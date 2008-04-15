@@ -9,10 +9,8 @@
   <description>Erklaerung folgt</description>
   <url>http://sepm.doublesignal.com</url>
   <modules>
-	<!-- <module>core</module> -->
-<!--    <module>documentation</module> -->
+	<module>core</module>
     <module>documentation</module>
-    <module>core</module>
   </modules>
 
   <developers>
