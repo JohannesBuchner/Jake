@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://www.apache.org/dtds/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Studenliste Dominik Dorn</title>
+
+    <author email="mail.2008@dominikdornc.com">Dominik Dorn</author>
+  </properties>
+
+  <body>
+    <section name="Stundenliste"><p align="center">SEPM 3950 Collab</p> <br /> <p
+    align="center">Softwareengeneering und Projektmanagement</p> <br /> <p
+    align="center">Technische Universität Wien</p> <br /> <p
+    align="center">Gruppe 3950, SS2008</p> <br /> <subsection
+    name="Ersteller"> <table>
+        <tr>
+          <td>erstellt am</td>
+          <td>Name</td>
+          <td>Matrikelnummer</td>
+          <td>Email</td>
+        </tr>
+
+        <tr>
+          <td>15.04.2008</td>
+          <td>Dominik Dorn</td>
+          <td>0626165</td>
+          <td>mail.2008@dominikdorn.com</td>
+        </tr>
+      </table> </subsection></section>
+
+    <section name="Änderungshistorie"><table>
+        <tr>
+          <td>Nr.</td>
+          <td>Datum</td>
+          <td>Autorenkürzel</td>
+          <td>Änderungen</td>
+        </tr>
+
+        <tr>
+          <td>1</td>
+          <td>15.04.2008</td>
+          <td>DD</td>
+          <td>Dokument erstellt</td>
+        </tr>
+      </table></section>
+
+    <section name="Arbeitsaufwand"><table>
+        <tr>
+          <td>Datum</td>
+          <td>von</td>
+          <td>bis</td>
+          <td>Dauer</td>
+          <td>Abschnitt</td>
+          <td>Beschreibung</td>
+        </tr>
+        
+		<tr>
+          <td>Mi, 09.04.2008</td>
+          <td>xx:xx</td>
+          <td>xx:xx</td>
+          <td>03:30</td>
+          <td>Besprechung</td>
+          <td>KickOff Treffen, Besprechung danach</td>
+        </tr>
+
+
+        <tr>
+          <td>Sa, 12.04.2008</td>
+          <td>-</td>
+          <td>-</td>
+          <td>1:30</td>
+          <td>Analyse</td>
+          <td>Einarbeitung Spring, Test-Driven Development</td>
+        </tr>
+
+
+        <tr>
+          <td>So, 13.04.2008</td>
+          <td>19:00</td>
+          <td>23:30</td>
+          <td>4:30</td>
+          <td>Dokumentation</td>
+          <td>(Mit-)Arbeiten am Projektvorschlag, Vorstellung bzgl. Projekt ins Wiki schreiben</td>
+        </tr>
+
+        <tr>
+          <td>Mo, 14.04.2008</td>
+          <td>18:00</td>
+          <td>19:30</td>
+          <td>1:30</td>
+          <td>Besprechung</td>
+          <td>MR1 Treffen mit Tutor und Assistent. Besprechung davor &amp; danach.</td>
+        </tr>
+
+        <tr>
+          <td>Di, 15.05.2008</td>
+          <td>14:00</td>
+          <td>15:45</td>
+          <td>1:45</td>
+          <td>Programmierung</td>
+          <td>Erstellung Maven Projektstruktur, Maven Dokumenation</td>
+        </tr>
+
+
+        <tr>
+          <td>xx.xx.xxxx</td>
+          <td>12:00</td>
+          <td>18:00</td>
+          <td>6:00 (hier in h:min eintragen)</td>
+          <td>Analys | Planung | Design | Testen | Programmierung |
+          Besprechung | Teamleitertätigkeit</td>
+          <td>Kaffee kochen</td>
+        </tr>
+      </table></section>
+  </body>
+</document>
