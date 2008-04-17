@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://www.apache.org/dtds/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Assumptions</title>
+
+    <author email="e0625457@student.tuwien.ac.at">Johannes Buchner</author>
+  </properties>
+
+  <body>
+    <section name="Assumptions">
+      <p align="center">SEPM 3950 Collab</p> <br /> <p
+    align="center">Softwareengeneering und Projektmanagement</p> <br /> <p
+    align="center">Technische Universität Wien</p> <br /> <p
+    align="center">Gruppe 3950, SS2008</p> <br /> <subsection
+    name="Ersteller"> 
+       <table>
+        <thead>
+        <tr>
+          <th>erstellt am</th>
+          <th>Name</th>
+          <th>Matrikelnummer</th>
+          <th>Email</th>
+        </tr>
+        </thead>
+
+        <tr>
+          <td>17.04.2008</td>
+          <td>Johannes Buchner</td>
+          <td>0625457</td>
+          <td>e0625457@student.tuwien.ac.at</td>
+        </tr>
+      </table> </subsection></section>
+
+    <section name="Änderungshistorie">
+      <table>
+        <thead>
+        <tr>
+          <th>Nr.</th>
+          <th>Datum</th>
+          <th>Autorenkürzel</th>
+          <th>Änderungen</th>
+        </tr>
+        </thead>
+
+        <tr>
+          <td>1</td>
+          <td>17.04.2008</td>
+          <td>JB</td>
+          <td>Dokument erstellt</td>
+        </tr>
+      </table></section>
+
+    <section name="Assumptions">
+      <table>
+        <thead>
+        <tr>
+          <th>Description</th>
+          <th>Reason</th>
+          <th>Affected Parts</th>
+        </tr>
+        </thead> 
+
+
+	<tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+	<!-- template:
+	<tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+	-->
+      </table></section>
+  </body>
+</document>
