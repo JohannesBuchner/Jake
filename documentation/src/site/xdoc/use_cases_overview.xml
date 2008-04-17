@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://www.apache.org/dtds/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Use Cases Overview</title>
+
+    <author email="me@simonwallner.at">Simon Wallner</author>
+  </properties>
+
+  <body>
+    <section name="Use Cases">
+    	<p>This page contains an overview over all use cases. Use cases are listed with a discrptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
+    	<p>Note: Since we don't yet need full use cases, a preliminary list of use cases without an identifier will suffice. Identifiers are added later on.</p>
+    	
+    	<ul>
+    		<li>show datapool</li>
+    		<li>add file/folder to datapool</li>
+    		<li>remove file/folder from datapool</li>
+    		<li>open file from pool with external application</li>
+    		<li>manage project members (add, remove)</li>
+    		<li>manage notes (crud)</li>
+    		<li>manage project (crud)</li>
+    		<li>manage project metadata (crud)</li>
+    		<li>resolve version conflicts</li>
+    		<li>propagate lokal changes to other project members</li>
+    		<li>manage file meta data</li>
+    		<li>manage personal meta data</li>
+    		<li>send message to project members</li>
+    		<li>read message</li>
+    		<li>edit application preferences</li>
+    	</ul>
+    </section>
+    <section name="History">
+		<table>
+			<tr>
+			  <td>No.</td>
+			  <td>Date</td>
+			  <td>Author</td>
+			  <td>Change</td>
+			</tr>
+	
+			<tr>
+			  <td>1</td>
+			  <td>2008-04-17</td>
+			  <td>SW</td>
+			  <td>created</td>
+			</tr>
+		  </table>
+      </section>
+  </body>
+</document>
