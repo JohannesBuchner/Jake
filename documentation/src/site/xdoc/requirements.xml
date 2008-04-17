@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://www.apache.org/dtds/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Requirements</title>
+    <author email="me@simonwallner.at">Simon Wallner</author>
+  </properties>
+
+  <body>
+    <section name="Requirements">
+    	This page contains all functional and nonfunctional requirements.
+    	<subsection name="functional requirements">
+    	</subsection>
+    	<subsection name="nonfunctional requirements">
+    		<ul>
+    			<li>It is not required to configure and run a central server to fully use the application. Setting up the application is easy even for users with minor computer experience.</li>
+    			<li>The application will run on the Windows, Linux and Mac plattform.</li>
+    			<li>The application must not corrupt data under any circumstances.</li>
+    			<li>Using the application is learned quickly and easily.</li>
+    			<li>The Application ist largely self-explenatory.</li>
+    		</ul>
+    	</subsection>
+    </section>
+    <section name="History">
+		<table>
+			<tr>
+			  <td>No.</td>
+			  <td>Date</td>
+			  <td>Author</td>
+			  <td>Change</td>
+			</tr>
+	
+			<tr>
+			  <td>1</td>
+			  <td>2008-04-17</td>
+			  <td>SW</td>
+			  <td>created</td>
+			</tr>
+		  </table>
+      </section>
+  </body>
+</document>

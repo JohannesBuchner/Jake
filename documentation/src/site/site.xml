@@ -22,6 +22,7 @@
 		</menu>
 		
 		<menu name="Documentation">
+			<item name="Requirements" href="requirements.html" />
 			<item name="Use Cases" href="use_cases_overview.html" />
 		</menu>
 		
