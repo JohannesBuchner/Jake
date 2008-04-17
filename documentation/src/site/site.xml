@@ -17,8 +17,12 @@
             <item name="Maven 2" href="http://maven.apache.org/maven2/" />
         </links>
 		
-		<menu name="Use Cases">
-			<item name="Overview" href="use_cases_overview.html" />
+		<menu name="General">
+			<item name="Features" href="features.html" />
+		</menu>
+		
+		<menu name="Documentation">
+			<item name="Use Cases" href="use_cases_overview.html" />
 		</menu>
 		
         <menu name="Stundenlisten">
