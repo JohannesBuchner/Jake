@@ -2,19 +2,19 @@
 %    Eine Liste von funktionalen Anforderungen oder eine Liste von User-Level Use Cases. Dabei sind nicht die ausführlichen Use Cases selbst gemeint (die kommen erst später) sondern lediglich gut beschreibende one-liner, eine Weiterführung der Featureliste. z.B. Datei zum Projektpool hinzufügen, neues Projekt erstellen, neues Projektmitglied hinzufügen
 
 \section{Funktionale Anforderungen}
-* Authentifizierung bei Programmstart mittels User/Passwort
-* Erstellen eines Projektes (Dateipool)
-* Hinzuf\"ugen von Benutzern zu einem Projektpool ( mittels Netzwerkservice)
-* Teilnahme an einem Projekt best\"atigen/ablehnen
-* Spezifikation eines Ordners auf der lokalen Festplatte f\"ur den Dateipool
-* Hinzuf\"ugen von Dateien zu einem Dateipool
-* Erstellen/Verwalten von Labels/Tags
-* Zuweisen/Entfernen von Labels zu einer/mehreren Dateien
-* Suchen von Dateien mittels Name
-* Suchen von Dateien mittels Label/Tag
-* Erstellen von Notizen
-* Hinzuf\"ugen von Metadaten zu Dateien/Notizen
-* Verbinden zum Projekt (sofern zuerst offline gearbeitet wurde)
-* Verbindung zum Projekt trennen (sofern zuerst online gearbeitet wurde)
-* Explizites Synchronisieren des Projektes (\"Anderungen herunterladen / ver\"offentlichen)
-
+\begin{itemize}
+  \item Authentifizierung bei Programmstart mittels User/Passwort (Login gegen das Netzwerkinterface)
+  \item Erstellen eines Projektes mit Auswahl eines Projektordners.
+  \item Bearbeiten von Benutzern eines Projektes.(mittels Netzwerkservice)
+  \item Teilnahme an einem Projekt bestätigen/ablehnen.
+  \item Erstellen/Verwalten von Labels/Tags für Datenobjekte. (Dateien, Notizen)
+  \item Zuweisen/Entfernen von Labels zu einer/mehreren Dateien.
+  \item Dateiverwaltung (hinzufügen, entfernen) von Dateien/Ordner.
+  \item Hinzufügen von Metadaten zu Datenobjekten.
+  \item Erstellen von Notizen.
+  \item Suchen von Dateien mittels Name, Label/Tag
+  \item Verbindungsmanagement zum Netzwerk. (verbinden, trennen)
+  \item Daten/Notizen können gepusht/gepullt werden.
+  \item Feature Auto-pull: Änderungen werden automatisch heruntergeladen.
+  \item Feature Auto-push: Änderungen werden automatisch verteilt.
+\end{itemize}
