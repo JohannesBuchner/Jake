@@ -2,7 +2,9 @@
 % Er legt fest was unser Projekt nicht ist, und was daher auch nicht implementiert wird.
 
 \section{Projektabgrenzung}
-Es wird nur die erste Phase implementiert, was das Programm nur lokal benutzbar macht, und andere Systeme durch Mock-Services simuliert. 
-Es ist nicht möglich, "live" gleichzeitig an einem Dokument zu arbeiten (wie etwa Gobby oder Google Apps).
-Es werden keine alten Versionen/Revisionen behalten, die wiederhergestellt werden könnten.
-Es wird kein automatisches Mergen (etwa von Textdateien) implementiert, da auf Benutzungsumgebungen fokussiert wird, die binäre bzw. proprietäre Formate verwenden.
+\begin{itemize}
+  \item Im Rahmen der Laborüubung SEPM wird nur die erste Phase laut Projektbeschreibung implementiert. Die konkrete Implementierung der Netzwerk- und Synchronisationsfunktionalität erfolgt erst in einer späteren Projektphase und wird in der ersten Phase durch Mock-Objekte simuliert.
+  \item Es ist nicht möglich, in Echtzeit gleichzeitig an einem Dokument zu arbeiten (wie etwa in Gobby oder Google Apps).
+  \item Es soll kein SCM oder Versionsmanagement implementiert werden. Alte Versionen von Dateien werden nicht behalten und sind daher auch nicht wiederherstellbar.
+  \item Da der Fokus auf Nutzungsumgebungen liegt, die primär binäre beziehungweise proprietäre Formate verwenden, soll kein automatisches Mergen (etwa von Textdateien) implementiert werden.
+\end
