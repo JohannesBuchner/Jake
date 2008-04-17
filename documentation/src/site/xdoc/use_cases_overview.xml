@@ -10,7 +10,7 @@
 
   <body>
     <section name="Use Cases">
-    	<p>This page contains an overview over all use cases. Use cases are listed with a discrptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
+    	<p>This page contains an overview of all use cases. Use cases are listed with a discriptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
     	<p>Note: Since we don't yet need full use cases, a preliminary list of use cases without an identifier will suffice. Identifiers are added later on.</p>
     	
     	<ul>
@@ -28,7 +28,6 @@
     		<li>manage personal meta data</li>
     		<li>send message to project members</li>
     		<li>read message</li>
-    		<li>edit application preferences</li>
     	</ul>
     </section>
     <section name="History">
