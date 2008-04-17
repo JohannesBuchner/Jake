@@ -1,2 +1,54 @@
 % Komponentendiagramm des Projektes
 \section{Komponentendiagramm}
+
+%% img component_diagram.png
+
+Das Projekt ist in vorwiegend 6 Komponenten aufgeteilt. 
+\begin{itemize}
+	\item Graphical User Interface (GUI)
+	\item Core
+	\item Database Persistence (DAO)
+	\item Synchronisation Services
+	\item File System Services
+	\item Network Service
+\end{itemize}
+
+\subsection{Graphical User Interface}
+Das Graphical User Interface (GUI) ist die grafische Benutzeroberfläche, mit welcher der Endanwender arbeitet.
+Die GUI ermöglicht Zugriff auf alle von der ``Core"-Komponente für Endbenutzer zur Verfügung gestellten
+Funktionalitäten.
+
+\subsection{Core}
+In der Core-Komponente befindet sich der Großteil der Logik der Applikation. Hier wird entschieden, was bei
+bestimmten User-Eingaben (z.B. das Drücken des Buttons ``Synchronisieren") gemacht werden soll. Die
+Core Komponente deligiert die vom User gewünschte Aktion an die einzelnen Komponenten, fügt die Ergebnisse
+der Aktionen zusammen und gibt diese zurück an die GUI. Der Core reagiert aber auch auf Events, die durch
+die einzelnen Komponenten gemeldet werden, y.B. wenn eine Datei im Dateisystem geändert wird, wird dies über
+den Core an die GUI gemeldet und je nach User Interaktion weiter an die Synchronisationskomponente geleitet.
+
+\subsection{Database Persistence}
+Die Database Persistence Komponente abstrahiert den Zugriff auf die Datenbank und ermöglicht es, definierte
+Aktionen einfach und geregelt (z.B. mittels Transaktionen) auszuführen. Es wird das Konzept des Data Hiding
+umgesetzt, wodurch erreicht werden kann, dass der Core bzw. im schlimmsten Falle andere Clients keinen direkten
+Zugriff auf die Datenbank erhalten, sondern nur auf die spezifizierten und notwendigen Funktionen. 
+
+\subsection{Synchronisation Services}
+Die Synchronisationskomponente arbeitet sehr eng mit dem Core zusammen. Der Core übermittelt beispielsweise
+eine Änderung einer Datei, welche durch den User bzw. automatisch (je nach Einstellung) bestätigt wurde.
+Die Synchronisationskomponente beinhaltet nun verschiedene Strategien, wie diese Änderungen an andere
+Projektmitglieder/Clients propagiert werden. 
+
+\subsection{File System Services}
+Die File System Services sind die Schnittstelle des Programmes zum Dateisystem des Benutzers. Dieser
+Service kapselt den kompleten Zugriff auf Dateien im Dateisystem, sodass diese vom Programm wie jegliche
+andere Objekte (z.B. Notizen) verwendet werden können. Außerdem kann der Dateisystem Service durch
+entsprechende Strategien feststellen, ob Dateien geändert wurden oder in die Projektordnerstruktur
+kopiert wurden und dies dem Core mitteilen, welcher wiederum entsprechende Aktionen veranlasst.
+
+\subsection{Network Service}
+Der Network Service behandelt alle Netzwerktätigkeiten des Programmes. Der Service kapselt beispielsweise
+vollständig die Kommunikation der Clients auf Netzwerkebene und gibt die entsprechenden Nachrichten an
+den Core weiter. So ist es leicht möglich, verschiedene Netzwerkbackends (z.B. XMPP oder RMI) zu unterstützen,
+welche für den Core und somit für den Benutzer transparent sind. Außerdem wird die Authentifizierung der
+Nutzer in dieser Komponente durchgeführt.
+
