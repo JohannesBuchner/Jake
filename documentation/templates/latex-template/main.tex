@@ -23,7 +23,6 @@
 % overwrite for each document:
 \def\sepmdocumentname{Template}
 \def\sepmauthors{Johannes Buchner}
-\def\sepmauthorsabbr{jb}
 \def\sepmreview{Simon Wallner}
 \def\sepmexecutivesummary{Dies ist das Template, das für jede abzugebende Projektdokumentation benutzt werden soll.}
 % these are lines that are injected into the changelog table
@@ -43,6 +42,7 @@
 \def\sepmgroupnr{3950}
 \def\sepmgroup{ Gruppe \sepmgroupnr }
 \def\sepmprojectname{ Jake }
+\setcounter{tocdepth}{2}
 
 \def\sepmstart{
 \begin{document}
@@ -58,7 +58,7 @@
 
 \begin{titlepage}
 \begin{center}
-\large{Projekt \textbf{\sepmprojectname}}
+\LARGE{Projekt \textbf{\sepmprojectname}}
 
 \vfill
 \Huge{\textbf{\sepmdocumentname}}
