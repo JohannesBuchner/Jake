@@ -40,7 +40,8 @@
 % don't update:
 \def\sepmlva{LU SEPM 188.403}
 \def\sepmdoctype{Projektdokumentation}
-\def\sepmgroup{3950}
+\def\sepmgroupnr{3950}
+\def\sepmgroup{ Gruppe \sepmgroupnr }
 \def\sepmprojectname{ Jake }
 
 \def\sepmstart{
@@ -50,7 +51,7 @@
 \pagestyle{fancy}
 \lhead{\sepmlva}
 \rhead{\sepmdoctype}
-\lfoot{\sepmgroup/\sepmauthorsabbr}
+\lfoot{\sepmgroup}
 %\cfoot{\today}
 \cfoot{\number\day.\number\month.\number\year}
 \rfoot{\thepage/\pageref{LastPage}}
