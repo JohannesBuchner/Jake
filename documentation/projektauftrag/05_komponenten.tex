@@ -27,13 +27,12 @@ Funktionalitäten.
 Die Persistence Komponente abstrahiert den Zugriff auf die Daten, die für den Betrieb gespeichert werden müssen. Diese umschließen nicht die Dateien. Es wird das Konzept des Data Hiding umgesetzt, wodurch erreicht werden kann, dass die anderen Komponenten nur auf definierte Weise die Daten verwenden. Für die Speicherung der Daten kann eine relationale Datenbank verwendet werden.
 
 \subsection{Synchronisation Services}
-Die Synchronisationskomponente ist für die Verteilung von Änderungensinformationen und Dateninhalten an andere Projektmitglieder/Clients zuständig. 
+Die Synchronisationskomponente ist für die Verteilung von Änderungsinformationen und Dateninhalten an andere Projektmitglieder/Clients zuständig. 
 
 \subsection{File System Services}
 Die File System Services kapselt den Zugriff auf Dateien im Dateisystem. Außerdem kann diese Komponente durch entsprechende Strategien feststellen, ob Dateien geändert wurden oder in die Projektordnerstruktur kopiert wurden und dies dem Core mitteilen, welcher wiederum entsprechende Aktionen veranlasst.
 
 \subsection{Interclient Communication} 
-Der Interclient Communication Service kapselt die vollständige Kommunikation zwischen den Clients (über das Netzwerk) und gibt die entsprechenden Nachrichten an den Core weiter. So ist es leicht möglich, verschiedene Netzwerkbackends (z.B. XMPP oder RMI) zu unterstützen, welche für den Core und somit für den Benutzer transparent sind. Außerdem wird die Authentifizierung der Nutzer in dieser Komponente durchgeführt. 
+Der Interclient Communication Service kapselt die vollständige Kommunikation zwischen den Clients (über das Netzwerk) und gibt die entsprechenden Nachrichten an den Core weiter. So ist es leicht möglich, verschiedene Netzwerk-backends (z.B. XMPP oder RMI) zu unterstützen, welche für den Core und somit für den Benutzer transparent sind. Außerdem wird die Authentifizierung der Nutzer in dieser Komponente durchgeführt. 
 % Ich habe bei Client Authentifizierung ein schlechtes Gefühl. Wenn wir nicht mit XMPP arbeiten, wie werden die Clients dann Authentifiziert? ~simon
 % ja. ~johannes
-
