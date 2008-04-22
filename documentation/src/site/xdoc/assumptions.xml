@@ -10,21 +10,71 @@
 
   <body>
     <section name="Assumptions">
+    <p>This site acts a reference to all project related assumptions. In the upper part of the site you will find valid assumptions, categorised by their domain and scope. In the lower part you will find new, changed or assumptions that are currently under discussion and need approval by the team, or some team members.</p>
+    <p>For the ease of use, each assumptions has an unique identifier [&lt;identifier&gt;]. This identifier should be short, simple and obvious. Once chosen it shall not be changed, and therefor be stable. If assumptions are refined, or otherwise hierarchically organised an identifier of the form [&lt;parent&gt;:&lt;child&gt;] shall be used.</p>
+    <p>Discussion of Assumptions takes place at <a href="http://sepm.doublesignal.com/wiki/doku.php?id=assumptions">wiki/Assumptions</a></p>
+    <subsection name="valid Assumptions">
       <table>
         <thead>
         <tr>
           <th>Description</th>
-          <th>Reason</th>
+          <th>Rationale</th>
           <th>Affected Parts</th>
         </tr>
         </thead> 
 
 	<!-- fill in here -->
 	<tr>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
+          <td>[offline] It is possible to work either on- or off-line. That implements that two users may work simultaneously on the same document. Hence some conflict resolution is needed.</td>
+          <td>basic functionality</td>
+          <td>scope of the application</td>
+    </tr>
+	<tr>
+	  <td>[all_equal] In general, all objects are treated equally; Files, Folders, Notes, etc.</td>
+	  <td>basic functionality</td>
+	  <td>scope of the application, architecture</td>
+	</tr>
+	<tr>
+	  <td>[folder_structure] Folder structures of imported folders are preserved</td>
+	  <td>ease of use, transparency for the user</td>
+	  <td>basic functionality, architecture</td>
+	</tr>
+	<tr>
+	  <td>[project_folder] All shared data lies in one project folder</td>
+	  <td>simplifies implementation, transparency for the user</td>
+	  <td>basic functionality, architecture</td>
+	</tr>
+	<tr>
+	  <td>[passive_mode] The application must be fully operational even without constant user interaction. That means that the client may passively share data and therefor may act as a dedicated server.</td>
+	  <td>limit the problem of unavailable clients and increase the chance of working with the latest files.</td>
+	  <td>scope of the application, architecture, user interaction</td>
+	</tr>
+	<tr>
+	  <td>[soft_lock] Instad of implementing strict access control systems a soft lock is used. If a user wants to update a file, he/she may be notified that access to the file is somehow restricted. After receiving the notification the user may decide to obey the restriction or not.</td>
+	  <td>no dead- or abandoned locks, no access control required</td>
+	  <td>scope of application, architecture</td>
+	</tr>
+	<tr>
+	  <td>[push_pull] Data may either be pushed to, or pulled from a client</td>
+	  <td>necessary fo synchronization</td>
+	  <td>architecture</td>
+	</tr>
+	<tr>
+	  <td>[auto_push_pull] The user may indicate whether the application automatically or manually pushes/pulls data. This option may save bandwidth and gives the user more control over the traffic.</td>
+	  <td>save bandwidth, more control over traffic, restrict traffic in insecure environments</td>
+	  <td>scope of application, architecture</td>
+	</tr>	
+	<tr>
+	  <td>[en] The UI and all public documentation are written in english.</td>
+	  <td>multi culture target audience</td>
+	  <td>architecture, ui, documentation</td>
+	</tr>
+	<tr>
+	  <td>[i18n] The application will be prepared for internationalization. UI-String will be centralized.</td>
+	  <td>ease of translation, ease of  maintenance of the ui</td>
+	  <td>architecutre</td>
+	</tr>
+    
 	<!-- template:
 	<tr>
           <td></td>
@@ -33,6 +83,23 @@
         </tr>
 	-->
       </table>
+      </subsection>
+      <subsection name="new/changed/under discussion">
+      <table>
+        <thead>
+        <tr>
+          <th>Description</th>
+          <th>Rationale</th>
+          <th>Affected Parts</th>
+        </tr>
+        </thead>
+       	<tr>
+          <td>[multi_platform] The application shall run under Windows, Linux and Mac Os X</td>
+          <td>variety of target audience</td>
+          <td>architecture</td>
+        </tr>
+      </table>
+      </subsection>
     </section>
 
     <section name="Changelog">
