@@ -29,6 +29,50 @@
     		<li>send message to project members</li>
     		<li>read message</li>
     	</ul>
+    	<subsection name="Use Case Description">
+    	<i>NOTE: Die Use Cases sagen absolut nichts über die Implementierung aus. Insofern darf im Use Case kein "klicken, Button, neues Fenster, Maus, etc." vorkommen. Diese impliziten Vorgaben machen nur das UI-design schwieriger. Also ganz allgemein, nur was der user will und was er bekommt. Das einzige wovon wir vielleicht ausgehen können, ist das wir ein grafisches UI verwenden. Insofern sind show, view, etc gerechtfertigt.
+    	</i>
+    		<table>
+				<thead>
+					<tr>
+						<td>name</td>
+						<td>UC-1: show datapool</td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>Show the datapool and its contents</td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td>The user wants to view the data that is in the datapool</td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td>All Users</td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td>The application is running</td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li>The user indicates that the application is to show the datapool and its contents</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td>The datapool and its contents are displayed</td>
+				</tr>
+			</table>
+		</subsection>
     </section>
     <section name="Changelog">
 		<table>
