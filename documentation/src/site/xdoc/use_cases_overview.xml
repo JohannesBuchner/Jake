@@ -72,6 +72,48 @@
 					<td>The datapool and its contents are displayed</td>
 				</tr>
 			</table>
+			<!-- template
+			<table>
+				<thead>
+					<tr>
+						<td>name</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			-->
 		</subsection>
     </section>
     <section name="Changelog">
