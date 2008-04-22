@@ -74,6 +74,11 @@
 	  <td>ease of translation, ease of  maintenance of the ui</td>
 	  <td>architecutre</td>
 	</tr>
+	<tr>
+	  <td>[multi_platform] The application shall run under Windows, Linux and Mac Os X</td>
+	  <td>variety of target audience</td>
+	  <td>architecture</td>
+	</tr>
     
 	<!-- template:
 	<tr>
@@ -93,11 +98,7 @@
           <th>Affected Parts</th>
         </tr>
         </thead>
-       	<tr>
-          <td>[multi_platform] The application shall run under Windows, Linux and Mac Os X</td>
-          <td>variety of target audience</td>
-          <td>architecture</td>
-        </tr>
+
       </table>
       </subsection>
     </section>
@@ -116,8 +117,14 @@
         <tr>
           <td>1</td>
           <td>17.04.2008</td>
-          <td>JB</td>
-          <td>Dokument erstellt</td>
+          <td>SW</td>
+          <td>created</td>
+        </tr>
+        <tr>
+        	<td>2</td>
+        	<td>22.4.2008</td>
+        	<td>SW</td>
+        	<td>added assumption to valid assumptions</td>
         </tr>
       </table>
     </section>
