@@ -16,7 +16,7 @@
     		<li>append metadata to files or notes</li>
     		<li>automatically propagate local changes</li>
     		<li>automatically get the latest versions from other project members</li>
-    		<li>work on files on and offline</li>
+    		<li>work on files online and offline</li>
     		<li>add files or folders to the project data pool</li>
     		<li>manage the project data pool</li>
     		<li>the application supports the user to resolve version conflicts</li>
@@ -24,14 +24,14 @@
     		<li>find files by metadata</li>
     	</ul>
     </section>
-    <section name="History">
-		<table>
+    <section name="Changelog">
+		<table><thead>
 			<tr>
-			  <td>No.</td>
-			  <td>Date</td>
-			  <td>Author</td>
-			  <td>Change</td>
-			</tr>
+			  <th>No.</th>
+			  <th>Date</th>
+			  <th>Author</th>
+			  <th>Change</th>
+			</tr></thead>
 	
 			<tr>
 			  <td>1</td>

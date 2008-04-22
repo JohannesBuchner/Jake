@@ -10,49 +10,6 @@
 
   <body>
     <section name="Assumptions">
-      <p align="center">SEPM 3950 Collab</p> <br /> <p
-    align="center">Softwareengeneering und Projektmanagement</p> <br /> <p
-    align="center">Technische Universität Wien</p> <br /> <p
-    align="center">Gruppe 3950, SS2008</p> <br /> <subsection
-    name="Ersteller"> 
-       <table>
-        <thead>
-        <tr>
-          <th>erstellt am</th>
-          <th>Name</th>
-          <th>Matrikelnummer</th>
-          <th>Email</th>
-        </tr>
-        </thead>
-
-        <tr>
-          <td>17.04.2008</td>
-          <td>Johannes Buchner</td>
-          <td>0625457</td>
-          <td>e0625457@student.tuwien.ac.at</td>
-        </tr>
-      </table> </subsection></section>
-
-    <section name="Änderungshistorie">
-      <table>
-        <thead>
-        <tr>
-          <th>Nr.</th>
-          <th>Datum</th>
-          <th>Autorenkürzel</th>
-          <th>Änderungen</th>
-        </tr>
-        </thead>
-
-        <tr>
-          <td>1</td>
-          <td>17.04.2008</td>
-          <td>JB</td>
-          <td>Dokument erstellt</td>
-        </tr>
-      </table></section>
-
-    <section name="Assumptions">
       <table>
         <thead>
         <tr>
@@ -62,7 +19,7 @@
         </tr>
         </thead> 
 
-
+	<!-- fill in here -->
 	<tr>
           <td></td>
           <td></td>
@@ -75,6 +32,27 @@
           <td></td>
         </tr>
 	-->
-      </table></section>
+      </table>
+    </section>
+
+    <section name="Changelog">
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Date</th>
+          <th>Author</th>
+          <th>Change</th>
+        </tr>
+        </thead>
+
+        <tr>
+          <td>1</td>
+          <td>17.04.2008</td>
+          <td>JB</td>
+          <td>Dokument erstellt</td>
+        </tr>
+      </table>
+    </section>
   </body>
 </document>

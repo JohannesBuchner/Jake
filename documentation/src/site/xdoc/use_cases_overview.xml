@@ -23,14 +23,14 @@
     		<li>manage project (crud)</li>
     		<li>manage project metadata (crud)</li>
     		<li>resolve version conflicts</li>
-    		<li>propagate lokal changes to other project members</li>
+    		<li>propagate local changes to other project members</li>
     		<li>manage file meta data</li>
     		<li>manage personal meta data</li>
     		<li>send message to project members</li>
     		<li>read message</li>
     	</ul>
     </section>
-    <section name="History">
+    <section name="Changelog">
 		<table>
 			<tr>
 			  <td>No.</td>

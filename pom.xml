@@ -5,9 +5,9 @@
   <artifactId>parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>SEPM 3950 Collaborative Environment</name>
-  <description>Erklaerung folgt</description>
-  <url>http://sepm.doublesignal.com</url>
+  <name>SEPM 3950 Jake</name>
+  <description>Jake is a collaboration tool for sharing a project folder between project members.</description>
+  <url>http://sepm.doublesignal.com/</url>
   <modules>
 	<module>core</module>
     <module>documentation</module>
@@ -19,7 +19,7 @@
 		<name>Christian Sutter</name>
 		<email>chris@doublesignal.com</email>
 		<roles>
-			<role>Teamkoordinator</role>
+			<role>Team coordinator</role>
 		</roles>
     </developer>
 
@@ -36,7 +36,7 @@
 		<name>Simon Wallner</name>
 		<email>contact@simonwallner.at</email>
 		<roles>
-			<role>Teamkoordinator</role>
+			<role>Team coordinator</role>
 		</roles>
     </developer>
 	<developer>
@@ -44,7 +44,7 @@
 		<name>Peter Steinberger</name>
 		<email>mail@petersteinberger.com</email>
 		<roles>
-			<role>Teamkoordinator Stellvertreter</role>
+			<role>second team coordinator</role>
 		</roles>
     </developer>
 	<developer>
@@ -52,7 +52,7 @@
 		<name>Philipp Knobelspies</name>
 		<email>philipp.knobelspies@gmail.com</email>
 		<roles>
-			<role>Technischer Architekt Stellvertreter</role>
+			<role>second technical architect</role>
 		</roles>
     </developer>
 	<developer>
@@ -60,7 +60,7 @@
 		<name>Dominik Dorn</name>
 		<email>mail.2008@dominikdorn.com</email>
 		<roles>
-			<role>Tester</role>
+			<role>Testing</role>
 		</roles>
     </developer>
 <!--

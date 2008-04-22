@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="Maven">
-    <bannerLeft>
+<!--    <bannerLeft>
         <name>Maven</name>
         <src>
             http://maven.apache.org/images/apache-maven-project.png
@@ -9,7 +9,7 @@
     </bannerLeft>
     <bannerRight>
         <src>http://maven.apache.org/images/maven-small.gif</src>
-    </bannerRight>
+    </bannerRight>-->
     <body>
         <links>
             <item name="Apache" href="http://www.apache.org/" />
@@ -22,26 +22,27 @@
 		</menu>
 		
 		<menu name="Documentation">
+			<item name="Projektauftrag" href="projektauftrag.html" />
+			<item name="Assumptions" href="assumptions.html" />
 			<item name="Requirements" href="requirements.html" />
 			<item name="Use Cases" href="use_cases_overview.html" />
 		</menu>
 		
-        <menu name="Stundenlisten">
-            <item name="Simon Wallner" href="stundenliste_simon.html" />
-            <item name="Peter Steinberger" href="stundenliste_peter.html" />
-            <item name="Christian Sutter" href="stundenliste_chris.html" />
-            <item name="Johannes Buchner" href="stundenliste_johannes.html" />
-            <item name="Philipp Knobelspies" href="stundenliste_philipp.html" />
-            <item name="Dominik Dorn" href="stundenliste_dominik.html" />
+        <menu name="Organisation">
+            <item name="Wiki" href="http://sepm.doublesignal.com/wiki/doku.php" />
+            <item name="Bugs" href="http://sepm.doublesignal.com/flyspray/" />
+            <item name="man-hours" href="http://sepm.doublesignal.com/wiki/doku.php?id=stundenlisten" />
         </menu>
 
         <menu name="Templates">
-            <item name="Stundenliste" href="stundenliste_vorlage.html" />
+            <item name="Page template" href="template.html" />
+            <!--<item name="Stundenliste" href="stundenliste_vorlage.html" /> -->
         </menu>
-
+<!-- not working
         <menu name="Maven 2.0">
             <item name="APT Format" href="format.html" />
         </menu>
+-->
     </body>
 </project>
 
