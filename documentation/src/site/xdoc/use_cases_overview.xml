@@ -7,6 +7,21 @@
 
     <author email="me@simonwallner.at">Simon Wallner</author>
   </properties>
+<!-- 
+HELPERS:
+
+Creates anchors in table
+:'<,'>s/<td>\[UC-\(.*\):\(.*\)\] \(.*\)<\/td>/<td><a name='uc_\1_\2'>[UC-\1:\2] \3<\/a><\/td>/g
+
+Creates clickable list items
+:'<,'>s/<li>\[UC-\(.*\):\(.*\)] \(.*\)<\/li>/<li><a href='#uc_\1_\2'>[UC-\1:\2] \3<\/a><\/li>/g
+
+TODO:
+
+Create stylesheet for 'table_usecase'
+
+//-->
+
 
   <body>
     <section name="Use Cases">
@@ -16,66 +31,66 @@
     	<ul>
 		<li>[UC-01] Manage Datapool <br />
 			<ul>
-				<li>[UC-01:01] show datapool</li>
-				<li>[UC-01:02] add file/folder to datapool</li>
-				<li>[UC-01:03] remove file/folder from datapool</li>
-				<li>[UC-01:04] manage file meta data</li>
+				<li><a href='#uc_01_01'>[UC-01:01] show datapool</a></li>
+				<li><a href='#uc_01_02'>[UC-01:02] add file/folder to datapool</a></li>
+				<li><a href='#uc_01_03'>[UC-01:03] remove file/folder from datapool</a></li>
+				<li><a href='#uc_01_04'>[UC-01:04] manage file meta data</a></li>
 			</ul>
 		</li>
 
 		<li>[UC-02] Manage Objects <br />
 			<ul>
-				<li>[UC-02:01] create note-object</li>
-				<li>[UC-02:02] import file/folder-object</li>
-				<li>[UC-02:03] view/edit note object</li>
-				<li>[UC-02:04] edit object-properties</li>
-				<li>[UC-02:05] delete object</li>
-				<li>[UC-02:06] start object synchronization</li>
-				<li>[UC-02:07] set object syncrhonization mode</li>
-				<li>[UC-02:08] open file/folder-object with OS specified program</li>
+				<li><a href='#uc_02_01'>[UC-02:01] create note-object</a></li>
+				<li><a href='#uc_02_02'>[UC-02:02] import file/folder-object</a></li>
+				<li><a href='#uc_02_03'>[UC-02:03] view/edit note object</a></li>
+				<li><a href='#uc_02_04'>[UC-02:04] edit object-properties</a></li>
+				<li><a href='#uc_02_05'>[UC-02:05] delete object</a></li>
+				<li><a href='#uc_02_06'>[UC-02:06] start object synchronization</a></li>
+				<li><a href='#uc_02_07'>[UC-02:07] set object syncrhonization mode</a></li>
+				<li><a href='#uc_02_08'>[UC-02:08] open file/folder-object with OS specified program</a></li>
 			</ul>
 		</li>
 		<li>[UC-03] Manage Tags <br />
 			<ul>
-				<li>[UC-03:01] Create a Tag</li>
-				<li>[UC-03:02] Edit/Rename a Tag</li>
-				<li>[UC-03:03] Delete a Tag</li>
-				<li>[UC-03:04] Add a Tag to an object</li>
-				<li>[UC-03:05] Add a Tag to a group of objects</li>
-				<li>[UC-03:06] Remove a Tag from an object</li>
-				<li>[UC-03:07] Remove a Tag from a group of objects</li>
-				<li>[UC-03:08] List available Tags</li>
-				<li>[UC-03:09] Find objects with specified Tag(s)</li>
+				<li><a href='#uc_03_01'>[UC-03:01] Create a Tag</a></li>
+				<li><a href='#uc_03_02'>[UC-03:02] Edit/Rename a Tag</a></li>
+				<li><a href='#uc_03_03'>[UC-03:03] Delete a Tag</a></li>
+				<li><a href='#uc_03_04'>[UC-03:04] Add a Tag to an object</a></li>
+				<li><a href='#uc_03_05'>[UC-03:05] Add a Tag to a group of objects</a></li>
+				<li><a href='#uc_03_06'>[UC-03:06] Remove a Tag from an object</a></li>
+				<li><a href='#uc_03_07'>[UC-03:07] Remove a Tag from a group of objects</a></li>
+				<li><a href='#uc_03_08'>[UC-03:08] List available Tags</a></li>
+				<li><a href='#uc_03_09'>[UC-03:09] Find objects with specified Tag(s)</a></li>
 			</ul>
 		</li>
 
 		<li>[UC-04] Manage Projectmembers <br />
 			<ul>
-				<li>[UC-04:01] Show project members</li>
-				<li>[UC-04:02] Show online project members</li>
-				<li>[UC-04:03] Search users by ID (e.g. XMPP-ID)</li>
-				<li>[UC-04:04] Invite a user to join the project</li>
-				<li>[UC-04:05] Accept Project Invitation</li>
-				<li>[UC-04:06] Reject Project Invitation</li>
-				<li>[UC-04:07] Edit own personal meta data</li>
+				<li><a href='#uc_04_01'>[UC-04:01] Show project members</a></li>
+				<li><a href='#uc_04_02'>[UC-04:02] Show online project members</a></li>
+				<li><a href='#uc_04_03'>[UC-04:03] Search users by ID (e.g. XMPP-ID)</a></li>
+				<li><a href='#uc_04_04'>[UC-04:04] Invite a user to join the project</a></li>
+				<li><a href='#uc_04_05'>[UC-04:05] Accept Project Invitation</a></li>
+				<li><a href='#uc_04_06'>[UC-04:06] Reject Project Invitation</a></li>
+				<li><a href='#uc_04_07'>[UC-04:07] Edit own personal meta data</a></li>
 			</ul>
 		</li>
 		<li>[UC-05] Manage Project <br />
 			<ul>
-				<li>[UC-05:01] Create new Project</li>
-				<li>[UC-05:02] Edit Project Metadata</li>
-				<li>[UC-05:03] Specify Project directory path</li>
+				<li><a href='#uc_05_01'>[UC-05:01] Create new Project</a></li>
+				<li><a href='#uc_05_02'>[UC-05:02] Edit Project Metadata</a></li>
+				<li><a href='#uc_05_03'>[UC-05:03] Specify Project directory path</a></li>
 			</ul>
 		</li>
 		<li>[UC-06] Propagate Changes <br />
 			<ul>
-				<li>[UC-06:01] Show changed objects</li>
-				<li>[UC-06:02] Start propagation of changes</li>
-				<li>[UC-06:03] Start receiving of changes</li>
-				<li>[UC-06:04] Set propagation mode</li>
-				<li>[UC-06:05] View propagation information</li>
-				<li>[UC-06:06] Show version conflicts</li>
-				<li>[UC-06:07] Resolve version conflicts</li>
+				<li><a href='#uc_06_01'>[UC-06:01] Show changed objects</a></li>
+				<li><a href='#uc_06_02'>[UC-06:02] Start propagation of changes</a></li>
+				<li><a href='#uc_06_03'>[UC-06:03] Start receiving of changes</a></li>
+				<li><a href='#uc_06_04'>[UC-06:04] Set propagation mode</a></li>
+				<li><a href='#uc_06_05'>[UC-06:05] View propagation information</a></li>
+				<li><a href='#uc_06_06'>[UC-06:06] Show version conflicts</a></li>
+				<li><a href='#uc_06_07'>[UC-06:07] Resolve version conflicts</a></li>
 
 				<li>send message?? to project members</li>
 				<li>read message??</li>
@@ -83,17 +98,17 @@
 		</li>
 		<li>[UC-07] Edit Programm Settings <br />
 			<ul>
-				<li>[UC-07:01] Set authentication Information</li>
-				<li>[UC-07:02] Login to the network</li>
-				<li>[UC-07:03] Logout from the network</li>
-				<li>[UC-07:04] Set networking options (e.g. Proxy Server)</li> 
+				<li><a href='#uc_07_01'>[UC-07:01] Set authentication Information</a></li>
+				<li><a href='#uc_07_02'>[UC-07:02] Login to the network</a></li>
+				<li><a href='#uc_07_03'>[UC-07:03] Logout from the network</a></li>
+				<li><a href='#uc_07_04'>[UC-07:04] Set networking options (e.g. Proxy Server)</a></li> 
 			</ul>
 		</li>
     	</ul>
     	<subsection name="Use Case Description">
     	<i>NOTE: Die Use Cases sagen absolut nichts über die Implementierung aus. Insofern darf im Use Case kein "klicken, Button, neues Fenster, Maus, etc." vorkommen. Diese impliziten Vorgaben machen nur das UI-design schwieriger. Also ganz allgemein, nur was der User will und was er bekommt. Das einzige wovon wir vielleicht ausgehen können, ist das wir ein grafisches UI verwenden. Insofern sind show, view, etc gerechtfertigt.
     	</i>
-    		<table>
+    		<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
@@ -133,8 +148,8 @@
 					<td>The datapool and its contents are displayed</td>
 				</tr>
 			</table>
-			<!-- template
-			<table>
+			<!-- template {{{
+			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
@@ -174,7 +189,1893 @@
 					<td></td>
 				</tr>
 			</table>
-			-->
+			 }}} -->
+
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_01_01'>[UC-01:01] show datapool</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_01_02'>[UC-01:02] add file/folder to datapool </a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_01_03'>[UC-01:03] remove file/folder from datapool</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_01_04'>[UC-01:04] manage file meta data</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_01'>[UC-02:01] create note-object</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_02'>[UC-02:02] import file/folder-object</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_03'>[UC-02:03] view/edit note object</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_04'>[UC-02:04] edit object-properties</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_05'>[UC-02:05] delete object</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_06'>[UC-02:06] start object synchronization</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_07'>[UC-02:07] set object syncrhonization mode</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_08'>[UC-02:08] open file/folder-object with OS specified program</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_01'>[UC-03:01] Create a Tag</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_02'>[UC-03:02] Edit/Rename a Tag</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_03'>[UC-03:03] Delete a Tag</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_04'>[UC-03:04] Add a Tag to an object</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_05'>[UC-03:05] Add a Tag to a group of objects</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_06'>[UC-03:06] Remove a Tag from an object</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_07'>[UC-03:07] Remove a Tag from a group of objects</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_08'>[UC-03:08] List available Tags</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_03_09'>[UC-03:09] Find objects with specified Tag(s)</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_01'>[UC-04:01] Show project members</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_02'>[UC-04:02] Show online project members</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_03'>[UC-04:03] Search users by ID (e.g. XMPP-ID)</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_04'>[UC-04:04] Invite a user to join the project</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_05'>[UC-04:05] Accept Project Invitation</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_06'>[UC-04:06] Reject Project Invitation</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_04_07'>[UC-04:07] Edit own personal meta data</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_05_01'>[UC-05:01] Create new Project</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_05_02'>[UC-05:02] Edit Project Metadata</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_05_03'>[UC-05:03] Specify Project directory path</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_01'>[UC-06:01] Show changed objects</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_02'>[UC-06:02] Start propagation of changes</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_03'>[UC-06:03] Start receiving of changes</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_04'>[UC-06:04] Set propagation mode</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_05'>[UC-06:05] View propagation information</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_06'>[UC-06:06] Show version conflicts</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_06_07'>[UC-06:07] Resolve version conflicts</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_07_01'>[UC-07:01] Set authentication Information</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_07_02'>[UC-07:02] Login to the network</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_07_03'>[UC-07:03] Logout from the network</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_07_04'>[UC-07:04] Set networking options (e.g. Proxy Server)</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>XXX</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>XXX</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>XXX</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>XXX</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+
 		</subsection>
     </section>
     <section name="Changelog">
@@ -192,6 +2093,19 @@
 			  <td>SW</td>
 			  <td>created</td>
 			</tr>
+			<tr>
+			  <td>2</td>
+			  <td>2008-04-23</td>
+			  <td>DD</td>
+			  <td>updated list of use cases</td>
+			</tr>
+			<tr>
+			  <td>3</td>
+			  <td>2008-04-23</td>
+			  <td>DD</td>
+			  <td>created tables for use cases, made them clickable</td>
+			</tr>
+			
 		  </table>
       </section>
   </body>
