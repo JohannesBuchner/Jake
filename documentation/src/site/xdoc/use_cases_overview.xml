@@ -14,23 +14,84 @@
     	<p>Note: Since we don't yet need full use cases, a preliminary list of use cases without an identifier will suffice. Identifiers are added later on.</p>
     	
     	<ul>
-    		<li>show datapool</li>
-    		<li>add file/folder to datapool</li>
-    		<li>remove file/folder from datapool</li>
-    		<li>open file from pool with external application</li>
-    		<li>manage project members (add, remove)</li>
-    		<li>manage notes (crud)</li>
-    		<li>manage project (crud)</li>
-    		<li>manage project metadata (crud)</li>
-    		<li>resolve version conflicts</li>
-    		<li>propagate local changes to other project members</li>
-    		<li>manage file meta data</li>
-    		<li>manage personal meta data</li>
-    		<li>send message to project members</li>
-    		<li>read message</li>
+		<li>[UC-01] Manage Datapool <br />
+			<ul>
+				<li>[UC-01:01] show datapool</li>
+				<li>[UC-01:02] add file/folder to datapool</li>
+				<li>[UC-01:03] remove file/folder from datapool</li>
+				<li>[UC-01:04] manage file meta data</li>
+			</ul>
+		</li>
+
+		<li>[UC-02] Manage Objects <br />
+			<ul>
+				<li>[UC-02:01] create note-object</li>
+				<li>[UC-02:02] import file/folder-object</li>
+				<li>[UC-02:03] view/edit note object</li>
+				<li>[UC-02:04] edit object-properties</li>
+				<li>[UC-02:05] delete object</li>
+				<li>[UC-02:06] start object synchronization</li>
+				<li>[UC-02:07] set object syncrhonization mode</li>
+				<li>[UC-02:08] open file/folder-object with OS specified program</li>
+			</ul>
+		</li>
+		<li>[UC-03] Manage Tags <br />
+			<ul>
+				<li>[UC-03:01] Create a Tag</li>
+				<li>[UC-03:02] Edit/Rename a Tag</li>
+				<li>[UC-03:03] Delete a Tag</li>
+				<li>[UC-03:04] Add a Tag to an object</li>
+				<li>[UC-03:05] Add a Tag to a group of objects</li>
+				<li>[UC-03:06] Remove a Tag from an object</li>
+				<li>[UC-03:07] Remove a Tag from a group of objects</li>
+				<li>[UC-03:08] List available Tags</li>
+				<li>[UC-03:09] Find objects with specified Tag(s)</li>
+			</ul>
+		</li>
+
+		<li>[UC-04] Manage Projectmembers <br />
+			<ul>
+				<li>[UC-04:01] Show project members</li>
+				<li>[UC-04:02] Show online project members</li>
+				<li>[UC-04:03] Search users by ID (e.g. XMPP-ID)</li>
+				<li>[UC-04:04] Invite a user to join the project</li>
+				<li>[UC-04:05] Accept Project Invitation</li>
+				<li>[UC-04:06] Reject Project Invitation</li>
+				<li>[UC-04:07] Edit own personal meta data</li>
+			</ul>
+		</li>
+		<li>[UC-05] Manage Project <br />
+			<ul>
+				<li>[UC-05:01] Create new Project</li>
+				<li>[UC-05:02] Edit Project Metadata</li>
+				<li>[UC-05:03] Specify Project directory path</li>
+			</ul>
+		</li>
+		<li>[UC-06] Propagate Changes <br />
+			<ul>
+				<li>[UC-06:01] Show changed objects</li>
+				<li>[UC-06:02] Start propagation of changes</li>
+				<li>[UC-06:03] Start receiving of changes</li>
+				<li>[UC-06:04] Set propagation mode</li>
+				<li>[UC-06:05] View propagation information</li>
+				<li>[UC-06:06] Show version conflicts</li>
+				<li>[UC-06:07] Resolve version conflicts</li>
+
+				<li>send message?? to project members</li>
+				<li>read message??</li>
+			</ul>
+		</li>
+		<li>[UC-07] Edit Programm Settings <br />
+			<ul>
+				<li>[UC-07:01] Set authentication Information</li>
+				<li>[UC-07:02] Login to the network</li>
+				<li>[UC-07:03] Logout from the network</li>
+				<li>[UC-07:04] Set networking options (e.g. Proxy Server)</li> 
+			</ul>
+		</li>
     	</ul>
     	<subsection name="Use Case Description">
-    	<i>NOTE: Die Use Cases sagen absolut nichts über die Implementierung aus. Insofern darf im Use Case kein "klicken, Button, neues Fenster, Maus, etc." vorkommen. Diese impliziten Vorgaben machen nur das UI-design schwieriger. Also ganz allgemein, nur was der user will und was er bekommt. Das einzige wovon wir vielleicht ausgehen können, ist das wir ein grafisches UI verwenden. Insofern sind show, view, etc gerechtfertigt.
+    	<i>NOTE: Die Use Cases sagen absolut nichts über die Implementierung aus. Insofern darf im Use Case kein "klicken, Button, neues Fenster, Maus, etc." vorkommen. Diese impliziten Vorgaben machen nur das UI-design schwieriger. Also ganz allgemein, nur was der User will und was er bekommt. Das einzige wovon wir vielleicht ausgehen können, ist das wir ein grafisches UI verwenden. Insofern sind show, view, etc gerechtfertigt.
     	</i>
     		<table>
 				<thead>
