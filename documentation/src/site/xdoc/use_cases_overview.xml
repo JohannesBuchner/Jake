@@ -31,74 +31,66 @@ Create stylesheet for 'table_usecase'
     	<a name="up" />
     	
     	<ul>
-		<li>[UC-01] Manage Datapool <br />
+		<li>[UC-01] Manage Objects <br />
 			<ul>
-				<li><a href='#uc_01_01'>[UC-01:01] show datapool</a></li>
-				<li><a href='#uc_01_02'>[UC-01:02] add file/folder to datapool</a></li>
-				<li><a href='#uc_01_03'>[UC-01:03] remove file/folder from datapool</a></li>
-				<li><a href='#uc_01_04'>[UC-01:04] manage file meta data</a></li>
+				<li><a href='#uc_01_01'>[UC-01:01] create note-object</a></li>
+				<li><a href='#uc_01_02'>[UC-01:02] import file/folder-object</a></li>
+				<li><a href='#uc_01_03'>[UC-01:03] view/edit note object</a></li>
+				<li><a href='#uc_01_04'>[UC-01:04] edit object-properties/meta data</a></li>
+				<li><a href='#uc_01_05'>[UC-01:05] delete/remove object</a></li>
+				<li><a href='#uc_01_06'>[UC-01:06] start object synchronization</a></li>
+				<li><a href='#uc_01_07'>[UC-01:07] set object syncrhonization mode</a></li>
+				<li><a href='#uc_01_08'>[UC-01:08] open file/folder-object with OS specified program</a></li>
+				<li><a href='#uc_01_09'>[UC-01:09] show datapool</a></li>
+			</ul>
+		</li>
+		<li>[UC-02] Manage Tags <br />
+			<ul>
+				<li><a href='#uc_02_01'>[UC-02:01] Create a Tag</a></li>
+				<li><a href='#uc_02_02'>[UC-02:02] Edit/Rename a Tag</a></li>
+				<li><a href='#uc_02_03'>[UC-02:03] Delete a Tag</a></li>
+				<li><a href='#uc_02_04'>[UC-02:04] Add a Tag to an object</a></li>
+				<li><a href='#uc_02_05'>[UC-02:05] Add a Tag to a group of objects</a></li>
+				<li><a href='#uc_02_06'>[UC-02:06] Remove a Tag from an object</a></li>
+				<li><a href='#uc_02_07'>[UC-02:07] Remove a Tag from a group of objects</a></li>
+				<li><a href='#uc_02_08'>[UC-02:08] List available Tags</a></li>
+				<li><a href='#uc_02_09'>[UC-02:09] Find objects with specified Tag(s)</a></li>
 			</ul>
 		</li>
 
-		<li>[UC-02] Manage Objects <br />
+		<li>[UC-03] Manage Projectmembers <br />
 			<ul>
-				<li><a href='#uc_02_01'>[UC-02:01] create note-object</a></li>
-				<li><a href='#uc_02_02'>[UC-02:02] import file/folder-object</a></li>
-				<li><a href='#uc_02_03'>[UC-02:03] view/edit note object</a></li>
-				<li><a href='#uc_02_04'>[UC-02:04] edit object-properties</a></li>
-				<li><a href='#uc_02_05'>[UC-02:05] delete object</a></li>
-				<li><a href='#uc_02_06'>[UC-02:06] start object synchronization</a></li>
-				<li><a href='#uc_02_07'>[UC-02:07] set object syncrhonization mode</a></li>
-				<li><a href='#uc_02_08'>[UC-02:08] open file/folder-object with OS specified program</a></li>
+				<li><a href='#uc_03_01'>[UC-03:01] Show project members</a></li>
+				<li><a href='#uc_03_02'>[UC-03:02] Show online project members</a></li>
+				<li><a href='#uc_03_03'>[UC-03:03] Search users by ID (e.g. XMPP-ID)</a></li>
+				<li><a href='#uc_03_04'>[UC-03:04] Invite a user to join the project</a></li>
+				<li><a href='#uc_03_05'>[UC-03:05] Accept Project Invitation</a></li>
+				<li><a href='#uc_03_06'>[UC-03:06] Reject Project Invitation</a></li>
+				<li><a href='#uc_03_07'>[UC-03:07] Edit own personal meta data</a></li>
 			</ul>
 		</li>
-		<li>[UC-03] Manage Tags <br />
+		<li>[UC-04] Manage Project <br />
 			<ul>
-				<li><a href='#uc_03_01'>[UC-03:01] Create a Tag</a></li>
-				<li><a href='#uc_03_02'>[UC-03:02] Edit/Rename a Tag</a></li>
-				<li><a href='#uc_03_03'>[UC-03:03] Delete a Tag</a></li>
-				<li><a href='#uc_03_04'>[UC-03:04] Add a Tag to an object</a></li>
-				<li><a href='#uc_03_05'>[UC-03:05] Add a Tag to a group of objects</a></li>
-				<li><a href='#uc_03_06'>[UC-03:06] Remove a Tag from an object</a></li>
-				<li><a href='#uc_03_07'>[UC-03:07] Remove a Tag from a group of objects</a></li>
-				<li><a href='#uc_03_08'>[UC-03:08] List available Tags</a></li>
-				<li><a href='#uc_03_09'>[UC-03:09] Find objects with specified Tag(s)</a></li>
+				<li><a href='#uc_04_01'>[UC-04:01] Create new Project</a></li>
+				<li><a href='#uc_04_02'>[UC-04:02] Edit Project Metadata</a></li>
+				<li><a href='#uc_04_03'>[UC-04:03] Specify Project directory path</a></li>
 			</ul>
 		</li>
-
-		<li>[UC-04] Manage Projectmembers <br />
+		<li>[UC-05] Propagate Changes <br />
 			<ul>
-				<li><a href='#uc_04_01'>[UC-04:01] Show project members</a></li>
-				<li><a href='#uc_04_02'>[UC-04:02] Show online project members</a></li>
-				<li><a href='#uc_04_03'>[UC-04:03] Search users by ID (e.g. XMPP-ID)</a></li>
-				<li><a href='#uc_04_04'>[UC-04:04] Invite a user to join the project</a></li>
-				<li><a href='#uc_04_05'>[UC-04:05] Accept Project Invitation</a></li>
-				<li><a href='#uc_04_06'>[UC-04:06] Reject Project Invitation</a></li>
-				<li><a href='#uc_04_07'>[UC-04:07] Edit own personal meta data</a></li>
-			</ul>
-		</li>
-		<li>[UC-05] Manage Project <br />
-			<ul>
-				<li><a href='#uc_05_01'>[UC-05:01] Create new Project</a></li>
-				<li><a href='#uc_05_02'>[UC-05:02] Edit Project Metadata</a></li>
-				<li><a href='#uc_05_03'>[UC-05:03] Specify Project directory path</a></li>
-			</ul>
-		</li>
-		<li>[UC-06] Propagate Changes <br />
-			<ul>
-				<li><a href='#uc_06_01'>[UC-06:01] Show changed objects</a></li>
-				<li><a href='#uc_06_02'>[UC-06:02] Start propagation of changes</a></li>
-				<li><a href='#uc_06_03'>[UC-06:03] Start receiving of changes</a></li>
-				<li><a href='#uc_06_04'>[UC-06:04] Set propagation mode</a></li>
-				<li><a href='#uc_06_05'>[UC-06:05] View propagation information</a></li>
-				<li><a href='#uc_06_06'>[UC-06:06] Show version conflicts</a></li>
-				<li><a href='#uc_06_07'>[UC-06:07] Resolve version conflicts</a></li>
+				<li><a href='#uc_05_01'>[UC-05:01] Show changed objects</a></li>
+				<li><a href='#uc_05_02'>[UC-05:02] Start propagation of changes</a></li>
+				<li><a href='#uc_05_03'>[UC-05:03] Start receiving of changes</a></li>
+				<li><a href='#uc_05_04'>[UC-05:04] Set propagation mode</a></li>
+				<li><a href='#uc_05_05'>[UC-05:05] View propagation information</a></li>
+				<li><a href='#uc_05_06'>[UC-05:06] Show version conflicts</a></li>
+				<li><a href='#uc_05_07'>[UC-05:07] Resolve version conflicts</a></li>
 
 				<li>send message?? to project members</li>
 				<li>read message??</li>
 			</ul>
 		</li>
-		<li>[UC-07] Edit Programm Settings <br />
+		<li>[UC-06] Edit Programm Settings <br />
 			<ul>
 				<li><a href='#uc_07_01'>[UC-07:01] Set authentication Information</a></li>
 				<li><a href='#uc_07_02'>[UC-07:02] Login to the network</a></li>
@@ -195,11 +187,12 @@ Create stylesheet for 'table_usecase'
 			<a href="#up"><b>up</b></a>
 			 }}} -->
 
+			<a href="#up"><b>up</b></a>
 			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_01'>[UC-01:01] show datapool</a></td>
+<td><a name='uc_01_01'>[UC-01:01] create note-object</a></td>
 
 					</tr>
 				</thead>
@@ -241,7 +234,66 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_02'>[UC-01:02] add file/folder to datapool </a></td>
+						<td><a name='uc_01_02'>[UC-01:02] import file/folder-object</a></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>The User adds a file or a folder to the project datapool.</td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td>The User wants to share some of his files with the other members of the project.</td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td>Projectmember</td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td>
+						<ol>
+							<li>The Program is started.</li>
+							<li>A project is opened.</li>
+							<li>Project is synchronized.</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li>The User indicates that he/she wants to add a file to the project</li>
+							<li>A list of possible files from the users file system is presented.</li>
+							<li>The User selects a file or a folder and indicates to add this file/folder.</li>
+							<li>The file/folder is added to the project datapool.</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>
+						<ul>
+							<li>(4). If the file is already in the project datapool, the user gets a warning.</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td>
+						<ul>
+							<li>The specified file is in the datapool.</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+			<a href="#up"><b>up</b></a>
+			<a href="#up"><b>up</b></a>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_01_03'>[UC-01:03] view/edit note object</a></td>
 
 					</tr>
 				</thead>
@@ -283,7 +335,99 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_03'>[UC-01:03] remove file/folder from datapool</a></td>
+						<td><a name='uc_01_04'>[UC-01:04] manage object meta data</a></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>The user has the ability to manage the meta data associated to </td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li></li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td></td>
+				</tr>
+			</table>
+
+			<a href="#up"><b>up</b></a>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+						<td><a name='uc_01_05'>[UC-01:05] delete object</a></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>The user selects an object from the datapool and indicates to remove it.</td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td>The user wants to remove objects from the datapool.</td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td>Projectmember</td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td>
+						<ol>
+							<li>Program is started.</li>
+							<li>Project is opened.</li>
+							<li>Project is synchronized.</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li>The user selects one or more objects from the datapool.</li>
+							<li>The user indicates that he/she wants to delete the object(s).</li>
+							<li>The user is queried if he/she really wants to delete the objects.</li>
+							<li>The objects are removed from the datapool.</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td>The objects aren't in the datastore anymore.</td>
+				</tr>
+			</table>
+			<a href="#up"><b>up</b></a>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_01_06'>[UC-01:06] start object synchronization</a></td>
 
 					</tr>
 				</thead>
@@ -325,50 +469,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_04'>[UC-01:04] manage file meta data</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_02_01'>[UC-02:01] create note-object</a></td>
+<td><a name='uc_01_07'>[UC-01:07] set object syncrhonization mode</a></td>
 
 					</tr>
 				</thead>
@@ -410,7 +511,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_02'>[UC-02:02] import file/folder-object</a></td>
+<td><a name='uc_01_08'>[UC-01:08] open file/folder-object with OS specified program</a></td>
 
 					</tr>
 				</thead>
@@ -452,7 +553,60 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_03'>[UC-02:03] view/edit note object</a></td>
+						<td><a name='uc_01_09'>[UC-01:09] show datapool</a></td>
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>A List or some sort of visualization is used to display the user the available files/objects in the project.</td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td>The user wants to know which files/objects are available to him.</td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td>Projectmember</td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td>
+						<ul>
+							<li>Programm is started</li>
+							<li>Project is opened</li>
+							<li>Project synchronized at least once</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li>User opens the Program.</li>
+							<li>User selects one of his projects.</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>
+						<ol>
+							<li>User opens the Program.</li>
+							<li>The last opened Project is automatically opened.</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td>The available files/objects are shown.</td>
+				</tr>
+			</table>
+			<a href="#up"><b>up</b></a>
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+<td><a name='uc_02_01'>[UC-02:01] Create a Tag</a></td>
 
 					</tr>
 				</thead>
@@ -494,7 +648,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_04'>[UC-02:04] edit object-properties</a></td>
+<td><a name='uc_02_02'>[UC-02:02] Edit/Rename a Tag</a></td>
 
 					</tr>
 				</thead>
@@ -536,7 +690,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_05'>[UC-02:05] delete object</a></td>
+<td><a name='uc_02_03'>[UC-02:03] Delete a Tag</a></td>
 
 					</tr>
 				</thead>
@@ -578,7 +732,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_06'>[UC-02:06] start object synchronization</a></td>
+<td><a name='uc_02_04'>[UC-02:04] Add a Tag to an object</a></td>
 
 					</tr>
 				</thead>
@@ -620,7 +774,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_07'>[UC-02:07] set object syncrhonization mode</a></td>
+<td><a name='uc_02_05'>[UC-02:05] Add a Tag to a group of objects</a></td>
 
 					</tr>
 				</thead>
@@ -662,7 +816,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_08'>[UC-02:08] open file/folder-object with OS specified program</a></td>
+<td><a name='uc_02_06'>[UC-02:06] Remove a Tag from an object</a></td>
 
 					</tr>
 				</thead>
@@ -704,7 +858,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_01'>[UC-03:01] Create a Tag</a></td>
+<td><a name='uc_02_07'>[UC-02:07] Remove a Tag from a group of objects</a></td>
 
 					</tr>
 				</thead>
@@ -746,7 +900,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_02'>[UC-03:02] Edit/Rename a Tag</a></td>
+<td><a name='uc_02_08'>[UC-02:08] List available Tags</a></td>
 
 					</tr>
 				</thead>
@@ -788,7 +942,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_03'>[UC-03:03] Delete a Tag</a></td>
+<td><a name='uc_02_09'>[UC-02:09] Find objects with specified Tag(s)</a></td>
 
 					</tr>
 				</thead>
@@ -830,7 +984,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_04'>[UC-03:04] Add a Tag to an object</a></td>
+<td><a name='uc_03_01'>[UC-03:01] Show project members</a></td>
 
 					</tr>
 				</thead>
@@ -872,7 +1026,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_05'>[UC-03:05] Add a Tag to a group of objects</a></td>
+<td><a name='uc_03_02'>[UC-03:02] Show online project members</a></td>
 
 					</tr>
 				</thead>
@@ -914,7 +1068,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_06'>[UC-03:06] Remove a Tag from an object</a></td>
+<td><a name='uc_03_03'>[UC-03:03] Search users by ID (e.g. XMPP-ID)</a></td>
 
 					</tr>
 				</thead>
@@ -956,7 +1110,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_07'>[UC-03:07] Remove a Tag from a group of objects</a></td>
+<td><a name='uc_03_04'>[UC-03:04] Invite a user to join the project</a></td>
 
 					</tr>
 				</thead>
@@ -998,7 +1152,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_08'>[UC-03:08] List available Tags</a></td>
+<td><a name='uc_03_05'>[UC-03:05] Accept Project Invitation</a></td>
 
 					</tr>
 				</thead>
@@ -1040,7 +1194,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_03_09'>[UC-03:09] Find objects with specified Tag(s)</a></td>
+<td><a name='uc_03_06'>[UC-03:06] Reject Project Invitation</a></td>
 
 					</tr>
 				</thead>
@@ -1082,7 +1236,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_01'>[UC-04:01] Show project members</a></td>
+<td><a name='uc_03_07'>[UC-03:07] Edit own personal meta data</a></td>
 
 					</tr>
 				</thead>
@@ -1124,7 +1278,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_02'>[UC-04:02] Show online project members</a></td>
+<td><a name='uc_04_01'>[UC-04:01] Create new Project</a></td>
 
 					</tr>
 				</thead>
@@ -1166,7 +1320,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_03'>[UC-04:03] Search users by ID (e.g. XMPP-ID)</a></td>
+<td><a name='uc_04_02'>[UC-04:02] Edit Project Metadata</a></td>
 
 					</tr>
 				</thead>
@@ -1208,7 +1362,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_04'>[UC-04:04] Invite a user to join the project</a></td>
+<td><a name='uc_04_03'>[UC-04:03] Specify Project directory path</a></td>
 
 					</tr>
 				</thead>
@@ -1250,7 +1404,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_05'>[UC-04:05] Accept Project Invitation</a></td>
+<td><a name='uc_05_01'>[UC-05:01] Show changed objects</a></td>
 
 					</tr>
 				</thead>
@@ -1292,7 +1446,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_06'>[UC-04:06] Reject Project Invitation</a></td>
+<td><a name='uc_05_02'>[UC-05:02] Start propagation of changes</a></td>
 
 					</tr>
 				</thead>
@@ -1334,7 +1488,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_04_07'>[UC-04:07] Edit own personal meta data</a></td>
+<td><a name='uc_05_03'>[UC-05:03] Start receiving of changes</a></td>
 
 					</tr>
 				</thead>
@@ -1376,7 +1530,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_05_01'>[UC-05:01] Create new Project</a></td>
+<td><a name='uc_05_04'>[UC-05:04] Set propagation mode</a></td>
 
 					</tr>
 				</thead>
@@ -1418,7 +1572,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_05_02'>[UC-05:02] Edit Project Metadata</a></td>
+<td><a name='uc_05_05'>[UC-05:05] View propagation information</a></td>
 
 					</tr>
 				</thead>
@@ -1460,7 +1614,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_05_03'>[UC-05:03] Specify Project directory path</a></td>
+<td><a name='uc_05_06'>[UC-05:06] Show version conflicts</a></td>
 
 					</tr>
 				</thead>
@@ -1502,259 +1656,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_06_01'>[UC-06:01] Show changed objects</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_06_02'>[UC-06:02] Start propagation of changes</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_06_03'>[UC-06:03] Start receiving of changes</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_06_04'>[UC-06:04] Set propagation mode</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_06_05'>[UC-06:05] View propagation information</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_06_06'>[UC-06:06] Show version conflicts</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_06_07'>[UC-06:07] Resolve version conflicts</a></td>
+<td><a name='uc_05_07'>[UC-05:07] Resolve version conflicts</a></td>
 
 					</tr>
 				</thead>
@@ -2151,8 +2053,20 @@ Create stylesheet for 'table_usecase'
 			<tr>
 			  <td>3</td>
 			  <td>2008-04-23</td>
-			  <td>DD</td>
+			  <td>dd</td>
 			  <td>created tables for use cases, made them clickable</td>
+			</tr>
+			<tr>
+			  <td>4</td>
+			  <td>2008-04-23</td>
+			  <td>sm</td>
+			  <td>added &quot;to top&quot; links</td>
+			</tr>
+			<tr>
+			  <td>5</td>
+			  <td>2008-04-24</td>
+			  <td>dd</td>
+			  <td>created some of the use case informaiton</td>
 			</tr>
 			
 		  </table>
