@@ -79,6 +79,16 @@
 	  <td>variety of target audience</td>
 	  <td>architecture</td>
 	</tr>
+	<tr>
+	  <td>[single_project] The project is centered around handling one project. The datascheme will support multiple ones, but is not necessary to switch between projects quickly.</td>
+	  <td>simplicity, do one thing well</td>
+	  <td>GUI</td>
+	</tr>
+	<tr>
+	  <td>[no_chat] It is assumed that the project member uses a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
+	  <td>Don't replace a chat client.</td>
+	  <td>architecture</td>
+	</tr>
     
 	<!-- template:
 	<tr>
