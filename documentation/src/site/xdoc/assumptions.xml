@@ -79,16 +79,6 @@
 	  <td>variety of target audience</td>
 	  <td>architecture</td>
 	</tr>
-	<tr>
-	  <td>[single_project] The project is centered around handling one project. The datascheme will support multiple ones, but is not necessary to switch between projects quickly.</td>
-	  <td>simplicity, do one thing well</td>
-	  <td>GUI</td>
-	</tr>
-	<tr>
-	  <td>[no_chat] It is assumed that the project member uses a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
-	  <td>Don't replace a chat client.</td>
-	  <td>architecture</td>
-	</tr>
     
 	<!-- template:
 	<tr>
@@ -108,6 +98,26 @@
           <th>Affected Parts</th>
         </tr>
         </thead>
+	<tr>
+	  <td>[single_project] The project is centered around handling one project. The datascheme will support multiple ones, but is not necessary to switch between projects quickly.</td>
+	  <td>simplicity, do one thing well</td>
+	  <td>GUI</td>
+	</tr>
+	<tr>
+	  <td>[no_chat] It is assumed that the project member uses a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
+	  <td>Don't replace a chat client.</td>
+	  <td>architecture</td>
+	</tr>
+	<tr>
+	  <td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
+	  <td>simplicity</td>
+	  <td>architecture, UI</td>
+	</tr>
+	<tr>
+	  <td>[no_chat] It is assumed that the project member uses a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
+	  <td>Don't replace a chat client.</td>
+	  <td>architecture</td>
+	</tr>
 
       </table>
       </subsection>
