@@ -123,6 +123,16 @@
 	  <td>Don't replace a chat client.</td>
 	  <td>architecture</td>
 	</tr>
+	<tr>
+		<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time</td>
+		<td>simplicity of implementation, although not very user friendly</td>
+		<td>usability</td>
+	</tr>
+	<tr>
+		<td>[notes_with_title_and_text] Notes consist of a title an text. If no title ist set the first line of the text is used instead</td>
+		<td>that seems quite practical to me... Notes may be displayed only by their title</td>
+		<td>basic functionality, usability</td>
+	</tr>
 
       </table>
       </subsection>
@@ -150,6 +160,12 @@
         	<td>22.4.2008</td>
         	<td>SW</td>
         	<td>added assumption to valid assumptions</td>
+        </tr>
+        <tr>
+        	<td>3</td>
+        	<td>28.4.2008</td>
+        	<td>SW</td>
+        	<td>added two assumptions</td>
         </tr>
       </table>
     </section>
