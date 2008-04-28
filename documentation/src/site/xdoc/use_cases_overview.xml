@@ -31,16 +31,17 @@ Create stylesheet for 'table_usecase'
     	<a name="up" />
     	
     	<ul>
-		<li>[UC-01] Manage Objects <br />
+		<li>[UC-01] Manage Data <br />
 			<ul>
-				<li><a href='#uc_01_01'>[UC-01:01] create note-object</a></li>
-				<li><a href='#uc_01_02'>[UC-01:02] import file/folder-object</a></li>
-				<li><a href='#uc_01_03'>[UC-01:03] view/edit note object</a></li>
+				<li><a href='#uc_01_01'>[UC-01:01] create note</a></li>
+				<li><a href='#uc_01_03'>[UC-01:03] view note</a></li>
+				<li><a href='#uc_01_10'>[UC-01:10] edit note</a></li>
+				<li><a href='#uc_01_02'>[UC-01:02] import file/folder</a></li>
 				<li><a href='#uc_01_04'>[UC-01:04] edit object-properties/meta data</a></li>
 				<li><a href='#uc_01_05'>[UC-01:05] delete/remove object</a></li>
 				<li><a href='#uc_01_06'>[UC-01:06] start object synchronization</a></li>
 				<li><a href='#uc_01_07'>[UC-01:07] set object syncrhonization mode</a></li>
-				<li><a href='#uc_01_08'>[UC-01:08] open file/folder-object with OS specified program</a></li>
+				<li><a href='#uc_01_08'>[UC-01:08] open file/folder with OS specified program</a></li>
 				<li><a href='#uc_01_09'>[UC-01:09] show datapool</a></li>
 			</ul>
 		</li>
@@ -99,14 +100,36 @@ Create stylesheet for 'table_usecase'
 			</ul>
 		</li>
     	</ul>
+    	<subsection name="Stable States">    	
+			<table>
+				<thead>
+					<tr>
+						<td>stable states</td>
+						<td>description</td>
+					</tr>
+				</thead>
+				<tr>
+					<td>[ST-01] application started</td>
+					<td>The application is started</td>
+				</tr>
+				<tr>
+					<td>[ST-02] project loaded</td>
+					<td>
+						<ul>
+							<li>[ST-01]</li>
+							<li>a project is loaded</li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</subsection>
+			
     	<subsection name="Use Case Description">
-    	<i>NOTE: Die Use Cases sagen absolut nichts über die Implementierung aus. Insofern darf im Use Case kein "klicken, Button, neues Fenster, Maus, etc." vorkommen. Diese impliziten Vorgaben machen nur das UI-design schwieriger. Also ganz allgemein, nur was der User will und was er bekommt. Das einzige wovon wir vielleicht ausgehen können, ist das wir ein grafisches UI verwenden. Insofern sind show, view, etc gerechtfertigt.
-    	</i>
     		<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-						<td>UC-1: show datapool</td>
+						<td><a name="uc_01_09">[UC-01:09] show datapool</a></td>
 					</tr>
 				</thead>
 				<tr>
@@ -123,7 +146,7 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td>The application is running</td>
+					<td>[ST-02]</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
@@ -187,54 +210,60 @@ Create stylesheet for 'table_usecase'
 			<a href="#up"><b>up</b></a>
 			 }}} -->
 
-			<a href="#up"><b>up</b></a>
 			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_01'>[UC-01:01] create note-object</a></td>
+						<td><a name='uc_01_01'>[UC-01:01] create note</a></td>
 
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>The User creates a new note.</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>Key Feature</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>[ST-02]</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user indicates to create a new note</li>
+							<li>The user may set the title and text of the note</li>
+							<li>The user indicates to safe the note</li>
+							<li>The note is created in the default location.</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>
+						In 1. if the user specifies a certain location the note will be created there.<br />
+						In 3. if the user indicates to cancel the operation, no note will be created
+					</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>A new note is created and the application is returned to its previous state.</td>
 				</tr>
 			</table>
+			
 			<a href="#up"><b>up</b></a>
 			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-						<td><a name='uc_01_02'>[UC-01:02] import file/folder-object</a></td>
+						<td><a name='uc_01_02'>[UC-01:02] import file/folder</a></td>
 					</tr>
 				</thead>
 				<tr>
@@ -247,23 +276,17 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td>Projectmember</td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td>
-						<ol>
-							<li>The Program is started.</li>
-							<li>A project is opened.</li>
-							<li>Project is synchronized.</li>
-						</ol>
-					</td>
+					<td>[ST-02]</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li>The User indicates that he/she wants to add a file to the project</li>
+							<li>The User indicates that he/she wants to add a file to the project.</li>
 							<li>A list of possible files from the users file system is presented.</li>
 							<li>The User selects a file or a folder and indicates to add this file/folder.</li>
 							<li>The file/folder is added to the project datapool.</li>
@@ -283,51 +306,60 @@ Create stylesheet for 'table_usecase'
 					<td>
 						<ul>
 							<li>The specified file is in the datapool.</li>
+							<li>The application returns to its previous state.</li>
 						</ul>
 					</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
-			<a href="#up"><b>up</b></a>
+
 			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_03'>[UC-01:03] view/edit note object</a></td>
+						<td><a name='uc_01_03'>[UC-01:03] view note</a></td>
 
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>Viewing a note</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>Key Feature</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>
+						<ul>
+							<li>[ST-02]</li>
+							<li>at least one note exists in the project</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user selects a note from the project an indicates to view it.</li>
+							<li>The note is displayed in an editable form</li>
+							<li>The user may change the title and text of the note</li>
+							<li>The user indicates to safe the changes</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>In 4. if the user indicates to cancel the operation, no changes are made to the note. The user is prompted to confirm the </td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>The changes are performed to the note, and the application returns to its previous state.</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
