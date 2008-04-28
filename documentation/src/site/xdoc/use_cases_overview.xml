@@ -37,9 +37,9 @@ Create stylesheet for 'table_usecase'
 				<li><a href='#uc_01_03'>[UC-01:03] view note</a></li>
 				<li><a href='#uc_01_10'>[UC-01:10] edit note</a></li>
 				<li><a href='#uc_01_02'>[UC-01:02] import file/folder</a></li>
-				<li><a href='#uc_01_04'>[UC-01:04] edit object-properties/meta data</a></li>
-				<li><a href='#uc_01_05'>[UC-01:05] delete/remove object</a></li>
-				<li><a href='#uc_01_06'>[UC-01:06] start object synchronization</a></li>
+				<li><a href='#uc_01_04'>[UC-01:04] manage object meta data</a></li>
+				<li><a href='#uc_01_05'>[UC-01:05] delete object</a></li>
+				<li><a href='#uc_01_06'>[UC-01:06] sznchronize project</a></li>
 				<li><a href='#uc_01_07'>[UC-01:07] set object syncrhonization mode</a></li>
 				<li><a href='#uc_01_08'>[UC-01:08] open file/folder with OS specified program</a></li>
 				<li><a href='#uc_01_09'>[UC-01:09] show datapool</a></li>
@@ -372,35 +372,42 @@ Create stylesheet for 'table_usecase'
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td>The user has the ability to manage the meta data associated to </td>
+					<td>The user has the ability to manage the meta data associated to an object</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>Key Feature</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>
+						<ul>
+							<li>[ST-02]</li>
+							<li>at least one object exists in the project</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user select an object from the project and indicates to change the objects metadata</li>
+							<li>All existing metadata of that object is presented, and the user may add, change or delete tags</li>
+							<li>The user indicates to safe the changes</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>In 3. the user may chose to cancel the operation. No changes will be stored</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>The changes are stored, the application returns to its previous state.</td>
 				</tr>
 			</table>
 
@@ -422,36 +429,40 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td>Projectmember</td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
 					<td>
-						<ol>
-							<li>Program is started.</li>
-							<li>Project is opened.</li>
-							<li>Project is synchronized.</li>
-						</ol>
+						<ul>
+							<li>[ST-02]</li>
+							<li>at least one object exists in the project</li>
+						</ul>
 					</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li>The user selects one or more objects from the datapool.</li>
-							<li>The user indicates that he/she wants to delete the object(s).</li>
-							<li>The user is queried if he/she really wants to delete the objects.</li>
+							<li>The user selects an objects from the datapool.</li>
+							<li>The user indicates that he/she wants to delete the object.</li>
+							<li>The user is prompted if he/she really wants to delete the objects.</li>
 							<li>The objects are removed from the datapool.</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>
+						In 1. the user may select multiple objects. <br />
+						In 3. the user may cancel the operation.<br />
+						In 4. if the object cannot be deleted from the project the user will be notified.
+					</td>
+					
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td>The objects aren't in the datastore anymore.</td>
+					<td>The object is deleted from the project, the application return to its previous state</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -459,41 +470,49 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_06'>[UC-01:06] start object synchronization</a></td>
-
+						<td><a name='uc_01_06'>[UC-01:06] synchronize project</a></td>
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>Synchronizing the data of the project with other clients</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>Key Feature</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>
+						<ul>
+							<li>[ST-02]</li>
+							<li>The client is connected to at least one other client</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user indicates to synchronize the project</li>
+							<li>The application synchronizes the project data</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>
+						In 2. if an error occurs, the user is prompted with an error message.<br />
+						In 2. if a version conflict occurs the application assists the user to resolve the conflict. see [???]
+					</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>The project is synchronized, the application returns to its previous state</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -501,41 +520,42 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_07'>[UC-01:07] set object syncrhonization mode</a></td>
-
+						<td><a name='uc_01_07'>[UC-01:07] set object synchronization mode</a></td>
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>The user may set synchronization mode for various objects to be either automatic push/pull or manual push/pull</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>Manual push/pull reduces the amount of bandwidth needed and gives the user more control over the traffic.</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>advanced Users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>[ST-02]</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user selects one object from the project and indicates to change the synchronization mode</li>
+							<li>The user may choose between manual or auto</li>
+							<li>The user indicates to safe the changes</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>In 3. the user may cancel the operation. No changes are stored</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>The synchronization mode is set for the object, the application returns to its previous state.</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -543,41 +563,46 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_01_08'>[UC-01:08] open file/folder-object with OS specified program</a></td>
+						<td><a name='uc_01_08'>[UC-01:08] open file/folder-object with OS specified program</a></td>
 
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>The user may open an object with an external application</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>Since the application does not support editing data, there must be a way to open data in an external  applucation</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>
+						<ul>
+							<li>[St-02]</li>
+							<li>at least one file/folder must exist in the project</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user indicates to open an object in an external application.</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>An error may occur diring the process. In that case the user is prompted with an error message.</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>The object is opened in an external application.</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -604,9 +629,7 @@ Create stylesheet for 'table_usecase'
 					<td>Preconditions</td>
 					<td>
 						<ul>
-							<li>Programm is started</li>
-							<li>Project is opened</li>
-							<li>Project synchronized at least once</li>
+							<li>[ST-02]</li>
 						</ul>
 					</td>
 				</tr>
@@ -638,7 +661,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_01'>[UC-02:01] Create a Tag</a></td>
+						<td><a name='uc_02_01'>[UC-02:01] Create a Tag</a></td>
 
 					</tr>
 				</thead>
@@ -2099,6 +2122,12 @@ Create stylesheet for 'table_usecase'
 			  <td>2008-04-24</td>
 			  <td>dd</td>
 			  <td>created some of the use case informaiton</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>2008-04-28</td>
+				<td>SW</td>
+				<td>added descriptions to some use cases</td>
 			</tr>
 			
 		  </table>
