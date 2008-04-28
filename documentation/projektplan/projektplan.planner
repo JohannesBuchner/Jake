@@ -25,79 +25,96 @@
   <tasks>
     <task id="1" name="Projektmanagement/Kommunikation" note="" work="180000" duration="950400" start="20080422T000000Z" end="20080626T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration"/>
     <task id="2" name="Anforderungsanalyse" note="" work="122400" start="20080422T000000Z" end="20080423T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-      <task id="3" name="Use Cases" note="" work="25200" start="20080422T000000Z" end="20080422T152000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="4" name="Use Case Diagram" note="" work="10800" start="20080422T000000Z" end="20080422T140000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="3" name="Use Cases" note="" work="25200" start="20080422T000000Z" end="20080423T160000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="4" name="Use Case Diagram" note="" work="10800" start="20080422T000000Z" end="20080422T160000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       <task id="5" name="Ziele" note="" work="28800" start="20080422T000000Z" end="20080423T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       <task id="6" name="Requirements" note="" work="28800" start="20080422T000000Z" end="20080423T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       <task id="7" name="Aktoren" note="" work="28800" start="20080422T000000Z" end="20080423T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
     </task>
-    <task id="8" name="Technischer Entwurf" note="" work="172800" start="20080422T000000Z" end="20080423T145000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-      <task id="9" name="Komponenten" note="" work="36000" start="20080422T000000Z" end="20080422T162000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="10" name="Komponentendiagramm" note="" work="14400" start="20080422T000000Z" end="20080422T142000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="11" name="Interfaces" note="" work="36000" start="20080422T162000Z" end="20080423T145000Z" work-start="20080422T162000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="8" name="Technischer Entwurf" note="" work="172800" start="20080422T000000Z" end="20080425T133000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="9" name="Komponenten" note="" work="36000" start="20080422T000000Z" end="20080424T150000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="10" name="Komponentendiagramm" note="" work="14400" start="20080422T000000Z" end="20080422T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="11" name="Interfaces" note="" work="36000" start="20080424T150000Z" end="20080425T133000Z" work-start="20080424T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="9" type="FS"/>
         </predecessors>
-        <task id="12" name="File Access" note="" work="9000" start="20080422T162000Z" end="20080423T145000Z" work-start="20080422T162000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="13" name="Persistence" note="" work="9000" start="20080422T162000Z" end="20080423T145000Z" work-start="20080422T162000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="14" name="Sync" note="" work="9000" start="20080422T162000Z" end="20080423T145000Z" work-start="20080422T162000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="15" name="Interclient-Com" note="" work="9000" start="20080422T162000Z" end="20080423T145000Z" work-start="20080422T162000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="12" name="File Access" note="" work="9000" start="20080424T150000Z" end="20080425T133000Z" work-start="20080424T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="13" name="Persistence" note="" work="9000" start="20080424T150000Z" end="20080425T133000Z" work-start="20080424T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="14" name="Sync" note="" work="9000" start="20080424T150000Z" end="20080425T133000Z" work-start="20080424T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="15" name="Interclient-Com" note="" work="9000" start="20080424T150000Z" end="20080425T133000Z" work-start="20080424T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       </task>
-      <task id="16" name="Klassendiagramm" note="" work="28800" start="20080422T000000Z" end="20080422T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="16" name="Klassendiagramm" note="" work="28800" start="20080422T000000Z" end="20080423T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       <task id="17" name="ER/EER" note="" work="14400" start="20080422T000000Z" end="20080422T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="18" name="Systemarchitektur" note="" work="43200" start="20080422T000000Z" end="20080422T160000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="18" name="Systemarchitektur" note="" work="43200" start="20080422T000000Z" end="20080424T170000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
     </task>
-    <task id="19" name="User Interface" note="" work="108000" start="20080422T000000Z" end="20080426T134000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="19" name="User Interface" note="" work="108000" start="20080422T000000Z" end="20080430T133000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <task id="20" name="Grobentwurf" note="" work="36000" start="20080422T000000Z" end="20080424T150000Z" work-start="20080422T130000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="21" name="Prototyp" note="" work="72000" start="20080424T150000Z" end="20080426T134000Z" work-start="20080424T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="21" name="Prototyp" note="" work="72000" start="20080425T133000Z" end="20080430T133000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="20" type="FS"/>
           <predecessor id="1" predecessor-id="8" type="FS"/>
         </predecessors>
       </task>
     </task>
-    <task id="22" name="Implementierung" note="" work="1450800" start="20080423T145000Z" end="20080610T155000Z" work-start="20080423T145000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="22" name="Implementierung" note="" work="1494000" start="20080425T133000Z" end="20080612T143000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <predecessors>
         <predecessor id="1" predecessor-id="8" type="FS"/>
       </predecessors>
-      <task id="23" name="Interfaces" note="" work="72000" start="20080423T145000Z" end="20080424T155000Z" work-start="20080423T145000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-        <task id="24" name="File Access" note="" work="18000" start="20080423T145000Z" end="20080424T155000Z" work-start="20080423T145000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="25" name="Persistence" note="" work="18000" start="20080423T145000Z" end="20080424T155000Z" work-start="20080423T145000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="26" name="Sync" note="" work="18000" start="20080423T145000Z" end="20080424T155000Z" work-start="20080423T145000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="27" name="Interclient-Com" note="" work="18000" start="20080423T145000Z" end="20080424T155000Z" work-start="20080423T145000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="23" name="Interfaces" note="" work="72000" start="20080425T133000Z" end="20080426T143000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="24" name="File Access" note="" work="18000" start="20080425T133000Z" end="20080426T143000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="25" name="Persistence" note="" work="18000" start="20080425T133000Z" end="20080426T143000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="26" name="Sync" note="" work="18000" start="20080425T133000Z" end="20080426T143000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="27" name="Interclient-Com" note="" work="18000" start="20080425T133000Z" end="20080426T143000Z" work-start="20080425T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       </task>
-      <task id="28" name="externe Komponenten" note="" work="396000" start="20080424T155000Z" end="20080505T145000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="28" name="externe Komponenten" note="" work="439200" start="20080426T143000Z" end="20080510T133000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="23" type="FS"/>
         </predecessors>
-        <task id="29" name="File Access" note="" work="154800" start="20080424T155000Z" end="20080505T145000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="30" name="Persistence" note="" work="154800" start="20080424T155000Z" end="20080505T145000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="31" name="Sync Mock" note="" work="43200" start="20080424T155000Z" end="20080427T155000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="32" name="Interclient-Com Mock" note="" work="43200" start="20080424T155000Z" end="20080427T155000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="29" name="Tests" note="" work="43200" start="20080426T143000Z" end="20080429T143000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="30" name="File Access" note="" work="154800" start="20080429T143000Z" end="20080510T133000Z" work-start="20080429T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="29" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="31" name="Persistence" note="" work="154800" start="20080429T143000Z" end="20080510T133000Z" work-start="20080429T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="29" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="32" name="Sync Mock" note="" work="43200" start="20080429T143000Z" end="20080502T143000Z" work-start="20080429T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="29" type="FS"/>
+          </predecessors>
+        </task>
+        <task id="33" name="Interclient-Com Mock" note="" work="43200" start="20080429T143000Z" end="20080502T143000Z" work-start="20080429T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <predecessors>
+            <predecessor id="1" predecessor-id="29" type="FS"/>
+          </predecessors>
+        </task>
       </task>
-      <task id="33" name="UI" note="" work="144000" start="20080426T134000Z" end="20080506T134000Z" work-start="20080426T134000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="34" name="UI" note="" work="144000" start="20080430T133000Z" end="20080510T133000Z" work-start="20080430T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="21" type="FS"/>
         </predecessors>
       </task>
-      <task id="34" name="Programmlogik (Core)" note="" work="838800" start="20080424T155000Z" end="20080610T155000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="35" name="Programmlogik (Core)" note="" work="838800" start="20080426T143000Z" end="20080612T143000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="23" type="FS"/>
         </predecessors>
-        <task id="35" name="UI-Logik" note="" work="36000" start="20080506T134000Z" end="20080508T154000Z" work-start="20080506T134000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="36" name="UI-Logik" note="" work="36000" start="20080510T133000Z" end="20080512T153000Z" work-start="20080510T133000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
           <predecessors>
-            <predecessor id="1" predecessor-id="33" type="FS"/>
+            <predecessor id="1" predecessor-id="34" type="FS"/>
           </predecessors>
         </task>
-        <task id="36" name="Datenaustausch" note="" work="72000" start="20080424T155000Z" end="20080427T135000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-          <task id="37" name="Push-Logik" note="" work="36000" start="20080424T155000Z" end="20080427T135000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-          <task id="38" name="Pull-Logik" note="" work="36000" start="20080424T155000Z" end="20080427T135000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="37" name="Datenaustausch" note="" work="72000" start="20080426T143000Z" end="20080428T163000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <task id="38" name="Push-Logik" note="" work="36000" start="20080426T143000Z" end="20080428T163000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+          <task id="39" name="Pull-Logik" note="" work="36000" start="20080426T143000Z" end="20080428T163000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
         </task>
-        <task id="39" name="Datenorganisation" note="" work="54000" start="20080424T155000Z" end="20080428T145000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-        <task id="40" name="restliche Use Cases" note="" work="676800" start="20080424T155000Z" end="20080610T155000Z" work-start="20080424T155000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="40" name="Datenorganisation" note="" work="54000" start="20080426T143000Z" end="20080430T133000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+        <task id="41" name="restliche Use Cases" note="" work="676800" start="20080426T143000Z" end="20080612T143000Z" work-start="20080426T143000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
       </task>
     </task>
-    <task id="41" name="Projektabgabe" note="" work="0" start="20080627T000000Z" end="20080627T000000Z" work-start="20080627T130000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+    <task id="42" name="Projektabgabe" note="" work="0" start="20080627T000000Z" end="20080627T000000Z" work-start="20080627T130000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
       <constraint type="must-start-on" time="20080627T000000Z"/>
       <predecessors>
         <predecessor id="1" predecessor-id="22" type="FS"/>
@@ -106,46 +123,19 @@
   </tasks>
   <resource-groups/>
   <resources>
-    <resource id="1" name="Johannes Buchner" short-name="johannes" type="1" units="0" email="" note="" std-rate="0"/>
-    <resource id="2" name="Chris Sutter" short-name="chris" type="1" units="0" email="" note="" std-rate="0"/>
-    <resource id="3" name="Philipp Knobelspies" short-name="philipp" type="1" units="0" email="" note="" std-rate="0"/>
-    <resource id="4" name="Dominik Dorn" short-name="dominik" type="1" units="0" email="" note="" std-rate="0"/>
-    <resource id="5" name="Peter Steinberger" short-name="peter" type="1" units="0" email="" note="" std-rate="0"/>
-    <resource id="6" name="Simon Wallner" short-name="simon" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="1" name="Simon Wallner" short-name="simon" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="2" name="Peter Steinberger" short-name="peter" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="3" name="Dominik Dorn" short-name="dominik" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="4" name="Philipp Knobelspies" short-name="philipp" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="5" name="Chris Sutter" short-name="chris" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="6" name="Johannes Buchner" short-name="johannes" type="1" units="0" email="" note="" std-rate="0"/>
   </resources>
   <allocations>
     <allocation task-id="22" resource-id="1" units="100"/>
-    <allocation task-id="7" resource-id="1" units="100"/>
     <allocation task-id="22" resource-id="2" units="100"/>
-    <allocation task-id="18" resource-id="2" units="100"/>
-    <allocation task-id="17" resource-id="2" units="100"/>
-    <allocation task-id="16" resource-id="2" units="100"/>
-    <allocation task-id="11" resource-id="2" units="100"/>
-    <allocation task-id="10" resource-id="2" units="100"/>
-    <allocation task-id="9" resource-id="2" units="100"/>
-    <allocation task-id="3" resource-id="2" units="100"/>
-    <allocation task-id="4" resource-id="2" units="100"/>
-    <allocation task-id="21" resource-id="3" units="100"/>
     <allocation task-id="22" resource-id="3" units="100"/>
-    <allocation task-id="18" resource-id="3" units="100"/>
-    <allocation task-id="11" resource-id="3" units="100"/>
     <allocation task-id="22" resource-id="4" units="100"/>
-    <allocation task-id="21" resource-id="4" units="100"/>
-    <allocation task-id="18" resource-id="4" units="100"/>
-    <allocation task-id="11" resource-id="4" units="100"/>
-    <allocation task-id="10" resource-id="4" units="100"/>
-    <allocation task-id="9" resource-id="4" units="100"/>
-    <allocation task-id="3" resource-id="4" units="100"/>
-    <allocation task-id="4" resource-id="4" units="100"/>
     <allocation task-id="22" resource-id="5" units="100"/>
-    <allocation task-id="21" resource-id="5" units="100"/>
-    <allocation task-id="20" resource-id="5" units="100"/>
-    <allocation task-id="18" resource-id="5" units="100"/>
-    <allocation task-id="16" resource-id="5" units="100"/>
-    <allocation task-id="10" resource-id="5" units="100"/>
-    <allocation task-id="9" resource-id="5" units="100"/>
-    <allocation task-id="3" resource-id="5" units="100"/>
-    <allocation task-id="4" resource-id="5" units="100"/>
     <allocation task-id="22" resource-id="6" units="100"/>
   </allocations>
 </project>
