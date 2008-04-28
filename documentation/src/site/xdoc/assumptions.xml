@@ -25,7 +25,7 @@
 
 	<!-- fill in here -->
 	<tr>
-          <td>[offline] It is possible to work either on- or off-line. That implements that two users may work simultaneously on the same document. Hence some conflict resolution is needed.</td>
+          <td>[offline] It is possible to work either on- or off-line. This implies that two users may work simultaneously on the same document. Hence some conflict resolution is needed.</td>
           <td>basic functionality</td>
           <td>scope of the application</td>
     </tr>
@@ -35,7 +35,7 @@
 	  <td>scope of the application, architecture</td>
 	</tr>
 	<tr>
-	  <td>[folder_structure] Folder structures of imported folders are preserved</td>
+	  <td>[folder_structure] Folder structure of imported folders is preserved</td>
 	  <td>ease of use, transparency for the user</td>
 	  <td>basic functionality, architecture</td>
 	</tr>
@@ -45,18 +45,18 @@
 	  <td>basic functionality, architecture</td>
 	</tr>
 	<tr>
-	  <td>[passive_mode] The application must be fully operational even without constant user interaction. That means that the client may passively share data and therefor may act as a dedicated server.</td>
+	  <td>[passive_mode] The application must be fully operational even without constant user interaction. That means that the client may passively share data and therefore acts as a dedicated server.</td>
 	  <td>limit the problem of unavailable clients and increase the chance of working with the latest files.</td>
 	  <td>scope of the application, architecture, user interaction</td>
 	</tr>
 	<tr>
-	  <td>[soft_lock] Instad of implementing strict access control systems a soft lock is used. If a user wants to update a file, he/she may be notified that access to the file is somehow restricted. After receiving the notification the user may decide to obey the restriction or not.</td>
+	  <td>[soft_lock] Instad of implementing a strict access control systems a soft lock is used. If a user wants to update a file, he/she may be notified that access to the file is somehow restricted. After receiving the notification the user may decide to obey the restriction or not.</td>
 	  <td>no dead- or abandoned locks, no access control required</td>
 	  <td>scope of application, architecture</td>
 	</tr>
 	<tr>
 	  <td>[push_pull] Data may either be pushed to, or pulled from a client</td>
-	  <td>necessary fo synchronization</td>
+	  <td>necessary for synchronization</td>
 	  <td>architecture</td>
 	</tr>
 	<tr>
@@ -70,7 +70,7 @@
 	  <td>architecture, ui, documentation</td>
 	</tr>
 	<tr>
-	  <td>[i18n] The application will be prepared for internationalization. UI-String will be centralized.</td>
+	  <td>[i18n] The application will be prepared for internationalization. UI strings will be handled centrally.</td>
 	  <td>ease of translation, ease of  maintenance of the ui</td>
 	  <td>architecutre</td>
 	</tr>
@@ -99,18 +99,23 @@
         </tr>
         </thead>
 	<tr>
-	  <td>[single_project] The project is centered around handling one project. The datascheme will support multiple ones, but is not necessary to switch between projects quickly.</td>
-	  <td>simplicity, do one thing well</td>
-	  <td>GUI</td>
+	  <td>[single_project] The project is centered around handling one project. An instance of the application will only handle one project and data pertaining to different projects shall be stored in different database files.</td>
+	  <td>simplicity, doing one thing well, clear separation of different projects and simpler data model</td>
+	  <td>architecture, GUI</td>
 	</tr>
 	<tr>
-	  <td>[no_chat] It is assumed that the project member uses a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
+	  <td>[no_chat] It is assumed that project members use a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
 	  <td>Don't replace a chat client.</td>
 	  <td>architecture</td>
 	</tr>
 	<tr>
 	  <td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
 	  <td>simplicity</td>
+	  <td>architecture, UI</td>
+	</tr>
+	<tr>
+	  <td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
+	  <td>need for choosing a project after [single_project]</td>
 	  <td>architecture, UI</td>
 	</tr>
 	<tr>
