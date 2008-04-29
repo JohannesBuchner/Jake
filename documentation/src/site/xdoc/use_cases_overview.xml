@@ -37,36 +37,22 @@ Create stylesheet for 'table_usecase'
 				<li><a href='#uc_01_03'>[UC-01:03] view note</a></li>
 				<li><a href='#uc_01_10'>[UC-01:10] edit note</a></li>
 				<li><a href='#uc_01_02'>[UC-01:02] import file/folder</a></li>
-				<li><a href='#uc_01_04'>[UC-01:04] manage object meta data</a></li>
+				<li><a href='#uc_01_04'>[UC-01:04] manage object tags</a></li>
 				<li><a href='#uc_01_05'>[UC-01:05] delete object</a></li>
-				<li><a href='#uc_01_06'>[UC-01:06] sznchronize project</a></li>
-				<li><a href='#uc_01_07'>[UC-01:07] set object syncrhonization mode</a></li>
+				<li><a href='#uc_01_06'>[UC-01:06] synchronize project</a></li>
+				<li><a href='#uc_01_07'>[UC-01:07] set object synchronization mode</a></li>
 				<li><a href='#uc_01_08'>[UC-01:08] open file/folder with OS specified program</a></li>
 				<li><a href='#uc_01_09'>[UC-01:09] show datapool</a></li>
+				<li><a href='#uc_02_09'>[UC-02:11] Find object by name or tag</a></li>
 			</ul>
 		</li>
-		<li>[UC-02] Manage Tags <br />
-			<ul>
-				<li><a href='#uc_02_01'>[UC-02:01] Create a Tag</a></li>
-				<li><a href='#uc_02_02'>[UC-02:02] Edit/Rename a Tag</a></li>
-				<li><a href='#uc_02_03'>[UC-02:03] Delete a Tag</a></li>
-				<li><a href='#uc_02_04'>[UC-02:04] Add a Tag to an object</a></li>
-				<li><a href='#uc_02_05'>[UC-02:05] Add a Tag to a group of objects</a></li>
-				<li><a href='#uc_02_06'>[UC-02:06] Remove a Tag from an object</a></li>
-				<li><a href='#uc_02_07'>[UC-02:07] Remove a Tag from a group of objects</a></li>
-				<li><a href='#uc_02_08'>[UC-02:08] List available Tags</a></li>
-				<li><a href='#uc_02_09'>[UC-02:09] Find objects with specified Tag(s)</a></li>
-			</ul>
-		</li>
-
+		
 		<li>[UC-03] Manage Projectmembers <br />
 			<ul>
 				<li><a href='#uc_03_01'>[UC-03:01] Show project members</a></li>
-				<li><a href='#uc_03_02'>[UC-03:02] Show online project members</a></li>
-				<li><a href='#uc_03_03'>[UC-03:03] Search users by ID (e.g. XMPP-ID)</a></li>
+				<li><a href='#uc_03_03'>[UC-03:03] Search users by ID (in the network, e.g. XMPP or else)</a></li>
 				<li><a href='#uc_03_04'>[UC-03:04] Invite a user to join the project</a></li>
 				<li><a href='#uc_03_05'>[UC-03:05] Accept Project Invitation</a></li>
-				<li><a href='#uc_03_06'>[UC-03:06] Reject Project Invitation</a></li>
 				<li><a href='#uc_03_07'>[UC-03:07] Edit own personal meta data</a></li>
 			</ul>
 		</li>
@@ -118,6 +104,7 @@ Create stylesheet for 'table_usecase'
 						<ul>
 							<li>[ST-01]</li>
 							<li>a project is loaded</li>
+							<li>[UC-01:09] is executed every time this state is entered</li>
 						</ul>
 					</td>
 				</tr>
@@ -142,7 +129,7 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td>All Users</td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
@@ -162,7 +149,7 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td>The datapool and its contents are displayed</td>
+					<td>All objects in the project are displayed by their name in their hierarchical order</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -367,12 +354,12 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-						<td><a name='uc_01_04'>[UC-01:04] manage object meta data</a></td>
+						<td><a name='uc_01_04'>[UC-01:04] manage object tags</a></td>
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td>The user has the ability to manage the meta data associated to an object</td>
+					<td>The user has the ability to manage the tags associated to an object</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
@@ -395,8 +382,8 @@ Create stylesheet for 'table_usecase'
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li>The user select an object from the project and indicates to change the objects metadata</li>
-							<li>All existing metadata of that object is presented, and the user may add, change or delete tags</li>
+							<li>The user select an object from the project and indicates to change the objects tags</li>
+							<li>All existing tags of that object is presented, and the user may add, change or delete tags</li>
 							<li>The user indicates to safe the changes</li>
 						</ol>
 					</td>
@@ -533,7 +520,7 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td>advanced Users</td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
@@ -656,36 +643,128 @@ Create stylesheet for 'table_usecase'
 					<td>The available files/objects are shown.</td>
 				</tr>
 			</table>
+
 			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
+<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-						<td><a name='uc_02_01'>[UC-02:01] Create a Tag</a></td>
+						<td><a name='uc_02_09'>[UC-01:11] Find object by name or tag</a></td>
 
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>List all objects with a certain tag</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>finding stuff either by name or tag</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>[ST-02]</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user indicates to perform a search.</li>
+							<li>The user enters a search term</li>
+							<li>The user may choose to only search for matching filenames, or tags, or both</li>
+							<li>The user indicates to perform the search</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>In 4. the user may cancel the operation, the application returns to its previous state</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td>All matching objects in the project are listed by their name</td>
+				</tr>
+			</table>
+			<a href="#up"><b>up</b></a>
+
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+						<td><a name='uc_03_01'>[UC-03:01] Show project members</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>Display all the project members that are associated with the project.</td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td>You might want to know who works on the project, and who has access to the data</td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td>All users</td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td>[ST-02]</td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li>The user indicates to view all project members</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>Alternative paths</td>
+					<td>The user may indicate to only display members that are currently online.</td>
+				</tr>
+				<tr>
+					<td>Postconditions</td>
+					<td>All project members are listed in alphabetical order by their name and online status. For those who are online, it is displayed whether the project is in synch or not (e.g if the local and remote project are in the same state)</td>
+				</tr>
+			</table>
+			<a href="#up"><b>up</b></a>
+			
+			<table class='table_usecase'>
+				<thead>
+					<tr>
+						<td>name</td>
+						<td><a name='uc_03_03'>[UC-03:03] Search users by ID (in the network, e.g. XMPP or else)</a></td>
+
+					</tr>
+				</thead>
+				<tr>
+					<td>Summary</td>
+					<td>Search for users in the network by their ID. That may be via the XMPP protocol and service, or some other network</td>
+				</tr>
+				<tr>
+					<td>Rationale</td>
+					<td>Finding users is crucial.</td>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td>all users</td>
+				</tr>
+				<tr>
+					<td>Preconditions</td>
+					<td>[ST-02] or the application is in the state of the postcondition of this UC</td>
+				</tr>
+				<tr>
+					<td>Basic course of Events</td>
+					<td>
+						<ol>
+							<li>The user indicates to search for other users</li>
+							<li>The user enters a user ID</li>
+							<li>The user indicates to perform the search</li>
 						</ol>
 					</td>
 				</tr>
@@ -695,7 +774,7 @@ Create stylesheet for 'table_usecase'
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>All matching users are listed in alphabetical oder by their ID and name (name, first-name)</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -703,125 +782,152 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_02'>[UC-02:02] Edit/Rename a Tag</a></td>
+						<td><a name='uc_03_04'>[UC-03:04] Invite a user to join the project</a></td>
 
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>Invite new users to join the project</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>A project needs project members</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All Users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>[UC-03:03] must have been performed</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user selects a user from the list and indicates to invite this new user to the project.</li>
+							<li>The user is prompted to confirm the the invitation.</li>
+							<li>The user is prompted that an invitation was sent to the new user.</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>In 2. the user may cancel the operation, the application returns to its previous state</td>
+					<td>In 3. if an error occurs, the error message is shown to the user.</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>An invitation is sent to the new user, the application returns to its previous state</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
+			
 			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_03'>[UC-02:03] Delete a Tag</a></td>
-
+						<td><a name='uc_03_05'>[UC-03:05] Accept Project Invitation</a></td>
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>The users accepts a project invitation</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>No project members no collaboration.</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>
+						<ul>
+							<li>[ST-01]</li>
+							<li>at least one pending invitation</li>
+						</ul>
+					</td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>All pending invitation are listed by the date of issuing.</li>
+							<li>The user selects one invitation and indicates to view its details</li>
+							<li>The user accepts the invitation</li>
+							<li>The user is prompted to chose a local location for the project folder</li>
+							<li>The user is asked if he/she wants to synchronize the project data</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>
+						In 3. the user may reject the invitation. The invitation is rejected and the application returns to its previous state.<br />
+						In 4. if an error occurs creating the project folder the error message is displayed<br />
+						In 5. the user may chose not to synchronize the project
+					</td>
+					
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>
+						<ul>
+							<li>The user is added to the project</li>
+							<li>A project folder is created</li>
+							<li>The new project is loaded</li>
+							<li>The project data is synchronized</li>
+							<li>The application returns to state [ST-02]</li>
+						</ul>
+					</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
+			
 			<table class='table_usecase'>
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_04'>[UC-02:04] Add a Tag to an object</a></td>
-
+						<td><a name='uc_03_07'>[UC-03:07] Edit own personal meta data</a></td>
 					</tr>
 				</thead>
 				<tr>
 					<td>Summary</td>
-					<td></td>
+					<td>The user may change his/her personal metadata</td>
 				</tr>
 				<tr>
 					<td>Rationale</td>
-					<td></td>
+					<td>The user needs to provide more personal metadata than his/her sole User-ID</td>
 				</tr>
 				<tr>
 					<td>Users</td>
-					<td></td>
+					<td>All users</td>
 				</tr>
 				<tr>
 					<td>Preconditions</td>
-					<td></td>
+					<td>[ST-02] </td>
 				</tr>
 				<tr>
 					<td>Basic course of Events</td>
 					<td>
 						<ol>
-							<li></li>
+							<li>The user indicates to change his/her personal metadata</li>
+							<li>The user may change various metadata</li>
+							<li>The user indicates to safe the changes</li>
 						</ol>
 					</td>
 				</tr>
 				<tr>
 					<td>Alternative paths</td>
-					<td>-</td>
+					<td>In 3. if the user cancels the operation no data will be changed. The application returns to its previous state.</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
-					<td></td>
+					<td>The changes are saved, the application returns to its previous state.</td>
 				</tr>
 			</table>
 			<a href="#up"><b>up</b></a>
@@ -829,511 +935,7 @@ Create stylesheet for 'table_usecase'
 				<thead>
 					<tr>
 						<td>name</td>
-<td><a name='uc_02_05'>[UC-02:05] Add a Tag to a group of objects</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_02_06'>[UC-02:06] Remove a Tag from an object</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_02_07'>[UC-02:07] Remove a Tag from a group of objects</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_02_08'>[UC-02:08] List available Tags</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_02_09'>[UC-02:09] Find objects with specified Tag(s)</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_01'>[UC-03:01] Show project members</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_02'>[UC-03:02] Show online project members</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_03'>[UC-03:03] Search users by ID (e.g. XMPP-ID)</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_04'>[UC-03:04] Invite a user to join the project</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_05'>[UC-03:05] Accept Project Invitation</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_06'>[UC-03:06] Reject Project Invitation</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_03_07'>[UC-03:07] Edit own personal meta data</a></td>
-
-					</tr>
-				</thead>
-				<tr>
-					<td>Summary</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Rationale</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Users</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Preconditions</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Basic course of Events</td>
-					<td>
-						<ol>
-							<li></li>
-						</ol>
-					</td>
-				</tr>
-				<tr>
-					<td>Alternative paths</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>Postconditions</td>
-					<td></td>
-				</tr>
-			</table>
-			<a href="#up"><b>up</b></a>
-			<table class='table_usecase'>
-				<thead>
-					<tr>
-						<td>name</td>
-<td><a name='uc_04_01'>[UC-04:01] Create new Project</a></td>
+						<td><a name='uc_04_01'>[UC-04:01] Create new Project</a></td>
 
 					</tr>
 				</thead>
