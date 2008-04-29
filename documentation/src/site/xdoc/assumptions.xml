@@ -11,7 +11,7 @@
   <body>
     <section name="Assumptions">
     <p>This site acts a reference to all project related assumptions. In the upper part of the site you will find valid assumptions, categorised by their domain and scope. In the lower part you will find new, changed or assumptions that are currently under discussion and need approval by the team, or some team members.</p>
-    <p>For the ease of use, each assumptions has an unique identifier [&lt;identifier&gt;]. This identifier should be short, simple and obvious. Once chosen it shall not be changed, and therefor be stable. If assumptions are refined, or otherwise hierarchically organised an identifier of the form [&lt;parent&gt;:&lt;child&gt;] shall be used.</p>
+    <p>For the ease of use, each assumptions has an unique identifier [&lt;identifier&gt;]. This identifier should be short, simple and obvious. Once chosen it shall not be changed, and therefore be stable. If assumptions are refined, or otherwise hierarchically organised an identifier of the form [&lt;parent&gt;:&lt;child&gt;] shall be used.</p>
     <p>Discussion of Assumptions takes place at <a href="http://sepm.doublesignal.com/wiki/doku.php?id=assumptions">wiki/Assumptions</a></p>
     <subsection name="valid Assumptions">
       <table>
@@ -133,6 +133,16 @@
 		<td>that seems quite practical to me... Notes may be displayed only by their title</td>
 		<td>basic functionality, usability</td>
 	</tr>
+	<tr>
+		<td>[local_personal_metadata] Personal metadata is stored locally and is therefore independent of the networking implementation.</td>
+		<td>independence of networking implementation</td>
+		<td>architecture, basic functionality</td>
+	</tr>
+	<tr>
+		<td>[single_user] The application supports only one local user per project.</td>
+		<td>no user switching needed, less security issues</td>
+		<td>architecture, basic functionality</td>
+	</tr>
 
       </table>
       </subsection>
@@ -151,19 +161,25 @@
 
         <tr>
           <td>1</td>
-          <td>17.04.2008</td>
+          <td>2008-04-17</td>
           <td>SW</td>
           <td>created</td>
         </tr>
         <tr>
         	<td>2</td>
-        	<td>22.4.2008</td>
+        	<td>2008-04-22</td>
         	<td>SW</td>
         	<td>added assumption to valid assumptions</td>
         </tr>
         <tr>
         	<td>3</td>
-        	<td>28.4.2008</td>
+        	<td>2008-04-28</td>
+        	<td>SW</td>
+        	<td>added two assumptions</td>
+        </tr>
+        <tr>
+        	<td>4</td>
+        	<td>2008-04-28</td>
         	<td>SW</td>
         	<td>added two assumptions</td>
         </tr>
