@@ -5,189 +5,206 @@
   <properties>
     <title>Assumptions</title>
 
-    <author email="e0625457@student.tuwien.ac.at">Johannes Buchner</author>
+    <author>Dominik Dorn</author>
+    <author>Simon Wallner</author>
+    <author>Johannes Buchner</author>
   </properties>
 
   <body>
     <section name="Assumptions">
-    <p>This site acts a reference to all project related assumptions. In the upper part of the site you will find valid assumptions, categorised by their domain and scope. In the lower part you will find new, changed or assumptions that are currently under discussion and need approval by the team, or some team members.</p>
-    <p>For the ease of use, each assumptions has an unique identifier [&lt;identifier&gt;]. This identifier should be short, simple and obvious. Once chosen it shall not be changed, and therefore be stable. If assumptions are refined, or otherwise hierarchically organised an identifier of the form [&lt;parent&gt;:&lt;child&gt;] shall be used.</p>
-    <p>Discussion of Assumptions takes place at <a href="http://sepm.doublesignal.com/wiki/doku.php?id=assumptions">wiki/Assumptions</a></p>
-    <subsection name="valid Assumptions">
-      <table>
-        <thead>
-        <tr>
-          <th>Description</th>
-          <th>Rationale</th>
-          <th>Affected Parts</th>
-        </tr>
-        </thead> 
-
-	<!-- fill in here -->
-	<tr>
-          <td>[offline] It is possible to work either on- or off-line. This implies that two users may work simultaneously on the same document. Hence some conflict resolution is needed.</td>
-          <td>basic functionality</td>
-          <td>scope of the application</td>
-    </tr>
-	<tr>
-	  <td>[all_equal] In general, all objects are treated equally; Files, Folders, Notes, etc.</td>
-	  <td>basic functionality</td>
-	  <td>scope of the application, architecture</td>
-	</tr>
-	<tr>
-	  <td>[folder_structure] Folder structure of imported folders is preserved</td>
-	  <td>ease of use, transparency for the user</td>
-	  <td>basic functionality, architecture</td>
-	</tr>
-	<tr>
-	  <td>[project_folder] All shared data lies in one project folder</td>
-	  <td>simplifies implementation, transparency for the user</td>
-	  <td>basic functionality, architecture</td>
-	</tr>
-	<tr>
-	  <td>[passive_mode] The application must be fully operational even without constant user interaction. That means that the client may passively share data and therefore acts as a dedicated server.</td>
-	  <td>limit the problem of unavailable clients and increase the chance of working with the latest files.</td>
-	  <td>scope of the application, architecture, user interaction</td>
-	</tr>
-	<tr>
-	  <td>[soft_lock] Instad of implementing a strict access control systems a soft lock is used. If a user wants to update a file, he/she may be notified that access to the file is somehow restricted. After receiving the notification the user may decide to obey the restriction or not.</td>
-	  <td>no dead- or abandoned locks, no access control required</td>
-	  <td>scope of application, architecture</td>
-	</tr>
-	<tr>
-	  <td>[push_pull] Data may either be pushed to, or pulled from a client</td>
-	  <td>necessary for synchronization</td>
-	  <td>architecture</td>
-	</tr>
-	<tr>
-	  <td>[auto_push_pull] The user may indicate whether the application automatically or manually pushes/pulls data. This option may save bandwidth and gives the user more control over the traffic.</td>
-	  <td>save bandwidth, more control over traffic, restrict traffic in insecure environments</td>
-	  <td>scope of application, architecture</td>
-	</tr>	
-	<tr>
-	  <td>[en] The UI and all public documentation are written in english.</td>
-	  <td>multi culture target audience</td>
-	  <td>architecture, ui, documentation</td>
-	</tr>
-	<tr>
-	  <td>[i18n] The application will be prepared for internationalization. UI strings will be handled centrally.</td>
-	  <td>ease of translation, ease of  maintenance of the ui</td>
-	  <td>architecutre</td>
-	</tr>
-	<tr>
-	  <td>[multi_platform] The application shall run under Windows, Linux and Mac Os X</td>
-	  <td>variety of target audience</td>
-	  <td>architecture</td>
-	</tr>
-	<tr>
-	  <td>[single_project] The project is centered around handling one project. An instance of the application will only handle one project and data pertaining to different projects shall be stored in different database files.</td>
-	  <td>simplicity, doing one thing well, clear separation of different projects and simpler data model</td>
-	  <td>architecture, GUI</td>
-	</tr>
-	<tr>
-	  <td>[no_chat] It is assumed that project members use a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
-	  <td>Don't replace a chat client.</td>
-	  <td>architecture</td>
-	</tr>
-	<tr>
-		<td>[notes_with_title_and_text] Notes consist of a title an text. If no title ist set the first line of the text is used instead</td>
-		<td>that seems quite practical to me... Notes may be displayed only by their title</td>
-		<td>basic functionality, usability</td>
-	</tr>
-	<tr>
-		<td>[remote_personal_metadata] Personal metadata is not stored locally and may be retrieved through the ICC-Service.</td>
-		<td>No handling of multiple local users.</td>
-		<td>architecture, basic functionality</td>
-	</tr>
-	<tr>
-		<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time</td>
-		<td>simplicity of implementation, although not very user friendly</td>
-		<td>usability</td>
-	</tr>
-	<tr>
-		<td>[single_user] The application supports only one local user per project.</td>
-		<td>no user switching needed, less security issues</td>
-		<td>architecture, basic functionality</td>
-	</tr>
-
-
-    
-	<!-- template:
-	<tr>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-	-->
-      </table>
-      </subsection>
-      <subsection name="new/changed/under discussion">
-      <table>
-        <thead>
-        <tr>
-          <th>Description</th>
-          <th>Rationale</th>
-          <th>Affected Parts</th>
-        </tr>
-        </thead>
-	<tr>
-	  <td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
-	  <td>simplicity</td>
-	  <td>architecture, UI</td>
-	</tr>
-	<tr>
-	  <td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
-	  <td>need for choosing a project after [single_project]</td>
-	  <td>architecture, UI</td>
-	</tr>
-
-      </table>
-      </subsection>
-    </section>
-
-    <section name="Changelog">
-      <table>
-        <thead>
-        <tr>
-          <th>No.</th>
-          <th>Date</th>
-          <th>Author</th>
-          <th>Change</th>
-        </tr>
-        </thead>
-
-        <tr>
-          <td>1</td>
-          <td>2008-04-17</td>
-          <td>SW</td>
-          <td>created</td>
-        </tr>
-        <tr>
-        	<td>2</td>
-        	<td>2008-04-22</td>
-        	<td>SW</td>
-        	<td>added assumption to valid assumptions</td>
-        </tr>
-        <tr>
-        	<td>3</td>
-        	<td>2008-04-28</td>
-        	<td>SW</td>
-        	<td>added two assumptions</td>
-        </tr>
-        <tr>
-        	<td>4</td>
-        	<td>2008-04-28</td>
-        	<td>SW</td>
-        	<td>added two assumptions</td>
-        </tr>
-        <tr>
-        	<td>5</td>
-        	<td>2008-04-30</td>
-        	<td>SW</td>
-        	<td>Updated assumptions according to the meeting (2008-4-29)</td>
-        </tr>
-       
-      </table>
-    </section>
-  </body>
+	<p>This site acts a reference to all project related assumptions. In the upper part of the site you will find valid assumptions, categorised by their domain and scope. In the lower part you will find new, changed or assumptions that are currently under discussion and need approval by the team, or some team members.</p>
+	<p>For the ease of use, each assumptions has an unique identifier [&lt;identifier&gt;]. This identifier should be short, simple and obvious. Once chosen it shall not be changed, and therefore be stable. If assumptions are refined, or otherwise hierarchically organised an identifier of the form [&lt;parent&gt;:&lt;child&gt;] shall be used.</p>
+	<p>Discussion of Assumptions takes place at <a href="http://sepm.doublesignal.com/wiki/doku.php?id=assumptions">wiki/Assumptions</a></p>
+	
+	<subsection name="Affecting the concept">
+		<table>
+			<thead>
+				<tr>
+					<th>Description</th>
+					<th>Rationale</th>
+					<th>Affected Parts</th>
+				</tr>
+			</thead> 
+			<tbody>
+				<tr>
+					<td>[offline] It is possible to work either online or offline. This implies that two users may work simultaneously on the same document. Hence some form of conflict resolution is needed.</td>
+					<td>basic functionality</td>
+					<td>scope of the application</td>
+				</tr>
+				<tr> <!-- TODO: fix from techarch-meeting -->
+					<td>[all_equal] In general, all objects are treated equally; Files, Folders, Notes, etc.</td>
+					<td>basic functionality</td>
+					<td>scope of the application, architecture</td>
+				</tr>
+				<tr>
+					<td>[folder_structure] Folder structure of imported folders is preserved</td>
+					<td>ease of use, transparency for the user</td>
+					<td>basic functionality, architecture</td>
+				</tr>
+				<tr> <!-- TODO: fix from techarch-meeting --> 
+					<td>[project_folder] All shared data lies in one project folder</td>
+					<td>simplifies implementation, transparency for the user</td>
+					<td>basic functionality, architecture</td>
+				</tr>
+				<tr>
+					<td>Feature: [passive_mode] The application can be fully operational even without constant user interaction. That means that the client may passively share data and therefore acts as a dedicated server.</td>
+					<td>limit the problem of unavailable clients and increase the chance of working with the latest files.</td>
+					<td>scope of the application, architecture, user interaction</td>
+				</tr>
+				<tr> <!-- TODO: discuss, as not modeled so far -->
+					<td>Feature: [soft_lock] Instad of implementing a strict access control systems a soft lock is used. If a user wants to update a file, he/she may be notified that access to the file is somehow restricted. After receiving the notification the user may decide to obey the restriction or not.</td>
+					<td>no dead- or abandoned locks, no access control required</td>
+					<td>scope of application, architecture</td>
+				</tr>
+				<tr>
+					<td>[push_pull] Concept: Data may either be pushed to, or pulled from a client</td>
+					<td>necessary for synchronization</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>[auto_push_pull] The user may indicate whether the application automatically or manually pushes/pulls data. This option may save bandwidth and gives the user more control over the traffic.</td>
+					<td>save bandwidth, more control over traffic, restrict traffic in insecure environments</td>
+					<td>scope of application, architecture</td>
+				</tr>	
+				<tr>
+					<td>[en] The UI and all public documentation are written in english.</td>
+					<td>multi culture target audience</td>
+					<td>ui, documentation</td>
+				</tr>
+				<tr>
+					<td>[i18n] The application will be prepared for internationalization. UI strings will be handled centrally.</td>
+					<td>ease of translation, ease of  maintenance of the ui</td>
+					<td>architecutre</td>
+				</tr>
+				<tr>
+					<td>[multi_platform] The application shall run under Windows, Linux and Mac Os X</td>
+					<td>variety of target audience</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>[single_project] The project is centered around handling one project. An instance of the application will only handle one project and data pertaining to different projects shall be stored in different database files.</td>
+					<td>simplicity, doing one thing well, clear separation of different projects and simpler data model</td>
+					<td>architecture, GUI</td>
+				</tr>
+				<tr>
+					<td>[no_chat] It is assumed that project members use a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
+					<td>Don't replace a chat client.</td>
+					<td>architecture</td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
+					<th colspan="3">under discussion: </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr> <!-- TODO: fix from techarch meeting -->
+					<td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
+					<td>simplicity</td>
+					<td>architecture, UI</td>
+				</tr>
+				<tr> <!-- TODO: fix from techarch meeting -->
+					<td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
+					<td>need for choosing a project after [single_project]</td>
+					<td>architecture, UI</td>
+				</tr>
+			</tbody>
+		</table>
+	</subsection>
+	
+	<subsection name="Affecting the implementation">
+		<table>
+			<thead>
+				<tr>
+					<th>Description</th>
+					<th>Rationale</th>
+					<th>Affected Parts</th>
+				</tr>
+			</thead> 
+			<tbody>
+				<tr> <!-- TODO: fix from techarch meeting -->
+					<td>[notes_with_title_and_text] Notes consist of a title an text. If no title ist set the first line of the text is used instead</td>
+					<td>that seems quite practical to me... Notes may be displayed only by their title</td>
+					<td>basic functionality, usability</td>
+				</tr>
+				<tr> <!-- TODO: more detail -->
+					<td>[remote_personal_metadata] Personal metadata is not stored locally and may be retrieved through the ICC-Service.</td>
+					<td>No handling of multiple local users.</td>
+					<td>architecture, basic functionality</td>
+				</tr>
+				<tr> <!-- TODO: more detail, especially why. 
+						TODO: discuss implementation of sharing tags -->
+					<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time</td>
+					<td>simplicity of implementation, although not very user friendly</td>
+					<td>usability</td>
+				</tr>
+				<tr> <!-- TODO: more detail, what does it mean? -->
+					<td>[single_user] The application supports only one local user per project.</td>
+					<td>no user switching needed, less security issues</td>
+					<td>architecture, basic functionality</td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
+					<th colspan="3">under discussion: </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr> <!-- TODO: fix from techarch meeting -->
+					<td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
+					<td>simplicity</td>
+					<td>architecture, UI</td>
+				</tr>
+				<tr> <!-- TODO: fix from techarch meeting -->
+					<td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
+					<td>need for choosing a project after [single_project]</td>
+					<td>architecture, UI</td>
+				</tr>
+			</tbody>
+		</table>
+	</subsection>
+	</section>
+	<section name="Changelog">
+		<table>
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Date</th>
+					<th>Author</th>
+					<th>Change</th>
+				</tr>
+			</thead>
+			<tr>
+				<td>1</td>
+				<td>2008-04-17</td>
+				<td>SW</td>
+				<td>created</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>2008-04-22</td>
+				<td>SW</td>
+				<td>added assumption to valid assumptions</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>2008-04-28</td>
+				<td>SW</td>
+				<td>added two assumptions</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>2008-04-28</td>
+				<td>SW</td>
+				<td>added two assumptions</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>2008-04-30</td>
+				<td>SW</td>
+				<td>Updated assumptions according to the meeting (2008-4-29)</td>
+			</tr>
+		</table>
+	</section>
+	</body>
 </document>
