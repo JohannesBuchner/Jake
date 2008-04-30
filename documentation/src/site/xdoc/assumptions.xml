@@ -31,10 +31,11 @@
 					<td>basic functionality</td>
 					<td>scope of the application</td>
 				</tr>
-				<tr> <!-- TODO: fix from techarch-meeting -->
-					<td>[all_equal] In general, all objects are treated equally; Files, Folders, Notes, etc.</td>
+				<tr>
+					<td>[all_equal] Objects to be shared will be treated equally; Files, Notes, etc. The meaning of this is that we don't handle each types of content differently.</td>
 					<td>basic functionality</td>
 					<td>scope of the application, architecture</td>
+					<!-- note: wording has been changed without the need of general discussion -->
 				</tr>
 				<tr>
 					<td>[folder_structure] Folder structure of imported folders is preserved</td>
@@ -58,7 +59,7 @@
 				</tr>
 				<tr>
 					<td>[push_pull] Concept: Data may either be pushed to, or pulled from a client</td>
-					<td>necessary for synchronization</td>
+					<td>necessary for synchronisation</td>
 					<td>architecture</td>
 				</tr>
 				<tr>
@@ -67,14 +68,14 @@
 					<td>scope of application, architecture</td>
 				</tr>	
 				<tr>
-					<td>[en] The UI and all public documentation are written in english.</td>
+					<td>[en] The UI and all public documentation are written in English.</td>
 					<td>multi culture target audience</td>
 					<td>ui, documentation</td>
 				</tr>
 				<tr>
-					<td>[i18n] The application will be prepared for internationalization. UI strings will be handled centrally.</td>
+					<td>[i18n] The application will be prepared for internationalisation. UI strings will be handled centrally.</td>
 					<td>ease of translation, ease of  maintenance of the ui</td>
-					<td>architecutre</td>
+					<td>architecture</td>
 				</tr>
 				<tr>
 					<td>[multi_platform] The application shall run under Windows, Linux and Mac Os X</td>
@@ -91,6 +92,28 @@
 					<td>Don't replace a chat client.</td>
 					<td>architecture</td>
 				</tr>
+				<tr>
+					<td>[move] A move operation, e.g. when a user moves or renames a file in the file system, is treated like a delete and a create. </td>
+					<td>simplicity. We don't have to track the log</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>[implicit-tags] There will be no tags for folders. Reasons: There is no need to tag folders. Each folders name and parents are its tags and tags for the files in it. We will call that concept "implicit tags". It saves lot of implementation. tagging of folders is unnecessary, since the folder name has the information already. Optional: Add option to turn implicit tags off.
+					</td> <!-- you may want to have a look at http://sepm.doublesignal.com/wiki/doku.php?id=discussion%3Aprotokoll%3A2008-04-30_techarch-meeting for more arguments -->
+					<td>simplicity</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>[no-folder-sync] Folders don't need to be synced.  We only sync files, empty  folders we don't care about. Since we sync by relative file name (relpath), which is unique, this implicates the folders that need to be created.
+					</td>
+					<td>simplicity</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>[login] The userid is the login to the ICService. It is entered on startup, or can be stored. A project member uses for one project (database file) his userid. For using multiple userids, those have to be added as project members and see [single_user]</td>
+					<td></td>
+					<td>architecture, UI</td>
+				</tr>
 			</tbody>
 			<thead>
 				<tr>
@@ -98,15 +121,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr> <!-- TODO: fix from techarch meeting -->
-					<td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
-					<td>simplicity</td>
-					<td>architecture, UI</td>
-				</tr>
-				<tr> <!-- TODO: fix from techarch meeting -->
-					<td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
-					<td>need for choosing a project after [single_project]</td>
-					<td>architecture, UI</td>
+				<tr>
+					<td>...</td>
+					<td></td>
+					<td></td>
 				</tr>
 			</tbody>
 		</table>
@@ -122,26 +140,59 @@
 				</tr>
 			</thead> 
 			<tbody>
-				<tr> <!-- TODO: fix from techarch meeting -->
-					<td>[notes_with_title_and_text] Notes consist of a title an text. If no title ist set the first line of the text is used instead</td>
-					<td>that seems quite practical to me... Notes may be displayed only by their title</td>
+				<tr>
+					<td>[notes_with_title_and_text] Notes consist of content. They have no distinguished title in the implementation. Only the GUI may show the first n characters of the content as title, and the whole content as the text</td>
+					<td></td>
 					<td>basic functionality, usability</td>
 				</tr>
-				<tr> <!-- TODO: more detail -->
-					<td>[remote_personal_metadata] Personal metadata is not stored locally and may be retrieved through the ICC-Service.</td>
+				<tr>
+					<td>[remote_personal_metadata] Personal metadata, that is e.g. first name, last name, telephone number, is not stored locally and is retrieved through the ICService. If you want to save the telephone number to a user A, user A should enter that information to the way the ICService retrieves data. However, this is outside the scope of the application, we may only handle retrieving/displaying.</td>
 					<td>No handling of multiple local users.</td>
 					<td>architecture, basic functionality</td>
 				</tr>
-				<tr> <!-- TODO: more detail, especially why. 
-						TODO: discuss implementation of sharing tags -->
-					<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time</td>
-					<td>simplicity of implementation, although not very user friendly</td>
+				<tr>
+					<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time. </td>
+					<td>Additional functionality, not a problem per se</td>
 					<td>usability</td>
 				</tr>
-				<tr> <!-- TODO: more detail, what does it mean? -->
-					<td>[single_user] The application supports only one local user per project.</td>
+				<tr>
+					<td>[single_user] The application supports only one local user per project. This means there is no user switching, or identities like in mail clients.</td>
 					<td>no user switching needed, less security issues</td>
 					<td>architecture, basic functionality</td>
+				</tr>
+				<tr>
+					<td>[no-supermetadata] Per se, it is unknown where the rootpath is. The application is called with the url of the database file and finds the rootpath in there. A list of database file may be implemented later as optional recent-project feature or in a central location. However, this is not a needed functionality.</td>
+					<td>need for choosing a project after [single_project]</td>
+					<td>architecture, UI</td>
+				</tr>
+				<tr>
+					<td>[no-store-folders] We don't store a folder structure in the database.</td>
+					<td>Duplicate effort, out of sync problems, brittle and inflexible structure</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>
+						<p>[no-folder-model] As far as we can see, there is no need to model folders in our project. Such a internal tree would have some drawbacks: It is a very brittle structure, always having to be in sync with the file system. It is also very inflexible and needs effort to be maintained. 
+						</p><p>
+						Also, there is no need to have such a structure. Navigating through the rootpath and subfolders can be achieved by queriing the FSService. Lists of files, with relpath as key, are sufficient for internal handling, especially with our (defined) small amount of files.
+						</p>
+					</td>
+					<td>Saves a lot of implementation</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td>[jakeobject-id] A Jakeobject has a String as identifier. For files, it is relpath, for notes it is "note:"+userid+timestamp of creation. This guarantees that two users can not create a object with the same id or know, if they talk about the same object.</td>
+					<td>Duplicate effort, out of sync problems, brittle and inflexible structure</td>
+					<td>architecture</td>
+				</tr>
+				<tr>
+					<td><p>[conflicts] We define a conflict as the situation when a user has a local modification that he did not push (synchronise to others), and a log entry of changes on the same file come in from another user. Or, similarly, when the user makes a local change but did not start from the last version of the file, he has to resolve the conflict. </p>
+					
+						<p>When launching the file for editing, the program may recommend a syncing and warn, if a newer version exists, and recommend to pull it.</p>
+						<!-- TODO: reference to sequence diagram -->
+					</td>
+					<td>definition</td>
+					<td>architecture, implementation</td>
 				</tr>
 			</tbody>
 			<thead>
@@ -150,20 +201,36 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr> <!-- TODO: fix from techarch meeting -->
-					<td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
-					<td>simplicity</td>
-					<td>architecture, UI</td>
-				</tr>
-				<tr> <!-- TODO: fix from techarch meeting -->
-					<td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
-					<td>need for choosing a project after [single_project]</td>
-					<td>architecture, UI</td>
+				<tr> 
+					<td> ... </td>
+					<td> ... </td>
+					<td> ... </td>
 				</tr>
 			</tbody>
 		</table>
 	</subsection>
 	</section>
+	
+	<section name="Definition of words">
+		<dl>
+			<dt>ICService</dt>
+			<dd>Interclient communication service</dd>
+			<dt>SyncService</dt>
+			<dd>Synchronisation service, uses ICService</dd>
+			<dt>FSService</dt>
+			<dd>File system service</dd>
+			
+			<dt>userid</dt>
+			<dd>A userid is a user identifier that is globally unique and known in the context of the ICService (Interclient Communication Service)</dd>
+			<dt>JakeObject</dt>
+			<dd>Shared objects; the abstraction of notes, files and possibly more types</dd>
+			<dt>rootpath</dt>
+			<dd>Project directory path on the file system</dd>
+			<dt>relpath</dt>
+			<dd>Relative file path of files starting from the root path</dd>
+		</dl>
+	</section>
+	
 	<section name="Changelog">
 		<table>
 			<thead>
@@ -177,32 +244,38 @@
 			<tr>
 				<td>1</td>
 				<td>2008-04-17</td>
-				<td>SW</td>
+				<td>simon</td>
 				<td>created</td>
 			</tr>
 			<tr>
 				<td>2</td>
 				<td>2008-04-22</td>
-				<td>SW</td>
+				<td>simon</td>
 				<td>added assumption to valid assumptions</td>
 			</tr>
 			<tr>
 				<td>3</td>
 				<td>2008-04-28</td>
-				<td>SW</td>
+				<td>simon</td>
 				<td>added two assumptions</td>
 			</tr>
 			<tr>
 				<td>4</td>
 				<td>2008-04-28</td>
-				<td>SW</td>
+				<td>simon</td>
 				<td>added two assumptions</td>
 			</tr>
 			<tr>
 				<td>5</td>
 				<td>2008-04-30</td>
-				<td>SW</td>
+				<td>simon</td>
 				<td>Updated assumptions according to the meeting (2008-4-29)</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>2008-04-30</td>
+				<td>johannes</td>
+				<td>Incorporated decisions of tech-arch meeting</td>
 			</tr>
 		</table>
 	</section>
