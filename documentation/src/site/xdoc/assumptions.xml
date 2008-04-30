@@ -122,9 +122,9 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>...</td>
-					<td></td>
-					<td></td>
+					<td>[no-spaces-in-tags] Tags don't contain spaces. Thus they can be written one after another.</td>
+					<td>Common sense</td>
+					<td>Architecture</td>
 				</tr>
 			</tbody>
 		</table>
