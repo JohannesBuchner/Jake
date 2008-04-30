@@ -79,6 +79,38 @@
 	  <td>variety of target audience</td>
 	  <td>architecture</td>
 	</tr>
+	<tr>
+	  <td>[single_project] The project is centered around handling one project. An instance of the application will only handle one project and data pertaining to different projects shall be stored in different database files.</td>
+	  <td>simplicity, doing one thing well, clear separation of different projects and simpler data model</td>
+	  <td>architecture, GUI</td>
+	</tr>
+	<tr>
+	  <td>[no_chat] It is assumed that project members use a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
+	  <td>Don't replace a chat client.</td>
+	  <td>architecture</td>
+	</tr>
+	<tr>
+		<td>[notes_with_title_and_text] Notes consist of a title an text. If no title ist set the first line of the text is used instead</td>
+		<td>that seems quite practical to me... Notes may be displayed only by their title</td>
+		<td>basic functionality, usability</td>
+	</tr>
+	<tr>
+		<td>[remote_personal_metadata] Personal metadata is not stored locally and may be retrieved through the ICC-Service.</td>
+		<td>No handling of multiple local users.</td>
+		<td>architecture, basic functionality</td>
+	</tr>
+	<tr>
+		<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time</td>
+		<td>simplicity of implementation, although not very user friendly</td>
+		<td>usability</td>
+	</tr>
+	<tr>
+		<td>[single_user] The application supports only one local user per project.</td>
+		<td>no user switching needed, less security issues</td>
+		<td>architecture, basic functionality</td>
+	</tr>
+
+
     
 	<!-- template:
 	<tr>
@@ -99,16 +131,6 @@
         </tr>
         </thead>
 	<tr>
-	  <td>[single_project] The project is centered around handling one project. An instance of the application will only handle one project and data pertaining to different projects shall be stored in different database files.</td>
-	  <td>simplicity, doing one thing well, clear separation of different projects and simpler data model</td>
-	  <td>architecture, GUI</td>
-	</tr>
-	<tr>
-	  <td>[no_chat] It is assumed that project members use a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
-	  <td>Don't replace a chat client.</td>
-	  <td>architecture</td>
-	</tr>
-	<tr>
 	  <td>[login] The login is the login to the Interclient Com. It is entered on startup, or can be stored. A person uses only one JID for all of his/her projects.</td>
 	  <td>simplicity</td>
 	  <td>architecture, UI</td>
@@ -117,31 +139,6 @@
 	  <td>[supermetadata] Assuming that the [single_project] assumption is accepted (that implies projects are "on their own" and do not know about other projects), a list of subscribed projects will have to be stored at a suitable central location (project installation folder, home directory/"documents and settings" folder,...) and presented to the user before or after login.</td>
 	  <td>need for choosing a project after [single_project]</td>
 	  <td>architecture, UI</td>
-	</tr>
-	<tr>
-	  <td>[no_chat] It is assumed that the project member uses a chat client next to the application. We don't want to replace the chat client and don't want to provide chat or group chat functionality. However, leaving a message for other project members (and displaying those) is a use case.</td>
-	  <td>Don't replace a chat client.</td>
-	  <td>architecture</td>
-	</tr>
-	<tr>
-		<td>[no_batch_tagging] It is assumed that the user may only manage tags at one object at a time</td>
-		<td>simplicity of implementation, although not very user friendly</td>
-		<td>usability</td>
-	</tr>
-	<tr>
-		<td>[notes_with_title_and_text] Notes consist of a title an text. If no title ist set the first line of the text is used instead</td>
-		<td>that seems quite practical to me... Notes may be displayed only by their title</td>
-		<td>basic functionality, usability</td>
-	</tr>
-	<tr>
-		<td>[local_personal_metadata] Personal metadata is stored locally and is therefore independent of the networking implementation.</td>
-		<td>independence of networking implementation</td>
-		<td>architecture, basic functionality</td>
-	</tr>
-	<tr>
-		<td>[single_user] The application supports only one local user per project.</td>
-		<td>no user switching needed, less security issues</td>
-		<td>architecture, basic functionality</td>
 	</tr>
 
       </table>
@@ -183,6 +180,13 @@
         	<td>SW</td>
         	<td>added two assumptions</td>
         </tr>
+        <tr>
+        	<td>5</td>
+        	<td>2008-04-30</td>
+        	<td>SW</td>
+        	<td>Updated assumptions according to the meeting (2008-4-29)</td>
+        </tr>
+       
       </table>
     </section>
   </body>
