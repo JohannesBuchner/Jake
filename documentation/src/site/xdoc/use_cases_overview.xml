@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
-"http://www.apache.org/dtds/xdoc_1_0.dtd">
+"http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <document>
   <properties>
     <title>Use Cases Overview</title>
@@ -22,8 +22,10 @@ Create stylesheet for 'table_usecase'
 
 //-->
 
-
   <body>
+	<style type='text/stylesheet'>
+		.use_case_name { font-weight: bold; width: 140px; }
+	</style>
     <section name="Use Cases">
     	<p>This page contains an overview of all use cases. Use cases are listed with a discriptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
     	<p>Note: Since we don't yet need full use cases, a preliminary list of use cases without an identifier will suffice. Identifiers are added later on.</p>
@@ -115,7 +117,7 @@ Create stylesheet for 'table_usecase'
     		<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name="uc_01_09">[UC-01:09] show datapool</a></td>
 					</tr>
 				</thead>
@@ -144,7 +146,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -157,7 +175,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td></td>
 					</tr>
 				</thead>
@@ -186,7 +204,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -200,7 +234,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_01'>[UC-01:01] create note</a></td>
 
 					</tr>
@@ -233,7 +267,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>
 						In 1. if the user specifies a certain location the note will be created there.<br />
 						In 3. if the user indicates to cancel the operation, no note will be created
@@ -249,7 +299,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_02'>[UC-01:02] import file/folder</a></td>
 					</tr>
 				</thead>
@@ -281,7 +331,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>
 						<ul>
 							<li>(4). If the file is already in the project datapool, the user gets a warning.</li>
@@ -303,7 +369,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_03'>[UC-01:03] view note</a></td>
 
 					</tr>
@@ -341,7 +407,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>In 4. if the user indicates to cancel the operation, no changes are made to the note. The user is prompted to confirm the </td>
 				</tr>
 				<tr>
@@ -353,7 +435,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_04'>[UC-01:04] manage object tags</a></td>
 					</tr>
 				</thead>
@@ -389,7 +471,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>In 3. the user may chose to cancel the operation. No changes will be stored</td>
 				</tr>
 				<tr>
@@ -402,7 +500,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_05'>[UC-01:05] delete object</a></td>
 					</tr>
 				</thead>
@@ -439,7 +537,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>
 						In 1. the user may select multiple objects. <br />
 						In 3. the user may cancel the operation.<br />
@@ -456,7 +570,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_06'>[UC-01:06] synchronize project</a></td>
 					</tr>
 				</thead>
@@ -491,7 +605,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>
 						In 2. if an error occurs, the user is prompted with an error message.<br />
 						In 2. if a version conflict occurs the application assists the user to resolve the conflict. see [???]
@@ -506,7 +636,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_07'>[UC-01:07] set object synchronization mode</a></td>
 					</tr>
 				</thead>
@@ -537,7 +667,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>In 3. the user may cancel the operation. No changes are stored</td>
 				</tr>
 				<tr>
@@ -549,7 +695,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_08'>[UC-01:08] open file/folder-object with OS specified program</a></td>
 
 					</tr>
@@ -584,7 +730,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>An error may occur diring the process. In that case the user is prompted with an error message.</td>
 				</tr>
 				<tr>
@@ -596,7 +758,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_01_09'>[UC-01:09] show datapool</a></td>
 					</tr>
 				</thead>
@@ -630,7 +792,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>
 						<ol>
 							<li>User opens the Program.</li>
@@ -648,7 +826,7 @@ Create stylesheet for 'table_usecase'
 <table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_02_09'>[UC-01:11] Find object by name or tag</a></td>
 
 					</tr>
@@ -681,7 +859,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>In 4. the user may cancel the operation, the application returns to its previous state</td>
 				</tr>
 				<tr>
@@ -694,7 +888,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_03_01'>[UC-03:01] Show project members</a></td>
 
 					</tr>
@@ -724,7 +918,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>The user may indicate to only display members that are currently online.</td>
 				</tr>
 				<tr>
@@ -737,7 +947,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_03_03'>[UC-03:03] Search users by ID (in the network, e.g. XMPP or else)</a></td>
 
 					</tr>
@@ -769,7 +979,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -781,7 +1007,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_03_04'>[UC-03:04] Invite a user to join the project</a></td>
 
 					</tr>
@@ -813,9 +1039,25 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
-					<td>In 2. the user may cancel the operation, the application returns to its previous state</td>
-					<td>In 3. if an error occurs, the error message is shown to the user.</td>
+					<td>Exceptions</td>
+					<td></td>
+				</tr>
+					<tr>
+</td>Priority</td>
+					<td></td>
+				</tr>
+					<tr>
+</td>Frequency of Use</td>
+					<td></td>
+					</tr>
+					<tr>
+</td>Open Questions</td>
+					<td></td>
+					</tr>
+					<tr>
+</td>Alternative paths</td>
+					<td>In 2. the user may cancel the operation, the application returns to its previous state<br />
+					In 3. if an error occurs, the error message is shown to the user.</td>
 				</tr>
 				<tr>
 					<td>Postconditions</td>
@@ -827,7 +1069,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_03_05'>[UC-03:05] Accept Project Invitation</a></td>
 					</tr>
 				</thead>
@@ -865,7 +1107,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>
 						In 3. the user may reject the invitation. The invitation is rejected and the application returns to its previous state.<br />
 						In 4. if an error occurs creating the project folder the error message is displayed<br />
@@ -891,7 +1149,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_03_07'>[UC-03:07] Edit own personal meta data</a></td>
 					</tr>
 				</thead>
@@ -922,7 +1180,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>In 3. if the user cancels the operation no data will be changed. The application returns to its previous state.</td>
 				</tr>
 				<tr>
@@ -934,7 +1208,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 						<td><a name='uc_04_01'>[UC-04:01] Create new Project</a></td>
 
 					</tr>
@@ -964,7 +1238,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -976,7 +1266,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_04_02'>[UC-04:02] Edit Project Metadata</a></td>
 
 					</tr>
@@ -1006,7 +1296,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1018,7 +1324,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_04_03'>[UC-04:03] Specify Project directory path</a></td>
 
 					</tr>
@@ -1048,7 +1354,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1060,7 +1382,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_01'>[UC-05:01] Show changed objects</a></td>
 
 					</tr>
@@ -1090,7 +1412,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1102,7 +1440,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_02'>[UC-05:02] Start propagation of changes</a></td>
 
 					</tr>
@@ -1132,7 +1470,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1144,7 +1498,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_03'>[UC-05:03] Start receiving of changes</a></td>
 
 					</tr>
@@ -1174,7 +1528,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1186,7 +1556,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_04'>[UC-05:04] Set propagation mode</a></td>
 
 					</tr>
@@ -1216,7 +1586,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1228,7 +1614,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_05'>[UC-05:05] View propagation information</a></td>
 
 					</tr>
@@ -1258,7 +1644,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1270,7 +1672,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_06'>[UC-05:06] Show version conflicts</a></td>
 
 					</tr>
@@ -1300,7 +1702,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1312,7 +1730,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_05_07'>[UC-05:07] Resolve version conflicts</a></td>
 
 					</tr>
@@ -1342,7 +1760,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1354,7 +1788,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_07_01'>[UC-07:01] Set authentication Information</a></td>
 
 					</tr>
@@ -1384,7 +1818,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1396,7 +1846,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_07_02'>[UC-07:02] Login to the network</a></td>
 
 					</tr>
@@ -1426,7 +1876,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1438,7 +1904,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_07_03'>[UC-07:03] Logout from the network</a></td>
 
 					</tr>
@@ -1468,7 +1934,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1480,7 +1962,7 @@ Create stylesheet for 'table_usecase'
 			<table class='table_usecase'>
 				<thead>
 					<tr>
-						<td>name</td>
+						<td class='use_case_name'>Name</td>
 <td><a name='uc_07_04'>[UC-07:04] Set networking options (e.g. Proxy Server)</a></td>
 
 					</tr>
@@ -1510,7 +1992,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1551,7 +2049,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1592,7 +2106,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1633,7 +2163,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+<td></td>
+</tr>
+<tr>
+</td>Priority</td>
+<td></td>
+</tr>
+<tr>
+</td>Frequency of Use</td>
+<td></td>
+</tr>
+<tr>
+</td>Open Questions</td>
+<td></td>
+</tr>
+<tr>
+</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
@@ -1675,7 +2221,23 @@ Create stylesheet for 'table_usecase'
 					</td>
 				</tr>
 				<tr>
-					<td>Alternative paths</td>
+					<td>Exceptions</td>
+					<td></td>
+				</tr>
+				<tr>
+					</td>Priority</td>
+					<td></td>
+				</tr>
+				<tr>
+					</td>Frequency of Use</td>
+					<td></td>
+					</tr>
+					<tr>
+					</td>Open Questions</td>
+					<td></td>
+					</tr>
+					<tr>
+					</td>Alternative paths</td>
 					<td>-</td>
 				</tr>
 				<tr>
