@@ -126,6 +126,21 @@
 					<td>Common sense</td>
 					<td>Architecture</td>
 				</tr>
+				<tr>
+					<td>[push] Push is: The user wants a file, that he/she changed locally, to be distributed. The LogEntry with the right action is created. All other users (online or not) are notified, that changes exist, thus recommending them to request a [logsync]. </td>
+					<td></td>
+					<td>Architecture</td>
+				</tr>
+				<tr>
+					<td>[pull] Pull is: A user knows (from the logs) that there exists a file and he/she wants it. It is downloaded from one who made the last change. Note: fallback to ask the others if they have this version might be tricky.</td>
+					<td></td>
+					<td>Architecture</td>
+				</tr>
+				<tr>
+					<td>[logsync] LogSync is: A user wants to find out, who made changes and requests the logs from the other users one by one. </td>
+					<td></td>
+					<td>Architecture</td>
+				</tr>
 			</tbody>
 		</table>
 	</subsection>
