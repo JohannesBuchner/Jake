@@ -209,6 +209,7 @@
 					<td>definition</td>
 					<td>architecture, implementation</td>
 				</tr>
+				
 			</tbody>
 			<thead>
 				<tr>
@@ -216,6 +217,11 @@
 				</tr>
 			</thead>
 			<tbody>
+				<tr> 
+					<td><p>[ascii] all objectnames, tags, userids may consist only of printable ascii characters (no umlauts, etc.)</p></td>
+					<td>we don't want objects with strange characters not displayable on some systems</td>
+					<td>architecture, UI</td>
+				</tr>
 				<tr> 
 					<td> ... </td>
 					<td> ... </td>

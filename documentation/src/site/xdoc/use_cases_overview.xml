@@ -7,7 +7,7 @@
 
     <author email="me@simonwallner.at">Simon Wallner</author>
     <author>Johannes Buchner</author>
-    <author>Dominik Dorn</author>
+    <author email="dominik.dorn@gmail.com">Dominik Dorn</author>
   </properties>
   <body>
     <section name="Use Cases">
@@ -37,10 +37,13 @@
 		<li>[UC-02] Manage Projectmembers <br />
 			<ul>
 				<li><a href='#uc_02_01'>[UC-02:01] Show project members</a></li>
-				<li><a href='#uc_02_03'>[UC-02:03] Search users by ID (in the network, e.g. XMPP or else)</a></li>
-				<li><a href='#uc_02_04'>[UC-02:04] Invite a user to join the project</a></li>
-				<li><a href='#uc_02_05'>[UC-02:05] Accept Project Invitation</a></li>
-				<li><a href='#uc_02_06'>[UC-02:06] Edit own personal meta data</a></li>
+				<li><a href='#uc_02_03'>[UC-02:03] Search users by ID / invite users</a></li>
+				<li><a href='#uc_02_04'>[UC-02:04] Accept Project Invitation</a></li>
+				<li><a href='#uc_02_05'>[UC-02:05] Edit own personal meta data</a></li>
+				<li><a href='#uc_02_06'>[UC-02:06] Add local comment to a project member</a></li>
+				<li><a href='#uc_02_07'>[UC-02:07] Set local nickname for a project member</a></li>
+				<li><a href='#uc_02_xx'>[UC-02:xx] </a></li>
+				<li><a href='#uc_02_xx'>[UC-02:xx] </a></li>
 			</ul>
 		</li>
 		<li>[UC-03] Manage Project <br />
@@ -50,15 +53,23 @@
 				<li><a href='#uc_03_03'>[UC-03:03] Specify Project directory path</a></li>
 			</ul>
 		</li>
-		<li>[UC-04] Propagate Changes <br />
+		<li>[UC-04] Client Interactions <br />
 			<ul>
-				<li><a href='#uc_04_01'>[UC-04:01] Show changed objects</a></li>
-				<li><a href='#uc_04_02'>[UC-04:02] Start propagation of changes</a></li>
-				<li><a href='#uc_04_03'>[UC-04:03] Start receiving of changes</a></li>
-				<li><a href='#uc_04_04'>[UC-04:04] Set propagation mode</a></li>
-				<li><a href='#uc_04_05'>[UC-04:05] View propagation information</a></li>
-				<li><a href='#uc_04_06'>[UC-04:06] Show version conflicts</a></li>
-				<li><a href='#uc_04_07'>[UC-04:07] Resolve version conflicts</a></li>
+				<li><a href='#uc_04_01'>[UC-04:01] Start log synchronisation</a></li>
+				<li><a href='#uc_04_02'>[UC-04:02] Show out-of-sync objects</a></li>
+				<li><a href='#uc_04_03'>[UC-04:03] Show changed objects</a></li>
+				<li><a href='#uc_04_04'>[UC-04:04] Start log-propagation of changes</a></li>
+				<li><a href='#uc_04_05'>[UC-04:05] Start pushing changed objects</a></li>
+				<li><a href='#uc_04_06'>[UC-04:06] Start pulling changed objects</a></li>
+				<li><a href='#uc_04_07'>[UC-04:07] Set automatic log synchronisation</a></li>
+				<li><a href='#uc_04_08'>[UC-04:08] Set automatic object push</a></li>
+				<li><a href='#uc_04_09'>[UC-04:09] Set automatic object pull</a></li>
+				<li><a href='#uc_04_10'>[UC-04:10] Resolve version conflicts</a></li>
+
+				<li><a href='#uc_04_11'>[UC-04:11] View Log</a></li>
+				<li><a href='#uc_04_12'>[UC-04:12] Notify User of received message</a></li>
+				<li><a href='#uc_04_13'>[UC-04:13] Read incomming message</a></li>
+				<li><a href='#uc_04_14'>[UC-04:14] Write message to project member</a></li>
 			</ul>
 		</li>
 		<li>[UC-05] Edit Programm Settings <br />
@@ -66,7 +77,16 @@
 				<li><a href='#uc_05_01'>[UC-05:01] Set authentication Information</a></li>
 				<li><a href='#uc_05_02'>[UC-05:02] Login to the network</a></li>
 				<li><a href='#uc_05_03'>[UC-05:03] Logout from the network</a></li>
-				<li><a href='#uc_05_04'>[UC-05:04] Set networking options (e.g. Proxy Server)</a></li> 
+				<li><a href='#uc_05_04'>[UC-05:04] Set networking/project options</a></li> 
+			</ul>
+		</li>
+		<li>[UC-06] Tagging <br />
+			<ul>
+				<li><a href='#uc_06_01'>[UC-06:01] Create Tag</a></li>
+				<li><a href='#uc_06_02'>[UC-06:02] Rename Tag</a></li>
+				<li><a href='#uc_06_03'>[UC-06:03] Delete Tag</a></li>
+				<li><a href='#uc_06_04'>[UC-06:04] Assign Tag to Object</a></li>
+				<li><a href='#uc_06_05'>[UC-06:05] Remove Tag from Object</a></li>
 			</ul>
 		</li>
     	</ul>
@@ -108,20 +128,20 @@
 			Important Use Cases that we mustn't miss:
 			Please check that these exist and have a good wording:
 			
-			DIRECT REMOTE INTERACTION: 
-				sync log
-				push
-				pull
-				read incoming message
-				leave message to project member
-			LOCAL:
-				create JakeObject
-				remove JakeObject
-				edit project member list
-				add (local) comment to project member
-				set (local) nickname for project member
-				view log (projectwise)
-				tagging
+			DIRECT REMOTE INTERACTION: -> refered to as [UC-04] Client interactions 
+				sync log (assumption [logsync] [UC-04:01]
+				push (assumption [push]) [UC-04:05] 
+				pull (assumption [pull]) [UC-04:06]
+				read incoming message ( assumption [no_chat] ) [UC-04:13] 
+				leave message to project member ( assumption [no_chat] ) [UC-04:14]
+			LOCAL: -> all other use cases
+
+				create JakeObject [01:02], [01:01]
+				remove JakeObject [01:05]
+				edit project member list [nicht benoetigt.. wir loeschen ja auch keine user... ] 
+				
+				view log (projectwise) [04:11]
+				tagging [UC-06]
 		./		finding files
 		./		view folder
 			
@@ -136,61 +156,6 @@
 			-->
 		
 		
-<!-- template {{{
-		<subsection name="[UC-01:09] show datapool"><a name="uc_01_09" />
-			<h5>Summary</h5>
-			
-			<h5>Rationale</h5>
-			
-			<h5>Preconditions</h5>
-			
-			<h5>Course of Events</h5>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			
-			<h5>Postconditions</h5>
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
- }}} -->
-		<subsection name="[UC-01:09] browse project files"><a name="uc_01_09" />
-			<h5>Summary</h5>
-			Navigate through the shared files.
-			
-			<h5>Rationale</h5>
-			The user wants to view the files belonging to the project. He may do so hierarchically or by the help of tags.
-			
-			<h5>Preconditions</h5>
-			[ST-02]
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user indicates that the application is to show the datapool and its contents</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			
-			<h5>Postconditions</h5>
-			All objects in the project are displayed by their name in their hierarchical order
-			
-			<h5>Frequency of use</h5>
-			5
-			
-			<h5>Priority</h5>
-			5
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
 		
 		<subsection name="[UC-01:01] create note"><a name="uc_01_01" />
 			<h5>Summary</h5>
@@ -498,20 +463,63 @@
 			
 		</subsection>
 		
-		<subsection name="[UC-01:09] show datapool"><a name="uc_01_09" />
+		<subsection name="[UC-01:09] browse project files"><a name="uc_01_09" />
 			<h5>Summary</h5>
+			Navigate through the shared files.
 			
 			<h5>Rationale</h5>
+			The user wants to view the files belonging to the project. He may do so hierarchically or by the help of tags.
 			
 			<h5>Preconditions</h5>
+			[ST-02]
 			
 			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates that the application is to show the datapool and its contents</li>
+			</ol>
 			
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
 			
 			<h5>Postconditions</h5>
+			All objects in the project are displayed by their name in their hierarchical order
+			
+			<h5>Frequency of use</h5>
+			5
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+			
+		</subsection>
+		
+		<subsection name="[UC-01:10] Find object by name or tag"><a name="uc_01_10" />
+			<h5>Summary</h5>
+			List all objects with a certain tag
+			
+			<h5>Rationale</h5>
+			Finding JakeObjects either by name or tag
+			
+			<h5>Preconditions</h5>
+			[ST-02]
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates he wants to perform a search.</li>
+				<li>The user enters a search term</li>
+				<li>The user may choose to only search for matching filenames, or tags, or both</li>
+				<li>The user indicates to perform the search</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 4. the user may cancel the operation, the application returns to its previous state
+			
+			<h5>Postconditions</h5>
+			All matching JakeObjects in the project are listed so that the user can access them.
 			
 			<h5>Frequency of use</h5>
 			
@@ -520,8 +528,6 @@
 			<h5>Open issues</h5>
 			
 		</subsection>
-		
-		<!-- here was "show datapool" (again) -->
 		
 		<subsection name="[UC-01:11] Check for new Data/Updates"><a name="uc_01_11" />
 			<h5>Summary</h5>
@@ -571,39 +577,6 @@
 		</subsection>
 
 		
-		<subsection name="[UC-01:10] Find object by name or tag"><a name="uc_01_10" />
-			<h5>Summary</h5>
-			List all objects with a certain tag
-			
-			<h5>Rationale</h5>
-			Finding JakeObjects either by name or tag
-			
-			<h5>Preconditions</h5>
-			[ST-02]
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user indicates he wants to perform a search.</li>
-				<li>The user enters a search term</li>
-				<li>The user may choose to only search for matching filenames, or tags, or both</li>
-				<li>The user indicates to perform the search</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			In 4. the user may cancel the operation, the application returns to its previous state
-			
-			<h5>Postconditions</h5>
-			All matching JakeObjects in the project are listed so that the user can access them.
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
 		
 
 		<subsection name="[UC-02:01] Show project members"><a name="uc_02_01" />
@@ -627,10 +600,10 @@
 			The user may indicate to only display members that are currently online.
 			
 			<h5>Postconditions</h5>
-			All project members are listed in alphabetical order by their name and online status. For those who are online, it is displayed whether the project is in synch or not (e.g if the local and remote project are in the same state)
+			All project members are listed in alphabetical order by their name and online status. For those who are online, it is displayed whether the project is in sync or not (e.g if the local and remote project are in the same state)
 			
 			<h5>Frequency of use</h5>
-			
+			5
 			<h5>Priority</h5>
 			
 			<h5>Open issues</h5>
@@ -638,12 +611,12 @@
 		</subsection>
 			
 
-		<subsection name="[UC-02:03] Search users by ID (in the network, e.g. XMPP or else)"><a name="uc_02_03" />
+		<subsection name="[UC-02:03] Search users by ID / Invite users"><a name="uc_02_03" />
 			<h5>Summary</h5>
-			Search for users in the network by their ID. That may be via the XMPP protocol and service, or some other network
+			Search for users in the network by their ID. Invite them to join the project.
 			
 			<h5>Rationale</h5>
-			Finding users is crucial. <!-- oh yeah? -->
+			A project needs project members. Connecting them can be made easier by invitations.
 			
 			<h5>Preconditions</h5>
 			[ST-02] or the application is in the state of the postcondition of this UC
@@ -653,63 +626,34 @@
 				<li>The user indicates to search for other users</li>
 				<li>The user enters a user ID</li>
 				<li>The user indicates to perform the search</li>
+				<li>The user selects a user</li>
+				<li>The user invites the selected user</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			
+				<ul>
+					<li>(4) No user is found</li>
+					<li>(4) The user aborts the invitation</li>
+
+				</ul>
 			<h5>Postconditions</h5>
-			All matching users are listed in alphabetical oder by their ID and name (name, first-name)
+				<ul>
+					<li>All matching users are listed in alphabetical oder by their ID and name (name, first-name)</li>
+					<li>An invitation is sent to the new user, the application returns to its previous state.</li>
+					<li>The user aborted the invitation. The application returns to its previous state.</li>
+				</ul>
 			
 			<h5>Frequency of use</h5>
 			
 			<h5>Priority</h5>
 			
 			<h5>Open issues</h5>
-			<p>We can not implement this for XMPP and it is a additional feature that is just "nice to have". We can only check if a userid exists. That is nearly the use case of inviting others.
-			</p>
-			Request for removal.
-			
-		</subsection>
-		
-		
-		<subsection name="[UC-02:04] Invite a user to join the project"><a name="uc_02_04" />
-			<h5>Summary</h5>
-			Invite new users to join the project
-			
-			<h5>Rationale</h5>
-			A project needs project members. Connecting them can be made easier by invitations.
-			
-			<h5>Preconditions</h5>
-			[ST-02] <!-- was: [UC-02:03] must have been performed -->
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>User A has the userid of user B, and indicates he wants to invite him</li>
-				<li>User A is prompted that an invitation was sent to the new user.</li>
-				<li>User B is prompted to confirm the invitation.</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			In 2. the user may cancel the operation, the application returns to its previous state<br />
-			In 3. if an error occurs, the error message is shown to the user.
-			
-			<h5>Postconditions</h5>
-			An invitation is sent to the new user, the application returns to its previous state.
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			
 		</subsection>
 		
 
-		<subsection name="[UC-02:05] Accept Project Invitation"><a name="uc_02_05" />
+		<subsection name="[UC-02:04] Accept Project Invitation"><a name="uc_02_04" />
 			<h5>Summary</h5>
 			The users accepts a project invitation
 			
@@ -754,7 +698,7 @@
 		</subsection>
 			
 		
-		<subsection name="[UC-02:06] Edit own personal meta data"><a name="uc_02_06" />
+		<subsection name="[UC-02:05] Edit own personal meta data"><a name="uc_02_05" />
 			Request for urgent removal.
 			<h5>Summary</h5>
 			The user may change his/her personal metadata
@@ -789,16 +733,53 @@
 			
 			With XMPP for example, the user enters the vcard once in has chat client.
 		</subsection>
-		
+	
+		<subsection name="[UC-02:06] Add local comment to a project member"><a name="uc_02_06" />
+		<!-- Der User soll einen lokalen kommentar zu einem user hinzufuegen koennen... dieser kommentar wird nicht
+		distributiert, sondern nur lokal gespeichert. 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-02:07] Set local nickname for a project member"><a name="uc_02_07" />
+		<!-- Der User moechte einem projektmitglied einen eigenen nicknamen geben, damit dieser leichter
+		erkennbar fuer den user ist (z.b. "johannes" statt jk13r )
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+
+
+
+
 		<subsection name="[UC-03:01] Create new Project"><a name="uc_03_01" />
 			<h5>Summary</h5>
-			
+				The User indicates to create a new project.	
 			<h5>Rationale</h5>
-			
+				The User wants to create a new project. 
 			<h5>Preconditions</h5>
-			
+				[ST-01]	
 			<h5>Course of Events</h5>
-			
+				<ol>
+					<li>The user indicates to create a new project</li>
+					<li>The network settings (specially the project id) are setup</li> 
+				</ol>
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
@@ -860,8 +841,9 @@
 			Request for removal. Is that changing the rootpath? If so, can't we assume one has to create a new project to do that? Hmm ... probably not. please clarify, otherwise remove.
 			
 		</subsection>
-		
-		<subsection name="[UC-04:01] Show changed objects"><a name="uc_04_01" />
+
+		<subsection name="[UC-04:01] Start log synchronisation"><a name="uc_04_01" />
+			<!-- der user sagt "schickt mir eure log eintraege seit timestamp xxx" und die anderen clients schicken ihm die entsprechenden eintraege. wird benoetigt um zu erkennen welche files/objekte sich geaendert haben  -->
 			<h5>Summary</h5>
 			
 			
@@ -882,13 +864,12 @@
 			<h5>Priority</h5>
 			
 			<h5>Open issues</h5>
-			is this: a) After LogSync, the user is notified about the file changes. 
-			or b) watching the log (projectwise or for a JakeObject)
 			
 		</subsection>
-
-		<subsection name="[UC-04:02] Start propagation of changes"><a name="uc_04_02" />
+		<subsection name="[UC-04:02] Show out-of-sync objects"><a name="uc_04_02" />
+			<!-- der user soll sehen, welche objekte nicht mehr aktuell sind (nach [logsync]) und beim pull geaendert werden wuerden. er kann dann fuer einzelne objekte die propagation mode festlegen  -->
 			<h5>Summary</h5>
+			
 			
 			<h5>Rationale</h5>
 			
@@ -907,40 +888,13 @@
 			<h5>Priority</h5>
 			
 			<h5>Open issues</h5>
-			Is this a) Notifiing others of local changes or 
-			b) others want to pull a file I have? 
 			
-			Please refer to assumptions.
-		</subsection>
-
-		<subsection name="[UC-04:03] Start receiving of changes"><a name="uc_04_03" />
-			<h5>Summary</h5>
-			
-			<h5>Rationale</h5>
-			
-			<h5>Preconditions</h5>
-			
-			<h5>Course of Events</h5>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			
-			<h5>Postconditions</h5>
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			Is this a) Pulling a file or 
-			b) logsync.
-			
-			Please refer to assumptions.
 		</subsection>
 		
-		<subsection name="[UC-04:04] Set propagation mode"><a name="uc_04_04" />
+		<subsection name="[UC-04:03] Show changed objects"><a name="uc_04_03" />
+			<!-- der user soll sehen, welche objekte nach dem letzten pull geaendert wurden -->
 			<h5>Summary</h5>
+			
 			
 			<h5>Rationale</h5>
 			
@@ -959,11 +913,13 @@
 			<h5>Priority</h5>
 			
 			<h5>Open issues</h5>
-			Is this a) frequency of logsync or
-			b) the same as autopull/autopush (see above) <!-- TODO: add use case id here -->
+			
 		</subsection>
 		
-		<subsection name="[UC-04:05] View propagation information"><a name="uc_04_05" />
+
+
+		<subsection name="[UC-04:04] Start log-propagation of changes"><a name="uc_04_04" />
+		<!-- der user moechte explizit sagen "ich bin fertig mit dem editieren, sag den anderen dass ich was veraendert habe"... logentrys werden an andere user verteilt -->
 			<h5>Summary</h5>
 			
 			<h5>Rationale</h5>
@@ -983,33 +939,187 @@
 			<h5>Priority</h5>
 			
 			<h5>Open issues</h5>
-			I don't understand what this is.
-			a) Viewing what is happening of traffic at the moment -> in that case: Remove, unnecessary additional feature or
-			b) Viewing setting of above -> in that case: Combine to one use case, remove this one.
+		</subsection>
+		<subsection name="[UC-04:05] Start pushing changed objects"><a name="uc_04_05" />
+		<!-- beginnt bzw. versucht aktiv geaenderte dateien an andere clients zu verschicken
+		wichtig wenn z.b. eine aenderung gemacht wurde und diese umbedingt jetzt zumindest
+		an einige clients verteilt werden soll, damit man danach offline gehen kann --> 
+			<h5>Summary</h5>
+			
+			<h5>Rationale</h5>
+			
+			<h5>Preconditions</h5>
+			
+			<h5>Course of Events</h5>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			
+			<h5>Postconditions</h5>
+			
+			<h5>Frequency of use</h5>
+			
+			<h5>Priority</h5>
+			
+			<h5>Open issues</h5>
 		</subsection>
 
-		<subsection name="[UC-04:06] Resolve version conflict"><a name="uc_04_06" />
+		<subsection name="[UC-04:06] Start pulling changed objects"><a name="uc_04_06" />
+		<!-- beginnt bzw. versucht aktiv, geaenderte dateien von anderen clients zu bekommen
+		-->
 			<h5>Summary</h5>
-			
 			<h5>Rationale</h5>
-			
 			<h5>Preconditions</h5>
-			
 			<h5>Course of Events</h5>
-			
 			<h5>Exceptions</h5>
-			
 			<h5>Alternative paths</h5>
-			
 			<h5>Postconditions</h5>
-			
 			<h5>Frequency of use</h5>
-			
 			<h5>Priority</h5>
-			
 			<h5>Open issues</h5>
-			<!-- TODO: see sequence_diagram_conflict -->
 		</subsection>
+		
+		<subsection name="[UC-04:07] Set automatic log synchronisation"><a name="uc_04_07" />
+		<!-- Der User moechte einstellen, ob das Log automatisch (z.b. in einem intervall)
+		mit anderen clients synchronisiert werden soll
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+
+		<subsection name="[UC-04:08] Set automatic object push"><a name="uc_04_08" />
+		<!-- Der user moechte einstellen, ob bei Aenderungen an Dateien generell automatisch
+		versucht werden soll, diese an andere Mitglieder zu versenden
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-04:09] Set automatic object pull"><a name="uc_04_09" />
+		<!-- Der user moechte einstellen, ob automatisch versucht werden soll
+		geaenderte files bei anderen usern herunterzuladen
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+
+		<subsection name="[UC-04:10] Resolve version conflicts"><a name="uc_04_10" />
+		<!-- Bei logsync wurde herausgefunden, dass der User eine Datei bearbeitet hat, welche auch von einem
+		anderen User bearbeitet wurde. er soll aufgefordert werden den konflikt zu beheben (z.b. durch manuelles
+		bearbeiten der zwei dateien ) bzw. eine version (seine oder die andere) als neue "stable version" festzulegen. 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		
+		<subsection name="[UC-04:11] View Log"><a name="uc_04_11" />
+		<!-- Der User soll die moeglichkeit haben, dass Logfile anzusehen und hierbei zu sehen, welche logentrys neu von anderen sind, welche neu von ihm erstellt wurden, welche bereits propagiert wurden, welche bereits lokal angewandt wurden (z.b. wenn ein eintrag sagt 'file xyz wurde bei user z geaendern' dann soll angezeigt werden, ob diese aenderung auch schon bei uns uebernommen wurde oder nicht) 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		
+		<subsection name="[UC-04:12] Notify User of received message"><a name="uc_04_12" />
+		<!-- Der User hat eine Nachricht von einem anderen User erhalten und soll nun ueber dies
+		benachrichtigt 	werden
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+
+		<subsection name="[UC-04:13] Read incomming message"><a name="uc_04_13" />
+		<!-- Der User hat eine Nachricht von einem anderen user bekommen und moechte sich diese
+		nun anschauen
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-04:14] Write message to project member"><a name="uc_04_14" />
+		<!-- Der User moechte einem anderen Projektmitglied eine nachricht schreiben
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		
+		<subsection name="[UC-0x:0x] xxx"><a name="uc_0x_0x" />
+		<!-- xxx 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+
 		
 		<subsection name="[UC-05:01] Edit preferences"><a name="uc_05_01" />
 			<h5>Summary</h5>
@@ -1038,55 +1148,204 @@
 		
 		<subsection name="[UC-05:02] Login to the network"><a name="uc_05_02" />
 			<h5>Summary</h5>
-			
+			The User indicates to login to the network. 	
 			<h5>Rationale</h5>
-			
+			The User wants to be connected to the network, so he/she is able to push/pull updates and sync logs.
 			<h5>Preconditions</h5>
-			[ST-01] <!-- oder? -->
+			[ST-02]
 			<h5>Course of Events</h5>
-			
+				<ol>
+					<li>The User indicates to log in to the network</li>
+					<li>The User is logged in</li>
+				</ol>
 			<h5>Exceptions</h5>
-			
+				<ol>
+					<li>The ICS throws an error</li>
+				</ol>
 			<h5>Alternative paths</h5>
-			
+				<ul>
+					<li>(2). No Network connection is available - the User is not logged in.</li>
+					<li>(2). The Users credentials are invailid - the User is not logged in.</li>
+
+				</ul>
 			<h5>Postconditions</h5>
-			[ST-02] <!-- oder? -->
+				The User is logged in. 	
+			<h5>Frequency of use</h5>
+				5	
+			<h5>Priority</h5>
+				5
+			<h5>Open issues</h5>
+			I wouldn't offer such a functionality in the user interface. I would just connect on start, and you have to close it, if you want to logout/disconnect. Saves invalid states for use cases and GUI space.<br />
+<font color='red'>Required by assumption [offline]</font>
+			
+		</subsection>
+		
+		<subsection name="[UC-05:04] Set networking/project options" id="test"><a name="uc_05_04" />
+			<h5>Summary</h5>
+				The User indicates to specify the networking settings
+			<h5>Rationale</h5>
+				The User may want to specify the settings for networking, e.g. specify
+				another login server, specify a proxy server, set project id etc.
+			<h5>Preconditions</h5>
+			[ST-02]
+			<h5>Course of Events</h5>
+				<ol>
+					<li>The User indicates to change the network settings</li>
+					<li>The User is presented with a dialog where he/she can changes the login server to use, his userid, his password and the pseudo-unique project id.</li>
+				</ol>
+			<h5>Exceptions</h5>
+				<ul>
+					<li>ICS throws Error, e.g. no network connection available, cannot propagate logout activity to network server</li>
+				</ul>
+			<h5>Alternative paths</h5>
+				<ul>
+					<li>(2) All fields except proxy server and password are not editable after the first sync of the project or after other users have been invited or joined the project.</li>
+				</ul>
+			<h5>Postconditions</h5>
+			[ST-02]
 			
 			<h5>Frequency of use</h5>
-			
+				3
 			<h5>Priority</h5>
-			
+				5
 			<h5>Open issues</h5>
-			I wouldn't offer such a functionality in the user interface. I would just connect on start, and you have to close it, if you want to logout/disconnect. Saves invalid states for use cases and GUI space.
-			
 		</subsection>
 		
 		<subsection name="[UC-05:03] Logout from the network"><a name="uc_05_03" />
 			<h5>Summary</h5>
-			
+				The User indicates to logout from the network
 			<h5>Rationale</h5>
-			
+				The User wants to logout from the network, so the other projectmembers
+				 don't bother him with changes.
 			<h5>Preconditions</h5>
-			[ST-01] <!-- oder? -->
+			[ST-02]
 			<h5>Course of Events</h5>
-			
+				<ol>
+					<li>The User indicates to logout</li>
+					<li>The User is logged out</li>
+				</ol>
 			<h5>Exceptions</h5>
-			
+				<ul>
+					<li>ICS throws Error, e.g. no network connection available, cannot propagate logout activity to network server</li>
+				</ul>
 			<h5>Alternative paths</h5>
-			
+				<ul>
+					<li>(1) The User closes the application, logout is performed automatically</li>
+					<li>(2) An exception occurs, a warning is displayed to the user, informing that he couldn't be logged out and may still appear online on other clients</li>
+				</ul>
 			<h5>Postconditions</h5>
-			[ST-02] <!-- oder? -->
+			[ST-02]
 			
 			<h5>Frequency of use</h5>
-			
+				3
 			<h5>Priority</h5>
-			
+				5
 			<h5>Open issues</h5>
 			I wouldn't offer such a functionality in the user interface. I would just connect on start, and you have to close it, if you want to logout/disconnect. Saves invalid states for use cases and GUI space.
+<br />
+<font color='red'>Required by assumption [offline]</font>
 			
 		</subsection>
 		
 		
+		<subsection name="[UC-06:01] Create Tag"><a name="uc_06_01" />
+		<!-- Der User erstellt einen Tag, der Tag wird in der DB abgelegt und an andere User versendet (logentry)
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-06:02] Rename Tag"><a name="uc_06_02" />
+		<!-- Der User benennt einen Tag um, aenderung wird per logfile an andere propagiert (nur ein logfile entry). 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-06:03] Delete Tag"><a name="uc_06_03" />
+		<!-- Der User loescht einen Tag, der Tag wird vom Programm automatisch von allen Objekten entfernt. Es wird aber nur ein Logentry generiert, der besagt dass der tag geloescht wurde (und nicht etwa fuer jedes objekt einen eigenen)
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-06:04] Assign Tag to Object"><a name="uc_06_04" />
+		<!-- Der User fuegt einen Tag zu einem Objekt hinzu.
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-06:05] Remove Tag from Object"><a name="uc_06_05" />
+		<!-- Der User entfernt einen Tag von einem bestimmten Objekt (d.h. es wird ein Logentry generiert)
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-0x:0x] xxx"><a name="uc_0x_0x" />
+		<!-- xxx 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
+		<subsection name="[UC-0x:0x] xxx"><a name="uc_0x_0x" />
+		<!-- xxx 
+		-->
+			<h5>Summary</h5>
+			<h5>Rationale</h5>
+			<h5>Preconditions</h5>
+			<h5>Course of Events</h5>
+			<h5>Exceptions</h5>
+			<h5>Alternative paths</h5>
+			<h5>Postconditions</h5>
+			<h5>Frequency of use</h5>
+			<h5>Priority</h5>
+			<h5>Open issues</h5>
+		</subsection>
 		
 		
 	</section>
@@ -1149,6 +1408,13 @@
 				<td>Cleared formatting and made editing easier. 
 					General reworking of content. </td>
 			</tr>
+			<tr>
+				<td>9</td>
+				<td>2008-05-01</td>
+				<td>dominik</td>
+				<td>completed some use cases</td>
+			</tr>
+		
 			
 		  </table>
       </section>
