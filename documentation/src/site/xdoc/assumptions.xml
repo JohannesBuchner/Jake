@@ -104,7 +104,7 @@
 					<td>architecture</td>
 				</tr>
 				<tr>
-					<td>[no-folder-sync] Folders don't need to be synced.  We only sync files, empty  folders we don't care about. Since we sync by relative file name (relpath), which is unique, this implicates the folders that need to be created.
+					<td>[no-folder-sync] Folders don't need to be synced.  We only sync files, we don't care about empty folders. Since we sync by relative file name (relpath), which is unique, this implicates the folders that need to be created.
 					</td>
 					<td>simplicity</td>
 					<td>architecture</td>
