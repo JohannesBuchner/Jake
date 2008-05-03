@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Test Plan</title>
+
+    <author email="dominik.dorn@gmail.com">Dominik Dorn</author>
+  </properties>
+
+  <body>
+  	
+	<section name="Test Plan">
+		<subsection name="Purpose">
+			This test plan document for the project &quot;Jake&quot; should cover the following goals:
+			<ul>
+				<li>Definition of used terms</li>
+				<li>Identification of the components to be tested</li>
+				<li>requirements for the tests</li>
+				<li>list of tests to be performed</li>
+				<li>description of the test strategy</li>
+			</ul>
+		</subsection>
+
+		<subsection name="Used terms">
+			Beside the terms used and defined in the section &quot;Components&quot; we use the follwing terms:
+			<ol>
+				<li><b>Test case / Unit test</b><br />
+					A Test case is a java file that tests a specified aspect (unit) of a component of a program.
+				</li>
+				<li><b>test driven development</b><br />
+					Is a method of creating software. The idea is to specify what interface a component has, write a
+					test case for each aspect of the interface and only after that, create an implementation of that
+					interface.
+				</li>
+				<li><b>Test suite</b><br />
+					A test suite is a batch of corresponding test cases.
+				</li>
+				<li><b>Data Access Object</b><br />
+					We encapsulate all the logic needed to manipulate data (e.g. Database records, files in the filesystem) with so called Data Access Object. Therefore we can later easily change the way we read or write data to disk (e.g. changing the database backend) without altering the rest of the code.
+				</li>
+
+
+			</ol>
+		</subsection>
+	</section>
+
+	<section name="Components">
+		Our Project consists of the following components.
+		<ul>
+			<li><b>GUI</b> The Graphical User Interface</li>
+			<li><b>Sync</b> Synchronisation Service - Mock Object simulating the Synchronisation between Clients</li>
+			<li><b>ICS</b> InterClient Communication Service - Mock Object simulating the communications between clients and the network </li>
+			<li><b>Filesystem</b> Filesystem Service - Used to handle the whole file and filesystem based logic</li>
+			<li><b>Core</b> The Core Component - Contains the business logic of the program, supplies interfaces for (graphical) user interfaces and communicates with the other components</li>
+		</ul>
+	</section>
+
+	<section name="Test Types">
+
+		<subsection name="Functional Tests">
+			We're using unit tests based on the JUnit Testing Framework. 
+			We want to ensure, that the component is doing what we expect
+			it to do, before writing the component itself (test driven development) 
+		</subsection>
+
+		<subsection name="User Interface">
+			We're currently not planing on testing the user interface, although we're evaluating
+			using test-driven development for the user interface. 
+		</subsection>
+
+		<subsection name="Data &amp; Database Integrity">
+			The Data Access Objects are tested with unit tests.
+			Therefore we can assure, the components are working
+			correctly if the database and filesystem service 
+			behind them is working correctly.
+		</subsection>
+
+		<subsection name="Performance">
+			We're not doing any performance testing. If we
+			encounter performance problems during the tests,
+			those will be noted.
+		</subsection>
+
+		<subsection name="Load Tests">
+			We're not doing any load testing because the
+			project is not intended for high load situations.
+		</subsection>
+
+		<subsection name="Stress Tests">
+			We're not doing any stress testing because the
+			project is not intended for high stress situations.
+			The only component which could be vulnerable to high
+			stress is the InterClient Communication Service.
+			Because this component is not implemented during this
+			project phase, no stress tests are required.
+		</subsection>
+
+		<subsection name="Security">
+			Because all Users of the systems have the same privileges,
+			no security tests are planed to be performed except testing
+			the ICS for correct login/logout of a user.
+		</subsection>
+
+		<subsection name="Permissions">
+			Because all Users of the systems have the same privileges,
+			no permission tests are planed to be performed.
+		</subsection>
+<!--
+		<subsection name="Failover &amp; Recovery">
+			-
+		</subsection>
+-->
+	</section>
+
+	<section name="Tools">
+		<ol>
+			<li><b>Unit Testing</b> <br />
+				We're using the JUnit Testing Framework for unit testing.
+				<br /><a href="http://www.junit.org">http://www.junit.org</a>
+			</li>
+			<li><b>Mock Objects</b> <br />
+				We're planing on using JMock for creation of Mock objects.
+				<br /><a href="http://www.jmock.org">http://www.jmock.org</a>
+			</li>
+			<li><b>GUI Testing</b> <br />
+				Althought we're not planing testing the GUI, we'll try do test-driven development
+				of the GUI using FEST 
+				<br /> <a href="http://code.google.com/p/fest/">http://code.google.com/p/fest/</a>
+			</li>
+			<li><b>Test Report Generation</b> <br />
+				We're using the Surefire-Report Plugin included in the Maven build management suite.
+				<br /> <a href="http://maven.apache.org/plugins/maven-surefire-plugin/">http://maven.apache.org/plugins/maven-surefire-plugin/</a>
+			</li>
+		</ol>
+	</section>
+
+	<section name="Tests to be performed">
+	Priority: <br />
+	5 - Very high <br />
+	1 - Very low <br />
+		<table>
+			<thead>
+				<td>Component</td>
+				<td>Function</td>
+				<td>Priority</td>
+				<td>Ticket#</td>
+			</thead>
+		
+			<tbody>
+
+<!-- start Sync tests -->
+				<tr>
+					<td>Sync</td>
+					<td> </td>
+					<td>1-5</td>
+					<td>[none yet]</td>
+				</tr>
+<!-- end Sync tests -->
+
+<!-- start ICS tests -->
+				<tr>
+					<td>ICS</td>
+					<td>login to the network</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td>logout from the network</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td>send message to a client</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td>receive message from a client</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td>check connection alive</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td>register receive message callback</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td>register receive object callback</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>ICS</td>
+					<td> </td>
+					<td>1-5</td>
+					<td>[none yet]</td>
+				</tr>
+<!-- end ICS tests -->
+
+
+<!-- start Filesystem tests -->
+				<tr>
+					<td>Filesystem</td>
+					<td>read a file</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>Filesystem</td>
+					<td>persistend (save) a file</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>Filesystem</td>
+					<td>Set root path of project </td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+				<tr>
+					<td>Filesystem</td>
+					<td>Check file existence</td>
+					<td>5</td>
+					<td>[none yet]</td>
+				</tr>
+
+				<tr>
+					<td>Filesystem</td>
+					<td>launch a file with os specified programm</td>
+					<td>2</td>
+					<td>[none yet]</td>
+				</tr>
+
+				<tr>
+					<td>Filesystem</td>
+					<td>-</td>
+					<td>1-5</td>
+					<td>[none yet]</td>
+				</tr>
+
+<!-- end Filesystem tests -->
+
+<!-- start Core tests -->
+				<tr>
+					<td>Core</td>
+					<td> </td>
+					<td>1-5</td>
+					<td>[none yet]</td>
+				</tr>
+<!-- end Core tests -->
+
+<!-- start Gui tests -->
+<!-- 
+				<tr>
+					<td>GUI</td>
+					<td> </td>
+					<td>1-5</td>
+					<td>[none yet]</td>
+				</tr>
+-->
+<!-- end Gui tests -->
+
+
+			</tbody>
+
+		</table>
+	</section>
+
+	<section name="Description of the test strategy">
+		<ul>
+			<li>
+				Because we're using &quot;test driven development&quot; all tests should be created before the
+				implementation of the specific interface.
+			</li>
+			<li>
+				The person responsible for the specific component/interface is responsible for creating the
+				test suites. 
+			</li>
+			<li>
+				The test delegate (Dominik Dorn) will occasionally check some of the test suites
+				for quality and coverage and assigns tasks for the responsible person to correct the issue.
+			</li>
+			<li>
+				Code reviews of the created sourcecode (not the tests) will be performed. Eventually found
+				possible errors will be handled like described in the following section &quot;Error Reporting&quot;.
+			</li>
+		</ul>
+
+
+
+		
+
+	</section>
+	
+	<section name="Error Reporting / Bug Tracking">
+		When an error is found:
+		<ol>
+			<li>An empty test case should be created by the person found the error with a short description
+				of the circumstances causing the error, the input data and the expected output. The person
+				has to ensure that the test fails, so it has to be fixed in order to pass all tests while
+				doing automatic testing.
+			</li>
+			<li>
+				A bug in our bugtracking tool (flyspray) has to be opened and to be assigned to the person
+				responsible for the specific component. The name of the test case should be noted.
+			</li>
+			<li>
+				The ticket number received by the bugtracking tool should be noted in the test case.
+			</li>
+			<li>
+				This document has to be updated, adding the error to the list of test cases. 
+			</li>
+			<li>
+				The changes have to be commited to our svn repository.
+			</li>
+		</ol>
+	</section>
+
+	<section name="Testcriteria">
+		TODO 
+	</section>
+
+	<section name="Bug fixing &amp; verification">
+		When a programmer becomes assigned to a bug, he/she has to
+		<ol>
+			<li>Set the tickets status to &quot;assigned&quot;</li>
+			<li>Create the rest of the unit test</li>
+			<li>Fix the specified code in the codebase of the component</li>
+			<li>Test the unit case, redo (3) if necessary</li>
+			<li>Make sure that the unit test is included in every new build of the component</li>
+			<li>Close the ticket</li>
+		</ol>
+
+	</section>
+
+<!--
+	<section name="Zeitplan">
+
+	</section>
+-->
+
+    
+    <section name="Changelog">
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Date</th>
+          <th>Author</th>
+          <th>Change</th>
+        </tr>
+        </thead>
+
+        <tr>
+          <td>1</td>
+          <td>03.05.2008</td>
+          <td>DD</td>
+          <td>created</td>
+        </tr>
+      </table>
+    </section>
+  </body>
+</document>
