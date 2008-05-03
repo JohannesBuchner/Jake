@@ -8,6 +8,7 @@
     <author email="me@simonwallner.at">Simon Wallner</author>
     <author>Johannes Buchner</author>
     <author email="dominik.dorn@gmail.com">Dominik Dorn</author>
+	 <author email="philipp.knobelspies@gmail.com">Philipp Knobelspies</author>
   </properties>
   <body>
     <section name="Use Cases">
@@ -845,47 +846,73 @@
 		<subsection name="[UC-04:01] Start log synchronisation"><a name="uc_04_01" />
 			<!-- der user sagt "schickt mir eure log eintraege seit timestamp xxx" und die anderen clients schicken ihm die entsprechenden eintraege. wird benoetigt um zu erkennen welche files/objekte sich geaendert haben  -->
 			<h5>Summary</h5>
-			
+			Syten updates the local Log
 			
 			<h5>Rationale</h5>
-			
+			Version control is only possible with a log which is up to date. Pull needs a Log to determine which files are out of date.
 			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>The client is connected to at least one other client</li>
+			</ul>
 			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to update the log or to pull files</li>
+			<li>The application synchronizes the log with other clients</li>
+			<li>The local log is updated</li>
+			</ol>
 			
 			<h5>Exceptions</h5>
+			In 2. if an error occurs with the connection to the other client the user is prompted with an error message.<br />
+			In 2. if the local log doesnt exist the new log is saved without synchronization <br />
 			
 			<h5>Alternative paths</h5>
+			(3). The local log is newer than the remote log.<br />
+			(4). The local log will not be changed.<br />
+			(5). The remote server will recieve the local log.<br />
 			
 			<h5>Postconditions</h5>
-			
+			The log is the newest available
 			<h5>Frequency of use</h5>
-			
+			3
 			<h5>Priority</h5>
-			
+			3
 			<h5>Open issues</h5>
 			
 		</subsection>
 		<subsection name="[UC-04:02] Show out-of-sync objects"><a name="uc_04_02" />
 			<!-- der user soll sehen, welche objekte nicht mehr aktuell sind (nach [logsync]) und beim pull geaendert werden wuerden. er kann dann fuer einzelne objekte die propagation mode festlegen  -->
 			<h5>Summary</h5>
-			
+			The user wants to see what files are out of sync
 			
 			<h5>Rationale</h5>
+			To keep the project members synchronized and to give the user an overwiev of files which have been changed and are out of sync.
 			
 			<h5>Preconditions</h5>
+			[UC-04:01]
 			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to get information about the sync level of files</li>
+			<li>The application compares the timestamp of the local files with the log</li>
+			<li>The application marks the files which do not have the newest available timestamp for that specific file</li>
+			<li>The application asks the user which files should be set to propagation mode</li>
+			</ol>
 			
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			(3). The local files are all up to date.<br />
 			
 			<h5>Postconditions</h5>
+			Files which are out of sync are marked.
 			
 			<h5>Frequency of use</h5>
+			2
 			
 			<h5>Priority</h5>
+			2
 			
 			<h5>Open issues</h5>
 			
@@ -894,23 +921,35 @@
 		<subsection name="[UC-04:03] Show changed objects"><a name="uc_04_03" />
 			<!-- der user soll sehen, welche objekte nach dem letzten pull geaendert wurden -->
 			<h5>Summary</h5>
-			
+			List all objects which have been changed since the last pull.
 			
 			<h5>Rationale</h5>
+			Shows the user which files are not in the latest version and need to be pulled.
 			
 			<h5>Preconditions</h5>
+			[UC-04:01]
 			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to get compare the local files with the most recent log</li>
+			<li>The application compares the timestamp of the local files with the log</li>
+			<li>The application marks the files which do not have the newest available timestamp for that specific file</li>
+			</ol>
 			
 			<h5>Exceptions</h5>
+			Files do not exist anymore in the log.
 			
 			<h5>Alternative paths</h5>
+			(3). The local files are all up to date since the last pull.<br />
 			
 			<h5>Postconditions</h5>
+			all files are marked which exist in a newer version in the log.
 			
 			<h5>Frequency of use</h5>
+			2
 			
 			<h5>Priority</h5>
+			3
 			
 			<h5>Open issues</h5>
 			
@@ -921,22 +960,33 @@
 		<subsection name="[UC-04:04] Start log-propagation of changes"><a name="uc_04_04" />
 		<!-- der user moechte explizit sagen "ich bin fertig mit dem editieren, sag den anderen dass ich was veraendert habe"... logentrys werden an andere user verteilt -->
 			<h5>Summary</h5>
+			The log is pushed to all available clients.
 			
 			<h5>Rationale</h5>
+			Helps to keep the project in a current version.
 			
 			<h5>Preconditions</h5>
+			[UC-04:01]
 			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to propagate a change of the log</li>
+			<li>The application pushes the new log</li>
+			</ol>
 			
 			<h5>Exceptions</h5>
+			No recent changes have been made to local log since the last pull of the log.
 			
 			<h5>Alternative paths</h5>
 			
 			<h5>Postconditions</h5>
+			The log has been pushed to all available clients
 			
 			<h5>Frequency of use</h5>
+			2
 			
 			<h5>Priority</h5>
+			3
 			
 			<h5>Open issues</h5>
 		</subsection>
@@ -945,22 +995,36 @@
 		wichtig wenn z.b. eine aenderung gemacht wurde und diese umbedingt jetzt zumindest
 		an einige clients verteilt werden soll, damit man danach offline gehen kann --> 
 			<h5>Summary</h5>
+			Files which have been changed locally can be pushed explicetly.
 			
 			<h5>Rationale</h5>
+			Important files can be pushed to start an update process within in the project members.
 			
 			<h5>Preconditions</h5>
+			[UC-04:01]
 			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to push a file</li>
+			<li>The application compares the timestamp of the local files with the files of other project members which are available</li>
+			<li>The application pushes the files which have a newer timestamp</li>
+			<li>The application reports back to the user of the success and the number of the pushes</li>
+			</ol>
 			
 			<h5>Exceptions</h5>
 			
+			
 			<h5>Alternative paths</h5>
+			(4). All pushes where error occured are reported and will be repushed for a certain number of times.<br />
 			
 			<h5>Postconditions</h5>
+			At least one succeeded push has been made.
 			
 			<h5>Frequency of use</h5>
+			3
 			
 			<h5>Priority</h5>
+			3
 			
 			<h5>Open issues</h5>
 		</subsection>
@@ -969,11 +1033,30 @@
 		<!-- beginnt bzw. versucht aktiv, geaenderte dateien von anderen clients zu bekommen
 		-->
 			<h5>Summary</h5>
+			The user wants to get the newest files from the project members.
+			
 			<h5>Rationale</h5>
+			The user is able to get all changed files from the project group.
+			
 			<h5>Preconditions</h5>
+			[UC-04:03]
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to pull objects</li>
+			<li>The application compares the timestamp of the local objects with the objects of other project members which are available trough the log</li>
+			<li>The application pulls the objects which have an older timestamp in the local log</li>
+			<li>The application reports back to the user of the success and the number of pulls which were made</li>
+			<li>The application syncs the log</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			
 			<h5>Alternative paths</h5>
+			(a 2.). All local objects are up to date.<br />
+			(b 2.). A local objects is newer then the object of a project member.<br />
+			(b 3.). <a href='#uc_04_05'>[UC-04:05] </a> is initiated for the objects of a project member which are out of date.  <br />
+			
 			<h5>Postconditions</h5>
 			<h5>Frequency of use</h5>
 			<h5>Priority</h5>
@@ -985,14 +1068,39 @@
 		mit anderen clients synchronisiert werden soll
 		-->
 			<h5>Summary</h5>
+			The user sets the automatic log synchronisation for a project.
+			
 			<h5>Rationale</h5>
+			Automactially synchronizes the local projects log and therefore helps to keep the project in a global version.
+			
 			<h5>Preconditions</h5>
+			<ul>
+			<li>At least one project needs to exist</li>
+			</ul>
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to set the automatic log syncronisation</li>
+			<li>The application opens a menu where the user can choose between his projects</li>
+			<li>The application opens a menu where the user can enable, disable and set the synchronisation time</li>
+			<li>The user changes the settings</li>
+			<li>The application sets up an automatic log syncronisation based on the user settings for the given project</li>
+			<li>The application shows an overview for all projects and their automatic log syncronisation</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			
 			<h5>Alternative paths</h5>
+			(global) The user aborts the interaction. No changes will be saved. <br />
+			(3) The user wants to change the log synchronisation for a different project. <br />
+			
 			<h5>Postconditions</h5>
+			log synchronisation for a project are set to the users choice.
+			
 			<h5>Frequency of use</h5>
+			3
 			<h5>Priority</h5>
+			3
 			<h5>Open issues</h5>
 		</subsection>
 
@@ -1001,14 +1109,40 @@
 		versucht werden soll, diese an andere Mitglieder zu versenden
 		-->
 			<h5>Summary</h5>
+			The users sets an automatisation of pushing files which have been changed.
+			
 			<h5>Rationale</h5>
+			Helps to propagate changed files.
+			This option may save bandwidth and gives the user more control over the traffic.
+			
 			<h5>Preconditions</h5>
+			<ul>
+			<li>At least one project needs to exist</li>
+			</ul>
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to set the automatic push for changed objects</li>
+			<li>The application opens a menu where the user can choose between his projects</li>
+			<li>The application opens a menu where the user can enable, disable and set the push time</li>
+			<li>The user changes the settings</li>
+			<li>The application sets up an automatic push for changed objects based on the user settings for the given project</li>
+			<li>The application shows an overview for all projects and their automatic push for changed objects</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			
 			<h5>Alternative paths</h5>
+			
 			<h5>Postconditions</h5>
+			Automatic pushing for changed objects for a project are set to the users choice.
+				
 			<h5>Frequency of use</h5>
+			3
+			
 			<h5>Priority</h5>
+			3
+			
 			<h5>Open issues</h5>
 		</subsection>
 		<subsection name="[UC-04:09] Set automatic object pull"><a name="uc_04_09" />
@@ -1016,14 +1150,40 @@
 		geaenderte files bei anderen usern herunterzuladen
 		-->
 			<h5>Summary</h5>
+			The users sets an automatisation of pulling objects.
+			
 			<h5>Rationale</h5>
+			Helps to propagate changed files.
+			This option may save bandwidth and gives the user more control over the traffic.
+			
 			<h5>Preconditions</h5>
+			<ul>
+			<li>At least one project needs to exist</li>
+			</ul>
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to set the automatic pull for changed objects</li>
+			<li>The application opens a menu where the user can choose between his projects</li>
+			<li>The application opens a menu where the user can enable, disable and set the pull time</li>
+			<li>The user changes the settings</li>
+			<li>The application sets up an automatic pull for changed objects based on the user settings for the given project</li>
+			<li>The application shows an overview for all projects and their automatic pull for changed objects</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			
 			<h5>Alternative paths</h5>
+			
 			<h5>Postconditions</h5>
+			Automatic pulling for objects for a project are set to the users choice.
+				
 			<h5>Frequency of use</h5>
+			3
+			
 			<h5>Priority</h5>
+			3
+			
 			<h5>Open issues</h5>
 		</subsection>
 
@@ -1033,14 +1193,36 @@
 		bearbeiten der zwei dateien ) bzw. eine version (seine oder die andere) als neue "stable version" festzulegen. 
 		-->
 			<h5>Summary</h5>
+			Resolving a version conflict
+			
 			<h5>Rationale</h5>
+			Version conflict are common and need to be handled with.
+			
 			<h5>Preconditions</h5>
+			[UC-04:01]
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user changed an object</li>
+			<li>The application tries to push the object or a pull is made within that time</li>
+			<li>A newer version of the object exists then when it was opened and worked on locally for the first time</li>
+			<li>The user is informed about a version conflict and needs to choose which file is the current one or he can save both locally and change them					by hand </li>
+			<li>The Application pushes the new log which indicates such a version conflict and the new version of the changed version conflicted object is					pushed</li>
+			<li>The users which caused the version conflict are informed about the decision made, regarding the actuall version conflicted object</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			The user is not available when the conflict has been resolved. <br />
+			The file can not be pushed. <br />
+			
 			<h5>Alternative paths</h5>
+			
 			<h5>Postconditions</h5>
+			The version conflict has been changed.
 			<h5>Frequency of use</h5>
+			1
 			<h5>Priority</h5>
+			3
 			<h5>Open issues</h5>
 		</subsection>
 		
@@ -1048,14 +1230,34 @@
 		<!-- Der User soll die moeglichkeit haben, dass Logfile anzusehen und hierbei zu sehen, welche logentrys neu von anderen sind, welche neu von ihm erstellt wurden, welche bereits propagiert wurden, welche bereits lokal angewandt wurden (z.b. wenn ein eintrag sagt 'file xyz wurde bei user z geaendern' dann soll angezeigt werden, ob diese aenderung auch schon bei uns uebernommen wurde oder nicht) 
 		-->
 			<h5>Summary</h5>
+			User can access the log which indicates version conflicts
+			
 			<h5>Rationale</h5>
+			Gives the user an overview of versions of his project
+			
 			<h5>Preconditions</h5>
+			[UC-04:01]
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to open the version log</li>
+			<li>The application opens the version log</li>
+			<li>The user can initiate a file pull and push</li>
+			<li>The application pushes and pulles objects</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			no text editor is avalaible.
+			
 			<h5>Alternative paths</h5>
+			(4) The user does not want a push/pull for the out of sync files. <br />
+
 			<h5>Postconditions</h5>
+			
 			<h5>Frequency of use</h5>
+			3
 			<h5>Priority</h5>
+			1
 			<h5>Open issues</h5>
 		</subsection>
 		
@@ -1064,15 +1266,34 @@
 		benachrichtigt 	werden
 		-->
 			<h5>Summary</h5>
+			The user gets notified of a newly recieved massage.
+			
 			<h5>Rationale</h5>
+			Helps the user to stay informed about new massages.
+			
 			<h5>Preconditions</h5>
+			[ST-02]
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The application revieves a new message</li>
+			<li>The application notifies the user through a pop up that a new message has been recieved</li>
+			<li>The user closes the pop up and therefore aknowledged the message</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			
 			<h5>Alternative paths</h5>
+			
 			<h5>Postconditions</h5>
+			The user has been notified about a new message.
+			
 			<h5>Frequency of use</h5>
+			3
 			<h5>Priority</h5>
+			3
 			<h5>Open issues</h5>
+			
 		</subsection>
 
 		<subsection name="[UC-04:13] Read incomming message"><a name="uc_04_13" />
@@ -1080,28 +1301,71 @@
 		nun anschauen
 		-->
 			<h5>Summary</h5>
+			The user wants to view a new message.
+			
 			<h5>Rationale</h5>
+			Allowes the user to read a new message.
+			
 			<h5>Preconditions</h5>
+			[UC-04:12]
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to read all new messages</li>
+			<li>The application opens all new messages in a window</li>
+			<li>The user closes the window</li>
+			<li>The application marks the messages as read</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			There are no new messages.
+			
 			<h5>Alternative paths</h5>
+			
 			<h5>Postconditions</h5>
+			All new messages are marked as read.
+			
 			<h5>Frequency of use</h5>
+			3
 			<h5>Priority</h5>
+			3
 			<h5>Open issues</h5>
+			
 		</subsection>
 		<subsection name="[UC-04:14] Write message to project member"><a name="uc_04_14" />
 		<!-- Der User moechte einem anderen Projektmitglied eine nachricht schreiben
 		-->
 			<h5>Summary</h5>
+			The user writes a message
+			
 			<h5>Rationale</h5>
+			The user can write a message to a certain project member to communicate with the project member.
+
 			<h5>Preconditions</h5>
+			[UC-02:03] (without invitation)
+			
 			<h5>Course of Events</h5>
+			<ol>
+			<li>The user indicates to write a new messages</li>
+			<li>The application opens a new window to create a message</li>
+			<li>The user writes a message and chosses the recipients for the message from the current project member list</li>
+			<li>The application sends the message to the specified members</li>
+			<li>The application closes the window for creating messages</li>
+			</ol>
+			
 			<h5>Exceptions</h5>
+			No text is inserted.
+			No recipient is selected.
+			
 			<h5>Alternative paths</h5>
+			(4) One or more of the recipients are not online. The System tries to send the message again at a later pint of time. 
 			<h5>Postconditions</h5>
+			All messages are sent to the recipients
+			
 			<h5>Frequency of use</h5>
+			3
 			<h5>Priority</h5>
+			3
 			<h5>Open issues</h5>
 		</subsection>
 		
@@ -1412,6 +1676,12 @@
 				<td>9</td>
 				<td>2008-05-01</td>
 				<td>dominik</td>
+				<td>completed some use cases</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td>2008-05-03</td>
+				<td>philipp</td>
 				<td>completed some use cases</td>
 			</tr>
 		
