@@ -156,6 +156,7 @@
 	</subsection>
 	
 	<subsection name="Affecting the implementation">
+		Also see the ER and, for the synchronisation, the sequence diagrams.
 		<table>
 			<thead>
 				<tr>
@@ -218,6 +219,12 @@
 					</td>
 					<td>definition</td>
 					<td>architecture, implementation</td>
+				</tr>
+				<tr>
+					<td>[tagchange] Changing tags for an object adds a logentry with action tagadd or tagremove. The commit message contains the tags seperated by spaces. After the logsync, the recipient applies the adds and removes against his Tag-to-JakeObject table.</p>
+					</td>
+					<td></td>
+					<td>implementation</td>
 				</tr>
 				
 			</tbody>
