@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://maven.apache.org/dtd/xdoc_1_0.dtd">
+
+<!-- Leere Tabelle
+<subsection name="">
+	<table>
+		<tr>
+			<th>Field</th>
+			<th>Type</th>
+			<th>Options</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+</subsection>
+-->
+
+<document>
+  <properties>
+    <title>INSERT TITLE HERE</title>
+
+    <author email="chris@doublesignal.com">Christian Sutter</author>
+  </properties>
+
+  <body>
+    <section name="Database Description">
+		<subsection name="Table 'configuration'">
+			<table>
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Options</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td>VARCHAR(50)</td>
+					<td>P</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>value</td>
+					<td>VARCHAR(255)</td>
+					<td>!</td>
+					<td></td>
+				</tr>
+			</table>
+		</subsection>
+		<subsection name="Table 'projectmembers'">
+			<table>
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Options</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>userid</td>
+					<td>VARCHAR(255)</td>
+					<td>P</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>nick</td>
+					<td>VARCHAR(50)</td>
+					<td><!-- wollen wir unique nicks? --></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>notes</td>
+					<td>LONGVARCHAR</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</subsection>
+		<subsection name="Table 'objects'">
+			<table>
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Options</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td>VARCHAR</td>
+					<td>[P]</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>type</td>
+					<td>TINYINT</td>
+					<td>[P]</td>
+					<td></td>
+				</tr>
+			</table>
+		</subsection>
+		<subsection name="Table 'noteobjects'">
+			<table>
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Options</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td>VARCHAR</td>
+					<td>PF</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>content</td>
+					<td>LONGVARCHAR</td>
+					<td>!</td>
+					<td></td>
+				</tr>
+			</table>
+		</subsection>
+		<subsection name="tags">
+			<table>
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Options</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>object</td>
+					<td>VARCHAR</td>
+					<td>[P]F</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>tag</td>
+					<td>VARCHAR(50)</td>
+					<td>[P]</td>
+					<td></td>
+				</tr>
+			</table>
+		</subsection>
+		<subsection name="logentry">
+			<table>
+				<tr>
+					<th>Field</th>
+					<th>Type</th>
+					<th>Options</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>object_name</td>
+					<td>VARCHAR</td>
+					<td>[P]F</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>object_type</td>
+					<td>TINYINT</td>
+					<td>[P]F</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>projectmember</td>
+					<td>VARCHAR(255)</td>
+					<td>[P]F</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>timestamp</td>
+					<td>DATETIME</td>
+					<td>[P]</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>action</td>
+					<td>VARCHAR(10)</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>message</td>
+					<td>VARCHAR(255)</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>hash</td>
+					<td>VARCHAR(65)</td>
+					<td>!</td>
+					<td>(65 for 256-bit SHA)</td>
+				</tr>
+				<tr>
+					<td>is_last_pulled</td>
+					<td>BOOLEAN</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</subsection>    </section>
+
+    <section name="Changelog">
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Date</th>
+          <th>Author</th>
+          <th>Change</th>
+        </tr>
+        </thead>
+			<tr>
+          <td>2</td>
+          <td>04.05.2008</td>
+          <td>CS</td>
+          <td>Updated with results from today's brainstorming, descriptions coming soon</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>01.05.2008</td>
+          <td>CS</td>
+          <td>created initial version</td>
+        </tr>
+      </table>
+    </section>
+  </body>
+</document>
