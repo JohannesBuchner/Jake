@@ -40,7 +40,6 @@
 				<li><a href='#uc_02_01'>[UC-02:01] Show project members</a></li>
 				<li><a href='#uc_02_03'>[UC-02:03] Search users by ID / invite users</a></li>
 				<li><a href='#uc_02_04'>[UC-02:04] Accept Project Invitation</a></li>
-				<li><a href='#uc_02_05'>[UC-02:05] Edit own personal meta data</a></li>
 				<li><a href='#uc_02_06'>[UC-02:06] Add local comment to a project member</a></li>
 				<li><a href='#uc_02_07'>[UC-02:07] Set local nickname for a project member</a></li>
 				<li><a href='#uc_02_xx'>[UC-02:xx] </a></li>
@@ -50,8 +49,6 @@
 		<li>[UC-03] Manage Project <br />
 			<ul>
 				<li><a href='#uc_03_01'>[UC-03:01] Create new Project</a></li>
-				<li><a href='#uc_03_02'>[UC-03:02] Edit Project Metadata</a></li>
-				<li><a href='#uc_03_03'>[UC-03:03] Specify Project directory path</a></li>
 			</ul>
 		</li>
 		<li>[UC-04] Client Interactions <br />
@@ -699,41 +696,6 @@
 		</subsection>
 			
 		
-		<subsection name="[UC-02:05] Edit own personal meta data"><a name="uc_02_05" />
-			Request for urgent removal.
-			<h5>Summary</h5>
-			The user may change his/her personal metadata
-			
-			<h5>Rationale</h5>
-			The user needs to provide more personal metadata than his/her sole User-ID
-			
-			<h5>Preconditions</h5>
-			[ST-02]
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user indicates to change his/her personal metadata</li>
-				<li>The user may change various metadata</li>
-				<li>The user indicates to safe the changes</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			In 3. if the user cancels the operation no data will be changed. The application returns to its previous state.
-			
-			<h5>Postconditions</h5>
-			The changes are saved, the application returns to its previous state.
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			Request for urgent removal. It is a additional feature. We only show project members meta data. The editing of the metadata has to happen externally. Too much effort.
-			
-			With XMPP for example, the user enters the vcard once in has chat client.
-		</subsection>
 	
 		<subsection name="[UC-02:06] Add local comment to a project member"><a name="uc_02_06" />
 		<!-- Der User soll einen lokalen kommentar zu einem user hinzufuegen koennen... dieser kommentar wird nicht
@@ -795,54 +757,6 @@
 			
 		</subsection>
 		
-		<subsection name="[UC-03:02] Edit Project Metadata"><a name="uc_01_11" />
-			<h5>Summary</h5>
-			
-			<h5>Rationale</h5>
-			
-			<h5>Preconditions</h5>
-			
-			<h5>Course of Events</h5>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			
-			<h5>Postconditions</h5>
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			Request for removal. What should that be? Refer to ER-diagram please.
-			
-		</subsection>
-
-		<subsection name="[UC-03:03] Specify Project directory path"><a name="uc_01_11" />
-			<h5>Summary</h5>
-			
-			<h5>Rationale</h5>
-			
-			<h5>Preconditions</h5>
-			
-			<h5>Course of Events</h5>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			
-			<h5>Postconditions</h5>
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			Request for removal. Is that changing the rootpath? If so, can't we assume one has to create a new project to do that? Hmm ... probably not. please clarify, otherwise remove.
-			
-		</subsection>
-
 		<subsection name="[UC-04:01] Start log synchronisation"><a name="uc_04_01" />
 			<!-- der user sagt "schickt mir eure log eintraege seit timestamp xxx" und die anderen clients schicken ihm die entsprechenden eintraege. wird benoetigt um zu erkennen welche files/objekte sich geaendert haben  -->
 			<h5>Summary</h5>
