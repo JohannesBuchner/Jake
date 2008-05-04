@@ -81,7 +81,6 @@
 		<li>[UC-06] Tagging <br />
 			<ul>
 				<li><a href='#uc_06_01'>[UC-06:01] Create Tag</a></li>
-				<li><a href='#uc_06_02'>[UC-06:02] Rename Tag</a></li>
 				<li><a href='#uc_06_03'>[UC-06:03] Delete Tag</a></li>
 				<li><a href='#uc_06_04'>[UC-06:04] Assign Tag to Object</a></li>
 				<li><a href='#uc_06_05'>[UC-06:05] Remove Tag from Object</a></li>
@@ -1428,20 +1427,6 @@
 		
 		<subsection name="[UC-06:01] Create Tag"><a name="uc_06_01" />
 		<!-- Der User erstellt einen Tag, der Tag wird in der DB abgelegt und an andere User versendet (logentry)
-		-->
-			<h5>Summary</h5>
-			<h5>Rationale</h5>
-			<h5>Preconditions</h5>
-			<h5>Course of Events</h5>
-			<h5>Exceptions</h5>
-			<h5>Alternative paths</h5>
-			<h5>Postconditions</h5>
-			<h5>Frequency of use</h5>
-			<h5>Priority</h5>
-			<h5>Open issues</h5>
-		</subsection>
-		<subsection name="[UC-06:02] Rename Tag"><a name="uc_06_02" />
-		<!-- Der User benennt einen Tag um, aenderung wird per logfile an andere propagiert (nur ein logfile entry). 
 		-->
 			<h5>Summary</h5>
 			<h5>Rationale</h5>

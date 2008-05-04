@@ -5,7 +5,8 @@ Abdeckung der Use Cases durch das IJakeGuiAccess:
     * [UC-01:01] create note									IJakeGuiAccess.createNote()
     * [UC-01:03] view note										NoteObject.getContent()
     * [UC-01:10] edit note										NoteObject.setContent()
-    * [UC-01:02] import file/folder								IJakeGuiAccess.createFileObject()
+    * [UC-01:02] import file/folder								IJakeGuiAccess.createFileObjectFromExternalFile(),
+																IJakeGuiAccess.createFileObject()
 
 
 
@@ -94,7 +95,6 @@ UC-05:
 [UC-06] Tagging
 
     * [UC-06:01] Create Tag							IJakeGuiAccess.createTag() bzw. JakeObject.addTag()
-    * [UC-06:02] Rename Tag							Tag.rename()
     * [UC-06:03] Delete Tag							Tag.delete()
     * [UC-06:04] Assign Tag to Object				JakeObject.addTag()
     * [UC-06:05] Remove Tag from Object				JakeObject.removeTag()
