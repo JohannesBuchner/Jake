@@ -11,6 +11,13 @@
 	 <author email="philipp.knobelspies@gmail.com">Philipp Knobelspies</author>
   </properties>
   <body>
+<style>
+h5{
+font-size:medium;
+padding: 0;
+margin: 0.2cm 0;
+}
+</style>
     <section name="Use Cases">
     	<p>This page contains an overview of all use cases. Use cases are listed with a discriptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
     	<p>Note: Since we don't yet need full use cases, a preliminary list of use cases without an identifier will suffice. Identifiers are added later on.</p>
