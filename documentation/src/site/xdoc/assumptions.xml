@@ -221,7 +221,7 @@
 					<td>architecture, implementation</td>
 				</tr>
 				<tr>
-					<td>[tagchange] Changing tags for an object adds a logentry with action tagadd or tagremove. The commit message contains the tags seperated by spaces. After the logsync, the recipient applies the adds and removes against his Tag-to-JakeObject table.</p>
+					<td><p>[tagchange] Changing tags for an object adds a logentry with action tagadd or tagremove. The commit message contains the tags seperated by spaces. After the logsync, the recipient applies the adds and removes against his Tag-to-JakeObject table.</p>
 					</td>
 					<td></td>
 					<td>implementation</td>
