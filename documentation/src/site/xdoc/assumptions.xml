@@ -42,8 +42,8 @@
 					<td>ease of use, transparency for the user</td>
 					<td>basic functionality, architecture</td>
 				</tr>
-				<tr> <!-- TODO: fix from techarch-meeting --> 
-					<td>[project_folder] All shared data lies in one project folder</td>
+				<tr>
+					<td>[project_folder] All shared file data lies in one project folder</td>
 					<td>simplifies implementation, transparency for the user</td>
 					<td>basic functionality, architecture</td>
 				</tr>
@@ -104,7 +104,7 @@
 					<td>architecture</td>
 				</tr>
 				<tr>
-					<td>[no-folder-sync] Folders don't need to be synced.  We only sync files, we don't care about empty folders. Since we sync by relative file name (relpath), which is unique, this implicates the folders that need to be created.
+					<td>[no_folder_sync] Folders don't need to be synced.  We only sync files, we don't care about empty folders. Since we sync by relative file name (relpath), which is unique, this implicates the folders that need to be created.
 					</td>
 					<td>simplicity</td>
 					<td>architecture</td>
@@ -114,6 +114,31 @@
 					<td></td>
 					<td>architecture, UI</td>
 				</tr>
+				<tr>
+					<td>[no_spaces_in_tags] Tags don't contain spaces. Thus they can be written one after another.</td>
+					<td>Common sense</td>
+					<td>Architecture</td>
+				</tr>
+				<tr>
+					<td>[push] Push is: The user wants a file, that he/she changed locally, to be distributed. The LogEntry with the right action is created. All other users (online or not) are notified, that changes exist, thus recommending them to request a [logsync]. </td>
+					<td>Definition</td>
+					<td>Architecture</td>
+				</tr>
+				<tr>
+					<td>[pull] Pull is: A user knows (from the logs) that there exists a file and he/she wants it. It is downloaded from one who made the last change. Note: fallback to ask the others if they have this version might be tricky.</td>
+					<td>Definition</td>
+					<td>Architecture</td>
+				</tr>
+				<tr>
+					<td>[logsync] LogSync is: A user wants to find out who made changes and requests the logs from another user. If no conflicts occur, the next user may be queried.   </td>
+					<td>Definition</td>
+					<td>Architecture</td>
+				</tr>
+				<tr>
+					<td>Feature: [foreign-pull] Foreign-Pull is: A user has the log, but the user that last edited the object is offline. The user may ask other users, if they have a local copy of the file (belonging to this log entry).</td>
+					<td>Independence from offline users</td>
+					<td>Architecture</td>
+				</tr>
 			</tbody>
 			<thead>
 				<tr>
@@ -122,24 +147,9 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>[no-spaces-in-tags] Tags don't contain spaces. Thus they can be written one after another.</td>
-					<td>Common sense</td>
-					<td>Architecture</td>
-				</tr>
-				<tr>
-					<td>[push] Push is: The user wants a file, that he/she changed locally, to be distributed. The LogEntry with the right action is created. All other users (online or not) are notified, that changes exist, thus recommending them to request a [logsync]. </td>
 					<td></td>
-					<td>Architecture</td>
-				</tr>
-				<tr>
-					<td>[pull] Pull is: A user knows (from the logs) that there exists a file and he/she wants it. It is downloaded from one who made the last change. Note: fallback to ask the others if they have this version might be tricky.</td>
 					<td></td>
-					<td>Architecture</td>
-				</tr>
-				<tr>
-					<td>[logsync] LogSync is: A user wants to find out, who made changes and requests the logs from the other users one by one. </td>
 					<td></td>
-					<td>Architecture</td>
 				</tr>
 			</tbody>
 		</table>
@@ -196,12 +206,12 @@
 					<td>architecture</td>
 				</tr>
 				<tr>
-					<td>[jakeobject-id] A Jakeobject has a String as identifier. For files, it is relpath, for notes it is "note:"+userid+timestamp of creation. This guarantees that two users can not create a object with the same id or know, if they talk about the same object.</td>
-					<td>Duplicate effort, out of sync problems, brittle and inflexible structure</td>
+					<td>[jakeobject-id] A Jakeobject is identified by the type (at this state, file or note) and a name. For files, the name is relpath, for notes it is userid+timestamp of creation. This guarantees that two users can not create a object with the same id or know, if they talk about the same object.</td>
+					<td>Avoid duplicate effort, out of sync problems, brittle and inflexible structure</td>
 					<td>architecture</td>
 				</tr>
 				<tr>
-					<td><p>[conflicts] We define a conflict as the situation when a user has a local modification that he did not push (synchronise to others), and a log entry of changes on the same file come in from another user. Or, similarly, when the user makes a local change but did not start from the last version of the file, he has to resolve the conflict. </p>
+					<td><p>[conflict] We define a conflict as the situation when a user has a local modification that he did not push (synchronise to others), and a log entry of changes on the same file come in from another user. Or, similarly, when the user makes a local change but did not start from the last version of the file, he has to resolve the conflict. </p>
 					
 						<p>When launching the file for editing, the program may recommend a syncing and warn, if a newer version exists, and recommend to pull it.</p>
 						<!-- TODO: reference to sequence diagram -->
@@ -219,7 +229,7 @@
 			<tbody>
 				<tr> 
 					<td><p>[ascii] all objectnames, tags, userids may consist only of printable ascii characters (no umlauts, etc.)</p></td>
-					<td>we don't want objects with strange characters not displayable on some systems</td>
+					<td>Avoiding excessive string checking, some characters may not be displayable on some systems</td>
 					<td>architecture, UI</td>
 				</tr>
 				<tr> 
@@ -233,6 +243,7 @@
 	</section>
 	
 	<section name="Definition of words">
+		Also see [push], [pull], [logsync], [auto_push_pull], [foreign_pull], [conflict]
 		<dl>
 			<dt>ICService</dt>
 			<dd>Interclient communication service</dd>
