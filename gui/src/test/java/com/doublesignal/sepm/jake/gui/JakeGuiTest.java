@@ -15,7 +15,7 @@ public class JakeGuiTest
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
+    public JakeGuiTest( String testName )
     {
         super( testName );
     }
