@@ -166,6 +166,11 @@
 					<td>would be a pain to delete every file in the folder to delete the folder</td>
 					<td>basic functionality, architecture</td>
 				</tr>
+				<tr>
+					<td>[note_pool] Notes are managed in one centralized location per project. They are not stored in the folder hierarchy.</td>
+					<td>ease of implementation, simplifies the user interaction</td>
+					<td>basic functionality, architecture, ui</td>
+				</tr>
 			</tbody>
 		</table>
 	</subsection>
