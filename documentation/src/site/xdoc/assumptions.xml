@@ -147,9 +147,9 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td>[import_folder] importing folders as a whole is supported.</td>
+					<td>Otherwise it would be a pain for users to share folders. See [folder_structure]</td>
+					<td>Basic functionality, architecture</td>
 				</tr>
 			</tbody>
 		</table>
