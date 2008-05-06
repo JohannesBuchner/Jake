@@ -151,6 +151,21 @@
 					<td>Otherwise it would be a pain for users to share folders. See [folder_structure]</td>
 					<td>Basic functionality, architecture</td>
 				</tr>
+				<tr>
+					<td>[no_batch_removal] objects are deleted one at a time.</td>
+					<td>ease of implementation</td>
+					<td>basic functionality, architecture</td>
+				</tr>
+				<tr>
+					<td>[no_batch_whatever] We do not offer any batch processing support of any kind.</td>
+					<td>ease of implementation</td>
+					<td>basic functionality, architecture</td>
+				</tr>
+				<tr>
+					<td>[delete_folder] It is possible to delete a whole folder from the datapool</td>
+					<td>would be a pain to delete every file in the folder to delete the folder</td>
+					<td>basic functionality, architecture</td>
+				</tr>
 			</tbody>
 		</table>
 	</subsection>
@@ -240,9 +255,9 @@
 					<td>architecture, UI</td>
 				</tr>
 				<tr> 
-					<td> ... </td>
-					<td> ... </td>
-					<td> ... </td>
+					<td>[singe_selection] In the datapool view only one object may be selected at a time.</td>
+					<td>ease of implementation</td>
+					<td>basic functionality, architecture, gui</td>
 				</tr>
 			</tbody>
 		</table>
