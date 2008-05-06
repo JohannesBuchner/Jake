@@ -20,23 +20,51 @@ margin: 0.2cm 0;
 </style>
     <section name="Use Cases">
     	<p>This page contains an overview of all use cases. Use cases are listed with a discriptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
-    	<p>Note: Since we don't yet need full use cases, a preliminary list of use cases without an identifier will suffice. Identifiers are added later on.</p>
-    	
+    	<p><b> ATTENTION, THIS IS WORK IN PROGRESS. Ich muss hier kurz für das Meeting unterbrechen, werde aber heute Abend noch weiterarbeiten.</b></p>
+    	    	
     	<subsection name="Overview">
-    	<ul> <!-- TODO: update overview -->
+    	<ul>
+    		<li>
+    			[UC-01] Offline Content Management
+    			<ul>
+					<li><a href='#uc_01_01'>[UC-01:01] show datapool</a></li>
+					<li><a href='#uc_01_02'>[UC-01:02] import file/folder</a></li>
+					<li><a href='#uc_01_03'>[UC-01:03] delete object</a></li>
+					<li><a href='#uc_01_04'>[UC-01:04] open file/folder with external application</a></li>
+					<li>
+						<a href='#uc_01_05'>[UC-01:05] view/manage file/note tags</a>
+						<ul>
+							<li><a href='#uc_01_05_01'>[UC-01:05:01] add tag</a></li>
+							<li><a href='#uc_01_05_02'>[UC-01:05:02] remove tag</a></li>
+							<li><a href='#uc_01_05_03'>[UC-01:05:03] alter tag</a></li>
+						</ul>
+					</li>
+					<li><a href='#uc_01_06'>[UC-01:06] Find object by name or tag</a></li>
+					<li>
+						<a href='#uc_01_07'>[UC-01:07] view/manage notes</a>
+						<ul>
+							<li><a href='#uc_01_07_01'>[UC-01:07:01] create note</a></li>
+							<li><a href='#uc_01_07_02'>[UC-01:07:02] edit note</a></li>
+							<li><a href='#uc_01_07_03'>[UC-01:07:03] delete note</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				[UC-02] Online
+				<ul>
+					<li><a href='#uc_02_01'>[UC-02:01] Login to the network</a></li>
+					<li><a href='#uc_02_02'>[UC-02:02] Logout from the network</a></li>
+				</ul>
+			</li>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+				    	
+    	
 		<li>[UC-01] Manage Data <br />
 			<ul>
-				<li><a href='#uc_01_01'>[UC-01:01] create note</a></li>
-				<li><a href='#uc_01_03'>[UC-01:03] view note</a></li>
-				<li><a href='#uc_01_10'>[UC-01:10] edit note</a></li>
-				<li><a href='#uc_01_02'>[UC-01:02] import file/folder</a></li>
-				<li><a href='#uc_01_04'>[UC-01:04] manage object tags</a></li>
-				<li><a href='#uc_01_05'>[UC-01:05] delete object</a></li>
 				<li><a href='#uc_01_06'>[UC-01:06] synchronize project</a></li>
 				<li><a href='#uc_01_07'>[UC-01:07] set object synchronization mode</a></li>
-				<li><a href='#uc_01_08'>[UC-01:08] open file/folder with OS specified program</a></li>
-				<li><a href='#uc_01_09'>[UC-01:09] show datapool</a></li>
-				<li><a href='#uc_01_10'>[UC-01:10] Find object by name or tag</a></li>
 				<li><a href='#uc_01_11'>[UC-01:11] Check for new data/updates</a></li>
 				<li><a href='#uc_01_12'>[UC-01:12] Edit object meta data</a></li>
 			</ul>
@@ -80,8 +108,6 @@ margin: 0.2cm 0;
 		<li>[UC-05] Edit Programm Settings <br />
 			<ul>
 				<li><a href='#uc_05_01'>[UC-05:01] Set authentication Information</a></li>
-				<li><a href='#uc_05_02'>[UC-05:02] Login to the network</a></li>
-				<li><a href='#uc_05_03'>[UC-05:03] Logout from the network</a></li>
 				<li><a href='#uc_05_04'>[UC-05:04] Set networking/project options</a></li> 
 			</ul>
 		</li>
@@ -116,7 +142,7 @@ margin: 0.2cm 0;
 						<ul>
 							<li>[ST-01]</li>
 							<li>a project is loaded</li>
-							<li>[UC-01:09] is executed every time this state is entered</li>
+							<li>[UC-01:01] is executed every time this state is entered</li>
 						</ul>
 					</td>
 				</tr>
@@ -160,46 +186,42 @@ margin: 0.2cm 0;
 			-->
 		
 		
-		
-		<subsection name="[UC-01:01] create note"><a name="uc_01_01" />
+		<subsection name="[UC-01:01] show datapool"><a name="uc_01_01" />
 			<h5>Summary</h5>
-			The user creates a new note.
+			Show the data in the datapool
 			
 			<h5>Rationale</h5>
-			Key feature.
+			The user wants to view the files belonging to the project.
 			
 			<h5>Preconditions</h5>
 			[ST-02]
 			
 			<h5>Course of Events</h5>
 			<ol>
-				<li>The user indicates to create a new note</li>
-				<!-- there is no location to specify. Notes are entered per project -->
-				<li>The user enters the text of the note</li> 
-				<!-- that a title is shown too should go into the view use case -->
-				<li>The user indicates to save the note</li>
-				<li>The note is stored in the application.</li>
+				<li>The user indicates that the application is to show the datapool and its contents</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
-			In 3.: If the user indicates to cancel the operation, no note will be created
 			
 			<h5>Alternative paths</h5>
 			
 			<h5>Postconditions</h5>
-			A new note is created and the application is returned to its previous state.
+			All objects in the project are displayed in hierarchical order.<br />
+			displayed fields: name, last changed, name of the user who last edited the file
 			
 			<h5>Frequency of use</h5>
+			5
 			
 			<h5>Priority</h5>
+			5
 			
 			<h5>Open issues</h5>
 			
 		</subsection>
 		
-		<subsection name="[UC-01:02] import file"><a name="uc_01_02" />
+		<subsection name="[UC-01:02] import file/folder"><a name="uc_01_02" />
 			<h5>Summary</h5>
-			The User adds a file <!-- or a folder --> into a project folder.
+			The User adds a file/folder to the project.
 			
 			<h5>Rationale</h5>
 			The User wants to share some of his files with the other members of the project.
@@ -209,109 +231,34 @@ margin: 0.2cm 0;
 			
 			<h5>Course of Events</h5>
 			<ol>
-				<li>The user indicates that he/she wants to add a file to the project.</li>
+				<li>The user indicates that he/she wants to add a file/folder to the project.</li>
 				<li>A list of possible files from the users file system is presented.</li>
 				<li>The User selects a file or a folder and indicates to add this file/folder.</li>
 				<li>The file/folder is added to the project datapool.</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
-			In 3.: if the user indicates to cancel the operation, no note will be created
-			
-			<h5>Frequency of use</h5>
-			2
-			<h5>Priority</h5>
-			3
-			
-			<h5>Open issues</h5>
-			<p>This use case was: import file/folder; we don't necessarily want to implement dragging an folder in
-				user should do that in the explorer? 
-				When talking about folders, isn't that use case to share an existing folder as a new project?</p>
-			
+			In 4. if the file is already in the project datapool, a warning is prompted to the user. The application returns to its previous state.
+
 			<h5>Alternative paths</h5>
-			(4). If the file is already in the project datapool, the user gets a warning.
-			
+		 	If the user cancels the operation no file/folder will be imported to the project. The application returns to its previous state.
+
 			<h5>Postconditions</h5>
 			<ul>
 				<li>The specified file is in the datapool.</li>
 				<li>The application returns to its previous state.</li>
 			</ul>
-		</subsection>
-		
-		<subsection name="[UC-01:03] view note"><a name="uc_01_03" />
-			<h5>Summary</h5>
-			View a note
-			
-			<h5>Rationale</h5>
-			Key feature
-			
-			<h5>Preconditions</h5>
-			<ul>
-				<li>[ST-02]</li>
-				<li>at least one note exists in the project</li>
-			</ul>
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user selects a note from the project an indicates to view it.</li>
-				<li>The note is displayed in an editable form</li>
-				<li>The user may change the content of the note</li>
-				<li>The user indicates to save the changes</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			In 4.: If the user indicates to cancel the operation, no changes are made to the note. 
-			<!-- "The user is prompted to confirm the " <- yeah, to confirm what?  -->
-			
-			<h5>Postconditions</h5>
-			The changes are performed to the note, and the application returns to its previous state.
-			
+
 			<h5>Frequency of use</h5>
-			
+			2
 			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
-		<subsection name="[UC-01:04] manage object tags"><a name="uc_01_04" />
-			<h5>Summary</h5>
-			The user has the ability to manage the tags associated to an JakeObject.
-			
-			<h5>Rationale</h5>
-			Key feature.
-			
-			<h5>Preconditions</h5>
-			<ul>
-				<li>[ST-02]</li>
-				<li>The object to be tagged exists in the project</li>
-			</ul>
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user select an object from the project and indicates to change the objects tags</li>
-				<li>All existing tags of that object is presented, and the user may add, change or delete tags</li>
-				<li>The user indicates to save the changes</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			In 3.: If the user indicates to cancel the operation, no change will be performed.
-			
-			<h5>Postconditions</h5>
-			The changes are stored, the application returns to its previous state.
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
+			5
 			
 			<h5>Open issues</h5>
 			
 		</subsection>
 		
-		<subsection name="[UC-01:05] delete object"><a name="uc_01_05" />
+		<subsection name="[UC-01:03] delete object"><a name="uc_01_03" />
 			<h5>Summary</h5>
 			The user selects an object from the datapool and indicates to remove it.
 			
@@ -328,35 +275,465 @@ margin: 0.2cm 0;
 			<ol>
 				<li>The user selects an  objects from the datapool.</li>
 				<li>The user indicates that he/she wants to delete the object.</li>
-				<li>The user is prompted if he/she really wants to delete the objects.</li>
-				<li>The objects are removed from the datapool.</li>
+				<li>The user is prompted if he/she really wants to delete the object.</li>
+				<li>The object is removed from the datapool.</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
+			If the file can not be accessed, a warning is prompted to the user.
 			
 			<h5>Alternative paths</h5>
-			In 1. the user may select multiple objects. <br />
-			In 3. the user may cancel the operation.<br />
-			In 4. if the object cannot be deleted from the project the user will be notified.
+			If the object is a folder, the user is asked if he really wants to delete the folder and the files contained. <br />
+			In 3. the user may cancel the operation. The application returns to its previous state.
 			
 			<h5>Postconditions</h5>
-			The object is deleted from the project, the application return to its previous state
+			The object is deleted from the project, the application returns to its previous state
 			
 			<h5>Frequency of use</h5>
+			2
 			
 			<h5>Priority</h5>
+			5
 			
 			<h5>Open issues</h5>
 			<p>Propagation of change: A LogEntry with the action "delete" is added. 
 			The other users may or may not be asked to accept the change (maybe a preference setting).
 			</p>
-			<p>
-				Maybe we should exclude the deletion of multiple objects. Saves implementation, 
-				and getting asked more than once isn't a bad idea. If the user wants to mass-delete files,
-				he/she can still do that in the file system and we will get every deletion.
-			</p>
 			
 		</subsection>
+		
+		<subsection name="[UC-01:04] open file/folder with external application"><a name="uc_01_04" />
+			<h5>Summary</h5>
+			The user wants to open a file with an external application
+			
+			<h5>Rationale</h5>
+			Since Jake does not support editing data, there must be a way to open data in an external application. 
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>at least one file exists in the project</li>
+				<li>The operating system supports a method of launching the application associated with a file</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to open an object in an external application.</li>
+				<li>The operating system is told to call an external application for editing the file.</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			An error may occur during the process. In that case the user is prompted with an error message.
+			
+			<h5>Postconditions</h5>
+			The object is opened in an external application, the application returns to its previous state.
+			
+			<h5>Frequency of use</h5>
+			5
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+			<p>What happens if no application is connected to the file type? Does the os prompt a "pick app to open file" dialog?</p>
+			
+		</subsection>
+		
+		<subsection name="[UC-01:05] view/manage file/note tags"><a name="uc_01_05" />
+			<h5>Summary</h5>
+			The user may manage tags associated to a file/note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>The object to be tagged exists in the project</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user select a file/note from the project and indicates to manage its tags</li>
+				<li>All current tags are listed.</li>
+				<li>The user indicates to return to the previous state.</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			
+			<h5>Postconditions</h5>
+			The changes are stored, the application returns to its previous state.
+			
+			<h5>Frequency of use</h5>
+			3
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+			
+		</subsection>
+
+		<subsection name="[UC-01:05:01] add tag"><a name="uc_01_05_01" />
+			<h5>Summary</h5>
+			The user may add a tag to a file/note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>The object to be tagged exists in the project</li>
+				<li>This UC is accessed from within [UC-01:05]</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to add a tag</li>
+				<li>The user specifies the tag name</li>
+				<li>the user indicates to safe the tag</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 3.: If the user indicates to cancel the operation, no change will be performed.
+			
+			<h5>Postconditions</h5>
+			The changes are stored, the application returns to its previous state. (e.g. [UC-01:05]
+			
+			<h5>Frequency of use</h5>
+			4
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+			
+		</subsection>		
+		<subsection name="[UC-01:05:02] remove tag"><a name="uc_01_05_02" />
+			<h5>Summary</h5>
+			The user may remove a tag from a file/note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>The object to be tagged exists in the project</li>
+				<li>The object has at least one tag</li>
+				<li>This UC is accessed from within [UC-01:05]</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user selects a tag</li>
+				<li>The user indicates to delete the tag</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			
+			<h5>Postconditions</h5>
+			The changes are stored, the application returns to its previous state. (e.g. [UC-01:05]
+			
+			<h5>Frequency of use</h5>
+			4
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+			
+		</subsection>	
+
+		<subsection name="[UC-01:05:03] alter tag"><a name="uc_01_05_03" />
+			<h5>Summary</h5>
+			The user may add a tag to a file/note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>The object to be tagged exists in the project</li>
+				<li>This UC is accessed from within [UC-01:05]</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to alter a tag</li>
+				<li>The user specifies a new tag name tag name</li>
+				<li>the user indicates to safe the tag</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 3.: If the user indicates to cancel the operation, no change will be performed.
+			
+			<h5>Postconditions</h5>
+			The changes are stored, the application returns to its previous state. (e.g. [UC-01:05]
+			
+			<h5>Frequency of use</h5>
+			4
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+			
+		</subsection>
+		
+		<subsection name="[UC-01:06] Find object by name or tag"><a name="uc_01_06" />
+			<h5>Summary</h5>
+			List all objects that match a search term.
+			
+			<h5>Rationale</h5>
+			Finding objects either by name or tag.
+			
+			<h5>Preconditions</h5>
+			[ST-02]
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to perform a search.</li>
+				<li>The user enters a search term</li>
+				<li>The user may choose to only search for matching filenames, or tags, or both</li>
+				<li>The user indicates to perform the search</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 4. the user may cancel the operation, the application returns to its previous state
+			
+			<h5>Postconditions</h5>
+			All matching Objects in the project are listed similar to [UC-01:01].
+			
+			<h5>Frequency of use</h5>
+			1
+			<h5>Priority</h5>
+			3
+			<h5>Open issues</h5>
+			
+		</subsection>
+
+		<subsection name="[UC-01:07] view/manage notes"><a name="uc_01_07" />
+			<h5>Summary</h5>
+			View all notes in the project.
+			
+			<h5>Rationale</h5>
+			Key feature
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to view all notes in the project</li>
+				<li>All notes are listed. Displayed fileds: the first line of the note as title, the following lines as text</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			
+			<h5>Postconditions</h5>
+			The notes are listed.
+			
+			<h5>Frequency of use</h5>
+			4
+			
+			<h5>Priority</h5>
+			2
+			
+			<h5>Open issues</h5>
+			
+		</subsection>
+
+		<subsection name="[UC-01:07:01] create note"><a name="uc_01_07_01" />
+			<h5>Summary</h5>
+			The user creates a new note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			[ST-02]
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to create a new note</li>
+				<li>The user enters the text of the note</li> 
+				<li>The user indicates to save the note</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 3.: If the user indicates to cancel the operation, no note will be created
+
+			<h5>Postconditions</h5>
+			A new note is created and the application returns to its previous state. (e.g. [UC-01:07]
+			
+			<h5>Frequency of use</h5>
+			2
+			<h5>Priority</h5>
+			2
+			<h5>Open issues</h5>
+			
+		</subsection>
+
+		<subsection name="[UC-01:07:02] edit note"><a name="uc_01_07_02" />
+			<h5>Summary</h5>
+			The user edits a note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			[ST-02]
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to edit a note</li>
+				<li>The note is displayed in editable form</li> 
+				<li>The user edits the text of the note</li>
+				<li>The user indicates to save the changes</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 4.: If the user indicates to cancel the operation, no note will be created
+
+			<h5>Postconditions</h5>
+			The note is altered and the application returns to its previous state. (e.g. [UC-01:07]
+			
+			<h5>Frequency of use</h5>
+			2
+			<h5>Priority</h5>
+			2
+			<h5>Open issues</h5>
+			
+		</subsection>
+
+		<subsection name="[UC-01:07:03] remove note"><a name="uc_01_07_03" />
+			<h5>Summary</h5>
+			The user creates a new note.
+			
+			<h5>Rationale</h5>
+			Key feature.
+			
+			<h5>Preconditions</h5>
+			[ST-02]
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user selects a note and indicates to remove it</li>
+				<li>The user is prompted to confirm the romoval</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 3.: If the user indicates to cancel the operation, no note will be created
+
+			<h5>Postconditions</h5>
+			The note is removed and the application returns to its previous state. (e.g. [UC-01:07]
+			
+			<h5>Frequency of use</h5>
+			2
+			<h5>Priority</h5>
+			2
+			<h5>Open issues</h5>
+			
+		</subsection>
+
+		<subsection name="[UC-02:01] Login to the network"><a name="uc_02_01" />
+			<h5>Summary</h5>
+			The User logs in to the network. 	
+			
+			<h5>Rationale</h5>
+			key feature
+			
+			<h5>Preconditions</h5>
+			[ST-02]
+			
+			<h5>Course of Events</h5>
+				<ol>
+					<li>The User indicates to log in to the network</li>
+					<li>The user enters its login-data</li>
+					<li>The user may chose to store the login data</li>
+					<li>The user may chose to automatically log in every time the app is started.</li>
+					<li>The user indicates to submit the log-in data</li>
+				</ol>
+
+			<h5>Exceptions</h5>
+				The application may not communicate with the network. A warning is prompted to the user. The application returns to its previous state.
+
+			<h5>Alternative paths</h5>
+				In 5. If the log-in data is not valid, the user is not logged in. A warning is prompted to the user. The user may correct the data.
+
+			<h5>Postconditions</h5>
+				The User is logged in. 	
+			<h5>Frequency of use</h5>
+				3	
+			<h5>Priority</h5>
+				5
+			<h5>Open issues</h5>
+						
+		</subsection>
+
+		<subsection name="[UC-02:02] Logout from the network"><a name="uc_02_02" />
+			<h5>Summary</h5>
+				The User logs out from the network.
+			
+			<h5>Rationale</h5>
+				The user wants to work offline.
+
+			<h5>Preconditions</h5>
+			[ST-02]
+
+			<h5>Course of Events</h5>
+				<ol>
+					<li>The User indicates to logout</li>
+					<li>The User is logged out</li>
+				</ol>
+			<h5>Exceptions</h5>
+
+			<h5>Alternative paths</h5>
+				<ul>
+					<li>(1) The User closes the application, logout is performed automatically</li>
+				</ul>
+			<h5>Postconditions</h5>
+			[ST-02]
+			
+			<h5>Frequency of use</h5>
+			2
+			
+			<h5>Priority</h5>
+			5
+			
+			<h5>Open issues</h5>
+	
+		</subsection>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+		
+		
 		
 		<subsection name="[UC-01:06] synchronize"><a name="uc_01_06" />
 			<h5>Summary</h5>
@@ -431,107 +808,7 @@ margin: 0.2cm 0;
 			
 		</subsection>
 		
-		<subsection name="[UC-01:08] open file/folder-object with associated program"><a name="uc_01_08" />
-			<h5>Summary</h5>
-			The user wants to open a file with an external application
-			<!-- was: object. Notes don't make sense. -->
-			<h5>Rationale</h5>
-			Since Jake does not support editing data, there must be a way to open data in an external  application. 
-			
-			<h5>Preconditions</h5>
-			<ul>
-				<li>[ST-02]</li>
-				<li>at least one file must exist in the project</li>
-				<li>The operating system supports a method of launching the application associated with a file</li>
-			</ul>
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user indicates to open an object in an external application.</li>
-				<li>The operating system is told to call an external application for editing the file.</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			An error may occur during the process. In that case the user is prompted with an error message.
-			
-			<h5>Postconditions</h5>
-			The object is opened in an external application, the application returns to its previous state.
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
-		
-		<subsection name="[UC-01:09] browse project files"><a name="uc_01_09" />
-			<h5>Summary</h5>
-			Navigate through the shared files.
-			
-			<h5>Rationale</h5>
-			The user wants to view the files belonging to the project. He may do so hierarchically or by the help of tags.
-			
-			<h5>Preconditions</h5>
-			[ST-02]
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user indicates that the application is to show the datapool and its contents</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			
-			<h5>Postconditions</h5>
-			All objects in the project are displayed by their name in their hierarchical order
-			
-			<h5>Frequency of use</h5>
-			5
-			
-			<h5>Priority</h5>
-			5
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
-		
-		<subsection name="[UC-01:10] Find object by name or tag"><a name="uc_01_10" />
-			<h5>Summary</h5>
-			List all objects with a certain tag
-			
-			<h5>Rationale</h5>
-			Finding JakeObjects either by name or tag
-			
-			<h5>Preconditions</h5>
-			[ST-02]
-			
-			<h5>Course of Events</h5>
-			<ol>
-				<li>The user indicates he wants to perform a search.</li>
-				<li>The user enters a search term</li>
-				<li>The user may choose to only search for matching filenames, or tags, or both</li>
-				<li>The user indicates to perform the search</li>
-			</ol>
-			
-			<h5>Exceptions</h5>
-			
-			<h5>Alternative paths</h5>
-			In 4. the user may cancel the operation, the application returns to its previous state
-			
-			<h5>Postconditions</h5>
-			All matching JakeObjects in the project are listed so that the user can access them.
-			
-			<h5>Frequency of use</h5>
-			
-			<h5>Priority</h5>
-			
-			<h5>Open issues</h5>
-			
-		</subsection>
+				
 		
 		<subsection name="[UC-01:11] Check for new Data/Updates"><a name="uc_01_11" />
 			<h5>Summary</h5>
@@ -1330,39 +1607,6 @@ margin: 0.2cm 0;
 			
 		</subsection>
 		
-		<subsection name="[UC-05:02] Login to the network"><a name="uc_05_02" />
-			<h5>Summary</h5>
-			The User indicates to login to the network. 	
-			<h5>Rationale</h5>
-			The User wants to be connected to the network, so he/she is able to push/pull updates and sync logs.
-			<h5>Preconditions</h5>
-			[ST-02]
-			<h5>Course of Events</h5>
-				<ol>
-					<li>The User indicates to log in to the network</li>
-					<li>The User is logged in</li>
-				</ol>
-			<h5>Exceptions</h5>
-				<ol>
-					<li>The ICS throws an error</li>
-				</ol>
-			<h5>Alternative paths</h5>
-				<ul>
-					<li>(2). No Network connection is available - the User is not logged in.</li>
-					<li>(2). The Users credentials are invailid - the User is not logged in.</li>
-
-				</ul>
-			<h5>Postconditions</h5>
-				The User is logged in. 	
-			<h5>Frequency of use</h5>
-				5	
-			<h5>Priority</h5>
-				5
-			<h5>Open issues</h5>
-			I wouldn't offer such a functionality in the user interface. I would just connect on start, and you have to close it, if you want to logout/disconnect. Saves invalid states for use cases and GUI space.<br />
-<font color='red'>Required by assumption [offline]</font>
-			
-		</subsection>
 		
 		<subsection name="[UC-05:04] Set networking/project options" id="test"><a name="uc_05_04" />
 			<h5>Summary</h5>
@@ -1395,41 +1639,6 @@ margin: 0.2cm 0;
 			<h5>Open issues</h5>
 		</subsection>
 		
-		<subsection name="[UC-05:03] Logout from the network"><a name="uc_05_03" />
-			<h5>Summary</h5>
-				The User indicates to logout from the network
-			<h5>Rationale</h5>
-				The User wants to logout from the network, so the other projectmembers
-				 don't bother him with changes.
-			<h5>Preconditions</h5>
-			[ST-02]
-			<h5>Course of Events</h5>
-				<ol>
-					<li>The User indicates to logout</li>
-					<li>The User is logged out</li>
-				</ol>
-			<h5>Exceptions</h5>
-				<ul>
-					<li>ICS throws Error, e.g. no network connection available, cannot propagate logout activity to network server</li>
-				</ul>
-			<h5>Alternative paths</h5>
-				<ul>
-					<li>(1) The User closes the application, logout is performed automatically</li>
-					<li>(2) An exception occurs, a warning is displayed to the user, informing that he couldn't be logged out and may still appear online on other clients</li>
-				</ul>
-			<h5>Postconditions</h5>
-			[ST-02]
-			
-			<h5>Frequency of use</h5>
-				3
-			<h5>Priority</h5>
-				5
-			<h5>Open issues</h5>
-			I wouldn't offer such a functionality in the user interface. I would just connect on start, and you have to close it, if you want to logout/disconnect. Saves invalid states for use cases and GUI space.
-<br />
-<font color='red'>Required by assumption [offline]</font>
-			
-		</subsection>
 		
 		
 		<subsection name="[UC-06:01] Create Tag"><a name="uc_06_01" />
