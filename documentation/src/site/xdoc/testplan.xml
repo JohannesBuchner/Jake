@@ -345,6 +345,48 @@
 
 	</section>
 
+	<section name="Sample Test Case">
+		<pre>
+Java File:
+sepm/trunk/{artefactId}/src/test/java/com/doublesignal/sepm/jake/{artefactId}/{package}/{className}Test.java
+
+-- content:
+package com.doublesignal.sepm.jake.{artefactId}/{package};
+
+
+/* adjust as necessary */
+import org.junit.*;
+import org.jmock.*;
+
+/* import necessary exceptions */
+/* import necessary classes */
+
+
+public class {className}Test
+{
+
+    /* set default values, e.g. object name, etc. */
+
+    /* setup mockery if needed */
+    Mockery context = new JUnit4Mockery();
+
+    @Test(expected = {some}Exception.class)
+    public void {testname}()
+    {
+
+    }
+
+
+
+}
+
+
+		</pre>
+
+	</section>
+
+
+
 <!--
 	<section name="Zeitplan">
 
@@ -368,6 +410,12 @@
           <td>03.05.2008</td>
           <td>DD</td>
           <td>created</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>07.05.2008</td>
+          <td>DD</td>
+          <td>added testcase</td>
         </tr>
       </table>
     </section>
