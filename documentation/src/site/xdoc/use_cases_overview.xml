@@ -52,7 +52,7 @@ margin: 0.2cm 0;
 					</ul>
 				</li>
 				<li>
-					[UC-02] Online
+					[UC-02] Networking
 					<ul>
 						<li><a href='#uc_02_01'>[UC-02:01] Login to the network</a></li>
 						<li><a href='#uc_02_02'>[UC-02:02] Logout from the network</a></li>
@@ -69,7 +69,7 @@ margin: 0.2cm 0;
 					</ul>
 				</li>
 				<li>
-					[UC-4] Manage Project
+					[UC-04] Manage Project
 					<ul>
 						<li><a href='#uc_04_01'>[UC-04:01] Create new Project</a></li>
 						<li>
@@ -165,7 +165,7 @@ margin: 0.2cm 0;
 			The User adds a file/folder to the project.
 			
 			<h5>Rationale</h5>
-			The User wants to share some of his files with the other members of the project.
+			The User wants to share some of his files with other members of the project.
 			
 			<h5>Preconditions</h5>
 			[ST-02]
@@ -412,14 +412,14 @@ margin: 0.2cm 0;
 			<h5>Course of Events</h5>
 			<ol>
 				<li>The user indicates to alter a tag</li>
-				<li>The user specifies a new tag name tag name</li>
-				<li>the user indicates to safe the tag</li>
+				<li>The user specifies a new tag name</li>
+				<li>the user indicates to save the tag</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			In 3.: If the user indicates to cancel the operation, no change will be performed.
+			In (3), if the user indicates to cancel the operation, no change will be performed.
 			
 			<h5>Postconditions</h5>
 			The changes are stored, the application returns to its previous state. (e.g. [UC-01:05]
@@ -439,7 +439,7 @@ margin: 0.2cm 0;
 			List all objects that match a search term.
 			
 			<h5>Rationale</h5>
-			Finding objects either by name or tag.
+			Finding objects either by name, tag or both.
 			
 			<h5>Preconditions</h5>
 			[ST-02]
@@ -455,7 +455,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			In 4. the user may cancel the operation, the application returns to its previous state
+			In (4) the user may cancel the operation, the application returns to its previous state
 			
 			<h5>Postconditions</h5>
 			All matching Objects in the project are listed similar to [UC-01:01].
@@ -483,7 +483,8 @@ margin: 0.2cm 0;
 			<h5>Course of Events</h5>
 			<ol>
 				<li>The user indicates to view all notes in the project</li>
-				<li>All notes are listed. Displayed fileds: the first line of the note as title, the following lines as text</li>
+				<li>All notes are listed. <br />
+				Displayed fields: the first line of the note as title, the following lines as text</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
@@ -523,7 +524,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			In 3.: If the user indicates to cancel the operation, no note will be created
+			In (3), if the user indicates to cancel the operation, no note will be created
 
 			<h5>Postconditions</h5>
 			A new note is created and the application returns to its previous state. (e.g. [UC-01:07]
@@ -557,7 +558,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			In 4.: If the user indicates to cancel the operation, no note will be created
+			In (4), if the user indicates to cancel the operation, no note will be created
 
 			<h5>Postconditions</h5>
 			The note is altered and the application returns to its previous state. (e.g. [UC-01:07]
@@ -583,13 +584,13 @@ margin: 0.2cm 0;
 			<h5>Course of Events</h5>
 			<ol>
 				<li>The user selects a note and indicates to remove it</li>
-				<li>The user is prompted to confirm the romoval</li>
+				<li>The user is prompted to confirm the removal</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			In 3.: If the user indicates to cancel the operation, no note will be created
+			In (2), if the user indicates to cancel the operation, no note will be created
 
 			<h5>Postconditions</h5>
 			The note is removed and the application returns to its previous state. (e.g. [UC-01:07]
@@ -653,13 +654,15 @@ margin: 0.2cm 0;
 					<li>The user may chose to store the login data</li>
 					<li>The user may chose to automatically log in every time the app is started.</li>
 					<li>The user indicates to submit the log-in data</li>
+					<li>The user is logged-in on the network.</li>
 				</ol>
 
 			<h5>Exceptions</h5>
 				The application may not communicate with the network. A warning is prompted to the user. The application returns to its previous state.
 
 			<h5>Alternative paths</h5>
-				In 5. If the log-in data is not valid, the user is not logged in. A warning is prompted to the user. The user may correct the data.
+				In (5), if the log-in data is not valid, the user is not logged in. A warning is prompted to the user. The user may correct the data. <br />
+				In (2), if the log-in data is already stored, jump to step (5)
 
 			<h5>Postconditions</h5>
 				The User is logged in. 	
@@ -734,7 +737,8 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
-			<p>It is not necessary to be online to propagate changes. It simply means that that the user has finished working on a file that may now be distributed.</p>
+			<p>It is not necessary to be online to propagate changes. It simply means that that the user has finished working on a file that may now be distributed.<br />
+			Dominik: WTF? How can we propagate changes if we're not online? We don't have the &quot;Magic stuff happens here&quot; cloud anymore... </p>
 			<p>see [push]</p>
 			
 		</subsection>
@@ -801,7 +805,8 @@ margin: 0.2cm 0;
 			3
 			
 			<h5>Open issues</h5>
-
+			Dominik: As far as I know, we don't set propagation mode of individual files. We do that
+			on a per project base.
 		</subsection>
 
 		<subsection name="[UC-03:04] view file log"><a name="uc_03_04" />
@@ -836,7 +841,8 @@ margin: 0.2cm 0;
 			3
 			
 			<h5>Open issues</h5>
-
+			Dominik: I thought it would be possible to view the whole project log, which gets reduced
+			if one or more specific files/objects are selected (like &quot; select * from projectlog &quot; and if a file is selected, simply add a where clause. )
 		</subsection>
 
 		<subsection name="[UC-03:05] resolve version conflict"><a name="uc_03_05" />
@@ -844,7 +850,7 @@ margin: 0.2cm 0;
 			Resolving a version conflict
 			
 			<h5>Rationale</h5>
-			Version conflict may occur during the propagation of changes. Those need to be treated carefully.
+			Version conflicts may occur during the propagation of changes. Those need to be treated carefully.
 						
 			<h5>Preconditions</h5>
 			[UC-03:01] has been executed, a version conflict occurred
@@ -1008,6 +1014,7 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
+			Dominik: I don't think this should be possible, since the userid get's confirmed by the ics. 
 		</subsection>
 
 		<subsection name="[UC-04:02:03] remove project member"><a name="uc_04_02_03" />
@@ -1042,6 +1049,9 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
+			Dominik: I don't think we should implement this, because we have no rights management in phase 1
+			and therefor cannot allow users to remove others from the project. Without rights management, this
+			could lead to serious synchronization problems (e.g. user a deletes user c, user c adds a file to the project, user b pulls it and redistributes the log to a, but a doesn't know of c anymore -> invalid state.)
 		</subsection>
 		
 		<subsection name="[UC-04:02:04] Set local nickname for a project member"><a name="uc_04_02_04" />
@@ -1049,7 +1059,7 @@ margin: 0.2cm 0;
 			Setting a nickname for a project member
 			
 			<h5>Rationale</h5>
-			Having nicknames makes it easier if project members have weird user ids.
+			Having nicknames makes it easier to recognize individual project members.
 
 			<h5>Preconditions</h5>
 			[ST-02]
@@ -1122,7 +1132,7 @@ margin: 0.2cm 0;
 			The user may want to send short messages to other project members from within the application.
 
 			<h5>Preconditions</h5>
-			[ST-02], at least one project member exists in the project
+			[ST-02], at least two project member exists in the project
 			
 			<h5>Course of Events</h5>
 			<ol>
@@ -1150,7 +1160,7 @@ margin: 0.2cm 0;
 		
 		<subsection name="[UC-05:02] Read incoming message"><a name="uc_05_02" />
 			<h5>Summary</h5>
-			Reading incomming messages.
+			Reading incoming messages.
 						
 			<h5>Rationale</h5>
 			The user wants to read incoming messages.
@@ -1216,7 +1226,7 @@ margin: 0.2cm 0;
 			5
 
 			<h5>Open issues</h5>
-			
+			Dominik: Useless Use Case without information what the user can change. Please specify. 	
 		</subsection>
 	</section>
 	
@@ -1295,6 +1305,13 @@ margin: 0.2cm 0;
 				<td>2008-05-06</td>
 				<td>simon</td>
 				<td>Reworked the use cases and regrouped them. Should be close to final, although some uncertainties exist regarding the synchronization.</td>
+			</tr>
+			<tr>
+				<td>12</td>
+				<td>2008-05-07</td>
+				<td>dominik</td>
+				<td>Fixed typos, changed/altered some definitions, added open issues where necessary. 
+				</td>
 			</tr>
 					
 		  </table>
