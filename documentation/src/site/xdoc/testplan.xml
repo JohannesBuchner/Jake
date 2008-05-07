@@ -59,7 +59,7 @@
 	<section name="Test Types">
 
 		<subsection name="Functional Tests">
-			We're using unit tests based on the JUnit Testing Framework. 
+			We're using unit tests based on the JUnit Testing Framework in the current version (4.4). 
 			We want to ensure, that the component is doing what we expect
 			it to do, before writing the component itself (test driven development) 
 		</subsection>
@@ -307,10 +307,9 @@
 	<section name="Error Reporting / Bug Tracking">
 		When an error is found:
 		<ol>
-			<li>An empty test case should be created by the person found the error with a short description
-				of the circumstances causing the error, the input data and the expected output. The person
-				has to ensure that the test fails, so it has to be fixed in order to pass all tests while
-				doing automatic testing.
+			<li>An test case should be created by the person found the error with a short description
+				of the circumstances causing the error, the input data and the expected output.
+				A small test case, showing the input data should be created to show the problem to others. 
 			</li>
 			<li>
 				A bug in our bugtracking tool (flyspray) has to be opened and to be assigned to the person
@@ -324,6 +323,12 @@
 			</li>
 			<li>
 				The changes have to be commited to our svn repository.
+			</li>
+			<li>
+				If the bug or the corresponding test case would be to big, to create a small test case in a
+				reasonable amount of time, an empty test case should be created, including a comment to
+				reproduce the error. The person responsible for the code in question then has to create
+				the full test case. 
 			</li>
 		</ol>
 	</section>
@@ -355,6 +360,7 @@ package com.doublesignal.sepm.jake.{artefactId}/{package};
 
 
 /* adjust as necessary */
+import org.hamcrest.*;
 import org.junit.*;
 import org.jmock.*;
 
@@ -370,6 +376,40 @@ public class {className}Test
     /* setup mockery if needed */
     Mockery context = new JUnit4Mockery();
 
+
+	
+	public String getName()
+	{
+		return "nameOfThisTestCase";
+	}
+
+	/**
+	 * acquire required resources
+     */ 
+	protected void setup()
+	{
+
+	}
+
+	/**
+	 * release all the resources acquired
+     */
+	protected voi tearDown()
+	{
+
+	}
+
+	/**
+	 *  {Test case name }
+     * Description of the test case
+	 * Description of the input data
+     * Description of the actual result
+     * Description of the expected result
+	 * @author {author}
+     * @date {date}
+     * @revision {revision, default 1, increasing by each change}
+     * {date first fixed in implementation}
+     */
     @Test(expected = {some}Exception.class)
     public void {testname}()
     {
@@ -377,6 +417,11 @@ public class {className}Test
     }
 
 
+	@Test
+	public void {anotherTestName}()
+	{
+		// some other test
+	}
 
 }
 
