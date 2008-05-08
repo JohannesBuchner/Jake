@@ -48,6 +48,7 @@ margin: 0.2cm 0;
 							</ul>
 						</li>
 						<li><a href='#uc_01_08'>[UC-01:08] refresh datapool view</a></li>
+						<li><a href='#uc_01_09'>[UC-01:09] set soft lock</a></li>
 	
 					</ul>
 				</li>
@@ -224,6 +225,7 @@ margin: 0.2cm 0;
 			If the file can not be accessed, a warning is prompted to the user.
 			
 			<h5>Alternative paths</h5>
+			In 4. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			If the object is a folder, the user is asked if he really wants to delete the folder and the files contained. <br />
 			In 3. the user may cancel the operation. The application returns to its previous state.
 			
@@ -343,6 +345,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			In 3. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			In 3.: If the user indicates to cancel the operation, no change will be performed.
 			
 			<h5>Postconditions</h5>
@@ -381,6 +384,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			In 3. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			
 			<h5>Postconditions</h5>
 			The changes are stored, the application returns to its previous state. (e.g. [UC-01:05]
@@ -419,6 +423,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			In 3. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			In (3), if the user indicates to cancel the operation, no change will be performed.
 			
 			<h5>Postconditions</h5>
@@ -558,6 +563,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			In 4. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			In (4), if the user indicates to cancel the operation, no note will be created
 
 			<h5>Postconditions</h5>
@@ -590,6 +596,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			In 1. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			In (2), if the user indicates to cancel the operation, no note will be created
 
 			<h5>Postconditions</h5>
@@ -634,8 +641,42 @@ margin: 0.2cm 0;
 			<h5>Open issues</h5>
 			
 		</subsection>
-
-
+	
+		<subsection name="[UC-01:09] set soft lock"><a name="uc_01_09" />
+			<h5>Summary</h5>
+			Setting a soft lock for an object
+			
+			<h5>Rationale</h5>
+			Since we don't support locking we at least support "soft locking" 
+			
+			<h5>Preconditions</h5>
+			[ST-02], at least one file exists in the project
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user selects a file and indicates to set the soft lock</li>
+				<li>The user sets the locking comment. </li>
+				<li>The user indicates to safe the locking comment</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			If 2. if the user leaves the comment empty no soft lock is set. <br />
+			If the user cancels the operation no changes are saved, the application returns to its previous state.
+			
+			<h5>Postconditions</h5>
+			A soft lock is set for the object.
+			
+			<h5>Frequency of use</h5>
+			3
+			
+			<h5>Priority</h5>
+			4
+			
+			<h5>Open issues</h5>
+			
+		</subsection>
 
 		<subsection name="[UC-02:01] Login to the network"><a name="uc_02_01" />
 			<h5>Summary</h5>
@@ -725,6 +766,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
+			In 1. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			If a version conflict occurs during the operation, [UC-03:05] is excuted.
 			
 			<h5>Postconditions</h5>
@@ -775,19 +817,19 @@ margin: 0.2cm 0;
 
 		</subsection>
 
-		<subsection name="[UC-03:03] set push/pull behaviour for file"><a name="uc_03_03" />
+		<subsection name="[UC-03:03] set push/pull behaviour"><a name="uc_03_03" />
 			<h5>Summary</h5>
-			Setting the push/pull behaviour for a file
+			Setting the push/pull behaviour for the application
 			
 			<h5>Rationale</h5>
-			The user may want to enable/disable auto push/pull for some file to save bandwidth etc.
+			The user may want to enable/disable auto push/pull to save bandwidth etc.
 			
 			<h5>Preconditions</h5>
-			[ST-02], at least one file exists in the project.
+			[ST-02]
 			
 			<h5>Course of Events</h5>
 			<ul>
-				<li>The user selects a file from the project and indicates to set its push/pull behaviour</li>
+				<li>The user indicates to set the projects push/pull behaviour</li>
 				<li>The user sets the behaviour, options are: auto/manual push, auto/manual pull</li>
 			</ul>
 			
@@ -796,7 +838,7 @@ margin: 0.2cm 0;
 			<h5>Alternative paths</h5>
 			
 			<h5>Postconditions</h5>
-			The push/pull behaviour is set for the file.
+			The push/pull behaviour is set for the project.
 						
 			<h5>Frequency of use</h5>
 			2
@@ -805,8 +847,7 @@ margin: 0.2cm 0;
 			3
 			
 			<h5>Open issues</h5>
-			Dominik: As far as I know, we don't set propagation mode of individual files. We do that
-			on a per project base.
+
 		</subsection>
 
 		<subsection name="[UC-03:04] view file log"><a name="uc_03_04" />
@@ -1015,6 +1056,7 @@ margin: 0.2cm 0;
 			
 			<h5>Open issues</h5>
 			Dominik: I don't think this should be possible, since the userid get's confirmed by the ics. 
+			Simon: We need to provide this uc, see the rationale for clarification. If I mistype a user ID I want to change it.
 		</subsection>
 
 		<subsection name="[UC-04:02:03] remove project member"><a name="uc_04_02_03" />
