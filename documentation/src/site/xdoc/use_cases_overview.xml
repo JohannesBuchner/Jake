@@ -35,6 +35,7 @@ margin: 0.2cm 0;
 							<ul>
 								<li><a href='#uc_01_05_01'>[UC-01:05:01] Add tag</a></li>
 								<li><a href='#uc_01_05_02'>[UC-01:05:02] Remove tag</a></li>
+								<li><a href='#uc_01_05_03'>[UC-01:05:03] Alter tag</a></li>
 							</ul>
 						</li>
 						<li><a href='#uc_01_06'>[UC-01:06] Find object by name or tag</a></li>
@@ -404,6 +405,48 @@ margin: 0.2cm 0;
 			
 			<h5>Open issues</h5>
 			
+		</subsection>
+		
+		<subsection name="[UC-01:05:03] Alter tag"><a name="uc_01_05_03" />
+			<h5>Summary</h5>
+			The user may alter a tag for a certain object.
+			
+			<h5>Rationale</h5>
+			See [UC-01:05]; Also, the user may have mistyped the tag when adding it.
+			
+			<h5>Preconditions</h5>
+			<ul>
+				<li>[ST-02]</li>
+				<li>The object to be tagged exists in the project</li>
+				<li>This UC is accessed from within [UC-01:05]</li>
+			</ul>
+			
+			<h5>Course of Events</h5>
+			<ol>
+				<li>The user indicates to alter a tag</li>
+				<li>The user specifies a new tag name</li>
+				<li>the user indicates to save the tag</li>
+			</ol>
+			
+			<h5>Exceptions</h5>
+			
+			<h5>Alternative paths</h5>
+			In 3. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
+			In (3), if the user indicates to cancel the operation, no change will be performed.
+			
+			<h5>Postconditions</h5>
+			The changes are stored, the application returns to its previous state. (e.g. [UC-01:05]
+			
+			<h5>Frequency of use</h5>
+			1
+			
+			<h5>Priority</h5>
+			3
+			
+			<h5>Open issues</h5>
+			<p>For implementation, this is first a remove of the old tag and a add of the new tag; Especially for the sync.
+			Also, this use case is no global tag rename (project-wise renaming a tag), but the changing of a tag for one object.
+			</p>
 		</subsection>
 		
 		<subsection name="[UC-01:06] Find object by name or tag"><a name="uc_01_06" />
