@@ -19,7 +19,7 @@ margin: 0.2cm 0;
 }
 </style>
     <section name="Use Cases">
-    	<p>This page contains an overview of all use cases. Use cases are listed with a discriptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
+    	<p>This page contains an overview of all use cases. Use cases are listed with a descriptive title and link to the full use case description. Every use case is identified by an unique identifier using the following syntax: [UC-&lt;Number&gt;]</p>
 		
     	<subsection name="Overview">
 			<ul>
@@ -54,12 +54,12 @@ margin: 0.2cm 0;
 				<li>
 					[UC-02] Networking
 					<ul>
-						<li><a href='#uc_02_01'>[UC-02:01] Login to the network</a></li>
+						<li><a href='#uc_02_01'>[UC-02:01] Log-in to the network</a></li>
 						<li><a href='#uc_02_02'>[UC-02:02] Logout from the network</a></li>
 					</ul>
 				</li>
 				<li>
-					[UC-03] Synchronization
+					[UC-03] Synchronisation
 					<ul>
 						<li><a href="#uc_03_01">[UC-03:01] Propagate local changes</a></li>
 						<li><a href="#uc_03_02">[UC-03:02] Pull file from project member</a></li>
@@ -286,7 +286,7 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
-			<p>What happens if no application is connected to the file type? Does the os prompt a "pick app to open file" dialog?</p>
+			<p>What happens if no application is connected to the file type? Does the OS prompt a "pick app to open file" dialog?</p>
 			
 		</subsection>
 		
@@ -345,7 +345,7 @@ margin: 0.2cm 0;
 			<ol>
 				<li>The user indicates to add a tag</li>
 				<li>The user specifies the tag name</li>
-				<li>the user indicates to safe the tag</li>
+				<li>the user indicates to save the tag</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
@@ -624,7 +624,7 @@ margin: 0.2cm 0;
 			<ol>
 				<li>The user selects a file and indicates to set the soft lock</li>
 				<li>The user sets the locking comment. </li>
-				<li>The user indicates to safe the locking comment</li>
+				<li>The user indicates to save the locking comment</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
@@ -651,17 +651,17 @@ margin: 0.2cm 0;
 			The user logs in to the network. For the used network layer (ICService), credentials are needed.
 			
 			<h5>Rationale</h5>
-			The sharing operations are built on top of a network service which has to be available. It is made available by a login operation.
+			The sharing operations are built on top of a network service which has to be available. It is made available by a log-in operation.
 			
 			<h5>Preconditions</h5>
 			[ST-02-loaded]
 			
 			<h5>Course of events</h5>
 				<ol>
-					<li>The user indicates to login to the network.</li>
+					<li>The user indicates to log-in to the network.</li>
 					<li>The user enters the credentials.</li>
 					<li>The user may choose to store the credentials.</li>
-					<li>If so, the user may choose to automatically login every time the app is started.</li>
+					<li>If so, the user may choose to automatically log-in every time the app is started.</li>
 					<li>The user indicates to submit the log-in data.</li>
 					<li>The user is logged-in on the network.</li>
 				</ol>
@@ -719,7 +719,7 @@ margin: 0.2cm 0;
 		
 		<subsection name="[UC-03:01] Propagate locally changed file"><a name="uc_03_01" />
 			<h5>Summary</h5>
-			After one modified a file, for showing and notifiing others that changes have been made, the information is propagated. Others then may perform "[UC-01:08] Refresh datapool view" and "[UC-03:02] pull file from project member"
+			After one modified a file, for showing and notifying others that changes have been made, the information is propagated. Others then may perform "[UC-01:08] Refresh datapool view" and "[UC-03:02] pull file from project member"
 			
 			<h5>Rationale</h5>
 			See above.
@@ -736,7 +736,7 @@ margin: 0.2cm 0;
 			<h5>Alternative paths</h5>
 			In 1. if the object is soft locked the locking comment is prompted to the user. The user may chose to cancel the operation or to ignore the lock.<br />
 			If a version conflict occurs during the operation, [UC-03:05] is started.<br />
-			Notifiing others that changes exist is based on best-effort. 
+			Notifying others that changes exist is based on best-effort. 
 			Failures in the network service may be displayed to the user as warnings.<br />
 			
 			<h5>Postconditions</h5>
@@ -794,7 +794,7 @@ margin: 0.2cm 0;
 
 		<subsection name="[UC-03:03] Set push/pull behaviour preferences"><a name="uc_03_03" />
 			<h5>Summary</h5>
-			The options autopush and autopull may be enabled or disabled seperately. 
+			The options autopush and autopull may be enabled or disabled separately. 
 			Autopush means that "[UC-03:01] Propagate local changes" is automatically started when the application detects a file change.
 			Autopull means that "[UC-03:02] Pull file from project member" is automatically started when it is known that a new version is available. 
 			
@@ -890,7 +890,7 @@ margin: 0.2cm 0;
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
-			The user may also abort the conflict resolvement. He/she then has to resolve the conflict later.
+			The user may also abort the conflict resolution. He/she then has to resolve the conflict later.
 			
 			<h5>Postconditions</h5>
 			The conflict has been resolved.
@@ -948,7 +948,7 @@ margin: 0.2cm 0;
 			Display all project members that are associated with the project.
 			
 			<h5>Rationale</h5>
-			The user wants to know who works on the project, and who has access to the data.
+			The user wants to know and define who works on the project, and who has access to the data.
 			
 			<h5>Preconditions</h5>
 			[ST-02-loaded]
@@ -964,8 +964,10 @@ margin: 0.2cm 0;
 			The user may indicate to only display members that are currently online.
 			
 			<h5>Postconditions</h5>
-			All project members are listed in alphabetical order. Displayed fields: name, online status (online, offline, unknown)
-						
+			All project members are listed in alphabetical order. Displayed fields: name, online status (online, offline, unknown). 
+			
+			The use cases below may be started now.
+			
 			<h5>Frequency of use</h5>
 			3
 			
@@ -976,12 +978,12 @@ margin: 0.2cm 0;
 			
 		</subsection>
 
-		<subsection name="[UC-04:02:01] add project member"><a name="uc_04_02_01" />
+		<subsection name="[UC-04:02:01] Add project member"><a name="uc_04_02_01" />
 			<h5>Summary</h5>
 			Add a project member to the project.
 			
 			<h5>Rationale</h5>
-			A project needs project members.
+			See [UC-04:02]
 			
 			<h5>Preconditions</h5>
 			[ST-02-loaded] or the application is in the state of the postcondition of this UC
@@ -997,10 +999,10 @@ margin: 0.2cm 0;
 			
 			<h5>Alternative paths</h5>
 				In 3. the user may cancel the operation, the application returns to its previous state.
-
+			
 			<h5>Postconditions</h5>
-			The new project member is added to the project.			
-
+			The new project member is added to the project.
+			
 			<h5>Frequency of use</h5>
 			2
 			
@@ -1008,34 +1010,36 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
+			<p>For implementation: At this point, no existence check is implemented (which would be depending on the ICService), nor a invite feature.
+			</p>
 		</subsection>
 		
-		<subsection name="[UC-04:02:03] alter project member"><a name="uc_04_02_02" />
+		<subsection name="[UC-04:02:02] Alter project member"><a name="uc_04_02_02" />
 			<h5>Summary</h5>
-			edit a project member.
+			Edit a project member
 			
 			<h5>Rationale</h5>
-			The user wants to edit a project member in case he/she mistyped, etc.
+			See [UC-04:02]. Also, the user wants to edit a project member in case he/she mistyped.
 			
 			<h5>Preconditions</h5>
-			[ST-02-loaded] or the application is in the state of the postcondition of this UC<br />
-			At least one project member exists in the project
+			[ST-02-loaded] or the application is in the state of the postcondition of this UC.<br />
+			At least one project member exists in the project.
 			
 			<h5>Course of events</h5>
 			<ol>
 				<li>The user selects a project member and indicates to edit it.</li>
 				<li>The user edits the user ID</li>
-				<li>The user indicates to safe the changes.</li>
+				<li>The user indicates to save the changes.</li>
 			</ol>
 			
 			<h5>Exceptions</h5>
 			
 			<h5>Alternative paths</h5>
 				In 3. the user may cancel the operation, the application returns to its previous state.
-
+			
 			<h5>Postconditions</h5>
-			The project member is edited.			
-
+			The project member is edited.
+			
 			<h5>Frequency of use</h5>
 			1
 			
@@ -1043,16 +1047,19 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
-			Dominik: I don't think this should be possible, since the userid get's confirmed by the ics. 
-			Simon: We need to provide this uc, see the rationale for clarification. If I mistype a user ID I want to change it.
+			<p>
+			Dominik: I don't think this should be possible, since the userid gets confirmed by the ICService. <br />
+			Simon: We need to provide this uc, see the rationale for clarification. If I mistype a user ID I want to change it.<br />
+			Johannes: Simon has a point there.
+			</p>
 		</subsection>
 
-		<subsection name="[UC-04:02:03] remove project member"><a name="uc_04_02_03" />
+		<subsection name="[UC-04:02:03] Remove project member"><a name="uc_04_02_03" />
 			<h5>Summary</h5>
 			Remove a member from the project.
 			
 			<h5>Rationale</h5>
-			Sometimes project members need to be removed.
+			See [UC-04:02]
 			
 			<h5>Preconditions</h5>
 			[ST-02-loaded] or the application is in the state of the postcondition of this UC<br />
@@ -1079,17 +1086,21 @@ margin: 0.2cm 0;
 			5
 			
 			<h5>Open issues</h5>
+			<p>
 			Dominik: I don't think we should implement this, because we have no rights management in phase 1
 			and therefor cannot allow users to remove others from the project. Without rights management, this
-			could lead to serious synchronization problems (e.g. user a deletes user c, user c adds a file to the project, user b pulls it and redistributes the log to a, but a doesn't know of c anymore -> invalid state.)
+			could lead to serious synchronisation problems (e.g. user a deletes user c, user c adds a file to the project, user b pulls it and redistributes the log to a, but a doesn't know of c anymore -> invalid state.)<br />
+			Johannes: Not a problem. In our not-invited world, where we assume that everyone has manually configured exactly the same project members list (don't tell me that sucks), this just defines userids the ICService talks to.
+			
+			</p>
 		</subsection>
 		
 		<subsection name="[UC-04:02:04] Set local nickname for a project member"><a name="uc_04_02_04" />
 			<h5>Summary</h5>
-			Setting a nickname for a project member
+			Setting a nickname for a project member.
 			
 			<h5>Rationale</h5>
-			Having nicknames makes it easier to recognize individual project members.
+			Having nicknames makes it easier to recognise individual project members (rather than user IDs).
 
 			<h5>Preconditions</h5>
 			[ST-02-loaded]
@@ -1098,7 +1109,7 @@ margin: 0.2cm 0;
 			<ul>
 				<li>The user selects a project member and indicates to set a nickname.</li>
 				<li>The user enters a nickname</li>
-				<li>The user indicates to safe the new nickname</li>
+				<li>The user indicates to save the new nickname</li>
 			</ul>
 
 			<h5>Exceptions</h5>
@@ -1124,7 +1135,7 @@ margin: 0.2cm 0;
 			A local comment is set for a project member.
 			
 			<h5>Rationale</h5>
-			The user may want to add a comment to a project member (e.g. additional contact info, etc.) that is not shared with other members.
+			The user may want to add a comment to a project member (e.g. additional contact info, <!-- that the guy is an ass, --> etc.) that is not shared with other members.
 			
 			<h5>Preconditions</h5>
 			[ST-02-loaded]
@@ -1154,7 +1165,7 @@ margin: 0.2cm 0;
 			<h5>Open issues</h5>
 		</subsection>
 
-		<subsection name="[UC-05:01] send message to project member"><a name="uc_05_01" />
+		<subsection name="[UC-05:01] Send message to project member"><a name="uc_05_01" />
 			<h5>Summary</h5>
 			Sending a message to another project member.
 			
@@ -1191,7 +1202,7 @@ margin: 0.2cm 0;
 		
 		<subsection name="[UC-05:02] Read a incoming message"><a name="uc_05_02" />
 			<h5>Summary</h5>
-			[UC-05:01] implies that the message will be displayed to the reciever. 
+			[UC-05:01] implies that the message will be displayed to the receiver. 
 			
 			<h5>Rationale</h5>
 			The user wants to read messages other users sent to him/her.
@@ -1226,10 +1237,10 @@ margin: 0.2cm 0;
 
 		<subsection name="[UC-06] Edit application preferences"><a name="uc_06" />
 			<h5>Summary</h5>
-			Edit the application prefs. These are:
+			Edit the application preferences. These are:
 			<ul>
-				<li>Whether the login is done when the application is started.</li>
-				<li>Login credentials</li>
+				<li>Whether the log-in is done when the application is started.</li>
+				<li>Log-in credentials</li>
 			</ul>
 			<h5>Rationale</h5>
 			Different users have usage scenarios, workflows or taste.
@@ -1239,10 +1250,10 @@ margin: 0.2cm 0;
 			
 			<h5>Course of Events</h5>
 			<ul>
-				<li>The user indicates to edit the prefs.</li>
-				<li>All available prefs are displayed to the user</li>
-				<li>The user may change the prefs.</li>
-				<li>the user indicates to safe the changes</li>
+				<li>The user indicates to edit the preferences.</li>
+				<li>All available preferences are displayed to the user</li>
+				<li>The user may change the preferences.</li>
+				<li>the user indicates to save the changes</li>
 			</ul>
 			
 			<h5>Exceptions</h5>
@@ -1305,7 +1316,7 @@ margin: 0.2cm 0;
 			  <td>5</td>
 			  <td>2008-04-24</td>
 			  <td>dominik</td>
-			  <td>created some of the use case informaiton</td>
+			  <td>created some of the use case information</td>
 			</tr>
 			<tr>
 				<td>6</td>
@@ -1342,7 +1353,7 @@ margin: 0.2cm 0;
 				<td>11</td>
 				<td>2008-05-06</td>
 				<td>simon</td>
-				<td>Reworked the use cases and regrouped them. Should be close to final, although some uncertainties exist regarding the synchronization.</td>
+				<td>Reworked the use cases and regrouped them. Should be close to final, although some uncertainties exist regarding the synchronisation.</td>
 			</tr>
 			<tr>
 				<td>12</td>
