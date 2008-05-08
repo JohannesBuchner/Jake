@@ -643,6 +643,7 @@ margin: 0.2cm 0;
 			4
 			
 			<h5>Open issues</h5>
+			<p>For implementation: A action in the log, e.g. set-lock and unset-lock, is performed. For checking if a file is locked (and who locked it), the log is scanned from bottom up.</p>
 			
 		</subsection>
 
