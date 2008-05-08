@@ -1355,6 +1355,12 @@ margin: 0.2cm 0;
 				<td>Fixed typos, changed/altered some definitions, added open issues where necessary. 
 				</td>
 			</tr>
+			<tr>
+				<td>13</td>
+				<td>2008-05-08</td>
+				<td>simon</td>
+				<td>added the soft lock uc(added a few alternative paths regarding the soft lock), edited [UC-03:03] so that it only supports setting the behaviour on a per project basis</td>
+			</tr>
 					
 		  </table>
       </section>
