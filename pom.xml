@@ -133,17 +133,10 @@
 		<dependencies>
 			<!-- Internal -->
 			<dependency>
-				<groupId>com.doublesignal.sepm.3950.collab</groupId>
-				<artifactId>sepm-collab-core</artifactId>
+				<groupId>com.doublesignal.sepm.jake</groupId>
+				<artifactId>sepm-jake-core</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
-<!-- 
-			<dependency>
-				<groupId>com.doublesignal.sepm.3950.collab</groupId>
-				<artifactId>sepm-collab-gui</artifactId>
-				<version>${pom.version}</version>
-			</dependency>
--->
 		</dependencies>
 	</dependencyManagement>
 
