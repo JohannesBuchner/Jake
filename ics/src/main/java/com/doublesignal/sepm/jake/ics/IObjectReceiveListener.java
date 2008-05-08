@@ -7,7 +7,7 @@ package com.doublesignal.sepm.jake.ics;
  * @author johannes
  */
 
-public interface ObjectReceiveListener {
+public interface IObjectReceiveListener {
 	
 	public void receivedObject(String from_userid, String identifier, String content);
 	

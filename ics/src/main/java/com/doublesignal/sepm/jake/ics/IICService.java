@@ -22,10 +22,10 @@ public interface IICService {
 	 * or should we try some fancy serialization stuff? */
 	public Boolean sendObject(String to_userid, String objectidentifier, String content);
 	
-	public void registerReceiveObjectCallback(ObjectReceiveListener rl);
+	public void registerReceiveObjectCallback(IObjectReceiveListener rl);
 	
 	public Boolean sendMessage(String to_userid, String content);
 	
-	public void registerReceiveObjectMessage(MessageReceiveListener rl);
+	public void registerReceiveObjectMessage(IMessageReceiveListener rl);
 	
 }
