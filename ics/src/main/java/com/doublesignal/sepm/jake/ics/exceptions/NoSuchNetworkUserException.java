@@ -9,4 +9,5 @@ package com.doublesignal.sepm.jake.ics.exceptions;
  * Time: 12:47:37 AM
  */
 public class NoSuchNetworkUserException extends Exception {
+	
 }

@@ -4,6 +4,7 @@ package com.doublesignal.sepm.jake.ics;
 /**
  * Objects wanting to receive messages have to implement this
  * 
+ * @see IICService
  * @author johannes
  */
 
