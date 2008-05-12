@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.core.domain;
 
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * SEPM SS08
@@ -10,7 +11,7 @@ import java.util.List;
  * Date: May 9, 2008
  * Time: 00:25:03 AM
  */
-public class JakeObject {
+public class JakeObject implements Serializable {
 
     private String name;
 

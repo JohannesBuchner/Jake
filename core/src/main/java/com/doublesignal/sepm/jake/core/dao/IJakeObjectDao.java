@@ -8,5 +8,8 @@ package com.doublesignal.sepm.jake.core.dao;
  * Date: May 9, 2008
  * Time: 1:11:56 AM
  */
-public interface IJakeObjectDao {
+public interface IJakeObjectDao
+{
+
+
 }

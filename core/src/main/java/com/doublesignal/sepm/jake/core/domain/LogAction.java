@@ -34,7 +34,18 @@ public enum LogAction {
     /**
      * the tag in the comment field of the LogEntry was removed from the JakeObject in question
      */
-    TAGREMOVE
+    TAGREMOVE,
+
+    /**
+     * a new invitation is created, to invite a new member to the project. the networkUserId is specified in the
+     * comments field, so the corresponding ProjectInvitation can be created at each client.
+     */
+    INVITECREATED,
+
+    /**
+     * 
+     */
+    INVITEACCEPTED
 
 
 }
