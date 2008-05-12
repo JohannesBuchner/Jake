@@ -47,7 +47,7 @@ public interface ILogEntryDao
      * @param jakeObject
      * @return List of LogEntrys
      */
-    public List<LogEntry> getAllOfJakeObject(JakeObject jakeObject)
+    public List<LogEntry> getAllOfJakeObject(JakeObject jakeObject);
 
 
 }
