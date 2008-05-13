@@ -6,5 +6,6 @@ package com.doublesignal.sepm.jake.ics.exceptions;
  * The requested operation requires a login first.
  */
 @SuppressWarnings("serial")
-public class NotLoggedInException extends Exception {
+public class NotLoggedInException extends NetworkException {
+	
 }

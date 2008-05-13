@@ -1,7 +1,9 @@
 package com.doublesignal.sepm.jake.ics;
 
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
 
 
@@ -64,7 +66,8 @@ public interface IICService {
 	 */
 	public Boolean sendObject(String to_userid, String objectidentifier, 
 			String content) 
-		throws NetworkException, NotLoggedInException, TimeoutException;
+		throws NetworkException, NotLoggedInException, TimeoutException,
+			NoSuchUseridException, OtherUserOfflineException;
 	
 	/**
 	 * Registers a callback for the event that a object is received.
@@ -86,7 +89,8 @@ public interface IICService {
 	 * @throws TimeoutException
 	 */
 	public Boolean sendMessage(String to_userid, String content)
-		throws NetworkException, NotLoggedInException, TimeoutException;
+		throws NetworkException, NotLoggedInException, TimeoutException, 
+			NoSuchUseridException, OtherUserOfflineException;
 	
 	/**
 	 * Registers a callback for the event that a message is received.

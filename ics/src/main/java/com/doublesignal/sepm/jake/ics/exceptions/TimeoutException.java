@@ -6,5 +6,5 @@ package com.doublesignal.sepm.jake.ics.exceptions;
  * A timeout occured during a network operation
  */
 @SuppressWarnings("serial")
-public class TimeoutException extends Exception {
+public class TimeoutException extends NetworkException {
 }
