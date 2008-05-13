@@ -264,6 +264,11 @@
 					<td>ease of implementation</td>
 					<td>basic functionality, architecture, gui</td>
 				</tr>
+				<tr>
+					<td>[RFC2119] we use the definitions of MUST, MAY, etc defined in http://www.ietf.org/rfc/rfc2119.txt</td>
+					<td>solid standards...</td>
+					<td>code</td>
+				</tr>
 			</tbody>
 		</table>
 	</subsection>
@@ -335,6 +340,12 @@
 				<td>2008-04-30</td>
 				<td>johannes</td>
 				<td>Incorporated decisions of tech-arch meeting</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>2008-05-13</td>
+				<td>simon</td>
+				<td>Added RFC2119</td>
 			</tr>
 		</table>
 	</section>
