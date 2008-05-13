@@ -1,7 +1,6 @@
 package com.doublesignal.sepm.jake.fss;
 
 import java.io.IOException;
-import java.io.*;
 
 /**
  * The file system service ought to provide a operating system

@@ -1,6 +1,9 @@
 package com.doublesignal.sepm.jake.ics;
 
-import java.io.IOException;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
+
 
 
 /**
@@ -26,14 +29,17 @@ public interface IICService {
 	 * @param userid
 	 * @param pw password
 	 * @return wether the login was successful
+	 * @throws NetworkException 
 	 */
-	public Boolean login(String userid, String pw);
+	public Boolean login(String userid, String pw)
+		throws NetworkException, TimeoutException;
 	
 	/**
 	 * Logs out and disconnects from the used network service.
 	 * @return wether the logout was successful
 	 */
-	public Boolean logout();
+	public Boolean logout()
+		throws NetworkException, TimeoutException;
 	
 	/**
 	 * Checks wether a previous login was successful and the connection is 
@@ -55,7 +61,7 @@ public interface IICService {
 	 */
 	public Boolean sendObject(String to_userid, String objectidentifier, 
 			String content) 
-		throws IOException;
+		throws NetworkException, NotLoggedInException, TimeoutException;
 	
 	/**
 	 * Registers a callback for the event that a object is received.
@@ -74,7 +80,7 @@ public interface IICService {
 	 *                         guarantee the object has been retrieved.
 	 */
 	public Boolean sendMessage(String to_userid, String content)
-		throws IOException;
+		throws NetworkException, NotLoggedInException, TimeoutException;
 	
 	/**
 	 * Registers a callback for the event that a message is received.
@@ -87,7 +93,8 @@ public interface IICService {
 	 * Checks if the userid may be reached (has an online status). 
 	 * @param userid the other client to talk to.
 	 */
-	public Boolean isOnline(String userid);
+	public Boolean isOnline(String userid)
+		throws NetworkException, NotLoggedInException, TimeoutException;
 	
 	/**
 	 * Registers a callback for the event that the userid goes online or offline

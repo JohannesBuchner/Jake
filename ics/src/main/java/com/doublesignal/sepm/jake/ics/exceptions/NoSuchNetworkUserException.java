@@ -8,6 +8,7 @@ package com.doublesignal.sepm.jake.ics.exceptions;
  * Date: May 9, 2008
  * Time: 12:47:37 AM
  */
+@SuppressWarnings("serial")
 public class NoSuchNetworkUserException extends Exception {
 	
 }

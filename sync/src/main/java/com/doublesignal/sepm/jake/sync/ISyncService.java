@@ -1,9 +1,16 @@
 package com.doublesignal.sepm.jake.sync;
 
+import java.util.List;
+
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.ics.IICService;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
+import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
+import com.doublesignal.sepm.jake.syn.exceptions.ObjectNotConfiguredException;
 
 import java.io.IOException;
 
@@ -11,10 +18,12 @@ import java.io.IOException;
  * The task of the synchronisation service (SyncService) is to 
  * implement a sharing logic for objects based on the ICService
  * 
- * Each client has a log index with the keys (timestamp, relpath, userid), a 
- *   action and possibly more.
+ * Each client has a log. It has the keys (timestamp, relpath, userid), a 
+ *   action and possibly more. 
+ *   @see LogEntry
  * 
- * synclog() synchronises the local index with another user using the ICService
+ * syncLogAndGetChanges() synchronises the local index with another user using 
+ *   the ICService 
  *   @see IICService
  * 
  * Then, a pull operation can be issued for a file. This downloads (fetches) the 
@@ -35,37 +44,44 @@ import java.io.IOException;
 
 public interface ISyncService {
 	/**
-	 * Connects to the given user and request their log.
+	 * The log is requested from the given user.
 	 * Then, the log is merged with (added to) the local log.
 	 * 
-	 * @param userid @see IICService
-	 * @return the list of objects that have changed/are new/were deleted or 
-	 *   touched in some other way
+	 * @param    userid @see IICService
+	 * @return   the list of objects that have changed/are new/were deleted or 
+	 *           touched in some other way
+	 * @throws IOException   Problems in the ICService
 	 */
-	public JakeObject[] synclog(String userid) 
-		throws IOException;
+	public List<JakeObject> syncLogAndGetChanges(String userid) 
+		throws NetworkException, NotLoggedInException, TimeoutException, 
+			ObjectNotConfiguredException;
 	
 	/**
 	 * The object is requested from the last editor (found in the log) and 
 	 * its content returned.
 	 * @param jo
-	 * @return The Object content if successful, null else
+	 * @return the object content
+	 * 
+	 * TODO: write the object content to the jakeobject or return a bytearray or
+	 * something similar (Strings look too human-readable). 
 	 */
 	public String pull(JakeObject jo) 
-		throws IOException;
+		throws NetworkException, NotLoggedInException, TimeoutException, 
+			OtherUserOfflineException, ObjectNotConfiguredException;
 	
 	/**
 	 * Adds a log entry that the object has been modified/created/...
-	 * Then, asks each project member one after another to start a synclog.   
+	 * Then, asks each project member one after another to start a synclog. 
+	 * These requests are best-effort only.   
 	 * 
-	 * @param  jo    Object to be treated.
-	 * @return 
-	 * @throws IOException
+	 * @param  jo       Object to be treated.
+	 * @return members  whom the request reached; empty list if no one could be 
+	 *                  reached
 	 */
-	public Boolean push(JakeObject jo)
-		throws IOException;
+	public List<ProjectMember> push(JakeObject jo) 
+		throws ObjectNotConfiguredException;
 	
-	/**
+	/* For implementing the SyncService:
 	 * This has to be registered in the used ICService to be called on pull 
 	 * requests. It loads the object content and sends it back to the requester.
 	 * 
@@ -77,11 +93,12 @@ public interface ISyncService {
 	 * @throws IOException
 	 * 
 	 * TODO: maybe set protected?
-	 */
+	 *
 	public String handleFetchRequest(JakeObject jo)	
-		throws IOException;
+		throws NetworkException, NotLoggedInException, TimeoutException;
+	 */
 	
-	/** The following methods ought to be set on initialization e.g. via 
+	/* The following methods ought to be set on initialization e.g. via 
 	 * dependency-injection. The parameters ought to be references, not copies.
 	 */
 	
@@ -96,17 +113,15 @@ public interface ISyncService {
 	 * Set the Log to be used.
 	 * This must be set before operations can be used.
 	 * @see IICService
-	 * 
-	 * TODO: Can we add logentries using this model?
 	 */
-	public void setLogEntries(LogEntry[] le);
+	public void setLogEntries(List<LogEntry> le);
 	
 	/**
 	 * set the project members list to be used.
 	 * This must be set before operations can be used.
 	 * @see IICService
 	 */	
-	public void setProjectMembers(ProjectMember[] pm);
+	public void setProjectMembers(List<ProjectMember> pm);
 	
 	
 }

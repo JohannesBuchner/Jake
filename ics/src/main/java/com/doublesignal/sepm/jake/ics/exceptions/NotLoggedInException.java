@@ -7,9 +7,7 @@ package com.doublesignal.sepm.jake.ics.exceptions;
  * User: domdorn
  * Date: May 9, 2008
  * Time: 12:51:21 AM
- * 
- * also IOException for network transmission
  */
 @SuppressWarnings("serial")
-public class NetworkException extends Exception {
+public class NotLoggedInException extends Exception {
 }
