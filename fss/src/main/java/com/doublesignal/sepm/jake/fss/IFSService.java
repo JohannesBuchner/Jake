@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
 import java.io.IOException;
+import java.io.*;
 
 /**
  * The file system service ought to provide a operating system
@@ -58,11 +59,11 @@ public interface IFSService {
 	public Boolean isValidRelpath(String relpath);
 	
 	/**
-	 * Concatinates the rootpath and the relpath together and
+	 * Concatinates the parentpath and the relpath together and
 	 * converts to the right path seperator
 	 * @return a absolute path usable to the OS
 	 */
-	public String joinPath(String rootPath, String relpath);
+	public String joinPath(String parentpath, String relpath);
 	
 	/**
 	 * Launches the associated application and returns (i.e. does not wait for 
@@ -111,5 +112,17 @@ public interface IFSService {
 	 */
 	public Boolean writeFile(String relpath, String content) 
 		throws InvalidFilenameException, IOException;
-
+	
+	
+	/**
+	 * @return a temporary directory
+	 */
+	public String getTempDir() 
+		throws IOException;
+	
+	/**
+	 * @return the path to a new temporary file that can be written to
+	 */
+	public String getTempFile()
+		throws IOException;
 }
