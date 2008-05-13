@@ -1,14 +1,9 @@
 package com.doublesignal.sepm.jake.ics.exceptions;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 9, 2008
- * Time: 12:51:21 AM
+ * @author domdorn, johannes
  * 
- * also IOException for network transmission
+ * Is used on unexpected connection breakdown, transmission abort, etc. 
  */
 @SuppressWarnings("serial")
 public class NetworkException extends Exception {

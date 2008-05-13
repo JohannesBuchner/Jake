@@ -1,12 +1,9 @@
 package com.doublesignal.sepm.jake.ics.exceptions;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 9, 2008
- * Time: 12:51:21 AM
+ * @author johannes
+ * 
+ * A timeout occured during a network operation
  */
 @SuppressWarnings("serial")
 public class TimeoutException extends Exception {

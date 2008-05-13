@@ -10,7 +10,7 @@ import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
-import com.doublesignal.sepm.jake.syn.exceptions.ObjectNotConfiguredException;
+import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 
 import java.io.IOException;
 
@@ -50,7 +50,10 @@ public interface ISyncService {
 	 * @param    userid @see IICService
 	 * @return   the list of objects that have changed/are new/were deleted or 
 	 *           touched in some other way
-	 * @throws IOException   Problems in the ICService
+	 * @throws ObjectNotConfiguredException 
+	 * @throws NetworkException
+	 * @throws NotLoggedInException
+	 * @throws TimeoutException
 	 */
 	public List<JakeObject> syncLogAndGetChanges(String userid) 
 		throws NetworkException, NotLoggedInException, TimeoutException, 
@@ -61,6 +64,11 @@ public interface ISyncService {
 	 * its content returned.
 	 * @param jo
 	 * @return the object content
+	 * @throws ObjectNotConfiguredException 
+	 * @throws OtherUserOfflineException
+	 * @throws NetworkException
+	 * @throws NotLoggedInException
+	 * @throws TimeoutException
 	 * 
 	 * TODO: write the object content to the jakeobject or return a bytearray or
 	 * something similar (Strings look too human-readable). 
@@ -77,11 +85,12 @@ public interface ISyncService {
 	 * @param  jo       Object to be treated.
 	 * @return members  whom the request reached; empty list if no one could be 
 	 *                  reached
+	 * @throws ObjectNotConfiguredException
 	 */
 	public List<ProjectMember> push(JakeObject jo) 
 		throws ObjectNotConfiguredException;
 	
-	/* For implementing the SyncService:
+	/* (Only for implementing the SyncService, not for the interface)
 	 * This has to be registered in the used ICService to be called on pull 
 	 * requests. It loads the object content and sends it back to the requester.
 	 * 
@@ -100,6 +109,8 @@ public interface ISyncService {
 	
 	/* The following methods ought to be set on initialization e.g. via 
 	 * dependency-injection. The parameters ought to be references, not copies.
+	 * If the following are not set, a ObjectNotConfiguredException is thrown 
+	 * from the other operations.
 	 */
 	
 	/**

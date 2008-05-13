@@ -29,7 +29,8 @@ public interface IICService {
 	 * @param userid
 	 * @param pw password
 	 * @return wether the login was successful
-	 * @throws NetworkException 
+	 * @throws NetworkException
+	 * @throws TimeoutException
 	 */
 	public Boolean login(String userid, String pw)
 		throws NetworkException, TimeoutException;
@@ -37,27 +38,29 @@ public interface IICService {
 	/**
 	 * Logs out and disconnects from the used network service.
 	 * @return wether the logout was successful
+	 * @throws NetworkException
+	 * @throws TimeoutException
 	 */
 	public Boolean logout()
 		throws NetworkException, TimeoutException;
 	
 	/**
-	 * Checks wether a previous login was successful and the connection is 
-	 * still functioning
+	 * Checks wether the user is logged in. 
+	 * The implementation has to assert that the user is still connected.
 	 */
-	public Boolean isConnected();
-	
-	/* TODO: This pretty much have to be strings, right? 
-	 * or should we try some fancy serialization stuff? */
+	public Boolean isLoggedIn();
 	
 	/**
 	 * Sends a object to another user.
 	 * @param to_userid        Userid to send to 
 	 * @param objectidentifier name of the content so the receiver knows what 
-	 *                         he/she is receiving
+	 *                         it is receiving
 	 * @param content          Full object content as String
 	 * @return                 wether the object could be sent. Does not 
 	 *                         guarantee the object has been retrieved.
+	 * @throws NetworkException
+	 * @throws TimeoutException
+	 * @throws NotLoggedInException
 	 */
 	public Boolean sendObject(String to_userid, String objectidentifier, 
 			String content) 
@@ -69,15 +72,18 @@ public interface IICService {
 	 * 
 	 * @param rl    object to be called
 	 */
-	public void registerReceiveObjectCallback(IObjectReceiveListener rl);
+	public void registerReceiveObjectListener(IObjectReceiveListener rl);
 	
 	/**
 	 * Sends a message to another user.
-	 * Can call sendObject with the objectidentifier "message".
+	 * May call sendObject with the objectidentifier "message".
 	 * @param to_userid        Userid to send to
 	 * @param content          Full message content as String 
 	 * @return                 wether the message could be sent. Does not 
 	 *                         guarantee the object has been retrieved.
+	 * @throws NetworkException
+	 * @throws NotLoggedInException
+	 * @throws TimeoutException
 	 */
 	public Boolean sendMessage(String to_userid, String content)
 		throws NetworkException, NotLoggedInException, TimeoutException;
@@ -87,21 +93,25 @@ public interface IICService {
 	 * 
 	 * @param rl    object to be called
 	 */
-	public void registerReceiveMessageCallback(IMessageReceiveListener rl);
+	public void registerReceiveMessageListener(IMessageReceiveListener rl);
 	
 	/**
 	 * Checks if the userid may be reached (has an online status). 
 	 * @param userid the other client to talk to.
+	 * @throws NetworkException
+	 * @throws NotLoggedInException
+	 * @throws TimeoutException
 	 */
-	public Boolean isOnline(String userid)
+	public Boolean isLoggedIn(String userid)
 		throws NetworkException, NotLoggedInException, TimeoutException;
 	
 	/**
 	 * Registers a callback for the event that the userid goes online or offline
 	 * 
-	 * @param osc   object to be called
+	 * @param osc     object to be called
+	 * @param userid  
 	 */
-	public void registerOnlineStatusCallback(IOnlineStatusCallback osc, 
+	public void registerOnlineStatusListener(IOnlineStatusListener osc, 
 			String userid);
 	
 }

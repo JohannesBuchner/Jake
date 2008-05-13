@@ -8,7 +8,7 @@ package com.doublesignal.sepm.jake.ics;
  * @author johannes
  */
 
-public interface IOnlineStatusCallback {
+public interface IOnlineStatusListener {
 	
 	public void onlineStatusChanged(String userid);
 
