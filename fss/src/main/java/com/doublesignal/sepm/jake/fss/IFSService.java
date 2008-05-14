@@ -3,8 +3,8 @@ package com.doublesignal.sepm.jake.fss;
 import java.io.IOException;
 
 /**
- * The file system service ought to provide a operating system
- * independent way of read/write and watch operations
+ * The file system service ought to provide a operating system independent way 
+ * of read/write and watch operations.
  * 
  * @author johannes
  * 
@@ -14,7 +14,7 @@ import java.io.IOException;
  *           systems.
  *           relpaths contain slashes as path seperators. 
  *           NOTE: For the real file access, the FSService has to convert them 
- *           to the OS-specific way  
+ *           to the OS-specific way
  * 
  **/
 
@@ -23,11 +23,12 @@ public interface IFSService {
 	 *       writeFile()? */
 	
 	/**
+	 * @param relpath
 	 * @return the hash over the file as a string
 	 * @throws InvalidFilenameException
 	 * @throws IOException
 	 */
-	public String calculateHash(String relpath) 
+	String calculateHash(String relpath) 
 		throws InvalidFilenameException, IOException;
 	
 	/**

@@ -7,8 +7,11 @@ package com.doublesignal.sepm.jake.fss;
  */
 
 public interface ModificationListener {
-	public enum ModifyActions { CREATED, REMOVED, CHANGED };
+	/**
+	 * Actions that can occur for a file on a filesystem.
+	 */
+	enum ModifyActions { CREATED, REMOVED, CHANGED };
 	
-	public void fileModified(String relpath, ModifyActions action);
+	void fileModified(String relpath, ModifyActions action);
 	
 }
