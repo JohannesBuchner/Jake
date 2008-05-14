@@ -10,17 +10,6 @@
   <name>sync</name>
   <version>0.1</version>
   <url>http://maven.apache.org</url>
-      <reporting>
-          <plugins>
-              <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-checkstyle-plugin</artifactId>
-                  <configuration>
-                      <configLocation>../build-tools/checkstyle.xml</configLocation>
-                  </configuration>
-              </plugin>
-          </plugins>
-      </reporting>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
