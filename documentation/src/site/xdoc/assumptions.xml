@@ -139,6 +139,17 @@
 					<td>Independence from offline users</td>
 					<td>Architecture</td>
 				</tr>
+				<tr>
+					<td>[import_folder] importing folders as a whole is supported.</td>
+					<td>Otherwise it would be a pain for users to share folders. See [folder_structure]</td>
+					<td>Basic functionality, architecture</td>
+				</tr>
+				<tr>
+					<td>[note_pool] Notes are managed in one centralized location per project. They are not stored in the folder hierarchy.</td>
+					<td>ease of implementation, simplifies the user interaction</td>
+					<td>basic functionality, architecture, ui</td>
+				</tr>
+
 			</tbody>
 			<thead>
 				<tr>
@@ -146,11 +157,6 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td>[import_folder] importing folders as a whole is supported.</td>
-					<td>Otherwise it would be a pain for users to share folders. See [folder_structure]</td>
-					<td>Basic functionality, architecture</td>
-				</tr>
 				<tr>
 					<td>[no_batch_removal] objects are deleted one at a time.</td>
 					<td>ease of implementation</td>
@@ -165,11 +171,6 @@
 					<td>[delete_folder] It is possible to delete a whole folder from the datapool</td>
 					<td>would be a pain to delete every file in the folder to delete the folder</td>
 					<td>basic functionality, architecture</td>
-				</tr>
-				<tr>
-					<td>[note_pool] Notes are managed in one centralized location per project. They are not stored in the folder hierarchy.</td>
-					<td>ease of implementation, simplifies the user interaction</td>
-					<td>basic functionality, architecture, ui</td>
 				</tr>
 			</tbody>
 		</table>
@@ -246,6 +247,16 @@
 					<td></td>
 					<td>implementation</td>
 				</tr>
+				<tr>
+					<td>[RFC2119] we use the definitions of MUST, MAY, etc defined in http://www.ietf.org/rfc/rfc2119.txt</td>
+					<td>solid standards...</td>
+					<td>code</td>
+				</tr>
+				<tr> 
+					<td><p>[ascii] We only use characters that are compatible with all os.(i.e. [a-zA-Z0-9\-_.] That means no special characters, no slashes, etc...</p></td>
+					<td>Avoiding excessive string checking, some characters may not be displayable on some systems</td>
+					<td>architecture, UI</td>
+				</tr>
 				
 			</tbody>
 			<thead>
@@ -254,20 +265,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr> 
-					<td><p>[ascii] all objectnames, tags, userids may consist only of printable ascii characters (no umlauts, etc.)</p></td>
-					<td>Avoiding excessive string checking, some characters may not be displayable on some systems</td>
-					<td>architecture, UI</td>
-				</tr>
+
 				<tr> 
 					<td>[singe_selection] In the datapool view only one object may be selected at a time.</td>
 					<td>ease of implementation</td>
 					<td>basic functionality, architecture, gui</td>
-				</tr>
-				<tr>
-					<td>[RFC2119] we use the definitions of MUST, MAY, etc defined in http://www.ietf.org/rfc/rfc2119.txt</td>
-					<td>solid standards...</td>
-					<td>code</td>
 				</tr>
 			</tbody>
 		</table>
