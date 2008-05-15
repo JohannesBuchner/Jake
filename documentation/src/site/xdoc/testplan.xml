@@ -1,468 +1,2020 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
-"http://maven.apache.org/dtd/xdoc_1_0.dtd">
+        "http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <document>
-  <properties>
-    <title>Test Plan</title>
-
-    <author email="dominik.dorn@gmail.com">Dominik Dorn</author>
-  </properties>
-
-  <body>
-  	
-	<section name="Test Plan">
-		<subsection name="Purpose">
-			This test plan document for the project &quot;Jake&quot; should cover the following goals:
-			<ul>
-				<li>Definition of used terms</li>
-				<li>Identification of the components to be tested</li>
-				<li>requirements for the tests</li>
-				<li>list of tests to be performed</li>
-				<li>description of the test strategy</li>
-			</ul>
-		</subsection>
-
-		<subsection name="Used terms">
-			Beside the terms used and defined in the section &quot;Components&quot; we use the follwing terms:
-			<ol>
-				<li><b>Test case / Unit test</b><br />
-					A Test case is a java file that tests a specified aspect (unit) of a component of a program.
-				</li>
-				<li><b>test driven development</b><br />
-					Is a method of creating software. The idea is to specify what interface a component has, write a
-					test case for each aspect of the interface and only after that, create an implementation of that
-					interface.
-				</li>
-				<li><b>Test suite</b><br />
-					A test suite is a batch of corresponding test cases.
-				</li>
-				<li><b>Data Access Object</b><br />
-					We encapsulate all the logic needed to manipulate data (e.g. Database records, files in the filesystem) with so called Data Access Object. Therefore we can later easily change the way we read or write data to disk (e.g. changing the database backend) without altering the rest of the code.
-				</li>
-
-
-			</ol>
-		</subsection>
-	</section>
-
-	<section name="Components">
-		Our Project consists of the following components.
-		<ul>
-			<li><b>GUI</b> The Graphical User Interface</li>
-			<li><b>Sync</b> Synchronisation Service - Mock Object simulating the Synchronisation between Clients</li>
-			<li><b>ICS</b> InterClient Communication Service - Mock Object simulating the communications between clients and the network </li>
-			<li><b>Filesystem</b> Filesystem Service - Used to handle the whole file and filesystem based logic</li>
-			<li><b>Core</b> The Core Component - Contains the business logic of the program, supplies interfaces for (graphical) user interfaces and communicates with the other components</li>
-		</ul>
-	</section>
-
-	<section name="Test Types">
-
-		<subsection name="Functional Tests">
-			We're using unit tests based on the JUnit Testing Framework in the current version (4.4). 
-			We want to ensure, that the component is doing what we expect
-			it to do, before writing the component itself (test driven development) 
-		</subsection>
-
-		<subsection name="User Interface">
-			We're currently not planing on testing the user interface, although we're evaluating
-			using test-driven development for the user interface. 
-		</subsection>
-
-		<subsection name="Data &amp; Database Integrity">
-			The Data Access Objects are tested with unit tests.
-			Therefore we can assure, the components are working
-			correctly if the database and filesystem service 
-			behind them is working correctly.
-		</subsection>
-
-		<subsection name="Performance">
-			We're not doing any performance testing. If we
-			encounter performance problems during the tests,
-			those will be noted.
-		</subsection>
-
-		<subsection name="Load Tests">
-			We're not doing any load testing because the
-			project is not intended for high load situations.
-		</subsection>
-
-		<subsection name="Stress Tests">
-			We're not doing any stress testing because the
-			project is not intended for high stress situations.
-			The only component which could be vulnerable to high
-			stress is the InterClient Communication Service.
-			Because this component is not implemented during this
-			project phase, no stress tests are required.
-		</subsection>
-
-		<subsection name="Security">
-			Because all Users of the systems have the same privileges,
-			no security tests are planed to be performed except testing
-			the ICS for correct login/logout of a user.
-		</subsection>
-
-		<subsection name="Permissions">
-			Because all Users of the systems have the same privileges,
-			no permission tests are planed to be performed.
-		</subsection>
-<!--
-		<subsection name="Failover &amp; Recovery">
-			-
-		</subsection>
--->
-	</section>
-
-	<section name="Tools">
-		<ol>
-			<li><b>Unit Testing</b> <br />
-				We're using the JUnit Testing Framework for unit testing.
-				<br /><a href="http://www.junit.org">http://www.junit.org</a>
-			</li>
-			<li><b>Mock Objects</b> <br />
-				We're planing on using JMock for creation of Mock objects.
-				<br /><a href="http://www.jmock.org">http://www.jmock.org</a>
-			</li>
-			<li><b>GUI Testing</b> <br />
-				Althought we're not planing testing the GUI, we'll try do test-driven development
-				of the GUI using FEST 
-				<br /> <a href="http://code.google.com/p/fest/">http://code.google.com/p/fest/</a>
-			</li>
-			<li><b>Test Report Generation</b> <br />
-				We're using the Surefire-Report Plugin included in the Maven build management suite.
-				<br /> <a href="http://maven.apache.org/plugins/maven-surefire-plugin/">http://maven.apache.org/plugins/maven-surefire-plugin/</a>
-			</li>
-		</ol>
-	</section>
-
-	<section name="Tests to be performed">
-	Priority: <br />
-	5 - Very high <br />
-	1 - Very low <br />
-		<table>
-			<thead>
-				<td>Component</td>
-				<td>Function</td>
-				<td>Priority</td>
-				<td>Ticket#</td>
-			</thead>
-		
-			<tbody>
-
-<!-- start Sync tests -->
-				<tr>
-					<td>Sync</td>
-					<td> </td>
-					<td>1-5</td>
-					<td>[none yet]</td>
-				</tr>
-<!-- end Sync tests -->
-
-<!-- start ICS tests -->
-				<tr>
-					<td>ICS</td>
-					<td>login to the network</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td>logout from the network</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td>send message to a client</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td>receive message from a client</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td>check connection alive</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td>register receive message callback</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td>register receive object callback</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>ICS</td>
-					<td> </td>
-					<td>1-5</td>
-					<td>[none yet]</td>
-				</tr>
-<!-- end ICS tests -->
-
-
-<!-- start Filesystem tests -->
-				<tr>
-					<td>Filesystem</td>
-					<td>read a file</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>Filesystem</td>
-					<td>persistend (save) a file</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>Filesystem</td>
-					<td>Set root path of project </td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-				<tr>
-					<td>Filesystem</td>
-					<td>Check file existence</td>
-					<td>5</td>
-					<td>[none yet]</td>
-				</tr>
-
-				<tr>
-					<td>Filesystem</td>
-					<td>launch a file with os specified programm</td>
-					<td>2</td>
-					<td>[none yet]</td>
-				</tr>
-
-				<tr>
-					<td>Filesystem</td>
-					<td>-</td>
-					<td>1-5</td>
-					<td>[none yet]</td>
-				</tr>
-
-<!-- end Filesystem tests -->
-
-<!-- start Core tests -->
-				<tr>
-					<td>Core</td>
-					<td> </td>
-					<td>1-5</td>
-					<td>[none yet]</td>
-				</tr>
-<!-- end Core tests -->
-
-<!-- start Gui tests -->
-<!-- 
-				<tr>
-					<td>GUI</td>
-					<td> </td>
-					<td>1-5</td>
-					<td>[none yet]</td>
-				</tr>
--->
-<!-- end Gui tests -->
-
-
-			</tbody>
-
-		</table>
-	</section>
-
-	<section name="Description of the test strategy">
-		<ul>
-			<li>
-				Because we're using &quot;test driven development&quot; all tests should be created before the
-				implementation of the specific interface.
-			</li>
-			<li>
-				The person responsible for the specific component/interface is responsible for creating the
-				test suites. 
-			</li>
-			<li>
-				The test delegate (Dominik Dorn) will occasionally check some of the test suites
-				for quality and coverage and assigns tasks for the responsible person to correct the issue.
-			</li>
-			<li>
-				Code reviews of the created sourcecode (not the tests) will be performed. Eventually found
-				possible errors will be handled like described in the following section &quot;Error Reporting&quot;.
-			</li>
-		</ul>
-
-
-
-		
-
-	</section>
-	
-	<section name="Error Reporting / Bug Tracking">
-		When an error is found:
-		<ol>
-			<li>An test case should be created by the person found the error with a short description
-				of the circumstances causing the error, the input data and the expected output.
-				A small test case, showing the input data should be created to show the problem to others. 
-			</li>
-			<li>
-				A bug in our bugtracking tool (flyspray) has to be opened and to be assigned to the person
-				responsible for the specific component. The name of the test case should be noted.
-			</li>
-			<li>
-				The ticket number received by the bugtracking tool should be noted in the test case.
-			</li>
-			<li>
-				This document has to be updated, adding the error to the list of test cases. 
-			</li>
-			<li>
-				The changes have to be commited to our svn repository.
-			</li>
-			<li>
-				If the bug or the corresponding test case would be to big, to create a small test case in a
-				reasonable amount of time, an empty test case should be created, including a comment to
-				reproduce the error. The person responsible for the code in question then has to create
-				the full test case. 
-			</li>
-		</ol>
-	</section>
-
-	<section name="Testcriteria">
-		TODO 
-	</section>
-
-	<section name="Bug fixing &amp; verification">
-		When a programmer becomes assigned to a bug, he/she has to
-		<ol>
-			<li>Set the tickets status to &quot;assigned&quot;</li>
-			<li>Create the rest of the unit test</li>
-			<li>Fix the specified code in the codebase of the component</li>
-			<li>Test the unit case, redo (3) if necessary</li>
-			<li>Make sure that the unit test is included in every new build of the component</li>
-			<li>Close the ticket</li>
-		</ol>
-
-	</section>
-
-	<section name="Sample Test Case">
-		<pre>
-Java File:
-sepm/trunk/{artefactId}/src/test/java/com/doublesignal/sepm/jake/{artefactId}/{package}/{className}Test.java
-
--- content:
-package com.doublesignal.sepm.jake.{artefactId}/{package};
-
-
-/* adjust as necessary */
-import org.hamcrest.*;
-import org.junit.*;
-import org.jmock.*;
-
-/* import necessary exceptions */
-/* import necessary classes */
-
-
-public class {className}Test
-{
-
-    /* set default values, e.g. object name, etc. */
-
-    /* setup mockery if needed */
-    Mockery context = new JUnit4Mockery();
-
-
-	
-	public String getName()
-	{
-		return "nameOfThisTestCase";
-	}
-
-	/**
-	 * acquire required resources
-     */ 
-	protected void setup()
-	{
-
-	}
-
-	/**
-	 * release all the resources acquired
-     */
-	protected voi tearDown()
-	{
-
-	}
-
-	/**
-	 *  {Test case name }
-     * Description of the test case
-	 * Description of the input data
-     * Description of the actual result
-     * Description of the expected result
-	 * @author {author}
-     * @date {date}
-     * @revision {revision, default 1, increasing by each change}
-     * {date first fixed in implementation}
-     */
-    @Test(expected = {some}Exception.class)
-    public void {testname}()
-    {
-
-    }
-
-
-	@Test
-	public void {anotherTestName}()
-	{
-		// some other test
-	}
-
-}
-
-
-		</pre>
-
-	</section>
-
-
-
-<!--
-	<section name="Zeitplan">
-
-	</section>
--->
-
-    
-    <section name="Changelog">
-      <table>
-        <thead>
-        <tr>
-          <th>No.</th>
-          <th>Date</th>
-          <th>Author</th>
-          <th>Change</th>
-        </tr>
-        </thead>
-
-        <tr>
-          <td>1</td>
-          <td>03.05.2008</td>
-          <td>DD</td>
-          <td>created</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>07.05.2008</td>
-          <td>DD</td>
-          <td>added testcase</td>
-        </tr>
-      </table>
-    </section>
-  </body>
+    <properties>
+        <title>Test Plan</title>
+
+        <author email="dominik.dorn@gmail.com">Dominik Dorn</author>
+    </properties>
+
+    <body>
+
+        <section name="Test Plan">
+            <subsection name="Purpose">
+                This test plan document for the project &quot;Jake&quot; should cover the following goals:
+                <ul>
+                    <li>Definition of used terms</li>
+                    <li>Identification of the components to be tested</li>
+                    <li>requirements for the tests</li>
+                    <li>list of tests to be performed</li>
+                    <li>description of the test strategy</li>
+                </ul>
+            </subsection>
+
+            <subsection name="Used terms">
+                Beside the terms used and defined in the section &quot;Components&quot; we use the follwing terms:
+                <ol>
+                    <li>
+                        <b>Test case / Unit test</b>
+                        <br/>
+                        A Test case is a java file that tests a specified aspect (unit) of a component of a program.
+                    </li>
+                    <li>
+                        <b>test driven development</b>
+                        <br/>
+                        Is a method of creating software. The idea is to specify what interface a component has, write a
+                        test case for each aspect of the interface and only after that, create an implementation of that
+                        interface.
+                    </li>
+                    <li>
+                        <b>Test suite</b>
+                        <br/>
+                        A test suite is a batch of corresponding test cases.
+                    </li>
+                    <li>
+                        <b>Data Access Object</b>
+                        <br/>
+                        We encapsulate all the logic needed to manipulate data (e.g. Database records, files in the
+                        filesystem) with so called Data Access Object. Therefore we can later easily change the way we
+                        read or write data to disk (e.g. changing the database backend) without altering the rest of the
+                        code.
+                    </li>
+
+
+                </ol>
+            </subsection>
+
+            <subsection name="Testrequirements">
+
+
+                Our Project consists of the following components.
+                <table>
+                    <thead>
+                        <tr>
+                            <td>#</td>
+                            <td>Component<br/>Name
+                            </td>
+                            <td>Component Description</td>
+                            <td width="100">Priority</td>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                1.
+                            </td>
+
+                            <td>
+                                GUI
+                            </td>
+                            <td>
+                                The Graphical User Interface
+                            </td>
+                            <td>
+                                Very High
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                2.
+                            </td>
+
+                            <td>
+                                Core
+                            </td>
+                            <td>
+                                The Core Component - Contains the business logic of the program, supplies interfaces for
+                                (graphical) user interfaces and communicates with the other components
+                            </td>
+                            <td>
+                                Very High
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                3.
+                            </td>
+
+                            <td>
+                                Filesystem
+                            </td>
+                            <td>
+                                Filesystem Service - Used to handle the whole file and filesystem based logic
+                            </td>
+                            <td>
+                                Very High
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+
+                            <td>Sync</td>
+                            <td>Synchronisation Service - Mock Object simulating the Synchronisation between Clients
+                            </td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+
+                            <td>ICS</td>
+                            <td>InterClient Communication Service - Mock Object simulating the communications between
+                                clients and the network
+                            </td>
+                            <td>Medium</td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+
+                Child Components:
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="80">Parent<br/>Component
+                            </td>
+                            <td>Child Component</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Ticket#</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- start gui tests -->
+                        <tr>
+                            <td>GUI</td>
+                            <td>LoginGUI</td>
+                            <td>Very High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>CreateProjectGUI</td>
+                            <td>Very High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>MainView</td>
+                            <td>Very High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ViewLogGUI</td>
+                            <td>Medium</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ReadMsgGUI</td>
+                            <td>Medium</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>SendMsgGUI</td>
+                            <td>High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ListNotesGui</td>
+                            <td>Medium</td>
+                            <td>[none yet]</td>
+                        </tr>
+                        <tr>
+                            <td>GUI</td>
+                            <td>ViewEditNoteGUI</td>
+                            <td>High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ListPeopleGui</td>
+                            <td>Medium</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>UserInfoGUI</td>
+                            <td>Medium</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ListFilesGUI</td>
+                            <td>High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ResolveConflictsGUI</td>
+                            <td>High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>SearchAddUserGUI</td>
+                            <td>Medium</td>
+                            <td>#102</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>SearchObjectGUI</td>
+                            <td>High</td>
+                            <td>#103</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>PreferencesGUI - Push/Pull Behaviour</td>
+                            <td>High</td>
+                            <td>#104</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>PreferencesGUI - Networking Options</td>
+                            <td>Very High</td>
+                            <td>#105</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>ImportFileFolderGUI</td>
+                            <td>Very High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>PropagateChangesDialog</td>
+                            <td>High</td>
+                            <td>[none yet]</td>
+                        </tr>
+
+                        <tr>
+                            <td>GUI</td>
+                            <td>DeleteObjectDialog</td>
+                            <td>Low</td>
+                            <td>#108</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+
+            </subsection>
+        </section>
+        <section name="Functiontests">
+            Types of test-cases:
+            <br/>
+            FC = Failure Test Case
+            <br/>
+            NC = Normal Test Case
+            <br/>
+            SC = Special Test Case
+            <br/>
+
+
+            <subsection name="GUI:LoginGUI">
+                The User is presented with a login form, where he has to enter credentials to logi
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>1</td>
+                            <td>Input Data Validation</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>2</td>
+                            <td>No Access to the Application possible without entering correct credentials</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:CreateProjectDialog">
+                The User is presented a dialog, where he can create a new Project
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>3</td>
+                            <td>Input Validation of Project Name</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>4</td>
+                            <td>Input Validation of Project Root Folder</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:MainView">
+                The User is presented the main view of the program, where he can switch between the various views.
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>5</td>
+                            <td>Close Application</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>6</td>
+                            <td>Switch Views</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>7</td>
+                            <td>Window rezisable</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ViewLogGUI">
+                The User can view the log entries of the whole project or certain objects.
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>8</td>
+                            <td>Window resizable</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Display based on selected object(s)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ReadMsgGUI">
+                The User can read a message sent to him.
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>10</td>
+                            <td>Resize window</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>57</td>
+                            <td>Text wrappable</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:SendMsgGUI">
+                The User can send messages to other members.
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>11</td>
+                            <td>Input Length limitation</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>12</td>
+                            <td>Valid recipient entered</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>13</td>
+                            <td>Data transmission to core/ics</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>14</td>
+                            <td>No empty messages</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>15</td>
+                            <td>No nonprintable characters (e.g. \0)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>FC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ListNotesGUI">
+                The User can see a list of available notes
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>16</td>
+                            <td>Sort notes by creator, date, etc.</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>17</td>
+                            <td>Extract Headline from notes</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>18</td>
+                            <td>Context-Menu for notes (view/edit)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>19</td>
+                            <td>Limiting Notes amount (e.g. 30)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Low</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>20</td>
+                            <td>Paging</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Low</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>21</td>
+                            <td>Filter with Textbox</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very Low</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ViewEditNoteGUI">
+                The User can view and change a note
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>22</td>
+                            <td>Resize window</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>23</td>
+                            <td>Length limitation</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>24</td>
+                            <td>Only printable characters</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>FC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ListPeopleGUI">
+                The User can view a list of people inside the project
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>25</td>
+                            <td>Sort by nickname, name, networkUserId</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>26</td>
+                            <td>ContextMenu</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>27</td>
+                            <td>ContextMenu->UserInfoGUI</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+
+            <subsection name="GUI:UserInfoGUI">
+                The User can view/change the details of other project members stored in his database
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>xx</td>
+                            <td>28</td>
+                            <td>Input Data Validation</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>29</td>
+                            <td>View/Change nickname</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>30</td>
+                            <td>View/Change Notes</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ListFilesGUI">
+                The User can view a List of files available in the project folder
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>31</td>
+                            <td>Resize Window</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>32</td>
+                            <td>Sort by Name, Folder, Time</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Medium</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>33</td>
+                            <td>Select a listitem</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>34</td>
+                            <td>ContextMenu for selected ListItem</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>35</td>
+                            <td>Edit Tags of selected ListItem</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>36</td>
+                            <td>ContextMenu->View Log of Object</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>37</td>
+                            <td>ContextMenu->Delete File</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>38</td>
+                            <td>Keyboard [DEL] deletes file</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>39</td>
+                            <td>ContextMenu->Open File/Folder</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>40</td>
+                            <td>DoubleClick on File/Folder opens file/folder with OS specified program</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ResolveConflictsGUI">
+                The User is presented with a Dialog informing him of conflicts and the ability to solve them manually.
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>41</td>
+                            <td>Display File Properties</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>42</td>
+                            <td>Highlight newer file</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>43</td>
+                            <td>Highlight bigger filesize</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>44</td>
+                            <td>Provide Buttons to open file with OS specific program</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+
+                        <tr>
+                            <td>xx</td>
+                            <td>45</td>
+                            <td>Make sure to escape special characters (preventing exploits)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:SearchAddUserGUI">
+                The User can search for Users in the network, gets a list of matches and selects users to add to the
+                project.
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>46</td>
+                            <td>NetworkUserId Input length checks</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>47</td>
+                            <td>NetworkUserId Input character (just printable ascii!) checks</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>48</td>
+                            <td>Search for Users (press button)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>49</td>
+                            <td>Sanitize received Data for display</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>50</td>
+                            <td>Select a User</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>51</td>
+                            <td>Add a User to the Project</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td>NC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:SearchObjectGUI">
+                The User can search Objects by name, tag or both
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width='100'>Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>52</td>
+                            <td>No Input given</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>53</td>
+                            <td>Unallowed charactes given (e.g. &quot;/&quot;)</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>54</td>
+                            <td>Input too long</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>FC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>55</td>
+                            <td>Display Nothing found</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+                        <tr>
+                            <td>xx</td>
+                            <td>56</td>
+                            <td>Display Results</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>NC</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:PreferencesGUI - Push/Pull Behaviour">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xx</td>
+                            <td>xx</td>
+                            <td>xxxx</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td>xx</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:PreferencesGUI - Networking Options">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="200">Preconditions</td>
+                            <td width="80">Test-Case#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>xxxx</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:ImportFileFolderGUI">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>xxxx</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:PropagateChangesDialog">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>xxxx</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="GUI:DeleteObjectDialog">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>xxxx</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>High</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="Core:Set root path of project">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>xxxx</td>
+                            <td>xpected result</td>
+                            <td>xinputsx</td>
+                            <td>xachievedresult</td>
+                            <td>xerrorbehx</td>
+                            <td>xpassedx</td>
+                            <td>Very High</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="FSS">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Read a file from the filesystem</td>
+                            <td>Very High</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                persistend (save) a file
+                            </td>
+                            <td>
+                                Very High
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                Check file existence
+                            </td>
+                            <td>
+                                Very High
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                Get File Hash
+                            </td>
+                            <td>Very High</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                Get File Modification Date
+                            </td>
+                            <td>
+                                Very High
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                Open File/Folder with external Program
+                            </td>
+                            <td>
+                                Medium
+                            </td>
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="ICS">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>login to the network</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                logout from the network
+                            </td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Send message to client</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Receive message from client</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Check connection alive</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Register Receive Message Callback</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                Register Receive Object Callback
+                            </td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Send file to client xy</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Receive file from client xy</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+            <subsection name="Sync">
+                Beschreibung blablablablablabala
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100">Testcase#</td>
+                            <td>Function</td>
+                            <td>Expected result</td>
+                            <td>Inputs</td>
+                            <td>achived result</td>
+                            <td>error behaviour</td>
+                            <td>passed</td>
+                            <td width="100">Priority</td>
+                            <td width="100">Type</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Get FileList</td>
+                            <td>High</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Get Changed Files</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Get Files to Push</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Get Files to Pull</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Start LogSync</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Abort LogSync</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Start File Pull</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Abort File Pull</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Start File Push</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Abort File Push</td>
+                            <td>Medium</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </subsection>
+
+        </section>
+
+
+        <section name="Test Requirements">
+
+
+        </section>
+
+        <section name="Test Types">
+
+            <subsection name="Functional Tests">
+                We're using unit tests based on the JUnit Testing Framework in the current version (4.4).
+                We want to ensure, that the component is doing what we expect
+                it to do, before writing the component itself (test driven development)
+            </subsection>
+
+            <subsection name="User Interface">
+                We're currently not planing on testing the user interface, although we're evaluating
+                using test-driven development for the user interface.
+            </subsection>
+
+            <subsection name="Data &amp; Database Integrity">
+                The Data Access Objects are tested with unit tests.
+                Therefore we can assure, the components are working
+                correctly if the database and filesystem service
+                behind them is working correctly.
+            </subsection>
+
+            <subsection name="Performance">
+                We're not doing any performance testing. If we
+                encounter performance problems during the tests,
+                those will be noted.
+            </subsection>
+
+            <subsection name="Load Tests">
+                We're not doing any load testing because the
+                project is not intended for high load situations.
+            </subsection>
+
+            <subsection name="Stress Tests">
+                We're not doing any stress testing because the
+                project is not intended for high stress situations.
+                The only component which could be vulnerable to high
+                stress is the InterClient Communication Service.
+                Because this component is not implemented during this
+                project phase, no stress tests are required.
+            </subsection>
+
+            <subsection name="Security">
+                Because all Users of the systems have the same privileges,
+                no security tests are planed to be performed except testing
+                the ICS for correct login/logout of a user.
+            </subsection>
+
+            <subsection name="Permissions">
+                Because all Users of the systems have the same privileges,
+                no permission tests are planed to be performed.
+            </subsection>
+            <!--
+                    <subsection name="Failover &amp; Recovery">
+                        -
+                    </subsection>
+            -->
+        </section>
+
+        <section name="Tools">
+            <ol>
+                <li>
+                    <b>Unit Testing</b>
+                    <br/>
+                    We're using the JUnit Testing Framework for unit testing.
+                    <br/>
+                    <a href="http://www.junit.org">http://www.junit.org</a>
+                </li>
+                <li>
+                    <b>Mock Objects</b>
+                    <br/>
+                    We're planing on using JMock for creation of Mock objects.
+                    <br/>
+                    <a href="http://www.jmock.org">http://www.jmock.org</a>
+                </li>
+                <li>
+                    <b>GUI Testing</b>
+                    <br/>
+                    Althought we're not planing testing the GUI, we'll try do test-driven development
+                    of the GUI using FEST
+                    <br/>
+                    <a href="http://code.google.com/p/fest/">http://code.google.com/p/fest/</a>
+                </li>
+                <li>
+                    <b>Test Report Generation</b>
+                    <br/>
+                    We're using the Surefire-Report Plugin included in the Maven build management suite.
+                    <br/>
+                    <a href="http://maven.apache.org/plugins/maven-surefire-plugin/">
+                        http://maven.apache.org/plugins/maven-surefire-plugin/
+                    </a>
+                </li>
+            </ol>
+        </section>
+
+
+        <section name="Description of the test strategy">
+            <ul>
+                <li>
+                    Because we're using &quot;test driven development&quot; all tests should be created before the
+                    implementation of the specific interface.
+                </li>
+                <li>
+                    The person responsible for the specific component/interface is responsible for creating the
+                    test suites.
+                </li>
+                <li>
+                    The test delegate (Dominik Dorn) will occasionally check some of the test suites
+                    for quality and coverage and assigns tasks for the responsible person to correct the issue.
+                </li>
+                <li>
+                    Code reviews of the created sourcecode (not the tests) will be performed. Eventually found
+                    possible errors will be handled like described in the following section &quot;Error Reporting&quot;.
+                </li>
+            </ul>
+
+
+        </section>
+
+        <section name="Error Reporting / Bug Tracking">
+            When an error is found:
+            <ol>
+                <li>An test case should be created by the person found the error with a short description
+                    of the circumstances causing the error, the input data and the expected output.
+                    A small test case, showing the input data should be created to show the problem to others.
+                </li>
+                <li>
+                    A bug in our bugtracking tool (flyspray) has to be opened and to be assigned to the person
+                    responsible for the specific component. The name of the test case should be noted.
+                </li>
+                <li>
+                    The ticket number received by the bugtracking tool should be noted in the test case.
+                </li>
+                <li>
+                    This document has to be updated, adding the error to the list of test cases.
+                </li>
+                <li>
+                    The changes have to be commited to our svn repository.
+                </li>
+                <li>
+                    If the bug or the corresponding test case would be to big, to create a small test case in a
+                    reasonable amount of time, an empty test case should be created, including a comment to
+                    reproduce the error. The person responsible for the code in question then has to create
+                    the full test case.
+                </li>
+            </ol>
+        </section>
+
+        <section name="Testcriteria">
+            TODO
+        </section>
+
+        <section name="Bug fixing &amp; verification">
+            When a programmer becomes assigned to a bug, he/she has to
+            <ol>
+                <li>Set the tickets status to &quot;assigned&quot;</li>
+                <li>Create the rest of the unit test</li>
+                <li>Fix the specified code in the codebase of the component</li>
+                <li>Test the unit case, redo (3) if necessary</li>
+                <li>Make sure that the unit test is included in every new build of the component</li>
+                <li>Close the ticket</li>
+            </ol>
+
+        </section>
+
+        <section name="Sample Test Case">
+            Filename Convention: <br />
+
+       sepm/trunk/{artefactId}/src/test/java/com/doublesignal/sepm/jake/{artefactId}/{package}/{className}Test.java
+            where <br/>
+            {artefactId} is one of &quot;core&quot;, &quot;ics&quot;, &quot;fss&quot;, &quot;sync&quot;, etc. <br/>
+            {package} is usually one of &quot;services&quot;, &quot;dao&quot;, etc. <br/>
+            {className} is the name of the class to be tested.<br/>
+
+            <pre>
+              Java File:
+
+
+                -- content:
+            package com.doublesignal.sepm.jake.{artefactId}/{package};
+
+
+            /* adjust as necessary */
+            import org.hamcrest.*;
+            import org.junit.*;
+            import org.jmock.*;
+
+            /* import necessary exceptions */
+            /* import necessary classes */
+
+
+            public class {className}Test
+            {
+
+                /* set default values, e.g. object name, etc. */
+
+                /* setup mockery if needed */
+                Mockery context = new JUnit4Mockery();
+
+
+                public String getName()
+                {
+                     return "nameOfThisTestCase";
+                }
+
+
+                /**
+                * acquire required resources
+                */
+                @Before
+                protected void setup()
+                {
+
+                }
+
+
+                /**
+                * {Test case name }
+                * Description of the test case
+                * Description of the input data
+                * Description of the actual result
+                * Description of the expected result
+                * @author {author}
+                * @date {date}
+                * @revision {revision, default 1, increasing by each change}
+                * {date first fixed in implementation}
+                */
+                @Test(expected = {some}Exception.class)
+                public void {testname}()
+                {
+
+                }
+
+                /**
+                * {Test case name }
+                * Description of the test case
+                * Description of the input data
+                * Description of the actual result
+                * Description of the expected result
+                * @author {author}
+                * @date {date}
+                * @revision {revision, default 1, increasing by each change}
+                * {date first fixed in implementation}
+                */
+                @Test
+                public void {anotherTestName}()
+                {
+                  // some other test
+                }
+
+                /**
+                * release all the resources acquired
+                */
+                @After
+                protected voi tearDown()
+                {
+
+                }
+
+            }
+
+
+            </pre>
+
+        </section>
+
+
+        <!--
+            <section name="Zeitplan">
+
+            </section>
+        -->
+
+
+        <section name="Changelog">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Date</th>
+                        <th>Author</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+
+                <tr>
+                    <td>1</td>
+                    <td>03.05.2008</td>
+                    <td>DD</td>
+                    <td>created</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>07.05.2008</td>
+                    <td>DD</td>
+                    <td>added testcase</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>16.05.2008</td>
+                    <td>DD</td>
+                    <td>Added Testcases, restructured Document, Added additional fields.</td>
+                </tr>
+            </table>
+        </section>
+    </body>
 </document>
