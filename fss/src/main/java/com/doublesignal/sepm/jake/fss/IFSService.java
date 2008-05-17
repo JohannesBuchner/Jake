@@ -1,5 +1,6 @@
 package com.doublesignal.sepm.jake.fss;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -51,8 +52,9 @@ public interface IFSService {
 	/**
 	 * @return joins the rootpath with the relpath and
 	 * converts to the right path seperator
+	 * @throws InvalidFilenameException 
 	 */
-	public String getFullpath(String relpath);
+	public String getFullpath(String relpath) throws InvalidFilenameException;
 	
 	/**
 	 * @return the rootpath set previously by SetRootRule
@@ -63,7 +65,7 @@ public interface IFSService {
 	 * Checks wether the relpath contains characters 
 	 * acceptable for various operating systems and file systems
 	 * 
-	 * These are printable ascii characters: [A-Za-z0-9\-_.]+
+	 * These are printable ascii characters: [A-Z a-z0-9\-+_./\(\)]+
 	 */
 	public Boolean isValidRelpath(String relpath);
 	
@@ -98,10 +100,13 @@ public interface IFSService {
 	 * Reads the full content of a given file into a String
 	 * @return content of the file
 	 * @throws InvalidFilenameException
-	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws NotAReadableFileException
+	 * @throws NotAFileException
 	 */
-	public String readFile(String relpath) 
-		throws InvalidFilenameException, IOException;
+	public byte[] readFile(String relpath) 
+		throws InvalidFilenameException, NotAFileException, 
+			FileNotFoundException, NotAReadableFileException;
 	
 	/**
 	 * Registers a callback for watching the rootpath.
@@ -117,9 +122,10 @@ public interface IFSService {
 	 * Sets and stores the root path for operations that use a relpath.
 	 * @throws InvalidFilenameException
 	 * @throws IOException
+	 * @throws NotADirectoryException 
 	 */
 	public void setRootPath(String path) 
-		throws InvalidFilenameException, IOException;
+		throws InvalidFilenameException, IOException, NotADirectoryException;
 
 	/**
 	 * Writes the content to the file.
@@ -128,7 +134,7 @@ public interface IFSService {
 	 * @throws InvalidFilenameException
 	 * @throws IOException
 	 */
-	public Boolean writeFile(String relpath, String content) 
+	public Boolean writeFile(String relpath, byte[] content) 
 		throws InvalidFilenameException, IOException;
 	
 	
