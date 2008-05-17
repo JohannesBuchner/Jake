@@ -15,9 +15,9 @@ public class JakeMessage implements Serializable {
 
     {
         /**
-         * Set the timestamp to the current date.
+         * Set the time to the current date.
          */
-        timestamp = new Date();
+        time = new Date();
 
         /**
          * Note: I really like this Java Trick!
@@ -27,7 +27,7 @@ public class JakeMessage implements Serializable {
     private ProjectMember recipient;
     private ProjectMember sender;
 
-    private Date timestamp;
+    private Date time;
     private String content;
 
     /**
@@ -62,13 +62,18 @@ public class JakeMessage implements Serializable {
         return content;
     }
 
-    /*
-   TODO:
-     * send() funktion?
-     * delete() funktion?
-    */
+  
+    /**
+	 * Get the time of the message
+	 * 
+	 * @return the time
+	 */
+	public Date getTime() {
+		return time;
+	}
 
-    public boolean equals(Object o) {
+	@Override
+	public boolean equals(Object o) {
         /* TODO */
         return super.equals(o);
     }
