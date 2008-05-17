@@ -65,7 +65,7 @@ public interface IICService {
 	 * @throws NotLoggedInException
 	 */
 	public Boolean sendObject(String to_userid, String objectidentifier, 
-			String content) 
+			byte[] content) 
 		throws NetworkException, NotLoggedInException, TimeoutException,
 			NoSuchUseridException, OtherUserOfflineException;
 	
