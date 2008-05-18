@@ -176,9 +176,15 @@
                 <tr>
                     <td>[projectId] 8 Chars long &quot;unique&quot; String to identify the project against other clients</td>
                     <td>The ICS must know if the message he receives belongs to the current project</td>
-                    <td>core, ics</td>
+                    <td>core, ics, gui</td>
                 </tr>
-            </tbody>
+
+				<tr>
+					<td>[projectName] Minimum of 2 Characters, maximum of 50 characters</td>
+					<td>We have to create some boundaries to ensure valid projectnames</td>
+					<td>core, ffs, gui</td>
+				</tr>
+			</tbody>
 		</table>
 	</subsection>
 	
