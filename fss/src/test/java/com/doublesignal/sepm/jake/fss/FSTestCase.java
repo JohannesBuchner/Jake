@@ -30,7 +30,7 @@ public class FSTestCase extends TestCase {
 		super.setUp();
 	}
 	
-	private boolean recursiveDelete(File f) {
+	protected boolean recursiveDelete(File f) {
 		if(f.isFile()){
 			//System.out.println("Deleting file: "+f.getAbsoluteFile());
 			return f.delete();
@@ -43,11 +43,13 @@ public class FSTestCase extends TestCase {
 						return false;
 				}
 			}
-			f.delete();
-			return true;
+			return f.delete();
 		}
 	}
-
+	
+	/**
+	 * Makes this class executable
+	 */
 	public void testnotest(){
 		
 	}

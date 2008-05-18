@@ -11,10 +11,16 @@ public class FSServiceTest extends FSTestCase {
 	public void testIsValidRelpath() throws Exception{
 		
 		assertTrue(fss.isValidRelpath("/"));
+		assertFalse("upexploit",fss.isValidRelpath(".."));
+		assertFalse("upexploit",fss.isValidRelpath("foo/../bar"));
+		assertFalse("upexploit",fss.isValidRelpath("foo/.."));
+		assertFalse("upexploit",fss.isValidRelpath("foo/../"));
+		assertFalse("upexploit",fss.isValidRelpath("foo/../../bar"));
 		
-		String[] valids = {"/", "foo", "foo.bar", "rANdoM.xls", "fold/er.txt", 
+		String[] valids = {
+			"/", "foo", "foo.bar", "rANdoM.xls", "fold/er.txt", 
 			"crazy/named/file/that.has.more.ext.s", "cool+-035.x_chars", 
-			"a", "ac (also cool).file"
+			"a", "ac (also cool).file", "...", "foo....bar", "foo/bar../abz"
 		};
 		for (int i = 0; i < valids.length; i++) {
 			assertTrue("valid name: " + valids[i], fss.isValidRelpath(valids[i]));
@@ -28,9 +34,9 @@ public class FSServiceTest extends FSTestCase {
 		for (int i = 0; i < s.length; i++) {
 			assertFalse("Invalid character " + s[i], fss.isValidRelpath("~"));
 		}
+		
 		assertFalse("backslash",fss.isValidRelpath("windows\\path"));
 		assertFalse("notestyle",fss.isValidRelpath("note:random"));
-		
 	}
 	public void testSetRootPath() throws Exception{
 		String oldrootpath = fss.getRootPath();
@@ -65,13 +71,13 @@ public class FSServiceTest extends FSTestCase {
 		fss.setRootPath(oldrootpath);
 	}
 	
-	public void testgetFullpath() throws Exception{
+	public void testGetFullpath() throws Exception{
 		String sep = File.separator;
 		String root = mytempdir;
 		
 		assertEquals("separator", "/", File.separator);
 		
-		assertEquals("/", root + sep, fss.getFullpath(sep));
+		assertEquals("/", root, fss.getFullpath(sep));
 		assertEquals(fss.getFullpath("testfile.xml"), 
 				root + sep + "testfile.xml");
 		assertEquals(fss.getFullpath("folder/to/testfile.xml"), 
@@ -86,6 +92,7 @@ public class FSServiceTest extends FSTestCase {
 	}
 	
 	public void testReadFile() throws Exception{
+		wipeRoot();
 		assertFalse("got a tempdir", mytempdir==null && mytempdir.length()>0);
 		
 		try{
@@ -150,6 +157,191 @@ public class FSServiceTest extends FSTestCase {
 		}
 	}
 	
+	public void testFolderExists() throws Exception {
+		wipeRoot();
+		assertTrue(fss.folderExists("/"));
+		assertFalse(fss.folderExists("/folderDoesNotExist"));
+		String[] dirnames = {"foobar", 
+				"/foo/bar/", "ran/dom/stuff"};
+		for (int i = 0; i < dirnames.length; i++) {
+			File f = new File(fss.getRootPath() + File.separator + dirnames[i] + 
+					File.separator);
+			f.mkdirs();
+			assertTrue(fss.folderExists(dirnames[i]));
+		}
+		try{
+			fss.folderExists("/fol:derDoesNotExist");
+			fail("InvalidFilenameException");
+		}catch(InvalidFilenameException e){
+		}
+		File f = new File(fss.getRootPath() + File.separator + "test.out");
+		f.createNewFile();
+		assertFalse(fss.folderExists("test.out"));
+	}
+	public void testFileExists() throws Exception {
+		wipeRoot();
+		assertFalse(fss.fileExists("/fileDoesNotExist"));
+		assertFalse(fss.fileExists("fileDoesNotExist"));
+		
+		String[] dirnames = {"foobar", 
+				"/foo/bar", "ran/dom/stuff"};
+		for (int i = 0; i < dirnames.length; i++) {
+			File f = new File(fss.getRootPath() + File.separator + dirnames[i] + 
+					File.separator);
+			f.getParentFile().mkdirs();
+			f.createNewFile();
+			assertTrue(fss.fileExists(dirnames[i]));
+		}
+		try{
+			fss.fileExists("/fil:eDoesNotExist");
+			fail("InvalidFilenameException");
+		}catch(InvalidFilenameException e){
+		}
+		
+		File f = new File(fss.getRootPath() + File.separator + "foobar");
+		f.delete();
+		f.mkdirs();
+		assertFalse(fss.fileExists("foobar"));
+		
+	}
+	
+	public void testGetTempDir() throws Exception{
+		if(File.separatorChar == '/'){
+			assertEquals("/tmp", fss.getTempDir());
+		}else{
+			fail("Not implemented for Windows (yet)");
+			assertEquals("C:\\Windows\\Temp", fss.getTempDir());
+		}
+		
+	}
+	
+	public void testGetTempFile() throws Exception{
+		assertTrue("in Temp dir",fss.getTempFile().startsWith(fss.getTempDir() + 
+			File.separator));
+	}
+	
+	public void testListFolder() throws Exception{
+		wipeRoot();
+		String folder = "jakeAtestFolder";
+		recursiveDelete(new File(fss.getRootPath() + File.separator + folder));
+		
+		String[] content = { "B", "C", "E", "D", "F", "G", "H", "J" };
+		for (int i = 0; i < content.length; i++) {
+			File f = new File(fss.getRootPath() + File.separator + folder + 
+				File.separator + content[i]);
+			if ( i < 4 ) {
+				f.mkdirs();
+				assertTrue(f.isDirectory());
+			} else {
+				f.createNewFile();
+				assertTrue(f.isFile());
+			}
+		}
+		
+		String[] s = fss.listFolder(folder);		
+		for (int j = 0; j < content.length; j++) {
+			boolean found = false;
+			for (int i = 0; i < s.length; i++) {
+				if(s[i].equals(content[j])){
+					found = true;
+					break;
+				}
+			}
+			assertTrue(found);
+			if(j<4){
+				assertTrue("folder: " + content[j],fss.folderExists(folder + File.separator + content[j]));
+			}else{
+				assertTrue("file: " + content[j],  fss.fileExists(folder + File.separator + content[j]));
+			}
+		}
+		
+		assertTrue(s.length == content.length);
+	}
+	
+	public void testWriteFile() throws Exception{
+		wipeRoot();
+		try{
+			fss.writeFile("ran:dom", null);
+			fail("InvalidFilenameException");
+		}catch(InvalidFilenameException e){
+		}
+		{
+			fss.writeFile("random", new byte[]{});
+			assertEquals(fss.readFile("random").length,0);
+		}
+		{
+			String content = "Foo bar\nbaz"; 
+			fss.writeFile("random", content.getBytes());
+			assertEquals(new String(fss.readFile("random")),content);
+		}
+		{
+			String content = "Fooäöpäüö bar\nbau€@ıδþæ'œœæ'œø€@ız"; 
+			fss.writeFile("random", content.getBytes("utf8"));
+			assertEquals(new String(fss.readFile("random"), "utf8"),content);
+		}
+		fss.writeFile("foo", new byte[]{12});
+		try{
+			fss.writeFile("foo/random", new byte[]{12,23});
+			fail("CreatingSubDirectoriesFailedException");
+		}catch(CreatingSubDirectoriesFailedException e){
+		}
+		
+		{
+			fss.writeFile("bar/baz/random", "Foobar".getBytes());
+			assertTrue("recursice create", fss.folderExists("bar") && fss.folderExists("bar/baz"));
+			assertTrue("recursice create", fss.fileExists("bar/baz/random"));
+			assertEquals("recursice create","Foobar",new String(fss.readFile("bar/baz/random")));
+		}
+		
+	}
+	public void testDeleteFile() throws Exception{
+		wipeRoot();
+		{
+			assertFalse(fss.fileExists("bar/baz/random") && 
+				fss.folderExists("bar/baz") && fss.folderExists("bar"));
+			
+			fss.writeFile("bar/baz/random", "Foobar".getBytes());
+			
+			assertTrue(fss.fileExists("bar/baz/random") && 
+				fss.folderExists("bar/baz") && fss.folderExists("bar"));
+			
+			assertTrue(fss.deleteFile("bar/baz/random"));
+			
+			assertFalse(fss.fileExists("bar/baz/random") && 
+				fss.folderExists("bar/baz") && fss.folderExists("bar"));
+		}
+		wipeRoot();
+		{
+			fss.writeFile("bar/baz/random", "Foobar".getBytes());
+			try{
+				fss.deleteFile("bar/baz/random2");
+				fail("FileNotFoundException");
+			}catch(FileNotFoundException e){
+			}
+			try{
+				fss.deleteFile("bar/baz/");
+				fail("NotAFileException");
+			}catch(NotAFileException e){
+			}
+			assertTrue(fss.fileExists("bar/baz/random"));
+			fss.writeFile("bar/baz/random2", "Foobar".getBytes());
+			assertTrue(fss.deleteFile("bar/baz/random"));
+			assertFalse(fss.fileExists("bar/baz/random"));
+			assertTrue(fss.folderExists("bar/baz") && fss.folderExists("bar"));
+			assertTrue(fss.fileExists("bar/baz/random2"));
+		}
+		
+	}
+	
+	
+	private void wipeRoot() {
+		File f = new File(fss.getRootPath());
+		assertTrue(f.exists() && f.isDirectory());
+		assertTrue(recursiveDelete(f));
+		f.mkdirs();
+		assertTrue(f.exists() && f.isDirectory() && f.list().length == 0);
+	}
+	
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
@@ -157,6 +349,7 @@ public class FSServiceTest extends FSTestCase {
 		assertFalse(fss == null);
 		fss.setRootPath(mytempdir);
 		assertEquals("rootpath",mytempdir,fss.getRootPath());
+		assertFalse(fss.getRootPath().startsWith("/home"));
 	}
 
 	@Override
@@ -164,5 +357,5 @@ public class FSServiceTest extends FSTestCase {
 		super.tearDown();
 	}
 	
-	
+	/* TODO: calculateHash launchFile registerModificationListener */
 }

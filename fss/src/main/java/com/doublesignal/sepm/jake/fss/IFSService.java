@@ -12,7 +12,7 @@ import java.io.IOException;
  * rootpath: The project root directory. Has to be set first.
  * relpath:  A relative path starting from the rootpath of a file or folder. 
  *           It may only contain characters supported by common operating 
- *           systems.
+ *           systems (@see <code>isValidRelpath</code>).
  *           relpaths contain slashes as path seperators. 
  *           NOTE: For the real file access, the FSService has to convert them 
  *           to the OS-specific way
@@ -20,9 +20,6 @@ import java.io.IOException;
  **/
 
 public interface IFSService {
-	/* TODO: Maybe we should return some streaming thingy in readFile() and 
-	 *       writeFile()? */
-	
 	/**
 	 * @param relpath
 	 * @return the hash over the file as a string
@@ -50,8 +47,9 @@ public interface IFSService {
 		throws InvalidFilenameException, IOException;
 	
 	/**
-	 * @return joins the rootpath with the relpath and
-	 * converts to the right path seperator
+	 * Joins the rootpath with the relpath. The absolute filename is converted 
+	 * to the right path seperator.
+	 * @return the absolute path for the relpath
 	 * @throws InvalidFilenameException 
 	 */
 	public String getFullpath(String relpath) throws InvalidFilenameException;
@@ -65,7 +63,8 @@ public interface IFSService {
 	 * Checks wether the relpath contains characters 
 	 * acceptable for various operating systems and file systems
 	 * 
-	 * These are printable ascii characters: [A-Z a-z0-9\-+_./\(\)]+
+	 * It matches for: [A-Z a-z0-9\-+_./\(\)]+ and checks that no /../ can be 
+	 * applied (which could reference outside the rootpath)  
 	 */
 	public Boolean isValidRelpath(String relpath);
 	
@@ -133,9 +132,13 @@ public interface IFSService {
 	 * @param content The full, new file content as a String
 	 * @throws InvalidFilenameException
 	 * @throws IOException
+	 * @throws NotAFileException 
+	 * @throws FileTooLargeException 
+	 * @throws CreatingSubDirectoriesFailedException 
 	 */
-	public Boolean writeFile(String relpath, byte[] content) 
-		throws InvalidFilenameException, IOException;
+	public void writeFile(String relpath, byte[] content) 
+		throws InvalidFilenameException, IOException, FileTooLargeException, 
+			NotAFileException, CreatingSubDirectoriesFailedException;
 	
 	
 	/**
@@ -158,4 +161,13 @@ public interface IFSService {
 	 */
 	public String getTempFile()
 		throws IOException;
+	
+	/**
+	 * Deletes the file and recursively removes parent folders if they are empty
+	 * @return wether the delete was successful
+	 * @throws InvalidFilenameException 
+	 * @throws FileNotFoundException 
+	 * @throws NotAFileException 
+	 */
+	public boolean deleteFile(String relpath) throws InvalidFilenameException, FileNotFoundException, NotAFileException;
 }

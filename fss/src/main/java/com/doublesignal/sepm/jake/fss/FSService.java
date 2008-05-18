@@ -19,16 +19,15 @@ public class FSService implements IFSService {
 			throw new NotADirectoryException();
 		rootPath = path;
 	}
-
-
+	
 	public String calculateHash(String relpath) throws InvalidFilenameException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Boolean fileExists(String relpath) throws InvalidFilenameException {
-		// TODO Auto-generated method stub
-		return null;
+		File f = new File(getFullpath(relpath));
+		return f.exists() && f.isFile();
 	}
 
 	public void launchFile(String relpath) throws InvalidFilenameException {
@@ -36,8 +35,8 @@ public class FSService implements IFSService {
 	}
 
 	public String[] listFolder(String relpath) throws InvalidFilenameException {
-		// TODO Auto-generated method stub
-		return null;
+		File f = new File(getFullpath(relpath));
+		return f.list();
 	}
 
 	public byte[] readFile(String relpath) throws InvalidFilenameException, 
@@ -78,7 +77,8 @@ public class FSService implements IFSService {
 	public String getFullpath(String relpath) throws InvalidFilenameException {
 		if(!isValidRelpath(relpath))
 			throw new InvalidFilenameException();
-		return joinPath(getRootPath(), relpath);
+		File f = new File(joinPath(getRootPath(), relpath));
+		return f.getAbsolutePath();
 	}
 
 	public String joinPath(String rootPath, String relpath) {
@@ -88,50 +88,90 @@ public class FSService implements IFSService {
 		return p.replaceAll(File.separator + File.separator, File.separator);
 	}
 
-	public void registerModificationCallBack(ModificationListener ob) {
-		// TODO Auto-generated method stub
-
-	}
-	
-	public Boolean writeFile(String relpath, byte[] content)
-			throws InvalidFilenameException, IOException {
-		return null;
+	public void writeFile(String relpath, byte[] content)
+		throws InvalidFilenameException, IOException, FileTooLargeException,
+			NotAFileException, CreatingSubDirectoriesFailedException
+	{
+		String filename = getFullpath(relpath);
+		File f = new File(filename);
 		
+		if(f.exists() && !f.isFile())
+			throw new NotAFileException();
+		if(content.length > Integer.MAX_VALUE)
+			throw new FileTooLargeException();
+		if(f.getParentFile().exists()){
+			if(!f.getParentFile().isDirectory())
+				throw new CreatingSubDirectoriesFailedException();
+		}else{
+			if(!f.getParentFile().mkdirs())
+				throw new CreatingSubDirectoriesFailedException();
+		}
+		
+		FileOutputStream fr = null;
+		fr = new FileOutputStream(filename);
+		fr.write(content);
+		fr.close();
 	}
 
 	public Boolean folderExists(String relpath)
 			throws InvalidFilenameException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		File f = new File(getFullpath(relpath));
+		return f.exists() && f.isDirectory();
 	}
 
 	public String getTempDir() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		String tempdir;
+		File f = File.createTempFile("jakefss", "testfile");
+		tempdir = f.getParentFile().getAbsolutePath();
+		f.delete();
+		return tempdir;
 	}
 
 	public String getTempFile() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		File f = File.createTempFile("jake", "");
+		return f.getAbsolutePath();
 	}
 
 	public Boolean isValidRelpath(String relpath) {
-        String regex = "[A-Z a-z0-9\\-+_./\\(\\)]+";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(relpath);
-
-        if(!(m.find() && m.start() == 0 && m.end() == relpath.length())){
-                return false;
-        }
-        if(relpath.contains("/..") || relpath.contains("../") ||
-                        relpath.startsWith("..") || relpath.endsWith("..")){
-                return false;
-        }
+		String regex = "[A-Z a-z0-9\\-+_./\\(\\)]+";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(relpath);
+		
+		if(!(m.find() && m.start() == 0 && m.end() == relpath.length())){
+			return false;
+		}
+		if (relpath.contains("/../") || 
+			relpath.startsWith("../") || 
+			relpath.endsWith("/..") ||
+			relpath.equals("..")
+		){
+			return false;
+		}
 		return true;
 	}
 
 	public void registerModificationListener(ModificationListener ob) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean deleteFile(String relpath) 
+		throws InvalidFilenameException, FileNotFoundException, NotAFileException
+	{
+		File f = new File(getFullpath(relpath));
+		if(!f.exists())
+			throw new FileNotFoundException();
+		if(!f.isFile())
+			throw new NotAFileException();
+		if(!f.delete())
+			return false;
+		
+		/* TODO: Check if this is a infinite loop on a empty drive on windows*/
+		do{
+			f = f.getParentFile();
+		}while(f.isDirectory() && f.getAbsolutePath().startsWith(getRootPath()) 
+			&& f.list().length>0 && f.delete());
+		
+		return true;
 	}
 }
