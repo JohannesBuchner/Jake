@@ -174,13 +174,17 @@
 				</tr>
 
                 <tr>
-                    <td>[projectId] 8 Chars long &quot;unique&quot; String to identify the project against other clients</td>
+                    <td>[projectId] 8 Chars long &quot;unique&quot; String to identify the project against other clients<br />
+		    <blockquote>Johannes: Why exactly 8? can't we just use the projectname? (see below)</blockquote>
+		    </td>
                     <td>The ICS must know if the message he receives belongs to the current project</td>
                     <td>core, ics, gui</td>
                 </tr>
 
 				<tr>
-					<td>[projectName] Minimum of 2 Characters, maximum of 50 characters</td>
+					<td>[projectName] Minimum of 2 Characters, maximum of 50 characters
+					<blockquote>Johannes: We need it to be nonempty alright, but we can do the upper limit it by ending it with a character that is forbidden in IFSService.isValidRelpath, like the pipe.</blockquote>
+					</td>
 					<td>We have to create some boundaries to ensure valid projectnames</td>
 					<td>core, ffs, gui</td>
 				</tr>
