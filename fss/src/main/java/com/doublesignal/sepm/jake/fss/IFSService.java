@@ -7,16 +7,18 @@ import java.io.IOException;
  * The file system service ought to provide a operating system independent way 
  * of read/write and watch operations.
  * 
- * @author johannes
  * 
- * rootpath: The project root directory. Has to be set first.
- * relpath:  A relative path starting from the rootpath of a file or folder. 
+ * <p>rootpath: The project root directory. Has to be set first.</p> 
+ * 
+ * <p>relpath:  A relative path starting from the rootpath of a file or folder. 
  *           It may only contain characters supported by common operating 
  *           systems (@see <code>isValidRelpath</code>).
  *           relpaths contain slashes as path seperators. 
  *           NOTE: For the real file access, the FSService has to convert them 
  *           to the OS-specific way
+ * </p>
  * 
+ * @author johannes
  **/
 
 public interface IFSService {
@@ -55,7 +57,7 @@ public interface IFSService {
 	public String getFullpath(String relpath) throws InvalidFilenameException;
 	
 	/**
-	 * @return the rootpath set previously by SetRootRule
+	 * @return the rootpath set previously by <code>setRootPath</code>
 	 */
 	public String getRootPath();
 	

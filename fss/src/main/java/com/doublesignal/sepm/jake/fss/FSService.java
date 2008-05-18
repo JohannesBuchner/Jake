@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Implementation of {@link IFSService}
+ * @author johannes
+ * @see IFSService
+ */
 public class FSService implements IFSService {
 	
 	private String rootPath = null;
