@@ -1,18 +1,49 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import java.io.Serializable;
-
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 8, 2008
- * Time: 11:05:20 PM
+ * The <code>FileObject</code> represents a file in the application.
+ * It contains of a <code>relpath</code> that points to the file.
+ * @author Simon
  */
-public class FileObject extends JakeObject implements Serializable {
-    public boolean equals(Object o) {
-        /* TODO */
-        return super.equals(o);
+public class FileObject extends JakeObject {
+	
+	private String relpath;
+	
+	/**
+	 * Create a new <code>FileObject</code> with a given <code>relpath</code>
+	 * @param relpath relative path to the file
+	 */
+	public FileObject(String relpath) {
+		this.relpath = relpath;
+	}
+	
+	/**
+	 * Get the relative path to the file.
+	 * @return relative path
+	 */
+    public String getRelpath() {
+		return relpath;
+	}
+
+    /**
+     * Set the relative path to the file.
+     * @param relpath relative path to the file
+     */
+	public void setRelpath(String relpath) {
+		this.relpath = relpath;
+	}
+
+	/**
+	 * Test if two <code>FileObjects</code>are equal.
+	 * @return <code>true</code> iff the two <code>relpath</code>s are equal.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+        if (obj != null && this.getClass().equals(obj.getClass()))
+        {
+        	FileObject that = (FileObject)obj;
+        	return (this.relpath.equals(that.getRelpath()));
+        }
+        return false;
     }
 }
