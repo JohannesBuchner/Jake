@@ -150,7 +150,7 @@ public class FSService implements IFSService {
 		return true;
 	}
 
-	public void registerModificationListener(ModificationListener ob) {
+	public void registerModificationListener(IModificationListener ob) {
 		// TODO Auto-generated method stub
 		
 	}

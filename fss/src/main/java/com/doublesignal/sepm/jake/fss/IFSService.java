@@ -113,9 +113,9 @@ public interface IFSService {
 	 * It is recursive and when a folder is created, the newly created folder is
 	 * watched too. When a folder is removed a delete-Callback is issued for 
 	 * each file.
-	 * @see ModificationListener
+	 * @see IModificationListener
 	 */
-	public void registerModificationListener(ModificationListener ob);
+	public void registerModificationListener(IModificationListener ob);
 	
 	/**
 	 * Sets and stores the root path for operations that use a relpath.
