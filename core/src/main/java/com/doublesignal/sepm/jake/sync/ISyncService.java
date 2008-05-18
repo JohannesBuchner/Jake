@@ -38,9 +38,17 @@ import java.io.IOException;
  * All methods are best-effort and might fail (in a safe way).
  * Communication is performed with project members only.
  * 
- * @see sequential diagrams 
+ * @ see sequential diagrams 
  * @author johannes 
  **/
+
+
+/* TODO: ACHTUNG:die @See dinger werden scheinbar von javadoc/dem java compiler oder irgendwas anderem
+  geparsed und muessen wenn dann auf Java Klassen/Interfaces etc. verweisen die per import eingebunden
+  wurden......... zumindest siehts so aus, werd mir das aber nochmal genauer anschauen
+  - dominik
+  */
+
 
 public interface ISyncService {
 	/**

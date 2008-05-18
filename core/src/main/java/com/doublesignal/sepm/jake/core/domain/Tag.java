@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.core.domain;
 
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
+
 /**
  * SEPM SS08
  * Gruppe: 3950
@@ -13,6 +15,12 @@ public class Tag {
      * Name of the Tag
      */
     private String name;
+
+
+    public Tag(String name) throws InvalidTagNameException 
+    {
+        this.name = name;
+    }
 
     /**
      * Get the name of the tag
