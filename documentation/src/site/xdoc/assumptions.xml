@@ -172,7 +172,13 @@
 					<td>would be a pain to delete every file in the folder to delete the folder</td>
 					<td>basic functionality, architecture</td>
 				</tr>
-			</tbody>
+
+                <tr>
+                    <td>[projectId] 8 Chars long &quot;unique&quot; String to identify the project against other clients</td>
+                    <td>The ICS must know if the message he receives belongs to the current project</td>
+                    <td>core, ics</td>
+                </tr>
+            </tbody>
 		</table>
 	</subsection>
 	
