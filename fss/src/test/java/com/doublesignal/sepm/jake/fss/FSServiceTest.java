@@ -216,8 +216,11 @@ public class FSServiceTest extends FSTestCase {
 	}
 	
 	public void testGetTempFile() throws Exception{
-		assertTrue("in Temp dir",fss.getTempFile().startsWith(fss.getTempDir() + 
+		String filename = fss.getTempFile();
+		assertTrue("in Temp dir",filename.startsWith(fss.getTempDir() + 
 			File.separator));
+		File f = new File(filename);
+		f.delete();
 	}
 	
 	public void testListFolder() throws Exception{
