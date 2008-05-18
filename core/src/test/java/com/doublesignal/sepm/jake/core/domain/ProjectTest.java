@@ -121,6 +121,13 @@ public class ProjectTest
 	}
 
 	@Test(expected = InvalidRootPathException.class)
+	public void createProjectWithNullRootPath() throws InvalidRootPathException
+	{
+		Project proj = new Project();
+		proj.setRootPath(null);
+	}
+
+	@Test(expected = InvalidRootPathException.class)
 	public void createProjectWithFileRootPath() throws InvalidRootPathException
 	{
 		Project proj = new Project();

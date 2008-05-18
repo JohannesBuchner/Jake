@@ -69,4 +69,31 @@ public class TagTest {
     }
 
 
+
+	@Test(expected = InvalidTagNameException.class)
+	public void nullNameTest() throws InvalidTagNameException
+	{
+		new Tag(null);
+	}
+
+	@Test
+	public void toStringTest()
+	{
+		String sampleTag = "sampleTag";
+
+		Tag t = null;
+		try
+		{
+			t = new Tag(sampleTag);
+		}
+		catch (InvalidTagNameException e)
+		{
+			Assert.fail("shouldn't fail with a valid tagname");
+		}
+		Assert.assertTrue(t.toString().equals(sampleTag));
+	}
+
+	// TODO check equals()
+	// TODO check hashCode()
+
 }
