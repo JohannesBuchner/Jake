@@ -40,7 +40,7 @@
 					<li>
 						<b>Test suite</b>
 						<br/>
-						A test suite is a batch of corresponding test cases.
+						A test suite is a batch of test cases for one component.
 					</li>
 					<li>
 						<b>Data Access Object</b>
@@ -54,8 +54,14 @@
 					<li>
 						<b>Project Root Folder</b>
 						<br/>
-						TODO
-
+						This is the folder on the filesystem of the user where the corresponding project is saved.
+						All files that are added to the project get copied beneath this folder.
+					</li>
+					<li>
+						<b>Usuability Test</b>
+						<br/>
+						The programmmer tests the corresponding GUI for usuability. He tries to make the user
+						experience as &quot;natural as possible&quot;.
 					</li>
 
 
@@ -130,7 +136,7 @@
 							<td>Sync</td>
 							<td>Synchronisation Service - Mock Object simulating the Synchronisation between Clients
 							</td>
-							<td>Medium</td>
+							<td>Low</td>
 						</tr>
 						<tr>
 							<td>5.</td>
@@ -139,14 +145,15 @@
 							<td>InterClient Communication Service - Mock Object simulating the communications between
 								clients and the network
 							</td>
-							<td>Medium</td>
+							<td>Low</td>
 						</tr>
 
 
 					</tbody>
 				</table>
 
-				Child Components:
+				GUI Child Components<br/>Those are not tested automatically, but tested for functionality &amp;
+				usability by the programer implementing the corresponding GUI element
 				<table>
 					<thead>
 						<tr>
@@ -244,55 +251,6 @@
 						</tr>
 
 
-						<tr>
-							<td>GUI</td>
-							<td>SearchAddUserGUI</td>
-							<td>Medium</td>
-							<td>#102</td>
-						</tr>
-
-						<tr>
-							<td>GUI</td>
-							<td>SearchObjectGUI</td>
-							<td>High</td>
-							<td>#103</td>
-						</tr>
-
-
-						<tr>
-							<td>GUI</td>
-							<td>PreferencesGUI - Push/Pull Behaviour</td>
-							<td>High</td>
-							<td>#104</td>
-						</tr>
-
-						<tr>
-							<td>GUI</td>
-							<td>PreferencesGUI - Networking Options</td>
-							<td>Very High</td>
-							<td>#105</td>
-						</tr>
-
-						<tr>
-							<td>GUI</td>
-							<td>ImportFileFolderGUI</td>
-							<td>Very High</td>
-							<td>[none yet]</td>
-						</tr>
-
-						<tr>
-							<td>GUI</td>
-							<td>PropagateChangesDialog</td>
-							<td>High</td>
-							<td>[none yet]</td>
-						</tr>
-
-						<tr>
-							<td>GUI</td>
-							<td>DeleteObjectDialog</td>
-							<td>Low</td>
-							<td>#108</td>
-						</tr>
 					</tbody>
 
 				</table>
@@ -1495,314 +1453,19 @@
 				</table>
 
 			</subsection>
-			<subsection name="GUI:SearchAddUserGUI">
-				The User can search for Users in the network, gets a list of matches and selects users to add to the
-				project.
-				<table>
-					<thead>
-						<tr>
-							<td width="200">Preconditions</td>
-							<td width="80">Test-Case#</td>
-							<td>Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>achived result</td>
-							<td>error behaviour</td>
-							<td>passed</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>xx</td>
-							<td>46</td>
-							<td>NetworkUserId Input length checks</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>Very High</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>47</td>
-							<td>NetworkUserId Input character (just printable ascii!) checks</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>Very High</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>48</td>
-							<td>Search for Users (press button)</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>NC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>49</td>
-							<td>Sanitize received Data for display</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>50</td>
-							<td>Select a User</td>
-							<td>Very High</td>
-							<td>NC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>51</td>
-							<td>Add a User to the Project</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>Very High</td>
-							<td>NC</td>
-						</tr>
-					</tbody>
-				</table>
-			</subsection>
-			<subsection name="GUI:SearchObjectGUI">
-				The User can search Objects by name, tag or both
-				<table>
-					<thead>
-						<tr>
-							<td width="200">Preconditions</td>
-							<td width="80">Test-Case#</td>
-							<td>Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>achived result</td>
-							<td>error behaviour</td>
-							<td>passed</td>
-							<td width='100'>Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>xx</td>
-							<td>52</td>
-							<td>No Input given</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>53</td>
-							<td>Unallowed charactes given (e.g. &quot;/&quot;)</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>54</td>
-							<td>Input too long</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>55</td>
-							<td>Display Nothing found</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>NC</td>
-						</tr>
-						<tr>
-							<td>xx</td>
-							<td>56</td>
-							<td>Display Results</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>NC</td>
-						</tr>
-
-					</tbody>
-				</table>
-			</subsection>
-			<subsection name="GUI:PreferencesGUI - Push/Pull Behaviour">
-				Beschreibung blablablablablabala
-				<table>
-					<thead>
-						<tr>
-							<td width="200">Preconditions</td>
-							<td width="80">Test-Case#</td>
-							<td>Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>achived result</td>
-							<td>error behaviour</td>
-							<td>passed</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>xx</td>
-							<td>xx</td>
-							<td>xxxx</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td>xx</td>
-						</tr>
-					</tbody>
-				</table>
-			</subsection>
-			<subsection name="GUI:PreferencesGUI - Networking Options">
-				Beschreibung blablablablablabala
-				<table>
-					<thead>
-						<tr>
-							<td width="200">Preconditions</td>
-							<td width="80">Test-Case#</td>
-							<td>Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>achived result</td>
-							<td>error behaviour</td>
-							<td>passed</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>xxxx</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-						</tr>
-					</tbody>
-				</table>
-			</subsection>
-			<subsection name="GUI:ImportFileFolderGUI">
-				Beschreibung blablablablablabala
-				<table>
-					<thead>
-						<tr>
-							<td width="100">Testcase#</td>
-							<td>Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>achived result</td>
-							<td>error behaviour</td>
-							<td>passed</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<td>xxxx</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td></td>
-						</tr>
-					</tbody>
-				</table>
-			</subsection>
-			<subsection name="GUI:PropagateChangesDialog">
-				Beschreibung blablablablablabala
-				<table>
-					<thead>
-						<tr>
-							<td width="100">Testcase#</td>
-							<td>Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>achived result</td>
-							<td>error behaviour</td>
-							<td>passed</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<td>xxxx</td>
-							<td>xpected result</td>
-							<td>xinputsx</td>
-							<td>xachievedresult</td>
-							<td>xerrorbehx</td>
-							<td>xpassedx</td>
-							<td>High</td>
-							<td></td>
-						</tr>
-					</tbody>
-				</table>
-			</subsection>
-			-->
 
 
-			<!-- // TODO CORE-->
+			<!-- // TODO CORE -->
 			<subsection name="Core:Services:IJakeGuiAccess">
-				Somedescription // TODO
+				This is the Interface provided for the GUI to fulfill the required use cases.
+				<br/>
+				Because the functions in question are already tested with unit tests in the other components,
+				testing this Interface has very little priority. Errors have to be looked up in the corresponding
+				component.
 
 				<br/>Preconditions:
 				<ul>
 					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
 				</ul>
 				<table>
 					<thead>
@@ -1820,11 +1483,11 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>55</td>
 							<!-- test case # //-->
-							<td></td>
+							<td>Test the functions</td>
 							<!-- function //-->
-							<td></td>
+							<td>The requests should be forwarded to the corresponding component in the core</td>
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
@@ -1834,32 +1497,11 @@
 							<!-- behaviour in case of error -->
 							<td></td>
 							<!-- passed? -->
-							<td></td>
+							<td>Very High</td>
 							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
+							<td>SC</td>
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-
 					</tbody>
 				</table>
 
@@ -1891,7 +1533,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>56</td>
 							<!-- test case # //-->
 							<td>Get RelPath</td>
 							<!-- function //-->
@@ -1941,7 +1583,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>57</td>
 							<!-- test case # //-->
 							<td>Get the content of the Note</td>
 							<!-- function //-->
@@ -1961,7 +1603,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>58</td>
 							<!-- test case # //-->
 							<td>Set the content of the note object</td>
 							<!-- function //-->
@@ -2011,7 +1653,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>59</td>
 							<!-- test case # //-->
 							<td>Get the Name of the JakeObject</td>
 							<!-- function //-->
@@ -2031,7 +1673,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>60</td>
 							<!-- test case # //-->
 							<td>Add a Tag to a JakeObject</td>
 							<!-- function //-->
@@ -2052,7 +1694,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>61</td>
 							<!-- test case # //-->
 							<td>Get List of tags</td>
 							<!-- function //-->
@@ -2072,7 +1714,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>62</td>
 							<!-- test case # //-->
 							<td>Remove a tag from a JakeObject</td>
 							<!-- function //-->
@@ -2124,7 +1766,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>63</td>
 							<!-- test case # //-->
 							<td>Check Content length</td>
 							<!-- function //-->
@@ -2143,7 +1785,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>64</td>
 							<!-- test case # //-->
 							<td>Check equals() method</td>
 							<!-- function //-->
@@ -2164,7 +1806,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>65</td>
 							<!-- test case # //-->
 							<td>Check hashCode() method</td>
 							<!-- function //-->
@@ -2185,7 +1827,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>66</td>
 							<!-- test case # //-->
 							<td>Check Valid Recipient</td>
 							<!-- function //-->
@@ -2206,7 +1848,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>67</td>
 							<!-- test case # //-->
 							<td>Check Valid Sender</td>
 							<!-- function //-->
@@ -2258,7 +1900,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>68</td>
 							<!-- test case # //-->
 							<td>Ensure correct LogAction supplied</td>
 							<!-- function //-->
@@ -2278,7 +1920,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>69</td>
 							<!-- test case # //-->
 							<td>Ensure valid JakeObjectName supplied</td>
 							<!-- function //-->
@@ -2299,7 +1941,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>70</td>
 							<!-- test case # //-->
 							<td>Test hashCode() method</td>
 							<!-- function //-->
@@ -2319,7 +1961,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>71</td>
 							<!-- test case # //-->
 							<td>Test equals() method</td>
 							<!-- function //-->
@@ -2371,7 +2013,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>72</td>
 							<!-- test case # //-->
 							<td>Create a empty Project</td>
 							<!-- function //-->
@@ -2391,7 +2033,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>73</td>
 							<!-- test case # //-->
 							<td>Access ProjectFolder of uninitialized Project Object</td>
 							<!-- function //-->
@@ -2411,7 +2053,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>74</td>
 							<!-- test case # //-->
 							<td>Access ProjectId of uninitialized Project Object</td>
 							<!-- function //-->
@@ -2432,7 +2074,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>75</td>
 							<!-- test case # //-->
 							<td>Access ProjectName of uninitialized Project Object</td>
 							<!-- function //-->
@@ -2452,7 +2094,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>76</td>
 							<!-- test case # //-->
 							<td>Create a Project with a valid path</td>
 							<!-- function //-->
@@ -2473,7 +2115,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>77</td>
 							<!-- test case # //-->
 							<td>Create a Project with a File instead of a directory as path</td>
 							<!-- function //-->
@@ -2494,7 +2136,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>78</td>
 							<!-- test case # //-->
 							<td>Create a Project with an non existend root path</td>
 							<!-- function //-->
@@ -2515,7 +2157,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>79</td>
 							<!-- test case # //-->
 							<td>Create a Project with a null value as root path</td>
 							<!-- function //-->
@@ -2536,7 +2178,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>80</td>
 							<!-- test case # //-->
 							<td>Create a Project with a valid Project name</td>
 							<!-- function //-->
@@ -2557,7 +2199,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>81</td>
 							<!-- test case # //-->
 							<td>Create a Project with just a character as Project name</td>
 							<!-- function //-->
@@ -2578,7 +2220,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>82</td>
 							<!-- test case # //-->
 							<td>Create a Project with a too long Project name</td>
 							<!-- function //-->
@@ -2599,7 +2241,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>83</td>
 							<!-- test case # //-->
 							<td>Create a Project with a Project name of the maximum width</td>
 							<!-- function //-->
@@ -2619,7 +2261,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>84</td>
 							<!-- test case # //-->
 							<td>Create a Project with an empty Project name</td>
 							<!-- function //-->
@@ -2640,7 +2282,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>85</td>
 							<!-- test case # //-->
 							<td>Create a Project with an null value for the project name</td>
 							<!-- function //-->
@@ -2661,7 +2303,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>86</td>
 							<!-- test case # //-->
 							<td>Create a Project with a valid project id</td>
 							<!-- function //-->
@@ -2682,7 +2324,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>87</td>
 							<!-- test case # //-->
 							<td>Create a Project with an empty Project Id</td>
 							<!-- function //-->
@@ -2702,7 +2344,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>88</td>
 							<!-- test case # //-->
 							<td>Create a Project with an null value as ProjectId</td>
 							<!-- function //-->
@@ -2722,7 +2364,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>89</td>
 							<!-- test case # //-->
 							<td>Create a Project with an too short ProjectId</td>
 							<!-- function //-->
@@ -2742,7 +2384,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>90</td>
 							<!-- test case # //-->
 							<td>Create a Project with a too long ProjectId</td>
 							<!-- function //-->
@@ -2762,7 +2404,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>91</td>
 							<!-- test case # //-->
 							<td>Create a Project with a correct RootPath, ProjectName &amp; ProjectId</td>
 							<!-- function //-->
@@ -2782,7 +2424,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>92</td>
 							<!-- test case # //-->
 							<td>Test the equals() method of a Project Object</td>
 							<!-- function //-->
@@ -2801,7 +2443,7 @@
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
 						<tr>
-							<td></td>
+							<td>93</td>
 							<!-- test case # //-->
 							<td>Test the hashCode() metho of a Proejct Object</td>
 							<!-- function //-->
@@ -2844,7 +2486,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td></td>
+							<td>94</td>
 							<!-- test case # //-->
 							<td>Create a Tag with a valid name</td>
 							<!-- function //-->
@@ -2865,6 +2507,7 @@
 						</tr>
 
 						<tr>
+							<td>95</td>
 							<td>Create a tag with an invalid name (Whitespace in it)</td>
 							<!-- function //-->
 							<td>throw a InvalidTagNameException</td>
@@ -2884,7 +2527,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>96</td>
 							<!-- test case # //-->
 							<td>Create a tag with an invalid name (null value)</td>
 							<!-- function //-->
@@ -2907,7 +2550,7 @@
 
 
 						<tr>
-							<td></td>
+							<td>97</td>
 							<!-- test case # //-->
 							<td>Test the equals method of two tag objects</td>
 							<!-- function //-->
@@ -2928,7 +2571,7 @@
 
 						</tr>
 						<tr>
-							<td></td>
+							<td>98</td>
 							<!-- test case # //-->
 							<td>Check the hashCode method of two tag objects</td>
 							<!-- function //-->
@@ -2949,7 +2592,7 @@
 						</tr>
 
 						<tr>
-							<td></td>
+							<td>99</td>
 							<!-- test case # //-->
 							<td>Test the toString() method of a Tag object</td>
 							<!-- function //-->
@@ -2975,719 +2618,703 @@
 
 			</subsection>
 
+			<!--
+			   <subsection name="Core:DAO:IJakeObjectDao">
+				   Somedescription
 
-			<subsection name="Core:DAO:IJakeObjectDao">
-				Somedescription
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
+							   <td></td>
+							   <td></td>
+							   <td></td>
+							   <td></td>
+							   <td></td>
+							   <td></td>
+							   <td></td>
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+						   </tr>
+						   <tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
 
 
-			<subsection name="Core:DAO:ILogEntryDao">
-				Somedescription
+			   <subsection name="Core:DAO:ILogEntryDao">
+				   Somedescription
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
 
-			<subsection name="Core:DAO:IProjectMemberDao">
-				Somedescription
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
 
-			<!-- // TODO SYNC:ISyncService -->
-			<subsection name="Sync:ISyncService">
-				Somedescription
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+						   </tr>
+						   <tr>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
+
+			   <subsection name="Core:DAO:IProjectMemberDao">
+				   Somedescription
+
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
 
 
-			<!-- // TODO FSS -->
-			<subsection name="FSS:IFSService">
-				Somedescription
+			   <subsection name="Sync:ISyncService">
+				   Somedescription
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
 
-			<subsection name="Sync:IModificationListener">
-				Somedescription
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
 
 
-			<!-- TODO ICS Services -->
-			<subsection name="ICS:IICService">
-				Somedescription
+			   <subsection name="FSS:IFSService">
+				   Somedescription
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
 
-			<subsection name="ICS:IMessageReceiveListener">
-				Somedescription
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
 
-			<subsection name="ICS:IObjectReceiveListener">
-				Somedescription
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+						   </tr>
+						   <tr>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
 
-			<subsection name="ICS:IOnlineStatusListener">
-				Somedescription
+							   <td></td>
 
-				<br/>Preconditions:
-				<ul>
-					<li>The Program is started</li>
-					<li>A project is opened</li>
-					<li>The user is authenticated</li>
-				</ul>
-				<table>
-					<thead>
-						<tr>
-							<td width="80">Test-Case#</td>
-							<td width="400">Function</td>
-							<td>Expected result</td>
-							<td>Inputs</td>
-							<td>Achieved Result</td>
-							<td>Error Behaviour</td>
-							<td width="40">Passed?</td>
-							<td width="100">Priority</td>
-							<td width="100">Type</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td></td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
+							   <td></td>
 
-					</tbody>
-				</table>
+							   <td></td>
 
-			</subsection>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
+
+			   <subsection name="Sync:IModificationListener">
+				   Somedescription
+
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
 
 
-		</section>
+			   <subsection name="ICS:IICService">
+				   Somedescription
 
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
 
-		<section name="Test Requirements">
+							   <td></td>
 
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
+
+			   <subsection name="ICS:IMessageReceiveListener">
+				   Somedescription
+
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
+
+			   <subsection name="ICS:IObjectReceiveListener">
+				   Somedescription
+
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
+
+			   <subsection name="ICS:IOnlineStatusListener">
+				   Somedescription
+
+				   <br/>Preconditions:
+				   <ul>
+					   <li>The Program is started</li>
+					   <li>A project is opened</li>
+					   <li>The user is authenticated</li>
+				   </ul>
+				   <table>
+					   <thead>
+						   <tr>
+							   <td width="80">Test-Case#</td>
+							   <td width="400">Function</td>
+							   <td>Expected result</td>
+							   <td>Inputs</td>
+							   <td>Achieved Result</td>
+							   <td>Error Behaviour</td>
+							   <td width="40">Passed?</td>
+							   <td width="100">Priority</td>
+							   <td width="100">Type</td>
+						   </tr>
+					   </thead>
+					   <tbody>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+						   <tr>
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+							   <td></td>
+
+						   </tr>
+
+					   </tbody>
+				   </table>
+
+			   </subsection>
+   -->
 
 		</section>
 
@@ -3700,8 +3327,8 @@
 			</subsection>
 
 			<subsection name="User Interface">
-				We're currently not planing on testing the user interface, although we're evaluating
-				using test-driven development for the user interface.
+				We don't do any automatic testing on the user interface, but we're doing manual
+				Integration &amp; Usability tests on the GUI.
 			</subsection>
 
 			<subsection name="Data &amp; Database Integrity">
@@ -3741,11 +3368,12 @@
 				Because all Users of the systems have the same privileges,
 				no permission tests are planed to be performed.
 			</subsection>
-			<!--
-								<subsection name="Failover &amp; Recovery">
-									-
-								</subsection>
-						-->
+
+			<subsection name="Failover &amp; Recovery">
+				No Failover and/or Recovery tests are performed in this
+				project phase.
+			</subsection>
+
 		</section>
 
 		<section name="Tools">
@@ -3764,14 +3392,7 @@
 					<br/>
 					<a href="http://www.jmock.org">http://www.jmock.org</a>
 				</li>
-				<li>
-					<b>GUI Testing</b>
-					<br/>
-					Althought we're not planing testing the GUI, we'll try do test-driven development
-					of the GUI using FEST
-					<br/>
-					<a href="http://code.google.com/p/fest/">http://code.google.com/p/fest/</a>
-				</li>
+
 				<li>
 					<b>Test Report Generation</b>
 					<br/>
@@ -3808,6 +3429,66 @@
 
 		</section>
 
+		<section name="Testcriteria">
+			We start testing with the begining of the implementationphase. Because a good portion of the required java
+			code can easily be autogenerated, we create unit tests before completing the auto generated stubs by the
+			IDE.
+			<br/>
+			We plan to stop testing when the project is complete and gets accepted by the LVA-leadership.
+			<br/>
+			An alternative end of testing occurs, if the project group breaks up and the project is aborted.
+			<br/>
+			If for any reason, some yet unknown requirements occur, this test plan and the corresponding test cases
+			have to be updated.
+			<br/>
+
+			<subsection name="GUI">
+				Testtypes:
+				<ul>
+					<li>Integration Test</li>
+					<li>Usuablity test</li>
+				</ul>
+			</subsection>
+
+			<subsection name="Core">
+				Testtypes:
+				<ul>
+					<li>Integration tests</li>
+					<li>Unit tests</li>
+					<li>BlackBox tests</li>
+				</ul>
+			</subsection>
+
+			<subsection name="FSS">
+				Testtypes:
+				<ul>
+					<li>Integration tests</li>
+					<li>Unit tests</li>
+					<li>BlackBox tests</li>
+				</ul>
+			</subsection>
+
+			<subsection name="Sync">
+				Testtypes:
+				<ul>
+					<li>Integration tests</li>
+					<li>Unit tests</li>
+					<li>BlackBox tests</li>
+				</ul>
+			</subsection>
+
+			<subsection name="ICS">
+				Testtypes:
+				<ul>
+					<li>Integration tests</li>
+					<li>Unit tests</li>
+					<li>BlackBox tests</li>
+				</ul>
+			</subsection>
+
+		</section>
+
+
 		<section name="Error Reporting / Bug Tracking">
 			When an error is found:
 			<ol>
@@ -3837,9 +3518,6 @@
 			</ol>
 		</section>
 
-		<section name="Testcriteria">
-			TODO
-		</section>
 
 		<section name="Bug fixing &amp; verification">
 			When a programmer becomes assigned to a bug, he/she has to
@@ -3852,6 +3530,12 @@
 				<li>Close the ticket</li>
 			</ol>
 
+		</section>
+
+		<section name="Code Reviews">
+			Code reviews are sheduled for the end of Project Week 8 (30.5-1.6.08) and for the end of Project Week 10
+			(13. - 15.6.08). On these dates, each project member reviews the code of 2 other members, adds comments,
+			creates additional unit tests and eventually bug reports.
 		</section>
 
 		<section name="Sample Test Case">
@@ -3868,105 +3552,94 @@
 			{className} is the name of the class to be tested.
 			<br/>
 
+			Java File:
 			<pre>
-				Java File:
+package com.doublesignal.sepm.jake.{artefactId}/{package};
 
 
-				-- content:
-				package com.doublesignal.sepm.jake.{artefactId}/{package};
+/* adjust as necessary */
+import org.hamcrest.*;
+import org.junit.*;
+import org.jmock.*;
+
+/* import necessary exceptions */
+/* import necessary classes */
 
 
-				/* adjust as necessary */
-				import org.hamcrest.*;
-				import org.junit.*;
-				import org.jmock.*;
+public class {className}Test
+{
 
-				/* import necessary exceptions */
-				/* import necessary classes */
+	/* set default values, e.g. object name, etc. */
 
-
-				public class {className}Test
-				{
-
-				/* set default values, e.g. object name, etc. */
-
-				/* setup mockery if needed */
-				Mockery context = new JUnit4Mockery();
+	/* setup mockery if needed */
+	Mockery context = new JUnit4Mockery();
 
 
-				public String getName()
-				{
-				return "nameOfThisTestCase";
-				}
+	public String getName()
+	{
+	return "nameOfThisTestCase";
+	}
 
 
-				/**
-				* acquire required resources
-				*/
-				@Before
-				protected void setup()
-				{
+	/**
+	* acquire required resources
+	*/
+	@Before
+	protected void setup()
+	{
 
-				}
-
-
-				/**
-				* {Test case name }
-				* Description of the test case
-				* Description of the input data
-				* Description of the actual result
-				* Description of the expected result
-				* @author {author}
-				* @date {date}
-				* @revision {revision, default 1, increasing by each change}
-				* {date first fixed in implementation}
-				*/
-				@Test(expected = {some}Exception.class)
-				public void {testname}()
-				{
-
-				}
-
-				/**
-				* {Test case name }
-				* Description of the test case
-				* Description of the input data
-				* Description of the actual result
-				* Description of the expected result
-				* @author {author}
-				* @date {date}
-				* @revision {revision, default 1, increasing by each change}
-				* {date first fixed in implementation}
-				*/
-				@Test
-				public void {anotherTestName}()
-				{
-				// some other test
-				}
-
-				/**
-				* release all the resources acquired
-				*/
-				@After
-				protected voi tearDown()
-				{
-
-				}
-
-				}
+	}
 
 
-			</pre>
+	/**
+	* {Test case name }
+	* Description of the test case
+	* Description of the input data
+	* Description of the actual result
+	* Description of the expected result
+	* @author {author}
+	* @date {date}
+	* @revision {revision, default 1, increasing by each change}
+	* {date first fixed in implementation}
+	*/
+	@Test(expected = {some}Exception.class)
+	public void {testname}()
+	{
+
+	}
+
+	/**
+	* {Test case name }
+	* Description of the test case
+	* Description of the input data
+	* Description of the actual result
+	* Description of the expected result
+	* @author {author}
+	* @date {date}
+	* @revision {revision, default 1, increasing by each change}
+	* {date first fixed in implementation}
+	*/
+	@Test
+	public void {anotherTestName}()
+	{
+	// some other test
+	}
+
+	/**
+	* release all the resources acquired
+	*/
+	@After
+	protected voi tearDown()
+	{
+
+	}
+
+}
+
+
+</pre>
 
 		</section>
-
-
-		<!--
-					<section name="Zeitplan">
-
-					</section>
-				-->
-
 
 		<section name="Changelog">
 			<table>
@@ -4008,6 +3681,12 @@
 					<td>18.05.2008</td>
 					<td>DD</td>
 					<td>Added/Reworked testcases.</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>19.05.2008</td>
+					<td>DD</td>
+					<td>Added testcase numbers, filled some holes</td>
 				</tr>
 			</table>
 		</section>
