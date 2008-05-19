@@ -22,7 +22,8 @@
 		</menu>
 		
 		<menu name="Documentation">
-			<item name="Projektauftrag" href="projektauftrag.html" />
+			<item name="Installation Notes" href="installation_notes.html" />
+			<item name="Projektauftrag(de)" href="projektauftrag.html" />
 			<item name="Assumptions" href="assumptions.html" />
 			<item name="Requirements" href="requirements.html" />
 			<item name="Actors Hierarchy" href="actors-hierarchy.html" />
