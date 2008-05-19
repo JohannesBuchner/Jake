@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
@@ -19,81 +20,96 @@ public class JakeGuiMockup1 extends JPanel {
 		initComponents();
 	}
 
+	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
+		// TODO add your code here
+	}
+
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		// Generated using JFormDesigner Evaluation license - tester tester
 		frame1 = new JFrame();
-		panel3 = new JPanel();
-		label1 = new JLabel();
-		label2 = new JLabel();
-		label3 = new JLabel();
+		statusPanel = new JPanel();
+		statusLabel = new JLabel();
 		panel1 = new JPanel();
-		tabbedPane1 = new JTabbedPane();
-		panel2 = new JPanel();
-		scrollPane1 = new JScrollPane();
-		table3 = new JTable();
+		messageReceivedLabel = new JButton();
+		fileConflictLabel = new JButton();
+		connectionLabel = new JButton();
+		mainPanel = new JPanel();
+		mainTabbedPane = new JTabbedPane();
+		peoplePanel = new JPanel();
+		peopleScrollPane = new JScrollPane();
+		peopleTable = new JTable();
 		filesPanel = new JPanel();
-		scrollPane2 = new JScrollPane();
-		table1 = new JTable();
+		filesScrollPane = new JScrollPane();
+		filesTable = new JTable();
 		notesPanel = new JPanel();
-		scrollPane3 = new JScrollPane();
-		table2 = new JTable();
-		toolBar1 = new JToolBar();
-		button10 = new JButton();
-		button11 = new JButton();
-		button8 = new JButton();
-		button4 = new JButton();
-		button5 = new JButton();
-		button7 = new JButton();
-		hSpacer1 = new JPanel(null);
-		label4 = new JLabel();
-		scrollPane4 = new JScrollPane();
-		textArea1 = new JTextArea();
-		menuBar1 = new JMenuBar();
-		menu1 = new JMenu();
-		menuItem6 = new JMenuItem();
-		menuItem1 = new JMenuItem();
-		menuItem2 = new JMenuItem();
-		menuItem3 = new JMenuItem();
-		menuItem4 = new JMenuItem();
-		menuItem5 = new JMenuItem();
-		menu3 = new JMenu();
-		menuItem19 = new JMenuItem();
-		menuItem14 = new JMenuItem();
-		menuItem15 = new JMenuItem();
-		menuItem30 = new JMenuItem();
-		menu2 = new JMenu();
-		menuItem22 = new JMenuItem();
-		menuItem23 = new JMenuItem();
-		checkBoxMenuItem1 = new JCheckBoxMenuItem();
-		menuItem24 = new JMenuItem();
-		menuItem25 = new JMenuItem();
-		menu8 = new JMenu();
-		menuItem9 = new JMenuItem();
-		menuItem31 = new JMenuItem();
-		menuItem26 = new JMenuItem();
-		menuItem8 = new JMenuItem();
-		menuItem7 = new JMenuItem();
-		popupMenuTree = new JPopupMenu();
-		menuItem10 = new JMenuItem();
-		menuItem17 = new JMenuItem();
-		menuItem27 = new JMenuItem();
-		menuItem11 = new JMenuItem();
-		popupMenuFiles = new JPopupMenu();
-		menuItem12 = new JMenuItem();
-		menuItem21 = new JMenuItem();
+		notesScrollPane = new JScrollPane();
+		notesTable = new JTable();
+		mainToolBar = new JToolBar();
+		openProjectFolderButton = new JButton();
+		refreshDatapoolViewButton = new JButton();
+		propagateFileButton = new JButton();
+		pullFilesButton = new JButton();
+		LockFileToggleButton = new JToggleButton();
+		newNoteButton = new JButton();
+		searchSpacer = new JPanel(null);
+		searchLabel = new JLabel();
+		searchTextField = new JTextField();
+		mainMenuBar = new JMenuBar();
+		fileMenu = new JMenu();
+		newProjectMenuItem = new JMenuItem();
+		openProjectMenuItem = new JMenuItem();
+		saveMenuItem = new JMenuItem();
+		saveAsMenuItem = new JMenuItem();
+		exitApplicationMenuItem = new JMenuItem();
+		viewMenu = new JMenu();
+		peopleViewMenuItem = new JMenuItem();
+		filesViewMenuItem = new JMenuItem();
+		notesViewMenuItem = new JMenuItem();
+		systemLogViewMenuItem = new JMenuItem();
+		networkMenu = new JMenu();
+		signInNetworkMenuItem = new JMenuItem();
+		signOutNetworkMenuItem = new JMenuItem();
+		showOfflineMembersCheckBoxMenuItem = new JCheckBoxMenuItem();
 		checkBoxMenuItem2 = new JCheckBoxMenuItem();
-		menuItem16 = new JMenuItem();
-		menuItem18 = new JMenuItem();
-		menuItem13 = new JMenuItem();
-		popupMenuNotes = new JPopupMenu();
-		menuItem20 = new JMenuItem();
-		menuItem28 = new JMenuItem();
-		menuItem29 = new JMenuItem();
+		autoFilePropagateCheckBoxMenuItem = new JCheckBoxMenuItem();
+		autoFilePullCheckBoxMenuItem = new JCheckBoxMenuItem();
+		projectMenu = new JMenu();
+		openProjectFolderMenuItem = new JMenuItem();
+		refreshDatapoolViewProjectMenuItem = new JMenuItem();
+		newNoteProjectMenuItem = new JMenuItem();
+		addFileToProjectMenuItem = new JMenuItem();
+		addFolderToProjectMenuItem = new JMenuItem();
+		addProjectMemberMenuItem = new JMenuItem();
+		helpMenu = new JMenu();
+		aboutHelpMenuItem = new JMenuItem();
+		peoplePopupMenu = new JPopupMenu();
+		sendMessageMenuItem = new JMenuItem();
+		showInfoPeopleMenuItem = new JMenuItem();
+		renamePeopleMenuItem = new JMenuItem();
+		menuItem5 = new JMenuItem();
+		removePeopleMenuItem = new JMenuItem();
+		filesPopupMenu = new JPopupMenu();
+		openExecuteFileMenuItem = new JMenuItem();
+		lockFileMenuItem = new JMenuItem();
+		deleteFileMenuItem = new JMenuItem();
+		viewLogForFileMenuItem = new JMenuItem();
+		resolveFileConflictMenuItem = new JMenuItem();
+		propagateFileMenuItem = new JMenuItem();
+		menuItem4 = new JMenuItem();
+		notesPopupMenu = new JPopupMenu();
+		viewEditNoteMenuItem = new JMenuItem();
+		newNoteMenuItem = new JMenuItem();
+		removeNoteMenuItem = new JMenuItem();
+		searchPopupMenu = new JPopupMenu();
+		nameSearchMenuItem = new JMenuItem();
+		tagsSearchMenuItem = new JMenuItem();
+		bothSearchMenuItem = new JMenuItem();
 
 		//======== frame1 ========
 		{
-			frame1.setTitle("Jake - \u00dcbersetzerbau (6/6)");
+			frame1.setTitle("Jake - \u00dcbersetzerbau");
+			frame1.setIconImage(new ImageIcon(getClass().getResource("/Jake.png")).getImage());
 			Container frame1ContentPane = frame1.getContentPane();
 			frame1ContentPane.setLayout(new BorderLayout());
 
@@ -109,92 +125,115 @@ public class JakeGuiMockup1 extends JPanel {
 
 				this.setLayout(new BorderLayout());
 
-				//======== panel3 ========
+				//======== statusPanel ========
 				{
-					panel3.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
-					panel3.setLayout(new BorderLayout(4, 4));
+					statusPanel.setLayout(new BorderLayout(60, 4));
 
-					//---- label1 ----
-					label1.setText("Pulling File xy...");
-					label1.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-					panel3.add(label1, BorderLayout.WEST);
+					//---- statusLabel ----
+					statusLabel.setText("Pulling File xy...");
+					statusLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+					statusLabel.setAlignmentX(0.5F);
+					statusPanel.add(statusLabel, BorderLayout.WEST);
 
-					//---- label2 ----
-					label2.setText("Connected as pstein@jabber.fsinf.at");
-					label2.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-					panel3.add(label2, BorderLayout.EAST);
+					//======== panel1 ========
+					{
+						panel1.setLayout(new HorizontalLayout());
 
-					//---- label3 ----
-					label3.setText("4 Files, 1 Conflict");
-					label3.setHorizontalAlignment(SwingConstants.CENTER);
-					label3.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-					panel3.add(label3, BorderLayout.CENTER);
+						//---- messageReceivedLabel ----
+						messageReceivedLabel.setText("2 Messages received");
+						messageReceivedLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+						messageReceivedLabel.setIcon(new ImageIcon(getClass().getResource("/message.png")));
+						messageReceivedLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+						panel1.add(messageReceivedLabel);
+
+						//---- fileConflictLabel ----
+						fileConflictLabel.setText("1 File Conflict");
+						fileConflictLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+						fileConflictLabel.setIcon(new ImageIcon(getClass().getResource("/warning.png")));
+						fileConflictLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+						panel1.add(fileConflictLabel);
+
+						//---- connectionLabel ----
+						connectionLabel.setText("Connected");
+						connectionLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+						connectionLabel.setIcon(new ImageIcon(getClass().getResource("/network-idle.png")));
+						connectionLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+						connectionLabel.setToolTipText("Connected as pstein@jabber.fsinf.at");
+						panel1.add(connectionLabel);
+					}
+					statusPanel.add(panel1, BorderLayout.EAST);
 				}
-				this.add(panel3, BorderLayout.SOUTH);
+				this.add(statusPanel, BorderLayout.SOUTH);
 
-				//======== panel1 ========
+				//======== mainPanel ========
 				{
-					panel1.setLayout(new BorderLayout());
+					mainPanel.setLayout(new BorderLayout());
 
-					//======== tabbedPane1 ========
+					//======== mainTabbedPane ========
 					{
 
-						//======== panel2 ========
+						//======== peoplePanel ========
 						{
-							panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+							peoplePanel.setLayout(new BoxLayout(peoplePanel, BoxLayout.X_AXIS));
 
-							//======== scrollPane1 ========
+							//======== peopleScrollPane ========
 							{
+								peopleScrollPane.setComponentPopupMenu(peoplePopupMenu);
 
-								//---- table3 ----
-								table3.setModel(new DefaultTableModel(
+								//---- peopleTable ----
+								peopleTable.setModel(new DefaultTableModel(
 									new Object[][] {
-										{"Simon", "simon@jabber.fsinf.at", "Online", "OK", ""},
-										{"Dominik", "d@jabber.fsinf.at", "Online", "1 File in Conflict", null},
-										{"Chris", "c@jabber.fsinf.at", "Online", "OK", null},
-										{"Peter", "peter@jabber.fsinf.at", "Offline", "OK", null},
+										{"Simon", "simon.wallner@jabber.fsinf.at", "Online", "Projektleiter"},
+										{"Dominik", "dominik.dorn@jabber.fsinf.at", "Online", null},
+										{"Chris", "chris.sutter@jabber.fsinf.at", "unknown", null},
+										{"Peter", "pstein@jabber.fsinf.at", "Offline", null},
 									},
 									new String[] {
-										"User", "User ID", "Connected", "State", "Notes"
+										"Nickname", "User ID", "Status", "Comment"
 									}
 								) {
 									boolean[] columnEditable = new boolean[] {
-										true, true, false, false, true
+										true, true, false, false
 									};
 									@Override
 									public boolean isCellEditable(int rowIndex, int columnIndex) {
 										return columnEditable[columnIndex];
 									}
 								});
-								scrollPane1.setViewportView(table3);
+								{
+									TableColumnModel cm = peopleTable.getColumnModel();
+									cm.getColumn(1).setPreferredWidth(195);
+									cm.getColumn(3).setPreferredWidth(145);
+								}
+								peopleScrollPane.setViewportView(peopleTable);
 							}
-							panel2.add(scrollPane1);
+							peoplePanel.add(peopleScrollPane);
 						}
-						tabbedPane1.addTab("People", panel2);
+						mainTabbedPane.addTab("People (3/4)", new ImageIcon(getClass().getResource("/people.png")), peoplePanel);
 
 
 						//======== filesPanel ========
 						{
 							filesPanel.setLayout(new BorderLayout());
 
-							//======== scrollPane2 ========
+							//======== filesScrollPane ========
 							{
-								scrollPane2.setComponentPopupMenu(popupMenuFiles);
+								filesScrollPane.setComponentPopupMenu(filesPopupMenu);
 
-								//---- table1 ----
-								table1.setModel(new DefaultTableModel(
+								//---- filesTable ----
+								filesTable.setModel(new DefaultTableModel(
 									new Object[][] {
-										{"SEPM_SS08_Artefaktenbeschreibung.pdf", "Latest", "! released", "Yesterday", "1 KB"},
-										{"SEPM_VO_Block_1.pdf", "Conflict", "obsolete", "March 18", "5 MB"},
-										{"SEPM_SS08_Artefaktenliste.pdf", "Modified", "!", "Today, 12:00", "10 MB"},
-										{"ToDos.txt", "Locked by Johannes", "todo", "Today 12:00", "5 KB"},
+										{"SEPM_SS08_Artefaktenbeschreibung.pdf", "1 KB", "! released", "Latest", "Yesterday", "Peter"},
+										{"SEPM_VO_Block_1.pdf", "5 MB", "obsolete", "remotely changed", "March 18", "Chris"},
+										{"SEPM_SS08_Artefaktenliste.pdf", "10 MB", "!", "locally changed", "Today, 12:00", "Simon"},
+										{"ToDos.txt", "5 KB", "todo", "not synced", "Today 12:00", "Dominik"},
 									},
 									new String[] {
-										"Name", "State", "Tags", "Date modified", "Size"
+										"Name", "Size", "Tags", "Sync Status", "Last Changed", "User"
 									}
 								) {
 									boolean[] columnEditable = new boolean[] {
-										false, false, true, false, false
+										false, false, true, false, false, true
 									};
 									@Override
 									public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -202,42 +241,42 @@ public class JakeGuiMockup1 extends JPanel {
 									}
 								});
 								{
-									TableColumnModel cm = table1.getColumnModel();
+									TableColumnModel cm = filesTable.getColumnModel();
 									cm.getColumn(0).setPreferredWidth(245);
+									cm.getColumn(1).setPreferredWidth(50);
 									cm.getColumn(2).setPreferredWidth(75);
-									cm.getColumn(4).setPreferredWidth(50);
 								}
-								table1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-								table1.setPreferredScrollableViewportSize(new Dimension(450, 379));
-								table1.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
-								scrollPane2.setViewportView(table1);
+								filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+								filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
+								filesTable.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+								filesScrollPane.setViewportView(filesTable);
 							}
-							filesPanel.add(scrollPane2, BorderLayout.CENTER);
+							filesPanel.add(filesScrollPane, BorderLayout.CENTER);
 						}
-						tabbedPane1.addTab("Files", filesPanel);
+						mainTabbedPane.addTab("Files (4/10 MB)", new ImageIcon(getClass().getResource("/files.png")), filesPanel);
 
 
 						//======== notesPanel ========
 						{
 							notesPanel.setLayout(new BorderLayout());
 
-							//======== scrollPane3 ========
+							//======== notesScrollPane ========
 							{
-								scrollPane3.setComponentPopupMenu(popupMenuNotes);
+								notesScrollPane.setComponentPopupMenu(notesPopupMenu);
 
-								//---- table2 ----
-								table2.setModel(new DefaultTableModel(
+								//---- notesTable ----
+								notesTable.setModel(new DefaultTableModel(
 									new Object[][] {
-										{"Update 1", "", "Peter", "Today"},
-										{"Aufgaben und Ziele", "!", "Simon", "Yesterday, 11:00"},
-										{"Testnotiz 1", "test", "Johannes", "April 12th"},
+										{"Update 1", "", "Today", "Peter"},
+										{"Aufgaben und Ziele", "!", "Yesterday, 11:00", "Simon"},
+										{"Testnotiz 1", "test", "April 12th", "Johannes"},
 									},
 									new String[] {
-										"Title", "Tags", "Creator", "Time"
+										"Title", "Tags", "Last changed", "User"
 									}
 								) {
 									boolean[] columnEditable = new boolean[] {
-										true, true, false, true
+										true, true, true, false
 									};
 									@Override
 									public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -245,255 +284,316 @@ public class JakeGuiMockup1 extends JPanel {
 									}
 								});
 								{
-									TableColumnModel cm = table2.getColumnModel();
+									TableColumnModel cm = notesTable.getColumnModel();
 									cm.getColumn(0).setPreferredWidth(265);
 								}
-								table2.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-								scrollPane3.setViewportView(table2);
+								notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+								notesScrollPane.setViewportView(notesTable);
 							}
-							notesPanel.add(scrollPane3, BorderLayout.CENTER);
+							notesPanel.add(notesScrollPane, BorderLayout.NORTH);
 						}
-						tabbedPane1.addTab("Notes", notesPanel);
+						mainTabbedPane.addTab("Notes (3)", new ImageIcon(getClass().getResource("/notes.png")), notesPanel);
 
 					}
-					panel1.add(tabbedPane1, BorderLayout.CENTER);
+					mainPanel.add(mainTabbedPane, BorderLayout.CENTER);
 
-					//======== toolBar1 ========
+					//======== mainToolBar ========
 					{
-						toolBar1.setBorderPainted(false);
-						toolBar1.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+						mainToolBar.setBorderPainted(false);
+						mainToolBar.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+						mainToolBar.setRollover(true);
 
-						//---- button10 ----
-						button10.setText("Open Project Folder");
-						button10.setHorizontalAlignment(SwingConstants.RIGHT);
-						toolBar1.add(button10);
+						//---- openProjectFolderButton ----
+						openProjectFolderButton.setHorizontalAlignment(SwingConstants.RIGHT);
+						openProjectFolderButton.setIcon(new ImageIcon(getClass().getResource("/project_folder.png")));
+						openProjectFolderButton.setToolTipText("Open Project Folder");
+						openProjectFolderButton.setText("Open Project Folder");
+						mainToolBar.add(openProjectFolderButton);
 
-						//---- button11 ----
-						button11.setText("Refresh Datapool");
-						button11.setHorizontalAlignment(SwingConstants.RIGHT);
-						toolBar1.add(button11);
-						toolBar1.addSeparator();
+						//---- refreshDatapoolViewButton ----
+						refreshDatapoolViewButton.setHorizontalAlignment(SwingConstants.RIGHT);
+						refreshDatapoolViewButton.setToolTipText("Refresh Datapool View");
+						refreshDatapoolViewButton.setIcon(new ImageIcon(getClass().getResource("/sync_project_folder.png")));
+						mainToolBar.add(refreshDatapoolViewButton);
+						mainToolBar.addSeparator();
 
-						//---- button8 ----
-						button8.setText("Sync");
-						button8.setSelected(true);
-						toolBar1.add(button8);
+						//---- propagateFileButton ----
+						propagateFileButton.setIcon(new ImageIcon(getClass().getResource("/push.png")));
+						propagateFileButton.setToolTipText("Propagate locally changed file");
+						mainToolBar.add(propagateFileButton);
 
-						//---- button4 ----
-						button4.setText("Push");
-						toolBar1.add(button4);
+						//---- pullFilesButton ----
+						pullFilesButton.setIcon(new ImageIcon(getClass().getResource("/pull.png")));
+						pullFilesButton.setToolTipText("Pull file from project member");
+						mainToolBar.add(pullFilesButton);
 
-						//---- button5 ----
-						button5.setText("Pull");
-						toolBar1.add(button5);
-						toolBar1.addSeparator();
+						//---- LockFileToggleButton ----
+						LockFileToggleButton.setIcon(new ImageIcon(getClass().getResource("/lock.png")));
+						LockFileToggleButton.setToolTipText("Lock File...");
+						mainToolBar.add(LockFileToggleButton);
+						mainToolBar.addSeparator();
 
-						//---- button7 ----
-						button7.setText("Log");
-						toolBar1.add(button7);
-						toolBar1.add(hSpacer1);
+						//---- newNoteButton ----
+						newNoteButton.setToolTipText("New Note");
+						newNoteButton.setIcon(new ImageIcon(getClass().getResource("/notes-new.png")));
+						mainToolBar.add(newNoteButton);
+						mainToolBar.add(searchSpacer);
 
-						//---- label4 ----
-						label4.setText("Search ");
-						toolBar1.add(label4);
+						//---- searchLabel ----
+						searchLabel.setToolTipText("Search for");
+						searchLabel.setIcon(new ImageIcon(getClass().getResource("/search.png")));
+						searchLabel.setComponentPopupMenu(searchPopupMenu);
+						searchLabel.setLabelFor(searchTextField);
+						mainToolBar.add(searchLabel);
 
-						//======== scrollPane4 ========
-						{
-
-							//---- textArea1 ----
-							textArea1.setMaximumSize(new Dimension(50, 2147483647));
-							scrollPane4.setViewportView(textArea1);
-						}
-						toolBar1.add(scrollPane4);
+						//---- searchTextField ----
+						searchTextField.setToolTipText("Search for Files");
+						searchTextField.setMaximumSize(new Dimension(150, 2147483647));
+						searchTextField.setPreferredSize(new Dimension(150, 28));
+						searchTextField.setComponentPopupMenu(searchPopupMenu);
+						mainToolBar.add(searchTextField);
 					}
-					panel1.add(toolBar1, BorderLayout.NORTH);
+					mainPanel.add(mainToolBar, BorderLayout.NORTH);
 				}
-				this.add(panel1, BorderLayout.CENTER);
+				this.add(mainPanel, BorderLayout.CENTER);
 
-				//======== menuBar1 ========
+				//======== mainMenuBar ========
 				{
 
-					//======== menu1 ========
+					//======== fileMenu ========
 					{
-						menu1.setText("File");
+						fileMenu.setText("File");
 
-						//---- menuItem6 ----
-						menuItem6.setText("New");
-						menu1.add(menuItem6);
+						//---- newProjectMenuItem ----
+						newProjectMenuItem.setText("New Project...");
+						fileMenu.add(newProjectMenuItem);
 
-						//---- menuItem1 ----
-						menuItem1.setText("Open");
-						menu1.add(menuItem1);
+						//---- openProjectMenuItem ----
+						openProjectMenuItem.setText("Open Project...");
+						fileMenu.add(openProjectMenuItem);
 
-						//---- menuItem2 ----
-						menuItem2.setText("Save");
-						menu1.add(menuItem2);
+						//---- saveMenuItem ----
+						saveMenuItem.setText("Save");
+						fileMenu.add(saveMenuItem);
 
-						//---- menuItem3 ----
-						menuItem3.setText("Save As...");
-						menu1.add(menuItem3);
+						//---- saveAsMenuItem ----
+						saveAsMenuItem.setText("Save As...");
+						fileMenu.add(saveAsMenuItem);
 
-						//---- menuItem4 ----
-						menuItem4.setText("Close");
-						menu1.add(menuItem4);
-
-						//---- menuItem5 ----
-						menuItem5.setText("Exit");
-						menu1.add(menuItem5);
+						//---- exitApplicationMenuItem ----
+						exitApplicationMenuItem.setText("Exit");
+						exitApplicationMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								exitApplicationMenuItemActionPerformed(e);
+							}
+						});
+						fileMenu.add(exitApplicationMenuItem);
 					}
-					menuBar1.add(menu1);
+					mainMenuBar.add(fileMenu);
 
-					//======== menu3 ========
+					//======== viewMenu ========
 					{
-						menu3.setText("View");
+						viewMenu.setText("View");
 
-						//---- menuItem19 ----
-						menuItem19.setText("People");
-						menu3.add(menuItem19);
+						//---- peopleViewMenuItem ----
+						peopleViewMenuItem.setText("People");
+						peopleViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/people.png")));
+						viewMenu.add(peopleViewMenuItem);
 
-						//---- menuItem14 ----
-						menuItem14.setText("Files");
-						menu3.add(menuItem14);
+						//---- filesViewMenuItem ----
+						filesViewMenuItem.setText("Files");
+						filesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/files.png")));
+						viewMenu.add(filesViewMenuItem);
 
-						//---- menuItem15 ----
-						menuItem15.setText("Notes");
-						menu3.add(menuItem15);
-						menu3.addSeparator();
+						//---- notesViewMenuItem ----
+						notesViewMenuItem.setText("Notes");
+						notesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/notes.png")));
+						viewMenu.add(notesViewMenuItem);
+						viewMenu.addSeparator();
 
-						//---- menuItem30 ----
-						menuItem30.setText("Log");
-						menu3.add(menuItem30);
+						//---- systemLogViewMenuItem ----
+						systemLogViewMenuItem.setText("System Log");
+						systemLogViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/log.png")));
+						viewMenu.add(systemLogViewMenuItem);
 					}
-					menuBar1.add(menu3);
+					mainMenuBar.add(viewMenu);
 
-					//======== menu2 ========
+					//======== networkMenu ========
 					{
-						menu2.setText("Network");
+						networkMenu.setText("Network");
 
-						//---- menuItem22 ----
-						menuItem22.setText("LogIn As...");
-						menu2.add(menuItem22);
+						//---- signInNetworkMenuItem ----
+						signInNetworkMenuItem.setText("Sign In...");
+						networkMenu.add(signInNetworkMenuItem);
 
-						//---- menuItem23 ----
-						menuItem23.setText("Logout");
-						menu2.add(menuItem23);
-						menu2.addSeparator();
+						//---- signOutNetworkMenuItem ----
+						signOutNetworkMenuItem.setText("Sign Out");
+						networkMenu.add(signOutNetworkMenuItem);
+						networkMenu.addSeparator();
 
-						//---- checkBoxMenuItem1 ----
-						checkBoxMenuItem1.setText("Auto Sync");
-						checkBoxMenuItem1.setSelected(true);
-						menu2.add(checkBoxMenuItem1);
+						//---- showOfflineMembersCheckBoxMenuItem ----
+						showOfflineMembersCheckBoxMenuItem.setText("Show Offline Members");
+						showOfflineMembersCheckBoxMenuItem.setSelected(true);
+						networkMenu.add(showOfflineMembersCheckBoxMenuItem);
 
-						//---- menuItem24 ----
-						menuItem24.setText("Push");
-						menu2.add(menuItem24);
+						//---- checkBoxMenuItem2 ----
+						checkBoxMenuItem2.setText("Automatic Datapool Refresh");
+						checkBoxMenuItem2.setSelected(true);
+						networkMenu.add(checkBoxMenuItem2);
 
-						//---- menuItem25 ----
-						menuItem25.setText("Pull");
-						menu2.add(menuItem25);
+						//---- autoFilePropagateCheckBoxMenuItem ----
+						autoFilePropagateCheckBoxMenuItem.setText("Automatic File Propagation");
+						autoFilePropagateCheckBoxMenuItem.setSelected(true);
+						networkMenu.add(autoFilePropagateCheckBoxMenuItem);
+
+						//---- autoFilePullCheckBoxMenuItem ----
+						autoFilePullCheckBoxMenuItem.setText("Automatic File Pull");
+						autoFilePullCheckBoxMenuItem.setSelected(true);
+						networkMenu.add(autoFilePullCheckBoxMenuItem);
 					}
-					menuBar1.add(menu2);
+					mainMenuBar.add(networkMenu);
 
-					//======== menu8 ========
+					//======== projectMenu ========
 					{
-						menu8.setText("Project");
+						projectMenu.setText("Project");
 
-						//---- menuItem9 ----
-						menuItem9.setText("Open Project Folder");
-						menu8.add(menuItem9);
+						//---- openProjectFolderMenuItem ----
+						openProjectFolderMenuItem.setText("Open Project Folder");
+						projectMenu.add(openProjectFolderMenuItem);
 
-						//---- menuItem31 ----
-						menuItem31.setText("Refresh Datapool");
-						menu8.add(menuItem31);
+						//---- refreshDatapoolViewProjectMenuItem ----
+						refreshDatapoolViewProjectMenuItem.setText("Refresh Datapool View");
+						projectMenu.add(refreshDatapoolViewProjectMenuItem);
 
-						//---- menuItem26 ----
-						menuItem26.setText("Add File...");
-						menu8.add(menuItem26);
+						//---- newNoteProjectMenuItem ----
+						newNoteProjectMenuItem.setText("New Note...");
+						projectMenu.add(newNoteProjectMenuItem);
+						projectMenu.addSeparator();
 
-						//---- menuItem8 ----
-						menuItem8.setText("Add Folder...");
-						menu8.add(menuItem8);
-						menu8.addSeparator();
+						//---- addFileToProjectMenuItem ----
+						addFileToProjectMenuItem.setText("Add File...");
+						projectMenu.add(addFileToProjectMenuItem);
 
-						//---- menuItem7 ----
-						menuItem7.setText("Add User");
-						menu8.add(menuItem7);
+						//---- addFolderToProjectMenuItem ----
+						addFolderToProjectMenuItem.setText("Add Folder...");
+						projectMenu.add(addFolderToProjectMenuItem);
+						projectMenu.addSeparator();
+
+						//---- addProjectMemberMenuItem ----
+						addProjectMemberMenuItem.setText("Add Project Member...");
+						projectMenu.add(addProjectMemberMenuItem);
 					}
-					menuBar1.add(menu8);
+					mainMenuBar.add(projectMenu);
+
+					//======== helpMenu ========
+					{
+						helpMenu.setText("Help");
+
+						//---- aboutHelpMenuItem ----
+						aboutHelpMenuItem.setText("About");
+						helpMenu.add(aboutHelpMenuItem);
+					}
+					mainMenuBar.add(helpMenu);
 				}
-				this.add(menuBar1, BorderLayout.NORTH);
+				this.add(mainMenuBar, BorderLayout.NORTH);
 			}
 			frame1ContentPane.add(this, BorderLayout.CENTER);
 			frame1.pack();
 			frame1.setLocationRelativeTo(frame1.getOwner());
 		}
 
-		//======== popupMenuTree ========
+		//======== peoplePopupMenu ========
 		{
 
-			//---- menuItem10 ----
-			menuItem10.setText("Send Message...");
-			menuItem10.setFont(new Font("Lucida Grande", Font.BOLD, 14));
-			popupMenuTree.add(menuItem10);
+			//---- sendMessageMenuItem ----
+			sendMessageMenuItem.setText("Send Message...");
+			sendMessageMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+			sendMessageMenuItem.setIcon(new ImageIcon(getClass().getResource("/message-new.png")));
+			peoplePopupMenu.add(sendMessageMenuItem);
 
-			//---- menuItem17 ----
-			menuItem17.setText("Show Info...");
-			popupMenuTree.add(menuItem17);
+			//---- showInfoPeopleMenuItem ----
+			showInfoPeopleMenuItem.setText("Show Info/Comments...");
+			peoplePopupMenu.add(showInfoPeopleMenuItem);
 
-			//---- menuItem27 ----
-			menuItem27.setText("Rename");
-			popupMenuTree.add(menuItem27);
+			//---- renamePeopleMenuItem ----
+			renamePeopleMenuItem.setText("Change Nickname...");
+			peoplePopupMenu.add(renamePeopleMenuItem);
 
-			//---- menuItem11 ----
-			menuItem11.setText("Remove");
-			popupMenuTree.add(menuItem11);
+			//---- menuItem5 ----
+			menuItem5.setText("Change User ID...");
+			peoplePopupMenu.add(menuItem5);
+
+			//---- removePeopleMenuItem ----
+			removePeopleMenuItem.setText("Remove Member...");
+			peoplePopupMenu.add(removePeopleMenuItem);
 		}
 
-		//======== popupMenuFiles ========
+		//======== filesPopupMenu ========
 		{
 
-			//---- menuItem12 ----
-			menuItem12.setText("Open");
-			menuItem12.setFont(new Font("Lucida Grande", Font.BOLD, 14));
-			popupMenuFiles.add(menuItem12);
+			//---- openExecuteFileMenuItem ----
+			openExecuteFileMenuItem.setText("Open");
+			openExecuteFileMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+			filesPopupMenu.add(openExecuteFileMenuItem);
 
-			//---- menuItem21 ----
-			menuItem21.setText("Lock File");
-			popupMenuFiles.add(menuItem21);
+			//---- lockFileMenuItem ----
+			lockFileMenuItem.setText("Lock File...");
+			filesPopupMenu.add(lockFileMenuItem);
 
-			//---- checkBoxMenuItem2 ----
-			checkBoxMenuItem2.setText("Auto Sync");
-			checkBoxMenuItem2.setSelected(true);
-			popupMenuFiles.add(checkBoxMenuItem2);
+			//---- deleteFileMenuItem ----
+			deleteFileMenuItem.setText("Delete File...");
+			filesPopupMenu.add(deleteFileMenuItem);
 
-			//---- menuItem16 ----
-			menuItem16.setText("View Log...");
-			popupMenuFiles.add(menuItem16);
+			//---- viewLogForFileMenuItem ----
+			viewLogForFileMenuItem.setText("View Log...");
+			filesPopupMenu.add(viewLogForFileMenuItem);
 
-			//---- menuItem18 ----
-			menuItem18.setText("Resolve Conflict...");
-			popupMenuFiles.add(menuItem18);
+			//---- resolveFileConflictMenuItem ----
+			resolveFileConflictMenuItem.setText("Resolve Conflict...");
+			filesPopupMenu.add(resolveFileConflictMenuItem);
+			filesPopupMenu.addSeparator();
 
-			//---- menuItem13 ----
-			menuItem13.setText("Delete File");
-			popupMenuFiles.add(menuItem13);
+			//---- propagateFileMenuItem ----
+			propagateFileMenuItem.setText("Propagate File");
+			propagateFileMenuItem.setToolTipText("Propagate locally changed file");
+			filesPopupMenu.add(propagateFileMenuItem);
+
+			//---- menuItem4 ----
+			menuItem4.setText("Pull File");
+			filesPopupMenu.add(menuItem4);
 		}
 
-		//======== popupMenuNotes ========
+		//======== notesPopupMenu ========
 		{
 
-			//---- menuItem20 ----
-			menuItem20.setText("View/Edit");
-			menuItem20.setFont(new Font("Lucida Grande", Font.BOLD, 14));
-			popupMenuNotes.add(menuItem20);
+			//---- viewEditNoteMenuItem ----
+			viewEditNoteMenuItem.setText("View/Edit Note");
+			viewEditNoteMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+			notesPopupMenu.add(viewEditNoteMenuItem);
 
-			//---- menuItem28 ----
-			menuItem28.setText("New Note...");
-			popupMenuNotes.add(menuItem28);
+			//---- newNoteMenuItem ----
+			newNoteMenuItem.setText("New Note...");
+			notesPopupMenu.add(newNoteMenuItem);
 
-			//---- menuItem29 ----
-			menuItem29.setText("Remove");
-			popupMenuNotes.add(menuItem29);
+			//---- removeNoteMenuItem ----
+			removeNoteMenuItem.setText("Remove");
+			notesPopupMenu.add(removeNoteMenuItem);
+		}
+
+		//======== searchPopupMenu ========
+		{
+
+			//---- nameSearchMenuItem ----
+			nameSearchMenuItem.setText("Name");
+			searchPopupMenu.add(nameSearchMenuItem);
+
+			//---- tagsSearchMenuItem ----
+			tagsSearchMenuItem.setText("Tags");
+			searchPopupMenu.add(tagsSearchMenuItem);
+
+			//---- bothSearchMenuItem ----
+			bothSearchMenuItem.setText("Both");
+			searchPopupMenu.add(bothSearchMenuItem);
 		}
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
@@ -501,72 +601,82 @@ public class JakeGuiMockup1 extends JPanel {
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
 	// Generated using JFormDesigner Evaluation license - tester tester
 	private JFrame frame1;
-	private JPanel panel3;
-	private JLabel label1;
-	private JLabel label2;
-	private JLabel label3;
+	private JPanel statusPanel;
+	private JLabel statusLabel;
 	private JPanel panel1;
-	private JTabbedPane tabbedPane1;
-	private JPanel panel2;
-	private JScrollPane scrollPane1;
-	private JTable table3;
+	private JButton messageReceivedLabel;
+	private JButton fileConflictLabel;
+	private JButton connectionLabel;
+	private JPanel mainPanel;
+	private JTabbedPane mainTabbedPane;
+	private JPanel peoplePanel;
+	private JScrollPane peopleScrollPane;
+	private JTable peopleTable;
 	private JPanel filesPanel;
-	private JScrollPane scrollPane2;
-	private JTable table1;
+	private JScrollPane filesScrollPane;
+	private JTable filesTable;
 	private JPanel notesPanel;
-	private JScrollPane scrollPane3;
-	private JTable table2;
-	private JToolBar toolBar1;
-	private JButton button10;
-	private JButton button11;
-	private JButton button8;
-	private JButton button4;
-	private JButton button5;
-	private JButton button7;
-	private JPanel hSpacer1;
-	private JLabel label4;
-	private JScrollPane scrollPane4;
-	private JTextArea textArea1;
-	private JMenuBar menuBar1;
-	private JMenu menu1;
-	private JMenuItem menuItem6;
-	private JMenuItem menuItem1;
-	private JMenuItem menuItem2;
-	private JMenuItem menuItem3;
-	private JMenuItem menuItem4;
-	private JMenuItem menuItem5;
-	private JMenu menu3;
-	private JMenuItem menuItem19;
-	private JMenuItem menuItem14;
-	private JMenuItem menuItem15;
-	private JMenuItem menuItem30;
-	private JMenu menu2;
-	private JMenuItem menuItem22;
-	private JMenuItem menuItem23;
-	private JCheckBoxMenuItem checkBoxMenuItem1;
-	private JMenuItem menuItem24;
-	private JMenuItem menuItem25;
-	private JMenu menu8;
-	private JMenuItem menuItem9;
-	private JMenuItem menuItem31;
-	private JMenuItem menuItem26;
-	private JMenuItem menuItem8;
-	private JMenuItem menuItem7;
-	private JPopupMenu popupMenuTree;
-	private JMenuItem menuItem10;
-	private JMenuItem menuItem17;
-	private JMenuItem menuItem27;
-	private JMenuItem menuItem11;
-	private JPopupMenu popupMenuFiles;
-	private JMenuItem menuItem12;
-	private JMenuItem menuItem21;
+	private JScrollPane notesScrollPane;
+	private JTable notesTable;
+	private JToolBar mainToolBar;
+	private JButton openProjectFolderButton;
+	private JButton refreshDatapoolViewButton;
+	private JButton propagateFileButton;
+	private JButton pullFilesButton;
+	private JToggleButton LockFileToggleButton;
+	private JButton newNoteButton;
+	private JPanel searchSpacer;
+	private JLabel searchLabel;
+	private JTextField searchTextField;
+	private JMenuBar mainMenuBar;
+	private JMenu fileMenu;
+	private JMenuItem newProjectMenuItem;
+	private JMenuItem openProjectMenuItem;
+	private JMenuItem saveMenuItem;
+	private JMenuItem saveAsMenuItem;
+	private JMenuItem exitApplicationMenuItem;
+	private JMenu viewMenu;
+	private JMenuItem peopleViewMenuItem;
+	private JMenuItem filesViewMenuItem;
+	private JMenuItem notesViewMenuItem;
+	private JMenuItem systemLogViewMenuItem;
+	private JMenu networkMenu;
+	private JMenuItem signInNetworkMenuItem;
+	private JMenuItem signOutNetworkMenuItem;
+	private JCheckBoxMenuItem showOfflineMembersCheckBoxMenuItem;
 	private JCheckBoxMenuItem checkBoxMenuItem2;
-	private JMenuItem menuItem16;
-	private JMenuItem menuItem18;
-	private JMenuItem menuItem13;
-	private JPopupMenu popupMenuNotes;
-	private JMenuItem menuItem20;
-	private JMenuItem menuItem28;
-	private JMenuItem menuItem29;
+	private JCheckBoxMenuItem autoFilePropagateCheckBoxMenuItem;
+	private JCheckBoxMenuItem autoFilePullCheckBoxMenuItem;
+	private JMenu projectMenu;
+	private JMenuItem openProjectFolderMenuItem;
+	private JMenuItem refreshDatapoolViewProjectMenuItem;
+	private JMenuItem newNoteProjectMenuItem;
+	private JMenuItem addFileToProjectMenuItem;
+	private JMenuItem addFolderToProjectMenuItem;
+	private JMenuItem addProjectMemberMenuItem;
+	private JMenu helpMenu;
+	private JMenuItem aboutHelpMenuItem;
+	private JPopupMenu peoplePopupMenu;
+	private JMenuItem sendMessageMenuItem;
+	private JMenuItem showInfoPeopleMenuItem;
+	private JMenuItem renamePeopleMenuItem;
+	private JMenuItem menuItem5;
+	private JMenuItem removePeopleMenuItem;
+	private JPopupMenu filesPopupMenu;
+	private JMenuItem openExecuteFileMenuItem;
+	private JMenuItem lockFileMenuItem;
+	private JMenuItem deleteFileMenuItem;
+	private JMenuItem viewLogForFileMenuItem;
+	private JMenuItem resolveFileConflictMenuItem;
+	private JMenuItem propagateFileMenuItem;
+	private JMenuItem menuItem4;
+	private JPopupMenu notesPopupMenu;
+	private JMenuItem viewEditNoteMenuItem;
+	private JMenuItem newNoteMenuItem;
+	private JMenuItem removeNoteMenuItem;
+	private JPopupMenu searchPopupMenu;
+	private JMenuItem nameSearchMenuItem;
+	private JMenuItem tagsSearchMenuItem;
+	private JMenuItem bothSearchMenuItem;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
