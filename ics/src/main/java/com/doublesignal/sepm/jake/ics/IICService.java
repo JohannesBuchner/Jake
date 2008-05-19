@@ -14,14 +14,14 @@ import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
  * a communication layer based on the network for communication between users 
  * based on messages and objects.
  * 
- * @author johannes
- * 
- * userid:   A way of identifying the user within the used network protocol.
- *           example: user@host
- * network service: The implementation of IICService use some sort of 
+ * <p>userid:   A way of identifying the user within the used network protocol.
+ *           example: user@host</p>
+ * <p>network service: The implementation of IICService use some sort of 
  *           Interclient Communication protocol. We reference to this underlying
  *           system as network service.
- *           examples: XMPP, TCP-Sockets, ... 
+ *           examples: XMPP, TCP-Sockets, ...</p> 
+ * 
+ * @author johannes
  **/
 
 public interface IICService {
@@ -117,5 +117,17 @@ public interface IICService {
 	 */
 	public void registerOnlineStatusListener(IOnlineStatusListener osc, 
 			String userid);
+	
+	/**
+	 * @return the firstname belonging to the userid
+	 * @param userid
+	 */
+	public String getFirstname(String userid) throws Exception;
+
+	/**
+	 * @return the lastname belonging to the userid
+	 * @param userid
+	 */
+	public String getLastname(String userid) throws Exception; 
 	
 }

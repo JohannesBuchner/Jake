@@ -12,42 +12,34 @@ import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 
-import java.io.IOException;
-
 /**
  * The task of the synchronisation service (SyncService) is to 
  * implement a sharing logic for objects based on the ICService
  * 
- * Each client has a log. It has the keys (timestamp, relpath, userid), a 
- *   action and possibly more. 
- *   @see LogEntry
+ * <p>Each client has a log (see <code>LogEntry</code>). It has the keys (timestamp, relpath, userid), a 
+ *   action and possibly more.</p> 
  * 
- * syncLogAndGetChanges() synchronises the local index with another user using 
- *   the ICService 
- *   @see IICService
+ * <p>syncLogAndGetChanges() synchronises the local index with another user using 
+ *   the <code>ICService</code></p>
  * 
- * Then, a pull operation can be issued for a file. This downloads (fetches) the 
- *   file and puts it in the file system. 
+ * <p>Then, a pull operation can be issued for a file. This downloads (fetches) the 
+ *   file and puts it in the file system.</p> 
  * 
- * If the local client receives such a download operation, the registered fetch 
- * callback can still decide wether the download is allowed or not.  
+ * <p>If the local client receives such a download operation, the registered fetch 
+ * callback can still decide wether the download is allowed or not.</p>  
  * 
- * A push operation is adding a log entry and requesting a synclog from each 
- *   project member one after another.  
+ * <p>A push operation is adding a log entry and requesting a synclog from each 
+ *   project member one after another.</p>  
  * 
- * All methods are best-effort and might fail (in a safe way).
- * Communication is performed with project members only.
+ * <p>All methods are best-effort and might fail (in a safe way).
+ * Communication is performed with project members only.</p>
  * 
- * @ see sequential diagrams 
+ * Also see the sequential diagrams. 
+ * 
+ * @see LogEntry
+ * @see IICService
  * @author johannes 
  **/
-
-
-/* TODO: ACHTUNG:die @See dinger werden scheinbar von javadoc/dem java compiler oder irgendwas anderem
-  geparsed und muessen wenn dann auf Java Klassen/Interfaces etc. verweisen die per import eingebunden
-  wurden......... zumindest siehts so aus, werd mir das aber nochmal genauer anschauen
-  - dominik
-  */
 
 
 public interface ISyncService {
@@ -55,13 +47,14 @@ public interface ISyncService {
 	 * The log is requested from the given user.
 	 * Then, the log is merged with (added to) the local log.
 	 * 
-	 * @param    userid @see IICService
+	 * @param    userid (see IICService)
 	 * @return   the list of objects that have changed/are new/were deleted or 
 	 *           touched in some other way
 	 * @throws ObjectNotConfiguredException 
 	 * @throws NetworkException
 	 * @throws NotLoggedInException
 	 * @throws TimeoutException
+	 * @see IICService
 	 */
 	public List<JakeObject> syncLogAndGetChanges(String userid) 
 		throws NetworkException, NotLoggedInException, TimeoutException, 
@@ -79,9 +72,11 @@ public interface ISyncService {
 	 * @throws TimeoutException
 	 * 
 	 * TODO: write the object content to the jakeobject or return a bytearray or
-	 * something similar (Strings look too human-readable). 
+	 * something similar (Strings look too human-readable).
+	 * NOTE: We don't have pullAndWriteToFile because JakeObjects don't have to 
+	 * be files
 	 */
-	public String pull(JakeObject jo) 
+	public byte[] pull(JakeObject jo) 
 		throws NetworkException, NotLoggedInException, TimeoutException, 
 			OtherUserOfflineException, ObjectNotConfiguredException;
 	
@@ -129,7 +124,7 @@ public interface ISyncService {
 	public void setICService(IICService ics);
 	
 	/**
-	 * Set the Log to be used.
+	 * Set the log to be used.
 	 * This must be set before operations can be used.
 	 * @see IICService
 	 */
