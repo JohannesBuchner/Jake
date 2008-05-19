@@ -1,19 +1,33 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-/**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 8, 2008
- * Time: 11:05:41 PM
- */
-public enum LogAction {
+import java.util.Date;
 
+
+/**
+ * A LogAction is intended to show the Status of a certain JakeObject/LogEntry.
+ * The available status can be  <code>PROJECT_CREATED</code>,<code>NEW</code>,<code>CHANGE</code>,<code>DELETE</code>,
+ * <code>TAG_ADD</code> and <code>TAG_REMOVE</code>.
+ * @author Dominik, Philipp
+ */
+
+public enum LogAction {
+	 
+	
+	    /**
+	     * Create a new LogAction Enum Set.
+	     *
+	     * @param PROJECT_CREATED
+	     * @param NEW
+	     * @param CHANGE
+	     * @param DELETE
+	     * @param TAG_ADD
+	     * @param TAG_REMOVE
+	     */
+	 
     /**
      * the project was just created, 1st Logentry ever
      */
-    PROJECTCREATED,
+    PROJECT_CREATED,
     /**
      * a new JakeObject was created
      */
@@ -22,7 +36,6 @@ public enum LogAction {
      * the JakeObject in question was modified
      */
     CHANGE,
-
     /**
      * the JakeObject in question was deleted
      */
@@ -30,22 +43,11 @@ public enum LogAction {
     /**
      * the tag in the comment field of the Logentry was added to the JakeObject in question
      */
-    TAGADD,
+    TAGA_DD,
     /**
      * the tag in the comment field of the LogEntry was removed from the JakeObject in question
      */
-    TAGREMOVE,
-
-    /**
-     * a new invitation is created, to invite a new member to the project. the networkUserId is specified in the
-     * comments field, so the corresponding ProjectInvitation can be created at each client.
-     */
-    INVITECREATED,
-
-    /**
-     * 
-     */
-    INVITEACCEPTED
+    TAG_REMOVE;
 
 
 }
