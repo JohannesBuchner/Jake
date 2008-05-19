@@ -24,7 +24,9 @@ public class ProjectMember
 
     public ProjectMember(String userId) throws InvalidUserIdException
     {
-        UserId = userId;
+		if(userId == null) throw new InvalidUserIdException("UserId may not be null");
+		if(userId.length() == 0) throw new InvalidUserIdException("UserId may not be empty");
+		UserId = userId;
     }
 
     public String getUserId() {
@@ -35,7 +37,7 @@ public class ProjectMember
         return Notes;
     }
 
-    public String getNickname() throws InvalidNicknameException
+    public String getNickname()
     {
         return Nickname;
     }
@@ -47,12 +49,49 @@ public class ProjectMember
         Notes = notes;
     }
 
-    public void setNickname(String nickname) {
-        Nickname = nickname;
+    public void setNickname(String nickname) throws InvalidNicknameException
+	{
+		if(nickname == null) throw new InvalidNicknameException("Nickname must not be null");
+		if(nickname.length() > 50) throw new InvalidNicknameException("Nickname must be shorter than 50 chars.");
+
+		Nickname = nickname;
     }
 
-    public boolean equals(Object o) {
-        /* TODO */
-        return super.equals(o);
-    }
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		ProjectMember that = (ProjectMember) o;
+
+		if (Nickname != null ? !Nickname.equals(that.Nickname) : that.Nickname != null)
+		{
+			return false;
+		}
+		if (Notes != null ? !Notes.equals(that.Notes) : that.Notes != null)
+		{
+			return false;
+		}
+		if (UserId != null ? !UserId.equals(that.UserId) : that.UserId != null)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	public int hashCode()
+	{
+		int result;
+		result = (UserId != null ? UserId.hashCode() : 0);
+		result = 31 * result + (Notes != null ? Notes.hashCode() : 0);
+		result = 31 * result + (Nickname != null ? Nickname.hashCode() : 0);
+		return result;
+	}
 }

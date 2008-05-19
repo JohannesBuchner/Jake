@@ -18,157 +18,201 @@ import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameExceptio
  * Date: May 18, 2008
  * Time: 4:21:19 AM
  */
-public class ProjectMemberTest {
-    String validUsername;
-    String tooLongUsername;
-    String usernameWithWhitespaces;
-    String notesInput;
-    String validNickname;
-    String tooLongNickname;
+public class ProjectMemberTest
+{
+	String validUsername;
+	String tooLongUsername;
+	String usernameWithWhitespaces;
+	String notesInput;
+	String validNickname;
+	String tooLongNickname;
 
-    {
-        validUsername = "validusername@domain.com";
-        tooLongUsername = "thisisawaytoolongusernamethisisawaytoolongusernamethisisawaytoolongusername" +
-                "thisisawaytoolongusernamethisisawaytoolongusernamethisisawaytoolongusernamethisisawaytoolongusername";
-        usernameWithWhitespaces = "Username with whitespaces";
-        notesInput = "Das ist ein Notes Input Test";
-        validNickname = "Peter";
-        tooLongNickname = "HansChristianAndersonDerMitDenGänsenFliegtUndSowieso";
-    }
-
-
-    @Before
-    public void Setup() throws Exception {
-        // nothing to setup here
-    }
+	{
+		validUsername = "validusername@domain.com";
+		tooLongUsername = "thisisawaytoolongusernamethisisawaytoolongusernamethisisawaytoolongusername" +
+				"thisisawaytoolongusernamethisisawaytoolongusernamethisisawaytoolongusernamethisisawaytoolongusername";
+		usernameWithWhitespaces = "Username with whitespaces";
+		notesInput = "Das ist ein Notes Input Test";
+		validNickname = "Peter";
+		tooLongNickname = "HansChristianAndersonDerMitDenGänsenFliegtUndSowieso";
+	}
 
 
-    @After
-    public void TearDown() throws Exception {
-        // nopthint to tear down here
-    }
+	@Before
+	public void Setup() throws Exception
+	{
+		// nothing to setup here
+	}
 
 
-    @Test
-    public void createValidMemberTest() {
-        try {
-            ProjectMember member = new ProjectMember(validUsername);
-        } catch (InvalidUserIdException e) {
-            Assert.fail("cought InvalidUserException although member should be valid");
-        }
-        catch (Exception e) {
-            Assert.fail("cought general exception");
-        }
-    }
-
-    @Test(expected = InvalidUserIdException.class)
-    public void emptyUsernameTest() throws InvalidUserIdException {
-        String Username = "";
-
-        ProjectMember test = new ProjectMember(Username);
-
-    }
-
-    @Test(expected = InvalidUserIdException.class)
-    public void UsernameNullTest() throws InvalidUserIdException {
-        ProjectMember test = new ProjectMember(null);
-    }
+	@After
+	public void TearDown() throws Exception
+	{
+		// nopthint to tear down here
+	}
 
 
-    @Test(expected = InvalidUserIdException.class)
-    public void whiteSpaceUsernameTest() throws InvalidUserIdException {
-        ProjectMember test = new ProjectMember(usernameWithWhitespaces);
-    }
+	@Test
+	public void createValidMemberTest()
+	{
+		try
+		{
+			ProjectMember member = new ProjectMember(validUsername);
+		}
+		catch (InvalidUserIdException e)
+		{
+			Assert.fail("cought InvalidUserException although member should be valid");
+		}
+		catch (Exception e)
+		{
+			Assert.fail("cought general exception");
+		}
+	}
 
-    @Test(expected = InvalidUserIdException.class)
-    public void tooLongusernameTest() throws InvalidUserIdException {
-        ProjectMember test = new ProjectMember(tooLongUsername);
-    }
+	@Test(expected = InvalidUserIdException.class)
+	public void emptyUsernameTest() throws InvalidUserIdException
+	{
+		String Username = "";
 
+		ProjectMember test = new ProjectMember(Username);
 
-    @Test
-    public void setGetNotesTest() {
-        try {
-            ProjectMember member = new ProjectMember(validUsername);
-            member.setNotes(notesInput);
+	}
 
-            Assert.assertTrue(member.getNotes().equals(notesInput));
-        }
-        catch (InvalidCharactersException e) {
-            Assert.fail();
-
-        }
-        catch (InvalidUserIdException
-                e) {
-            Assert.fail();
-
-        } catch (InputLenghtException
-                e) {
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void setValidNicknameTest() {
-        try {
-            ProjectMember member = new ProjectMember(validUsername);
-            member.setNickname(validNickname);
-
-            Assert.assertTrue(member.getNickname().equals(validUsername));
-        } catch (InvalidUserIdException e) {
-            Assert.fail();
-        } catch (InvalidNicknameException e) {
-            Assert.fail();
-        }
-
-    }
-
-    @Test(expected = InvalidNicknameException.class)
-    public void NicknameNotNullTest() throws InvalidNicknameException {
-        try {
-            ProjectMember member = new ProjectMember(validUsername);
-            member.setNickname(null);
-        } catch (InvalidUserIdException e) {
-            Assert.fail();
-        }
+	@Test(expected = InvalidUserIdException.class)
+	public void UsernameNullTest() throws InvalidUserIdException
+	{
+		ProjectMember test = new ProjectMember(null);
+	}
 
 
-    }
+	@Test(expected = InvalidUserIdException.class)
+	public void whiteSpaceUsernameTest() throws InvalidUserIdException
+	{
+		ProjectMember test = new ProjectMember(usernameWithWhitespaces);
+	}
+
+	@Test(expected = InvalidUserIdException.class)
+	public void tooLongusernameTest() throws InvalidUserIdException
+	{
+		ProjectMember test = new ProjectMember(tooLongUsername);
+	}
 
 
-    @Test(expected = InvalidNicknameException.class)
-   public void setTooLongNicknameTest() throws InvalidNicknameException {
-        try {
-            ProjectMember member = new ProjectMember(validUsername);
-            member.setNickname(tooLongNickname);
-        } catch (InvalidUserIdException e) {
-            Assert.fail();
-        }
-    }
+	@Test
+	public void setGetNotesTest()
+	{
+		try
+		{
+			ProjectMember member = new ProjectMember(validUsername);
+			member.setNotes(notesInput);
 
-    @Test
-    public void checkEqualsImplemented() {
+			Assert.assertTrue(member.getNotes().equals(notesInput));
+		}
+		catch (InvalidCharactersException e)
+		{
+			Assert.fail();
 
-        ProjectMember mema = null;
-        ProjectMember memb = null;
-        try {
-            mema = new ProjectMember(validUsername);
-            memb = new ProjectMember(validUsername);
+		}
+		catch (InvalidUserIdException
+				e)
+		{
+			Assert.fail();
 
-            mema.setNickname(validNickname);
-            memb.setNickname(validNickname);
+		}
+		catch (InputLenghtException
+				e)
+		{
+			Assert.fail();
+		}
+	}
 
-            mema.setNotes(notesInput);
-            memb.setNotes(notesInput);
-        } catch (InvalidUserIdException e) {
-            Assert.fail();
-        } catch (InputLenghtException e) {
-            Assert.fail();
-        } catch (InvalidCharactersException e) {
-            Assert.fail();
-        }
+	@Test
+	public void setValidNicknameTest()
+	{
+		try
+		{
+			ProjectMember member = new ProjectMember(validUsername);
+			member.setNickname(validNickname);
 
-        Assert.assertEquals(mema, memb);
-    }
+			Assert.assertTrue(member.getNickname().equals(validUsername));
+		}
+		catch (InvalidUserIdException e)
+		{
+			Assert.fail();
+		}
+		catch (InvalidNicknameException e)
+		{
+			Assert.fail();
+		}
+
+	}
+
+	@Test(expected = InvalidNicknameException.class)
+	public void NicknameNotNullTest() throws InvalidNicknameException
+	{
+		try
+		{
+			ProjectMember member = new ProjectMember(validUsername);
+			member.setNickname(null);
+		}
+		catch (InvalidUserIdException e)
+		{
+			Assert.fail();
+		}
+
+
+	}
+
+
+	@Test(expected = InvalidNicknameException.class)
+	public void setTooLongNicknameTest() throws InvalidNicknameException
+	{
+		try
+		{
+			ProjectMember member = new ProjectMember(validUsername);
+			member.setNickname(tooLongNickname);
+		}
+		catch (InvalidUserIdException e)
+		{
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void checkEqualsImplemented()
+	{
+
+		ProjectMember mema = null;
+		ProjectMember memb = null;
+		try
+		{
+			mema = new ProjectMember(validUsername);
+			memb = new ProjectMember(validUsername);
+
+			mema.setNickname(validNickname);
+			memb.setNickname(validNickname);
+
+			mema.setNotes(notesInput);
+			memb.setNotes(notesInput);
+		}
+		catch (InvalidUserIdException e)
+		{
+			Assert.fail();
+		}
+		catch (InputLenghtException e)
+		{
+			Assert.fail();
+		}
+		catch (InvalidCharactersException e)
+		{
+			Assert.fail();
+		}
+		catch (InvalidNicknameException e)
+		{
+			Assert.fail();
+		}
+
+		Assert.assertEquals(mema, memb);
+	}
 
 }

@@ -43,6 +43,9 @@ public class Project
 
 	public void setRootPath(File rootPath) throws InvalidRootPathException
 	{
+		if(rootPath == null) throw new InvalidRootPathException("rootPath must not be null");
+		if(!rootPath.isDirectory()) throw new InvalidRootPathException("root path must be a directory");
+		if(!rootPath.exists()) throw new InvalidRootPathException("root path must exist");
 		this.rootPath = rootPath;
 	}
 
@@ -54,6 +57,8 @@ public class Project
 
 	public void setName(String name) throws InvalidProjectNameException
 	{
+		if(name == null) throw new InvalidProjectNameException("project name must not be null");
+		if(name.length() < 2) throw new InvalidProjectNameException("project name must be at least 2 characters long");
 		this.name = name;
 	}
 
