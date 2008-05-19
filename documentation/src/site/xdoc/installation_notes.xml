@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
+"http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<document>
+  <properties>
+    <title>Installation Notes</title>
+
+    <author email="me@simonwallner.at">Simon Wallner</author>
+  </properties>
+
+  <body>
+    <section name="Installation Notes">
+    	<p>
+    		To run the application you need:
+    		<ul>
+    			<li>Java Runtime Environment JRE 5.0 or higher (The latest version of the JRE is usually installed on modern OS. Try running the app before installing a new java JRE), <a href="http://java.sun.com/javase/downloads/index.jsp"> download JRE</a></li>
+    			<li>download the .jar file from this website, (not yet available)</li>
+    			<li>run the application from any place in your filesystem by double clicking on it.</li>
+    		</ul>
+    	</p>
+    	<subsection name="Potential problems">
+    		<p>
+    			<i><b>There are so many different versions of the the JRE, I don't know which one to chose.</b></i>
+    			<br />
+    			To run this app you at least need the JRE version 5.0. Any higher version will do fine, also version 6.0. You may alternatively install the latest JDK (Java Development Kit) version since the JRE is part of the JDK. Unless you are a developer you might not want to install the JDK because the extra JDK stuff won't be of much use to you. 
+    		</p>
+    	</subsection>
+	</section>
+	<section name="Changelog">
+      <table>
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>Date</th>
+          <th>Author</th>
+          <th>Change</th>
+        </tr>
+        </thead>
+
+        <tr>
+          <td>1</td>
+          <td>2008-05-19</td>
+          <td>sw</td>
+          <td>created</td>
+        </tr>
+      </table>
+    </section>
+  </body>
+</document>
