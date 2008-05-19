@@ -73,7 +73,7 @@ public class JakeMessage {
 	/**
 	 * Tests if two messages are equal.
 	 * 
-	 * @return <code>true</code> iff <code>recipient, sender, time, content</code>
+	 * @return <code>true</code> if <code>recipient, sender, time, content</code>
 	 * are equal.
 	 */
 	@Override
