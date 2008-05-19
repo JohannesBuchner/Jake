@@ -13,8 +13,8 @@
     	<p>
     		To run the application you need:
     		<ul>
-    			<li>Java Runtime Environment JRE 5.0 or higher (The latest version of the JRE is usually installed on modern OS. Try running the app before installing a new java JRE), <a href="http://java.sun.com/javase/downloads/index.jsp"> download JRE</a></li>
-    			<li>download the .jar file from this website, (not yet available)</li>
+    			<li>Java Runtime Environment JRE 5.0 or higher (The latest version of the JRE is usually installed on modern operating systems. Try running the application before installing a new java JRE), <a href="http://java.sun.com/javase/downloads/index.jsp"> download JRE</a></li>
+    			<li>download the .jar file from this website (not available yet)</li>
     			<li>run the application from any place in your filesystem by double clicking on it.</li>
     		</ul>
     	</p>
@@ -22,7 +22,12 @@
     		<p>
     			<i><b>There are so many different versions of the the JRE, I don't know which one to chose.</b></i>
     			<br />
-    			To run this app you at least need the JRE version 5.0. Any higher version will do fine, also version 6.0. You may alternatively install the latest JDK (Java Development Kit) version since the JRE is part of the JDK. Unless you are a developer you might not want to install the JDK because the extra JDK stuff won't be of much use to you. 
+    			To run this application you at least need the JRE version 5.0. Any higher version will do fine, also version 6.0. You may alternatively install the latest JDK (Java Development Kit) version since the JRE is part of the JDK. Unless you are a developer you will prefer the JRE, as the extra developers stuff won't be of interest for you. 
+    		</p>
+    		<p>
+    			<i><b>I use Linux and double-clicking didn't work</b></i>
+    			<br />
+			You can create a shortcut calling <pre>java -jar theJarFile.jar</pre> or start it over that command in the shell. If java is not in your PATH variable, either add it or adress java via an absolute path.
     		</p>
     	</subsection>
 	</section>
@@ -40,9 +45,15 @@
         <tr>
           <td>1</td>
           <td>2008-05-19</td>
-          <td>sw</td>
+          <td>simon</td>
           <td>created</td>
         </tr>
+        <tr>
+          <td>2</td>
+          <td>2008-05-19</td>
+          <td>johannes</td>
+          <td>Review</td>
+	</tr>
       </table>
     </section>
   </body>
