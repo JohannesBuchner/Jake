@@ -17,7 +17,6 @@
         <module>ics</module>
         <module>gui</module>
         <module>fss</module>
-        <module>sync</module>
     </modules>
 
     <developers>
