@@ -13,7 +13,7 @@ import java.util.HashSet;
 public class JakeObject {
 
     private String name;
-    private HashSet<String> tags = new HashSet<String>();
+    private HashSet<Tag> tags = new HashSet<Tag>();
 
 	public JakeObject(String name) {
 		this.name = name;	
@@ -31,7 +31,7 @@ public class JakeObject {
      * Get the tags of the object
      * @return Set of <code>tags</code> that are appended to this object.
      */
-    public Set<String> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
@@ -40,8 +40,7 @@ public class JakeObject {
      * @param tag to be added
      * @throws com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException
      */
-    public void addTag(String tag) throws InvalidTagNameException {
-	    // TODO: What's an invalid tag name?
+    public void addTag(Tag tag) throws InvalidTagNameException {
         tags.add(tag);
     }
 
@@ -49,7 +48,7 @@ public class JakeObject {
      * Removes all <code>tags</code> from the object that are equal to <code>tag</code>.
      * @param tag to be removed
      */
-    public void removeTag(String tag) {
+    public void removeTag(Tag tag) {
 	    tags.remove(tag);
     }
 
