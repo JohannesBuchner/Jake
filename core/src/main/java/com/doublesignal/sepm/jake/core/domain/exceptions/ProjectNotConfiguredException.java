@@ -8,6 +8,5 @@ package com.doublesignal.sepm.jake.core.domain.exceptions;
  * Date: May 18, 2008
  * Time: 1:35:15 PM
  */
-public class ProjectNotConfiguredException extends Exception
-{
+public class ProjectNotConfiguredException extends Exception {
 }

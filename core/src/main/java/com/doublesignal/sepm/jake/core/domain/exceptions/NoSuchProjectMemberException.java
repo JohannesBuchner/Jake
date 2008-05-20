@@ -9,4 +9,7 @@ package com.doublesignal.sepm.jake.core.domain.exceptions;
  * Time: 11:08:44 PM
  */
 public class NoSuchProjectMemberException extends Exception {
+	public NoSuchProjectMemberException(String message) {
+		super(message);
+	}
 }

@@ -11,8 +11,8 @@ package com.doublesignal.sepm.jake.core.domain;
 public class ProjectInvitation {
 
 
-    public boolean equals(Object o) {
-        /* TODO */
-        return super.equals(o);
-    }
+	public boolean equals(Object o) {
+		/* TODO */
+		return super.equals(o);
+	}
 }

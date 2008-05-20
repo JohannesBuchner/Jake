@@ -5,49 +5,50 @@ import java.io.Serializable;
 /**
  * A <code>NoteObject</code> is a Extension of a JakeObject
  * consists of <code>content</code>.
+ *
  * @author Dominik, Philipp
  */
 
 public class NoteObject extends JakeObject implements Serializable {
 
-    private String content;
+	private String content;
 
-    public NoteObject(String content) {
-        this.content = content;
+	public NoteObject(String name, String content) {
+		super(name);
+		this.content = content;
+	}
+
+	/**
+	 * Get the content of a NoteObject.
+	 *
+	 * @return content
+	 */
+	public String getContent() {
+		return content;
+	}
+
+	/**
+	 * Set the content of a NoteObject.
+	 *
+	 * @return content
+	 */
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 
-    }
-
-    /**
-     * Get the content of a NoteObject.
-     *
-     * @return content
-     */
-    public String getContent() {
-        return content;
-    }
-    /**
-     * Set the content of a NoteObject.
-     *
-     * @return content
-     */
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-
-    /**
+	/**
 	 * Tests if two contents are equal.
-	 * 
+	 *
 	 * @return <code>true</code> if <code>content</code>
-	 * is equal.
+	 *         is equal.
 	 */
 	@Override
 	public boolean equals(Object obj) {
-        if (obj != null && obj.getClass().equals(this.getClass())) {
-        	NoteObject that = (NoteObject) obj;
-        	return (this.content.equals(that.getContent()));
-        }
-        return false;
-    }
+		if (obj != null && obj.getClass().equals(this.getClass())) {
+			NoteObject that = (NoteObject) obj;
+			return (this.content.equals(that.getContent()));
+		}
+		return false;
+	}
 }
