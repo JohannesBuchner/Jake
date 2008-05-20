@@ -1,7 +1,9 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
+
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This is the base of all Objects used in jake, like files, notes, etc.
@@ -11,7 +13,7 @@ import java.util.List;
 public class JakeObject {
 
     private String name;
-    private LinkedList<Tag> tags;
+    private HashSet<String> tags;
     
     /**
      * Get the <code>name</code> of the object.
@@ -25,15 +27,17 @@ public class JakeObject {
      * Get the tags of the object
      * @return List of <code>tags</code> that are appended to this object.
      */
-    public List<Tag> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
     /**
      * Add a tag to the object.
      * @param tag to be added
+     * @throws com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException
      */
-    public void addTag(Tag tag) {
+    public void addTag(String tag) throws InvalidTagNameException {
+	    // TODO: What's an invalid tag name?
         tags.add(tag);
     }
 
@@ -41,11 +45,11 @@ public class JakeObject {
      * Removes all <code>tags</code> from the object that are equal to <code>tag</code>.
      * @param tag to be removed
      */
-    public void removeTag(Tag tag) {
+    public void removeTag(String tag) {
         /* I'm affright that is does not do what i want. remove() should be repeated
          * as long as it returns true...
-         */ 
-    	while (tags.remove(tag));
+         */
+	    tags.remove(tag);
     }
 
     /**
