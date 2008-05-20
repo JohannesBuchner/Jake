@@ -98,6 +98,16 @@ for (i = 0; i &lt; 10; i++) { // NOT: for(i=0;i&lt;10;i++){<br /><br />
        </subsection>
        <subsection name="Exception Handling">
        	<ul>
+       		<li>All exceptions should contain a public constructor that accepts a <code>String</code> as its argument and then calls the constructor of the superclass with it.<br /><br />Example:<br />
+       		<code>
+       		class FooException extends Exception {<br />
+       		&#160;&#160;&#160;public FooException(String message) {<br />
+       		&#160;&#160;&#160;&#160;&#160;&#160;super(message);<br />
+       		&#160;&#160;&#160;}<br />
+       		}<br />
+       		</code>
+       		<br />
+       		</li>
        		<li>The failure of a method call should never be shown only by a side effect or a certain return value. Returning <code>null</code> is a bad practice, unless <code>null</code> is a valid and useful return value for the method.</li>
        		<li>Exceptions should always contain a concise textual description of why/how the error occured in their message. Do not say anything that is already clear by the Exceptions name or hierarchy, but provide additional information.</li>
        	</ul>
@@ -122,7 +132,12 @@ for (i = 0; i &lt; 10; i++) { // NOT: for(i=0;i&lt;10;i++){<br /><br />
           <th>Change</th>
         </tr>
         </thead>
-
+			<tr>
+          <td>2</td>
+          <td>20.05.2008</td>
+          <td>CS</td>
+          <td>revised, added some further information</td>
+        </tr>
         <tr>
           <td>1</td>
           <td>15.05.2008</td>
