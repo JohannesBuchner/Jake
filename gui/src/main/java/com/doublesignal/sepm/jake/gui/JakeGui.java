@@ -107,9 +107,7 @@ public class JakeGui extends JPanel {
 		//======== frame1 ========
 		{
 			mainFrame.setTitle("Jake - \u00dcbersetzerbau");
-			System.out.println("test");
-			System.out.flush();
-			mainFrame.setIconImage(new ImageIcon(getClass().getResource("/resources/icons/Jake.png")).getImage());
+			mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icons/Jake.png")).getImage());
 			Container frame1ContentPane = mainFrame.getContentPane();
 			frame1ContentPane.setLayout(new BorderLayout());
 
@@ -134,21 +132,21 @@ public class JakeGui extends JPanel {
 						//---- messageReceivedLabel ----
 						messageReceivedLabel.setText("2 Messages received");
 						messageReceivedLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-						messageReceivedLabel.setIcon(new ImageIcon(getClass().getResource("/resources/icons/message.png")));
+						messageReceivedLabel.setIcon(new ImageIcon(getClass().getResource("/icons/message.png")));
 						messageReceivedLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
 						panel1.add(messageReceivedLabel);
 
 						//---- fileConflictLabel ----
 						fileConflictLabel.setText("1 File Conflict");
 						fileConflictLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-						fileConflictLabel.setIcon(new ImageIcon(getClass().getResource("/resources/icons/warning.png")));
+						fileConflictLabel.setIcon(new ImageIcon(getClass().getResource("/icons/warning.png")));
 						fileConflictLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
 						panel1.add(fileConflictLabel);
 
 						//---- connectionLabel ----
 						connectionLabel.setText("Connected");
 						connectionLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-						connectionLabel.setIcon(new ImageIcon(getClass().getResource("/resources/icons/network-idle.png")));
+						connectionLabel.setIcon(new ImageIcon(getClass().getResource("/icons/network-idle.png")));
 						connectionLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
 						connectionLabel.setToolTipText("Connected as pstein@jabber.fsinf.at");
 						panel1.add(connectionLabel);
@@ -201,7 +199,7 @@ public class JakeGui extends JPanel {
 							}
 							peoplePanel.add(peopleScrollPane);
 						}
-						mainTabbedPane.addTab("People (3/4)", new ImageIcon(getClass().getResource("/resources/icons/people.png")), peoplePanel);
+						mainTabbedPane.addTab("People (3/4)", new ImageIcon(getClass().getResource("/icons/people.png")), peoplePanel);
 
 
 						//======== filesPanel ========
@@ -245,7 +243,7 @@ public class JakeGui extends JPanel {
 							}
 							filesPanel.add(filesScrollPane, BorderLayout.CENTER);
 						}
-						mainTabbedPane.addTab("Files (4/10 MB)", new ImageIcon(getClass().getResource("/resources/icons/files.png")), filesPanel);
+						mainTabbedPane.addTab("Files (4/10 MB)", new ImageIcon(getClass().getResource("/icons/files.png")), filesPanel);
 
 
 						//======== notesPanel ========
@@ -284,7 +282,7 @@ public class JakeGui extends JPanel {
 							}
 							notesPanel.add(notesScrollPane, BorderLayout.NORTH);
 						}
-						mainTabbedPane.addTab("Notes (3)", new ImageIcon(getClass().getResource("/resources/icons/notes.png")), notesPanel);
+						mainTabbedPane.addTab("Notes (3)", new ImageIcon(getClass().getResource("/icons/notes.png")), notesPanel);
 
 					}
 					mainPanel.add(mainTabbedPane, BorderLayout.CENTER);
@@ -297,7 +295,7 @@ public class JakeGui extends JPanel {
 
 						//---- openProjectFolderButton ----
 						openProjectFolderButton.setHorizontalAlignment(SwingConstants.RIGHT);
-						openProjectFolderButton.setIcon(new ImageIcon(getClass().getResource("/resources/icons/project_folder.png")));
+						openProjectFolderButton.setIcon(new ImageIcon(getClass().getResource("/icons/project_folder.png")));
 						openProjectFolderButton.setToolTipText("Open Project Folder");
 						openProjectFolderButton.setText("Open Project Folder");
 						mainToolBar.add(openProjectFolderButton);
@@ -305,35 +303,35 @@ public class JakeGui extends JPanel {
 						//---- refreshDatapoolViewButton ----
 						refreshDatapoolViewButton.setHorizontalAlignment(SwingConstants.RIGHT);
 						refreshDatapoolViewButton.setToolTipText("Refresh Datapool View");
-						refreshDatapoolViewButton.setIcon(new ImageIcon(getClass().getResource("/resources/icons/sync_project_folder.png")));
+						refreshDatapoolViewButton.setIcon(new ImageIcon(getClass().getResource("/icons/sync_project_folder.png")));
 						mainToolBar.add(refreshDatapoolViewButton);
 						mainToolBar.addSeparator();
 
 						//---- propagateFileButton ----
-						propagateFileButton.setIcon(new ImageIcon(getClass().getResource("/resources/icons/push.png")));
+						propagateFileButton.setIcon(new ImageIcon(getClass().getResource("/icons/push.png")));
 						propagateFileButton.setToolTipText("Propagate locally changed file");
 						mainToolBar.add(propagateFileButton);
 
 						//---- pullFilesButton ----
-						pullFilesButton.setIcon(new ImageIcon(getClass().getResource("/resources/icons/pull.png")));
+						pullFilesButton.setIcon(new ImageIcon(getClass().getResource("/icons/pull.png")));
 						pullFilesButton.setToolTipText("Pull file from project member");
 						mainToolBar.add(pullFilesButton);
 
 						//---- LockFileToggleButton ----
-						LockFileToggleButton.setIcon(new ImageIcon(getClass().getResource("/resources/icons/lock.png")));
+						LockFileToggleButton.setIcon(new ImageIcon(getClass().getResource("/icons/lock.png")));
 						LockFileToggleButton.setToolTipText("Lock File...");
 						mainToolBar.add(LockFileToggleButton);
 						mainToolBar.addSeparator();
 
 						//---- newNoteButton ----
 						newNoteButton.setToolTipText("New Note");
-						newNoteButton.setIcon(new ImageIcon(getClass().getResource("/resources/icons/notes-new.png")));
+						newNoteButton.setIcon(new ImageIcon(getClass().getResource("/icons/notes-new.png")));
 						mainToolBar.add(newNoteButton);
 						mainToolBar.add(searchSpacer);
 
 						//---- searchLabel ----
 						searchLabel.setToolTipText("Search for");
-						searchLabel.setIcon(new ImageIcon(getClass().getResource("/resources/icons/search.png")));
+						searchLabel.setIcon(new ImageIcon(getClass().getResource("/icons/search.png")));
 						searchLabel.setComponentPopupMenu(searchPopupMenu);
 						searchLabel.setLabelFor(searchTextField);
 						mainToolBar.add(searchLabel);
@@ -389,23 +387,23 @@ public class JakeGui extends JPanel {
 
 						//---- peopleViewMenuItem ----
 						peopleViewMenuItem.setText("People");
-						peopleViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/resources/icons/people.png")));
+						peopleViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/people.png")));
 						viewMenu.add(peopleViewMenuItem);
 
 						//---- filesViewMenuItem ----
 						filesViewMenuItem.setText("Files");
-						filesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/resources/icons/files.png")));
+						filesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/files.png")));
 						viewMenu.add(filesViewMenuItem);
 
 						//---- notesViewMenuItem ----
 						notesViewMenuItem.setText("Notes");
-						notesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/resources/icons/notes.png")));
+						notesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/notes.png")));
 						viewMenu.add(notesViewMenuItem);
 						viewMenu.addSeparator();
 
 						//---- systemLogViewMenuItem ----
 						systemLogViewMenuItem.setText("System Log");
-						systemLogViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/resources/icons/log.png")));
+						systemLogViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/log.png")));
 						viewMenu.add(systemLogViewMenuItem);
 					}
 					mainMenuBar.add(viewMenu);
@@ -503,7 +501,7 @@ public class JakeGui extends JPanel {
 			//---- sendMessageMenuItem ----
 			sendMessageMenuItem.setText("Send Message...");
 			sendMessageMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
-			sendMessageMenuItem.setIcon(new ImageIcon(getClass().getResource("/resources/icons/message-new.png")));
+			sendMessageMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/message-new.png")));
 			peoplePopupMenu.add(sendMessageMenuItem);
 
 			//---- showInfoPeopleMenuItem ----
