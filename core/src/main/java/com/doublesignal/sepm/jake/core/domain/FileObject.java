@@ -6,32 +6,24 @@ package com.doublesignal.sepm.jake.core.domain;
  * @author Simon
  */
 public class FileObject extends JakeObject {
-	
-	private String relpath;
-	
 	/**
 	 * Create a new <code>FileObject</code> with a given <code>relpath</code>
 	 * @param relpath relative path to the file
 	 */
 	public FileObject(String relpath) {
 		super(relpath);
-		this.relpath = relpath;
 	}
 	
 	/**
 	 * Get the relative path to the file.
+	 *
+	 * TODO: I left this in here in case any of you still use it. We should get rid of it ASAP.
+	 *
 	 * @return relative path
 	 */
+	@Deprecated
     public String getRelpath() {
-		return relpath;
-	}
-
-    /**
-     * Set the relative path to the file.
-     * @param relpath relative path to the file
-     */
-	public void setRelpath(String relpath) {
-		this.relpath = relpath;
+		return this.getName();
 	}
 
 	/**
@@ -43,7 +35,7 @@ public class FileObject extends JakeObject {
         if (obj != null && this.getClass().equals(obj.getClass()))
         {
         	FileObject that = (FileObject)obj;
-        	return (this.relpath.equals(that.getRelpath()));
+        	return (this.getName().equals(that.getName()));
         }
         return false;
     }
