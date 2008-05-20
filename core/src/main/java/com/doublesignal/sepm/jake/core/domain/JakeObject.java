@@ -13,7 +13,11 @@ import java.util.HashSet;
 public class JakeObject {
 
     private String name;
-    private HashSet<String> tags;
+    private HashSet<String> tags = new HashSet<String>();
+
+	public JakeObject(String name) {
+		this.name = name;	
+	}
     
     /**
      * Get the <code>name</code> of the object.
@@ -25,7 +29,7 @@ public class JakeObject {
     
     /**
      * Get the tags of the object
-     * @return List of <code>tags</code> that are appended to this object.
+     * @return Set of <code>tags</code> that are appended to this object.
      */
     public Set<String> getTags() {
         return tags;
@@ -46,9 +50,6 @@ public class JakeObject {
      * @param tag to be removed
      */
     public void removeTag(String tag) {
-        /* I'm affright that is does not do what i want. remove() should be repeated
-         * as long as it returns true...
-         */
 	    tags.remove(tag);
     }
 
