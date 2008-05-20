@@ -14,7 +14,7 @@
       </object> 
       <void method="setProperty"> 
        <string>title</string> 
-       <string>Jake - Übersetzerbau (6/6)</string> 
+       <string>Jake - Übersetzerbau</string> 
       </void> 
       <void method="setProperty"> 
        <string>iconImage</string> 
@@ -84,7 +84,15 @@
            <object class="com.jformdesigner.model.FormContainer"> 
             <string>javax.swing.JPanel</string> 
             <object class="com.jformdesigner.model.FormLayoutManager"> 
-             <class>org.jdesktop.swingx.HorizontalLayout</class> 
+             <class>java.awt.FlowLayout</class> 
+             <void method="setProperty"> 
+              <string>hgap</string> 
+              <int>0</int> 
+             </void> 
+             <void method="setProperty"> 
+              <string>vgap</string> 
+              <int>1</int> 
+             </void> 
             </object> 
             <void property="name"> 
              <string>panel1</string> 
@@ -190,37 +198,6 @@
             <void method="setProperty"> 
              <string>value</string> 
              <string>East</string> 
-            </void> 
-           </object> 
-          </void> 
-          <void method="add"> 
-           <object class="com.jformdesigner.model.FormComponent"> 
-            <string>javax.swing.JLabel</string> 
-            <void method="setProperty"> 
-             <string>text</string> 
-             <string>4 Files (10 MB)</string> 
-            </void> 
-            <void method="setProperty"> 
-             <string>horizontalAlignment</string> 
-             <int>0</int> 
-            </void> 
-            <void method="setProperty"> 
-             <string>font</string> 
-             <object class="java.awt.Font"> 
-              <string>Lucida Grande</string> 
-              <int>0</int> 
-              <int>12</int> 
-             </object> 
-            </void> 
-            <void property="name"> 
-             <string>fileStatusLabel</string> 
-            </void> 
-           </object> 
-           <object class="com.jformdesigner.model.FormLayoutConstraints"> 
-            <class>java.lang.String</class> 
-            <void method="setProperty"> 
-             <string>value</string> 
-             <string>Center</string> 
             </void> 
            </object> 
           </void> 
@@ -433,13 +410,13 @@
               <null/> 
               <void method="setProperty"> 
                <string>title</string> 
-               <string>People</string> 
+               <string>People (3/4)</string> 
               </void> 
               <void method="setProperty"> 
                <string>icon</string> 
                <object class="com.jformdesigner.model.SwingIcon"> 
                 <int>0</int> 
-                <string>/people.png</string> 
+                <string>/resources/icons/people.png</string> 
                </object> 
               </void> 
              </object> 
@@ -702,7 +679,7 @@
               <null/> 
               <void method="setProperty"> 
                <string>title</string> 
-               <string>Files</string> 
+               <string>Files (4/10 MB)</string> 
               </void> 
               <void method="setProperty"> 
                <string>icon</string> 
@@ -880,7 +857,7 @@
               <null/> 
               <void method="setProperty"> 
                <string>title</string> 
-               <string>Notes</string> 
+               <string>Notes (3)</string> 
               </void> 
               <void method="setProperty"> 
                <string>icon</string> 
@@ -1413,6 +1390,22 @@
               <string>javax.swing.JCheckBoxMenuItem</string> 
               <void method="setProperty"> 
                <string>text</string> 
+               <string>Automatic Datapool Refresh</string> 
+              </void> 
+              <void method="setProperty"> 
+               <string>selected</string> 
+               <boolean>true</boolean> 
+              </void> 
+              <void property="name"> 
+               <string>checkBoxMenuItem2</string> 
+              </void> 
+             </object> 
+            </void> 
+            <void method="add"> 
+             <object class="com.jformdesigner.model.FormComponent"> 
+              <string>javax.swing.JCheckBoxMenuItem</string> 
+              <void method="setProperty"> 
+               <string>text</string> 
                <string>Automatic File Propagation</string> 
               </void> 
               <void method="setProperty"> 
@@ -1775,6 +1768,18 @@
       </void> 
       <void method="add"> 
        <object class="com.jformdesigner.model.FormComponent"> 
+        <string>javax.swing.JMenuItem</string> 
+        <void method="setProperty"> 
+         <string>text</string> 
+         <string>Resolve Conflict...</string> 
+        </void> 
+        <void property="name"> 
+         <string>resolveFileConflictMenuItem</string> 
+        </void> 
+       </object> 
+      </void> 
+      <void method="add"> 
+       <object class="com.jformdesigner.model.FormComponent"> 
         <string>javax.swing.JPopupMenu$Separator</string> 
         <void property="name"> 
          <string>separator1</string> 
@@ -1806,22 +1811,6 @@
         </void> 
         <void property="name"> 
          <string>menuItem4</string> 
-        </void> 
-       </object> 
-      </void> 
-      <void method="add"> 
-       <object class="com.jformdesigner.model.FormComponent"> 
-        <string>javax.swing.JCheckBoxMenuItem</string> 
-        <void method="setProperty"> 
-         <string>text</string> 
-         <string>Auto Sync</string> 
-        </void> 
-        <void method="setProperty"> 
-         <string>selected</string> 
-         <boolean>true</boolean> 
-        </void> 
-        <void property="name"> 
-         <string>autoSyncFileCheckBoxMenuItem</string> 
         </void> 
        </object> 
       </void> 

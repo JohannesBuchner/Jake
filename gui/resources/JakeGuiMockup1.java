@@ -137,7 +137,7 @@ public class JakeGuiMockup1 extends JPanel {
 
 					//======== panel1 ========
 					{
-						panel1.setLayout(new HorizontalLayout());
+						panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 1));
 
 						//---- messageReceivedLabel ----
 						messageReceivedLabel.setText("2 Messages received");
@@ -209,7 +209,7 @@ public class JakeGuiMockup1 extends JPanel {
 							}
 							peoplePanel.add(peopleScrollPane);
 						}
-						mainTabbedPane.addTab("People (3/4)", new ImageIcon(getClass().getResource("/people.png")), peoplePanel);
+						mainTabbedPane.addTab("People (3/4)", new ImageIcon(getClass().getResource("/resources/icons/people.png")), peoplePanel);
 
 
 						//======== filesPanel ========
