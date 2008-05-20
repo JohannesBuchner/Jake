@@ -126,6 +126,12 @@ public class ProjectMemberTest
 		}
 	}
 
+
+
+
+
+
+
 	@Test
 	public void setValidNicknameTest()
 	{
@@ -134,15 +140,15 @@ public class ProjectMemberTest
 			ProjectMember member = new ProjectMember(validUsername);
 			member.setNickname(validNickname);
 
-			Assert.assertTrue(member.getNickname().equals(validUsername));
+			Assert.assertTrue(member.getNickname().equals(validNickname));
 		}
 		catch (InvalidUserIdException e)
 		{
-			Assert.fail();
+			Assert.fail("didn't got a valid username");
 		}
 		catch (InvalidNicknameException e)
 		{
-			Assert.fail();
+			Assert.fail("didn't get a valid nickname");
 		}
 
 	}

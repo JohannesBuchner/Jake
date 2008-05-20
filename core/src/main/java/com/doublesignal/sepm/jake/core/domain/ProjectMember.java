@@ -1,9 +1,9 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import com.doublesignal.sepm.jake.core.domain.exceptions.InputLenghtException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidCharactersException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameException;
 import com.doublesignal.sepm.jake.ics.exceptions.InvalidUserIdException;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameException;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidCharactersException;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InputLenghtException;
 
 
 /**
@@ -14,67 +14,89 @@ import com.doublesignal.sepm.jake.ics.exceptions.InvalidUserIdException;
  * Date: May 8, 2008
  * Time: 11:04:48 PM
  */
-public class ProjectMember {
+public class ProjectMember
+{
 
 	private String UserId;
 	private String Notes;
 	private String Nickname;
 
 
-	public ProjectMember(String userId) throws InvalidUserIdException {
-		if (userId == null) throw new InvalidUserIdException("UserId may not be null");
-		if (userId.length() == 0) throw new InvalidUserIdException("UserId may not be empty");
+	public ProjectMember(String userId) throws InvalidUserIdException
+	{
+		if (userId == null)	throw new InvalidUserIdException("UserId may not be null");
+		if (userId.length() < 1) throw new InvalidUserIdException("UserId may not be empty");
+		if (userId.length() > 70) throw new InvalidUserIdException("UserId may be max. 70 characters logn");
+		if (userId.contains(" ")) throw new InvalidUserIdException("UserId may not contain a whitespace");
 		UserId = userId;
 	}
 
-	public String getUserId() {
+	public String getUserId()
+	{
 		return UserId;
 	}
 
-	public String getNotes() {
+	public String getNotes()
+	{
 		return Notes;
 	}
 
-	public String getNickname() {
+	public String getNickname()
+	{
 		return Nickname;
 	}
 
 
-	public void setNotes(String notes) throws InputLenghtException, InvalidCharactersException {
+	public void setNotes(String notes) throws InputLenghtException, InvalidCharactersException
+	{
 		Notes = notes;
 	}
 
-	public void setNickname(String nickname) throws InvalidNicknameException {
-		if (nickname == null) throw new InvalidNicknameException("Nickname must not be null");
-		if (nickname.length() > 50) throw new InvalidNicknameException("Nickname must be shorter than 50 chars.");
+	public void setNickname(String nickname) throws InvalidNicknameException
+	{
+		if (nickname == null)
+		{
+			throw new InvalidNicknameException("Nickname must not be null");
+		}
+		if (nickname.length() > 50)
+		{
+			throw new InvalidNicknameException("Nickname must be shorter than 50 chars.");
+		}
 
 		Nickname = nickname;
 	}
 
-	public boolean equals(Object o) {
-		if (this == o) {
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || getClass() != o.getClass())
+		{
 			return false;
 		}
 
 		ProjectMember that = (ProjectMember) o;
 
-		if (Nickname != null ? !Nickname.equals(that.Nickname) : that.Nickname != null) {
+		if (Nickname != null ? !Nickname.equals(that.Nickname) : that.Nickname != null)
+		{
 			return false;
 		}
-		if (Notes != null ? !Notes.equals(that.Notes) : that.Notes != null) {
+		if (Notes != null ? !Notes.equals(that.Notes) : that.Notes != null)
+		{
 			return false;
 		}
-		if (UserId != null ? !UserId.equals(that.UserId) : that.UserId != null) {
+		if (UserId != null ? !UserId.equals(that.UserId) : that.UserId != null)
+		{
 			return false;
 		}
 
 		return true;
 	}
 
-	public int hashCode() {
+	public int hashCode()
+	{
 		int result;
 		result = (UserId != null ? UserId.hashCode() : 0);
 		result = 31 * result + (Notes != null ? Notes.hashCode() : 0);

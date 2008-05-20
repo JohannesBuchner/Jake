@@ -34,6 +34,7 @@ public class Project {
 	}
 
 	public File getRootPath() throws ProjectNotConfiguredException {
+		if(rootPath == null ) throw new ProjectNotConfiguredException("rootPath not configured");
 		return rootPath;
 	}
 
@@ -46,20 +47,25 @@ public class Project {
 
 
 	public String getName() throws ProjectNotConfiguredException {
+		if(name == null) throw new ProjectNotConfiguredException("ProjectName not configured");
 		return name;
 	}
 
 	public void setName(String name) throws InvalidProjectNameException {
 		if (name == null) throw new InvalidProjectNameException("project name must not be null");
 		if (name.length() < 2) throw new InvalidProjectNameException("project name must be at least 2 characters long");
+		if(name.length() > 50) throw new InvalidProjectNameException("project name may only be 50 characters long");
 		this.name = name;
 	}
 
 	public String getProjectId() throws ProjectNotConfiguredException {
+		if(projectId == null) throw new ProjectNotConfiguredException("ProjectId not configured");
 		return projectId;
 	}
 
 	public void setProjectId(String projectId) throws InvalidProjectIdException {
+		if(projectId == null) throw new InvalidProjectIdException("projectId cannot be null");
+		if(projectId.length() != 8) throw new InvalidProjectIdException("projectId must be exact 8 characters long");
 		this.projectId = projectId;
 	}
 

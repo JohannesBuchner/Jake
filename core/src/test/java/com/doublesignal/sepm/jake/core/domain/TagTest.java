@@ -76,22 +76,56 @@ public class TagTest {
 		new Tag(null);
 	}
 
+
+	@Test(expected = InvalidTagNameException.class)
+	public void emptyTagTest() throws InvalidTagNameException
+	{
+		new Tag(""); // minimum length is 1 character
+	}
+
+	@Test
+	public void maximumLengthTagTest()
+	{
+		try
+		{
+			new Tag("dasistdashausvomnikolaus127893");
+		}
+		catch (Exception e)
+		{
+			Assert.fail("Tag should be able to handle 30 characters");
+		}
+	}
+
+
+	@Test(expected = InvalidTagNameException.class)
+	public void tooLongTagTest() throws InvalidTagNameException
+	{
+		String tooLongName = "dasistdashausvomnikolaus127893X"; // 31 characters
+		new Tag(tooLongName);
+	}
+
+
 	@Test
 	public void toStringTest()
 	{
 		String sampleTag = "sampleTag";
 
-		Tag t = null;
 		try
 		{
-			t = new Tag(sampleTag);
+			Tag t = new Tag(sampleTag);
+			Assert.assertTrue(t.toString().equals(sampleTag));
 		}
 		catch (InvalidTagNameException e)
 		{
 			Assert.fail("shouldn't fail with a valid tagname");
 		}
-		Assert.assertTrue(t.toString().equals(sampleTag));
+
 	}
+
+
+	
+	
+
 
 	// TODO check equals()
 	// TODO check hashCode()

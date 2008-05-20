@@ -1,6 +1,5 @@
 package com.doublesignal.sepm.jake.core.dao;
 
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.domain.ProjectInvitation;
 import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchProjectMemberException;
 
