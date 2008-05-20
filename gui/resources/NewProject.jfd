@@ -45,7 +45,7 @@
            </void> 
            <void method="setProperty"> 
             <string>$rowSpecs</string> 
-            <string>center:fill, pref, pref</string> 
+            <string>center:fill, pref</string> 
            </void> 
           </object> 
           <void property="name"> 
@@ -270,7 +270,7 @@
        <string>size</string> 
        <object class="java.awt.Dimension"> 
         <int>400</int> 
-        <int>165</int> 
+        <int>155</int> 
        </object> 
       </void> 
      </object> 

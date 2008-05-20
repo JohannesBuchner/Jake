@@ -4,10 +4,13 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
+import org.jdesktop.swingx.*;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 /**
  * @author Peter Steinberger
  */
+@SuppressWarnings("serial")
 public class JakeGui extends JPanel {
 	public JakeGui() {
 		initComponents();
@@ -21,10 +24,25 @@ public class JakeGui extends JPanel {
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
 		System.exit(0);
 	}
+	
+	private void propertiesMenuItemActionPerformed(ActionEvent e) {
+		new PreferencesDialog(mainFrame).setVisible(true);
+	}
+	
+	private void newProjectMenuItemActionPerformed(ActionEvent e) {
+		new NewProjectDialog(mainFrame).setVisible(true);
+	}
+	
+	private void openProjectMenuItemActionPerformed(ActionEvent e) {
+		// TODO
+	}
+	
+	private void systemLogViewMenuItemActionPerformed(ActionEvent e) {
+		new ViewLogDialog(mainFrame).setVisible(true);
+	}
+	
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - tester tester
 		mainFrame = new JFrame();
 		statusPanel = new JPanel();
 		statusLabel = new JLabel();
@@ -36,13 +54,13 @@ public class JakeGui extends JPanel {
 		mainTabbedPane = new JTabbedPane();
 		peoplePanel = new JPanel();
 		peopleScrollPane = new JScrollPane();
-		peopleTable = new JTable();
+		peopleTable = new JXTable();
 		filesPanel = new JPanel();
 		filesScrollPane = new JScrollPane();
-		filesTable = new JTable();
+		filesTable = new JXTable();
 		notesPanel = new JPanel();
 		notesScrollPane = new JScrollPane();
-		notesTable = new JTable();
+		notesTable = new JXTable();
 		mainToolBar = new JToolBar();
 		openProjectFolderButton = new JButton();
 		refreshDatapoolViewButton = new JButton();
@@ -59,6 +77,7 @@ public class JakeGui extends JPanel {
 		openProjectMenuItem = new JMenuItem();
 		saveMenuItem = new JMenuItem();
 		saveAsMenuItem = new JMenuItem();
+		preferencesMenuItem = new JMenuItem();
 		exitApplicationMenuItem = new JMenuItem();
 		viewMenu = new JMenu();
 		peopleViewMenuItem = new JMenuItem();
@@ -122,7 +141,7 @@ public class JakeGui extends JPanel {
 					//---- statusLabel ----
 					statusLabel.setText("Pulling File xy...");
 					statusLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-					statusLabel.setAlignmentX(0.5F);
+					statusLabel.setAlignmentX(0);
 					statusPanel.add(statusLabel, BorderLayout.WEST);
 
 					//======== panel1 ========
@@ -190,6 +209,9 @@ public class JakeGui extends JPanel {
 										return columnEditable[columnIndex];
 									}
 								});
+								peopleTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+								peopleTable.setColumnControlVisible(true);
+								
 								{
 									TableColumnModel cm = peopleTable.getColumnModel();
 									cm.getColumn(1).setPreferredWidth(195);
@@ -211,6 +233,8 @@ public class JakeGui extends JPanel {
 								filesScrollPane.setComponentPopupMenu(filesPopupMenu);
 
 								//---- filesTable ----
+								filesTable.setColumnControlVisible(true);
+								filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 								filesTable.setModel(new DefaultTableModel(
 									new Object[][] {
 										{"SEPM_SS08_Artefaktenbeschreibung.pdf", "1 KB", "! released", "Latest", "Yesterday", "Peter"},
@@ -255,6 +279,8 @@ public class JakeGui extends JPanel {
 								notesScrollPane.setComponentPopupMenu(notesPopupMenu);
 
 								//---- notesTable ----
+								notesTable.setColumnControlVisible(true);
+								notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 								notesTable.setModel(new DefaultTableModel(
 									new Object[][] {
 										{"Update 1", "", "Today", "Peter"},
@@ -356,10 +382,20 @@ public class JakeGui extends JPanel {
 
 						//---- newProjectMenuItem ----
 						newProjectMenuItem.setText("New Project...");
+						newProjectMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								newProjectMenuItemActionPerformed(e);
+							}
+						});							
 						fileMenu.add(newProjectMenuItem);
 
 						//---- openProjectMenuItem ----
 						openProjectMenuItem.setText("Open Project...");
+						openProjectMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								openProjectMenuItemActionPerformed(e);
+							}
+						});									
 						fileMenu.add(openProjectMenuItem);
 
 						//---- saveMenuItem ----
@@ -369,6 +405,15 @@ public class JakeGui extends JPanel {
 						//---- saveAsMenuItem ----
 						saveAsMenuItem.setText("Save As...");
 						fileMenu.add(saveAsMenuItem);
+						
+						//---- preferencesMenuItem ----
+						preferencesMenuItem.setText("Preferences...");
+						preferencesMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								propertiesMenuItemActionPerformed(e);
+							}
+						});	
+						fileMenu.add(preferencesMenuItem);	
 
 						//---- exitApplicationMenuItem ----
 						exitApplicationMenuItem.setText("Exit");
@@ -404,6 +449,12 @@ public class JakeGui extends JPanel {
 						//---- systemLogViewMenuItem ----
 						systemLogViewMenuItem.setText("System Log");
 						systemLogViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/log.png")));
+						systemLogViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								systemLogViewMenuItemActionPerformed(e);
+							}
+						});
+						
 						viewMenu.add(systemLogViewMenuItem);
 					}
 					mainMenuBar.add(viewMenu);
@@ -590,6 +641,9 @@ public class JakeGui extends JPanel {
 		}
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
+	
+	
+
 
 	private JFrame mainFrame;
 	private JPanel statusPanel;
@@ -602,13 +656,13 @@ public class JakeGui extends JPanel {
 	private JTabbedPane mainTabbedPane;
 	private JPanel peoplePanel;
 	private JScrollPane peopleScrollPane;
-	private JTable peopleTable;
+	private JXTable peopleTable;
 	private JPanel filesPanel;
 	private JScrollPane filesScrollPane;
-	private JTable filesTable;
+	private JXTable filesTable;
 	private JPanel notesPanel;
 	private JScrollPane notesScrollPane;
-	private JTable notesTable;
+	private JXTable notesTable;
 	private JToolBar mainToolBar;
 	private JButton openProjectFolderButton;
 	private JButton refreshDatapoolViewButton;
@@ -625,6 +679,7 @@ public class JakeGui extends JPanel {
 	private JMenuItem openProjectMenuItem;
 	private JMenuItem saveMenuItem;
 	private JMenuItem saveAsMenuItem;
+	private JMenuItem preferencesMenuItem;
 	private JMenuItem exitApplicationMenuItem;
 	private JMenu viewMenu;
 	private JMenuItem peopleViewMenuItem;

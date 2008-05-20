@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <entry key="classpath1" value=".." />
+  <entry key="classpath2" value="../src/main/resources/icons" />
 </project>
 
