@@ -14,6 +14,7 @@ public class FileObject extends JakeObject {
 	 * @param relpath relative path to the file
 	 */
 	public FileObject(String relpath) {
+		super(relpath);
 		this.relpath = relpath;
 	}
 	
@@ -35,7 +36,7 @@ public class FileObject extends JakeObject {
 
 	/**
 	 * Test if two <code>FileObjects</code>are equal.
-	 * @return <code>true</code> iff the two <code>relpath</code>s are equal.
+	 * @return <code>true</code> if the two <code>relpath</code>s are equal.
 	 */
 	@Override
 	public boolean equals(Object obj) {
