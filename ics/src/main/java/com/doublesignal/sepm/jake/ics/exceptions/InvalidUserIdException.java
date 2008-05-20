@@ -9,4 +9,7 @@ package com.doublesignal.sepm.jake.ics.exceptions;
  * Time: 4:26:05 AM
  */
 public class InvalidUserIdException extends Exception {
+	public InvalidUserIdException(String message) {
+		super(message);
+	}
 }
