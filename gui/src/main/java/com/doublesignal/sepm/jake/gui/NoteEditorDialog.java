@@ -1,8 +1,4 @@
 package com.doublesignal.sepm.jake.gui;
-
-import info.clearthought.layout.TableLayout;
-import info.clearthought.layout.TableLayoutConstraints;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,42 +6,41 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.*;
 
+
 /**
- * @author Peter Steinberger
+ * @author tester tester
  */
 @SuppressWarnings("serial")
-public class PreferencesDialog extends JDialog {
-	public PreferencesDialog(Frame owner) {
+public class NoteEditorDialog extends JDialog {
+	public NoteEditorDialog(Frame owner) {
 		super(owner);
 		initComponents();
 	}
 
-	public PreferencesDialog(Dialog owner) {
+	public NoteEditorDialog(Dialog owner) {
 		super(owner);
 		initComponents();
 	}
 	
 	private void okButtonActionPerformed(ActionEvent e) {
 		this.setVisible(false);
-	}	
+	}
+	
+	private void cancelButtonActionPerformed(ActionEvent e) {
+		this.setVisible(false);
+	}		
 
 	private void initComponents() {
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		autoPushLabel = new JLabel();
-		textField1 = new JTextField();
-		autoPullLabel = new JLabel();
-		textField2 = new JTextField();
-		autoLogSyncLabel = new JLabel();
-		textField3 = new JTextField();
+		noteScrollPane = new JScrollPane();
+		noteTextArea = new JTextArea();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
 
 		//======== this ========
-		setTitle("Preferences");
-		setResizable(false);
-		setModal(true);
+		setTitle("New/Edit Note  - This is a Note");
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -56,24 +51,16 @@ public class PreferencesDialog extends JDialog {
 
 			//======== contentPanel ========
 			{
-				contentPanel.setLayout(new TableLayout(new double[][] {
-					{189, 176},
-					{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+				contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 
-				//---- label1 ----
-				autoPushLabel.setText("Auto-Push [sec]");
-				contentPanel.add(autoPushLabel, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
-				contentPanel.add(textField1, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
-
-				//---- label2 ----
-				autoPullLabel.setText("Auto-Pull [sec]");
-				contentPanel.add(autoPullLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(textField2, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-				//---- label3 ----
-				autoLogSyncLabel.setText("Auto Log Sync [sec]");
-				contentPanel.add(autoLogSyncLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(textField3, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				//======== noteScrollPane ========
+				{
+					//---- noteTextArea ----
+					noteTextArea.setText("This is a Note\n\nIt has an implicit title... bla");
+					noteTextArea.setLineWrap(true);
+					noteScrollPane.setViewportView(noteTextArea);
+				}
+				contentPanel.add(noteScrollPane);
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -85,7 +72,7 @@ public class PreferencesDialog extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
 				//---- okButton ----
-				okButton.setText("OK");
+				okButton.setText("Save");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						okButtonActionPerformed(e);
@@ -96,26 +83,28 @@ public class PreferencesDialog extends JDialog {
 					new Insets(0, 0, 0, 5), 0, 0));
 
 				//---- cancelButton ----
-				cancelButton.setText("Cancel");
+				cancelButton.setText("Close");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						cancelButtonActionPerformed(e);
+					}
+				});	
 				buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			dialogPane.add(buttonBar, BorderLayout.SOUTH);
 		}
-		contentPane.add(dialogPane, BorderLayout.SOUTH);
+		contentPane.add(dialogPane, BorderLayout.CENTER);
+		setMinimumSize(new Dimension(300, 250));
 		pack();
 		setLocationRelativeTo(getOwner());
 	}
 
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JLabel autoPushLabel;
-	private JTextField textField1;
-	private JLabel autoPullLabel;
-	private JTextField textField2;
-	private JLabel autoLogSyncLabel;
-	private JTextField textField3;
+	private JScrollPane noteScrollPane;
+	private JTextArea noteTextArea;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;

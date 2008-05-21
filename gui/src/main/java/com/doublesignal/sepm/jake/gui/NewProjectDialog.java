@@ -1,14 +1,18 @@
 package com.doublesignal.sepm.jake.gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import info.clearthought.layout.*;
 
 
 /**
- * @author tester tester
+ * @author Peter Steinberger
  */
+@SuppressWarnings("serial")
 public class NewProjectDialog extends JDialog {
 	public NewProjectDialog(Frame owner) {
 		super(owner);
@@ -19,10 +23,12 @@ public class NewProjectDialog extends JDialog {
 		super(owner);
 		initComponents();
 	}
+	
+	private void okButtonActionPerformed(ActionEvent e) {
+		this.setVisible(false);
+	}
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - tester tester
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
 		label1 = new JLabel();
@@ -42,14 +48,6 @@ public class NewProjectDialog extends JDialog {
 		//======== dialogPane ========
 		{
 			dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-			// JFormDesigner evaluation mark
-			dialogPane.setBorder(new javax.swing.border.CompoundBorder(
-				new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-					"JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-					javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-					java.awt.Color.red), dialogPane.getBorder())); dialogPane.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
-
 			dialogPane.setLayout(new BorderLayout());
 
 			//======== contentPanel ========
@@ -83,6 +81,11 @@ public class NewProjectDialog extends JDialog {
 
 				//---- okButton ----
 				okButton.setText("Save");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						okButtonActionPerformed(e);
+					}
+				});	
 				buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
@@ -98,11 +101,8 @@ public class NewProjectDialog extends JDialog {
 		contentPane.add(dialogPane, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(getOwner());
-		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
 	private JPanel contentPanel;
 	private JLabel label1;
@@ -113,5 +113,4 @@ public class NewProjectDialog extends JDialog {
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -14,7 +14,7 @@
       </object> 
       <void method="setProperty"> 
        <string>title</string> 
-       <string>Message from Johannes</string> 
+       <string>Message</string> 
       </void> 
       <void method="add"> 
        <object class="com.jformdesigner.model.FormContainer"> 

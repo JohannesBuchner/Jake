@@ -1,8 +1,4 @@
 package com.doublesignal.sepm.jake.gui;
-
-import info.clearthought.layout.TableLayout;
-import info.clearthought.layout.TableLayoutConstraints;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,17 +6,18 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.*;
 
+
 /**
  * @author Peter Steinberger
  */
 @SuppressWarnings("serial")
-public class PreferencesDialog extends JDialog {
-	public PreferencesDialog(Frame owner) {
+public class SendMessageDialog extends JDialog {
+	public SendMessageDialog(Frame owner) {
 		super(owner);
 		initComponents();
 	}
 
-	public PreferencesDialog(Dialog owner) {
+	public SendMessageDialog(Dialog owner) {
 		super(owner);
 		initComponents();
 	}
@@ -30,50 +27,62 @@ public class PreferencesDialog extends JDialog {
 	}	
 
 	private void initComponents() {
+		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+		// Generated using JFormDesigner Evaluation license - tester tester
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		autoPushLabel = new JLabel();
-		textField1 = new JTextField();
-		autoPullLabel = new JLabel();
-		textField2 = new JTextField();
-		autoLogSyncLabel = new JLabel();
-		textField3 = new JTextField();
+		scrollPane1 = new JScrollPane();
+		textArea1 = new JTextArea();
+		panel1 = new JPanel();
+		comboBox1 = new JComboBox();
+		label1 = new JLabel();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
 
 		//======== this ========
-		setTitle("Preferences");
-		setResizable(false);
-		setModal(true);
+		setTitle("Send Message");
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
 		//======== dialogPane ========
 		{
 			dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+
 			dialogPane.setLayout(new BorderLayout());
 
 			//======== contentPanel ========
 			{
-				contentPanel.setLayout(new TableLayout(new double[][] {
-					{189, 176},
-					{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+				contentPanel.setLayout(new BorderLayout(0, 3));
 
-				//---- label1 ----
-				autoPushLabel.setText("Auto-Push [sec]");
-				contentPanel.add(autoPushLabel, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
-				contentPanel.add(textField1, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				//======== scrollPane1 ========
+				{
 
-				//---- label2 ----
-				autoPullLabel.setText("Auto-Pull [sec]");
-				contentPanel.add(autoPullLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(textField2, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- textArea1 ----
+					textArea1.setText("Hi Johannes! File XY sollte \u00fcberarbeitet werden.");
+					textArea1.setLineWrap(true);
+					scrollPane1.setViewportView(textArea1);
+				}
+				contentPanel.add(scrollPane1, BorderLayout.CENTER);
 
-				//---- label3 ----
-				autoLogSyncLabel.setText("Auto Log Sync [sec]");
-				contentPanel.add(autoLogSyncLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(textField3, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				//======== panel1 ========
+				{
+					panel1.setLayout(new BorderLayout());
+
+					//---- comboBox1 ----
+					comboBox1.setModel(new DefaultComboBoxModel(new String[] {
+						"Johannes",
+						"Chris",
+						"Peter",
+						"Simon"
+					}));
+					panel1.add(comboBox1, BorderLayout.CENTER);
+
+					//---- label1 ----
+					label1.setText("To:");
+					panel1.add(label1, BorderLayout.WEST);
+				}
+				contentPanel.add(panel1, BorderLayout.NORTH);
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -85,7 +94,7 @@ public class PreferencesDialog extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
 				//---- okButton ----
-				okButton.setText("OK");
+				okButton.setText("Send");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						okButtonActionPerformed(e);
@@ -103,20 +112,23 @@ public class PreferencesDialog extends JDialog {
 			}
 			dialogPane.add(buttonBar, BorderLayout.SOUTH);
 		}
-		contentPane.add(dialogPane, BorderLayout.SOUTH);
+		contentPane.add(dialogPane, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(getOwner());
+		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
+	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JLabel autoPushLabel;
-	private JTextField textField1;
-	private JLabel autoPullLabel;
-	private JTextField textField2;
-	private JLabel autoLogSyncLabel;
-	private JTextField textField3;
+	private JScrollPane scrollPane1;
+	private JTextArea textArea1;
+	private JPanel panel1;
+	private JComboBox comboBox1;
+	private JLabel label1;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;
+	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

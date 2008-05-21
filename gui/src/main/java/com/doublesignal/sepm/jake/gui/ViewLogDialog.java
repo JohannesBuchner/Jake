@@ -1,17 +1,17 @@
 package com.doublesignal.sepm.jake.gui;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
-/*
- * Created by JFormDesigner on Tue May 06 12:34:16 CEST 2008
- */
-
 
 
 /**
  * @author Peter Steinberger
  */
+@SuppressWarnings("serial")
 public class ViewLogDialog extends JDialog {
 	public ViewLogDialog(Frame owner) {
 		super(owner);
@@ -22,14 +22,17 @@ public class ViewLogDialog extends JDialog {
 		super(owner);
 		initComponents();
 	}
+	
+	private void okButtonActionPerformed(ActionEvent e) {
+		this.setVisible(false);
+	}
+	
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - tester tester
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		scrollPane1 = new JScrollPane();
-		table1 = new JTable();
+		logTableScrollPane = new JScrollPane();
+		logTable = new JTable();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 
@@ -51,7 +54,7 @@ public class ViewLogDialog extends JDialog {
 				{
 
 					//---- table1 ----
-					table1.setModel(new DefaultTableModel(
+					logTable.setModel(new DefaultTableModel(
 						new Object[][] {
 							{"CREATED", "Johannes", "April 1st, 11:59"},
 							{"UPDATED", "Peter", "April 4th, 19:33"},
@@ -60,9 +63,9 @@ public class ViewLogDialog extends JDialog {
 							"Action", "User", "Time"
 						}
 					));
-					scrollPane1.setViewportView(table1);
+					logTableScrollPane.setViewportView(logTable);
 				}
-				contentPanel.add(scrollPane1);
+				contentPanel.add(logTableScrollPane);
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -75,6 +78,11 @@ public class ViewLogDialog extends JDialog {
 
 				//---- okButton ----
 				okButton.setText("OK");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						okButtonActionPerformed(e);
+					}
+				});	
 				buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
@@ -84,16 +92,12 @@ public class ViewLogDialog extends JDialog {
 		contentPane.add(dialogPane, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(getOwner());
-		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JScrollPane scrollPane1;
-	private JTable table1;
+	private JScrollPane logTableScrollPane;
+	private JTable logTable;
 	private JPanel buttonBar;
 	private JButton okButton;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

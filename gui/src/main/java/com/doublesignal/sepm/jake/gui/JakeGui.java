@@ -3,9 +3,14 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.table.*;
 import org.jdesktop.swingx.*;
+import org.jdesktop.swingx.decorator.Filter;
+import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.PatternFilter;
 
 /**
  * @author Peter Steinberger
@@ -18,8 +23,24 @@ public class JakeGui extends JPanel {
 	
     public static void main( String[] args )
     {
+    	setLookAndFeel();
     	new JakeGui();
     }
+    
+	private static void setLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch(Exception e) {
+		}
+	} 
+    
+    
+    /***** File Menu *****/
+
+	private void newProjectMenuItemActionPerformed(ActionEvent e) {
+		new NewProjectDialog(mainFrame).setVisible(true);
+	} 
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
 		System.exit(0);
@@ -29,27 +50,99 @@ public class JakeGui extends JPanel {
 		new PreferencesDialog(mainFrame).setVisible(true);
 	}
 	
-	private void newProjectMenuItemActionPerformed(ActionEvent e) {
-		new NewProjectDialog(mainFrame).setVisible(true);
+    /***** View Menu *****/
+	
+	private void systemLogViewMenuItemActionPerformed(ActionEvent e) {
+		new ViewLogDialog(mainFrame).setVisible(true);
 	}
+	
+	private void peopleViewMenuItemActionPerformed(ActionEvent e) {
+		mainTabbedPane.setSelectedComponent(peoplePanel);
+	}
+	
+	private void filesViewMenuItemActionPerformed(ActionEvent e) {
+		mainTabbedPane.setSelectedComponent(filesPanel);
+	}
+	
+	private void notesViewMenuItemActionPerformed(ActionEvent e) {
+		mainTabbedPane.setSelectedComponent(notesPanel);
+	}
+	
+	
+    /***** Network Menu *****/
+	private void signInNetworkMenuItemActionPerformed(ActionEvent e) {
+		new JXLoginDialog().setVisible(true);
+	}
+	
+	
+    /***** Project Menu *****/
 	
 	private void openProjectMenuItemActionPerformed(ActionEvent e) {
 		// TODO
 	}
 	
-	private void systemLogViewMenuItemActionPerformed(ActionEvent e) {
-		new ViewLogDialog(mainFrame).setVisible(true);
+	
+    /***** Help Menu *****/
+	
+	private void aboutHelpMenuItemActionPerformed(ActionEvent e) {
+		JOptionPane.showMessageDialog(mainFrame, "Jake GUI by SEPM Group 3950");
+	}	
+	
+	
+	/***** Tool Bar *****/
+	
+	private void newNoteButtonActionPerformed(ActionEvent e) {
+		new NoteEditorDialog(mainFrame).setVisible(true);
 	}
+	
+	
+	/***** People Context Menu *****/
+	
+	private void showInfoPeopleMenuItemActionPerformed(ActionEvent e) {
+		new InfoDialog(mainFrame).setVisible(true);
+	}
+	
+	private void sendMessageMenuItemActionPerformed(ActionEvent e) {
+		new SendMessageDialog(mainFrame).setVisible(true);
+	}
+	
+	private void newNoteProjectMenuItemActionPerformed(ActionEvent e) {
+		new NoteEditorDialog(mainFrame).setVisible(true);
+	}
+	
+	private void newNoteMenuItemActionPerformed(ActionEvent e) {
+		new NoteEditorDialog(mainFrame).setVisible(true);
+	}	
+	
+	
+	/***** Files Context Menu *****/
+	private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {
+		new ResolveConflictDialog(mainFrame).setVisible(true);
+	}	
+	
+	
+	/***** Status Bar Buttons *****/
+	private void messageReceivedStatusButtonActionPerformed(ActionEvent e) {
+		new  ReceiveMessageDialog(mainFrame).setVisible(true);
+	}	
+	
+	private void fileConflictStatusButtonActionPerformed(ActionEvent e) {
+		new ResolveConflictDialog(mainFrame).setVisible(true);
+	}
+	
+	private void connectionStatusButtonActionPerformed(ActionEvent e) {
+		new JXLoginDialog().setVisible(true);
+	}	
 	
 
 	private void initComponents() {
 		mainFrame = new JFrame();
 		statusPanel = new JPanel();
 		statusLabel = new JLabel();
-		panel1 = new JPanel();
-		messageReceivedLabel = new JButton();
-		fileConflictLabel = new JButton();
-		connectionLabel = new JButton();
+		statusButtonsPanel = new JPanel();
+		messageReceivedStatusButton = new JButton();
+		fileConflictStatusButton = new JButton();
+		connectionStatusButton = new JButton();
 		mainPanel = new JPanel();
 		mainTabbedPane = new JTabbedPane();
 		peoplePanel = new JPanel();
@@ -69,14 +162,12 @@ public class JakeGui extends JPanel {
 		LockFileToggleButton = new JToggleButton();
 		newNoteButton = new JButton();
 		searchSpacer = new JPanel(null);
-		searchLabel = new JLabel();
+		searchButton = new JButton();
 		searchTextField = new JTextField();
 		mainMenuBar = new JMenuBar();
 		fileMenu = new JMenu();
 		newProjectMenuItem = new JMenuItem();
 		openProjectMenuItem = new JMenuItem();
-		saveMenuItem = new JMenuItem();
-		saveAsMenuItem = new JMenuItem();
 		preferencesMenuItem = new JMenuItem();
 		exitApplicationMenuItem = new JMenuItem();
 		viewMenu = new JMenu();
@@ -104,7 +195,7 @@ public class JakeGui extends JPanel {
 		sendMessageMenuItem = new JMenuItem();
 		showInfoPeopleMenuItem = new JMenuItem();
 		renamePeopleMenuItem = new JMenuItem();
-		menuItem5 = new JMenuItem();
+		changeUserIdMenuItem = new JMenuItem();
 		removePeopleMenuItem = new JMenuItem();
 		filesPopupMenu = new JPopupMenu();
 		openExecuteFileMenuItem = new JMenuItem();
@@ -136,41 +227,52 @@ public class JakeGui extends JPanel {
 
 				//======== statusPanel ========
 				{
-					statusPanel.setLayout(new BorderLayout(60, 4));
+					statusPanel.setLayout(new BorderLayout(2, 2));
 
 					//---- statusLabel ----
 					statusLabel.setText("Pulling File xy...");
-					statusLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-					statusLabel.setAlignmentX(0);
+					//statusLabel.setAlignmentX(0);
 					statusPanel.add(statusLabel, BorderLayout.WEST);
 
-					//======== panel1 ========
+					//======== statusButtonsPanel ========
 					{
-						panel1.setLayout(new FlowLayout());
+						statusButtonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
-						//---- messageReceivedLabel ----
-						messageReceivedLabel.setText("2 Messages received");
-						messageReceivedLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-						messageReceivedLabel.setIcon(new ImageIcon(getClass().getResource("/icons/message.png")));
-						messageReceivedLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
-						panel1.add(messageReceivedLabel);
+						//---- messageReceivedStatusButton ----
+						messageReceivedStatusButton.setText("2 Messages received");
+						messageReceivedStatusButton.setIcon(new ImageIcon(getClass().getResource("/icons/message.png")));
+						messageReceivedStatusButton.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+						messageReceivedStatusButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								messageReceivedStatusButtonActionPerformed(e);
+							}
+						});	
+						statusButtonsPanel.add(messageReceivedStatusButton);
 
-						//---- fileConflictLabel ----
-						fileConflictLabel.setText("1 File Conflict");
-						fileConflictLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-						fileConflictLabel.setIcon(new ImageIcon(getClass().getResource("/icons/warning.png")));
-						fileConflictLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
-						panel1.add(fileConflictLabel);
+						//---- fileConflictStatusButton ----
+						fileConflictStatusButton.setText("1 File Conflict");
+						fileConflictStatusButton.setIcon(new ImageIcon(getClass().getResource("/icons/warning.png")));
+						fileConflictStatusButton.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+						fileConflictStatusButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								fileConflictStatusButtonActionPerformed(e);
+							}
+						});	
+						statusButtonsPanel.add(fileConflictStatusButton);
 
-						//---- connectionLabel ----
-						connectionLabel.setText("Connected");
-						connectionLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-						connectionLabel.setIcon(new ImageIcon(getClass().getResource("/icons/network-idle.png")));
-						connectionLabel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
-						connectionLabel.setToolTipText("Connected as pstein@jabber.fsinf.at");
-						panel1.add(connectionLabel);
+						//---- connectionStatusButton ----
+						connectionStatusButton.setText("Connected");
+						connectionStatusButton.setIcon(new ImageIcon(getClass().getResource("/icons/network-idle.png")));
+						connectionStatusButton.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+						connectionStatusButton.setToolTipText("Connected as pstein@jabber.fsinf.at");
+						connectionStatusButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								connectionStatusButtonActionPerformed(e);
+							}
+						});	
+						statusButtonsPanel.add(connectionStatusButton);
 					}
-					statusPanel.add(panel1, BorderLayout.EAST);
+					statusPanel.add(statusButtonsPanel, BorderLayout.EAST);
 				}
 				this.add(statusPanel, BorderLayout.SOUTH);
 
@@ -187,9 +289,10 @@ public class JakeGui extends JPanel {
 
 							//======== peopleScrollPane ========
 							{
-								peopleScrollPane.setComponentPopupMenu(peoplePopupMenu);
-
 								//---- peopleTable ----
+								peopleTable.setComponentPopupMenu(peoplePopupMenu);
+								peopleTable.setColumnControlVisible(true);
+								peopleTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 								peopleTable.setModel(new DefaultTableModel(
 									new Object[][] {
 										{"Simon", "simon.wallner@jabber.fsinf.at", "Online", "Projektleiter"},
@@ -209,9 +312,6 @@ public class JakeGui extends JPanel {
 										return columnEditable[columnIndex];
 									}
 								});
-								peopleTable.setHighlighters(HighlighterFactory.createSimpleStriping());
-								peopleTable.setColumnControlVisible(true);
-								
 								{
 									TableColumnModel cm = peopleTable.getColumnModel();
 									cm.getColumn(1).setPreferredWidth(195);
@@ -230,9 +330,8 @@ public class JakeGui extends JPanel {
 
 							//======== filesScrollPane ========
 							{
-								filesScrollPane.setComponentPopupMenu(filesPopupMenu);
-
 								//---- filesTable ----
+								filesTable.setComponentPopupMenu(filesPopupMenu);
 								filesTable.setColumnControlVisible(true);
 								filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 								filesTable.setModel(new DefaultTableModel(
@@ -262,7 +361,6 @@ public class JakeGui extends JPanel {
 								}
 								filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 								filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
-								filesTable.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
 								filesScrollPane.setViewportView(filesTable);
 							}
 							filesPanel.add(filesScrollPane, BorderLayout.CENTER);
@@ -276,9 +374,8 @@ public class JakeGui extends JPanel {
 
 							//======== notesScrollPane ========
 							{
-								notesScrollPane.setComponentPopupMenu(notesPopupMenu);
-
 								//---- notesTable ----
+								notesTable.setComponentPopupMenu(notesPopupMenu);
 								notesTable.setColumnControlVisible(true);
 								notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 								notesTable.setModel(new DefaultTableModel(
@@ -316,7 +413,6 @@ public class JakeGui extends JPanel {
 					//======== mainToolBar ========
 					{
 						mainToolBar.setBorderPainted(false);
-						mainToolBar.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 						mainToolBar.setRollover(true);
 
 						//---- openProjectFolderButton ----
@@ -352,22 +448,51 @@ public class JakeGui extends JPanel {
 						//---- newNoteButton ----
 						newNoteButton.setToolTipText("New Note");
 						newNoteButton.setIcon(new ImageIcon(getClass().getResource("/icons/notes-new.png")));
+						newNoteButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								newNoteButtonActionPerformed(e);
+							}
+						});	
 						mainToolBar.add(newNoteButton);
 						mainToolBar.add(searchSpacer);
 
-						//---- searchLabel ----
-						searchLabel.setToolTipText("Search for");
-						searchLabel.setIcon(new ImageIcon(getClass().getResource("/icons/search.png")));
-						searchLabel.setComponentPopupMenu(searchPopupMenu);
-						searchLabel.setLabelFor(searchTextField);
-						mainToolBar.add(searchLabel);
-
 						//---- searchTextField ----
 						searchTextField.setToolTipText("Search for Files");
-						searchTextField.setMaximumSize(new Dimension(150, 2147483647));
+						searchTextField.setMaximumSize(new Dimension(200, 40));
 						searchTextField.setPreferredSize(new Dimension(150, 28));
 						searchTextField.setComponentPopupMenu(searchPopupMenu);
+						searchTextField.addCaretListener(new CaretListener() {
+							public void caretUpdate(CaretEvent e) {
+								// TODO: proof of concept! filter input (e.g. crash with '*')
+								peopleTable.setFilters(new FilterPipeline(new Filter[] { 
+										new PatternFilter(searchTextField.getText(), 0, 0)
+										}));
+								filesTable.setFilters(new FilterPipeline(new Filter[] { 
+										new PatternFilter(searchTextField.getText(), 0, 0)
+										}));
+								notesTable.setFilters(new FilterPipeline(new Filter[] { 
+										new PatternFilter(searchTextField.getText(), 0, 0)
+										}));
+							}
+						});
+						searchTextField.addActionListener(new ActionListener()  {
+							public void actionPerformed(ActionEvent e) {
+								searchPopupMenu.show(searchButton, 0, 0);
+							}
+						});
 						mainToolBar.add(searchTextField);
+						
+						//---- searchButton ----
+						searchButton.setToolTipText("Search for");
+						searchButton.setIcon(new ImageIcon(getClass().getResource("/icons/search.png")));
+						searchButton.setComponentPopupMenu(searchPopupMenu);
+						searchButton.setBorder(null);
+						searchButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								searchPopupMenu.show(searchButton, 0, 0);
+							}
+						});	
+						mainToolBar.add(searchButton);						
 					}
 					mainPanel.add(mainToolBar, BorderLayout.NORTH);
 				}
@@ -397,14 +522,6 @@ public class JakeGui extends JPanel {
 							}
 						});									
 						fileMenu.add(openProjectMenuItem);
-
-						//---- saveMenuItem ----
-						saveMenuItem.setText("Save");
-						fileMenu.add(saveMenuItem);
-
-						//---- saveAsMenuItem ----
-						saveAsMenuItem.setText("Save As...");
-						fileMenu.add(saveAsMenuItem);
 						
 						//---- preferencesMenuItem ----
 						preferencesMenuItem.setText("Preferences...");
@@ -433,16 +550,31 @@ public class JakeGui extends JPanel {
 						//---- peopleViewMenuItem ----
 						peopleViewMenuItem.setText("People");
 						peopleViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/people.png")));
+						peopleViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								peopleViewMenuItemActionPerformed(e);
+							}
+						});	
 						viewMenu.add(peopleViewMenuItem);
 
 						//---- filesViewMenuItem ----
 						filesViewMenuItem.setText("Files");
 						filesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/files.png")));
+						filesViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								filesViewMenuItemActionPerformed(e);
+							}
+						});	
 						viewMenu.add(filesViewMenuItem);
 
 						//---- notesViewMenuItem ----
 						notesViewMenuItem.setText("Notes");
 						notesViewMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/notes.png")));
+						notesViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								notesViewMenuItemActionPerformed(e);
+							}
+						});	
 						viewMenu.add(notesViewMenuItem);
 						viewMenu.addSeparator();
 
@@ -465,6 +597,11 @@ public class JakeGui extends JPanel {
 
 						//---- signInNetworkMenuItem ----
 						signInNetworkMenuItem.setText("Sign In...");
+						signInNetworkMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								signInNetworkMenuItemActionPerformed(e);
+							}
+						});						
 						networkMenu.add(signInNetworkMenuItem);
 
 						//---- signOutNetworkMenuItem ----
@@ -508,6 +645,11 @@ public class JakeGui extends JPanel {
 
 						//---- newNoteProjectMenuItem ----
 						newNoteProjectMenuItem.setText("New Note...");
+						newNoteProjectMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								newNoteProjectMenuItemActionPerformed(e);
+							}
+						});	
 						projectMenu.add(newNoteProjectMenuItem);
 						projectMenu.addSeparator();
 
@@ -532,6 +674,11 @@ public class JakeGui extends JPanel {
 
 						//---- aboutHelpMenuItem ----
 						aboutHelpMenuItem.setText("About");
+						aboutHelpMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								aboutHelpMenuItemActionPerformed(e);
+							}
+						});	
 						helpMenu.add(aboutHelpMenuItem);
 					}
 					mainMenuBar.add(helpMenu);
@@ -551,21 +698,30 @@ public class JakeGui extends JPanel {
 
 			//---- sendMessageMenuItem ----
 			sendMessageMenuItem.setText("Send Message...");
-			sendMessageMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
 			sendMessageMenuItem.setIcon(new ImageIcon(getClass().getResource("/icons/message-new.png")));
+			sendMessageMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					sendMessageMenuItemActionPerformed(e);
+				}
+			});				
 			peoplePopupMenu.add(sendMessageMenuItem);
 
 			//---- showInfoPeopleMenuItem ----
 			showInfoPeopleMenuItem.setText("Show Info/Comments...");
+			showInfoPeopleMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					showInfoPeopleMenuItemActionPerformed(e);
+				}
+			});			
 			peoplePopupMenu.add(showInfoPeopleMenuItem);
 
 			//---- renamePeopleMenuItem ----
 			renamePeopleMenuItem.setText("Change Nickname...");
 			peoplePopupMenu.add(renamePeopleMenuItem);
 
-			//---- menuItem5 ----
-			menuItem5.setText("Change User ID...");
-			peoplePopupMenu.add(menuItem5);
+			//---- changeUserIdMenuItem ----
+			changeUserIdMenuItem.setText("Change User ID...");
+			peoplePopupMenu.add(changeUserIdMenuItem);
 
 			//---- removePeopleMenuItem ----
 			removePeopleMenuItem.setText("Remove Member...");
@@ -577,7 +733,6 @@ public class JakeGui extends JPanel {
 
 			//---- openExecuteFileMenuItem ----
 			openExecuteFileMenuItem.setText("Open");
-			openExecuteFileMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
 			filesPopupMenu.add(openExecuteFileMenuItem);
 
 			//---- lockFileMenuItem ----
@@ -594,6 +749,11 @@ public class JakeGui extends JPanel {
 
 			//---- resolveFileConflictMenuItem ----
 			resolveFileConflictMenuItem.setText("Resolve Conflict...");
+			resolveFileConflictMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					resolveFileConflictMenuItemActionPerformed(e);
+				}
+			});					
 			filesPopupMenu.add(resolveFileConflictMenuItem);
 			filesPopupMenu.addSeparator();
 
@@ -612,11 +772,15 @@ public class JakeGui extends JPanel {
 
 			//---- viewEditNoteMenuItem ----
 			viewEditNoteMenuItem.setText("View/Edit Note");
-			viewEditNoteMenuItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
 			notesPopupMenu.add(viewEditNoteMenuItem);
 
 			//---- newNoteMenuItem ----
 			newNoteMenuItem.setText("New Note...");
+			newNoteMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					newNoteMenuItemActionPerformed(e);
+				}
+			});						
 			notesPopupMenu.add(newNoteMenuItem);
 
 			//---- removeNoteMenuItem ----
@@ -639,19 +803,15 @@ public class JakeGui extends JPanel {
 			bothSearchMenuItem.setText("Both");
 			searchPopupMenu.add(bothSearchMenuItem);
 		}
-		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 	
-	
-
-
 	private JFrame mainFrame;
 	private JPanel statusPanel;
 	private JLabel statusLabel;
-	private JPanel panel1;
-	private JButton messageReceivedLabel;
-	private JButton fileConflictLabel;
-	private JButton connectionLabel;
+	private JPanel statusButtonsPanel;
+	private JButton messageReceivedStatusButton;
+	private JButton fileConflictStatusButton;
+	private JButton connectionStatusButton;
 	private JPanel mainPanel;
 	private JTabbedPane mainTabbedPane;
 	private JPanel peoplePanel;
@@ -671,14 +831,12 @@ public class JakeGui extends JPanel {
 	private JToggleButton LockFileToggleButton;
 	private JButton newNoteButton;
 	private JPanel searchSpacer;
-	private JLabel searchLabel;
+	private JButton searchButton;
 	private JTextField searchTextField;
 	private JMenuBar mainMenuBar;
 	private JMenu fileMenu;
 	private JMenuItem newProjectMenuItem;
 	private JMenuItem openProjectMenuItem;
-	private JMenuItem saveMenuItem;
-	private JMenuItem saveAsMenuItem;
 	private JMenuItem preferencesMenuItem;
 	private JMenuItem exitApplicationMenuItem;
 	private JMenu viewMenu;
@@ -706,7 +864,7 @@ public class JakeGui extends JPanel {
 	private JMenuItem sendMessageMenuItem;
 	private JMenuItem showInfoPeopleMenuItem;
 	private JMenuItem renamePeopleMenuItem;
-	private JMenuItem menuItem5;
+	private JMenuItem changeUserIdMenuItem;
 	private JMenuItem removePeopleMenuItem;
 	private JPopupMenu filesPopupMenu;
 	private JMenuItem openExecuteFileMenuItem;
