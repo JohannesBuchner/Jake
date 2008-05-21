@@ -172,6 +172,11 @@
 					<td>would be a pain to delete every file in the folder to delete the folder</td>
 					<td>basic functionality, architecture</td>
 				</tr>
+				<tr>
+					<td>[time_synced] It is assumed that the clock on the used computers are approximately synchronized.</td>
+					<td>Log is timestamp-based</td>
+					<td>basic functionality</td>
+				</tr>
 
                 <tr>
                     <td>[projectId] 8 Chars long &quot;unique&quot; String to identify the project against other clients<br />
