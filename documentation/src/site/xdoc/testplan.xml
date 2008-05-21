@@ -958,7 +958,7 @@
 						<tr>
 							<td>34</td>
 							<!-- test case # //-->
-							<td>Sort by nickname, name, networkUserId</td>
+							<td>Sort by nickname, name, UserId</td>
 							<!-- function //-->
 							<td>The user clicks on a column, the list is sorted by that column</td>
 							<!-- expected result -->

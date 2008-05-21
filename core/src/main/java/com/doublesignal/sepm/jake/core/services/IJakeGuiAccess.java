@@ -119,10 +119,10 @@ public interface IJakeGuiAccess {
     ich muss mir nochmal genau ueberlegen was ich mir dabei gedacht habe. ist schon etwas
     zu spaet dafuer. - dominik
 
-    public String findProjectMember(String networkUserId);
+    public String findProjectMember(String UserId);
 
 
-    public ProjectMember addProjectProjectMember(String networkUserId)
+    public ProjectMember addProjectProjectMember(String UserId)
             throws NoSuchNetworkUserException;
 
 */

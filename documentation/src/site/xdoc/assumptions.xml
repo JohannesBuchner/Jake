@@ -175,8 +175,12 @@
 
                 <tr>
                     <td>[projectId] 8 Chars long &quot;unique&quot; String to identify the project against other clients<br />
-		    <blockquote>Johannes: Why exactly 8? can't we just use the projectname? (see below)</blockquote>
-		    </td>
+		   			<blockquote>Johannes: Why exactly 8? can't we just use the projectname? (see below)</blockquote>
+						<blockquote>Dominik: It could be any size, but I think 8 characters give enough randomness to
+							ensure two projects don't have the same Id. Also it would reduce bandwith usage, because
+						the projectId has to be transported with each message sent over the network. </blockquote>
+
+			</td>
                     <td>The ICS must know if the message he receives belongs to the current project</td>
                     <td>core, ics, gui</td>
                 </tr>
@@ -184,9 +188,29 @@
 				<tr>
 					<td>[projectName] Minimum of 2 Characters, maximum of 50 characters
 					<blockquote>Johannes: We need it to be nonempty alright, but we can do the upper limit it by ending it with a character that is forbidden in IFSService.isValidRelpath, like the pipe.</blockquote>
+						<blockquote>Dominik: Yes it has to be nonempty.. but imho the project name is not by
+							default the name of the rootfolder. The user can choose any folder for the rootfolder of
+							his project, the project name is stored in some kind of file (e.g. .jake) so the user can
+							identify the project also if the folder name is somehow strange or can not be changed (e.g.
+						if the user wants to share some existing folder like 'My Documents')
+						The ProjectName is some String helping the User to recognize the project, the ProjectId is a String
+							helping the program to recognize the project in an easy and error insusceptible way. 
+						</blockquote>
 					</td>
 					<td>We have to create some boundaries to ensure valid projectnames</td>
 					<td>core, ffs, gui</td>
+				</tr>
+
+				<tr>
+					<td>[tag] Minimum 1 Character, maximum 30 characters, no spaces</td>
+					<td>We have to ensure that tags have some defined look to handle them easily</td>
+					<td>core, gui</td>
+				</tr>
+
+				<tr>
+					<td>[userid_length] UserId minimum 1, maximum 70 characters, no whitespaces</td>
+					<td>We have to do some bounds checking on userids</td>
+					<td>core,gui,ics</td>
 				</tr>
 			</tbody>
 		</table>
