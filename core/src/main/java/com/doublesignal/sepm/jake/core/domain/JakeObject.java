@@ -44,7 +44,7 @@ public class JakeObject {
 	 * @throws com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException
 	 *
 	 */
-	public void addTag(Tag tag) throws InvalidTagNameException {
+	public void addTag(Tag tag) {
 		tags.add(tag);
 	}
 

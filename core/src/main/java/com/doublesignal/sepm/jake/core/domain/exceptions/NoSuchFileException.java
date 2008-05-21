@@ -11,4 +11,7 @@ import java.io.IOException;
  * Time: 12:42:06 AM
  */
 public class NoSuchFileException extends IOException {
+	public NoSuchFileException(String message) {
+		super(message);
+	}
 }
