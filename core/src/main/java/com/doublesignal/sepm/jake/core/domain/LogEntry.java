@@ -3,19 +3,32 @@ package com.doublesignal.sepm.jake.core.domain;
 import java.util.Date;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 8, 2008
- * Time: 11:04:28 PM
+ * A Log entry. It consists of a <code> action, timestamp, jakoObjectName </code>
+ * and a <code>comment</code>.
+ * 
+ * @author Dominik, Simon
  */
 public class LogEntry {
+	
 	private LogAction action;
 	private Date timestamp;
 	private String comment;
 	private String jakeObjectName;
 
+	/**
+	 * Construct a new LogEntry with the given params.
+	 * @param action The <code>LogAction</code> to be logged
+	 * @param timestamp The time of the log entry
+	 * @param jakeObjectName The name of the <code>JakeObject</code> this log
+	 * entry corresponds to.
+	 * @param comment An arbitrary comment
+	 */
+	public LogEntry(LogAction action, Date timestamp, String jakeObjectName, String comment) {
+		this.action = action;
+		this.timestamp = timestamp;
+		this.comment = comment;
+		this.jakeObjectName = jakeObjectName;
+	}
 
 	public LogAction getAction() {
 		return action;
@@ -49,17 +62,10 @@ public class LogEntry {
 		this.jakeObjectName = jakeObjectName;
 	}
 
-	public LogEntry() {
-	}
-
-	public LogEntry(LogAction action, Date timestamp, String jakeObjectName, String comment) {
-		this.action = action;
-		this.timestamp = timestamp;
-		this.comment = comment;
-		this.jakeObjectName = jakeObjectName;
-	}
-
-
+	/**
+	 * Test if two LogEntrys are equal.
+	 * @return <code>true</code> iff all fields are equal.
+	 */
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -86,6 +92,10 @@ public class LogEntry {
 		return true;
 	}
 
+	/**
+	 * calculates and returns the hash value of the log entry
+	 * @return hash code
+	 */
 	public int hashCode() {
 		int result;
 		result = (action != null ? action.hashCode() : 0);
