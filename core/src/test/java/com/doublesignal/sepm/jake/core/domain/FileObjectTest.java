@@ -62,6 +62,14 @@ public class FileObjectTest {
 	}
 	
 	/**
+	 * test if fnull equals f1. Should not throw exception.
+	 */
+	@Test
+	public void testWithNullValue2() {
+		Assert.assertFalse(fnull.equals(f1));
+	}
+	
+	/**
 	 *  tests if f1 equals f3.
 	 */
 	@Test

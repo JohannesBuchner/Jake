@@ -38,7 +38,9 @@ public class FileObject extends JakeObject {
 	public boolean equals(Object obj) {
 		if (obj != null && this.getClass().equals(obj.getClass())) {
 			FileObject that = (FileObject) obj;
-			return (this.getName().equals(that.getName()));
+			if(this.getName() != null) {
+				return (this.getName().equals(that.getName()));
+			} else if(that.getName() == null) return true;
 		}
 		return false;
 	}
