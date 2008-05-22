@@ -8,12 +8,8 @@ import com.doublesignal.sepm.jake.core.domain.exceptions.ProjectNotConfiguredExc
 import java.io.File;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 8, 2008
- * Time: 11:04:55 PM
+ * The Project consists of a <code>rootpath</code>, a <code>name</code> and a 
+ * <code>projectId</code>.
  */
 public class Project {
 
@@ -21,11 +17,18 @@ public class Project {
 	private String name;
 	private String projectId;
 
-
-	public Project() {
-
-	}
-
+	/**
+	 * Constructs a new Project with the given params. See setter Methods for 
+	 * constraints and exceptions.
+	 * 
+	 * @param rootPath The root path of the project
+	 * @param name The name of the project
+	 * @param projectId The Id of the project
+	 * 
+	 * @throws InvalidProjectNameException 
+	 * @throws InvalidProjectIdException
+	 * @throws InvalidRootPathException
+	 */
 	public Project(File rootPath, String name, String projectId)
 			  throws InvalidProjectNameException, InvalidProjectIdException, InvalidRootPathException {
 		setRootPath(rootPath);
@@ -33,42 +36,63 @@ public class Project {
 		setProjectId(projectId);
 	}
 
-	public File getRootPath() throws ProjectNotConfiguredException {
-		if(rootPath == null ) throw new ProjectNotConfiguredException("rootPath not configured");
+	public File getRootPath() {
 		return rootPath;
 	}
 
+	/**
+	 * Set the root path of the Project. The root path must be an existing
+	 * directory.
+	 * 
+	 * @param rootPath The root path of the Project, may not be <code>null</code>.
+	 * 
+	 * @throws InvalidRootPathException An Exceptions is thrown iff the 
+	 * <code>rootpath</code> does not exist or is no valid <code>directory</code>.
+	 * 
+	 * @see java.io.File
+	 */
 	public void setRootPath(File rootPath) throws InvalidRootPathException {
-		if (rootPath == null) throw new InvalidRootPathException("rootPath must not be null");
+		
 		if (!rootPath.isDirectory()) throw new InvalidRootPathException("root path must be a directory");
-		if (!rootPath.exists()) throw new InvalidRootPathException("root path must exist");
+		if (!rootPath.exists()) throw new InvalidRootPathException("root path does not exist");
 		this.rootPath = rootPath;
 	}
 
 
-	public String getName() throws ProjectNotConfiguredException {
-		if(name == null) throw new ProjectNotConfiguredException("ProjectName not configured");
+	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Set the name of the Project. The name must be between 2 and 50 characters
+	 * long.
+	 * @param name of the Project, may not be <code>null</code>;
+	 * @throws InvalidProjectNameException iff <code>!(2 <= name.length() <= 50)</code>
+	 */
 	public void setName(String name) throws InvalidProjectNameException {
-		if (name == null) throw new InvalidProjectNameException("project name must not be null");
 		if (name.length() < 2) throw new InvalidProjectNameException("project name must be at least 2 characters long");
 		if(name.length() > 50) throw new InvalidProjectNameException("project name may only be 50 characters long");
 		this.name = name;
 	}
 
-	public String getProjectId() throws ProjectNotConfiguredException {
-		if(projectId == null) throw new ProjectNotConfiguredException("ProjectId not configured");
+	public String getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * Set the project id.
+	 * @param projectId must be exactly 8 characters long, may not be <code>null</code>;
+	 * @throws InvalidProjectIdException iff <code>projectId.length != 8</code>
+	 */
 	public void setProjectId(String projectId) throws InvalidProjectIdException {
-		if(projectId == null) throw new InvalidProjectIdException("projectId cannot be null");
-		if(projectId.length() != 8) throw new InvalidProjectIdException("projectId must be exact 8 characters long");
+		if(projectId.length() != 8) throw new InvalidProjectIdException("projectId must be exactly 8 characters long");
 		this.projectId = projectId;
 	}
 
+	/**
+	 * Tests if two Projects are equal.
+	 * @return <code>true</code> iff all fields are equal.
+	 */
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -92,6 +116,10 @@ public class Project {
 		return true;
 	}
 
+	/**
+	 * Returns the hash code of the Project.
+	 * @return hash code
+	 */
 	public int hashCode() {
 		int result;
 		result = (rootPath != null ? rootPath.hashCode() : 0);

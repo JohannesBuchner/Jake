@@ -12,325 +12,175 @@ import org.junit.Test;
 import java.io.File;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 18, 2008
- * Time: 1:05:06 PM
+ * Tests for Project.
  */
-public class ProjectTest
-{
+public class ProjectTest {
 
-	private String baseDir;
+	private static final String baseDir = "/tmp";
 
 	private String validRootPath;
 	private String fileRootPath;
 	private String RootPathDoesNotExist;
 
-	private String validProjectName;
-	private String onecharProjectName;
-	private String tooLongProjectName;
-	private String maximumLengthProjectName;
-	private String emptyProjectName;
-	private String nullProjectName;
+	private static final String validProjectName = "My great JakeProject";
+	private static final String onecharProjectName = "a";
+	private static final String tooLongProjectName = "dasisteintestdasisteintestdasisteintestdasisteintes"; // 51 chars
+	private static final String maximumLengthProjectName = "dasisteintestdasisteintestdasisteintestdasisteinte";
+	private static final String emptyProjectName = "";
+	private static final String nullProjectName = null;
 
-	private String validProjectId = "jp3820xx";
-	private String emptyProjectId = "";
-	private String nullProjectId = null;
-	private String tooShortProjectId = "1234567";
-	private String tooLongProjectId = "123456789";
+	private static final String validProjectId = "jp3820xx";
+	private static final String emptyProjectId = "";
+	private static final String nullProjectId = null;
+	private static final String tooShortProjectId = "1234567";
+	private static final String tooLongProjectId = "123456789";
 
+	private Project p1, p2;
 
-	public ProjectTest()
-	{
-
-		baseDir = "/tmp";
+	@Before
+	public void Setup() throws Exception {
 		validRootPath = baseDir + "/validRootPath";
 		fileRootPath = baseDir + "/somefile";
 		RootPathDoesNotExist = baseDir + "/somenotexistendthing";
 
-
-		validProjectName = "My great JakeProject";
-		tooLongProjectName = "dasisteintestdasisteintestdasisteintestdasisteintes"; // 51 chars
-		emptyProjectName = "";
-		nullProjectName = null;
-		onecharProjectName = "a";
-		maximumLengthProjectName = "dasisteintestdasisteintestdasisteintestdasisteinte";
-	}
-
-
-	@Before
-	public void Setup() throws Exception
-	{
 		new File(validRootPath).mkdir();
 		new File(fileRootPath).createNewFile();
+
+		p1 = new Project(new File(validRootPath), validProjectName, validProjectId);
+		p2 = new Project(new File(validRootPath), validProjectName, "otherPID");
 	}
 
 	@After
-	public void TearDown() throws Exception
-	{
+	public void TearDown() throws Exception {
 		new File(fileRootPath).delete();
 		new File(validRootPath).delete();
 	}
 
-
-	@Test
-	public void createEmptyProjectTest()
-	{
-		Project project = new Project();
-	}
-
-	@Test(expected = ProjectNotConfiguredException.class)
-	public void accessUnconfiguredProjectFolder() throws ProjectNotConfiguredException
-	{
-		Project proj = new Project();
-		proj.getRootPath();
-	}
-
-	@Test(expected = ProjectNotConfiguredException.class)
-	public void accessUnconfiguredProjectName() throws ProjectNotConfiguredException
-	{
-		Project proj = new Project();
-		proj.getName();
-	}
-
-
-	@Test(expected = ProjectNotConfiguredException.class)
-	public void accessUnconfiguredProjectId() throws ProjectNotConfiguredException
-	{
-		Project proj = new Project();
-		proj.getProjectId();
-	}
-
-
 	@Test()
-	public void createProjectWithValidPath()
-	{
-		Project proj = new Project();
-
-		try
-		{
-			proj.setRootPath(new File(validRootPath));
-		}
-		catch (InvalidRootPathException e)
-		{
+	public void createProjectWithValidPath() {
+		try {
+			p1.setRootPath(new File(validRootPath));
+		} catch (InvalidRootPathException e) {
 			Assert.fail("couldn't set a valid rootpath");
 		}
 
 	}
 
-	@Test(expected = InvalidRootPathException.class)
-	public void createProjectWithNullRootPath() throws InvalidRootPathException
-	{
-		Project proj = new Project();
-		proj.setRootPath(null);
+	@Test(expected = NullPointerException.class)
+	public void createProjectWithNullRootPath() throws InvalidRootPathException {
+		p1.setRootPath(null);
 	}
 
 	@Test(expected = InvalidRootPathException.class)
-	public void createProjectWithFileRootPath() throws InvalidRootPathException
-	{
-		Project proj = new Project();
-		proj.setRootPath(new File(fileRootPath));
+	public void createProjectWithFileRootPath() throws InvalidRootPathException {
+		p1.setRootPath(new File(fileRootPath));
 	}
 
 	@Test(expected = InvalidRootPathException.class)
-	public void createProjectWithNonExistendRootPath() throws InvalidRootPathException
-	{
-		Project proj = new Project();
-		proj.setRootPath(new File(RootPathDoesNotExist));
+	public void createProjectWithNonExistendRootPath()
+			throws InvalidRootPathException {
+		p1.setRootPath(new File(RootPathDoesNotExist));
 	}
 
 	@Test
-	public void createProjectWithValidName()
-	{
-		Project proj = new Project();
-		try
-		{
-			proj.setName(validProjectName);
-		}
-		catch (InvalidProjectNameException e)
-		{
+	public void createProjectWithValidName() {
+		try {
+			p1.setName(validProjectName);
+		} catch (InvalidProjectNameException e) {
 			Assert.fail("Thrown exception but ProjectName is valid");
 		}
 	}
 
 	@Test(expected = InvalidProjectNameException.class)
-	public void createOnecharProjectNameTest() throws InvalidProjectNameException
-	{
-		Project proj = new Project();
-		proj.setName(onecharProjectName);
+	public void createOnecharProjectNameTest()
+			throws InvalidProjectNameException {
+		p1.setName(onecharProjectName);
 	}
 
 	@Test(expected = InvalidProjectNameException.class)
-	public void createTooLongProjectNameTest() throws InvalidProjectNameException
-	{
-		Project proj = new Project();
-		proj.setName(tooLongProjectName);
+	public void createTooLongProjectNameTest()
+			throws InvalidProjectNameException {
+		p1.setName(tooLongProjectName);
 	}
 
 	@Test
-	public void createMaximumLengthProjectNameTest()
-	{
-		Project proj = new Project();
-
-		try
-		{
-			proj.setName(maximumLengthProjectName);
-		}
-		catch (InvalidProjectNameException e)
-		{
+	public void createMaximumLengthProjectNameTest() {
+		try {
+			p1.setName(maximumLengthProjectName);
+		} catch (InvalidProjectNameException e) {
 			Assert.fail("failed but projectname has maximum allowed with");
 		}
 	}
 
 	@Test(expected = InvalidProjectNameException.class)
-	public void emptyProjectNameTest() throws InvalidProjectNameException
-	{
-		Project proj = new Project();
-		proj.setName(emptyProjectName);
+	public void emptyProjectNameTest() throws InvalidProjectNameException {
+		p1.setName(emptyProjectName);
 	}
 
-
-	@Test(expected = InvalidProjectNameException.class)
-	public void nullProjectNameTest() throws InvalidProjectNameException
-	{
-		Project proj = new Project();
-		proj.setName(nullProjectName);
+	@Test(expected = NullPointerException.class)
+	public void nullProjectNameTest() throws InvalidProjectNameException {
+		p1.setName(nullProjectName);
 	}
-
 
 	@Test
-	public void createProjectWithValidProjectId()
-	{
-		Project proj = new Project();
-		try
-		{
-			proj.setProjectId(validProjectId);
-		}
-		catch (InvalidProjectIdException e)
-		{
+	public void setValidProjectId() {
+		try {
+			p1.setProjectId(validProjectId);
+		} catch (InvalidProjectIdException e) {
 			Assert.fail("failed but projectId was correct");
 		}
 	}
 
 	@Test(expected = InvalidProjectIdException.class)
-	public void emptyProjectIdTest() throws InvalidProjectIdException
-	{
-		Project proj = new Project();
-		proj.setProjectId(emptyProjectId);
+	public void emptyProjectIdTest() throws InvalidProjectIdException {
+		p1.setProjectId(emptyProjectId);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void nullProjectIdTest() throws InvalidProjectIdException {
+		p1.setProjectId(nullProjectId);
 	}
 
 	@Test(expected = InvalidProjectIdException.class)
-	public void nullProjectIdTest() throws InvalidProjectIdException
-	{
-		Project proj = new Project();
-		proj.setProjectId(nullProjectId);
+	public void tooShortProjectIdTest() throws InvalidProjectIdException {
+		p1.setProjectId(tooShortProjectId);
 	}
 
 	@Test(expected = InvalidProjectIdException.class)
-	public void tooShortProjectIdTest() throws InvalidProjectIdException
-	{
-		Project proj = new Project();
-		proj.setProjectId(tooShortProjectId);
-	}
-
-	@Test(expected = InvalidProjectIdException.class)
-	public void tooLongProjectIdTest() throws InvalidProjectIdException
-	{
-		Project proj = new Project();
-		proj.setProjectId(tooLongProjectId);
+	public void tooLongProjectIdTest() throws InvalidProjectIdException {
+		p1.setProjectId(tooLongProjectId);
 	}
 
 	@Test
-	public void createCorrectProjectTest()
-	{
-		try
-		{
+	public void createCorrectProjectTest() {
+		try {
 			Project proj = new Project(new File(validRootPath), validProjectName, validProjectId);
-
 
 			Assert.assertTrue(proj.getName().equals(validProjectName));
 			Assert.assertTrue(proj.getProjectId().equals(validProjectId));
 			Assert.assertTrue(proj.getRootPath().toString().equals(validRootPath));
-
-
-		}
-		catch (InvalidProjectNameException e)
-		{
+		} catch (InvalidProjectNameException e) {
 			Assert.fail("Failed but ProjectName was correct");
-		}
-		catch (InvalidProjectIdException e)
-		{
+		} catch (InvalidProjectIdException e) {
 			Assert.fail("Failed but ProjectId was correct");
-		}
-		catch (InvalidRootPathException e)
-		{
+		} catch (InvalidRootPathException e) {
 			Assert.fail("Failed but ProjectRootPath was correct");
 		}
-		catch (ProjectNotConfiguredException e)
-		{
-			Assert.fail("Failed but project was configured");
-		}
+
 	}
 
 	@Test
-	public void equalsTest()
-	{
-		Project proja = null;
-		Project projb = null;
-		try
-		{
-			proja = new Project(new File(validRootPath), validProjectName, validProjectId);
-			projb = new Project();
-			projb.setProjectId(validProjectId);
-			projb.setName(validProjectName);
-			projb.setRootPath(new File(validRootPath));
-		}
-		catch (InvalidProjectNameException e)
-		{
-			Assert.fail();
-		}
-		catch (InvalidProjectIdException e)
-		{
-			Assert.fail();
-		}
-		catch (InvalidRootPathException e)
-		{
-			Assert.fail();
-		}
-
-		Assert.assertEquals(proja,projb);
-
+	public void p1Equalsp2() {
+		Assert.assertFalse(p1.equals(p2));
 	}
 
-		public void hashCodeTest()
-	{
-		Project proja = null;
-		Project projb = null;
-		try
-		{
-			proja = new Project(new File(validRootPath), validProjectName, validProjectId);
-			projb = new Project();
-			projb.setProjectId(validProjectId);
-			projb.setName(validProjectName);
-			projb.setRootPath(new File(validRootPath));
-		}
-		catch (InvalidProjectNameException e)
-		{
-			Assert.fail();
-		}
-		catch (InvalidProjectIdException e)
-		{
-			Assert.fail();
-		}
-		catch (InvalidRootPathException e)
-		{
-			Assert.fail();
-		}
+	@Test
+	public void p1Equalsp1() {
+		Assert.assertTrue(p1.equals(p1));
+	}
 
-
-		Assert.assertTrue(proja.hashCode() == projb.hashCode());
+	public void hashCodeTest() {
+		Assert.assertTrue(p1.hashCode() == p1.hashCode());
 
 	}
 
