@@ -9,17 +9,22 @@ import java.io.Serializable;
  * @author Dominik, Philipp
  */
 
-public class NoteObject extends JakeObject implements Serializable {
+public class NoteObject extends JakeObject {
 
 	private String content;
 
+	/**
+	 * Construct a new <code>NoteObject</code>. 
+	 * @param name The name of the object, as in <code>JakeObject</code>
+	 * @param content The content of the note
+	 */
 	public NoteObject(String name, String content) {
 		super(name);
 		this.content = content;
 	}
 
 	/**
-	 * Get the content of a NoteObject.
+	 * Get the content of a <code>NoteObject</code>.
 	 *
 	 * @return content
 	 */
@@ -28,7 +33,7 @@ public class NoteObject extends JakeObject implements Serializable {
 	}
 
 	/**
-	 * Set the content of a NoteObject.
+	 * Set the content of a <code>NoteObject</code>.
 	 *
 	 * @return content
 	 */
@@ -38,17 +43,19 @@ public class NoteObject extends JakeObject implements Serializable {
 
 
 	/**
-	 * Tests if two contents are equal.
+	 * Tests if two notes are equal.
 	 *
-	 * @return <code>true</code> if <code>content</code>
-	 *         is equal.
+	 * @return <code>true</code> iff the <code>contents</code> of the two notes 
+	 * are equal.
 	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && obj.getClass().equals(this.getClass())) {
 			NoteObject that = (NoteObject) obj;
-			return (this.content.equals(that.getContent()));
+			
+			if (content == null && that.getContent() != null) return false;
+			if (content != null && !content.equals(that.getContent())) return false;
 		}
-		return false;
+		return true;
 	}
 }
