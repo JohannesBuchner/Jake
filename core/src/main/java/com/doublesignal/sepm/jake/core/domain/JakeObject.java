@@ -1,6 +1,5 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +14,10 @@ public class JakeObject {
 	private String name;
 	private HashSet<Tag> tags = new HashSet<Tag>();
 
+	/**
+	 * Construct a new <code>JakeObject</code>.
+	 * @param name the name of the object.
+	 */
 	public JakeObject(String name) {
 		this.name = name;
 	}
@@ -41,7 +44,6 @@ public class JakeObject {
 	 * Add a tag to the object.
 	 *
 	 * @param tag to be added
-	 * @throws com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException
 	 *
 	 */
 	public void addTag(Tag tag) {
@@ -68,9 +70,10 @@ public class JakeObject {
 	public boolean equals(Object obj) {
 		if (obj != null && this.getClass().equals(obj.getClass())) {
 			JakeObject that = (JakeObject) obj;
-			return (this.name.equals(that.getName()) &&
-					  this.tags.equals(that.getTags()));
+			
+			if (name == null && that.getName() != null) return false;
+			if (name != null && !name.equals(that.getName())) return false;
 		}
-		return false;
+		return true;
 	}
 }
