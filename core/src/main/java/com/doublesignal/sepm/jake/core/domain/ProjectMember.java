@@ -1,18 +1,12 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import com.doublesignal.sepm.jake.ics.exceptions.InvalidUserIdException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidCharactersException;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InputLenghtException;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidCharactersException;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameException;
 
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 8, 2008
- * Time: 11:04:48 PM
+ * @author johannes, domdorn
  */
 public class ProjectMember
 {
@@ -22,12 +16,8 @@ public class ProjectMember
 	private String Nickname;
 
 
-	public ProjectMember(String userId) throws InvalidUserIdException
+	public ProjectMember(String userId)
 	{
-		if (userId == null)	throw new InvalidUserIdException("UserId may not be null");
-		if (userId.length() < 1) throw new InvalidUserIdException("UserId may not be empty");
-		if (userId.length() > 70) throw new InvalidUserIdException("UserId may be max. 70 characters logn");
-		if (userId.contains(" ")) throw new InvalidUserIdException("UserId may not contain a whitespace");
 		UserId = userId;
 	}
 
@@ -54,45 +44,26 @@ public class ProjectMember
 
 	public void setNickname(String nickname) throws InvalidNicknameException
 	{
-		if (nickname == null)
-		{
-			throw new InvalidNicknameException("Nickname must not be null");
-		}
-		if (nickname.length() > 50)
-		{
-			throw new InvalidNicknameException("Nickname must be shorter than 50 chars.");
-		}
-
 		Nickname = nickname;
 	}
 
 	public boolean equals(Object o)
 	{
 		if (this == o)
-		{
 			return true;
-		}
 		if (o == null || getClass() != o.getClass())
-		{
 			return false;
-		}
 
 		ProjectMember that = (ProjectMember) o;
 
-		if (Nickname != null ? !Nickname.equals(that.Nickname) : that.Nickname != null)
-		{
-			return false;
+		if (Nickname.equals(that.Nickname) && 
+			Notes.equals(that.Notes) && 
+			UserId.equals(that.UserId)
+		){
+			return true;
 		}
-		if (Notes != null ? !Notes.equals(that.Notes) : that.Notes != null)
-		{
-			return false;
-		}
-		if (UserId != null ? !UserId.equals(that.UserId) : that.UserId != null)
-		{
-			return false;
-		}
-
-		return true;
+		
+		return false;
 	}
 
 	public int hashCode()
