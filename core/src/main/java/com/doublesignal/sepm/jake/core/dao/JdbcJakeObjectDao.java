@@ -40,10 +40,10 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport implements IJakeObje
 	private static final String NOTEOBJECT_DELETE = "DELETE FROM noteobjects " +
 			  "WHERE name=:name AND type=:type";
 
-	private static final String TAGS_SELECT = "SELECT name FROM tags WHERE " +
+	private static final String TAGS_SELECT = "SELECT tag FROM tags WHERE " +
 			  "object_name=:object_name AND object_type=:object_type";
 	private static final String TAGS_INSERT = "INSERT INTO tags (object_name, " +
-			  "object_type, name) VALUES (:object_name, :object_type, :name)";
+			  "object_type, tag) VALUES (:object_name, :object_type, :tag)";
 	private static final String TAGS_DELETE = "DELETE FROM tags WHERE " +
 			  "object_name=:object_name AND object_type=:object_type";
 
@@ -84,7 +84,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport implements IJakeObje
 			Map<String, Object> tagParameters = new HashMap<String, Object>();
 			tagParameters.put("object_name", obj.getName());
 			tagParameters.put("object_type", objectType);
-			tagParameters.put("name", t.getName());
+			tagParameters.put("tag", t.getName());
 			getSimpleJdbcTemplate().update(TAGS_INSERT, tagParameters);
 		}
 	}

@@ -124,7 +124,7 @@
 				</tr>
 			</table>
 		</subsection>
-		<subsection name="tags">
+		<subsection name="Table 'tags'">
 			<table>
 				<tr>
 					<th width="20%">Field</th>
@@ -152,7 +152,7 @@
 				</tr>
 			</table>
 		</subsection>
-		<subsection name="logentry">
+		<subsection name="Table 'logentries'">
 			<table>
 				<tr>
 					<th width="20%">Field</th>
@@ -221,6 +221,12 @@
           <th>Change</th>
         </tr>
         </thead>
+        <tr>
+          <td>4</td>
+          <td>24.05.2008</td>
+          <td>CS</td>
+          <td>Fixed some table titles</td>
+        </tr>
         <tr>
           <td>3</td>
           <td>05.05.2008</td>
