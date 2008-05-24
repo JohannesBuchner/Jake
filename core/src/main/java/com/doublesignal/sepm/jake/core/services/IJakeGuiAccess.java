@@ -10,7 +10,6 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.ProjectInvitation;
 import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
@@ -133,17 +132,7 @@ public interface IJakeGuiAccess {
      * @param obs
      */
     public void registerProjectInvitationCallback(Observer obs);
-
-
-    /**
-     * Gets the ProjectInvitation from the Core, so it can be displayed
-     * in the GUI and the corresponding Project can be created, if the user
-     * wishes so.
-     * @return a ProjectInvitation
-     */
-    public ProjectInvitation getProjectInvitation();
-
-
+    
     /**
      * Create a new note
      * @param content
