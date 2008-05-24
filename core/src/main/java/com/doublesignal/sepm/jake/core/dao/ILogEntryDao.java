@@ -8,12 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 9, 2008
- * Time: 1:11:46 AM
+ * Serves as a frontend for database-independent LogEntry management.
  */
 public interface ILogEntryDao {
 
@@ -34,7 +29,7 @@ public interface ILogEntryDao {
 	 * @return the LogEntry requested
 	 * @throws NoSuchLogEntryException if no such LogEntry exists
 	 */
-	public LogEntry load(String name, String type, Date timestamp)
+	public LogEntry get(String name, String type, Date timestamp)
 			  throws NoSuchLogEntryException;
 
 	/**
@@ -52,5 +47,17 @@ public interface ILogEntryDao {
 	 */
 	public List<LogEntry> getAllOfJakeObject(JakeObject jakeObject);
 
+	/**
+	 * Retrieves the most recent log entry for a given JakeObject
+	 * @param jakeObject
+	 * @return
+	 */
+	public LogEntry getMostRecentFor(JakeObject jakeObject);
 
+	/**
+	 * Retrieves the user ID of the ProjectMember who created this log entry
+	 * @param logEntry
+	 * @return
+	 */
+	public String getProjectMemberUserIdFor(LogEntry logEntry);
 }

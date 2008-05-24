@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- We still need to figure out a way of having seperate DB files for each project -->
+	<bean id="hsqldbDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:target/classes/data/db" />
+		<property name="username" value="SE" />
+		<property name="password" value="" />
+		<property name="connectionProperties">
+			<props>
+				<prop key="shutdown">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="projectMemberDAO"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcProjectMemberDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+
+	<bean id="jakeObjectDAO"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcJakeObjectDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+
+	 <bean id="logEntryDAO"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcLogEntryDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+</beans>
