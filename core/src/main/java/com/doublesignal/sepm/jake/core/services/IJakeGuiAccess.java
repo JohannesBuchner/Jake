@@ -19,12 +19,7 @@ import java.util.Observer;
 
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 8, 2008
- * Time: 10:48:39 PM
+ * @author domdorn
  */
 public interface IJakeGuiAccess {
 

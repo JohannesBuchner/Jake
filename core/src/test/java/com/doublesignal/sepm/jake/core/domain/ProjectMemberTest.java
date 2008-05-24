@@ -9,14 +9,8 @@ import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidCharactersExcept
 import com.doublesignal.sepm.jake.core.domain.exceptions.InputLenghtException;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameException;
 
-
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 18, 2008
- * Time: 4:21:19 AM
+ * @author domdorn
  */
 public class ProjectMemberTest
 {

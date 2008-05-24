@@ -4,12 +4,7 @@ import com.doublesignal.sepm.jake.gui.JakeGui;
 
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 20, 2008
- * Time: 10:56:48 PM
+ * @author domdorn
  */
 public class StartJake
 {

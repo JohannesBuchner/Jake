@@ -7,12 +7,7 @@ import org.junit.Assert;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 
 /**
- * SEPM SS08
- * Gruppe: 3950
- * Projekt: Jake - a collaborative Environment
- * User: domdorn
- * Date: May 18, 2008
- * Time: 3:54:50 AM
+ * @author domdorn
  */
 public class TagTest {
 
