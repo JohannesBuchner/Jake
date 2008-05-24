@@ -85,10 +85,10 @@ public interface IJakeGuiAccess {
      */
     public List<JakeObject> getChangedObjects();
 
-    public void PushObjects()
+    public void pushObjects()
             throws NetworkException;
 
-    public void PullObjects()
+    public void pullObjects()
             throws NetworkException;
 
     /*
