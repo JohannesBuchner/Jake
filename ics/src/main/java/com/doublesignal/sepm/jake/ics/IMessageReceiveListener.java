@@ -8,7 +8,7 @@ package com.doublesignal.sepm.jake.ics;
  * @author johannes
  */
 
-public interface IMessageReceiveListener extends IObjectReceiveListener {
+public interface IMessageReceiveListener {
 	
 	public void receivedMessage(String from_userid, String content);
 	

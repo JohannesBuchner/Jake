@@ -11,7 +11,7 @@ package com.doublesignal.sepm.jake.ics;
 public interface IObjectReceiveListener {
 	
 	public void receivedObject(String from_userid, String identifier, 
-			String content);
+			byte[] content);
 	
 	
 	

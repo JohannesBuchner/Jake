@@ -114,20 +114,27 @@ public interface IICService {
 	 * 
 	 * @param osc     object to be called
 	 * @param userid  
+	 * @throws NoSuchUseridException 
 	 */
 	public void registerOnlineStatusListener(IOnlineStatusListener osc, 
-			String userid);
+			String userid) throws NoSuchUseridException;
 	
 	/**
 	 * @return the firstname belonging to the userid
 	 * @param userid
+	 * @throws NoSuchUseridException
+	 * @throws {@link OtherUserOfflineException}
 	 */
-	public String getFirstname(String userid) throws Exception;
+	public String getFirstname(String userid) throws NoSuchUseridException, 
+		OtherUserOfflineException;
 
 	/**
 	 * @return the lastname belonging to the userid
 	 * @param userid
+	 * @throws NoSuchUseridException
+	 * @throws {@link OtherUserOfflineException}
 	 */
-	public String getLastname(String userid) throws Exception; 
+	public String getLastname(String userid) throws NoSuchUseridException, 
+		OtherUserOfflineException; 
 	
 }
