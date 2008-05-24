@@ -71,8 +71,10 @@ public class JakeObject {
 		if (obj != null && this.getClass().equals(obj.getClass())) {
 			JakeObject that = (JakeObject) obj;
 			
-			if (name == null && that.getName() != null) return false;
-			if (name != null && !name.equals(that.getName())) return false;
+			if (name == null && that.getName() != null) 
+				return false;
+			if (name != null && !name.equals(that.getName())) 
+				return false;
 		}
 		return true;
 	}
