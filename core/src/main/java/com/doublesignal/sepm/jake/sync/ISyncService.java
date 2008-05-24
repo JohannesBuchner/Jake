@@ -54,11 +54,14 @@ public interface ISyncService {
 	 * @throws NetworkException
 	 * @throws NotLoggedInException
 	 * @throws TimeoutException
+	 * @throws OtherUserOfflineException 
+	 * @throws NotAProjectMemberException 
 	 * @see IICService
 	 */
 	public List<JakeObject> syncLogAndGetChanges(String userid) 
 		throws NetworkException, NotLoggedInException, TimeoutException, 
-			ObjectNotConfiguredException;
+			ObjectNotConfiguredException, OtherUserOfflineException, 
+			NotAProjectMemberException;
 	
 	/**
 	 * The object is requested from the last editor (found in the log) and 
@@ -86,11 +89,12 @@ public interface ISyncService {
 	 * These requests are best-effort only.   
 	 * 
 	 * @param  jo       Object to be treated.
+	 * @param  commitmsg
 	 * @return members  whom the request reached; empty list if no one could be 
 	 *                  reached
 	 * @throws ObjectNotConfiguredException
 	 */
-	public List<ProjectMember> push(JakeObject jo) 
+	public List<ProjectMember> push(JakeObject jo, String commitmsg) 
 		throws ObjectNotConfiguredException;
 	
 	/* (Only for implementing the SyncService, not for the interface)

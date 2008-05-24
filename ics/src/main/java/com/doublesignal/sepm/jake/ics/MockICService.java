@@ -16,8 +16,11 @@ public class MockICService implements IICService {
 	HashSet<IObjectReceiveListener> objreceivers = new HashSet<IObjectReceiveListener>();
 	HashSet<IMessageReceiveListener> msgreceivers = new HashSet<IMessageReceiveListener>();
 	
+	/**
+	 * userids have a @ like email adresses
+	 */
 	public Boolean isValidUserid(String userid){
-		if(userid.contains("@"))
+		if(userid.contains("@") )
 			return true;
 		return false;
 	}
@@ -45,7 +48,9 @@ public class MockICService implements IICService {
 	public Boolean isLoggedIn() {
 		return loggedinstatus;
 	}
-
+	/**
+	 * users having a s in the userid before the \@ are online
+	 */
 	public Boolean isLoggedIn(String userid) throws NetworkException,
 			NotLoggedInException, TimeoutException {
 		if(!isValidUserid(userid)) 
