@@ -18,18 +18,6 @@ public class FileObject extends JakeObject {
 	}
 
 	/**
-	 * Get the relative path to the file.
-	 * TODO: I left this in here in case any of you still use it. We should get rid of it ASAP.
-	 *
-	 * @return relative path
-	 * @deprecated use .getName() instead
-	 */
-	@Deprecated
-	public String getRelpath() {
-		return this.getName();
-	}
-
-	/**
 	 * Test if two <code>FileObjects</code>are equal.
 	 *
 	 * @return <code>true</code> if the two <code>name</code>s are equal.

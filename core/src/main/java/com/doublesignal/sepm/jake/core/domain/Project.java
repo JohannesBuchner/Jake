@@ -33,7 +33,7 @@ public class Project {
 	private Integer autoSyncInterval = 0;
 	
 	
-	public Project(File rootPath, String name, String projectId) {
+	public Project(File rootPath, String name) {
 		setRootPath(rootPath);
 		setName(name);
 	}

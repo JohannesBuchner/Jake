@@ -36,7 +36,7 @@ public class NoteObjectTest {
 		Assert.assertFalse(nNull.equals(n1));
 	}
 	@Test
-	public void testCreateNoteObject(){
+	public void testCreateNoteObject() throws InterruptedException{
 		NoteObject n = NoteObject.createNoteObject("myuserid@host", null);
 		Assert.assertTrue(n.getName().startsWith("note:myuserid@host"));
 		Assert.assertNull(n.getContent());
@@ -44,5 +44,10 @@ public class NoteObjectTest {
 		n = NoteObject.createNoteObject("myuserid@host", "random");
 		Assert.assertTrue(n.getName().startsWith("note:myuserid@host"));
 		Assert.assertEquals(n.getContent(), "random");
+		
+		Thread.sleep(1000);
+		
+		n2 = NoteObject.createNoteObject("myuserid@host", "random");
+		Assert.assertFalse(n2.equals(n));
 	}
 }

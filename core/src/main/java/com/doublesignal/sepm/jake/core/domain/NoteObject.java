@@ -54,6 +54,11 @@ public class NoteObject extends JakeObject {
 	public boolean equals(Object obj) {
 		if (obj != null && obj.getClass().equals(this.getClass())) {
 			NoteObject that = (NoteObject) obj;
+
+			if (getName() == null && that.getName() != null) 
+				return false;
+			if (getName() != null && !getName().equals(that.getName())) 
+				return false;
 			
 			if (content == null && that.getContent() != null) return false;
 			if (content != null && !content.equals(that.getContent())) return false;

@@ -17,7 +17,7 @@ public class ProjectTest {
 	private String validRootPath;
 	private String fileRootPath;
 	private static final String validProjectName = "My great JakeProject";
-	private static final String validProjectId = "jp3820xx";
+	private static final String validOtherProjectName = "jp3820xx";
 	
 	private Project p1, p2;
 
@@ -28,8 +28,8 @@ public class ProjectTest {
 		new File(validRootPath).mkdir();
 		new File(fileRootPath).createNewFile();
 
-		p1 = new Project(new File(validRootPath), validProjectName, validProjectId);
-		p2 = new Project(new File(validRootPath), validProjectName, "otherPID");
+		p1 = new Project(new File(validRootPath), validProjectName);
+		p2 = new Project(new File(validRootPath), validOtherProjectName);
 	}
 
 	@After
@@ -55,7 +55,7 @@ public class ProjectTest {
 	
 	@Test
 	public void createCorrectProjectTest() {
-		Project proj = new Project(new File(validRootPath), validProjectName, validProjectId);
+		Project proj = new Project(new File(validRootPath), validProjectName);
 
 		Assert.assertTrue(proj.getName().equals(validProjectName));
 		Assert.assertTrue(proj.getRootPath().toString().equals(validRootPath));
