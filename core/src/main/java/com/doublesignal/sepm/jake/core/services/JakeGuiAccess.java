@@ -12,9 +12,9 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchFileException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchJakeObjectException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
@@ -26,15 +26,52 @@ import com.doublesignal.sepm.jake.sync.ISyncService;
  *
  */
 public class JakeGuiAccess implements IJakeGuiAccess{
-
-	public void pullObjects() throws NetworkException {
-		// TODO Auto-generated method stub
+	/* TODO: do we want this here or somewhere else? 
+	 * IMO it's OK here. */
+	IICService ics = null;     /* TODO: dependency inject MockICSService */
+	ISyncService sync = null; /* TODO: dependency inject MockSyncService */
+	
+	public void login() {
+		String user = null;
+		String pw = null;
+		try{
+			user = getConfigOption("userid");
+			pw = getConfigOption("password");
+		}catch(NoSuchConfigOptionException e){
+			/* TODO: show login dialog */
+		}
+		if(user == null || pw == null)
+			return; /* user didn't want */
 		
+		try{
+			if(!ics.login(user, pw)){
+				/* TODO: 
+				 *  a) should we throw a exception and the GUI finds out what we 
+				 *     meant
+				 *  b) should we throw a UserErrorException("LoginWrong") and the 
+				 *     GUI gets the i18n string?
+				 *  c) no exception, we trigger the errormessage ourselves
+				 * */
+			}
+		}catch (TimeoutException e) {
+			/* TODO */
+		}catch (NetworkException e) {
+			/* TODO */
+		}
 	}
 
-	public void pushObjects() throws NetworkException {
-		// TODO Auto-generated method stub
-		
+	public void logout() throws NetworkException {
+		try{
+			if(!ics.logout()){
+				/* TODO: 
+				 *  a/b/c? same as in login()
+				 * */
+			}
+		}catch (TimeoutException e) {
+			/* TODO */
+		}catch (NetworkException e) {
+			/* TODO */
+		}
 	}
 
 	public FileObject createFileObjectFromExternalFile(String absolutePath)
@@ -148,6 +185,16 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 		
 	}
 
+	public void pullObjects() throws NetworkException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void pushObjects() throws NetworkException {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void registerProjectInvitationCallback(Observer obs) {
 		// TODO Auto-generated method stub
 		
@@ -162,54 +209,6 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 			throws NoSuchConfigOptionException {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	/* TODO: do we want this here or somewhere else? 
-	 * IMO it's OK here. */
-	IICService ics = null;     /* TODO: dependency inject MockICSService */
-	ISyncService sync = null; /* TODO: dependency inject MockSyncService */
-	
-	public void login() {
-		String user = null;
-		String pw = null;
-		try{
-			user = getConfigOption("userid");
-			pw = getConfigOption("password");
-		}catch(NoSuchConfigOptionException e){
-			/* TODO: show login dialog */
-		}
-		if(user == null || pw == null)
-			return; /* user didn't want */
-		
-		try{
-			if(!ics.login(user, pw)){
-				/* TODO: 
-				 *  a) should we throw a exception and the GUI finds out what we 
-				 *     meant
-				 *  b) should we throw a UserErrorException("LoginWrong") and the 
-				 *     GUI gets the i18n string?
-				 *  c) no exception, we trigger the errormessage ourselves
-				 * */
-			}
-		}catch (TimeoutException e) {
-			/* TODO */
-		}catch (NetworkException e) {
-			/* TODO */
-		}
-	}
-
-	public void logout() throws NetworkException {
-		try{
-			if(!ics.logout()){
-				/* TODO: 
-				 *  a/b/c? same as in login()
-				 * */
-			}
-		}catch (TimeoutException e) {
-			/* TODO */
-		}catch (NetworkException e) {
-			/* TODO */
-		}
 	}
 
 }

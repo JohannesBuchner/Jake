@@ -5,7 +5,8 @@ import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Tag;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchFileException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
+
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import java.util.HashMap;

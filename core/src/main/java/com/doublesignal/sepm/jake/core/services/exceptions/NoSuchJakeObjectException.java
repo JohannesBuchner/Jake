@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.core.domain.exceptions;
+package com.doublesignal.sepm.jake.core.services.exceptions;
 
 
 /**

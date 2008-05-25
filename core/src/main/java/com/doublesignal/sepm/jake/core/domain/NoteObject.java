@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.core.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * A <code>NoteObject</code> is a Extension of a JakeObject
@@ -15,28 +16,29 @@ public class NoteObject extends JakeObject {
 
 	/**
 	 * Construct a new <code>NoteObject</code>. 
-	 * @param name The name of the object, as in <code>JakeObject</code>
+	 * @param name The name of the object, as in <code>JakeObject</code>. 
+	 *    It starts with 'note:'
 	 * @param content The content of the note
 	 */
 	public NoteObject(String name, String content) {
 		super(name);
 		this.content = content;
 	}
-
+	
 	/**
-	 * Get the content of a <code>NoteObject</code>.
-	 *
-	 * @return content
+	 * Creates a new JakeObject: The name is constructed like this: 
+	 * 'note:' + userid + ':' + timestamp
 	 */
+	public static NoteObject createNoteObject(String userid, String content) {
+		return new NoteObject(
+				"note:" + userid + ":" + System.currentTimeMillis(), 
+				content);
+	}
+	
 	public String getContent() {
 		return content;
 	}
-
-	/**
-	 * Set the content of a <code>NoteObject</code>.
-	 *
-	 * @return content
-	 */
+	
 	public void setContent(String content) {
 		this.content = content;
 	}

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 /**
  * Tests for <code>NoteObject</code>
- * @author Simon
+ * @author Simon, johannes
  *
  */
 public class NoteObjectTest {
@@ -35,5 +35,14 @@ public class NoteObjectTest {
 	public void nNullEqualsn1() {
 		Assert.assertFalse(nNull.equals(n1));
 	}
-
+	@Test
+	public void testCreateNoteObject(){
+		NoteObject n = NoteObject.createNoteObject("myuserid@host", null);
+		Assert.assertTrue(n.getName().startsWith("note:myuserid@host"));
+		Assert.assertNull(n.getContent());
+		
+		n = NoteObject.createNoteObject("myuserid@host", "random");
+		Assert.assertTrue(n.getName().startsWith("note:myuserid@host"));
+		Assert.assertEquals(n.getContent(), "random");
+	}
 }

@@ -4,11 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.doublesignal.sepm.jake.ics.exceptions.InvalidUserIdException;
-
 /**
  * Tests for JakeMessage
- * @author Simon
+ * @author Simon, johannes
  *
  */
 public class JakeMessageTest {
@@ -22,16 +20,12 @@ public class JakeMessageTest {
 	 */
 	@Before
 	public void setUp() {
-		try {
-			pm = new ProjectMember("member_1");
-		} catch (InvalidUserIdException e) {
-			Assert.fail(e.getMessage());
-		}
+		pm = new ProjectMember("member_1");
 		m1 = new JakeMessage(pm, pm, content);
 		m2 = new JakeMessage(pm, pm, "other content");
 		m3 = new JakeMessage(pm, pm, content); 
 		mNull = new JakeMessage(null, null, null);
-		}
+	}
 
 	/**
 	 * Test if two different messages are not equal.

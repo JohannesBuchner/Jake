@@ -1,8 +1,6 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.After;
 import org.junit.Assert;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 
@@ -11,21 +9,10 @@ import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException
  */
 public class TagTest {
 
-    @Before
-    public void Setup() throws Exception {
-        // nothing to setup here
-    }
-
-    @After
-    public void TearDown() throws Exception {
-        // nopthint to tear down here
-    }
-
-
     /**
      * correctNameTest
      * Create a Tag with a valid name
-     * namee: SomethingUsefull
+     * name: SomethingUsefull
      * expected result: Tag object with correct name
      *
      * @author Dominik
@@ -47,7 +34,7 @@ public class TagTest {
 
 
     /**
-     * correctNameTest
+     * nameWithWitespaceTest
      * Create a Tag with an invalid name containing whitespaces
      * namee: "Some tag with withspace"
      * expected result: Exception InvalidTagNameException gets thrown
@@ -60,7 +47,7 @@ public class TagTest {
     public void nameWithWitespaceTest() throws InvalidTagNameException 
     {
         String tagname = "Some tag with withspace";
-        Tag tmpTag = new Tag(tagname);
+        new Tag(tagname);
     }
 
 
@@ -71,12 +58,6 @@ public class TagTest {
 		new Tag(null);
 	}
 
-
-	@Test(expected = InvalidTagNameException.class)
-	public void emptyTagTest() throws InvalidTagNameException
-	{
-		new Tag(""); // minimum length is 1 character
-	}
 
 	@Test
 	public void maximumLengthTagTest()
@@ -92,11 +73,15 @@ public class TagTest {
 	}
 
 
-	@Test(expected = InvalidTagNameException.class)
-	public void tooLongTagTest() throws InvalidTagNameException
+	@Test
+	public void tooLongTagTest()
 	{
 		String tooLongName = "dasistdashausvomnikolaus127893X"; // 31 characters
-		new Tag(tooLongName);
+		try {
+			new Tag(tooLongName);
+		} catch (InvalidTagNameException e) {
+			Assert.fail("InvalidTagNameException");
+		}
 	}
 
 

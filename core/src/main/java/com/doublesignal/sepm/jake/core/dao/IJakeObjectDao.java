@@ -2,7 +2,7 @@ package com.doublesignal.sepm.jake.core.dao;
 
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchFileException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface IJakeObjectDao {
 	 *
 	 * @param name The name of the FileObject to be retrieved
 	 * @return The FileObject
-	 * @throws com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchFileException
+	 * @throws com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException
 	 *
 	 */
 	public FileObject getFileObjectByName(String name) throws NoSuchFileException;
@@ -27,7 +27,7 @@ public interface IJakeObjectDao {
 	 *
 	 * @param name The name of the NoteObject to be retrieved
 	 * @return The NoteObject
-	 * @throws com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchFileException
+	 * @throws com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException
 	 *
 	 */
 	public NoteObject getNoteObjectByName(String name) throws NoSuchFileException;

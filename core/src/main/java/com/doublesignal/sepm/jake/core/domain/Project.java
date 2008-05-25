@@ -1,10 +1,5 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidProjectIdException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidProjectNameException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidRootPathException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.ProjectNotConfiguredException;
-
 import java.io.File;
 
 /**
@@ -13,80 +8,79 @@ import java.io.File;
  */
 public class Project {
 
+	/** 
+	 * The root path of the project 
+	 **/
 	private File rootPath;
+	/** 
+	 * Name of the project. 
+	 * One should use a unique project name for intersecting user groups 
+	 **/
 	private String name;
-	private String projectId;
-
+	/** 
+	 * if true, file modifications trigger a push instantly; 
+	 * otherwise the user is asked
+	 **/
+	private Boolean autoPush = false;
+	/** 
+	 * if true, after a sync, modified files are pulled automatically. 
+	 * **/
+	private Boolean autoPull = false;
 	/**
-	 * Constructs a new Project with the given params. See setter Methods for 
-	 * constraints and exceptions.
-	 * 
-	 * @param rootPath The root path of the project
-	 * @param name The name of the project
-	 * @param projectId The Id of the project
-	 * 
-	 * @throws InvalidProjectNameException 
-	 * @throws InvalidProjectIdException
-	 * @throws InvalidRootPathException
-	 */
-	public Project(File rootPath, String name, String projectId)
-			  throws InvalidProjectNameException, InvalidProjectIdException, InvalidRootPathException {
+	 * If >0, after that number of seconds, a synclog is started against 
+	 * every other project member one after another.  
+	 **/
+	private Integer autoSyncInterval = 0;
+	
+	
+	public Project(File rootPath, String name, String projectId) {
 		setRootPath(rootPath);
 		setName(name);
-		setProjectId(projectId);
 	}
 
 	public File getRootPath() {
 		return rootPath;
 	}
-
-	/**
-	 * Set the root path of the Project. The root path must be an existing
-	 * directory.
-	 * 
-	 * @param rootPath The root path of the Project, may not be <code>null</code>.
-	 * 
-	 * @throws InvalidRootPathException An Exceptions is thrown iff the 
-	 * <code>rootpath</code> does not exist or is no valid <code>directory</code>.
-	 * 
-	 * @see java.io.File
-	 */
-	public void setRootPath(File rootPath) throws InvalidRootPathException {
-		
-		if (!rootPath.isDirectory()) throw new InvalidRootPathException("root path must be a directory");
-		if (!rootPath.exists()) throw new InvalidRootPathException("root path does not exist");
+	
+	public void setRootPath(File rootPath){
 		this.rootPath = rootPath;
 	}
-
-
+	
 	public String getName() {
 		return name;
 	}
-
-	/**
-	 * Set the name of the Project. The name must be between 2 and 50 characters
-	 * long.
-	 * @param name of the Project, may not be <code>null</code>;
-	 * @throws InvalidProjectNameException iff <code>!(2 <= name.length() <= 50)</code>
-	 */
-	public void setName(String name) throws InvalidProjectNameException {
-		if (name.length() < 2) throw new InvalidProjectNameException("project name must be at least 2 characters long");
-		if(name.length() > 50) throw new InvalidProjectNameException("project name may only be 50 characters long");
+	
+	public void setName(String name){
 		this.name = name;
 	}
-
-	public String getProjectId() {
-		return projectId;
+	
+	public Boolean getAutoPush() {
+		return autoPush;
 	}
 
+	public void setAutoPush(Boolean autoPush) {
+		this.autoPush = autoPush;
+	}
+
+	public Boolean getAutoPull() {
+		return autoPull;
+	}
+
+	public void setAutoPull(Boolean autoPull) {
+		this.autoPull = autoPull;
+	}
+
+	public Integer getAutoSyncInterval() {
+		return autoSyncInterval;
+	}
+	
 	/**
-	 * Set the project id.
-	 * @param projectId must be exactly 8 characters long, may not be <code>null</code>;
-	 * @throws InvalidProjectIdException iff <code>projectId.length != 8</code>
+	 * if the new interval is < 0, autoSyncInterval is set to 0
 	 */
-	public void setProjectId(String projectId) throws InvalidProjectIdException {
-		if(projectId.length() != 8) throw new InvalidProjectIdException("projectId must be exactly 8 characters long");
-		this.projectId = projectId;
+	public void setAutoSyncInterval(Integer autoSyncInterval) {
+		if (autoSyncInterval < 0) 
+			autoSyncInterval = 0;
+		this.autoSyncInterval = autoSyncInterval;
 	}
 
 	/**
@@ -100,19 +94,16 @@ public class Project {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-
+	
 		Project project = (Project) o;
-
+	
 		if (name != null ? !name.equals(project.name) : project.name != null) {
-			return false;
-		}
-		if (projectId != null ? !projectId.equals(project.projectId) : project.projectId != null) {
 			return false;
 		}
 		if (rootPath != null ? !rootPath.equals(project.rootPath) : project.rootPath != null) {
 			return false;
 		}
-
+	
 		return true;
 	}
 
@@ -124,10 +115,6 @@ public class Project {
 		int result;
 		result = (rootPath != null ? rootPath.hashCode() : 0);
 		result = 36 * result + (name != null ? name.hashCode() : 0);
-		result = 36 * result + (projectId != null ? projectId.hashCode() : 0);
 		return result;
 	}
-
-	//TODO implement other methods mentioned in class diagram
-
 }

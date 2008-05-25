@@ -18,7 +18,7 @@ public class LogEntryTest {
 
 	@Before
 	public void setUp() throws Exception {
-		l1 = new LogEntry(LogAction.CHANGE, new Date(), "foo", "foobar");
+		l1 = new LogEntry(LogAction.NEW_VERSION, new Date(), "foo", "foobar");
 		l2 = new LogEntry(LogAction.TAG_REMOVE, new Date(), "bar", "barfoo");
 		lNull = new LogEntry(null, null, null, null);
 	}

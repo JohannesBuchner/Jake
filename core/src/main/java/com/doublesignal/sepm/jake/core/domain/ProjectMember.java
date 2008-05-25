@@ -1,10 +1,5 @@
 package com.doublesignal.sepm.jake.core.domain;
 
-import com.doublesignal.sepm.jake.core.domain.exceptions.InputLenghtException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidCharactersException;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidNicknameException;
-
-
 /**
  * @author johannes, domdorn
  */
@@ -37,12 +32,12 @@ public class ProjectMember
 	}
 
 
-	public void setNotes(String notes) throws InputLenghtException, InvalidCharactersException
+	public void setNotes(String notes)
 	{
 		Notes = notes;
 	}
 
-	public void setNickname(String nickname) throws InvalidNicknameException
+	public void setNickname(String nickname)
 	{
 		Nickname = nickname;
 	}

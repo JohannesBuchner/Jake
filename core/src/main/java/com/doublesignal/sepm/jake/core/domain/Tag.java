@@ -23,8 +23,6 @@ public class Tag {
 	public void setName(String name) throws InvalidTagNameException {
 		if (name == null)
 			throw new InvalidTagNameException("tag name must not be null");
-		if (name.length() < 1 || name.length() > 30)
-			throw new InvalidTagNameException("tag name must not be empty and not longer than 30 chars");
 		if (name.contains(" "))
 			throw new InvalidTagNameException("A Tag may not contain a whitespace");
 		this.name = name;
