@@ -2,9 +2,14 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	<bean id="translationProvider"
+	<!--<bean id="translationProvider"
 			class="com.doublesignal.sepm.jake.gui.i18n.SimpleXmlTranslationProvider"
 			singleton="true">
-		<property name="languageSourceFile" value="lang.xml" />
+		<property name="language" value="lang.xml" />
+	</bean>-->
+	<bean id="translationProvider"
+			class="com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider"
+			singleton="true">
+		<property name="language" value="src/main/resources/lang-foo.txt" />
 	</bean>
 </beans>

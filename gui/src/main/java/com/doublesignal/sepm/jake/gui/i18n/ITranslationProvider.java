@@ -1,12 +1,14 @@
 package com.doublesignal.sepm.jake.gui.i18n;
 
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
+import com.doublesignal.sepm.jake.gui.i18n.exceptions.UnknownIdentifierException;
 
 /**
  * Defines an interface for a translation provider that retrieves internationalized
  * messages from some sort of data source.
  *
  * @author Chris
+ * @author johannes
  */
 public interface ITranslationProvider {
 	/**
@@ -39,8 +41,10 @@ public interface ITranslationProvider {
 	 *                                           for placeholderValues does not
 	 *                                           match the number of placeholders
 	 *                                           in the translation message.
+	 * @throws UnknownIdentifierException if the messageIdentifier was not defined
 	 */
-	public String getTranslation(String messageIdentifier,
+	public String get(String messageIdentifier,
 	                             String... placeholderValues)
-			                       throws IllegalNumberOfArgumentsException;
+			                       throws IllegalNumberOfArgumentsException, 
+			                       UnknownIdentifierException;
 }
