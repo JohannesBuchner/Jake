@@ -39,11 +39,10 @@ public interface IICService {
 	
 	/**
 	 * Logs out and disconnects from the used network service.
-	 * @return wether the logout was successful
 	 * @throws NetworkException
 	 * @throws TimeoutException
 	 */
-	public Boolean logout()
+	public void logout()
 		throws NetworkException, TimeoutException;
 	
 	/**
@@ -136,5 +135,15 @@ public interface IICService {
 	 */
 	public String getLastname(String userid) throws NoSuchUseridException, 
 		OtherUserOfflineException; 
+
+	/**
+	 * @return the userid we are logged in with
+	 * @throws NotLoggedInException
+	 */
+	public String getUserid() throws NotLoggedInException;
 	
+	/**
+	 * @return wether the userid has the right format for this implementation
+	 */
+	public boolean isOfCorrectUseridFormat(String userid);
 }

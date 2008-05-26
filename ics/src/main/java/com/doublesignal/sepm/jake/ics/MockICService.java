@@ -19,14 +19,15 @@ public class MockICService implements IICService {
 	/**
 	 * userids have a @ like email adresses
 	 */
-	public Boolean isValidUserid(String userid){
-		if(userid.contains("@") )
+	public boolean isOfCorrectUseridFormat(String userid){
+		if(userid.contains("@") && userid.lastIndexOf("@") == userid.lastIndexOf("@")
+			&& userid.indexOf("@") > 0 && userid.indexOf("@") < userid.length()-1 )
 			return true;
 		return false;
 	}
 	
 	public String getFirstname(String userid) throws NoSuchUseridException {
-		if(!isValidUserid(userid)) 
+		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
 		
 		if(!userid.contains(".")){
@@ -36,7 +37,7 @@ public class MockICService implements IICService {
 	}
 
 	public String getLastname(String userid) throws NoSuchUseridException {
-		if(!isValidUserid(userid)) 
+		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
 		
 		if(!userid.contains(".")){
@@ -53,7 +54,7 @@ public class MockICService implements IICService {
 	 */
 	public Boolean isLoggedIn(String userid) throws NetworkException,
 			NotLoggedInException, TimeoutException {
-		if(!isValidUserid(userid)) 
+		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
 		if(userid.equals(myuserid)) 
 			return loggedinstatus;
@@ -66,7 +67,7 @@ public class MockICService implements IICService {
 
 	public Boolean login(String userid, String pw) throws NetworkException,
 			TimeoutException {
-		if(!isValidUserid(userid)) 
+		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
 		if(loggedinstatus == true)
 			logout();
@@ -78,15 +79,14 @@ public class MockICService implements IICService {
 			return false;
 	}
 
-	public Boolean logout() throws NetworkException, TimeoutException {
+	public void logout() throws NetworkException, TimeoutException {
 		myuserid = null;
 		loggedinstatus = false;
-		return true;
 	}
 
 	public void registerOnlineStatusListener(IOnlineStatusListener osc,
 			String userid) throws NoSuchUseridException {
-		if(!isValidUserid(userid)) 
+		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
 		/* about userid: we don't care, because we are tired. */
 		onlinereceivers.add(osc);
@@ -104,7 +104,7 @@ public class MockICService implements IICService {
 			throws NetworkException, NotLoggedInException, TimeoutException,
 			NoSuchUseridException, OtherUserOfflineException 
 	{
-		if(!isValidUserid(to_userid)) 
+		if(!isOfCorrectUseridFormat(to_userid)) 
 			throw new NoSuchUseridException();
 		if(loggedinstatus == false)
 			throw new NotLoggedInException();
@@ -127,7 +127,7 @@ public class MockICService implements IICService {
 	public Boolean sendObject(String to_userid, String objectidentifier,
 			byte[] content) throws NetworkException, NotLoggedInException,
 			TimeoutException, NoSuchUseridException, OtherUserOfflineException {
-		if(!isValidUserid(to_userid)) 
+		if(!isOfCorrectUseridFormat(to_userid)) 
 			throw new NoSuchUseridException();
 		if(loggedinstatus == false)
 			throw new NotLoggedInException();
@@ -143,6 +143,13 @@ public class MockICService implements IICService {
 			/* we can't do anything with the object, so we just accept it. */
 			return true;
 		}
+	}
+
+	public String getUserid() throws NotLoggedInException {
+		if(!isLoggedIn())
+			throw new NotLoggedInException();
+		
+		return myuserid;
 	}
 
 }

@@ -11,7 +11,6 @@ public class TestMockICService extends TestCase {
 	
 	public void setUp(){
 		ics = new MockICService();
-		System.out.println("TestMockICService setup");
 	}
 	/* we use firstname.lastname@host or nick@host notation for the Mock */
 	public void testGetNames() throws Exception {
@@ -47,11 +46,11 @@ public class TestMockICService extends TestCase {
 		assertTrue(ics.isLoggedIn("foo@host"));
 		assertFalse(ics.isLoggedIn("bar@host"));
 		assertTrue(ics.isLoggedIn("IhasSses@host"));
-		assertTrue(ics.logout());
+		ics.logout();
 		assertFalse(ics.isLoggedIn());
 		
 		assertTrue(ics.login("bar@host", "bar@host"));
-		assertTrue(ics.logout());
+		ics.logout();
 	}
 	
 	public void testregisterOnlineStatusListener() throws Exception {
@@ -63,7 +62,7 @@ public class TestMockICService extends TestCase {
 			}
 		};
 		ics.registerOnlineStatusListener(mylistener, "bar@host");
-		assertTrue(ics.logout());
+		ics.logout();
 		ics = new MockICService(); /* "removing" listener */
 		
 	}
@@ -78,7 +77,6 @@ public class TestMockICService extends TestCase {
 			int i = 0;
 			public void receivedMessage(String from_userid, String content) {
 				i++;
-				System.out.println("receivedMessage: " + i);
 				if(i==1){
 					assertEquals("hello I", content);
 					assertEquals("foo@host", from_userid);
@@ -98,7 +96,6 @@ public class TestMockICService extends TestCase {
 			int i = 0;
 			public void receivedObject(String from_userid, String identifier, byte[] content) {
 				i++;
-				System.out.println("receivedObject: " + i);
 				if(i == 1){
 					assertEquals("foo@host", from_userid);
 					assertEquals("42:12", identifier);
