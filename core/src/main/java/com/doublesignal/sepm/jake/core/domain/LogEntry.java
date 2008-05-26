@@ -13,8 +13,8 @@ public class LogEntry {
 	private LogAction action;
 	private Date timestamp;
 	private String jakeObjectName;
-	private String hash;
 	private String userId;
+	private String hash;
 	private String comment;
 	
 	/**
@@ -23,16 +23,18 @@ public class LogEntry {
 	 * @param timestamp The time of the log entry
 	 * @param jakeObjectName The name of the <code>JakeObject</code> this log
 	 * entry corresponds to.
+	 * @param userId The ProjectMember who did this
+	 * @param hash The hash over the (updated) object (SHA512)
 	 * @param comment An arbitrary comment
 	 */
 	public LogEntry(LogAction action, Date timestamp, String jakeObjectName, 
 			String hash, String userId, String comment) {
 		this.action = action;
 		this.timestamp = timestamp;
-		this.comment = comment;
 		this.jakeObjectName = jakeObjectName;
-		this.hash = hash;
 		this.userId = userId;
+		this.hash = hash;
+		this.comment = comment;
 	}
 
 	public LogAction getAction() {
@@ -78,51 +80,64 @@ public class LogEntry {
 	public String getUserId() {
 		return userId;
 	}
-
+	
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
-	/**
-	 * calculates and returns the hash value of the log entry
-	 * @return hash code
-	 */
+	@Override
 	public int hashCode() {
-		int result;
-		result = (action != null ? action.hashCode() : 0);
-		result = 28 * result + (timestamp != null ? timestamp.hashCode() : 0);
-		result = 28 * result + (comment != null ? comment.hashCode() : 0);
-		result = 28 * result + (jakeObjectName != null ? jakeObjectName.hashCode() : 0);
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((action == null) ? 0 : action.hashCode());
+		result = PRIME * result + ((comment == null) ? 0 : comment.hashCode());
+		result = PRIME * result + ((hash == null) ? 0 : hash.hashCode());
+		result = PRIME * result + ((jakeObjectName == null) ? 0 : jakeObjectName.hashCode());
+		result = PRIME * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = PRIME * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
-	/**
-	 * Test if two LogEntrys are equal.
-	 * @return <code>true</code> iff all fields are equal.
-	 */
-	public boolean equals(Object o) {
-		if (this == o) {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
+		if (obj == null)
 			return false;
-		}
-	
-		LogEntry logEntry = (LogEntry) o;
-	
-		if (action != logEntry.action) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if (comment != null ? !comment.equals(logEntry.comment) : logEntry.comment != null) {
+		final LogEntry other = (LogEntry) obj;
+		if (action == null) {
+			if (other.action != null)
+				return false;
+		} else if (!action.equals(other.action))
 			return false;
-		}
-		if (jakeObjectName != null ? !jakeObjectName.equals(logEntry.jakeObjectName) : logEntry.jakeObjectName != null) {
+		if (comment == null) {
+			if (other.comment != null)
+				return false;
+		} else if (!comment.equals(other.comment))
 			return false;
-		}
-		if (timestamp != null ? !timestamp.equals(logEntry.timestamp) : logEntry.timestamp != null) {
+		if (hash == null) {
+			if (other.hash != null)
+				return false;
+		} else if (!hash.equals(other.hash))
 			return false;
-		}
-	
+		if (jakeObjectName == null) {
+			if (other.jakeObjectName != null)
+				return false;
+		} else if (!jakeObjectName.equals(other.jakeObjectName))
+			return false;
+		if (timestamp == null) {
+			if (other.timestamp != null)
+				return false;
+		} else if (!timestamp.equals(other.timestamp))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
 		return true;
 	}
+
 }

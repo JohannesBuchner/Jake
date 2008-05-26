@@ -5,12 +5,14 @@ import java.util.List;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
+import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
 
 /**
  * The task of the synchronisation service (SyncService) is to 
@@ -88,14 +90,17 @@ public interface ISyncService {
 	 * Then, asks each project member one after another to start a synclog. 
 	 * These requests are best-effort only.   
 	 * 
-	 * @param  jo       Object to be treated.
-	 * @param  commitmsg
-	 * @return members  whom the request reached; empty list if no one could be 
-	 *                  reached
+	 * @param  jo        JakeObject to be treated.
+	 * @param  commitmsg 
+	 * @param  userid    Your userId
+	 * @return members   whom the request reached; empty list if no one could be 
+	 *                   reached
 	 * @throws ObjectNotConfiguredException
+	 * @throws SyncException
 	 */
-	public List<ProjectMember> push(JakeObject jo, String commitmsg) 
-		throws ObjectNotConfiguredException;
+	public List<ProjectMember> push(JakeObject jo, String userid, 
+			String commitmsg) 
+		throws ObjectNotConfiguredException, SyncException;
 	
 	/* (Only for implementing the SyncService, not for the interface)
 	 * This has to be registered in the used ICService to be called on pull 
@@ -130,16 +135,23 @@ public interface ISyncService {
 	/**
 	 * Set the log to be used.
 	 * This must be set before operations can be used.
-	 * @see IICService
+	 * @see LogEntry
 	 */
 	public void setLogEntries(List<LogEntry> le);
 	
 	/**
 	 * set the project members list to be used.
 	 * This must be set before operations can be used.
-	 * @see IICService
+	 * @see ProjectMember
 	 */	
 	public void setProjectMembers(List<ProjectMember> pm);
+
+	/**
+	 * set the filesystem service to be used.
+	 * This must be set before operations can be used.
+	 * @see IFSService
+	 */
+	public void setFSService(IFSService fss);
 	
 	
 }

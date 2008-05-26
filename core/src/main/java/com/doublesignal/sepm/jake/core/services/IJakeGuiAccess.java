@@ -8,6 +8,8 @@ import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
@@ -25,10 +27,17 @@ public interface IJakeGuiAccess {
 
     /**
      * Login on the network
+     * Missing login information (null values) will be retrieved from the 
+     * configuration. If it is not stored either, a LoginDataRequiredException
+     * is thrown.
+     * 
      * @throws NetworkException if the ICS couldn't log us onto the network.
+     * @param userid userid to use, can be null
+     * @param pw     Password to use, can be null
       */
-    public void login()
-            throws NetworkException;
+    public void login(String userid, String pw)
+            throws LoginDataRequiredException, 
+    		LoginDataNotValidException, NetworkException;
 
     /**
      * Logout from the network

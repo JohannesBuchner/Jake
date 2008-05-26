@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.FileSystemResource;
+
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -12,12 +16,14 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
+import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
-import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 
 /**
@@ -28,50 +34,35 @@ import com.doublesignal.sepm.jake.sync.ISyncService;
 public class JakeGuiAccess implements IJakeGuiAccess{
 	/* TODO: do we want this here or somewhere else? 
 	 * IMO it's OK here. */
-	IICService ics = null;     /* TODO: dependency inject MockICSService */
-	ISyncService sync = null; /* TODO: dependency inject MockSyncService */
+	IICService ics = null; 
+	ISyncService sync = null; 
+	IFSService fss = null;
 	
-	public void login() {
-		String user = null;
-		String pw = null;
+	public JakeGuiAccess(){
+		BeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+		ics  = (IICService)   factory.getBean("ICService");
+		sync = (ISyncService) factory.getBean("SyncService");
+		fss  = (IFSService)   factory.getBean("FSService");
+	}
+	
+	public void login(String user, String pw) throws LoginDataRequiredException, 
+		LoginDataNotValidException, NetworkException 
+	{
 		try{
-			user = getConfigOption("userid");
-			pw = getConfigOption("password");
+			if(user==null)
+				user = getConfigOption("userid");
+			if(pw == null)
+				pw = getConfigOption("password");
 		}catch(NoSuchConfigOptionException e){
-			/* TODO: show login dialog */
+			throw new LoginDataRequiredException();
 		}
-		if(user == null || pw == null)
-			return; /* user didn't want */
-		
-		try{
-			if(!ics.login(user, pw)){
-				/* TODO: 
-				 *  a) should we throw a exception and the GUI finds out what we 
-				 *     meant
-				 *  b) should we throw a UserErrorException("LoginWrong") and the 
-				 *     GUI gets the i18n string?
-				 *  c) no exception, we trigger the errormessage ourselves
-				 * */
-			}
-		}catch (TimeoutException e) {
-			/* TODO */
-		}catch (NetworkException e) {
-			/* TODO */
+		if(!ics.login(user, pw)){
+			throw new LoginDataNotValidException();
 		}
 	}
 
 	public void logout() throws NetworkException {
-		try{
-			if(!ics.logout()){
-				/* TODO: 
-				 *  a/b/c? same as in login()
-				 * */
-			}
-		}catch (TimeoutException e) {
-			/* TODO */
-		}catch (NetworkException e) {
-			/* TODO */
-		}
+		ics.logout();
 	}
 
 	public FileObject createFileObjectFromExternalFile(String absolutePath)

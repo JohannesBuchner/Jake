@@ -7,22 +7,23 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.fss.FSService;
+import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.MockICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 
-import junit.framework.TestCase;
-
-public class MockSyncServiceTest extends TestCase {
+public class MockSyncServiceTest extends FSTestCase {
 	
 	ISyncService ss = null;
 	LinkedList<ProjectMember> pm = null;
 	LinkedList<LogEntry> le = null;
 	IICService ics = null;
-	
+	IFSService fss = null;
 	public void setUp() throws Exception{
+		super.setUp();
 		ss = new MockSyncService();
 		pm = new LinkedList<ProjectMember>();
 		pm.add(new ProjectMember("me@host"));
@@ -32,6 +33,8 @@ public class MockSyncServiceTest extends TestCase {
 		
 		le = new LinkedList<LogEntry>();
 		ics = new MockICService();
+		fss = new FSService();
+		fss.setRootPath(mytempdir);
 		
 		try{
 			ss.pull(new JakeObject("foo/bar"));
@@ -54,6 +57,14 @@ public class MockSyncServiceTest extends TestCase {
 			
 		}
 		ss.setProjectMembers(pm);
+
+		try{
+			ss.pull(new JakeObject("foo/bar"));
+			fail("ObjectNotConfiguredException");
+		}catch (ObjectNotConfiguredException e) {
+			
+		}
+		ss.setFSService(fss);
 		
 		try{
 			ss.pull(new JakeObject("foo/bar"));
@@ -117,8 +128,9 @@ public class MockSyncServiceTest extends TestCase {
 		assertEquals(le.size(),0);
 		assertTrue(ics.isLoggedIn());
 		
-		JakeObject jo = new JakeObject("Projektauftrag/test1.txt"); 
-		ss.push(jo, "I don't like commit messages");
+		JakeObject jo = new JakeObject("Projektauftrag/test1.txt");
+		fss.writeFile("Projektauftrag/test1.txt", "Helo funky boy!".getBytes());
+		ss.push(jo, "foo@host", "I don't like commit messages");
 		assertEquals(le.size(),1);
 		assertEquals(le.get(0).getJakeObjectName(), jo.getName());
 		
