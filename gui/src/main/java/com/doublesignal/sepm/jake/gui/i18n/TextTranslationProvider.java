@@ -3,17 +3,8 @@ package com.doublesignal.sepm.jake.gui.i18n;
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.UnknownIdentifierException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,19 +12,14 @@ import java.util.HashMap;
 /**
  * TextTranslationProvider.
  */
-public class TextTranslationProvider {
+public class TextTranslationProvider implements ITranslationProvider {
 	private static HashMap<String, String> strings;
 	
-	protected TextTranslationProvider() {
-	}
 	/**
-	 * Loads "lang-"+lang+".txt" in the langFilesPath
-	 * and interpretes each line as identifier=message pair
+	 * Loads the languageFile and interpretes each line as identifier=message pair
 	 * @param lang
-	 * @throws IOException
 	 */
-	public static void setLanguage(String langFile) throws IOException {
-		System.out.println("Language was set to " + langFile);
+	public void setLanguage(String langFile) throws IOException{
 		strings = new HashMap<String, String>();
 		BufferedReader fr = new BufferedReader(new FileReader(langFile));
 		String line = "";
@@ -54,7 +40,7 @@ public class TextTranslationProvider {
 		fr.close();
 	}
 	
-	public static String get(String identifier, String... placeholderValues) 
+	public String get(String identifier, String... placeholderValues) 
 			throws IllegalNumberOfArgumentsException, UnknownIdentifierException
 	{
 		String result = strings.get(identifier);

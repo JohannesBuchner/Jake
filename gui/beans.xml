@@ -10,6 +10,6 @@
 	<bean id="translationProvider"
 			class="com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider"
 			singleton="true">
-		<property name="language" value="src/main/resources/lang-foo.txt" />
+		<property name="language" value="src/main/resources/lang-test.txt" />
 	</bean>
 </beans>

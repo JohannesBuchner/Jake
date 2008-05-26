@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.gui.i18n;
 
+import java.io.IOException;
+
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.UnknownIdentifierException;
 
@@ -16,7 +18,7 @@ public interface ITranslationProvider {
 	 *
 	 * @param language The ISO 639-1 code of the language
 	 */
-	public void setLanguage(String language);
+	public void setLanguage(String language) throws IOException;
 
 	/**
 	 * Retrieves the internationalized message for a given message ID
