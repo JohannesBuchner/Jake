@@ -34,6 +34,7 @@ public class MockSyncServiceTest extends FSTestCase {
 		le = new LinkedList<LogEntry>();
 		ics = new MockICService();
 		fss = new FSService();
+		assertNotNull(mytempdir);
 		fss.setRootPath(mytempdir);
 		
 		try{
