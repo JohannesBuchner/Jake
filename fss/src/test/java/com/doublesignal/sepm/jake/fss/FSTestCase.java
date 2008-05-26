@@ -5,9 +5,8 @@ import java.io.File;
 import junit.framework.TestCase;
 
 public class FSTestCase extends TestCase {
-	String mytempdir = null; 
+	protected String mytempdir = null; 
 	
-
 	@Override
 	public void setUp() throws Exception {
 		String systmpdir = "/tmp";

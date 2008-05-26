@@ -23,15 +23,6 @@ import java.io.IOException;
 
 public interface IFSService {
 	/**
-	 * @param relpath
-	 * @return the hash over the file as a string
-	 * @throws InvalidFilenameException
-	 * @throws IOException
-	 */
-	String calculateHash(String relpath) 
-		throws InvalidFilenameException, IOException;
-	
-	/**
 	 * Checks that the file exists and that it is a regular file (no link, 
 	 * device, pipe, ...)
 	 * @return wether the file exists
@@ -83,9 +74,10 @@ public interface IFSService {
 	 * @param relpath the file to be edited/viewed
 	 * @throws InvalidFilenameException
 	 * @throws LaunchException
+	 * @throws IOException 
 	 */
 	public void launchFile(String relpath) 
-		throws InvalidFilenameException, LaunchException;
+		throws InvalidFilenameException, LaunchException, IOException;
 	
 	/**
 	 * Lists folder content following isValidRelpath
@@ -172,4 +164,27 @@ public interface IFSService {
 	 * @throws NotAFileException 
 	 */
 	public boolean deleteFile(String relpath) throws InvalidFilenameException, FileNotFoundException, NotAFileException;
+	
+	
+	/**
+	 * @param relpath
+	 * @return the hash over the file
+	 * @throws InvalidFilenameException
+	 * @throws NotAReadableFileException
+	 * @throws FileNotFoundException 
+	 */
+	String calculateHashOverFile(String relpath) 
+		throws InvalidFilenameException, NotAReadableFileException, FileNotFoundException;
+
+	/**
+	 * @param bytes
+	 * @return hash over the bytes
+	 */
+	String calculateHash(byte[] bytes);
+	
+	/**
+	 * @return length of the returning String of the implemented Hash operation
+	 */
+	int getHashLength();
+	
 }

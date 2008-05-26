@@ -6,71 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 
-public class FSServiceTest extends FSTestCase {
-	FSService fss = null;
-	public void testIsValidRelpath() throws Exception{
-		
-		assertTrue(fss.isValidRelpath("/"));
-		assertFalse("upexploit",fss.isValidRelpath(".."));
-		assertFalse("upexploit",fss.isValidRelpath("foo/../bar"));
-		assertFalse("upexploit",fss.isValidRelpath("foo/.."));
-		assertFalse("upexploit",fss.isValidRelpath("foo/../"));
-		assertFalse("upexploit",fss.isValidRelpath("foo/../../bar"));
-		
-		String[] valids = {
-			"/", "foo", "foo.bar", "rANdoM.xls", "fold/er.txt", 
-			"crazy/named/file/that.has.more.ext.s", "cool+-035.x_chars", 
-			"a", "ac (also cool).file", "...", "foo....bar", "foo/bar../abz"
-		};
-		for (int i = 0; i < valids.length; i++) {
-			assertTrue("valid name: " + valids[i], fss.isValidRelpath(valids[i]));
-		}
-		assertFalse("up and out", fss.isValidRelpath("foo/../../bar.xls"));
-		assertFalse("up",fss.isValidRelpath("foo/../bar.xls"));
-		
-		String[] s = {"~","*","..","#","=","}","{","$","\"",
-				"'","!","%","&","<",">","|","","@","","^","\\", ":" };
-		
-		for (int i = 0; i < s.length; i++) {
-			assertFalse("Invalid character " + s[i], fss.isValidRelpath("~"));
-		}
-		
-		assertFalse("backslash",fss.isValidRelpath("windows\\path"));
-		assertFalse("notestyle",fss.isValidRelpath("note:random"));
-	}
-	public void testSetRootPath() throws Exception{
-		String oldrootpath = fss.getRootPath();
-		
-		try{
-			fss.setRootPath("/root/file/that/doesnt/exist");
-			fail();
-		}catch(FileNotFoundException e){
-		}
-		{
-			String filename = mytempdir + "/test.out";
-			File f = new File(filename);
-			f.createNewFile();
-			try{
-				fss.setRootPath(filename);
-				fail();
-			}catch(NotADirectoryException e){
-			}
-		}
-		String[] dirnames = {mytempdir + "/..", 
-				mytempdir + "/!", mytempdir + "/#"};
-		for (int i = 0; i < dirnames.length; i++) {
-			File f = new File(dirnames[i]);
-			f.mkdirs();
-			assertTrue("Creating dir successful", f.exists() && f.isDirectory());
-			try{
-				fss.setRootPath(dirnames[i]);
-			}catch(NotADirectoryException e){
-			}
-		}
-				
-		fss.setRootPath(oldrootpath);
-	}
-	
+
+public class FSServiceTestOuter extends FSServiceTestCase {
 	public void testGetFullpath() throws Exception{
 		String sep = File.separator;
 		String root = mytempdir;
@@ -205,24 +142,6 @@ public class FSServiceTest extends FSTestCase {
 		
 	}
 	
-	public void testGetTempDir() throws Exception{
-		if(File.separatorChar == '/'){
-			assertEquals("/tmp", fss.getTempDir());
-		}else{
-			fail("Not implemented for Windows (yet)");
-			assertEquals("C:\\Windows\\Temp", fss.getTempDir());
-		}
-		
-	}
-	
-	public void testGetTempFile() throws Exception{
-		String filename = fss.getTempFile();
-		assertTrue("in Temp dir",filename.startsWith(fss.getTempDir() + 
-			File.separator));
-		File f = new File(filename);
-		f.delete();
-	}
-	
 	public void testListFolder() throws Exception{
 		wipeRoot();
 		String folder = "jakeAtestFolder";
@@ -336,28 +255,20 @@ public class FSServiceTest extends FSTestCase {
 		
 	}
 	
-	
-	private void wipeRoot() {
-		File f = new File(fss.getRootPath());
-		assertTrue(f.exists() && f.isDirectory());
-		assertTrue(recursiveDelete(f));
-		f.mkdirs();
-		assertTrue(f.exists() && f.isDirectory() && f.list().length == 0);
+	public void testHashFile() throws Exception{
+		fss.writeFile("bar/baz/random", "Foobar".getBytes());
+		
+		assertEquals(fss.calculateHashOverFile("bar/baz/random"), 
+			"cead1f59a9a0d22e46a28f943a662338dd758d6dce38f7ea6ab13b6615c312b69fffff049781c169b597577cb5566d5d1354364ac032a9d4d5bd8ef833340061");
+		
 	}
 	
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-		fss = new FSService();
-		assertFalse(fss == null);
-		fss.setRootPath(mytempdir);
-		assertEquals("rootpath",mytempdir,fss.getRootPath());
-		assertFalse(fss.getRootPath().startsWith("/home"));
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
+	public void launchTest() throws Exception {
+		fss.writeFile("launch1.txt", "Foobar".getBytes());
+		fss.writeFile("launch2.html", "<html><body><h1>Woot!</h1></body></html>"
+				.getBytes());
+		fss.launchFile("launch1.txt");
+		fss.launchFile("launch2.html");
 	}
 	
 	/* TODO: calculateHash launchFile registerModificationListener */
