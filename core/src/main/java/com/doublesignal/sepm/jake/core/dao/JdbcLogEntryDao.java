@@ -1,8 +1,8 @@
 package com.doublesignal.sepm.jake.core.dao;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchLogEntryException;
 
 import java.util.Date;
 import java.util.List;

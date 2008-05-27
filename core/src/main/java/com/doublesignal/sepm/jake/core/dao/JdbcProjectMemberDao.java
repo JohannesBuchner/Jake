@@ -1,7 +1,7 @@
 package com.doublesignal.sepm.jake.core.dao;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchProjectMemberException;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import java.util.HashMap;

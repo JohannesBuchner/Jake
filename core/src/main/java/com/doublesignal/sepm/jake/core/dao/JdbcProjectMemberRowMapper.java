@@ -1,8 +1,6 @@
 package com.doublesignal.sepm.jake.core.dao;
 
-import com.doublesignal.sepm.jake.core.dao.exceptions.QueryFailedException;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.ics.exceptions.InvalidUserIdException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import java.sql.ResultSet;

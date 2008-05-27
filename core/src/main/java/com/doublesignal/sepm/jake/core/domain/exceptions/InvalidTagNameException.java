@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.core.domain.exceptions;
 /**
  * @author domdorn
  */
+@SuppressWarnings("serial")
 public class InvalidTagNameException extends Exception {
 	public InvalidTagNameException()
 	{

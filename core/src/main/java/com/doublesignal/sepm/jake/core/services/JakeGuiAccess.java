@@ -1,7 +1,7 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.*;
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.ics.IICService;

@@ -1,6 +1,6 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
