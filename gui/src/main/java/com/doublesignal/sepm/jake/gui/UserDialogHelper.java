@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.gui;
 import java.awt.Component;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
@@ -53,6 +54,7 @@ public class UserDialogHelper {
 		dialog.setVisible(true);
 		return ((Integer)pane.getValue()).intValue();
 	}
+	
 	private static int showConfirmDialog(Component parent, String msg, String title, int msgtype){
 		JOptionPane pane = getNarrowOptionPane(0);
 		pane.setMessage(msg);
@@ -85,6 +87,10 @@ public class UserDialogHelper {
 			}
 		}
 		return new NarrowOptionPane(maxCharactersPerLineCount);
+	}
+
+	public static void error(Component parent, String errorMessage) {
+		showMessageDialog(parent, errorMessage, "", JOptionPane.ERROR_MESSAGE);
 	}
 		
 }

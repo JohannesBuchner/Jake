@@ -7,7 +7,6 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
 
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
-import com.doublesignal.sepm.jake.gui.i18n.exceptions.UnknownIdentifierException;
 
 public class I18nTest extends TestCase {
 	public void testi18n() throws Exception{
@@ -41,11 +40,8 @@ public class I18nTest extends TestCase {
 		}catch (IllegalNumberOfArgumentsException e) {
 		}
 		
-		try{
-			translator.get("FOO_BAR_DO_NOT_KNOW");
-			fail("UnknownIdentifierException");
-		}catch(UnknownIdentifierException e) {
-		}
+		assertEquals(translator.get("FOO_BAR_DO_NOT_KNOW"), "FOO_BAR_DO_NOT_KNOW");
+		assertEquals(translator.get("FOO_BAR_DO_NOT_KNOW", "foo", "bar"), "FOO_BAR_DO_NOT_KNOW");
 	}
 	
 }

@@ -6,6 +6,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -39,9 +40,8 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	}
 	
 	public void login(String user, String pw) throws LoginDataRequiredException, 
-		LoginDataNotValidException, NetworkException 
+		LoginDataNotValidException, NetworkException, LoginUseridNotValidException 
 	{
-		log.info("Login with " + user + " + " + pw);
 		try{
 			if(user == null)
 				user = getConfigOption("userid");
@@ -50,8 +50,12 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 		}catch(NoSuchConfigOptionException e){
 			throw new LoginDataRequiredException();
 		}
-		if(!ics.login(user, pw)){
-			throw new LoginDataNotValidException();
+		try{
+			if(!ics.login(user, pw)){
+				throw new LoginDataNotValidException();
+			}
+		}catch(NoSuchUseridException e){
+			throw new LoginUseridNotValidException();
 		}
 	}
 

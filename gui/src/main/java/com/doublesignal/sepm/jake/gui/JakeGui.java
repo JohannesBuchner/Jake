@@ -4,6 +4,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionExceptio
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
@@ -28,6 +29,8 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * @author Peter Steinberger
@@ -35,6 +38,7 @@ import java.awt.event.ActionListener;
 @SuppressWarnings("serial")
 public class JakeGui extends JPanel {
 	private static Logger log = Logger.getLogger(JakeGui.class);
+	
 	private ITranslationProvider translator;
 	
 	private IJakeGuiAccess jakeGuiAccess = null;
@@ -110,78 +114,106 @@ public class JakeGui extends JPanel {
 	
 	
     /***** Network Menu *****/
+	/**
+	 * @author johannes
+	 */
 	private void signInNetworkMenuItemActionPerformed(ActionEvent e) {
-		log.debug("Network signin procedure");
-		
-		boolean showDialog = false;
-		JXLoginPane login = new JXLoginPane();
-		String username = null;
-		String password = null;
-		
-		while(true){
-			log.debug("Do we need a login dialog? " + showDialog);
-			if(showDialog){
-				try {
-					login.setUserName(jakeGuiAccess.getConfigOption("userid"));
-				} catch (NoSuchConfigOptionException e2) {
-					log.debug("Username not stored");
-				}
-				try {
-					login.setPassword(jakeGuiAccess.getConfigOption("password").toCharArray());
-				} catch (NoSuchConfigOptionException e2) {
-					log.debug("Password not stored");
-				}
-				login.setVisible(true);
-				
-				
-				if(login.getStatus() != JXLoginPane.Status.SUCCEEDED){
-					log.debug("Login Dialog was cancelled");
-					break;
-				}
-				username = login.getUserName();
-				password = new String(login.getPassword());
-				if(	login.getSaveMode() == JXLoginPane.SaveMode.USER_NAME ||
-					login.getSaveMode() == JXLoginPane.SaveMode.BOTH)
-				{
-					log.debug("Saving username");
-					jakeGuiAccess.setConfigOption("userid", username);
-				}
-				if(	login.getSaveMode() == JXLoginPane.SaveMode.PASSWORD ||
-					login.getSaveMode() == JXLoginPane.SaveMode.BOTH)
-				{
-					log.debug("Saving password");
-					jakeGuiAccess.setConfigOption("password", username);
-				}
-			}
-			log.debug("Trying login with " + username + "...");
-			try {
-				jakeGuiAccess.login(username, password);
-				log.debug("Login was successful");
-				return;
-			} catch (LoginDataRequiredException e1) {
-				log.debug("LoginDataRequired");
-				if(!showDialog){
-					showDialog = true;
-				}else{
-					log.error("LoginDataRequiredException although we provided dialog data! That shouldn't happen");
-				}
-			} catch (LoginDataNotValidException e1) {
-				log.debug("LoginDataNotValid");
-				login.setErrorMessage( translator.get("LoginDataNotValid"));
-				showDialog = true;
-			} catch (NetworkException e1) {
-				log.debug("NetworkException");
-				UserDialogHelper.inform(mainFrame, "", 
-					translator.get("NetworkError", e1.getMessage()), 
-					JOptionPane.ERROR_MESSAGE
-				);
-				break;
-			}
-		}
-		log.debug("Login was not successful");
+		signInNetwork(null, null, true);
 	}
 	
-    /***** Network Menu *****/
+	/**
+	 * Tries to sign in using dialog or stored configuration.
+	 * 
+	 * <p>If fillFromConfig is false and at least one parameter is null, 
+	 * a dialog is used.</p>
+	 * Use like this: 
+	 *    <code>signInNetwork(null, null, true);</code>
+	 * @param username    username if you know it, null otherwise
+	 * @param password	  password if you know it, null otherwise
+	 * @param fillFromConfig  Should we first load the stored config values
+	 * @author johannes 
+	 */
+	private void signInNetwork(String username, String password, 
+			boolean fillFromConfig) 
+	{
+		log.debug("Network signin procedure");
+		
+		boolean showDialog = (username == null || password == null ) && !fillFromConfig;
+		
+		final JXLoginPane login = new JXLoginPane();
+		log.debug("Do we need a login dialog? " + showDialog);
+		if(showDialog){
+			try {
+				login.setUserName(jakeGuiAccess.getConfigOption("userid"));
+			} catch (NoSuchConfigOptionException e2) {
+				log.debug("Username not stored");
+			}
+			try {
+				login.setPassword(jakeGuiAccess.getConfigOption("password").toCharArray());
+			} catch (NoSuchConfigOptionException e2) {
+				log.debug("Password not stored");
+			}
+			login.setVisible(true);
+	        final JXLoginPane.JXLoginFrame frm = JXLoginPane.showLoginFrame(login);
+	        
+	        frm.addWindowListener(new WindowAdapter() {
+				public void windowClosed(WindowEvent e) {
+					log.debug("Login Dialog was: "+ frm.getStatus());
+					if (frm.getStatus() != JXLoginPane.Status.SUCCEEDED) {
+						return;
+					}
+					String username = login.getUserName();
+					String password = new String(login.getPassword());
+					if (login.getSaveMode() == JXLoginPane.SaveMode.USER_NAME
+							|| login.getSaveMode() == JXLoginPane.SaveMode.BOTH) {
+						log.debug("Saving username");
+						jakeGuiAccess.setConfigOption("userid", username);
+					}
+					if (login.getSaveMode() == JXLoginPane.SaveMode.PASSWORD
+							|| login.getSaveMode() == JXLoginPane.SaveMode.BOTH) {
+						log.debug("Saving password");
+						jakeGuiAccess.setConfigOption("password", username);
+					}
+					signInNetwork(username, password, false);
+				}
+			});
+	        frm.setVisible(true);
+			return;
+		}
+		
+		log.debug("Trying login with " + username + "...");
+		try {
+			jakeGuiAccess.login(username, password);
+			log.debug("Login was successful");
+			return;
+		} catch (LoginDataRequiredException e1) {
+			log.debug("LoginDataRequired");
+			signInNetwork(username, password, false);
+			return;
+		} catch (LoginDataNotValidException e1) {
+			log.debug("LoginDataNotValid");
+			UserDialogHelper.error(mainFrame, 
+					translator.get("LoginDataNotValid"));
+			signInNetwork(username, null, false);
+			return;
+		} catch (LoginUseridNotValidException e) {
+			log.debug("LoginUseridNotValid");
+			UserDialogHelper.error(mainFrame, 
+					translator.get("LoginUseridNotValid"));
+			login.setErrorMessage( translator.get("LoginUseridNotValid"));
+			signInNetwork(username, null, false);
+			return;
+		} catch (NetworkException e1) {
+			log.debug("NetworkException");
+			UserDialogHelper.error(mainFrame, 
+					translator.get("NetworkError", e1.getLocalizedMessage()));
+			return;
+		}
+	}
+	
+	/**
+	 * @author johannes
+	 */
 	private void signOutNetworkMenuItemActionPerformed(ActionEvent e) {
 		try {
 			jakeGuiAccess.logout();
