@@ -1,30 +1,20 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Observer;
-
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
-
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeMessage;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.LogEntry;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.domain.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
+import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.FileSystemResource;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Observer;
 
 /**
  * 
@@ -37,8 +27,11 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	IICService ics = null; 
 	ISyncService sync = null; 
 	IFSService fss = null;
-	
+
+	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
+
 	public JakeGuiAccess(){
+		log.info("Setup the JakeGuiAccess Object");
 		BeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
 		ics  = (IICService)   factory.getBean("ICService");
 		sync = (ISyncService) factory.getBean("SyncService");
@@ -48,6 +41,7 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	public void login(String user, String pw) throws LoginDataRequiredException, 
 		LoginDataNotValidException, NetworkException 
 	{
+		log.info("Logging in");
 		try{
 			if(user==null)
 				user = getConfigOption("userid");
@@ -62,6 +56,7 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	}
 
 	public void logout() throws NetworkException {
+		log.info("Logout");
 		ics.logout();
 	}
 
