@@ -1,13 +1,23 @@
 package com.doublesignal.sepm.jake.gui;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXLoginDialog;
+import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.Filter;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.PatternFilter;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.FileSystemResource;
 
 import javax.swing.*;
 import javax.swing.border.SoftBevelBorder;
@@ -25,25 +35,30 @@ import java.awt.event.ActionListener;
 @SuppressWarnings("serial")
 public class JakeGui extends JPanel {
 	private static Logger log = Logger.getLogger(JakeGui.class);
-
-
+	private ITranslationProvider translator;
+	
 	private IJakeGuiAccess jakeGuiAccess = null;
 
 	public IJakeGuiAccess getJakeGuiAccess()
 	{
-		log.info("Getting JakeGuIAccess Object");
+		log.debug("Getting JakeGuIAccess Object");
 		return jakeGuiAccess;
 	}
 
 	public void setJakeGuiAccess(IJakeGuiAccess jakeGuiAccess)
 	{
-		log.info("Setting IJakeGuiAccess Object");
-		System.out.println("blablabal");
+		log.debug("Setting IJakeGuiAccess Object");
 		this.jakeGuiAccess = jakeGuiAccess;
 	}
 
-	public JakeGui() {
-		log.info("Initializing Components");
+	public JakeGui(IJakeGuiAccess jakeGuiAccess) {
+		BeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+        translator = (ITranslationProvider) 
+        	factory.getBean("translationProvider");
+        
+        setJakeGuiAccess(jakeGuiAccess);
+		
+        log.debug("Initializing Components");
 		initComponents();
 	}
 	
@@ -60,24 +75,24 @@ public class JakeGui extends JPanel {
     /***** File Menu *****/
 
 	private void newProjectMenuItemActionPerformed(ActionEvent e) {
-		log.info("Open new Project Dialog");
+		log.debug("Open new Project Dialog");
 		new NewProjectDialog(mainFrame).setVisible(true);
 	} 
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
-		log.info("ExitApplication");
+		log.debug("ExitApplication");
 		System.exit(0);
 	}
 	
 	private void propertiesMenuItemActionPerformed(ActionEvent e) {
-		log.info("Open Preferences Dialog");
+		log.debug("Open Preferences Dialog");
 		new PreferencesDialog(mainFrame).setVisible(true);
 	}
 	
     /***** View Menu *****/
 	
 	private void systemLogViewMenuItemActionPerformed(ActionEvent e) {
-		log.info("Open ViewLog Dialog");
+		log.debug("Open ViewLog Dialog");
 		new ViewLogDialog(mainFrame).setVisible(true);
 	}
 	
@@ -96,8 +111,86 @@ public class JakeGui extends JPanel {
 	
     /***** Network Menu *****/
 	private void signInNetworkMenuItemActionPerformed(ActionEvent e) {
-		log.info("Open Network-SignIn Dialog");
-		new JXLoginDialog().setVisible(true);
+		log.debug("Network signin procedure");
+		
+		boolean showDialog = false;
+		JXLoginPane login = new JXLoginPane();
+		String username = null;
+		String password = null;
+		
+		while(true){
+			log.debug("Do we need a login dialog? " + showDialog);
+			if(showDialog){
+				try {
+					login.setUserName(jakeGuiAccess.getConfigOption("userid"));
+				} catch (NoSuchConfigOptionException e2) {
+					log.debug("Username not stored");
+				}
+				try {
+					login.setPassword(jakeGuiAccess.getConfigOption("password").toCharArray());
+				} catch (NoSuchConfigOptionException e2) {
+					log.debug("Password not stored");
+				}
+				login.setVisible(true);
+				
+				
+				if(login.getStatus() != JXLoginPane.Status.SUCCEEDED){
+					log.debug("Login Dialog was cancelled");
+					break;
+				}
+				username = login.getUserName();
+				password = new String(login.getPassword());
+				if(	login.getSaveMode() == JXLoginPane.SaveMode.USER_NAME ||
+					login.getSaveMode() == JXLoginPane.SaveMode.BOTH)
+				{
+					log.debug("Saving username");
+					jakeGuiAccess.setConfigOption("userid", username);
+				}
+				if(	login.getSaveMode() == JXLoginPane.SaveMode.PASSWORD ||
+					login.getSaveMode() == JXLoginPane.SaveMode.BOTH)
+				{
+					log.debug("Saving password");
+					jakeGuiAccess.setConfigOption("password", username);
+				}
+			}
+			log.debug("Trying login with " + username + "...");
+			try {
+				jakeGuiAccess.login(username, password);
+				log.debug("Login was successful");
+				return;
+			} catch (LoginDataRequiredException e1) {
+				log.debug("LoginDataRequired");
+				if(!showDialog){
+					showDialog = true;
+				}else{
+					log.error("LoginDataRequiredException although we provided dialog data! That shouldn't happen");
+				}
+			} catch (LoginDataNotValidException e1) {
+				log.debug("LoginDataNotValid");
+				login.setErrorMessage( translator.get("LoginDataNotValid"));
+				showDialog = true;
+			} catch (NetworkException e1) {
+				log.debug("NetworkException");
+				UserDialogHelper.inform(mainFrame, "", 
+					translator.get("NetworkError", e1.getMessage()), 
+					JOptionPane.ERROR_MESSAGE
+				);
+				break;
+			}
+		}
+		log.debug("Login was not successful");
+	}
+	
+    /***** Network Menu *****/
+	private void signOutNetworkMenuItemActionPerformed(ActionEvent e) {
+		try {
+			jakeGuiAccess.logout();
+		} catch (NetworkException e1) {
+			UserDialogHelper.inform(mainFrame, "", 
+				translator.get("NetworkError", e1.getMessage()), 
+				JOptionPane.ERROR_MESSAGE
+			);
+		}
 	}
 	
 	
@@ -632,6 +725,11 @@ public class JakeGui extends JPanel {
 
 						//---- signOutNetworkMenuItem ----
 						signOutNetworkMenuItem.setText("Sign Out");
+						signOutNetworkMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								signOutNetworkMenuItemActionPerformed(e);
+							}
+						});						
 						networkMenu.add(signOutNetworkMenuItem);
 						networkMenu.addSeparator();
 

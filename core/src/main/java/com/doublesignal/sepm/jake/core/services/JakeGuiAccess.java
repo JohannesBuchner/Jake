@@ -41,9 +41,9 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	public void login(String user, String pw) throws LoginDataRequiredException, 
 		LoginDataNotValidException, NetworkException 
 	{
-		log.info("Logging in");
+		log.info("Login with " + user + " + " + pw);
 		try{
-			if(user==null)
+			if(user == null)
 				user = getConfigOption("userid");
 			if(pw == null)
 				pw = getConfigOption("password");
@@ -90,7 +90,7 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	public String getConfigOption(String configKey)
 			throws NoSuchConfigOptionException {
 		// TODO Auto-generated method stub
-		return null;
+		throw new NoSuchConfigOptionException();
 	}
 
 	public Map<String, String> getConfigOptions() {
@@ -192,7 +192,7 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	}
 
 	public void setConfigOption(String configKey, String configValue)
-			throws NoSuchConfigOptionException {
+	{
 		// TODO Auto-generated method stub
 		
 	}

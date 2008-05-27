@@ -12,4 +12,21 @@
 			singleton="true">
 		<property name="language" value="src/main/resources/lang-test.txt" />
 	</bean>
+
+	<!-- unfortunately, we have to repeat ourselves here (copied from core) -->
+	<bean id="FSService"
+			class="com.doublesignal.sepm.jake.fss.FSService"
+			singleton="true">
+	</bean>
+	<bean id="ICService"
+			class="com.doublesignal.sepm.jake.ics.MockICService"
+			singleton="true">
+	</bean>
+	<bean id="SyncService"
+			class="com.doublesignal.sepm.jake.sync.MockSyncService"
+			singleton="true">
+			
+			<property name="ICService" ref="ICService"/>
+			<property name="FSService" ref="FSService"/>
+	</bean>
 </beans>

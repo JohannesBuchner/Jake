@@ -1,6 +1,5 @@
 package com.doublesignal.sepm.jake.gui;
 
-import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import org.apache.log4j.Logger;
 
@@ -20,17 +19,9 @@ public class StartJake
 		log.info("want to give us, feel free to send us an email!");
 
 		log.info("===================================================");
-
-
-
-		log.info("starting frontend....");
-		JakeGui gui = new JakeGui();
-		log.info("should set JakeGUIAccess now");
-		IJakeGuiAccess jakeGuiAccess = new JakeGuiAccess();
-		System.out.println("test");
-		gui.setJakeGuiAccess(jakeGuiAccess);
-		System.out.println("test2");
-
-		System.out.println("some other output after gui thread started");
+		
+		log.debug("starting frontend....");
+		new JakeGui(new JakeGuiAccess());
+		log.debug("loading done.");
 	}
 }

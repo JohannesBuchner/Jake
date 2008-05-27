@@ -51,10 +51,8 @@ public interface IJakeGuiAccess {
      * Sets a config
      * @param configKey
      * @param configValue
-     * @throws NoSuchConfigOptionException
      */
-    public void setConfigOption(String configKey, String configValue)
-            throws NoSuchConfigOptionException;
+    public void setConfigOption(String configKey, String configValue);
 
     /**
      * Gets a config option by the specified key

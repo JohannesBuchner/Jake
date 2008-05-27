@@ -46,7 +46,5 @@ public interface ITranslationProvider {
 	 * @throws UnknownIdentifierException if the messageIdentifier was not defined
 	 */
 	public String get(String messageIdentifier,
-	                             String... placeholderValues)
-			                       throws IllegalNumberOfArgumentsException, 
-			                       UnknownIdentifierException;
+	                             String... placeholderValues);
 }
