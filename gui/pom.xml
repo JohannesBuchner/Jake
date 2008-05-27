@@ -31,5 +31,10 @@
 	      <artifactId>TableLayout</artifactId>
 	      <version>20050920</version>
 	    </dependency>
+		<dependency>
+			<groupId>com.doublesignal.sepm.jake</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
     </dependencies>
 </project>

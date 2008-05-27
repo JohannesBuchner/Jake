@@ -1,32 +1,53 @@
 package com.doublesignal.sepm.jake.gui;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.table.*;
-import org.jdesktop.swingx.*;
+
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXLoginDialog;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.Filter;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.PatternFilter;
+
+import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Peter Steinberger
  */
 @SuppressWarnings("serial")
 public class JakeGui extends JPanel {
+	private static Logger log = Logger.getLogger(JakeGui.class);
+
+
+	private IJakeGuiAccess jakeGuiAccess = null;
+
+	public IJakeGuiAccess getJakeGuiAccess()
+	{
+		log.info("Getting JakeGuIAccess Object");
+		return jakeGuiAccess;
+	}
+
+	public void setJakeGuiAccess(IJakeGuiAccess jakeGuiAccess)
+	{
+		log.info("Setting IJakeGuiAccess Object");
+		System.out.println("blablabal");
+		this.jakeGuiAccess = jakeGuiAccess;
+	}
+
 	public JakeGui() {
+		log.info("Initializing Components");
 		initComponents();
 	}
 	
-    public static void main( String[] args )
-    {
-    	setLookAndFeel();
-    	new JakeGui();
-    }
-    
+
 	private static void setLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -39,20 +60,24 @@ public class JakeGui extends JPanel {
     /***** File Menu *****/
 
 	private void newProjectMenuItemActionPerformed(ActionEvent e) {
+		log.info("Open new Project Dialog");
 		new NewProjectDialog(mainFrame).setVisible(true);
 	} 
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
+		log.info("ExitApplication");
 		System.exit(0);
 	}
 	
 	private void propertiesMenuItemActionPerformed(ActionEvent e) {
+		log.info("Open Preferences Dialog");
 		new PreferencesDialog(mainFrame).setVisible(true);
 	}
 	
     /***** View Menu *****/
 	
 	private void systemLogViewMenuItemActionPerformed(ActionEvent e) {
+		log.info("Open ViewLog Dialog");
 		new ViewLogDialog(mainFrame).setVisible(true);
 	}
 	
@@ -71,6 +96,7 @@ public class JakeGui extends JPanel {
 	
     /***** Network Menu *****/
 	private void signInNetworkMenuItemActionPerformed(ActionEvent e) {
+		log.info("Open Network-SignIn Dialog");
 		new JXLoginDialog().setVisible(true);
 	}
 	
