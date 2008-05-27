@@ -1,7 +1,6 @@
 package com.doublesignal.sepm.jake.gui.i18n;
 
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
-import com.doublesignal.sepm.jake.gui.i18n.exceptions.UnknownIdentifierException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -42,7 +41,9 @@ public class SimpleXmlTranslationProvider implements ITranslationProvider {
 		this.language = language;
 	}
 
-	public String get(String messageIdentifier, String... placeholderValues) throws IllegalNumberOfArgumentsException, UnknownIdentifierException {
+	public String get(String messageIdentifier, String... placeholderValues) 
+		throws IllegalNumberOfArgumentsException 
+	{
 		if(this.document == null) {
 			return messageIdentifier;
 		}

@@ -1,7 +1,6 @@
 package com.doublesignal.sepm.jake.gui.i18n;
 
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
-import com.doublesignal.sepm.jake.gui.i18n.exceptions.UnknownIdentifierException;
 
 
 import java.io.BufferedReader;
@@ -41,15 +40,17 @@ public class TextTranslationProvider implements ITranslationProvider {
 	}
 	
 	public String get(String identifier, String... placeholderValues) 
-			throws IllegalNumberOfArgumentsException, UnknownIdentifierException
+			throws IllegalNumberOfArgumentsException
 	{
 		String result = strings.get(identifier);
 		if(result == null)
-			throw new UnknownIdentifierException(identifier);
+			return identifier;
 		
-		for(int i=0;i<placeholderValues.length;i++)
+		for(int i=0;i<placeholderValues.length;i++){
+			if(placeholderValues[i] == null)
+				placeholderValues[i] = "(null)";
 			result = result.replaceAll("%"+i+"%", placeholderValues[i]);
-		
+		}
 		if(result.matches(".*%[0-9]{1,}%.*"))
 			throw new IllegalNumberOfArgumentsException(
 					"The identifier '"+identifier+"' needs more arguments: " + 
