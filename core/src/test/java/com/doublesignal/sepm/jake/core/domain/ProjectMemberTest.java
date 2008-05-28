@@ -8,8 +8,8 @@ import org.junit.Assert;
  */
 public class ProjectMemberTest
 {
-	String validUsername = "validusername@domain.com";;
-	String notesInput = "Das ist ein Notes Input Test";;
+	String validUsername = "validusername@domain.com";
+	String notesInput = "Das ist ein Notes Input Test";
 	String validNickname = "Peter";
 	
 	@Test
@@ -65,6 +65,12 @@ public class ProjectMemberTest
 		}
 
 		Assert.assertEquals(mema, memb);
+	}
+	
+	@Test
+	public void notEqualWithString() {
+		ProjectMember p = new ProjectMember("user");
+		Assert.assertFalse(p.equals(new String()));
 	}
 
 }

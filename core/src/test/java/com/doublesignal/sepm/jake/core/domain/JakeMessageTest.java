@@ -51,4 +51,9 @@ public class JakeMessageTest {
 	public void nullEqualsMessage() {
 		Assert.assertFalse(mNull.equals(m1));
 	}
+	
+	@Test
+	public void m1NotEqualsString() {
+		Assert.assertFalse(m1.equals(new String("asdf")));
+	}
 }

@@ -76,4 +76,8 @@ public class FileObjectTest {
 	public void testf1Equalf3() {
 		Assert.assertTrue(f1.equals(f3));
 	}
+	@Test
+	public void f1EqualsNotString() {
+		Assert.assertFalse(f1.equals(new String("foobar")));
+	}
 }

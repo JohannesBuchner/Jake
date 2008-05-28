@@ -80,21 +80,22 @@ public class JakeMessage {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj.getClass().equals(this.getClass())) {
-			JakeMessage that = (JakeMessage) obj;
+		if (obj == null || !obj.getClass().equals(this.getClass()))
+			return false;
+		JakeMessage that = (JakeMessage) obj;
 
-			if (this.recipient == null && that.getRecipient() != null) return false;
-			if (this.recipient != null && !this.recipient.equals(that.getRecipient())) return false;
+		if (this.recipient == null && that.getRecipient() != null) return false;
+		if (this.recipient != null && !this.recipient.equals(that.getRecipient())) return false;
 
-			if (this.sender == null && that.getSender() != null) return false;
-			if (this.sender != null && !this.sender.equals(that.getSender())) return false;
+		if (this.sender == null && that.getSender() != null) return false;
+		if (this.sender != null && !this.sender.equals(that.getSender())) return false;
 
-			if (this.time == null && that.getTime() != null) return false;
-			if (this.time != null && !this.time.equals(that.getTime())) return false;
+		if (this.time == null && that.getTime() != null) return false;
+		if (this.time != null && !this.time.equals(that.getTime())) return false;
 
-			if (this.content == null && that.getContent() != null) return false;
-			if (this.content != null && !this.content.equals(that.getContent())) return false;
-		}
+		if (this.content == null && that.getContent() != null) return false;
+		if (this.content != null && !this.content.equals(that.getContent())) return false;
+
 		return true;
     }
 }

@@ -8,30 +8,12 @@ import java.io.File;
  */
 public class Project {
 
-	/** 
-	 * The root path of the project 
-	 **/
+
 	private File rootPath;
-	/** 
-	 * Name of the project. 
-	 * One should use a unique project name for intersecting user groups 
-	 **/
 	private String name;
-	/** 
-	 * if true, file modifications trigger a push instantly; 
-	 * otherwise the user is asked
-	 **/
 	private Boolean autoPush = false;
-	/** 
-	 * if true, after a sync, modified files are pulled automatically. 
-	 * **/
 	private Boolean autoPull = false;
-	/**
-	 * If >0, after that number of seconds, a synclog is started against 
-	 * every other project member one after another.  
-	 **/
 	private Integer autoSyncInterval = 0;
-	
 	
 	public Project(File rootPath, String name) {
 		setRootPath(rootPath);
@@ -42,6 +24,10 @@ public class Project {
 		return rootPath;
 	}
 	
+	/**
+	 * Set the rootpath.
+	 * @param rootpath The root path of the project 
+	 */
 	public void setRootPath(File rootPath){
 		this.rootPath = rootPath;
 	}
@@ -50,6 +36,11 @@ public class Project {
 		return name;
 	}
 	
+	/**
+	 * Set the name of the project. One should use a unique project name for
+	 * intersecting user groups
+	 * @param name Name of the project 
+	 */
 	public void setName(String name){
 		this.name = name;
 	}
@@ -57,7 +48,11 @@ public class Project {
 	public Boolean getAutoPush() {
 		return autoPush;
 	}
-
+	
+	/**
+	 * Set the autoPush value for the project. 
+	 * @param autpPush if true, file modifications trigger a push instantly.
+	 */
 	public void setAutoPush(Boolean autoPush) {
 		this.autoPush = autoPush;
 	}
@@ -66,6 +61,10 @@ public class Project {
 		return autoPull;
 	}
 
+	/**
+	 * Set the autoPull value for the project.
+	 * @param autoPull if true, after a sync, modified files are pulled automatically. 
+	 */
 	public void setAutoPull(Boolean autoPull) {
 		this.autoPull = autoPull;
 	}
@@ -75,7 +74,8 @@ public class Project {
 	}
 	
 	/**
-	 * if the new interval is < 0, autoSyncInterval is set to 0
+	 * Set the autosync interval in sekonds.
+	 * @param autoSyncInterval if the new interval is < 0, autoSyncInterval is set to 0
 	 */
 	public void setAutoSyncInterval(Integer autoSyncInterval) {
 		if (autoSyncInterval < 0) 

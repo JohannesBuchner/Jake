@@ -36,4 +36,9 @@ public class JakeObjectTest {
 	public void ObWithNullValueEualsJ1() {
 		Assert.assertFalse(jnull.equals(j1));
 	}
+	
+	@Test
+	public void j1EqualsOtherObject() {
+		Assert.assertFalse(j1.equals(new String("foobar")));
+	}
 }

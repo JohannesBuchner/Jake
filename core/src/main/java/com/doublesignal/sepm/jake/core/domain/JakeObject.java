@@ -68,14 +68,16 @@ public class JakeObject {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && this.getClass().equals(obj.getClass())) {
-			JakeObject that = (JakeObject) obj;
-			
-			if (name == null && that.getName() != null) 
-				return false;
-			if (name != null && !name.equals(that.getName())) 
-				return false;
-		}
+		if (obj == null || !this.getClass().equals(obj.getClass()))
+			return false;
+		
+		JakeObject that = (JakeObject) obj;
+
+		if (name == null && that.getName() != null) 
+			return false;
+		if (name != null && !name.equals(that.getName())) 
+			return false;
+		
 		return true;
 	}
 }

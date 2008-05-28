@@ -1,72 +1,81 @@
 package com.doublesignal.sepm.jake.core.domain;
 
 /**
- * @author johannes, domdorn
+ * The representation of a project member. It consists of a <code>userId</code>, 
+ * <code>nickname</code>, and a <code>note</code>(i.e a comment, there is only one
+ * note per project member, it is not distributed in the project)
+ * @author johannes, domdorn, simon
  */
-public class ProjectMember
-{
+public class ProjectMember {
 
-	private String UserId;
-	private String Notes;
-	private String Nickname;
+	private String userId;
+	private String notes;
+	private String nickname;
 
-
-	public ProjectMember(String userId)
-	{
-		UserId = userId;
+	/**
+	 * Constructs a new <code>ProjectMember</code> with the given <code>userId</code>.
+	 * @param userId
+	 */
+	public ProjectMember(String userId) {
+		this.userId = userId;
 	}
 
-	public String getUserId()
-	{
-		return UserId;
+	public String getUserId() {
+		return userId;
 	}
 
-	public String getNotes()
-	{
-		return Notes;
+	public String getNotes() {
+		return notes;
 	}
 
-	public String getNickname()
-	{
-		return Nickname;
+	public String getNickname() {
+		return nickname;
 	}
 
-
-	public void setNotes(String notes)
-	{
-		Notes = notes;
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
-	public void setNickname(String nickname)
-	{
-		Nickname = nickname;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
-	public boolean equals(Object o)
-	{
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
+	/**
+	 * Tests if two <code>projectMembers</code>s are equal
+	 * @return <code>true</code> iff all fields are equal.
+	 */
+	public boolean equals(Object obj) {
+		if (obj == null || !this.getClass().equals(obj.getClass()))
 			return false;
 
-		ProjectMember that = (ProjectMember) o;
-
-		if (Nickname.equals(that.Nickname) && 
-			Notes.equals(that.Notes) && 
-			UserId.equals(that.UserId)
-		){
-			return true;
-		}
+		ProjectMember that = (ProjectMember) obj;
 		
-		return false;
+		if (nickname == null && that.getNickname() != null)
+			return false;
+		if (nickname != null && !nickname.equals(that.getNickname()))
+			return false;
+		
+		if (notes == null && that.getNotes() != null)
+			return false;
+		if (notes != null && !notes.equals(that.getNotes()))
+			return false;
+		
+		if (userId == null && that.getUserId() != null)
+			return false;
+		if (userId != null && !userId.equals(that.getUserId()))
+			return false;
+
+		return true;
 	}
 
-	public int hashCode()
-	{
+	/**
+	 * Returns a hash of the projectMember. All fields are used in the calculation.
+	 */
+	public int hashCode() {
 		int result;
-		result = (UserId != null ? UserId.hashCode() : 0);
-		result = 31 * result + (Notes != null ? Notes.hashCode() : 0);
-		result = 31 * result + (Nickname != null ? Nickname.hashCode() : 0);
+		result = (userId != null ? userId.hashCode() : 0);
+		result = 31 * result + (notes != null ? notes.hashCode() : 0);
+		result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
 		return result;
 	}
 }
