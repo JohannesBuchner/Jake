@@ -32,4 +32,32 @@
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
 	</bean>
+	<bean id="FSService"
+			class="com.doublesignal.sepm.jake.fss.FSService"
+			singleton="true">
+	</bean>
+	<bean id="ICService"
+			class="com.doublesignal.sepm.jake.ics.MockICService"
+			singleton="true">
+	</bean>
+	<bean id="SyncService"
+			class="com.doublesignal.sepm.jake.sync.MockSyncService"
+			singleton="true">
+			
+			<property name="ICService" ref="ICService"/>
+			<property name="FSService" ref="FSService"/>
+	</bean>
+
+	<!--
+		<bean id="exampleBean" class="examples.ExampleBean">
+		
+		  -- constructor injection using the nested <ref/> element --
+		  <constructor-arg><ref bean="anotherExampleBean"/></constructor-arg>
+		  
+		  -- constructor injection using the neater 'ref' attribute --
+		  <constructor-arg ref="yetAnotherBean"/>
+		  
+		  <constructor-arg type="int" value="1"/>
+		</bean>
+	-->
 </beans>
