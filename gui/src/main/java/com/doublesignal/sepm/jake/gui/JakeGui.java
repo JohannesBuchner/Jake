@@ -61,7 +61,7 @@ public class JakeGui extends JPanel {
         	factory.getBean("translationProvider");
         
         setJakeGuiAccess(jakeGuiAccess);
-		
+        setLookAndFeel();
         log.debug("Initializing Components");
 		initComponents();
 	}
