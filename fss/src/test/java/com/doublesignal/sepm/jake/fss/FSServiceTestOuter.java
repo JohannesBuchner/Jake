@@ -271,5 +271,27 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 		fss.launchFile("launch2.html");
 	}
 	
-	/* TODO: calculateHash launchFile registerModificationListener */
+	public void testFileSize() throws Exception {
+		fss.writeFile("launch1.txt", "Foobar".getBytes());
+		fss.writeFile("launch2.html", "<html><body><h1>Woot!</h1></body></html>"
+				.getBytes());
+		assertEquals(fss.getFileSize("launch2.html"),
+				fss.readFile("launch2.html").length);
+		assertEquals(fss.getFileSize("launch1.txt"),
+				fss.readFile("launch1.txt").length);
+		try{
+			fss.getFileSize("does/not/exist.txt");
+			fail();
+		}catch(FileNotFoundException e){
+		}
+		fss.writeFile("foo/bar.txt", "Foobar".getBytes());
+		try{
+			fss.getFileSize("foo");
+			fail();
+		}catch(NotAFileException e){
+		}
+
+	}
+	
+	/* TODO: launchFile registerModificationListener */
 }

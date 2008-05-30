@@ -248,4 +248,16 @@ public class FSService implements IFSService {
 			throw new LaunchException(e);
 		}
 	}
+
+	public long getFileSize(String relpath)
+		throws InvalidFilenameException, FileNotFoundException, NotAFileException 
+	{
+		String filename = getFullpath(relpath);
+		File f = new File(filename);
+		if(!f.exists())
+			throw new FileNotFoundException();
+		if(!f.isFile())
+			throw new NotAFileException();
+		return f.length();
+	}
 }

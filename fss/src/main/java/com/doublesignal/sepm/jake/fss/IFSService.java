@@ -187,4 +187,15 @@ public interface IFSService {
 	 */
 	int getHashLength();
 	
+	/**
+	 * @param relpath
+	 * @return size of the file in Bytes
+	 * @throws InvalidFilenameException
+	 * @throws FileNotFoundException
+	 * @throws NotAFileException
+	 */
+	long getFileSize(String relpath)
+		throws InvalidFilenameException, FileNotFoundException, NotAFileException; 
+
+
 }
