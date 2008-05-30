@@ -16,6 +16,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -127,7 +128,13 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	public List<JakeObject> getJakeObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
 		// TODO Auto-generated method stub
-		return null;
+		
+		List<JakeObject> results = new ArrayList<JakeObject>();
+		results.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf"));
+		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
+		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
+		results.add(new FileObject("ToDos.txt"));
+		return results;
 	}
 
 	public List<JakeObject> getJakeObjectsByTags(List<Tag> tags) {
@@ -212,4 +219,8 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 		
 	}
 
+	public long getFileSize(FileObject fileObject)
+	{
+		return 812315646;
+	}
 }

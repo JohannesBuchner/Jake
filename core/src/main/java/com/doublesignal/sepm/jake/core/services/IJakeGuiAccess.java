@@ -234,6 +234,12 @@ public interface IJakeGuiAccess {
     public List<Tag> getTagsOfObject(JakeObject object);
 
 
+	/**
+	 * Queries the FSS for the filesize of a specific FileObject
+	 * @param fileObject
+	 * @return FileSize in Bytes
+	 */
+	public long getFileSize(FileObject fileObject);
 
 
 
