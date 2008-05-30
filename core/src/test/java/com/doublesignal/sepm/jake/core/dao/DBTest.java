@@ -33,8 +33,9 @@ public class DBTest {
 	
 	@After
 	public void tearDown() throws Exception {
-		con.rollback();
-		disconnect();
+        con.commit();
+        con.createStatement().execute("SHUTDOWN");
+        disconnect();
 	}
 	
 	@Test
