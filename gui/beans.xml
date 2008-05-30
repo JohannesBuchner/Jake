@@ -14,7 +14,37 @@
 	</bean>
 
 	<!-- unfortunately, we have to repeat ourselves here (copied from core) -->
-	<bean id="FSService"
+    <bean id="hsqldbDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:target/classes/data/db" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="connectionProperties">     
+			<props>
+				<prop key="shutdown">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="ProjectMemberDAO"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcProjectMemberDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+
+	<bean id="JakeObjectDAO"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcJakeObjectDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+
+	 <bean id="LogEntryDAO"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcLogEntryDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+    
+    <bean id="FSService"
 			class="com.doublesignal.sepm.jake.fss.FSService"
 			singleton="true">
 	</bean>

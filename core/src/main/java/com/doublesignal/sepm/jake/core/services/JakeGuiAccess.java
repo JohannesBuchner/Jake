@@ -1,6 +1,9 @@
 package com.doublesignal.sepm.jake.core.services;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
+import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
+import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
@@ -29,7 +32,11 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	ISyncService sync = null; 
 	IFSService fss = null;
 
-	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
+    IProjectMemberDao projectMemberDAO = null;
+    IJakeObjectDao jakeObjectDAO = null;
+    ILogEntryDao logEntryDAO = null;
+
+    private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
 	public JakeGuiAccess(){
 		log.info("Setup the JakeGuiAccess Object");
@@ -37,7 +44,11 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 		ics  = (IICService)   factory.getBean("ICService");
 		sync = (ISyncService) factory.getBean("SyncService");
 		fss  = (IFSService)   factory.getBean("FSService");
-	}
+
+        projectMemberDAO = (IProjectMemberDao) factory.getBean("ProjectMemberDAO");
+        jakeObjectDAO = (IJakeObjectDao) factory.getBean("JakeObjectDAO");
+        logEntryDAO = (ILogEntryDao) factory.getBean("LogEntryDAO");
+    }
 	
 	public void login(String user, String pw) throws LoginDataRequiredException, 
 		LoginDataNotValidException, NetworkException, LoginUseridNotValidException 

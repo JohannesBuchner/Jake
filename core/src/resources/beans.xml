@@ -6,7 +6,7 @@
 	<bean id="hsqldbDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 		<property name="url" value="jdbc:hsqldb:target/classes/data/db" />
-		<property name="username" value="SE" />
+		<property name="username" value="sa" />
 		<property name="password" value="" />
 		<property name="connectionProperties">
 			<props>
@@ -15,19 +15,19 @@
 		</property>
 	</bean>
 
-	<bean id="projectMemberDAO"
+	<bean id="ProjectMemberDAO"
 		class="com.doublesignal.sepm.jake.core.dao.JdbcProjectMemberDao"
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
 	</bean>
 
-	<bean id="jakeObjectDAO"
+	<bean id="JakeObjectDAO"
 		class="com.doublesignal.sepm.jake.core.dao.JdbcJakeObjectDao"
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
 	</bean>
 
-	 <bean id="logEntryDAO"
+	 <bean id="LogEntryDAO"
 		class="com.doublesignal.sepm.jake.core.dao.JdbcLogEntryDao"
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
