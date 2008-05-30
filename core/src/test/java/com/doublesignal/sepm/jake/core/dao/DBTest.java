@@ -33,9 +33,8 @@ public class DBTest {
 	
 	@After
 	public void tearDown() throws Exception {
-        con.commit();
-        con.createStatement().execute("SHUTDOWN");
-        disconnect();
+		con.rollback();
+		disconnect();
 	}
 	
 	@Test
@@ -45,7 +44,7 @@ public class DBTest {
 	
 	protected Connection con;
 	
-	protected String connect_string = "jdbc:hsqldb:test.db";
+	protected String connect_string = "jdbc:hsqldb:test.db;shutdown=true";
 	
 	public void connect() throws Exception{
 		con = null;
