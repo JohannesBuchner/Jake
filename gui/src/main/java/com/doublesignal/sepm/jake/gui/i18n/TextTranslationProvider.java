@@ -1,7 +1,8 @@
 package com.doublesignal.sepm.jake.gui.i18n;
 
 import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
-
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,14 +14,18 @@ import java.util.HashMap;
  */
 public class TextTranslationProvider implements ITranslationProvider {
 	private static HashMap<String, String> strings;
-	
+
+	private Resource file;
+
 	/**
 	 * Loads the languageFile and interpretes each line as identifier=message pair
 	 * @param lang
 	 */
 	public void setLanguage(String langFile) throws IOException{
 		strings = new HashMap<String, String>();
-		BufferedReader fr = new BufferedReader(new FileReader(langFile));
+		file = new ClassPathResource(langFile);
+		
+		BufferedReader fr = new BufferedReader(new FileReader(file.getFile()));
 		String line = "";
 		while(true){
 			line = fr.readLine();

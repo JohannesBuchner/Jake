@@ -1,0 +1,3 @@
+LoginDataNotValid=The login data you provided were invalid. Try again!
+NetworkError=A network error occured. The error was: %0%
+LoginUseridNotValid=The user you entered doesn't exist or is of invalid format.

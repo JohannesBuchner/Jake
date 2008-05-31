@@ -1,12 +1,14 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
+import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
@@ -14,12 +16,10 @@ import com.doublesignal.sepm.jake.sync.ISyncService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Observer;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 /**
  * 
@@ -41,7 +41,7 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 
 	public JakeGuiAccess(){
 		log.info("Setup the JakeGuiAccess Object");
-		BeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
 		ics  = (IICService)   factory.getBean("ICService");
 		sync = (ISyncService) factory.getBean("SyncService");
 		fss  = (IFSService)   factory.getBean("FSService");
@@ -106,7 +106,7 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	public String getConfigOption(String configKey)
 			throws NoSuchConfigOptionException {
 		// TODO Auto-generated method stub
-		throw new NoSuchConfigOptionException();
+		throw new NoSuchConfigOptionException(configKey);
 	}
 
 	public Map<String, String> getConfigOptions() {
@@ -221,6 +221,40 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 
 	public long getFileSize(FileObject fileObject)
 	{
-		return 812315646;
+		try
+		{
+			return fss.getFileSize(fileObject.getName());
+		}
+		catch (InvalidFilenameException e)
+		{
+			return 0;
+		}
+		catch (FileNotFoundException e)
+		{
+			return 0;
+		}
+		catch (NotAFileException e)
+		{
+			return 0;
+		}
 	}
+
+	public ProjectMember getLastModifier(JakeObject jakeObject)
+	{
+	   //sync.getLogEntries(jakeObject)
+		//return new ProjectMember(logEntryDAO.getMostRecentFor(jakeObject).getUserId());
+		return new ProjectMember("dominik"); // TODO
+		//return null;
+	}
+
+
+	public Date getLastModified(JakeObject jakeObject)
+	{
+		GregorianCalendar date =  new GregorianCalendar();
+		date.set(2008,05,13,13,12);
+		return date.getTime();
+
+		//return logEntryDAO.getMostRecentFor(jakeObject).getTimestamp();
+	}
+
 }

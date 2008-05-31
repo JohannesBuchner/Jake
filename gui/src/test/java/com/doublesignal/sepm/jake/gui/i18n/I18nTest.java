@@ -1,20 +1,18 @@
 package com.doublesignal.sepm.jake.gui.i18n;
 
+import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
 import junit.framework.TestCase;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
-
-import com.doublesignal.sepm.jake.gui.i18n.exceptions.IllegalNumberOfArgumentsException;
+import org.springframework.core.io.ClassPathResource;
 
 public class I18nTest extends TestCase {
 	public void testi18n() throws Exception{
-		BeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("/beans.xml"));
         ITranslationProvider translator = (ITranslationProvider) 
         	factory.getBean("translationProvider");
         
-        translator.setLanguage("src/main/resources/lang-test.txt");
+        translator.setLanguage("lang-test.txt");
 		assertEquals(translator.get("HELLO_WORLD"),"Hallo Welt!");
 		assertEquals(translator.get("HELLO", "Chris"),
 				"Hallo Chris!");

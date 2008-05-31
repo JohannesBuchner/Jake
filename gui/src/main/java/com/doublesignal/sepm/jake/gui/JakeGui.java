@@ -20,7 +20,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.PatternFilter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
 import javax.swing.border.SoftBevelBorder;
@@ -61,7 +61,7 @@ public class JakeGui extends JPanel
 
 	public JakeGui(IJakeGuiAccess jakeGuiAccess)
 	{
-		BeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
 		translator = (ITranslationProvider)
 				factory.getBean("translationProvider");
 
@@ -631,8 +631,8 @@ public class JakeGui extends JPanel
 													FileSize + " " + FileSizeUnity,
 													obj.getTags().toString(),
 													"offline",
-													"2005-08-10 13:12:08",
-													"dominik"
+													jakeGuiAccess.getLastModified(obj).toString(),
+													jakeGuiAccess.getLastModifier(obj).getNickname()
 											});
 								}
 
