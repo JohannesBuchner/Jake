@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
 @SuppressWarnings("serial")
 /**
@@ -14,15 +15,18 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
  */
 public class NotesTableModel extends AbstractTableModel {
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
-	private final List<NoteObject> notes;
+	private List<NoteObject> notes;
+	private final IJakeGuiAccess jakeGuiAccess;
 
-	NotesTableModel(List<NoteObject> notes) {
+	NotesTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing NoteTableModel.");
-		this.notes = notes;
+		this.jakeGuiAccess = jakeGuiAccess;
+
+		updateData();
 	}
 
 	String[] colNames = new String[] { "Title", "Tags", "Last changed", "User" };
-	boolean[] columnEditable = new boolean[] { true, true, true, false };
+	boolean[] columnEditable = new boolean[] { false, true, true, false };
 
 	enum NotesColumns {
 		Title, Tags, LastChanged, User
@@ -36,6 +40,15 @@ public class NotesTableModel extends AbstractTableModel {
 		return notes.size();
 	}
 
+	/**
+	 * Updates the view for notes, get new notes from GuiAccess
+	 */
+	private void updateData() {
+		log.info("Updating Notes data...");
+		notes = jakeGuiAccess.getNotes();
+
+	}
+
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		NoteObject note = notes.get(rowIndex);
 
@@ -45,13 +58,13 @@ public class NotesTableModel extends AbstractTableModel {
 			return note.getName();
 
 		case Tags:
-			return note.getTags();
+			return JakeObjLib.getTagString(note.getTags());
 
 		case LastChanged:
-			return "???";
+			return jakeGuiAccess.getLastModified(note).toString();
 
 		case User:
-			return "???";
+			return jakeGuiAccess.getLastModifier(note).getNickname();
 
 		default:
 			throw new IllegalArgumentException(
