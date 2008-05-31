@@ -42,7 +42,6 @@ public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProje
 	}
 
 	public void save(ProjectMember member) {
-		ProjectMember existing = null;
 		try {
 			this.getByUserId(member.getUserId());
 
