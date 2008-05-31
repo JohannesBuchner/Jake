@@ -1,37 +1,12 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Observer;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
-
 import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeMessage;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.LogEntry;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
+import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
@@ -39,6 +14,13 @@ import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.FileNotFoundException;
+import java.util.*;
 
 /**
  * 
@@ -147,10 +129,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
-	public List<FileObject> getFileObjectsByPath(String relPath)
+	public List<JakeObject> getJakeObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
 
-		List<FileObject> results = new ArrayList<FileObject>();
+		List<JakeObject> results = new ArrayList<JakeObject>();
 		try {
 			results.add((FileObject) new FileObject(
 					"SEPM_SS08_Artefaktenbeschreibung.pdf").addTag(

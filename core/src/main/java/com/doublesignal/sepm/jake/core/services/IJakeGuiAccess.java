@@ -1,26 +1,14 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.domain.*;
+import com.doublesignal.sepm.jake.core.services.exceptions.*;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
-
-import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeMessage;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.LogEntry;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
 /**
  * @author domdorn
@@ -195,7 +183,7 @@ public interface IJakeGuiAccess {
 	 * @return list of FileObjects
 	 * @throws NoSuchJakeObjectException
 	 */
-	public List<FileObject> getFileObjectsByPath(String relPath)
+	public List<JakeObject> getJakeObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException;
 
 	/**
