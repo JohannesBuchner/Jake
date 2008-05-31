@@ -1,12 +1,38 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Observer;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+
 import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.*;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.domain.Project;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
-import com.doublesignal.sepm.jake.core.services.exceptions.*;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
@@ -14,60 +40,56 @@ import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
-
-import java.io.FileNotFoundException;
-import java.util.*;
 
 /**
  * 
  * @author johannes
- *
+ * 
  */
-public class JakeGuiAccess implements IJakeGuiAccess{
-	/* TODO: do we want this here or somewhere else? 
-	 * IMO it's OK here. */
-	IICService ics = null; 
-	ISyncService sync = null; 
+public class JakeGuiAccess implements IJakeGuiAccess {
+	/*
+	 * TODO: do we want this here or somewhere else? IMO it's OK here.
+	 */
+	IICService ics = null;
+	ISyncService sync = null;
 	IFSService fss = null;
 
-    IProjectMemberDao projectMemberDAO = null;
-    IJakeObjectDao jakeObjectDAO = null;
-    ILogEntryDao logEntryDAO = null;
+	IProjectMemberDao projectMemberDAO = null;
+	IJakeObjectDao jakeObjectDAO = null;
+	ILogEntryDao logEntryDAO = null;
 
-    private static Logger log = Logger.getLogger(JakeGuiAccess.class);
+	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
-	public JakeGuiAccess(){
+	public JakeGuiAccess() {
 		log.info("Setup the JakeGuiAccess Object");
-		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
-		ics  = (IICService)   factory.getBean("ICService");
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
+				"beans.xml"));
+		ics = (IICService) factory.getBean("ICService");
 		sync = (ISyncService) factory.getBean("SyncService");
-		fss  = (IFSService)   factory.getBean("FSService");
+		fss = (IFSService) factory.getBean("FSService");
 
-        projectMemberDAO = (IProjectMemberDao) factory.getBean("ProjectMemberDAO");
-        jakeObjectDAO = (IJakeObjectDao) factory.getBean("JakeObjectDAO");
-        logEntryDAO = (ILogEntryDao) factory.getBean("LogEntryDAO");
-    }
-	
-	public void login(String user, String pw) throws LoginDataRequiredException, 
-		LoginDataNotValidException, NetworkException, LoginUseridNotValidException 
-	{
-		try{
-			if(user == null)
+		projectMemberDAO = (IProjectMemberDao) factory
+				.getBean("ProjectMemberDAO");
+		jakeObjectDAO = (IJakeObjectDao) factory.getBean("JakeObjectDAO");
+		logEntryDAO = (ILogEntryDao) factory.getBean("LogEntryDAO");
+	}
+
+	public void login(String user, String pw)
+			throws LoginDataRequiredException, LoginDataNotValidException,
+			NetworkException, LoginUseridNotValidException {
+		try {
+			if (user == null)
 				user = getConfigOption("userid");
-			if(pw == null)
+			if (pw == null)
 				pw = getConfigOption("password");
-		}catch(NoSuchConfigOptionException e){
+		} catch (NoSuchConfigOptionException e) {
 			throw new LoginDataRequiredException();
 		}
-		try{
-			if(!ics.login(user, pw)){
+		try {
+			if (!ics.login(user, pw)) {
 				throw new LoginDataNotValidException();
 			}
-		}catch(NoSuchUseridException e){
+		} catch (NoSuchUseridException e) {
 			throw new LoginUseridNotValidException();
 		}
 	}
@@ -129,15 +151,16 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	public List<JakeObject> getJakeObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
 		// TODO Auto-generated method stub
-		
+
 		List<JakeObject> results = new ArrayList<JakeObject>();
-		try
-		{
-			results.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf").addTag(new Tag("someTag")).addTag(new Tag("someothertag")));
-		}
-		catch (InvalidTagNameException e)
-		{
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		try {
+			results
+					.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf")
+							.addTag(new Tag("someTag")).addTag(
+									new Tag("someothertag")));
+		} catch (InvalidTagNameException e) {
+			e.printStackTrace(); // To change body of catch statement use
+									// File | Settings | File Templates.
 		}
 		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
 		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
@@ -166,8 +189,8 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 	}
 
 	public List<NoteObject> getNotes() {
-		// TODO Auto-generated method stub
-		return null;
+		// return *something*.
+		return new LinkedList<NoteObject>();
 	}
 
 	public List<JakeObject> getOutOfSyncObjects() {
@@ -198,85 +221,73 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 
 	public void logSync() throws NetworkException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void pullObjects() throws NetworkException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void pushObjects() throws NetworkException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void registerProjectInvitationCallback(Observer obs) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void registerReceiveMessageCallback(Observer observer) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public void setConfigOption(String configKey, String configValue)
-	{
+	public void setConfigOption(String configKey, String configValue) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public long getFileSize(FileObject fileObject)
-	{
-		try
-		{
+	public long getFileSize(FileObject fileObject) {
+		try {
 			return fss.getFileSize(fileObject.getName());
-		}
-		catch (InvalidFilenameException e)
-		{
+		} catch (InvalidFilenameException e) {
 			return 0;
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return 0;
-		}
-		catch (NotAFileException e)
-		{
+		} catch (NotAFileException e) {
 			return 0;
 		}
 	}
 
-	public ProjectMember getLastModifier(JakeObject jakeObject)
-	{
-	   //sync.getLogEntries(jakeObject)
-		//return new ProjectMember(logEntryDAO.getMostRecentFor(jakeObject).getUserId());
+	public ProjectMember getLastModifier(JakeObject jakeObject) {
+		// sync.getLogEntries(jakeObject)
+		// return new
+		// ProjectMember(logEntryDAO.getMostRecentFor(jakeObject).getUserId());
 		return new ProjectMember("dominik"); // TODO
-		//return null;
+		// return null;
 	}
 
-
-	public Date getLastModified(JakeObject jakeObject)
-	{
-		GregorianCalendar date =  new GregorianCalendar();
-		date.set(2008,05,13,13,12);
+	public Date getLastModified(JakeObject jakeObject) {
+		GregorianCalendar date = new GregorianCalendar();
+		date.set(2008, 05, 13, 13, 12);
 		return date.getTime();
 
-		//return logEntryDAO.getMostRecentFor(jakeObject).getTimestamp();
+		// return logEntryDAO.getMostRecentFor(jakeObject).getTimestamp();
 	}
 
-
-	public JakeObject addTag(JakeObject jakeObject, Tag tag)
-	{
-		log.debug("Adding tag '"+tag+"' to JakeObject '"+jakeObject.getName()+"' ");
+	public JakeObject addTag(JakeObject jakeObject, Tag tag) {
+		log.debug("Adding tag '" + tag + "' to JakeObject '"
+				+ jakeObject.getName() + "' ");
 		jakeObject.addTag(tag);
 		// todo access jakeObjectDao
 		return jakeObject;
 	}
 
-	public JakeObject removeTag(JakeObject jakeObject, Tag tag)
-	{
-		log.debug("removing tag '"+tag+"' from JakeObject '"+jakeObject.getName()+"' ");
+	public JakeObject removeTag(JakeObject jakeObject, Tag tag) {
+		log.debug("removing tag '" + tag + "' from JakeObject '"
+				+ jakeObject.getName() + "' ");
 		jakeObject.removeTag(tag);
 		// todo access jakeObjectDao
 		return jakeObject;
