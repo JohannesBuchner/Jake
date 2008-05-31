@@ -1,12 +1,39 @@
 package com.doublesignal.sepm.jake.gui;
 
-import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.JXLoginPane;
@@ -19,17 +46,13 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.swing.*;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
 /**
  * @author Peter Steinberger
@@ -356,14 +379,6 @@ public class JakeGui extends JPanel {
 		renamePeopleMenuItem = new JMenuItem();
 		changeUserIdMenuItem = new JMenuItem();
 		removePeopleMenuItem = new JMenuItem();
-		filesPopupMenu = new JPopupMenu();
-		openExecuteFileMenuItem = new JMenuItem();
-		lockFileMenuItem = new JMenuItem();
-		deleteFileMenuItem = new JMenuItem();
-		viewLogForFileMenuItem = new JMenuItem();
-		resolveFileConflictMenuItem = new JMenuItem();
-		propagateFileMenuItem = new JMenuItem();
-		menuItem4 = new JMenuItem();
 
 		searchPopupMenu = new JPopupMenu();
 		nameSearchMenuItem = new JMenuItem();
@@ -515,15 +530,9 @@ public class JakeGui extends JPanel {
 
 						// ======== filesPanel ========
 
-						mainTabbedPane.addTab(
-								"Files (4/10 MB)",
-								new ImageIcon(getClass().getResource(
-										"/icons/files.png")), filesPanel
-						);
-
-
-
-
+						mainTabbedPane.addTab("Files (4/10 MB)", new ImageIcon(
+								getClass().getResource("/icons/files.png")),
+								filesPanel);
 
 						mainTabbedPane.addTab("Notes (3)", new ImageIcon(
 								getClass().getResource("/icons/notes.png")),
@@ -904,46 +913,6 @@ public class JakeGui extends JPanel {
 			peoplePopupMenu.add(removePeopleMenuItem);
 		}
 
-		// ======== filesPopupMenu ========
-		{
-
-			// ---- openExecuteFileMenuItem ----
-			openExecuteFileMenuItem.setText("Open");
-			filesPopupMenu.add(openExecuteFileMenuItem);
-
-			// ---- lockFileMenuItem ----
-			lockFileMenuItem.setText("Lock File...");
-			filesPopupMenu.add(lockFileMenuItem);
-
-			// ---- deleteFileMenuItem ----
-			deleteFileMenuItem.setText("Delete File...");
-			filesPopupMenu.add(deleteFileMenuItem);
-
-			// ---- viewLogForFileMenuItem ----
-			viewLogForFileMenuItem.setText("View Log...");
-			filesPopupMenu.add(viewLogForFileMenuItem);
-
-			// ---- resolveFileConflictMenuItem ----
-			resolveFileConflictMenuItem.setText("Resolve Conflict...");
-			resolveFileConflictMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					resolveFileConflictMenuItemActionPerformed(e);
-				}
-			});
-			filesPopupMenu.add(resolveFileConflictMenuItem);
-			filesPopupMenu.addSeparator();
-
-			// ---- propagateFileMenuItem ----
-			propagateFileMenuItem.setText("Propagate File");
-			propagateFileMenuItem
-					.setToolTipText("Propagate locally changed file");
-			filesPopupMenu.add(propagateFileMenuItem);
-
-			// ---- menuItem4 ----
-			menuItem4.setText("Pull File");
-			filesPopupMenu.add(menuItem4);
-		}
-
 		// ======== searchPopupMenu ========
 		{
 
@@ -1019,14 +988,6 @@ public class JakeGui extends JPanel {
 	private JMenuItem renamePeopleMenuItem;
 	private JMenuItem changeUserIdMenuItem;
 	private JMenuItem removePeopleMenuItem;
-	private JPopupMenu filesPopupMenu;
-	private JMenuItem openExecuteFileMenuItem;
-	private JMenuItem lockFileMenuItem;
-	private JMenuItem deleteFileMenuItem;
-	private JMenuItem viewLogForFileMenuItem;
-	private JMenuItem resolveFileConflictMenuItem;
-	private JMenuItem propagateFileMenuItem;
-	private JMenuItem menuItem4;
 	private JPopupMenu searchPopupMenu;
 	private JMenuItem nameSearchMenuItem;
 	private JMenuItem tagsSearchMenuItem;
