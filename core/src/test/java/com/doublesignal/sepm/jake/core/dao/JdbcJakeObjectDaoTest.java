@@ -6,10 +6,12 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.domain.Tag;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Test for the JDBC JakeObject DAO
@@ -29,7 +31,33 @@ public class JdbcJakeObjectDaoTest extends DBTest {
 	@Test
 	public void testGetExistingFileObject() throws NoSuchFileException {
 		FileObject fo = dao.getFileObjectByName("test.docx");
-		assertEquals("Should be the right FileObject", "test.docx", fo.getName());		
+		Set<Tag> tags = fo.getTags();
+
+		boolean hasTagWord = false;
+		boolean hasTagMicrosoft = false;
+		boolean hasTagTest = false;
+		boolean hasTagFoobar = false;
+
+		for(Tag t: tags) {
+			if("word".equals(t.getName())) {
+				hasTagWord = true;
+			}
+			if("microsoft".equals(t.getName())) {
+				hasTagMicrosoft = true;
+			}
+			if("test".equals(t.getName())) {
+				hasTagTest = true;
+			}
+			if("foobar".equals(t.getName())) {
+				hasTagFoobar = true;
+			}
+		}
+
+		assertEquals("Should be the right FileObject", "test.docx", fo.getName());
+		assertTrue("Should have tag 'word'", hasTagWord);
+		assertTrue("Should have tag 'microsoft'", hasTagMicrosoft);
+		assertTrue("Should have tag 'test'", hasTagTest);
+		assertTrue("Should have tag 'foobar'", hasTagFoobar);
 	}
 
 	@Test

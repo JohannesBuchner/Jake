@@ -17,3 +17,14 @@ INSERT INTO objects (name) VALUES ('note:j13r@jabber.ccc.de:20080531201910');
 INSERT INTO noteobjects (name, content) VALUES ('note:j13r@jabber.ccc.de:20080531201910', 'Lorem ipsum dolor sit amet.');
 INSERT INTO objects (name) VALUES ('note:dominik@jabber.fsinf.at:20080531201955');
 INSERT INTO noteobjects (name, content) VALUES ('note:dominik@jabber.fsinf.at:20080531201955', '99 bottles of beer on the wall!');
+
+INSERT INTO tags (object_name, tag) VALUES ('test.docx', 'word');
+INSERT INTO tags (object_name, tag) VALUES ('test.docx', 'microsoft');
+INSERT INTO tags (object_name, tag) VALUES ('test.docx', 'test');
+INSERT INTO tags (object_name, tag) VALUES ('test.docx', 'foobar');
+INSERT INTO tags (object_name, tag) VALUES ('pr0n.jpg', 'private');
+INSERT INTO tags (object_name, tag) VALUES ('note:chris@jabber.doublesignal.com:20080531201500', 'important');
+INSERT INTO tags (object_name, tag) VALUES ('note:chris@jabber.doublesignal.com:20080531201500', 'university');
+INSERT INTO tags (object_name, tag) VALUES ('note:chris@jabber.doublesignal.com:20080531201500', 'foobar');
+INSERT INTO tags (object_name, tag) VALUES ('note:j13r@jabber.ccc.de:20080531201910', 'foobar');
+INSERT INTO tags (object_name, tag) VALUES ('note:j13r@jabber.ccc.de:20080531201910', 'loremipsum');

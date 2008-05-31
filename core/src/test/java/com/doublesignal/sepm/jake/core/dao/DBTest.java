@@ -21,7 +21,7 @@ public class DBTest {
 	
 	public void setUp(String createFilename, String insertFilename) throws Exception {
 		connect();
-		String rootpath = "src/resources/";
+		String rootpath = "src/test/resources/";
 		if(! new File(rootpath + createFilename).exists()){
 			rootpath = "./";
 			if(! new File(rootpath + createFilename).exists()){
