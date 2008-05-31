@@ -10,10 +10,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * JDBC implementation of the JakeObject DAO
@@ -23,13 +20,15 @@ import java.util.Set;
 public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 		  implements IJakeObjectDao {
 	private final String JAKEOBJECT_SELECT = "SELECT name FROM objects";
+	private final String JAKEOBJECT_WHERE = " WHERE name=?";
 	private final String JAKEOBJECT_INSERT =
 			  "INSERT INTO objects (name) VALUES (:name)";
 	private final String JAKEOBJECT_DELETE =
 			  "DELETE FROM objects WHERE name=:name";
 
 	private final String NOTEOBJECT_SELECT =
-			  "SELECT name, content FROM noteobjects NATURAL JOIN objects WHERE name=?";
+			  "SELECT name, content FROM noteobjects n JOIN objects o ON n.name = o.name";
+	private final String NOTEOBJECT_WHERE = " WHERE name=?";
 	private final String NOTEOBJECT_INSERT =
 			  "INSERT INTO noteobjects (name, content) VALUES (:name, :content)";
 	private final String NOTEOBJECT_UPDATE =
@@ -56,7 +55,10 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 			  throws NoSuchFileException {
 		try {
 			FileObject fo = getSimpleJdbcTemplate().queryForObject(
-					  JAKEOBJECT_SELECT, new JdbcFileObjectRowMapper(), name);
+					  JAKEOBJECT_SELECT + JAKEOBJECT_WHERE, new JdbcFileObjectRowMapper(), name);
+			if(fo.getName().startsWith("note:")) {
+				throw new NoSuchFileException("Requested a FileObject, but this is a NoteObject!");
+			}
 			for (Tag t : getTagsForObject(fo)) {
 				fo.addTag(t);
 			}
@@ -71,7 +73,10 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 			  throws NoSuchFileException {
 		try {
 			NoteObject no = getSimpleJdbcTemplate().queryForObject(
-					  NOTEOBJECT_SELECT, new JdbcNoteObjectRowMapper(), name);
+					  NOTEOBJECT_SELECT + NOTEOBJECT_WHERE, new JdbcNoteObjectRowMapper(), name);
+			if(!no.getName().startsWith("note:")) {
+				throw new NoSuchFileException("Requested a NoteObject, but this is something else!");
+			}
 			for (Tag t : getTagsForObject(no)) {
 				no.addTag(t);
 			}
@@ -83,11 +88,27 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 	}
 
 	public List<FileObject> getAllFileObjects() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		List<FileObject> fos = getSimpleJdbcTemplate().query(
+				  JAKEOBJECT_SELECT,
+				  new JdbcFileObjectRowMapper()
+		);
+
+		List<FileObject> fos_return = new ArrayList<FileObject>();
+
+		for(FileObject fo: fos) {
+			if(!fo.getName().startsWith("note:")) {
+				fos_return.add(fo);
+			}
+		}
+
+		return fos_return;
 	}
 
 	public List<NoteObject> getAllNoteObjects() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getSimpleJdbcTemplate().query(
+				  NOTEOBJECT_SELECT,
+				  new JdbcNoteObjectRowMapper()
+		);
 	}
 
 	public void save(JakeObject object) {

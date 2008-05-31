@@ -63,7 +63,38 @@ public class JdbcJakeObjectDaoTest extends DBTest {
 	@Test
 	public void testGetExistingNoteObject() throws NoSuchFileException {
 		NoteObject no = dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500");
+		Set<Tag> tags = no.getTags();
+
+		boolean hasTagImportant = false;
+		boolean hasTagUniversity = false;
+		boolean hasTagFoobar = false;
+
+		for(Tag t: tags) {
+			if("important".equals(t.getName())) {
+				hasTagImportant = true;
+			}
+			if("university".equals(t.getName())) {
+				hasTagUniversity = true;
+			}
+			if("foobar".equals(t.getName())) {
+				hasTagFoobar = true;
+			}
+		}
+
 		assertEquals("Should be the right NoteObject", "I am a machine.", no.getContent());
+		assertTrue("Should have tag 'important'", hasTagImportant);
+		assertTrue("Should have tag 'university'", hasTagUniversity);
+		assertTrue("Should have tag 'foobar'", hasTagFoobar);
+	}
+
+	@Test(expected= NoSuchFileException.class)
+	public void testGetInvalidNoteObject() throws NoSuchFileException {
+		dao.getNoteObjectByName("test.docx");	
+	}
+
+	@Test(expected= NoSuchFileException.class)
+	public void testGetInvalidFileObject() throws NoSuchFileException {
+		dao.getFileObjectByName("note:chris@jabber.doublesignal.com:20080531201500");
 	}
 
 	@Test(expected= NoSuchFileException.class)
