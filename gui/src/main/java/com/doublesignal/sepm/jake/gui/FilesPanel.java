@@ -1,23 +1,16 @@
 package com.doublesignal.sepm.jake.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
-
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import javax.swing.*;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -55,16 +48,11 @@ public class FilesPanel extends JPanel {
 		filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		filesTable.setModel(filesTableModel);
 
-		// TagTableModelListener TagfileListTableModelListener = new
-		// TagTableModelListener(
-		// jakeGuiAccess, files, 0, 2);
-
-		// filesTableModel.addTableModelListener(TagfileListTableModelListener);
-
 		TableColumnModel cm = filesTable.getColumnModel();
 		cm.getColumn(0).setPreferredWidth(245);
 		cm.getColumn(1).setPreferredWidth(50);
 		cm.getColumn(2).setPreferredWidth(75);
+
 
 		filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));

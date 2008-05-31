@@ -1,8 +1,8 @@
 package com.doublesignal.sepm.jake.gui;
 
-import java.util.Set;
-
 import com.doublesignal.sepm.jake.core.domain.Tag;
+
+import java.util.Set;
 
 /**
  * Library for various JakeObject-related gui functions.
@@ -18,7 +18,7 @@ public final class JakeObjLib {
 	 * @param tags
 	 * @return
 	 */
-	public static Object getTagString(Set<Tag> tags) {
+	public static String getTagString(Set<Tag> tags) {
 		String sTags = "";
 		for (Tag tag : tags) {
 			sTags = tag.toString() + ((!sTags.isEmpty()) ? ", " + sTags : "");
