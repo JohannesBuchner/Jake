@@ -1,54 +1,5 @@
 package com.doublesignal.sepm.jake.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.List;
-import java.util.Date;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXLoginDialog;
-import org.jdesktop.swingx.JXLoginPane;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.Filter;
-import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.PatternFilter;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
-
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -61,6 +12,31 @@ import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidEx
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXLoginDialog;
+import org.jdesktop.swingx.JXLoginPane;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.Filter;
+import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.PatternFilter;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+
+import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Peter Steinberger
@@ -588,7 +564,8 @@ public class JakeGui extends JPanel {
 								}
 								catch (NoSuchJakeObjectException e)
 								{
-									e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+									log.warn("Got a NoSuchJakeObjectException from jakeGuiAccess");
+									//e.printStackTrace();
 								}
 
 								ProjectMember pmLastModifier;
@@ -647,7 +624,11 @@ public class JakeGui extends JPanel {
 								}
 
 
-								TagTableModelListener TagfileListTableModelListener = new TagTableModelListener(jakeGuiAccess, files, 0);
+								TagTableModelListener TagfileListTableModelListener = new TagTableModelListener(
+										jakeGuiAccess,
+										files,
+										0,
+										2);
 
 								fileListTableModel.addTableModelListener(TagfileListTableModelListener);
 
@@ -665,6 +646,13 @@ public class JakeGui extends JPanel {
 							}
 							filesPanel.add(filesScrollPane, BorderLayout.CENTER);
 						}
+						mainTabbedPane.addTab(
+								"Files (4/10 MB)",
+								new ImageIcon(getClass().getResource(
+										"/icons/files.png")), filesPanel
+						);
+
+
 
 
 

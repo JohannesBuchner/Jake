@@ -27,20 +27,32 @@ public class TagTableModelListener implements TableModelListener
 	private static Logger log = Logger.getLogger(TagTableModelListener.class);
 
 	private IJakeGuiAccess jakeGuiAccess;
+	/**
+	 * The list of JakeObjects used to create the TableModel
+	 */
 	private List<JakeObject> jakeObjects;
+	/**
+	 * Column-Position of the JakeObjectName in the TableModel
+	 */
 	private int iJakeObjectIdPosition;
+	/**
+	 * Column-Position of the Tags-Column in the TableModel
+	 */
+	private int iTagsPosition;
 
-	public TagTableModelListener(IJakeGuiAccess jakeGuiAccess, List<JakeObject> jakeObjects, int iJakeObjectIdPosition)
+	public TagTableModelListener(IJakeGuiAccess jakeGuiAccess, List<JakeObject> jakeObjects, int iJakeObjectIdPosition, int iTagsPosition)
 	{
 		this.jakeGuiAccess = jakeGuiAccess;
 		this.jakeObjects = jakeObjects;
 		this.iJakeObjectIdPosition = iJakeObjectIdPosition;
+		this.iTagsPosition = iTagsPosition;
 	}
 
 	public void tableChanged(TableModelEvent event)
 	{
-		if (event.getType() == TableModelEvent.UPDATE)
+		if (event.getType() == TableModelEvent.UPDATE && event.getColumn() == iTagsPosition)
 		{
+			log.debug("handling a tag-change event");
 			TableModel tm = (TableModel) event.getSource();
 			String jakeObjectName = (String) tm.getValueAt(event.getFirstRow(), iJakeObjectIdPosition);
 			String tags = (String) tm.getValueAt(event.getFirstRow(), event.getColumn());
