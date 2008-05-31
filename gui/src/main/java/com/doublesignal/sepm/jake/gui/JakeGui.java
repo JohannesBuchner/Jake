@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -58,7 +60,7 @@ import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
  * @author Peter Steinberger
  */
 @SuppressWarnings("serial")
-public class JakeGui extends JPanel {
+public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
 	private final ITranslationProvider translator;
@@ -85,6 +87,7 @@ public class JakeGui extends JPanel {
 		setNativeLookAndFeel();
 		log.debug("Initializing Components");
 		initComponents();
+		registerUpdateObservers();
 	}
 
 	/**
@@ -319,6 +322,16 @@ public class JakeGui extends JPanel {
 		new JXLoginDialog().setVisible(true);
 	}
 
+	private void registerUpdateObservers() {
+		notesPanel.getNotesUpdater().addObserver(this);
+	}
+
+	public void update(Observable o, Object arg) {
+		// mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
+		// mainTabbedPane.setTitleAt(0, peoplePanel.getTitle());
+		mainTabbedPane.setTitleAt(0, notesPanel.getTitle());
+	}
+
 	private void initComponents() {
 		mainFrame = new JFrame();
 		statusPanel = new JPanel();
@@ -333,9 +346,7 @@ public class JakeGui extends JPanel {
 		peopleScrollPane = new JScrollPane();
 		peopleTable = new JXTable();
 		filesPanel = new FilesPanel(this);
-
 		notesPanel = new NotesPanel(this);
-
 		mainToolBar = new JToolBar();
 		openProjectFolderButton = new JButton();
 		refreshDatapoolViewButton = new JButton();
@@ -943,7 +954,7 @@ public class JakeGui extends JPanel {
 	private JScrollPane peopleScrollPane;
 	private JXTable peopleTable;
 	private FilesPanel filesPanel;
-	private JPanel notesPanel;
+	private NotesPanel notesPanel;
 
 	private JToolBar mainToolBar;
 	private JButton openProjectFolderButton;

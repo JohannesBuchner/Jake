@@ -16,6 +16,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.gui.NotesTableModel.NotesUpdaterObservable;
 
 @SuppressWarnings("serial")
 /**
@@ -38,6 +39,14 @@ public class NotesPanel extends JPanel {
 
 	private void newNoteMenuItemActionPerformed(ActionEvent e) {
 		new NoteEditorDialog(gui.getMainFrame()).setVisible(true);
+	}
+
+	public NotesUpdaterObservable getNotesUpdater() {
+		return notesTableModel.getNotesUpdater();
+	}
+
+	public String getTitle() {
+		return "Notes (" + notesTableModel.getNotes() + ")";
 	}
 
 	public void initComponents() {
