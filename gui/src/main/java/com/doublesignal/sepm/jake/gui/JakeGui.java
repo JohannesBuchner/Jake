@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Date;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -51,6 +52,8 @@ import org.springframework.core.io.ClassPathResource;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
@@ -546,105 +549,125 @@ public class JakeGui extends JPanel {
 						{
 							filesPanel.setLayout(new BorderLayout());
 
-							// ======== filesScrollPane ========
+							//======== filesScrollPane ========
 							{
-								// ---- filesTable ----
-								filesTable
-										.setComponentPopupMenu(filesPopupMenu);
+								//---- filesTable ----
+								filesTable.setComponentPopupMenu(filesPopupMenu);
 								filesTable.setColumnControlVisible(true);
-								filesTable.setHighlighters(HighlighterFactory
-										.createSimpleStriping());
+								filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
-								/*
-								 * Object[] fileListContent = new Object[]{};
-								 * 
-								 * fileListContent[fileListContent.length] = new
-								 * String[] {"Name", "Size", "Tags", "Sync
-								 * Status", "Last Changed", "User"};
-								 */
 
-								String[] fileListCaptions = new String[] {
-										"Name", "Size", "Tags", "Sync Status",
-										"Last Changed", "User" };
+								String[] fileListCaptions = new String[]{
+										"Name", "Size", "Tags", "Sync Status", "Last Changed", "User"
+								};
+
 
 								DefaultTableModel fileListTableModel = new DefaultTableModel(
 										fileListCaptions, 0
 
-								) {
-									boolean[] columnEditable = new boolean[] {
-											false, false, true, false, false,
-											true };
+								)
+								{
+									boolean[] columnEditable = new boolean[]{
+											false, false, true, false, false, false
+									};
 
 									@Override
-									public boolean isCellEditable(int rowIndex,
-											int columnIndex) {
+									public boolean isCellEditable(int rowIndex, int columnIndex)
+									{
 										return columnEditable[columnIndex];
 									}
+
+
 								};
 
+
 								List<JakeObject> files = null;
-								try {
-									files = jakeGuiAccess
-											.getJakeObjectsByPath("/");
-								} catch (NoSuchJakeObjectException e) {
-									e.printStackTrace(); // To change body of
-									// catch statement
-									// use File |
-									// Settings | File
-									// Templates.
+								try
+								{
+									files = jakeGuiAccess.getJakeObjectsByPath("/");
+								}
+								catch (NoSuchJakeObjectException e)
+								{
+									e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 								}
 
-								for (JakeObject obj : files) {
-									long FileSize = jakeGuiAccess
-											.getFileSize((FileObject) obj);
-									String FileSizeUnity = "Bytes";
-									if (FileSize > 1024) {
-										FileSize /= 1024;
-										FileSizeUnity = "KB";
+								ProjectMember pmLastModifier;
+								Date dLastModified;
+								long lFileSize;
+								String sFileSizeUnity;
+								String sLastModifier;
+								String sOnlineStatus;
+								String sTags;
+
+								for (JakeObject obj : files)
+								{
+									lFileSize = jakeGuiAccess.getFileSize((FileObject) obj);
+
+									sFileSizeUnity = "Bytes";
+									if (lFileSize > 1024)
+									{
+										lFileSize /= 1024;
+										sFileSizeUnity = "KB";
 									}
-									if (FileSize > 1024) {
-										FileSize /= 1024;
-										FileSizeUnity = "MB";
+									if (lFileSize > 1024)
+									{
+										lFileSize /= 1024;
+										sFileSizeUnity = "MB";
 									}
-									if (FileSize > 1024) {
-										FileSize /= 1024;
-										FileSizeUnity = "GB";
+									if (lFileSize > 1024)
+									{
+										lFileSize /= 1024;
+										sFileSizeUnity = "GB";
 									}
 
-									fileListTableModel.addRow(new String[] {
-											obj.getName(),
-											FileSize + " " + FileSizeUnity,
-											obj.getTags().toString(),
-											"offline",
-											jakeGuiAccess.getLastModified(obj)
-													.toString(),
-											jakeGuiAccess.getLastModifier(obj)
-													.getNickname() });
+									pmLastModifier = jakeGuiAccess.getLastModifier(obj);
+									dLastModified = jakeGuiAccess.getLastModified(obj);
+
+									sLastModifier = (pmLastModifier.getNickname().isEmpty()) ?
+											pmLastModifier.getUserId()
+											:
+											pmLastModifier.getNickname();
+
+									sTags = "";
+									for (Tag tag : obj.getTags())
+									{
+										sTags = tag.toString() + ((!sTags.isEmpty()) ? ", " + sTags : "");
+									}
+									sOnlineStatus = "online";
+
+									fileListTableModel.addRow(
+											new String[]{
+													obj.getName(),
+													lFileSize + " " + sFileSizeUnity,
+													sTags,
+													sOnlineStatus,
+													dLastModified.toString(),
+													sLastModifier
+											});
 								}
+
+
+								TagTableModelListener TagfileListTableModelListener = new TagTableModelListener(jakeGuiAccess, files, 0);
+
+								fileListTableModel.addTableModelListener(TagfileListTableModelListener);
+
 
 								filesTable.setModel(fileListTableModel);
 								{
-									TableColumnModel cm = filesTable
-											.getColumnModel();
+									TableColumnModel cm = filesTable.getColumnModel();
 									cm.getColumn(0).setPreferredWidth(245);
 									cm.getColumn(1).setPreferredWidth(50);
 									cm.getColumn(2).setPreferredWidth(75);
 								}
-								filesTable
-										.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-								filesTable
-										.setPreferredScrollableViewportSize(new Dimension(
-												450, 379));
+								filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+								filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
 								filesScrollPane.setViewportView(filesTable);
 							}
-							filesPanel
-									.add(filesScrollPane, BorderLayout.CENTER);
-
-							mainTabbedPane.addTab("Files (4/10 MB)",
-									new ImageIcon(getClass().getResource(
-											"/icons/files.png")), filesPanel);
-
+							filesPanel.add(filesScrollPane, BorderLayout.CENTER);
 						}
+
+
+
 						mainTabbedPane.addTab("Notes (3)", new ImageIcon(
 								getClass().getResource("/icons/notes.png")),
 								notesPanel);
