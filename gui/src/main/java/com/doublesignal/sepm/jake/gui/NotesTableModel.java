@@ -1,5 +1,6 @@
 package com.doublesignal.sepm.jake.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
@@ -17,7 +18,7 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
  */
 public class NotesTableModel extends AbstractTableModel {
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
-	private List<NoteObject> notes;
+	private List<NoteObject> notes = new ArrayList<NoteObject>();
 	private final IJakeGuiAccess jakeGuiAccess;
 
 	NotesTableModel(IJakeGuiAccess jakeGuiAccess) {
