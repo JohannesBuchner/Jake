@@ -13,17 +13,13 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
  * @author peter
  */
 public class NotesTableModel extends AbstractTableModel {
-	private static Logger log = Logger.getLogger(JakeGui.class);
+	private static Logger log = Logger.getLogger(NotesTableModel.class);
 	private final List<NoteObject> notes;
 
 	NotesTableModel(List<NoteObject> notes) {
 		log.info("Initializing NoteTableModel.");
 		this.notes = notes;
 	}
-
-	Object[][] model = new Object[][] { { "Update 1", "", "Today", "Peter" },
-			{ "Aufgaben und Ziele", "!", "Yesterday, 11:00", "Simon" },
-			{ "Testnotiz 1", "test", "April 12th", "Johannes" } };
 
 	String[] colNames = new String[] { "Title", "Tags", "Last changed", "User" };
 	boolean[] columnEditable = new boolean[] { true, true, true, false };

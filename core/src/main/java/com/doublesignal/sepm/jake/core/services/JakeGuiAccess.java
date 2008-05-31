@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -148,19 +147,16 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
-	public List<JakeObject> getJakeObjectsByPath(String relPath)
+	public List<FileObject> getFileObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
-		// TODO Auto-generated method stub
 
-		List<JakeObject> results = new ArrayList<JakeObject>();
+		List<FileObject> results = new ArrayList<FileObject>();
 		try {
-			results
-					.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf")
-							.addTag(new Tag("someTag")).addTag(
-									new Tag("someothertag")));
+			results.add((FileObject) new FileObject(
+					"SEPM_SS08_Artefaktenbeschreibung.pdf").addTag(
+					new Tag("someTag")).addTag(new Tag("someothertag")));
 		} catch (InvalidTagNameException e) {
-			e.printStackTrace(); // To change body of catch statement use
-									// File | Settings | File Templates.
+			e.printStackTrace();
 		}
 		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
 		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
@@ -190,7 +186,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 	public List<NoteObject> getNotes() {
 		// return *something*.
-		return new LinkedList<NoteObject>();
+		ArrayList<NoteObject> list = new ArrayList<NoteObject>();
+		list.add(NoteObject.createNoteObject("peter", "Test-Content"));
+		list.add(NoteObject.createNoteObject("dom", "Noch ein Test"));
+		return list;
 	}
 
 	public List<JakeObject> getOutOfSyncObjects() {

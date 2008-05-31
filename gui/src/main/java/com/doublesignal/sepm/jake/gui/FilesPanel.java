@@ -4,14 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
@@ -19,12 +17,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -35,6 +28,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectExcep
 public class FilesPanel extends JPanel {
 	private static Logger log = Logger.getLogger(FilesPanel.class);
 	private final JakeGui jakeGui;
+	private FilesTableModel filesTableModel;
 
 	public FilesPanel(JakeGui jakeGui) {
 		this.jakeGui = jakeGui;
@@ -55,91 +49,23 @@ public class FilesPanel extends JPanel {
 		filesScrollPane = new JScrollPane();
 		filesTable = new JXTable();
 		this.setLayout(new BorderLayout());
+		filesTableModel = new FilesTableModel(jakeGuiAccess);
 		filesTable.setComponentPopupMenu(filesPopupMenu);
 		filesTable.setColumnControlVisible(true);
 		filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+		filesTable.setModel(filesTableModel);
 
-		String[] fileListCaptions = new String[] { "Name", "Size", "Tags",
-				"Sync Status", "Last Changed", "User" };
+		// TagTableModelListener TagfileListTableModelListener = new
+		// TagTableModelListener(
+		// jakeGuiAccess, files, 0, 2);
 
-		DefaultTableModel fileListTableModel = new DefaultTableModel(
-				fileListCaptions, 0
+		// filesTableModel.addTableModelListener(TagfileListTableModelListener);
 
-		) {
-			boolean[] columnEditable = new boolean[] { false, false, true,
-					false, false, false };
+		TableColumnModel cm = filesTable.getColumnModel();
+		cm.getColumn(0).setPreferredWidth(245);
+		cm.getColumn(1).setPreferredWidth(50);
+		cm.getColumn(2).setPreferredWidth(75);
 
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return columnEditable[columnIndex];
-			}
-
-		};
-
-		java.util.List<JakeObject> files = null;
-		try {
-			files = jakeGuiAccess.getJakeObjectsByPath("/");
-		} catch (NoSuchJakeObjectException e) {
-			log.warn("Got a NoSuchJakeObjectException from jakeGuiAccess");
-			// e.printStackTrace();
-		}
-
-		ProjectMember pmLastModifier;
-		Date dLastModified;
-		long lFileSize;
-		String sFileSizeUnity;
-		String sLastModifier;
-		String sOnlineStatus;
-		String sTags;
-
-		for (JakeObject obj : files) {
-			lFileSize = jakeGuiAccess.getFileSize((FileObject) obj);
-
-			sFileSizeUnity = "Bytes";
-			if (lFileSize > 1024) {
-				lFileSize /= 1024;
-				sFileSizeUnity = "KB";
-			}
-			if (lFileSize > 1024) {
-				lFileSize /= 1024;
-				sFileSizeUnity = "MB";
-			}
-			if (lFileSize > 1024) {
-				lFileSize /= 1024;
-				sFileSizeUnity = "GB";
-			}
-
-			pmLastModifier = jakeGuiAccess.getLastModifier(obj);
-			dLastModified = jakeGuiAccess.getLastModified(obj);
-
-			sLastModifier = (pmLastModifier.getNickname().isEmpty()) ? pmLastModifier
-					.getUserId()
-					: pmLastModifier.getNickname();
-
-			sTags = "";
-			for (Tag tag : obj.getTags()) {
-				sTags = tag.toString()
-						+ ((!sTags.isEmpty()) ? ", " + sTags : "");
-			}
-			sOnlineStatus = "online";
-
-			fileListTableModel.addRow(new String[] { obj.getName(),
-					lFileSize + " " + sFileSizeUnity, sTags, sOnlineStatus,
-					dLastModified.toString(), sLastModifier });
-		}
-
-		TagTableModelListener TagfileListTableModelListener = new TagTableModelListener(
-				jakeGuiAccess, files, 0, 2);
-
-		fileListTableModel.addTableModelListener(TagfileListTableModelListener);
-
-		filesTable.setModel(fileListTableModel);
-		{
-			TableColumnModel cm = filesTable.getColumnModel();
-			cm.getColumn(0).setPreferredWidth(245);
-			cm.getColumn(1).setPreferredWidth(50);
-			cm.getColumn(2).setPreferredWidth(75);
-		}
 		filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
 		filesScrollPane.setViewportView(filesTable);

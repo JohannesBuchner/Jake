@@ -24,6 +24,7 @@ public class FSService implements IFSService {
 		if (!Desktop.isDesktopSupported())
 			throw new NoSuchAlgorithmException("Desktop not supported");
 		
+		
 		desktop = Desktop.getDesktop();
 		
 		if (!desktop.isSupported(Desktop.Action.OPEN)) 
