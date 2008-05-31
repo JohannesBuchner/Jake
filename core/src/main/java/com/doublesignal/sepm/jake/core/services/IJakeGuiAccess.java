@@ -246,4 +246,21 @@ public interface IJakeGuiAccess {
 	 */
 	public Date getLastModified(JakeObject jakeObject);
 
+	/**
+	 * Adds a tag to a specific JakeObject
+	 * @param jakeObject
+	 * @param tag
+	 * @return the JakeObject given as parameter
+	 */
+	public JakeObject addTag(JakeObject jakeObject, Tag tag);
+
+
+	/**
+	 * Removes a tag from a specific JakeObject
+	 * @param jakeObject
+	 * @param tag
+	 * @return the JakeObject given as parameter
+	 */
+	public JakeObject removeTag(JakeObject jakeObject, Tag tag);
+
 }

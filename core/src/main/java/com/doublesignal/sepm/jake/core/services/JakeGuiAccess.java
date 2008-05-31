@@ -5,6 +5,7 @@ import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.*;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
@@ -130,7 +131,14 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 		// TODO Auto-generated method stub
 		
 		List<JakeObject> results = new ArrayList<JakeObject>();
-		results.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf"));
+		try
+		{
+			results.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf").addTag(new Tag("someTag")).addTag(new Tag("someothertag")));
+		}
+		catch (InvalidTagNameException e)
+		{
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		}
 		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
 		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
 		results.add(new FileObject("ToDos.txt"));
@@ -257,4 +265,20 @@ public class JakeGuiAccess implements IJakeGuiAccess{
 		//return logEntryDAO.getMostRecentFor(jakeObject).getTimestamp();
 	}
 
+
+	public JakeObject addTag(JakeObject jakeObject, Tag tag)
+	{
+		log.debug("Adding tag '"+tag+"' to JakeObject '"+jakeObject.getName()+"' ");
+		jakeObject.addTag(tag);
+		// todo access jakeObjectDao
+		return jakeObject;
+	}
+
+	public JakeObject removeTag(JakeObject jakeObject, Tag tag)
+	{
+		log.debug("removing tag '"+tag+"' from JakeObject '"+jakeObject.getName()+"' ");
+		jakeObject.removeTag(tag);
+		// todo access jakeObjectDao
+		return jakeObject;
+	}
 }
