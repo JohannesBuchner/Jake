@@ -42,6 +42,8 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 			  "INSERT INTO tags (object_name, tag) VALUES (:object_name, :tag)";
 	private final String TAGS_DELETE =
 			  "DELETE FROM tags WHERE object_name=:object_name AND tag=:tag";
+	private final String TAGS_DELETE_ALL =
+			  "DELETE FROM tags WHERE object_name=:object_name";
 
 	private List<Tag> getTagsForObject(JakeObject jo) {
 		return getSimpleJdbcTemplate().query(
@@ -49,6 +51,17 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 				  new JdbcTagRowMapper(),
 				  jo.getName()
 		);
+	}
+
+	private void saveTags(JakeObject object) {
+		getSimpleJdbcTemplate().update(TAGS_DELETE_ALL, object.getName());
+		
+		for(Tag t: object.getTags()) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("object_name", object.getName());
+			parameters.put("tag", t.getName());
+			getSimpleJdbcTemplate().update(TAGS_INSERT, parameters);
+		}
 	}
 
 	public FileObject getFileObjectByName(String name)
@@ -112,7 +125,32 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 	}
 
 	public void save(JakeObject object) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		this.saveTags(object);
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("name", object.getName());
+
+		if(object instanceof FileObject) {
+			try {
+				getFileObjectByName(object.getName());
+				/* If we get here, this FileObject already exists in DB - do nothing */
+			} catch (NoSuchFileException e) {
+				/* If we get here, this FileObject does not yet exist in DB - insert it*/
+				getSimpleJdbcTemplate().update(JAKEOBJECT_INSERT, parameters);
+			}
+		} else if (object instanceof NoteObject) {
+			try {
+				getNoteObjectByName(object.getName());
+				/* If we get here, this NoteObject already exists in DB */
+				parameters.put("content", ((NoteObject)object).getContent());
+				getSimpleJdbcTemplate().update(NOTEOBJECT_UPDATE, parameters);
+			} catch (NoSuchFileException e) {
+				/* If we get here, this NoteObject does not yet exist in DB - insert it */
+				getSimpleJdbcTemplate().update(JAKEOBJECT_INSERT, parameters);
+				parameters.put("content", ((NoteObject)object).getContent());
+				getSimpleJdbcTemplate().update(NOTEOBJECT_INSERT, parameters);
+			}
+		}
 	}
 
 	public void delete(JakeObject object) {
@@ -134,10 +172,16 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 	}
 
 	public void addTagsTo(JakeObject object, Tag... tags) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		for(Tag t: tags) {
+			object.addTag(t);
+		}
+		this.save(object);
 	}
 
 	public void removeTagsFrom(JakeObject object, Tag... tags) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		for(Tag t: tags) {
+			object.removeTag(t);
+		}
+		this.save(object);
 	}
 }
