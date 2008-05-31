@@ -273,4 +273,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		// todo access jakeObjectDao
 		return jakeObject;
 	}
+
+	public String getJakeObjectSyncStatus(JakeObject jakeObject)
+	{
+
+
+		return "Offline";
+	}
 }

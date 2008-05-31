@@ -86,15 +86,15 @@ public class FilesTableModel extends AbstractTableModel {
 			return JakeObjLib.getTagString(file.getTags());
 
 		case SyncStatus:
-			return "???";
+			return jakeGuiAccess.getJakeObjectSyncStatus(file);
 
 		case LastChanged:
+			return jakeGuiAccess.getLastModified(file).toString();
+
+		case User:
 			ProjectMember pmLastModifier = jakeGuiAccess.getLastModifier(file);
 			return (pmLastModifier.getNickname().isEmpty()) ? pmLastModifier
 					.getUserId() : pmLastModifier.getNickname();
-
-		case User:
-			return "???";
 
 		default:
 			throw new IllegalArgumentException(
@@ -141,7 +141,6 @@ public class FilesTableModel extends AbstractTableModel {
 
 				// remove the non existend tags from the jakeObject
 				List<String> tagsFromArray = Arrays.asList(tagsArray);
-
 				log.debug("removing tags from jakeObject");
 				Tag[] foundTags = foundJakeObject.getTags().toArray(new Tag[foundJakeObject.getTags().size()]);
 				for (Tag tag : foundTags)
@@ -160,8 +159,7 @@ public class FilesTableModel extends AbstractTableModel {
 				super.setValueAt(sTags, rowIndex, columnIndex);
 			}
 		}
-
-		// other column
+		// possible other columns go here
 	}
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {

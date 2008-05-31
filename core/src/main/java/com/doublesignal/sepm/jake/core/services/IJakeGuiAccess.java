@@ -270,4 +270,13 @@ public interface IJakeGuiAccess {
 	 */
 	public JakeObject removeTag(JakeObject jakeObject, Tag tag);
 
+
+	/**
+	 * Get the SyncStatus of a JakeObject
+	 * @param jakeObject
+	 * @return SyncStatus (String)
+	 */
+	public String getJakeObjectSyncStatus(JakeObject jakeObject);
+	
+
 }

@@ -20,6 +20,8 @@ public final class JakeObjLib {
 	 */
 	public static String getTagString(Set<Tag> tags) {
 		String sTags = "";
+
+
 		for (Tag tag : tags) {
 			sTags = tag.toString() + ((!sTags.isEmpty()) ? ", " + sTags : "");
 		}
