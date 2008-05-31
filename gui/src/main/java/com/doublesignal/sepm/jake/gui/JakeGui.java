@@ -301,13 +301,6 @@ public class JakeGui extends JPanel implements Observer {
 	}
 
 	/**
-	 * ** Files Context Menu ****
-	 */
-	private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {
-		new ResolveConflictDialog(mainFrame).setVisible(true);
-	}
-
-	/**
 	 * ** Status Bar Buttons ****
 	 */
 	private void messageReceivedStatusButtonActionPerformed(ActionEvent e) {
@@ -327,6 +320,7 @@ public class JakeGui extends JPanel implements Observer {
 	}
 
 	public void update(Observable o, Object arg) {
+		log.info("Got Observer Message: Updating Titles");
 		// mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
 		// mainTabbedPane.setTitleAt(0, peoplePanel.getTitle());
 		mainTabbedPane.setTitleAt(0, notesPanel.getTitle());

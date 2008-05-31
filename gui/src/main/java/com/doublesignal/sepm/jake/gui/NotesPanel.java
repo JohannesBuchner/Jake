@@ -35,6 +35,7 @@ public class NotesPanel extends JPanel {
 		this.jakeGuiAccess = gui.getJakeGuiAccess();
 
 		initComponents();
+		updateData();
 	}
 
 	private void newNoteMenuItemActionPerformed(ActionEvent e) {
@@ -43,6 +44,11 @@ public class NotesPanel extends JPanel {
 
 	public NotesUpdaterObservable getNotesUpdater() {
 		return notesTableModel.getNotesUpdater();
+	}
+
+	public void updateData() {
+		log.info("Updating Notes Panel...");
+		notesTableModel.updateData();
 	}
 
 	public String getTitle() {

@@ -1,16 +1,23 @@
 package com.doublesignal.sepm.jake.gui;
 
-import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumnModel;
+
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import javax.swing.*;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -28,6 +35,13 @@ public class FilesPanel extends JPanel {
 		this.jakeGuiAccess = jakeGui.getJakeGuiAccess();
 		initComponents();
 		initPopupMenu();
+	}
+
+	/**
+	 * ** Files Context Menu ****
+	 */
+	private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {
+		new ResolveConflictDialog(jakeGui.getMainFrame()).setVisible(true);
 	}
 
 	public FilterPipeline getFilters() {
@@ -52,7 +66,6 @@ public class FilesPanel extends JPanel {
 		cm.getColumn(0).setPreferredWidth(245);
 		cm.getColumn(1).setPreferredWidth(50);
 		cm.getColumn(2).setPreferredWidth(75);
-
 
 		filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
@@ -86,7 +99,7 @@ public class FilesPanel extends JPanel {
 		resolveFileConflictMenuItem.setText("Resolve Conflict...");
 		resolveFileConflictMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// resolveFileConflictMenuItemActionPerformed(e);
+				resolveFileConflictMenuItemActionPerformed(e);
 			}
 		});
 		filesPopupMenu.add(resolveFileConflictMenuItem);

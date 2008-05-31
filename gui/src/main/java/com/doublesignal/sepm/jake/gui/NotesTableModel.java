@@ -23,8 +23,6 @@ public class NotesTableModel extends AbstractTableModel {
 	NotesTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing NoteTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
-
-		updateData();
 	}
 
 	String[] colNames = new String[] { "Title", "Tags", "Last changed", "User" };
@@ -45,7 +43,7 @@ public class NotesTableModel extends AbstractTableModel {
 	/**
 	 * Updates the view for notes, get new notes from GuiAccess
 	 */
-	private void updateData() {
+	public void updateData() {
 		log.info("Updating Notes data...");
 		notes = jakeGuiAccess.getNotes();
 	}
