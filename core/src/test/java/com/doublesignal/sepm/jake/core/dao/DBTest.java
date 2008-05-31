@@ -1,13 +1,17 @@
 package com.doublesignal.sepm.jake.core.dao;
-import java.io.*;
-import java.sql.*;
 
 import junit.framework.Assert;
-
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBTest {
 	@Before
@@ -44,7 +48,7 @@ public class DBTest {
 	
 	protected Connection con;
 	
-	protected String connect_string = "jdbc:hsqldb:test.db;shutdown=true";
+	protected String connect_string = "jdbc:hsqldb:mem:db";
 	
 	public void connect() throws Exception{
 		con = null;
