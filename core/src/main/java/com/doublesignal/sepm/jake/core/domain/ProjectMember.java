@@ -8,9 +8,9 @@ package com.doublesignal.sepm.jake.core.domain;
  */
 public class ProjectMember {
 
-	private String userId;
-	private String notes;
-	private String nickname;
+	private String userId ="";
+	private String notes = "";
+	private String nickname = "";
 
 	/**
 	 * Constructs a new <code>ProjectMember</code> with the given <code>userId</code>.
