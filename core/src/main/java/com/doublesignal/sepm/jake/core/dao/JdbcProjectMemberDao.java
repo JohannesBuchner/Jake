@@ -42,19 +42,15 @@ public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProje
 	}
 
 	public void save(ProjectMember member) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("userid", member.getUserId());
+		parameters.put("nick", member.getNickname());
+		parameters.put("notes", member.getNotes());
 		try {
 			this.getByUserId(member.getUserId());
-
 			/* If we're still in here, the ProjectMember already exists */
-			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("nick", member.getNickname());
-			parameters.put("notes", member.getNotes());
 			getSimpleJdbcTemplate().update(PROJECTMEMBER_UPDATE, parameters);
 		} catch (NoSuchProjectMemberException e) {
-			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("userid", member.getUserId());
-			parameters.put("nick", member.getNickname());
-			parameters.put("notes", member.getNotes());
 			getSimpleJdbcTemplate().update(PROJECTMEMBER_INSERT, parameters);
 		}
 	}

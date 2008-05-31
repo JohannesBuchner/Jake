@@ -37,7 +37,7 @@ public interface IProjectMemberDao {
 	public void save(ProjectMember member);
 
 	/**
-	 * Removes a ProjectMember from the database.
+	 * Removes a ProjectMember from the database. If the ProjectMember didn't exist in the first place, nothing is done.
 	 *
 	 * @param member
 	 */
