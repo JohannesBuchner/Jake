@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.core.dao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,17 +22,11 @@ public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProje
 	private static final String PROJECTMEMBER_WHERE_USERID = " WHERE userid=?";
 
 	public ProjectMember getByUserId(String networkId) throws NoSuchProjectMemberException {
-		List<ProjectMember> matches = getSimpleJdbcTemplate().query(
-				  PROJECTMEMBER_SELECT + PROJECTMEMBER_WHERE_USERID,
-				  new JdbcProjectMemberRowMapper(),
-				  networkId
-		);
-
-		if (matches.size() == 0) {
+		try {
+			return getSimpleJdbcTemplate().queryForObject(PROJECTMEMBER_SELECT + PROJECTMEMBER_WHERE_USERID, new JdbcProjectMemberRowMapper(), networkId);
+		} catch (EmptyResultDataAccessException e) {
 			throw new NoSuchProjectMemberException("ProjectMember \"" + networkId + "\" does not exist");
 		}
-
-		return matches.get(0);
 	}
 
 	public List<ProjectMember> getAll() {

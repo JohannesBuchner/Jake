@@ -2,6 +2,8 @@ package com.doublesignal.sepm.jake.core.dao;
 
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 
 import java.util.List;
@@ -47,30 +49,30 @@ public interface IJakeObjectDao {
 	public List<NoteObject> getAllNoteObjects();
 
 	/**
-	 * Saves a FileObject to the database (or updates an existing FileObject should one with the same relpath exist)
+	 * Saves a JakeObject to the database (or updates an existing JakeObject should one with the same name exist)
 	 *
-	 * @param object The FileObject to be saved
+	 * @param object The JakeObject to be saved
 	 */
-	public void save(FileObject object);
+	public void save(JakeObject object);
 
 	/**
-	 * Saves a NoteObject to the database (or updates an existing NoteObject should one with the same name exist)
-	 *
-	 * @param object The NoteObject to be saved
-	 */
-	public void save(NoteObject object);
-
-	/**
-	 * Deletes a FileObject from the database
+	 * Deletes a JakeObject from the database
 	 *
 	 * @param object The object to be deleted
 	 */
-	public void delete(FileObject object);
+	public void delete(JakeObject object);
 
 	/**
-	 * Deletes a NoteObject from the database
-	 *
-	 * @param object The object to be deleted
+	 * Convenience method to add one or more tags to a JakeObject
+	 * @param object
+	 * @param tags
 	 */
-	public void delete(NoteObject object);
+	public void addTagsTo(JakeObject object, Tag... tags);
+
+	/**
+	 * Convenience method to remove one or more tags from a JakeObject
+	 * @param object
+	 * @param tags
+	 */
+	public void removeTagsFrom(JakeObject object, Tag... tags);
 }
