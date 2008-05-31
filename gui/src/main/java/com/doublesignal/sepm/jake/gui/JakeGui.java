@@ -1,15 +1,10 @@
 package com.doublesignal.sepm.jake.gui;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
@@ -35,8 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author Peter Steinberger
@@ -316,9 +309,8 @@ public class JakeGui extends JPanel {
 		peoplePanel = new JPanel();
 		peopleScrollPane = new JScrollPane();
 		peopleTable = new JXTable();
-		filesPanel = new JPanel();
-		filesScrollPane = new JScrollPane();
-		filesTable = new JXTable();
+		filesPanel = new FilesPanel(this);
+
 		notesPanel = new NotesPanel(this);
 
 		mainToolBar = new JToolBar();
@@ -522,130 +514,7 @@ public class JakeGui extends JPanel {
 								peoplePanel);
 
 						// ======== filesPanel ========
-						{
-							filesPanel.setLayout(new BorderLayout());
 
-							//======== filesScrollPane ========
-							{
-								//---- filesTable ----
-								filesTable.setComponentPopupMenu(filesPopupMenu);
-								filesTable.setColumnControlVisible(true);
-								filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
-
-
-								String[] fileListCaptions = new String[]{
-										"Name", "Size", "Tags", "Sync Status", "Last Changed", "User"
-								};
-
-
-								DefaultTableModel fileListTableModel = new DefaultTableModel(
-										fileListCaptions, 0
-
-								)
-								{
-									boolean[] columnEditable = new boolean[]{
-											false, false, true, false, false, false
-									};
-
-									@Override
-									public boolean isCellEditable(int rowIndex, int columnIndex)
-									{
-										return columnEditable[columnIndex];
-									}
-
-
-								};
-
-
-								List<JakeObject> files = null;
-								try
-								{
-									files = jakeGuiAccess.getJakeObjectsByPath("/");
-								}
-								catch (NoSuchJakeObjectException e)
-								{
-									log.warn("Got a NoSuchJakeObjectException from jakeGuiAccess");
-									//e.printStackTrace();
-								}
-
-								ProjectMember pmLastModifier;
-								Date dLastModified;
-								long lFileSize;
-								String sFileSizeUnity;
-								String sLastModifier;
-								String sOnlineStatus;
-								String sTags;
-
-								for (JakeObject obj : files)
-								{
-									lFileSize = jakeGuiAccess.getFileSize((FileObject) obj);
-
-									sFileSizeUnity = "Bytes";
-									if (lFileSize > 1024)
-									{
-										lFileSize /= 1024;
-										sFileSizeUnity = "KB";
-									}
-									if (lFileSize > 1024)
-									{
-										lFileSize /= 1024;
-										sFileSizeUnity = "MB";
-									}
-									if (lFileSize > 1024)
-									{
-										lFileSize /= 1024;
-										sFileSizeUnity = "GB";
-									}
-
-									pmLastModifier = jakeGuiAccess.getLastModifier(obj);
-									dLastModified = jakeGuiAccess.getLastModified(obj);
-
-									sLastModifier = (pmLastModifier.getNickname().isEmpty()) ?
-											pmLastModifier.getUserId()
-											:
-											pmLastModifier.getNickname();
-
-									sTags = "";
-									for (Tag tag : obj.getTags())
-									{
-										sTags = tag.toString() + ((!sTags.isEmpty()) ? ", " + sTags : "");
-									}
-									sOnlineStatus = "online";
-
-									fileListTableModel.addRow(
-											new String[]{
-													obj.getName(),
-													lFileSize + " " + sFileSizeUnity,
-													sTags,
-													sOnlineStatus,
-													dLastModified.toString(),
-													sLastModifier
-											});
-								}
-
-
-								TagTableModelListener TagfileListTableModelListener = new TagTableModelListener(
-										jakeGuiAccess,
-										files,
-										0,
-										2);
-
-								fileListTableModel.addTableModelListener(TagfileListTableModelListener);
-
-
-								filesTable.setModel(fileListTableModel);
-								{
-									TableColumnModel cm = filesTable.getColumnModel();
-									cm.getColumn(0).setPreferredWidth(245);
-									cm.getColumn(1).setPreferredWidth(50);
-									cm.getColumn(2).setPreferredWidth(75);
-								}
-								filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-								filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
-								filesScrollPane.setViewportView(filesTable);
-							}
-							filesPanel.add(filesScrollPane, BorderLayout.CENTER);
-						}
 						mainTabbedPane.addTab(
 								"Files (4/10 MB)",
 								new ImageIcon(getClass().getResource(
@@ -739,7 +608,7 @@ public class JakeGui extends JPanel {
 														searchTextField
 																.getText(), 0,
 														0) }));
-								filesTable
+								filesPanel
 										.setFilters(new FilterPipeline(
 												new Filter[] { new PatternFilter(
 														searchTextField
@@ -1104,9 +973,7 @@ public class JakeGui extends JPanel {
 	private JPanel peoplePanel;
 	private JScrollPane peopleScrollPane;
 	private JXTable peopleTable;
-	private JPanel filesPanel;
-	private JScrollPane filesScrollPane;
-	private JXTable filesTable;
+	private FilesPanel filesPanel;
 	private JPanel notesPanel;
 
 	private JToolBar mainToolBar;
