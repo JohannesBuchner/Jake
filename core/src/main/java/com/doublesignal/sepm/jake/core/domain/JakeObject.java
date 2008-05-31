@@ -46,8 +46,9 @@ public class JakeObject {
 	 * @param tag to be added
 	 *
 	 */
-	public void addTag(Tag tag) {
+	public JakeObject addTag(Tag tag) {
 		tags.add(tag);
+		return this;
 	}
 
 	/**
@@ -55,8 +56,9 @@ public class JakeObject {
 	 *
 	 * @param tag to be removed
 	 */
-	public void removeTag(Tag tag) {
+	public JakeObject removeTag(Tag tag) {
 		tags.remove(tag);
+		return this;
 	}
 
 	/**
