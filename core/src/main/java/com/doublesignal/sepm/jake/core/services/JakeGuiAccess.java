@@ -40,6 +40,11 @@ import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 
+
+import java.io.FileNotFoundException;
+import java.io.File;
+import java.util.*;
+
 /**
  * 
  * @author johannes, domdorn, peter
@@ -114,7 +119,17 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
-	public void editNote(NoteObject note) {
+
+	public Project createProject(String projectName,
+                                 String projectPath) {
+        // todo advice fss to create new project
+        // todo advice ics to create new project
+        // todo advice database to create new project
+        log.info("Creating a new JakeProject with name '"+projectName+"' and Path '"+projectPath+"' ");
+        return new Project(new File(projectPath),projectName);
+    }
+
+    public void editNote(NoteObject note) {
 		log.info("edit Note: " + note);
 	}
 
@@ -122,11 +137,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		log.info("remove Note:" + note);
 	}
 
-	public Project createProject(String projectName, String projectId,
-			String projectPath) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public List<JakeObject> getChangedObjects() {
 		// TODO Auto-generated method stub
@@ -170,6 +181,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
 		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
 		results.add(new FileObject("ToDos.txt"));
+
+		System.out.println("fss.getRootPath() = " + fss.getRootPath());
+
+
 		return results;
 	}
 
@@ -212,12 +227,13 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	}
 
 	public List<Tag> getTags() {
+		
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<Tag> getTagsOfObject(JakeObject object) {
-		// TODO Auto-generated method stub
+		// TODO ??? brauchen wir das wirklich?? ich glaube nicht. - dominik
 		return null;
 	}
 

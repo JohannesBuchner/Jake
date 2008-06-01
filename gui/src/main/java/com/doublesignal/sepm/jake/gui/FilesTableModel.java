@@ -107,6 +107,7 @@ public class FilesTableModel extends AbstractTableModel {
 			if (foundJakeObject != null)
 			{
 				String sTags = JakeObjLib.generateNewTagString(jakeGuiAccess, foundJakeObject, (String) columnValue);
+				
 				super.setValueAt(sTags, rowIndex, columnIndex);
 			}
 		}

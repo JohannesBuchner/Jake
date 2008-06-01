@@ -53,6 +53,7 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
@@ -63,7 +64,11 @@ import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
-	private final ITranslationProvider translator;
+    public Project createProject(String projectName, String projectPath) {
+        return jakeGuiAccess.createProject(projectName, projectPath);
+    }
+
+    private final ITranslationProvider translator;
 
 	private IJakeGuiAccess jakeGuiAccess = null;
 
@@ -108,7 +113,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void newProjectMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open new Project Dialog");
-		new NewProjectDialog(mainFrame).setVisible(true);
+		new NewProjectDialog(mainFrame,this).setVisible(true);
 	}
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {

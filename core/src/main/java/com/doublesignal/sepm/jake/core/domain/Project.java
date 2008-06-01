@@ -26,7 +26,7 @@ public class Project {
 	
 	/**
 	 * Set the rootpath.
-	 * @param rootpath The root path of the project 
+	 * @param rootPath The root path of the project
 	 */
 	public void setRootPath(File rootPath){
 		this.rootPath = rootPath;
@@ -51,7 +51,7 @@ public class Project {
 	
 	/**
 	 * Set the autoPush value for the project. 
-	 * @param autpPush if true, file modifications trigger a push instantly.
+	 * @param autoPush if true, file modifications trigger a push instantly.
 	 */
 	public void setAutoPush(Boolean autoPush) {
 		this.autoPush = autoPush;

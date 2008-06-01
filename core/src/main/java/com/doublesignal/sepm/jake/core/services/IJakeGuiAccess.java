@@ -119,8 +119,8 @@ public interface IJakeGuiAccess {
 
 	public List<JakeMessage> getNewMessages();
 
-	public Project createProject(String projectName, String projectId,
-			String projectPath);
+	public Project createProject(String projectName,
+                                 String projectPath);
 
 	public Project getProject();
 

@@ -3,10 +3,14 @@ package com.doublesignal.sepm.jake.gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 import javax.swing.border.*;
 import info.clearthought.layout.*;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -14,33 +18,132 @@ import info.clearthought.layout.*;
  */
 @SuppressWarnings("serial")
 public class NewProjectDialog extends JDialog {
-	public NewProjectDialog(Frame owner) {
+	private static Logger log = Logger.getLogger(NewProjectDialog.class);
+
+
+    private JakeGui jakeGui;
+    private String projectFolderString;
+    private String projectNameString;
+    private boolean projectNameOk;
+    private boolean projectFolderOk;
+
+
+    public NewProjectDialog(Frame owner,JakeGui jakeGui) {
+        super(owner);
+        this.jakeGui = jakeGui;
+        initComponents();
+        checkSaveButtonAvailable();
+    }
+
+    public NewProjectDialog(Dialog owner) {
 		super(owner);
 		initComponents();
 	}
 
-	public NewProjectDialog(Dialog owner) {
-		super(owner);
-		initComponents();
-	}
-	
-	private void okButtonActionPerformed(ActionEvent e) {
-		this.setVisible(false);
+
+    private void reset()
+    {
+        projectFolderString = "invalid";
+        projectFolderOk = false;
+        projectNameOk = false;
+        jakeProjectFolderTextField.setText("<Please select Folder for JakeProject>");
+    }
+
+
+    private void okButtonActionPerformed(ActionEvent e) {
+        jakeGui.createProject(projectNameString,projectFolderString);
+        this.setVisible(false);
 	}
 
-	private void initComponents() {
+    private void cancelButtionActionPerformed(ActionEvent e)
+    {
+        this.setVisible(false);
+    }
+
+
+    private void selectorButtonActionPerformed(ActionEvent e)
+    {
+        //log.debug("calling selectorButtonActionPerformed ");
+        String sUserWorkDir = System.getProperty("user.dir");
+
+
+        JFileChooser fileChooser = new JFileChooser(sUserWorkDir);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        int returnCode = fileChooser.showOpenDialog(null);
+        if(returnCode == JFileChooser.APPROVE_OPTION)
+        {
+            this.jakeProjectFolderTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+        }
+
+    }
+
+    private void projectFolderTextFieldActionPerformed(DocumentEvent e)
+    {
+        //log.debug("inside projectFolderTextFieldActionPerformed");
+        File file = new File(jakeProjectFolderTextField.getText());
+        if(file.isDirectory())
+        {
+            projectFolderString = jakeProjectFolderTextField.getText();
+            jakeProjectFolderTextField.setForeground(Color.DARK_GRAY);
+            projectFolderOk = true;
+        }
+        else
+        {
+            projectFolderString = "invalid";
+            projectFolderOk = false;
+            jakeProjectFolderTextField.setForeground(Color.RED);
+        }
+        checkSaveButtonAvailable();
+    }
+
+
+    private void checkSaveButtonAvailable()
+    {
+        //log.debug("inside checkSaveButtonAvailable");
+        if (projectFolderOk && projectNameOk)
+            okButton.setEnabled(true);
+        else
+            okButton.setEnabled(false);
+    }
+
+
+    private void projectNameTextFieldActionPerformed(DocumentEvent e)
+    {
+        //log.debug("calling projectNameTextFieldActionPerformed");
+        projectNameString = jakeProjectNameTextField.getText();
+        if(projectNameString.length() < 2 || projectNameString.length() > 50) // according to [projectName]
+        {
+            projectNameOk = false;
+            jakeProjectNameTextField.setForeground(Color.RED);
+        }
+        else
+        {
+            projectNameOk = true;
+            jakeProjectNameTextField.setForeground(Color.DARK_GRAY);
+        }
+        checkSaveButtonAvailable();
+    }
+
+
+    private void initComponents() {
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		label1 = new JLabel();
-		textField1 = new JTextField();
-		label2 = new JLabel();
-		textField2 = new JTextField();
-		button2 = new JButton();
+		jakeProjectNameLabel = new JLabel();
+		jakeProjectNameTextField = new JTextField();
+		jakeProjectFolderLabel = new JLabel();
+		jakeProjectFolderTextField = new JTextField();
+		jakeProjectFolderSelectorButton = new JButton();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
 
-		//======== this ========
+
+        reset();
+
+
+        //======== this ========
 		setTitle("Start a new Project");
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
@@ -52,24 +155,65 @@ public class NewProjectDialog extends JDialog {
 
 			//======== contentPanel ========
 			{
-				contentPanel.setLayout(new TableLayout(new double[][] {
+                jakeProjectFolderTextField.getDocument().addDocumentListener(new DocumentListener()
+                {
+                    public void changedUpdate(DocumentEvent event) {
+                        projectFolderTextFieldActionPerformed(event);
+                    }
+
+                    public void insertUpdate(DocumentEvent event) {
+                        projectFolderTextFieldActionPerformed(event);
+                    }
+
+                    public void removeUpdate(DocumentEvent event) {
+                        projectFolderTextFieldActionPerformed(event);
+                    }
+                });
+
+                contentPanel.setLayout(new TableLayout(new double[][] {
 					{TableLayout.PREFERRED, 256, TableLayout.PREFERRED},
 					{TableLayout.FILL, TableLayout.PREFERRED}}));
 
-				//---- label1 ----
-				label1.setText("Name:");
-				contentPanel.add(label1, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
-				contentPanel.add(textField1, new TableLayoutConstraints(1, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				//---- jakeProjectNameLabel ----
+				jakeProjectNameLabel.setText("Name:");
+                jakeProjectNameTextField.getDocument().addDocumentListener(new DocumentListener()
+                {
+                    public void insertUpdate(DocumentEvent event) {
+                        projectNameTextFieldActionPerformed(event);
+                    }
 
-				//---- label2 ----
-				label2.setText("Folder:");
-				contentPanel.add(label2, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(textField2, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+                    public void removeUpdate(DocumentEvent event) {
+                        projectNameTextFieldActionPerformed(event);
+                    }
 
-				//---- button2 ----
-				button2.setText("...");
-				contentPanel.add(button2, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-			}
+                    public void changedUpdate(DocumentEvent event) {
+                        projectNameTextFieldActionPerformed(event);
+                    }
+                }
+                );
+                contentPanel.add(jakeProjectNameLabel, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				contentPanel.add(jakeProjectNameTextField, new TableLayoutConstraints(1, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- jakeProjectFolderLabel ----
+				jakeProjectFolderLabel.setText("Folder:");
+				contentPanel.add(jakeProjectFolderLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(jakeProjectFolderTextField, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+
+
+                //---- jakeProjectFolderSelectorButton ----
+				jakeProjectFolderSelectorButton.setText("...");
+				contentPanel.add(jakeProjectFolderSelectorButton, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+                jakeProjectFolderSelectorButton.addActionListener( new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent event)
+                    {
+                        selectorButtonActionPerformed(event);                    
+                    }
+                }
+                );
+
+            }
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
 			//======== buttonBar ========
@@ -92,10 +236,18 @@ public class NewProjectDialog extends JDialog {
 
 				//---- cancelButton ----
 				cancelButton.setText("Cancel");
-				buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+				cancelButton.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent event)
+                    {
+                        cancelButtionActionPerformed(event);
+                    }
+                });
+                buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
-			}
+
+            }
 			dialogPane.add(buttonBar, BorderLayout.SOUTH);
 		}
 		contentPane.add(dialogPane, BorderLayout.CENTER);
@@ -105,11 +257,11 @@ public class NewProjectDialog extends JDialog {
 
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JLabel label1;
-	private JTextField textField1;
-	private JLabel label2;
-	private JTextField textField2;
-	private JButton button2;
+	private JLabel jakeProjectNameLabel;
+	private JTextField jakeProjectNameTextField;
+	private JLabel jakeProjectFolderLabel;
+	private JTextField jakeProjectFolderTextField;
+	private JButton jakeProjectFolderSelectorButton;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;
