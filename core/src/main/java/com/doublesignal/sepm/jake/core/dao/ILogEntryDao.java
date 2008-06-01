@@ -16,20 +16,19 @@ public interface ILogEntryDao {
 	 * Persist a new LogEntry to the database.
 	 *
 	 * @param logEntry
-	 * @return the LogEntry persisted.
 	 */
-	public LogEntry create(LogEntry logEntry);
+	public void create(LogEntry logEntry);
 
 	/**
 	 * Loads a specific LogEntry from the Database
 	 *
 	 * @param name
-	 * @param type
+	 * @param projectmember
 	 * @param timestamp
 	 * @return the LogEntry requested
 	 * @throws NoSuchLogEntryException if no such LogEntry exists
 	 */
-	public LogEntry get(String name, String type, Date timestamp)
+	public LogEntry get(String name, String projectmember, Date timestamp)
 			  throws NoSuchLogEntryException;
 
 	/**
@@ -51,13 +50,7 @@ public interface ILogEntryDao {
 	 * Retrieves the most recent log entry for a given JakeObject
 	 * @param jakeObject
 	 * @return
+	 * @throws NoSuchLogEntryException
 	 */
-	public LogEntry getMostRecentFor(JakeObject jakeObject);
-
-	/**
-	 * Retrieves the user ID of the ProjectMember who created this log entry
-	 * @param logEntry
-	 * @return
-	 */
-	public String getProjectMemberUserIdFor(LogEntry logEntry);
+	public LogEntry getMostRecentFor(JakeObject jakeObject) throws NoSuchLogEntryException;
 }
