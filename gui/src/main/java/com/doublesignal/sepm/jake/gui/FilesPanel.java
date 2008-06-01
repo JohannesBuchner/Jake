@@ -5,11 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
@@ -30,17 +26,38 @@ public class FilesPanel extends JPanel {
 	private final JakeGui jakeGui;
 	private FilesTableModel filesTableModel;
 
-	public FilesPanel(JakeGui jakeGui) {
+    int tabindex = 0;
+    
+    public FilesPanel(JakeGui jakeGui) {
 		this.jakeGui = jakeGui;
 		this.jakeGuiAccess = jakeGui.getJakeGuiAccess();
-		initComponents();
 		initPopupMenu();
-	}
+        initComponents();
+
+        jakeGui.getMainTabbedPane()
+						.addTab("filestab", new ImageIcon(
+								getClass().getResource("/icons/files.png")),
+								this);
+
+
+        tabindex = jakeGui.getMainTabbedPane().indexOfTab("filestab");
+        if(tabindex >= 0)
+            jakeGui.getMainTabbedPane().setTitleAt(tabindex,
+                "Files ("+ filesTableModel.getFilesCount()
+                        + "/"+ FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize())+")"
+           );
+    }
 
     public void updateUI() {
         super.updateUI();
         if(filesTableModel!=null)
+        {
             filesTableModel.updateData();
+            if(tabindex >= 0)
+                jakeGui.getMainTabbedPane().setTitleAt(tabindex,
+                    "Files ("+ filesTableModel.getFilesCount()
+                            + "/"+ FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize())+")");
+        }
     }
 
     /**
@@ -63,7 +80,8 @@ public class FilesPanel extends JPanel {
 		filesTable = new JXTable();
 		this.setLayout(new BorderLayout());
 		filesTableModel = new FilesTableModel(jakeGuiAccess);
-		filesTable.setComponentPopupMenu(filesPopupMenu);
+
+        filesTable.setComponentPopupMenu(filesPopupMenu);
 		filesTable.setColumnControlVisible(true);
 		filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		filesTable.setModel(filesTableModel);
@@ -117,7 +135,10 @@ public class FilesPanel extends JPanel {
 
 		pullFileMenuItem.setText("Pull File");
 		filesPopupMenu.add(pullFileMenuItem);
-	}
+
+
+
+    }
 
 	private JScrollPane filesScrollPane;
 	private JXTable filesTable;

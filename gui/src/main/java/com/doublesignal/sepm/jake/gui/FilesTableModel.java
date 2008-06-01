@@ -20,7 +20,24 @@ public class FilesTableModel extends AbstractTableModel {
 	private final IJakeGuiAccess jakeGuiAccess;
 	private List<JakeObject> files;
 
-	public List<JakeObject> getFiles()
+
+    private long summedFilesize = 0;
+
+    public long getSummedFilesize() {
+        summedFilesize = 0;
+        for(JakeObject file : files)
+        {
+            summedFilesize += jakeGuiAccess.getFileSize((FileObject) file);
+        }
+        return summedFilesize;
+    }
+
+    public int getFilesCount() {
+        return files.size();
+
+    }
+
+    public List<JakeObject> getFiles()
 	{
 		log.debug("getting files");
 		if(files == null)
@@ -41,8 +58,7 @@ public class FilesTableModel extends AbstractTableModel {
 	FilesTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing FilesTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
-
-		updateData();
+        updateData();
 	}
 
 	/**
@@ -107,7 +123,6 @@ public class FilesTableModel extends AbstractTableModel {
 			if (foundJakeObject != null)
 			{
 				String sTags = JakeObjLib.generateNewTagString(jakeGuiAccess, foundJakeObject, (String) columnValue);
-				
 				super.setValueAt(sTags, rowIndex, columnIndex);
 			}
 		}

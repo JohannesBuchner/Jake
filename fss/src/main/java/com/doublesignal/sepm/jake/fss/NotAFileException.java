@@ -7,5 +7,11 @@ package com.doublesignal.sepm.jake.fss;
  */
 @SuppressWarnings("serial")
 public class NotAFileException extends NotAReadableFileException {
+    public NotAFileException() {
+        super();
+    }
 
+    public NotAFileException(String s) {
+        super(s);
+    }
 }

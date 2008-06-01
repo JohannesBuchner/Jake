@@ -59,6 +59,7 @@ import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
 
 /**
  * @author Peter Steinberger
@@ -70,15 +71,17 @@ public class JakeGui extends JPanel implements Observer {
     private Project currentProject = null;
 
     public Project createProject(String projectName, String projectPath)
-            throws InvalidFilenameException, NotADirectoryException, IOException {
+            throws InvalidFilenameException, NotADirectoryException, IOException, NotAFileException {
         currentProject = jakeGuiAccess.createProject(projectName, projectPath);
+        mainFrame.setTitle("Jake - "+currentProject.getName());
         filesPanel.updateUI();
+      
         return currentProject; 
     }
 
-
-
-
+    public JTabbedPane getMainTabbedPane() {
+        return mainTabbedPane;
+    }
 
     private final ITranslationProvider translator;
 
@@ -409,7 +412,9 @@ public class JakeGui extends JPanel implements Observer {
 
 		// ======== frame1 ========
 		{
-			mainFrame.setTitle("Jake - \u00dcbersetzerbau");
+			mainFrame.setTitle("Jake - Please open/create a project");
+         
+
 			mainFrame.setIconImage(new ImageIcon(getClass().getResource(
 					"/icons/Jake.png")).getImage());
 			Container frame1ContentPane = mainFrame.getContentPane();
@@ -550,11 +555,6 @@ public class JakeGui extends JPanel implements Observer {
 								getClass().getResource("/icons/people.png")),
 								peoplePanel);
 
-						// ======== filesPanel ========
-
-						mainTabbedPane.addTab("Files (4/10 MB)", new ImageIcon(
-								getClass().getResource("/icons/files.png")),
-								filesPanel);
 
 						mainTabbedPane.addTab("Notes (3)", new ImageIcon(
 								getClass().getResource("/icons/notes.png")),

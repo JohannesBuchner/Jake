@@ -24,6 +24,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectExcep
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
 
 /**
  * @author domdorn
@@ -123,7 +124,7 @@ public interface IJakeGuiAccess {
 	public List<JakeMessage> getNewMessages();
 
 	public Project createProject(String projectName,
-                                 String projectPath) throws InvalidFilenameException, IOException, NotADirectoryException;
+                                 String projectPath) throws InvalidFilenameException, IOException, NotADirectoryException, NotAFileException;
 
 	public Project getProject();
 
@@ -159,14 +160,14 @@ public interface IJakeGuiAccess {
 	 * 
 	 * @param selectedNote
 	 */
-	public void editNote(NoteObject note);
+	public void editNote(NoteObject selectedNote);
 
 	/**
 	 * Remove a specific note.
 	 * 
 	 * @param selectedNote
 	 */
-	public void removeNote(NoteObject note);
+	public void removeNote(NoteObject selectedNote);
 
 	/**
 	 * Get the list of available NoteObjects.
@@ -306,5 +307,15 @@ public interface IJakeGuiAccess {
 	 * @return SyncStatus (String)
 	 */
 	public String getJakeObjectSyncStatus(JakeObject jakeObject);
+
+
+    /**
+     * Opens the Project in the path given, if it exists.
+     * @param rootPath
+     * @return the Project Object of the Project
+     */
+    public Project openProject(String rootPath);
+
+
 
 }

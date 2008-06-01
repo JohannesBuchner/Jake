@@ -17,14 +17,7 @@ import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeMessage;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.LogEntry;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
@@ -128,13 +121,16 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 	public Project createProject(String projectName,
                                  String projectPath) throws
-            InvalidFilenameException, IOException, NotADirectoryException {
+            InvalidFilenameException, IOException, NotADirectoryException, NotAFileException {
         // todo advice fss to create new project
         // todo advice ics to create new project
         // todo advice database to create new project
         log.info("Creating a new JakeProject with name '"+projectName+"' and Path '"+projectPath+"' ");
         Project newProject = new Project(new File(projectPath),projectName);
         fss.setRootPath(newProject.getRootPath().toString());
+
+        ProjectFile projectFile = new ProjectFile(fss.getRootPath());
+        projectFile.createProject(newProject);
         return newProject;
     }
 
@@ -362,4 +358,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 		return "Offline";
 	}
+
+    public Project openProject(String rootPath) {
+
+
+        
+    }
 }

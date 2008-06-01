@@ -7,5 +7,11 @@ package com.doublesignal.sepm.jake.fss;
  */
 @SuppressWarnings("serial")
 public class NotADirectoryException extends Exception {
+    public NotADirectoryException(String s) {
+        super(s);
+    }
 
+    public NotADirectoryException() {
+        super();
+    }
 }

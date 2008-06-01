@@ -14,6 +14,7 @@ import info.clearthought.layout.*;
 import org.apache.log4j.Logger;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
 
 
 /**
@@ -65,6 +66,9 @@ public class NewProjectDialog extends JDialog {
         } catch (IOException e1) {
             projectFolderOk = false;
             jakeProjectFolderTextField.setText("<Couldn't read the specified path. Are the permissions ok?>");
+        } catch (NotAFileException e1) {
+            projectFolderOk = false;
+            jakeProjectFolderTextField.setText("<Couldn't write to the parent folder. Are the permissions ok?>");
         }
         checkSaveButtonAvailable();
         if(projectFolderOk)
