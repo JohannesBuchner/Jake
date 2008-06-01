@@ -44,11 +44,19 @@ public class NotesPanel extends JPanel {
 	}
 
 	private void newNoteMenuItemActionPerformed(ActionEvent e) {
-		new NoteEditorDialog(gui.getMainFrame()).setVisible(true);
+		log.info("create new Note.");
+		NoteEditorDialog noteEditor = new NoteEditorDialog(gui.getMainFrame());
+		noteEditor.setVisible(true);
+
+		if (noteEditor.isSaved()) {
+			jakeGuiAccess.createNote(noteEditor.getContent());
+		}
 	}
 
 	private void editNoteMenuItemActionPerformed(ActionEvent e) {
 		editNote(getSelectedNote());
+		editNote(getSelectedNote());
+
 	}
 
 	private void removeNoteMenuItemActionPerformed(ActionEvent e) {
@@ -57,7 +65,13 @@ public class NotesPanel extends JPanel {
 
 	private void editNote(NoteObject note) {
 		log.info("Edit Note " + note);
-		new NoteEditorDialog(gui.getMainFrame(), note).setVisible(true);
+		NoteEditorDialog noteEditor = new NoteEditorDialog(gui.getMainFrame(),
+				note);
+		noteEditor.setVisible(true);
+
+		if (noteEditor.isSaved()) {
+			jakeGuiAccess.editNote(noteEditor.getNote());
+		}
 	}
 
 	public NotesUpdaterObservable getNotesUpdater() {

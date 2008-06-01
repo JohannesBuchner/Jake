@@ -34,19 +34,19 @@ public class NoteEditorDialog extends JDialog {
 	 * @param owner
 	 */
 	public NoteEditorDialog(Frame owner) {
-		super(owner);
+		super(owner, true);
 		initComponents();
 		this.setTitle("New Note");
 	}
 
 	/**
-	 * Constructor for edit note.
+	 * Constructor for edit note. (modal)
 	 * 
 	 * @param owner
 	 * @param note
 	 */
 	public NoteEditorDialog(Frame owner, NoteObject note) {
-		super(owner);
+		super(owner, true); // make it modal!
 		this.note = note;
 
 		initComponents();
@@ -58,12 +58,34 @@ public class NoteEditorDialog extends JDialog {
 		return isSaved;
 	}
 
+	/**
+	 * Get note text content
+	 * 
+	 * @return note text content.
+	 */
+	public String getContent() {
+		return noteTextArea.getText();
+	}
+
+	public NoteObject getNote() {
+		return note;
+	}
+
 	private void loadNote() {
 		noteTextArea.setText(note.getContent());
 	}
 
 	private void okButtonActionPerformed(ActionEvent e) {
 		isSaved = true;
+
+		// update current note object or create new one
+		if (note == null) {
+			// TODO: interface doesn't need this
+			note = NoteObject.createNoteObject("0", getContent());
+		} else {
+			note.setContent(getContent());
+		}
+
 		this.setVisible(false);
 
 	}
