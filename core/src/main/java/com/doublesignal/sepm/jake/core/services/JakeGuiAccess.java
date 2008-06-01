@@ -171,43 +171,35 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
-	public List<JakeObject> getJakeObjectsByPath(String relPath)
+
+    private List<FileObject> getFileObjectsByRelPath(String relPath) throws InvalidFilenameException, IOException {
+        List<FileObject> results = new ArrayList<FileObject>();
+
+        String[] files = fss.listFolder(relPath);
+
+        File tmp;
+        for(String file : files)
+        {
+            tmp = new File(fss.getFullpath(relPath+file));
+            if(tmp.isDirectory())
+            {
+                results.addAll(getFileObjectsByRelPath(relPath+file+"/"));
+            }
+            if(tmp.isFile())
+                results.add(new FileObject(relPath+file));
+        }
+        return results;
+    }
+
+    public List<JakeObject> getJakeObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
 
 		List<JakeObject> results = new ArrayList<JakeObject>();
 
-/*
-		try {
-			results
-					.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf")
-							.addTag(new Tag("someTag")).addTag(
-									new Tag("someothertag")));
-		} catch (InvalidTagNameException e) {
-			e.printStackTrace();
-		}
-		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
-		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
-		results.add(new FileObject("ToDos.txt"));
-*/
-
-		System.out.println("fss.getRootPath() = " + fss.getRootPath());
-
         if(fss.getRootPath() != null && !fss.getRootPath().equals(""))
         {
             try {
-                String[] files = fss.listFolder(relPath);
-
-                File tmp;
-                for(String file : files)
-                {
-                    tmp = new File(fss.getFullpath(relPath+file));
-                    if(tmp.isDirectory())
-                        continue;
-
-                    results.add(new FileObject(relPath+file));
-                    System.out.println("file = " + file);
-                }
-
+                results.addAll(getFileObjectsByRelPath(relPath));
             } catch (InvalidFilenameException e) {
                 System.out.println("cought invalidFilenameException");
                 e.printStackTrace();
@@ -359,9 +351,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return "Offline";
 	}
 
-    public Project openProject(String rootPath) {
+    public Project openProject(String rootPath)
+    {
 
 
-        
+        return new Project(null,null);
     }
 }
