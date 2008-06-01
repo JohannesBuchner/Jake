@@ -7,8 +7,10 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 import java.util.List;
 import java.util.Set;
@@ -148,32 +150,107 @@ public class JdbcJakeObjectDaoTest extends DBTest {
 	}
 
 	@Test
-	public void testSaveExistingFileObject() {
+	public void testSaveExistingFileObject()
+			  throws NoSuchFileException, InvalidTagNameException {
+		FileObject fo = dao.getFileObjectByName("test.docx");
+		fo.addTag(new Tag("noodles"));
+		dao.save(fo);
 
+		FileObject fonew = dao.getFileObjectByName("test.docx");
+		boolean hasNewTag = fonew.getTags().contains(new Tag("noodles"));
+		assertTrue("Object should have been saved correctly", hasNewTag);
 	}
 
 	@Test
-	public void testSaveNonexistingFileObject() {
+	public void testSaveNonexistingFileObject()
+			  throws InvalidTagNameException, NoSuchFileException {
+		FileObject fo = new FileObject("jinglebells.sql");
+		fo.addTag(new Tag("christmas"));
+		dao.save(fo);
 
+		FileObject fonew = dao.getFileObjectByName("jinglebells.sql");
+		boolean hasNewTag = fonew.getTags().contains(new Tag("christmas"));
+		assertTrue("Object should now exist and have tag", hasNewTag);
 	}
 
 	@Test
-	public void testSaveExistingNoteObject() {
+	public void testSaveExistingNoteObject()
+			  throws NoSuchFileException, InvalidTagNameException {
+		NoteObject no = dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500");
+		no.setContent("I'm a winner baby...");
+		no.addTag(new Tag("winner"));
+		dao.save(no);
 
+		NoteObject nonew = dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500");
+		boolean hasNewTag = nonew.getTags().contains(new Tag("winner"));
+		assertEquals("Object should now have new content", "I'm a winner baby...", nonew.getContent());
+		assertTrue("Object should now have new tag", hasNewTag);
 	}
 
 	@Test
-	public void testSaveNonexistingNoteObject() {
+	public void testSaveNonexistingNoteObject()
+			  throws InvalidTagNameException, NoSuchFileException {
+		NoteObject no = new NoteObject("note:foobar@jabber.doublesignal.com:20080531203520", "Ich bin so schoen, ich bin so toll, ich bin der Anton aus Tirol...");
+		no.addTag(new Tag("spam"));
+		dao.save(no);
 
+		NoteObject nonew = dao.getNoteObjectByName("note:foobar@jabber.doublesignal.com:20080531203520");
+		boolean hasNewTag = nonew.getTags().contains(new Tag("spam"));
+		assertEquals("Object should now have content", "Ich bin so schoen, ich bin so toll, ich bin der Anton aus Tirol...", nonew.getContent());
+		assertTrue("Object should now exist and have tag", hasNewTag);
 	}
 
 	@Test
-	public void testDeleteFileObject() {
+	public void testDeleteFileObject() throws NoSuchFileException {
+		dao.delete(dao.getFileObjectByName("test.docx"));
 		
+		/* We need a seperate try/catch block instead of annotation-based exception
+		 * checking so that we can make sure the exception is not thrown in the
+		 * getFileObjectByName(...) call above.  
+		 */
+		try {
+			dao.getFileObjectByName("test.docx");
+			fail("FileObject should no longer exist");
+		} catch(NoSuchFileException e) {
+			/* Nothing to see here, move along */
+		}
 	}
 
 	@Test
-	public void testDeleteNoteObject() {
+	public void testDeleteNoteObject() throws NoSuchFileException {
+		dao.delete(dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500"));
 
+		/* We need a seperate try/catch block instead of annotation-based exception
+		 * checking so that we can make sure the exception is not thrown in the
+		 * getNoteObjectByName(...) call above.
+		 */
+		try {
+			dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500");
+			fail("NoteObject should no longer exist");
+		} catch(NoSuchFileException e) {
+			/* Nothing to see here, move along */
+		}
+	}
+
+	@Test
+	public void testAddTagsToObject()
+			  throws InvalidTagNameException, NoSuchFileException {
+		dao.addTagsTo(new FileObject("boogie.mid"), new Tag("music"), new Tag("woogie"));
+		FileObject fo = dao.getFileObjectByName("boogie.mid");
+
+		Set<Tag> tags = fo.getTags();
+		boolean containsTags = false;
+		if(tags.contains(new Tag("music")) && tags.contains(new Tag("woogie"))) {
+			containsTags = true;
+		}
+		assertTrue("Object should now have these tags", containsTags);
+	}
+
+	@Test
+	public void testRemoveTagsFromObject()
+			  throws NoSuchFileException, InvalidTagNameException {
+		dao.removeTagsFrom(dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500"), new Tag("important"));
+		NoteObject no = dao.getNoteObjectByName("note:chris@jabber.doublesignal.com:20080531201500");
+		assertTrue("Object should no longer have tag", !no.getTags().contains(new Tag("important")));
 	}
 }

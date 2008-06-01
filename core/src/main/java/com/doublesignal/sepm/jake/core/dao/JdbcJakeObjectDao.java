@@ -43,7 +43,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 	private final String TAGS_DELETE =
 			  "DELETE FROM tags WHERE object_name=:object_name AND tag=:tag";
 	private final String TAGS_DELETE_ALL =
-			  "DELETE FROM tags WHERE object_name=:object_name";
+			  "DELETE FROM tags WHERE object_name=?";
 
 	private List<Tag> getTagsForObject(JakeObject jo) {
 		return getSimpleJdbcTemplate().query(
@@ -125,8 +125,6 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 	}
 
 	public void save(JakeObject object) {
-		this.saveTags(object);
-
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("name", object.getName());
 
@@ -151,6 +149,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 				getSimpleJdbcTemplate().update(NOTEOBJECT_INSERT, parameters);
 			}
 		}
+		this.saveTags(object);
 	}
 
 	public void delete(JakeObject object) {
@@ -164,11 +163,12 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("name", object.getName());
-		getSimpleJdbcTemplate().update(JAKEOBJECT_DELETE, parameters);
 
 		if (object instanceof NoteObject) {
 			getSimpleJdbcTemplate().update(NOTEOBJECT_DELETE, parameters);
 		}
+
+		getSimpleJdbcTemplate().update(JAKEOBJECT_DELETE, parameters);
 	}
 
 	public void addTagsTo(JakeObject object, Tag... tags) {
