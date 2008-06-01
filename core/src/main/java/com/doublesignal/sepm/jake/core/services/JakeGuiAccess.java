@@ -118,6 +118,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 	public NoteObject createNote(String content) {
 		log.info("createNote: " + content);
+
+		NoteObject note = NoteObject.createNoteObject("0", content);
+
+		jakeObjectDAO.save(note);
 		return null;
 	}
 
