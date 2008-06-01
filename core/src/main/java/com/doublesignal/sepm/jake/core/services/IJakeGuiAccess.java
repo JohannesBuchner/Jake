@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
+import java.io.IOException;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
@@ -21,6 +22,8 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 
 /**
  * @author domdorn
@@ -120,7 +123,7 @@ public interface IJakeGuiAccess {
 	public List<JakeMessage> getNewMessages();
 
 	public Project createProject(String projectName,
-                                 String projectPath);
+                                 String projectPath) throws InvalidFilenameException, IOException, NotADirectoryException;
 
 	public Project getProject();
 

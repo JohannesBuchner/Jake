@@ -35,6 +35,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectExcep
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
@@ -43,6 +44,7 @@ import com.doublesignal.sepm.jake.sync.ISyncService;
 
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -121,12 +123,15 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 
 	public Project createProject(String projectName,
-                                 String projectPath) {
+                                 String projectPath) throws
+            InvalidFilenameException, IOException, NotADirectoryException {
         // todo advice fss to create new project
         // todo advice ics to create new project
         // todo advice database to create new project
         log.info("Creating a new JakeProject with name '"+projectName+"' and Path '"+projectPath+"' ");
-        return new Project(new File(projectPath),projectName);
+        Project newProject = new Project(new File(projectPath),projectName);
+        fss.setRootPath(newProject.getRootPath().toString());
+        return newProject;
     }
 
     public void editNote(NoteObject note) {
@@ -170,6 +175,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			throws NoSuchJakeObjectException {
 
 		List<JakeObject> results = new ArrayList<JakeObject>();
+
+/*
 		try {
 			results
 					.add(new FileObject("SEPM_SS08_Artefaktenbeschreibung.pdf")
@@ -181,11 +188,41 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		results.add(new FileObject("SEPM_VO_Block_1.pdf"));
 		results.add(new FileObject("SEPM_SS08_Artefaktenliste"));
 		results.add(new FileObject("ToDos.txt"));
+*/
 
 		System.out.println("fss.getRootPath() = " + fss.getRootPath());
 
+        if(fss.getRootPath() != null && !fss.getRootPath().equals(""))
+        {
+            try {
+                String[] files = fss.listFolder(relPath);
 
-		return results;
+                File tmp;
+                for(String file : files)
+                {
+                    tmp = new File(fss.getFullpath(relPath+file));
+                    if(tmp.isDirectory())
+                        continue;
+
+                    results.add(new FileObject(relPath+file));
+                    System.out.println("file = " + file);
+                }
+
+            } catch (InvalidFilenameException e) {
+                System.out.println("cought invalidFilenameException");
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("cought IOException");
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            System.out.println("condition not met.");
+        }
+
+
+        return results;
 	}
 
 	public List<JakeObject> getJakeObjectsByTags(List<Tag> tags) {

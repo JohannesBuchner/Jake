@@ -48,7 +48,7 @@ public class FilesTableModel extends AbstractTableModel {
 	/**
 	 * Update whole table data.
 	 */
-	private void updateData() {
+	protected void updateData() {
 		log.info("calling updateData");
 		try {
 			this.files = jakeGuiAccess.getJakeObjectsByPath("/");

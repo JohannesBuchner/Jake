@@ -37,7 +37,13 @@ public class FilesPanel extends JPanel {
 		initPopupMenu();
 	}
 
-	/**
+    public void updateUI() {
+        super.updateUI();
+        if(filesTableModel!=null)
+            filesTableModel.updateData();
+    }
+
+    /**
 	 * ** Files Context Menu ****
 	 */
 	private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {

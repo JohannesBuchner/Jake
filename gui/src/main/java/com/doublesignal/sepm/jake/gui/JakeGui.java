@@ -10,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
+import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -56,6 +57,8 @@ import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidEx
 import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 
 /**
  * @author Peter Steinberger
@@ -64,9 +67,18 @@ import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
-    public Project createProject(String projectName, String projectPath) {
-        return jakeGuiAccess.createProject(projectName, projectPath);
+    private Project currentProject = null;
+
+    public Project createProject(String projectName, String projectPath)
+            throws InvalidFilenameException, NotADirectoryException, IOException {
+        currentProject = jakeGuiAccess.createProject(projectName, projectPath);
+        filesPanel.updateUI();
+        return currentProject; 
     }
+
+
+
+
 
     private final ITranslationProvider translator;
 
@@ -575,7 +587,16 @@ public class JakeGui extends JPanel implements Observer {
 						refreshDatapoolViewButton.setIcon(new ImageIcon(
 								getClass().getResource(
 										"/icons/sync_project_folder.png")));
-						mainToolBar.add(refreshDatapoolViewButton);
+
+                        refreshDatapoolViewButton.addActionListener(new ActionListener()
+                        {
+                            public void actionPerformed(ActionEvent event) {
+                                filesPanel.updateUI();
+                            }
+                        });
+
+
+                        mainToolBar.add(refreshDatapoolViewButton);
 						mainToolBar.addSeparator();
 
 						// ---- propagateFileButton ----

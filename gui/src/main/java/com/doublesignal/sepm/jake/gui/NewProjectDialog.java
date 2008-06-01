@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
 import javax.swing.event.DocumentListener;
@@ -11,6 +12,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.border.*;
 import info.clearthought.layout.*;
 import org.apache.log4j.Logger;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 
 
 /**
@@ -51,9 +54,25 @@ public class NewProjectDialog extends JDialog {
 
 
     private void okButtonActionPerformed(ActionEvent e) {
-        jakeGui.createProject(projectNameString,projectFolderString);
-        this.setVisible(false);
-	}
+        try {
+            jakeGui.createProject(projectNameString,projectFolderString);
+        } catch (InvalidFilenameException e1) {
+            projectFolderOk = false;
+            jakeProjectFolderTextField.setText("<The path you specified is invalid>");
+        } catch (NotADirectoryException e1) {
+            projectFolderOk = false;
+            jakeProjectFolderTextField.setText("<The path you specified is not a folder>");
+        } catch (IOException e1) {
+            projectFolderOk = false;
+            jakeProjectFolderTextField.setText("<Couldn't read the specified path. Are the permissions ok?>");
+        }
+        checkSaveButtonAvailable();
+        if(projectFolderOk)
+        {
+            this.setVisible(false);
+        }
+
+    }
 
     private void cancelButtionActionPerformed(ActionEvent e)
     {
