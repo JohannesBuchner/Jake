@@ -5,8 +5,13 @@ import java.sql.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.junit.Before;
 
 public class DBTestTest extends DBTest {
+	@Before
+	public void setUp() throws Exception {
+		setUp("test-test-create.sql", "test-test-insert.sql");
+	}
 	
 	@Test
 	public void testSelect() throws Exception{
