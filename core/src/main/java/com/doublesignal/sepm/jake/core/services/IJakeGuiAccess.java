@@ -18,11 +18,13 @@ import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
 
@@ -313,9 +315,30 @@ public interface IJakeGuiAccess {
      * Opens the Project in the path given, if it exists.
      * @param rootPath
      * @return the Project Object of the Project
+     * @throws NotADirectoryException 
+     * @throws IOException 
+     * @throws InvalidFilenameException 
+     * @throws NoProjectLoadedException 
      */
-    public Project openProject(String rootPath);
+    public Project openProject(String rootPath) 
+    	throws InvalidFilenameException, IOException, NotADirectoryException, NoProjectLoadedException;
 
-
+    /**
+     * checks if a project was loaded and everything is configured for 
+     * operations
+     * @return
+     */
+	public boolean isProjectLoaded();
+	
+	/**
+	 * open a file with the associated (external) application 
+	 * @param relpath
+	 * @throws InvalidFilenameException
+	 * @throws LaunchException
+	 * @throws IOException
+	 * @throws NoProjectLoadedException 
+	 */
+	public void launchFile(String relpath) 
+		throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException;
 
 }

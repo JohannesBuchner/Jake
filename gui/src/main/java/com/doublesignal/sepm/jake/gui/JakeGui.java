@@ -2,6 +2,7 @@ package com.doublesignal.sepm.jake.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.BoxLayout;
@@ -54,10 +56,12 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
 
@@ -109,7 +113,6 @@ public class JakeGui extends JPanel implements Observer {
 		initComponents();
 		registerUpdateObservers();
 	}
-
 	/**
 	 * Set the system NATIVE look & feel.
 	 */
@@ -650,6 +653,7 @@ public class JakeGui extends JPanel implements Observer {
 							public void caretUpdate(CaretEvent e) {
 								// TODO: proof of concept! filter input (e.g.
 								// crash with '*')
+								
 								peopleTable
 										.setFilters(new FilterPipeline(
 												new Filter[] { new PatternFilter(

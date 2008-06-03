@@ -153,5 +153,11 @@ public interface ISyncService {
 	 */
 	public void setFSService(IFSService fss);
 	
+	/**
+	 * @return true iff setLogEntries, setProjectMembers and setFSService were
+	 *         called before
+	 */
+	public boolean isConfigured();
+	
 	
 }

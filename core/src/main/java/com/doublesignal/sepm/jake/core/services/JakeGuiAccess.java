@@ -23,6 +23,7 @@ import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
@@ -370,14 +371,38 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return "Offline";
 	}
 
-    public Project openProject(String rootPath)
+    public Project openProject(String rootPath) throws InvalidFilenameException,
+    	IOException, NotADirectoryException, NoProjectLoadedException 
     {
-
-
+		fss.setRootPath(rootPath);
+		assertProjectLoaded();
         return new Project(null,null);
     }
 
-    public void launchFile(String relpath) throws InvalidFilenameException, LaunchException, IOException {
-        fss.launchFile(relpath);
+    public void launchFile(String relpath) throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException {
+		assertProjectLoaded();
+		fss.launchFile(relpath);
+    }
+    
+    private void loadProjectFile(String projectfile){
+    	/* TODO: 
+    	 * open database projectfile
+    	 * get Projectroot
+    	 */
+    	
+    	
+    }
+    
+    public boolean isProjectLoaded(){
+    	if(fss.getRootPath() == null)
+    		return false;
+    	/* later: if(!sync.isConfigured())
+    		return false;*/
+    	return true;
+    }
+    
+    public void assertProjectLoaded() throws NoProjectLoadedException  {
+    	if(!isProjectLoaded())
+    		throw new NoProjectLoadedException();
     }
 }

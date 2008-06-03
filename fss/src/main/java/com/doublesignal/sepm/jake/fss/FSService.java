@@ -19,11 +19,9 @@ public class FSService implements IFSService {
 	Desktop desktop = null;
 	public FSService() throws NoSuchAlgorithmException{
 		md = MessageDigest.getInstance("SHA-512");
-		Desktop desktop = null;
 
 		if (!Desktop.isDesktopSupported())
 			throw new NoSuchAlgorithmException("Desktop not supported");
-		
 		
 		desktop = Desktop.getDesktop();
 		
@@ -95,6 +93,8 @@ public class FSService implements IFSService {
 	}
 
 	public String getFullpath(String relpath) throws InvalidFilenameException {
+		if(getRootPath()==null)
+			return null;
 		if(!isValidRelpath(relpath))
 			throw new InvalidFilenameException();
 		File f = new File(joinPath(getRootPath(), relpath));

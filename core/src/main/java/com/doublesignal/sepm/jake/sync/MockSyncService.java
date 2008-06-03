@@ -49,7 +49,7 @@ public class MockSyncService implements ISyncService {
 		this.pm = pm;
 	}
 	
-	private boolean isConfigured(){
+	public boolean isConfigured(){
 		return (pm != null) && (le != null) && (ics != null) && (fss != null); 
 	}
 	
