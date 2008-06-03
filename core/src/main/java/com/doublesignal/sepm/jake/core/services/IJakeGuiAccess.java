@@ -73,18 +73,11 @@ public interface IJakeGuiAccess {
 	 * Gets a config option by the specified key
 	 * 
 	 * @param configKey
-	 * @return
+	 * @return the associated value
 	 * @throws NoSuchConfigOptionException
 	 */
 	public String getConfigOption(String configKey)
 			throws NoSuchConfigOptionException;
-
-	/**
-	 * Get all the available config options
-	 * 
-	 * @return all configs options
-	 */
-	public Map<String, String> getConfigOptions();
 
 	/**
 	 * do a logSync
