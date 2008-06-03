@@ -72,7 +72,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 				.getBean("ProjectMemberDAO");
 		jakeObjectDAO = (IJakeObjectDao) factory.getBean("JakeObjectDAO");
 		logEntryDAO = (ILogEntryDao) factory.getBean("LogEntryDAO");
-		configureationDAO = (IConfigurationDao)	factory.getBean("ConfigurationDAO");
+		//configureationDAO = (IConfigurationDao)	factory.getBean("ConfigurationDAO");
 	}
 
 	public void login(String user, String pw)
