@@ -42,7 +42,7 @@ import java.util.*;
 
 /**
  * 
- * @author johannes, domdorn, peter
+ * @author johannes, domdorn, peter, philipp
  * 
  */
 public class JakeGuiAccess implements IJakeGuiAccess {
@@ -313,7 +313,15 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			return 0;
 		}
 	}
-
+	
+	public void addProjectMember(String networkUserId) {
+		
+		//ProjectMember PM = new ProjectMember(networkUserId);
+		//getProject().addMember(PM);
+		
+		
+	}
+	
 	public ProjectMember getLastModifier(JakeObject jakeObject) {
 		// sync.getLogEntries(jakeObject)
 		// return new

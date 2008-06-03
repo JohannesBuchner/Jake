@@ -125,7 +125,14 @@ public interface IJakeGuiAccess {
 
 	public Project createProject(String projectName,
                                  String projectPath) throws InvalidFilenameException, IOException, NotADirectoryException, NotAFileException;
-
+	
+	/**
+	 * Add a new Member to a Project
+	 * 
+	 * @param UserId
+	 */
+	public void addProjectMember(String networkUserId);
+	
 	public Project getProject();
 
 	/*
