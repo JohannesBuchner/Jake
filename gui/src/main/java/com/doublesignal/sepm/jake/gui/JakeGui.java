@@ -287,6 +287,13 @@ public class JakeGui extends JPanel implements Observer {
 	private void openProjectMenuItemActionPerformed(ActionEvent e) {
 		// TODO
 	}
+	
+	private void viewProjectMembersMenuItemActionPerformed(ActionEvent e) {
+		log.debug("view all Project Members");
+		peoplePanel.updateUI();
+		mainTabbedPane.setSelectedComponent(peoplePanel);
+		
+	}
 
 	/**
 	 * ** Help Menu ****
@@ -396,6 +403,7 @@ public class JakeGui extends JPanel implements Observer {
 		addFileToProjectMenuItem = new JMenuItem();
 		addFolderToProjectMenuItem = new JMenuItem();
 		addProjectMemberMenuItem = new JMenuItem();
+		viewProjectMembersMenuItem = new JMenuItem();
 		helpMenu = new JMenu();
 		aboutHelpMenuItem = new JMenuItem();
 		peoplePopupMenu = new JPopupMenu();
@@ -879,6 +887,20 @@ public class JakeGui extends JPanel implements Observer {
 						addProjectMemberMenuItem
 								.setText("Add Project Member...");
 						projectMenu.add(addProjectMemberMenuItem);
+						
+						// ---- viewProjectMembersMenuItem ----
+						viewProjectMembersMenuItem
+								.setText("View Project Members...");
+						projectMenu.add(viewProjectMembersMenuItem);
+						viewProjectMembersMenuItem
+								.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								viewProjectMembersMenuItemActionPerformed(e);
+							}
+						});
+					
+					
+					
 					}
 					mainMenuBar.add(projectMenu);
 
@@ -1011,6 +1033,7 @@ public class JakeGui extends JPanel implements Observer {
 	private JMenuItem addFileToProjectMenuItem;
 	private JMenuItem addFolderToProjectMenuItem;
 	private JMenuItem addProjectMemberMenuItem;
+	private JMenuItem viewProjectMembersMenuItem;
 	private JMenu helpMenu;
 	private JMenuItem aboutHelpMenuItem;
 	private JPopupMenu peoplePopupMenu;
