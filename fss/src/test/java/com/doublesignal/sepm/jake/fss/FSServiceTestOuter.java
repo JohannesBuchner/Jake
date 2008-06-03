@@ -262,7 +262,10 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 			"cead1f59a9a0d22e46a28f943a662338dd758d6dce38f7ea6ab13b6615c312b69fffff049781c169b597577cb5566d5d1354364ac032a9d4d5bd8ef833340061");
 		
 	}
-	
+	/** 
+	 * Tests that no exceptions are thrown.
+	 * No application is launched, since awt/swing is not started
+	 **/
 	public void launchTest() throws Exception {
 		fss.writeFile("launch1.txt", "Foobar".getBytes());
 		fss.writeFile("launch2.html", "<html><body><h1>Woot!</h1></body></html>"
