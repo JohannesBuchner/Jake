@@ -1,11 +1,8 @@
 package com.doublesignal.sepm.jake.core.services.exceptions;
 
 /**
- * Project is not loaded.
- * 
- * @author studpete
- * 
+ * @author johannes
  */
+@SuppressWarnings("serial")
 public class NoProjectLoadedException extends GuiCoreInteractionException {
-
 }
