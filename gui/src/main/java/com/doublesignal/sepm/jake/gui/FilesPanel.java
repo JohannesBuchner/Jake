@@ -109,7 +109,15 @@ public class FilesPanel extends JPanel {
 		pullFileMenuItem = new JMenuItem();
 
 		openExecuteFileMenuItem.setText("Open");
-		filesPopupMenu.add(openExecuteFileMenuItem);
+        openExecuteFileMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event) {
+                openExecutFileMenuItemActionEvent(event);
+            }
+        }
+        );
+
+        filesPopupMenu.add(openExecuteFileMenuItem);
 
 		lockFileMenuItem.setText("Lock File...");
 		filesPopupMenu.add(lockFileMenuItem);
@@ -140,7 +148,11 @@ public class FilesPanel extends JPanel {
 
     }
 
-	private JScrollPane filesScrollPane;
+    private void openExecutFileMenuItemActionEvent(ActionEvent event) {
+     //   jakeGuiAccess.
+    }
+
+    private JScrollPane filesScrollPane;
 	private JXTable filesTable;
 	private final IJakeGuiAccess jakeGuiAccess;
 	private JPopupMenu filesPopupMenu;
