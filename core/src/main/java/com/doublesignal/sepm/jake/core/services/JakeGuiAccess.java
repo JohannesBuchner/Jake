@@ -54,12 +54,9 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	IProjectMemberDao projectMemberDAO = null;
 	IJakeObjectDao jakeObjectDAO = null;
 	ILogEntryDao logEntryDAO = null;
-<<<<<<< .mine
 	IConfigurationDao configureationDAO;
 
-=======
 	private Project currentProject;
->>>>>>> .r411
 	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
 	public JakeGuiAccess() {
