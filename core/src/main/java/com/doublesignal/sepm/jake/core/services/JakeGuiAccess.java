@@ -13,6 +13,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
+import com.doublesignal.sepm.jake.core.dao.IConfigurationDao;
 import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
@@ -53,7 +54,12 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	IProjectMemberDao projectMemberDAO = null;
 	IJakeObjectDao jakeObjectDAO = null;
 	ILogEntryDao logEntryDAO = null;
+<<<<<<< .mine
+	IConfigurationDao configureationDAO;
+
+=======
 	private Project currentProject;
+>>>>>>> .r411
 	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
 	public JakeGuiAccess() {
@@ -68,6 +74,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 				.getBean("ProjectMemberDAO");
 		jakeObjectDAO = (IJakeObjectDao) factory.getBean("JakeObjectDAO");
 		logEntryDAO = (ILogEntryDao) factory.getBean("LogEntryDAO");
+		configureationDAO = (IConfigurationDao)	factory.getBean("ConfigurationDAO");
 	}
 
 	public void login(String user, String pw)
@@ -147,16 +154,27 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
+	/**
+	 * Returs the configuration option for a <code>configKey</code>
+	 * @param configKey the name of the configuration option
+	 * @return the associated value to the key
+	 * @throws NoSuchConfigOptionException Raised if no option exists with the
+	 * given <code>configKey</code>.
+	 */
 	public String getConfigOption(String configKey)
 			throws NoSuchConfigOptionException {
-		// TODO Auto-generated method stub
-		throw new NoSuchConfigOptionException(configKey);
+		return configureationDAO.getConfigurationValue(configKey);
+	}
+	
+	/**
+	 * Set a configuration option.
+	 * @param configKey the name of the option
+	 * @param configValue the value of the option
+	 */
+	public void setConfigOption(String configKey, String configValue) {
+		configureationDAO.setConfigurationValue(configKey, configValue);
 	}
 
-	public Map<String, String> getConfigOptions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public List<JakeObject> getJakeObjectsByName(String name) {
 		// TODO Auto-generated method stub
@@ -294,11 +312,6 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	}
 
 	public void registerReceiveMessageCallback(Observer observer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setConfigOption(String configKey, String configValue) {
 		// TODO Auto-generated method stub
 
 	}
