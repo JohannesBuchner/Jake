@@ -49,6 +49,7 @@ public interface IFSService {
 	
 	/**
 	 * @return the rootpath set previously by <code>setRootPath</code>
+	 *         if no valid rootpath was set, null is returned.
 	 */
 	public String getRootPath();
 	
