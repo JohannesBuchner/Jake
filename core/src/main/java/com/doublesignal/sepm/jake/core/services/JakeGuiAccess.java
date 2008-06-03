@@ -25,10 +25,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidEx
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
-import com.doublesignal.sepm.jake.fss.IFSService;
-import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.NotAFileException;
-import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.*;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
@@ -56,7 +53,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	IProjectMemberDao projectMemberDAO = null;
 	IJakeObjectDao jakeObjectDAO = null;
 	ILogEntryDao logEntryDAO = null;
-
+	private Project currentProject;
 	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
 	public JakeGuiAccess() {
@@ -131,7 +128,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
         ProjectFile projectFile = new ProjectFile(fss.getRootPath());
         projectFile.createProject(newProject);
-        return newProject;
+        currentProject = newProject; 
+		return newProject;
     }
 
     public void editNote(NoteObject note) {
@@ -201,16 +199,20 @@ public class JakeGuiAccess implements IJakeGuiAccess {
             try {
                 results.addAll(getFileObjectsByRelPath(relPath));
             } catch (InvalidFilenameException e) {
-                System.out.println("cought invalidFilenameException");
+                log.debug("getJakeObjectsByPath: cought invalidFilenameException");
                 e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("cought IOException");
+                log.debug("getJakeObjectsByPath: cought IOException");
                 e.printStackTrace();
             }
         }
         else
         {
-            System.out.println("condition not met.");
+            if(fss.getRootPath() == null)
+                log.debug("getJakeObjectsByPath: fss.getRootPath is null, cannot read any files");
+            else
+                if(fss.getRootPath().equals(""))
+                    log.debug("getJakeObjectsByPath: fss.getRootPath is not null, but empty!");
         }
 
 
@@ -251,8 +253,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	}
 
 	public Project getProject() {
-		// TODO Auto-generated method stub
-		return null;
+		return currentProject;
 	}
 
 	public List<Tag> getTags() {
@@ -364,5 +365,9 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 
         return new Project(null,null);
+    }
+
+    public void launchFile(String relpath) throws InvalidFilenameException, LaunchException, IOException {
+        fss.launchFile(relpath);
     }
 }
