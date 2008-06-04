@@ -1,7 +1,8 @@
 package com.doublesignal.sepm.jake.core.domain;
 
 import java.io.File;
-
+import java.util.List;
+import java.util.ArrayList;
 /**
  * The Project consists of a <code>rootpath</code>, a <code>name</code> and a 
  * <code>projectId</code>.
@@ -14,12 +15,37 @@ public class Project {
 	private Boolean autoPush = false;
 	private Boolean autoPull = false;
 	private Integer autoSyncInterval = 0;
+	private List<ProjectMember> members = new ArrayList<ProjectMember>();
 	
 	public Project(File rootPath, String name) {
 		setRootPath(rootPath);
 		setName(name);
 	}
 
+	/**
+	 * Add Project Member to a Project
+	 * @param member 
+	 */
+	public void addMember(ProjectMember member) {
+		members.add(member);
+	}
+	
+	/**
+	 * Get ArrayList of all Project Members of a Project
+	 * @return <code>ArrayList<ProjectMembers></code> 
+	 */
+	public List<ProjectMember> getMembers() {
+		return members;
+	}
+	
+	/**
+	 * Remove Project Member from a Project
+	 * @param member 
+	 */
+	public void removeMember(ProjectMember member) {
+		members.remove(member);
+	}
+	
 	public File getRootPath() {
 		return rootPath;
 	}
@@ -60,7 +86,8 @@ public class Project {
 	public Boolean getAutoPull() {
 		return autoPull;
 	}
-
+	
+	
 	/**
 	 * Set the autoPull value for the project.
 	 * @param autoPull if true, after a sync, modified files are pulled automatically. 
@@ -74,7 +101,7 @@ public class Project {
 	}
 	
 	/**
-	 * Set the autosync interval in sekonds.
+	 * Set the autosync interval in seconds.
 	 * @param autoSyncInterval if the new interval is < 0, autoSyncInterval is set to 0
 	 */
 	public void setAutoSyncInterval(Integer autoSyncInterval) {
@@ -85,7 +112,7 @@ public class Project {
 
 	/**
 	 * Tests if two Projects are equal.
-	 * @return <code>true</code> iff all fields are equal.
+	 * @return <code>true</code> if all fields are equal.
 	 */
 	public boolean equals(Object o) {
 		if (this == o) {

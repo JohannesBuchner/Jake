@@ -153,7 +153,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	}
 
 	/**
-	 * Returs the configuration option for a <code>configKey</code>
+	 * Returns the configuration option for a <code>configKey</code>
 	 * @param configKey the name of the configuration option
 	 * @return the associated value to the key
 	 * @throws NoSuchConfigOptionException Raised if no option exists with the
@@ -328,8 +328,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	
 	public void addProjectMember(String networkUserId) {
 		
-		//ProjectMember PM = new ProjectMember(networkUserId);
-		//getProject().addMember(PM);
+		ProjectMember PM = new ProjectMember(networkUserId);
+		currentProject.addMember(PM);
 		
 		
 	}

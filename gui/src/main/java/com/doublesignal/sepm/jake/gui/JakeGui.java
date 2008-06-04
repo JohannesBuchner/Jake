@@ -894,7 +894,7 @@ public class JakeGui extends JPanel implements Observer {
 						
 						// ---- viewProjectMembersMenuItem ----
 						viewProjectMembersMenuItem
-								.setText("View Project Members...");
+								.setText("View Project Members");
 						projectMenu.add(viewProjectMembersMenuItem);
 						viewProjectMembersMenuItem
 								.addActionListener(new ActionListener() {
