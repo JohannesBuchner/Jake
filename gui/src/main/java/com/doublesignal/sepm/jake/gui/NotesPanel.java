@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -60,6 +61,11 @@ public class NotesPanel extends JPanel {
 	}
 
 	private void removeNoteMenuItemActionPerformed(ActionEvent e) {
+
+		JOptionPane.showConfirmDialog(this, "This operation cannot be undone.",
+				"Really delete this node?", JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE);
+
 		jakeGuiAccess.removeNote(getSelectedNote());
 	}
 
@@ -138,14 +144,6 @@ public class NotesPanel extends JPanel {
 	}
 
 	private void initPopupMenu() {
-		// ---- viewEditNoteMenuItem ----
-		viewEditNoteMenuItem.setText("View/Edit Note");
-		viewEditNoteMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				editNoteMenuItemActionPerformed(e);
-			}
-		});
-		notesPopupMenu.add(viewEditNoteMenuItem);
 
 		// ---- newNoteMenuItem ----
 		newNoteMenuItem.setText("New Note...");
@@ -154,10 +152,20 @@ public class NotesPanel extends JPanel {
 				newNoteMenuItemActionPerformed(e);
 			}
 		});
+
+		// ---- viewEditNoteMenuItem ----
+		viewEditNoteMenuItem.setText("Open Note...");
+		viewEditNoteMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				editNoteMenuItemActionPerformed(e);
+			}
+		});
+		notesPopupMenu.add(viewEditNoteMenuItem);
+
 		notesPopupMenu.add(newNoteMenuItem);
 
 		// ---- removeNoteMenuItem ----
-		removeNoteMenuItem.setText("Remove");
+		removeNoteMenuItem.setText("Remove Note...");
 		removeNoteMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				removeNoteMenuItemActionPerformed(e);
