@@ -73,8 +73,8 @@ public class FSServiceTestInner extends FSTestCase {
 		if(File.separatorChar == '/'){
 			assertEquals("/tmp", fss.getTempDir());
 		}else{
-			fail("Not implemented for Windows (yet)");
-			assertEquals("C:\\Windows\\Temp", fss.getTempDir());
+			assertEquals(System.getProperty("java.io.tmpdir",""), fss.getTempDir() + 
+				File.separator);
 		}
 		
 	}
@@ -96,14 +96,6 @@ public class FSServiceTestInner extends FSTestCase {
 		assertEquals(fss.calculateHash("".getBytes()), 
 			"cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
 	}	
-	
-	public void launchTest() throws Exception {
-		fss.writeFile("launch1.txt", "Foobar".getBytes());
-		fss.writeFile("launch2.html", "<html><body><h1>Woot!</h1></body></html>"
-				.getBytes());
-		fss.launchFile("launch1.txt");
-		fss.launchFile("launch2.html");
-	}
 	
 	@Override
 	public void setUp() throws Exception {

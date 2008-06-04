@@ -12,9 +12,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 		String sep = File.separator;
 		String root = mytempdir;
 		
-		assertEquals("separator", "/", File.separator);
-		
-		assertEquals("/", root, fss.getFullpath(sep));
+		assertEquals("root", root, fss.getFullpath("/"));
 		assertEquals(fss.getFullpath("testfile.xml"), 
 				root + sep + "testfile.xml");
 		assertEquals(fss.getFullpath("folder/to/testfile.xml"), 
@@ -23,7 +21,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 		
 		assertEquals(fss.joinPath("foldera", "folderb"), 
 			"foldera"+sep+"folderb");
-		assertEquals(fss.joinPath("foldera/to/", "folderb"), 
+		assertEquals(fss.joinPath("foldera"+sep+"to"+sep, "folderb"), 
 			"foldera"+sep+"to"+sep+"folderb");
 		
 	}
@@ -82,14 +80,20 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 			assertEquals("content read correctly", r.length, c.length);
 		}
 		{
-			Runtime.getRuntime().exec(
-				"chmod 000 " + mytempdir + File.separator + filename);
-			
-			Thread.sleep(100);
+			boolean setupWorked = true;
 			try{
-				fss.readFile(filename);
-				fail("NotAReadableFileException");
-			}catch(NotAReadableFileException e){
+				Runtime.getRuntime().exec(
+					"chmod 000 " + mytempdir + File.separator + filename);
+				Thread.sleep(100);
+			}catch(Exception e){
+				setupWorked = false;
+			}
+			if(setupWorked){
+				try{
+					fss.readFile(filename);
+					fail("NotAReadableFileException");
+				}catch(NotAReadableFileException e){
+				}
 			}
 		}
 	}
@@ -170,10 +174,11 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 				}
 			}
 			assertTrue(found);
+			String sep = "/";
 			if(j<4){
-				assertTrue("folder: " + content[j],fss.folderExists(folder + File.separator + content[j]));
+				assertTrue("folder: " + content[j],fss.folderExists(folder + sep + content[j]));
 			}else{
-				assertTrue("file: " + content[j],  fss.fileExists(folder + File.separator + content[j]));
+				assertTrue("file: " + content[j],  fss.fileExists(folder + sep + content[j]));
 			}
 		}
 		
@@ -262,6 +267,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 			"cead1f59a9a0d22e46a28f943a662338dd758d6dce38f7ea6ab13b6615c312b69fffff049781c169b597577cb5566d5d1354364ac032a9d4d5bd8ef833340061");
 		
 	}
+	
 	/** 
 	 * Tests that no exceptions are thrown.
 	 * No application is launched, since awt/swing is not started

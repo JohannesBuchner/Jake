@@ -8,11 +8,11 @@ import org.junit.Test;
 import java.io.File;
 
 /**
- * Tests for Project.
+ * @author johannes
  */
 public class ProjectTest {
 
-	private static final String baseDir = "/tmp";
+	private String baseDir = System.getProperty("java.io.tmpdir","");
 
 	private String validRootPath;
 	private String fileRootPath;
@@ -23,8 +23,10 @@ public class ProjectTest {
 
 	@Before
 	public void Setup() throws Exception {
-		validRootPath = baseDir + "/validRootPath";
-		fileRootPath = baseDir + "/somefile";
+		if(!baseDir.endsWith(File.separator))
+			baseDir = baseDir + File.separator;
+		validRootPath = baseDir + "validRootPath";
+		fileRootPath = baseDir + "somefile";
 		new File(validRootPath).mkdir();
 		new File(fileRootPath).createNewFile();
 
@@ -58,7 +60,7 @@ public class ProjectTest {
 		Project proj = new Project(new File(validRootPath), validProjectName);
 
 		Assert.assertTrue(proj.getName().equals(validProjectName));
-		Assert.assertTrue(proj.getRootPath().toString().equals(validRootPath));
+		Assert.assertEquals(proj.getRootPath().toString(),validRootPath);
 	}
 
 	@Test

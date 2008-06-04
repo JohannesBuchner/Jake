@@ -1,6 +1,5 @@
 package com.doublesignal.sepm.jake.sync;
 
-
 import java.io.File;
 
 import junit.framework.TestCase;
@@ -10,13 +9,14 @@ public class FSTestCase extends TestCase {
 	
 	@Override
 	public void setUp() throws Exception {
-		String systmpdir = "/tmp";
-		if(File.separatorChar != '/'){
-			throw new Exception("Test only developed for Unix-like operating systems");
-		}
+		String systmpdir = System.getProperty("java.io.tmpdir","");
+		if(!systmpdir.endsWith(File.separator))
+			systmpdir = systmpdir + File.separator;
+		
+		assertTrue(systmpdir.startsWith("C:\\") || systmpdir.startsWith("/tmp"));
 		
 		File f = new File(systmpdir);
-		assertEquals("tmpdir",systmpdir, f.getAbsolutePath());
+		assertEquals("tmpdir",systmpdir, f.getAbsolutePath()+File.separator);
 		f = new File(systmpdir + File.separator + "fstest");
 		if(f.exists()){
 			assertTrue("recursiveDelete",recursiveDelete(f));
@@ -26,11 +26,12 @@ public class FSTestCase extends TestCase {
 		assertTrue("create successful",f.exists() );
 		
 		mytempdir = f.getAbsolutePath();
-		
+		//System.out.println("Using "+systmpdir+" for FSS tests");
 		super.setUp();
 	}
 	
 	protected boolean recursiveDelete(File f) {
+		System.gc(); /* windows needs this */
 		if(f.isFile()){
 			//System.out.println("Deleting file: "+f.getAbsoluteFile());
 			return f.delete();
@@ -39,8 +40,10 @@ public class FSTestCase extends TestCase {
 			String[] l = f.list();
 			if(l!=null){
 				for (int i = 0; i < l.length; i++) {
-					if(recursiveDelete(new File(f.getPath() + File.separator + l[i])) == false)
+					if(recursiveDelete(new File(f.getPath(),l[i])) == false){
+						System.err.println("deleting " +l[i]+" in "+f.getPath() + " failed!");
 						return false;
+					}
 				}
 			}
 			return f.delete();

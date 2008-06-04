@@ -42,11 +42,6 @@ public class FSService implements IFSService {
 		rootPath = path;
 	}
 	
-	public String calculateHash(String relpath) throws InvalidFilenameException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Boolean fileExists(String relpath) throws InvalidFilenameException {
 		File f = new File(getFullpath(relpath));
 		return f.exists() && f.isFile();
@@ -102,10 +97,15 @@ public class FSService implements IFSService {
 	}
 
 	public String joinPath(String rootPath, String relpath) {
+		if('/'!=File.separatorChar)
+			relpath = relpath.replace('/', File.separatorChar);
 		String p = rootPath + File.separator + relpath;
-		if(File.separator != "/")
-			p = p.replaceAll("/", File.separator);
-		return p.replaceAll(File.separator + File.separator, File.separator);
+		if(File.separatorChar == '\\'){
+			p = p.replaceAll("\\\\\\\\", "\\\\");
+		}else{
+			p = p.replaceAll(File.separator + File.separator, File.separator);
+		}
+		return p;
 	}
 
 	public void writeFile(String relpath, byte[] content)
