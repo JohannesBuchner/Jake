@@ -1,4 +1,6 @@
 package com.doublesignal.sepm.jake.gui;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,13 +9,18 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * @author Peter Steinberger
  */
 @SuppressWarnings("serial")
 public class ViewLogDialog extends JDialog {
-	public ViewLogDialog(Frame owner) {
+    private static Logger log = Logger.getLogger(ViewLogDialog.class);
+    private JakeObject jakeObject;
+
+    public ViewLogDialog(Frame owner) {
 		super(owner);
 		initComponents();
 	}
@@ -22,8 +29,16 @@ public class ViewLogDialog extends JDialog {
 		super(owner);
 		initComponents();
 	}
-	
-	private void okButtonActionPerformed(ActionEvent e) {
+
+    public ViewLogDialog setJakeObject(JakeObject jakeObject)
+    {
+        log.info("Set jakeObject to  "+ jakeObject.getName());
+        this.jakeObject = jakeObject;
+        return this;
+    }
+
+
+    private void okButtonActionPerformed(ActionEvent e) {
 		this.setVisible(false);
 	}
 	

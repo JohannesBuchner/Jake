@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.*;
 import info.clearthought.layout.*;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
 
 
 /**
@@ -13,7 +14,15 @@ import info.clearthought.layout.*;
  */
 @SuppressWarnings("serial")
 public class ResolveConflictDialog extends JDialog {
-	public ResolveConflictDialog(Frame owner) {
+
+    private JakeObject jakeObject;
+
+    public ResolveConflictDialog setJakeObject(JakeObject jakeObject) {
+        this.jakeObject = jakeObject;
+        return this;
+    }
+
+    public ResolveConflictDialog(Frame owner) {
 		super(owner);
 		initComponents();
 	}
