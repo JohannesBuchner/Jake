@@ -189,25 +189,27 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     private List<FileObject> getFileObjectsByRelPath(String relPath) throws InvalidFilenameException, IOException {
         List<FileObject> results = new ArrayList<FileObject>();
 
-        String[] files = fss.listFolder(relPath);
+        String[] files;
+        try {
+            files = fss.listFolder(relPath);
+        } catch (InvalidFilenameException e) {
+            throw new InvalidFilenameException(e.getMessage());
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
 
         File tmp;
-        for(String file : files)
-        {
+        for(String file : files) {
             try {
-                tmp = new File(fss.getFullpath(relPath+file));
-                if(tmp.isDirectory())
-            {
-                results.addAll(getFileObjectsByRelPath(relPath+file+"/"));
-            }
-                if(tmp.isFile())
-                results.add(new FileObject(relPath+file));
+                tmp = new File(fss.getFullpath(relPath + file));
+                if (tmp.isDirectory()) {
+                    results.addAll(getFileObjectsByRelPath(relPath + file + "/"));
+                }
+                if (tmp.isFile())
+                    results.add(new FileObject(relPath + file));
             } catch (InvalidFilenameException e) {
                 continue;
                 // we simply ignore invalid filenames
-            } catch (IOException e) {
-                continue;
-                // we simply ignore non readable files
             }
         }
         return results;

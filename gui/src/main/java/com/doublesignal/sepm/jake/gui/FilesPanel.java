@@ -120,13 +120,31 @@ public class FilesPanel extends JPanel {
         filesPopupMenu.add(openExecuteFileMenuItem);
 
 		lockFileMenuItem.setText("Lock File...");
-		filesPopupMenu.add(lockFileMenuItem);
+        lockFileMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event) {
+                lockFileMenuItemActionPerformed(event);
+            }
+        });
+        filesPopupMenu.add(lockFileMenuItem);
 
 		deleteFileMenuItem.setText("Delete File...");
-		filesPopupMenu.add(deleteFileMenuItem);
+        deleteFileMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event) {
+                deleteFileMenuItemActionPerformed(event);
+            }
+        });
+        filesPopupMenu.add(deleteFileMenuItem);
 
 		viewLogForFileMenuItem.setText("View Log...");
-		filesPopupMenu.add(viewLogForFileMenuItem);
+        viewLogForFileMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event) {
+                    viewLogForFileMenuItemActionPerfomed(event);
+            }
+        });
+        filesPopupMenu.add(viewLogForFileMenuItem);
 
 		resolveFileConflictMenuItem.setText("Resolve Conflict...");
 		resolveFileConflictMenuItem.addActionListener(new ActionListener() {
@@ -139,18 +157,57 @@ public class FilesPanel extends JPanel {
 
 		propagateFileMenuItem.setText("Propagate File");
 		propagateFileMenuItem.setToolTipText("Propagate locally changed file");
-		filesPopupMenu.add(propagateFileMenuItem);
+        propagateFileMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event) {
+                propagateFileMenuItemActionPerfomed(event);
+            }
+        }
+        );
+        filesPopupMenu.add(propagateFileMenuItem);
 
 		pullFileMenuItem.setText("Pull File");
-		filesPopupMenu.add(pullFileMenuItem);
+		pullFileMenuItem.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                pullFileMenuItemActionPerformed(event);
+            }
+        });
+        filesPopupMenu.add(pullFileMenuItem);
 
 
 
+
+    }
+
+    private void lockFileMenuItemActionPerformed(ActionEvent event) {
+        log.info("lockFileMenuItemActionPerformed");
+    }
+
+    private void deleteFileMenuItemActionPerformed(ActionEvent event) {
+        log.info("deleteFileMenuItemActionPerformed");
+    }
+
+    private void viewLogForFileMenuItemActionPerfomed(ActionEvent event) {
+        log.info("viewLogForFileMenuItemActionPerfomed");
     }
 
     private void openExecutFileMenuItemActionEvent(ActionEvent event) {
-     //   jakeGuiAccess.
+        log.info("openExecutFileMenuItemActionEvent");
     }
+
+
+    private void propagateFileMenuItemActionPerfomed(ActionEvent event)
+    {
+        log.info("propagateFileMenuItemActionPerfomed");
+    }
+
+    private void pullFileMenuItemActionPerformed(ActionEvent event)
+    {
+        log.info("pullFileMenuItemActionPerformed");
+    }
+
 
     private JScrollPane filesScrollPane;
 	private JXTable filesTable;
