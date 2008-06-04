@@ -96,7 +96,7 @@ public class FSService implements IFSService {
 		if(getRootPath()==null)
 			return null;
 		if(!isValidRelpath(relpath))
-			throw new InvalidFilenameException();
+			throw new InvalidFilenameException("File "+relpath + " is not a valid filename!");
 		File f = new File(joinPath(getRootPath(), relpath));
 		return f.getAbsolutePath();
 	}
