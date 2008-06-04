@@ -364,9 +364,17 @@ public interface IJakeGuiAccess {
     boolean deleteJakeObject(JakeObject jakeObject);
 
     /**
-     *  Pushes the given JakeObject
+     *  Shedules the pushing of the given JakeObject
      *
      * @param jakeObject the JakeObject which should be distributed
      */
     void propagateJakeObject(JakeObject jakeObject);
+
+    /**
+     * Shedules the pulling of the given JakeObject
+     *                               *
+     * @param jakeObject the JakeObject to be pulled
+     */
+    void pullJakeObject(JakeObject jakeObject);
+
 }

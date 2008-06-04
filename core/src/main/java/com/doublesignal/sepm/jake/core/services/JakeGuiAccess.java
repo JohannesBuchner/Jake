@@ -433,4 +433,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     public void propagateJakeObject(JakeObject jakeObject) {
         // TODO 
     }
+
+    public void pullJakeObject(JakeObject jakeObject) {
+        // todo
+    }
 }
