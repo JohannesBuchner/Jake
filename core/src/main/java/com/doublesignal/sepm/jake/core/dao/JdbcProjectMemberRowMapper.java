@@ -14,6 +14,7 @@ public class JdbcProjectMemberRowMapper implements ParameterizedRowMapper<Projec
 		ProjectMember newMember = new ProjectMember(rs.getString(1));
 		newMember.setNickname(rs.getString(2));
 		newMember.setNotes(rs.getString(3));
+		newMember.setActive(rs.getBoolean(4));
 		return newMember;
 	}
 }

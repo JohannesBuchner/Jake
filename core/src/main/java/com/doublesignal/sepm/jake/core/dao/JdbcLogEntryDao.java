@@ -30,7 +30,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 						 "AND timestamp=?";
 	private static final String LOGENTRY_WHERE_JAKEOBJECT =
 			  " WHERE object_name=?";
-	private static final String LOGENTRY_MOSTRECENT = " ORDER BY timestamp DESC LIMIT 0 1";
+	private static final String LOGENTRY_MOSTRECENT = " ORDER BY timestamp DESC LIMIT 1";
 
 	public void create(LogEntry logEntry) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -40,10 +40,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 		parameters.put("action", logEntry.getAction().toString());
 		parameters.put("message", logEntry.getComment());
 		parameters.put("hash", logEntry.getHash());
-		/*
-		 * TODO: Fix this to no longer save static value once I know where we get it from
-		 */
-		parameters.put("is_last_pulled", false);
+		parameters.put("is_last_pulled", logEntry.getIsLastPulled());
 
 		getSimpleJdbcTemplate().update(LOGENTRY_INSERT, parameters);
 	}
@@ -51,7 +48,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 	public LogEntry get(String name, String projectmember, Date timestamp)
 			  throws NoSuchLogEntryException {
 		try {
-			return getSimpleJdbcTemplate().queryForObject(LOGENTRY_SELECT + LOGENTRY_WHERE_SPECIFIC, new JdbcLogEntryRowMapper(), name, projectmember, timestamp);
+			return getSimpleJdbcTemplate().queryForObject(LOGENTRY_SELECT + LOGENTRY_WHERE_SPECIFIC, new JdbcLogEntryRowMapper(), name, projectmember, new java.sql.Date(timestamp.getTime()));
 		} catch (EmptyResultDataAccessException e) {
 			throw new NoSuchLogEntryException();
 		}

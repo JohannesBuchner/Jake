@@ -18,7 +18,7 @@ public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProje
 	private static final String PROJECTMEMBER_INSERT = "INSERT INTO projectmembers (userid, nick, notes) VALUES (:userid, :nick, :notes)";
 	private static final String PROJECTMEMBER_UPDATE = "UPDATE projectmembers SET nick=:nick, notes=:notes WHERE userid=:userid";
 	private static final String PROJECTMEMBER_DELETE = "DELETE FROM projectmembers WHERE userid=:userid";
-	private static final String PROJECTMEMBER_SELECT = "SELECT userid, nick, notes FROM projectmembers";
+	private static final String PROJECTMEMBER_SELECT = "SELECT userid, nick, notes, active FROM projectmembers";
 	private static final String PROJECTMEMBER_WHERE_USERID = " WHERE userid=?";
 
 	public ProjectMember getByUserId(String networkId) throws NoSuchProjectMemberException {

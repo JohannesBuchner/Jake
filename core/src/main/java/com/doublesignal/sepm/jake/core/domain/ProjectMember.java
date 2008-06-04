@@ -12,6 +12,8 @@ public class ProjectMember {
 	private String notes = "";
 	private String nickname = "";
 
+	private boolean active = true;
+
 	/**
 	 * Constructs a new <code>ProjectMember</code> with the given <code>userId</code>.
 	 * @param userId
@@ -66,6 +68,14 @@ public class ProjectMember {
 			return false;
 
 		return true;
+	}
+
+	public boolean getActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	/**

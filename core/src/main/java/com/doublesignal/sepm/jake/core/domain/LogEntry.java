@@ -16,6 +16,7 @@ public class LogEntry {
 	private String userId;
 	private String hash;
 	private String comment;
+	private boolean isLastPulled;
 	
 	/**
 	 * Construct a new LogEntry with the given params.
@@ -140,4 +141,11 @@ public class LogEntry {
 		return true;
 	}
 
+	public boolean getIsLastPulled() {
+		return isLastPulled;
+	}
+
+	public void setIsLastPulled(boolean isLastPulled) {
+		this.isLastPulled = isLastPulled;
+	}
 }

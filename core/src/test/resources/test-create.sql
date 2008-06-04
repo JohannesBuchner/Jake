@@ -13,7 +13,8 @@
   CREATE TABLE projectmembers (
   	userid			VARCHAR(255)	PRIMARY KEY,
   	nick				VARCHAR(50),
-  	notes				LONGVARCHAR
+  	notes				LONGVARCHAR,
+  	active			BOOLEAN
   );
 
   CREATE TABLE objects (
@@ -41,9 +42,9 @@
   	timestamp		DATETIME,
   	action			VARCHAR(10) NOT NULL,
   	message			VARCHAR(255),
-  	hash				VARCHAR(65) NOT NULL,
+  	hash				VARCHAR(128) NOT NULL,
   	is_last_pulled	BOOLEAN,
   	PRIMARY KEY(object_name, projectmember, timestamp),
-  	FOREIGN KEY (object_name) REFERENCES objects(name),
-  	FOREIGN KEY (projectmember) REFERENCES projectmembers(userid)
+  	FOREIGN KEY (object_name) REFERENCES objects(name) ON DELETE CASCADE,
+  	FOREIGN KEY (projectmember) REFERENCES projectmembers(userid) ON DELETE CASCADE
   );
