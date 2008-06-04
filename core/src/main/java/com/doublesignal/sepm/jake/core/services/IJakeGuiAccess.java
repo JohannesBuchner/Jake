@@ -1,10 +1,9 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Observer;
-import java.io.IOException;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
@@ -22,11 +21,12 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedExcept
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 
 /**
  * @author domdorn
@@ -62,6 +62,20 @@ public interface IJakeGuiAccess {
 	 *             the network (others may see us still online)
 	 */
 	public void logout() throws NetworkException;
+
+	/**
+	 * Checks if the application is logged into the network
+	 * 
+	 * @return true if app is logged in.
+	 */
+	public boolean isLoggedIn();
+
+	/**
+	 * Get the user that is currently logged in.
+	 * 
+	 * @return
+	 */
+	public String getLoginUser() throws NotLoggedInException;
 
 	/**
 	 * Sets a config
@@ -118,16 +132,17 @@ public interface IJakeGuiAccess {
 
 	public List<JakeMessage> getNewMessages();
 
-	public Project createProject(String projectName,
-                                 String projectPath) throws InvalidFilenameException, IOException, NotADirectoryException, NotAFileException;
-	
+	public Project createProject(String projectName, String projectPath)
+			throws InvalidFilenameException, IOException,
+			NotADirectoryException, NotAFileException;
+
 	/**
 	 * Add a new Member to a Project
 	 * 
 	 * @param UserId
 	 */
 	public void addProjectMember(String UserId);
-	
+
 	public Project getProject();
 
 	/*
@@ -310,71 +325,80 @@ public interface IJakeGuiAccess {
 	 */
 	public String getJakeObjectSyncStatus(JakeObject jakeObject);
 
-
-    /**
-     * Opens the Project in the path given, if it exists.
-     * @param rootPath
-     * @return the Project Object of the Project
-     * @throws NotADirectoryException 
-     * @throws IOException 
-     * @throws InvalidFilenameException 
-     * @throws NoProjectLoadedException 
-     */
-    public Project openProject(String rootPath) 
-    	throws InvalidFilenameException, IOException, NotADirectoryException, NoProjectLoadedException;
-
-    /**
-     * checks if a project was loaded and everything is configured for 
-     * operations
-     * @return
-     */
-	public boolean isProjectLoaded();
-	
 	/**
-	 * open a file with the associated (external) application 
+	 * Opens the Project in the path given, if it exists.
+	 * 
+	 * @param rootPath
+	 * @return the Project Object of the Project
+	 * @throws NotADirectoryException
+	 * @throws IOException
+	 * @throws InvalidFilenameException
+	 * @throws NoProjectLoadedException
+	 */
+	public Project openProject(String rootPath)
+			throws InvalidFilenameException, IOException,
+			NotADirectoryException, NoProjectLoadedException;
+
+	/**
+	 * checks if a project was loaded and everything is configured for
+	 * operations
+	 * 
+	 * @return
+	 */
+	public boolean isProjectLoaded();
+
+	/**
+	 * open a file with the associated (external) application
+	 * 
 	 * @param relpath
 	 * @throws InvalidFilenameException
 	 * @throws LaunchException
 	 * @throws IOException
-	 * @throws NoProjectLoadedException 
+	 * @throws NoProjectLoadedException
 	 */
-	public void launchFile(String relpath) 
-		throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException;
+	public void launchFile(String relpath) throws InvalidFilenameException,
+			LaunchException, IOException, NoProjectLoadedException;
 
-    /**
-     * Gets the current softlock status of a jakeObject
-     * @param jakeObject
-     * @return true if file has softlock, false otherwise
-     */
-    boolean getJakeObjectLock(JakeObject jakeObject);
+	/**
+	 * Gets the current softlock status of a jakeObject
+	 * 
+	 * @param jakeObject
+	 * @return true if file has softlock, false otherwise
+	 */
+	boolean getJakeObjectLock(JakeObject jakeObject);
 
-    /**
-     * Sets or unsets the softlock on a certain jakeObject
-     * @param isLocked: True to set the softlock, false otherwise
-     * @param jakeObject
-     * @return returns the new softlock status of the jakeObject 
-     */
-    boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject);
+	/**
+	 * Sets or unsets the softlock on a certain jakeObject
+	 * 
+	 * @param isLocked:
+	 *            True to set the softlock, false otherwise
+	 * @param jakeObject
+	 * @return returns the new softlock status of the jakeObject
+	 */
+	boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject);
 
-    /**
-     * Deletes a jakeObject.
-     * @param jakeObject
-     * @return true on success, false otherwise
-     */
-    boolean deleteJakeObject(JakeObject jakeObject);
+	/**
+	 * Deletes a jakeObject.
+	 * 
+	 * @param jakeObject
+	 * @return true on success, false otherwise
+	 */
+	boolean deleteJakeObject(JakeObject jakeObject);
 
-    /**
-     *  Shedules the pushing of the given JakeObject
-     *
-     * @param jakeObject the JakeObject which should be distributed
-     */
-    void propagateJakeObject(JakeObject jakeObject);
+	/**
+	 * Shedules the pushing of the given JakeObject
+	 * 
+	 * @param jakeObject
+	 *            the JakeObject which should be distributed
+	 */
+	void propagateJakeObject(JakeObject jakeObject);
 
-    /**
-     * Shedules the pulling of the given JakeObject
-     *                               *
-     * @param jakeObject the JakeObject to be pulled
-     */
-    void pullJakeObject(JakeObject jakeObject);
+	/**
+	 * Shedules the pulling of the given JakeObject *
+	 * 
+	 * @param jakeObject
+	 *            the JakeObject to be pulled
+	 */
+	void pullJakeObject(JakeObject jakeObject);
 
 }

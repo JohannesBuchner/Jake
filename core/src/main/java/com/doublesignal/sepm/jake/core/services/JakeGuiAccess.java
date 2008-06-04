@@ -1,11 +1,12 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Observer;
 
 import org.apache.log4j.Logger;
@@ -18,8 +19,15 @@ import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.domain.*;
-import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.domain.Project;
+import com.doublesignal.sepm.jake.core.domain.ProjectFile;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
@@ -27,17 +35,16 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedExcept
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
-import com.doublesignal.sepm.jake.fss.*;
+import com.doublesignal.sepm.jake.fss.IFSService;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
-
-
-import java.io.FileNotFoundException;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * 
@@ -72,7 +79,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 				.getBean("ProjectMemberDAO");
 		jakeObjectDAO = (IJakeObjectDao) factory.getBean("JakeObjectDAO");
 		logEntryDAO = (ILogEntryDao) factory.getBean("LogEntryDAO");
-		//configureationDAO = (IConfigurationDao)	factory.getBean("ConfigurationDAO");
+		// configureationDAO = (IConfigurationDao)
+		// factory.getBean("ConfigurationDAO");
 	}
 
 	public void login(String user, String pw)
@@ -100,6 +108,14 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		ics.logout();
 	}
 
+	public String getLoginUser() throws NotLoggedInException {
+		return ics.getUserid();
+	}
+
+	public boolean isLoggedIn() {
+		return ics.isLoggedIn();
+	}
+
 	public FileObject createFileObjectFromExternalFile(String absolutePath)
 			throws NoSuchFileException {
 		// TODO Auto-generated method stub
@@ -120,32 +136,30 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
+	public Project createProject(String projectName, String projectPath)
+			throws InvalidFilenameException, IOException,
+			NotADirectoryException, NotAFileException {
+		// todo advice fss to create new project
+		// todo advice ics to create new project
+		// todo advice database to create new project
+		log.info("Creating a new JakeProject with name '" + projectName
+				+ "' and Path '" + projectPath + "' ");
+		Project newProject = new Project(new File(projectPath), projectName);
+		fss.setRootPath(newProject.getRootPath().toString());
 
-	public Project createProject(String projectName,
-                                 String projectPath) throws
-            InvalidFilenameException, IOException, NotADirectoryException, NotAFileException {
-        // todo advice fss to create new project
-        // todo advice ics to create new project
-        // todo advice database to create new project
-        log.info("Creating a new JakeProject with name '"+projectName+"' and Path '"+projectPath+"' ");
-        Project newProject = new Project(new File(projectPath),projectName);
-        fss.setRootPath(newProject.getRootPath().toString());
-
-        ProjectFile projectFile = new ProjectFile(fss.getRootPath());
-        projectFile.createProject(newProject);
-        currentProject = newProject; 
+		ProjectFile projectFile = new ProjectFile(fss.getRootPath());
+		projectFile.createProject(newProject);
+		currentProject = newProject;
 		return newProject;
-    }
+	}
 
-    public void editNote(NoteObject note) {
+	public void editNote(NoteObject note) {
 		log.info("edit Note: " + note);
 	}
 
 	public void removeNote(NoteObject note) {
 		log.info("remove Note:" + note);
 	}
-
-
 
 	public List<JakeObject> getChangedObjects() {
 		// TODO Auto-generated method stub
@@ -154,25 +168,30 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 	/**
 	 * Returns the configuration option for a <code>configKey</code>
-	 * @param configKey the name of the configuration option
+	 * 
+	 * @param configKey
+	 *            the name of the configuration option
 	 * @return the associated value to the key
-	 * @throws NoSuchConfigOptionException Raised if no option exists with the
-	 * given <code>configKey</code>.
+	 * @throws NoSuchConfigOptionException
+	 *             Raised if no option exists with the given
+	 *             <code>configKey</code>.
 	 */
 	public String getConfigOption(String configKey)
 			throws NoSuchConfigOptionException {
 		return configureationDAO.getConfigurationValue(configKey);
 	}
-	
+
 	/**
 	 * Set a configuration option.
-	 * @param configKey the name of the option
-	 * @param configValue the value of the option
+	 * 
+	 * @param configKey
+	 *            the name of the option
+	 * @param configValue
+	 *            the value of the option
 	 */
 	public void setConfigOption(String configKey, String configValue) {
 		configureationDAO.setConfigurationValue(configKey, configValue);
 	}
-
 
 	public List<JakeObject> getJakeObjectsByName(String name) {
 		// TODO Auto-generated method stub
@@ -185,64 +204,64 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
+	private List<FileObject> getFileObjectsByRelPath(String relPath)
+			throws InvalidFilenameException, IOException {
+		List<FileObject> results = new ArrayList<FileObject>();
 
-    private List<FileObject> getFileObjectsByRelPath(String relPath) throws InvalidFilenameException, IOException {
-        List<FileObject> results = new ArrayList<FileObject>();
+		String[] files;
+		try {
+			files = fss.listFolder(relPath);
+		} catch (InvalidFilenameException e) {
+			throw new InvalidFilenameException(e.getMessage());
+		} catch (IOException e) {
+			throw new IOException(e.getMessage());
+		}
 
-        String[] files;
-        try {
-            files = fss.listFolder(relPath);
-        } catch (InvalidFilenameException e) {
-            throw new InvalidFilenameException(e.getMessage());
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+		File tmp;
+		for (String file : files) {
+			try {
+				tmp = new File(fss.getFullpath(relPath + file));
+				if (tmp.isDirectory()) {
+					results
+							.addAll(getFileObjectsByRelPath(relPath + file
+									+ "/"));
+				}
+				if (tmp.isFile())
+					results.add(new FileObject(relPath + file));
+			} catch (InvalidFilenameException e) {
+				continue;
+				// we simply ignore invalid filenames
+			}
+		}
+		return results;
+	}
 
-        File tmp;
-        for(String file : files) {
-            try {
-                tmp = new File(fss.getFullpath(relPath + file));
-                if (tmp.isDirectory()) {
-                    results.addAll(getFileObjectsByRelPath(relPath + file + "/"));
-                }
-                if (tmp.isFile())
-                    results.add(new FileObject(relPath + file));
-            } catch (InvalidFilenameException e) {
-                continue;
-                // we simply ignore invalid filenames
-            }
-        }
-        return results;
-    }
-
-    public List<JakeObject> getJakeObjectsByPath(String relPath)
+	public List<JakeObject> getJakeObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
 
 		List<JakeObject> results = new ArrayList<JakeObject>();
 
-        if(fss.getRootPath() != null && !fss.getRootPath().equals(""))
-        {
-            try {
-                results.addAll(getFileObjectsByRelPath(relPath));
-            } catch (InvalidFilenameException e) {
-                log.debug("getJakeObjectsByPath: cought invalidFilenameException");
-                e.printStackTrace();
-            } catch (IOException e) {
-                log.debug("getJakeObjectsByPath: cought IOException");
-                e.printStackTrace();
-            }
-        }
-        else
-        {
-            if(fss.getRootPath() == null)
-                log.debug("getJakeObjectsByPath: fss.getRootPath is null, cannot read any files");
-            else
-                if(fss.getRootPath().equals(""))
-                    log.debug("getJakeObjectsByPath: fss.getRootPath is not null, but empty!");
-        }
+		if (fss.getRootPath() != null && !fss.getRootPath().equals("")) {
+			try {
+				results.addAll(getFileObjectsByRelPath(relPath));
+			} catch (InvalidFilenameException e) {
+				log
+						.debug("getJakeObjectsByPath: cought invalidFilenameException");
+				e.printStackTrace();
+			} catch (IOException e) {
+				log.debug("getJakeObjectsByPath: cought IOException");
+				e.printStackTrace();
+			}
+		} else {
+			if (fss.getRootPath() == null)
+				log
+						.debug("getJakeObjectsByPath: fss.getRootPath is null, cannot read any files");
+			else if (fss.getRootPath().equals(""))
+				log
+						.debug("getJakeObjectsByPath: fss.getRootPath is not null, but empty!");
+		}
 
-
-        return results;
+		return results;
 	}
 
 	public List<JakeObject> getJakeObjectsByTags(List<Tag> tags) {
@@ -283,7 +302,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	}
 
 	public List<Tag> getTags() {
-		
+
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -335,15 +354,14 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			return 0;
 		}
 	}
-	
+
 	public void addProjectMember(String networkUserId) {
-		
+
 		ProjectMember PM = new ProjectMember(networkUserId);
 		currentProject.addMember(PM);
-		
-		
+
 	}
-	
+
 	public ProjectMember getLastModifier(JakeObject jakeObject) {
 		// sync.getLogEntries(jakeObject)
 		// return new
@@ -381,60 +399,60 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return "Offline";
 	}
 
-    public Project openProject(String rootPath) throws InvalidFilenameException,
-    	IOException, NotADirectoryException, NoProjectLoadedException 
-    {
+	public Project openProject(String rootPath)
+			throws InvalidFilenameException, IOException,
+			NotADirectoryException, NoProjectLoadedException {
 		fss.setRootPath(rootPath);
 		assertProjectLoaded();
-        return new Project(null,null);
-    }
+		return new Project(null, null);
+	}
 
-    public void launchFile(String relpath) throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException {
+	public void launchFile(String relpath) throws InvalidFilenameException,
+			LaunchException, IOException, NoProjectLoadedException {
 		assertProjectLoaded();
 		fss.launchFile(relpath);
-    }
-    
-    private void loadProjectFile(String projectfile){
-    	/* TODO: 
-    	 * open database projectfile
-    	 * get Projectroot
-    	 */
-    	
-    	
-    }
-    
-    public boolean isProjectLoaded(){
-    	if(fss.getRootPath() == null)
-    		return false;
-    	/* later: if(!sync.isConfigured())
-    		return false;*/
-    	return true;
-    }
-    
-    public void assertProjectLoaded() throws NoProjectLoadedException  {
-    	if(!isProjectLoaded())
-    		throw new NoProjectLoadedException();
-    }
+	}
 
-    public boolean getJakeObjectLock(JakeObject jakeObject) {
-        // TODO
-        return false;
-    }
+	private void loadProjectFile(String projectfile) {
+		/*
+		 * TODO: open database projectfile get Projectroot
+		 */
 
-    public boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject) {
-        // TODO
-        return false;
-    }
+	}
 
-    public boolean deleteJakeObject(JakeObject jakeObject) {
-        return false;
-    }
+	public boolean isProjectLoaded() {
+		if (fss.getRootPath() == null)
+			return false;
+		/*
+		 * later: if(!sync.isConfigured()) return false;
+		 */
+		return true;
+	}
 
-    public void propagateJakeObject(JakeObject jakeObject) {
-        // TODO 
-    }
+	public void assertProjectLoaded() throws NoProjectLoadedException {
+		if (!isProjectLoaded())
+			throw new NoProjectLoadedException();
+	}
 
-    public void pullJakeObject(JakeObject jakeObject) {
-        // todo
-    }
+	public boolean getJakeObjectLock(JakeObject jakeObject) {
+		// TODO
+		return false;
+	}
+
+	public boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject) {
+		// TODO
+		return false;
+	}
+
+	public boolean deleteJakeObject(JakeObject jakeObject) {
+		return false;
+	}
+
+	public void propagateJakeObject(JakeObject jakeObject) {
+		// TODO
+	}
+
+	public void pullJakeObject(JakeObject jakeObject) {
+		// todo
+	}
 }

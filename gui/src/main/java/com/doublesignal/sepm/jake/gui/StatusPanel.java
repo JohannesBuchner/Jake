@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXLoginDialog;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 
 /**
  * This is the StatusPanel (root of main gui window) Shows status messages +
@@ -62,7 +63,7 @@ public class StatusPanel extends JPanel {
 	private void updateData() {
 		int messagesReceived = 0;
 		int filesConflict = 0;
-		boolean connectionOnline = true;
+		boolean connectionOnline = jakeGuiAccess.isLoggedIn();
 
 		if (messagesReceived > 0) {
 			if (messagesReceived == 1)
@@ -90,6 +91,13 @@ public class StatusPanel extends JPanel {
 
 		if (connectionOnline) {
 			connectionStatusButton.setText("Connected");
+			try {
+				connectionStatusButton.setToolTipText("Connected as "
+						+ jakeGuiAccess.getLoginUser());
+			} catch (NotLoggedInException e) {
+				// can't be -> connection status is checked!
+				e.printStackTrace();
+			}
 		} else {
 			connectionStatusButton.setText("Not Connected");
 			connectionStatusButton.setToolTipText("Press to connect");
@@ -129,54 +137,50 @@ public class StatusPanel extends JPanel {
 
 		// ---- statusLabel ----
 		statusLabel.setText("");
-		// statusLabel.setAlignmentX(0);
 		this.add(statusLabel, BorderLayout.WEST);
 
-		// ======== statusButtonsPanel ========
-		{
-			statusButtonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		statusButtonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
-			// ---- messageReceivedStatusButton ----
-			messageReceivedStatusButton.setText("Messages received");
-			messageReceivedStatusButton.setIcon(new ImageIcon(getClass()
-					.getResource("/icons/message.png")));
-			messageReceivedStatusButton.setBorder(new SoftBevelBorder(
-					SoftBevelBorder.RAISED));
-			messageReceivedStatusButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					messageReceivedStatusButtonActionPerformed(e);
-				}
-			});
-			messageReceivedStatusButton.setVisible(false);
-			statusButtonsPanel.add(messageReceivedStatusButton);
+		// ---- messageReceivedStatusButton ----
+		messageReceivedStatusButton.setText("");
+		messageReceivedStatusButton.setIcon(new ImageIcon(getClass()
+				.getResource("/icons/message.png")));
+		messageReceivedStatusButton.setBorder(new SoftBevelBorder(
+				SoftBevelBorder.RAISED));
+		messageReceivedStatusButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				messageReceivedStatusButtonActionPerformed(e);
+			}
+		});
+		messageReceivedStatusButton.setVisible(false);
+		statusButtonsPanel.add(messageReceivedStatusButton);
 
-			// ---- fileConflictStatusButton ----
-			fileConflictStatusButton.setText("File Conflicts");
-			fileConflictStatusButton.setIcon(new ImageIcon(getClass()
-					.getResource("/icons/warning.png")));
-			fileConflictStatusButton.setBorder(new SoftBevelBorder(
-					SoftBevelBorder.RAISED));
-			fileConflictStatusButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					fileConflictStatusButtonActionPerformed(e);
-				}
-			});
-			fileConflictStatusButton.setVisible(false);
-			statusButtonsPanel.add(fileConflictStatusButton);
+		// ---- fileConflictStatusButton ----
+		fileConflictStatusButton.setText("");
+		fileConflictStatusButton.setIcon(new ImageIcon(getClass().getResource(
+				"/icons/warning.png")));
+		fileConflictStatusButton.setBorder(new SoftBevelBorder(
+				SoftBevelBorder.RAISED));
+		fileConflictStatusButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fileConflictStatusButtonActionPerformed(e);
+			}
+		});
+		fileConflictStatusButton.setVisible(false);
+		statusButtonsPanel.add(fileConflictStatusButton);
 
-			// ---- connectionStatusButton ----
-			connectionStatusButton.setText("Offline");
-			connectionStatusButton.setIcon(new ImageIcon(getClass()
-					.getResource("/icons/network-idle.png")));
-			connectionStatusButton.setBorder(new SoftBevelBorder(
-					SoftBevelBorder.RAISED));
-			connectionStatusButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					connectionStatusButtonActionPerformed(e);
-				}
-			});
-			statusButtonsPanel.add(connectionStatusButton);
-		}
+		// ---- connectionStatusButton ----
+		connectionStatusButton.setText("");
+		connectionStatusButton.setIcon(new ImageIcon(getClass().getResource(
+				"/icons/network-idle.png")));
+		connectionStatusButton.setBorder(new SoftBevelBorder(
+				SoftBevelBorder.RAISED));
+		connectionStatusButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				connectionStatusButtonActionPerformed(e);
+			}
+		});
+		statusButtonsPanel.add(connectionStatusButton);
 
 		this.add(statusButtonsPanel, BorderLayout.EAST);
 	}
