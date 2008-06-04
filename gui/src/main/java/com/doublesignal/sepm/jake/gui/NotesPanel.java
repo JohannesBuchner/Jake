@@ -84,7 +84,7 @@ public class NotesPanel extends JPanel {
 	}
 
 	public String getTitle() {
-		return "Notes (" + notesTableModel.getNotes() + ")";
+		return "Notes (" + notesTableModel.getNotes().size() + ")";
 	}
 
 	private boolean isNoteSelected() {

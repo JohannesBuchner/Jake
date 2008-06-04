@@ -2,17 +2,15 @@ package com.doublesignal.sepm.jake.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -52,18 +50,16 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
 /**
  * @author Peter Steinberger
@@ -72,22 +68,23 @@ import com.doublesignal.sepm.jake.fss.NotAFileException;
 public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
-    private Project currentProject = null;
+	private Project currentProject = null;
 
-    public Project createProject(String projectName, String projectPath)
-            throws InvalidFilenameException, NotADirectoryException, IOException, NotAFileException {
-        currentProject = jakeGuiAccess.createProject(projectName, projectPath);
-        mainFrame.setTitle("Jake - "+currentProject.getName());
-        filesPanel.updateUI();
-      
-        return currentProject; 
-    }
+	public Project createProject(String projectName, String projectPath)
+			throws InvalidFilenameException, NotADirectoryException,
+			IOException, NotAFileException {
+		currentProject = jakeGuiAccess.createProject(projectName, projectPath);
+		mainFrame.setTitle("Jake - " + currentProject.getName());
+		filesPanel.updateUI();
 
-    public JTabbedPane getMainTabbedPane() {
-        return mainTabbedPane;
-    }
+		return currentProject;
+	}
 
-    private final ITranslationProvider translator;
+	public JTabbedPane getMainTabbedPane() {
+		return mainTabbedPane;
+	}
+
+	private final ITranslationProvider translator;
 
 	private IJakeGuiAccess jakeGuiAccess = null;
 
@@ -112,7 +109,9 @@ public class JakeGui extends JPanel implements Observer {
 		log.debug("Initializing Components");
 		initComponents();
 		registerUpdateObservers();
+		updateAll();
 	}
+
 	/**
 	 * Set the system NATIVE look & feel.
 	 */
@@ -131,7 +130,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void newProjectMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open new Project Dialog");
-		new NewProjectDialog(mainFrame,this).setVisible(true);
+		new NewProjectDialog(mainFrame, this).setVisible(true);
 	}
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
@@ -290,13 +289,6 @@ public class JakeGui extends JPanel implements Observer {
 	private void openProjectMenuItemActionPerformed(ActionEvent e) {
 		// TODO
 	}
-	
-	private void viewProjectMembersMenuItemActionPerformed(ActionEvent e) {
-		log.debug("view all Project Members");
-		peoplePanel.updateUI();
-		mainTabbedPane.setSelectedComponent(peoplePanel);
-		
-	}
 
 	/**
 	 * ** Help Menu ****
@@ -353,7 +345,12 @@ public class JakeGui extends JPanel implements Observer {
 		log.info("Got Observer Message: Updating Titles");
 		// mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
 		// mainTabbedPane.setTitleAt(0, peoplePanel.getTitle());
-		mainTabbedPane.setTitleAt(0, notesPanel.getTitle());
+		mainTabbedPane.setTitleAt(2, notesPanel.getTitle());
+	}
+
+	public void updateAll() {
+		// peoplePanel.updateData();
+		notesPanel.updateData();
 	}
 
 	private void initComponents() {
@@ -406,7 +403,6 @@ public class JakeGui extends JPanel implements Observer {
 		addFileToProjectMenuItem = new JMenuItem();
 		addFolderToProjectMenuItem = new JMenuItem();
 		addProjectMemberMenuItem = new JMenuItem();
-		viewProjectMembersMenuItem = new JMenuItem();
 		helpMenu = new JMenu();
 		aboutHelpMenuItem = new JMenuItem();
 		peoplePopupMenu = new JPopupMenu();
@@ -424,7 +420,6 @@ public class JakeGui extends JPanel implements Observer {
 		// ======== frame1 ========
 		{
 			mainFrame.setTitle("Jake - Please open/create a project");
-         
 
 			mainFrame.setIconImage(new ImageIcon(getClass().getResource(
 					"/icons/Jake.png")).getImage());
@@ -562,14 +557,12 @@ public class JakeGui extends JPanel implements Observer {
 							}
 							peoplePanel.add(peopleScrollPane);
 						}
-						mainTabbedPane.addTab("People (3/4)", new ImageIcon(
+						mainTabbedPane.addTab("People", new ImageIcon(
 								getClass().getResource("/icons/people.png")),
 								peoplePanel);
 
-
-						mainTabbedPane.addTab("Notes (3)", new ImageIcon(
-								getClass().getResource("/icons/notes.png")),
-								notesPanel);
+						mainTabbedPane.addTab("Notes", new ImageIcon(getClass()
+								.getResource("/icons/notes.png")), notesPanel);
 
 					}
 					mainPanel.add(mainTabbedPane, BorderLayout.CENTER);
@@ -599,15 +592,15 @@ public class JakeGui extends JPanel implements Observer {
 								getClass().getResource(
 										"/icons/sync_project_folder.png")));
 
-                        refreshDatapoolViewButton.addActionListener(new ActionListener()
-                        {
-                            public void actionPerformed(ActionEvent event) {
-                                filesPanel.updateUI();
-                            }
-                        });
+						refreshDatapoolViewButton
+								.addActionListener(new ActionListener() {
+									public void actionPerformed(
+											ActionEvent event) {
+										filesPanel.updateUI();
+									}
+								});
 
-
-                        mainToolBar.add(refreshDatapoolViewButton);
+						mainToolBar.add(refreshDatapoolViewButton);
 						mainToolBar.addSeparator();
 
 						// ---- propagateFileButton ----
@@ -653,7 +646,7 @@ public class JakeGui extends JPanel implements Observer {
 							public void caretUpdate(CaretEvent e) {
 								// TODO: proof of concept! filter input (e.g.
 								// crash with '*')
-								
+
 								peopleTable
 										.setFilters(new FilterPipeline(
 												new Filter[] { new PatternFilter(
@@ -891,20 +884,7 @@ public class JakeGui extends JPanel implements Observer {
 						addProjectMemberMenuItem
 								.setText("Add Project Member...");
 						projectMenu.add(addProjectMemberMenuItem);
-						
-						// ---- viewProjectMembersMenuItem ----
-						viewProjectMembersMenuItem
-								.setText("View Project Members");
-						projectMenu.add(viewProjectMembersMenuItem);
-						viewProjectMembersMenuItem
-								.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								viewProjectMembersMenuItemActionPerformed(e);
-							}
-						});
-					
-					
-					
+
 					}
 					mainMenuBar.add(projectMenu);
 
@@ -1037,7 +1017,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JMenuItem addFileToProjectMenuItem;
 	private JMenuItem addFolderToProjectMenuItem;
 	private JMenuItem addProjectMemberMenuItem;
-	private JMenuItem viewProjectMembersMenuItem;
 	private JMenu helpMenu;
 	private JMenuItem aboutHelpMenuItem;
 	private JPopupMenu peoplePopupMenu;

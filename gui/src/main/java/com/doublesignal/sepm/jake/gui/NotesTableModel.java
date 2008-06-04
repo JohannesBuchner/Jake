@@ -47,6 +47,7 @@ public class NotesTableModel extends AbstractTableModel {
 	public void updateData() {
 		log.info("Updating Notes data...");
 		notes = jakeGuiAccess.getNotes();
+		notesUpdater.dataUpdated();
 	}
 
 	/**
