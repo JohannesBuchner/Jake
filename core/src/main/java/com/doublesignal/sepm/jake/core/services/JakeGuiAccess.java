@@ -194,13 +194,21 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         File tmp;
         for(String file : files)
         {
-            tmp = new File(fss.getFullpath(relPath+file));
-            if(tmp.isDirectory())
+            try {
+                tmp = new File(fss.getFullpath(relPath+file));
+                if(tmp.isDirectory())
             {
                 results.addAll(getFileObjectsByRelPath(relPath+file+"/"));
             }
-            if(tmp.isFile())
+                if(tmp.isFile())
                 results.add(new FileObject(relPath+file));
+            } catch (InvalidFilenameException e) {
+                continue;
+                // we simply ignore invalid filenames
+            } catch (IOException e) {
+                continue;
+                // we simply ignore non readable files
+            }
         }
         return results;
     }
