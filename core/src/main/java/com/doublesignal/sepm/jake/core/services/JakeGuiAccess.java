@@ -415,4 +415,22 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     	if(!isProjectLoaded())
     		throw new NoProjectLoadedException();
     }
+
+    public boolean getJakeObjectLock(JakeObject jakeObject) {
+        // TODO
+        return false;
+    }
+
+    public boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject) {
+        // TODO
+        return false;
+    }
+
+    public boolean deleteJakeObject(JakeObject jakeObject) {
+        return false;
+    }
+
+    public void propagateJakeObject(JakeObject jakeObject) {
+        // TODO 
+    }
 }

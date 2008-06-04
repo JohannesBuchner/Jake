@@ -126,7 +126,7 @@ public interface IJakeGuiAccess {
 	 * 
 	 * @param UserId
 	 */
-	public void addProjectMember(String networkUserId);
+	public void addProjectMember(String UserId);
 	
 	public Project getProject();
 
@@ -341,4 +341,32 @@ public interface IJakeGuiAccess {
 	public void launchFile(String relpath) 
 		throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException;
 
+    /**
+     * Gets the current softlock status of a jakeObject
+     * @param jakeObject
+     * @return true if file has softlock, false otherwise
+     */
+    boolean getJakeObjectLock(JakeObject jakeObject);
+
+    /**
+     * Sets or unsets the softlock on a certain jakeObject
+     * @param isLocked: True to set the softlock, false otherwise
+     * @param jakeObject
+     * @return returns the new softlock status of the jakeObject 
+     */
+    boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject);
+
+    /**
+     * Deletes a jakeObject.
+     * @param jakeObject
+     * @return true on success, false otherwise
+     */
+    boolean deleteJakeObject(JakeObject jakeObject);
+
+    /**
+     *  Pushes the given JakeObject
+     *
+     * @param jakeObject the JakeObject which should be distributed
+     */
+    void propagateJakeObject(JakeObject jakeObject);
 }
