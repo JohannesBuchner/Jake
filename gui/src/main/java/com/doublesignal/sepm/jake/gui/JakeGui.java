@@ -3,7 +3,6 @@ package com.doublesignal.sepm.jake.gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,7 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -31,14 +29,12 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXLoginDialog;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.Filter;
@@ -84,6 +80,15 @@ public class JakeGui extends JPanel implements Observer {
 		return mainTabbedPane;
 	}
 
+	/**
+	 * Set a status message for 5 seconds.
+	 * 
+	 * @param msg
+	 */
+	public void setStatusMsg(String msg) {
+		statusPanel.setStatusMsg(msg);
+	}
+
 	private final ITranslationProvider translator;
 
 	private IJakeGuiAccess jakeGuiAccess = null;
@@ -110,6 +115,8 @@ public class JakeGui extends JPanel implements Observer {
 		initComponents();
 		registerUpdateObservers();
 		updateAll();
+
+		setStatusMsg("Jake initialized & ready to rumble!");
 	}
 
 	/**
@@ -322,21 +329,6 @@ public class JakeGui extends JPanel implements Observer {
 		new NoteEditorDialog(mainFrame).setVisible(true);
 	}
 
-	/**
-	 * ** Status Bar Buttons ****
-	 */
-	private void messageReceivedStatusButtonActionPerformed(ActionEvent e) {
-		new ReceiveMessageDialog(mainFrame).setVisible(true);
-	}
-
-	private void fileConflictStatusButtonActionPerformed(ActionEvent e) {
-		new ResolveConflictDialog(mainFrame).setVisible(true);
-	}
-
-	private void connectionStatusButtonActionPerformed(ActionEvent e) {
-		new JXLoginDialog().setVisible(true);
-	}
-
 	private void registerUpdateObservers() {
 		notesPanel.getNotesUpdater().addObserver(this);
 	}
@@ -355,12 +347,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void initComponents() {
 		mainFrame = new JFrame();
-		statusPanel = new JPanel();
-		statusLabel = new JLabel();
-		statusButtonsPanel = new JPanel();
-		messageReceivedStatusButton = new JButton();
-		fileConflictStatusButton = new JButton();
-		connectionStatusButton = new JButton();
+		statusPanel = new StatusPanel(this);
 		mainPanel = new JPanel();
 		mainTabbedPane = new JTabbedPane();
 		peoplePanel = new JPanel();
@@ -430,68 +417,6 @@ public class JakeGui extends JPanel implements Observer {
 			{
 				this.setLayout(new BorderLayout());
 
-				// ======== statusPanel ========
-				{
-					statusPanel.setLayout(new BorderLayout(2, 2));
-
-					// ---- statusLabel ----
-					statusLabel.setText("Pulling File xy...");
-					// statusLabel.setAlignmentX(0);
-					statusPanel.add(statusLabel, BorderLayout.WEST);
-
-					// ======== statusButtonsPanel ========
-					{
-						statusButtonsPanel.setLayout(new FlowLayout(
-								FlowLayout.LEFT, 0, 0));
-
-						// ---- messageReceivedStatusButton ----
-						messageReceivedStatusButton
-								.setText("2 Messages received");
-						messageReceivedStatusButton.setIcon(new ImageIcon(
-								getClass().getResource("/icons/message.png")));
-						messageReceivedStatusButton
-								.setBorder(new SoftBevelBorder(
-										SoftBevelBorder.RAISED));
-						messageReceivedStatusButton
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										messageReceivedStatusButtonActionPerformed(e);
-									}
-								});
-						statusButtonsPanel.add(messageReceivedStatusButton);
-
-						// ---- fileConflictStatusButton ----
-						fileConflictStatusButton.setText("1 File Conflict");
-						fileConflictStatusButton.setIcon(new ImageIcon(
-								getClass().getResource("/icons/warning.png")));
-						fileConflictStatusButton.setBorder(new SoftBevelBorder(
-								SoftBevelBorder.RAISED));
-						fileConflictStatusButton
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										fileConflictStatusButtonActionPerformed(e);
-									}
-								});
-						statusButtonsPanel.add(fileConflictStatusButton);
-
-						// ---- connectionStatusButton ----
-						connectionStatusButton.setText("Connected");
-						connectionStatusButton.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/network-idle.png")));
-						connectionStatusButton.setBorder(new SoftBevelBorder(
-								SoftBevelBorder.RAISED));
-						connectionStatusButton
-								.setToolTipText("Connected as pstein@jabber.fsinf.at");
-						connectionStatusButton
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										connectionStatusButtonActionPerformed(e);
-									}
-								});
-						statusButtonsPanel.add(connectionStatusButton);
-					}
-					statusPanel.add(statusButtonsPanel, BorderLayout.EAST);
-				}
 				this.add(statusPanel, BorderLayout.SOUTH);
 
 				// ======== mainPanel ========
@@ -968,12 +893,7 @@ public class JakeGui extends JPanel implements Observer {
 	}
 
 	private JFrame mainFrame;
-	private JPanel statusPanel;
-	private JLabel statusLabel;
-	private JPanel statusButtonsPanel;
-	private JButton messageReceivedStatusButton;
-	private JButton fileConflictStatusButton;
-	private JButton connectionStatusButton;
+	private StatusPanel statusPanel;
 	private JPanel mainPanel;
 	private JTabbedPane mainTabbedPane;
 	private JPanel peoplePanel;
@@ -981,7 +901,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JXTable peopleTable;
 	private FilesPanel filesPanel;
 	private NotesPanel notesPanel;
-
 	private JToolBar mainToolBar;
 	private JButton openProjectFolderButton;
 	private JButton refreshDatapoolViewButton;
