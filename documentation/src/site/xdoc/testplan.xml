@@ -360,12 +360,18 @@
 					test suites.
 				</li>
 				<li>
+					All components begin testing with the beginning of the implementation, and end testing with the end of the project.
+				</li>
+				<li>
 					The test delegate (Dominik Dorn) will occasionally check some of the test suites
 					for quality and coverage and assigns tasks for the responsible person to correct the issue.
 				</li>
 				<li>
 					Code reviews of the created sourcecode (not the tests) will be performed. Eventually found
 					possible errors will be handled like described in the following section &quot;Error Reporting&quot;.
+				</li>
+				<li>
+					A component is tested successfully if the unit-tests succeed and the aspects that the testcases cover are found adequate. 
 				</li>
 			</ul>
 
@@ -392,7 +398,7 @@
 			<subsection name="GUI">
 				Testtypes:
 				<ul>
-					<li>Integration test</li>
+					<!--<li>Integration test</li>-->
 					<li>Usablity test</li>
 				</ul>
 			</subsection>
@@ -400,36 +406,36 @@
 			<subsection name="Core">
 				Testtypes:
 				<ul>
-					<li>Integration tests</li>
+					<!--<li>Integration test</li>-->
 					<li>Unit tests</li>
-					<li>BlackBox tests</li>
+					<!--<li>BlackBox tests</li>-->
 				</ul>
 			</subsection>
 
 			<subsection name="FSS">
 				Testtypes:
 				<ul>
-					<li>Integration tests</li>
+					<!--<li>Integration test</li>-->
 					<li>Unit tests</li>
-					<li>BlackBox tests</li>
+					<!--<li>BlackBox tests</li>-->
 				</ul>
 			</subsection>
 
 			<subsection name="Sync">
 				Testtypes:
 				<ul>
-					<li>Integration tests</li>
+					<!--<li>Integration test</li>-->
 					<li>Unit tests</li>
-					<li>BlackBox tests</li>
+					<!--<li>BlackBox tests</li>-->
 				</ul>
 			</subsection>
 
 			<subsection name="ICS">
 				Testtypes:
 				<ul>
-					<li>Integration tests</li>
+					<!--<li>Integration test</li>-->
 					<li>Unit tests</li>
-					<li>BlackBox tests</li>
+					<!--<li>BlackBox tests</li>-->
 				</ul>
 			</subsection>
 
