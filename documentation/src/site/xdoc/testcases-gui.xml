@@ -987,9 +987,10 @@
 						<tr>
 							<td>47</td>
 							<!-- test case # //-->
-							<td>Delete with [DEL] Key</td>
+							<td>Doubleclick on Entry</td>
 							<!-- function //-->
-							<td>A window pops up, asking the User if he really wants to delete the file</td>
+							<td>The file is launched with the means of the operating system
+                                (same as ContextMenu-&gt;Open File)</td>
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
