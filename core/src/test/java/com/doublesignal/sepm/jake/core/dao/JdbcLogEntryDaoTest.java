@@ -30,8 +30,18 @@ public class JdbcLogEntryDaoTest extends DBTest {
 	}
 
 	@Test
-	public void testCreate() {
-		
+	public void testCreate() throws NoSuchLogEntryException {
+		dao.create(new LogEntry(LogAction.TAG_REMOVE, new Date(new GregorianCalendar(2008, 5, 5, 3, 51, 0).getTimeInMillis()), "test.docx", "04B33F0D249353F473622BD3F60A5465681680FE64B376D78BBC0A3B5FF6F1437B9C2ACA299DB48162DE8B169165D14F9FD47BA8EE753694ACA3E51D9E5CCBB9", "chris@jabber.doublesignal.com", "microsoft"));
+
+		LogEntry le = dao.get("test.docx", "chris@jabber.doublesignal.com", new Date(new GregorianCalendar(2008, 5, 5, 3, 51, 0).getTimeInMillis()));
+
+		assertEquals("Name should match", "test.docx", le.getJakeObjectName());
+		assertEquals("User should match", "chris@jabber.doublesignal.com", le.getUserId());
+		assertEquals("Timestamp should match", new Date(new GregorianCalendar(2008, 5, 5, 3, 51, 0).getTimeInMillis()), le.getTimestamp());
+		assertEquals("Type should match", LogAction.TAG_REMOVE, le.getAction());
+		assertEquals("Hash should match", "04B33F0D249353F473622BD3F60A5465681680FE64B376D78BBC0A3B5FF6F1437B9C2ACA299DB48162DE8B169165D14F9FD47BA8EE753694ACA3E51D9E5CCBB9", le.getHash());
+		assertEquals("Message should match", "microsoft", le.getComment());
+		assertEquals("IsLastPulled should match", false, le.getIsLastPulled());
 	}
 
 	@Test
@@ -53,7 +63,34 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test
 	public void testGetAll() {
-		
+		List<LogEntry> entries = dao.getAll();
+
+		int testCount = 0;
+		int pr0nCount = 0;
+		int sepmCount = 0;
+		int noteCount = 0;
+
+		for(LogEntry le: entries) {
+			if("test.docx".equals(le.getJakeObjectName())) {
+				testCount++;
+			}
+			if("pr0n.jpg".equals(le.getJakeObjectName())) {
+				assertEquals("pr0n.jpg should belong to dominik@jabber.fsinf.at", "dominik@jabber.fsinf.at", le.getUserId());
+				pr0nCount++;
+			}
+			if("subfolder/sepm.txt".equals(le.getJakeObjectName())) {
+				assertEquals("subfolder/sepm.txt should belong to chris@jabber.doublesignal.com", "chris@jabber.doublesignal.com", le.getUserId());
+				sepmCount++;
+			}
+			if("note:j13r@jabber.ccc.de:20080531201910".equals(le.getJakeObjectName())) {
+				noteCount++;
+			}
+		}
+
+		assertEquals("There should be 3 entries for test.docx", 3, testCount);
+		assertEquals("There should be 1 entry for pr0n.jpg", 1, pr0nCount);
+		assertEquals("There should be 2 entries for the note", 2, noteCount);
+		assertEquals("There should be 1 entry for subfolder/sepm.txt", 1, sepmCount);
 	}
 
 	@Test
@@ -69,5 +106,10 @@ public class JdbcLogEntryDaoTest extends DBTest {
 	@Test(expected= NoSuchLogEntryException.class)
 	public void testGetMostRecentNonexisting() throws NoSuchLogEntryException {
 		dao.getMostRecentFor(new JakeObject("jaksfsafsadfds"));
+	}
+
+	public void testGetAllOfJakeObjectNonexisting() throws NoSuchLogEntryException {
+		List<LogEntry> entries = dao.getAllOfJakeObject(new JakeObject("jaksfsafsadfds"));
+		assertEquals("Should return an empty list", 0, entries.size());
 	}
 }
