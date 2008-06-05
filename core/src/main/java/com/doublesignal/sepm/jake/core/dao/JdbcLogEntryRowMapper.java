@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class JdbcLogEntryRowMapper implements ParameterizedRowMapper<LogEntry> {
 	public LogEntry mapRow(ResultSet resultSet, int i) throws SQLException {
 		LogAction action = LogAction.valueOf(resultSet.getString(4));
-		return new LogEntry(action, resultSet.getDate(3), resultSet.getString(1),
+		return new LogEntry(action, new java.util.Date(resultSet.getTimestamp(3).getTime()), resultSet.getString(1),
 				  resultSet.getString(6), resultSet.getString(2), resultSet.getString(5));
 	}
 }

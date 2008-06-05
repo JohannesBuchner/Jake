@@ -4,10 +4,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,8 +23,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 			  "SELECT object_name, projectmember, timestamp, action, message, hash, " +
 						 "is_last_pulled FROM logentries";
 	private static final String LOGENTRY_WHERE_SPECIFIC =
-			  " WHERE object_name=? AND projectmember=? " +
-						 "AND timestamp=?";
+			  " WHERE object_name=? AND projectmember=? AND timestamp=?";
 	private static final String LOGENTRY_WHERE_JAKEOBJECT =
 			  " WHERE object_name=?";
 	private static final String LOGENTRY_MOSTRECENT = " ORDER BY timestamp DESC LIMIT 1";
@@ -48,7 +44,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 	public LogEntry get(String name, String projectmember, Date timestamp)
 			  throws NoSuchLogEntryException {
 		try {
-			return getSimpleJdbcTemplate().queryForObject(LOGENTRY_SELECT + LOGENTRY_WHERE_SPECIFIC, new JdbcLogEntryRowMapper(), name, projectmember, new java.sql.Date(timestamp.getTime()));
+			return getSimpleJdbcTemplate().queryForObject(LOGENTRY_SELECT + LOGENTRY_WHERE_SPECIFIC, new JdbcLogEntryRowMapper(), name, projectmember, timestamp);
 		} catch (EmptyResultDataAccessException e) {
 			throw new NoSuchLogEntryException();
 		}

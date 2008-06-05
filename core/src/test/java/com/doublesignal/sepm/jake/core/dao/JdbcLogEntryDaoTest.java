@@ -10,6 +10,7 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -35,16 +36,13 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test
 	public void testGet() throws NoSuchLogEntryException {
-		LogEntry le = dao.get("test.docx", "dominik@jabber.fsinf.at", new Date(new GregorianCalendar(2008, 6, 1, 7, 22, 10).getTimeInMillis()));
+		LogEntry le = dao.get("test.docx", "dominik@jabber.fsinf.at", new Date(new GregorianCalendar(2008, 5, 1, 7, 22, 10).getTimeInMillis()));
 		assertEquals("Name should match", "test.docx", le.getJakeObjectName());
-		assertEquals("User should match", "test.docx", le.getUserId());
-		assertEquals("Timestamp should match", new Date(new GregorianCalendar(2008, 6, 1, 7, 22, 10).getTimeInMillis()), le.getTimestamp());
+		assertEquals("User should match", "dominik@jabber.fsinf.at", le.getUserId());
+		assertEquals("Timestamp should match", new Date(new GregorianCalendar(2008, 5, 1, 7, 22, 10).getTimeInMillis()), le.getTimestamp());
 		assertEquals("Type should match", LogAction.NEW_VERSION, le.getAction());
 		assertEquals("Hash should match", "51687BE5C2800D2C5C54D088261B2B55EC9A5CB62AEC7CAAF4F82613F84A47E2BA0330EDF3A181D2B31684ADB53AA67A7D350C81C84F009D5030FC8C1C308989", le.getHash());
 		assertEquals("Message should match", "", le.getComment());
-		/*
-		 * TODO: Update this once we know where the hell we get it from
-		 */
 		assertEquals("IsLastPulled should match", false, le.getIsLastPulled());
 	}
 
@@ -55,7 +53,7 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test
 	public void testGetAll() {
-
+		
 	}
 
 	@Test
