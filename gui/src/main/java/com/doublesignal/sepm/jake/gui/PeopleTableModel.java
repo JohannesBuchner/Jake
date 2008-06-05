@@ -8,17 +8,17 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
 
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
 @SuppressWarnings("serial")
 /**
- * @author peter
+ * @author peter,philipp
  */
 public class PeopleTableModel extends AbstractTableModel {
 	private static Logger log = Logger.getLogger(PeopleTableModel.class);
-	private List<NoteObject> notes = new ArrayList<NoteObject>();
+	private List<ProjectMember> members = new ArrayList<ProjectMember>();
 	private final IJakeGuiAccess jakeGuiAccess;
 
 	PeopleTableModel(IJakeGuiAccess jakeGuiAccess) {
@@ -38,15 +38,15 @@ public class PeopleTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return notes.size();
+		return members.size();
 	}
 
 	/**
-	 * Updates the view for notes, get new notes from GuiAccess
+	 * Updates the view to show Project members
 	 */
 	public void updateData() {
-		log.info("Updating Notes data...");
-		notes = jakeGuiAccess.getNotes();
+		log.info("Updating People data...");
+		members = jakeGuiAccess.getProject().getMembers();
 	}
 
 	/**
@@ -65,21 +65,22 @@ public class PeopleTableModel extends AbstractTableModel {
 	private final NotesUpdaterObservable notesUpdater = new NotesUpdaterObservable();
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		NoteObject note = notes.get(rowIndex);
+		ProjectMember member = members.get(rowIndex);
 
 		NotesColumns col = NotesColumns.values()[columnIndex];
 		switch (col) {
 		case Nickname:
-			return note.getName();
+			return member.getNickname();
 
 		case UserID:
-			return JakeObjLib.getTagString(note.getTags());
+			return member.getUserId();
 
 		case Status:
-			return jakeGuiAccess.getLastModified(note).toString();
+			return "status";
 
 		case Comment:
-			return jakeGuiAccess.getLastModifier(note).getNickname();
+			return "comment";
+			//jakeGuiAccess.getLastModifier(note).getNickname();
 
 		default:
 			throw new IllegalArgumentException(
@@ -110,12 +111,12 @@ public class PeopleTableModel extends AbstractTableModel {
 	public String getColumnName(int columnIndex) {
 		return colNames[columnIndex];
 	}
-
+/*
 	public NotesUpdaterObservable getNotesUpdater() {
 		return notesUpdater;
 	}
-
-	public List<NoteObject> getNotes() {
-		return notes;
+*/
+	public List<ProjectMember> getMembers() {
+		return members;
 	}
 }
