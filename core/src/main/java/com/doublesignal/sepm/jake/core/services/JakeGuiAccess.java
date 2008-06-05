@@ -1,9 +1,13 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -363,7 +367,9 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return newProject;
 	}
 
-	private JakeGuiAccess(String jakefile) throws SQLException {
+	private JakeGuiAccess(String rootPath) throws SQLException, IOException, 
+			NotADirectoryException 
+	{
 		log.info("Setup the JakeGuiAccess Object");
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
 				"beans.xml"));
@@ -379,7 +385,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		db.setProjectMemberDao((IProjectMemberDao) factory.getBean("ProjectMemberDao"));
 		db.setLogEntryDao((ILogEntryDao) factory.getBean("LogEntryDao"));
 		
-		db.connect(jakefile);
+		db.connect(rootPath);
+		fss.setRootPath(rootPath);
 		
 	}
 	
@@ -395,23 +402,41 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		if(!(scriptfile.exists() && scriptfile.isFile() && scriptfile.canWrite())){
 			throw new InvalidDatabaseException();
 		}
-		log.debug("copying over ");
+		log.debug("copying over ...");
 		try {
 			ClassPathResource cpr = new ClassPathResource("empty.jake");
 			log.debug("ClassPathResource: " + cpr.getFile().getAbsolutePath());
-			FileInputStream fis  = new FileInputStream(cpr.getFile());
-			FileOutputStream fos = new FileOutputStream(scriptfile);
-			byte[] buf = new byte[1024];
-			int i = 0;
-			while ((i = fis.read(buf)) != -1) {
-				fos.write(buf, 0, i);
+			BufferedReader fis = new BufferedReader(new FileReader(cpr.getFile()));
+			BufferedWriter fos = new BufferedWriter(new FileWriter(scriptfile));
+			boolean hasCreates = false;
+			int lines = 0;
+			while(true){
+				String l = fis.readLine();
+				System.out.println("Line "+(lines+1) + ": " + l);
+				lines++;
+				if(l == null)
+					break;
+				if(l.contains("CREATE TABLE"))
+					hasCreates = true;
+				fos.write(l);
+				fos.newLine();
 			}
-			log.debug("copied to " + scriptfile.getAbsolutePath());
-			if (fis != null) fis.close();
-			if (fos != null) fos.close();
+			log.debug("copied to " + scriptfile.getAbsolutePath() + "; " + lines + " lines");
+			
+			if (fis != null) 
+				fis.close();
+			if (fos != null) 
+				fos.close();
+			
+			if(hasCreates == false){
+				log.error("empty.jake had no CREATE TABLE statements");
+				throw new InvalidDatabaseException();
+			}
+			
 		} catch (IOException e) {
 			throw new InvalidDatabaseException();
 		}
+		log.debug("copying done ...");
 		
 	}
 	
@@ -425,7 +450,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
 	public static JakeGuiAccess createNewProjectByRootpath(String rootPath, 
 			String projectname) 
-		throws ExistingProjectException, InvalidDatabaseException, SQLException 
+		throws ExistingProjectException, InvalidDatabaseException, SQLException, 
+			IOException, NotADirectoryException 
 	{
 		rootPath = new File(rootPath).getAbsolutePath();
 		log.debug("createNewProjectByRootpath: " + rootPath);
@@ -443,6 +469,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		jga.db.getConfigurationDao().setConfigurationValue("projectname", projectname);
 		
 		jga.currentProject = new Project(new File(rootPath), projectname);
+		log.debug("project created and loaded.");
 		
 		return jga;
 	}
@@ -489,6 +516,12 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		} catch (SQLException e) {
 			System.out.println(e);
 			throw new InvalidDatabaseException();
+		} catch (IOException e) {
+			System.out.println(e);
+			throw new InvalidRootPathException();
+		} catch (NotADirectoryException e) {
+			System.out.println(e);
+			throw new InvalidRootPathException();
 		}
 		
 		/* if no exceptions were thrown until here, the database is (assumed) 

@@ -68,7 +68,8 @@ public class JakeGui extends JPanel implements Observer {
 	
 	public Project createProject(String projectName, String projectPath)
 			throws InvalidFilenameException, NotADirectoryException,
-			IOException, NotAFileException {
+			IOException, NotAFileException 
+	{
 		currentProject = jakeGuiAccess.createProject(projectName, projectPath);
 		mainFrame.setTitle("Jake - " + currentProject.getName());
 		filesPanel.updateUI();
@@ -94,31 +95,34 @@ public class JakeGui extends JPanel implements Observer {
 	private IJakeGuiAccess jakeGuiAccess = null;
 
 	public IJakeGuiAccess getJakeGuiAccess() {
-		log.debug("Getting JakeGuIAccess Object");
+		log.debug("Getting IJakeGuiAccess Object; is null? " + (jakeGuiAccess == null));
 		return jakeGuiAccess;
 	}
 
 	public void setJakeGuiAccess(IJakeGuiAccess jakeGuiAccess) {
-		log.debug("Setting IJakeGuiAccess Object");
+		log.debug("Setting IJakeGuiAccess Object; is null? " + (jakeGuiAccess == null));
 		this.jakeGuiAccess = jakeGuiAccess;
 	}
 
-	public JakeGui(IJakeGuiAccess jakeGuiAccess) {
+	public JakeGui(IJakeGuiAccess jakeGuiAccess) {		
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
 				"beans.xml"));
 		translator = (ITranslationProvider) factory
 				.getBean("translationProvider");
-
+		
 		setJakeGuiAccess(jakeGuiAccess);
 		setNativeLookAndFeel();
 		log.debug("Initializing Components");
 		initComponents();
 		registerUpdateObservers();
 		updateAll();
-
-		setStatusMsg("Jake initialized & ready to rumble!");
+		setStatusMsg("started");
+		log.debug("JakeGui loaded.");
+		
 	}
-
+	public static void showSelectProjectDialog(){
+		new NewProject();
+	}
 	/**
 	 * Set the system NATIVE look & feel.
 	 */

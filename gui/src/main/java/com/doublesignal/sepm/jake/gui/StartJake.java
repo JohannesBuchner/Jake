@@ -1,6 +1,5 @@
 package com.doublesignal.sepm.jake.gui;
 
-import java.io.File;
 import java.sql.SQLException;
 
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
@@ -30,33 +29,39 @@ public class StartJake
 		
 		log.debug("starting frontend....");
 		
-		String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
+		JakeGuiAccess jga = null;
 		
-		
-		File rootPath = new File(tmpdir, "testProject");
-		File jakeFile = new File(tmpdir, "testProject" + ".script");
-		jakeFile.delete();
-		rootPath.mkdir();
-		String rootfolder = rootPath.getAbsolutePath();
-		if(!(rootPath.exists() && rootPath.isDirectory()))
-			return;
-		try {
-			new JakeGui(JakeGuiAccess.openProjectByRootpath(rootfolder));
-		} catch (NonExistantDatabaseException e) {
-			e.printStackTrace();
-			try {
-				new JakeGui(JakeGuiAccess.createNewProjectByRootpath(rootfolder, "testProject"));
-			} catch (ExistingProjectException e1) {
-				e1.printStackTrace();
-			} catch (InvalidDatabaseException e1) {
-				e1.printStackTrace();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+		if(args.length >= 1){
+			/*String rootfolder = args[0];
+			try{
+				jga = JakeGuiAccess.openProjectByRootpath(rootfolder);
+			} catch (NonExistantDatabaseException e) {
+				log.info("Database not found, creating it.");
+				try {
+					jga = JakeGuiAccess.createNewProjectByRootpath(rootfolder, "testProject");
+				} catch (ExistingProjectException e1) {
+					UserDialogHelper.error(gui, "Database already exists? That's odd.");
+					System.exit(-1);
+				} catch (InvalidDatabaseException e1) {
+					UserDialogHelper.error(gui, "Database invalid.");
+					System.exit(-1);
+				} catch (SQLException e1) {
+					e.printStackTrace();
+					UserDialogHelper.error(gui, "An unexpected error occured. (SQLException)");
+					System.exit(-1);
+				}
+			} catch (InvalidDatabaseException e) {
+				UserDialogHelper.error(gui, "Database invalid.");
+				System.exit(-1);
+			} catch (InvalidRootPathException e) {
+				UserDialogHelper.error(gui, "Folder path invalid.");
+				System.exit(-1);
+			}catch (NullPointerException e){
+				e.printStackTrace();
 			}
-		} catch (InvalidDatabaseException e) {
-			e.printStackTrace();
-		} catch (InvalidRootPathException e) {
-			e.printStackTrace();
+			gui.setJakeGuiAccess(jga);*/
+		}else{
+			JakeGui.showSelectProjectDialog();
 		}
 		log.debug("loading done.");
 	}
