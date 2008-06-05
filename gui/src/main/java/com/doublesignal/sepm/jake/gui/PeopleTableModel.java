@@ -9,12 +9,11 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
 @SuppressWarnings("serial")
 /**
- * @author peter,philipp
+ * @author philipp
  */
 public class PeopleTableModel extends AbstractTableModel {
 	private static Logger log = Logger.getLogger(PeopleTableModel.class);
@@ -29,7 +28,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	String[] colNames = new String[] { "Nickname", "UserID", "Status", "Comment" };
 	boolean[] columnEditable = new boolean[] { true, false, false, true };
 
-	enum NotesColumns {
+	enum PeopleColumns {
 		Nickname, UserID, Status, Comment
 	}
 
@@ -55,19 +54,19 @@ public class PeopleTableModel extends AbstractTableModel {
 	 * @author peter
 	 * 
 	 */
-	public class NotesUpdaterObservable extends Observable {
+	public class PeopleUpdaterObservable extends Observable {
 		public void dataUpdated() {
 			setChanged();
 			notifyObservers();
 		}
 	}
 
-	private final NotesUpdaterObservable notesUpdater = new NotesUpdaterObservable();
+	private final PeopleUpdaterObservable peopleUpdater = new PeopleUpdaterObservable();
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		ProjectMember member = members.get(rowIndex);
 
-		NotesColumns col = NotesColumns.values()[columnIndex];
+		PeopleColumns col = PeopleColumns.values()[columnIndex];
 		switch (col) {
 		case Nickname:
 			return member.getNickname();
@@ -79,7 +78,7 @@ public class PeopleTableModel extends AbstractTableModel {
 			return "status";
 
 		case Comment:
-			return "comment";
+			return member.getNotes();
 			//jakeGuiAccess.getLastModifier(note).getNickname();
 
 		default:
@@ -90,7 +89,7 @@ public class PeopleTableModel extends AbstractTableModel {
 /*
 	@Override
 	public void setValueAt(Object columnValue, int rowIndex, int columnIndex) {
-		if (columnIndex == NotesColumns.Tags.ordinal()) {
+		if (columnIndex == PeopleColumns.Tags.ordinal()) {
 			JakeObject foundJakeObject = notes.get(rowIndex);
 			log.debug("handling a tag-change event");
 			if (foundJakeObject != null) {
@@ -111,11 +110,11 @@ public class PeopleTableModel extends AbstractTableModel {
 	public String getColumnName(int columnIndex) {
 		return colNames[columnIndex];
 	}
-/*
-	public NotesUpdaterObservable getNotesUpdater() {
-		return notesUpdater;
+
+	public PeopleUpdaterObservable getNotesUpdater() {
+		return peopleUpdater;
 	}
-*/
+
 	public List<ProjectMember> getMembers() {
 		return members;
 	}
