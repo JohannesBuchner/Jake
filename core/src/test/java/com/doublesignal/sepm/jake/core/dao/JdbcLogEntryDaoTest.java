@@ -95,12 +95,19 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test
 	public void testGetAllOfJakeObject() {
+		List<LogEntry> entries = dao.getAllOfJakeObject(new JakeObject("subfolder/sepm.txt"));
+		LogEntry e = entries.get(0);
 
+		assertEquals("Date should match", new Date(new GregorianCalendar(2008, 4, 31, 17, 22, 12).getTimeInMillis()), e.getTimestamp());
+		assertEquals("User should match", "chris@jabber.doublesignal.com", e.getUserId());
 	}
 
 	@Test
-	public void testGetMostRecent() {
+	public void testGetMostRecent() throws NoSuchLogEntryException {
+		LogEntry e = dao.getMostRecentFor(new JakeObject("test.docx"));
 
+		assertEquals("Date should match", new Date(new GregorianCalendar(2008, 5, 1, 7, 22, 10).getTimeInMillis()), e.getTimestamp());
+		assertEquals("User should match", "dominik@jabber.fsinf.at", e.getUserId());
 	}
 
 	@Test(expected= NoSuchLogEntryException.class)
