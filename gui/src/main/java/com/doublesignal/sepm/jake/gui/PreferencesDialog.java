@@ -18,6 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
@@ -56,6 +58,12 @@ public class PreferencesDialog extends JDialog {
 	}
 	
 	private void okButtonActionPerformed(ActionEvent e) {
+		guiAccess.setConfigOption("autoPush", String.valueOf(autoPushCheckBox.isSelected()));
+		guiAccess.setConfigOption("autoPull", String.valueOf(autoPullCheckBox.isSelected()));
+		guiAccess.setConfigOption("logsyncInterval", logSyncTextField.getText());
+		guiAccess.setConfigOption("username", userTextfield.getText());
+		guiAccess.setConfigOption("password", String.valueOf(passwordTextfield.getPassword()));
+		
 		this.setVisible(false);
 	}	
 	
@@ -76,6 +84,10 @@ public class PreferencesDialog extends JDialog {
 		autoPullCheckBox = new JCheckBox();
 		autoLogSyncLabel = new JLabel();
 		logSyncTextField = new JTextField();
+		userLabel = new JLabel();
+		userTextfield = new JTextField();
+		passwordLabel = new JLabel();
+		passwordTextfield = new JPasswordField();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
@@ -112,6 +124,18 @@ public class PreferencesDialog extends JDialog {
 				autoLogSyncLabel.setText(translator.get("PreferencesLableAutoLogSync"));
 				contentPanel.add(autoLogSyncLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				contentPanel.add(logSyncTextField, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				
+				// username
+				userLabel.setText(translator.get("PreferencesLabelUsername"));
+				contentPanel.add(userLabel, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(userTextfield, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				
+				// password
+				passwordLabel.setText(translator.get("PreferencesLabelPassword"));
+				contentPanel.add(passwordLabel, new TableLayoutConstraints(0, 4, 0, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(passwordTextfield, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -148,10 +172,20 @@ public class PreferencesDialog extends JDialog {
 		}
 		contentPane.add(dialogPane, BorderLayout.SOUTH);
 
-		//===== fill in data =====
-//		autoPushCheckBox.setEnabled(guiAccess.getConfigOption(configKey));
-//		autoPullCheckBox.setEnabled(guiAccess.getConfigOption(configKey));
-//		logSyncTextField.setText(guiAccess.getConfigOption(configKey));
+		//===== try to fill in data =====
+		try {
+			autoPushCheckBox.setSelected(Boolean.parseBoolean(guiAccess.getConfigOption("autoPush")));
+			autoPullCheckBox.setSelected(Boolean.parseBoolean(guiAccess.getConfigOption("autoPull")));
+			logSyncTextField.setText(guiAccess.getConfigOption("logsyncInterval"));
+		} catch (NoSuchConfigOptionException e) {
+			log.warn("could not fill in configuration values; unknown configuration option!");
+		}
+		try {
+			userTextfield.setText(guiAccess.getConfigOption("username"));
+			passwordTextfield.setText(guiAccess.getConfigOption("password"));
+		} catch (NoSuchConfigOptionException e) {
+			log.warn("could not fill in username/password; unknown configuration option. Values may not yet be set");
+		}
 		
 		pack();
 		setLocationRelativeTo(getOwner());
@@ -165,6 +199,10 @@ public class PreferencesDialog extends JDialog {
 	private JCheckBox autoPullCheckBox;
 	private JLabel autoLogSyncLabel;
 	private JTextField logSyncTextField;
+	private JLabel userLabel;
+	private JTextField userTextfield;
+	private JLabel passwordLabel;
+	private JPasswordField passwordTextfield;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;
