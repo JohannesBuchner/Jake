@@ -4,6 +4,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 
@@ -55,6 +56,21 @@ public class CreateAndOpenProjectTest extends TestCase {
 		assertEquals(jga.getProject().getName(), "foooo");
 		assertTrue(f.exists());
 		f.delete();
+	}
+	
+	public void testaddProjectMember() throws Exception
+	{
+		File rootPath = new File(tmpdir + "test-2");
+		rootPath.mkdir();
+		JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), "foooo");
+		File f = new File(rootPath.getAbsolutePath() + ".script");
+		assertTrue(f.exists());
+		JakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());
+		assertTrue(jga.getProject().getMembers().size()==0);
+		jga.addProjectMember("validusername@domain.com");
+		Project p = jga.getProject();
+		assertEquals("validusername@domain.com",p.getMembers().get(p.getMembers().size()-1).getUserId());
+		
 	}
 	
 	public void tearDown(){
