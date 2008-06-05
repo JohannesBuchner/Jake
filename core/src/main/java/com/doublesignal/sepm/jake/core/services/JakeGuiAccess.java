@@ -1,14 +1,6 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -480,11 +472,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		log.debug("setting config option projectname ... ");
 		db.getConfigurationDao().setConfigurationValue("projectname", projectname);
 		
-		jga.db.getConfigurationDao().setConfigurationValue("autoPush",
+		db.getConfigurationDao().setConfigurationValue("autoPush",
 				String.valueOf(1));
-		jga.db.getConfigurationDao().setConfigurationValue("autoPull",
+		db.getConfigurationDao().setConfigurationValue("autoPull",
 				String.valueOf(1));
-		jga.db.getConfigurationDao().setConfigurationValue("logsyncInterval",
+		db.getConfigurationDao().setConfigurationValue("logsyncInterval",
 				String.valueOf(5));
 		/* don't know. maybe scan in files? */
 		
