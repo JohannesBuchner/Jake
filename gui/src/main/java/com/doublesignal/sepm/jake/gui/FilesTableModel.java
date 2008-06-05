@@ -98,7 +98,7 @@ public class FilesTableModel extends AbstractTableModel {
 			return JakeObjLib.getTagString(file.getTags());
 
 		case SyncStatus:
-			return jakeGuiAccess.getFileObjectSyncStatus(file);
+			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.getFileObjectSyncStatus(file));
 
 		case LastChanged:
 			return jakeGuiAccess.getLastModified(file).toString();

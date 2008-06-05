@@ -37,7 +37,6 @@ public class FilesPanel extends JPanel {
     }
 
 
-
     public FilesPanel(JakeGui jakeGui) {
         this.jakeGui = jakeGui;
         this.jakeGuiAccess = jakeGui.getJakeGuiAccess();
@@ -68,7 +67,6 @@ public class FilesPanel extends JPanel {
                                 + "/" + FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")");
         }
     }
-
 
 
     public FilterPipeline getFilters() {
@@ -125,6 +123,7 @@ public class FilesPanel extends JPanel {
         resolveFileConflictMenuItem = new JMenuItem();
         propagateFileMenuItem = new JMenuItem();
         pullFileMenuItem = new JMenuItem();
+        importLocalFileMenuItem = new JMenuItem();
 
         openExecuteFileMenuItem.setText("Open");
         openExecuteFileMenuItem.addActionListener(new ActionListener() {
@@ -186,12 +185,23 @@ public class FilesPanel extends JPanel {
             }
         });
         filesPopupMenu.add(pullFileMenuItem);
+
+        importLocalFileMenuItem.setText("Import into Project");
+        importLocalFileMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                importLocalFileMenuItemActionPerformed(event);
+            }
+        }
+        );
+
+        filesPopupMenu.add(importLocalFileMenuItem);
+
     }
 
 
     private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {
         JakeObject fileObject = getSelectedFile();
-        if(fileObject != null)
+        if (fileObject != null)
             new ResolveConflictDialog(jakeGui.getMainFrame()).setJakeObject(fileObject).setVisible(true);
     }
 
@@ -216,12 +226,11 @@ public class FilesPanel extends JPanel {
 
         String filename = fileObject.getName();
 
-        if(UserDialogHelper.askForConfirmation(this,"Delete file?",
-                "Are you shure you want to delete the file \n\"" +filename + "\"\n from the project? \n\n" +
+        if (UserDialogHelper.askForConfirmation(this, "Delete file?",
+                "Are you shure you want to delete the file \n\"" + filename + "\"\n from the project? \n\n" +
                         "This operation may not be undone! "
 
-        ))
-        {
+        )) {
             if (jakeGuiAccess.deleteJakeObject(fileObject)) {
                 UserDialogHelper.inform(this, "File deleted", "The file \"" + filename + "\" was deleted from the project.",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -240,8 +249,7 @@ public class FilesPanel extends JPanel {
     private void viewLogForFileMenuItemActionPerfomed(ActionEvent event) {
         log.info("viewLogForFileMenuItemActionPerfomed");
         JakeObject fileObject = getSelectedFile();
-        if(fileObject != null)
-        {
+        if (fileObject != null) {
             new ViewLogDialog(jakeGui.getMainFrame()).setJakeObject(fileObject).setVisible(true);
         }
     }
@@ -253,35 +261,30 @@ public class FilesPanel extends JPanel {
         try {
             jakeGuiAccess.launchFile(filename);
         } catch (InvalidFilenameException e) {
-            UserDialogHelper.inform(this, "Couldn't open file", "Sorry, the object \n\"" + filename +
+            UserDialogHelper.error(this, "Couldn't open file", "Sorry, the object \n\"" + filename +
                     "\"\n could not be opend because it seems to be no valid file.\n" +
-                    "Please contact the Jake team.",
-                    JOptionPane.ERROR_MESSAGE);
+                    "Please contact the Jake team.");
 
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (LaunchException e) {
-            UserDialogHelper.inform(this, "Couldn't open file",
-                    "Sorry, the file \n\"" + filename +"\"\n could not be opend. \n\n"+
-            "Please check your operating systems settings for default file actions. ",
-                    JOptionPane.ERROR_MESSAGE);
+            UserDialogHelper.error(this, "Couldn't open file",
+                    "Sorry, the file \n\"" + filename + "\"\n could not be opend. \n\n" +
+                            "Please check your operating systems settings for default file actions. ");
 
         } catch (IOException e) {
-            UserDialogHelper.inform(this, "Couldn't open file", "The file \n\"" + filename + "\"\n" +
+            UserDialogHelper.error(this, "Couldn't open file", "The file \n\"" + filename + "\"\n" +
                     " could not be opened because of an input/output error.\n" +
                     "Please manually check if the file is accessible through \n" +
                     "the tools provided by your operating system (Windows Explorer, Konqueror, Finder, etc.)\n" +
-                    "Maybe you should also check your filesystem for failures (scandisk, fsck, etc.)",
-                    JOptionPane.ERROR_MESSAGE);
+                    "Maybe you should also check your filesystem for failures (scandisk, fsck, etc.)");
 
         } catch (NoProjectLoadedException e) {
             UserDialogHelper.inform(this, "Couldn't open file",
                     "The file \n\"" + filename + "\"\n" +
-                    " could not be opened because no project is loaded. \n THIS SHOULD NOT HAPPEN \n" +
-                            "Please report to the Jake Team.",
-                    JOptionPane.WARNING_MESSAGE);
+                            " could not be opened because no project is loaded. \n THIS SHOULD NOT HAPPEN \n" +
+                            "Please report to the Jake Team.");
         }
     }
-
 
 
     private void propagateFileMenuItemActionPerfomed(ActionEvent event) {
@@ -292,25 +295,53 @@ public class FilesPanel extends JPanel {
             jakeGuiAccess.propagateJakeObject(fileObject);
             UserDialogHelper.inform(this, "Propagation sheduled",
                     "The propagation of the file \n\"" + fileObject.getName() + "\"\n was sheduled. \n\n" +
-                    "It could take some time to propagate it to other project members, \n" +
-                    "depending on the availability of other project members.",
-                    JOptionPane.INFORMATION_MESSAGE);
+                            "It could take some time to propagate it to other project members, \n" +
+                            "depending on the availability of other project members.");
         }
     }
 
     private void pullFileMenuItemActionPerformed(ActionEvent event) {
         log.info("pullFileMenuItemActionPerformed");
         JakeObject fileObject = getSelectedFile();
-        if(fileObject != null)
-        {
+        if (fileObject != null) {
             jakeGuiAccess.pullJakeObject(fileObject);
-                        UserDialogHelper.inform(this, "Pulling sheduled",
+            UserDialogHelper.inform(this, "Pulling sheduled",
                     "The pulling of the file \n\"" + fileObject.getName() + "\"\n" +
-                    " was sheduled. \n\n" +
-                    "It could take some time to get it from other project members,\n" +
-                    "due to the availability of the other project members.",
-                    JOptionPane.INFORMATION_MESSAGE);
+                            " was sheduled. \n\n" +
+                            "It could take some time to get it from other project members,\n" +
+                            "due to the availability of the other project members.");
         }
+    }
+
+    private void importLocalFileMenuItemActionPerformed(ActionEvent event) {
+        log.info("importLocalFileMenuItemActionPerformed");
+
+        JakeObject fileObject = getSelectedFile();
+        if (fileObject != null) {
+            Integer nstatusnr = jakeGuiAccess.getFileObjectSyncStatus(fileObject);
+
+            if (nstatusnr != 102) {
+                UserDialogHelper.warning(this, "Import failed",
+                        "The file \n\"" + fileObject.getName() + "\"\n " +
+                                "could not be imported into the project because it is either already \n" +
+                                "a file in the projects repository or has not a valid filename ");
+            } else {
+                if (jakeGuiAccess.importLocalFileIntoProject(fileObject.getName())) {
+                    UserDialogHelper.inform(this, "Import succeeded",
+                            "The file \n\"" + fileObject.getName() + "\"\n" +
+                                    "was succcessfully imported into this JakeProject."
+                    );
+                    filesTable.updateUI();
+                } else {
+                    UserDialogHelper.error(this, "Import failed",
+                            "The file \n\"" + fileObject.getName() + "\"\n " +
+                                    "could not be imported into the project because it is either already \n" +
+                                    "a file in the projects repository or has not a valid filename "
+                    );
+                }
+            }
+        }
+
     }
 
 
@@ -325,4 +356,5 @@ public class FilesPanel extends JPanel {
     private JMenuItem resolveFileConflictMenuItem;
     private JMenuItem propagateFileMenuItem;
     private JMenuItem pullFileMenuItem;
+    private JMenuItem importLocalFileMenuItem;
 }

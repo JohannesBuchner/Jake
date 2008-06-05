@@ -20,4 +20,28 @@ public class FilesLib {
 
 		return lFileSize + " " + sFileSizeUnity;
 	}
+
+    public static String getHumanReadableFileStatus(int status)
+    {
+        switch(status)
+        {
+            default:
+            case 100:
+                return "no valid status";
+
+            case 101:
+                return "Remote File -> pull";
+            case 102:
+                return "local file, not in project";
+            case 103:
+                return "File in Sync";
+            case 104:
+                return "File remotely changed";
+            case 105:
+                return "File locally changed";
+            case 106:
+                return "File in conflict";
+        }
+    }
+
 }
