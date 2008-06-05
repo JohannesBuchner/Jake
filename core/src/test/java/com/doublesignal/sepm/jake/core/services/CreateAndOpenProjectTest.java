@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.gui;
+package com.doublesignal.sepm.jake.core.services;
 
 import java.io.File;
 
@@ -10,7 +10,8 @@ import com.doublesignal.sepm.jake.core.services.exceptions.*;
 
 public class CreateAndOpenProjectTest extends TestCase {
 	
-	String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
+	//String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
+	String tmpdir = "/home/user/Desktop/foo2/";
 	
 	public void setUp() throws Exception{
 		tearDown();

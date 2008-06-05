@@ -19,9 +19,10 @@ public class HsqlJakeDatabase implements IJakeDatabase {
 		close();
 		if(database.endsWith(".properties") || database.endsWith(".script"))
 			throw new SQLException("File ends with suffix!");
+		System.err.println("HSQL-CONNECT: " + "jdbc:hsqldb:file:"+database+";ifexists=true;shutdown=true");
 		DriverManagerDataSource ds = new DriverManagerDataSource(
 			"org.hsqldb.jdbcDriver", 
-			"jdbc:hsqldb:file:"+database+";shutdown=true",
+			"jdbc:hsqldb:"+database+";shutdown=true",
 			"sa",
 			""
 		);

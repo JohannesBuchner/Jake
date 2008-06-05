@@ -50,17 +50,6 @@ public class JakeGui extends JPanel implements Observer {
 
 	private Project currentProject = null;
 	
-	public Project createProject(String projectName, String projectPath)
-			throws InvalidFilenameException, NotADirectoryException,
-			IOException, NotAFileException 
-	{
-		currentProject = jakeGuiAccess.createProject(projectName, projectPath);
-		mainFrame.setTitle("Jake - " + currentProject.getName());
-		filesPanel.updateUI();
-		
-		return currentProject;
-	}
-
 	public JTabbedPane getMainTabbedPane() {
 		return mainTabbedPane;
 	}
@@ -125,7 +114,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void newProjectMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open new Project Dialog");
-		new NewProjectDialog(mainFrame, this).setVisible(true);
+		//new NewProjectDialog(mainFrame, this).setVisible(true);
 	}
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {

@@ -131,11 +131,7 @@ public interface IJakeGuiAccess {
 	public void registerReceiveMessageCallback(Observer observer);
 
 	public List<JakeMessage> getNewMessages();
-
-	public Project createProject(String projectName, String projectPath)
-			throws InvalidFilenameException, IOException,
-			NotADirectoryException, NotAFileException;
-
+	
 	/**
 	 * Add a new Member to a Project
 	 * 

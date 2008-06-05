@@ -153,8 +153,8 @@
 							<td>8</td>
 							<td>No Projectfolder selected</td>
 							<td>Create button disabled, field highlighted</td>
+							<td></td>
 							<td>Create button not disabled, hangs</td>
-							<td>Hangs</td>
 							<td></td>
 							<td>NO</td>
 							<td>Very High</td>

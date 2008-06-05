@@ -109,13 +109,10 @@ public class NewProject extends JDialog {
 			} catch (InvalidDatabaseException e) {
 				log.error("Invalid Database");
 				UserDialogHelper.error(this, translator.get("Invalid Database"));
-			} catch (SQLException e) {
-				log.error("Invalid Database (SQL Exception)");
-				UserDialogHelper.error(this, translator.get("Invalid Database (SQL Exception)"));
-			} catch (IOException e) {
+			} catch (NotADirectoryException e) {
 				log.error("Invalid Project Directory");
 				UserDialogHelper.error(this, translator.get("Invalid Project Directory"));
-			} catch (NotADirectoryException e) {
+			} catch (InvalidRootPathException e) {
 				log.error("Invalid Project Directory");
 				UserDialogHelper.error(this, translator.get("Invalid Project Directory"));
 			}
@@ -230,17 +227,6 @@ public class NewProject extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
-				//---- okButton ----
-				okButton.setText("Load/Generate New Project");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent event) {
-						okButtonActionPerformed(event);
-					}
-				});
-				buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-						GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-						new Insets(0, 0, 0, 5), 0, 0));
-				
 				//---- cancelButton ----
 				cancelButton.setText("Close");
 				cancelButton.addActionListener(new ActionListener() {
@@ -248,9 +234,21 @@ public class NewProject extends JDialog {
 						cancelButtonActionPerformed(event);
 					}
 				});
-				buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+				buttonBar.add(cancelButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
+				
+				//---- okButton ----
+				okButton.setText("Create/Load Project");
+				okButton.setEnabled(false);
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent event) {
+						okButtonActionPerformed(event);
+					}
+				});
+				buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+						GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+						new Insets(0, 0, 0, 5), 0, 0));
 			}
 			dialogPane.add(buttonBar, BorderLayout.SOUTH);
 		}
