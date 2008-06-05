@@ -65,13 +65,24 @@ public class NotesTableModel extends AbstractTableModel {
 
 	private final NotesUpdaterObservable notesUpdater = new NotesUpdaterObservable();
 
+	public static String getNotesTitle(NoteObject note) {
+		final int MAXLEN = 50;
+		String trailings = "";
+		int endIndex = note.getContent().length();
+		if (endIndex > MAXLEN) {
+			endIndex = MAXLEN - 3;
+			trailings = "...";
+		}
+		return note.getContent().substring(0, endIndex) + trailings;
+	}
+
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		NoteObject note = notes.get(rowIndex);
 
 		NotesColumns col = NotesColumns.values()[columnIndex];
 		switch (col) {
 		case Title:
-			return note.getName();
+			return getNotesTitle(note);
 
 		case Tags:
 			return JakeObjLib.getTagString(note.getTags());
@@ -83,8 +94,7 @@ public class NotesTableModel extends AbstractTableModel {
 			return jakeGuiAccess.getLastModifier(note).getNickname();
 
 		default:
-			throw new IllegalArgumentException(
-					"Cannot get Information for column " + columnIndex);
+			throw new IllegalArgumentException("Cannot get Information for column " + columnIndex);
 		}
 	}
 
@@ -94,9 +104,12 @@ public class NotesTableModel extends AbstractTableModel {
 			JakeObject foundJakeObject = notes.get(rowIndex);
 			log.debug("handling a tag-change event");
 			if (foundJakeObject != null) {
-				String sTags = JakeObjLib.generateNewTagString(jakeGuiAccess,
-						foundJakeObject, (String) columnValue);
+				String sTags = JakeObjLib.generateNewTagString(jakeGuiAccess, foundJakeObject,
+						(String) columnValue);
 				super.setValueAt(sTags, rowIndex, columnIndex);
+				
+				// save tags
+				jakeGuiAccess.editNote((NoteObject)foundJakeObject);
 			}
 		}
 		// possible other columns go here

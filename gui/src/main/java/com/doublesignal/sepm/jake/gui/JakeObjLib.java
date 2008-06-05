@@ -64,7 +64,7 @@ public final class JakeObjLib {
 			}
 		}
 
-		// remove the non existend tagsNew from the jakeObject
+		// remove the non existent tagsNew from the jakeObject
 		List<String> tagsFromArray = Arrays.asList(tagsArray);
 		log.debug("removing tags from jakeObject");
 		Tag[] foundTags = jakeObject.getTags().toArray(new Tag[jakeObject.getTags().size()]);

@@ -20,10 +20,14 @@ import javax.swing.table.TableColumnModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.NotesTableModel.NotesUpdaterObservable;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 
 @SuppressWarnings("serial")
 /**
@@ -31,6 +35,7 @@ import com.doublesignal.sepm.jake.gui.NotesTableModel.NotesUpdaterObservable;
  */
 public class NotesPanel extends JPanel {
 	private static Logger log = Logger.getLogger(NotesPanel.class);
+	ITranslationProvider translator = null;
 	private final JakeGui gui;
 	private final IJakeGuiAccess jakeGuiAccess;
 
@@ -40,6 +45,9 @@ public class NotesPanel extends JPanel {
 		log.info("Initializing NotesPanel.");
 		this.gui = gui;
 		this.jakeGuiAccess = gui.getJakeGuiAccess();
+
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+		translator = (ITranslationProvider) factory.getBean("translationProvider");
 
 		initComponents();
 		initPopupMenu();
@@ -60,15 +68,11 @@ public class NotesPanel extends JPanel {
 
 	private void editNoteMenuItemActionPerformed(ActionEvent e) {
 		editNote(getSelectedNote());
-		editNote(getSelectedNote());
-
 	}
 
 	private void removeNoteMenuItemActionPerformed(ActionEvent e) {
-
 		JOptionPane.showConfirmDialog(this, "This operation cannot be undone.",
-				"Really delete this node?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.WARNING_MESSAGE);
+				"Really delete this node?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 		jakeGuiAccess.removeNote(getSelectedNote());
 		updateData();
@@ -76,8 +80,7 @@ public class NotesPanel extends JPanel {
 
 	private void editNote(NoteObject note) {
 		log.info("Edit Note " + note);
-		NoteEditorDialog noteEditor = new NoteEditorDialog(gui.getMainFrame(),
-				note);
+		NoteEditorDialog noteEditor = new NoteEditorDialog(gui.getMainFrame(), note);
 		noteEditor.setVisible(true);
 
 		if (noteEditor.isSaved()) {
@@ -107,8 +110,7 @@ public class NotesPanel extends JPanel {
 	private NoteObject getSelectedNote() {
 		int selRow = notesTable.getSelectedRow();
 		if (selRow >= 0) {
-			log.info("getSelectedNode: (" + selRow + ") "
-					+ notesTableModel.getNotes().get(selRow));
+			log.info("getSelectedNode: (" + selRow + ") " + notesTableModel.getNotes().get(selRow));
 			return (notesTableModel.getNotes().get(selRow));
 		} else {
 			log.info("getSelctedNode: null");
@@ -120,9 +122,6 @@ public class NotesPanel extends JPanel {
 		notesTable = new JXTable();
 		notesScrollPane = new JScrollPane();
 		notesPopupMenu = new JPopupMenu();
-		viewEditNoteMenuItem = new JMenuItem();
-		newNoteMenuItem = new JMenuItem();
-		removeNoteMenuItem = new JMenuItem();
 
 		this.setLayout(new BorderLayout());
 		notesTableModel = new NotesTableModel(jakeGuiAccess);
@@ -133,8 +132,7 @@ public class NotesPanel extends JPanel {
 		notesTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2
-						&& SwingUtilities.isLeftMouseButton(e)
+				if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)
 						&& isNoteSelected()) {
 					editNote(getSelectedNote());
 				}
@@ -151,6 +149,9 @@ public class NotesPanel extends JPanel {
 	}
 
 	private void initPopupMenu() {
+		viewEditNoteMenuItem = new JMenuItem();
+		newNoteMenuItem = new JMenuItem();
+		removeNoteMenuItem = new JMenuItem();
 
 		// ---- newNoteMenuItem ----
 		newNoteMenuItem.setText("New Note...");
