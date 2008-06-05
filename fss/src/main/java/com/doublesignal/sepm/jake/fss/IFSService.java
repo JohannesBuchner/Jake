@@ -114,12 +114,11 @@ public interface IFSService {
 	
 	/**
 	 * Sets and stores the root path for operations that use a relpath.
-	 * @throws InvalidFilenameException
 	 * @throws IOException
 	 * @throws NotADirectoryException 
 	 */
 	public void setRootPath(String path) 
-		throws InvalidFilenameException, IOException, NotADirectoryException;
+		throws IOException, NotADirectoryException;
 
 	/**
 	 * Writes the content to the file.

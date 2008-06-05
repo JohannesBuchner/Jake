@@ -65,14 +65,14 @@ public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
 	private Project currentProject = null;
-
+	
 	public Project createProject(String projectName, String projectPath)
 			throws InvalidFilenameException, NotADirectoryException,
 			IOException, NotAFileException {
 		currentProject = jakeGuiAccess.createProject(projectName, projectPath);
 		mainFrame.setTitle("Jake - " + currentProject.getName());
 		filesPanel.updateUI();
-
+		
 		return currentProject;
 	}
 

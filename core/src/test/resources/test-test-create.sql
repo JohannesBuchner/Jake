@@ -1,4 +1,4 @@
-DROP TABLE testtable;
+DROP TABLE IF EXISTS testtable;
 
 CREATE TABLE testtable (
 	a INTEGER,

@@ -326,28 +326,6 @@ public interface IJakeGuiAccess {
 	public String getJakeObjectSyncStatus(JakeObject jakeObject);
 
 	/**
-	 * Opens the Project in the path given, if it exists.
-	 * 
-	 * @param rootPath
-	 * @return the Project Object of the Project
-	 * @throws NotADirectoryException
-	 * @throws IOException
-	 * @throws InvalidFilenameException
-	 * @throws NoProjectLoadedException
-	 */
-	public Project openProject(String rootPath)
-			throws InvalidFilenameException, IOException,
-			NotADirectoryException, NoProjectLoadedException;
-
-	/**
-	 * checks if a project was loaded and everything is configured for
-	 * operations
-	 * 
-	 * @return
-	 */
-	public boolean isProjectLoaded();
-
-	/**
 	 * open a file with the associated (external) application
 	 * 
 	 * @param relpath

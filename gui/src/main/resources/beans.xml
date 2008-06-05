@@ -16,7 +16,10 @@
 	<!-- unfortunately, we have to repeat ourselves here (copied from core) -->
     <bean id="hsqldbDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-		<property name="url" value="jdbc:hsqldb:data/db" />
+		<property name="url">
+			<value>jdbc:hsqldb:mem:db</value>
+		</property>
+		
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 		<property name="connectionProperties">     
@@ -25,25 +28,44 @@
 			</props>
 		</property>
 	</bean>
-
-	<bean id="ProjectMemberDAO"
+	
+	
+	
+	<bean id="ProjectMemberDao"
 		class="com.doublesignal.sepm.jake.core.dao.JdbcProjectMemberDao"
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
 	</bean>
 
-	<bean id="JakeObjectDAO"
+	<bean id="JakeObjectDao"
 		class="com.doublesignal.sepm.jake.core.dao.JdbcJakeObjectDao"
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
 	</bean>
 
-	 <bean id="LogEntryDAO"
+	 <bean id="LogEntryDao"
 		class="com.doublesignal.sepm.jake.core.dao.JdbcLogEntryDao"
 		singleton="true">
 		<property name="dataSource" ref="hsqldbDataSource" />
 	</bean>
     
+    <bean id="ConfigurationDao"
+		class="com.doublesignal.sepm.jake.core.dao.JdbcConfigurationDao"
+		singleton="true">
+		<property name="dataSource" ref="hsqldbDataSource" />
+	</bean>
+	
+    <bean id="JakeDatabase"
+		class="com.doublesignal.sepm.jake.core.dao.HsqlJakeDatabase"
+		singleton="true">
+		<!--<property name="logEntryDao"      ref="LogEntryDao" />
+		<property name="jakeObjectDao"    ref="JakeObjectDao" />
+		<property name="configurationDao" ref="ConfigurationDao" />
+		<property name="projectMemberDao" ref="ProjectMemberDao" />-->
+	</bean>
+	
+	
+	
     <bean id="FSService"
 			class="com.doublesignal.sepm.jake.fss.FSService"
 			singleton="true">

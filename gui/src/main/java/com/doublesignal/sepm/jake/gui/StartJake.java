@@ -1,6 +1,14 @@
 package com.doublesignal.sepm.jake.gui;
 
+import java.io.File;
+import java.sql.SQLException;
+
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.exceptions.ExistingProjectException;
+import com.doublesignal.sepm.jake.core.services.exceptions.InvalidDatabaseException;
+import com.doublesignal.sepm.jake.core.services.exceptions.InvalidRootPathException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -21,7 +29,35 @@ public class StartJake
 		log.info("===================================================");
 		
 		log.debug("starting frontend....");
-		new JakeGui(new JakeGuiAccess());
+		
+		String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
+		
+		
+		File rootPath = new File(tmpdir, "testProject");
+		File jakeFile = new File(tmpdir, "testProject" + ".script");
+		jakeFile.delete();
+		rootPath.mkdir();
+		String rootfolder = rootPath.getAbsolutePath();
+		if(!(rootPath.exists() && rootPath.isDirectory()))
+			return;
+		try {
+			new JakeGui(JakeGuiAccess.openProjectByRootpath(rootfolder));
+		} catch (NonExistantDatabaseException e) {
+			e.printStackTrace();
+			try {
+				new JakeGui(JakeGuiAccess.createNewProjectByRootpath(rootfolder, "testProject"));
+			} catch (ExistingProjectException e1) {
+				e1.printStackTrace();
+			} catch (InvalidDatabaseException e1) {
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} catch (InvalidDatabaseException e) {
+			e.printStackTrace();
+		} catch (InvalidRootPathException e) {
+			e.printStackTrace();
+		}
 		log.debug("loading done.");
 	}
 }
