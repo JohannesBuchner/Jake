@@ -467,6 +467,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		jga.db.getConfigurationDao().setConfigurationValue("rootpath", rootPath);
 		log.debug("setting config option projectname ... ");
 		jga.db.getConfigurationDao().setConfigurationValue("projectname", projectname);
+//===================================================		
+		jga.db.getConfigurationDao().setConfigurationValue("autoPush", String.valueOf(1));
+		jga.db.getConfigurationDao().setConfigurationValue("autoPull", String.valueOf(1));
+		jga.db.getConfigurationDao().setConfigurationValue("logsyncInterval", String.valueOf(5));
+//===================================================
 		
 		jga.currentProject = new Project(new File(rootPath), projectname);
 		log.debug("project created and loaded.");
