@@ -11,24 +11,8 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import javax.swing.*;
+
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.DefaultTableModel;
@@ -126,7 +110,7 @@ public class JakeGui extends JPanel implements Observer {
 	/**
 	 * Set the system NATIVE look & feel.
 	 */
-	private static void setNativeLookAndFeel() {
+	public static void setNativeLookAndFeel() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			log.info("Look & Feel set to: " + UIManager.getLookAndFeel());

@@ -53,7 +53,7 @@ public class NewProject extends JDialog {
 	}
 	
 	private void folderSelectActionPerformed(ActionEvent event) {
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new JFileChooser(folderTextField.getText());
 		fileChooser.setMultiSelectionEnabled(false);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnCode = fileChooser.showOpenDialog(null);
@@ -129,7 +129,6 @@ public class NewProject extends JDialog {
 	
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - xx xxx
 		panel1 = new JPanel();
 		label7 = new JLabel();
 		dialogPane = new JPanel();
@@ -158,12 +157,6 @@ public class NewProject extends JDialog {
 			panel1.setBackground(Color.white);
 
 			// JFormDesigner evaluation mark
-			panel1.setBorder(new javax.swing.border.CompoundBorder(
-				new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-					"JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-					javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-					java.awt.Color.red), panel1.getBorder())); panel1.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
-
 			panel1.setLayout(new FlowLayout());
 
 			//---- label7 ----
@@ -268,7 +261,6 @@ public class NewProject extends JDialog {
 	}
 
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - xx xxx
 	private JPanel panel1;
 	private JLabel label7;
 	private JPanel dialogPane;
