@@ -10,8 +10,8 @@ import com.doublesignal.sepm.jake.core.services.exceptions.*;
 
 public class CreateAndOpenProjectTest extends TestCase {
 	
-	//String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
-	String tmpdir = "/home/user/Desktop/foo2/";
+	String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
+	//String tmpdir = "/home/user/Desktop/foo2/";
 	
 	public void setUp() throws Exception{
 		tearDown();
@@ -37,13 +37,17 @@ public class CreateAndOpenProjectTest extends TestCase {
 		}catch (ExistingProjectException e) {
 			
 		}
+		assertTrue(f.exists());
 		f.delete();
+		File f2 = new File(rootPath.getAbsolutePath() + ".properties");
+		f2.delete();
 		
 		JakeGuiAccess jga = JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), "foobaz");
 		assertEquals(jga.getProject().getName(), "foobaz");
 		jga.close();
 		assertTrue(f.exists());
 		f.delete();
+		f2.delete();
 	}
 	
 	public void testopenProjectByRootpath() throws Exception

@@ -13,8 +13,8 @@ import com.doublesignal.sepm.jake.core.services.exceptions.*;
 
 public class JakeGuiAccessTest extends TestCase {
 	
-	//String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
-	String tmpdir = "/home/user/Desktop/foo2/";
+	String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
+	//String tmpdir = "/home/user/Desktop/foo2/";
 	JakeGuiAccess jga;
 	
 	@Before
@@ -23,6 +23,8 @@ public class JakeGuiAccessTest extends TestCase {
 		rootPath.mkdir();
 		File jakeFile = new File(tmpdir, "testProject" + ".script");
 		jakeFile.delete();
+		File jakeFile2 = new File(tmpdir, "testProject" + ".properties");
+		jakeFile2.delete();
 		String rootfolder = rootPath.getAbsolutePath();
 		if(!(rootPath.exists() && rootPath.isDirectory()))
 			return;
@@ -51,6 +53,8 @@ public class JakeGuiAccessTest extends TestCase {
 		rootPath.delete();
 		File jakeFile = new File(tmpdir, "testProject" + ".script");
 		jakeFile.delete();
+		File jakeFile2 = new File(tmpdir, "testProject" + ".properties");
+		jakeFile2.delete();
 	}
 	
 }

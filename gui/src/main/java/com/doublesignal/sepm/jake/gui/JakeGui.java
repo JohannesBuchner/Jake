@@ -295,7 +295,7 @@ public class JakeGui extends JPanel implements Observer {
 	 */
 
 	private void showInfoPeopleMenuItemActionPerformed(ActionEvent e) {
-		new InfoDialog(mainFrame).setVisible(true);
+		new ProjectMemberInfoDialog(mainFrame).setVisible(true);
 	}
 
 	private void sendMessageMenuItemActionPerformed(ActionEvent e) {

@@ -125,17 +125,6 @@ public class NoteEditorDialog extends JDialog {
 		((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {
 				1.0, 0.0, 0.0 };
 
-		// ---- okButton ----
-		okButton.setText("Save");
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				okButtonActionPerformed(e);
-			}
-		});
-		buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
-						0, 0, 0, 5), 0, 0));
-
 		// ---- cancelButton ----
 		cancelButton.setText("Close");
 		cancelButton.addActionListener(new ActionListener() {
@@ -143,11 +132,22 @@ public class NoteEditorDialog extends JDialog {
 				cancelButtonActionPerformed(e);
 			}
 		});
-		buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0,
+		buttonBar.add(cancelButton, new GridBagConstraints(1, 0, 1, 1, 0.0,
 				0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 0), 0, 0));
+				new Insets(0, 0, 0, 5), 0, 0));
 		dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
+		// ---- okButton ----
+		okButton.setText("Save");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okButtonActionPerformed(e);
+			}
+		});
+		buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+						0, 0, 0, 0), 0, 0));
+		
 		contentPane.add(dialogPane, BorderLayout.CENTER);
 		setMinimumSize(new Dimension(300, 250));
 		pack();
