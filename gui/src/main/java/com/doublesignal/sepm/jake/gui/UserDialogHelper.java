@@ -17,7 +17,13 @@ import java.awt.*;
 public class UserDialogHelper {
 	static Logger logger = Logger.getRootLogger();
 
-	/**
+
+     public static void inform(Component parent, String title, String text)
+     {
+         inform(parent, title, text, JOptionPane.INFORMATION_MESSAGE);
+     }
+
+    /**
 	 * Generally a messagebox and a log4j log entry
 	 * 
 	 * @param parent
@@ -121,10 +127,24 @@ public class UserDialogHelper {
 	 *            the message to be shown.
 	 */
 	public static void error(Component parent, String errorMessage) {
-		showMessageDialog(parent, errorMessage, "", JOptionPane.ERROR_MESSAGE);
+		error(parent, errorMessage, "");
 	}
 
-	/**
+    public static void error(Component parent, String title, String errorMessage) {
+        showMessageDialog(parent, errorMessage, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void warning(Component parent, String warningMessage)
+    {
+        warning(parent, "", warningMessage);
+    }
+
+    public static void warning(Component parent, String title, String warningMessage) {
+        showMessageDialog(parent, warningMessage, title, JOptionPane.WARNING_MESSAGE);
+    }
+
+
+    /**
 	 * creates an error-dialog box using the i18n-identifier
 	 * 
 	 * @param parent
