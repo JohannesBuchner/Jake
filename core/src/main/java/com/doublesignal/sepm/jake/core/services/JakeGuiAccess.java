@@ -3,14 +3,16 @@ package com.doublesignal.sepm.jake.core.services;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Observer;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -18,14 +20,42 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
 
-import com.doublesignal.sepm.jake.core.dao.*;
-import com.doublesignal.sepm.jake.core.dao.exceptions.*;
-import com.doublesignal.sepm.jake.core.domain.*;
-import com.doublesignal.sepm.jake.core.services.exceptions.*;
-import com.doublesignal.sepm.jake.fss.*;
-import com.doublesignal.sepm.jake.ics.*;
-import com.doublesignal.sepm.jake.ics.exceptions.*;
-import com.doublesignal.sepm.jake.sync.*;
+import com.doublesignal.sepm.jake.core.dao.IConfigurationDao;
+import com.doublesignal.sepm.jake.core.dao.IJakeDatabase;
+import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
+import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
+import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.core.domain.Project;
+import com.doublesignal.sepm.jake.core.domain.ProjectFile;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.services.exceptions.ExistingProjectException;
+import com.doublesignal.sepm.jake.core.services.exceptions.InvalidDatabaseException;
+import com.doublesignal.sepm.jake.core.services.exceptions.InvalidRootPathException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
+import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
+import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
+import com.doublesignal.sepm.jake.fss.IFSService;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.ics.IICService;
+import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.sync.ISyncService;
 
 /**
  * 
@@ -40,7 +70,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	private ISyncService sync = null;
 	private IFSService fss = null;
 	private IJakeDatabase db = null;
-	
+
 	private Project currentProject;
 	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
@@ -97,16 +127,13 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return null;
 	}
 
-
-    public void editNote(NoteObject note) {
+	public void editNote(NoteObject note) {
 		log.info("edit Note: " + note);
 	}
 
 	public void removeNote(NoteObject note) {
 		log.info("remove Note:" + note);
 	}
-
-
 
 	public List<JakeObject> getChangedObjects() {
 		// TODO Auto-generated method stub
@@ -127,6 +154,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			throws NoSuchConfigOptionException {
 		return db.getConfigurationDao().getConfigurationValue(configKey);
 	}
+
 	/**
 	 * Set a configuration option.
 	 * 
@@ -139,7 +167,6 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		db.getConfigurationDao().setConfigurationValue(configKey, configValue);
 	}
 
-
 	public List<JakeObject> getJakeObjectsByName(String name) {
 		// TODO Auto-generated method stub
 		return null;
@@ -150,7 +177,6 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	private List<FileObject> getFileObjectsByRelPath(String relPath)
 			throws InvalidFilenameException, IOException {
@@ -209,7 +235,6 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 						.debug("getJakeObjectsByPath: fss.getRootPath is not null, but empty!");
 		}
 
-
 		return results;
 	}
 
@@ -234,11 +259,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	}
 
 	public List<NoteObject> getNotes() {
-		// return *something*.
-		ArrayList<NoteObject> list = new ArrayList<NoteObject>();
-		list.add(NoteObject.createNoteObject("peter", "Test-Content"));
-		list.add(NoteObject.createNoteObject("dom", "Noch ein Test"));
-		return list;
+		return db.getJakeObjectDao().getAllNoteObjects();
 	}
 
 	public List<JakeObject> getOutOfSyncObjects() {
@@ -302,10 +323,12 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			return 0;
 		}
 	}
+
 	public void addProjectMember(String networkUserId) {
 		ProjectMember PM = new ProjectMember(networkUserId);
 		currentProject.addMember(PM);
 	}
+
 	public ProjectMember getLastModifier(JakeObject jakeObject) {
 		// sync.getLogEntries(jakeObject)
 		// return new
@@ -343,154 +366,160 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return "Offline";
 	}
 
-    public void launchFile(String relpath) throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException {
+	public void launchFile(String relpath) throws InvalidFilenameException,
+			LaunchException, IOException, NoProjectLoadedException {
 		fss.launchFile(relpath);
-    }
-    
-    
-    
-    
-    
-    public Project createProject(String projectName,
-	                             String projectPath) throws
-	        InvalidFilenameException, IOException, NotADirectoryException, NotAFileException {
-	    // todo advice fss to create new project
-	    // todo advice ics to create new project
-	    // todo advice database to create new project
-	    log.info("Creating a new JakeProject with name '"+projectName+"' and Path '"+projectPath+"' ");
-	    Project newProject = new Project(new File(projectPath),projectName);
-	    fss.setRootPath(newProject.getRootPath().toString());
-	
-	    ProjectFile projectFile = new ProjectFile(fss.getRootPath());
-	    projectFile.createProject(newProject);
-	    currentProject = newProject; 
+	}
+
+	public Project createProject(String projectName, String projectPath)
+			throws InvalidFilenameException, IOException,
+			NotADirectoryException, NotAFileException {
+		// todo advice fss to create new project
+		// todo advice ics to create new project
+		// todo advice database to create new project
+		log.info("Creating a new JakeProject with name '" + projectName
+				+ "' and Path '" + projectPath + "' ");
+		Project newProject = new Project(new File(projectPath), projectName);
+		fss.setRootPath(newProject.getRootPath().toString());
+
+		ProjectFile projectFile = new ProjectFile(fss.getRootPath());
+		projectFile.createProject(newProject);
+		currentProject = newProject;
 		return newProject;
 	}
 
-	private JakeGuiAccess(String rootPath) throws SQLException, IOException, 
-			NotADirectoryException 
-	{
+	private JakeGuiAccess(String rootPath) throws SQLException, IOException,
+			NotADirectoryException {
 		log.info("Setup the JakeGuiAccess Object");
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
 				"beans.xml"));
-		
+
 		ics = (IICService) factory.getBean("ICService");
 		sync = (ISyncService) factory.getBean("SyncService");
 		fss = (IFSService) factory.getBean("FSService");
-		
+
 		db = (IJakeDatabase) factory.getBean("JakeDatabase");
-		
-		db.setConfigurationDao((IConfigurationDao) factory.getBean("ConfigurationDao"));
+
+		db.setConfigurationDao((IConfigurationDao) factory
+				.getBean("ConfigurationDao"));
 		db.setJakeObjectDao((IJakeObjectDao) factory.getBean("JakeObjectDao"));
-		db.setProjectMemberDao((IProjectMemberDao) factory.getBean("ProjectMemberDao"));
+		db.setProjectMemberDao((IProjectMemberDao) factory
+				.getBean("ProjectMemberDao"));
 		db.setLogEntryDao((ILogEntryDao) factory.getBean("LogEntryDao"));
-		
+
 		db.connect(rootPath);
 		fss.setRootPath(rootPath);
-		
+
 	}
-	
-	public static void createSchema(String rootPath) throws InvalidDatabaseException {
+
+	public static void createSchema(String rootPath)
+			throws InvalidDatabaseException {
 		File scriptfile = new File(rootPath + ".script");
 		log.debug("create schema of " + scriptfile.getAbsolutePath());
-		if(!scriptfile.exists())
+		if (!scriptfile.exists())
 			try {
 				scriptfile.createNewFile();
 			} catch (IOException e1) {
 				throw new InvalidDatabaseException();
 			}
-		if(!(scriptfile.exists() && scriptfile.isFile() && scriptfile.canWrite())){
+		if (!(scriptfile.exists() && scriptfile.isFile() && scriptfile
+				.canWrite())) {
 			throw new InvalidDatabaseException();
 		}
 		log.debug("copying over ...");
 		try {
 			ClassPathResource cpr = new ClassPathResource("empty.jake");
 			log.debug("ClassPathResource: " + cpr.getFile().getAbsolutePath());
-			BufferedReader fis = new BufferedReader(new FileReader(cpr.getFile()));
+			BufferedReader fis = new BufferedReader(new FileReader(cpr
+					.getFile()));
 			BufferedWriter fos = new BufferedWriter(new FileWriter(scriptfile));
 			boolean hasCreates = false;
 			int lines = 0;
-			while(true){
+			while (true) {
 				String l = fis.readLine();
-				System.out.println("Line "+(lines+1) + ": " + l);
+				System.out.println("Line " + (lines + 1) + ": " + l);
 				lines++;
-				if(l == null)
+				if (l == null)
 					break;
-				if(l.contains("CREATE TABLE"))
+				if (l.contains("CREATE TABLE"))
 					hasCreates = true;
 				fos.write(l);
 				fos.newLine();
 			}
-			log.debug("copied to " + scriptfile.getAbsolutePath() + "; " + lines + " lines");
-			
-			if (fis != null) 
+			log.debug("copied to " + scriptfile.getAbsolutePath() + "; "
+					+ lines + " lines");
+
+			if (fis != null)
 				fis.close();
-			if (fos != null) 
+			if (fos != null)
 				fos.close();
-			
-			if(hasCreates == false){
+
+			if (hasCreates == false) {
 				log.error("empty.jake had no CREATE TABLE statements");
 				throw new InvalidDatabaseException();
 			}
-			
+
 		} catch (IOException e) {
 			throw new InvalidDatabaseException();
 		}
 		log.debug("copying done ...");
-		
+
 	}
-	
-	public static boolean hasRootpathAProject(String rootPath) 
-	{
+
+	public static boolean hasRootpathAProject(String rootPath) {
 		File d = new File(rootPath);
 		rootPath = d.getAbsolutePath();
 		File jakeFile = new File(d.getParentFile(), d.getName() + ".script");
 		return jakeFile.exists();
 	}
 
-	public static JakeGuiAccess createNewProjectByRootpath(String rootPath, 
-			String projectname) 
-		throws ExistingProjectException, InvalidDatabaseException, SQLException, 
-			IOException, NotADirectoryException 
-	{
+	public static JakeGuiAccess createNewProjectByRootpath(String rootPath,
+			String projectname) throws ExistingProjectException,
+			InvalidDatabaseException, SQLException, IOException,
+			NotADirectoryException {
 		rootPath = new File(rootPath).getAbsolutePath();
 		log.debug("createNewProjectByRootpath: " + rootPath);
-		if(hasRootpathAProject(rootPath))
+		if (hasRootpathAProject(rootPath))
 			throw new ExistingProjectException();
-		
+
 		log.debug("createSchema");
 		createSchema(rootPath);
 		log.debug("JakeGuiAccess");
 		JakeGuiAccess jga;
 		jga = new JakeGuiAccess(rootPath);
 		log.debug("setting config option rootpath ... ");
-		jga.db.getConfigurationDao().setConfigurationValue("rootpath", rootPath);
+		jga.db.getConfigurationDao()
+				.setConfigurationValue("rootpath", rootPath);
 		log.debug("setting config option projectname ... ");
-		jga.db.getConfigurationDao().setConfigurationValue("projectname", projectname);
-//===================================================		
-		jga.db.getConfigurationDao().setConfigurationValue("autoPush", String.valueOf(1));
-		jga.db.getConfigurationDao().setConfigurationValue("autoPull", String.valueOf(1));
-		jga.db.getConfigurationDao().setConfigurationValue("logsyncInterval", String.valueOf(5));
-//===================================================
-		
+		jga.db.getConfigurationDao().setConfigurationValue("projectname",
+				projectname);
+		// ===================================================
+		jga.db.getConfigurationDao().setConfigurationValue("autoPush",
+				String.valueOf(1));
+		jga.db.getConfigurationDao().setConfigurationValue("autoPull",
+				String.valueOf(1));
+		jga.db.getConfigurationDao().setConfigurationValue("logsyncInterval",
+				String.valueOf(5));
+		// ===================================================
+
 		jga.currentProject = new Project(new File(rootPath), projectname);
 		log.debug("project created and loaded.");
-		
+
 		return jga;
 	}
-	
-	public static JakeGuiAccess openProjectByRootpath(String rootPath) throws 
-		NonExistantDatabaseException, InvalidDatabaseException, InvalidRootPathException 
-	{
+
+	public static JakeGuiAccess openProjectByRootpath(String rootPath)
+			throws NonExistantDatabaseException, InvalidDatabaseException,
+			InvalidRootPathException {
 		File f = new File(rootPath);
 		rootPath = f.getAbsolutePath();
-		log.debug("openProjectByRootpath: "  + rootPath);
-		if(!hasRootpathAProject(rootPath))
+		log.debug("openProjectByRootpath: " + rootPath);
+		if (!hasRootpathAProject(rootPath))
 			throw new NonExistantDatabaseException();
-		
+
 		JakeGuiAccess jga;
 		String projectName = null;
-		try{
+		try {
 			jga = new JakeGuiAccess(rootPath);
 			log.debug("Setting rootpath to " + rootPath + " ...");
 			try {
@@ -503,19 +532,21 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			log.debug("Setting rootpath done.");
 			/* database was opened */
 			try {
-				projectName = jga.db.getConfigurationDao().getConfigurationValue("projectname");
+				projectName = jga.db.getConfigurationDao()
+						.getConfigurationValue("projectname");
 			} catch (NoSuchConfigOptionException e) {
 				log.error("projectname config entry is missing!");
 				throw new InvalidDatabaseException();
 			}
 			log.debug("Project is named " + projectName + ".");
-			
-			jga.db.getConfigurationDao().setConfigurationValue("rootfolder", f.getAbsolutePath());
-			
+
+			jga.db.getConfigurationDao().setConfigurationValue("rootfolder",
+					f.getAbsolutePath());
+
 			jga.currentProject = new Project(f, projectName);
-			
+
 			log.debug("Project created.");
-		}catch (DataAccessException e) {
+		} catch (DataAccessException e) {
 			System.out.println(e);
 			throw new InvalidDatabaseException();
 		} catch (SQLException e) {
@@ -528,10 +559,12 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 			System.out.println(e);
 			throw new InvalidRootPathException();
 		}
-		
-		/* if no exceptions were thrown until here, the database is (assumed) 
-		 * to be valid. */
-		
+
+		/*
+		 * if no exceptions were thrown until here, the database is (assumed) to
+		 * be valid.
+		 */
+
 		return jga;
 	}
 

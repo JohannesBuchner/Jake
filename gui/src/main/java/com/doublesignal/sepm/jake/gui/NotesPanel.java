@@ -13,6 +13,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
@@ -52,6 +54,8 @@ public class NotesPanel extends JPanel {
 		if (noteEditor.isSaved()) {
 			jakeGuiAccess.createNote(noteEditor.getContent());
 		}
+
+		updateData();
 	}
 
 	private void editNoteMenuItemActionPerformed(ActionEvent e) {
@@ -67,6 +71,7 @@ public class NotesPanel extends JPanel {
 				JOptionPane.WARNING_MESSAGE);
 
 		jakeGuiAccess.removeNote(getSelectedNote());
+		updateData();
 	}
 
 	private void editNote(NoteObject note) {
@@ -78,6 +83,8 @@ public class NotesPanel extends JPanel {
 		if (noteEditor.isSaved()) {
 			jakeGuiAccess.editNote(noteEditor.getNote());
 		}
+
+		updateData();
 	}
 
 	public NotesUpdaterObservable getNotesUpdater() {
@@ -172,6 +179,21 @@ public class NotesPanel extends JPanel {
 			}
 		});
 		notesPopupMenu.add(removeNoteMenuItem);
+
+		notesPopupMenu.addPopupMenuListener(new PopupMenuListener() {
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				System.out.println("Popup menu will be visible!");
+			}
+
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				System.out.println("Popup menu will be invisible!");
+			}
+
+			public void popupMenuCanceled(PopupMenuEvent e) {
+				System.out.println("Popup menu is hidden!");
+			}
+
+		});
 	}
 
 	private JScrollPane notesScrollPane;
