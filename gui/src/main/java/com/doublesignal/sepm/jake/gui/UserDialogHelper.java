@@ -129,8 +129,8 @@ public class UserDialogHelper {
 	 * 
 	 * @param parent
 	 *            the parent component, usually &quot;this&quot;
-	 * @param errorMessage
-	 *            the message to be shown.
+	 * @param i18nIdentifier the identifier of the message to be shown
+	 *
 	 */
 	public static void translatedError(Component parent, String i18nIdentifier) {
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
@@ -140,5 +140,40 @@ public class UserDialogHelper {
 		showMessageDialog(parent, translator.get(i18nIdentifier), "",
 				JOptionPane.ERROR_MESSAGE);
 	}
+
+	/**
+	 * creates an inform-dialog box using the i18n-identifier
+	 *
+	 * @param parent
+	 *            the parent component, usually &quot;this&quot;
+	 * @param i18nIdentifier the identifier of the message to be shown
+	 *
+	 */
+	public static void translatedInform(Component parent, String i18nIdentifier) {
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
+				"beans.xml"));
+		ITranslationProvider translator = (ITranslationProvider) factory
+				.getBean("translationProvider");
+		showMessageDialog(parent, translator.get(i18nIdentifier), "",
+				JOptionPane.INFORMATION_MESSAGE);
+	}
+
+    	/**
+	 * creates an error-dialog box using the i18n-identifier
+	 *
+	 * @param parent
+	 *            the parent component, usually &quot;this&quot;
+	 * @param i18nIdentifier the identifier of the message to be shown
+	 *
+	 */
+	public static void translatedWarning(Component parent, String i18nIdentifier) {
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
+				"beans.xml"));
+		ITranslationProvider translator = (ITranslationProvider) factory
+				.getBean("translationProvider");
+		showMessageDialog(parent, translator.get(i18nIdentifier), "",
+				JOptionPane.WARNING_MESSAGE);
+	}
+
 
 }
