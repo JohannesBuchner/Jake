@@ -46,10 +46,12 @@ import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 @SuppressWarnings("serial")
 public class NewProject extends JDialog {
 	ITranslationProvider translator = null;
+
 	JakeGuiAccess jga = null;
+
 	private static Logger log = Logger.getLogger(NewProject.class);
 
-	public NewProject() {
+	public NewProject(String foldersuggestion) {
 		super();
 		log.debug("NewProject dialog starts");
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
@@ -60,6 +62,11 @@ public class NewProject extends JDialog {
 		initComponents();
 		log.debug("NewProject:setVisible");
 		setVisible(true);
+		if (foldersuggestion != null) {
+			folderTextField.setText(foldersuggestion);
+			if (checkFolderSelection())
+				okButtonActionPerformed(null);
+		}
 	}
 
 	private void folderSelectActionPerformed(ActionEvent event) {
@@ -70,35 +77,38 @@ public class NewProject extends JDialog {
 		if (returnCode == JFileChooser.APPROVE_OPTION) {
 			String rootPath = fileChooser.getSelectedFile().getAbsolutePath();
 			folderTextField.setText(rootPath);
-
-			projectNameTextField.setEditable(true);
-			okButton.setEnabled(false);
-			folderTextField.setBackground(Color.WHITE);
-			jga = null;
-			try {
-				jga = JakeGuiAccess.openProjectByRootpath(rootPath);
-				okButton.setEnabled(true);
-				folderTextField.setBackground(Color.GREEN);
-
-				projectNameTextField.setEditable(false);
-				projectNameTextField.setText(jga.getProject().getName());
-
-				okButton.setText(translator.get("NewProjectDialogOpenProject"));
-				okButton.setEnabled(true);
-			} catch (NonExistantDatabaseException e) {
-				okButton.setText(translator
-						.get("NewProjectDialogCreateProject"));
-				projectNameTextField.setEditable(true);
-				projectNameTextField.setText(new File(rootPath).getName());
-				okButton.setEnabled(true);
-			} catch (InvalidDatabaseException e) {
-				folderTextField.setBackground(Color.RED);
-				UserDialogHelper.error(this, "Invalid Database");
-			} catch (InvalidRootPathException e) {
-				UserDialogHelper.error(this, "Invalid root path");
-				folderTextField.setBackground(Color.RED);
-			}
+			checkFolderSelection();
 		}
+	}
+
+	private boolean checkFolderSelection() {
+		String rootPath = folderTextField.getText();
+		projectNameTextField.setEditable(true);
+		okButton.setEnabled(false);
+		folderTextField.setBackground(Color.WHITE);
+		jga = null;
+		try {
+			jga = JakeGuiAccess.openProjectByRootpath(rootPath);
+			okButton.setEnabled(true);
+			folderTextField.setBackground(Color.GREEN);
+
+			projectNameTextField.setText(new File(rootPath).getName());
+			okButton.setText(translator.get("Open Project"));
+			okButton.setEnabled(true);
+			return true;
+		} catch (NonExistantDatabaseException e) {
+			okButton.setText(translator.get("Create Project"));
+			projectNameTextField.setEditable(true);
+			projectNameTextField.setText(new File(rootPath).getName());
+			okButton.setEnabled(true);
+		} catch (InvalidDatabaseException e) {
+			folderTextField.setBackground(Color.RED);
+			UserDialogHelper.translatedError(this, "Invalid Database");
+		} catch (InvalidRootPathException e) {
+			UserDialogHelper.translatedError(this, "Invalid root path");
+			folderTextField.setBackground(Color.RED);
+		}
+		return false;
 	}
 
 	private void okButtonActionPerformed(ActionEvent event) {
@@ -172,7 +182,7 @@ public class NewProject extends JDialog {
 			log.warn("image icon not found.");
 		}
 		jakeIconLabel.setBackground(Color.white);
-		jakeIconLabel.setText("Welcome to Jake!");
+		jakeIconLabel.setText(translator.get("Welcome to Jake!"));
 		jakeIconLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		jakeIconLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		jakeIconLabel.setAlignmentX(5.0F);
@@ -297,18 +307,32 @@ public class NewProject extends JDialog {
 	}
 
 	private JPanel headerPanel;
+
 	private JLabel jakeIconLabel;
+
 	private JPanel dialogPane;
+
 	private JPanel contentPanel;
+
 	private JLabel infoLabel;
+
 	private JLabel selectFolderLabel;
+
 	private JLabel folderLabel;
+
 	private JTextField folderTextField;
+
 	private JButton folderSelectButton;
+
 	private JLabel nameProjectLabel;
+
 	private JLabel projectNameLabel;
+
 	private JTextField projectNameTextField;
+
 	private JPanel buttonBar;
+
 	private JButton okButton;
+
 	private JButton cancelButton;
 }

@@ -22,7 +22,11 @@ public class StartJake
 		log.debug("starting frontend....");
 		
 		JakeGui.setNativeLookAndFeel();
-		JakeGui.showSelectProjectDialog();
+		if(args.length==0){
+			JakeGui.showSelectProjectDialog(null);
+		}else{
+			JakeGui.showSelectProjectDialog(args[0]);
+		}
 		
 		log.debug("loading done.");
 	}

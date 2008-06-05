@@ -93,8 +93,8 @@ public class JakeGui extends JPanel implements Observer {
 		log.debug("JakeGui loaded.");
 		
 	}
-	public static void showSelectProjectDialog(){
-		new NewProject();
+	public static void showSelectProjectDialog(String foldersuggestion){
+		new NewProject(foldersuggestion);
 	}
 	/**
 	 * Set the system NATIVE look & feel.
