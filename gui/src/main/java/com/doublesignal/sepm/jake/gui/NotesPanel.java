@@ -180,19 +180,19 @@ public class NotesPanel extends JPanel {
 		});
 		notesPopupMenu.add(removeNoteMenuItem);
 
+		// check the data before drawing the popup menu
 		notesPopupMenu.addPopupMenuListener(new PopupMenuListener() {
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				System.out.println("Popup menu will be visible!");
+				boolean isNoteSelected = getSelectedNote() != null;
+				viewEditNoteMenuItem.setEnabled(isNoteSelected);
+				removeNoteMenuItem.setEnabled(isNoteSelected);
 			}
 
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-				System.out.println("Popup menu will be invisible!");
 			}
 
 			public void popupMenuCanceled(PopupMenuEvent e) {
-				System.out.println("Popup menu is hidden!");
 			}
-
 		});
 	}
 
