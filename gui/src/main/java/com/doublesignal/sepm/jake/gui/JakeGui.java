@@ -147,7 +147,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void propertiesMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open Preferences Dialog");
-		new PreferencesDialog(mainFrame).setVisible(true);
+		new PreferencesDialog(mainFrame, this).setVisible(true);
 	}
 
 	/**

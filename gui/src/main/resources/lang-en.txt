@@ -1,3 +1,11 @@
 LoginDataNotValid=The login data you provided were invalid. Try again!
-NetworkError=A network error occured. The error was: %0%
+NetworkError=A network error occurred. The error was: %0%
 LoginUseridNotValid=The user you entered doesn't exist or is of invalid format.
+
+PreferencesWindowTitle=Preferences
+PreferencesLableAutoPush=activate auto push
+PreferencesLableAutoPull=activate auto pull
+PreferencesLableAutoLogSync=Auto update interval (sec)
+
+ButtonConfirm=OK
+ButtonCancel=Cancel
