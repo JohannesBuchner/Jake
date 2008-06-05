@@ -10,7 +10,6 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.config.PropertyOverrideConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
@@ -33,10 +32,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	/*
 	 * TODO: do we want this here or somewhere else? IMO it's OK here.
 	 */
-	IICService ics = null;
-	ISyncService sync = null;
-	IFSService fss = null;
-	IJakeDatabase db = null;
+	private IICService ics = null;
+	private ISyncService sync = null;
+	private IFSService fss = null;
+	private IJakeDatabase db = null;
 	
 	private Project currentProject;
 	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
@@ -373,8 +372,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		sync = (ISyncService) factory.getBean("SyncService");
 		fss = (IFSService) factory.getBean("FSService");
 		
-		db = new HsqlJakeDatabase(); 
-		//(HsqlJakeDatabase) factory.getBean("JakeDatabase");
+		db = (IJakeDatabase) factory.getBean("JakeDatabase");
 		
 		db.setConfigurationDao((IConfigurationDao) factory.getBean("ConfigurationDao"));
 		db.setJakeObjectDao((IJakeObjectDao) factory.getBean("JakeObjectDao"));
@@ -439,10 +437,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		log.debug("JakeGuiAccess");
 		JakeGuiAccess jga;
 		jga = new JakeGuiAccess(rootPath);
-		log.debug("setting rootpath ... ");
+		log.debug("setting config option rootpath ... ");
 		jga.db.getConfigurationDao().setConfigurationValue("rootpath", rootPath);
+		log.debug("setting config option projectname ... ");
 		jga.db.getConfigurationDao().setConfigurationValue("projectname", projectname);
-
+		
 		jga.currentProject = new Project(new File(rootPath), projectname);
 		
 		return jga;
