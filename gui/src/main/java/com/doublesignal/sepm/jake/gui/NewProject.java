@@ -91,8 +91,9 @@ public class NewProject extends JDialog {
 			jga = JakeGuiAccess.openProjectByRootpath(rootPath);
 			okButton.setEnabled(true);
 			folderTextField.setBackground(Color.GREEN);
-
-			projectNameTextField.setText(new File(rootPath).getName());
+			
+			projectNameTextField.setText(jga.getProject().getName());
+			projectNameTextField.setEditable(false);
 			okButton.setText(translator.get("Open Project"));
 			okButton.setEnabled(true);
 			return true;
@@ -112,6 +113,11 @@ public class NewProject extends JDialog {
 	}
 
 	private void okButtonActionPerformed(ActionEvent event) {
+		if (projectNameTextField.getText().length() == 0) {
+			UserDialogHelper.translatedError(this, "Project name too short");
+			return;
+		}
+		
 		if (jga != null) {
 			log.info("starting main window with opened database ...");
 			new JakeGui(jga);

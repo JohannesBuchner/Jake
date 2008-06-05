@@ -142,9 +142,9 @@
 							<td>Projectname empty</td>
 							<td>Error message</td>
 							<td>Projectname: &quot;&quot;</td>
-							<td>Hangs</td>
 							<td></td>
-							<td>NO</td>
+							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
@@ -154,9 +154,9 @@
 							<td>No Projectfolder selected</td>
 							<td>Create button disabled, field highlighted</td>
 							<td></td>
-							<td>Create button not disabled, hangs</td>
 							<td></td>
-							<td>NO</td>
+							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -180,7 +180,7 @@
 								Project is created and loaded. The Main Window is started.
 							</td>
 							<td>Project root folder: /home/username/jakeprojects/existingproject</td>
-							<td>As expected.</td>
+							<td></td>
 							<td></td>
 							<td>Yes</td>
 							<td>Very High</td>
@@ -191,9 +191,9 @@
 							<td>Valid project root folder with no existing JakeProject is selected</td>
 							<td>Project is created and loaded. The Main Window is started. </td>
 							<td>Project root folder: /home/username/jakeprojects/newproject</td>
-							<td>Hangs</td>
 							<td></td>
-							<td>NO</td>
+							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>

@@ -129,8 +129,8 @@ public class UserDialogHelper {
 	 * 
 	 * @param parent
 	 *            the parent component, usually &quot;this&quot;
-	 * @param i18nIdentifier the identifier of the message to be shown
-	 *
+	 * @param i18nIdentifier
+	 *            the i18nIdentifier to be looked up and shown.
 	 */
 	public static void translatedError(Component parent, String i18nIdentifier) {
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
