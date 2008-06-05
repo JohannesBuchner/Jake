@@ -4,6 +4,7 @@ import info.clearthought.layout.TableLayout;
 import info.clearthought.layout.TableLayoutConstraints;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -58,13 +59,19 @@ public class PreferencesDialog extends JDialog {
 	}
 	
 	private void okButtonActionPerformed(ActionEvent e) {
-		guiAccess.setConfigOption("autoPush", String.valueOf(autoPushCheckBox.isSelected()));
-		guiAccess.setConfigOption("autoPull", String.valueOf(autoPullCheckBox.isSelected()));
-		guiAccess.setConfigOption("logsyncInterval", logSyncTextField.getText());
-		guiAccess.setConfigOption("username", userTextfield.getText());
-		guiAccess.setConfigOption("password", String.valueOf(passwordTextfield.getPassword()));
-		
-		this.setVisible(false);
+		try {
+			int logsyncInterval = Integer.parseInt(logSyncTextField.getText());
+			
+			guiAccess.setConfigOption("autoPush", String.valueOf(autoPushCheckBox.isSelected()));
+			guiAccess.setConfigOption("autoPull", String.valueOf(autoPullCheckBox.isSelected()));
+			guiAccess.setConfigOption("logsyncInterval", String.valueOf(logsyncInterval));
+			guiAccess.setConfigOption("username", userTextfield.getText());
+			guiAccess.setConfigOption("userid", String.valueOf(passwordTextfield.getPassword()));
+			this.setVisible(false);
+		} catch (NumberFormatException e1) {
+			log.info("could not parse logsyncInterval int");
+			logSyncTextField.setBackground(Color.RED);
+		}
 	}	
 	
 	private void cancelButtonActionPerformed(ActionEvent e) {
@@ -108,7 +115,7 @@ public class PreferencesDialog extends JDialog {
 			{
 				contentPanel.setLayout(new TableLayout(new double[][] {
 					{189, 176},
-					{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+					{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
 
 				//---- auto push ----
 				autoPushLabel.setText(translator.get("PreferencesLableAutoPush"));
@@ -181,7 +188,7 @@ public class PreferencesDialog extends JDialog {
 			log.warn("could not fill in configuration values; unknown configuration option!");
 		}
 		try {
-			userTextfield.setText(guiAccess.getConfigOption("username"));
+			userTextfield.setText(guiAccess.getConfigOption("userid"));
 			passwordTextfield.setText(guiAccess.getConfigOption("password"));
 		} catch (NoSuchConfigOptionException e) {
 			log.warn("could not fill in username/password; unknown configuration option. Values may not yet be set");
