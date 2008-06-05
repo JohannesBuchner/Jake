@@ -48,7 +48,7 @@
 							</td>
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -60,7 +60,7 @@
 							<td>Username: &quot;someusernamewithout_at_&quot;</td>
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
@@ -75,7 +75,7 @@
 
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
@@ -90,7 +90,7 @@
 							</td>
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -103,7 +103,7 @@
 							</td>
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>High</td>
 							<td>FC</td>
 						</tr>
