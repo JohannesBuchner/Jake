@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,9 +34,6 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.NotADirectoryException;
-import com.doublesignal.sepm.jake.fss.NotAFileException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
@@ -49,7 +45,7 @@ public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
 	private Project currentProject = null;
-	
+
 	public JTabbedPane getMainTabbedPane() {
 		return mainTabbedPane;
 	}
@@ -77,12 +73,10 @@ public class JakeGui extends JPanel implements Observer {
 		this.jakeGuiAccess = jakeGuiAccess;
 	}
 
-	public JakeGui(IJakeGuiAccess jakeGuiAccess) {		
-		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
-				"beans.xml"));
-		translator = (ITranslationProvider) factory
-				.getBean("translationProvider");
-		
+	public JakeGui(IJakeGuiAccess jakeGuiAccess) {
+		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+		translator = (ITranslationProvider) factory.getBean("translationProvider");
+
 		setJakeGuiAccess(jakeGuiAccess);
 		setNativeLookAndFeel();
 		log.debug("Initializing Components");
@@ -91,11 +85,13 @@ public class JakeGui extends JPanel implements Observer {
 		updateAll();
 		setStatusMsg("started");
 		log.debug("JakeGui loaded.");
-		
+
 	}
-	public static void showSelectProjectDialog(String foldersuggestion){
+
+	public static void showSelectProjectDialog(String foldersuggestion) {
 		new NewProject(foldersuggestion);
 	}
+
 	/**
 	 * Set the system NATIVE look & feel.
 	 */
@@ -172,12 +168,10 @@ public class JakeGui extends JPanel implements Observer {
 	 *            Should we first load the stored config values
 	 * @author johannes
 	 */
-	private void signInNetwork(String username, String password,
-			boolean fillFromConfig) {
+	private void signInNetwork(String username, String password, boolean fillFromConfig) {
 		log.debug("Network signin procedure");
 
-		boolean showDialog = (username == null || password == null)
-				&& !fillFromConfig;
+		boolean showDialog = (username == null || password == null) && !fillFromConfig;
 
 		final JXLoginPane login = new JXLoginPane();
 		log.debug("Do we need a login dialog? " + showDialog);
@@ -188,14 +182,12 @@ public class JakeGui extends JPanel implements Observer {
 				log.debug("Username not stored");
 			}
 			try {
-				login.setPassword(jakeGuiAccess.getConfigOption("password")
-						.toCharArray());
+				login.setPassword(jakeGuiAccess.getConfigOption("password").toCharArray());
 			} catch (NoSuchConfigOptionException e2) {
 				log.debug("Password not stored");
 			}
 			login.setVisible(true);
-			final JXLoginPane.JXLoginFrame frm = JXLoginPane
-					.showLoginFrame(login);
+			final JXLoginPane.JXLoginFrame frm = JXLoginPane.showLoginFrame(login);
 
 			frm.addWindowListener(new WindowAdapter() {
 				@Override
@@ -234,14 +226,12 @@ public class JakeGui extends JPanel implements Observer {
 			return;
 		} catch (LoginDataNotValidException e1) {
 			log.debug("LoginDataNotValid");
-			UserDialogHelper.error(mainFrame, translator
-					.get("LoginDataNotValid"));
+			UserDialogHelper.error(mainFrame, translator.get("LoginDataNotValid"));
 			signInNetwork(username, null, false);
 			return;
 		} catch (LoginUseridNotValidException e) {
 			log.debug("LoginUseridNotValid");
-			UserDialogHelper.error(mainFrame, translator
-					.get("LoginUseridNotValid"));
+			UserDialogHelper.error(mainFrame, translator.get("LoginUseridNotValid"));
 			login.setErrorMessage(translator.get("LoginUseridNotValid"));
 			signInNetwork(username, null, false);
 			return;
@@ -260,9 +250,8 @@ public class JakeGui extends JPanel implements Observer {
 		try {
 			jakeGuiAccess.logout();
 		} catch (NetworkException e1) {
-			UserDialogHelper
-					.inform(mainFrame, "", translator.get("NetworkError", e1
-							.getMessage()), JOptionPane.ERROR_MESSAGE);
+			UserDialogHelper.inform(mainFrame, "", translator.get("NetworkError", e1.getMessage()),
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -320,6 +309,15 @@ public class JakeGui extends JPanel implements Observer {
 	public void updateAll() {
 		// peoplePanel.updateData();
 		notesPanel.updateData();
+	}
+	
+	/**
+	 * Set some system properties to integrate the app better to mac os.
+	 * These calls are *not* harmful to other operating systems... 
+	 */
+	public static void setSystemProperties() {
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
 	}
 
 	private void initComponents() {
@@ -385,8 +383,8 @@ public class JakeGui extends JPanel implements Observer {
 		{
 			mainFrame.setTitle("Jake - Please open/create a project");
 
-			mainFrame.setIconImage(new ImageIcon(getClass().getResource(
-					"/icons/Jake.png")).getImage());
+			mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icons/Jake.png"))
+					.getImage());
 			Container frame1ContentPane = mainFrame.getContentPane();
 			frame1ContentPane.setLayout(new BorderLayout());
 
@@ -405,53 +403,36 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ======== peoplePanel ========
 						{
-							peoplePanel.setLayout(new BoxLayout(peoplePanel,
-									BoxLayout.X_AXIS));
+							peoplePanel.setLayout(new BoxLayout(peoplePanel, BoxLayout.X_AXIS));
 
 							// ======== peopleScrollPane ========
 							{
 								// ---- peopleTable ----
-								peopleTable
-										.setComponentPopupMenu(peoplePopupMenu);
+								peopleTable.setComponentPopupMenu(peoplePopupMenu);
 								peopleTable.setColumnControlVisible(true);
 								peopleTable.setHighlighters(HighlighterFactory
 										.createSimpleStriping());
-								peopleTable
-										.setModel(new DefaultTableModel(
-												new Object[][] {
-														{
-																"Simon",
-																"simon.wallner@jabber.fsinf.at",
-																"Online",
-																"Projektleiter" },
-														{
-																"Dominik",
-																"dominik.dorn@jabber.fsinf.at",
-																"Online", null },
-														{
-																"Chris",
-																"chris.sutter@jabber.fsinf.at",
-																"unknown", null },
-														{
-																"Peter",
-																"pstein@jabber.fsinf.at",
-																"Offline", null }, },
-												new String[] { "Nickname",
-														"User ID", "Status",
-														"Comment" }) {
-											boolean[] columnEditable = new boolean[] {
-													true, true, false, false };
+								peopleTable.setModel(new DefaultTableModel(
+										new Object[][] {
+												{ "Simon", "simon.wallner@jabber.fsinf.at",
+														"Online", "Projektleiter" },
+												{ "Dominik", "dominik.dorn@jabber.fsinf.at",
+														"Online", null },
+												{ "Chris", "chris.sutter@jabber.fsinf.at",
+														"unknown", null },
+												{ "Peter", "pstein@jabber.fsinf.at", "Offline",
+														null }, }, new String[] { "Nickname",
+												"User ID", "Status", "Comment" }) {
+									boolean[] columnEditable = new boolean[] { true, true, false,
+											false };
 
-											@Override
-											public boolean isCellEditable(
-													int rowIndex,
-													int columnIndex) {
-												return columnEditable[columnIndex];
-											}
-										});
+									@Override
+									public boolean isCellEditable(int rowIndex, int columnIndex) {
+										return columnEditable[columnIndex];
+									}
+								});
 								{
-									TableColumnModel cm = peopleTable
-											.getColumnModel();
+									TableColumnModel cm = peopleTable.getColumnModel();
 									cm.getColumn(1).setPreferredWidth(195);
 									cm.getColumn(3).setPreferredWidth(145);
 								}
@@ -459,12 +440,11 @@ public class JakeGui extends JPanel implements Observer {
 							}
 							peoplePanel.add(peopleScrollPane);
 						}
-						mainTabbedPane.addTab("People", new ImageIcon(
-								getClass().getResource("/icons/people.png")),
-								peoplePanel);
+						mainTabbedPane.addTab("People", new ImageIcon(getClass().getResource(
+								"/icons/people.png")), peoplePanel);
 
-						mainTabbedPane.addTab("Notes", new ImageIcon(getClass()
-								.getResource("/icons/notes.png")), notesPanel);
+						mainTabbedPane.addTab("Notes", new ImageIcon(getClass().getResource(
+								"/icons/notes.png")), notesPanel);
 
 					}
 					mainPanel.add(mainTabbedPane, BorderLayout.CENTER);
@@ -475,62 +455,52 @@ public class JakeGui extends JPanel implements Observer {
 						mainToolBar.setRollover(true);
 
 						// ---- openProjectFolderButton ----
-						openProjectFolderButton
-								.setHorizontalAlignment(SwingConstants.RIGHT);
-						openProjectFolderButton.setIcon(new ImageIcon(
-								getClass().getResource(
-										"/icons/project_folder.png")));
-						openProjectFolderButton
-								.setToolTipText("Open Project Folder");
+						openProjectFolderButton.setHorizontalAlignment(SwingConstants.RIGHT);
+						openProjectFolderButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/project_folder.png")));
+						openProjectFolderButton.setToolTipText("Open Project Folder");
 						openProjectFolderButton.setText("Open Project Folder");
 						mainToolBar.add(openProjectFolderButton);
 
 						// ---- refreshDatapoolViewButton ----
-						refreshDatapoolViewButton
-								.setHorizontalAlignment(SwingConstants.RIGHT);
-						refreshDatapoolViewButton
-								.setToolTipText("Refresh Datapool View");
-						refreshDatapoolViewButton.setIcon(new ImageIcon(
-								getClass().getResource(
-										"/icons/sync_project_folder.png")));
+						refreshDatapoolViewButton.setHorizontalAlignment(SwingConstants.RIGHT);
+						refreshDatapoolViewButton.setToolTipText("Refresh Datapool View");
+						refreshDatapoolViewButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/sync_project_folder.png")));
 
-						refreshDatapoolViewButton
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(
-											ActionEvent event) {
-										jakeGuiAccess.refreshFileObjects();
-                                        filesPanel.updateUI();
-									}
-								});
+						refreshDatapoolViewButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent event) {
+								jakeGuiAccess.refreshFileObjects();
+								filesPanel.updateUI();
+							}
+						});
 
 						mainToolBar.add(refreshDatapoolViewButton);
 						mainToolBar.addSeparator();
 
 						// ---- propagateFileButton ----
-						propagateFileButton.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/push.png")));
-						propagateFileButton
-								.setToolTipText("Propagate locally changed file");
+						propagateFileButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/push.png")));
+						propagateFileButton.setToolTipText("Propagate locally changed file");
 						mainToolBar.add(propagateFileButton);
 
 						// ---- pullFilesButton ----
-						pullFilesButton.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/pull.png")));
-						pullFilesButton
-								.setToolTipText("Pull file from project member");
+						pullFilesButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/pull.png")));
+						pullFilesButton.setToolTipText("Pull file from project member");
 						mainToolBar.add(pullFilesButton);
 
 						// ---- LockFileToggleButton ----
-						LockFileToggleButton.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/lock.png")));
+						LockFileToggleButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/lock.png")));
 						LockFileToggleButton.setToolTipText("Lock File...");
 						mainToolBar.add(LockFileToggleButton);
 						mainToolBar.addSeparator();
 
 						// ---- newNoteButton ----
 						newNoteButton.setToolTipText("New Note");
-						newNoteButton.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/notes-new.png")));
+						newNoteButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/notes-new.png")));
 						newNoteButton.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								newNoteButtonActionPerformed(e);
@@ -542,26 +512,19 @@ public class JakeGui extends JPanel implements Observer {
 						// ---- searchTextField ----
 						searchTextField.setToolTipText("Search for Files");
 						searchTextField.setMaximumSize(new Dimension(200, 40));
-						searchTextField
-								.setPreferredSize(new Dimension(150, 28));
+						searchTextField.setPreferredSize(new Dimension(150, 28));
 						searchTextField.setComponentPopupMenu(searchPopupMenu);
 						searchTextField.addCaretListener(new CaretListener() {
 							public void caretUpdate(CaretEvent e) {
 								// TODO: proof of concept! filter input (e.g.
 								// crash with '*')
 
-								peopleTable
-										.setFilters(new FilterPipeline(
-												new Filter[] { new PatternFilter(
-														searchTextField
-																.getText(), 0,
-														0) }));
-								filesPanel
-										.setFilters(new FilterPipeline(
-												new Filter[] { new PatternFilter(
-														searchTextField
-																.getText(), 0,
-														0) }));
+								peopleTable.setFilters(new FilterPipeline(
+										new Filter[] { new PatternFilter(searchTextField.getText(),
+												0, 0) }));
+								filesPanel.setFilters(new FilterPipeline(
+										new Filter[] { new PatternFilter(searchTextField.getText(),
+												0, 0) }));
 								/*
 								 * notesTable.setFilters(new FilterPipeline(new
 								 * Filter[]{ new
@@ -579,8 +542,8 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- searchButton ----
 						searchButton.setToolTipText("Search for");
-						searchButton.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/search.png")));
+						searchButton.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/search.png")));
 						searchButton.setComponentPopupMenu(searchPopupMenu);
 						searchButton.setBorder(null);
 						searchButton.addActionListener(new ActionListener() {
@@ -603,42 +566,38 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- newProjectMenuItem ----
 						newProjectMenuItem.setText("New Project...");
-						newProjectMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										newProjectMenuItemActionPerformed(e);
-									}
-								});
+						newProjectMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								newProjectMenuItemActionPerformed(e);
+							}
+						});
 						fileMenu.add(newProjectMenuItem);
 
 						// ---- openProjectMenuItem ----
 						openProjectMenuItem.setText("Open Project...");
-						openProjectMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										openProjectMenuItemActionPerformed(e);
-									}
-								});
+						openProjectMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								openProjectMenuItemActionPerformed(e);
+							}
+						});
 						fileMenu.add(openProjectMenuItem);
 
 						// ---- preferencesMenuItem ----
 						preferencesMenuItem.setText("Preferences...");
-						preferencesMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										propertiesMenuItemActionPerformed(e);
-									}
-								});
+						preferencesMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								propertiesMenuItemActionPerformed(e);
+							}
+						});
 						fileMenu.add(preferencesMenuItem);
 
 						// ---- exitApplicationMenuItem ----
 						exitApplicationMenuItem.setText("Exit");
-						exitApplicationMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										exitApplicationMenuItemActionPerformed(e);
-									}
-								});
+						exitApplicationMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								exitApplicationMenuItemActionPerformed(e);
+							}
+						});
 						fileMenu.add(exitApplicationMenuItem);
 					}
 					mainMenuBar.add(fileMenu);
@@ -649,51 +608,47 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- peopleViewMenuItem ----
 						peopleViewMenuItem.setText("People");
-						peopleViewMenuItem.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/people.png")));
-						peopleViewMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										peopleViewMenuItemActionPerformed(e);
-									}
-								});
+						peopleViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/people.png")));
+						peopleViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								peopleViewMenuItemActionPerformed(e);
+							}
+						});
 						viewMenu.add(peopleViewMenuItem);
 
 						// ---- filesViewMenuItem ----
 						filesViewMenuItem.setText("Files");
-						filesViewMenuItem.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/files.png")));
-						filesViewMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										filesViewMenuItemActionPerformed(e);
-									}
-								});
+						filesViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/files.png")));
+						filesViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								filesViewMenuItemActionPerformed(e);
+							}
+						});
 						viewMenu.add(filesViewMenuItem);
 
 						// ---- notesViewMenuItem ----
 						notesViewMenuItem.setText("Notes");
-						notesViewMenuItem.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/notes.png")));
-						notesViewMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										notesViewMenuItemActionPerformed(e);
-									}
-								});
+						notesViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/notes.png")));
+						notesViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								notesViewMenuItemActionPerformed(e);
+							}
+						});
 						viewMenu.add(notesViewMenuItem);
 						viewMenu.addSeparator();
 
 						// ---- systemLogViewMenuItem ----
 						systemLogViewMenuItem.setText("System Log");
-						systemLogViewMenuItem.setIcon(new ImageIcon(getClass()
-								.getResource("/icons/log.png")));
-						systemLogViewMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										systemLogViewMenuItemActionPerformed(e);
-									}
-								});
+						systemLogViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
+								"/icons/log.png")));
+						systemLogViewMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								systemLogViewMenuItemActionPerformed(e);
+							}
+						});
 
 						viewMenu.add(systemLogViewMenuItem);
 					}
@@ -705,28 +660,25 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- signInNetworkMenuItem ----
 						signInNetworkMenuItem.setText("Sign In...");
-						signInNetworkMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										signInNetworkMenuItemActionPerformed(e);
-									}
-								});
+						signInNetworkMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								signInNetworkMenuItemActionPerformed(e);
+							}
+						});
 						networkMenu.add(signInNetworkMenuItem);
 
 						// ---- signOutNetworkMenuItem ----
 						signOutNetworkMenuItem.setText("Sign Out");
-						signOutNetworkMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										signOutNetworkMenuItemActionPerformed(e);
-									}
-								});
+						signOutNetworkMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								signOutNetworkMenuItemActionPerformed(e);
+							}
+						});
 						networkMenu.add(signOutNetworkMenuItem);
 						networkMenu.addSeparator();
 
 						// ---- showOfflineMembersCheckBoxMenuItem ----
-						showOfflineMembersCheckBoxMenuItem
-								.setText("Show Offline Members");
+						showOfflineMembersCheckBoxMenuItem.setText("Show Offline Members");
 						showOfflineMembersCheckBoxMenuItem.setSelected(true);
 						networkMenu.add(showOfflineMembersCheckBoxMenuItem);
 
@@ -736,14 +688,12 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.add(checkBoxMenuItem2);
 
 						// ---- autoFilePropagateCheckBoxMenuItem ----
-						autoFilePropagateCheckBoxMenuItem
-								.setText("Automatic File Propagation");
+						autoFilePropagateCheckBoxMenuItem.setText("Automatic File Propagation");
 						autoFilePropagateCheckBoxMenuItem.setSelected(true);
 						networkMenu.add(autoFilePropagateCheckBoxMenuItem);
 
 						// ---- autoFilePullCheckBoxMenuItem ----
-						autoFilePullCheckBoxMenuItem
-								.setText("Automatic File Pull");
+						autoFilePullCheckBoxMenuItem.setText("Automatic File Pull");
 						autoFilePullCheckBoxMenuItem.setSelected(true);
 						networkMenu.add(autoFilePullCheckBoxMenuItem);
 					}
@@ -754,23 +704,20 @@ public class JakeGui extends JPanel implements Observer {
 						projectMenu.setText("Project");
 
 						// ---- openProjectFolderMenuItem ----
-						openProjectFolderMenuItem
-								.setText("Open Project Folder");
+						openProjectFolderMenuItem.setText("Open Project Folder");
 						projectMenu.add(openProjectFolderMenuItem);
 
 						// ---- refreshDatapoolViewProjectMenuItem ----
-						refreshDatapoolViewProjectMenuItem
-								.setText("Refresh Datapool View");
+						refreshDatapoolViewProjectMenuItem.setText("Refresh Datapool View");
 						projectMenu.add(refreshDatapoolViewProjectMenuItem);
 
 						// ---- newNoteProjectMenuItem ----
 						newNoteProjectMenuItem.setText("New Note...");
-						newNoteProjectMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										newNoteProjectMenuItemActionPerformed(e);
-									}
-								});
+						newNoteProjectMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								newNoteProjectMenuItemActionPerformed(e);
+							}
+						});
 						projectMenu.add(newNoteProjectMenuItem);
 						projectMenu.addSeparator();
 
@@ -784,8 +731,7 @@ public class JakeGui extends JPanel implements Observer {
 						projectMenu.addSeparator();
 
 						// ---- addProjectMemberMenuItem ----
-						addProjectMemberMenuItem
-								.setText("Add Project Member...");
+						addProjectMemberMenuItem.setText("Add Project Member...");
 						projectMenu.add(addProjectMemberMenuItem);
 
 					}
@@ -797,23 +743,22 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- aboutHelpMenuItem ----
 						aboutHelpMenuItem.setText("About");
-						aboutHelpMenuItem
-								.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										aboutHelpMenuItemActionPerformed(e);
-									}
-								});
+						aboutHelpMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								aboutHelpMenuItemActionPerformed(e);
+							}
+						});
 						helpMenu.add(aboutHelpMenuItem);
 					}
 					mainMenuBar.add(helpMenu);
 				}
 				this.add(mainMenuBar, BorderLayout.NORTH);
+				mainFrame.setJMenuBar(mainMenuBar);
 			}
 			frame1ContentPane.add(this, BorderLayout.CENTER);
 			mainFrame.pack();
 			mainFrame.setLocationRelativeTo(mainFrame.getOwner());
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			// mainFrame.setSize( 300, 200 );
 			mainFrame.setVisible(true);
 		}
 

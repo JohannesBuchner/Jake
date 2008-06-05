@@ -19,8 +19,10 @@ public class StartJake
 
 		log.info("===================================================");
 		
+	
 		log.debug("starting frontend....");
 		
+		JakeGui.setSystemProperties();
 		JakeGui.setNativeLookAndFeel();
 		if(args.length==0){
 			JakeGui.showSelectProjectDialog(null);

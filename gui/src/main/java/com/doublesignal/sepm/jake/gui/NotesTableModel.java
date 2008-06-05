@@ -66,7 +66,7 @@ public class NotesTableModel extends AbstractTableModel {
 	private final NotesUpdaterObservable notesUpdater = new NotesUpdaterObservable();
 
 	public static String getNotesTitle(NoteObject note) {
-		final int MAXLEN = 50;
+		final int MAXLEN = 100;
 		String trailings = "";
 		int endIndex = note.getContent().length();
 		if (endIndex > MAXLEN) {
