@@ -37,7 +37,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	private Project currentProject;
 	private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
-	public void login(String user, String pw)
+    private List<FileObject> filesFSS;
+    private List<FileObject> filesDB;
+
+    public void login(String user, String pw)
 			throws LoginDataRequiredException, LoginDataNotValidException,
 			NetworkException, LoginUseridNotValidException {
 		try {
@@ -177,7 +180,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return results;
 	}
 
-	public List<JakeObject> getJakeObjectsByPath(String relPath)
+	public List<JakeObject> getFileObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException {
 
 		List<JakeObject> results = new ArrayList<JakeObject>();
@@ -187,19 +190,19 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 				results.addAll(getFileObjectsByRelPath(relPath));
 			} catch (InvalidFilenameException e) {
 				log
-						.debug("getJakeObjectsByPath: cought invalidFilenameException");
+						.debug("getFileObjectsByPath: cought invalidFilenameException");
 				e.printStackTrace();
 			} catch (IOException e) {
-				log.debug("getJakeObjectsByPath: cought IOException");
+				log.debug("getFileObjectsByPath: cought IOException");
 				e.printStackTrace();
 			}
 		} else {
 			if (fss.getRootPath() == null)
 				log
-						.debug("getJakeObjectsByPath: fss.getRootPath is null, cannot read any files");
+						.debug("getFileObjectsByPath: fss.getRootPath is null, cannot read any files");
 			else if (fss.getRootPath().equals(""))
 				log
-						.debug("getJakeObjectsByPath: fss.getRootPath is not null, but empty!");
+						.debug("getFileObjectsByPath: fss.getRootPath is not null, but empty!");
 		}
 
 
@@ -327,10 +330,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		return jakeObject;
 	}
 
-	public String getJakeObjectSyncStatus(JakeObject jakeObject) {
 
-		return "Offline";
-	}
 
     public void launchFile(String relpath) throws InvalidFilenameException, LaunchException, IOException, NoProjectLoadedException {
 		fss.launchFile(relpath);
@@ -552,4 +552,65 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 	public void pullJakeObject(JakeObject jakeObject) {
 		// todo
 	}
+
+    public void refreshFileObjects() {
+        log.debug("calling refreshFileObjects() ");
+        filesDB = getFileObjectsFromDB();
+        try {
+            filesFSS = getFileObjectsByRelPath("/");
+        } catch (InvalidFilenameException e) {
+            // slightly ignore
+            filesFSS = null;
+        } catch (IOException e) {
+            // slightly ignore
+            filesFSS = null;
+        }
+    }
+
+    	public String getFileObjectSyncStatus(JakeObject jakeObject)
+    {
+        log.debug("calling getFileObjectSyncStatus on JakeObject "+ jakeObject.getName());
+        boolean fileInDB = false;
+        boolean fileOnFS = false;
+        boolean fileInLog = false;
+
+        try {
+            LogEntry currentLogEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
+            fileInLog = true;
+        } catch (NoSuchLogEntryException e) {
+            fileInLog = false;
+        }
+
+        if (filesDB.contains(jakeObject))
+            fileInDB = true;
+
+        if(filesFSS.contains(jakeObject))
+            fileOnFS = true;
+
+
+        if(fileOnFS && !fileInDB)
+        {
+            return "File not in Project";
+        }
+        if(fileInDB && fileInLog && !fileOnFS)
+        {
+            return "File remote; not synced";
+        }
+
+
+        return "default, shouldn't happen";
+
+
+    }
+
+
+    private List<FileObject> getFileObjectsFromDB()
+    {
+        if(filesDB == null)
+            filesDB = db.getJakeObjectDao().getAllFileObjects();
+        List<FileObject> results = new ArrayList<FileObject>();
+        results.addAll(filesDB);
+        return results;
+    }
+
 }

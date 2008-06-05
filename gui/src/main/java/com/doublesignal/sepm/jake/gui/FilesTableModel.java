@@ -5,12 +5,10 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
-import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
-import java.io.IOException;
 
 /**
  * @author peter, dominik
@@ -68,7 +66,7 @@ public class FilesTableModel extends AbstractTableModel {
 	protected void updateData() {
 		log.info("calling updateData");
 		try {
-			this.files = jakeGuiAccess.getJakeObjectsByPath("/");
+			this.files = jakeGuiAccess.getFileObjectsByPath("/");
 		}
         catch (NoSuchJakeObjectException e) {
 			log.warn("Got NoSuchJakeObjectException: " + e.toString());
@@ -100,7 +98,7 @@ public class FilesTableModel extends AbstractTableModel {
 			return JakeObjLib.getTagString(file.getTags());
 
 		case SyncStatus:
-			return jakeGuiAccess.getJakeObjectSyncStatus(file);
+			return jakeGuiAccess.getFileObjectSyncStatus(file);
 
 		case LastChanged:
 			return jakeGuiAccess.getLastModified(file).toString();

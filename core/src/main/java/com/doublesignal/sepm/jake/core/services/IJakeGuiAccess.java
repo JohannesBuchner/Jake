@@ -226,7 +226,7 @@ public interface IJakeGuiAccess {
 	 * @return list of FileObjects
 	 * @throws NoSuchJakeObjectException
 	 */
-	public List<JakeObject> getJakeObjectsByPath(String relPath)
+	public List<JakeObject> getFileObjectsByPath(String relPath)
 			throws NoSuchJakeObjectException;
 
 	/**
@@ -319,7 +319,7 @@ public interface IJakeGuiAccess {
 	 * @param jakeObject
 	 * @return SyncStatus (String)
 	 */
-	public String getJakeObjectSyncStatus(JakeObject jakeObject);
+	public String getFileObjectSyncStatus(JakeObject jakeObject);
 
 	/**
 	 * open a file with the associated (external) application
@@ -374,5 +374,13 @@ public interface IJakeGuiAccess {
 	 *            the JakeObject to be pulled
 	 */
 	void pullJakeObject(JakeObject jakeObject);
+
+
+    /**
+     * Querys the FSS and Database for the current data and makes shure
+     * the used datastructures are updated accordingly
+     */
+    void refreshFileObjects();
+
 
 }

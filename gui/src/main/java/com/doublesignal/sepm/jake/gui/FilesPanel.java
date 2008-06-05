@@ -84,11 +84,11 @@ public class FilesPanel extends JPanel {
         filesTable = new JXTable();
         this.setLayout(new BorderLayout());
         filesTableModel = new FilesTableModel(jakeGuiAccess);
-
         filesTable.setComponentPopupMenu(filesPopupMenu);
         filesTable.setColumnControlVisible(true);
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
+        filesTable.setRolloverEnabled(false);
         filesTable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent event) {
                 if (event.getClickCount() == 2
