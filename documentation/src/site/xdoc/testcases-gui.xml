@@ -10,6 +10,11 @@
 
 	<body>
 		<section name="GUI Function tests">
+			
+			<p>The use cases are tested using the following test cases.
+			</p>
+		
+		
 			<subsection name="GUI:LoginGUI">
 				The user is presented with a login form, where he has to enter credentials to login
 				<h4>Preconditions:</h4>
@@ -135,61 +140,71 @@
 						<tr>
 							<td>7</td>
 							<td>Projectname empty</td>
-							<td>Create button disabled, field highlighted</td>
+							<td>Error message</td>
 							<td>Projectname: &quot;&quot;</td>
+							<td>Hangs</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>NO</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
 
 						<tr>
 							<td>8</td>
-							<td>Projectfolder not selected</td>
+							<td>No Projectfolder selected</td>
 							<td>Create button disabled, field highlighted</td>
+							<td>Create button not disabled, hangs</td>
+							<td>Hangs</td>
 							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td>NO</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
 						<tr>
 							<td>9</td>
-							<td>Projectfolder invalid</td>
-							<td>Error Message &quot;This Projectfolder is not allowed by your Operating system&quot;
-								is shown, Projectfolder field cleared
+							<td>Projectfolder not a valid path</td>
+							<td>Error Message is shown
 							</td>
 							<td>Projectfolder: C:\:COM1</td>
+							<td>Error Message</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
 						<tr>
 							<td>10</td>
-							<td>Existing JakeProject Project root folder is selected</td>
-							<td>Error Message &quot;There is already a Jake Project in this folder. Please select
-								another folder for this project&quot;</td>
+							<td>Project root folder with existing JakeProject is selected</td>
+							<td>User is guided to open the Project instead of creating a new one. 
+								The option to enter a projectname is disabled.
+								Project is created and loaded. The Main Window is started.
+							</td>
 							<td>Project root folder: /home/username/jakeprojects/existingproject</td>
+							<td>As expected.</td>
 							<td></td>
+							<td>Yes</td>
+							<td>Very High</td>
+							<td>FC</td>
+						</tr>
+						<tr>
+							<td>12</td>
+							<td>Valid project root folder with no existing JakeProject is selected</td>
+							<td>Project is created and loaded. The Main Window is started. </td>
+							<td>Project root folder: /home/username/jakeprojects/newproject</td>
+							<td>Hangs</td>
 							<td></td>
-							<td></td>
+							<td>NO</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
 						<tr>
 							<td>11</td>
-							<td>Projectname to short or to long in comparision to assumptions</td>
-							<td>Error Message &quot;Invalid Projectname! Your project name needs to be at least X and
-								at most Y characters long, consisting of the characters a-zA-Z, underscore '_' and
-								hyphen '-' &quot; </td>
-							<td>Projectname: someveryveryveryvyervyervyerlongnamewithinv@lidchar$init</td>
+							<td>User cancels the dialog</td>
+							<td>Program shuts down cleanly</td>
 							<td></td>
+							<td>On close Button: OK, On the X of the windows it hangs</td>
 							<td></td>
-							<td></td>
+							<td>Yes</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
