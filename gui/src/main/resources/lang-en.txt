@@ -6,6 +6,8 @@ PreferencesWindowTitle=Preferences
 PreferencesLableAutoPush=activate auto push
 PreferencesLableAutoPull=activate auto pull
 PreferencesLableAutoLogSync=Auto update interval (sec)
+PreferencesLableUserName=User name
+PreferencesLabelPassword=Password
 
 ButtonConfirm=OK
 ButtonCancel=Cancel
