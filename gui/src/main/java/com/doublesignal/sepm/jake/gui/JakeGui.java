@@ -498,7 +498,8 @@ public class JakeGui extends JPanel implements Observer {
 								.addActionListener(new ActionListener() {
 									public void actionPerformed(
 											ActionEvent event) {
-										filesPanel.updateUI();
+										jakeGuiAccess.refreshFileObjects();
+                                        filesPanel.updateUI();
 									}
 								});
 

@@ -581,10 +581,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
             fileInLog = false;
         }
 
-        if (filesDB.contains(jakeObject))
+
+        if (filesDB != null && filesDB.contains(jakeObject))
             fileInDB = true;
 
-        if(filesFSS.contains(jakeObject))
+        if(filesFSS != null && filesFSS.contains(jakeObject))
             fileOnFS = true;
 
 
