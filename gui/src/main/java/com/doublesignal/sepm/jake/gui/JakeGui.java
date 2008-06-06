@@ -126,7 +126,23 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void propertiesMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open Preferences Dialog");
-		new PreferencesDialog(mainFrame, this).setVisible(true);
+		PreferencesDialog prefs = new PreferencesDialog(mainFrame, this);
+		prefs.addUpdateListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updatePrefMenuItems();
+			}
+		});
+		prefs.setVisible(true);
+	}
+	
+	private void updatePrefMenuItems() {
+		try {
+			autoFilePropagateCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPush")));
+			autoFilePullCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPull")));
+		} catch (NoSuchConfigOptionException e) {
+			log.warn("cannot retrieve pref config options...");
+		}
+		
 	}
 
 	/**
@@ -301,6 +317,24 @@ public class JakeGui extends JPanel implements Observer {
 		new NoteEditorDialog(mainFrame).setVisible(true);
 	}
 
+	private void setAutoPushMenuItemActionPerformed(ActionEvent e) {
+		try {
+			jakeGuiAccess.setConfigOption("autoPush", String.valueOf(!Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPush"))));
+		} catch (NoSuchConfigOptionException e1) {
+			log.warn("cannot retrieve autoPush config option, setting it true");
+			jakeGuiAccess.setConfigOption("autoPush", String.valueOf(true));
+		}
+	}
+	
+	private void setAutoPullMenuItemActionPerformed(ActionEvent e) {
+		try {
+			jakeGuiAccess.setConfigOption("autoPull", String.valueOf(!Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPull"))));
+		} catch (NoSuchConfigOptionException e1) {
+			log.warn("cannot retrieve  autoPull config option, setting it true");
+			jakeGuiAccess.setConfigOption("autoPull", String.valueOf(true));
+		}
+	}
+	
 	private void registerUpdateObservers() {
 		notesPanel.getNotesUpdater().addObserver(this);
 	}
@@ -671,20 +705,31 @@ public class JakeGui extends JPanel implements Observer {
 						showOfflineMembersCheckBoxMenuItem.setSelected(true);
 						networkMenu.add(showOfflineMembersCheckBoxMenuItem);
 
-						// ---- checkBoxMenuItem2 ----
+						// ---- auto datapool refresh ----
 						checkBoxMenuItem2.setText("Automatic Datapool Refresh");
 						checkBoxMenuItem2.setSelected(true);
 						networkMenu.add(checkBoxMenuItem2);
 
 						// ---- autoFilePropagateCheckBoxMenuItem ----
-						autoFilePropagateCheckBoxMenuItem.setText("Automatic File Propagation");
-						autoFilePropagateCheckBoxMenuItem.setSelected(true);
+						autoFilePropagateCheckBoxMenuItem.setText(translator.get("PreferencesLableAutoPush"));
+						autoFilePropagateCheckBoxMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								setAutoPushMenuItemActionPerformed(e);
+							}
+						});
 						networkMenu.add(autoFilePropagateCheckBoxMenuItem);
 
 						// ---- autoFilePullCheckBoxMenuItem ----
-						autoFilePullCheckBoxMenuItem.setText("Automatic File Pull");
-						autoFilePullCheckBoxMenuItem.setSelected(true);
+						autoFilePullCheckBoxMenuItem.setText(translator.get("PreferencesLableAutoPull"));
+						autoFilePullCheckBoxMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								setAutoPullMenuItemActionPerformed(e);
+							}
+						});
 						networkMenu.add(autoFilePullCheckBoxMenuItem);
+						
+						//update pref menu items
+						updatePrefMenuItems();
 					}
 					mainMenuBar.add(networkMenu);
 

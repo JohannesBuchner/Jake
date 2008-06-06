@@ -13,6 +13,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -44,6 +46,7 @@ public class PreferencesDialog extends JDialog {
 	private ITranslationProvider translator;
 	private JakeGui gui;
 	private IJakeGuiAccess guiAccess;
+	private List<ActionListener> updateListeners;
 
 	
 	public PreferencesDialog(Frame owner, JakeGui gui) {
@@ -58,6 +61,15 @@ public class PreferencesDialog extends JDialog {
 		initComponents();
 	}
 	
+	public void addUpdateListener(ActionListener l) {
+		updateListeners.add(l);		
+	}
+	
+	private void notifyUpdateListeners()	{
+		for (ActionListener listener : updateListeners) {
+			listener.actionPerformed(new ActionEvent(this, 0, "update"));
+		}
+	}
 	private void okButtonActionPerformed(ActionEvent e) {
 		try {
 			int logsyncInterval = Integer.parseInt(logSyncTextField.getText());
@@ -69,6 +81,7 @@ public class PreferencesDialog extends JDialog {
 			guiAccess.setConfigOption("logsyncInterval", String.valueOf(logsyncInterval));
 			guiAccess.setConfigOption("username", userTextfield.getText());
 			guiAccess.setConfigOption("userid", String.valueOf(passwordTextfield.getPassword()));
+			notifyUpdateListeners();
 			this.setVisible(false);
 		} catch (NumberFormatException ex) {
 			log.info("could not parse logsyncInterval int" + ex.getMessage());
@@ -77,6 +90,7 @@ public class PreferencesDialog extends JDialog {
 	}	
 	
 	private void cancelButtonActionPerformed(ActionEvent e) {
+		notifyUpdateListeners();
 		this.setVisible(false);
 	}
 
@@ -84,6 +98,7 @@ public class PreferencesDialog extends JDialog {
 		log.info("initializing Preferences Dialog");
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
 		translator = (ITranslationProvider) factory.getBean("translationProvider");
+		updateListeners = new LinkedList<ActionListener>();
 		
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
