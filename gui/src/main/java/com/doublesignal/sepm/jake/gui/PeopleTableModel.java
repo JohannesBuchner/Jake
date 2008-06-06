@@ -74,8 +74,11 @@ public class PeopleTableModel extends AbstractTableModel {
 		case UserID:
 			return member.getUserId();
 
-		case Status:
-			return "status";
+		case Status:	{
+					if(member.getActive())
+					return "Online";
+					else return "Offline";
+					}
 
 		case Comment:
 			return member.getNotes();
