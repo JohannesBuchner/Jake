@@ -61,6 +61,8 @@ public class PreferencesDialog extends JDialog {
 	private void okButtonActionPerformed(ActionEvent e) {
 		try {
 			int logsyncInterval = Integer.parseInt(logSyncTextField.getText());
+			if (logsyncInterval < 0)
+				throw new NumberFormatException("logsyncInterval must be geater 0");
 			
 			guiAccess.setConfigOption("autoPush", String.valueOf(autoPushCheckBox.isSelected()));
 			guiAccess.setConfigOption("autoPull", String.valueOf(autoPullCheckBox.isSelected()));
@@ -68,8 +70,8 @@ public class PreferencesDialog extends JDialog {
 			guiAccess.setConfigOption("username", userTextfield.getText());
 			guiAccess.setConfigOption("userid", String.valueOf(passwordTextfield.getPassword()));
 			this.setVisible(false);
-		} catch (NumberFormatException e1) {
-			log.info("could not parse logsyncInterval int");
+		} catch (NumberFormatException ex) {
+			log.info("could not parse logsyncInterval int" + ex.getMessage());
 			logSyncTextField.setBackground(Color.RED);
 		}
 	}	
