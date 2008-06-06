@@ -139,10 +139,11 @@ public class JakeGui extends JPanel implements Observer {
 		try {
 			autoFilePropagateCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPush")));
 			autoFilePullCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPull")));
+			showOfflineMembersCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("showOfflineProjectMembers")));
+			autoRefreshCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoRefresh")));
 		} catch (NoSuchConfigOptionException e) {
 			log.warn("cannot retrieve pref config options...");
 		}
-		
 	}
 
 	/**
@@ -335,6 +336,24 @@ public class JakeGui extends JPanel implements Observer {
 		}
 	}
 	
+	private void setShowOfflineProjectMembersActionPerformed(ActionEvent e) {
+		try {
+			jakeGuiAccess.setConfigOption("showOfflineProjectMembers", String.valueOf(!Boolean.parseBoolean(jakeGuiAccess.getConfigOption("showOfflineProjectMembers"))));
+		} catch (NoSuchConfigOptionException e1) {
+			log.warn("cannot retrieve showOfflineProjectMembers config option, setting it true");
+			jakeGuiAccess.setConfigOption("showOfflineProjectMembers", String.valueOf(true));
+		}
+	}
+	
+	private void setAutoDatapoolRefreshActionPerformed(ActionEvent e) {
+		try {
+			jakeGuiAccess.setConfigOption("autoRefresh", String.valueOf(!Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoRefresh"))));
+		} catch (NoSuchConfigOptionException e1) {
+			log.warn("cannot retrieve autoRefresh config option, setting it true");
+			jakeGuiAccess.setConfigOption("autoRefresh", String.valueOf(true));
+		}
+	}
+	
 	private void registerUpdateObservers() {
 		notesPanel.getNotesUpdater().addObserver(this);
 	}
@@ -396,7 +415,7 @@ public class JakeGui extends JPanel implements Observer {
 		signInNetworkMenuItem = new JMenuItem();
 		signOutNetworkMenuItem = new JMenuItem();
 		showOfflineMembersCheckBoxMenuItem = new JCheckBoxMenuItem();
-		checkBoxMenuItem2 = new JCheckBoxMenuItem();
+		autoRefreshCheckBoxMenuItem = new JCheckBoxMenuItem();
 		autoFilePropagateCheckBoxMenuItem = new JCheckBoxMenuItem();
 		autoFilePullCheckBoxMenuItem = new JCheckBoxMenuItem();
 		projectMenu = new JMenu();
@@ -679,10 +698,10 @@ public class JakeGui extends JPanel implements Observer {
 
 					// ======== networkMenu ========
 					{
-						networkMenu.setText("Network");
+						networkMenu.setText(translator.get("MenuNetwork"));
 
 						// ---- signInNetworkMenuItem ----
-						signInNetworkMenuItem.setText("Sign In...");
+						signInNetworkMenuItem.setText(translator.get("MenuItemSignIn"));
 						signInNetworkMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								signInNetworkMenuItemActionPerformed(e);
@@ -691,7 +710,7 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.add(signInNetworkMenuItem);
 
 						// ---- signOutNetworkMenuItem ----
-						signOutNetworkMenuItem.setText("Sign Out");
+						signOutNetworkMenuItem.setText(translator.get("MenuItemSignOut"));
 						signOutNetworkMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								signOutNetworkMenuItemActionPerformed(e);
@@ -701,14 +720,22 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.addSeparator();
 
 						// ---- showOfflineMembersCheckBoxMenuItem ----
-						showOfflineMembersCheckBoxMenuItem.setText("Show Offline Members");
-						showOfflineMembersCheckBoxMenuItem.setSelected(true);
+						showOfflineMembersCheckBoxMenuItem.setText(translator.get("MenuItemShowOfflineProjectMembers"));
+						showOfflineMembersCheckBoxMenuItem.addActionListener(new ActionListener () {
+							public void actionPerformed(ActionEvent e) {
+								setShowOfflineProjectMembersActionPerformed(e);
+							}
+						});
 						networkMenu.add(showOfflineMembersCheckBoxMenuItem);
 
 						// ---- auto datapool refresh ----
-						checkBoxMenuItem2.setText("Automatic Datapool Refresh");
-						checkBoxMenuItem2.setSelected(true);
-						networkMenu.add(checkBoxMenuItem2);
+						autoRefreshCheckBoxMenuItem.setText(translator.get("MenuItemAutoRefresh"));
+						autoRefreshCheckBoxMenuItem.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								setAutoDatapoolRefreshActionPerformed(e);
+							}
+						});
+						networkMenu.add(autoRefreshCheckBoxMenuItem);
 
 						// ---- autoFilePropagateCheckBoxMenuItem ----
 						autoFilePropagateCheckBoxMenuItem.setText(translator.get("PreferencesLableAutoPush"));
@@ -971,7 +998,7 @@ public class JakeGui extends JPanel implements Observer {
 	private JMenuItem signInNetworkMenuItem;
 	private JMenuItem signOutNetworkMenuItem;
 	private JCheckBoxMenuItem showOfflineMembersCheckBoxMenuItem;
-	private JCheckBoxMenuItem checkBoxMenuItem2;
+	private JCheckBoxMenuItem autoRefreshCheckBoxMenuItem;
 	private JCheckBoxMenuItem autoFilePropagateCheckBoxMenuItem;
 	private JCheckBoxMenuItem autoFilePullCheckBoxMenuItem;
 	private JMenu projectMenu;
