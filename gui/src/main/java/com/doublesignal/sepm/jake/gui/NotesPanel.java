@@ -19,6 +19,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -38,7 +39,6 @@ public class NotesPanel extends JPanel {
 	ITranslationProvider translator = null;
 	private final JakeGui gui;
 	private final IJakeGuiAccess jakeGuiAccess;
-
 	private NotesTableModel notesTableModel;
 
 	public NotesPanel(JakeGui gui) {
@@ -53,6 +53,10 @@ public class NotesPanel extends JPanel {
 		initPopupMenu();
 		updateData();
 	}
+	
+    public void setFilters(FilterPipeline filterPipeline) {
+        notesTable.setFilters(filterPipeline);
+    }
 
 	private void newNoteMenuItemActionPerformed(ActionEvent e) {
 		log.info("create new Note.");
@@ -203,4 +207,14 @@ public class NotesPanel extends JPanel {
 	private JMenuItem viewEditNoteMenuItem;
 	private JMenuItem newNoteMenuItem;
 	private JMenuItem removeNoteMenuItem;
+
+	public int getNameColPos() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public int getTagsColPos() {
+		// TODO Auto-generated method stub
+		return 1;
+	}	
 }

@@ -14,6 +14,8 @@ import javax.swing.*;
 
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -34,6 +36,7 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
+import com.doublesignal.sepm.jake.gui.helper.MultiColPatternFilter;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
@@ -45,6 +48,7 @@ public class JakeGui extends JPanel implements Observer {
 	private static Logger log = Logger.getLogger(JakeGui.class);
 
 	private Project currentProject = null;
+	private SearchMode searchMode = SearchMode.Both;
 
 	public JTabbedPane getMainTabbedPane() {
 		return mainTabbedPane;
@@ -78,9 +82,11 @@ public class JakeGui extends JPanel implements Observer {
 		translator = (ITranslationProvider) factory.getBean("translationProvider");
 
 		setJakeGuiAccess(jakeGuiAccess);
+		setSystemProperties();
 		setNativeLookAndFeel();
 		log.debug("Initializing Components");
 		initComponents();
+		initSearchPopupMenu();
 		registerUpdateObservers();
 		updateAll();
 		setStatusMsg("started");
@@ -110,7 +116,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void newProjectMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open new Project Dialog");
-		//new NewProjectDialog(mainFrame, this).setVisible(true);
+		// new NewProjectDialog(mainFrame, this).setVisible(true);
 	}
 
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
@@ -304,16 +310,17 @@ public class JakeGui extends JPanel implements Observer {
 		// mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
 		// mainTabbedPane.setTitleAt(0, peoplePanel.getTitle());
 		mainTabbedPane.setTitleAt(2, notesPanel.getTitle());
+		mainTabbedPane.updateUI();
 	}
 
 	public void updateAll() {
 		// peoplePanel.updateData();
 		notesPanel.updateData();
 	}
-	
+
 	/**
-	 * Set some system properties to integrate the app better to mac os.
-	 * These calls are *not* harmful to other operating systems... 
+	 * Set some system properties to integrate the app better to mac os. These
+	 * calls are *not* harmful to other operating systems...
 	 */
 	public static void setSystemProperties() {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -373,11 +380,7 @@ public class JakeGui extends JPanel implements Observer {
 		renamePeopleMenuItem = new JMenuItem();
 		changeUserIdMenuItem = new JMenuItem();
 		removePeopleMenuItem = new JMenuItem();
-
 		searchPopupMenu = new JPopupMenu();
-		nameSearchMenuItem = new JMenuItem();
-		tagsSearchMenuItem = new JMenuItem();
-		bothSearchMenuItem = new JMenuItem();
 
 		// ======== frame1 ========
 		{
@@ -516,21 +519,7 @@ public class JakeGui extends JPanel implements Observer {
 						searchTextField.setComponentPopupMenu(searchPopupMenu);
 						searchTextField.addCaretListener(new CaretListener() {
 							public void caretUpdate(CaretEvent e) {
-								// TODO: proof of concept! filter input (e.g.
-								// crash with '*')
-
-								peopleTable.setFilters(new FilterPipeline(
-										new Filter[] { new PatternFilter(searchTextField.getText(),
-												0, 0) }));
-								filesPanel.setFilters(new FilterPipeline(
-										new Filter[] { new PatternFilter(searchTextField.getText(),
-												0, 0) }));
-								/*
-								 * notesTable.setFilters(new FilterPipeline(new
-								 * Filter[]{ new
-								 * PatternFilter(searchTextField.getText(), 0,
-								 * 0) }));
-								 */
+								updateSearch();
 							}
 						});
 						searchTextField.addActionListener(new ActionListener() {
@@ -797,22 +786,110 @@ public class JakeGui extends JPanel implements Observer {
 			removePeopleMenuItem.setText("Remove Member...");
 			peoplePopupMenu.add(removePeopleMenuItem);
 		}
+	}
 
-		// ======== searchPopupMenu ========
-		{
+	enum SearchMode {
+		Name, Tag, Both
+	}
 
-			// ---- nameSearchMenuItem ----
-			nameSearchMenuItem.setText("Name");
-			searchPopupMenu.add(nameSearchMenuItem);
+	private void initSearchPopupMenu() {
+		nameSearchMenuItem = new JCheckBoxMenuItem();
+		tagsSearchMenuItem = new JCheckBoxMenuItem();
+		bothSearchMenuItem = new JCheckBoxMenuItem();
+		// ---- nameSearchMenuItem ----
+		nameSearchMenuItem.setText("Name");
+		nameSearchMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setSearchMode(SearchMode.Name);
+			}
+		});
+		searchPopupMenu.add(nameSearchMenuItem);
 
-			// ---- tagsSearchMenuItem ----
-			tagsSearchMenuItem.setText("Tags");
-			searchPopupMenu.add(tagsSearchMenuItem);
+		// ---- tagsSearchMenuItem ----
+		tagsSearchMenuItem.setText("Tags");
+		tagsSearchMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setSearchMode(SearchMode.Tag);
+			}
+		});
+		searchPopupMenu.add(tagsSearchMenuItem);
 
-			// ---- bothSearchMenuItem ----
-			bothSearchMenuItem.setText("Both");
-			searchPopupMenu.add(bothSearchMenuItem);
-		}
+		// ---- bothSearchMenuItem ----
+		bothSearchMenuItem.setText("Both");
+		bothSearchMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setSearchMode(SearchMode.Both);
+			}
+		});
+		searchPopupMenu.add(bothSearchMenuItem);
+
+		searchPopupMenu.addPopupMenuListener(new PopupMenuListener() {
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				nameSearchMenuItem.setSelected(getSearchMode() == SearchMode.Name);
+				tagsSearchMenuItem.setSelected(getSearchMode() == SearchMode.Tag);
+				bothSearchMenuItem.setSelected(getSearchMode() == SearchMode.Both);
+			}
+
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+			}
+
+			public void popupMenuCanceled(PopupMenuEvent e) {
+			}
+		});
+	}
+
+	private void setSearchMode(SearchMode searchMode) {
+		this.searchMode = searchMode;
+
+		updateSearch();
+	}
+
+	/**
+	 * Update the current search for all tabs
+	 */
+	private void updateSearch() {
+		boolean nameSearch = getSearchMode() == SearchMode.Name;
+		boolean tagsSearch = getSearchMode() == SearchMode.Tag;
+		boolean bothSearch = getSearchMode() == SearchMode.Both;
+
+		PatternFilter searchNoteName = new PatternFilter(searchTextField.getText(), 0, notesPanel
+				.getNameColPos());
+		PatternFilter searchNoteTags = new PatternFilter(searchTextField.getText(), 0, notesPanel
+				.getTagsColPos());
+		PatternFilter searchNoteNameAnTags = new MultiColPatternFilter(searchTextField.getText(),
+				0, notesPanel.getNameColPos(), notesPanel.getTagsColPos());
+		PatternFilter searchFileName = new PatternFilter(searchTextField.getText(), 0, filesPanel
+				.getNameColPos());
+		PatternFilter searchFileTags = new PatternFilter(searchTextField.getText(), 0, filesPanel
+				.getTagsColPos());
+		PatternFilter searchFileNameAnTags = new MultiColPatternFilter(searchTextField.getText(),
+				0, filesPanel.getNameColPos(), filesPanel.getTagsColPos());
+
+		if (nameSearch)
+			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileName }));
+
+		if (tagsSearch)
+			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileTags }));
+
+		if (bothSearch)
+			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileNameAnTags }));
+
+		if (nameSearch)
+			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteName }));
+
+		if (tagsSearch)
+			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteTags }));
+
+		if (bothSearch)
+			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteNameAnTags }));
+		
+		// TODO: when philipp is finished...
+		peopleTable.setFilters(new FilterPipeline(new Filter[] { new PatternFilter(searchTextField
+				.getText(), 0, 0) }));
+	}
+
+	private SearchMode getSearchMode() {
+		return searchMode;
 	}
 
 	private JFrame mainFrame;
@@ -868,9 +945,9 @@ public class JakeGui extends JPanel implements Observer {
 	private JMenuItem changeUserIdMenuItem;
 	private JMenuItem removePeopleMenuItem;
 	private JPopupMenu searchPopupMenu;
-	private JMenuItem nameSearchMenuItem;
-	private JMenuItem tagsSearchMenuItem;
-	private JMenuItem bothSearchMenuItem;
+	private JCheckBoxMenuItem nameSearchMenuItem;
+	private JCheckBoxMenuItem tagsSearchMenuItem;
+	private JCheckBoxMenuItem bothSearchMenuItem;
 
 	public JFrame getMainFrame() {
 		return mainFrame;

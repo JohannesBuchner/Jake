@@ -343,6 +343,16 @@ public class FilesPanel extends JPanel {
         }
 
     }
+    
+	public int getNameColPos() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public int getTagsColPos() {
+		// TODO Auto-generated method stub
+		return 2;
+	}	 
 
 
     private JScrollPane filesScrollPane;

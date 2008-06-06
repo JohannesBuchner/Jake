@@ -19,7 +19,6 @@ public class StartJake
 
 		log.info("===================================================");
 		
-	
 		log.debug("starting frontend....");
 		
 		JakeGui.setSystemProperties();
