@@ -319,7 +319,7 @@ public interface IJakeGuiAccess {
 	 * @param jakeObject
 	 * @return SyncStatus (String)
 	 */
-	public String getFileObjectSyncStatus(JakeObject jakeObject);
+	public Integer getFileObjectSyncStatus(JakeObject jakeObject);
 
 	/**
 	 * open a file with the associated (external) application
@@ -383,4 +383,11 @@ public interface IJakeGuiAccess {
     void refreshFileObjects();
 
 
+    /**
+     * Imports a file which is already in the project folder into the projects
+     * repository (adding to databse, generating log entries, etc.)
+     * @param relPath the relative path of this file
+     * @return true on success, false on error
+     */
+    boolean importLocalFileIntoProject(String relPath);
 }
