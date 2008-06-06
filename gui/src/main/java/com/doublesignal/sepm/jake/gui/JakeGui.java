@@ -720,7 +720,7 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.addSeparator();
 
 						// ---- showOfflineMembersCheckBoxMenuItem ----
-						showOfflineMembersCheckBoxMenuItem.setText(translator.get("MenuItemShowOfflineProjectMembers"));
+						showOfflineMembersCheckBoxMenuItem.setText(translator.get("PreferencesLabelShowOfflineProjectMembers"));
 						showOfflineMembersCheckBoxMenuItem.addActionListener(new ActionListener () {
 							public void actionPerformed(ActionEvent e) {
 								setShowOfflineProjectMembersActionPerformed(e);
@@ -729,7 +729,7 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.add(showOfflineMembersCheckBoxMenuItem);
 
 						// ---- auto datapool refresh ----
-						autoRefreshCheckBoxMenuItem.setText(translator.get("MenuItemAutoRefresh"));
+						autoRefreshCheckBoxMenuItem.setText(translator.get("PreferencesLabelAutoRefresh"));
 						autoRefreshCheckBoxMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								setAutoDatapoolRefreshActionPerformed(e);

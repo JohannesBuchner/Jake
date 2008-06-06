@@ -76,6 +76,8 @@ public class PreferencesDialog extends JDialog {
 			if (logsyncInterval < 0)
 				throw new NumberFormatException("logsyncInterval must be geater 0");
 			
+			guiAccess.setConfigOption("showOfflineProjectMembers", String.valueOf(showOfflineProjectMemebrsCheckBox.isSelected()));
+			guiAccess.setConfigOption("autoRefresh", String.valueOf(autoRefreshCheckBox.isSelected()));
 			guiAccess.setConfigOption("autoPush", String.valueOf(autoPushCheckBox.isSelected()));
 			guiAccess.setConfigOption("autoPull", String.valueOf(autoPullCheckBox.isSelected()));
 			guiAccess.setConfigOption("logsyncInterval", String.valueOf(logsyncInterval));
@@ -102,6 +104,10 @@ public class PreferencesDialog extends JDialog {
 		
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
+		showOfflineProjectMembersLabel = new JLabel();
+		showOfflineProjectMemebrsCheckBox = new JCheckBox();
+		autoRefreshLabel = new JLabel();
+		autoRefreshCheckBox = new JCheckBox();
 		autoPushLabel = new JLabel();
 		autoPushCheckBox = new JCheckBox();
 		autoPullLabel = new JLabel();
@@ -131,33 +137,43 @@ public class PreferencesDialog extends JDialog {
 			//======== contentPanel ========
 			{
 				contentPanel.setLayout(new TableLayout(new double[][] {
-					{189, 176},
-					{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+					{250, 176},
+					{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+
+				//---- offline members ----
+				showOfflineProjectMembersLabel.setText(translator.get("PreferencesLabelShowOfflineProjectMembers"));
+				contentPanel.add(showOfflineProjectMembersLabel, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				contentPanel.add(showOfflineProjectMemebrsCheckBox, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- auto refresh ----
+				autoRefreshLabel.setText(translator.get("PreferencesLabelAutoRefresh"));
+				contentPanel.add(autoRefreshLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(autoRefreshCheckBox, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- auto push ----
-				autoPushLabel.setText(translator.get("PreferencesLableAutoPush"));
-				contentPanel.add(autoPushLabel, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
-				contentPanel.add(autoPushCheckBox, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				autoPushLabel.setText(translator.get("PreferencesLabelAutoPush"));
+				contentPanel.add(autoPushLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				contentPanel.add(autoPushCheckBox, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
 				//---- autp pull ----
-				autoPullLabel.setText(translator.get("PreferencesLableAutoPull"));
-				contentPanel.add(autoPullLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(autoPullCheckBox, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				autoPullLabel.setText(translator.get("PreferencesLabelAutoPull"));
+				contentPanel.add(autoPullLabel, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(autoPullCheckBox, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- log sync ----
-				autoLogSyncLabel.setText(translator.get("PreferencesLableAutoLogSync"));
-				contentPanel.add(autoLogSyncLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(logSyncTextField, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				autoLogSyncLabel.setText(translator.get("PreferencesLabelAutoLogSync"));
+				contentPanel.add(autoLogSyncLabel, new TableLayoutConstraints(0, 4, 0, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(logSyncTextField, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				
 				// username
 				userLabel.setText(translator.get("PreferencesLabelUsername"));
-				contentPanel.add(userLabel, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(userTextfield, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(userLabel, new TableLayoutConstraints(0, 5, 0, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(userTextfield, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				
 				// password
 				passwordLabel.setText(translator.get("PreferencesLabelPassword"));
-				contentPanel.add(passwordLabel, new TableLayoutConstraints(0, 4, 0, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				contentPanel.add(passwordTextfield, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(passwordLabel, new TableLayoutConstraints(0, 6, 0, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				contentPanel.add(passwordTextfield, new TableLayoutConstraints(1, 6, 1, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				
 			}
@@ -217,6 +233,10 @@ public class PreferencesDialog extends JDialog {
 
 	private JPanel dialogPane;
 	private JPanel contentPanel;
+	private JLabel showOfflineProjectMembersLabel;
+	private JCheckBox showOfflineProjectMemebrsCheckBox;
+	private JLabel autoRefreshLabel;
+	private JCheckBox autoRefreshCheckBox;
 	private JLabel autoPushLabel;
 	private JCheckBox autoPushCheckBox;
 	private JLabel autoPullLabel;
