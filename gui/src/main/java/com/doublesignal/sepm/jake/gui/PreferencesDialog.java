@@ -81,8 +81,8 @@ public class PreferencesDialog extends JDialog {
 			guiAccess.setConfigOption("autoPush", String.valueOf(autoPushCheckBox.isSelected()));
 			guiAccess.setConfigOption("autoPull", String.valueOf(autoPullCheckBox.isSelected()));
 			guiAccess.setConfigOption("logsyncInterval", String.valueOf(logsyncInterval));
-			guiAccess.setConfigOption("username", userTextfield.getText());
-			guiAccess.setConfigOption("userid", String.valueOf(passwordTextfield.getPassword()));
+			guiAccess.setConfigOption("userid", userTextfield.getText());
+			guiAccess.setConfigOption("password", String.valueOf(passwordTextfield.getPassword()));
 			notifyUpdateListeners();
 			this.setVisible(false);
 		} catch (NumberFormatException ex) {
@@ -166,7 +166,7 @@ public class PreferencesDialog extends JDialog {
 				contentPanel.add(logSyncTextField, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				
 				// username
-				userLabel.setText(translator.get("PreferencesLabelUsername"));
+				userLabel.setText(translator.get("PreferencesLabelUserName"));
 				contentPanel.add(userLabel, new TableLayoutConstraints(0, 5, 0, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				contentPanel.add(userTextfield, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				
@@ -214,6 +214,8 @@ public class PreferencesDialog extends JDialog {
 
 		//===== try to fill in data =====
 		try {
+			showOfflineProjectMemebrsCheckBox.setSelected(Boolean.parseBoolean(guiAccess.getConfigOption("showOfflineProjectMembers")));
+			autoRefreshCheckBox.setSelected(Boolean.parseBoolean(guiAccess.getConfigOption("autoRefresh")));
 			autoPushCheckBox.setSelected(Boolean.parseBoolean(guiAccess.getConfigOption("autoPush")));
 			autoPullCheckBox.setSelected(Boolean.parseBoolean(guiAccess.getConfigOption("autoPull")));
 			logSyncTextField.setText(guiAccess.getConfigOption("logsyncInterval"));

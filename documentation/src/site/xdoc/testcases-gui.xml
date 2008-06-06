@@ -1262,6 +1262,158 @@
 				</table>
 
 			</subsection>
+			
+			<subsection name="GUI:PreferencePane">
+				The user may change application preferences either in the preferences pane or in the menu "Network"
+
+				<br/>Preconditions:
+				<ul>
+					<li>The Program is started</li>
+					<li>A project is opened</li>
+
+				</ul>
+				<table>
+					<thead>
+						<tr>
+							<th width="80">Test-Case#</th>
+							<th width="400">Function</th>
+							<th>Expected result</th>
+							<th>Inputs</th>
+							<th>Achieved Result</th>
+							<th>Error Behaviour</th>
+							<th width="40">Passed?</th>
+							<th width="100">Priority</th>
+							<th width="100">Type</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td>Open the preference pane and display current settings by clicking "Preferences..." in the "File" menu.</td>
+							<!-- function //-->
+							<td>The preferences pane is shown.All setting are displayed correctly(i.e. as stated in the db .script file.</td>
+							<!-- expected result -->
+							<td>-</td>
+							<!-- inputs -->
+							<td>ok</td>
+							<!-- achieved result [blank] -->
+							<td></td>
+							<!-- behaviour in case of error -->
+							<td>2008-06-06 16:41</td>
+							<!-- passed? -->
+							<td>high</td>
+							<!-- priority: very high, high, medium, low, very low -->
+							<td>nc</td>
+							<!-- type: normal case nc, failure case fc, special case sc -->
+						</tr>
+						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td>Change the setting and safe them by clicking the "OK" button.</td>
+							<!-- function //-->
+							<td>The setting are stored correctly (i.e. in the db .script file)</td>
+							<!-- expected result -->
+							<td>offline members - true, refresh - true, autopull - true, autopush - true, update interval - 10, username - foo, password - bar</td>
+							<!-- inputs -->
+							<td>ok</td>
+							<!-- achieved result [blank] -->
+							<td></td>
+							<!-- behaviour in case of error -->
+							<td>2008-06-06 16:54</td>
+							<!-- passed? -->
+							<td>high</td>
+							<!-- priority: very high, high, medium, low, very low -->
+							<td>nc</td>
+							<!-- type: normal case nc, failure case fc, special case sc -->
+						</tr>
+						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td>Invalid auto update interval</td>
+							<!-- function //-->
+							<td>The auto update interval textfield turns red</td>
+							<!-- expected result -->
+							<td>-10, asdf</td>
+							<!-- inputs -->
+							<td>ok</td>
+							<!-- achieved result [blank] -->
+							<td>the text filed turns red</td>
+							<!-- behaviour in case of error -->
+							<td>2008-06-06 16:58</td>
+							<!-- passed? -->
+							<td>high</td>
+							<!-- priority: very high, high, medium, low, very low -->
+							<td>fc</td>
+							<!-- type: normal case nc, failure case fc, special case sc -->
+						</tr>
+						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td>Change the setting from the "Network" menu</td>
+							<!-- function //-->
+							<td>The settings are changed accordingly (i.e. in the db .script)</td>
+							<!-- expected result -->
+							<td>all checked, none checked</td>
+							<!-- inputs -->
+							<td>ok</td>
+							<!-- achieved result [blank] -->
+							<td></td>
+							<!-- behaviour in case of error -->
+							<td>2008-06-06 17:00</td>
+							<!-- passed? -->
+							<td>high</td>
+							<!-- priority: very high, high, medium, low, very low -->
+							<td>nc</td>
+							<!-- type: normal case nc, failure case fc, special case sc -->
+						</tr>
+						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td>Cancel the preferences dialog</td>
+							<!-- function //-->
+							<td>The preferences remain unchanged.</td>
+							<!-- expected result -->
+							<td>all checked, 10, foo, bar</td>
+							<!-- inputs -->
+							<td>ok</td>
+							<!-- achieved result [blank] -->
+							<td></td>
+							<!-- behaviour in case of error -->
+							<td>2008-06-06 17:02</td>
+							<!-- passed? -->
+							<td>high</td>
+							<!-- priority: very high, high, medium, low, very low -->
+							<td>sc</td>
+							<!-- type: normal case nc, failure case fc, special case sc -->
+						</tr>
+						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td></td>
+							<!-- function //-->
+							<td></td>
+							<!-- expected result -->
+							<td></td>
+							<!-- inputs -->
+							<td></td>
+							<!-- achieved result [blank] -->
+							<td></td>
+							<!-- behaviour in case of error -->
+							<td></td>
+							<!-- passed? -->
+							<td></td>
+							<!-- priority: very high, high, medium, low, very low -->
+							<td></td>
+							<!-- type: normal case nc, failure case fc, special case sc -->
+						</tr>
+						
+						
+						
+					</tbody>
+				</table>
+
+			</subsection>
 		</section>
 
 		<section name="Changelog">
@@ -1277,9 +1429,15 @@
 
 				<tr>
 					<td>1</td>
-					<td>01.06.2008</td>
+					<td>2008-06-01</td>
 					<td>JB</td>
 					<td>moved from main document</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>2008-06-06</td>
+					<td>sw</td>
+					<td>added testd for the preference pane</td>
 				</tr>
 			</table>
 		</section>
