@@ -486,9 +486,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         log.debug("setting config option projectname ... ");
         db.getConfigurationDao().setConfigurationValue("projectname", projectname);
 
-        db.getConfigurationDao().setConfigurationValue("autoPush", String.valueOf(1));
-        db.getConfigurationDao().setConfigurationValue("autoPull", String.valueOf(1));
+        db.getConfigurationDao().setConfigurationValue("autoPush", String.valueOf(false));
+        db.getConfigurationDao().setConfigurationValue("autoPull", String.valueOf(true));
         db.getConfigurationDao().setConfigurationValue("logsyncInterval", String.valueOf(5));
+        db.getConfigurationDao().setConfigurationValue("showOfflineProjectMembers", String.valueOf(true));
+        db.getConfigurationDao().setConfigurationValue("autoRefresh", String.valueOf(true));
         /* don't know. maybe scan in files? */
 
     }
