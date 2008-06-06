@@ -706,7 +706,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         if (filesDB == null && filesFSS == null || filesStatus == null)
             refreshFileObjects();
 
-        return filesStatus.get(jakeObject.getName());
+        return 100; 
+        //Integer status = filesStatus.get(jakeObject.getName());
+
+       // return status == null ? 0 : status;
     }
     
 
