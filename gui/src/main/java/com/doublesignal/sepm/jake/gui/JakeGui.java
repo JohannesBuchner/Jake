@@ -738,7 +738,7 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.add(autoRefreshCheckBoxMenuItem);
 
 						// ---- autoFilePropagateCheckBoxMenuItem ----
-						autoFilePropagateCheckBoxMenuItem.setText(translator.get("PreferencesLableAutoPush"));
+						autoFilePropagateCheckBoxMenuItem.setText(translator.get("PreferencesLabelAutoPush"));
 						autoFilePropagateCheckBoxMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								setAutoPushMenuItemActionPerformed(e);
@@ -747,7 +747,7 @@ public class JakeGui extends JPanel implements Observer {
 						networkMenu.add(autoFilePropagateCheckBoxMenuItem);
 
 						// ---- autoFilePullCheckBoxMenuItem ----
-						autoFilePullCheckBoxMenuItem.setText(translator.get("PreferencesLableAutoPull"));
+						autoFilePullCheckBoxMenuItem.setText(translator.get("PreferencesLabelAutoPull"));
 						autoFilePullCheckBoxMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								setAutoPullMenuItemActionPerformed(e);
