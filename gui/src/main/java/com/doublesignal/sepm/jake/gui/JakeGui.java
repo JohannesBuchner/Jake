@@ -385,11 +385,12 @@ public class JakeGui extends JPanel implements Observer {
 		statusPanel = new StatusPanel(this);
 		mainPanel = new JPanel();
 		mainTabbedPane = new JTabbedPane();
-		peoplePanel = new JPanel();
+		//peoplePanel = new JPanel();
 		peopleScrollPane = new JScrollPane();
-		peopleTable = new JXTable();
+		//peopleTable = new JXTable();
 		filesPanel = new FilesPanel(this);
 		notesPanel = new NotesPanel(this);
+		peoplePanel = new PeoplePanel(this);
 		mainToolBar = new JToolBar();
 		openProjectFolderButton = new JButton();
 		refreshDatapoolViewButton = new JButton();
@@ -459,43 +460,7 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ======== peoplePanel ========
 						{
-							peoplePanel.setLayout(new BoxLayout(peoplePanel, BoxLayout.X_AXIS));
-
-							// ======== peopleScrollPane ========
-							{
-								// ---- peopleTable ----
-								peopleTable.setComponentPopupMenu(peoplePopupMenu);
-								peopleTable.setColumnControlVisible(true);
-								peopleTable.setHighlighters(HighlighterFactory
-										.createSimpleStriping());
-								peopleTable.setModel(new DefaultTableModel(
-										new Object[][] {
-												{ "Simon", "simon.wallner@jabber.fsinf.at",
-														"Online", "Projektleiter" },
-												{ "Dominik", "dominik.dorn@jabber.fsinf.at",
-														"Online", null },
-												{ "Chris", "chris.sutter@jabber.fsinf.at",
-														"unknown", null },
-												{ "Peter", "pstein@jabber.fsinf.at", "Offline",
-														null }, }, new String[] { "Nickname",
-												"User ID", "Status", "Comment" }) {
-									boolean[] columnEditable = new boolean[] { true, true, false,
-											false };
-
-									@Override
-									public boolean isCellEditable(int rowIndex, int columnIndex) {
-										return columnEditable[columnIndex];
-									}
-								});
-								{
-									TableColumnModel cm = peopleTable.getColumnModel();
-									cm.getColumn(1).setPreferredWidth(195);
-									cm.getColumn(3).setPreferredWidth(145);
-								}
-								peopleScrollPane.setViewportView(peopleTable);
-							}
-							peoplePanel.add(peopleScrollPane);
-						}
+							
 						mainTabbedPane.addTab("People", new ImageIcon(getClass().getResource(
 								"/icons/people.png")), peoplePanel);
 
@@ -822,7 +787,7 @@ public class JakeGui extends JPanel implements Observer {
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.setVisible(true);
 		}
-
+/*
 		// ======== peoplePopupMenu ========
 		{
 
@@ -836,7 +801,7 @@ public class JakeGui extends JPanel implements Observer {
 				}
 			});
 			peoplePopupMenu.add(sendMessageMenuItem);
-
+*/
 			// ---- showInfoPeopleMenuItem ----
 			showInfoPeopleMenuItem.setText("Show Info/Comments...");
 			showInfoPeopleMenuItem.addActionListener(new ActionListener() {
@@ -968,7 +933,7 @@ public class JakeGui extends JPanel implements Observer {
 	private StatusPanel statusPanel;
 	private JPanel mainPanel;
 	private JTabbedPane mainTabbedPane;
-	private JPanel peoplePanel;
+	private PeoplePanel peoplePanel;
 	private JScrollPane peopleScrollPane;
 	private JXTable peopleTable;
 	private FilesPanel filesPanel;

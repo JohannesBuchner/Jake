@@ -138,6 +138,7 @@ public interface IJakeGuiAccess {
 	 * @param UserId
 	 */
 	public void addProjectMember(String UserId);
+	public List<ProjectMember> getMembers();
 
 	public Project getProject();
 

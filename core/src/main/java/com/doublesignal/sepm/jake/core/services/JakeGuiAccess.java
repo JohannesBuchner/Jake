@@ -68,7 +68,6 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     private ISyncService sync = null;
     private IFSService fss = null;
     private IJakeDatabase db = null;
-
     private Project currentProject;
     private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
@@ -317,6 +316,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         currentProject.addMember(PM);
     }
 
+    public List<ProjectMember> getMembers()	{
+    	return currentProject.getMembers();
+    	
+    }
+    
     public ProjectMember getLastModifier(JakeObject jakeObject) {
         // sync.getLogEntries(jakeObject)
         // return new
