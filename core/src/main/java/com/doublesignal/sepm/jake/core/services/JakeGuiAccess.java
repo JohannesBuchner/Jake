@@ -31,6 +31,7 @@ import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -68,12 +69,15 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     private ISyncService sync = null;
     private IFSService fss = null;
     private IJakeDatabase db = null;
+    private IProjectMemberDao pm = null;
     private Project currentProject;
     private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
     private List<FileObject> filesFSS;
     private List<FileObject> filesDB;
     private Map<String, Integer> filesStatus;
+
+
 
     public void login(String user, String pw) throws LoginDataRequiredException,
             LoginDataNotValidException, NetworkException, LoginUseridNotValidException {
@@ -148,6 +152,15 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException {
+       log.info("*********************************");
+       log.info("Get User by"+userId+" . Set Note "+note);
+       pm.getByUserId(userId).setNotes(note);
+       log.info("*********************************");
+    }
+
+
 
     /**
      * Returns the configuration option for a <code>configKey</code>
@@ -706,6 +719,9 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return 100;
     }
 
+
+
+
     private List<FileObject> getFileObjectsFromDB() {
         if (filesDB == null)
             filesDB = db.getJakeObjectDao().getAllFileObjects();
@@ -730,6 +746,16 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
     public boolean importLocalFileIntoProject(String absolutePath, String destinationFolderRelPath) {
         // TODO
+        File srcFile = new File(absolutePath);
+        if(srcFile == null || !srcFile.exists() )
+            return false;
+
+        File destinationFolder = new File(absolutePath);
+        if(!destinationFolder.getAbsolutePath().startsWith(getProject().getRootPath().getAbsolutePath()))
+            return false;
+
+        //fss.
+
         return false;
     }
 
