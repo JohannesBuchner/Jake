@@ -27,11 +27,11 @@ import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
  * @see ISyncService
  */
 public class MockSyncService implements ISyncService {
-	
-	protected IFSService fss = null;
-	protected IICService ics = null;
-	protected List<LogEntry> le = null;
-	protected List<ProjectMember> pm = null;
+
+	private IFSService fss = null;
+	private IICService ics = null;
+	private List<LogEntry> logEntries = null;
+	private List<ProjectMember> projectMembers = null;
 
 	public void setICService(IICService ics) {
 		this.ics = ics;
@@ -42,57 +42,59 @@ public class MockSyncService implements ISyncService {
 	}
 
 	public void setLogEntries(List<LogEntry> le) {
-		this.le = le;
+		this.logEntries = le;
 	}
 
 	public void setProjectMembers(List<ProjectMember> pm) {
-		this.pm = pm;
+		this.projectMembers = pm;
 	}
-	
-	public boolean isConfigured(){
-		return (pm != null) && (le != null) && (ics != null) && (fss != null); 
+
+	public boolean isConfigured() {
+		return (projectMembers != null) && (logEntries != null)
+				&& (ics != null) && (fss != null);
 	}
-	
+
 	/**
 	 * @returns the name of the Jake object, with its timestamp from the log
 	 */
 	public byte[] pull(JakeObject jo) throws NetworkException,
 			NotLoggedInException, TimeoutException, OtherUserOfflineException,
 			ObjectNotConfiguredException {
-		
-		if(!isConfigured()) 
+
+		if (!isConfigured())
 			throw new ObjectNotConfiguredException();
-		
+
 		/* TODO: we need a findLastLogentryForJakeObject(jo) */
 		int i;
-		for(i=le.size()-1;i>=0;i--){
-			if(le.get(i).getJakeObjectName().equals(jo.getName()))
+		for (i = logEntries.size() - 1; i >= 0; i--) {
+			if (logEntries.get(i).getJakeObjectName().equals(jo.getName()))
 				break;
 		}
-		if(i<0)
+		if (i < 0)
 			return null;
-		
+
 		/* TODO: we need a getProjectMemberForLogentry(le) 
 		 * when we have that, local content can be pulled here 
 		 * (integrity) 
 		 * */
-		
-		return ("This is " + jo.getName() + " from "+ le.get(i).getTimestamp() + 
-				"\n\n" + le.get(i).getComment() + "\n" 
-				).getBytes();
-		
+
+		return ("This is " + jo.getName() + " from "
+				+ logEntries.get(i).getTimestamp() + "\n\n"
+				+ logEntries.get(i).getComment() + "\n").getBytes();
+
 	}
 
-	public List<ProjectMember> push(JakeObject jo, String userid, String commitmsg)
-			throws ObjectNotConfiguredException, SyncException {
-		if(!isConfigured())
+	public List<ProjectMember> push(JakeObject jo, String userid,
+			String commitmsg) throws ObjectNotConfiguredException,
+			SyncException {
+		if (!isConfigured())
 			throw new ObjectNotConfiguredException();
-		
+
 		String hash;
-		if(jo.getName().startsWith("note:")){
+		if (jo.getName().startsWith("note:")) {
 			NoteObject note = (NoteObject) jo;
 			hash = fss.calculateHash(note.getContent().getBytes());
-		}else{
+		} else {
 			try {
 				hash = fss.calculateHashOverFile(jo.getName());
 			} catch (FileNotFoundException e) {
@@ -103,61 +105,60 @@ public class MockSyncService implements ISyncService {
 				throw new SyncException(e);
 			}
 		}
-		
+
 		/* TODO: When and how is that written to the database? */
-		le.add(new LogEntry(LogAction.NEW_VERSION, new Date(), 
-			jo.getName(), userid, hash, commitmsg));
-		
+		logEntries.add(new LogEntry(LogAction.NEW_VERSION, new Date(), jo
+				.getName(), userid, hash, commitmsg));
+
 		return new ArrayList<ProjectMember>();
 	}
-	
+
 	/* on every sync, a new version of the object o is created by the user
 	 * u. (u, o fixed) */
 	public List<JakeObject> syncLogAndGetChanges(String userid)
 			throws NetworkException, NotLoggedInException, TimeoutException,
-			ObjectNotConfiguredException, OtherUserOfflineException, 
-			NotAProjectMemberException
-	{
-		if(!isConfigured())
+			ObjectNotConfiguredException, OtherUserOfflineException,
+			NotAProjectMemberException {
+		if (!isConfigured())
 			throw new ObjectNotConfiguredException();
-		if(!ics.isLoggedIn())
+		if (!ics.isLoggedIn())
 			throw new NotLoggedInException();
-		
+
 		int i;
-		for(i=0;i<pm.size();i++){
-			if(pm.get(i).getUserId().equals(userid))
+		for (i = 0; i < projectMembers.size(); i++) {
+			if (projectMembers.get(i).getUserId().equals(userid))
 				break;
 		}
-		if(i==pm.size())
+		if (i == projectMembers.size())
 			throw new NotAProjectMemberException();
-		if(!ics.isLoggedIn(userid))
+		if (!ics.isLoggedIn(userid))
 			throw new OtherUserOfflineException();
-		
+
 		LogEntry myle = simulateCreateNewVersion(userid);
 		List<JakeObject> jolist = new ArrayList<JakeObject>();
-		if(myle!=null){
-			le.add(myle);
+		if (myle != null) {
+			logEntries.add(myle);
 			jolist.add(new JakeObject(myle.getJakeObjectName()));
 		}
 		return jolist;
 	}
 
 	private LogEntry simulateCreateNewVersion(String userid) {
-		if(!userid.contains("n"))
+		if (!userid.contains("n"))
 			return null;
-		
+
 		/* simulate creating updated version of JakeObject */
 		JakeObject jo = new JakeObject("Projektauftrag/Lastenheft.txt");
-		
+
 		String comment = "automated change (MockSync)";
-		String hash = "This is " + jo.getName() + " from "+ new Date() + 
-			"\n\n" + comment + "\n"; 
-		
+		String hash = "This is " + jo.getName() + " from " + new Date()
+				+ "\n\n" + comment + "\n";
+
 		hash = fss.calculateHash(hash.getBytes());
-		
-		LogEntry le = new LogEntry(LogAction.NEW_VERSION, new Date(), 
-				jo.getName(), hash, userid, comment);
-		
+
+		LogEntry le = new LogEntry(LogAction.NEW_VERSION, new Date(), jo
+				.getName(), hash, userid, comment);
+
 		return le;
 	}
 
