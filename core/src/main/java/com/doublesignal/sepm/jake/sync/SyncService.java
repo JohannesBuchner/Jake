@@ -2,6 +2,8 @@ package com.doublesignal.sepm.jake.sync;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
@@ -11,12 +13,18 @@ import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.IObjectReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
 
+/**
+ * Implementation of the <code>ISyncService</code> interface.
+ * @author Simon
+ *
+ */
 public class SyncService implements ISyncService, IModificationListener,
 		IMessageReceiveListener, IObjectReceiveListener {
 	
@@ -25,14 +33,27 @@ public class SyncService implements ISyncService, IModificationListener,
 	private List<LogEntry> logEntrys;
 	private List<ProjectMember> projectMembers;
 	
+	private static Logger log = Logger.getLogger(SyncService.class);
 	public static final String REQUEST_LOG = "sync_request_log";
+	public static final String SUBMIT_LOG = "sync_submit_log";
 
 	public boolean isConfigured() {
 		return (ics != null && fss != null && logEntrys != null && projectMembers != null); 
 	}
 
 	public void logSyncWithUser(String userid) {
-		// TODO Auto-generated method stub
+		try {
+			ics.sendMessage(userid, REQUEST_LOG);
+		} catch (NetworkException e) {
+			log.warn("A network exception was raised:" + e.getMessage());
+		} catch (OtherUserOfflineException e) {
+			log.warn("The user: " + userid + "is offline");
+		}
+	}
+	private void braodcastLog() {
+		for (ProjectMember member : projectMembers) {
+			//ics.sendMessage(member.getUserId(), SUBMIT_LOG + ":" + logEntrys
+		}
 	}
 
 	public byte[] pull(JakeObject jo) throws NetworkException,
@@ -90,8 +111,9 @@ public class SyncService implements ISyncService, IModificationListener,
 	}
 
 	public void receivedMessage(String from_userid, String content) {
-		// TODO Auto-generated method stub
-
+		if (content.equals(REQUEST_LOG)) {
+			
+		}
 	}
 
 	public void receivedObject(String from_userid, String identifier,
