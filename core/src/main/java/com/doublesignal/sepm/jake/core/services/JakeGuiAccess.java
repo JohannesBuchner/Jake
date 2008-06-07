@@ -578,6 +578,17 @@ public class JakeGuiAccess implements IJakeGuiAccess {
             // slightly ignore
             filesFSS = null;
         }
+
+
+        Set<FileObject> result = new HashSet<FileObject>();
+        result.addAll(filesDB);
+        result.addAll(filesFSS);
+        if (filesStatus == null)
+            filesStatus = new HashMap<String, Integer>();
+
+        for (FileObject file : result) {
+            filesStatus.put(file.getName(), getRealFileObjectSyncStatus(file));
+        }
     }
 
     private int getRealFileObjectSyncStatus(FileObject jakeObject) {
@@ -705,11 +716,21 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     public Integer getFileObjectSyncStatus(JakeObject jakeObject) {
         //   log.debug("calling getFileObjectSyncStatus on JakeObject "+ jakeObject.getName());
 
+
+        if(filesDB == null)
+            log.debug("filesDB is null!");
+
+        if(filesFSS == null)
+            log.debug("FilesFSS is null");
+
+        if(filesStatus == null)
+            log.debug("filesStatus is null");
+
         if (filesDB == null && filesFSS == null || filesStatus == null)
             refreshFileObjects();
 
-        return 100; 
-        //Integer status = filesStatus.get(jakeObject.getName());
+        //return 100;
+        return filesStatus.get(jakeObject.getName());
 
        // return status == null ? 0 : status;
     }
