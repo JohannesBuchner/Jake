@@ -387,7 +387,7 @@ public interface IJakeGuiAccess {
     /**
      * Stores a <code>note</code> for a Project Member
      *
-     * @param the Project Member userid
+     * @param userId the Project Member userid
      * @throws NoSuchProjectMemberException Raised if no user can be found for the given
      *                                     <code>userid</code>.
      */
@@ -400,4 +400,14 @@ public interface IJakeGuiAccess {
      * @return true on success, false on error
      */
     boolean importLocalFileIntoProject(String relPath);
+
+    /**
+     * Imports a file which is not currently in the project folder by
+     * copying it into a folder inside the projects root folder.
+     * @param absolutePath
+     * @param destinationFolderRelPath
+     * @return true on success, false on error
+     */
+    boolean importLocalFileIntoProject(String absolutePath, String destinationFolderRelPath);
+    
 }
