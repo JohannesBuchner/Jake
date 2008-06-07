@@ -749,6 +749,12 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- addFileToProjectMenuItem ----
 						addFileToProjectMenuItem.setText("Add File...");
+                        addFileToProjectMenuItem.addActionListener(new ActionListener()
+                        {
+                            public void actionPerformed(ActionEvent event) {
+                                addFileToProjectMenuItemActionPerformed(event);
+                            }
+                        });
 						projectMenu.add(addFileToProjectMenuItem);
 
 						// ---- addFolderToProjectMenuItem ----
@@ -824,6 +830,9 @@ public class JakeGui extends JPanel implements Observer {
 			peoplePopupMenu.add(removePeopleMenuItem);
 		}
 	}
+    private void addFileToProjectMenuItemActionPerformed(ActionEvent event) {
+        new importFileDialog(this.getMainFrame()).setJakeGuiAccess(jakeGuiAccess).setVisible(true);
+    }
 
 	enum SearchMode {
 		Name, Tag, Both
