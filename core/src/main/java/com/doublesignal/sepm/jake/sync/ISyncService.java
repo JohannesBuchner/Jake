@@ -159,5 +159,9 @@ public interface ISyncService {
 	 */
 	public boolean isConfigured();
 	
-	
+	/**
+	 * Synchronize the local log with the remote log of the given user.
+	 * @param userid the user id of the remote user
+	 */
+	public void logSyncWithUser(String userid); 
 }

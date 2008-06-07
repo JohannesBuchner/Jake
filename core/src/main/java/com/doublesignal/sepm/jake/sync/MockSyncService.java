@@ -162,4 +162,8 @@ public class MockSyncService implements ISyncService {
 		return le;
 	}
 
+	public void logSyncWithUser(String userid) {
+		// TODO Auto-generated method stub
+		
+	}
 }
