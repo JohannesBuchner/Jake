@@ -4,11 +4,14 @@ import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
+import javax.swing.event.CaretListener;
+import javax.swing.event.CaretEvent;
 import java.awt.event.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
+import java.io.File;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
@@ -56,6 +59,8 @@ public class importFileDialog extends JDialog {
         super(owner);
         $$$setupUI$$$();
         createUIComponents();
+        addListeners();
+
 
         setContentPane(mainPanel);
         setModal(true);
@@ -63,10 +68,6 @@ public class importFileDialog extends JDialog {
         getRootPane().setDefaultButton(importButton);
         pack();
         setLocationRelativeTo(getOwner());
-    }
-
-    private void onOK() {
-        dispose();
     }
 
     private void onCancel() {
@@ -94,14 +95,14 @@ public class importFileDialog extends JDialog {
                 browseFileButtonActionPerformed(event);
             }
         });
-        fileTextField.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent event) {
+        fileTextField.addCaretListener(new CaretListener() {
+            public void caretUpdate(CaretEvent event) {
                 checkFields();
             }
         });
         destinationFolderTextField.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                checkFields();
+                //checkFields();
             }
         });
         destinationFolderButton.addActionListener(new ActionListener() {
@@ -142,8 +143,7 @@ public class importFileDialog extends JDialog {
         addListeners();
     }
 
-    public importFileDialog(Frame parent)
-    {
+    public importFileDialog(Frame parent) {
         $$$setupUI$$$();
         createUIComponents();
         addListeners();
@@ -158,15 +158,99 @@ public class importFileDialog extends JDialog {
     }
 
     private void destinationFolderButtonActionPerformed(ActionEvent event) {
-        //todo
+        log.debug("calling destinationFolderButtonActionPerformed");
+        final String projectRootPath = jakeGuiAccess.getProject().getRootPath().getAbsolutePath();
+        JFileChooser fileChooser = new JFileChooser(projectRootPath + File.separator + ".") {
+
+            public void setCurrentDirectory(File file) {
+                if (file.getAbsolutePath().startsWith(projectRootPath)) {
+                    super.setCurrentDirectory(file);
+                } else {
+                    File selectedFile = getSelectedFile();
+                    if (selectedFile != null && selectedFile.getAbsolutePath().equals(projectRootPath)) {
+                        super.setCurrentDirectory(file);
+                    } else {
+                        log.debug("a: " + file.getAbsolutePath());
+                        log.debug("b: " + projectRootPath);
+                        UserDialogHelper.warning(this, "No valid directory",
+                                "Sorry, you can only select a folder within the current project!");
+                    }
+                }
+            }
+        };
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returncode = fileChooser.showDialog(this, "Copy file to this directory");
+        if (returncode == JFileChooser.APPROVE_OPTION) {
+            String rootPath = fileChooser.getSelectedFile().getAbsolutePath();
+            destinationFolderTextField.setText(rootPath);
+            checkFields();
+        }
     }
 
     private void checkFields() {
-        // todo
+        if (jakeGuiAccess == null)
+            return;
+
+        String projectRootPath = jakeGuiAccess.getProject().getRootPath().getAbsolutePath();
+        String fileString = fileTextField.getText();
+        String targetDirectoryString = destinationFolderTextField.getText();
+        boolean fileOk = false;
+        boolean folderOk = false;
+
+        // initialize
+        fileTextField.setBackground(Color.white);
+        destinationFolderTextField.setBackground(Color.white);
+
+        if (!fileString.isEmpty()) {
+            File importFile = new File(fileString);
+            if (importFile.exists() && importFile.isFile() && !importFile.getAbsolutePath().startsWith(projectRootPath))
+                fileOk = true;
+            if (!fileOk)
+                fileTextField.setBackground(Color.red);
+        }
+
+        if (!targetDirectoryString.isEmpty()) {
+            File targetDirectoryFile = new File(targetDirectoryString);
+            if (targetDirectoryFile.exists() && targetDirectoryFile.isDirectory()
+                    &&
+                    (
+                            targetDirectoryFile.getAbsolutePath().startsWith(projectRootPath) ||
+                                    targetDirectoryFile.getAbsolutePath().equals(projectRootPath)
+                    )
+                )
+                folderOk = true;
+
+            if (!folderOk)
+                destinationFolderTextField.setBackground(Color.red);
+        }
+
+        importButton.setEnabled(fileOk && folderOk);
     }
 
     private void browseFileButtonActionPerformed(ActionEvent event) {
-        // todo
+        log.debug("calling browseFileButtonActionPerformed");
+        final String projectRootPath = jakeGuiAccess.getProject().getRootPath().getAbsolutePath();
+
+        JFileChooser fileChooser = new JFileChooser() {
+            public void setCurrentDirectory(File file) {
+
+                if (file != null && file.getAbsolutePath().startsWith(projectRootPath)) {
+                    UserDialogHelper.warning(this, "File must be outside the project folder",
+                            "Sorry, the file you want to import must be outside of the project folder.\n" +
+                                    "If the file is already in the project folder, use the popup menu in\n" +
+                                    "the filelist to import it into the project!");
+                } else {
+                    super.setCurrentDirectory(file);
+                }
+            }
+        };
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int returncode = fileChooser.showDialog(this, "Import this file");
+        if (returncode == JFileChooser.APPROVE_OPTION) {
+            String rootPath = fileChooser.getSelectedFile().getAbsolutePath();
+            fileTextField.setText(rootPath);
+            checkFields();
+        }
     }
 
     /**
