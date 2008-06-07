@@ -4,7 +4,6 @@ import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
@@ -65,14 +64,8 @@ public class FilesTableModel extends AbstractTableModel {
 	 */
 	protected void updateData() {
 		log.info("calling updateData");
-		try {
-			this.files = jakeGuiAccess.getFileObjectsByPath("/");
-		}
-        catch (NoSuchJakeObjectException e) {
-			log.warn("Got NoSuchJakeObjectException: " + e.toString());
-			//e.printStackTrace();
-		}
-	}
+        this.files = jakeGuiAccess.getFileObjects("/");
+    }
 
 	public int getColumnCount() {
 		return colNames.length;

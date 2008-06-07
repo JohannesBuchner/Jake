@@ -226,8 +226,8 @@ public interface IJakeGuiAccess {
 	 * @return list of FileObjects
 	 * @throws NoSuchJakeObjectException
 	 */
-	public List<JakeObject> getFileObjectsByPath(String relPath)
-			throws NoSuchJakeObjectException;
+	public List<JakeObject> getFileObjects(String relPath)
+            ;
 
 	/**
 	 * Searches for Jake Objects by specifying a name

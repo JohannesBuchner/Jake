@@ -1,33 +1,31 @@
 package com.doublesignal.sepm.jake.gui;
 
 public class FilesLib {
-	public static String getHumanReadableFileSize(long lFileSize) {
-		String sFileSizeUnity;
+    public static String getHumanReadableFileSize(long lFileSize) {
+        String sFileSizeUnity;
 
-		sFileSizeUnity = "Bytes";
-		if (lFileSize > 1024) {
-			lFileSize /= 1024;
-			sFileSizeUnity = "KB";
-		}
-		if (lFileSize > 1024) {
-			lFileSize /= 1024;
-			sFileSizeUnity = "MB";
-		}
-		if (lFileSize > 1024) {
-			lFileSize /= 1024;
-			sFileSizeUnity = "GB";
-		}
+        sFileSizeUnity = "Bytes";
+        if (lFileSize > 1024) {
+            lFileSize /= 1024;
+            sFileSizeUnity = "KB";
+        }
+        if (lFileSize > 1024) {
+            lFileSize /= 1024;
+            sFileSizeUnity = "MB";
+        }
+        if (lFileSize > 1024) {
+            lFileSize /= 1024;
+            sFileSizeUnity = "GB";
+        }
 
-		return lFileSize + " " + sFileSizeUnity;
-	}
+        return lFileSize + " " + sFileSizeUnity;
+    }
 
-    public static String getHumanReadableFileStatus(int status)
-    {
-        switch(status)
-        {
+    public static String getHumanReadableFileStatus(int status) {
+        switch (status) {
             default:
             case 100:
-                return "no valid status";
+                return "no valid status: "+status;
 
             case 101:
                 return "Remote File -> pull";
@@ -41,6 +39,8 @@ public class FilesLib {
                 return "File locally changed";
             case 106:
                 return "File in conflict";
+            case 107:
+                return "Local file missing";
         }
     }
 

@@ -23,7 +23,6 @@ import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -41,7 +40,6 @@ import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidEx
 import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
@@ -206,27 +204,14 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return results;
     }
 
-    public List<JakeObject> getFileObjectsByPath(String relPath) throws NoSuchJakeObjectException {
-
+    public List<JakeObject> getFileObjects(String relPath) {
+        Set<JakeObject> tmp = new HashSet<JakeObject>();
+        if(filesDB == null || filesFSS == null || filesStatus == null)
+                refreshFileObjects();
+        tmp.addAll(filesDB);
+        tmp.addAll(filesFSS);
         List<JakeObject> results = new ArrayList<JakeObject>();
-
-        if (fss.getRootPath() != null && !fss.getRootPath().equals("")) {
-            try {
-                results.addAll(getFileObjectsByRelPath(relPath));
-            } catch (InvalidFilenameException e) {
-                log.debug("getFileObjectsByPath: cought invalidFilenameException");
-                e.printStackTrace();
-            } catch (IOException e) {
-                log.debug("getFileObjectsByPath: cought IOException");
-                e.printStackTrace();
-            }
-        } else {
-            if (fss.getRootPath() == null)
-                log.debug("getFileObjectsByPath: fss.getRootPath is null, cannot read any files");
-            else if (fss.getRootPath().equals(""))
-                log.debug("getFileObjectsByPath: fss.getRootPath is not null, but empty!");
-        }
-
+        results.addAll(tmp);
         return results;
     }
 
@@ -603,8 +588,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
          *    -A -B  C  D | 100 | - no valid status -
          *    -A  B -C -D | 101 | - Remote File -> pull -
          *    -A  B -C  D | 101 | - Remote File -> pull -
-         *    -A  B  C -D | 100 | - no valid status - // TODO
-         *    -A  B  C  D | 100 | - no valid status - // TODO
+         *    -A  B  C -D | 107 | - no valid status - // TODO
+         *    -A  B  C  D | 107 | - no valid status - // TODO
          *     A -B -C -D | 102 | - local file, not in project -
          *     A -B -C  D | 100 | - no valid state -
          *     A -B  C -D | 102 | - local file, not in project -
@@ -674,14 +659,28 @@ public class JakeGuiAccess implements IJakeGuiAccess {
                 ) {
             return 102;
         }
+        /*
+         *    -A  B  C -D | 107 | - no valid status - // TODO
+         *    -A  B  C  D | 107 | - no valid status - // TODO
+
+         */
+
+        if(
+        !fileOnFS && fileInDB &&  fileLocallyChanged
+                /* &&  !fileRemotelyChanged ||
+        !fileOnFS && fileInDB &&  fileLocallyChanged &&   fileRemotelyChanged */
+        )
+        {
+            /* local file is in database but deleted from project folder */
+            return 107;
+        }
 
 /*        if( // doing code 100
         !fileOnFS && !fileInDB && !fileLocallyChanged && !fileRemotelyChanged ||
         !fileOnFS && !fileInDB && !fileLocallyChanged &&  fileRemotelyChanged ||
         !fileOnFS && !fileInDB &&  fileLocallyChanged && !fileRemotelyChanged ||
         !fileOnFS && !fileInDB &&  fileLocallyChanged &&  fileRemotelyChanged ||
-        !fileOnFS && fileInDB &&  fileLocallyChanged &&  !fileRemotelyChanged ||
-        !fileOnFS && fileInDB &&  fileLocallyChanged &&   fileRemotelyChanged ||
+
          fileOnFS && fileInDB &&  !fileLocallyChanged &&  !fileRemotelyChanged
         )
 {
