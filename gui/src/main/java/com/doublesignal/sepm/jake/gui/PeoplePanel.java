@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
@@ -179,6 +180,8 @@ public class PeoplePanel extends JPanel {
 	private void removePeopleMenuItemActionPerformed(ActionEvent event)
 	    {
 	        log.info("removePeopleMenuItemActionPerformed");
+	        //jakeGuiAccess.removeMember(getSelectedMember());
+			updateUi();
 	    }
 	
 	private void openExecutFileMenuItemActionEvent(ActionEvent event) {
@@ -190,6 +193,18 @@ public class PeoplePanel extends JPanel {
 		return peopleTable.getSelectedRow() >= 0;
 	}
 
+	private ProjectMember getSelectedMember() {
+		int selRow = peopleTable.getSelectedRow();
+		if (selRow >= 0) {
+			
+			log.info("getSelectedNode: (" + selRow + ") " + peopleTableModel.getMembers().get(selRow));
+			return (peopleTableModel.getMembers().get(selRow));
+		} else {
+			log.info("getSelctedNode: null");
+			return null;
+		}
+	}
+	
 	private JScrollPane peopleScrollPane;
 	private JXTable peopleTable;
 	private final IJakeGuiAccess jakeGuiAccess;
