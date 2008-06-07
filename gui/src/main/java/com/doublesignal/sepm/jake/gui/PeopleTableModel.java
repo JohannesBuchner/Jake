@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 
 @SuppressWarnings("serial")
 /**
@@ -25,6 +26,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	PeopleTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing NoteTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
+		updateData();
 		
 		jakeGuiAccess.addProjectMember("tesuserph@domain.com");
 		ProjectMember pm = new ProjectMember("test");
@@ -56,7 +58,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	}
 
 	public int getMembersCount()	{
-		return getMembers().size();
+		return members.size();
 		
 	}
 	
@@ -71,7 +73,8 @@ public class PeopleTableModel extends AbstractTableModel {
 			countActiveUser++;
 		}
 		
-		return countActiveUser;
+		//return countActiveUser;
+		return 0;
 	}
 	
 	/**
@@ -79,7 +82,8 @@ public class PeopleTableModel extends AbstractTableModel {
 	 */
 	public void updateData() {
 		log.info("Updating People data...");
-		members = jakeGuiAccess.getProject().getMembers();
+		this.members = jakeGuiAccess.getMembers();
+
 	}
 
 	/**
@@ -103,20 +107,20 @@ public class PeopleTableModel extends AbstractTableModel {
 		PeopleColumns col = PeopleColumns.values()[columnIndex];
 		switch (col) {
 		case Nickname:
-			return "safsa";
+			return member.getNickname();
 
 		case UserID:
 			return member.getUserId();
 
-		case Status:	{
-					if(member.getActive())
-					return "Online";
+		case Status:	
+					if (jakeGuiAccess.isLoggedIn())
+							return "Online";
 					else return "Offline";
-					}
 
 		case Comment:
 			return member.getNotes();
 			//jakeGuiAccess.getLastModifier(note).getNickname();
+			
 
 		default:
 			throw new IllegalArgumentException(
@@ -127,11 +131,34 @@ public class PeopleTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object columnValue, int rowIndex, int columnIndex) {
 		if (columnIndex == PeopleColumns.Comment.ordinal()) {
+			
 			ProjectMember foundProjectMember = members.get(rowIndex);
 			log.debug("handling a comment-change event");
 			if (foundProjectMember != null) {
+				log.debug((String) columnValue);
 				String comment = (String) columnValue;
-				super.setValueAt(comment, rowIndex, columnIndex);
+				//foundProjectMember.setNotes(comment);
+				//super.setValueAt(comment, rowIndex, columnIndex);
+//					try	{
+//						jakeGuiAccess.setProjectMemberNote(foundProjectMember.getUserId(),comment);
+//					}
+//						catch (NoSuchProjectMemberException e1)	{
+//							log.debug("No such Member found");
+//						}
+				foundProjectMember.setNotes(comment);
+			}
+		}
+		
+		
+		if (columnIndex == PeopleColumns.Nickname.ordinal()) {
+			
+			ProjectMember foundProjectMember = members.get(rowIndex);
+			log.debug("handling a Nickname-change event");
+			if (foundProjectMember != null) {
+				log.debug((String) columnValue);
+				String nickname = (String) columnValue;
+					
+				foundProjectMember.setNickname(nickname);
 			}
 		}
 		// possible other columns go here

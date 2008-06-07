@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Observer;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -382,7 +383,15 @@ public interface IJakeGuiAccess {
      * the used datastructures are updated accordingly
      */
     void refreshFileObjects();
-
+    
+    /**
+     * Stores a <code>note</code> for a Project Member
+     *
+     * @param the Project Member userid
+     * @throws NoSuchProjectMemberException Raised if no user can be found for the given
+     *                                     <code>userid</code>.
+     */
+    public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException;
 
     /**
      * Imports a file which is already in the project folder into the projects

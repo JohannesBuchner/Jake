@@ -49,6 +49,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedExcept
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
@@ -68,6 +69,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     private ISyncService sync = null;
     private IFSService fss = null;
     private IJakeDatabase db = null;
+    private IProjectMemberDao pm = null;
     private Project currentProject;
     private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
@@ -750,6 +752,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
        // return status == null ? 0 : status;
     }
     
-
+    public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException	{
+    	log.info("*********************************");
+    	log.info("Get User by"+userId+" . Set Note "+note);
+    	pm.getByUserId(userId).setNotes(note);
+    	log.info("*********************************");
+    }
 
 }

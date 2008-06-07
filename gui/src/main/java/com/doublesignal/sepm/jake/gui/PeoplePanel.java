@@ -46,7 +46,9 @@ public class PeoplePanel extends JPanel {
 				this);
 	}
 
-	
+	public String getTitle() {
+		return "People (" + peopleTableModel.getOnlineMembersCount()+"/"+peopleTableModel.getMembersCount()  + ")";
+	}
 
 	public void updateUi() {
 		log.info("Updating people Panel...");

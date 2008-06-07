@@ -361,7 +361,7 @@ public class JakeGui extends JPanel implements Observer {
 	public void update(Observable o, Object arg) {
 		log.info("Got Observer Message: Updating Titles");
 		// mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
-		// mainTabbedPane.setTitleAt(0, peoplePanel.getTitle());
+		mainTabbedPane.setTitleAt(1, peoplePanel.getTitle());
 		mainTabbedPane.setTitleAt(2, notesPanel.getTitle());
 		mainTabbedPane.updateUI();
 	}
@@ -793,21 +793,7 @@ public class JakeGui extends JPanel implements Observer {
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.setVisible(true);
 		}
-/*
-		// ======== peoplePopupMenu ========
-		{
 
-			// ---- sendMessageMenuItem ----
-			sendMessageMenuItem.setText("Send Message...");
-			sendMessageMenuItem.setIcon(new ImageIcon(getClass().getResource(
-					"/icons/message-new.png")));
-			sendMessageMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					sendMessageMenuItemActionPerformed(e);
-				}
-			});
-			peoplePopupMenu.add(sendMessageMenuItem);
-*/
 			// ---- showInfoPeopleMenuItem ----
 			showInfoPeopleMenuItem.setText("Show Info/Comments...");
 			showInfoPeopleMenuItem.addActionListener(new ActionListener() {
