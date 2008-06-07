@@ -8,7 +8,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Observer;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -264,8 +272,12 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     }
 
     public void logSync() throws NetworkException {
-        // TODO Auto-generated method stub
-
+        List<ProjectMember> members = currentProject.getMembers();
+        for (ProjectMember member : members) {
+        	if (ics.isLoggedIn(member.getUserId())) {
+            	sync.logSyncWithUser(member.getUserId());
+        	}
+        }
     }
 
     public void pullObjects() throws NetworkException {
