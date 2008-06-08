@@ -30,6 +30,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberExcepti
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
@@ -50,11 +51,15 @@ import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
+import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
+import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 
 /**
  * @author johannes, domdorn, peter, philipp
@@ -288,11 +293,21 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     }
 
     public void logSync() throws NetworkException {
-        List<ProjectMember> members = currentProject.getMembers();
-        for (ProjectMember member : members) {
-        	if (ics.isLoggedIn(member.getUserId())) {
-            	sync.logSyncWithUser(member.getUserId());
-        	}
+    	log.info("startign logsync...");
+    	List<ProjectMember> members = currentProject.getMembers();
+    	for (ProjectMember member : members) {
+    		try {
+    			sync.syncLogAndGetChanges(member.getUserId());
+    		} catch (ObjectNotConfiguredException e) {
+    			log.warn("sync is not configured; " + e.getMessage());
+    		} catch (OtherUserOfflineException e) {
+    			log.warn("other user is offline");
+    		} catch (NotAProjectMemberException e) {
+    			log.warn("the user: " + member.getUserId() + " is not a valid project member");
+    		} catch (NetworkException e) {
+    			log.warn("a network exception was raised: " + e.getMessage());
+    			log.debug("userid: " + member.getUserId());
+    		}
         }
     }
 
@@ -381,14 +396,13 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         ics = (IICService) factory.getBean("ICService");
         sync = (ISyncService) factory.getBean("SyncService");
         fss = (IFSService) factory.getBean("FSService");
-
         db = (IJakeDatabase) factory.getBean("JakeDatabase");
-
+        
         db.setConfigurationDao((IConfigurationDao) factory.getBean("ConfigurationDao"));
         db.setJakeObjectDao((IJakeObjectDao) factory.getBean("JakeObjectDao"));
         db.setProjectMemberDao((IProjectMemberDao) factory.getBean("ProjectMemberDao"));
         db.setLogEntryDao((ILogEntryDao) factory.getBean("LogEntryDao"));
-
+        
         try {
             db.connect(rootPath);
         } catch (SQLException e) {
@@ -400,7 +414,9 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         } catch (IOException e) {
             throw new InvalidRootPathException();
         }
-
+        
+        sync.setLogEntries(db.getLogEntryDao().getAll());
+        sync.setProjectMembers(db.getProjectMemberDao().getAll());
     }
 
 
@@ -611,7 +627,19 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     }
 
     public boolean deleteJakeObject(JakeObject jakeObject) {
-        return false;
+        try {
+			fss.deleteFile(jakeObject.getName());
+			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
+		} catch (FileNotFoundException e) {
+			log.warn("Failed to delete file: File not found!");
+		} catch (NotAFileException e) {
+			log.warn("Failed to delete file: Not a file!");
+		} catch (InvalidFilenameException e) {
+			log.warn("Failed to delete file: Invalid file name!");
+		} catch (NotAReadableFileException e) {
+			log.warn("Failed to delete file: File is not readable");
+		}
+		return false;
     }
 
     public void propagateJakeObject(JakeObject jakeObject) {
@@ -624,6 +652,13 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
     public void refreshFileObjects() {
         log.debug("calling refreshFileObjects() ");
+        
+        try {
+			logSync();
+		} catch (NetworkException e) {
+			log.warn("a network exception occured; " + e.getMessage());
+		}
+        
         filesDB = getFileObjectsFromDB();
         try {
             filesFSS = getFileObjectsByRelPath("/");

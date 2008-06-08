@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
@@ -28,10 +30,12 @@ import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
  */
 public class MockSyncService implements ISyncService {
 
-	private IFSService fss = null;
-	private IICService ics = null;
-	private List<LogEntry> logEntries = null;
-	private List<ProjectMember> projectMembers = null;
+	private IFSService fss;
+	private IICService ics;
+	private List<LogEntry> logEntries;
+	private List<ProjectMember> projectMembers;
+	
+	private static Logger log = Logger.getLogger(MockSyncService.class);
 
 	public void setICService(IICService ics) {
 		this.ics = ics;
@@ -119,11 +123,13 @@ public class MockSyncService implements ISyncService {
 			throws NetworkException, NotLoggedInException, TimeoutException,
 			ObjectNotConfiguredException, OtherUserOfflineException,
 			NotAProjectMemberException {
+		
+		log.info("trying to fake log sync...");
 		if (!isConfigured())
 			throw new ObjectNotConfiguredException();
 		if (!ics.isLoggedIn())
 			throw new NotLoggedInException();
-
+		log.debug("still trying...");
 		int i;
 		for (i = 0; i < projectMembers.size(); i++) {
 			if (projectMembers.get(i).getUserId().equals(userid))
