@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.gui;
 
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+
 public class FilesLib {
     public static String getHumanReadableFileSize(long lFileSize) {
         String sFileSizeUnity;
@@ -24,22 +26,22 @@ public class FilesLib {
     public static String getHumanReadableFileStatus(int status) {
         switch (status) {
             default:
-            case 100:
+            case IJakeGuiAccess.SYNC_NO_VALID_STATE:
                 return "no valid status: "+status;
 
-            case 101:
+            case IJakeGuiAccess.SYNC_FILE_IS_REMOTE:
                 return "Remote File -> pull";
-            case 102:
+            case IJakeGuiAccess.SYNC_LOCAL_FILE_NOT_IN_PROJECT:
                 return "local file, not in project";
-            case 103:
+            case IJakeGuiAccess.SYNC_FILE_IN_SYNC:
                 return "File in Sync";
-            case 104:
+            case IJakeGuiAccess.SYNC_FILE_REMOTELY_CHANGED:
                 return "File remotely changed";
-            case 105:
+            case IJakeGuiAccess.SYNC_FILE_LOCALLY_CHANGED:
                 return "File locally changed";
-            case 106:
+            case IJakeGuiAccess.SYNC_FILE_IN_CONFLICT:
                 return "File in conflict";
-            case 107:
+            case IJakeGuiAccess.SYNC_FILE_DELETED_LOCALLY:
                 return "Local file missing";
         }
     }
