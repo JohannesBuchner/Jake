@@ -16,15 +16,12 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.Filter;
 import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.PatternFilter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -113,12 +110,6 @@ public class JakeGui extends JPanel implements Observer {
 	/**
 	 * ** File Menu ****
 	 */
-
-	private void newProjectMenuItemActionPerformed(ActionEvent e) {
-		log.debug("Open new Project Dialog");
-		// new NewProjectDialog(mainFrame, this).setVisible(true);
-	}
-
 	private void exitApplicationMenuItemActionPerformed(ActionEvent e) {
 		log.debug("ExitApplication");
 		System.exit(0);
@@ -282,10 +273,6 @@ public class JakeGui extends JPanel implements Observer {
 	 * ** Project Menu ****
 	 */
 
-	private void openProjectMenuItemActionPerformed(ActionEvent e) {
-		// TODO
-	}
-
 	/**
 	 * ** Help Menu ****
 	 */
@@ -308,10 +295,6 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void showInfoPeopleMenuItemActionPerformed(ActionEvent e) {
 		new ProjectMemberInfoDialog(mainFrame).setVisible(true);
-	}
-
-	private void sendMessageMenuItemActionPerformed(ActionEvent e) {
-		new SendMessageDialog(mainFrame).setVisible(true);
 	}
 
 	private void newNoteProjectMenuItemActionPerformed(ActionEvent e) {
@@ -908,7 +891,6 @@ public class JakeGui extends JPanel implements Observer {
 	private FilesPanel filesPanel;
 	private NotesPanel notesPanel;
 	private JToolBar mainToolBar;
-	private JButton openProjectFolderButton;
 	private JButton refreshDatapoolViewButton;
 	private JButton propagateFileButton;
 	private JButton pullFilesButton;
@@ -919,8 +901,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JTextField searchTextField;
 	private JMenuBar mainMenuBar;
 	private JMenu fileMenu;
-	private JMenuItem newProjectMenuItem;
-	private JMenuItem openProjectMenuItem;
 	private JMenuItem preferencesMenuItem;
 	private JMenuItem exitApplicationMenuItem;
 	private JMenu viewMenu;
