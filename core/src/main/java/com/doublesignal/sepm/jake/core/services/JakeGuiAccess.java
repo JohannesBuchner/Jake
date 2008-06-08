@@ -494,7 +494,16 @@ public class JakeGuiAccess implements IJakeGuiAccess {
             e.printStackTrace();
             throw new InvalidDatabaseException();
         }
-
+        try{
+            jga.checkIfValidDatabase();
+        }catch (BadSqlGrammarException e) {
+            e.printStackTrace();
+        	log.error("Database invalid - We have to change our schema");
+            throw new InvalidDatabaseException();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new InvalidDatabaseException();
+        }
         log.debug("project created and loaded.");
 
         jga.currentProject = new Project(new File(rootPath), projectname);
@@ -514,9 +523,18 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         db.getConfigurationDao().setConfigurationValue("showOfflineProjectMembers", String.valueOf(true));
         db.getConfigurationDao().setConfigurationValue("autoRefresh", String.valueOf(true));
         /* don't know. maybe scan in files? */
-
+        
     }
 
+
+    private void checkIfValidDatabase() {
+    	db.getJakeObjectDao().getAllFileObjects();
+    	db.getJakeObjectDao().getAllNoteObjects();
+    	db.getLogEntryDao().getAll();
+    	db.getProjectMemberDao().getAll();
+	}
+    
+    
     public static JakeGuiAccess openProjectByRootpath(String rootPath)
             throws NonExistantDatabaseException, InvalidDatabaseException, InvalidRootPathException {
         File f = new File(rootPath);
@@ -537,12 +555,15 @@ public class JakeGuiAccess implements IJakeGuiAccess {
                 throw new InvalidDatabaseException();
             }
             log.debug("Project is named " + projectName + ".");
+            
+            jga.checkIfValidDatabase();
 
             jga.db.getConfigurationDao().setConfigurationValue("rootpath", f.getAbsolutePath());
 
             jga.currentProject = new Project(f, projectName);
 
             log.debug("Project opened.");
+            
         } catch (BadSqlGrammarException e) {
             System.out.println(e);
             throw new InvalidDatabaseException();
@@ -562,7 +583,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return jga;
     }
 
-    public void close() throws SQLException {
+	public void close() throws SQLException {
         db.close();
     }
 
