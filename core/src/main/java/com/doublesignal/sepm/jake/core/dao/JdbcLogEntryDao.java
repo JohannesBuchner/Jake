@@ -27,6 +27,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 	private static final String LOGENTRY_WHERE_JAKEOBJECT =
 			  " WHERE object_name=?";
 	private static final String LOGENTRY_MOSTRECENT = " ORDER BY timestamp DESC LIMIT 1";
+	private static final String LOGENTRY_LASTPULLED = " AND is_last_pulled=1";
 
 	public void create(LogEntry logEntry) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -68,6 +69,14 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 	public LogEntry getMostRecentFor(JakeObject jakeObject) throws NoSuchLogEntryException {
 		try {
 			return getSimpleJdbcTemplate().queryForObject(LOGENTRY_SELECT + LOGENTRY_WHERE_JAKEOBJECT + LOGENTRY_MOSTRECENT, new JdbcLogEntryRowMapper(), jakeObject.getName());
+		} catch (EmptyResultDataAccessException e) {
+			throw new NoSuchLogEntryException();
+		}
+	}
+
+	public LogEntry getLastPulledFor(JakeObject jakeObject) throws NoSuchLogEntryException {
+		try {
+			return getSimpleJdbcTemplate().queryForObject(LOGENTRY_SELECT + LOGENTRY_WHERE_JAKEOBJECT + LOGENTRY_LASTPULLED, new JdbcLogEntryRowMapper(), jakeObject.getName());
 		} catch (EmptyResultDataAccessException e) {
 			throw new NoSuchLogEntryException();
 		}

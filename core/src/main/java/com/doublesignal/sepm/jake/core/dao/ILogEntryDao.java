@@ -48,9 +48,19 @@ public interface ILogEntryDao {
 
 	/**
 	 * Retrieves the most recent log entry for a given JakeObject
+	 *
 	 * @param jakeObject
 	 * @return
 	 * @throws NoSuchLogEntryException
 	 */
 	public LogEntry getMostRecentFor(JakeObject jakeObject) throws NoSuchLogEntryException;
+
+	/**
+	 * Retrieves the log entry representing the last pulled version for the given JakeObject
+	 *
+	 * @param jakeObject
+	 * @return
+	 * @throws NoSuchLogEntryException
+	 */
+	public LogEntry getLastPulledFor(JakeObject jakeObject) throws NoSuchLogEntryException;
 }
