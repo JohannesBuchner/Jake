@@ -144,8 +144,9 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     }
     
     public void removeProjectMember(ProjectMember selectedMember)	{
-    	 log.info("remove Project Member:" + selectedMember.getUserId());
-    	//pm.remove(projectMember);
+    	 log.info("remove Project Member with ID :" + selectedMember.getUserId());
+    	//pm.remove(selectedMember);
+    	currentProject.removeMember(selectedMember);
     }
 
     public List<JakeObject> getChangedObjects() {
@@ -154,10 +155,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     }
 
     public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException {
-       log.info("*********************************");
        log.info("Get User by"+userId+" . Set Note "+note);
        pm.getByUserId(userId).setNotes(note);
-       log.info("*********************************");
     }
 
 

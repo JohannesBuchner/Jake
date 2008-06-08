@@ -51,7 +51,7 @@ public class PeoplePanel extends JPanel {
 		return "People (" + peopleTableModel.getOnlineMembersCount()+"/"+peopleTableModel.getMembersCount()  + ")";
 	}
 
-	public void updateUi() {
+	public void updatePeopleUi() {
 		log.info("Updating people Panel...");
 		peopleTableModel.updateData();
 		if (tabindex >= 0)
@@ -180,8 +180,12 @@ public class PeoplePanel extends JPanel {
 	private void removePeopleMenuItemActionPerformed(ActionEvent event)
 	    {
 	        log.info("removePeopleMenuItemActionPerformed");
-	       //jakeGuiAccess.removeProjectMember(getSelectedMember());
-			updateUi();
+	      
+	        //log.info(getSelectedMember().getUserId());
+	        
+	        jakeGuiAccess.removeProjectMember(getSelectedMember());
+			
+	       //updatePeopleUi();
 	    }
 	
 	private void openExecutFileMenuItemActionEvent(ActionEvent event) {

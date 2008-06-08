@@ -360,7 +360,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	public void update(Observable o, Object arg) {
 		log.info("Got Observer Message: Updating Titles");
-		// mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
+		//mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
 		mainTabbedPane.setTitleAt(1, peoplePanel.getTitle());
 		mainTabbedPane.setTitleAt(2, notesPanel.getTitle());
 		mainTabbedPane.updateUI();
