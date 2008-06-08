@@ -1,7 +1,6 @@
 package com.doublesignal.sepm.jake.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -30,6 +29,7 @@ public class PeoplePanel extends JPanel {
 	private static Logger log = Logger.getLogger(PeoplePanel.class);
 	private final JakeGui jakeGui;
 	private PeopleTableModel peopleTableModel;
+	private Frame owner;
 
 	int tabindex = 0;
 	
@@ -45,6 +45,8 @@ public class PeoplePanel extends JPanel {
 		.addTab("peopletab", new ImageIcon(
 				getClass().getResource("/icons/people.png")),
 				this);
+
+		this.owner = jakeGui.getMainFrame();
 	}
 
 	public String getTitle() {
@@ -69,7 +71,7 @@ public class PeoplePanel extends JPanel {
 
 		this.setLayout(new BorderLayout());
 		peopleTableModel = new PeopleTableModel(jakeGuiAccess);
-		peopleTable.setComponentPopupMenu(peoplePopupMenu);
+		// peopleTable.setComponentPopupMenu(peoplePopupMenu);
 		peopleTable.setColumnControlVisible(true);
 		peopleTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		peopleTable.setModel(peopleTableModel);
@@ -85,6 +87,29 @@ public class PeoplePanel extends JPanel {
             }
         }
         );
+
+		peopleTable.addMouseListener( new MouseAdapter() {
+		public void mouseClicked( MouseEvent e ) {
+			// Right mouse click
+			if ( SwingUtilities.isRightMouseButton( e ) ) {
+				// get the coordinates of the mouse click
+				Point p = e.getPoint();
+
+				// get the row index that contains that coordinate
+				int rowNumber = peopleTable.rowAtPoint( p );
+
+				// Get the ListSelectionModel of the JTable
+				ListSelectionModel model = peopleTable.getSelectionModel();
+
+				// set the selected interval of rows. Using the "rowNumber"
+				// variable for the beginning and end selects only that one row.
+				model.setSelectionInterval( rowNumber, rowNumber );
+
+				// Show the table popup
+				peoplePopupMenu.show(peopleTable, (int)e.getPoint().getX(), (int)e.getPoint().getY());
+			}
+		}
+	});
 		
 		TableColumnModel cm = peopleTable.getColumnModel();
 		cm.getColumn(0).setPreferredWidth(70);
@@ -160,6 +185,7 @@ public class PeoplePanel extends JPanel {
 	private void sendMessageMenuItemActionPerformed(ActionEvent event)
 	    {
 	        log.info("sendMessageMenuItemActionPerformed");
+		    new SendMessageDialog(owner, peopleTableModel.getProjectMemberAt(peopleTable.getSelectedRow()).getUserId(), this.jakeGuiAccess).setVisible(true);
 	    } 
 	
 	private void showInfoPeopleMenuItemActionPerformed(ActionEvent event)

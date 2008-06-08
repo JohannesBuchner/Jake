@@ -29,24 +29,12 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.domain.Tag;
-import com.doublesignal.sepm.jake.core.services.exceptions.ExistingProjectException;
-import com.doublesignal.sepm.jake.core.services.exceptions.InvalidDatabaseException;
-import com.doublesignal.sepm.jake.core.services.exceptions.InvalidRootPathException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
+import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.*;
 import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
-import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
-import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
-import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
+import com.doublesignal.sepm.jake.ics.exceptions.*;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
@@ -256,6 +244,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		this.messageListener = listener;
 	}
 
+	public void sendMessage(JakeMessage message) throws NetworkException, NotLoggedInException, TimeoutException,
+			NoSuchUseridException, OtherUserOfflineException {
+		this.ics.sendMessage(message.getRecipient().getUserId(), message.getContent());
+	}
+
 	public List<JakeMessage> getNewMessages() {
         // TODO Auto-generated method stub
         return null;
@@ -274,7 +267,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return currentProject;
     }
 
-    public List<Tag> getTags() {
+	public ProjectMember getProjectMember(String userId) throws NoSuchProjectMemberException {
+		return this.db.getProjectMemberDao().getByUserId(userId);
+	}
+
+	public List<Tag> getTags() {
         // TODO Auto-generated method stub
         return null;
     }

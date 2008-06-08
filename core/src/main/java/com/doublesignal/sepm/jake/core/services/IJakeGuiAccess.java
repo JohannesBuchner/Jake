@@ -8,23 +8,11 @@ import java.util.Observer;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.LogEntry;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
-import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
+import com.doublesignal.sepm.jake.core.domain.*;
+import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.*;
 
 /**
  * @author domdorn
@@ -146,6 +134,14 @@ public interface IJakeGuiAccess {
 	 * @param listener A client object wanting to be informed of incoming JakeMessages
 	 */
 	public void registerReceiveMessageListener(IJakeMessageReceiveListener listener);
+
+	/**
+	 * Sends a JakeMessage to another ProjectMember.
+	 * @param message The JakeMessage to be sent
+	 */
+	public void sendMessage(JakeMessage message) throws NetworkException, NotLoggedInException, TimeoutException,
+			NoSuchUseridException, OtherUserOfflineException;
+
 	
 	/**
 	 * Add a new Member to a Project
@@ -168,6 +164,13 @@ public interface IJakeGuiAccess {
 	 * NoSuchNetworkUserException;
 	 * 
 	 */
+
+	/**
+	 * Retrieves a ProjectMember by their user ID
+	 * @param userId
+	 * @return
+	 */
+	public ProjectMember getProjectMember(String userId) throws NoSuchProjectMemberException;
 
 	/**
 	 * Registers

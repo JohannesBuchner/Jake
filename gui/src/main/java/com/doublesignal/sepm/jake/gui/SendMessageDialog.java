@@ -1,10 +1,20 @@
 package com.doublesignal.sepm.jake.gui;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.ics.exceptions.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import javax.swing.border.*;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -12,17 +22,62 @@ import javax.swing.border.*;
  */
 @SuppressWarnings("serial")
 public class SendMessageDialog extends JDialog {
-	public SendMessageDialog(Frame owner) {
+	private IJakeGuiAccess jakeGuiAccess;
+	private String recipient;
+	private static Logger log = Logger.getLogger(SendMessageDialog.class);
+
+	public SendMessageDialog(Frame owner, String recipient, IJakeGuiAccess guiAccess) {
 		super(owner);
+		this.jakeGuiAccess = guiAccess;
+		this.recipient = recipient;
 		initComponents();
 	}
 
-	public SendMessageDialog(Dialog owner) {
+	public SendMessageDialog(Dialog owner, String recipient, IJakeGuiAccess guiAccess) {
 		super(owner);
+		this.jakeGuiAccess = guiAccess;
+		this.recipient = recipient;
 		initComponents();
 	}
 	
 	private void okButtonActionPerformed(ActionEvent e) {
+		try {
+			if("".equals(this.textArea1.getText())) {
+				JOptionPane.showMessageDialog(this, "You cannot send an empty message. Please enter some text and try again.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			ProjectMember jmRecipient = jakeGuiAccess.getProjectMember(recipient);
+			// TODO: Is this REALLY the value we want?
+			ProjectMember jmSender = jakeGuiAccess.getProjectMember(jakeGuiAccess.getLoginUserid());
+
+			JakeMessage jm = new JakeMessage(jmRecipient, jmSender, this.textArea1.getText());
+
+		   jakeGuiAccess.sendMessage(jm);
+		} catch (NoSuchProjectMemberException e1) {
+			log.warn("Recipient does not exist in project");
+			JOptionPane.showMessageDialog(this, "The recipient project member does not exist in this project.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			this.setVisible(false);
+			return;
+		} catch (OtherUserOfflineException e1) {
+			JOptionPane.showMessageDialog(this, "The recipient project member is currently offline. Try again later.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			this.setVisible(false);
+			return;
+		} catch (NoSuchUseridException e1) {
+			JOptionPane.showMessageDialog(this, "The recipient project member does not exist on this network.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			this.setVisible(false);
+			return;
+		} catch (NotLoggedInException e1) {
+			JOptionPane.showMessageDialog(this, "The message could not be sent because you are not logged in.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			this.setVisible(false);
+			return;
+		} catch (NetworkException e1) {
+			JOptionPane.showMessageDialog(this, "The message could not be sent because of a general network error. Please try again later.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			this.setVisible(false);
+			return;
+		}
+
+		JOptionPane.showMessageDialog(this, "Your message to \""+ recipient +"\" has been sent successfully.", "Message sent", JOptionPane.INFORMATION_MESSAGE);
+
 		this.setVisible(false);
 	}	
 
@@ -36,6 +91,7 @@ public class SendMessageDialog extends JDialog {
 		panel1 = new JPanel();
 		comboBox1 = new JComboBox();
 		label1 = new JLabel();
+		label2 = new JLabel();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
@@ -48,6 +104,7 @@ public class SendMessageDialog extends JDialog {
 		//======== dialogPane ========
 		{
 			dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+			dialogPane.setMinimumSize(new Dimension(320, 240));
 
 			dialogPane.setLayout(new BorderLayout());
 
@@ -59,7 +116,7 @@ public class SendMessageDialog extends JDialog {
 				{
 
 					//---- textArea1 ----
-					textArea1.setText("Hi Johannes! File XY sollte \u00fcberarbeitet werden.");
+					textArea1.setText("");
 					textArea1.setLineWrap(true);
 					scrollPane1.setViewportView(textArea1);
 				}
@@ -70,13 +127,8 @@ public class SendMessageDialog extends JDialog {
 					panel1.setLayout(new BorderLayout());
 
 					//---- comboBox1 ----
-					comboBox1.setModel(new DefaultComboBoxModel(new String[] {
-						"Johannes",
-						"Chris",
-						"Peter",
-						"Simon"
-					}));
-					panel1.add(comboBox1, BorderLayout.CENTER);
+					label2.setText(recipient);
+					panel1.add(label2, BorderLayout.CENTER);
 
 					//---- label1 ----
 					label1.setText("To:");
@@ -95,6 +147,11 @@ public class SendMessageDialog extends JDialog {
 
 				//---- cancelButton ----
 				cancelButton.setText("Cancel");
+			   cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						cancelButtonActionPerformed(e);
+					}
+				});
 				buttonBar.add(cancelButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
@@ -118,6 +175,10 @@ public class SendMessageDialog extends JDialog {
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
+	private void cancelButtonActionPerformed(ActionEvent e) {
+		this.setVisible(false);
+	}
+
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
 	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
@@ -127,6 +188,7 @@ public class SendMessageDialog extends JDialog {
 	private JPanel panel1;
 	private JComboBox comboBox1;
 	private JLabel label1;
+	private JLabel label2;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;

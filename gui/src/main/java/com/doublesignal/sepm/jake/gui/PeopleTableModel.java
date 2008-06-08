@@ -24,7 +24,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	private int countActiveUser = 0;
 	
 	PeopleTableModel(IJakeGuiAccess jakeGuiAccess) {
-		log.info("Initializing NoteTableModel.");
+		log.info("Initializing PeopleTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
 		
@@ -60,6 +60,10 @@ public class PeopleTableModel extends AbstractTableModel {
 	public int getMembersCount()	{
 		return members.size();
 		
+	}
+
+	public ProjectMember getProjectMemberAt(int rowId) {
+		return members.get(rowId);
 	}
 	
 	/**
