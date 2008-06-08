@@ -60,6 +60,7 @@ public class NewProject extends JDialog {
 				.getBean("translationProvider");
 		log.debug("NewProject:initComponents");
 		initComponents();
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 
 		log.debug("NewProject:setVisible");
 		setVisible(true);
 		if (foldersuggestion != null) {
@@ -186,7 +187,6 @@ public class NewProject extends JDialog {
 		// ======== this ========
 		setTitle(translator.get("NewProjectDialogTitle"));
 		setResizable(false);
-		setModal(false);
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
