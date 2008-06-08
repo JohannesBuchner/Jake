@@ -375,7 +375,6 @@ public class JakeGui extends JPanel implements Observer {
 		notesPanel = new NotesPanel(this);
 		peoplePanel = new PeoplePanel(this);
 		mainToolBar = new JToolBar();
-		openProjectFolderButton = new JButton();
 		refreshDatapoolViewButton = new JButton();
 		propagateFileButton = new JButton();
 		pullFilesButton = new JButton();
@@ -386,8 +385,6 @@ public class JakeGui extends JPanel implements Observer {
 		searchTextField = new JTextField();
 		mainMenuBar = new JMenuBar();
 		fileMenu = new JMenu();
-		newProjectMenuItem = new JMenuItem();
-		openProjectMenuItem = new JMenuItem();
 		preferencesMenuItem = new JMenuItem();
 		exitApplicationMenuItem = new JMenuItem();
 		viewMenu = new JMenu();
