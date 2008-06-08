@@ -150,7 +150,18 @@ public class importFileDialog extends JDialog {
     }
 
     private void importButtonActionPerformed(ActionEvent event) {
-        //todo
+        if (jakeGuiAccess.importLocalFileIntoProject(fileTextField.getText(), destinationFolderTextField.getText())) {
+            UserDialogHelper.inform(this, "File successfully imported",
+                    "Your file was successfully imported into your project!"
+            );
+            onCancel();
+        } else {
+            UserDialogHelper.error(this, "File not imported!",
+                    "An Error occured during importing of the file into your project!\n" +
+                            "Please check your permissions on the file and the project folder and \n" +
+                            "the there is enough available disk space to copy it into the project folder!"
+            );
+        }
     }
 
     private void cancelButtonActionPerfomed(ActionEvent event) {
@@ -217,7 +228,7 @@ public class importFileDialog extends JDialog {
                             targetDirectoryFile.getAbsolutePath().startsWith(projectRootPath) ||
                                     targetDirectoryFile.getAbsolutePath().equals(projectRootPath)
                     )
-                )
+                    )
                 folderOk = true;
 
             if (!folderOk)

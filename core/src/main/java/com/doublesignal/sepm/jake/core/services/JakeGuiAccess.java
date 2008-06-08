@@ -1,12 +1,6 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 import java.util.Set;
+import java.nio.channels.FileChannel;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -399,7 +394,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
     }
 
-    private static void copyFile(File source, File target) throws IOException {
+    private static void copySQLFile(File source, File target) throws IOException {
         BufferedReader fis = new BufferedReader(new FileReader(source));
         BufferedWriter fos = new BufferedWriter(new FileWriter(target));
         boolean hasCreates = false;
@@ -424,6 +419,15 @@ public class JakeGuiAccess implements IJakeGuiAccess {
             fos.close();
     }
 
+    private void copyFile(File source, File target) throws IOException {
+        FileChannel srcChannel = new FileInputStream(source).getChannel();
+        FileChannel dstChannel = new FileOutputStream(target).getChannel();
+        dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+        srcChannel.close();
+        dstChannel.close();
+    }
+
+
     public static void createSchema(String rootPath) throws InvalidDatabaseException {
         File scriptfile = new File(rootPath + ".script");
         File propertiesfile = new File(rootPath + ".properties");
@@ -441,10 +445,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         try {
             ClassPathResource scriptres = new ClassPathResource("skeleton.script");
             log.debug("ClassPathResource: " + scriptres.getFile().getAbsolutePath());
-            copyFile(scriptres.getFile(), scriptfile);
+            copySQLFile(scriptres.getFile(), scriptfile);
             ClassPathResource propertiesres = new ClassPathResource("skeleton.properties");
             log.debug("ClassPathResource: " + propertiesres.getFile().getAbsolutePath());
-            copyFile(propertiesres.getFile(), propertiesfile);
+            copySQLFile(propertiesres.getFile(), propertiesfile);
         } catch (IOException e) {
             e.printStackTrace();
             throw new InvalidDatabaseException();
@@ -744,19 +748,43 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return true;
     }
 
-    public boolean importLocalFileIntoProject(String absolutePath, String destinationFolderRelPath) {
-        // TODO
+    public boolean importLocalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
+        log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
         File srcFile = new File(absolutePath);
         if(srcFile == null || !srcFile.exists() )
             return false;
 
-        File destinationFolder = new File(absolutePath);
+        File destinationFolder = new File(destinationFolderAbsolutePath);
         if(!destinationFolder.getAbsolutePath().startsWith(getProject().getRootPath().getAbsolutePath()))
+        {
+            log.debug("destination folder not in projectRootPath");
             return false;
+        }
 
-        //fss.
 
-        return false;
+
+        String filename = srcFile.getName();
+        File destinationFile = new File(destinationFolderAbsolutePath, filename);
+
+        if(destinationFile.exists())
+        {
+            log.debug("destinationFile already exists");
+            return false;
+        }
+
+        try
+        {
+            destinationFile.createNewFile();
+            copyFile(srcFile, destinationFile );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        String relPath = destinationFile.getAbsolutePath().
+                replace(getProject().getRootPath().getAbsolutePath(),"");
+
+        return importLocalFileIntoProject(relPath);
     }
 
     public Integer getFileObjectSyncStatus(JakeObject jakeObject) {
