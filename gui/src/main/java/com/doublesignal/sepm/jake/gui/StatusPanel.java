@@ -114,7 +114,7 @@ public class StatusPanel extends JPanel {
 	}
 
 	private void fileConflictStatusButtonActionPerformed(ActionEvent e) {
-		new ResolveConflictDialog(gui.getMainFrame()).setVisible(true);
+		//new ResolveConflictDialog(gui.getMainFrame()).setVisible(true);
 	}
 
 	private void connectionStatusButtonActionPerformed(ActionEvent e) {
