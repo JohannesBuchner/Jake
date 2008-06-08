@@ -49,6 +49,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseEx
 import com.doublesignal.sepm.jake.fss.*;
 import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
+import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
@@ -60,7 +61,7 @@ import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 /**
  * @author johannes, domdorn, peter, philipp
  */
-public class JakeGuiAccess implements IJakeGuiAccess {
+public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     private IICService ics = null;
     private ISyncService sync = null;
     private IFSService fss = null;
@@ -72,6 +73,8 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     private List<FileObject> filesFSS;
     private List<FileObject> filesDB;
     private Map<String, Integer> filesStatus;
+
+	private IJakeMessageReceiveListener messageListener;
 
 
 
@@ -255,7 +258,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return null;
     }
 
-    public List<JakeMessage> getNewMessages() {
+	public void registerReceiveMessageListener(IJakeMessageReceiveListener listener) {
+		this.messageListener = listener;
+	}
+
+	public List<JakeMessage> getNewMessages() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -929,5 +936,29 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 		IICService ics = (IICService) factory.getBean("ICService");
 		return ics.isOfCorrectUseridFormat(userid);
 	}
-    
+
+	/**
+	 * This comes from the ICS and is called whenever a message is received from another project member
+	 *
+	 * @param from_userid The project member sending the message
+	 * @param content The content of the message
+	 */
+	public void receivedMessage(String from_userid, String content) {
+		try {
+			JakeMessage jm = new JakeMessage(db.getProjectMemberDao().getByUserId(ics.getUserid()), db.getProjectMemberDao().getByUserId(from_userid), content);
+			if(this.messageListener != null) {
+				messageListener.receivedJakeMessage(jm);
+			}
+		} catch (NoSuchProjectMemberException e) {
+			/*
+			 * Apparently, this user does not exist in our project. We don't care about messages from people who don't
+			 * exist in that context, so we can safely discard the message. */
+		} catch (NotLoggedInException e) {
+			/*
+			 * "Technically", this should never happen, since this listener only gets called when we are logged in
+			 * anyway. In this case, it is safe to assume something weird has happened and we will simply discard
+			 * the message.
+			 */
+		}
+	}
 }

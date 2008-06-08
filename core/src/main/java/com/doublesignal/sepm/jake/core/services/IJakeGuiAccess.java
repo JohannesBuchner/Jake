@@ -8,7 +8,6 @@ import java.util.Observer;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
@@ -24,10 +23,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchJakeObjectException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
-import com.doublesignal.sepm.jake.fss.NotADirectoryException;
-import com.doublesignal.sepm.jake.fss.NotAFileException;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
-import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 
 /**
  * @author domdorn
@@ -140,9 +136,15 @@ public interface IJakeGuiAccess {
 
 	public List<LogEntry> getLog(JakeObject object);
 
-	public void registerReceiveMessageCallback(Observer observer);
-
-	public List<JakeMessage> getNewMessages();
+	/**
+	 * Adds a listener for the client to be informed of incoming JakeMessages.
+	 *
+	 * Only one listener can be registered at any time, subsequent calls to this method will overwrite the
+	 * previous listener.
+	 *
+	 * @param listener A client object wanting to be informed of incoming JakeMessages
+	 */
+	public void registerReceiveMessageListener(IJakeMessageReceiveListener listener);
 	
 	/**
 	 * Add a new Member to a Project
