@@ -180,7 +180,7 @@ public class PeoplePanel extends JPanel {
 	private void removePeopleMenuItemActionPerformed(ActionEvent event)
 	    {
 	        log.info("removePeopleMenuItemActionPerformed");
-	        //jakeGuiAccess.removeMember(getSelectedMember());
+	       //jakeGuiAccess.removeProjectMember(getSelectedMember());
 			updateUi();
 	    }
 	
