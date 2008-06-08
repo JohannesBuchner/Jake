@@ -84,6 +84,7 @@ public class NewProject extends JDialog {
 	private boolean checkFolderSelection() {
 		String rootPath = folderTextField.getText();
 		projectNameTextField.setEditable(true);
+		useridTextField.setEditable(true);
 		okButton.setEnabled(false);
 		folderTextField.setBackground(Color.WHITE);
 		jga = null;
@@ -94,6 +95,8 @@ public class NewProject extends JDialog {
 			
 			projectNameTextField.setText(jga.getProject().getName());
 			projectNameTextField.setEditable(false);
+			useridTextField.setText(jga.getLoginUserid());
+			useridTextField.setEditable(false);
 			okButton.setText(translator.get("Open Project"));
 			okButton.setEnabled(true);
 			return true;
@@ -117,6 +120,10 @@ public class NewProject extends JDialog {
 			UserDialogHelper.translatedError(this, "Project name too short");
 			return;
 		}
+		if (!JakeGuiAccess.isOfCorrectUseridFormat(useridTextField.getText())){
+			UserDialogHelper.translatedError(this, "Userid is not of correct format");
+			return;
+		}
 		
 		if (jga != null) {
 			log.info("starting main window with opened database ...");
@@ -126,7 +133,9 @@ public class NewProject extends JDialog {
 			try {
 				log.info("creating database ...");
 				jga = JakeGuiAccess.createNewProjectByRootpath(folderTextField
-						.getText(), projectNameTextField.getText());
+						.getText(), projectNameTextField.getText(),
+						useridTextField.getText());
+				jga.addProjectMember(useridTextField.getText());
 				setVisible(false);
 				log.info("created Database, starting main window");
 				new JakeGui(jga);
@@ -164,8 +173,11 @@ public class NewProject extends JDialog {
 		folderLabel = new JLabel();
 		folderTextField = new JTextField();
 		folderSelectButton = new JButton();
-		nameProjectLabel = new JLabel();
-		projectNameLabel = new JLabel();
+		adviseNameProjectLabel = new JLabel();
+		adviseProjectNameLabel = new JLabel();
+		adviseUseridLabel = new JLabel();
+		useridLabel = new JLabel();
+		useridTextField = new JTextField();
 		projectNameTextField = new JTextField();
 		buttonBar = new JPanel();
 		okButton = new JButton();
@@ -205,13 +217,15 @@ public class NewProject extends JDialog {
 			// ======== contentPanel ========
 			{
 				contentPanel.setLayout(new TableLayout(
-						new double[][] {
-								{ TableLayout.PREFERRED, 246, 64 },
-								{ TableLayout.PREFERRED, TableLayout.PREFERRED,
-										TableLayout.PREFERRED,
-										TableLayout.PREFERRED,
-										TableLayout.PREFERRED,
-										TableLayout.PREFERRED } }));
+					new double[][] {
+						{ TableLayout.PREFERRED, 246, 64 },
+						{ TableLayout.PREFERRED, TableLayout.PREFERRED, 
+						  TableLayout.PREFERRED, TableLayout.PREFERRED,
+						  TableLayout.PREFERRED, TableLayout.PREFERRED,
+						  TableLayout.PREFERRED, TableLayout.PREFERRED 
+						} 
+					}
+				));
 				((TableLayout) contentPanel.getLayout()).setHGap(2);
 				((TableLayout) contentPanel.getLayout()).setVGap(15);
 
@@ -223,7 +237,7 @@ public class NewProject extends JDialog {
 
 				// ---- selectFolderLabel ----
 				selectFolderLabel.setText(translator
-						.get("NewProjectDialogSelectFolder"));
+						.get("NewProjectDialogAdviseSelectFolder"));
 				contentPanel.add(selectFolderLabel, new TableLayoutConstraints(
 						0, 1, 1, 1, TableLayoutConstraints.FULL,
 						TableLayoutConstraints.FULL));
@@ -253,20 +267,38 @@ public class NewProject extends JDialog {
 								TableLayoutConstraints.FULL));
 
 				// ---- nameProjectLabel ----
-				nameProjectLabel.setText(translator
-						.get("NewProjectDialogNameProject"));
-				contentPanel.add(nameProjectLabel, new TableLayoutConstraints(
+				adviseNameProjectLabel.setText(translator
+						.get("NewProjectDialogAdviseNameProject"));
+				contentPanel.add(adviseNameProjectLabel, new TableLayoutConstraints(
 						0, 3, 2, 3, TableLayoutConstraints.FULL,
 						TableLayoutConstraints.FULL));
 
-				// ---- projectNameLabel ----
-				projectNameLabel.setText(translator
+				// ---- adviseProjectNameLabel ----
+				adviseProjectNameLabel.setText(translator
 						.get("NewProjectDialogProjectName"));
-				contentPanel.add(projectNameLabel, new TableLayoutConstraints(
+				contentPanel.add(adviseProjectNameLabel, new TableLayoutConstraints(
 						0, 4, 0, 4, TableLayoutConstraints.FULL,
 						TableLayoutConstraints.FULL));
 				contentPanel.add(projectNameTextField,
 						new TableLayoutConstraints(1, 4, 2, 4,
+								TableLayoutConstraints.FULL,
+								TableLayoutConstraints.FULL));
+				// ---- adviseUseridLabel ----
+				adviseUseridLabel.setText(translator
+						.get("NewProjectDialogAdviseUserid", 
+						JakeGuiAccess.getICSName()));
+				contentPanel.add(adviseUseridLabel, new TableLayoutConstraints(
+						0, 5, 2, 5, TableLayoutConstraints.FULL,
+						TableLayoutConstraints.FULL));
+				
+				// ---- useridLabel ----
+				useridLabel.setText(translator
+						.get("NewProjectDialogUserid"));
+				contentPanel.add(useridLabel, new TableLayoutConstraints(
+						0, 6, 0, 6, TableLayoutConstraints.FULL,
+						TableLayoutConstraints.FULL));
+				contentPanel.add(useridTextField,
+						new TableLayoutConstraints(1, 6, 2, 6,
 								TableLayoutConstraints.FULL,
 								TableLayoutConstraints.FULL));
 			}
@@ -325,14 +357,20 @@ public class NewProject extends JDialog {
 	private JLabel selectFolderLabel;
 
 	private JLabel folderLabel;
+	
+	private JLabel useridLabel;
 
 	private JTextField folderTextField;
+	
+	private JTextField useridTextField;
 
 	private JButton folderSelectButton;
 
-	private JLabel nameProjectLabel;
+	private JLabel adviseNameProjectLabel;
 
-	private JLabel projectNameLabel;
+	private JLabel adviseProjectNameLabel;
+
+	private JLabel adviseUseridLabel;
 
 	private JTextField projectNameTextField;
 

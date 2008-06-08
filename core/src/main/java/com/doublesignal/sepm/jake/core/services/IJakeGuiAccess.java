@@ -75,8 +75,9 @@ public interface IJakeGuiAccess {
 	 * Get the user that is currently logged in.
 	 * 
 	 * @return
+	 * @throws NoSuchConfigOptionException 
 	 */
-	public String getLoginUser() throws NotLoggedInException;
+	public String getLoginUserid();
 
 	/**
 	 * Sets a config

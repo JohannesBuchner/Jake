@@ -152,4 +152,8 @@ public class MockICService implements IICService {
 		return myuserid;
 	}
 
+	public String getServiceName() {
+		return "Mock";
+	}
+
 }

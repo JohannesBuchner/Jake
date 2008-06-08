@@ -88,6 +88,7 @@ public class JakeGui extends JPanel implements Observer {
 		updateAll();
 		setStatusMsg("started");
 		log.debug("JakeGui loaded.");
+		peopleViewMenuItemActionPerformed(null);
 
 	}
 

@@ -98,8 +98,13 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         ics.logout();
     }
 
-    public String getLoginUser() throws NotLoggedInException {
-        return ics.getUserid();
+    public String getLoginUserid() {
+    	try {
+			return getConfigOption("userid");
+		} catch (NoSuchConfigOptionException e) {
+			// can not happen, we check in 
+	    	return null;
+		}
     }
 
     public boolean isLoggedIn() {
@@ -467,21 +472,23 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return jakeFile.exists();
     }
 
-    public static JakeGuiAccess createNewProjectByRootpath(String rootPath, String projectname)
-            throws ExistingProjectException, InvalidDatabaseException, NotADirectoryException,
-            InvalidRootPathException {
+    public static JakeGuiAccess createNewProjectByRootpath(
+    		String rootPath, String projectname, String userid)
+            throws ExistingProjectException, InvalidDatabaseException, 
+            NotADirectoryException, InvalidRootPathException 
+    {
         rootPath = new File(rootPath).getAbsolutePath();
         log.debug("createNewProjectByRootpath: " + rootPath);
         if (hasRootpathAProject(rootPath))
             throw new ExistingProjectException();
-
+        
         log.debug("createSchema");
         createSchema(rootPath);
         log.debug("JakeGuiAccess");
         JakeGuiAccess jga;
         jga = new JakeGuiAccess(rootPath);
         try {
-            jga.initializeDatabase(projectname);
+        	jga.initializeDatabase(projectname, userid);
         } catch (BadSqlGrammarException e) {
             log.error("Database invalid - Schema was not accepted by hsqldb");
             throw new InvalidDatabaseException();
@@ -506,11 +513,13 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         return jga;
     }
 
-    private void initializeDatabase(String projectname) {
+    private void initializeDatabase(String projectname, String userid) {
         log.debug("setting config option rootpath ... ");
         db.getConfigurationDao().setConfigurationValue("rootpath", fss.getRootPath());
         log.debug("setting config option projectname ... ");
         db.getConfigurationDao().setConfigurationValue("projectname", projectname);
+        log.debug("setting config option userid ... ");
+        db.getConfigurationDao().setConfigurationValue("userid", userid);
 
         db.getConfigurationDao().setConfigurationValue("autoPush", String.valueOf(false));
         db.getConfigurationDao().setConfigurationValue("autoPull", String.valueOf(true));
@@ -522,11 +531,20 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     }
 
 
-    private void checkIfValidDatabase() {
+    private void checkIfValidDatabase() throws InvalidDatabaseException {
+    	
     	db.getJakeObjectDao().getAllFileObjects();
     	db.getJakeObjectDao().getAllNoteObjects();
     	db.getLogEntryDao().getAll();
     	db.getProjectMemberDao().getAll();
+    	try {
+			getConfigOption("rootpath");
+	    	getConfigOption("projectname");
+	    	getConfigOption("userid");
+		} catch (NoSuchConfigOptionException e) {
+			e.printStackTrace();
+			throw new InvalidDatabaseException();
+		}
 	}
     
     
@@ -828,7 +846,17 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
        // return status == null ? 0 : status;
     }
+
+	public static String getICSName() {
+        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+		IICService ics = (IICService) factory.getBean("ICService");
+		return ics.getServiceName();
+	}
+
+	public static boolean isOfCorrectUseridFormat(String userid) {
+        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+		IICService ics = (IICService) factory.getBean("ICService");
+		return ics.isOfCorrectUseridFormat(userid);
+	}
     
-
-
 }

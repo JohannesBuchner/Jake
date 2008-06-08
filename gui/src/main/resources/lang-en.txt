@@ -16,11 +16,13 @@ ButtonCancel=Cancel
 ButtonClose=Close
 
 NewProjectDialogTitle=Jake - the collaborative file sharing client
-NewProjectDialogInfo=<html><body>Jake is a collaborative file sharing client.<br>Begin sharing your files with two simple steps.</body></html>
-NewProjectDialogSelectFolder=1. Select the folder you want to share:
+NewProjectDialogInfo=<html><body>Jake is a collaborative file sharing client.<br>Begin sharing your files with three simple steps.</body></html>
+NewProjectDialogAdviseSelectFolder=1. Select the folder you want to share:
 NewProjectDialogFolder=Folder:
-NewProjectDialogNameProject=2. Give your project a name! (or use folder name as default)
+NewProjectDialogAdviseNameProject=2. Give your project a name! (or use folder name as default)
 NewProjectDialogProjectName=Project Name:
+NewProjectDialogAdviseUserid=3. Enter your userid for the %0% service
+NewProjectDialogUserid=Userid:
 NewProjectDialogOpenProject=Open Project
 NewProjectDialogCreateProject=Create Project
 NewProjectDialogCreateOpenProject=Create/Open Project

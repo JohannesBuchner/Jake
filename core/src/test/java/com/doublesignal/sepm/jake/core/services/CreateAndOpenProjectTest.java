@@ -32,18 +32,20 @@ public class CreateAndOpenProjectTest extends TestCase {
 		f.createNewFile();
 		assertTrue(f.exists());
 		try{
-			JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), "foobar");
+			JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), 
+					"foobar", "bla@foo");
 			fail("ExistingProjectException");
 		}catch (ExistingProjectException e) {
-			
 		}
 		assertTrue(f.exists());
 		f.delete();
 		File f2 = new File(rootPath.getAbsolutePath() + ".properties");
 		f2.delete();
 		
-		JakeGuiAccess jga = JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), "foobaz");
+		JakeGuiAccess jga = JakeGuiAccess.createNewProjectByRootpath(
+				rootPath.getAbsolutePath(), "foobaz", "bla@bar");
 		assertEquals(jga.getProject().getName(), "foobaz");
+		assertEquals(jga.getLoginUserid(), "bla@bar");
 		jga.close();
 		assertTrue(f.exists());
 		f.delete();
@@ -54,11 +56,13 @@ public class CreateAndOpenProjectTest extends TestCase {
 	{
 		File rootPath = new File(tmpdir + "test-2");
 		rootPath.mkdir();
-		JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), "foooo");
+		JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), 
+				"foooo", "bla@bar");
 		File f = new File(rootPath.getAbsolutePath() + ".script");
 		assertTrue(f.exists());
 		JakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());
 		assertEquals(jga.getProject().getName(), "foooo");
+		assertEquals(jga.getLoginUserid(), "bla@bar");
 		assertTrue(f.exists());
 		f.delete();
 	}
@@ -67,7 +71,8 @@ public class CreateAndOpenProjectTest extends TestCase {
 	{
 		File rootPath = new File(tmpdir + "test-2");
 		rootPath.mkdir();
-		JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), "foooo");
+		JakeGuiAccess.createNewProjectByRootpath(rootPath.getAbsolutePath(), 
+				"foooo", "bla@bar");
 		File f = new File(rootPath.getAbsolutePath() + ".script");
 		assertTrue(f.exists());
 		JakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());

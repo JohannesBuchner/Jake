@@ -91,13 +91,8 @@ public class StatusPanel extends JPanel {
 
 		if (connectionOnline) {
 			connectionStatusButton.setText("Connected");
-			try {
-				connectionStatusButton.setToolTipText("Connected as "
-						+ jakeGuiAccess.getLoginUser());
-			} catch (NotLoggedInException e) {
-				// can't be -> connection status is checked!
-				e.printStackTrace();
-			}
+			connectionStatusButton.setToolTipText("Connected as "
+				+ jakeGuiAccess.getLoginUserid());
 		} else {
 			connectionStatusButton.setText("Not Connected");
 			connectionStatusButton.setToolTipText("Press to connect");

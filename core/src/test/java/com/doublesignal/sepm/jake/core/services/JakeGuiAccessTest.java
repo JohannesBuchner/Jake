@@ -32,7 +32,8 @@ public class JakeGuiAccessTest extends TestCase {
 			jga = JakeGuiAccess.openProjectByRootpath(rootfolder);
 			fail("NonExistantDatabaseException");
 		} catch (NonExistantDatabaseException e) {
-			jga = JakeGuiAccess.createNewProjectByRootpath(rootfolder, "testProject");
+			jga = JakeGuiAccess.createNewProjectByRootpath(rootfolder, 
+					"testProject", "test@host");
 		} catch (RuntimeException e){
 			e.printStackTrace();
 			fail();
@@ -45,6 +46,7 @@ public class JakeGuiAccessTest extends TestCase {
 		assertNotNull(jga);
 		assertNotNull(jga.getProject());
 		assertEquals(jga.getProject().getName(),"testProject");
+		assertEquals(jga.getLoginUserid(), "test@host");
 	}
 	
 	@After

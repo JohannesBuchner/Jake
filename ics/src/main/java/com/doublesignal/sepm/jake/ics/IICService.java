@@ -146,4 +146,9 @@ public interface IICService {
 	 * @return wether the userid has the right format for this implementation
 	 */
 	public boolean isOfCorrectUseridFormat(String userid);
+	
+	/**
+	 * @return the name of the implemented service
+	 */
+	public String getServiceName();
 }
