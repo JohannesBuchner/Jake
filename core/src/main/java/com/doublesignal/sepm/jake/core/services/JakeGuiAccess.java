@@ -142,6 +142,11 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         log.info("remove Note:" + note);
         db.getJakeObjectDao().delete(note);
     }
+    
+    public void removeProjectMember(ProjectMember projectMember)	{
+    	 log.info("remove Project Member:" + projectMember);
+    	pm.remove(projectMember);
+    }
 
     public List<JakeObject> getChangedObjects() {
         // TODO Auto-generated method stub
