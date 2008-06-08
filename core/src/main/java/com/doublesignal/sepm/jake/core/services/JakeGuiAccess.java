@@ -398,31 +398,26 @@ public class JakeGuiAccess implements IJakeGuiAccess {
 
     }
 
-    private static void copySQLFile(File source, File target) throws IOException {
-        BufferedReader fis = new BufferedReader(new FileReader(source));
+
+    private static void copyTextFile(File source, File target) throws IOException {
+        if(!source.exists())
+        	throw new IOException("Resource " + source.getAbsolutePath() + 
+        			"does not exist.");
+    	BufferedReader fis = new BufferedReader(new FileReader(source));
         BufferedWriter fos = new BufferedWriter(new FileWriter(target));
-        boolean hasCreates = false;
-        int lines = 0;
         while (true) {
             String l = fis.readLine();
             if (l == null)
                 break;
-            System.out.println("Line " + (lines + 1) + ": " + l);
-            lines++;
-            if (l.contains("CREATE TABLE"))
-                hasCreates = true;
             fos.write(l);
             fos.newLine();
         }
-        log.debug("copied " + source.getAbsolutePath() + " -> " + target.getAbsoluteFile() + "; "
-                + lines + " lines");
-
         if (fis != null)
             fis.close();
         if (fos != null)
             fos.close();
     }
-
+    
     private void copyFile(File source, File target) throws IOException {
         FileChannel srcChannel = new FileInputStream(source).getChannel();
         FileChannel dstChannel = new FileOutputStream(target).getChannel();
@@ -449,10 +444,10 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         try {
             ClassPathResource scriptres = new ClassPathResource("skeleton.script");
             log.debug("ClassPathResource: " + scriptres.getFile().getAbsolutePath());
-            copySQLFile(scriptres.getFile(), scriptfile);
+            copyTextFile(scriptres.getFile(), scriptfile);
             ClassPathResource propertiesres = new ClassPathResource("skeleton.properties");
             log.debug("ClassPathResource: " + propertiesres.getFile().getAbsolutePath());
-            copySQLFile(propertiesres.getFile(), propertiesfile);
+            copyTextFile(propertiesres.getFile(), propertiesfile);
         } catch (IOException e) {
             e.printStackTrace();
             throw new InvalidDatabaseException();
