@@ -10,8 +10,15 @@ import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
 
 public class MockICService implements IICService {
+	/**
+	 * are we online?
+	 */
 	Boolean loggedinstatus = false;
+	/**
+	 * the userid is stored between login and logout, then cleared again
+	 */
 	String myuserid = null;
+
 	HashSet<IOnlineStatusListener> onlinereceivers = new HashSet<IOnlineStatusListener>();
 	HashSet<IObjectReceiveListener> objreceivers = new HashSet<IObjectReceiveListener>();
 	HashSet<IMessageReceiveListener> msgreceivers = new HashSet<IMessageReceiveListener>();
@@ -45,7 +52,7 @@ public class MockICService implements IICService {
 		}
 		return userid.substring(userid.indexOf(".")+1, userid.indexOf("@"));
 	}
-
+	
 	public Boolean isLoggedIn() {
 		return loggedinstatus;
 	}
@@ -64,7 +71,9 @@ public class MockICService implements IICService {
 		/* everyone else not having a s in the name is offline */
 		return userid.substring(0,userid.indexOf("@")).contains("s"); 
 	}
-
+	/**
+	 * Login is successful, if userid == pw
+	 */
 	public Boolean login(String userid, String pw) throws NetworkException,
 			TimeoutException {
 		if(!isOfCorrectUseridFormat(userid)) 
@@ -79,11 +88,14 @@ public class MockICService implements IICService {
 			return false;
 	}
 
-	public void logout() throws NetworkException, TimeoutException {
+	public void logout() {
 		myuserid = null;
 		loggedinstatus = false;
 	}
-
+	
+	/**
+	 * noone comes or goes offline, so this is futile
+	 */
 	public void registerOnlineStatusListener(IOnlineStatusListener osc,
 			String userid) throws NoSuchUseridException {
 		if(!isOfCorrectUseridFormat(userid)) 
@@ -99,7 +111,10 @@ public class MockICService implements IICService {
 	public void registerReceiveObjectListener(IObjectReceiveListener rl) {
 		objreceivers.add(rl);
 	}
-
+	
+	/**
+	 * If you send a message to someone, a reply is generated.
+	 */
 	public Boolean sendMessage(String to_userid, String content)
 			throws NetworkException, NotLoggedInException, TimeoutException,
 			NoSuchUseridException, OtherUserOfflineException 
@@ -123,7 +138,10 @@ public class MockICService implements IICService {
 		}
 		return true;
 	}
-
+	
+	/**
+	 * objects sent to other online users are accepted, but ignored.
+	 */
 	public Boolean sendObject(String to_userid, String objectidentifier,
 			byte[] content) throws NetworkException, NotLoggedInException,
 			TimeoutException, NoSuchUseridException, OtherUserOfflineException {
