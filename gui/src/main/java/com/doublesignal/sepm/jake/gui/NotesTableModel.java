@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 
 @SuppressWarnings("serial")
 /**
@@ -88,12 +89,22 @@ public class NotesTableModel extends AbstractTableModel {
 			return JakeObjLib.getTagString(note.getTags());
 
 		case LastChanged:
-			return jakeGuiAccess.getLastModified(note).toString();
+            try {
+                return jakeGuiAccess.getLastModified(note).toString();
+            } catch (NoSuchLogEntryException e) {
+                log.debug("THIS SHOULD NOT HAPPEN!");
+                e.printStackTrace();
+                return "NO LOGENTRY FOR NOTE";
+            }
 
-		case User:
-			return jakeGuiAccess.getLastModifier(note).getNickname();
+            case User:
+                try {
+                    return jakeGuiAccess.getLastModifier(note).getNickname();
+                } catch (NoSuchLogEntryException e) {
+                    return "NO LOGENTRY FOR NOTE";
+                }
 
-		default:
+            default:
 			throw new IllegalArgumentException("Cannot get Information for column " + columnIndex);
 		}
 	}

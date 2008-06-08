@@ -4,6 +4,7 @@ import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
@@ -94,14 +95,23 @@ public class FilesTableModel extends AbstractTableModel {
 			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.getFileObjectSyncStatus(file));
 
 		case LastChanged:
-			return jakeGuiAccess.getLastModified(file).toString();
+            try {
+                return jakeGuiAccess.getLastModified(file).toString();
+            } catch (NoSuchLogEntryException e) {
+                return "<File not in Project>";
+            }
 
-		case User:
-			ProjectMember pmLastModifier = jakeGuiAccess.getLastModifier(file);
+            case User:
+			try
+            {
+            ProjectMember pmLastModifier = jakeGuiAccess.getLastModifier(file);
 			return (pmLastModifier.getNickname().isEmpty()) ? pmLastModifier
 					.getUserId() : pmLastModifier.getNickname();
+            } catch (NoSuchLogEntryException e) {
+                return "<File not in Project>";
+            }
 
-		default:
+            default:
 			throw new IllegalArgumentException(
 					"Cannot get Information for column " + columnIndex);
 		}

@@ -2,15 +2,7 @@ package com.doublesignal.sepm.jake.core.services;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Observer;
-import java.util.Set;
+import java.util.*;
 import java.nio.channels.FileChannel;
 
 import org.apache.log4j.Logger;
@@ -27,6 +19,7 @@ import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -139,6 +132,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
         NoteObject note = NoteObject.createNoteObject(userId, content);
         db.getJakeObjectDao().save(note);
+        
         return note;
     }
 
@@ -357,20 +351,14 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     	
     }
     
-    public ProjectMember getLastModifier(JakeObject jakeObject) {
-        // sync.getLogEntries(jakeObject)
-        // return new
-        // ProjectMember(logEntryDAO.getMostRecentFor(jakeObject).getUserId());
-        return new ProjectMember("dominik"); // TODO
-        // return null;
+    public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException {
+        LogEntry logEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
+        return new ProjectMember(logEntry.getUserId());
     }
 
-    public Date getLastModified(JakeObject jakeObject) {
-        GregorianCalendar date = new GregorianCalendar();
-        date.set(2008, 05, 13, 13, 12);
-        return date.getTime();
-
-        // return logEntryDAO.getMostRecentFor(jakeObject).getTimestamp();
+    public Date getLastModified(JakeObject jakeObject) throws NoSuchLogEntryException {
+        LogEntry logEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
+        return logEntry.getTimestamp();
     }
 
     public JakeObject addTag(JakeObject jakeObject, Tag tag) {
@@ -730,6 +718,77 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             fileInDB = true;
 
         if (fileOnFS && fileInDB) {
+            String hashLastLogEntry;
+            String hashLastPulledLogEntry;
+            String hashFile;
+            try {
+                hashFile = fss.calculateHashOverFile(jakeObject.getName());
+                List<LogEntry> logEntryList = db.getLogEntryDao().getAllOfJakeObject(jakeObject);
+
+                ListIterator listIterator = logEntryList.listIterator();
+
+                LogEntry lastLogEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
+                LogEntry lastPulledLogEntry = lastLogEntry; // TODO change this!
+
+                    //LogEntry lasLogEntry = null;
+                    if(lastPulledLogEntry == null)
+                    {
+                        // file has never been downloadeded
+                        hashLastPulledLogEntry = "";
+                    }
+                    else
+                    {
+                        // file has been downloaded
+                        hashLastPulledLogEntry = lastPulledLogEntry.getHash();
+                    }
+                    hashLastLogEntry = lastLogEntry.getHash();
+
+                    if(hashLastLogEntry.equals(hashLastPulledLogEntry))
+                    {
+                        // the last logEntry is also the lastPulledLogEntry
+                        // if the hash of this log entry and our file is different,
+                        // we modified it local
+                        if(hashFile.equals(hashLastLogEntry))
+                        {
+                            fileLocallyChanged = false;
+                            fileRemotelyChanged = false;
+                        }
+                        else
+                        {
+                            fileLocallyChanged = true;
+                            fileRemotelyChanged = false;
+                        }
+                    }
+                    else
+                    {
+                        // the last LogEntry is not the same as the lastPulled LogEntry
+                        // obviously the file was changed on the remote side, lets check
+                        // if it also got changed locally
+                        fileRemotelyChanged = true;
+
+                        if(hashFile.equals(hashLastPulledLogEntry))
+                        {
+                            fileLocallyChanged = false;
+                        }
+                        else
+                        {
+                            fileLocallyChanged = true;
+                        }
+
+                    }
+
+
+            }
+            catch (InvalidFilenameException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (NotAReadableFileException e) {
+                e.printStackTrace();
+            } catch (NoSuchLogEntryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
             // todo check if file locally changed
 
         }
@@ -841,6 +900,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
                     /* comment */
                     comment
             );
+            logEntry.setIsLastPulled(true);
 
             db.getLogEntryDao().create(logEntry);
             log.debug("persisted logentry");

@@ -7,6 +7,7 @@ import java.util.Observer;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
@@ -300,7 +301,7 @@ public interface IJakeGuiAccess {
 	 * @param jakeObject
 	 * @return the projectMember
 	 */
-	public ProjectMember getLastModifier(JakeObject jakeObject);
+	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException;
 
 	/**
 	 * Returns the date when the object was last modified (according to log
@@ -308,7 +309,7 @@ public interface IJakeGuiAccess {
 	 * @param jakeObject
 	 * @return the last modified date
 	 */
-	public Date getLastModified(JakeObject jakeObject);
+	public Date getLastModified(JakeObject jakeObject) throws NoSuchLogEntryException;
 
 	/**
 	 * Adds a tag to a specific JakeObject
