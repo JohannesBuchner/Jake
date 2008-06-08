@@ -46,11 +46,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedExcept
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFolderException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
-import com.doublesignal.sepm.jake.fss.IFSService;
-import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.LaunchException;
-import com.doublesignal.sepm.jake.fss.NotADirectoryException;
-import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.fss.*;
 import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
@@ -346,6 +342,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     public void addProjectMember(String networkUserId) {
         ProjectMember PM = new ProjectMember(networkUserId);
         currentProject.addMember(PM);
+        db.getProjectMemberDao().save(PM);
     }
 
     public List<ProjectMember> getMembers()	{
@@ -811,11 +808,46 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         FileObject fileObject = new FileObject(relPath);
 
         db.getJakeObjectDao().save(fileObject);
+        // create logEntry
+
+
+        try {
+
+
+            // userId = ics.getUserid();
+            String userId = getLoginUserid();
+            String comment = "";
+            String hash = fss.calculateHashOverFile(fileObject.getName());
+
+            LogEntry logEntry = new LogEntry(
+                    LogAction.NEW_JAKEOBJECT,
+                    new Date(),
+                    fileObject.getName(),
+                    /* hash */
+                    hash,
+                    /* userId */
+                    userId,
+                    /* comment */
+                    comment
+            );
+
+            db.getLogEntryDao().create(logEntry);
+            log.debug("persisted logentry");
+        } catch (InvalidFilenameException e) {
+            e.printStackTrace();
+            return false;
+        } catch (NotAReadableFileException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }  
+
         filesDB.add(fileObject);
-        //refreshFileObjects();
 
         filesStatus.put(relPath, getRealFileObjectSyncStatus(fileObject));
-        log.debug("putted status of file " + relPath + " to " + filesStatus.get(relPath));
+        //log.debug("putted status of file " + relPath + " to " + filesStatus.get(relPath));
 
         // TODO
         return true;

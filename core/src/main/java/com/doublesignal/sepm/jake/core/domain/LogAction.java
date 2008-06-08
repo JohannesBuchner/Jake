@@ -23,10 +23,14 @@ public enum LogAction {
 
 	/**
 	 * the project was just created, 1st Logentry ever
-	 * TODO: Why do we need this?
 	 */
 	PROJECT_CREATED,
-	/**
+
+    /**
+     * a new jakeobject was added to the project (not a new version!)
+     */
+    NEW_JAKEOBJECT,
+    /**
 	 * a new version of a JakeObject was created
 	 */
 	NEW_VERSION,
@@ -41,7 +45,7 @@ public enum LogAction {
 	/**
 	 * the tag in the comment field of the LogEntry was removed from the JakeObject in question
 	 */
-	TAG_REMOVE;
+	TAG_REMOVE
 
 
 	}
