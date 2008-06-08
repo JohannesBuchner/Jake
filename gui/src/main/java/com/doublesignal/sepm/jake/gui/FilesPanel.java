@@ -18,6 +18,8 @@ import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedExcept
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -29,6 +31,7 @@ public class FilesPanel extends JPanel {
     private static Logger log = Logger.getLogger(FilesPanel.class);
     private final JakeGui jakeGui;
     private FilesTableModel filesTableModel;
+    private static ITranslationProvider translator = new TextTranslationProvider();
 
     int tabindex = 0;
 
@@ -226,19 +229,13 @@ public class FilesPanel extends JPanel {
 
         String filename = fileObject.getName();
 
-        if (UserDialogHelper.askForConfirmation(this, "Delete file?",
-                "Are you shure you want to delete the file \n\"" + filename + "\"\n from the project? \n\n" +
-                        "This operation may not be undone! "
-
-        )) {
+        if (UserDialogHelper.askForConfirmation(this, translator.get("FilesPanelDialogConfirmDeleteDialogTitle"),
+                translator.get("FilesPanelDialogConfirmDeleteDialogText", filename))) {
             if (jakeGuiAccess.deleteJakeObject(fileObject)) {
-                UserDialogHelper.inform(this, "File deleted", "The file \"" + filename + "\" was deleted from the project.",
+                UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileDeletedTitle"), translator.get("FilesPanleDialogFileDeletedText", filename),
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
-                UserDialogHelper.inform(this, "File NOT deleted", "The file \"" + filename +
-                        "\" was NOT deleted from the project.\n\n" +
-                        "Please make shure you have the necessary rights on the filesystem \n" +
-                        "to perform this action (e.g. file is owned by you, you have write rights, etc.)! ",
+                UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileNotDeletedTitle"), translator.get("FilesPanelDialogFileNotDeletedText", filename),
                         JOptionPane.ERROR_MESSAGE);
             }
 
