@@ -30,3 +30,10 @@ NewProjectDialogCreateOpenProject=Create/Open Project
 MenuNetwork=Network
 MenuItemSignIn=Sign in...
 MenuItemSignOut=Sign out
+
+FilesPanelDialogConfirmDeleteDialogTitle=Delete file?
+FilesPanelDialogConfirmDeleteDialogText=Are you sure you want to delete the following file? This action may not be undone. \n\n %0%
+FilesPanelDialogFileDeletedTitle=File deleted
+FilesPanleDialogFileDeletedText=%0% has been deleted successfully!
+FilesPanelDialogFileNotDeletedTitle=File not deleted
+FilesPanelDialogFileNotDeletedText=The following file could not have been deleted from the project. Please make sure you have the necessary rights to perform this operation. \n\n %0%
