@@ -679,28 +679,32 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         }
     }
 
+
+
+
+
     private int getRealFileObjectSyncStatus(FileObject jakeObject) {
         /**
          *    A = in FileSystem
          *    B = in DataBase
          *    C = changed local
          *    D = changed remote
-         *    -A -B -C -D | 100 | - no valid status -
-         *    -A -B -C  D | 100 | - no valid status -
-         *    -A -B  C -D | 100 | - no valid status -
-         *    -A -B  C  D | 100 | - no valid status -
-         *    -A  B -C -D | 101 | - Remote File -> pull -
-         *    -A  B -C  D | 101 | - Remote File -> pull -
-         *    -A  B  C -D | 107 | - no valid status - // TODO
-         *    -A  B  C  D | 107 | - no valid status - // TODO
-         *     A -B -C -D | 102 | - local file, not in project -
-         *     A -B -C  D | 100 | - no valid state -
-         *     A -B  C -D | 102 | - local file, not in project -
-         *     A -B  C  D | 100 | - no valid state -
-         *     A  B -C -D | 103 | - File in Sync -
-         *     A  B -C  D | 104 | - File remotely changed -
-         *     A  B  C -D | 105 | - File locally changed -
-         *     A  B  C  D | 106 | - File in conflict -
+         *    -A -B -C -D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
+         *    -A -B -C  D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
+         *    -A -B  C -D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
+         *    -A -B  C  D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
+         *    -A  B -C -D | 101 | - Remote File -> pull -               SYNC_FILE_IS_REMOTE
+         *    -A  B -C  D | 101 | - Remote File -> pull -               SYNC_FILE_IS_REMOTE
+         *    -A  B  C -D | 107 | - SYNC_FILE_DELETED_LOCALLY - // TODO SYNC_FILE_DELETED_LOCALLY
+         *    -A  B  C  D | 107 | - SYNC_FILE_DELETED_LOCALLY - // TODO SYNC_FILE_DELETED_LOCALLY
+         *     A -B -C -D | 102 | - local file, not in project -        SYNC_LOCAL_FILE_NOT_IN_PROJECT
+         *     A -B -C  D | 100 | - no valid state -                    SYNC_NO_VALID_STATE
+         *     A -B  C -D | 102 | - local file, not in project -        SYNC_LOCAL_FILE_NOT_IN_PROJECT
+         *     A -B  C  D | 100 | - no valid state -                    SYNC_NO_VALID_STATE
+         *     A  B -C -D | 103 | - File in Sync -                      SYNC_FILE_IN_SYNC
+         *     A  B -C  D | 104 | - File remotely changed -             SYNC_FILE_REMOTELY_CHANGED
+         *     A  B  C -D | 105 | - File locally changed -              SYNC_FILE_LOCALLY_CHANGED
+         *     A  B  C  D | 106 | - File in conflict -                  SYNC_FILE_IN_CONFLICT
 
          // TODO possibility to optimize using quine-mcklusky's method
 
@@ -729,21 +733,21 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         /** this part is finished, no need to modify, except possible optimizations */
 
         if (fileOnFS && fileInDB && !fileLocallyChanged && !fileRemotelyChanged) {
-            return 103;
+            return IJakeGuiAccess.SYNC_FILE_IN_SYNC;
         }
 
         if (fileOnFS && fileInDB && !fileLocallyChanged && fileRemotelyChanged) {
-            return 104;
+            return IJakeGuiAccess.SYNC_FILE_REMOTELY_CHANGED;
         }
 
         if (
                 fileOnFS && fileInDB && !fileLocallyChanged && !fileRemotelyChanged
                 ) {
-            return 105;
+            return IJakeGuiAccess.SYNC_FILE_LOCALLY_CHANGED;
         }
 
         if (fileOnFS && fileInDB && fileLocallyChanged && fileRemotelyChanged) {
-            return 106;
+            return IJakeGuiAccess.SYNC_FILE_IN_CONFLICT;
         }
 
 
@@ -752,7 +756,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
                 !fileOnFS && !fileInDB && !fileLocallyChanged && !fileRemotelyChanged ||
                         !fileOnFS && !fileInDB && !fileLocallyChanged && fileRemotelyChanged
                 ) {
-            return 101;
+            return IJakeGuiAccess.SYNC_FILE_IS_REMOTE;
         }
 
         if (
@@ -760,7 +764,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
                 fileOnFS && !fileInDB && !fileLocallyChanged && !fileRemotelyChanged ||
                         fileOnFS && !fileInDB && fileLocallyChanged && !fileRemotelyChanged
                 ) {
-            return 102;
+            return IJakeGuiAccess.SYNC_LOCAL_FILE_NOT_IN_PROJECT;
         }
         /*
          *    -A  B  C -D | 107 | - no valid status - // TODO
@@ -775,7 +779,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
         )
         {
             /* local file is in database but deleted from project folder */
-            return 107;
+            return IJakeGuiAccess.SYNC_FILE_DELETED_LOCALLY;
         }
 
 /*        if( // doing code 100
@@ -790,7 +794,7 @@ public class JakeGuiAccess implements IJakeGuiAccess {
     return 100;
 }*/
 
-        return 100;
+        return IJakeGuiAccess.SYNC_NO_VALID_STATE;
     }
 
 

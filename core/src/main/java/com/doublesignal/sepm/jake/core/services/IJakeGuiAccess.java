@@ -35,7 +35,17 @@ import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
  */
 public interface IJakeGuiAccess {
 
-	/**
+    public static int SYNC_NO_VALID_STATE = 100;
+    public static int SYNC_FILE_IS_REMOTE = 101;
+    public static int SYNC_LOCAL_FILE_NOT_IN_PROJECT = 102;
+    public static int SYNC_FILE_IN_SYNC = 103;
+    public static int SYNC_FILE_REMOTELY_CHANGED = 104;
+    public static int SYNC_FILE_LOCALLY_CHANGED = 105;
+    public static int SYNC_FILE_IN_CONFLICT = 106;
+    public static int SYNC_FILE_DELETED_LOCALLY = 107;
+
+
+    /**
 	 * Login on the network Missing login information (null values) will be
 	 * retrieved from the configuration. If it is not stored either, a
 	 * LoginDataRequiredException is thrown.
