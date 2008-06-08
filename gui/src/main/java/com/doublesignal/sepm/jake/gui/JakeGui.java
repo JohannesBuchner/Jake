@@ -438,7 +438,7 @@ public class JakeGui extends JPanel implements Observer {
 
 		// ======== frame1 ========
 		{
-			mainFrame.setTitle("Jake - Please open/create a project");
+			mainFrame.setTitle("Jake");
 
 			mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icons/Jake.png"))
 					.getImage());
@@ -474,15 +474,7 @@ public class JakeGui extends JPanel implements Observer {
 					{
 						mainToolBar.setBorderPainted(false);
 						mainToolBar.setRollover(true);
-
-						// ---- openProjectFolderButton ----
-						openProjectFolderButton.setHorizontalAlignment(SwingConstants.RIGHT);
-						openProjectFolderButton.setIcon(new ImageIcon(getClass().getResource(
-								"/icons/project_folder.png")));
-						openProjectFolderButton.setToolTipText("Open Project Folder");
-						openProjectFolderButton.setText("Open Project Folder");
-						mainToolBar.add(openProjectFolderButton);
-
+						
 						// ---- refreshDatapoolViewButton ----
 						refreshDatapoolViewButton.setHorizontalAlignment(SwingConstants.RIGHT);
 						refreshDatapoolViewButton.setToolTipText("Refresh Datapool View");
@@ -570,25 +562,7 @@ public class JakeGui extends JPanel implements Observer {
 					// ======== fileMenu ========
 					{
 						fileMenu.setText("File");
-
-						// ---- newProjectMenuItem ----
-						newProjectMenuItem.setText("New Project...");
-						newProjectMenuItem.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								newProjectMenuItemActionPerformed(e);
-							}
-						});
-						fileMenu.add(newProjectMenuItem);
-
-						// ---- openProjectMenuItem ----
-						openProjectMenuItem.setText("Open Project...");
-						openProjectMenuItem.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								openProjectMenuItemActionPerformed(e);
-							}
-						});
-						fileMenu.add(openProjectMenuItem);
-
+						
 						// ---- preferencesMenuItem ----
 						preferencesMenuItem.setText("Preferences...");
 						preferencesMenuItem.addActionListener(new ActionListener() {
