@@ -409,5 +409,11 @@ public interface IJakeGuiAccess {
      * @return true on success, false on error
      */
     boolean importLocalFileIntoProject(String absolutePath, String destinationFolderRelPath);
+
+    /**
+     * Deletes a Project Member
+     * @param projectMember which is to be deleted
+     */
+	public void removeProjectMember(ProjectMember selectedMember);
     
 }
