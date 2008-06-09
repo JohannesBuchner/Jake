@@ -18,7 +18,7 @@ public interface IProjectMemberDao {
 	 * @return the ProjectMember requested
 	 * @throws NoSuchProjectMemberException if no such ProjectMember is found
 	 */
-	public ProjectMember getByUserId(String networkId) throws NoSuchProjectMemberException;
+	public ProjectMember getByUserId(String userid) throws NoSuchProjectMemberException;
 
 	/**
 	 * Gets all ProjectMembers.

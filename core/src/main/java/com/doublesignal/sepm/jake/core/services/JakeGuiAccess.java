@@ -35,6 +35,7 @@ import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
@@ -404,8 +405,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             throw new InvalidRootPathException();
         }
         
-        sync.setLogEntries(db.getLogEntryDao().getAll());
-        sync.setProjectMembers(db.getProjectMemberDao().getAll());
+        sync.setDatabase(db);
     }
 
 

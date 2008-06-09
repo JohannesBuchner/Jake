@@ -1,7 +1,12 @@
 package com.doublesignal.sepm.jake.sync;
 
+import java.rmi.NoSuchObjectException;
 import java.util.List;
 
+import com.doublesignal.sepm.jake.core.dao.IJakeDatabase;
+import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
+import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
@@ -75,15 +80,18 @@ public interface ISyncService {
 	 * @throws NetworkException
 	 * @throws NotLoggedInException
 	 * @throws TimeoutException
+	 * @throws NoSuchObjectException The JakeObject has no logentry
 	 * 
 	 * TODO: write the object content to the jakeobject or return a bytearray or
 	 * something similar (Strings look too human-readable).
 	 * NOTE: We don't have pullAndWriteToFile because JakeObjects don't have to 
 	 * be files
+	 * @throws NoSuchLogEntryException 
 	 */
 	public byte[] pull(JakeObject jo) 
 		throws NetworkException, NotLoggedInException, TimeoutException, 
-			OtherUserOfflineException, ObjectNotConfiguredException;
+			OtherUserOfflineException, ObjectNotConfiguredException, 
+			NoSuchObjectException, NoSuchLogEntryException;
 	
 	/**
 	 * Adds a log entry that the object has been modified/created/...
@@ -133,19 +141,11 @@ public interface ISyncService {
 	public void setICService(IICService ics);
 	
 	/**
-	 * Set the log to be used.
+	 * Set the database to be used.
 	 * This must be set before operations can be used.
-	 * @see LogEntry
 	 */
-	public void setLogEntries(List<LogEntry> le);
+	public void setDatabase(IJakeDatabase db);
 	
-	/**
-	 * set the project members list to be used.
-	 * This must be set before operations can be used.
-	 * @see ProjectMember
-	 */	
-	public void setProjectMembers(List<ProjectMember> pm);
-
 	/**
 	 * set the filesystem service to be used.
 	 * This must be set before operations can be used.
@@ -157,5 +157,5 @@ public interface ISyncService {
 	 * @return true iff setLogEntries, setProjectMembers and setFSService were
 	 *         called before
 	 */
-	public boolean isConfigured();	
+	public boolean isConfigured();
 }
