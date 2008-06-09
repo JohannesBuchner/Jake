@@ -28,17 +28,17 @@ public class PeopleTableModel extends AbstractTableModel {
 		this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
 		
-		jakeGuiAccess.addProjectMember("tesuserph@domain.com");
-		ProjectMember pm = new ProjectMember("test");
-		jakeGuiAccess.getProject().addMember(pm);
-		NoteObject o = new NoteObject("notename","notetext");
-		
-		jakeGuiAccess.getNotes().add(o);
-		log.info("*********************************");
-		int i;
-		for (i=0;i<jakeGuiAccess.getProject().getMembers().size();i++)
-		{log.info(jakeGuiAccess.getMembers().get(i).getUserId());}
-		log.info("*********************************");
+//		jakeGuiAccess.addProjectMember("tesuserph@domain.com");
+//		ProjectMember pm = new ProjectMember("test");
+//		jakeGuiAccess.getProject().addMember(pm);
+//		NoteObject o = new NoteObject("notename","notetext");
+//		
+//		jakeGuiAccess.getNotes().add(o);
+//		log.info("*********************************");
+//		int i;
+//		for (i=0;i<jakeGuiAccess.getProject().getMembers().size();i++)
+//		{log.info(jakeGuiAccess.getMembers().get(i).getUserId());}
+//		log.info("*********************************");
 		
 	}
 
@@ -58,7 +58,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	}
 
 	public int getMembersCount()	{
-		return members.size();
+		return this.members.size();
 		
 	}
 
@@ -71,7 +71,8 @@ public class PeopleTableModel extends AbstractTableModel {
 	 */
 	public int getOnlineMembersCount()	{
 		
-		for(ProjectMember p:getMembers())
+		
+		for(ProjectMember p:this.members)
 		{
 			if(p.getActive())
 			countActiveUser++;
@@ -87,6 +88,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	public void updateData() {
 		log.info("Updating People data...");
 		this.members = jakeGuiAccess.getMembers();
+		peopleUpdater.dataUpdated();
 
 	}
 
@@ -137,19 +139,13 @@ public class PeopleTableModel extends AbstractTableModel {
 		if (columnIndex == PeopleColumns.Comment.ordinal()) {
 			
 			ProjectMember foundProjectMember = members.get(rowIndex);
-			log.debug("handling a comment-change event");
+			log.debug("handling a note-change event");
 			if (foundProjectMember != null) {
 				log.debug((String) columnValue);
-				String comment = (String) columnValue;
-				//foundProjectMember.setNotes(comment);
-				//super.setValueAt(comment, rowIndex, columnIndex);
-//					try	{
-//						jakeGuiAccess.setProjectMemberNote(foundProjectMember.getUserId(),comment);
-//					}
-//						catch (NoSuchProjectMemberException e1)	{
-//							log.debug("No such Member found");
-//						}
-				foundProjectMember.setNotes(comment);
+				String note = (String) columnValue;
+				jakeGuiAccess.editProjectMemberNote(foundProjectMember, note);
+		        updateData();
+				//foundProjectMember.setNotes(note);
 			}
 		}
 		

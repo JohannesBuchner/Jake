@@ -31,7 +31,7 @@ public class PeoplePanel extends JPanel {
 	private PeopleTableModel peopleTableModel;
 	private Frame owner;
 
-	int tabindex = 0;
+	int tabindex = 1;
 	
 	public PeoplePanel(JakeGui gui) {
 		log.info("Initializing PeoplePanel.");
@@ -56,11 +56,8 @@ public class PeoplePanel extends JPanel {
 	public void updatePeopleUi() {
 		log.info("Updating people Panel...");
 		peopleTableModel.updateData();
-		if (tabindex >= 0)
-			jakeGui.getMainTabbedPane().setTitleAt(tabindex,
-					"People (" + peopleTableModel.getMembersCount()
-                    + "/" + FilesLib.getHumanReadableFileSize(peopleTableModel.getOnlineMembersCount()) + ")"	
-			);
+		if (tabindex >= 1)
+			jakeGui.getMainTabbedPane().setTitleAt(tabindex,getTitle());
 	}
 
 	public void initComponents() {
@@ -132,6 +129,7 @@ public class PeoplePanel extends JPanel {
 		renamePeopleMenuItem = new JMenuItem();
 		changeUserIdMenuItem = new JMenuItem();
 		removePeopleMenuItem = new JMenuItem();
+		addProjectMemberMenuItem = new JMenuItem();
 
 		// ---- sendMessageMenuItem ----
 		sendMessageMenuItem.setText("Send Message...");
@@ -154,7 +152,7 @@ public class PeoplePanel extends JPanel {
 		
 		peoplePopupMenu.add(showInfoPeopleMenuItem);
 
-		// ---- renamePeopleMenuItem ----
+		/*// ---- renamePeopleMenuItem ----
 		renamePeopleMenuItem.setText("Change Nickname...");
 		renamePeopleMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -170,7 +168,16 @@ public class PeoplePanel extends JPanel {
 				changeUserIdMenuItemActionPerformed(e);
 			}
 		});
-		peoplePopupMenu.add(changeUserIdMenuItem);
+		peoplePopupMenu.add(changeUserIdMenuItem);*/
+		
+		// ---- addProjectMemberMenuItem ----
+		addProjectMemberMenuItem.setText("Add project member...");
+		addProjectMemberMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addProjectMemberMenuItemActionPerformed(e);
+			}
+		});
+		peoplePopupMenu.add(addProjectMemberMenuItem);
 
 		// ---- removePeopleMenuItem ----
 		removePeopleMenuItem.setText("Remove Member...");
@@ -205,11 +212,12 @@ public class PeoplePanel extends JPanel {
 	
 	private void removePeopleMenuItemActionPerformed(ActionEvent event)
 	    {
-	        log.info("removePeopleMenuItemActionPerformed");
+	        log.info("removePeopleMenuItemActionPerformed"+getSelectedMember().getUserId());
 	      
 	        //log.info(getSelectedMember().getUserId());
 	        
 	        jakeGuiAccess.removeProjectMember(getSelectedMember());
+	        updatePeopleUi();
 			
 	       //updatePeopleUi();
 	    }
@@ -218,6 +226,19 @@ public class PeoplePanel extends JPanel {
         log.info("openExecutFileMenuItemActionEvent");
         
     }
+	
+	private void addProjectMemberMenuItemActionPerformed(ActionEvent e) {
+		log.info("add Project Member.");
+		AddProjectMemberDialog addProjectMemberDialog = new AddProjectMemberDialog(jakeGui.getMainFrame());
+		addProjectMemberDialog.setVisible(true);
+
+		if (addProjectMemberDialog.isSaved()) {
+			jakeGuiAccess.createNote(addProjectMemberDialog.getContent());
+			jakeGuiAccess.addProjectMember(addProjectMemberDialog.getContent());
+		}
+
+		updatePeopleUi();
+	}
 	
 	private boolean isPersonSelected() {
 		return peopleTable.getSelectedRow() >= 0;
@@ -243,6 +264,7 @@ public class PeoplePanel extends JPanel {
 	private JMenuItem showInfoPeopleMenuItem;
 	private JMenuItem renamePeopleMenuItem;
 	private JMenuItem changeUserIdMenuItem;
+	private JMenuItem addProjectMemberMenuItem;
 	private JMenuItem removePeopleMenuItem;
 
 	
