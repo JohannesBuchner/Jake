@@ -241,7 +241,7 @@ public class FilesPanel extends JPanel {
             }
 
         }
-        // no else part, because if the user cancels deletion, nothing should happen!       
+        updateUI();
     }
 
     private void viewLogForFileMenuItemActionPerfomed(ActionEvent event) {

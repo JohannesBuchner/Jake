@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -25,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
@@ -54,7 +57,9 @@ public class ResolveConflictDialog extends JDialog {
         this.localFile = localObject;
         this.jakeGuiAccess = jakeGuiAccess;
         
-        remoteFile = localFile;
+        //load the remote file...
+        remoteFile = this.jakeGuiAccess.pullRemoteFile(localFile);
+        
 		initComponents();
 	}
 
@@ -63,7 +68,11 @@ public class ResolveConflictDialog extends JDialog {
 	}
 	
 	private void okButtonActionPerformed(ActionEvent e) {
-		//keep one file
+		if (useRemoteFileRadio.isSelected()) {
+			//keep remote file
+		} else {
+			//keep local file
+		}
 	}
 
 

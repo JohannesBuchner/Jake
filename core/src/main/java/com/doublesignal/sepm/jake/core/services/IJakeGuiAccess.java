@@ -394,6 +394,12 @@ public interface IJakeGuiAccess {
 	 */
 	void pullJakeObject(JakeObject jakeObject);
 
+	/**
+    * Pull the remote file of a file that is in conflict.
+    * @param localFile The local file that is in conflict
+    * @return The remote counterpart
+    */
+   public FileObject pullRemoteFile(FileObject localFile);
 
     /**
      * Querys the FSS and Database for the current data and makes shure

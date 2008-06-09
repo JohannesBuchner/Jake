@@ -10,7 +10,6 @@ import com.doublesignal.sepm.jake.fss.*;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
-import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
@@ -23,6 +22,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.rmi.NoSuchObjectException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -218,13 +218,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public List<LogEntry> getLog() {
-        // TODO Auto-generated method stub
-        return null;
+        return db.getLogEntryDao().getAll();
     }
 
     public List<LogEntry> getLog(JakeObject object) {
-        // TODO Auto-generated method stub
-        return null;
+        return db.getLogEntryDao().getAllOfJakeObject(object);
     }
 
 	public void registerReceiveMessageListener(IJakeMessageReceiveListener listener) {
@@ -604,9 +602,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public boolean deleteJakeObject(JakeObject jakeObject) {
+    	log.debug("trying to delete object: " + jakeObject.getName());
+    	Boolean sucess = false;
         try {
 			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
-			fss.deleteFile(jakeObject.getName());
+			sucess = fss.deleteFile(jakeObject.getName());
 			refreshFileObjects();
 		} catch (FileNotFoundException e) {
 			log.warn("Failed to delete file: File not found!");
@@ -617,7 +617,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (NotAReadableFileException e) {
 			log.warn("Failed to delete file: File is not readable");
 		}
-		return false;
+		return sucess;
     }
 
     public void propagateJakeObject(JakeObject jakeObject) {
@@ -626,6 +626,15 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     public void pullJakeObject(JakeObject jakeObject) {
         // todo
+    }
+    
+    /**
+     * Pull the remote file of a file that is in conflict.
+     * @param localFile The local file that is in conflict
+     * @return The remote counterpart
+     */
+    public FileObject pullRemoteFile(FileObject localFile) {
+    	return localFile;
     }
 
     public void refreshFileObjects() {
