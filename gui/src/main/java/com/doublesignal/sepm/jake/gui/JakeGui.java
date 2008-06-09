@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -46,6 +47,8 @@ public class JakeGui extends JPanel implements Observer {
 
 	private Project currentProject = null;
 	private SearchMode searchMode = SearchMode.Both;
+	
+	private LinkedList<ActionListener> loginStatusListeners;
 
 	public JTabbedPane getMainTabbedPane() {
 		return mainTabbedPane;
@@ -77,7 +80,9 @@ public class JakeGui extends JPanel implements Observer {
 	public JakeGui(IJakeGuiAccess jakeGuiAccess) {
 		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
 		translator = (ITranslationProvider) factory.getBean("translationProvider");
-
+		
+		loginStatusListeners = new LinkedList<ActionListener>();
+		
 		setJakeGuiAccess(jakeGuiAccess);
 		setSystemProperties();
 		setNativeLookAndFeel();
@@ -89,6 +94,8 @@ public class JakeGui extends JPanel implements Observer {
 		setStatusMsg("started");
 		log.debug("JakeGui loaded.");
 		peopleViewMenuItemActionPerformed(null);
+		
+
 
 	}
 
@@ -183,7 +190,7 @@ public class JakeGui extends JPanel implements Observer {
 	 *            Should we first load the stored config values
 	 * @author johannes
 	 */
-	private void signInNetwork(String username, String password, boolean fillFromConfig) {
+	public void signInNetwork(String username, String password, boolean fillFromConfig) {
 		log.debug("Network signin procedure");
 
 		boolean showDialog = (username == null || password == null) && !fillFromConfig;
@@ -207,12 +214,14 @@ public class JakeGui extends JPanel implements Observer {
 			frm.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
+					log.debug("window close listener, WindowEvent e: " + e.toString());
 					log.debug("Login Dialog was: " + frm.getStatus());
 					if (frm.getStatus() != JXLoginPane.Status.SUCCEEDED) {
 						return;
 					}
 					String username = login.getUserName();
 					String password = new String(login.getPassword());
+					log.debug("login.getSaveMode is: " + login.getSaveMode());
 					if (login.getSaveMode() == JXLoginPane.SaveMode.USER_NAME
 							|| login.getSaveMode() == JXLoginPane.SaveMode.BOTH) {
 						log.debug("Saving username");
@@ -234,27 +243,38 @@ public class JakeGui extends JPanel implements Observer {
 		try {
 			jakeGuiAccess.login(username, password);
 			log.debug("Login was successful");
+			notifyLoginListeners();
 			return;
 		} catch (LoginDataRequiredException e1) {
 			log.debug("LoginDataRequired");
 			signInNetwork(username, password, false);
 			return;
 		} catch (LoginDataNotValidException e1) {
-			log.debug("LoginDataNotValid");
-			UserDialogHelper.error(mainFrame, translator.get("LoginDataNotValid"));
+			log.debug("LoginDataNotValid: LoginDataNotValidException");
+			UserDialogHelper.error(mainFrame, translator.get("LoginDialogInvalidLoginTitle"), translator.get("LoginDialogInvalidLoginText"));
 			signInNetwork(username, null, false);
 			return;
 		} catch (LoginUseridNotValidException e) {
-			log.debug("LoginUseridNotValid");
-			UserDialogHelper.error(mainFrame, translator.get("LoginUseridNotValid"));
+			log.debug("LoginUseridNotValid: LoginUseridNotValidException");
+			UserDialogHelper.error(mainFrame, translator.get("LoginDialogInvalidLoginTitle"), translator.get("LoginDialogInvalidLoginText"));
 			login.setErrorMessage(translator.get("LoginUseridNotValid"));
 			signInNetwork(username, null, false);
 			return;
 		} catch (NetworkException e1) {
 			log.debug("NetworkException");
-			UserDialogHelper.error(mainFrame, translator.get("NetworkError", e1
+			UserDialogHelper.error(mainFrame, translator.get("Error"), translator.get("NetworkError", e1
 					.getLocalizedMessage()));
 			return;
+		}
+	}
+	
+	public void addLoginStatusListener(ActionListener l) {
+		loginStatusListeners.add(l);
+	}
+	
+	private void notifyLoginListeners() {
+		for (ActionListener listener : loginStatusListeners) {
+			listener.actionPerformed(new ActionEvent(this, 0, "updateLoginStatus"));
 		}
 	}
 
@@ -262,13 +282,23 @@ public class JakeGui extends JPanel implements Observer {
 	 * @author johannes
 	 */
 	private void signOutNetworkMenuItemActionPerformed(ActionEvent e) {
+		signOutNetwork();
+	}
+	
+	/**
+	 * Sign  out...
+	 */
+	public void signOutNetwork() {
 		try {
 			jakeGuiAccess.logout();
 		} catch (NetworkException e1) {
 			UserDialogHelper.inform(mainFrame, "", translator.get("NetworkError", e1.getMessage()),
 					JOptionPane.ERROR_MESSAGE);
 		}
+		notifyLoginListeners();
 	}
+	
+	
 
 	/**
 	 * ** Project Menu ****

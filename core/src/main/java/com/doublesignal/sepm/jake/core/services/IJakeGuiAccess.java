@@ -438,5 +438,5 @@ public interface IJakeGuiAccess {
      * @param projectMember which is to be deleted
      */
 	public void removeProjectMember(ProjectMember selectedMember);
-    
+	
 }

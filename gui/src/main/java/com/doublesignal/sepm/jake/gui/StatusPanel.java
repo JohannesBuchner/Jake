@@ -31,6 +31,11 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 	public StatusPanel(JakeGui gui) {
 		log.info("Initializing StatusPanel.");
 		this.gui = gui;
+		this.gui.addLoginStatusListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateData();
+			}
+		});
 		this.jakeGuiAccess = gui.getJakeGuiAccess();
 		this.jakeGuiAccess.registerReceiveMessageListener(this);
 
@@ -121,10 +126,15 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 	}
 
 	private void connectionStatusButtonActionPerformed(ActionEvent e) {
-		new JXLoginDialog().setVisible(true);
+		if (jakeGuiAccess.isLoggedIn()) {
+			gui.signOutNetwork();
+		} else {
+			gui.signInNetwork(null, null, true);
+		}
 	}
 
 	void initComponents() {
+		
 		statusLabel = new JLabel();
 		statusButtonsPanel = new JPanel();
 		messageReceivedStatusButton = new JButton();
