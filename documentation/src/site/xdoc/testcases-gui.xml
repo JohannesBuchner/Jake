@@ -1027,15 +1027,15 @@
 							<!-- test case # //-->
 							<td>ContextMenu-&gt;Delete File</td>
 							<!-- function //-->
-							<td>A window pops up, asking the User if he really wants to delete the file</td>
+							<td>A window pops up, asking the User if he really wants to delete the file. The file is deleted from the fss.</td>
 							<!-- expected result -->
-							<td></td>
+							<td>(file must be under sync) select a file, select delete from the context menu, confirm deletion</td>
 							<!-- inputs -->
-							<td></td>
+							<td>file deleted, an empty file is still displayed</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-09 13>29</td>
 							<!-- passed? -->
 							<td>High</td>
 							<!-- priority: very high, high, medium, low, very low -->
