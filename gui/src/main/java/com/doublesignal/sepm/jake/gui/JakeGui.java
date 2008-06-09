@@ -331,6 +331,21 @@ public class JakeGui extends JPanel implements Observer {
 	private void newNoteProjectMenuItemActionPerformed(ActionEvent e) {
 		new NoteEditorDialog(mainFrame).setVisible(true);
 	}
+	
+	private void addProjectMemberMenutItemActionPerformed(
+			ActionEvent e) {
+		log.info("add Project Member.");
+		AddProjectMemberDialog addProjectMemberDialog = new AddProjectMemberDialog(getMainFrame());
+		addProjectMemberDialog.setVisible(true);
+
+		if (addProjectMemberDialog.isSaved()) {
+			jakeGuiAccess.createNote(addProjectMemberDialog.getContent());
+			jakeGuiAccess.addProjectMember(addProjectMemberDialog.getContent());
+		}
+
+		peoplePanel.updatePeopleUi();
+		
+	}
 
 	private void setAutoPushMenuItemActionPerformed(ActionEvent e) {
 		try {
@@ -749,6 +764,11 @@ public class JakeGui extends JPanel implements Observer {
 
 						// ---- addProjectMemberMenuItem ----
 						addProjectMemberMenuItem.setText("Add Project Member...");
+						addProjectMemberMenuItem.addActionListener(new ActionListener()	{
+							public void actionPerformed(ActionEvent e)	{
+								addProjectMemberMenutItemActionPerformed(e);
+							}
+						});
 						projectMenu.add(addProjectMemberMenuItem);
 
 					}

@@ -50,7 +50,7 @@ public class AddProjectMemberDialog extends JDialog {
 	 * @return note text content.
 	 */
 	public String getContent() {
-		return noteTextArea.getText();
+		return AddProjectMemberArea.getText();
 	}
 
 	/**
@@ -78,8 +78,8 @@ public class AddProjectMemberDialog extends JDialog {
 	private void initComponents() {
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		noteScrollPane = new JScrollPane();
-		noteTextArea = new JTextArea();
+		ProjectMemberScrollPane = new JScrollPane();
+		AddProjectMemberArea = new JTextArea();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
@@ -92,10 +92,10 @@ public class AddProjectMemberDialog extends JDialog {
 
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 
-		noteTextArea.setText("");
-		noteTextArea.setLineWrap(true);
-		noteScrollPane.setViewportView(noteTextArea);
-		contentPanel.add(noteScrollPane);
+		AddProjectMemberArea.setText("");
+		AddProjectMemberArea.setLineWrap(true);
+		ProjectMemberScrollPane.setViewportView(AddProjectMemberArea);
+		contentPanel.add(ProjectMemberScrollPane);
 		dialogPane.add(contentPanel, BorderLayout.CENTER);
 
 		buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
@@ -136,8 +136,8 @@ public class AddProjectMemberDialog extends JDialog {
 
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JScrollPane noteScrollPane;
-	private JTextArea noteTextArea;
+	private JScrollPane ProjectMemberScrollPane;
+	private JTextArea AddProjectMemberArea;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;

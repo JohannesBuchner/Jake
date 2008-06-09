@@ -233,7 +233,6 @@ public class PeoplePanel extends JPanel {
 		addProjectMemberDialog.setVisible(true);
 
 		if (addProjectMemberDialog.isSaved()) {
-			jakeGuiAccess.createNote(addProjectMemberDialog.getContent());
 			jakeGuiAccess.addProjectMember(addProjectMemberDialog.getContent());
 		}
 
