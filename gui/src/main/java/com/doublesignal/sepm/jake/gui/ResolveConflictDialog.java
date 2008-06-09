@@ -1,68 +1,107 @@
 package com.doublesignal.sepm.jake.gui;
-import java.awt.*;
+import info.clearthought.layout.TableLayout;
+import info.clearthought.layout.TableLayoutConstraints;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
-import javax.swing.*;
-import javax.swing.border.*;
-import info.clearthought.layout.*;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.border.EmptyBorder;
+
+import org.apache.log4j.Logger;
+
+import antlr.FileLineFormatter;
+
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
+import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 
 
 /**
- * @author Peter Steinberger
+ * @author Peter Steinberger, Simon
  */
 @SuppressWarnings("serial")
 public class ResolveConflictDialog extends JDialog {
 
-    private JakeObject jakeObject;
+    private FileObject localFile, remoteFile;
+    private IJakeGuiAccess jakeGuiAccess;
 
-    public ResolveConflictDialog setJakeObject(JakeObject jakeObject) {
-        this.jakeObject = jakeObject;
-        return this;
-    }
+    private static ITranslationProvider translator = new TextTranslationProvider();
+    private static Logger log = Logger.getLogger(ResolveConflictDialog.class);
 
-    public ResolveConflictDialog(Frame owner) {
+
+    /**
+     * Setup the dialog and load all necessary data, i.e. the local and remote file.
+     * @param owner
+     * @param localObject
+     * @param jakeGuiAccess
+     */
+    public ResolveConflictDialog(Frame owner, FileObject localObject, IJakeGuiAccess jakeGuiAccess) {
 		super(owner);
+        this.localFile = localObject;
+        this.jakeGuiAccess = jakeGuiAccess;
+        
+        remoteFile = localFile;
 		initComponents();
 	}
 
-	public ResolveConflictDialog(Dialog owner) {
-		super(owner);
-		initComponents();
-	}
-	
 	private void cancelButtonActionPerformed(ActionEvent e) {
 		this.setVisible(false);
-	}	
+	}
+	
+	private void okButtonActionPerformed(ActionEvent e) {
+		//keep one file
+	}
+
 
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		// Generated using JFormDesigner Evaluation license - tester tester
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		panel1 = new JPanel();
-		label12 = new JLabel();
-		label13 = new JLabel();
-		label1 = new JLabel();
-		label5 = new JLabel();
-		label6 = new JLabel();
-		label2 = new JLabel();
-		label7 = new JLabel();
-		label8 = new JLabel();
-		label4 = new JLabel();
-		label9 = new JLabel();
-		label10 = new JLabel();
-		button1 = new JButton();
-		button2 = new JButton();
-		radioButton1 = new JRadioButton();
-		radioButton2 = new JRadioButton();
+		mainPanel = new JPanel();
+		localLabel = new JLabel();
+		remoteLabel = new JLabel();
+		lastEditorLabel = new JLabel();
+		localEditorLabel = new JLabel();
+		remoteEditorLabel = new JLabel();
+		lastEditLabel = new JLabel();
+		localFileEditTimeLabel = new JLabel();
+		remoteFileEditTimeLabel = new JLabel();
+		fileSizeLabel = new JLabel();
+		localFileSizeLabel = new JLabel();
+		remoteFileSizeLabel = new JLabel();
+		openLocalFileButton = new JButton();
+		openRemoteFileButton = new JButton();
+		useLocalFileRadio = new JRadioButton();
+		useRemoteFileRadio = new JRadioButton();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
-		panel2 = new JPanel();
-		label3 = new JLabel();
-		label11 = new JLabel();
+		headerPanel = new JPanel();
+		headerLabel = new JLabel();
+		filenameLabel = new JLabel();
 
 		//======== this ========
 		setTitle("Resolve Conflict");
@@ -78,79 +117,116 @@ public class ResolveConflictDialog extends JDialog {
 			{
 				contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 
-				//======== panel1 ========
+				//======== main panel ========
 				{
-					panel1.setLayout(new TableLayout(new double[][] {
+					mainPanel.setLayout(new TableLayout(new double[][] {
 						{132, 121, 134},
 						{26, TableLayout.PREFERRED, 19, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
-					((TableLayout)panel1.getLayout()).setHGap(5);
-					((TableLayout)panel1.getLayout()).setVGap(5);
+					((TableLayout)mainPanel.getLayout()).setHGap(5);
+					((TableLayout)mainPanel.getLayout()).setVGap(5);
 
-					//---- label12 ----
-					label12.setText("Local");
-					label12.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-					panel1.add(label12, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- local ----
+					localLabel.setText(translator.get("ConflictDialogLocal"));
+					localLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+					mainPanel.add(localLabel, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label13 ----
-					label13.setText("Remote");
-					label13.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-					panel1.add(label13, new TableLayoutConstraints(2, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- remote ----
+					remoteLabel.setText(translator.get("ConflictDialogRemote"));
+					remoteLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+					mainPanel.add(remoteLabel, new TableLayoutConstraints(2, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label1 ----
-					label1.setText("Last editor:");
-					panel1.add(label1, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- last edit ----
+					lastEditorLabel.setText(translator.get("ConflictDialogLastEditor"));
+					mainPanel.add(lastEditorLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label5 ----
-					label5.setText("Simon");
-					panel1.add(label5, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					try {
+						//---- local editor ----
+						localEditorLabel.setText(jakeGuiAccess.getLastModifier(localFile).getUserId());
+						mainPanel.add(localEditorLabel, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label6 ----
-					label6.setText("Chris");
-					panel1.add(label6, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+						//---- remote editor ----
+						remoteEditorLabel.setText(jakeGuiAccess.getLastModifier(remoteFile).getUserId());
+						mainPanel.add(remoteEditorLabel, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label2 ----
-					label2.setText("Last edit time:");
-					panel1.add(label2, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+						//---- last edited ----
+						lastEditLabel.setText(translator.get("ConflictDialogLastEdit"));
+						mainPanel.add(lastEditLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
-					//---- label7 ----
-					label7.setText("Yesterday, 11:00");
-					panel1.add(label7, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+						//---- local last edited ----
+						localFileEditTimeLabel.setText(jakeGuiAccess.getLastModified(localFile).toString());
+						mainPanel.add(localFileEditTimeLabel, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
-					//---- label8 ----
-					label8.setText("Today, 12:00");
-					label8.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-					panel1.add(label8, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+						//---- remote last edited ----
+						remoteFileEditTimeLabel.setText(jakeGuiAccess.getLastModified(remoteFile).toString());
+						mainPanel.add(remoteFileEditTimeLabel, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+					} catch (NoSuchLogEntryException e2) {
+						log.warn("no such logentry: " + e2.getMessage());
+						log.info("closing window");
+						this.setVisible(false);
+					}
 
-					//---- label4 ----
-					label4.setText("File size:");
-					panel1.add(label4, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- file size ----
+					fileSizeLabel.setText(translator.get("ConflictDialogFileSize"));
+					mainPanel.add(fileSizeLabel, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label9 ----
-					label9.setText("600 KB");
-					label9.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-					panel1.add(label9, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- local file size ----
+					localFileSizeLabel.setText(FilesLib.getHumanReadableFileSize(jakeGuiAccess.getFileSize(localFile)));
+					mainPanel.add(localFileSizeLabel, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label10 ----
-					label10.setText("400 KB");
-					panel1.add(label10, new TableLayoutConstraints(2, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- remote file size ----
+					remoteFileSizeLabel.setText(FilesLib.getHumanReadableFileSize(jakeGuiAccess.getFileSize(remoteFile)));
+					mainPanel.add(remoteFileSizeLabel, new TableLayoutConstraints(2, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- button1 ----
-					button1.setText("Open");
-					panel1.add(button1, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- open local ----
+					openLocalFileButton.setText(translator.get("ConflictDialogOpen"));
+					openLocalFileButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							try {
+								jakeGuiAccess.launchFile(localFile.getName());
+							} catch (Exception e1) {
+								log.warn("Failed to launch file: " + e1.getMessage());
+							}
+						}
+					});
+					mainPanel.add(openLocalFileButton, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- button2 ----
-					button2.setText("Open");
-					panel1.add(button2, new TableLayoutConstraints(2, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- open remote ----
+					openRemoteFileButton.setText(translator.get("ConflictDialogOpen"));
+					openRemoteFileButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							try {
+								jakeGuiAccess.launchFile(remoteFile.getName());
+							} catch (Exception e1) {
+								log.warn("Failed to launch file: " + e1.getMessage());
+							}
+						}
+					});
+					mainPanel.add(openRemoteFileButton, new TableLayoutConstraints(2, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- radioButton1 ----
-					radioButton1.setText("Use local file");
-					panel1.add(radioButton1, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- use local ----
+					useLocalFileRadio.setText(translator.get("ConflictDialogUseLocalFile"));
+					useLocalFileRadio.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							okButton.setEnabled(true);
+						}
+					});
+					mainPanel.add(useLocalFileRadio, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- radioButton2 ----
-					radioButton2.setText("Use remote file");
-					panel1.add(radioButton2, new TableLayoutConstraints(2, 5, 2, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- use remote ----
+					useRemoteFileRadio.setText(translator.get("ConflictDialogUseRemoteFile"));
+					useRemoteFileRadio.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							okButton.setEnabled(true);
+						}
+					});
+					mainPanel.add(useRemoteFileRadio, new TableLayoutConstraints(2, 5, 2, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					
+					//---- group
+					ButtonGroup group = new ButtonGroup();
+					group.add(useLocalFileRadio);
+					group.add(useRemoteFileRadio);
 				}
-				contentPanel.add(panel1);
+				contentPanel.add(mainPanel);
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -162,7 +238,7 @@ public class ResolveConflictDialog extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
 				//---- cancelButton ----
-				cancelButton.setText("Cancel");
+				cancelButton.setText(translator.get("ConflictDialogCancel"));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						cancelButtonActionPerformed(e);
@@ -173,8 +249,13 @@ public class ResolveConflictDialog extends JDialog {
 					new Insets(0, 0, 0, 5), 0, 0));
 				
 				//---- okButton ----
-				okButton.setText("OK");
+				okButton.setText(translator.get("ConflictDialogOK"));
 				okButton.setEnabled(false);
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						okButtonActionPerformed(e);
+					}
+				});
 				buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
@@ -182,20 +263,20 @@ public class ResolveConflictDialog extends JDialog {
 			}
 			dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
-			//======== panel2 ========
+			//======== header ========
 			{
-				panel2.setLayout(new BorderLayout());
+				headerPanel.setLayout(new BorderLayout());
 
-				//---- label3 ----
-				label3.setText("There is a conflict for ");
-				panel2.add(label3, BorderLayout.WEST);
+				//---- header ----
+				headerLabel.setText(translator.get("ConflictDialogHeader"));
+				headerPanel.add(headerLabel, BorderLayout.WEST);
 
-				//---- label11 ----
-				label11.setText("Docs/SEPM_Architekt.txt");
-				label11.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-				panel2.add(label11, BorderLayout.CENTER);
+				//---- filename ----
+				filenameLabel.setText(localFile.getName());
+				filenameLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+				headerPanel.add(filenameLabel, BorderLayout.CENTER);
 			}
-			dialogPane.add(panel2, BorderLayout.NORTH);
+			dialogPane.add(headerPanel, BorderLayout.NORTH);
 		}
 		contentPane.add(dialogPane, BorderLayout.CENTER);
 		pack();
@@ -207,27 +288,27 @@ public class ResolveConflictDialog extends JDialog {
 	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JPanel panel1;
-	private JLabel label12;
-	private JLabel label13;
-	private JLabel label1;
-	private JLabel label5;
-	private JLabel label6;
-	private JLabel label2;
-	private JLabel label7;
-	private JLabel label8;
-	private JLabel label4;
-	private JLabel label9;
-	private JLabel label10;
-	private JButton button1;
-	private JButton button2;
-	private JRadioButton radioButton1;
-	private JRadioButton radioButton2;
+	private JPanel mainPanel;
+	private JLabel localLabel;
+	private JLabel remoteLabel;
+	private JLabel lastEditorLabel;
+	private JLabel localEditorLabel;
+	private JLabel remoteEditorLabel;
+	private JLabel lastEditLabel;
+	private JLabel localFileEditTimeLabel;
+	private JLabel remoteFileEditTimeLabel;
+	private JLabel fileSizeLabel;
+	private JLabel localFileSizeLabel;
+	private JLabel remoteFileSizeLabel;
+	private JButton openLocalFileButton;
+	private JButton openRemoteFileButton;
+	private JRadioButton useLocalFileRadio;
+	private JRadioButton useRemoteFileRadio;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;
-	private JPanel panel2;
-	private JLabel label3;
-	private JLabel label11;
+	private JPanel headerPanel;
+	private JLabel headerLabel;
+	private JLabel filenameLabel;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }

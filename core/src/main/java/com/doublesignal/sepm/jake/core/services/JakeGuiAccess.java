@@ -360,7 +360,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public void launchFile(String relpath) throws InvalidFilenameException, LaunchException,
-            IOException, NoProjectLoadedException {
+            IOException {
         fss.launchFile(relpath);
     }
 
@@ -605,8 +605,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     public boolean deleteJakeObject(JakeObject jakeObject) {
         try {
-			fss.deleteFile(jakeObject.getName());
 			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
+			fss.deleteFile(jakeObject.getName());
+			refreshFileObjects();
 		} catch (FileNotFoundException e) {
 			log.warn("Failed to delete file: File not found!");
 		} catch (NotAFileException e) {

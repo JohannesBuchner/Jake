@@ -15,6 +15,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 
+import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
@@ -203,9 +204,9 @@ public class FilesPanel extends JPanel {
 
 
     private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {
-        JakeObject fileObject = getSelectedFile();
-        if (fileObject != null)
-            new ResolveConflictDialog(jakeGui.getMainFrame()).setJakeObject(fileObject).setVisible(true);
+        JakeObject localFile = getSelectedFile();
+        if (localFile != null && localFile.getClass().equals(FileObject.class))
+            new ResolveConflictDialog(jakeGui.getMainFrame(), (FileObject)localFile, jakeGuiAccess).setVisible(true);
     }
 
 
