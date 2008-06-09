@@ -4,7 +4,6 @@ import info.clearthought.layout.TableLayoutConstraints;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -12,7 +11,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -25,15 +23,9 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
-import antlr.FileLineFormatter;
-
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
-import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
-import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 
