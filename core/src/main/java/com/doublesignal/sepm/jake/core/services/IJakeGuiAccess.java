@@ -17,6 +17,7 @@ import com.doublesignal.sepm.jake.ics.exceptions.*;
 /**
  * @author domdorn
  * @author johannes
+ * @author philipp
  */
 public interface IJakeGuiAccess {
 
@@ -146,9 +147,10 @@ public interface IJakeGuiAccess {
 	/**
 	 * Add a new Member to a Project
 	 * 
-	 * @param UserId
+	 * @param ProjectMember
 	 */
 	public void addProjectMember(String UserId);
+	
 	public List<ProjectMember> getMembers();
 
 	public Project getProject();
@@ -439,4 +441,21 @@ public interface IJakeGuiAccess {
      */
 	public void removeProjectMember(ProjectMember selectedMember);
 	
+	/**
+     * Edit a Note of a project member
+     * @param projectMember which is to be updated
+     * @param note which is to be edited
+     */
+	public void editProjectMemberNote(ProjectMember selectedMember , String note);
+
+	/**
+     * Delete a project member
+     * @param selectedMember which is to be updated
+     * @param nickName which is to be edited
+     */
+	public void editProjectMemberNickName(ProjectMember selectedMember , String nickName);
+	    
+    
+
+
 }

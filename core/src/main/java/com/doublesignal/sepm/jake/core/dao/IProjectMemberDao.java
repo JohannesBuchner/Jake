@@ -42,4 +42,20 @@ public interface IProjectMemberDao {
 	 * @param member
 	 */
 	public void remove(ProjectMember member);
+
+	/**
+	 * Edits a note of a project member
+	 *
+	 * @param member The member to edit
+	 * @param note The note to be inserted
+	 */
+	public void editNote(ProjectMember member, String note);
+
+	/**
+	 * Removes a ProjectMember from the database. If the ProjectMember didn't exist in the first place, nothing is done.
+	 *
+	 * @param member The member to edit
+	 * @param nickName The note to be inserted
+	 */
+	public void editNickName(ProjectMember member, String nickName);
 }

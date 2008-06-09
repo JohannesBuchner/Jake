@@ -55,4 +55,24 @@ public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProje
 		parameters.put("userid", member.getUserId());
 		getSimpleJdbcTemplate().update(PROJECTMEMBER_DELETE, parameters);
 	}
+
+
+	public void editNickName(ProjectMember member, String nickName) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("userid", member.getUserId());
+		parameters.put("nick", nickName);
+		parameters.put("notes", member.getNotes());
+		getSimpleJdbcTemplate().update(PROJECTMEMBER_UPDATE, parameters);
+	}
+
+	
+	public void editNote(ProjectMember member, String note) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("userid", member.getUserId());
+		parameters.put("notes", note);
+		parameters.put("nick", member.getNickname());
+		getSimpleJdbcTemplate().update(PROJECTMEMBER_UPDATE, parameters);
+		
+	}
+	
 }

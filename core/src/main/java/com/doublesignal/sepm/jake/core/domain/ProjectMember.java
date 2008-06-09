@@ -41,6 +41,10 @@ public class ProjectMember {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	/**
 	 * Tests if two <code>projectMembers</code>s are equal

@@ -123,8 +123,19 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     
     public void removeProjectMember(ProjectMember selectedMember)	{
     	 log.info("remove Project Member with ID :" + selectedMember.getUserId());
-    	//pm.remove(selectedMember);
-    	currentProject.removeMember(selectedMember);
+    	
+    	db.getProjectMemberDao().remove(selectedMember);
+    	//currentProject.removeMember(selectedMember);
+    }
+    
+    public void editProjectMemberNote(ProjectMember selectedMember , String note)	{
+    	log.info("edit Note for Project Member with ID :" + selectedMember.getUserId());
+    	db.getProjectMemberDao().editNote(selectedMember,note);
+    }
+    
+    public void editProjectMemberNickName(ProjectMember selectedMember , String nickName)	{
+    	log.info("edit NickName for Project Member with ID :" + selectedMember.getUserId());
+    	db.getProjectMemberDao().editNickName(selectedMember,nickName);
     }
 
     public List<JakeObject> getChangedObjects() {
@@ -329,7 +340,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public List<ProjectMember> getMembers()	{
-    	return currentProject.getMembers();
+    	return db.getProjectMemberDao().getAll();
     	
     }
     
