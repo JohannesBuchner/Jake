@@ -1,11 +1,14 @@
 package com.doublesignal.sepm.jake.gui;
+import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import info.clearthought.layout.TableLayout;
+import info.clearthought.layout.TableLayoutConstraints;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import info.clearthought.layout.*;
+import java.util.Date;
 
 
 /**
@@ -13,13 +16,18 @@ import info.clearthought.layout.*;
  */
 @SuppressWarnings("serial")
 public class ReceiveMessageDialog extends JDialog {
-	public ReceiveMessageDialog(Frame owner) {
+	private JakeMessage message;
+	private Date receivedAt;
+
+	public ReceiveMessageDialog(Frame owner, JakeMessage jakeMessage) {
 		super(owner);
+		this.message = jakeMessage;
 		initComponents();
 	}
 
-	public ReceiveMessageDialog(Dialog owner) {
+	public ReceiveMessageDialog(Dialog owner, JakeMessage jakeMessage) {
 		super(owner);
+		this.message = jakeMessage;
 		initComponents();
 	}
 	
@@ -41,7 +49,7 @@ public class ReceiveMessageDialog extends JDialog {
 		cancelButton = new JButton();
 
 		//======== this ========
-		setTitle("Message");
+		setTitle("Message from " + message.getSender().getUserId());
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -57,7 +65,7 @@ public class ReceiveMessageDialog extends JDialog {
 				//======== messageScrollPane ========
 				{
 					//---- messageTextArea ----
-					messageTextArea.setText("Erledigt.");
+					messageTextArea.setText(message.getContent());
 					messageTextArea.setLineWrap(true);
 					messageTextArea.setEditable(false);
 					messageScrollPane.setViewportView(messageTextArea);
@@ -76,7 +84,7 @@ public class ReceiveMessageDialog extends JDialog {
 					panel1.add(label2, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label1 ----
-					label1.setText("Johannes");
+					label1.setText(message.getSender().getUserId());
 					panel1.add(label1, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label3 ----
@@ -84,7 +92,7 @@ public class ReceiveMessageDialog extends JDialog {
 					panel1.add(label3, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label4 ----
-					label4.setText("Yesterday, 11:00");
+					label4.setText(this.message.getTime().toString());
 					panel1.add(label4, new TableLayoutConstraints(1, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				}
 				contentPanel2.add(panel1, BorderLayout.NORTH);

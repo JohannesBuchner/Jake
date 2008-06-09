@@ -1,21 +1,18 @@
 package com.doublesignal.sepm.jake.gui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.SoftBevelBorder;
-
+import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.IJakeMessageReceiveListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXLoginDialog;
 
-import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
-import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the StatusPanel (root of main gui window) Shows status messages +
@@ -25,15 +22,17 @@ import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
  * 
  */
 @SuppressWarnings("serial")
-public class StatusPanel extends JPanel {
+public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 	private static Logger log = Logger.getLogger(StatusPanel.class);
 	private final JakeGui gui;
 	private final IJakeGuiAccess jakeGuiAccess;
+	private List<JakeMessage> unreadMessages = new ArrayList<JakeMessage>();
 
 	public StatusPanel(JakeGui gui) {
 		log.info("Initializing StatusPanel.");
 		this.gui = gui;
 		this.jakeGuiAccess = gui.getJakeGuiAccess();
+		this.jakeGuiAccess.registerReceiveMessageListener(this);
 
 		initComponents();
 		updateData();
@@ -61,7 +60,7 @@ public class StatusPanel extends JPanel {
 	 * Updates the whole status bar
 	 */
 	private void updateData() {
-		int messagesReceived = 0;
+		int messagesReceived = unreadMessages.size();
 		int filesConflict = 0;
 		boolean connectionOnline = jakeGuiAccess.isLoggedIn();
 
@@ -110,7 +109,11 @@ public class StatusPanel extends JPanel {
 	 * ** Status Bar Buttons ****
 	 */
 	private void messageReceivedStatusButtonActionPerformed(ActionEvent e) {
-		new ReceiveMessageDialog(gui.getMainFrame()).setVisible(true);
+		for (JakeMessage jm: unreadMessages) {
+			new ReceiveMessageDialog(gui.getMainFrame(), jm).setVisible(true);
+		}
+		unreadMessages.clear();
+		updateData();
 	}
 
 	private void fileConflictStatusButtonActionPerformed(ActionEvent e) {
@@ -185,4 +188,9 @@ public class StatusPanel extends JPanel {
 	private JButton messageReceivedStatusButton;
 	private JButton fileConflictStatusButton;
 	private JButton connectionStatusButton;
+
+	public void receivedJakeMessage(JakeMessage message) {
+		unreadMessages.add(message);
+		updateData();
+	}
 }

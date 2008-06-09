@@ -1,15 +1,13 @@
 package com.doublesignal.sepm.jake.ics;
 
+import com.doublesignal.sepm.jake.ics.exceptions.*;
+import org.apache.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.Iterator;
 
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
-import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
-import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
-import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
-import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
-
 public class MockICService implements IICService {
+	Logger log = Logger.getLogger(MockICService.class);
 	/**
 	 * are we online?
 	 */
@@ -105,10 +103,12 @@ public class MockICService implements IICService {
 	}
 
 	public void registerReceiveMessageListener(IMessageReceiveListener rl) {
+		log.info("Message receive listener registered");
 		msgreceivers.add(rl);
 	}
 
 	public void registerReceiveObjectListener(IObjectReceiveListener rl) {
+		log.info("Object receive listener registered...");
 		objreceivers.add(rl);
 	}
 	
@@ -119,20 +119,26 @@ public class MockICService implements IICService {
 			throws NetworkException, NotLoggedInException, TimeoutException,
 			NoSuchUseridException, OtherUserOfflineException 
 	{
-		if(!isOfCorrectUseridFormat(to_userid)) 
+		log.info("Sending message to "+ to_userid +" with content \"" + content + "\"");
+		if(!isOfCorrectUseridFormat(to_userid)) {
+			log.warn("Couldn't send message: Recipient invalid");
 			throw new NoSuchUseridException();
-		if(loggedinstatus == false)
+		}
+
+		if(!loggedinstatus) {
+			log.warn("Couldn't send message: Not logged in");
 			throw new NotLoggedInException();
+		}
 		
 		if(!to_userid.equals(myuserid)){
 			/* autoreply feature */
-			for (Iterator<IMessageReceiveListener> it = msgreceivers.iterator(); it.hasNext();) {
-				IMessageReceiveListener rl = it.next();
+			for (IMessageReceiveListener rl : msgreceivers) {
+				log.info("Propagating message to a listener...");
 				rl.receivedMessage(to_userid, content + " to you too");
 			}
 		}else{
-			for (Iterator<IMessageReceiveListener> it = msgreceivers.iterator(); it.hasNext();) {
-				IMessageReceiveListener rl = it.next();
+			for (IMessageReceiveListener rl : msgreceivers) {
+				log.info("Propagating message to a listener...");
 				rl.receivedMessage(myuserid, content);
 			}
 		}

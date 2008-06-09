@@ -1,37 +1,12 @@
 package com.doublesignal.sepm.jake.core.services;
 
-import java.io.*;
-import java.sql.SQLException;
-import java.util.*;
-import java.nio.channels.FileChannel;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.BadSqlGrammarException;
-
-import com.doublesignal.sepm.jake.core.dao.IConfigurationDao;
-import com.doublesignal.sepm.jake.core.dao.IJakeDatabase;
-import com.doublesignal.sepm.jake.core.dao.IJakeObjectDao;
-import com.doublesignal.sepm.jake.core.dao.ILogEntryDao;
-import com.doublesignal.sepm.jake.core.dao.IProjectMemberDao;
+import com.doublesignal.sepm.jake.core.dao.*;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
-import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
-import com.doublesignal.sepm.jake.core.domain.FileObject;
-import com.doublesignal.sepm.jake.core.domain.JakeMessage;
-import com.doublesignal.sepm.jake.core.domain.JakeObject;
-import com.doublesignal.sepm.jake.core.domain.LogAction;
-import com.doublesignal.sepm.jake.core.domain.LogEntry;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
-import com.doublesignal.sepm.jake.core.domain.Project;
-import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.domain.Tag;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.*;
-import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
@@ -39,6 +14,17 @@ import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
+
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author johannes, domdorn, peter, philipp
@@ -406,6 +392,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         }
         
         sync.setDatabase(db);
+
+	    ics.registerReceiveMessageListener(this);
     }
 
 
