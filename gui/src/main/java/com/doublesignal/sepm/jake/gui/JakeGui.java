@@ -339,7 +339,6 @@ public class JakeGui extends JPanel implements Observer {
 		addProjectMemberDialog.setVisible(true);
 
 		if (addProjectMemberDialog.isSaved()) {
-			jakeGuiAccess.createNote(addProjectMemberDialog.getContent());
 			jakeGuiAccess.addProjectMember(addProjectMemberDialog.getContent());
 		}
 
