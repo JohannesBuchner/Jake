@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ public class FolderWatcher {
 
 	private HashMap<File, Long> lastmodifieddates = new HashMap<File, Long>();
 
-	private HashMap<File, byte[]> hashes = new HashMap<File, byte[]>();
+	private HashMap<File, String> hashes = new HashMap<File, String>();
 
 	private List<File> files = new ArrayList<File>();
 
@@ -36,7 +37,11 @@ public class FolderWatcher {
 
 	private long pollingInterval;
 	
-	public FolderWatcher(File rootpath, long pollingInterval) throws NotADirectoryException {
+	private FileHashCalculator hasher = null;
+	
+	public FolderWatcher(File rootpath, long pollingInterval) 
+		throws NotADirectoryException, NoSuchAlgorithmException 
+	{
 
 		if (!rootpath.exists() || !rootpath.isDirectory()) {
 			throw new NotADirectoryException();
@@ -44,6 +49,9 @@ public class FolderWatcher {
 
 		this.rootpath = rootpath;
 		this.pollingInterval = pollingInterval;
+		
+		hasher = new FileHashCalculator();
+		
 	}
 
 	public void initialRun(){
@@ -98,19 +106,14 @@ public class FolderWatcher {
 				}
 			}
 		}
-
+		
 		/**
 		 * recursively finds modified and newly created files 
-		 * @param folder
+		 * @param folder  important: must be a existing directory!
 		 */
 		private void checkFolder(File folder) {
 			if(isCanceled)
 				return;
-			if(!folder.isDirectory()){
-				System.out.println("SHOULD NOT HAPPEN: checkFolder got a non-directory: " + 
-						folder.getAbsolutePath());
-				return;
-			}
 			for (File f : folder.listFiles()) {
 				if (f.isDirectory()) {
 					checkFolder(f);
@@ -118,24 +121,29 @@ public class FolderWatcher {
 				if (f.isFile()) {
 					if (files.contains(f)) {
 						if (f.lastModified() != lastmodifieddates.get(f)) {
-							byte[] newhash = null;
+							String newhash = null;
 							try {
 								newhash = calculateHash(f);
 							} catch (NotAReadableFileException e) {
+								e.printStackTrace();
 							}
-
-							lastmodifieddates.put(f, f.lastModified());
-							hashes.put(f, newhash);
 							
-							changeHappened(f, ModifyActions.MODIFIED);
+							lastmodifieddates.put(f, f.lastModified());
+							if(!newhash.equals(hashes.get(f)) ){
+								hashes.put(f, newhash);
+								changeHappened(f, ModifyActions.MODIFIED);
+							}else{
+								/* System.out.println("Got modification update, " +
+										"but hash stayed the same."); */
+							}
 						}
 					}else{
-						byte[] newhash = null;
+						String newhash = null;
 						try {
 							newhash = calculateHash(f);
 						} catch (NotAReadableFileException e) {
 						}
-
+						
 						lastmodifieddates.put(f, f.lastModified());
 						hashes.put(f, newhash);
 						files.add(f);
@@ -145,38 +153,30 @@ public class FolderWatcher {
 				}
 			}
 		}
-
 	}
 
-	private static byte[] calculateHash(File f)
-	throws NotAReadableFileException {
-
-		FileInputStream fr;
-		try {
-			fr = new FileInputStream(f);
-		} catch (FileNotFoundException e1) {
-			throw new NotAReadableFileException();
-		}
-		
-		int len = (int) f.length();
-		byte[] buf = new byte[len];
+	private String calculateHash(File f)
+		throws NotAReadableFileException {
+		int len; 
+		byte[] buf;
 		int n;
-		
 		try {
+			FileInputStream fr = new FileInputStream(f);
+			len = (int) f.length();
+			buf = new byte[len];
 			n = fr.read(buf, 0, len);
 		} catch (IOException e) {
 			throw new NotAReadableFileException();
 		}
 		if (len > n)
 			throw new NotAReadableFileException();
-
-		return buf;
+		return hasher.calculateHash(buf);
 	}
 
 	private void changeHappened(File f, ModifyActions event) {
 		if(isCanceled)
 			return;
-		System.out.println("changeHappened: " + f.getAbsolutePath() + ": " + event);
+		System.out.println("changeHappened: " + f.getAbsolutePath() + ": " + event); 
 		for(IModificationListener l : listeners){
 			l.fileModified(f, event);
 		}

@@ -1,11 +1,13 @@
 package com.doublesignal.sepm.jake.fss;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +22,7 @@ public class FolderWatchTest extends FSTestCase {
 
 	@Test
 	public void testCreateFile() throws Exception {
+		System.out.println(" **** testCreateFile **** ");
 		File f = new File(mytempdir + File.separator + "just_created");
 		try {
 			fw = new FolderWatcher(new File(mytempdir), 100);
@@ -37,9 +40,11 @@ public class FolderWatchTest extends FSTestCase {
 			
 			f.createNewFile();
 			
+			System.out.println("We expect CREATED");
 			if (!latch.await(3, TimeUnit.SECONDS)) {
 				fail("No callback occured");
 			}
+			f.delete();
 			fw.cancel();
 		} catch (Exception e) {
 			fw.cancel();
@@ -50,7 +55,7 @@ public class FolderWatchTest extends FSTestCase {
 
 	@Test
 	public void testDeleteFile() throws Exception {
-		System.out.println("testDeleteFile");
+		System.out.println(" **** testDeleteFile **** ");
 		File f = new File(mytempdir + File.separator + "just_deleted");
 		long interval = 1000;
 		
@@ -83,13 +88,13 @@ public class FolderWatchTest extends FSTestCase {
 			});
 			fw.run();
 			f.createNewFile();
-			System.out.println("Awaiting ...");
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
-			System.out.println("Awaiting done.");
+			System.out.println("We expect CREATED");
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			f.delete();
 			System.gc();
 			assertFalse(f.exists());
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
+			System.out.println("We expect DELETED");
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			
 			fw.cancel();
 		} catch (Exception e) {
@@ -97,11 +102,82 @@ public class FolderWatchTest extends FSTestCase {
 			throw e;
 		}
 	}
+	
+	@Test
+	public void testModifyFile() throws Exception {
+		
+		System.out.println("**** testModifyFile **** ");
+		File f = new File(mytempdir + File.separator + "just_edited");
+		writeInFile(f, "foo, bar");
+		long interval = 700;
+		
+		try {
+			final Semaphore s = new Semaphore(0);
+			fw = new FolderWatcher(new File(mytempdir), interval);
+			fw.initialRun();
+			
+			IModificationListener failer = new IModificationListener() {
+				public void fileModified(File f, ModifyActions action) {
+					fail("Got unwanted event: " + f.getAbsolutePath() + 
+							":" + action);
+				}
+			};
+			fw.addListener(failer);
+			fw.run();
+			
+			awaitNextTimeUnit();
+			
+			System.out.println("We expect no event.");
+			
+			writeInFile(f, "foo, bar");
+			
+			Thread.sleep(interval*3);
+			
+			fw.removeListener(failer);
+			fw.addListener(new IModificationListener() {
+				public void fileModified(File f, ModifyActions action) {
+					System.out.println("got event: " + f.getAbsolutePath() + 
+							":" + action);
+					assertEquals("just_edited", f.getName());
+					assertEquals(ModifyActions.MODIFIED, action);
+					s.release();
+				}
+			});
+			
+			awaitNextTimeUnit();
+			
+			System.out.println("We expect no event.");
+			
+			writeInFile(f, "bar, baz");
+			assertTrue("Real content change", 
+				s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
+			
+			fw.cancel();
+			f.delete();
+			System.gc();
+			assertFalse(f.exists());
+			
+		} catch (Exception e) {
+			fw.cancel();
+			throw e;
+		}
+	}
+	
+	
+	private void awaitNextTimeUnit() throws InterruptedException {
+		System.out.print("Waiting a second ... ");
+		Thread.sleep(1000); /* modifications are measured in seconds */
+		System.out.println("ok.");
+	}
+
 	private void writeInFile(File f, String content) throws Exception {
 		FileWriter fwriter = new FileWriter(f);
-		fwriter.append("foo, bar");
+		fwriter.append(content);
 		fwriter.close();
+		fwriter = null;
+		System.gc();
 	}
+	
 	@Test
 	public void testWithSmallInterval() throws Exception{
 		runSzenarioTest(10);
@@ -115,7 +191,7 @@ public class FolderWatchTest extends FSTestCase {
 		runSzenarioTest(1000);
 	}
 	private void runSzenarioTest(long interval) throws Exception {
-		System.out.println("testModifyFile");
+		System.out.println("runSzenarioTest: with interval " + interval);
 		final File f = new File(mytempdir + File.separator + "just_modified");
 		final File f2 = new File(mytempdir + File.separator + "just_modified2");
 		final Semaphore s = new Semaphore(0);
@@ -173,37 +249,42 @@ public class FolderWatchTest extends FSTestCase {
 			});
 			fw.run();
 			f.createNewFile();
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
-			System.out.println("Waiting a second ... ");
-			Thread.sleep(1000); /* modifications are measured in seconds */
-			System.out.println("Waiting a second ... ok.");
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
+			
+			awaitNextTimeUnit();
+			
 			writeInFile(f, "foo, bar");
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			f.delete();
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS));
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
 			
 			writeInFile(f2, "Hello World");
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS));
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
 			
 			writeInFile(f, "bar, baz");
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			
 			f2.delete();
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS));
-
-			System.out.println("Waiting a second ... ");
-			Thread.sleep(1000); /* modifications are measured in seconds */
-			System.out.println("Waiting a second ... ok.");
+			System.gc();
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
+			
+			awaitNextTimeUnit();
+			
 			writeInFile(f, "bar, bazz");
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			f.delete();
-			assertTrue(s.tryAcquire(interval*3, TimeUnit.SECONDS)); 
+			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			
 			fw.cancel();
 		} catch (Exception e) {
+			f.delete();
+			f2.delete();
 			fw.cancel();
 			throw e;
 		}
 	}
-
+	@After
+	public void teardown() throws Exception{
+		super.tearDown();
+	}
 }
