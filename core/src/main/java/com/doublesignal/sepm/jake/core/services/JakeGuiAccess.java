@@ -1,5 +1,6 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.*;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
@@ -1079,6 +1080,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			 * anyway. In this case, it is safe to assume something weird has happened and we will simply discard
 			 * the message.
 			 */
+			InvalidApplicationState.die("NotLoggedInException from receiveMessage", e);
 		}
 	}
 }

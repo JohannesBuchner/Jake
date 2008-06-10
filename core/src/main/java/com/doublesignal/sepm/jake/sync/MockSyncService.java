@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.IJakeDatabase;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
@@ -17,7 +18,6 @@ import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
-import com.doublesignal.sepm.jake.core.services.exceptions.InvalidApplicationStateException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 import com.doublesignal.sepm.jake.fss.IFSService;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
@@ -173,7 +173,8 @@ public class MockSyncService implements ISyncService {
 			return jolist;
 
 		if(le.getJakeObjectName().startsWith("note:")){
-			throw new InvalidApplicationStateException();
+			InvalidApplicationState.die("We received sync logentries containing " +
+					"a note, which is not implemented.");
 		}else{
 			FileObject jo = new FileObject(le.getJakeObjectName());
 			try{
