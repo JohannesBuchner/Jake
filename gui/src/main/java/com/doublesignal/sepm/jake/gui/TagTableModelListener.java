@@ -4,6 +4,9 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.event.TableModelEvent;
@@ -24,8 +27,10 @@ import java.util.Set;
 public class TagTableModelListener implements TableModelListener
 {
 
-	private static Logger log = Logger.getLogger(TagTableModelListener.class);
-
+	private static final Logger log = Logger.getLogger(StatusPanel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private IJakeGuiAccess jakeGuiAccess;
 	/**
 	 * The list of JakeObjects used to create the TableModel

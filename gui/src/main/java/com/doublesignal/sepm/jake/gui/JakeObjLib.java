@@ -4,6 +4,9 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.domain.exceptions.InvalidTagNameException;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
@@ -17,7 +20,10 @@ import java.util.Set;
  * 
  */
 public final class JakeObjLib {
-	private static Logger log = Logger.getLogger(JakeObjLib.class);
+	private static final Logger log = Logger.getLogger(JakeObjLib.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	/**
 	 * Get String of Tags
 	 * 

@@ -74,7 +74,7 @@ public interface IJakeGuiAccess {
 	 * @return true if user is logged in.
 	 */
 	
-	public boolean isLoggedIn(String userId);
+	public Boolean isLoggedIn(String userId) throws NotLoggedInException;
 
 	/**
 	 * Get the user that is currently logged in.

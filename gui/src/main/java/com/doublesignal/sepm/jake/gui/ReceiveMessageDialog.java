@@ -1,10 +1,16 @@
 package com.doublesignal.sepm.jake.gui;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 import info.clearthought.layout.TableLayout;
 import info.clearthought.layout.TableLayoutConstraints;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.log4j.Logger;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +22,10 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 public class ReceiveMessageDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(ReceiveMessageDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private JakeMessage message;
 	private Date receivedAt;
 

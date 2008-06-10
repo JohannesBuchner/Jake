@@ -18,13 +18,21 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 /**
  * @author tester tester
  */
 @SuppressWarnings("serial")
 public class NoteEditorDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(NoteEditorDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private NoteObject note = null;
 	private boolean isSaved = false;
 

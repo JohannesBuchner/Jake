@@ -14,10 +14,16 @@ import java.io.IOException;
 import java.io.File;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 @SuppressWarnings("serial")
 public class ImportFileDialog extends JDialog {
-    private JPanel mainPanel;
+	private static final Logger log = Logger.getLogger(ImportFileDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
+	private JPanel mainPanel;
     private JButton importButton;
     private JButton cancelButton;
     private JPanel topPanel;
@@ -53,9 +59,7 @@ public class ImportFileDialog extends JDialog {
         pack();
         setLocationRelativeTo(getOwner());
     }
-
-    private Logger log = Logger.getLogger(ImportFileDialog.class);
-
+    
     public ImportFileDialog(JFrame owner) {
         super(owner);
         $$$setupUI$$$();

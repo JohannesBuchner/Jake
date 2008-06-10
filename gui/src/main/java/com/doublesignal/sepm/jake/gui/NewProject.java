@@ -39,26 +39,23 @@ import com.doublesignal.sepm.jake.core.services.exceptions.InvalidRootPathExcept
 import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
 import com.doublesignal.sepm.jake.fss.NotADirectoryException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 /**
  * @author johannes, peter
  */
 @SuppressWarnings("serial")
 public class NewProject extends JDialog {
-	ITranslationProvider translator = null;
+	
+	private static final Logger log = Logger.getLogger(NewProject.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
 	JakeGuiAccess jga = null;
-
-	private static Logger log = Logger.getLogger(NewProject.class);
 
 	public NewProject(String foldersuggestion) {
 		super();
 		log.debug("NewProject dialog starts");
-		BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
-				"beans.xml"));
-		translator = (ITranslationProvider) factory
-				.getBean("translationProvider");
-		log.debug("NewProject:initComponents");
 		initComponents();
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 
 		log.debug("NewProject:setVisible");

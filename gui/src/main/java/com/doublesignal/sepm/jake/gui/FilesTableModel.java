@@ -6,7 +6,7 @@ import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
-import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 import org.apache.log4j.Logger;
 
@@ -19,8 +19,9 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class FilesTableModel extends AbstractTableModel {
-	private static Logger log = Logger.getLogger(FilesTableModel.class);
-	private static ITranslationProvider translator = new TextTranslationProvider();
+	private static final Logger log = Logger.getLogger(FilesTableModel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	
 	private final IJakeGuiAccess jakeGuiAccess;
 	private List<JakeObject> files;

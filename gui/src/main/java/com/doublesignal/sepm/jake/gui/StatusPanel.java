@@ -3,8 +3,10 @@ package com.doublesignal.sepm.jake.gui;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.IJakeMessageReceiveListener;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXLoginDialog;
 
 import javax.swing.*;
 import javax.swing.border.SoftBevelBorder;
@@ -23,7 +25,11 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
-	private static Logger log = Logger.getLogger(StatusPanel.class);
+	
+	private static final Logger log = Logger.getLogger(StatusPanel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+
 	private final JakeGui gui;
 	private final IJakeGuiAccess jakeGuiAccess;
 	private List<JakeMessage> unreadMessages = new ArrayList<JakeMessage>();

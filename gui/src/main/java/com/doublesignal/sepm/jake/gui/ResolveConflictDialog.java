@@ -31,6 +31,7 @@ import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 
 /**
@@ -38,12 +39,12 @@ import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
  */
 @SuppressWarnings("serial")
 public class ResolveConflictDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(ResolveConflictDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
     private FileObject localFile, remoteFile;
     private IJakeGuiAccess jakeGuiAccess;
-
-    private static ITranslationProvider translator = new TextTranslationProvider();
-    private static Logger log = Logger.getLogger(ResolveConflictDialog.class);
 
 
     /**

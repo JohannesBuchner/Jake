@@ -28,14 +28,16 @@ import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 public class SetSoftLockDialog extends JDialog {
 
+	private static final Logger log = Logger.getLogger(SendMessageDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+
 	private IJakeGuiAccess jakeGuiAccess;
 	private FileObject file;
-
-	private static Logger log = Logger.getLogger(SendMessageDialog.class);
-	private static ITranslationProvider translator = new TextTranslationProvider();
 	
 	private JPanel dialogPanel;
 	private JPanel contentPanel;

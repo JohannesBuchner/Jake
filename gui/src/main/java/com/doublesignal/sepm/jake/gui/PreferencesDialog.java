@@ -34,6 +34,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionExceptio
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 /**
  * The application preferences dialog.
@@ -41,9 +42,10 @@ import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
  */
 @SuppressWarnings("serial")
 public class PreferencesDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(PreferencesDialog.class);
 	
-	private static Logger log = Logger.getLogger(PreferencesDialog.class);
-	private ITranslationProvider translator;
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+
 	private JakeGui gui;
 	private IJakeGuiAccess guiAccess;
 	private List<ActionListener> updateListeners;
@@ -98,8 +100,6 @@ public class PreferencesDialog extends JDialog {
 
 	private void initComponents() {
 		log.info("initializing Preferences Dialog");
-		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
-		translator = (ITranslationProvider) factory.getBean("translationProvider");
 		updateListeners = new LinkedList<ActionListener>();
 		
 		dialogPane = new JPanel();

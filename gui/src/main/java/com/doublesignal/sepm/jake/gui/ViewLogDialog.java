@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.gui;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +19,10 @@ import org.apache.log4j.Logger;
  */
 @SuppressWarnings("serial")
 public class ViewLogDialog extends JDialog {
-    private static Logger log = Logger.getLogger(ViewLogDialog.class);
+	private static final Logger log = Logger.getLogger(ViewLogDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+
     private JakeObject jakeObject;
 
     public ViewLogDialog(Frame owner) {

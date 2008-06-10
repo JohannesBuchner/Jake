@@ -18,7 +18,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 
 /**
@@ -26,6 +30,10 @@ import com.doublesignal.sepm.jake.core.domain.ProjectMember;
  */
 @SuppressWarnings("serial")
 public class AddProjectMemberDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(AddProjectMemberDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private ProjectMember projectMember = null;
 	private boolean isSaved = false;
 	

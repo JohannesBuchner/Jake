@@ -9,6 +9,9 @@ import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 
 
 @SuppressWarnings("serial")
@@ -16,19 +19,17 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
  * @author philipp
  */
 public class PeopleTableModel extends AbstractTableModel {
-	private static Logger log = Logger.getLogger(PeopleTableModel.class);
+	private static final Logger log = Logger.getLogger(PeopleTableModel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private List<ProjectMember> members = new ArrayList<ProjectMember>();
 	private final IJakeGuiAccess jakeGuiAccess;
-	
-	
-	
 	
 	PeopleTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing PeopleTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
-		
-		
 	}
 
 	String[] colNames = new String[] { "Nickname", "UserID", "Status", "Comment" };
@@ -64,9 +65,12 @@ public class PeopleTableModel extends AbstractTableModel {
 		
 		for(ProjectMember p:this.members)
 		{
-			
-			if(jakeGuiAccess.isLoggedIn(p.getUserId()))
-				onlineMembers++;
+			try {
+				if(jakeGuiAccess.isLoggedIn(p.getUserId()))
+					onlineMembers++;
+			} catch (NotLoggedInException e) {
+				return 0;
+			}
 		}
 		
 	
@@ -110,10 +114,18 @@ public class PeopleTableModel extends AbstractTableModel {
 			return member.getUserId();
 
 		case Status:	
-					if (jakeGuiAccess.isLoggedIn(member.getUserId()))
-							return "Online";
-					else return "Offline";
-
+			try {
+				if(jakeGuiAccess.isLoggedIn(member.getUserId()))
+					return translator.get("Online");
+				else
+					return translator.get("Offline");
+			} catch (NotLoggedInException e) {
+				return translator.get("You are offline");
+			} catch (NullPointerException e){
+				e.printStackTrace();
+				return translator.get("Error");
+			}
+		
 		case Comment:
 			return member.getNotes();
 			

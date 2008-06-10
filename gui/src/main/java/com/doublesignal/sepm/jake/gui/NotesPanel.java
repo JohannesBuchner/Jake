@@ -29,14 +29,17 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.NotesTableModel.NotesUpdaterObservable;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 @SuppressWarnings("serial")
 /**
  * @author peter
  */
 public class NotesPanel extends JPanel {
-	private static Logger log = Logger.getLogger(NotesPanel.class);
-	ITranslationProvider translator = null;
+	private static final Logger log = Logger.getLogger(NotesPanel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private final JakeGui gui;
 	private final IJakeGuiAccess jakeGuiAccess;
 	private NotesTableModel notesTableModel;
@@ -45,10 +48,7 @@ public class NotesPanel extends JPanel {
 		log.info("Initializing NotesPanel.");
 		this.gui = gui;
 		this.jakeGuiAccess = gui.getJakeGuiAccess();
-
-		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
-		translator = (ITranslationProvider) factory.getBean("translationProvider");
-
+		
 		initComponents();
 		initPopupMenu();
 		updateData();

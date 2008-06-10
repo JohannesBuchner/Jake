@@ -3,6 +3,8 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.domain.JakeMessage;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
 
 import java.awt.*;
@@ -22,10 +24,13 @@ import org.apache.log4j.Logger;
  */
 @SuppressWarnings("serial")
 public class SendMessageDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(SendMessageDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+
 	private IJakeGuiAccess jakeGuiAccess;
 	private String recipient;
-	private static Logger log = Logger.getLogger(SendMessageDialog.class);
-
+	
 	public SendMessageDialog(Frame owner, String recipient, IJakeGuiAccess guiAccess) {
 		super(owner);
 		this.jakeGuiAccess = guiAccess;

@@ -9,6 +9,8 @@ import javax.swing.table.*;
 
 import org.apache.log4j.Logger;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 
 
@@ -17,7 +19,10 @@ import com.doublesignal.sepm.jake.core.domain.LogEntry;
  */
 @SuppressWarnings("serial")
 public class ViewLogDialogTableModel extends AbstractTableModel {
-    private static Logger log = Logger.getLogger(ViewLogDialogTableModel.class);
+	
+	private static final Logger log = Logger.getLogger(ViewLogDialogTableModel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
     private List<LogEntry> logEntries = new ArrayList<LogEntry>();
     
 

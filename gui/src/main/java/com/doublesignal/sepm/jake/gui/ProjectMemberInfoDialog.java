@@ -6,12 +6,21 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import org.apache.log4j.Logger;
+
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 
 /**
  * @author Peter Steinberger
  */
 @SuppressWarnings("serial")
 public class ProjectMemberInfoDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(ProjectMemberInfoDialog.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	public ProjectMemberInfoDialog(Frame owner) {
 		super(owner);
 		initComponents();

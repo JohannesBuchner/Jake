@@ -1,6 +1,8 @@
 package com.doublesignal.sepm.jake.gui;
 
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -14,8 +16,9 @@ import java.awt.*;
  * is just copied from another project, modify as you wish.
  */
 public class UserDialogHelper {
-    static Logger logger = Logger.getRootLogger();
-
+	private static final Logger log = Logger.getLogger(UserDialogHelper.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
     public static void inform(Component parent, String title, String text) {
         inform(parent, title, text, JOptionPane.INFORMATION_MESSAGE);
@@ -34,14 +37,14 @@ public class UserDialogHelper {
                               int type) {
         switch (type) {
             case JOptionPane.WARNING_MESSAGE:
-                logger.warn(text);
+                log.warn(text);
                 break;
             case JOptionPane.ERROR_MESSAGE:
-                logger.error(text);
+                log.error(text);
                 break;
             default:
                 type = JOptionPane.INFORMATION_MESSAGE;
-                logger.info(text);
+                log.info(text);
                 break;
         }
         showMessageDialog(parent, title + "\n\n" + text, title, type);

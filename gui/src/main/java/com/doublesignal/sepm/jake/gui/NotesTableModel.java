@@ -12,13 +12,17 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 @SuppressWarnings("serial")
 /**
  * @author peter
  */
 public class NotesTableModel extends AbstractTableModel {
-	private static Logger log = Logger.getLogger(NotesTableModel.class);
+	private static final Logger log = Logger.getLogger(NotesTableModel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	private List<NoteObject> notes = new ArrayList<NoteObject>();
 	private final IJakeGuiAccess jakeGuiAccess;
 

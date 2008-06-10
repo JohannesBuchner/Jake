@@ -20,13 +20,17 @@ import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 @SuppressWarnings("serial")
 /**
  * @author philipp
  */
 public class PeoplePanel extends JPanel {
-	private static Logger log = Logger.getLogger(PeoplePanel.class);
+	private static final Logger log = Logger.getLogger(PeoplePanel.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	private final JakeGui jakeGui;
 	private PeopleTableModel peopleTableModel;
 	private Frame owner;

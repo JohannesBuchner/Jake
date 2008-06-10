@@ -21,6 +21,7 @@ import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -29,8 +30,11 @@ import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
  */
 @SuppressWarnings("serial")
 public class FilesPanel extends JPanel {
-    private static final Logger log = Logger.getLogger(FilesPanel.class);
-    private final JakeGui jakeGui;
+	private static final Logger log = Logger.getLogger(FilesPanel.class);
+	
+	private static final ITranslationProvider translatorProvider = TranslatorFactory.getTranslator();
+	
+	private final JakeGui jakeGui;
     private FilesTableModel filesTableModel;
     private static ITranslationProvider translator = new TextTranslationProvider();
 

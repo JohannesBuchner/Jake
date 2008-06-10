@@ -36,6 +36,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredExce
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginUseridNotValidException;
 import com.doublesignal.sepm.jake.gui.helper.MultiColPatternFilter;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
 
 /**
@@ -43,8 +44,11 @@ import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
  */
 @SuppressWarnings("serial")
 public class JakeGui extends JPanel implements Observer {
-	private static Logger log = Logger.getLogger(JakeGui.class);
-
+	
+	private static final Logger log = Logger.getLogger(JakeGui.class);
+	
+	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
 	private Project currentProject = null;
 	private SearchMode searchMode = SearchMode.Both;
 	
@@ -63,7 +67,6 @@ public class JakeGui extends JPanel implements Observer {
 		statusPanel.setStatusMsg(msg);
 	}
 
-	private final ITranslationProvider translator;
 
 	private IJakeGuiAccess jakeGuiAccess = null;
 
@@ -78,9 +81,6 @@ public class JakeGui extends JPanel implements Observer {
 	}
 
 	public JakeGui(IJakeGuiAccess jakeGuiAccess) {
-		BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
-		translator = (ITranslationProvider) factory.getBean("translationProvider");
-		
 		loginStatusListeners = new LinkedList<ActionListener>();
 		
 		setJakeGuiAccess(jakeGuiAccess);
