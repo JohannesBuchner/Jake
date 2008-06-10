@@ -47,8 +47,7 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
     	return logEntries.size();
     }
     
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex)	{
+    public Object getValueAt(int rowIndex, int columnIndex) {
     	LogEntry logEntry = logEntries.get(rowIndex);
     	
     	LogColumns col = LogColumns.values()[columnIndex];
