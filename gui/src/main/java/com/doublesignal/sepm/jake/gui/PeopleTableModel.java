@@ -11,6 +11,7 @@ import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 
 
@@ -70,6 +71,8 @@ public class PeopleTableModel extends AbstractTableModel {
 					onlineMembers++;
 			} catch (NotLoggedInException e) {
 				return 0;
+			} catch (NoSuchUseridException e) {
+				
 			}
 		}
 		
@@ -121,9 +124,8 @@ public class PeopleTableModel extends AbstractTableModel {
 					return translator.get("Offline");
 			} catch (NotLoggedInException e) {
 				return translator.get("You are offline");
-			} catch (NullPointerException e){
-				e.printStackTrace();
-				return translator.get("Error");
+			} catch (NoSuchUseridException e) {
+				return translator.get("No such userid");
 			}
 		
 		case Comment:

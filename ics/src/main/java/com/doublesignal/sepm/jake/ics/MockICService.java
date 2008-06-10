@@ -57,8 +57,8 @@ public class MockICService implements IICService {
 	/**
 	 * users having a s in the userid before the \@ are online
 	 */
-	public Boolean isLoggedIn(String userid) throws NetworkException,
-			NotLoggedInException, TimeoutException {
+	public Boolean isLoggedIn(String userid) throws NoSuchUseridException, 
+			NetworkException, NotLoggedInException, TimeoutException {
 		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
 		if(userid.equals(myuserid)) 

@@ -83,14 +83,20 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return ics.isLoggedIn();
     }
     
-    public Boolean isLoggedIn(String userId) throws NotLoggedInException {
+    public Boolean isLoggedIn(String userId) throws NotLoggedInException, 
+    	NoSuchUseridException 
+    {
     	try {
 			return ics.isLoggedIn(userId);
-		} catch (TimeoutException e) {
-			//InvalidApplicationState.die("unhandled");
+    	} catch (NotLoggedInException e) {
+    		throw e;
+    	} catch (NoSuchUseridException e) {
+    		throw e;
+    	} catch (TimeoutException e) {
+			InvalidApplicationState.die("unhandled");
 			return null;
 		} catch (NetworkException e) {
-			//InvalidApplicationState.die("unhandled");
+			InvalidApplicationState.die("unhandled");
 			return null;
 		}
     }

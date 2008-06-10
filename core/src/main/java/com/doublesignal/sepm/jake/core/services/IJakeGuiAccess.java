@@ -72,9 +72,11 @@ public interface IJakeGuiAccess {
 	 * 
 	 * @param userId of the user of whom the online status is to be checked
 	 * @return true if user is logged in.
+	 * @throws NoSuchUseridException 
 	 */
 	
-	public Boolean isLoggedIn(String userId) throws NotLoggedInException;
+	public Boolean isLoggedIn(String userId) 
+		throws NotLoggedInException, NoSuchUseridException;
 
 	/**
 	 * Get the user that is currently logged in.

@@ -106,7 +106,8 @@ public interface IICService {
 	 * @throws TimeoutException
 	 */
 	public Boolean isLoggedIn(String userid)
-		throws NetworkException, NotLoggedInException, TimeoutException;
+		throws NoSuchUseridException, NetworkException, NotLoggedInException, 
+		TimeoutException;
 	
 	/**
 	 * Registers a callback for the event that the userid goes online or offline
