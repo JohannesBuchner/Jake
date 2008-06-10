@@ -213,12 +213,9 @@ public class FilesPanel extends JPanel {
     private void lockFileMenuItemActionPerformed(ActionEvent event) {
         log.info("lockFileMenuItemActionPerformed");
         JakeObject fileObject = getSelectedFile();
-        if (fileObject == null)
+        if (fileObject == null || fileObject.getClass() != FileObject.class)
             return;
-        jakeGuiAccess.setJakeObjectLock(!jakeGuiAccess.getJakeObjectLock(fileObject), fileObject);
-// TODO @Peter: insert softlock actions here!
-
-
+        new SetSoftLockDialog(jakeGui.getMainFrame(), jakeGuiAccess, (FileObject)fileObject).setVisible(true);
     }
 
     private void deleteFileMenuItemActionPerformed(ActionEvent event) {

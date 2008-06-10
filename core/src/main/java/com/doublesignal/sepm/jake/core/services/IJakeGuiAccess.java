@@ -364,22 +364,43 @@ public interface IJakeGuiAccess {
 			LaunchException, IOException, NoProjectLoadedException;
 
 	/**
-	 * Gets the current softlock status of a jakeObject
+	 * Gets the current soft lock comment for a given <code>JakeObject</code>.
 	 * 
 	 * @param jakeObject
-	 * @return true if file has softlock, false otherwise
+	 * @return The locking comment
 	 */
-	boolean getJakeObjectLock(JakeObject jakeObject);
+	public String getJakeObjectLockComment(JakeObject jakeObject);
+	
+	/**
+	 * Determine if a <code>JakeObject</code> has a soft lock
+	 * @param jakeObject
+	 * @return
+	 */
+	public boolean getJakeObjectLock(JakeObject jakeObject);
 
 	/**
 	 * Sets or unsets the softlock on a certain jakeObject
 	 * 
 	 * @param isLocked:
-	 *            True to set the softlock, false otherwise
+	 *            True to set the softlock, false to revoke ist
+	 *            
 	 * @param jakeObject
-	 * @return returns the new softlock status of the jakeObject
 	 */
-	boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject);
+	public void setJakeObjectLock(JakeObject jakeObject, boolean isLocked);
+	
+	/**
+	 * Activates the lock and sets the lock comment for a <code>JakeObject</code>;
+	 * @param jakeObject
+	 * @param lockComment
+	 */
+	public void setJakeObjectLockComment(JakeObject jakeObject, String lockComment);
+	
+	/**
+	 * Get the <code>ProjectMember</code> that locked the file.
+	 * @param jakeObject
+	 * @return
+	 */
+	public ProjectMember getJakeObjectLockedBy (JakeObject jakeObject);
 
 	/**
 	 * Deletes a jakeObject.
@@ -387,7 +408,7 @@ public interface IJakeGuiAccess {
 	 * @param jakeObject
 	 * @return true on success, false otherwise
 	 */
-	boolean deleteJakeObject(JakeObject jakeObject);
+	public boolean deleteJakeObject(JakeObject jakeObject);
 
 	/**
 	 * Shedules the pushing of the given JakeObject

@@ -517,10 +517,10 @@ public class JakeGui extends JPanel implements Observer {
 						mainToolBar.add(pullFilesButton);
 
 						// ---- LockFileToggleButton ----
-						LockFileToggleButton.setIcon(new ImageIcon(getClass().getResource(
-								"/icons/lock.png")));
-						LockFileToggleButton.setToolTipText("Lock File...");
-						mainToolBar.add(LockFileToggleButton);
+//						LockFileToggleButton.setIcon(new ImageIcon(getClass().getResource(
+//								"/icons/lock.png")));
+//						LockFileToggleButton.setToolTipText("Lock File...");
+//						mainToolBar.add(LockFileToggleButton);
 						mainToolBar.addSeparator();
 
 						// ---- newNoteButton ----

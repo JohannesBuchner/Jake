@@ -615,17 +615,45 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         db.close();
     }
 
+    public String getJakeObjectLockComment(JakeObject jakeObject) {
+        // TODO
+        return "foobar Soft Lock";
+    }
+    
     public boolean getJakeObjectLock(JakeObject jakeObject) {
-        // TODO
-        return false;
+    	// TODO
+    	return true;
     }
 
-    public boolean setJakeObjectLock(boolean isLocked, JakeObject jakeObject) {
-        // TODO
-        return false;
+    public void setJakeObjectLock(JakeObject jakeObject, boolean isLocked) {
+        if (isLocked) {
+        	setJakeObjectLockComment(jakeObject, "");
+        } else {
+        	// delte lock
+        }
     }
+    
+    public void setJakeObjectLockComment(JakeObject jakeObject, String lockComment) {
+		try {
+			db.getLogEntryDao().create(new LogEntry(LogAction.LOCK, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), lockComment));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFilenameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotAReadableFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+    
+   	public ProjectMember getJakeObjectLockedBy(JakeObject jakeObject) {
+		// TODO Auto-generated method stub
+		return new ProjectMember("foobar User");
+	}
 
-    public boolean deleteJakeObject(JakeObject jakeObject) {
+	public boolean deleteJakeObject(JakeObject jakeObject) {
     	log.debug("trying to delete object: " + jakeObject.getName());
     	Boolean sucess = false;
         try {

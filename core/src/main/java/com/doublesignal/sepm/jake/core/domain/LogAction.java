@@ -45,7 +45,16 @@ public enum LogAction {
 	/**
 	 * the tag in the comment field of the LogEntry was removed from the JakeObject in question
 	 */
-	TAG_REMOVE
+	TAG_REMOVE,
+	/**
+	 * the object has been locked
+	 */
+	LOCK,
+	/**
+	 * the object has been unlocked
+	 */
+	UNLOCK
+	
 
 
 	}
