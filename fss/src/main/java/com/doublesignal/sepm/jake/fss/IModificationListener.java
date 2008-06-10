@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
+import java.io.File;
+
 /**
  * Objects listening for file modifications have to implement this.
  * 
@@ -10,8 +12,8 @@ public interface IModificationListener {
 	/**
 	 * Actions that can occur for a file on a filesystem.
 	 */
-	enum ModifyActions { CREATED, REMOVED, CHANGED }
+	public enum ModifyActions { CREATED, DELETED, MODIFIED }
 	
-	void fileModified(String relpath, ModifyActions action);
+	void fileModified(File f, ModifyActions action);
 	
 }
