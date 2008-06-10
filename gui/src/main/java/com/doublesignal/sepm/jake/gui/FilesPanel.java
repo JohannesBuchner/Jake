@@ -86,22 +86,40 @@ public class FilesPanel extends JPanel {
         filesTable = new JXTable();
         this.setLayout(new BorderLayout());
         filesTableModel = new FilesTableModel(jakeGuiAccess);
-        filesTable.setComponentPopupMenu(filesPopupMenu);
+        //filesTable.setComponentPopupMenu(filesPopupMenu);
         filesTable.setColumnControlVisible(true);
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
         filesTable.setRolloverEnabled(false);
         filesTable.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
-                if (event.getClickCount() == 2
-                        && SwingUtilities.isLeftMouseButton(event)
+    		public void mouseClicked( MouseEvent e ) {
+    			log.debug("click reveived");
+                if (e.getClickCount() == 2
+                        && SwingUtilities.isLeftMouseButton(e)
                         && isFileSelected()) {
                     openExecutFileMenuItemActionEvent(null);
                 }
-            }
-        }
-        );
+    			// Right mouse click
+    			if ( SwingUtilities.isRightMouseButton( e ) ) {
+        			log.debug("a right click.");
+    				// get the coordinates of the mouse click
+    				Point p = e.getPoint();
 
+    				// get the row index that contains that coordinate
+    				int rowNumber = filesTable.rowAtPoint( p );
+
+    				// Get the ListSelectionModel of the JTable
+    				ListSelectionModel model = filesTable.getSelectionModel();
+
+    				// set the selected interval of rows. Using the "rowNumber"
+    				// variable for the beginning and end selects only that one row.
+    				model.setSelectionInterval( rowNumber, rowNumber );
+
+    				// Show the table popup
+    				filesPopupMenu.show(filesTable, (int)e.getPoint().getX(), (int)e.getPoint().getY());
+    			}
+    		}
+        });
         TableColumnModel cm = filesTable.getColumnModel();
         cm.getColumn(0).setPreferredWidth(245);
         cm.getColumn(1).setPreferredWidth(50);
@@ -110,7 +128,7 @@ public class FilesPanel extends JPanel {
         filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         filesTable.setPreferredScrollableViewportSize(new Dimension(450, 379));
         filesScrollPane.setViewportView(filesTable);
-
+        
         this.add(filesScrollPane, BorderLayout.CENTER);
     }
 

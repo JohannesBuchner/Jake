@@ -86,27 +86,27 @@ public class PeoplePanel extends JPanel {
         );
 
 		peopleTable.addMouseListener( new MouseAdapter() {
-		public void mouseClicked( MouseEvent e ) {
-			// Right mouse click
-			if ( SwingUtilities.isRightMouseButton( e ) ) {
-				// get the coordinates of the mouse click
-				Point p = e.getPoint();
-
-				// get the row index that contains that coordinate
-				int rowNumber = peopleTable.rowAtPoint( p );
-
-				// Get the ListSelectionModel of the JTable
-				ListSelectionModel model = peopleTable.getSelectionModel();
-
-				// set the selected interval of rows. Using the "rowNumber"
-				// variable for the beginning and end selects only that one row.
-				model.setSelectionInterval( rowNumber, rowNumber );
-
-				// Show the table popup
-				peoplePopupMenu.show(peopleTable, (int)e.getPoint().getX(), (int)e.getPoint().getY());
+			public void mouseClicked( MouseEvent e ) {
+				// Right mouse click
+				if ( SwingUtilities.isRightMouseButton( e ) ) {
+					// get the coordinates of the mouse click
+					Point p = e.getPoint();
+	
+					// get the row index that contains that coordinate
+					int rowNumber = peopleTable.rowAtPoint( p );
+	
+					// Get the ListSelectionModel of the JTable
+					ListSelectionModel model = peopleTable.getSelectionModel();
+	
+					// set the selected interval of rows. Using the "rowNumber"
+					// variable for the beginning and end selects only that one row.
+					model.setSelectionInterval( rowNumber, rowNumber );
+	
+					// Show the table popup
+					peoplePopupMenu.show(peopleTable, (int)e.getPoint().getX(), (int)e.getPoint().getY());
+				}
 			}
-		}
-	});
+		});
 		
 		TableColumnModel cm = peopleTable.getColumnModel();
 		cm.getColumn(0).setPreferredWidth(70);

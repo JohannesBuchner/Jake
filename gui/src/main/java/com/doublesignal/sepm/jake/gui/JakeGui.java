@@ -809,7 +809,7 @@ public class JakeGui extends JPanel implements Observer {
 		}
 	}
     private void addFileToProjectMenuItemActionPerformed(ActionEvent event) {
-        new importFileDialog(this.getMainFrame()).setJakeGuiAccess(jakeGuiAccess).setVisible(true);
+        new ImportFileDialog(this.getMainFrame()).setJakeGuiAccess(jakeGuiAccess).setVisible(true);
     }
 
 	enum SearchMode {
