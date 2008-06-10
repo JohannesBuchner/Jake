@@ -52,6 +52,7 @@ public class SetSoftLockDialog extends JDialog {
 		super(owner);
 		this.jakeGuiAccess = guiAccess;
 		this.file = file;
+		setModal(true);
 		initComponents();
 	}
 
