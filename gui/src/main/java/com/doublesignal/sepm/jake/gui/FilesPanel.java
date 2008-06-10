@@ -37,6 +37,9 @@ public class FilesPanel extends JPanel {
     int tabindex = 0;
 
     private JakeObject getSelectedFile() {
+        int selectedRow = filesTable.getSelectedRow();
+        if(selectedRow < 0)
+            return null;
         return filesTableModel.getFiles().get(filesTable.getSelectedRow());
     }
 
@@ -91,7 +94,8 @@ public class FilesPanel extends JPanel {
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
         filesTable.setRolloverEnabled(false);
-        filesTable.addMouseListener(new MouseAdapter() {
+/*    // sorry, we don't need a mouseadapter
+      filesTable.addMouseListener(new MouseAdapter() {
     		public void mouseClicked( MouseEvent e ) {
     			log.debug("click reveived");
                 if (e.getClickCount() == 2
@@ -116,10 +120,13 @@ public class FilesPanel extends JPanel {
     				model.setSelectionInterval( rowNumber, rowNumber );
 
     				// Show the table popup
-    				filesPopupMenu.show(filesTable, (int)e.getPoint().getX(), (int)e.getPoint().getY());
+
+
+
+                    filesPopupMenu.show(filesTable, (int)e.getPoint().getX(), (int)e.getPoint().getY());
     			}
     		}
-        });
+        });*/
         TableColumnModel cm = filesTable.getColumnModel();
         cm.getColumn(0).setPreferredWidth(245);
         cm.getColumn(1).setPreferredWidth(50);
@@ -137,7 +144,13 @@ public class FilesPanel extends JPanel {
     }
 
     private void initPopupMenu() {
-        filesPopupMenu = new JPopupMenu();
+        filesPopupMenu = new JPopupMenu()
+        {
+            public void show(Component component, int i, int i1) {
+                if(getSelectedFile() != null)
+                    super.show(component, i, i1);
+            }
+        };
         openExecuteFileMenuItem = new JMenuItem();
         lockFileMenuItem = new JMenuItem();
         deleteFileMenuItem = new JMenuItem();
