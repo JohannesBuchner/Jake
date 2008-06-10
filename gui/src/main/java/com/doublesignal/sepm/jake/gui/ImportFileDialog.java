@@ -15,7 +15,8 @@ import java.io.File;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
-public class importFileDialog extends JDialog {
+@SuppressWarnings("serial")
+public class ImportFileDialog extends JDialog {
     private JPanel mainPanel;
     private JButton importButton;
     private JButton cancelButton;
@@ -39,12 +40,12 @@ public class importFileDialog extends JDialog {
         return jakeGuiAccess;
     }
 
-    public importFileDialog setJakeGuiAccess(IJakeGuiAccess jakeGuiAccess) {
+    public ImportFileDialog setJakeGuiAccess(IJakeGuiAccess jakeGuiAccess) {
         this.jakeGuiAccess = jakeGuiAccess;
         return this;
     }
 
-    public importFileDialog(Dialog dialog) {
+    public ImportFileDialog(Dialog dialog) {
         super(dialog);
         setModal(true);
         setResizable(false);
@@ -53,9 +54,9 @@ public class importFileDialog extends JDialog {
         setLocationRelativeTo(getOwner());
     }
 
-    private Logger log = Logger.getLogger(importFileDialog.class);
+    private Logger log = Logger.getLogger(ImportFileDialog.class);
 
-    public importFileDialog(JFrame owner) {
+    public ImportFileDialog(JFrame owner) {
         super(owner);
         $$$setupUI$$$();
         createUIComponents();
@@ -137,13 +138,13 @@ public class importFileDialog extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    public importFileDialog() {
+    public ImportFileDialog() {
         $$$setupUI$$$();
         createUIComponents();
         addListeners();
     }
 
-    public importFileDialog(Frame parent) {
+    public ImportFileDialog(Frame parent) {
         $$$setupUI$$$();
         createUIComponents();
         addListeners();
