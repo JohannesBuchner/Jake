@@ -49,8 +49,12 @@ public class FSService implements IFSService {
 		startModificationThread();
 	}
 	
-	private void startModificationThread() throws NotADirectoryException{
-		fw = new FolderWatcher(new File(this.rootPath), 700);
+	private void startModificationThread() throws NotADirectoryException {
+		try {
+			fw = new FolderWatcher(new File(this.rootPath), 700);
+		} catch (NoSuchAlgorithmException e) {
+			/* won't happen as we use the same algorithm here and it loaded. */
+		}
 		fw.initialRun();
 		fw.run();
 	}
