@@ -28,6 +28,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 			  " WHERE object_name=?";
 	private static final String LOGENTRY_MOSTRECENT = " ORDER BY timestamp DESC LIMIT 1";
 	private static final String LOGENTRY_LASTPULLED = " AND is_last_pulled=1";
+	private static final String LOGENTRY_ORDER_BY_TIMESTAMP_DESC = " ORDER BY timestamp DESC";
 
 	public void create(LogEntry logEntry) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -60,7 +61,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 
 	public List<LogEntry> getAllOfJakeObject(JakeObject jakeObject) {
 		return getSimpleJdbcTemplate().query(
-				  LOGENTRY_SELECT + LOGENTRY_WHERE_JAKEOBJECT,
+				  LOGENTRY_SELECT + LOGENTRY_WHERE_JAKEOBJECT + LOGENTRY_ORDER_BY_TIMESTAMP_DESC,
 				  new JdbcLogEntryRowMapper(),
 				  jakeObject.getName()
 		);

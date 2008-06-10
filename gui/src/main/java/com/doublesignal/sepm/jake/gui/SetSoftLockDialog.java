@@ -23,6 +23,8 @@ import javax.swing.border.EmptyBorder;
 import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.LogAction;
+import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
@@ -43,7 +45,7 @@ public class SetSoftLockDialog extends JDialog {
 	private JLabel lockOwnerLabel;
 	private JCheckBox lockCheckBox;
 	private JPanel buttonBar;
-	private JButton overrideButton;
+	private JButton okButton;
 	private JButton cancelButton;
 
 	public SetSoftLockDialog(Frame owner, IJakeGuiAccess guiAccess, FileObject file) {
@@ -55,7 +57,6 @@ public class SetSoftLockDialog extends JDialog {
 
 	private void overrideButtonActionPerformed(ActionEvent e) {
 		if (lockCheckBox.isSelected()) {
-			jakeGuiAccess.setJakeObjectLock(file, true);
 			jakeGuiAccess.setJakeObjectLockComment(file, lockCommentTextArea.getText());
 		} else {
 			jakeGuiAccess.setJakeObjectLock(file, false);
@@ -75,6 +76,27 @@ public class SetSoftLockDialog extends JDialog {
 		updateLockCommentPane();
 	}
 	
+	private void fillInData() {
+		LogEntry log = jakeGuiAccess.getJakeObjectLockLogEntry(file);
+		if (log != null) {
+			lockCommentTextArea.setText(log.getComment());
+
+			
+			if (log.getUserId().equals(jakeGuiAccess.getLoginUserid())) {
+				lockOwnerLabel.setText(translator.get("SetSoftLockDialogLockedByYouLabel"));
+			} else {
+				lockOwnerLabel.setText(translator.get("SetSoftLockDialogLockedByLabel") + log.getUserId());
+			}
+
+			lockCheckBox.setSelected(log.getAction() == LogAction.LOCK);
+			if (log.getAction() == LogAction.LOCK) {
+				okButton.setText(translator.get("SetSoftLockDialogOverrideLockButton"));
+				return;
+			}
+		}
+		okButton.setText(translator.get("ButtonConfirm"));
+	}
+	
 	private void initComponents() {
 		
 		dialogPanel = new JPanel();
@@ -85,7 +107,7 @@ public class SetSoftLockDialog extends JDialog {
 		lockOwnerLabel = new JLabel();
 		lockCheckBox = new JCheckBox();
 		buttonBar = new JPanel();
-		overrideButton = new JButton();
+		okButton = new JButton();
 		cancelButton = new JButton();
 
 		//======== this ========
@@ -106,7 +128,6 @@ public class SetSoftLockDialog extends JDialog {
 				//======== lockCommentPane ========
 				{
 					//---- lockCommentTextArea ----
-					lockCommentTextArea.setText(jakeGuiAccess.getJakeObjectLockComment(file));
 					lockCommentTextArea.setLineWrap(true);
 					lockCommentPane.setViewportView(lockCommentTextArea);
 				}
@@ -115,16 +136,9 @@ public class SetSoftLockDialog extends JDialog {
 				//======== topPanel ========
 				{
 					topPanel.setLayout(new BorderLayout());
-					String lockOwner = jakeGuiAccess.getJakeObjectLockedBy(file).getUserId();
-					if (lockOwner.equals(jakeGuiAccess.getLoginUserid())) {
-						lockOwnerLabel.setText(translator.get("SetSoftLockDialogLockedByYouLabel"));
-					} else {
-						lockOwnerLabel.setText(translator.get("SetSoftLockDialogLockedByLabel") + lockOwner);
-					}
 					topPanel.add(lockOwnerLabel, BorderLayout.NORTH);
 
 					//---- checkBox ----
-					lockCheckBox.setSelected(jakeGuiAccess.getJakeObjectLock(file));
 					lockCheckBox.setText(translator.get("SetSoftLockDialogActivateLabel"));
 					lockCheckBox.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
@@ -156,13 +170,12 @@ public class SetSoftLockDialog extends JDialog {
 					new Insets(0, 0, 0, 5), 0, 0));
 				
 				//---- overrideButton ----
-				overrideButton.setText(translator.get("SetSoftLockDialogOverrideLockButton"));
-				overrideButton.addActionListener(new ActionListener() {
+				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						overrideButtonActionPerformed(e);
 					}
 				});	
-				buttonBar.add(overrideButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+				buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
@@ -170,6 +183,7 @@ public class SetSoftLockDialog extends JDialog {
 		}
 		contentPane.add(dialogPanel, BorderLayout.CENTER);
 		pack();
+		fillInData();
 		updateLockCommentPane();
 		setLocationRelativeTo(getOwner());
 	}

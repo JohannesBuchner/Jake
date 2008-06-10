@@ -615,13 +615,21 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         db.close();
     }
 
-    public String getJakeObjectLockComment(JakeObject jakeObject) {
-        // TODO
-        return "foobar Soft Lock";
+    public LogEntry getJakeObjectLockLogEntry(JakeObject jakeObject) {
+        List<LogEntry> logs = getLog(jakeObject);
+        for (LogEntry log: logs) {
+        	if (log.getAction() == LogAction.LOCK || log.getAction() == LogAction.UNLOCK) {
+        		return log;
+        	}
+        }
+        return null;
     }
     
     public boolean getJakeObjectLock(JakeObject jakeObject) {
-    	// TODO
+    	LogEntry log = getJakeObjectLockLogEntry(jakeObject);
+    	if (log == null || log.getAction() == LogAction.UNLOCK) {
+    		return false;
+    	}
     	return true;
     }
 
@@ -629,7 +637,15 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         if (isLocked) {
         	setJakeObjectLockComment(jakeObject, "");
         } else {
-        	// delte lock
+        	try {
+    			db.getLogEntryDao().create(new LogEntry(LogAction.UNLOCK, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), ""));
+    		} catch (FileNotFoundException e) {
+    			log.warn("failed to create log entry: file not found");
+    		} catch (InvalidFilenameException e) {
+    			log.warn("failed to create log entrwhoy: invalid file name");
+    		} catch (NotAReadableFileException e) {
+    			log.warn("failed to create log entry: not a readable file exception");
+    		}
         }
     }
     
@@ -637,14 +653,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		try {
 			db.getLogEntryDao().create(new LogEntry(LogAction.LOCK, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), lockComment));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn("failed to create log entry: file not found");
 		} catch (InvalidFilenameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn("failed to create log entry: invalid file name");
 		} catch (NotAReadableFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn("failed to create log entry: not a readable file exception");
 		}
 	}
     

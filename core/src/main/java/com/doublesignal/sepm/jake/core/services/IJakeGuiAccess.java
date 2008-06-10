@@ -367,9 +367,10 @@ public interface IJakeGuiAccess {
 	 * Gets the current soft lock comment for a given <code>JakeObject</code>.
 	 * 
 	 * @param jakeObject
-	 * @return The locking comment
+	 * @return The LogEntry that has either LOCK or  UNLOCK as lock action, or
+	 * null, iff no locking log entry was found.
 	 */
-	public String getJakeObjectLockComment(JakeObject jakeObject);
+	public LogEntry getJakeObjectLockLogEntry(JakeObject jakeObject);
 	
 	/**
 	 * Determine if a <code>JakeObject</code> has a soft lock

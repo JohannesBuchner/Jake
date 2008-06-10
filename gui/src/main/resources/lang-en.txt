@@ -56,4 +56,4 @@ SetSoftLockDialogTitle=Set soft lock
 SetSoftLockDialogActivateLabel=Activate soft lock
 SetSoftLockDialogOverrideLockButton=Override lock
 SetSoftLockDialogLockedByLabel=This lock was set by: 
-SetSoftLockDialogLockedByYouLabel=You
+SetSoftLockDialogLockedByYouLabel=This lock was set by: You
