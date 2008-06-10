@@ -297,7 +297,7 @@ public class JakeGui extends JPanel implements Observer {
 	 */
 
 	private void aboutHelpMenuItemActionPerformed(ActionEvent e) {
-		JOptionPane.showMessageDialog(mainFrame, "Jake GUI by SEPM Group 3950");
+		JOptionPane.showMessageDialog(mainFrame, translator.get("AboutDialogText"));
 	}
 
 	/**
@@ -490,7 +490,7 @@ public class JakeGui extends JPanel implements Observer {
 						
 						// ---- refreshDatapoolViewButton ----
 						refreshDatapoolViewButton.setHorizontalAlignment(SwingConstants.RIGHT);
-						refreshDatapoolViewButton.setToolTipText("Refresh Datapool View");
+						refreshDatapoolViewButton.setToolTipText(translator.get("MainToolbarToolTipRefresh"));
 						refreshDatapoolViewButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/sync_project_folder.png")));
 
@@ -507,13 +507,13 @@ public class JakeGui extends JPanel implements Observer {
 						// ---- propagateFileButton ----
 						propagateFileButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/push.png")));
-						propagateFileButton.setToolTipText("Propagate locally changed file");
+						propagateFileButton.setToolTipText(translator.get("MainToolbarToolTipPropagateFile"));
 						mainToolBar.add(propagateFileButton);
 
 						// ---- pullFilesButton ----
 						pullFilesButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/pull.png")));
-						pullFilesButton.setToolTipText("Pull file from project member");
+						pullFilesButton.setToolTipText(translator.get("MainToolbarToolTipPull"));
 						mainToolBar.add(pullFilesButton);
 
 						// ---- LockFileToggleButton ----
@@ -536,7 +536,7 @@ public class JakeGui extends JPanel implements Observer {
 						mainToolBar.add(searchSpacer);
 
 						// ---- searchTextField ----
-						searchTextField.setToolTipText("Search for Files");
+						searchTextField.setToolTipText(translator.get("MainToolbarToolTipSearchField"));
 						searchTextField.setMaximumSize(new Dimension(200, 40));
 						searchTextField.setPreferredSize(new Dimension(150, 28));
 						searchTextField.setComponentPopupMenu(searchPopupMenu);
@@ -553,7 +553,7 @@ public class JakeGui extends JPanel implements Observer {
 						mainToolBar.add(searchTextField);
 
 						// ---- searchButton ----
-						searchButton.setToolTipText("Search for");
+						searchButton.setToolTipText(translator.get("MainToolbarToolTipSearch"));
 						searchButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/search.png")));
 						searchButton.setComponentPopupMenu(searchPopupMenu);

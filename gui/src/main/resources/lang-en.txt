@@ -1,3 +1,5 @@
+AboutDialogText=Jake, a work in progress prototype...
+
 LoginDialogInvalidLoginText=The login data you provided were invalid. Try again!
 LoginDialogInvalidLoginTitle=Failed to log in
 
@@ -74,3 +76,9 @@ SetSoftLockDialogActivateLabel=Activate soft lock
 SetSoftLockDialogOverrideLockButton=Override lock
 SetSoftLockDialogLockedByLabel=This lock was set by: 
 SetSoftLockDialogLockedByYouLabel=This lock was set by: You
+
+MainToolbarToolTipRefresh=Refresh datapool view
+MainToolbarToolTipPropagateFile=Propagate locally changed files
+MainToolbarToolTipPull=Pull files from project member
+MainToolbarToolTipSearch=Search for files
+MainToolbarToolTipSearchField=Enter search term here
