@@ -66,6 +66,15 @@ public interface IJakeGuiAccess {
 	 * @return true if app is logged in.
 	 */
 	public boolean isLoggedIn();
+	
+	/**
+	 * Checks if the given user id is logged online
+	 * 
+	 * @param userId of the user of whom the online status is to be checked
+	 * @return true if user is logged in.
+	 */
+	
+	public boolean isLoggedIn(String userId);
 
 	/**
 	 * Get the user that is currently logged in.

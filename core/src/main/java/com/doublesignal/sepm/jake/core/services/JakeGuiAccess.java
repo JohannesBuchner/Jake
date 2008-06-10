@@ -34,7 +34,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     private ISyncService sync = null;
     private IFSService fss = null;
     private IJakeDatabase db = null;
-    private IProjectMemberDao pm = null;
     private Project currentProject;
     private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
@@ -81,6 +80,20 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     public boolean isLoggedIn() {
         return ics.isLoggedIn();
+    }
+    
+    public boolean isLoggedIn(String userId) {
+        
+        	try {
+				return ics.isLoggedIn(userId);
+			} catch (NotLoggedInException e) {
+				return false;
+			} catch (TimeoutException e) {
+				return false;
+			} catch (NetworkException e) {
+				return false;
+			}
+        
     }
 
     public FileObject createFileObjectFromExternalFile(String absolutePath)
@@ -145,7 +158,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException {
        log.info("Get User by"+userId+" . Set Note "+note);
-       pm.getByUserId(userId).setNotes(note);
+       db.getProjectMemberDao().getByUserId(userId).setNotes(note);
     }
 
 

@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Observable;
 
 import javax.swing.table.AbstractTableModel;
-
 import org.apache.log4j.Logger;
-import com.doublesignal.sepm.jake.core.domain.NoteObject;
+
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
-import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+
 
 @SuppressWarnings("serial")
 /**
@@ -20,25 +19,15 @@ public class PeopleTableModel extends AbstractTableModel {
 	private static Logger log = Logger.getLogger(PeopleTableModel.class);
 	private List<ProjectMember> members = new ArrayList<ProjectMember>();
 	private final IJakeGuiAccess jakeGuiAccess;
-
-	private int countActiveUser = 0;
+	
+	
+	
 	
 	PeopleTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing PeopleTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
 		
-//		jakeGuiAccess.addProjectMember("tesuserph@domain.com");
-//		ProjectMember pm = new ProjectMember("test");
-//		jakeGuiAccess.getProject().addMember(pm);
-//		NoteObject o = new NoteObject("notename","notetext");
-//		
-//		jakeGuiAccess.getNotes().add(o);
-//		log.info("*********************************");
-//		int i;
-//		for (i=0;i<jakeGuiAccess.getProject().getMembers().size();i++)
-//		{log.info(jakeGuiAccess.getMembers().get(i).getUserId());}
-//		log.info("*********************************");
 		
 	}
 
@@ -71,15 +60,17 @@ public class PeopleTableModel extends AbstractTableModel {
 	 */
 	public int getOnlineMembersCount()	{
 		
+		int onlineMembers=0;
 		
 		for(ProjectMember p:this.members)
 		{
-			if(p.getActive())
-			countActiveUser++;
+			
+			if(jakeGuiAccess.isLoggedIn(p.getUserId()))
+				onlineMembers++;
 		}
 		
-		//return countActiveUser;
-		return 0;
+	
+		return onlineMembers;
 	}
 	
 	/**
@@ -119,13 +110,13 @@ public class PeopleTableModel extends AbstractTableModel {
 			return member.getUserId();
 
 		case Status:	
-					if (jakeGuiAccess.isLoggedIn())
+					if (jakeGuiAccess.isLoggedIn(member.getUserId()))
 							return "Online";
 					else return "Offline";
 
 		case Comment:
 			return member.getNotes();
-			//jakeGuiAccess.getLastModifier(note).getNickname();
+			
 			
 
 		default:
