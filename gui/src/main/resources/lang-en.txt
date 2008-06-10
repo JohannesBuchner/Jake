@@ -40,6 +40,23 @@ FilesPanleDialogFileDeletedText=%0% has been deleted successfully!
 FilesPanelDialogFileNotDeletedTitle=File not deleted
 FilesPanelDialogFileNotDeletedText=The following file could not have been deleted from the project. Please make sure you have the necessary rights to perform this operation. <br> %0%
 
+FilesDialogContextMenuItemOpen=Open
+FilesDialogContextMenuItemSetLock=Set lock...
+FilesDialogContextMenuItemDeleteFile=Delete file
+FilesDialogContextMenuItemViewLog=View log...
+FilesDialogContextMenuItemResolveConflict=Resolve conflict...
+FilesDialogContextMenuItemPropagateFile=Propagate file
+FilesDialogContextMenuItemPullFile=Pull file
+FilesDialogContextMenuItemImportFile=Import file
+
+FilesTableModelColumnName=Name
+FilesTableModelColumnSize=Size
+FilesTableModelColumnTags=Tags
+FilesTableModelColumnSyncStatus=Sync status
+FilesTableModelColumnLastChanged=Last changed
+FilesTableModelColumnUser=User
+FilesTableModelFileNotInProject= <file not in project>
+
 ConflictDialogUseLocalFile=Use local File
 ConflictDialogUseRemoteFile=Use remote file
 ConflictDialogOpen=Open

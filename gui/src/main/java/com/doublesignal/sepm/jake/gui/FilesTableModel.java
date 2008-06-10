@@ -5,6 +5,9 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
@@ -17,6 +20,8 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class FilesTableModel extends AbstractTableModel {
 	private static Logger log = Logger.getLogger(FilesTableModel.class);
+	private static ITranslationProvider translator = new TextTranslationProvider();
+	
 	private final IJakeGuiAccess jakeGuiAccess;
 	private List<JakeObject> files;
 
@@ -44,17 +49,25 @@ public class FilesTableModel extends AbstractTableModel {
 		return files;
 	}
 
-	String[] colNames = new String[] { "Name", "Size", "Tags", "Sync Status",
-			"Last Changed", "User" };
+	private String[] colNames = new String[] {translator.get("FilesTableModelColumnName"),
+			                          translator.get("FilesTableModelColumnSize"),
+			                          translator.get("FilesTableModelColumnTags"),
+			                          translator.get("FilesTableModelColumnSyncStatus"),
+			                          translator.get("FilesTableModelColumnLastChanged"),
+			                          translator.get("FilesTableModelColumnUser") };
 
-	boolean[] columnEditable = new boolean[] { false, false, true, false,
+	private boolean[] columnEditable = new boolean[] { false, false, true, false,
 			false, false };
 
-	enum FilesColumns {
+	private enum FilesColumns {
 		Name, Size, Tags, SyncStatus, LastChanged, User
 	}
-
-	FilesTableModel(IJakeGuiAccess jakeGuiAccess) {
+	
+	/**
+	 * Construct a new table model, init data.
+	 * @param jakeGuiAccess
+	 */
+	public FilesTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing FilesTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
         updateData();
@@ -63,7 +76,7 @@ public class FilesTableModel extends AbstractTableModel {
 	/**
 	 * Update whole table data.
 	 */
-	protected void updateData() {
+	public void updateData() {
 		log.info("calling updateData");
         this.files = jakeGuiAccess.getFileObjects("/");
     }
@@ -95,25 +108,23 @@ public class FilesTableModel extends AbstractTableModel {
 			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.getFileObjectSyncStatus(file));
 
 		case LastChanged:
-            try {
-                return jakeGuiAccess.getLastModified(file).toString();
-            } catch (NoSuchLogEntryException e) {
-                return "<File not in Project>";
-            }
+			try {
+				return jakeGuiAccess.getLastModified(file).toString();
+			} catch (NoSuchLogEntryException e) {
+				return "<File not in Project>";
+			}
 
-            case User:
-			try
-            {
-            ProjectMember pmLastModifier = jakeGuiAccess.getLastModifier(file);
-			return (pmLastModifier.getNickname().isEmpty()) ? pmLastModifier
-					.getUserId() : pmLastModifier.getNickname();
-            } catch (NoSuchLogEntryException e) {
-                return "<File not in Project>";
-            }
+		case User:
+			try {
+				ProjectMember pmLastModifier = jakeGuiAccess.getLastModifier(file);
+				return (pmLastModifier.getNickname().isEmpty()) ? pmLastModifier
+						.getUserId() : pmLastModifier.getNickname();
+			} catch (NoSuchLogEntryException e) {
+				return translator.get("FilesTableModelFileNotInProject");
+			}
 
-            default:
-			throw new IllegalArgumentException(
-					"Cannot get Information for column " + columnIndex);
+		default:
+			throw new IllegalArgumentException("Cannot get Information for column " + columnIndex);
 		}
 	}
 

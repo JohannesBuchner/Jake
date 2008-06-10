@@ -913,9 +913,9 @@
 								the filelist gets enlarged.
 							</td>
 							<td></td>
+							<td>OK</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-10, 20:59, sw</td>
 							<td>High</td>
 							<td>NC</td>
 						</tr>
@@ -928,11 +928,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok, takes 1-2 seconds to display the correct result.</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-10, 21:04, sw</td>
 							<!-- passed? -->
 							<td>High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -949,11 +949,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-10, 21:05, sw</td>
 							<!-- passed? -->
 							<td>Very High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -969,7 +969,7 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>the context menu is not context sensitiv.</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
@@ -988,11 +988,11 @@
 							<td>The user double clicks on the file, the file is launched by the operating system</td>
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-10, 21:08, sw</td>
 							<!-- passed? -->
 							<td>Very High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -1009,11 +1009,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-10, 21:08, sw</td>
 							<!-- passed? -->
 							<td>Medium</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -1027,7 +1027,7 @@
 							<!-- test case # //-->
 							<td>ContextMenu-&gt;Delete File</td>
 							<!-- function //-->
-							<td>A window pops up, asking the User if he really wants to delete the file. The file is deleted from the fss.</td>
+							<td>the user is asked for confirmation, the file is deleted from the fs.</td>
 							<!-- expected result -->
 							<td>(file must be under sync) select a file, select delete from the context menu, confirm deletion</td>
 							<!-- inputs -->
@@ -1051,11 +1051,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>displpay fake info</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>no</td>
 							<!-- passed? -->
 							<td></td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -1067,15 +1067,15 @@
 							<!-- test case # //-->
 							<td>ContextMenu-&gt;Open File/Folder</td>
 							<!-- function //-->
-							<td></td>
+							<td>launch the file with external app</td>
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-10, 21:15, sw</td>
 							<!-- passed? -->
 							<td>Very High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -1087,16 +1087,15 @@
 							<!-- test case # //-->
 							<td>ContextMenu-&gt;Lock File</td>
 							<!-- function //-->
-							<td>The file is locked for autodistribution. Changes the user makes,
-                                are not automatically distributed</td>
+							<td>The lock dialog is prompted, the user may set/delete/override the lock</td>
 							<!-- expected result -->
-							<td></td>
+							<td>the lock is changed accordingly</td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-10, 21:16, sw</td>
 							<!-- passed? -->
 							<td>Very High</td>
 							<!-- priority: very high, high, medium, low, very low -->
