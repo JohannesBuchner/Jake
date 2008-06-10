@@ -1,21 +1,26 @@
 package com.doublesignal.sepm.jake.gui;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
+
+
+import com.doublesignal.sepm.jake.sync.ISyncService;
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.table.*;
+
 
 import org.apache.log4j.Logger;
 
 
 /**
- * @author Peter Steinberger
+ * @author Peter Steinberger, philipp
  */
 @SuppressWarnings("serial")
 public class ViewLogDialog extends JDialog {
@@ -23,12 +28,28 @@ public class ViewLogDialog extends JDialog {
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
-    private JakeObject jakeObject;
-
+    
+    
+    ISyncService ss = null;
+    IJakeGuiAccess jakeGuiAccess;
+   
+    Date d = new Date();
+    
+     
+   
+   
+    public ViewLogDialog(Frame owner,IJakeGuiAccess jakeGuiAccess) {
+		super(owner);
+		this.jakeGuiAccess = jakeGuiAccess;
+		initComponents();
+    }
+    
     public ViewLogDialog(Frame owner) {
 		super(owner);
+		
 		initComponents();
-	}
+		log.info("DONE");
+    }
 
 	public ViewLogDialog(Dialog owner) {
 		super(owner);
@@ -38,7 +59,6 @@ public class ViewLogDialog extends JDialog {
     public ViewLogDialog setJakeObject(JakeObject jakeObject)
     {
         log.info("Set jakeObject to  "+ jakeObject.getName());
-        this.jakeObject = jakeObject;
         return this;
     }
 
@@ -55,9 +75,9 @@ public class ViewLogDialog extends JDialog {
 		logTable = new JTable();
 		buttonBar = new JPanel();
 		okButton = new JButton();
-
+		viewlogDialogTableModel = new ViewLogDialogTableModel(jakeGuiAccess);
 		//======== this ========
-		setTitle("View Log - SEPM_Artefakt.pdf");
+		setTitle("View Log");
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -72,17 +92,8 @@ public class ViewLogDialog extends JDialog {
 
 				//======== scrollPane1 ========
 				{
-
-					//---- table1 ----
-					logTable.setModel(new DefaultTableModel(
-						new Object[][] {
-							{"CREATED", "Johannes", "April 1st, 11:59"},
-							{"UPDATED", "Peter", "April 4th, 19:33"},
-						},
-						new String[] {
-							"Action", "User", "Time"
-						}
-					));
+					logTable.setModel(viewlogDialogTableModel);
+			
 					logTableScrollPane.setViewportView(logTable);
 				}
 				contentPanel.add(logTableScrollPane);
@@ -120,4 +131,5 @@ public class ViewLogDialog extends JDialog {
 	private JTable logTable;
 	private JPanel buttonBar;
 	private JButton okButton;
+	private ViewLogDialogTableModel viewlogDialogTableModel;
 }

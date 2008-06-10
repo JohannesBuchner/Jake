@@ -132,6 +132,8 @@ public interface IJakeGuiAccess {
 	 */
 
 	public List<LogEntry> getLog();
+	
+	public void createLog(LogEntry logEntry);
 
 	public List<LogEntry> getLog(JakeObject object);
 

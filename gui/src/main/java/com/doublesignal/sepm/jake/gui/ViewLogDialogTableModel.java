@@ -9,8 +9,12 @@ import javax.swing.table.*;
 
 import org.apache.log4j.Logger;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
+
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+
 
 
 
@@ -24,18 +28,22 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
     private List<LogEntry> logEntries = new ArrayList<LogEntry>();
-    
+    private final IJakeGuiAccess jakeGuiAccess;
 
-    ViewLogDialogTableModel()	{
+    
+    
+    
+    ViewLogDialogTableModel(IJakeGuiAccess jakeGuiAccess)	{
     	log.info("Initializing ViewLogDialogTableModel.");
-		
+    	this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
     	
     }
     
-    private void updateData() {
+    public void updateData() {
 		log.info("Updating Log data...");
-			
+		this.logEntries = jakeGuiAccess.getLog();
+		
 	}
 
 	String[] colNames = new String[] { "Action", "User", "Time" };
@@ -53,6 +61,7 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
     }
     
     public Object getValueAt(int rowIndex, int columnIndex) {
+    	
     	LogEntry logEntry = logEntries.get(rowIndex);
     	
     	LogColumns col = LogColumns.values()[columnIndex];

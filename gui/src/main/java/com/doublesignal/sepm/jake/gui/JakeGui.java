@@ -151,7 +151,7 @@ public class JakeGui extends JPanel implements Observer {
 
 	private void systemLogViewMenuItemActionPerformed(ActionEvent e) {
 		log.debug("Open ViewLog Dialog");
-		new ViewLogDialog(mainFrame).setVisible(true);
+		new ViewLogDialog(mainFrame , getJakeGuiAccess()).setVisible(true);
 	}
 
 	private void peopleViewMenuItemActionPerformed(ActionEvent e) {

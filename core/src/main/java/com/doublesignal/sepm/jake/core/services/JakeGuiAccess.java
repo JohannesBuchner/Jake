@@ -243,6 +243,10 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     public List<LogEntry> getLog() {
         return db.getLogEntryDao().getAll();
     }
+    
+    public void createLog(LogEntry logEntry) {
+         db.getLogEntryDao().create(logEntry);
+    }
 
     public List<LogEntry> getLog(JakeObject object) {
         return db.getLogEntryDao().getAllOfJakeObject(object);
