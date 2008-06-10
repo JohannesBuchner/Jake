@@ -103,16 +103,6 @@ public interface IFSService {
 			FileNotFoundException, NotAReadableFileException;
 	
 	/**
-	 * Registers a callback for watching the rootpath.
-	 * Events are create, modify, delete for files. 
-	 * It is recursive and when a folder is created, the newly created folder is
-	 * watched too. When a folder is removed a delete-Callback is issued for 
-	 * each file.
-	 * @see IModificationListener
-	 */
-	public void registerModificationListener(IModificationListener ob);
-	
-	/**
 	 * Sets and stores the root path for operations that use a relpath.
 	 * @throws IOException
 	 * @throws NotADirectoryException 
@@ -198,4 +188,20 @@ public interface IFSService {
 		throws InvalidFilenameException, FileNotFoundException, NotAFileException; 
 
 
+	/**
+	 * Registers a callback for watching the rootpath.
+	 * Events are create, modify, delete for files. 
+	 * It is recursive and when a folder is created, the newly created folder is
+	 * watched too. When a folder is removed a delete-Callback is issued for 
+	 * each file.
+	 * @see IModificationListener
+	 */
+	public void addModificationListener(IModificationListener ob);
+
+	/**
+	 * Removes a callback for watching the rootpath.
+	 * @see IModificationListener
+	 */
+	public void removeModificationListener(IModificationListener ob);
+	
 }

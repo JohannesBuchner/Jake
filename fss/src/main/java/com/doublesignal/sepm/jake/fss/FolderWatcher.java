@@ -76,11 +76,13 @@ public class FolderWatcher {
 		 */
 		@Override
 		public void run() {
-			if(isCanceled){
-				System.out.println("Odd, a Timer started running, although we " +
-				"are in canceled state");
+			if(!rootpath.isDirectory()){
+				System.err.println("FolderScanTask was not shutdown, doing " +
+						"it myself.");
+				cancel();
 				return;
 			}
+			
 			checkFolder(rootpath);
 			if(isCanceled)
 				return;
@@ -109,7 +111,8 @@ public class FolderWatcher {
 			if(isCanceled)
 				return;
 			if(!folder.isDirectory()){
-				System.out.println("checkFolder got a non-directory!");
+				System.out.println("checkFolder got a non-directory: " + 
+						folder.getAbsolutePath());
 				return;
 			}
 			for (File f : folder.listFiles()) {
@@ -158,7 +161,7 @@ public class FolderWatcher {
 		} catch (FileNotFoundException e1) {
 			throw new NotAReadableFileException();
 		}
-
+		
 		int len = (int) f.length();
 		byte[] buf = new byte[len];
 		int n;

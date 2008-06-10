@@ -101,7 +101,6 @@ public class FolderWatchTest extends FSTestCase {
 		FileWriter fwriter = new FileWriter(f);
 		fwriter.append("foo, bar");
 		fwriter.close();
-		
 	}
 	@Test
 	public void testWithSmallInterval() throws Exception{

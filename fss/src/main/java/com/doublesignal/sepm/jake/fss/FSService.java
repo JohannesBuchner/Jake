@@ -2,9 +2,7 @@ package com.doublesignal.sepm.jake.fss;
 
 import java.awt.Desktop;
 import java.io.*;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +18,8 @@ public class FSService implements IFSService {
 	private Desktop desktop = null;
 	
 	private FileHashCalculator hasher = null;
+	
+	private FolderWatcher fw = null;
 	
 	public FSService() throws NoSuchAlgorithmException{
 		hasher = new FileHashCalculator();
@@ -44,10 +44,25 @@ public class FSService implements IFSService {
 			throw new NotADirectoryException();
 		rootPath = path;
 		
+		if(fw != null)
+			fw.cancel();
 		startModificationThread();
 	}
-	private void startModificationThread(){
-		
+	
+	private void startModificationThread() throws NotADirectoryException{
+		fw = new FolderWatcher(new File(this.rootPath), 700);
+		fw.initialRun();
+		fw.run();
+	}
+	
+	public void addModificationListener(IModificationListener l) {
+		if(fw != null)
+			fw.addListener(l);
+	}
+	
+	public void removeModificationListener(IModificationListener l) {
+		if(fw != null)
+			fw.removeListener(l);
 	}
 	
 	public Boolean fileExists(String relpath) throws InvalidFilenameException {
@@ -177,12 +192,6 @@ public class FSService implements IFSService {
 		}
 		return true;
 	}
-	ArrayList<IModificationListener> listener = new ArrayList<IModificationListener>();
-	
-	public void registerModificationListener(IModificationListener ob) {
-		listener.add(ob);
-	}
-
 	public boolean deleteFile(String relpath) 
 		throws InvalidFilenameException, FileNotFoundException, NotAFileException
 	{
@@ -236,5 +245,6 @@ public class FSService implements IFSService {
 	public int getHashLength() {
 		return hasher.getHashLength();
 	}
+
 
 }
