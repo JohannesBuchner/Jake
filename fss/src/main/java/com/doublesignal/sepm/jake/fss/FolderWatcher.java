@@ -88,8 +88,6 @@ public class FolderWatcher {
 				return;
 
 			/* check for deleted files */
-			System.out.println("checking for deleted files ...");
-
 			for (int i = files.size() - 1; i>=0; i-- ) {
 				File f = files.get(i);
 				if(!f.exists()){
@@ -97,8 +95,6 @@ public class FolderWatcher {
 					hashes.remove(f);
 					files.remove(i);
 					changeHappened(f, ModifyActions.DELETED);
-				}else{
-					System.out.println(f.getAbsolutePath() + " still exists.");
 				}
 			}
 		}
@@ -111,7 +107,7 @@ public class FolderWatcher {
 			if(isCanceled)
 				return;
 			if(!folder.isDirectory()){
-				System.out.println("checkFolder got a non-directory: " + 
+				System.out.println("SHOULD NOT HAPPEN: checkFolder got a non-directory: " + 
 						folder.getAbsolutePath());
 				return;
 			}
