@@ -37,6 +37,8 @@ public class FSService implements IFSService {
 	}
 
 	public void setRootPath(String path) throws FileNotFoundException, NotADirectoryException {
+		if(fw != null)
+			fw.cancel();
 		File f = new File(path);
 		if(!f.exists()) 
 			throw new FileNotFoundException();
@@ -44,12 +46,6 @@ public class FSService implements IFSService {
 			throw new NotADirectoryException();
 		rootPath = path;
 		
-		if(fw != null)
-			fw.cancel();
-		startModificationThread();
-	}
-	
-	private void startModificationThread() throws NotADirectoryException {
 		try {
 			fw = new FolderWatcher(new File(this.rootPath), 700);
 		} catch (NoSuchAlgorithmException e) {

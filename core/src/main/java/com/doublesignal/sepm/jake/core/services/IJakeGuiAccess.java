@@ -1,18 +1,33 @@
 package com.doublesignal.sepm.jake.core.services;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.NoSuchObjectException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Observer;
+import java.util.Set;
 
+import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
+import com.doublesignal.sepm.jake.fss.CreatingSubDirectoriesFailedException;
+import com.doublesignal.sepm.jake.fss.FileTooLargeException;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.fss.NotAFileException;
+import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
+import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
+import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
 
 /**
  * @author domdorn
@@ -103,35 +118,6 @@ public interface IJakeGuiAccess {
 	 */
 	public String getConfigOption(String configKey)
 			throws NoSuchConfigOptionException;
-
-	/**
-	 * do a logSync
-	 */
-	public void logSync() throws NetworkException;
-
-	/**
-	 * Returns a list of one or more JakeObjects which are reported as
-	 * OutOfSync, so they can be visualized by the gui.
-	 * 
-	 * @return list of Jake Objects
-	 */
-	public List<JakeObject> getOutOfSyncObjects();
-
-	/**
-	 * Returns a list of one or more JakeObjects which where changed by a recent
-	 * PullObjects() call, so they can be visualized by the gui.
-	 * 
-	 * @return list of Jake Objects
-	 */
-	public List<JakeObject> getChangedObjects();
-
-	public void pushObjects() throws NetworkException;
-
-	public void pullObjects() throws NetworkException;
-
-	/*
-	 * TODO: Resolve version conflicts!!!
-	 */
 
 	public List<LogEntry> getLog();
 	
@@ -348,14 +334,6 @@ public interface IJakeGuiAccess {
 	public JakeObject removeTag(JakeObject jakeObject, Tag tag);
 
 	/**
-	 * Get the SyncStatus of a JakeObject
-	 * 
-	 * @param jakeObject
-	 * @return SyncStatus (String)
-	 */
-	public Integer getFileObjectSyncStatus(JakeObject jakeObject);
-
-	/**
 	 * open a file with the associated (external) application
 	 * 
 	 * @param relpath
@@ -414,35 +392,6 @@ public interface IJakeGuiAccess {
 	 * @return true on success, false otherwise
 	 */
 	public boolean deleteJakeObject(JakeObject jakeObject);
-
-	/**
-	 * Shedules the pushing of the given JakeObject
-	 * 
-	 * @param jakeObject
-	 *            the JakeObject which should be distributed
-	 */
-	void propagateJakeObject(JakeObject jakeObject);
-
-	/**
-	 * Shedules the pulling of the given JakeObject *
-	 * 
-	 * @param jakeObject
-	 *            the JakeObject to be pulled
-	 */
-	void pullJakeObject(JakeObject jakeObject);
-
-	/**
-    * Pull the remote file of a file that is in conflict.
-    * @param localFile The local file that is in conflict
-    * @return The remote counterpart
-    */
-   public FileObject pullRemoteFile(FileObject localFile);
-
-    /**
-     * Querys the FSS and Database for the current data and makes shure
-     * the used datastructures are updated accordingly
-     */
-    void refreshFileObjects();
     
     /**
      * Stores a <code>note</code> for a Project Member
@@ -496,8 +445,98 @@ public interface IJakeGuiAccess {
      * @param userId which is to be edited
      */
 	public void editProjectMemberUserId(ProjectMember selectedMember , String userId);
-	    
+
+	/* Syncronisation stuff */
+	
+	public void refreshFileObjects();
+	
+	public Integer getFileObjectSyncStatus(JakeObject jakeObject);
+
+	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
+
+	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException;
+
+	public FileObject pullRemoteFile(FileObject localFile);
+	
+	public void launchExternalFile(File f);
+	
+	/*
+
+	public List<JakeObject> getChangedObjects();
+
+	public List<JakeObject> getOutOfSyncObjects();
+
+	public void pullObjects() throws NetworkException;
+
+	public void pushObjects() throws NetworkException;
+
+	
+	public List<FileObject> getFileObjectsFromDB();
+	
+	public void logSync() throws NetworkException;
+	
+	/**
+	 * Returns a list of one or more JakeObjects which are reported as
+	 * OutOfSync, so they can be visualized by the gui.
+	 * 
+	 * @return list of Jake Objects
+	 * /
+	public List<JakeObject> getOutOfSyncObjects();
+
+	/**
+	 * Returns a list of one or more JakeObjects which where changed by a recent
+	 * PullObjects() call, so they can be visualized by the gui.
+	 * 
+	 * @return list of Jake Objects
+	 * /
+	public List<JakeObject> getChangedObjects();
+
+	public void pushObjects() throws NetworkException;
+
+	public void pullObjects() throws NetworkException;
+
+
+	/**
+	 * Get the SyncStatus of a JakeObject
+	 * 
+	 * @param jakeObject
+	 * @return SyncStatus (String)
+	 * /
+	public Integer getFileObjectSyncStatus(JakeObject jakeObject);
+
+
+
+
+	/**
+	 * Shedules the pulling of the given JakeObject *
+	 * 
+	 * @param jakeObject
+	 *            the JakeObject to be pulled
+	 * @throws NotLoggedInException 
+	 * @throws OtherUserOfflineException 
+	 * /
+	void pullJakeObject(JakeObject jakeObject) throws NotLoggedInException, OtherUserOfflineException;
+
+	/**
+    * Pull the remote file of a file that is in conflict.
+    * @param localFile The local file that is in conflict
+    * @return The remote counterpart
+    * /
+   public FileObject pullRemoteFile(FileObject localFile);
+
+    /**
+     * Querys the FSS and Database for the current data and makes sure
+     * the used datastructures are updated accordingly
+     * /
+    void refreshFileObjects();
     
+	/**
+	 * Shedules the pushing of the given JakeObject
+	 * 
+	 * @param jakeObject
+	 *            the JakeObject which should be distributed
+	 * /
+	void propagateJakeObject(JakeObject jakeObject);
 
-
+    */
 }

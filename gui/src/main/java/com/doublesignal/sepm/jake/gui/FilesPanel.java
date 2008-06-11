@@ -22,6 +22,8 @@ import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -156,10 +158,8 @@ public class FilesPanel extends JPanel {
         lockFileMenuItem = new JMenuItem();
         deleteFileMenuItem = new JMenuItem();
         viewLogForFileMenuItem = new JMenuItem();
-        resolveFileConflictMenuItem = new JMenuItem();
         propagateFileMenuItem = new JMenuItem();
         pullFileMenuItem = new JMenuItem();
-        importLocalFileMenuItem = new JMenuItem();
 
         launchFileMenuItem.setText(translator.get("FilesDialogContextMenuItemOpen"));
         launchFileMenuItem.addActionListener(new ActionListener() {
@@ -169,23 +169,18 @@ public class FilesPanel extends JPanel {
         }
         );
 
-        filesPopupMenu.add(launchFileMenuItem);
-
         lockFileMenuItem.setText(translator.get("FilesDialogContextMenuItemSetLock"));
         lockFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 lockFileMenuItemActionPerformed(event);
             }
         });
-        filesPopupMenu.add(lockFileMenuItem);
-
         deleteFileMenuItem.setText(translator.get("FilesDialogContextMenuItemDeleteFile"));
         deleteFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 deleteFileMenuItemActionPerformed(event);
             }
         });
-        filesPopupMenu.add(deleteFileMenuItem);
 
         viewLogForFileMenuItem.setText(translator.get("FilesDialogContextMenuItemViewLog"));
         viewLogForFileMenuItem.addActionListener(new ActionListener() {
@@ -193,17 +188,7 @@ public class FilesPanel extends JPanel {
                 viewLogForFileMenuItemActionPerfomed(event);
             }
         });
-        filesPopupMenu.add(viewLogForFileMenuItem);
-
-        resolveFileConflictMenuItem.setText(translator.get("FilesDialogContextMenuItemResolveConflict"));
-        resolveFileConflictMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                resolveFileConflictMenuItemActionPerformed(e);
-            }
-        });
-        filesPopupMenu.add(resolveFileConflictMenuItem);
-        filesPopupMenu.addSeparator();
-
+        
         propagateFileMenuItem.setText(translator.get("FilesDialogContextMenuItemPropagateFile"));
         propagateFileMenuItem.setToolTipText("Propagate locally changed file");
         propagateFileMenuItem.addActionListener(new ActionListener() {
@@ -212,33 +197,22 @@ public class FilesPanel extends JPanel {
             }
         }
         );
-        filesPopupMenu.add(propagateFileMenuItem);
-
         pullFileMenuItem.setText(translator.get("FilesDialogContextMenuItemPullFile"));
         pullFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 pullFileMenuItemActionPerformed(event);
             }
         });
+        
+        filesPopupMenu.add(launchFileMenuItem);
+        filesPopupMenu.addSeparator();
+        filesPopupMenu.add(propagateFileMenuItem);
         filesPopupMenu.add(pullFileMenuItem);
-
-        importLocalFileMenuItem.setText(translator.get("FilesDialogContextMenuItemImportFile"));
-        importLocalFileMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                importLocalFileMenuItemActionPerformed(event);
-            }
-        }
-        );
-        filesPopupMenu.add(importLocalFileMenuItem);
+        filesPopupMenu.addSeparator();
+        filesPopupMenu.add(lockFileMenuItem);
+        filesPopupMenu.add(deleteFileMenuItem);
+        filesPopupMenu.add(viewLogForFileMenuItem);
     }
-
-
-    private void resolveFileConflictMenuItemActionPerformed(ActionEvent e) {
-        JakeObject localFile = getSelectedFile();
-        if (localFile != null && localFile.getClass().equals(FileObject.class))
-            new ResolveConflictDialog(jakeGui.getMainFrame(), (FileObject)localFile, jakeGuiAccess).setVisible(true);
-    }
-
 
     private void lockFileMenuItemActionPerformed(ActionEvent event) {
         log.info("lockFileMenuItemActionPerformed");
@@ -252,7 +226,7 @@ public class FilesPanel extends JPanel {
         log.info("deleteFileMenuItemActionPerformed");
 
         JakeObject fileObject = getSelectedFile();
-        if (fileObject == null)
+        if (fileObject == null) 
             return;
 
         String filename = fileObject.getName();
@@ -298,51 +272,42 @@ public class FilesPanel extends JPanel {
 
 
     private void propagateFileMenuItemActionPerfomed(ActionEvent event) {
-        log.info("propagateFileMenuItemActionPerfomed");
+		log.info("propagateFileMenuItemActionPerfomed");
 
-        JakeObject fileObject = getSelectedFile();
-        if (fileObject != null) {
-            jakeGuiAccess.propagateJakeObject(fileObject);
-            UserDialogHelper.inform(this, translator.get("FilesPanelDialogPropagationMessageTitle"), translator.get("FilesPanelDialogPropagationMessageText", fileObject.getName()));
-        }
-    }
+		JakeObject fileObject = getSelectedFile();
+		if (fileObject != null) {
+			/*jakeGuiAccess.pushJakeObject(fileObject);
+			UserDialogHelper.inform(
+				this,
+				"Propagation sheduled",
+				"The propagation of the file \n\""
+					+ fileObject.getName()
+					+ "\"\n was sheduled. \n\n"
+					+ "It could take some time to propagate it to other project members, \n"
+					+ "depending on the availability of other project members.");
+			*/
+		}
 
+	}
     private void pullFileMenuItemActionPerformed(ActionEvent event) {
-        log.info("pullFileMenuItemActionPerformed");
-        JakeObject fileObject = getSelectedFile();
-        if (fileObject != null) {
-            jakeGuiAccess.pullJakeObject(fileObject);
-            UserDialogHelper.inform(this, translator.get("FilesPanelDialogPullMessageTitle"), translator.get("FilesPanelDialogPullMessageText", fileObject.getName()));
-        }
-    }
-
-    private void importLocalFileMenuItemActionPerformed(ActionEvent event) {
-        log.info("importLocalFileMenuItemActionPerformed");
-
-        JakeObject fileObject = getSelectedFile();
-        if (fileObject != null) {
-        	Integer nstatusnr = jakeGuiAccess.getFileObjectSyncStatus(fileObject);
-
-        	if (nstatusnr != 102) {
-        		UserDialogHelper.warning(this, translator.get(""), translator.get("", fileObject.getName()));
-        	} else {
-        		if (jakeGuiAccess.importLocalFileIntoProject(fileObject.getName())) {
-        			UserDialogHelper.inform(this, translator.get(""), translator.get("", fileObject.getName()));
-        			filesTable.updateUI();
-        		} else {
-        			UserDialogHelper.error(this, translator.get(""), translator.get("", fileObject.getName()));
-        		}
-        	}
-        }
-    }
+		log.info("pullFileMenuItemActionPerformed");
+		JakeObject fileObject = getSelectedFile();
+		if (fileObject != null) {
+			try {
+				jakeGuiAccess.pullJakeObject(fileObject);
+			} catch (NotLoggedInException e) {
+				UserDialogHelper.translatedError(this, "NotLoggedInException");
+			} catch (OtherUserOfflineException e) {
+				UserDialogHelper.translatedError(this, "OtherUserOfflineException");
+			}
+		}
+	}
     
 	public int getNameColPos() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
 	public int getTagsColPos() {
-		// TODO Auto-generated method stub
 		return 2;
 	}	 
 
@@ -355,8 +320,6 @@ public class FilesPanel extends JPanel {
     private JMenuItem lockFileMenuItem;
     private JMenuItem deleteFileMenuItem;
     private JMenuItem viewLogForFileMenuItem;
-    private JMenuItem resolveFileConflictMenuItem;
     private JMenuItem propagateFileMenuItem;
     private JMenuItem pullFileMenuItem;
-    private JMenuItem importLocalFileMenuItem;
 }

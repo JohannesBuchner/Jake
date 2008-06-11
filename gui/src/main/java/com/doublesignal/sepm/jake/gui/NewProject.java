@@ -32,6 +32,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.ExistingProjectException;
 import com.doublesignal.sepm.jake.core.services.exceptions.InvalidDatabaseException;
@@ -51,7 +52,7 @@ public class NewProject extends JDialog {
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
-	JakeGuiAccess jga = null;
+	IJakeGuiAccess jga = null;
 
 	public NewProject(String foldersuggestion) {
 		super();

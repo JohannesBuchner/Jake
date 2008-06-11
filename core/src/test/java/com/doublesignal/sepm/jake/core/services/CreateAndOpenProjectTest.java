@@ -60,7 +60,7 @@ public class CreateAndOpenProjectTest extends TestCase {
 				"foooo", "bla@bar");
 		File f = new File(rootPath.getAbsolutePath() + ".script");
 		assertTrue(f.exists());
-		JakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());
+		IJakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());
 		assertEquals(jga.getProject().getName(), "foooo");
 		assertEquals(jga.getLoginUserid(), "bla@bar");
 		assertTrue(f.exists());
@@ -75,7 +75,7 @@ public class CreateAndOpenProjectTest extends TestCase {
 				"foooo", "bla@bar");
 		File f = new File(rootPath.getAbsolutePath() + ".script");
 		assertTrue(f.exists());
-		JakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());
+		IJakeGuiAccess jga = JakeGuiAccess.openProjectByRootpath(rootPath.getAbsolutePath());
 		assertTrue(jga.getProject().getMembers().size()==0);
 		jga.addProjectMember("validusername@domain.com");
 		Project p = jga.getProject();

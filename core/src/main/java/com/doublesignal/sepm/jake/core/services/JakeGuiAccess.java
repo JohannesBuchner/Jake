@@ -14,6 +14,8 @@ import com.doublesignal.sepm.jake.ics.exceptions.*;
 import com.doublesignal.sepm.jake.sync.ISyncService;
 import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
+import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -31,17 +33,17 @@ import java.util.*;
  * @author johannes, domdorn, peter, philipp
  */
 public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
-    private IICService ics = null;
-    private ISyncService sync = null;
-    private IFSService fss = null;
-    private IJakeDatabase db = null;
+    IICService ics = null;
+    ISyncService sync = null;
+    IFSService fss = null;
+    IJakeDatabase db = null;
     private Project currentProject;
-    private static Logger log = Logger.getLogger(JakeGuiAccess.class);
+    static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
-    private List<FileObject> filesFSS;
-    private List<FileObject> filesDB;
-    private Map<String, Integer> filesStatus;
-
+    List<FileObject> filesFSS;
+    List<FileObject> filesDB;
+    Map<String, Integer> filesStatus;
+    
 	private IJakeMessageReceiveListener messageListener;
 
 
@@ -160,11 +162,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		db.getProjectMemberDao().editUserId(selectedMember , userId);
 	}
 
-    public List<JakeObject> getChangedObjects() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException {
        log.info("Get User by"+userId+" . Set Note "+note);
        db.getProjectMemberDao().getByUserId(userId).setNotes(note);
@@ -204,7 +201,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return null;
     }
 
-    private List<FileObject> getFileObjectsByRelPath(String relPath)
+    List<FileObject> getFileObjectsByRelPath(String relPath)
             throws InvalidFilenameException, IOException {
         List<FileObject> results = new ArrayList<FileObject>();
 
@@ -280,11 +277,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return db.getJakeObjectDao().getAllNoteObjects();
     }
 
-    public List<JakeObject> getOutOfSyncObjects() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public Project getProject() {
         return currentProject;
     }
@@ -325,16 +317,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     			log.debug("userid: " + member.getUserId());
     		}
         }
-    }
-
-    public void pullObjects() throws NetworkException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void pushObjects() throws NetworkException {
-        // TODO Auto-generated method stub
-
     }
 
     public void registerProjectInvitationCallback(Observer obs) {
@@ -576,7 +558,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	}
     
     
-    public static JakeGuiAccess openProjectByRootpath(String rootPath)
+    public static IJakeGuiAccess openProjectByRootpath(String rootPath)
             throws NonExistantDatabaseException, InvalidDatabaseException, InvalidRootPathException {
         File f = new File(rootPath);
         rootPath = f.getAbsolutePath();
@@ -626,6 +608,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
 	public void close() throws SQLException {
         db.close();
+        try {
+			fss.setRootPath(null);
+		} catch (Exception e) {
+			/* we know this fails */
+		}
     }
 
     public LogEntry getJakeObjectLockLogEntry(JakeObject jakeObject) {
@@ -681,10 +668,10 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
 	public boolean deleteJakeObject(JakeObject jakeObject) {
     	log.debug("trying to delete object: " + jakeObject.getName());
-    	Boolean sucess = false;
+    	Boolean success = false;
         try {
 			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
-			sucess = fss.deleteFile(jakeObject.getName());
+			success = fss.deleteFile(jakeObject.getName());
 			refreshFileObjects();
 		} catch (FileNotFoundException e) {
 			log.warn("Failed to delete file: File not found!");
@@ -695,25 +682,224 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (NotAReadableFileException e) {
 			log.warn("Failed to delete file: File is not readable");
 		}
-		return sucess;
+		return success;
     }
 
-    public void propagateJakeObject(JakeObject jakeObject) {
+
+    public boolean importLocalFileIntoProject(String relPath) {
+        FileObject fileObject = new FileObject(relPath);
+
+        db.getJakeObjectDao().save(fileObject);
+        // create logEntry
+
+
+        try {
+
+
+            // userId = ics.getUserid();
+            String userId = getLoginUserid();
+            String comment = "";
+            String hash = fss.calculateHashOverFile(fileObject.getName());
+
+            LogEntry logEntry = new LogEntry(
+                    LogAction.NEW_JAKEOBJECT,
+                    new Date(),
+                    fileObject.getName(),
+                    /* hash */
+                    hash,
+                    /* userId */
+                    userId,
+                    /* comment */
+                    comment
+            );
+            logEntry.setIsLastPulled(true);
+
+            db.getLogEntryDao().create(logEntry);
+            log.debug("persisted logentry");
+        } catch (InvalidFilenameException e) {
+            e.printStackTrace();
+            return false;
+        } catch (NotAReadableFileException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }  
+
+        filesDB.add(fileObject);
+
+        filesStatus.put(relPath, getRealFileObjectSyncStatus(fileObject));
+        //log.debug("putted status of file " + relPath + " to " + filesStatus.get(relPath));
+
         // TODO
+        return true;
     }
 
-    public void pullJakeObject(JakeObject jakeObject) {
-        // todo
+    public boolean importLocalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
+        log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
+        File srcFile = new File(absolutePath);
+        if(srcFile == null || !srcFile.exists() )
+            return false;
+
+        File destinationFolder = new File(destinationFolderAbsolutePath);
+        if(!destinationFolder.getAbsolutePath().startsWith(getProject().getRootPath().getAbsolutePath()))
+        {
+            log.debug("destination folder not in projectRootPath");
+            return false;
+        }
+
+
+
+        String filename = srcFile.getName();
+        File destinationFile = new File(destinationFolderAbsolutePath, filename);
+
+        if(destinationFile.exists())
+        {
+            log.debug("destinationFile already exists");
+            return false;
+        }
+
+        try
+        {
+            destinationFile.createNewFile();
+            copyFile(srcFile, destinationFile );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        String relPath = destinationFile.getAbsolutePath().
+                replace(getProject().getRootPath().getAbsolutePath(),"");
+
+        return importLocalFileIntoProject(relPath);
+    }
+
+	public static String getICSName() {
+        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+		IICService ics = (IICService) factory.getBean("ICService");
+		return ics.getServiceName();
+	}
+
+	public static boolean isOfCorrectUseridFormat(String userid) {
+        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+		IICService ics = (IICService) factory.getBean("ICService");
+		return ics.isOfCorrectUseridFormat(userid);
+	}
+
+	/**
+	 * This comes from the ICS and is called whenever a message is received from another project member
+	 *
+	 * @param from_userid The project member sending the message
+	 * @param content The content of the message
+	 */
+	public void receivedMessage(String from_userid, String content) {
+		try {
+			JakeMessage jm = new JakeMessage(db.getProjectMemberDao().getByUserId(ics.getUserid()), db.getProjectMemberDao().getByUserId(from_userid), content);
+			if(this.messageListener != null) {
+				messageListener.receivedJakeMessage(jm);
+			}
+		} catch (NoSuchProjectMemberException e) {
+			/*
+			 * Apparently, this user does not exist in our project. We don't care about messages from people who don't
+			 * exist in that context, so we can safely discard the message. */
+		} catch (NotLoggedInException e) {
+			/*
+			 * "Technically", this should never happen, since this listener only gets called when we are logged in
+			 * anyway. In this case, it is safe to assume something weird has happened and we will simply discard
+			 * the message.
+			 */
+			InvalidApplicationState.die("NotLoggedInException from receiveMessage", e);
+		}
+	}
+	
+	
+	/* *** Synchronisation stuff  *** */
+	
+
+    public void pushJakeObject(JakeObject jo, String commitmsg) 
+    	throws SyncException, NotLoggedInException 
+    {
+        try {
+			sync.push(jo, ics.getUserid(), commitmsg);
+		} catch (NotLoggedInException e) {
+			throw e;
+		} catch (ObjectNotConfiguredException e) {
+			InvalidApplicationState.die(e);
+		} catch (SyncException e) {
+			throw e;
+		}
+    }
+
+    public void pullJakeObject(JakeObject jo) throws 
+    	NotLoggedInException, OtherUserOfflineException 
+    {
+        byte[] content;
+		try {
+			content = sync.pull(jo);
+	        if(jo.getName().startsWith("note:")){
+	        	NoteObject no = new NoteObject(jo.getName(), new String(content));
+	        	db.getJakeObjectDao().save(no);
+	        }else{
+	        	fss.writeFile(jo.getName(), content);
+	        }
+		} catch (NoSuchObjectException e) {
+			InvalidApplicationState.die(e);
+		} catch (NotLoggedInException e) {
+			throw e;
+		} catch (TimeoutException e) {
+			InvalidApplicationState.die("unimplemented", e);
+		} catch (NetworkException e) {
+			InvalidApplicationState.die("unimplemented", e);
+		} catch (OtherUserOfflineException e) {
+			throw e;
+		} catch (ObjectNotConfiguredException e) {
+			InvalidApplicationState.die(e);
+		} catch (NoSuchLogEntryException e) {
+			InvalidApplicationState.die(e);
+		} catch (FileTooLargeException e) {
+			InvalidApplicationState.die(e);
+		} catch (NotAFileException e) {
+			InvalidApplicationState.die(e);
+		} catch (InvalidFilenameException e) {
+			InvalidApplicationState.die(e);
+		} catch (IOException e) {
+			InvalidApplicationState.die(e);
+		} catch (CreatingSubDirectoriesFailedException e) {
+			InvalidApplicationState.die("unimplemented", e);
+		}
+    }
+
+    public List<JakeObject> getChangedObjects() {
+        // TODO Auto-generated method stub
+        return null;
     }
     
-    /**
-     * Pull the remote file of a file that is in conflict.
-     * @param localFile The local file that is in conflict
-     * @return The remote counterpart
-     */
-    public FileObject pullRemoteFile(FileObject localFile) {
-    	return localFile;
+    public List<JakeObject> getOutOfSyncObjects() {
+        // TODO Auto-generated method stub
+        return null;
     }
+    
+    public void pullObjects() throws NetworkException {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void pushObjects() throws NetworkException {
+        // TODO Auto-generated method stub
+
+    }
+    
+	public void launchExternalFile(File f){
+		
+	}
+
+	/**
+     * the name is the full path here
+     */
+	public FileObject pullRemoteFile(FileObject jo){
+		return null;
+	}
 
     public void refreshFileObjects() {
         log.debug("calling refreshFileObjects() ");
@@ -936,106 +1122,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return IJakeGuiAccess.SYNC_NO_VALID_STATE;
     }
 
-
-
-
-    private List<FileObject> getFileObjectsFromDB() {
-        if (filesDB == null)
-            filesDB = db.getJakeObjectDao().getAllFileObjects();
-        List<FileObject> results = new ArrayList<FileObject>();
-        results.addAll(filesDB);
-        return results;
-    }
-
-    public boolean importLocalFileIntoProject(String relPath) {
-        FileObject fileObject = new FileObject(relPath);
-
-        db.getJakeObjectDao().save(fileObject);
-        // create logEntry
-
-
-        try {
-
-
-            // userId = ics.getUserid();
-            String userId = getLoginUserid();
-            String comment = "";
-            String hash = fss.calculateHashOverFile(fileObject.getName());
-
-            LogEntry logEntry = new LogEntry(
-                    LogAction.NEW_JAKEOBJECT,
-                    new Date(),
-                    fileObject.getName(),
-                    /* hash */
-                    hash,
-                    /* userId */
-                    userId,
-                    /* comment */
-                    comment
-            );
-            logEntry.setIsLastPulled(true);
-
-            db.getLogEntryDao().create(logEntry);
-            log.debug("persisted logentry");
-        } catch (InvalidFilenameException e) {
-            e.printStackTrace();
-            return false;
-        } catch (NotAReadableFileException e) {
-            e.printStackTrace();
-            return false;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }  
-
-        filesDB.add(fileObject);
-
-        filesStatus.put(relPath, getRealFileObjectSyncStatus(fileObject));
-        //log.debug("putted status of file " + relPath + " to " + filesStatus.get(relPath));
-
-        // TODO
-        return true;
-    }
-
-    public boolean importLocalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
-        log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
-        File srcFile = new File(absolutePath);
-        if(srcFile == null || !srcFile.exists() )
-            return false;
-
-        File destinationFolder = new File(destinationFolderAbsolutePath);
-        if(!destinationFolder.getAbsolutePath().startsWith(getProject().getRootPath().getAbsolutePath()))
-        {
-            log.debug("destination folder not in projectRootPath");
-            return false;
-        }
-
-
-
-        String filename = srcFile.getName();
-        File destinationFile = new File(destinationFolderAbsolutePath, filename);
-
-        if(destinationFile.exists())
-        {
-            log.debug("destinationFile already exists");
-            return false;
-        }
-
-        try
-        {
-            destinationFile.createNewFile();
-            copyFile(srcFile, destinationFile );
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        String relPath = destinationFile.getAbsolutePath().
-                replace(getProject().getRootPath().getAbsolutePath(),"");
-
-        return importLocalFileIntoProject(relPath);
-    }
-
     public Integer getFileObjectSyncStatus(JakeObject jakeObject) {
         //   log.debug("calling getFileObjectSyncStatus on JakeObject "+ jakeObject.getName());
 
@@ -1058,43 +1144,24 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
        // return status == null ? 0 : status;
     }
 
-	public static String getICSName() {
-        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
-		IICService ics = (IICService) factory.getBean("ICService");
-		return ics.getServiceName();
-	}
 
-	public static boolean isOfCorrectUseridFormat(String userid) {
-        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
-		IICService ics = (IICService) factory.getBean("ICService");
-		return ics.isOfCorrectUseridFormat(userid);
-	}
 
-	/**
-	 * This comes from the ICS and is called whenever a message is received from another project member
-	 *
-	 * @param from_userid The project member sending the message
-	 * @param content The content of the message
-	 */
-	public void receivedMessage(String from_userid, String content) {
-		try {
-			JakeMessage jm = new JakeMessage(db.getProjectMemberDao().getByUserId(ics.getUserid()), db.getProjectMemberDao().getByUserId(from_userid), content);
-			if(this.messageListener != null) {
-				messageListener.receivedJakeMessage(jm);
-			}
-		} catch (NoSuchProjectMemberException e) {
-			/*
-			 * Apparently, this user does not exist in our project. We don't care about messages from people who don't
-			 * exist in that context, so we can safely discard the message. */
-		} catch (NotLoggedInException e) {
-			/*
-			 * "Technically", this should never happen, since this listener only gets called when we are logged in
-			 * anyway. In this case, it is safe to assume something weird has happened and we will simply discard
-			 * the message.
-			 */
-			InvalidApplicationState.die("NotLoggedInException from receiveMessage", e);
-		}
-	}
 
+    List<FileObject> getFileObjectsFromDB() {
+        if (filesDB == null)
+            filesDB = db.getJakeObjectDao().getAllFileObjects();
+        List<FileObject> results = new ArrayList<FileObject>();
+        results.addAll(filesDB);
+        return results;
+    }
+	
+	
+	
+    
+    
+    
+    
+	
+	
 	
 }

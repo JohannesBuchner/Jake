@@ -15,7 +15,7 @@ public class JakeGuiAccessTest extends TestCase {
 	
 	String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
 	//String tmpdir = "/home/user/Desktop/foo2/";
-	JakeGuiAccess jga;
+	IJakeGuiAccess jga;
 	
 	@Before
 	public void setup() throws Exception{

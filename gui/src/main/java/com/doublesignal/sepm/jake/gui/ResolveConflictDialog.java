@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +44,8 @@ public class ResolveConflictDialog extends JDialog {
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
-    private FileObject localFile, remoteFile;
+    private FileObject localFile;
+    private FileObject remoteFile;
     private IJakeGuiAccess jakeGuiAccess;
 
 
