@@ -13,6 +13,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
@@ -36,6 +37,10 @@ public class PeoplePanel extends JPanel {
 	private Frame owner;
 
 	int tabindex = 1;
+	
+    public void setFilters(FilterPipeline filterPipeline) {
+        peopleTable.setFilters(filterPipeline);
+    }	
 	
 	public PeoplePanel(JakeGui gui) {
 		log.info("Initializing PeoplePanel.");
@@ -257,6 +262,11 @@ public class PeoplePanel extends JPanel {
 			log.info("getSelctedNode: null");
 			return null;
 		}
+	}	
+	
+	public int getNameColPos() {
+		// TODO: make dynamic lookup
+		return 0;
 	}
 	
 	private JScrollPane peopleScrollPane;
@@ -269,6 +279,4 @@ public class PeoplePanel extends JPanel {
 	private JMenuItem changeUserIdMenuItem;
 	private JMenuItem addProjectMemberMenuItem;
 	private JMenuItem removePeopleMenuItem;
-
-	
 }

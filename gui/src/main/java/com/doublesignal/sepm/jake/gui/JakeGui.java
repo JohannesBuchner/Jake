@@ -276,7 +276,7 @@ public class JakeGui extends JPanel implements Observer {
 	}
 	
 	/**
-	 * Sign  out...
+	 * Sign out...
 	 */
 	public void signOutNetwork() {
 		try {
@@ -288,11 +288,6 @@ public class JakeGui extends JPanel implements Observer {
 		notifyLoginListeners();
 	}
 	
-	
-
-	/**
-	 * ** Project Menu ****
-	 */
 
 	/**
 	 * ** Help Menu ****
@@ -378,13 +373,13 @@ public class JakeGui extends JPanel implements Observer {
 
 	public void update(Observable o, Object arg) {
 		log.info("Got Observer Message: Updating Titles");
-		//mainTabbedPane.setTitleAt(0, filesPanel.getTitle());
 		mainTabbedPane.setTitleAt(1, peoplePanel.getTitle());
 		mainTabbedPane.setTitleAt(2, notesPanel.getTitle());
 		mainTabbedPane.updateUI();
 	}
 
 	public void updateAll() {
+		// TODO: update interface !?
 		// peoplePanel.updateData();
 		notesPanel.updateData();
 	}
@@ -403,9 +398,6 @@ public class JakeGui extends JPanel implements Observer {
 		statusPanel = new StatusPanel(this);
 		mainPanel = new JPanel();
 		mainTabbedPane = new JTabbedPane();
-		//peoplePanel = new JPanel();
-		peopleScrollPane = new JScrollPane();
-		//peopleTable = new JXTable();
 		filesPanel = new FilesPanel(this);
 		notesPanel = new NotesPanel(this);
 		peoplePanel = new PeoplePanel(this);
@@ -413,7 +405,6 @@ public class JakeGui extends JPanel implements Observer {
 		refreshDatapoolViewButton = new JButton();
 		propagateFileButton = new JButton();
 		pullFilesButton = new JButton();
-		LockFileToggleButton = new JToggleButton();
 		newNoteButton = new JButton();
 		searchSpacer = new JPanel(null);
 		searchButton = new JButton();
@@ -444,7 +435,6 @@ public class JakeGui extends JPanel implements Observer {
 		helpMenu = new JMenu();
 		aboutHelpMenuItem = new JMenuItem();
 		peoplePopupMenu = new JPopupMenu();
-		sendMessageMenuItem = new JMenuItem();
 		showInfoPeopleMenuItem = new JMenuItem();
 		renamePeopleMenuItem = new JMenuItem();
 		changeUserIdMenuItem = new JMenuItem();
@@ -884,12 +874,16 @@ public class JakeGui extends JPanel implements Observer {
 				.getTagsColPos());
 		PatternFilter searchNoteNameAnTags = new MultiColPatternFilter(searchTextField.getText(),
 				0, notesPanel.getNameColPos(), notesPanel.getTagsColPos());
+		
 		PatternFilter searchFileName = new PatternFilter(searchTextField.getText(), 0, filesPanel
 				.getNameColPos());
 		PatternFilter searchFileTags = new PatternFilter(searchTextField.getText(), 0, filesPanel
 				.getTagsColPos());
 		PatternFilter searchFileNameAnTags = new MultiColPatternFilter(searchTextField.getText(),
 				0, filesPanel.getNameColPos(), filesPanel.getTagsColPos());
+		
+		PatternFilter searchPeopleName = new PatternFilter(searchTextField.getText(), 0, peoplePanel
+				.getNameColPos());	
 
 		if (nameSearch)
 			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileName }));
@@ -909,9 +903,8 @@ public class JakeGui extends JPanel implements Observer {
 		if (bothSearch)
 			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteNameAnTags }));
 		
-		// TODO: when philipp is finished...
-		peopleTable.setFilters(new FilterPipeline(new Filter[] { new PatternFilter(searchTextField
-				.getText(), 0, 0) }));
+		if (nameSearch || bothSearch)
+			peoplePanel.setFilters(new FilterPipeline(new Filter[] { searchPeopleName }));
 	}
 
 	private SearchMode getSearchMode() {
@@ -923,7 +916,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JPanel mainPanel;
 	private JTabbedPane mainTabbedPane;
 	private PeoplePanel peoplePanel;
-	private JScrollPane peopleScrollPane;
 	private JXTable peopleTable;
 	private FilesPanel filesPanel;
 	private NotesPanel notesPanel;
@@ -931,7 +923,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JButton refreshDatapoolViewButton;
 	private JButton propagateFileButton;
 	private JButton pullFilesButton;
-	private JToggleButton LockFileToggleButton;
 	private JButton newNoteButton;
 	private JPanel searchSpacer;
 	private JButton searchButton;
@@ -962,7 +953,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JMenu helpMenu;
 	private JMenuItem aboutHelpMenuItem;
 	private JPopupMenu peoplePopupMenu;
-	private JMenuItem sendMessageMenuItem;
 	private JMenuItem showInfoPeopleMenuItem;
 	private JMenuItem renamePeopleMenuItem;
 	private JMenuItem changeUserIdMenuItem;

@@ -113,7 +113,7 @@ public class NotesPanel extends JPanel {
 
 	private NoteObject getSelectedNote() {
 		int selRow = notesTable.getSelectedRow();
-		if (selRow >= 0) {
+		if (selRow >= 0 && selRow < notesTableModel.getNotes().size()) {
 			log.info("getSelectedNode: (" + selRow + ") " + notesTableModel.getNotes().get(selRow));
 			return (notesTableModel.getNotes().get(selRow));
 		} else {
