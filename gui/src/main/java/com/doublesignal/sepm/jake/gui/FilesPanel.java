@@ -249,7 +249,9 @@ public class FilesPanel extends JPanel {
         log.info("viewLogForFileMenuItemActionPerfomed");
         JakeObject fileObject = getSelectedFile();
         if (fileObject != null) {
-            new ViewLogDialog(jakeGui.getMainFrame()).setJakeObject(fileObject).setVisible(true);
+        	log.info("view log for a single object");
+        	log.info(fileObject.getName());
+            new ViewLogDialog(jakeGui.getMainFrame() , this.jakeGuiAccess , fileObject).setVisible(true);
         }
     }
 
