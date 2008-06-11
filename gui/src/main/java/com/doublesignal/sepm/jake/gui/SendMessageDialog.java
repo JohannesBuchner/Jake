@@ -109,7 +109,7 @@ public class SendMessageDialog extends JDialog {
 		//======== dialogPane ========
 		{
 			dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-			dialogPane.setMinimumSize(new Dimension(320, 240));
+			dialogPane.setPreferredSize(new Dimension(320, 240));
 
 			dialogPane.setLayout(new BorderLayout());
 
