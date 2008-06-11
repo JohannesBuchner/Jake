@@ -1,6 +1,8 @@
 package com.doublesignal.sepm.jake.core.services;
 
 import java.io.File;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -9,9 +11,15 @@ import org.junit.Test;
 import junit.framework.TestCase;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.LogAction;
+import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
+import com.doublesignal.sepm.jake.sync.MockSyncServiceTest;
 
 public class JakeGuiAccessTest extends TestCase {
 	
@@ -19,6 +27,7 @@ public class JakeGuiAccessTest extends TestCase {
 	//String tmpdir = "/home/user/Desktop/foo2/";
 	IJakeGuiAccess jga;
 	ProjectMember pm;
+	Date date;
 	
 	
 	@Before
@@ -115,6 +124,72 @@ public class JakeGuiAccessTest extends TestCase {
 		jga.addProjectMember(userNameOne);
 		jga.editProjectMemberNote(	jga.getProjectMember(userNameOne), note);
 		assertEquals(jga.getProjectMember(userNameOne).getNotes() , note);
+		
+	}
+	
+	@Test
+	public void testGetLog()throws Exception	{
+		setup();
+		String userId = "testuser@domain.de";
+		String note = "This is a Note!";
+		String hash = "4567897";
+		String comment = "This is a comment!";
+		String noteObjectName = null;
+		
+		jga.login(userId, userId);
+		jga.addProjectMember(userId);
+		jga.createNote(note);
+		date = new Date();
+		noteObjectName = jga.getNotes().get(jga.getNotes().size()-1).getName();
+		
+		LogEntry logEntry = new LogEntry(LogAction.TAG_ADD, date, noteObjectName, hash, userId, comment);
+		jga.createLog(logEntry);
+		
+		assertTrue(jga.getLog().get(jga.getLog().size()-1).equals(logEntry));
+		
+		
+	}
+	
+	@Test
+	public void testGetJakeObjectLog()throws Exception	{
+		setup();
+		MockSyncServiceTest Test = new MockSyncServiceTest();
+		Test.setUp();
+		String userId = "testuser@domain.de";
+		String note = "This is a Note!";
+		String hash = "4567897";
+		String comment = "This is a comment!";
+		String jakeObjectName = "jakeObject";
+		
+		String userId2 = "user@domain.de";
+		String note2 = "This is a second is a Note!";
+		String hash2 = "23745953";
+		String comment2 = "This is also a comment!";
+		String noteObjectName2 = null;
+		String jakeObjectName2 = "jakeObject2";
+		
+		jga.login(userId, userId);
+		jga.addProjectMember(userId);
+		jga.createNote(note);
+		jga.createNote(note2);
+		date = new Date();
+		
+		
+		JakeObject jakeObject = new JakeObject(jakeObjectName);
+		JakeObject jakeObject2 = new JakeObject(jakeObjectName2);
+		//jga.pushJakeObject(jakeObject, "commit");
+//		try{jga.pushJakeObject(jakeObject, "commit");}
+//		catch (SyncException e)	{System.out.print("lalallalala");}
+//		catch (NotLoggedInException e)	{System.out.print("bbbbbb");}
+		 
+		
+		//jga.pushJakeObject(jakeObject2, "commit");
+		
+		//LogEntry logEntry = new LogEntry(LogAction.TAG_ADD, date, jakeObjectName, hash, userId, comment);
+		//LogEntry logEntry2 = new LogEntry(LogAction.TAG_ADD, date, jakeObjectName2, hash, userId, comment);
+		
+		
+		
 		
 	}
 	

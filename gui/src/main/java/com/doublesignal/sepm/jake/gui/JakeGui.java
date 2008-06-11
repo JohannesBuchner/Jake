@@ -228,6 +228,7 @@ public class JakeGui extends JPanel implements Observer {
 					jakeGuiAccess.setConfigOption("password", password);
 					log.debug("Login was successful");
 					notifyLoginListeners();
+					updateAll();
 					return;
 				} catch (LoginDataRequiredException e1) {
 					log.debug("LoginDataRequired");
@@ -263,6 +264,7 @@ public class JakeGui extends JPanel implements Observer {
 	private void notifyLoginListeners() {
 		for (ActionListener listener : loginStatusListeners) {
 			listener.actionPerformed(new ActionEvent(this, 0, "updateLoginStatus"));
+			updateAll();
 		}
 	}
 

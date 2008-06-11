@@ -64,19 +64,20 @@ public class PeopleTableModel extends AbstractTableModel {
 	public int getOnlineMembersCount()	{
 		
 		int onlineMembers=0;
-		int x = 0;
+		
 		for(ProjectMember p:this.members)
 		{
-			members.get(x).getUserId();
+			//members.get(x).getUserId();
 			//jakeGuiAccess.isLoggedIn(members.get(x).getUserId());
 			
 			try {
-				if(jakeGuiAccess.isLoggedIn(p.getUserId()))
+				jakeGuiAccess.isLoggedIn(p.getUserId());
 					onlineMembers++;
+					log.info(onlineMembers++);
 			} catch (NotLoggedInException e) {
-				
+				log.info("in exc");
 			} catch (NoSuchUseridException e) {
-				
+				log.info("in exc");
 			}
 		}
 		
