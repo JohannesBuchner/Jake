@@ -153,8 +153,7 @@ public class JakeGuiAccessTest extends TestCase {
 	@Test
 	public void testGetJakeObjectLog()throws Exception	{
 		setup();
-		MockSyncServiceTest Test = new MockSyncServiceTest();
-		Test.setUp();
+		
 		String userId = "testuser@domain.de";
 		String note = "This is a Note!";
 		String hash = "4567897";
