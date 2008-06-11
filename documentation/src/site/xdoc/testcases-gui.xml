@@ -488,7 +488,20 @@
 							<td>Medium</td>
 							<td>NC</td>
 						</tr>
-
+                        						<tr>
+							<td>?</td>
+							<!-- test case # //-->
+							<td>The User uses his mouse to resize the windows</td>
+							<td>The Window is resized, the corresponding elements are moved,
+								the textarea gets enlarged.
+							</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>failed, 2008-06-11, 16:00, DD</td>
+							<td>High</td>
+							<td>NC</td>
+						</tr>
 					</tbody>
 				</table>
 			</subsection>
@@ -527,7 +540,7 @@
 							<td></td>
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>passed, 2008-06-11, 16:00, DD</td>
 							<td>High</td>
 							<td>NC</td>
 						</tr>
