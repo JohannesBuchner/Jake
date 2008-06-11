@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import junit.framework.TestCase;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.JakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 
@@ -16,6 +18,7 @@ public class JakeGuiAccessTest extends TestCase {
 	String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
 	//String tmpdir = "/home/user/Desktop/foo2/";
 	IJakeGuiAccess jga;
+	
 	
 	@Before
 	public void setup() throws Exception{
@@ -47,6 +50,26 @@ public class JakeGuiAccessTest extends TestCase {
 		assertNotNull(jga.getProject());
 		assertEquals(jga.getProject().getName(),"testProject");
 		assertEquals(jga.getLoginUserid(), "test@host");
+	}
+	
+	@Test
+	public void editProjectMemberUserIdTest()throws Exception	{
+		String userNameOne = "testuser@domain.de";
+		String userNameTwo = "valid@domain.de";
+		
+		jga.addProjectMember(userNameOne);
+		jga.addProjectMember(userNameTwo);
+		try {
+			jga.editProjectMemberUserId(jga.getProjectMember(userNameOne), userNameTwo);
+		} catch (NoSuchProjectMemberException e) {
+			fail("Can'tAddUser");
+		}
+		
+		try {
+			assertEquals(jga.getProjectMember(userNameOne),jga.getProjectMember(userNameTwo));
+		} catch (NoSuchProjectMemberException e) {
+			fail("Can'tAddUser");
+		}
 	}
 	
 	@After
