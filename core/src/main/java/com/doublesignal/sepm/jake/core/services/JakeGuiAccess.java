@@ -140,10 +140,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
     
     public void removeProjectMember(ProjectMember selectedMember)	{
-    	 log.info("remove Project Member with ID :" + selectedMember.getUserId());
-    	
+    	log.info("remove Project Member with ID :" + selectedMember.getUserId());
     	db.getProjectMemberDao().remove(selectedMember);
-    	//currentProject.removeMember(selectedMember);
     }
     
     public void editProjectMemberNote(ProjectMember selectedMember , String note)	{
@@ -155,6 +153,12 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     	log.info("edit NickName for Project Member with ID :" + selectedMember.getUserId());
     	db.getProjectMemberDao().editNickName(selectedMember,nickName);
     }
+    
+    
+	public void editProjectMemberUserId(ProjectMember selectedMember , String userId) {
+		log.info("edit UserId for Project Member with ID :" + selectedMember.getUserId());
+		db.getProjectMemberDao().editUserId(selectedMember , userId);
+	}
 
     public List<JakeObject> getChangedObjects() {
         // TODO Auto-generated method stub
@@ -1091,4 +1095,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			InvalidApplicationState.die("NotLoggedInException from receiveMessage", e);
 		}
 	}
+
+	
 }

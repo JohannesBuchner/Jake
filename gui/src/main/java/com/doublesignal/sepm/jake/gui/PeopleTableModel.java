@@ -34,7 +34,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	}
 
 	String[] colNames = new String[] { "Nickname", "UserID", "Status", "Comment" };
-	boolean[] columnEditable = new boolean[] { true, false, false, true };
+	boolean[] columnEditable = new boolean[] { true, true, false, true };
 
 	enum PeopleColumns {
 		Nickname, UserID, Status, Comment
@@ -148,7 +148,7 @@ public class PeopleTableModel extends AbstractTableModel {
 			if (foundProjectMember != null) {
 				log.debug((String) columnValue);
 				String note = (String) columnValue;
-				jakeGuiAccess.editProjectMemberNote(foundProjectMember, note);
+				jakeGuiAccess.editProjectMemberNote(foundProjectMember , note);
 		        updateData();
 				//foundProjectMember.setNotes(note);
 			}
@@ -162,8 +162,26 @@ public class PeopleTableModel extends AbstractTableModel {
 			if (foundProjectMember != null) {
 				log.debug((String) columnValue);
 				String nickname = (String) columnValue;
-					
-				foundProjectMember.setNickname(nickname);
+				jakeGuiAccess.editProjectMemberNickName(foundProjectMember , nickname);
+				updateData();
+				
+			}
+		}
+		
+		if (columnIndex == PeopleColumns.UserID.ordinal())	{
+			
+			ProjectMember foundProjectMember = members.get(rowIndex);
+			log.debug("handling a UserId-change event");
+			if (foundProjectMember != null) {
+				log.debug((String) columnValue);
+				log.info("***********");
+				log.info(foundProjectMember.getUserId());
+				log.info((String) columnValue);
+				log.info("***********");
+				String userId = (String) columnValue;
+				jakeGuiAccess.editProjectMemberUserId(foundProjectMember , userId);
+				updateData();
+				log.info("user id updated");
 			}
 		}
 		// possible other columns go here

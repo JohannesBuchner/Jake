@@ -17,6 +17,7 @@ import java.util.Map;
 public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProjectMemberDao {
 	private static final String PROJECTMEMBER_INSERT = "INSERT INTO projectmembers (userid, nick, notes) VALUES (:userid, :nick, :notes)";
 	private static final String PROJECTMEMBER_UPDATE = "UPDATE projectmembers SET nick=:nick, notes=:notes WHERE userid=:userid";
+	private static final String PROJECTMEMBER_UPDATEUSERID = "UPDATE projectmembers SET userid=:newuserid WHERE userid=:olduserid";
 	private static final String PROJECTMEMBER_DELETE = "DELETE FROM projectmembers WHERE userid=:userid";
 	private static final String PROJECTMEMBER_SELECT = "SELECT userid, nick, notes, active FROM projectmembers";
 	private static final String PROJECTMEMBER_WHERE_USERID = " WHERE userid=?";
@@ -72,6 +73,15 @@ public class JdbcProjectMemberDao extends SimpleJdbcDaoSupport implements IProje
 		parameters.put("notes", note);
 		parameters.put("nick", member.getNickname());
 		getSimpleJdbcTemplate().update(PROJECTMEMBER_UPDATE, parameters);
+		
+	}
+
+	
+	public void editUserId(ProjectMember member, String userId) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("olduserid", member.getUserId());
+		parameters.put("newuserid", userId);
+		getSimpleJdbcTemplate().update(PROJECTMEMBER_UPDATEUSERID, parameters);
 		
 	}
 	

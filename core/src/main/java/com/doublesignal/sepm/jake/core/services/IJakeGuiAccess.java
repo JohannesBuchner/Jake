@@ -489,6 +489,13 @@ public interface IJakeGuiAccess {
      * @param nickName which is to be edited
      */
 	public void editProjectMemberNickName(ProjectMember selectedMember , String nickName);
+
+	/**
+     * Edit the user id of a project member
+     * @param selectedMember which is to be updated
+     * @param userId which is to be edited
+     */
+	public void editProjectMemberUserId(ProjectMember selectedMember , String userId);
 	    
     
 
