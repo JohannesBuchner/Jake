@@ -37,7 +37,6 @@ import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
  */
 public class NotesPanel extends JPanel {
 	private static final Logger log = Logger.getLogger(NotesPanel.class);
-	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	
 	private final JakeGui gui;
@@ -75,8 +74,8 @@ public class NotesPanel extends JPanel {
 	}
 
 	private void removeNoteMenuItemActionPerformed(ActionEvent e) {
-		JOptionPane.showConfirmDialog(this, "This operation cannot be undone.",
-				"Really delete this node?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showConfirmDialog(this, translator.get("NotesPanelDialogCannotBeUndone"),
+				translator.get("NotesPanelDialogReallyDeleteNode"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 		jakeGuiAccess.removeNote(getSelectedNote());
 		updateData();
@@ -104,7 +103,8 @@ public class NotesPanel extends JPanel {
 	}
 
 	public String getTitle() {
-		return "Notes (" + notesTableModel.getNotes().size() + ")";
+		return translator.get("NotesPanelDialogTitle") + " (" + 
+		notesTableModel.getNotes().size() + ")";
 	}
 
 	private boolean isNoteSelected() {
@@ -158,7 +158,7 @@ public class NotesPanel extends JPanel {
 		removeNoteMenuItem = new JMenuItem();
 
 		// ---- newNoteMenuItem ----
-		newNoteMenuItem.setText("New Note...");
+		newNoteMenuItem.setText(translator.get("NotesPanelDialogMenuNewNote"));
 		newNoteMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				newNoteMenuItemActionPerformed(e);
@@ -166,7 +166,7 @@ public class NotesPanel extends JPanel {
 		});
 
 		// ---- viewEditNoteMenuItem ----
-		viewEditNoteMenuItem.setText("Open Note...");
+		viewEditNoteMenuItem.setText(translator.get("NotesPanelDialogMenuOpenNote"));
 		viewEditNoteMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				editNoteMenuItemActionPerformed(e);
@@ -177,7 +177,7 @@ public class NotesPanel extends JPanel {
 		notesPopupMenu.add(newNoteMenuItem);
 
 		// ---- removeNoteMenuItem ----
-		removeNoteMenuItem.setText("Remove Note...");
+		removeNoteMenuItem.setText(translator.get("NotesPanelDialogMenuRemoveNote"));
 		removeNoteMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				removeNoteMenuItemActionPerformed(e);
@@ -209,12 +209,10 @@ public class NotesPanel extends JPanel {
 	private JMenuItem removeNoteMenuItem;
 
 	public int getNameColPos() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
 	public int getTagsColPos() {
-		// TODO Auto-generated method stub
 		return 1;
 	}	
 }

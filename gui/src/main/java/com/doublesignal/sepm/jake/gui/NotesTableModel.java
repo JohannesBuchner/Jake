@@ -31,7 +31,12 @@ public class NotesTableModel extends AbstractTableModel {
 		this.jakeGuiAccess = jakeGuiAccess;
 	}
 
-	String[] colNames = new String[] { "Title", "Tags", "Last changed", "User" };
+	String[] colNames = new String[] { 
+			translator.get("NotesTableModelColumnTitle"), 
+			translator.get("NotesTableModelColumnTags"), 
+			translator.get("NotesTableModelColumnLastChanged"), 
+			translator.get("NotesTableModelColumnUser") };
+	
 	boolean[] columnEditable = new boolean[] { false, true, true, false };
 
 	enum NotesColumns {

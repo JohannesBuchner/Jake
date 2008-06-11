@@ -98,7 +98,18 @@ FilesTableModelColumnLastChanged=Last changed
 FilesTableModelColumnUser=User
 FilesTableModelFileNotInProject= <file not in project>
 
-NotesTableModelNoteNotInProject = <Note not in Project>
+NotesPanelDialogTitle=Notes
+NotesPanelDialogCannotBeUndone=This operation cannot be undone.
+NotesPanelDialogReallyDeleteNode=Really delete this node?
+NotesPanelDialogMenuNewNote=New Note...
+NotesPanelDialogMenuOpenNote=Open Note...
+NotesPanelDialogMenuRemoveNote=Remove Note...
+
+NotesTableModelColumnTitle=Title
+NotesTableModelColumnTags=Tags
+NotesTableModelColumnLastChanged=Last Changed
+NotesTableModelColumnUser=User
+NotesTableModelNoteNotInProject=<Note not in Project>
 
 ConflictDialogUseLocalFile=Use local File
 ConflictDialogUseRemoteFile=Use remote file
