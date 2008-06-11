@@ -18,6 +18,7 @@ public class JakeGuiAccessTest extends TestCase {
 	String tmpdir = System.getProperty("java.io.tmpdir","") + File.separator;
 	//String tmpdir = "/home/user/Desktop/foo2/";
 	IJakeGuiAccess jga;
+	ProjectMember pm;
 	
 	
 	@Before
@@ -53,23 +54,68 @@ public class JakeGuiAccessTest extends TestCase {
 	}
 	
 	@Test
-	public void editProjectMemberUserIdTest()throws Exception	{
+	public void testEditProjectMemberUserId()throws Exception	{
+		
+		setup();
 		String userNameOne = "testuser@domain.de";
-		String userNameTwo = "valid@domain.de";
-		
+		String userNameTwo = "user@domain.com";
+	
 		jga.addProjectMember(userNameOne);
-		jga.addProjectMember(userNameTwo);
-		try {
-			jga.editProjectMemberUserId(jga.getProjectMember(userNameOne), userNameTwo);
-		} catch (NoSuchProjectMemberException e) {
-			fail("Can'tAddUser");
+		
+		jga.editProjectMemberUserId(jga.getProjectMember(userNameOne) , userNameTwo);
+		try	{
+		jga.getProjectMember(userNameOne);
+		fail();
+		}	catch (NoSuchProjectMemberException e)	{
+			 
+		
 		}
 		
-		try {
-			assertEquals(jga.getProjectMember(userNameOne),jga.getProjectMember(userNameTwo));
-		} catch (NoSuchProjectMemberException e) {
-			fail("Can'tAddUser");
-		}
+		
+	}
+		
+	
+	@Test
+	public void testAddProjectMember()throws Exception	{
+		setup();
+		String userNameOne = "testuser@domain.de";
+		jga.addProjectMember(userNameOne);
+		assertNotNull(jga.getProjectMember(userNameOne));
+		
+		
+	}
+	
+	@Test
+	public void testGetProjectMember()throws Exception	{
+		setup();
+		String userNameOne = "testuser@domain.de";
+		jga.addProjectMember(userNameOne);
+		assertNotNull(jga.getProjectMember(userNameOne));
+		
+		
+	}
+	
+	@Test
+	public void testEditProjectMemberNickName()throws Exception	{
+		setup();
+		String userNameOne = "testuser@domain.de";
+		String nickName = "User Nick Name";
+		jga.addProjectMember(userNameOne);
+		jga.editProjectMemberNickName(	jga.getProjectMember(userNameOne), nickName);
+		assertEquals(jga.getProjectMember(userNameOne).getNickname() , nickName);
+		
+	}
+	
+	@Test
+	public void testEditProjectMemberNote()throws Exception	{
+		setup();
+		String userNameOne = "testuser@domain.de";
+		String note = "This is a Note!";
+	
+		jga.addProjectMember(userNameOne);
+		jga.editProjectMemberNote(	jga.getProjectMember(userNameOne), note);
+		assertEquals(jga.getProjectMember(userNameOne).getNotes() , note);
+		
 	}
 	
 	@After
