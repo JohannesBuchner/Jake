@@ -1,4 +1,6 @@
 VERSION="1.0-SNAPSHOT"
+SHELL="bash"
+
 
 all: gui
 
@@ -16,7 +18,6 @@ core: fss ics
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { mvn package install; touch ../.rebuild_gui; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { mvn package install; touch ../.rebuild_gui; } || true
 	rm -f .rebuild_$@
-	touch .rebuild_gui
 
 fss:
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { mvn package install; touch ../.rebuild_core; } || true
