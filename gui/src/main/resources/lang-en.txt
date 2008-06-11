@@ -78,7 +78,7 @@ FilesPanelDialogPullMessageText=The pulling of the file %0% was scheduled. It co
 FilesPanleDialogImportFailedTitle=Import failed
 FilesPanleDialogImportFailedText=The file %0% could not be imported into the project because it is either already a file in the projects repository or has not a valid filename
 FilesPanleDialogImportSucceededTitle=Import succeeded
-FilesPanleDialogImportSucceededText=The file %0% was succcessfully imported into this JakeProject.
+FilesPanleDialogImportSucceededText=The file %0% was successfully imported into this JakeProject.
 
 
 FilesDialogContextMenuItemOpen=Open
@@ -97,6 +97,8 @@ FilesTableModelColumnSyncStatus=Sync status
 FilesTableModelColumnLastChanged=Last changed
 FilesTableModelColumnUser=User
 FilesTableModelFileNotInProject= <file not in project>
+
+NotesTableModelNoteNotInProject = <Note not in Project>
 
 ConflictDialogUseLocalFile=Use local File
 ConflictDialogUseRemoteFile=Use remote file

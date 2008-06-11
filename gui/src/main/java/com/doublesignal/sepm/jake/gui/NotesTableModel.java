@@ -96,16 +96,16 @@ public class NotesTableModel extends AbstractTableModel {
             try {
                 return jakeGuiAccess.getLastModified(note).toString();
             } catch (NoSuchLogEntryException e) {
-                log.debug("THIS SHOULD NOT HAPPEN!");
-                e.printStackTrace();
-                return "NO LOGENTRY FOR NOTE";
+                //log.debug("THIS SHOULD NOT HAPPEN!");
+                //e.printStackTrace();
+            	return translator.get("NotesTableModelNoteNotInProject");
             }
 
             case User:
                 try {
                     return jakeGuiAccess.getLastModifier(note).getNickname();
                 } catch (NoSuchLogEntryException e) {
-                    return "NO LOGENTRY FOR NOTE";
+                	return translator.get("NotesTableModelNoteNotInProject");
                 }
 
             default:
