@@ -15,7 +15,6 @@ import com.doublesignal.sepm.jake.sync.ISyncService;
 import com.doublesignal.sepm.jake.sync.exceptions.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
-import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -753,7 +752,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	}
 
 	public void pullJakeObject(JakeObject jo) throws NotLoggedInException,
-			OtherUserOfflineException {
+			OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
 		byte[] content;
 		try {
 			content = sync.pull(jo);
@@ -765,7 +764,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 				fss.writeFile(jo.getName(), content);
 			}
 		} catch (NoSuchObjectException e) {
-			InvalidApplicationState.die(e);
+			throw e;
 		} catch (NotLoggedInException e) {
 			throw e;
 		} catch (TimeoutException e) {
@@ -777,7 +776,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (ObjectNotConfiguredException e) {
 			InvalidApplicationState.die(e);
 		} catch (NoSuchLogEntryException e) {
-			InvalidApplicationState.die(e);
+			throw e;
 		} catch (FileTooLargeException e) {
 			InvalidApplicationState.die(e);
 		} catch (NotAFileException e) {
@@ -790,7 +789,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			InvalidApplicationState.die("unimplemented", e);
 		}
 	}
-
+	
 	public List<JakeObject> syncLogAndGetChanges(String userid)
 			throws OtherUserOfflineException, NotAProjectMemberException,
 			NotLoggedInException {
@@ -847,54 +846,65 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		if (jo.getName().startsWith("note")) {
 			try {
 				db.getJakeObjectDao().getNoteObjectByName(jo.getName());
-				state |= SYNC_EXISTS_LOCALLY;
+				state |= SYNC_EXISTS_LOCALLY | SYNC_IS_IN_PROJECT;
 			} catch (NoSuchFileException e) {
 			}
 		} else {
 			try {
 				if (fss.fileExists(jo.getName()))
 					state |= SYNC_EXISTS_LOCALLY;
-
+				
 			} catch (InvalidFilenameException e) {
 				InvalidApplicationState.die("should not happen", e);
 			} catch (IOException e) {
 				/* interpreting as we don't have it accessible */
 			}
+			try {
+				db.getJakeObjectDao().getFileObjectByName(jo.getName());
+				state |= SYNC_IS_IN_PROJECT;
+			} catch (NoSuchFileException e) {
+			}
 		}
 		
-		LogEntry mostRecent;
-		try {
-			mostRecent = db.getLogEntryDao().getMostRecentFor(jo);
-			state |= SYNC_HAS_LOGENTRIES;
-
-			if (mostRecent.getAction() != LogAction.DELETE) {
-				state |= SYNC_EXISTS_REMOTELY;
-			}
-			LogEntry lastPulled;
+		if((state & SYNC_IS_IN_PROJECT) != 0){
+			LogEntry mostRecent;
 			try {
-				lastPulled = db.getLogEntryDao().getLastPulledFor(jo);
-				if (lastPulled.equals(mostRecent))
-					state |= SYNC_LOCAL_IS_LATEST;
-				else if (mostRecent.getTimestamp().getTime() > lastPulled.getTimestamp().getTime())
-					state |= SYNC_REMOTE_IS_NEWER;
+				mostRecent = db.getLogEntryDao().getMostRecentFor(jo);
+				state |= SYNC_HAS_LOGENTRIES;
+	
+				if (mostRecent.getAction() != LogAction.DELETE) {
+					state |= SYNC_EXISTS_REMOTELY;
+				}
+				LogEntry lastPulled;
+				try {
+					lastPulled = db.getLogEntryDao().getLastPulledFor(jo);
+					if (lastPulled.equals(mostRecent))
+						state |= SYNC_LOCAL_IS_LATEST;
+					else if (mostRecent.getTimestamp().getTime() > lastPulled.getTimestamp().getTime())
+						state |= SYNC_REMOTE_IS_NEWER;
+				} catch (NoSuchLogEntryException e) {
+				}
+				try {
+					if (hasLocalModification(jo)) {
+						state |= SYNC_LOCALLY_CHANGED;
+					}
+				} catch (NoSuchFileException e) {
+				} catch (FileNotFoundException e) {
+				} catch (NotAReadableFileException e) {
+				}
 			} catch (NoSuchLogEntryException e) {
 			}
-			try {
-				if (hasLocalModification(jo)) {
-					state |= SYNC_LOCALLY_CHANGED;
-				}
-			} catch (NoSuchFileException e) {
-			} catch (FileNotFoundException e) {
-			} catch (NotAReadableFileException e) {
-			}
-		} catch (NoSuchLogEntryException e) {
 		}
 		return state;
 	}
-
+	
+	public void refreshFileObject(JakeObject jo) {
+		filesStatus.put(jo.getName(), getJakeObjectSyncStatus(jo));
+	}
+	
 	public void refreshFileObjects() {
 		log.debug("calling refreshFileObjects() ");
-
+		
 		try {
 			for (ProjectMember pm : db.getProjectMemberDao().getAll()) {
 				try {
@@ -911,15 +921,19 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
 		filesDB = getFileObjectsFromDB();
 		filesFSS = getFileObjectsByRelPath("/");
-
-		Set<FileObject> result = new HashSet<FileObject>();
-		result.addAll(filesDB);
-		result.addAll(filesFSS);
+		
+		
 		if (filesStatus == null)
 			filesStatus = new HashMap<String, Integer>();
-
-		for (FileObject file : result) {
-			filesStatus.put(file.getName(), getJakeObjectSyncStatus(file));
+		
+		for(FileObject file : filesFSS) {
+			System.out.println("in fss: " + file.getName());
+			filesStatus.put(file.getName(), SYNC_EXISTS_LOCALLY);
+		}
+		for(FileObject file : filesDB) {
+			System.out.println("in db: " + file.getName());
+			filesStatus.put(file.getName(), getJakeObjectSyncStatus(file)
+				| SYNC_IS_IN_PROJECT);
 		}
 	}
 

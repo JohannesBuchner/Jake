@@ -61,10 +61,10 @@ public class FilesLib {
     		state.add(translator.get("HumanReadeableFileStatusLocalCopyExists"));
     	if((status & IJakeGuiAccess.SYNC_EXISTS_REMOTELY) != 0)
     		state.add(translator.get("HumanReadeableFileStatusRemoteVersionExists"));
-    	if((status & IJakeGuiAccess.SYNC_HAS_LOGENTRIES) == 0)
+    	if((status & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
        		state.add(translator.get("HumanReadeableFileStatusNotInProject"));
-    	if((status & IJakeGuiAccess.SYNC_NO_VALID_STATE) != 0)
-       		state.add(translator.get("HumanReadeableFileStatusInvalid"));
+    	if((status & IJakeGuiAccess.SYNC_HAS_LOGENTRIES) == 0)
+       		state.add(translator.get("HumanReadeableFileStatusNotPushed"));
     	return join(state, ", ");
     }
 

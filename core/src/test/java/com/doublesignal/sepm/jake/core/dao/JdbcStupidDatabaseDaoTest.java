@@ -15,6 +15,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 
@@ -96,18 +97,20 @@ public class JdbcStupidDatabaseDaoTest extends DBTest {
 		c.close();
 	}
 	
+	/* got obsolete by explicit check in save()
 	@Test
 	public void testSave() throws Exception {
-		JakeObject jo = new JakeObject("foo");
+		FileObject jo = new FileObject("foo");
 		HsqlJakeDatabase db = setUpDatabase();
 		db.getJakeObjectDao().save(jo);
 		try{
 			db.getJakeObjectDao().getFileObjectByName("foo");
-			/* It seems that generic JakeObjects aren't saved */
+			// It seems that generic JakeObjects aren't saved 
 			Assert.fail();
 		}catch (NoSuchFileException e){
 			
 		}
 	}
+	*/
 	
 }

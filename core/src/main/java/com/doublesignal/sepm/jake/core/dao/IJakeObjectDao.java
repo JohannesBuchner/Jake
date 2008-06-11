@@ -75,4 +75,5 @@ public interface IJakeObjectDao {
 	 * @param tags
 	 */
 	public void removeTagsFrom(JakeObject object, Tag... tags);
+
 }

@@ -54,6 +54,7 @@ public interface ISyncService {
 	/**
 	 * The log is requested from the given user.
 	 * Then, the log is merged with (added to) the local log.
+	 * Nonexisting JakeObjects are created.
 	 * 
 	 * @param    userid (see IICService)
 	 * @return   the list of objects that have changed/are new/were deleted or 

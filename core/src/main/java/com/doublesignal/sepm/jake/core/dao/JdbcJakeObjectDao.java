@@ -1,5 +1,6 @@
 package com.doublesignal.sepm.jake.core.dao;
 
+import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.exceptions.QueryFailedException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -148,7 +149,10 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 				parameters.put("content", ((NoteObject)object).getContent());
 				getSimpleJdbcTemplate().update(NOTEOBJECT_INSERT, parameters);
 			}
+		}else{
+			InvalidApplicationState.die("JakeObject to save is of unknown type");
 		}
+		
 		this.saveTags(object);
 	}
 

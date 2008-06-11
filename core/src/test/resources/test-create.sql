@@ -24,7 +24,7 @@
 
   CREATE TABLE noteobjects (
   	name				VARCHAR,
-  	content			VARCHAR NOT NULL,
+  	content			VARCHAR,
   	PRIMARY KEY (name),
   	FOREIGN KEY (name) REFERENCES objects(name)
   );

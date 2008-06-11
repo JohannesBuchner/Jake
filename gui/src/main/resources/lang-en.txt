@@ -86,7 +86,7 @@ FilesDialogContextMenuItemSetLock=Set lock...
 FilesDialogContextMenuItemDeleteFile=Delete file
 FilesDialogContextMenuItemViewLog=View log...
 FilesDialogContextMenuItemResolveConflict=Resolve conflict...
-FilesDialogContextMenuItemPropagateFile=Propagate file
+FilesDialogContextMenuItemPropagateFile=Announce file
 FilesDialogContextMenuItemPullFile=Pull file
 FilesDialogContextMenuItemImportFile=Import file
 
@@ -150,5 +150,7 @@ HumanReadeableFileStatusLocallyChanged=Locally changed
 HumanReadeableFileStatusLocalCopyExists=Local
 HumanReadeableFileStatusRemoteVersionExists=Remote
 HumanReadeableFileStatusNotInProject=Not in Project
-HumanReadeableFileStatusInvalid=Invalid
+HumanReadeableFileStatusNotPushed=Not announced
+
+
 

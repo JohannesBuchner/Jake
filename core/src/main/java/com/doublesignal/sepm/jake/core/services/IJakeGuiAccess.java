@@ -28,13 +28,12 @@ import com.doublesignal.sepm.jake.sync.exceptions.*;
  * @author philipp
  */
 public interface IJakeGuiAccess {
-
 	/**
-	 * weird stuff happened
+	 * file was imported into project, it is represented in the database
 	 */
-    public static final int SYNC_NO_VALID_STATE = 1;
+    public static final int SYNC_IS_IN_PROJECT = 1;
 	/**
-	 * is in project
+	 * is distributed
 	 */
     public static final int SYNC_HAS_LOGENTRIES = 2;
 	/**
@@ -60,7 +59,7 @@ public interface IJakeGuiAccess {
 	/**
 	 * A newer remote version exists, we have a modified old version. 
 	 */
-    public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER | SYNC_LOCALLY_CHANGED;
+    public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER & SYNC_LOCALLY_CHANGED;
 
     /**
 	 * Login on the network Missing login information (null values) will be
@@ -468,8 +467,10 @@ public interface IJakeGuiAccess {
 	 * @param jo
 	 * @throws NotLoggedInException
 	 * @throws OtherUserOfflineException
+	 * @throws NoSuchObjectException 
+	 * @throws NoSuchLogEntryException 
 	 */
-	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException;
+	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException;
 	
 	/**
 	 * 

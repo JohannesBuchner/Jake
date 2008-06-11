@@ -1,15 +1,14 @@
 package com.doublesignal.sepm.jake.gui;
 
-import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
-import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+import java.awt.Component;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
 
-import javax.swing.*;
-import java.awt.*;
+import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
+import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 /**
  * Wrapper for dialogs and standards the user is served with (e.g. dates). This
@@ -51,7 +50,7 @@ public class UserDialogHelper {
     }
 
     /**
-     * generally a question box
+     * a yes-no question box
      *
      * @param parent   the parent component of this dialog, usually &quot;this&quot;
      * @param title    the title of this dialog
@@ -64,7 +63,7 @@ public class UserDialogHelper {
         return showConfirmDialog(parent, title + "\n\n" + question, title,
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
-
+    
     private static int showMessageDialog(Component parent, String msg,
                                          String title, int msgtype) {
         JOptionPane pane = getNarrowOptionPane(0);
@@ -129,7 +128,7 @@ public class UserDialogHelper {
      * @param errorMessage the error message
      */
     public static void error(Component parent, String title, String errorMessage) {
-        showMessageDialog(parent, errorMessage, title, JOptionPane.ERROR_MESSAGE);
+    	inform(parent, errorMessage, title, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -150,7 +149,7 @@ public class UserDialogHelper {
      * @param warningMessage the warning message
      */
     public static void warning(Component parent, String title, String warningMessage) {
-        showMessageDialog(parent, warningMessage, title, JOptionPane.WARNING_MESSAGE);
+    	inform(parent, warningMessage, title, JOptionPane.WARNING_MESSAGE);
     }
 
 
@@ -161,12 +160,10 @@ public class UserDialogHelper {
      * @param i18nIdentifier the i18nIdentifier to be looked up and shown.
      */
     public static void translatedError(Component parent, String i18nIdentifier) {
-        BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
-                "beans.xml"));
-        ITranslationProvider translator = (ITranslationProvider) factory
-                .getBean("translationProvider");
-        showMessageDialog(parent, translator.get(i18nIdentifier), "",
-                JOptionPane.ERROR_MESSAGE);
+        error(parent, translator.get(i18nIdentifier), "");
+    }
+    public static void translatedError(Component parent, String i18ntitle, String i18nmessage) {
+        error(parent, translator.get(i18ntitle), translator.get(i18nmessage));
     }
 
     /**
@@ -176,12 +173,7 @@ public class UserDialogHelper {
      * @param i18nIdentifier the identifier of the message to be shown
      */
     public static void translatedInform(Component parent, String i18nIdentifier) {
-        BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
-                "beans.xml"));
-        ITranslationProvider translator = (ITranslationProvider) factory
-                .getBean("translationProvider");
-        showMessageDialog(parent, translator.get(i18nIdentifier), "",
-                JOptionPane.INFORMATION_MESSAGE);
+        inform(parent, translator.get(i18nIdentifier), "");
     }
 
     /**
@@ -191,13 +183,32 @@ public class UserDialogHelper {
      * @param i18nIdentifier the identifier of the message to be shown
      */
     public static void translatedWarning(Component parent, String i18nIdentifier) {
-        BeanFactory factory = new XmlBeanFactory(new ClassPathResource(
-                "beans.xml"));
-        ITranslationProvider translator = (ITranslationProvider) factory
-                .getBean("translationProvider");
-        showMessageDialog(parent, translator.get(i18nIdentifier), "",
-                JOptionPane.WARNING_MESSAGE);
+        warning(parent, translator.get(i18nIdentifier), "");
     }
-
+    
+    /**
+     * Asks the user to enter a line
+     * @param parent
+     * @param title
+     * @param question
+     * @return null if canceled, answer else
+     */
+    public static String showTextInputDialog(Component parent, String title, String question){
+        return JOptionPane.showInputDialog(parent, title + "\n" + question, question);
+    }
+    
+    /**
+     * Asks the user to enter a line, uses the translator
+     * @param parent
+     * @param title
+     * @param question
+     * @return null if canceled, answer else
+     */
+    public static String showTranslatedTextInputDialog(
+    		Component parent, String i18ntitle, String i18nquestion)
+    {
+        return showTextInputDialog(parent, translator.get(i18ntitle), 
+        		translator.get(i18nquestion)); 
+    }
 
 }

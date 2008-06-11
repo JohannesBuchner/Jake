@@ -28,11 +28,13 @@ public class InvalidApplicationState {
 		return o;
 	}
 	public static void die(String reason, Exception parentException) {
+		log.error(parentException.toString());
 		log.debug(getStackTrace(parentException.getStackTrace()));
 		die(reason);
 	}
 	
 	public static void die(Exception parentException) {
+		log.error(parentException.toString());
 		log.debug(getStackTrace(parentException.getStackTrace()));
 		log.fatal("Invalid Application State.");
 		die();

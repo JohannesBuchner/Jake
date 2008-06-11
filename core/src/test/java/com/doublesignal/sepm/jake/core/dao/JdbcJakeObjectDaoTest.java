@@ -199,7 +199,17 @@ public class JdbcJakeObjectDaoTest extends DBTest {
 		assertEquals("Object should now have content", "Ich bin so schoen, ich bin so toll, ich bin der Anton aus Tirol...", nonew.getContent());
 		assertTrue("Object should now exist and have tag", hasNewTag);
 	}
-
+	
+	/**
+	 * I need this for adding tupels to nonpulled objects.
+	 * @throws NoSuchFileException 
+	 */
+	@Test
+	public void testStoreNullNote () throws NoSuchFileException  {
+		dao.save(new NoteObject("note:foo:bar", null));
+		assertEquals(null, dao.getNoteObjectByName("note:foo:bar").getContent());
+	}
+	
 	@Test
 	public void testDeleteFileObject() throws NoSuchFileException {
 		dao.delete(dao.getFileObjectByName("test.docx"));

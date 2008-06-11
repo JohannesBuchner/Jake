@@ -182,6 +182,7 @@ public class MockSyncService implements ISyncService {
 				db.getJakeObjectDao().getFileObjectByName(le.getJakeObjectName());
 				System.err.println("JakeObject found.");
 			}catch (NoSuchFileException e){
+				System.err.println("FileObject created.");
 				db.getJakeObjectDao().save(jo);
 			}
 			jolist.add(jo);
@@ -203,7 +204,7 @@ public class MockSyncService implements ISyncService {
 				+ "\n\n" + comment + "\n";
 		
 		String hash = fss.calculateHash(content.getBytes());
-
+		
 		LogEntry le = new LogEntry(LogAction.NEW_VERSION, new Date(), jo
 				.getName(), hash, userid, comment);
 

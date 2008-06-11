@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.rmi.NoSuchObjectException;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -15,6 +16,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
@@ -24,6 +26,7 @@ import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
+import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
 
 /**
  * SEPM SS08 Gruppe: 3950 Projekt: Jake - a collaborative Environment User:
@@ -279,19 +282,21 @@ public class FilesPanel extends JPanel {
 
 		JakeObject fileObject = getSelectedFile();
 		if (fileObject != null) {
-			/*jakeGuiAccess.pushJakeObject(fileObject);
-			UserDialogHelper.inform(
-				this,
-				"Propagation sheduled",
-				"The propagation of the file \n\""
-					+ fileObject.getName()
-					+ "\"\n was sheduled. \n\n"
-					+ "It could take some time to propagate it to other project members, \n"
-					+ "depending on the availability of other project members.");
-			*/
+			String commitmsg = UserDialogHelper.showTextInputDialog(this, 
+					translator.get("CommitMessage"), translator.get("CommitMessageAdvice")); 
+			
+			if(commitmsg != null)
+				try {
+					jakeGuiAccess.pushJakeObject(fileObject, commitmsg);
+				} catch (NotLoggedInException e) {
+					UserDialogHelper.translatedError(this, "NotLoggedInException");
+				} catch (SyncException e) {
+					e.getInnerException().printStackTrace();
+					UserDialogHelper.translatedError(this, "SyncException");
+				}
 		}
-
 	}
+    
     private void pullFileMenuItemActionPerformed(ActionEvent event) {
 		log.info("pullFileMenuItemActionPerformed");
 		JakeObject fileObject = getSelectedFile();
@@ -302,6 +307,10 @@ public class FilesPanel extends JPanel {
 				UserDialogHelper.translatedError(this, "NotLoggedInException");
 			} catch (OtherUserOfflineException e) {
 				UserDialogHelper.translatedError(this, "OtherUserOfflineException");
+			} catch (NoSuchObjectException e) {
+				UserDialogHelper.translatedError(this, "ObjectNotInProject");
+			} catch (NoSuchLogEntryException e) {
+				UserDialogHelper.translatedError(this, "ObjectNotInProject");
 			}
 		}
 	}
