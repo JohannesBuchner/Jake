@@ -15,7 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
@@ -87,7 +87,7 @@ public class AddProjectMemberDialog extends JDialog {
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
 		ProjectMemberScrollPane = new JScrollPane();
-		AddProjectMemberArea = new JTextArea();
+		AddProjectMemberArea = new JTextField();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		cancelButton = new JButton();
@@ -101,7 +101,7 @@ public class AddProjectMemberDialog extends JDialog {
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 
 		AddProjectMemberArea.setText("");
-		AddProjectMemberArea.setLineWrap(true);
+		//AddProjectMemberArea.setLineWrap(true);
 		ProjectMemberScrollPane.setViewportView(AddProjectMemberArea);
 		contentPanel.add(ProjectMemberScrollPane);
 		dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -145,7 +145,7 @@ public class AddProjectMemberDialog extends JDialog {
 	private JPanel dialogPane;
 	private JPanel contentPanel;
 	private JScrollPane ProjectMemberScrollPane;
-	private JTextArea AddProjectMemberArea;
+	private JTextField AddProjectMemberArea;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JButton cancelButton;
