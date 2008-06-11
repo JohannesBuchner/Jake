@@ -45,7 +45,7 @@ public class AddProjectMemberDialog extends JDialog {
 	public AddProjectMemberDialog(Frame owner) {
 		super(owner, true);
 		initComponents();
-		this.setTitle("Enter a user id");
+		this.setTitle(translator.get("AddProjectMemberDialogTitle"));
 	}
 
 	public boolean isSaved() {
@@ -114,7 +114,7 @@ public class AddProjectMemberDialog extends JDialog {
 				1.0, 0.0, 0.0 };
 
 		// ---- cancelButton ----
-		cancelButton.setText("Close");
+		cancelButton.setText(translator.get("ButtonCancel"));
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelButtonActionPerformed(e);
@@ -126,7 +126,7 @@ public class AddProjectMemberDialog extends JDialog {
 		dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
 		// ---- okButton ----
-		okButton.setText("Save");
+		okButton.setText(translator.get("AddProjectMemberDialogSaveButton"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				okButtonActionPerformed(e);

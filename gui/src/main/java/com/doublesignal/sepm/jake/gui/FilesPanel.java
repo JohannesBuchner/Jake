@@ -286,28 +286,13 @@ public class FilesPanel extends JPanel {
         try {
             jakeGuiAccess.launchFile(filename);
         } catch (InvalidFilenameException e) {
-            UserDialogHelper.error(this, "Couldn't open file", "Sorry, the object \n\"" + filename +
-                    "\"\n could not be opend because it seems to be no valid file.\n" +
-                    "Please contact the Jake team.");
-
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileInvalidText"));
         } catch (LaunchException e) {
-            UserDialogHelper.error(this, "Couldn't open file",
-                    "Sorry, the file \n\"" + filename + "\"\n could not be opend. \n\n" +
-                            "Please check your operating systems settings for default file actions. ");
-
+            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileOpenText"));
         } catch (IOException e) {
-            UserDialogHelper.error(this, "Couldn't open file", "The file \n\"" + filename + "\"\n" +
-                    " could not be opened because of an input/output error.\n" +
-                    "Please manually check if the file is accessible through \n" +
-                    "the tools provided by your operating system (Windows Explorer, Konqueror, Finder, etc.)\n" +
-                    "Maybe you should also check your filesystem for failures (scandisk, fsck, etc.)");
-
+            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileIOText"));
         } catch (NoProjectLoadedException e) {
-            UserDialogHelper.inform(this, "Couldn't open file",
-                    "The file \n\"" + filename + "\"\n" +
-                            " could not be opened because no project is loaded. \n THIS SHOULD NOT HAPPEN \n" +
-                            "Please report to the Jake Team.");
+            UserDialogHelper.inform(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileNoProjectText"));
         }
     }
 
@@ -318,10 +303,7 @@ public class FilesPanel extends JPanel {
         JakeObject fileObject = getSelectedFile();
         if (fileObject != null) {
             jakeGuiAccess.propagateJakeObject(fileObject);
-            UserDialogHelper.inform(this, "Propagation sheduled",
-                    "The propagation of the file \n\"" + fileObject.getName() + "\"\n was sheduled. \n\n" +
-                            "It could take some time to propagate it to other project members, \n" +
-                            "depending on the availability of other project members.");
+            UserDialogHelper.inform(this, translator.get("FilesPanelDialogPropagationMessageTitle"), translator.get("FilesPanelDialogPropagationMessageText", fileObject.getName()));
         }
     }
 
@@ -330,11 +312,7 @@ public class FilesPanel extends JPanel {
         JakeObject fileObject = getSelectedFile();
         if (fileObject != null) {
             jakeGuiAccess.pullJakeObject(fileObject);
-            UserDialogHelper.inform(this, "Pulling sheduled",
-                    "The pulling of the file \n\"" + fileObject.getName() + "\"\n" +
-                            " was sheduled. \n\n" +
-                            "It could take some time to get it from other project members,\n" +
-                            "due to the availability of the other project members.");
+            UserDialogHelper.inform(this, translator.get("FilesPanelDialogPullMessageTitle"), translator.get("FilesPanelDialogPullMessageText", fileObject.getName()));
         }
     }
 
@@ -343,30 +321,19 @@ public class FilesPanel extends JPanel {
 
         JakeObject fileObject = getSelectedFile();
         if (fileObject != null) {
-            Integer nstatusnr = jakeGuiAccess.getFileObjectSyncStatus(fileObject);
+        	Integer nstatusnr = jakeGuiAccess.getFileObjectSyncStatus(fileObject);
 
-            if (nstatusnr != 102) {
-                UserDialogHelper.warning(this, "Import failed",
-                        "The file \n\"" + fileObject.getName() + "\"\n " +
-                                "could not be imported into the project because it is either already \n" +
-                                "a file in the projects repository or has not a valid filename ");
-            } else {
-                if (jakeGuiAccess.importLocalFileIntoProject(fileObject.getName())) {
-                    UserDialogHelper.inform(this, "Import succeeded",
-                            "The file \n\"" + fileObject.getName() + "\"\n" +
-                                    "was succcessfully imported into this JakeProject."
-                    );
-                    filesTable.updateUI();
-                } else {
-                    UserDialogHelper.error(this, "Import failed",
-                            "The file \n\"" + fileObject.getName() + "\"\n " +
-                                    "could not be imported into the project because it is either already \n" +
-                                    "a file in the projects repository or has not a valid filename "
-                    );
-                }
-            }
+        	if (nstatusnr != 102) {
+        		UserDialogHelper.warning(this, translator.get(""), translator.get("", fileObject.getName()));
+        	} else {
+        		if (jakeGuiAccess.importLocalFileIntoProject(fileObject.getName())) {
+        			UserDialogHelper.inform(this, translator.get(""), translator.get("", fileObject.getName()));
+        			filesTable.updateUI();
+        		} else {
+        			UserDialogHelper.error(this, translator.get(""), translator.get("", fileObject.getName()));
+        		}
+        	}
         }
-
     }
     
 	public int getNameColPos() {

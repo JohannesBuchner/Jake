@@ -35,22 +35,22 @@ public class FilesLib {
         switch (status) {
             default:
             case IJakeGuiAccess.SYNC_NO_VALID_STATE:
-                return "no valid status: "+status;
+                return translator.get("HumanReadeableFileStatusInvalid") + status;
 
             case IJakeGuiAccess.SYNC_FILE_IS_REMOTE:
-                return "Remote File -> pull";
+                return translator.get("HumanReadeableFileStatusRemote");
             case IJakeGuiAccess.SYNC_LOCAL_FILE_NOT_IN_PROJECT:
-                return "local file, not in project";
+                return translator.get("HumanReadeableFileStatusNotInProject");
             case IJakeGuiAccess.SYNC_FILE_IN_SYNC:
-                return "File in Sync";
+                return translator.get("HumanReadeableFileStatusInSync");
             case IJakeGuiAccess.SYNC_FILE_REMOTELY_CHANGED:
-                return "File remotely changed";
+                return translator.get("HumanReadeableFileStatusRemotelyChanged");
             case IJakeGuiAccess.SYNC_FILE_LOCALLY_CHANGED:
-                return "File locally changed";
+                return translator.get("HumanReadeableFileStatusLocallyChanged");
             case IJakeGuiAccess.SYNC_FILE_IN_CONFLICT:
-                return "File in conflict";
+                return translator.get("HumanReadeableFileStatusConflict");
             case IJakeGuiAccess.SYNC_FILE_DELETED_LOCALLY:
-                return "Local file missing";
+                return translator.get("HumanReadeableFileStatusMissing");
         }
     }
 

@@ -574,10 +574,10 @@ public class JakeGui extends JPanel implements Observer {
 
 					// ======== fileMenu ========
 					{
-						fileMenu.setText("File");
+						fileMenu.setText(translator.get("MenuFile"));
 						
 						// ---- preferencesMenuItem ----
-						preferencesMenuItem.setText("Preferences...");
+						preferencesMenuItem.setText(translator.get("MenuItemPreferences"));
 						preferencesMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								propertiesMenuItemActionPerformed(e);
@@ -586,7 +586,7 @@ public class JakeGui extends JPanel implements Observer {
 						fileMenu.add(preferencesMenuItem);
 
 						// ---- exitApplicationMenuItem ----
-						exitApplicationMenuItem.setText("Exit");
+						exitApplicationMenuItem.setText(translator.get("MenuItemQuit"));
 						exitApplicationMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								exitApplicationMenuItemActionPerformed(e);
@@ -598,10 +598,10 @@ public class JakeGui extends JPanel implements Observer {
 
 					// ======== viewMenu ========
 					{
-						viewMenu.setText("View");
+						viewMenu.setText(translator.get("MenuView"));
 
 						// ---- peopleViewMenuItem ----
-						peopleViewMenuItem.setText("People");
+						peopleViewMenuItem.setText(translator.get("MenuItemPeople"));
 						peopleViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/people.png")));
 						peopleViewMenuItem.addActionListener(new ActionListener() {
@@ -612,7 +612,7 @@ public class JakeGui extends JPanel implements Observer {
 						viewMenu.add(peopleViewMenuItem);
 
 						// ---- filesViewMenuItem ----
-						filesViewMenuItem.setText("Files");
+						filesViewMenuItem.setText(translator.get("MenuItemFiles"));
 						filesViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/files.png")));
 						filesViewMenuItem.addActionListener(new ActionListener() {
@@ -623,7 +623,7 @@ public class JakeGui extends JPanel implements Observer {
 						viewMenu.add(filesViewMenuItem);
 
 						// ---- notesViewMenuItem ----
-						notesViewMenuItem.setText("Notes");
+						notesViewMenuItem.setText(translator.get("MenuItemNotes"));
 						notesViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/notes.png")));
 						notesViewMenuItem.addActionListener(new ActionListener() {
@@ -635,7 +635,7 @@ public class JakeGui extends JPanel implements Observer {
 						viewMenu.addSeparator();
 
 						// ---- systemLogViewMenuItem ----
-						systemLogViewMenuItem.setText("System Log");
+						systemLogViewMenuItem.setText(translator.get("MenuItemLog"));
 						systemLogViewMenuItem.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/log.png")));
 						systemLogViewMenuItem.addActionListener(new ActionListener() {
@@ -717,15 +717,15 @@ public class JakeGui extends JPanel implements Observer {
 						projectMenu.setText("Project");
 
 						// ---- openProjectFolderMenuItem ----
-						openProjectFolderMenuItem.setText("Open Project Folder");
+						openProjectFolderMenuItem.setText(translator.get("MenuItemOpenProjectFolder"));
 						projectMenu.add(openProjectFolderMenuItem);
 
 						// ---- refreshDatapoolViewProjectMenuItem ----
-						refreshDatapoolViewProjectMenuItem.setText("Refresh Datapool View");
+						refreshDatapoolViewProjectMenuItem.setText(translator.get("MenuItemRefreshDatapoolView"));
 						projectMenu.add(refreshDatapoolViewProjectMenuItem);
 
 						// ---- newNoteProjectMenuItem ----
-						newNoteProjectMenuItem.setText("New Note...");
+						newNoteProjectMenuItem.setText(translator.get("MenuItemNewNote"));
 						newNoteProjectMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								newNoteProjectMenuItemActionPerformed(e);
@@ -735,7 +735,7 @@ public class JakeGui extends JPanel implements Observer {
 						projectMenu.addSeparator();
 
 						// ---- addFileToProjectMenuItem ----
-						addFileToProjectMenuItem.setText("Add File...");
+						addFileToProjectMenuItem.setText(translator.get("MenuItemAddFile"));
                         addFileToProjectMenuItem.addActionListener(new ActionListener()
                         {
                             public void actionPerformed(ActionEvent event) {
@@ -745,12 +745,12 @@ public class JakeGui extends JPanel implements Observer {
 						projectMenu.add(addFileToProjectMenuItem);
 
 						// ---- addFolderToProjectMenuItem ----
-						addFolderToProjectMenuItem.setText("Add Folder...");
+						addFolderToProjectMenuItem.setText(translator.get("MenuItemAddFolder"));
 						projectMenu.add(addFolderToProjectMenuItem);
 						projectMenu.addSeparator();
 
 						// ---- addProjectMemberMenuItem ----
-						addProjectMemberMenuItem.setText("Add Project Member...");
+						addProjectMemberMenuItem.setText(translator.get("MenuItemAddProjectMember"));
 						addProjectMemberMenuItem.addActionListener(new ActionListener()	{
 							public void actionPerformed(ActionEvent e)	{
 								addProjectMemberMenutItemActionPerformed(e);
@@ -763,10 +763,10 @@ public class JakeGui extends JPanel implements Observer {
 
 					// ======== helpMenu ========
 					{
-						helpMenu.setText("Help");
+						helpMenu.setText(translator.get("MenuHelp"));
 
 						// ---- aboutHelpMenuItem ----
-						aboutHelpMenuItem.setText("About");
+						aboutHelpMenuItem.setText(translator.get("MenuItemAbout"));
 						aboutHelpMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								aboutHelpMenuItemActionPerformed(e);
@@ -787,7 +787,7 @@ public class JakeGui extends JPanel implements Observer {
 		}
 
 			// ---- showInfoPeopleMenuItem ----
-			showInfoPeopleMenuItem.setText("Show Info/Comments...");
+			showInfoPeopleMenuItem.setText(translator.get("PeoplePaneContextMenuItemShowInfoComments"));
 			showInfoPeopleMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					showInfoPeopleMenuItemActionPerformed(e);
@@ -796,15 +796,15 @@ public class JakeGui extends JPanel implements Observer {
 			peoplePopupMenu.add(showInfoPeopleMenuItem);
 
 			// ---- renamePeopleMenuItem ----
-			renamePeopleMenuItem.setText("Change Nickname...");
+			renamePeopleMenuItem.setText(translator.get("PeoplePaneContextMenuItemSetNickname"));
 			peoplePopupMenu.add(renamePeopleMenuItem);
 
 			// ---- changeUserIdMenuItem ----
-			changeUserIdMenuItem.setText("Change User ID...");
+			changeUserIdMenuItem.setText(translator.get("PeoplePaneContextMenuItemSetUserID"));
 			peoplePopupMenu.add(changeUserIdMenuItem);
 
 			// ---- removePeopleMenuItem ----
-			removePeopleMenuItem.setText("Remove Member...");
+			removePeopleMenuItem.setText(translator.get("PeoplePaneContextMenuItemRemoveMember"));
 			peoplePopupMenu.add(removePeopleMenuItem);
 		}
 	}
@@ -821,7 +821,7 @@ public class JakeGui extends JPanel implements Observer {
 		tagsSearchMenuItem = new JCheckBoxMenuItem();
 		bothSearchMenuItem = new JCheckBoxMenuItem();
 		// ---- nameSearchMenuItem ----
-		nameSearchMenuItem.setText("Name");
+		nameSearchMenuItem.setText(translator.get("SearchMenuItemName"));
 		nameSearchMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setSearchMode(SearchMode.Name);
@@ -830,7 +830,7 @@ public class JakeGui extends JPanel implements Observer {
 		searchPopupMenu.add(nameSearchMenuItem);
 
 		// ---- tagsSearchMenuItem ----
-		tagsSearchMenuItem.setText("Tags");
+		tagsSearchMenuItem.setText(translator.get("SearchMenuItemTags"));
 		tagsSearchMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setSearchMode(SearchMode.Tag);
@@ -839,7 +839,7 @@ public class JakeGui extends JPanel implements Observer {
 		searchPopupMenu.add(tagsSearchMenuItem);
 
 		// ---- bothSearchMenuItem ----
-		bothSearchMenuItem.setText("Both");
+		bothSearchMenuItem.setText(translator.get("SearchMenuItemBoth"));
 		bothSearchMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setSearchMode(SearchMode.Both);
