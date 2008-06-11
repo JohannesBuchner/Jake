@@ -48,11 +48,6 @@ public class PeopleTableModel extends AbstractTableModel {
 		return members.size();
 	}
 
-	public int getMembersCount()	{
-		return this.members.size();
-		
-	}
-
 	public ProjectMember getProjectMemberAt(int rowId) {
 		return members.get(rowId);
 	}
@@ -60,17 +55,26 @@ public class PeopleTableModel extends AbstractTableModel {
 	/**
 	 * Returns the status of members
 	 */
+	
+	public int getMembersCount()	{
+		return this.members.size();
+		
+	}
+	
 	public int getOnlineMembersCount()	{
 		
 		int onlineMembers=0;
-		
+		int x = 0;
 		for(ProjectMember p:this.members)
 		{
+			members.get(x).getUserId();
+			//jakeGuiAccess.isLoggedIn(members.get(x).getUserId());
+			
 			try {
 				if(jakeGuiAccess.isLoggedIn(p.getUserId()))
 					onlineMembers++;
 			} catch (NotLoggedInException e) {
-				return 0;
+				
 			} catch (NoSuchUseridException e) {
 				
 			}
