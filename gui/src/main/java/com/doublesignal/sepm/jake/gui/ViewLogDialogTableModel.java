@@ -30,14 +30,15 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
     private List<LogEntry> logEntries = new ArrayList<LogEntry>();
     private final IJakeGuiAccess jakeGuiAccess;
-    private JakeObject jakeObject;
+    private JakeObject jakeObject = null;
 
     
     
     
     ViewLogDialogTableModel(IJakeGuiAccess jakeGuiAccess , JakeObject jakeObject)	{
-    	log.info("Initializing ViewLogDialogTableModel.");
-    	log.info(jakeObject.getName());
+    	log.info("Initializing ViewLogDialogTableModel...");
+    	
+    	if(jakeObject != null)
     	this.jakeObject = jakeObject;
     	this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
