@@ -61,7 +61,7 @@ public class ResolveConflictDialog extends JDialog {
         this.jakeGuiAccess = jakeGuiAccess;
         
         //load the remote file...
-        remoteFile = this.jakeGuiAccess.pullRemoteFile(localFile);
+        //remoteFile = this.jakeGuiAccess.pullRemoteFile(localFile);
         
 		initComponents();
 	}

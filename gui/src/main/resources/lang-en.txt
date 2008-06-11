@@ -130,11 +130,12 @@ PeoplePaneContextMenuItemRemoveMember=Remove project member
 AddProjectMemberDialogTitle=Enter a user id
 AddProjectMemberDialogSaveButton=Save
 
-HumanReadeableFileStatusInvalid=Invalid: 
-HumanReadeableFileStatusRemote=Remote file -> pull
-HumanReadeableFileStatusNotInProject=local file, not in project
-HumanReadeableFileStatusinSync=File in sync
-HumanReadeableFileStatusRemotelyChanged=File remotely changed
-HumanReadeableFileStatusLocallyChanged=File locally changed
-HumanReadeableFileStatusConflict=File in conflict
-HumanReadeableFileStatusMissing=Local file missing
+HumanReadeableFileStatusConflict=In conflict
+HumanReadeableFileStatusIsNewestVersion=Is Newest version
+HumanReadeableFileStatusNewerVersionAvailable=Newer version available
+HumanReadeableFileStatusLocallyChanged=Locally changed
+HumanReadeableFileStatusLocalCopyExists=Local
+HumanReadeableFileStatusRemoteVersionExists=Remote
+HumanReadeableFileStatusNotInProject=Not in Project
+HumanReadeableFileStatusInvalid=Invalid
+

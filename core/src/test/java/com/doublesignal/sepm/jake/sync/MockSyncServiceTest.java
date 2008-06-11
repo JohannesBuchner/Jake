@@ -16,6 +16,7 @@ import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.MockICService;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
+import com.doublesignal.sepm.jake.sync.exceptions.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 
 public class MockSyncServiceTest extends FSTestCase {

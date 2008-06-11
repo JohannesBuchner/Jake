@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Observer;
 import java.util.Set;
 
 import com.doublesignal.sepm.jake.core.InvalidApplicationState;
@@ -19,15 +17,10 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberExcepti
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
-import com.doublesignal.sepm.jake.fss.CreatingSubDirectoriesFailedException;
-import com.doublesignal.sepm.jake.fss.FileTooLargeException;
-import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.LaunchException;
-import com.doublesignal.sepm.jake.fss.NotAFileException;
-import com.doublesignal.sepm.jake.fss.NotAReadableFileException;
+import com.doublesignal.sepm.jake.fss.*;
+import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
-import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
-import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
+import com.doublesignal.sepm.jake.sync.exceptions.*;
 
 /**
  * @author domdorn
@@ -36,15 +29,38 @@ import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
  */
 public interface IJakeGuiAccess {
 
-    public static int SYNC_NO_VALID_STATE = 100;
-    public static int SYNC_FILE_IS_REMOTE = 101;
-    public static int SYNC_LOCAL_FILE_NOT_IN_PROJECT = 102;
-    public static int SYNC_FILE_IN_SYNC = 103;
-    public static int SYNC_FILE_REMOTELY_CHANGED = 104;
-    public static int SYNC_FILE_LOCALLY_CHANGED = 105;
-    public static int SYNC_FILE_IN_CONFLICT = 106;
-    public static int SYNC_FILE_DELETED_LOCALLY = 107;
-
+	/**
+	 * weird stuff happened
+	 */
+    public static final int SYNC_NO_VALID_STATE = 1;
+	/**
+	 * is in project
+	 */
+    public static final int SYNC_HAS_LOGENTRIES = 2;
+	/**
+	 * we have this file
+	 */
+    public static final int SYNC_EXISTS_LOCALLY = 4;
+	/**
+	 * it is from the latest version
+	 */
+    public static final int SYNC_LOCAL_IS_LATEST = 8;
+	/**
+	 * we modified it
+	 */
+    public static final int SYNC_LOCALLY_CHANGED = 16;
+	/**
+	 * Did someone delete it?
+	 */
+    public static final int SYNC_EXISTS_REMOTELY = 32;
+	/**
+	 * A newer remote version exists 
+	 */
+    public static final int SYNC_REMOTE_IS_NEWER = 64;
+	/**
+	 * A newer remote version exists, we have a modified old version. 
+	 */
+    public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER | SYNC_LOCALLY_CHANGED;
 
     /**
 	 * Login on the network Missing login information (null values) will be
@@ -172,14 +188,7 @@ public interface IJakeGuiAccess {
 	 * @return
 	 */
 	public ProjectMember getProjectMember(String userId) throws NoSuchProjectMemberException;
-
-	/**
-	 * Registers
-	 * 
-	 * @param obs
-	 */
-	public void registerProjectInvitationCallback(Observer obs);
-
+	
 	/**
 	 * Create a new note
 	 * 
@@ -401,15 +410,7 @@ public interface IJakeGuiAccess {
      *                                     <code>userid</code>.
      */
     public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException;
-
-    /**
-     * Imports a file which is already in the project folder into the projects
-     * repository (adding to databse, generating log entries, etc.)
-     * @param relPath the relative path of this file
-     * @return true on success, false on error
-     */
-    boolean importLocalFileIntoProject(String relPath);
-
+    
     /**
      * Imports a file which is not currently in the project folder by
      * copying it into a folder inside the projects root folder.
@@ -417,7 +418,7 @@ public interface IJakeGuiAccess {
      * @param destinationFolderRelPath
      * @return true on success, false on error
      */
-    boolean importLocalFileIntoProject(String absolutePath, String destinationFolderRelPath);
+    boolean importExternalFileIntoProject(String absolutePath, String destinationFolderRelPath);
 
     /**
      * Deletes a Project Member
@@ -448,18 +449,64 @@ public interface IJakeGuiAccess {
 
 	/* Syncronisation stuff */
 	
+	/**
+	 * What should be called in case a Conflict is detected?
+	 */
+	public void setConflictCallback(IConflictCallback cc);
+	
+	/**
+	 * 
+	 * @param jo
+	 * @param commitmsg
+	 * @throws SyncException
+	 * @throws NotLoggedInException
+	 */
+	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
+	
+	/**
+	 * 
+	 * @param jo
+	 * @throws NotLoggedInException
+	 * @throws OtherUserOfflineException
+	 */
+	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException;
+	
+	/**
+	 * 
+	 * @param userid
+	 * @return
+	 * @throws OtherUserOfflineException
+	 * @throws NotAProjectMemberException
+	 * @throws NotLoggedInException
+	 */
+	public List<JakeObject> syncLogAndGetChanges(String userid) throws OtherUserOfflineException, NotAProjectMemberException, NotLoggedInException;
+	
+	/**
+	 * @param jo
+	 * @return status of the JakeObject, or-Combination of the constants SYNC_*
+	 */
+	public int getJakeObjectSyncStatus(JakeObject jo);
+	
+	/**
+	 * Performs a sync to all project members one after another, and analyses
+	 * each files sync status.
+	 */
 	public void refreshFileObjects();
 	
-	public Integer getFileObjectSyncStatus(JakeObject jakeObject);
-
-	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
-
-	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException;
-
-	public FileObject pullRemoteFile(FileObject localFile);
-	
+	/**
+	 * For conflict resolving, a external file can be launched.
+	 * @param f
+	 */
 	public void launchExternalFile(File f);
 	
+	/**
+	 * For conflict resolving, a remote version can be pulled in a temporary 
+	 * file
+	 * @param jo
+	 * @return the temporary file
+	 */
+	public File pullRemoteFileInTempFile(FileObject jo);
+
 	/*
 
 	public List<JakeObject> getChangedObjects();

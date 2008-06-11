@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.sync;
+package com.doublesignal.sepm.jake.sync.exceptions;
 
 /**
  * @author johannes

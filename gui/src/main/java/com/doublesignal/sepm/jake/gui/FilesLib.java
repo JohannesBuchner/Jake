@@ -1,5 +1,9 @@
 package com.doublesignal.sepm.jake.gui;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
@@ -30,28 +34,38 @@ public class FilesLib {
 
         return lFileSize + " " + sFileSizeUnity;
     }
-
-    public static String getHumanReadableFileStatus(int status) {
-        switch (status) {
-            default:
-            case IJakeGuiAccess.SYNC_NO_VALID_STATE:
-                return translator.get("HumanReadeableFileStatusInvalid") + status;
-
-            case IJakeGuiAccess.SYNC_FILE_IS_REMOTE:
-                return translator.get("HumanReadeableFileStatusRemote");
-            case IJakeGuiAccess.SYNC_LOCAL_FILE_NOT_IN_PROJECT:
-                return translator.get("HumanReadeableFileStatusNotInProject");
-            case IJakeGuiAccess.SYNC_FILE_IN_SYNC:
-                return translator.get("HumanReadeableFileStatusInSync");
-            case IJakeGuiAccess.SYNC_FILE_REMOTELY_CHANGED:
-                return translator.get("HumanReadeableFileStatusRemotelyChanged");
-            case IJakeGuiAccess.SYNC_FILE_LOCALLY_CHANGED:
-                return translator.get("HumanReadeableFileStatusLocallyChanged");
-            case IJakeGuiAccess.SYNC_FILE_IN_CONFLICT:
-                return translator.get("HumanReadeableFileStatusConflict");
-            case IJakeGuiAccess.SYNC_FILE_DELETED_LOCALLY:
-                return translator.get("HumanReadeableFileStatusMissing");
+    
+	private static String join(Collection<String> s, String delimiter) {
+        StringBuffer buffer = new StringBuffer();
+        Iterator<String> iter = s.iterator();
+        while (iter.hasNext()) {
+            buffer.append(iter.next());
+            if (iter.hasNext()) {
+                buffer.append(delimiter);
+            }
         }
+        return buffer.toString();
+    }
+	
+    public static String getHumanReadableFileStatus(int status) {
+    	ArrayList<String> state = new ArrayList<String>();
+    	if((status & IJakeGuiAccess.SYNC_IN_CONFLICT) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusConflict"));
+    	if((status & IJakeGuiAccess.SYNC_LOCAL_IS_LATEST) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusIsNewestVersion"));
+    	if((status & IJakeGuiAccess.SYNC_REMOTE_IS_NEWER) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusNewerVersionAvailable"));
+    	if((status & IJakeGuiAccess.SYNC_LOCALLY_CHANGED) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusLocallyChanged"));
+    	if((status & IJakeGuiAccess.SYNC_EXISTS_LOCALLY) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusLocalCopyExists"));
+    	if((status & IJakeGuiAccess.SYNC_EXISTS_REMOTELY) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusRemoteVersionExists"));
+    	if((status & IJakeGuiAccess.SYNC_HAS_LOGENTRIES) == 0)
+       		state.add(translator.get("HumanReadeableFileStatusNotInProject"));
+    	if((status & IJakeGuiAccess.SYNC_NO_VALID_STATE) != 0)
+       		state.add(translator.get("HumanReadeableFileStatusInvalid"));
+    	return join(state, ", ");
     }
 
 }

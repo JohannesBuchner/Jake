@@ -12,9 +12,10 @@ import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
 import com.doublesignal.sepm.jake.sync.ISyncService;
-import com.doublesignal.sepm.jake.sync.NotAProjectMemberException;
+import com.doublesignal.sepm.jake.sync.exceptions.NotAProjectMemberException;
 import com.doublesignal.sepm.jake.sync.exceptions.ObjectNotConfiguredException;
 import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
+import com.sun.corba.se.spi.orbutil.fsm.Action;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -42,9 +43,10 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     List<FileObject> filesFSS;
     List<FileObject> filesDB;
-    Map<String, Integer> filesStatus;
+    HashMap<String, Integer> filesStatus;
     
 	private IJakeMessageReceiveListener messageListener;
+	IConflictCallback conflictCallback = null;
 
 
 
@@ -201,40 +203,41 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return null;
     }
 
-    List<FileObject> getFileObjectsByRelPath(String relPath)
-            throws InvalidFilenameException, IOException {
-        List<FileObject> results = new ArrayList<FileObject>();
+    List<FileObject> getFileObjectsByRelPath(String relPath){
+		List<FileObject> results = new ArrayList<FileObject>();
 
-        String[] files;
-        try {
-            files = fss.listFolder(relPath);
-        } catch (InvalidFilenameException e) {
-            throw new InvalidFilenameException(e.getMessage());
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+		String[] files = new String[0];
+		try {
+			files = fss.listFolder(relPath);
+		} catch (InvalidFilenameException e) {
+			InvalidApplicationState.die("should not happen", e);
+		} catch (IOException e) {
+			InvalidApplicationState.die("should not happen", e);
+		}
 
-        File tmp;
-        for (String file : files) {
-            try {
-                tmp = new File(fss.getFullpath(relPath + file));
-                if (tmp.isDirectory()) {
-                    results.addAll(getFileObjectsByRelPath(relPath + file + "/"));
-                }
-                if (tmp.isFile())
-                    results.add(new FileObject(relPath + file));
-            } catch (InvalidFilenameException e) {
-                continue;
-                // we simply ignore invalid filenames
-            }
-        }
-        return results;
-    }
+		File tmp;
+		for (String file : files) {
+			try {
+				tmp = new File(fss.getFullpath(relPath + file));
+				if (tmp.isDirectory()) {
+					results
+							.addAll(getFileObjectsByRelPath(relPath + file
+									+ "/"));
+				}
+				if (tmp.isFile())
+					results.add(new FileObject(relPath + file));
+			} catch (InvalidFilenameException e) {
+				continue;
+				// we simply ignore invalid filenames
+			}
+		}
+		return results;
+	}
 
     public List<JakeObject> getFileObjects(String relPath) {
         Set<JakeObject> tmp = new HashSet<JakeObject>();
         if(filesDB == null || filesFSS == null || filesStatus == null)
-                refreshFileObjects();
+        	refreshFileObjects();
         tmp.addAll(filesDB);
         tmp.addAll(filesFSS);
         List<JakeObject> results = new ArrayList<JakeObject>();
@@ -268,6 +271,18 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		this.ics.sendMessage(message.getRecipient().getUserId(), message.getContent());
 	}
 
+    public long getFileSize(FileObject fileObject) {
+        try {
+            return fss.getFileSize(fileObject.getName());
+        } catch (InvalidFilenameException e) {
+            return 0;
+        } catch (FileNotFoundException e) {
+            return 0;
+        } catch (NotAFileException e) {
+            return 0;
+        }
+    }
+    
 	public List<JakeMessage> getNewMessages() {
         // TODO Auto-generated method stub
         return null;
@@ -298,47 +313,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     public List<FileObject> importFolder(String absolutePath) throws NoSuchFolderException {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    public void logSync() throws NetworkException {
-    	log.info("startign logsync...");
-    	List<ProjectMember> members = currentProject.getMembers();
-    	for (ProjectMember member : members) {
-    		try {
-    			sync.syncLogAndGetChanges(member.getUserId());
-    		} catch (ObjectNotConfiguredException e) {
-    			log.warn("sync is not configured; " + e.getMessage());
-    		} catch (OtherUserOfflineException e) {
-    			log.warn("other user is offline");
-    		} catch (NotAProjectMemberException e) {
-    			log.warn("the user: " + member.getUserId() + " is not a valid project member");
-    		} catch (NetworkException e) {
-    			log.warn("a network exception was raised: " + e.getMessage());
-    			log.debug("userid: " + member.getUserId());
-    		}
-        }
-    }
-
-    public void registerProjectInvitationCallback(Observer obs) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void registerReceiveMessageCallback(Observer observer) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public long getFileSize(FileObject fileObject) {
-        try {
-            return fss.getFileSize(fileObject.getName());
-        } catch (InvalidFilenameException e) {
-            return 0;
-        } catch (FileNotFoundException e) {
-            return 0;
-        } catch (NotAFileException e) {
-            return 0;
-        }
     }
 
     public void addProjectMember(String networkUserId) {
@@ -686,57 +660,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
 
-    public boolean importLocalFileIntoProject(String relPath) {
-        FileObject fileObject = new FileObject(relPath);
 
-        db.getJakeObjectDao().save(fileObject);
-        // create logEntry
-
-
-        try {
-
-
-            // userId = ics.getUserid();
-            String userId = getLoginUserid();
-            String comment = "";
-            String hash = fss.calculateHashOverFile(fileObject.getName());
-
-            LogEntry logEntry = new LogEntry(
-                    LogAction.NEW_JAKEOBJECT,
-                    new Date(),
-                    fileObject.getName(),
-                    /* hash */
-                    hash,
-                    /* userId */
-                    userId,
-                    /* comment */
-                    comment
-            );
-            logEntry.setIsLastPulled(true);
-
-            db.getLogEntryDao().create(logEntry);
-            log.debug("persisted logentry");
-        } catch (InvalidFilenameException e) {
-            e.printStackTrace();
-            return false;
-        } catch (NotAReadableFileException e) {
-            e.printStackTrace();
-            return false;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }  
-
-        filesDB.add(fileObject);
-
-        filesStatus.put(relPath, getRealFileObjectSyncStatus(fileObject));
-        //log.debug("putted status of file " + relPath + " to " + filesStatus.get(relPath));
-
-        // TODO
-        return true;
-    }
-
-    public boolean importLocalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
+    public boolean importExternalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
         log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
         File srcFile = new File(absolutePath);
         if(srcFile == null || !srcFile.exists() )
@@ -748,9 +673,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             log.debug("destination folder not in projectRootPath");
             return false;
         }
-
-
-
+        
         String filename = srcFile.getName();
         File destinationFile = new File(destinationFolderAbsolutePath, filename);
 
@@ -768,11 +691,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             e.printStackTrace();
             return false;
         }
-
-        String relPath = destinationFile.getAbsolutePath().
-                replace(getProject().getRootPath().getAbsolutePath(),"");
-
-        return importLocalFileIntoProject(relPath);
+        return true;
     }
 
 	public static String getICSName() {
@@ -814,13 +733,15 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	}
 	
 	
-	/* *** Synchronisation stuff  *** */
-	
+	/* *** Synchronisation stuff *** */
 
-    public void pushJakeObject(JakeObject jo, String commitmsg) 
-    	throws SyncException, NotLoggedInException 
-    {
-        try {
+	public void setConflictCallback(IConflictCallback cc) {
+		this.conflictCallback = cc;
+	}
+
+	public void pushJakeObject(JakeObject jo, String commitmsg)
+			throws SyncException, NotLoggedInException {
+		try {
 			sync.push(jo, ics.getUserid(), commitmsg);
 		} catch (NotLoggedInException e) {
 			throw e;
@@ -829,20 +750,20 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (SyncException e) {
 			throw e;
 		}
-    }
+	}
 
-    public void pullJakeObject(JakeObject jo) throws 
-    	NotLoggedInException, OtherUserOfflineException 
-    {
-        byte[] content;
+	public void pullJakeObject(JakeObject jo) throws NotLoggedInException,
+			OtherUserOfflineException {
+		byte[] content;
 		try {
 			content = sync.pull(jo);
-	        if(jo.getName().startsWith("note:")){
-	        	NoteObject no = new NoteObject(jo.getName(), new String(content));
-	        	db.getJakeObjectDao().save(no);
-	        }else{
-	        	fss.writeFile(jo.getName(), content);
-	        }
+			if (jo.getName().startsWith("note:")) {
+				NoteObject no = new NoteObject(jo.getName(),
+						new String(content));
+				db.getJakeObjectDao().save(no);
+			} else {
+				fss.writeFile(jo.getName(), content);
+			}
 		} catch (NoSuchObjectException e) {
 			InvalidApplicationState.die(e);
 		} catch (NotLoggedInException e) {
@@ -868,286 +789,141 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (CreatingSubDirectoriesFailedException e) {
 			InvalidApplicationState.die("unimplemented", e);
 		}
-    }
-
-    public List<JakeObject> getChangedObjects() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    public List<JakeObject> getOutOfSyncObjects() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    public void pullObjects() throws NetworkException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void pushObjects() throws NetworkException {
-        // TODO Auto-generated method stub
-
-    }
-    
-	public void launchExternalFile(File f){
-		
 	}
 
-	/**
-     * the name is the full path here
-     */
-	public FileObject pullRemoteFile(FileObject jo){
+	public List<JakeObject> syncLogAndGetChanges(String userid)
+			throws OtherUserOfflineException, NotAProjectMemberException,
+			NotLoggedInException {
+		List<JakeObject> changes = null;
+		try {
+			changes = sync.syncLogAndGetChanges(userid);
+		} catch (ObjectNotConfiguredException e) {
+			InvalidApplicationState.die(e);
+		} catch (OtherUserOfflineException e) {
+			throw e;
+		} catch (NotAProjectMemberException e) {
+			throw e;
+		} catch (NotLoggedInException e) {
+			throw e;
+		} catch (TimeoutException e) {
+			InvalidApplicationState.die("unimplemented");
+		} catch (NetworkException e) {
+			InvalidApplicationState.die("unimplemented");
+		}
+		return changes;
+	}
+
+	private String getLocalContentHash(JakeObject jo)
+			throws NoSuchFileException, FileNotFoundException,
+			NotAReadableFileException {
+		if (jo.getName().startsWith("note:")) {
+			return fss.calculateHash(db.getJakeObjectDao().getNoteObjectByName(
+					jo.getName()).getContent().getBytes());
+		} else {
+			try {
+				return fss.calculateHashOverFile(jo.getName());
+			} catch (FileNotFoundException e) {
+				throw e;
+			} catch (InvalidFilenameException e) {
+				InvalidApplicationState.die(e);
+			} catch (NotAReadableFileException e) {
+				throw e;
+			}
+		}
 		return null;
 	}
 
-    public void refreshFileObjects() {
-        log.debug("calling refreshFileObjects() ");
-        
-        try {
-			logSync();
-		} catch (NetworkException e) {
-			log.warn("a network exception occured; " + e.getMessage());
+	private boolean hasLocalModification(JakeObject jo)
+			throws NoSuchFileException, FileNotFoundException,
+			NotAReadableFileException, NoSuchLogEntryException {
+		String hash = getLocalContentHash(jo);
+		LogEntry le = db.getLogEntryDao().getLastPulledFor(jo);
+		return !le.getHash().equals(hash);
+	}
+	
+	public int getJakeObjectSyncStatus(JakeObject jo) {
+		int state = 0;
+
+		if (jo.getName().startsWith("note")) {
+			try {
+				db.getJakeObjectDao().getNoteObjectByName(jo.getName());
+				state |= SYNC_EXISTS_LOCALLY;
+			} catch (NoSuchFileException e) {
+			}
+		} else {
+			try {
+				if (fss.fileExists(jo.getName()))
+					state |= SYNC_EXISTS_LOCALLY;
+
+			} catch (InvalidFilenameException e) {
+				InvalidApplicationState.die("should not happen", e);
+			} catch (IOException e) {
+				/* interpreting as we don't have it accessible */
+			}
 		}
-        
-        filesDB = getFileObjectsFromDB();
-        try {
-            filesFSS = getFileObjectsByRelPath("/");
-        } catch (InvalidFilenameException e) {
-            // slightly ignore
-            filesFSS = null;
-        } catch (IOException e) {
-            // slightly ignore
-            filesFSS = null;
-        }
+		
+		LogEntry mostRecent;
+		try {
+			mostRecent = db.getLogEntryDao().getMostRecentFor(jo);
+			state |= SYNC_HAS_LOGENTRIES;
 
+			if (mostRecent.getAction() != LogAction.DELETE) {
+				state |= SYNC_EXISTS_REMOTELY;
+			}
+			LogEntry lastPulled;
+			try {
+				lastPulled = db.getLogEntryDao().getLastPulledFor(jo);
+				if (lastPulled.equals(mostRecent))
+					state |= SYNC_LOCAL_IS_LATEST;
+				else if (mostRecent.getTimestamp().getTime() > lastPulled.getTimestamp().getTime())
+					state |= SYNC_REMOTE_IS_NEWER;
+			} catch (NoSuchLogEntryException e) {
+			}
+			try {
+				if (hasLocalModification(jo)) {
+					state |= SYNC_LOCALLY_CHANGED;
+				}
+			} catch (NoSuchFileException e) {
+			} catch (FileNotFoundException e) {
+			} catch (NotAReadableFileException e) {
+			}
+		} catch (NoSuchLogEntryException e) {
+		}
+		return state;
+	}
 
-        Set<FileObject> result = new HashSet<FileObject>();
-        result.addAll(filesDB);
-        result.addAll(filesFSS);
-        if (filesStatus == null)
-            filesStatus = new HashMap<String, Integer>();
+	public void refreshFileObjects() {
+		log.debug("calling refreshFileObjects() ");
 
-        for (FileObject file : result) {
-            filesStatus.put(file.getName(), getRealFileObjectSyncStatus(file));
-        }
-    }
+		try {
+			for (ProjectMember pm : db.getProjectMemberDao().getAll()) {
+				try {
+					syncLogAndGetChanges(pm.getUserId());
+				} catch (OtherUserOfflineException e) {
+					/* thats ok. */
+				} catch (NotAProjectMemberException e) {
+					InvalidApplicationState.die("shouldn't occur");
+				}
+			}
+		} catch (NotLoggedInException e) {
+			log.warn("Not logged in.");
+		}
 
+		filesDB = getFileObjectsFromDB();
+		filesFSS = getFileObjectsByRelPath("/");
 
+		Set<FileObject> result = new HashSet<FileObject>();
+		result.addAll(filesDB);
+		result.addAll(filesFSS);
+		if (filesStatus == null)
+			filesStatus = new HashMap<String, Integer>();
 
+		for (FileObject file : result) {
+			filesStatus.put(file.getName(), getJakeObjectSyncStatus(file));
+		}
+	}
 
-
-    private int getRealFileObjectSyncStatus(FileObject jakeObject) {
-        /**
-         *    A = in FileSystem
-         *    B = in DataBase
-         *    C = changed local
-         *    D = changed remote
-         *    -A -B -C -D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
-         *    -A -B -C  D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
-         *    -A -B  C -D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
-         *    -A -B  C  D | 100 | - no valid status -                   SYNC_NO_VALID_STATE
-         *    -A  B -C -D | 101 | - Remote File -> pull -               SYNC_FILE_IS_REMOTE
-         *    -A  B -C  D | 101 | - Remote File -> pull -               SYNC_FILE_IS_REMOTE
-         *    -A  B  C -D | 107 | - SYNC_FILE_DELETED_LOCALLY - // TODO SYNC_FILE_DELETED_LOCALLY
-         *    -A  B  C  D | 107 | - SYNC_FILE_DELETED_LOCALLY - // TODO SYNC_FILE_DELETED_LOCALLY
-         *     A -B -C -D | 102 | - local file, not in project -        SYNC_LOCAL_FILE_NOT_IN_PROJECT
-         *     A -B -C  D | 100 | - no valid state -                    SYNC_NO_VALID_STATE
-         *     A -B  C -D | 102 | - local file, not in project -        SYNC_LOCAL_FILE_NOT_IN_PROJECT
-         *     A -B  C  D | 100 | - no valid state -                    SYNC_NO_VALID_STATE
-         *     A  B -C -D | 103 | - File in Sync -                      SYNC_FILE_IN_SYNC
-         *     A  B -C  D | 104 | - File remotely changed -             SYNC_FILE_REMOTELY_CHANGED
-         *     A  B  C -D | 105 | - File locally changed -              SYNC_FILE_LOCALLY_CHANGED
-         *     A  B  C  D | 106 | - File in conflict -                  SYNC_FILE_IN_CONFLICT
-
-         // TODO possibility to optimize using quine-mcklusky's method
-
-         */
-
-        boolean fileOnFS = false;
-        boolean fileInDB = false;
-        boolean fileLocallyChanged = false;
-        boolean fileRemotelyChanged = false;
-
-
-        if (filesFSS.contains(new FileObject(jakeObject.getName())))
-            fileOnFS = true;
-
-        if (filesDB.contains(new FileObject(jakeObject.getName())))
-            fileInDB = true;
-
-        if (fileOnFS && fileInDB) {
-            String hashLastLogEntry;
-            String hashLastPulledLogEntry;
-            String hashFile;
-            try {
-                hashFile = fss.calculateHashOverFile(jakeObject.getName());
-                List<LogEntry> logEntryList = db.getLogEntryDao().getAllOfJakeObject(jakeObject);
-
-                ListIterator listIterator = logEntryList.listIterator();
-
-                LogEntry lastLogEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
-                LogEntry lastPulledLogEntry = lastLogEntry; // TODO change this!
-
-                    //LogEntry lasLogEntry = null;
-                    if(lastPulledLogEntry == null)
-                    {
-                        // file has never been downloadeded
-                        hashLastPulledLogEntry = "";
-                    }
-                    else
-                    {
-                        // file has been downloaded
-                        hashLastPulledLogEntry = lastPulledLogEntry.getHash();
-                    }
-                    hashLastLogEntry = lastLogEntry.getHash();
-
-                    if(hashLastLogEntry.equals(hashLastPulledLogEntry))
-                    {
-                        // the last logEntry is also the lastPulledLogEntry
-                        // if the hash of this log entry and our file is different,
-                        // we modified it local
-                        if(hashFile.equals(hashLastLogEntry))
-                        {
-                            fileLocallyChanged = false;
-                            fileRemotelyChanged = false;
-                        }
-                        else
-                        {
-                            fileLocallyChanged = true;
-                            fileRemotelyChanged = false;
-                        }
-                    }
-                    else
-                    {
-                        // the last LogEntry is not the same as the lastPulled LogEntry
-                        // obviously the file was changed on the remote side, lets check
-                        // if it also got changed locally
-                        fileRemotelyChanged = true;
-
-                        if(hashFile.equals(hashLastPulledLogEntry))
-                        {
-                            fileLocallyChanged = false;
-                        }
-                        else
-                        {
-                            fileLocallyChanged = true;
-                        }
-
-                    }
-
-
-            }
-            catch (InvalidFilenameException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (NotAReadableFileException e) {
-                e.printStackTrace();
-            } catch (NoSuchLogEntryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-
-            // todo check if file locally changed
-
-        }
-        if (fileInDB) {
-            // todo check logEntry
-        }
-
-        /** this part is finished, no need to modify, except possible optimizations */
-
-        if (fileOnFS && fileInDB && !fileLocallyChanged && !fileRemotelyChanged) {
-            return IJakeGuiAccess.SYNC_FILE_IN_SYNC;
-        }
-
-        if (fileOnFS && fileInDB && !fileLocallyChanged && fileRemotelyChanged) {
-            return IJakeGuiAccess.SYNC_FILE_REMOTELY_CHANGED;
-        }
-
-        if (
-                fileOnFS && fileInDB && !fileLocallyChanged && !fileRemotelyChanged
-                ) {
-            return IJakeGuiAccess.SYNC_FILE_LOCALLY_CHANGED;
-        }
-
-        if (fileOnFS && fileInDB && fileLocallyChanged && fileRemotelyChanged) {
-            return IJakeGuiAccess.SYNC_FILE_IN_CONFLICT;
-        }
-
-
-        if (
-            // doing status 101
-                !fileOnFS && !fileInDB && !fileLocallyChanged && !fileRemotelyChanged ||
-                        !fileOnFS && !fileInDB && !fileLocallyChanged && fileRemotelyChanged
-                ) {
-            return IJakeGuiAccess.SYNC_FILE_IS_REMOTE;
-        }
-
-        if (
-            // doing 102
-                fileOnFS && !fileInDB && !fileLocallyChanged && !fileRemotelyChanged ||
-                        fileOnFS && !fileInDB && fileLocallyChanged && !fileRemotelyChanged
-                ) {
-            return IJakeGuiAccess.SYNC_LOCAL_FILE_NOT_IN_PROJECT;
-        }
-        /*
-         *    -A  B  C -D | 107 | - no valid status - // TODO
-         *    -A  B  C  D | 107 | - no valid status - // TODO
-
-         */
-
-        if(
-        !fileOnFS && fileInDB &&  fileLocallyChanged
-                /* &&  !fileRemotelyChanged ||
-        !fileOnFS && fileInDB &&  fileLocallyChanged &&   fileRemotelyChanged */
-        )
-        {
-            /* local file is in database but deleted from project folder */
-            return IJakeGuiAccess.SYNC_FILE_DELETED_LOCALLY;
-        }
-
-/*        if( // doing code 100
-        !fileOnFS && !fileInDB && !fileLocallyChanged && !fileRemotelyChanged ||
-        !fileOnFS && !fileInDB && !fileLocallyChanged &&  fileRemotelyChanged ||
-        !fileOnFS && !fileInDB &&  fileLocallyChanged && !fileRemotelyChanged ||
-        !fileOnFS && !fileInDB &&  fileLocallyChanged &&  fileRemotelyChanged ||
-
-         fileOnFS && fileInDB &&  !fileLocallyChanged &&  !fileRemotelyChanged
-        )
-{
-    return 100;
-}*/
-
-        return IJakeGuiAccess.SYNC_NO_VALID_STATE;
-    }
-
-    public Integer getFileObjectSyncStatus(JakeObject jakeObject) {
-        //   log.debug("calling getFileObjectSyncStatus on JakeObject "+ jakeObject.getName());
-
-
-        if(filesDB == null)
-            log.debug("filesDB is null!");
-
-        if(filesFSS == null)
-            log.debug("FilesFSS is null");
-
-        if(filesStatus == null)
-            log.debug("filesStatus is null");
-
-        if (filesDB == null && filesFSS == null || filesStatus == null)
-            refreshFileObjects();
-
-        //return 100;
-        return filesStatus.get(jakeObject.getName());
-
-       // return status == null ? 0 : status;
-    }
-
-
-
-
-    List<FileObject> getFileObjectsFromDB() {
+    private List<FileObject> getFileObjectsFromDB() {
         if (filesDB == null)
             filesDB = db.getJakeObjectDao().getAllFileObjects();
         List<FileObject> results = new ArrayList<FileObject>();
@@ -1156,12 +932,12 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 	
 	
+	public void launchExternalFile(File f){
+		// TODO
+	}
 	
-    
-    
-    
-    
-	
-	
+	public File pullRemoteFileInTempFile(FileObject jo){
+		return null;
+	}
 	
 }

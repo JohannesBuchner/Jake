@@ -155,7 +155,7 @@ public class ImportFileDialog extends JDialog {
     }
 
     private void importButtonActionPerformed(ActionEvent event) {
-        if (jakeGuiAccess.importLocalFileIntoProject(fileTextField.getText(), destinationFolderTextField.getText())) {
+        if (jakeGuiAccess.importExternalFileIntoProject(fileTextField.getText(), destinationFolderTextField.getText())) {
             UserDialogHelper.inform(this, "File successfully imported",
                     "Your file was successfully imported into your project!"
             );
