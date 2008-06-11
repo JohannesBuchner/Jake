@@ -32,7 +32,7 @@ public class ViewLogDialog extends JDialog {
     
     ISyncService ss = null;
     IJakeGuiAccess jakeGuiAccess;
-   
+    JakeObject jakeObject;
     Date d = new Date();
     
      
@@ -41,6 +41,13 @@ public class ViewLogDialog extends JDialog {
     public ViewLogDialog(Frame owner,IJakeGuiAccess jakeGuiAccess) {
 		super(owner);
 		this.jakeGuiAccess = jakeGuiAccess;
+		initComponents();
+    }
+    
+    public ViewLogDialog(Frame owner,IJakeGuiAccess jakeGuiAccess,JakeObject jakeObject) {
+		super(owner);
+		this.jakeGuiAccess = jakeGuiAccess;
+		this.jakeObject = jakeObject;
 		initComponents();
     }
     
@@ -75,7 +82,7 @@ public class ViewLogDialog extends JDialog {
 		logTable = new JTable();
 		buttonBar = new JPanel();
 		okButton = new JButton();
-		viewlogDialogTableModel = new ViewLogDialogTableModel(jakeGuiAccess);
+		viewlogDialogTableModel = new ViewLogDialogTableModel(jakeGuiAccess , jakeObject);
 		//======== this ========
 		setTitle("View Log");
 		Container contentPane = getContentPane();

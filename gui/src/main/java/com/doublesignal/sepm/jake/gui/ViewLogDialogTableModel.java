@@ -9,6 +9,7 @@ import javax.swing.table.*;
 
 import org.apache.log4j.Logger;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 
@@ -29,19 +30,26 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
     private List<LogEntry> logEntries = new ArrayList<LogEntry>();
     private final IJakeGuiAccess jakeGuiAccess;
+    private JakeObject jakeObject;
 
     
     
     
-    ViewLogDialogTableModel(IJakeGuiAccess jakeGuiAccess)	{
+    ViewLogDialogTableModel(IJakeGuiAccess jakeGuiAccess , JakeObject jakeObject)	{
     	log.info("Initializing ViewLogDialogTableModel.");
+    	log.info(jakeObject.getName());
+    	this.jakeObject = jakeObject;
     	this.jakeGuiAccess = jakeGuiAccess;
 		updateData();
     	
     }
     
     public void updateData() {
-		log.info("Updating Log data...");
+		//test if current Jake object is null, if so all log entries will be shown
+    	log.info("Updating Log data...");
+		if (jakeObject!=null)
+			this.logEntries = jakeGuiAccess.getLog(jakeObject);
+		else
 		this.logEntries = jakeGuiAccess.getLog();
 		
 	}
