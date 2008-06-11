@@ -885,26 +885,24 @@ public class JakeGui extends JPanel implements Observer {
 		PatternFilter searchPeopleName = new PatternFilter(searchTextField.getText(), 0, peoplePanel
 				.getNameColPos());	
 
-		if (nameSearch)
-			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileName }));
-
-		if (tagsSearch)
-			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileTags }));
-
-		if (bothSearch)
-			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileNameAnTags }));
-
-		if (nameSearch)
-			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteName }));
-
-		if (tagsSearch)
-			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteTags }));
-
-		if (bothSearch)
-			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteNameAnTags }));
 		
-		if (nameSearch || bothSearch)
+		if (nameSearch) {
+			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileName }));
+			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteName }));
 			peoplePanel.setFilters(new FilterPipeline(new Filter[] { searchPeopleName }));
+		}
+		
+		if (tagsSearch) {
+			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileTags }));
+			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteTags }));
+			peoplePanel.setFilters(new FilterPipeline(new Filter[] {  }));
+		}
+		
+		if (bothSearch) {
+			filesPanel.setFilters(new FilterPipeline(new Filter[] { searchFileNameAnTags }));
+			notesPanel.setFilters(new FilterPipeline(new Filter[] { searchNoteNameAnTags }));
+			peoplePanel.setFilters(new FilterPipeline(new Filter[] { searchPeopleName }));
+		}	
 	}
 
 	private SearchMode getSearchMode() {
@@ -916,7 +914,6 @@ public class JakeGui extends JPanel implements Observer {
 	private JPanel mainPanel;
 	private JTabbedPane mainTabbedPane;
 	private PeoplePanel peoplePanel;
-	private JXTable peopleTable;
 	private FilesPanel filesPanel;
 	private NotesPanel notesPanel;
 	private JToolBar mainToolBar;
