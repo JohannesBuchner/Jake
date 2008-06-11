@@ -133,6 +133,7 @@ public class NotesPanel extends JPanel {
 		notesTable.setColumnControlVisible(true);
 		notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		notesTable.setModel(notesTableModel);
+		notesTable.setRolloverEnabled(false);
 		notesTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -149,7 +150,7 @@ public class NotesPanel extends JPanel {
 		notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		notesScrollPane.setViewportView(notesTable);
 
-		this.add(notesScrollPane, BorderLayout.NORTH);
+		this.add(notesScrollPane, BorderLayout.CENTER);
 	}
 
 	private void initPopupMenu() {
