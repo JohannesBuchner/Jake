@@ -176,16 +176,14 @@ public class JakeGuiAccessTest extends TestCase {
 		
 		JakeObject jakeObject = new JakeObject(jakeObjectName);
 		JakeObject jakeObject2 = new JakeObject(jakeObjectName2);
-		//jga.pushJakeObject(jakeObject, "commit");
-//		try{jga.pushJakeObject(jakeObject, "commit");}
-//		catch (SyncException e)	{System.out.print("lalallalala");}
-//		catch (NotLoggedInException e)	{System.out.print("bbbbbb");}
-		 
 		
-		//jga.pushJakeObject(jakeObject2, "commit");
 		
-		//LogEntry logEntry = new LogEntry(LogAction.TAG_ADD, date, jakeObjectName, hash, userId, comment);
-		//LogEntry logEntry2 = new LogEntry(LogAction.TAG_ADD, date, jakeObjectName2, hash, userId, comment);
+		LogEntry logEntry = new LogEntry(LogAction.TAG_ADD, date, jakeObjectName, hash, userId, comment);
+		LogEntry logEntry2 = new LogEntry(LogAction.TAG_ADD, date, jakeObjectName2, hash, userId, comment);
+
+		
+		
+		
 		
 		
 		
