@@ -43,8 +43,11 @@ public class JdbcStupidDatabaseDaoTest extends DBTest {
 		dao.getConfigurationValue("foo");
 	}
 	
-
 	public static HsqlJakeDatabase setUpDatabase() throws Exception {
+		return setUpDatabase(null);
+	}
+
+	public static HsqlJakeDatabase setUpDatabase(String dbfile) throws Exception {
 		HsqlJakeDatabase db = new HsqlJakeDatabase();
 		JdbcConfigurationDao cd = new JdbcConfigurationDao();
 		JdbcJakeObjectDao jod = new JdbcJakeObjectDao();
@@ -54,7 +57,10 @@ public class JdbcStupidDatabaseDaoTest extends DBTest {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
 		ds.setDriverClassName("org.hsqldb.jdbcDriver");
 		Random r = new Random();
-		ds.setUrl("jdbc:hsqldb:mem:newAndEmptyDatabase" + r.nextInt()+";ifexists=false");
+		if(dbfile == null)
+			ds.setUrl("jdbc:hsqldb:mem:newAndEmptyDatabase" + r.nextInt()+";ifexists=false");
+		else
+			ds.setUrl("jdbc:hsqldb:file:" + dbfile + ";ifexists=false");
 		ds.setUsername("sa");
 		
 		cd.setDataSource(ds);
