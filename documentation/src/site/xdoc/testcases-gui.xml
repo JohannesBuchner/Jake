@@ -239,9 +239,9 @@
 							<td>Close Application</td>
 							<td>The Project is closed, all aquired resources are freed.</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-11, 13:24, sw</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -250,9 +250,9 @@
 							<td>Switch views</td>
 							<td>The User clicks on a tab to switch the current view</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-11, 13:25, sw</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -264,9 +264,9 @@
 								are moved accordingly
 							</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-11, 13:25, sw</td>
 							<td>Medium</td>
 							<td>NC</td>
 						</tr>
@@ -279,9 +279,8 @@
 				<br/>Preconditions:
 				<ul>
 					<li>The Program is started</li>
-					<li>A project is selected</li>
-					<li>The user is authenticated</li>
-					<li>The ViewLog View is open</li>
+					<li>A project is loaded</li>
+
 				</ul>
 				<table>
 					<thead>
@@ -304,28 +303,14 @@
 							<td>The LogEntries are shown to the user</td>
 							<td></td>
 							<td></td>
-							<td></td>
+							<td>exception, log not displayed</td>
 							<td></td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
 						<tr>
-							<td>16</td>
-							<td>No LogEntries available</td>
-							<td>Error Message &quot;Something is wrong with your database because no log entries exist.
-								There should exist at least one log entry stating the project exists&quot; is shown.
-							</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Very high</td>
-							<td>FC</td>
-						</tr>
-
-						<tr>
 							<td>17</td>
-							<td>Show LogEntries of selected object from other views</td>
+							<td>Show LogEntries of selected object</td>
 							<td>Only the corresponding LogEntries for the selected object(s) are shown</td>
 							<td>the selected JakeObject</td>
 							<td></td>
@@ -334,23 +319,10 @@
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
-						<tr>
-							<td>18</td>
-							<td>Show LogEntries of select object, but there aren't any</td>
-							<td>Error Message &quot;There's something wrong with your database, because no log entries
-								of this object are available!&quot; </td>
-							<td>the selected JakeObject</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Very high</td>
-							<td>FC</td>
-						</tr>
 					</tbody>
 				</table>
 
 			</subsection>
-
 
 			<subsection name="GUI:ReadMsgGUI">
 				The User can read a message sent to him.
@@ -377,43 +349,16 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>19</td>
-							<td>The User uses his mouse to resize the windows</td>
-							<td>The Window is resized, the corresponding elements are moved,
-								the textarea gets enlarged.
-							</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>High</td>
-							<td>NC</td>
-						</tr>
-						<tr>
-							<td>20</td>
-							<td>The User indicates to close the window</td>
-							<td>The Window is closed, the MessageObject is deleted.</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Very High</td>
-							<td>NC</td>
-						</tr>
-
-						<tr>
 							<td>21</td>
-							<td>The User indicates to make a reply for this message</td>
-							<td>The window is closed, a compose window is opened</td>
+							<td>Read incomming message. The user indicates to read an incomming message.</td>
+							<td>The message is displayed</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-11, 13:38, sw</td>
 							<td>Medium</td>
 							<td>NC</td>
 						</tr>
-
-
 					</tbody>
 				</table>
 			</subsection>
@@ -424,6 +369,7 @@
 					<li>The Program is started</li>
 					<li>A project is opened</li>
 					<li>The user is authenticated</li>
+					<li>At least one user exists in the project</li>
 				</ul>
 				<table>
 					<thead>
@@ -442,65 +388,26 @@
 					<tbody>
 						<tr>
 							<td>22</td>
-							<td>No Recipient/Message given</td>
-							<td>Error Message: &quot;You must specify an recipient / a message content beforce
-								you can send this message&quot;</td>
+							<td>The recipient does not exist on the network</td>
+							<td>After trying to send the message, an error message is prompted to the user. No message is sent.</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-11, 13:44, sw</td>
 							<td>Very High</td>
 							<td>FC</td>
 						</tr>
-						<tr>
-							<td>23</td>
-							<td>No Falid Recipient</td>
-							<td>Error Message: &quot;There is no such projectmember. Please check
-								your typing&quot;</td>
-							<td>Recipient: nosuch@projectmeber.com</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Very High</td>
-							<td>FC</td>
-						</tr>
-
 						<tr>
 							<td>24</td>
 							<td>All Inputs correct</td>
 							<td>Message is sent through ICS, no exception thrown</td>
 							<td></td>
-							<td></td>
+							<td>ok, an automatically generated return message is sent to the user.</td>
 							<td></td>
 							<td></td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
-
-						<tr>
-							<td>25</td>
-							<td>Message Content to long</td>
-							<td>Error Message: &quot;Messages are only allowed to have a
-								maximum length of XX chars.&quot;</td>
-							<td>A too long message content</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Medium</td>
-							<td>FC</td>
-						</tr>
-						<tr>
-							<td>26</td>
-							<td>Message contains nonprintable characters beside \r\n</td>
-							<td>The nonprintable characters are removed from the message</td>
-							<td>Messagecontent: nonprintable characters, e.g. \0</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Medium</td>
-							<td>SC</td>
-						</tr>
-
 
 					</tbody>
 				</table>
@@ -705,11 +612,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-11, 14:11, sw</td>
 							<!-- passed? -->
 							<td>Medium</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -727,7 +634,7 @@
 							<!-- expected result -->
 							<td>36</td>
 							<!-- inputs -->
-							<td></td>
+							<td>clicking in the empty space gives also gives the option "remove member" allthough no member is selected</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
@@ -747,7 +654,7 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>no action</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
@@ -770,11 +677,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-11, 14:15, sw</td>
 							<!-- passed? -->
 							<td>High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -906,20 +813,6 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>42</td>
-							<!-- test case # //-->
-							<td>The User uses his mouse to resize the windows</td>
-							<td>The Window is resized, the corresponding elements are moved,
-								the filelist gets enlarged.
-							</td>
-							<td></td>
-							<td>OK</td>
-							<td></td>
-							<td>2008-06-10, 20:59, sw</td>
-							<td>High</td>
-							<td>NC</td>
-						</tr>
-						<tr>
 							<td>43</td>
 							<!-- test case # //-->
 							<td>Sort by Name, Folder, Time</td>
@@ -1035,7 +928,7 @@
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td>2008-06-09 13>29</td>
+							<td>2008-06-09 13:29</td>
 							<!-- passed? -->
 							<td>High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -1437,6 +1330,12 @@
 					<td>2008-06-06</td>
 					<td>sw</td>
 					<td>added testd for the preference pane</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>2008-06-11</td>
+					<td>sw</td>
+					<td>did a short test run of a few tests, altered/deleted some tests</td>
 				</tr>
 			</table>
 		</section>
