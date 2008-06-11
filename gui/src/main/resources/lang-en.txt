@@ -35,12 +35,51 @@ MenuNetwork=Network
 MenuItemSignIn=Sign in...
 MenuItemSignOut=Sign out
 
+MenuFile=File
+MenuItemPreferences=Preferences...
+MenuItemQuit=Quit Application
+
+MenuView=View
+MenuItemPeople=People
+MenuItemFiles=Files
+MenuItemNotes=Notes
+MenuItemLog=Project log
+
+MenuProject=Project
+MenuItemOpenProjectFolder=Open project folder
+MenuItemNewNote=New note...
+MenuItemRefreshDatapoolView=Refresh datapool view
+MenuItemAddFile= Add file...
+MenuItemAddFolder=Add folder...
+MenuItemAddProjectMember=Add project member...
+
+MenuHelp=Help
+MenuItemAbout=About
+
+SearchMenuItemName=Name
+SearchMenuItemTags=Tags
+SearchMenuItemBoth=Both
+
 FilesPanelDialogConfirmDeleteDialogTitle=Delete file?
 FilesPanelDialogConfirmDeleteDialogText=Are you sure you want to delete the following file? This action may not be undone. <br> %0%
 FilesPanelDialogFileDeletedTitle=File deleted
 FilesPanleDialogFileDeletedText=%0% has been deleted successfully!
 FilesPanelDialogFileNotDeletedTitle=File not deleted
 FilesPanelDialogFileNotDeletedText=The following file could not have been deleted from the project. Please make sure you have the necessary rights to perform this operation. <br> %0%
+FilesPanelDialogCouldNotLaunchFiledTitle=Couldn't open file
+FilesPanelDialogCouldNotLaunchFileInvalidText=The file you tried to open seems to be no valid file!
+FilesPanelDialogCouldNotLaunchFileOpenText=Please check your operating systems settings for default file actions
+FilesPanelDialogCouldNotLaunchFileNoProjectText=Could not be opened because no project is loaded
+FilesPanelDialogCouldNotLaunchFileIOText=The file could not be opened due to an IOError
+FilesPanelDialogPropagationMessageTitle=Propagation scheduled
+FilesPanelDialogPropagationMessageText=The propagation of the file %0% was scheduled. It could take some time to propagate it to other project members, depending on the availability of other project members.
+FilesPanelDialogPullMessageTitle=Pulling scheduled
+FilesPanelDialogPullMessageText=The pulling of the file %0% was scheduled. It could take some time to get it from other project members,due to the availability of the other project members.
+FilesPanleDialogImportFailedTitle=Import failed
+FilesPanleDialogImportFailedText=The file %0% could not be imported into the project because it is either already a file in the projects repository or has not a valid filename
+FilesPanleDialogImportSucceededTitle=Import succeeded
+FilesPanleDialogImportSucceededText=The file %0% was succcessfully imported into this JakeProject.
+
 
 FilesDialogContextMenuItemOpen=Open
 FilesDialogContextMenuItemSetLock=Set lock...
@@ -82,3 +121,20 @@ MainToolbarToolTipPropagateFile=Propagate locally changed files
 MainToolbarToolTipPull=Pull files from project member
 MainToolbarToolTipSearch=Search for files
 MainToolbarToolTipSearchField=Enter search term here
+
+PeoplePaneContextMenuItemShowInfoComments=Show info/comments...
+PeoplePaneContextMenuItemSetNickname=Set nickname...
+PeoplePaneContextMenuItemSetUserID=Set user id
+PeoplePaneContextMenuItemRemoveMember=Remove project member
+
+AddProjectMemberDialogTitle=Enter a user id
+AddProjectMemberDialogSaveButton=Save
+
+HumanReadeableFileStatusInvalid=Invalid: 
+HumanReadeableFileStatusRemote=Remote file -> pull
+HumanReadeableFileStatusNotInProject=local file, not in project
+HumanReadeableFileStatusinSync=File in sync
+HumanReadeableFileStatusRemotelyChanged=File remotely changed
+HumanReadeableFileStatusLocallyChanged=File locally changed
+HumanReadeableFileStatusConflict=File in conflict
+HumanReadeableFileStatusMissing=Local file missing
