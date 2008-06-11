@@ -174,14 +174,9 @@ public class PeopleTableModel extends AbstractTableModel {
 			log.debug("handling a UserId-change event");
 			if (foundProjectMember != null) {
 				log.debug((String) columnValue);
-				log.info("***********");
-				log.info(foundProjectMember.getUserId());
-				log.info((String) columnValue);
-				log.info("***********");
 				String userId = (String) columnValue;
 				jakeGuiAccess.editProjectMemberUserId(foundProjectMember , userId);
 				updateData();
-				log.info("user id updated");
 			}
 		}
 		// possible other columns go here
