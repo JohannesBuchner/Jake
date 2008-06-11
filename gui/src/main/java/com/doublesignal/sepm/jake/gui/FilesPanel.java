@@ -100,8 +100,9 @@ public class FilesPanel extends JPanel {
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
         filesTable.setRolloverEnabled(false);
-    // sorry, we don't need a mouseadapter
-      filesTable.addMouseListener(new MouseAdapter() {
+      
+        // sorry, we don't need a mouse adapter
+        filesTable.addMouseListener(new MouseAdapter() {
     		public void mouseClicked( MouseEvent e ) {
     			log.debug("click reveived");
                 if (e.getClickCount() == 2

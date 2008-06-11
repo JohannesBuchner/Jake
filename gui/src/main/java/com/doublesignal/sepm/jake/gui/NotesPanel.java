@@ -58,6 +58,10 @@ public class NotesPanel extends JPanel {
     }
 
 	private void newNoteMenuItemActionPerformed(ActionEvent e) {
+		createNewNote();
+	}
+
+	public void createNewNote() {
 		log.info("create new Note.");
 		NoteEditorDialog noteEditor = new NoteEditorDialog(gui.getMainFrame());
 		noteEditor.setVisible(true);

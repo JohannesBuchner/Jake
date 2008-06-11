@@ -94,9 +94,6 @@ public class JakeGui extends JPanel implements Observer {
 		setStatusMsg("started");
 		log.debug("JakeGui loaded.");
 		peopleViewMenuItemActionPerformed(null);
-		
-
-
 	}
 
 	public static void showSelectProjectDialog(String foldersuggestion) {
@@ -297,12 +294,12 @@ public class JakeGui extends JPanel implements Observer {
 		JOptionPane.showMessageDialog(mainFrame, translator.get("AboutDialogText"));
 	}
 
+	
 	/**
 	 * ** Tool Bar ****
 	 */
-
 	private void newNoteButtonActionPerformed(ActionEvent e) {
-		new NoteEditorDialog(mainFrame).setVisible(true);
+		notesPanel.createNewNote();
 	}
 
 	/**
