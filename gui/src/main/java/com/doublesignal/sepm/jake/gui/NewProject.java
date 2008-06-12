@@ -96,19 +96,19 @@ public class NewProject extends JDialog {
 			projectNameTextField.setEditable(false);
 			useridTextField.setText(jga.getLoginUserid());
 			useridTextField.setEditable(false);
-			okButton.setText(translator.get("Open Project"));
+			okButton.setText(translator.get("NewProjectDialogOpenProject"));
 			okButton.setEnabled(true);
 			return true;
 		} catch (NonExistantDatabaseException e) {
-			okButton.setText(translator.get("Create Project"));
+			okButton.setText(translator.get("NewProjectDialogCreateProject"));
 			projectNameTextField.setEditable(true);
 			projectNameTextField.setText(new File(rootPath).getName());
 			okButton.setEnabled(true);
 		} catch (InvalidDatabaseException e) {
 			folderTextField.setBackground(Color.RED);
-			UserDialogHelper.translatedError(this, "Invalid Database");
+			UserDialogHelper.translatedError(this, "NewProjectDialogInvalidDatabase");
 		} catch (InvalidRootPathException e) {
-			UserDialogHelper.translatedError(this, "Invalid root path");
+			UserDialogHelper.translatedError(this, "NewProjectDialogInvalidRootPath");
 			folderTextField.setBackground(Color.RED);
 		}
 		return false;
@@ -116,11 +116,11 @@ public class NewProject extends JDialog {
 
 	private void okButtonActionPerformed(ActionEvent event) {
 		if (projectNameTextField.getText().length() == 0) {
-			UserDialogHelper.translatedError(this, "Project name too short");
+			UserDialogHelper.translatedError(this, "NewProjectDialogProjectNameTooShort");
 			return;
 		}
 		if (!JakeGuiAccess.isOfCorrectUseridFormat(useridTextField.getText())){
-			UserDialogHelper.translatedError(this, "Userid is not of correct format");
+			UserDialogHelper.translatedError(this, "NewProjectDialogInvalidUserIdFormat");
 			return;
 		}
 		
@@ -141,19 +141,19 @@ public class NewProject extends JDialog {
 			} catch (ExistingProjectException e) {
 				log.error("Project already exists");
 				UserDialogHelper.error(this, translator
-						.get("Project already exists"));
+						.get("NewProjectDialogProjectAlreadyExists"));
 			} catch (InvalidDatabaseException e) {
 				log.error("Invalid Database");
 				UserDialogHelper
-						.error(this, translator.get("Invalid Database"));
+						.error(this, translator.get("NewProjectDialogInvalidDatabase"));
 			} catch (NotADirectoryException e) {
 				log.error("Invalid Project Directory");
 				UserDialogHelper.error(this, translator
-						.get("Invalid Project Directory"));
+						.get("NewProjectDialogInvalidProjectDirectory"));
 			} catch (InvalidRootPathException e) {
 				log.error("Invalid Project Directory");
 				UserDialogHelper.error(this, translator
-						.get("Invalid Project Directory"));
+						.get("NewProjectDialogInvalidProjectDirectory"));
 			}
 		}
 	}
@@ -241,7 +241,7 @@ public class NewProject extends JDialog {
 						TableLayoutConstraints.FULL));
 
 				// ---- folderLabel ----
-				folderLabel.setText(translator.get("Folder"));
+				folderLabel.setText(translator.get("NewProjectDialogFolderLabel"));
 				folderLabel.setIcon(UIManager
 						.getIcon("FileChooser.newFolderIcon"));
 				contentPanel.add(folderLabel, new TableLayoutConstraints(0, 2,
@@ -253,7 +253,7 @@ public class NewProject extends JDialog {
 						TableLayoutConstraints.FULL));
 
 				// ---- folderSelectButton ----
-				folderSelectButton.setText("...");
+				folderSelectButton.setText(translator.get("NewProjectDialogFolderSelectButton"));
 				folderSelectButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
 						folderSelectActionPerformed(event);

@@ -73,6 +73,13 @@ public class PreferencesDialog extends JDialog {
 		}
 	}
 	private void okButtonActionPerformed(ActionEvent e) {
+		if (!JakeGuiAccess.isOfCorrectUseridFormat(userTextfield.getText())) {
+			UserDialogHelper.translatedError(this, "PreferencesInvalidUserIdError");
+			userTextfield.setBackground(Color.RED);
+			return;
+		} else {
+			userTextfield.setBackground(Color.WHITE);
+		}
 		try {
 			int logsyncInterval = Integer.parseInt(logSyncTextField.getText());
 			if (logsyncInterval < 0)

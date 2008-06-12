@@ -1,17 +1,41 @@
 package com.doublesignal.sepm.jake.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
-
-import javax.swing.*;
-import javax.swing.event.CaretListener;
-import javax.swing.event.CaretEvent;
-import java.awt.event.*;
-import java.awt.*;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.io.IOException;
-import java.io.File;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
@@ -62,7 +86,7 @@ public class ImportFileDialog extends JDialog {
     
     public ImportFileDialog(JFrame owner) {
         super(owner);
-        $$$setupUI$$$();
+        initializeGui();
         createUIComponents();
         addListeners();
 
@@ -143,29 +167,23 @@ public class ImportFileDialog extends JDialog {
     }
 
     public ImportFileDialog() {
-        $$$setupUI$$$();
+        initializeGui();
         createUIComponents();
         addListeners();
     }
 
     public ImportFileDialog(Frame parent) {
-        $$$setupUI$$$();
+        initializeGui();
         createUIComponents();
         addListeners();
     }
 
     private void importButtonActionPerformed(ActionEvent event) {
         if (jakeGuiAccess.importExternalFileIntoProject(fileTextField.getText(), destinationFolderTextField.getText())) {
-            UserDialogHelper.inform(this, "File successfully imported",
-                    "Your file was successfully imported into your project!"
-            );
+            UserDialogHelper.translatedInform(this, "ImportFileDialogSuccessMessageTitle", "ImportFileDialogSuccessMessageText");
             onCancel();
         } else {
-            UserDialogHelper.error(this, "File not imported!",
-                    "An Error occured during importing of the file into your project!\n" +
-                            "Please check your permissions on the file and the project folder and \n" +
-                            "the there is enough available disk space to copy it into the project folder!"
-            );
+            UserDialogHelper.translatedError(this, "ImportFileDialogNotImportedMessageTitle", "ImportFileDialogNotImportedMessageText");
         }
     }
 
@@ -188,14 +206,13 @@ public class ImportFileDialog extends JDialog {
                     } else {
                         log.debug("a: " + file.getAbsolutePath());
                         log.debug("b: " + projectRootPath);
-                        UserDialogHelper.warning(this, "No valid directory",
-                                "Sorry, you can only select a folder within the current project!");
+                        UserDialogHelper.translatedWarning(this, "ImportFileDialogInvalidDirectoryMessageTitle", "ImportFileDialogInvalidDirectoryMessageText");
                     }
                 }
             }
         };
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returncode = fileChooser.showDialog(this, "Copy file to this directory");
+        int returncode = fileChooser.showDialog(this, translator.get("ImportFileDialogDestinationFileChooserButton"));
         if (returncode == JFileChooser.APPROVE_OPTION) {
             String rootPath = fileChooser.getSelectedFile().getAbsolutePath();
             destinationFolderTextField.setText(rootPath);
@@ -226,20 +243,17 @@ public class ImportFileDialog extends JDialog {
         }
 
         if (!targetDirectoryString.isEmpty()) {
-            File targetDirectoryFile = new File(targetDirectoryString);
-            if (targetDirectoryFile.exists() && targetDirectoryFile.isDirectory()
-                    &&
-                    (
-                            targetDirectoryFile.getAbsolutePath().startsWith(projectRootPath) ||
-                                    targetDirectoryFile.getAbsolutePath().equals(projectRootPath)
-                    )
-                    )
-                folderOk = true;
+			File targetDirectoryFile = new File(targetDirectoryString);
+			if (targetDirectoryFile.exists()
+					&& targetDirectoryFile.isDirectory()
+					&& (targetDirectoryFile.getAbsolutePath().startsWith(
+							projectRootPath) || targetDirectoryFile
+							.getAbsolutePath().equals(projectRootPath)))
+				folderOk = true;
 
-            if (!folderOk)
+			if (!folderOk)
                 destinationFolderTextField.setBackground(Color.red);
         }
-
         importButton.setEnabled(fileOk && folderOk);
     }
 
@@ -251,17 +265,14 @@ public class ImportFileDialog extends JDialog {
             public void setCurrentDirectory(File file) {
 
                 if (file != null && file.getAbsolutePath().startsWith(projectRootPath)) {
-                    UserDialogHelper.warning(this, "File must be outside the project folder",
-                            "Sorry, the file you want to import must be outside of the project folder.\n" +
-                                    "If the file is already in the project folder, use the popup menu in\n" +
-                                    "the filelist to import it into the project!");
+                    UserDialogHelper.translatedWarning(this, "ImportFileDialogFileNotOutsideTitle", "ImportFileDialogFileNotOutsideText");
                 } else {
                     super.setCurrentDirectory(file);
                 }
             }
         };
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int returncode = fileChooser.showDialog(this, "Import this file");
+        int returncode = fileChooser.showDialog(this, translator.get("ImportFileDialogSourceFileChoosrButton"));
         if (returncode == JFileChooser.APPROVE_OPTION) {
             String rootPath = fileChooser.getSelectedFile().getAbsolutePath();
             fileTextField.setText(rootPath);
@@ -269,14 +280,7 @@ public class ImportFileDialog extends JDialog {
         }
     }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
+      private void initializeGui() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.setMaximumSize(new Dimension(500, 250));
@@ -295,7 +299,7 @@ public class ImportFileDialog extends JDialog {
         importButton.setMaximumSize(new Dimension(90, 35));
         importButton.setMinimumSize(new Dimension(90, 35));
         importButton.setPreferredSize(new Dimension(90, 35));
-        importButton.setText("import");
+        importButton.setText(translator.get("ImportFileDialogImportButton"));
         importButton.setMnemonic('I');
         importButton.setDisplayedMnemonicIndex(0);
         GridBagConstraints gbc;
@@ -320,7 +324,7 @@ public class ImportFileDialog extends JDialog {
         cancelButton.setMaximumSize(new Dimension(90, 35));
         cancelButton.setMinimumSize(new Dimension(90, 35));
         cancelButton.setPreferredSize(new Dimension(90, 35));
-        cancelButton.setText("Cancel");
+        cancelButton.setText(translator.get("ButtonCancel"));
         cancelButton.setMnemonic('C');
         cancelButton.setDisplayedMnemonicIndex(0);
         gbc = new GridBagConstraints();
@@ -337,7 +341,7 @@ public class ImportFileDialog extends JDialog {
         jakeIconLabel.setFont(new Font(jakeIconLabel.getFont().getName(), Font.BOLD, 20));
         jakeIconLabel.setHorizontalAlignment(2);
         jakeIconLabel.setHorizontalTextPosition(11);
-        jakeIconLabel.setText("Import a file");
+        jakeIconLabel.setText(translator.get("ImportFileDialogJakeIconLabel"));
         topPanel.add(jakeIconLabel, BorderLayout.WEST);
         middlePanel = new JPanel();
         middlePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -353,7 +357,7 @@ public class ImportFileDialog extends JDialog {
         middlePanel.add(importFilePanel);
         fileLabel = new JLabel();
         fileLabel.setPreferredSize(new Dimension(150, 17));
-        fileLabel.setText("File to import");
+        fileLabel.setText(translator.get("ImportFileDialogFileLabel"));
         fileLabel.setDisplayedMnemonic('F');
         fileLabel.setDisplayedMnemonicIndex(0);
         importFilePanel.add(fileLabel, BorderLayout.WEST);
@@ -363,7 +367,7 @@ public class ImportFileDialog extends JDialog {
         importFilePanel.add(fileTextField, BorderLayout.CENTER);
         browseFileButton = new JButton();
         browseFileButton.setPreferredSize(new Dimension(100, 27));
-        browseFileButton.setText("Browse");
+        browseFileButton.setText(translator.get("ImportFileDialogBrowserFileButton"));
         browseFileButton.setMnemonic('B');
         browseFileButton.setDisplayedMnemonicIndex(0);
         importFilePanel.add(browseFileButton, BorderLayout.EAST);
@@ -375,7 +379,7 @@ public class ImportFileDialog extends JDialog {
         middlePanel.add(destinationFolderPanel);
         destinationFolderLabel = new JLabel();
         destinationFolderLabel.setPreferredSize(new Dimension(150, 17));
-        destinationFolderLabel.setText("Destination folder");
+        destinationFolderLabel.setText(translator.get("ImportFileDialogDestinationFolderLabel"));
         destinationFolderLabel.setDisplayedMnemonic('D');
         destinationFolderLabel.setDisplayedMnemonicIndex(0);
         destinationFolderPanel.add(destinationFolderLabel, BorderLayout.WEST);
@@ -386,7 +390,7 @@ public class ImportFileDialog extends JDialog {
         destinationFolderPanel.add(destinationFolderTextField, BorderLayout.CENTER);
         destinationFolderButton = new JButton();
         destinationFolderButton.setPreferredSize(new Dimension(100, 27));
-        destinationFolderButton.setText("Select");
+        destinationFolderButton.setText(translator.get("ImportFileDialogDestinationFolderButton"));
         destinationFolderButton.setMnemonic('S');
         destinationFolderButton.setDisplayedMnemonicIndex(0);
         destinationFolderPanel.add(destinationFolderButton, BorderLayout.EAST);
@@ -394,10 +398,7 @@ public class ImportFileDialog extends JDialog {
         destinationFolderLabel.setLabelFor(destinationFolderTextField);
     }
 
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
+    public JComponent getRootComponent() {
         return mainPanel;
     }
 }

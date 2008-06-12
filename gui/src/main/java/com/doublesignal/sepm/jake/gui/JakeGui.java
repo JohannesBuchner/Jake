@@ -91,7 +91,7 @@ public class JakeGui extends JPanel implements Observer {
 		initSearchPopupMenu();
 		registerUpdateObservers();
 		updateAll();
-		setStatusMsg("started");
+		setStatusMsg(translator.get("JakeGuiStatusMessag"));
 		log.debug("JakeGui loaded.");
 		peopleViewMenuItemActionPerformed(null);
 	}
@@ -233,19 +233,20 @@ public class JakeGui extends JPanel implements Observer {
 					return;
 				} catch (LoginDataNotValidException e1) {
 					log.debug("LoginDataNotValid: LoginDataNotValidException");
-					UserDialogHelper.error(mainFrame, translator.get("LoginDialogInvalidLoginTitle"), translator.get("LoginDialogInvalidLoginText"));
+					UserDialogHelper.translatedError(mainFrame, "LoginDialogInvalidLoginTitle", "LoginDialogInvalidLoginText");
 					signInNetwork(username, null, false);
 					return;
 				} catch (LoginUseridNotValidException e1) {
 					log.debug("LoginUseridNotValid: LoginUseridNotValidException");
-					UserDialogHelper.error(mainFrame, translator.get("LoginDialogInvalidLoginTitle"), translator.get("LoginDialogInvalidLoginText"));
+					UserDialogHelper.translatedError(mainFrame, "LoginDialogInvalidLoginTitle", "LoginDialogInvalidLoginText");
 					loginPane.setErrorMessage(translator.get("LoginUseridNotValid"));
 					signInNetwork(username, null, false);
 					return;
 				} catch (NetworkException e1) {
 					log.debug("NetworkException");
-					UserDialogHelper.error(mainFrame, translator.get("Error"), translator.get("NetworkError", e1
-							.getLocalizedMessage()));
+					UserDialogHelper.error(mainFrame, translator.get("Error"),
+							translator.get("NetworkError", e1
+									.getLocalizedMessage()));
 					return;
 				}
 			}
@@ -289,7 +290,6 @@ public class JakeGui extends JPanel implements Observer {
 	/**
 	 * ** Help Menu ****
 	 */
-
 	private void aboutHelpMenuItemActionPerformed(ActionEvent e) {
 		JOptionPane.showMessageDialog(mainFrame, translator.get("AboutDialogText"));
 	}

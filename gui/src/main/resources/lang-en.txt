@@ -14,6 +14,7 @@ PreferencesLabelAutoPull=activate auto pull
 PreferencesLabelAutoLogSync=Auto update interval (sec)
 PreferencesLabelUserName=User name
 PreferencesLabelPassword=Password
+PreferencesInvalidUserIdError=Invalid user id. The user id must be of the from foo@bar.com
 
 ButtonConfirm=OK
 ButtonCancel=Cancel
@@ -30,6 +31,15 @@ NewProjectDialogUserid=Userid:
 NewProjectDialogOpenProject=Open Project
 NewProjectDialogCreateProject=Create Project
 NewProjectDialogCreateOpenProject=Create/Open Project
+NewProjectDialogInvalidDatabase=Invalid database
+NewProjectDialogInvalidRootPath=Invalid root path
+NewProjectDialogProjectNameTooShort=Project name is too short
+NewProjectDialogInvalidUserIdFormat=Userid is not of correct format
+NewProjectDialogProjectAlreadyExists=Project already exists
+NewProjectDialogInvalidProjectDirectory=Invalid project directory
+NewProjectDialogFolderLabel=Folder
+NewProjectDialogFolderSelectButton=...
+
 
 MenuNetwork=Network
 MenuItemSignIn=Sign in...
@@ -152,5 +162,21 @@ HumanReadeableFileStatusRemoteVersionExists=Remote
 HumanReadeableFileStatusNotInProject=Not in Project
 HumanReadeableFileStatusNotPushed=Not announced
 
+ImportFileDialogSuccessMessageTitle=File successfully imported
+ImportFileDialogSuccessMessageText=Your file was successfully imported into your project!
+ImportFileDialogNotImportedMessageTitle=File not imported!
+ImportFileDialogNotImportedMessageText=An Error occurred during importing of the file into your project! Please check your permissions on the file and the project folder and the there is enough available disk space to copy it into the project folder!
+ImportFileDialogInvalidDirectoryMessageTitle=Invalid directory!
+ImportFileDialogInvalidDirectoryMessageText=You may only select a folder from within the current project.
+ImportFileDialogDestinationFileChooserButton=Set destination Folder
+ImportFileDialogSourceFileChoosrButton=Import selected file
+ImportFileDialogFileNotOutsideTitle=File must be outside the project folder
+ImportFileDialogFileNotOutsideText=The file you want to import must be outside the current project folder.
+ImportFileDialogImportButton=Import
+ImportFileDialogJakeIconLabel=Import file
+ImportFileDialogFileLabel=Source file:
+ImportFileDialogBrowserFileButton=Browser...«
+ImportFileDialogDestinationFolderLabel=Destination folder:
+ImportFileDialogDestinationFolderButton=Browse...
 
-
+JakeGuiStatusMessag=Jake's up and running...

@@ -26,7 +26,7 @@ public class UserDialogHelper {
     /**
      * Generally a messagebox and a log4j log entry
      *
-     * @param parent the parent Component of this dialog (usually &quot;this&quot;)
+     * @param parent the parent Component of this dialog (usually <code>this</code>)
      * @param title  the title of the dialog
      * @param text   the text of the dialog
      * @param type   e.g. JOptionPane.WARNING_MESSAGE, JOptionPane.ERROR_MESSAG or
@@ -52,7 +52,7 @@ public class UserDialogHelper {
     /**
      * a yes-no question box
      *
-     * @param parent   the parent component of this dialog, usually &quot;this&quot;
+     * @param parent   the parent component of this dialog, usually <code>this</code>
      * @param title    the title of this dialog
      * @param question the text/question of this dialog to be asked. should be so
      *                 that it can answered with yes/no
@@ -113,7 +113,7 @@ public class UserDialogHelper {
     /**
      * creates an error-dialog box
      *
-     * @param parent       the parent component, usually &quot;this&quot;
+     * @param parent       the parent component, usually <code>this</code>
      * @param errorMessage the message to be shown.
      */
     public static void error(Component parent, String errorMessage) {
@@ -123,8 +123,7 @@ public class UserDialogHelper {
     /**
      * creates an error-dialog box with a sepcific title
      *
-     * @param parent       the parent component, usually &quot;this&quot;
-     * @param title        the title of the dialog box
+     * @param parent       the parent component, usually <code>this</code>
      * @param errorMessage the error message
      */
     public static void error(Component parent, String title, String errorMessage) {
@@ -134,7 +133,7 @@ public class UserDialogHelper {
     /**
      * creates a warning-dialog box
      *
-     * @param parent         the parent component, usually &quot;this&quot;
+     * @param parent         the parent component, usually <code>this</code>
      * @param warningMessage the warning message
      */
     public static void warning(Component parent, String warningMessage) {
@@ -144,7 +143,7 @@ public class UserDialogHelper {
     /**
      * creates a warning-dialog box with a specific title
      *
-     * @param parent         the parent component, usually &quot;this&quot;
+     * @param parent         the parent component, usually <code>this</code>
      * @param title          the title of the dialog box
      * @param warningMessage the warning message
      */
@@ -156,7 +155,7 @@ public class UserDialogHelper {
     /**
      * creates an error-dialog box using the i18n-identifier
      *
-     * @param parent         the parent component, usually &quot;this&quot;
+     * @param parent         the parent component, usually <code>this</code>
      * @param i18nIdentifier the i18nIdentifier to be looked up and shown.
      */
     public static void translatedError(Component parent, String i18nIdentifier) {
@@ -169,21 +168,42 @@ public class UserDialogHelper {
     /**
      * creates an inform-dialog box using the i18n-identifier
      *
-     * @param parent         the parent component, usually &quot;this&quot;
+     * @param parent         the parent component, usually <code>this</code>
      * @param i18nIdentifier the identifier of the message to be shown
      */
     public static void translatedInform(Component parent, String i18nIdentifier) {
         inform(parent, translator.get(i18nIdentifier), "");
     }
+    
+    /**
+     * creates an inform-dialog box using i18n identifier
+     * @param parent	 	the parent component, usually <code>this</code>
+     * @param i18nTitle		the i18n-identifier for the title
+     * @param i18nText		the i18n-identifier for the text
+     */
+    public static void translatedInform(Component parent, String i18nTitle, String i18nText) {
+    	inform(parent, translator.get(i18nTitle), translator.get(i18nText));
+    }
 
     /**
      * creates an error-dialog box using the i18n-identifier
      *
-     * @param parent         the parent component, usually &quot;this&quot;
+     * @param parent         the parent component, usually <code>this</code>
      * @param i18nIdentifier the identifier of the message to be shown
      */
     public static void translatedWarning(Component parent, String i18nIdentifier) {
         warning(parent, translator.get(i18nIdentifier), "");
+    }
+    
+    /**
+     * creates an error-dialog box using the i18n-identifier
+     *
+     * @param parent         the parent component, usually <code>this</code>
+     * @param i18nTitle		 the identifier of the title to be shown
+     * @param i18nText		 the identifier of the text to be shown
+     */
+    public static void translatedWarning(Component parent, String i18nTitle, String i18nText) {
+        warning(parent, translator.get(i18nTitle), translator.get(i18nText));
     }
     
     /**
