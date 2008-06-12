@@ -207,6 +207,14 @@ public class PeoplePanel extends JPanel {
 	private void showInfoPeopleMenuItemActionPerformed(ActionEvent event)
 	    {
 	        log.info("showInfoPeopleMenuItemActionPerformed");
+	        
+	      //  new ViewProjectMemberCommentDialog(owner ,getSelectedMember(), this.jakeGuiAccess ).setVisible(true);
+	        
+	        ViewProjectMemberCommentDialog viewProjectMemberCommentDialog = new ViewProjectMemberCommentDialog(owner ,getSelectedMember(), this.jakeGuiAccess );
+	        viewProjectMemberCommentDialog.setVisible(true);
+	        if(viewProjectMemberCommentDialog.isSaved())
+	        	updatePeopleUi();
+	        	
 	    }
 	
 	private void renamePeopleMenuItemActionPerformed(ActionEvent event)

@@ -15,38 +15,44 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
+
+import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 
 /**
- * @author tester tester
+ * @author Philipp
  */
 @SuppressWarnings("serial")
-public class AddProjectMemberDialog extends JDialog {
-	private static final Logger log = Logger.getLogger(AddProjectMemberDialog.class);
+public class ViewProjectMemberCommentDialog extends JDialog {
+	private static final Logger log = Logger.getLogger(ViewProjectMemberCommentDialog.class);
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	
-	private ProjectMember projectMember = null;
+	private IJakeGuiAccess jga = null;
 	private boolean isSaved = false;
 	
 	/**
-	 * Constructor for a new note
+	 * Constructor for view/change a project member comment
 	 * 
-	 * @param owner
+	 * @param Frame
+	 * @param ProjectMember
+	 * @param IJakeGuiAccess
 	 */
-	public AddProjectMemberDialog(Frame owner) {
+	public ViewProjectMemberCommentDialog(Frame owner , ProjectMember projectMember , IJakeGuiAccess jga) {
 		super(owner, true);
 		setModal(true);
-		initComponents();
-		this.setTitle(translator.get("AddProjectMemberDialogTitle"));
+		this.jga = jga;
+		this.projectMember = projectMember;
+		initComponents();	
+		this.setTitle(translator.get("ViewProjectMemberCommentDialogTitle")+projectMember.getUserId());
 	}
 
 	public boolean isSaved() {
@@ -59,8 +65,10 @@ public class AddProjectMemberDialog extends JDialog {
 	 * @return note text content.
 	 */
 	public String getContent() {
-		return AddProjectMemberArea.getText();
+		return ProjectMemberCommentArea.getText();
 	}
+	
+	
 
 	/**
 	 * Get project member
@@ -71,10 +79,9 @@ public class AddProjectMemberDialog extends JDialog {
 		return projectMember;
 	}
 
-	private void okButtonActionPerformed(ActionEvent e) {
+	private void saveButtonActionPerformed(ActionEvent e) {
 		isSaved = true;
-		projectMember = new ProjectMember(getContent());
-		
+		jga.editProjectMemberNote(getProjectMember()  , getContent());
 		this.setVisible(false);
 
 	}
@@ -88,9 +95,9 @@ public class AddProjectMemberDialog extends JDialog {
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
 		ProjectMemberScrollPane = new JScrollPane();
-		AddProjectMemberArea = new JTextField();
+		ProjectMemberCommentArea = new JTextArea();
 		buttonBar = new JPanel();
-		okButton = new JButton();
+		saveButton = new JButton();
 		cancelButton = new JButton();
 
 		Container contentPane = getContentPane();
@@ -101,9 +108,10 @@ public class AddProjectMemberDialog extends JDialog {
 
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 
-		AddProjectMemberArea.setText("");
-		//AddProjectMemberArea.setLineWrap(true);
-		ProjectMemberScrollPane.setViewportView(AddProjectMemberArea);
+		log.info(projectMember.getUserId());
+		ProjectMemberCommentArea.setText(projectMember.getNotes());
+		
+		ProjectMemberScrollPane.setViewportView(ProjectMemberCommentArea);
 		contentPanel.add(ProjectMemberScrollPane);
 		dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -127,18 +135,18 @@ public class AddProjectMemberDialog extends JDialog {
 		dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
 		// ---- okButton ----
-		okButton.setText(translator.get("AddProjectMemberDialogSaveButton"));
-		okButton.addActionListener(new ActionListener() {
+		saveButton.setText(translator.get("ViewProjectMemberCommentDialogButtonSave"));
+		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				okButtonActionPerformed(e);
+				saveButtonActionPerformed(e);
 			}
 		});
-		buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+		buttonBar.add(saveButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
 						0, 0, 0, 0), 0, 0));
 		
 		contentPane.add(dialogPane, BorderLayout.CENTER);
-		setMinimumSize(new Dimension(200, 110));
+		setMinimumSize(new Dimension(450, 250));
 		pack();
 		setLocationRelativeTo(getOwner());
 	}
@@ -146,8 +154,9 @@ public class AddProjectMemberDialog extends JDialog {
 	private JPanel dialogPane;
 	private JPanel contentPanel;
 	private JScrollPane ProjectMemberScrollPane;
-	private JTextField AddProjectMemberArea;
+	private JTextArea ProjectMemberCommentArea;
 	private JPanel buttonBar;
-	private JButton okButton;
+	private JButton saveButton;
 	private JButton cancelButton;
+	private ProjectMember projectMember;
 }

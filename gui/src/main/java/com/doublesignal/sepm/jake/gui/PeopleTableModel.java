@@ -33,11 +33,11 @@ public class PeopleTableModel extends AbstractTableModel {
 		updateData();
 	}
 
-	String[] colNames = new String[] { "Nickname", "UserID", "Status", "Comment" };
-	boolean[] columnEditable = new boolean[] { true, true, false, true };
+	String[] colNames = new String[] { "Nickname", "UserID", "Status" };
+	boolean[] columnEditable = new boolean[] { true, true, false };
 
 	enum PeopleColumns {
-		Nickname, UserID, Status, Comment
+		Nickname, UserID, Status
 	}
 
 	public int getColumnCount() {
@@ -131,8 +131,7 @@ public class PeopleTableModel extends AbstractTableModel {
 				return translator.get("No such userid");
 			}
 		
-		case Comment:
-			return member.getNotes();
+		
 			
 			
 
@@ -144,18 +143,7 @@ public class PeopleTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object columnValue, int rowIndex, int columnIndex) {
-		if (columnIndex == PeopleColumns.Comment.ordinal()) {
-			
-			ProjectMember foundProjectMember = members.get(rowIndex);
-			log.debug("handling a note-change event");
-			if (foundProjectMember != null) {
-				log.debug((String) columnValue);
-				String note = (String) columnValue;
-				jakeGuiAccess.editProjectMemberNote(foundProjectMember , note);
-		        updateData();
-				//foundProjectMember.setNotes(note);
-			}
-		}
+		
 		
 		
 		if (columnIndex == PeopleColumns.Nickname.ordinal()) {

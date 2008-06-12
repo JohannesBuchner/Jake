@@ -153,6 +153,9 @@ PeoplePaneContextMenuItemRemoveMember=Remove project member
 AddProjectMemberDialogTitle=Enter a user id
 AddProjectMemberDialogSaveButton=Save
 
+ViewProjectMemberCommentDialogButtonSave=Save
+ViewProjectMemberCommentDialogTitle=Show local comment of 
+
 HumanReadeableFileStatusConflict=In conflict
 HumanReadeableFileStatusIsNewestVersion=Is Newest version
 HumanReadeableFileStatusNewerVersionAvailable=Newer version available
