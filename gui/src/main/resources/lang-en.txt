@@ -108,7 +108,7 @@ FilesTableModelColumnLastChanged=Last changed
 FilesTableModelColumnUser=User
 FilesTableModelFileNotInProject= <file not in project>
 
-NotesPanelDialogTitle=Notes
+NotesPanelDialogTitle=Notes (%0%)
 NotesPanelDialogCannotBeUndone=This operation cannot be undone.
 NotesPanelDialogReallyDeleteNode=Really delete this node?
 NotesPanelDialogMenuNewNote=New Note...
@@ -121,6 +121,11 @@ NotesTableModelColumnLastChanged=Last Changed
 NotesTableModelColumnUser=User
 NotesTableModelNoteNotInProject=<Note not in Project>
 
+NoteEditorDialogNewNoteTitle=New note
+NoteEditorDialogEditNoteTitle=Edit note
+NoteEditorDialogOkButton=Save
+
+ConflictDialogTitle=Resolve conflict
 ConflictDialogUseLocalFile=Use local File
 ConflictDialogUseRemoteFile=Use remote file
 ConflictDialogOpen=Open
@@ -183,3 +188,27 @@ ImportFileDialogDestinationFolderLabel=Destination folder:
 ImportFileDialogDestinationFolderButton=Browse...
 
 JakeGuiStatusMessag=Jake's up and running...
+
+PeoplePanelTitle=People (%0%/%1%)
+PeoplePanelMenuItemSendMessage=Send message...
+PeoplePanelMenuItemShowInfo=Show info/comment...
+PeoplePanelMenuItemAddProjectMember=Add project member...
+PeoplePanelMenuItemRemoveProjectMember=Remove project member
+
+PeopleTabelModelColumnNickname=Nickname
+PeopleTabelModelColumnUserId=User ID
+PeopleTabelModelColumnStatus=Status
+PeopleTabelModelStautsOnline=Online
+PeopleTabelModelStatusOffline=Offline
+PeopleTabelModelStatusNotLoggedIn=Log in to view status
+PeopleTabelModelStatusNoSuchUserId=Unknown user
+
+ReceiveMessageDialogTitle=Message from %0%
+ReceiveMessageDialogFromLabel=From: 
+ReceiveMessageDialogWhenLabel=When: 
+ReceiveMessageDialog
+ReceiveMessageDialog
+ReceiveMessageDialog
+ReceiveMessageDialog
+ReceiveMessageDialog
+ReceiveMessageDialog

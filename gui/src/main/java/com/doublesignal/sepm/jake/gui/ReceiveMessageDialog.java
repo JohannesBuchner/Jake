@@ -46,31 +46,31 @@ public class ReceiveMessageDialog extends JDialog {
 	}		
 
 	private void initComponents() {
-		dialogPane2 = new JPanel();
-		contentPanel2 = new JPanel();
+		dialogPanel = new JPanel();
+		contentPanel = new JPanel();
 		messageScrollPane = new JScrollPane();
 		messageTextArea = new JTextArea();
-		panel1 = new JPanel();
-		label2 = new JLabel();
-		label1 = new JLabel();
-		label3 = new JLabel();
-		label4 = new JLabel();
+		mainPanel = new JPanel();
+		fromLabel = new JLabel();
+		fromUserLabel = new JLabel();
+		whenLabel = new JLabel();
+		whenDateLabel = new JLabel();
 		buttonBar = new JPanel();
-		cancelButton = new JButton();
+		closeButton = new JButton();
 
 		//======== this ========
-		setTitle("Message from " + message.getSender().getUserId());
+		setTitle(translator.get("ReceiveMessageDialogTitle", message.getSender().getUserId()));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
 		//======== dialogPane2 ========
 		{
-			dialogPane2.setBorder(new EmptyBorder(12, 12, 12, 12));
-			dialogPane2.setLayout(new BorderLayout());
+			dialogPanel.setBorder(new EmptyBorder(12, 12, 12, 12));
+			dialogPanel.setLayout(new BorderLayout());
 
 			//======== contentPanel2 ========
 			{
-				contentPanel2.setLayout(new BorderLayout(0, 3));
+				contentPanel.setLayout(new BorderLayout(0, 3));
 
 				//======== messageScrollPane ========
 				{
@@ -80,34 +80,34 @@ public class ReceiveMessageDialog extends JDialog {
 					messageTextArea.setEditable(false);
 					messageScrollPane.setViewportView(messageTextArea);
 				}
-				contentPanel2.add(messageScrollPane, BorderLayout.CENTER);
+				contentPanel.add(messageScrollPane, BorderLayout.CENTER);
 
 				//======== panel1 ========
 				{
-					panel1.setLayout(new TableLayout(new double[][] {
+					mainPanel.setLayout(new TableLayout(new double[][] {
 						{TableLayout.PREFERRED, TableLayout.FILL, TableLayout.PREFERRED},
 						{TableLayout.PREFERRED, TableLayout.FILL}}));
-					((TableLayout)panel1.getLayout()).setVGap(3);
+					((TableLayout)mainPanel.getLayout()).setVGap(3);
 
-					//---- label2 ----
-					label2.setText("From: ");
-					panel1.add(label2, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- from: ----
+					fromLabel.setText(translator.get("ReceiveMessageDialogFromLabel"));
+					mainPanel.add(fromLabel, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label1 ----
-					label1.setText(message.getSender().getUserId());
-					panel1.add(label1, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- from user ----
+					fromUserLabel.setText(message.getSender().getUserId());
+					mainPanel.add(fromUserLabel, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label3 ----
-					label3.setText("When: ");
-					panel1.add(label3, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- when: ----
+					whenLabel.setText(translator.get("ReceiveMessageDialogWhenLabel"));
+					mainPanel.add(whenLabel, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label4 ----
-					label4.setText(this.message.getTime().toString());
-					panel1.add(label4, new TableLayoutConstraints(1, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- when date ----
+					whenDateLabel.setText(this.message.getTime().toString());
+					mainPanel.add(whenDateLabel, new TableLayoutConstraints(1, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				}
-				contentPanel2.add(panel1, BorderLayout.NORTH);
+				contentPanel.add(mainPanel, BorderLayout.NORTH);
 			}
-			dialogPane2.add(contentPanel2, BorderLayout.CENTER);
+			dialogPanel.add(contentPanel, BorderLayout.CENTER);
 
 			//======== buttonBar ========
 			{
@@ -116,34 +116,34 @@ public class ReceiveMessageDialog extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
-				//---- cancelButton ----
-				cancelButton.setText("Close");
-				cancelButton.addActionListener(new ActionListener() {
+				//---- close Button ----
+				closeButton.setText(translator.get("ButtonClose"));
+				closeButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						cancelButtonActionPerformed(e);
 					}
 				});	
-				buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+				buttonBar.add(closeButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
-			dialogPane2.add(buttonBar, BorderLayout.SOUTH);
+			dialogPanel.add(buttonBar, BorderLayout.SOUTH);
 		}
-		contentPane.add(dialogPane2, BorderLayout.CENTER);
+		contentPane.add(dialogPanel, BorderLayout.CENTER);
 		setMinimumSize(new Dimension(300,250));
 		pack();
 		setLocationRelativeTo(getOwner());
 	}
 
-	private JPanel dialogPane2;
-	private JPanel contentPanel2;
+	private JPanel dialogPanel;
+	private JPanel contentPanel;
 	private JScrollPane messageScrollPane;
 	private JTextArea messageTextArea;
-	private JPanel panel1;
-	private JLabel label2;
-	private JLabel label1;
-	private JLabel label3;
-	private JLabel label4;
+	private JPanel mainPanel;
+	private JLabel fromLabel;
+	private JLabel fromUserLabel;
+	private JLabel whenLabel;
+	private JLabel whenDateLabel;
 	private JPanel buttonBar;
-	private JButton cancelButton;
+	private JButton closeButton;
 }

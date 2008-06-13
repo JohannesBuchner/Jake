@@ -33,7 +33,10 @@ public class PeopleTableModel extends AbstractTableModel {
 		updateData();
 	}
 
-	String[] colNames = new String[] { "Nickname", "UserID", "Status" };
+	String[] colNames = new String[] {
+			translator.get("PeopleTabelModelColumnNickname"),
+			translator.get("PeopleTabelModelColumnUserId"),
+			translator.get("PeopleTabelModelColumnStatus") };
 	boolean[] columnEditable = new boolean[] { true, true, false };
 
 	enum PeopleColumns {
@@ -61,25 +64,20 @@ public class PeopleTableModel extends AbstractTableModel {
 		
 	}
 	
-	public int getOnlineMembersCount()	{
-		
-		int onlineMembers=0;
-		
-		for(ProjectMember p:this.members)
-		{
-			
-			
+	public int getOnlineMembersCount() {
+
+		int onlineMembers = 0;
+
+		for (ProjectMember p : this.members) {
 			try {
-				if(jakeGuiAccess.isLoggedIn(p.getUserId()))
+				if (jakeGuiAccess.isLoggedIn(p.getUserId()))
 					onlineMembers++;
 			} catch (NotLoggedInException e) {
-				
+				// don't care
 			} catch (NoSuchUseridException e) {
-				
+				// don't care
 			}
 		}
-		
-	
 		return onlineMembers;
 	}
 	
@@ -122,18 +120,14 @@ public class PeopleTableModel extends AbstractTableModel {
 		case Status:	
 			try {
 				if(jakeGuiAccess.isLoggedIn(member.getUserId()))
-					return translator.get("Online");
+					return translator.get("PeopleTabelModelStautsOnline");
 				else
-					return translator.get("Offline");
+					return translator.get("PeopleTabelModelStatusOffline");
 			} catch (NotLoggedInException e) {
-				return translator.get("You are offline");
+				return translator.get("PeopleTabelModelStatusNotLoggedIn");
 			} catch (NoSuchUseridException e) {
-				return translator.get("No such userid");
+				return translator.get("PeopleTabelModelStatusNoSuchUserId");
 			}
-		
-		
-			
-			
 
 		default:
 			throw new IllegalArgumentException(
@@ -143,9 +137,7 @@ public class PeopleTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object columnValue, int rowIndex, int columnIndex) {
-		
-		
-		
+
 		if (columnIndex == PeopleColumns.Nickname.ordinal()) {
 			
 			ProjectMember foundProjectMember = members.get(rowIndex);
@@ -153,9 +145,9 @@ public class PeopleTableModel extends AbstractTableModel {
 			if (foundProjectMember != null) {
 				log.debug((String) columnValue);
 				String nickname = (String) columnValue;
-				jakeGuiAccess.editProjectMemberNickName(foundProjectMember , nickname);
+				jakeGuiAccess.editProjectMemberNickName(foundProjectMember,
+						nickname);
 				updateData();
-				
 			}
 		}
 		

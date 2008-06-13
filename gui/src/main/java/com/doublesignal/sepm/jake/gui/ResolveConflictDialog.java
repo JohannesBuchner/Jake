@@ -80,8 +80,7 @@ public class ResolveConflictDialog extends JDialog {
 
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - tester tester
+
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
 		mainPanel = new JPanel();
@@ -108,7 +107,7 @@ public class ResolveConflictDialog extends JDialog {
 		filenameLabel = new JLabel();
 
 		//======== this ========
-		setTitle("Resolve Conflict");
+		setTitle(translator.get("ConflictDialogTitle"));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -285,11 +284,8 @@ public class ResolveConflictDialog extends JDialog {
 		contentPane.add(dialogPane, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(getOwner());
-		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
 	private JPanel contentPanel;
 	private JPanel mainPanel;
@@ -314,5 +310,5 @@ public class ResolveConflictDialog extends JDialog {
 	private JPanel headerPanel;
 	private JLabel headerLabel;
 	private JLabel filenameLabel;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

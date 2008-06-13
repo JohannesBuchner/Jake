@@ -107,8 +107,7 @@ public class NotesPanel extends JPanel {
 	}
 
 	public String getTitle() {
-		return translator.get("NotesPanelDialogTitle") + " (" + 
-		notesTableModel.getNotes().size() + ")";
+		return translator.get("NotesPanelDialogTitle", String.valueOf(notesTableModel.getNotes().size()));
 	}
 
 	private boolean isNoteSelected() {

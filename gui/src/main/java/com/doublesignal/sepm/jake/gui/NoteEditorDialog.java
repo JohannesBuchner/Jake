@@ -44,7 +44,7 @@ public class NoteEditorDialog extends JDialog {
 	public NoteEditorDialog(Frame owner) {
 		super(owner, true);
 		initComponents();
-		this.setTitle("New Note");
+		this.setTitle(translator.get("NoteEditorDialogNewNoteTitle"));
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class NoteEditorDialog extends JDialog {
 		this.note = note;
 
 		initComponents();
-		this.setTitle("Edit Note");
+		this.setTitle(translator.get("NoteEditorDialogEditNoteTitle"));
 		loadNote();
 	}
 
@@ -134,7 +134,7 @@ public class NoteEditorDialog extends JDialog {
 				1.0, 0.0, 0.0 };
 
 		// ---- cancelButton ----
-		cancelButton.setText("Close");
+		cancelButton.setText(translator.get("ButtonCancel"));
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelButtonActionPerformed(e);
@@ -146,7 +146,7 @@ public class NoteEditorDialog extends JDialog {
 		dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
 		// ---- okButton ----
-		okButton.setText("Save");
+		okButton.setText(translator.get("NoteEditorDialogOkButton"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				okButtonActionPerformed(e);

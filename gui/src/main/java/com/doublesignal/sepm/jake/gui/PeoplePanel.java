@@ -59,7 +59,7 @@ public class PeoplePanel extends JPanel {
 	}
 
 	public String getTitle() {
-		return "People (" + peopleTableModel.getOnlineMembersCount()+"/"+peopleTableModel.getMembersCount()  + ")";
+		return translator.get("PeoplePanelTitle", String.valueOf(peopleTableModel.getOnlineMembersCount()), String.valueOf(peopleTableModel.getMembersCount()));
 	}
 
 	public void updatePeopleUi() {
@@ -141,7 +141,7 @@ public class PeoplePanel extends JPanel {
 		addProjectMemberMenuItem = new JMenuItem();
 
 		// ---- sendMessageMenuItem ----
-		sendMessageMenuItem.setText("Send Message...");
+		sendMessageMenuItem.setText(translator.get("PeoplePanelMenuItemSendMessage"));
 		sendMessageMenuItem.setIcon(new ImageIcon(getClass().getResource(
 				"/icons/message-new.png")));
 		sendMessageMenuItem.addActionListener(new ActionListener() {
@@ -152,7 +152,7 @@ public class PeoplePanel extends JPanel {
 		peoplePopupMenu.add(sendMessageMenuItem);
 		
 		// ---- showInfoPeopleMenuItem ----
-		showInfoPeopleMenuItem.setText("Show Info/Comments...");
+		showInfoPeopleMenuItem.setText(translator.get("PeoplePanelMenuItemShowInfo"));
 		showInfoPeopleMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showInfoPeopleMenuItemActionPerformed(e);
@@ -180,7 +180,7 @@ public class PeoplePanel extends JPanel {
 		peoplePopupMenu.add(changeUserIdMenuItem);*/
 		
 		// ---- addProjectMemberMenuItem ----
-		addProjectMemberMenuItem.setText("Add project member...");
+		addProjectMemberMenuItem.setText(translator.get("PeoplePanelMenuItemAddProjectMember"));
 		addProjectMemberMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addProjectMemberMenuItemActionPerformed(e);
@@ -189,7 +189,7 @@ public class PeoplePanel extends JPanel {
 		peoplePopupMenu.add(addProjectMemberMenuItem);
 
 		// ---- removePeopleMenuItem ----
-		removePeopleMenuItem.setText("Remove Member...");
+		removePeopleMenuItem.setText(translator.get("PeoplePanelMenuItemRemoveProjectMember"));
 		removePeopleMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				removePeopleMenuItemActionPerformed(e);
