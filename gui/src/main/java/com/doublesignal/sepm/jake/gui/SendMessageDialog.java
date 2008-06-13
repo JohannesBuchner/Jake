@@ -47,62 +47,81 @@ public class SendMessageDialog extends JDialog {
 	
 	private void okButtonActionPerformed(ActionEvent e) {
 		try {
-			if("".equals(this.textArea1.getText())) {
-				JOptionPane.showMessageDialog(this, "You cannot send an empty message. Please enter some text and try again.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			if("".equals(this.messageTextArea.getText())) {
+				JOptionPane.showMessageDialog(this,
+						translator.get("SendMessageDialogMessageEmptyMessageText"),
+						translator.get("SendMessageDialogMessageEmptyMessageTitle"),
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			ProjectMember jmRecipient = jakeGuiAccess.getProjectMember(recipient);
 			// TODO: Is this REALLY the value we want?
 			ProjectMember jmSender = jakeGuiAccess.getProjectMember(jakeGuiAccess.getLoginUserid());
 
-			JakeMessage jm = new JakeMessage(jmRecipient, jmSender, this.textArea1.getText());
+			JakeMessage jm = new JakeMessage(jmRecipient, jmSender, this.messageTextArea.getText());
 
 		   jakeGuiAccess.sendMessage(jm);
 		} catch (NoSuchProjectMemberException e1) {
 			log.warn("Recipient does not exist in project");
-			JOptionPane.showMessageDialog(this, "The recipient project member does not exist in this project.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, 
+					translator.get("SendMessageDialogMessageRecipientDoesNotExistInProject"),
+					translator.get("SendMessageDialogMesaageError"),
+					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (OtherUserOfflineException e1) {
-			JOptionPane.showMessageDialog(this, "The recipient project member is currently offline. Try again later.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, 
+					translator.get("SendMessageDialogMessageRecipientOffline"),
+					translator.get("SendMessageDialogMesaageError"),
+					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (NoSuchUseridException e1) {
-			JOptionPane.showMessageDialog(this, "The recipient project member does not exist on this network.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this,
+					translator.get("SendMessageDialogMeaageRecipientDoesNotExistInNetwork"),
+					translator.get("SendMessageDialogMesaageError"),
+					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (NotLoggedInException e1) {
-			JOptionPane.showMessageDialog(this, "The message could not be sent because you are not logged in.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, 
+					translator.get("SendMessageDialogMessageNotLoggedIn"),
+					translator.get("SendMessageDialogMesaageError"),
+					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (NetworkException e1) {
-			JOptionPane.showMessageDialog(this, "The message could not be sent because of a general network error. Please try again later.", "Error sending message", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this,
+					translator.get("SendMessageDialogMessageGeneralNetworkError"),
+					translator.get("SendMessageDialogMesaageError"),
+					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		}
 
-		JOptionPane.showMessageDialog(this, "Your message to \""+ recipient +"\" has been sent successfully.", "Message sent", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, 
+				translator.get("SendMessageDialogMessageSuccessText", recipient), 
+				translator.get("SendMessageDialogMessageSuccessTitle"),
+				JOptionPane.INFORMATION_MESSAGE);
 
 		this.setVisible(false);
 	}	
 
 	private void initComponents() {
-		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		// Generated using JFormDesigner Evaluation license - tester tester
+
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
-		scrollPane1 = new JScrollPane();
-		textArea1 = new JTextArea();
-		panel1 = new JPanel();
-		comboBox1 = new JComboBox();
-		label1 = new JLabel();
-		label2 = new JLabel();
+		messageScrollPane = new JScrollPane();
+		messageTextArea = new JTextArea();
+		mainPanel = new JPanel();
+		toLabel = new JLabel();
+		recipientLabel = new JLabel();
 		buttonBar = new JPanel();
-		okButton = new JButton();
+		sendButton = new JButton();
 		cancelButton = new JButton();
 
 		//======== this ========
-		setTitle("Send Message");
+		setTitle(translator.get("SendMessageDialogTitle"));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -121,25 +140,25 @@ public class SendMessageDialog extends JDialog {
 				{
 
 					//---- textArea1 ----
-					textArea1.setText("");
-					textArea1.setLineWrap(true);
-					scrollPane1.setViewportView(textArea1);
+					messageTextArea.setText("");
+					messageTextArea.setLineWrap(true);
+					messageScrollPane.setViewportView(messageTextArea);
 				}
-				contentPanel.add(scrollPane1, BorderLayout.CENTER);
+				contentPanel.add(messageScrollPane, BorderLayout.CENTER);
 
 				//======== panel1 ========
 				{
-					panel1.setLayout(new BorderLayout());
+					mainPanel.setLayout(new BorderLayout());
 
 					//---- comboBox1 ----
-					label2.setText(recipient);
-					panel1.add(label2, BorderLayout.CENTER);
+					recipientLabel.setText(recipient);
+					mainPanel.add(recipientLabel, BorderLayout.CENTER);
 
 					//---- label1 ----
-					label1.setText("To:");
-					panel1.add(label1, BorderLayout.WEST);
+					toLabel.setText(translator.get("SendMessageDialogToLabel"));
+					mainPanel.add(toLabel, BorderLayout.WEST);
 				}
-				contentPanel.add(panel1, BorderLayout.NORTH);
+				contentPanel.add(mainPanel, BorderLayout.NORTH);
 			}
 			dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -151,8 +170,8 @@ public class SendMessageDialog extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
 				//---- cancelButton ----
-				cancelButton.setText("Cancel");
-			   cancelButton.addActionListener(new ActionListener() {
+				cancelButton.setText(translator.get("ButtonCancel"));
+				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						cancelButtonActionPerformed(e);
 					}
@@ -161,14 +180,14 @@ public class SendMessageDialog extends JDialog {
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 5), 0, 0));
 				
-				//---- okButton ----
-				okButton.setText("Send");
-				okButton.addActionListener(new ActionListener() {
+				//---- sendButton ----
+				sendButton.setText(translator.get("SendMessageDialogSendButton"));
+				sendButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						okButtonActionPerformed(e);
 					}
 				});	
-				buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+				buttonBar.add(sendButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
@@ -177,25 +196,21 @@ public class SendMessageDialog extends JDialog {
 		contentPane.add(dialogPane, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(getOwner());
-		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent e) {
 		this.setVisible(false);
 	}
 
-	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	// Generated using JFormDesigner Evaluation license - tester tester
 	private JPanel dialogPane;
 	private JPanel contentPanel;
-	private JScrollPane scrollPane1;
-	private JTextArea textArea1;
-	private JPanel panel1;
-	private JComboBox comboBox1;
-	private JLabel label1;
-	private JLabel label2;
+	private JScrollPane messageScrollPane;
+	private JTextArea messageTextArea;
+	private JPanel mainPanel;
+	private JLabel toLabel;
+	private JLabel recipientLabel;
 	private JPanel buttonBar;
-	private JButton okButton;
+	private JButton sendButton;
 	private JButton cancelButton;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

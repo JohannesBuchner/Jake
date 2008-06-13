@@ -159,7 +159,7 @@ AddProjectMemberDialogTitle=Enter a user id
 AddProjectMemberDialogSaveButton=Save
 
 ViewProjectMemberCommentDialogButtonSave=Save
-ViewProjectMemberCommentDialogTitle=Show local comment of 
+ViewProjectMemberCommentDialogTitle=Show local comment of %0%
 
 HumanReadeableFileStatusConflict=In conflict
 HumanReadeableFileStatusIsNewestVersion=Is Newest version
@@ -199,16 +199,41 @@ PeopleTabelModelColumnNickname=Nickname
 PeopleTabelModelColumnUserId=User ID
 PeopleTabelModelColumnStatus=Status
 PeopleTabelModelStautsOnline=Online
-PeopleTabelModelStatusOffline=Offline
+PeopleTabelModelStatusOffline=Off-line
 PeopleTabelModelStatusNotLoggedIn=Log in to view status
 PeopleTabelModelStatusNoSuchUserId=Unknown user
 
 ReceiveMessageDialogTitle=Message from %0%
 ReceiveMessageDialogFromLabel=From: 
 ReceiveMessageDialogWhenLabel=When: 
-ReceiveMessageDialog
-ReceiveMessageDialog
-ReceiveMessageDialog
-ReceiveMessageDialog
-ReceiveMessageDialog
-ReceiveMessageDialog
+
+SendMessageDialogMessageEmptyMessageText=The message you tried to send is empty. Please insert some text or cancel  the operation
+SendMessageDialogMessageEmptyMessageTitle=Empty message
+SendMessageDialogMesaageError=Error sending message
+SendMessageDialogMessageRecipientDoesNotExistInProject=The recipient project member does not exist in this project.
+SendMessageDialogMessageRecipientOffline=The recipient project member is currently off-line. Try again later.
+SendMessageDialogMeaageRecipientDoesNotExistInNetwork=The recipient project member does not exist on this network.
+SendMessageDialogMessageNotLoggedIn=The message could not be sent because you are not logged in.
+SendMessageDialogMessageGeneralNetworkError=The message could not be sent because of a general network error. Please try again later.
+SendMessageDialogMessageSuccessText=Your message to %0% has been sent successfully.
+SendMessageDialogMessageSuccessTitle=Message sent
+SendMessageDialogTitle=Send message
+SendMessageDialogToLabel=To: 
+SendMessageDialogSendButton=Send
+
+StatusPanelSingelMessageReceived=1 message received
+StatusPanelMultibleMessagesReceived=%0% messages received
+StatusPanelSingelConflict=File conflict
+StatusPanelMultibleConflicts=%0% File conflicts
+StatusPanelConnected=Connected
+StatusPanelConnectedToolTip=Connected as %0%
+StatusPanelNotConnected=Not connected
+StatusPanelNotConnectedTooltip=Press to connect
+
+ViewLogDialogTitle=View log
+
+ViewLogDialogTableModelColumnAction=Action
+ViewLogDialogTableModelColumnUser=User
+ViewLogDialogTableModelColumnTime=Time
+
+

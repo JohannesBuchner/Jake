@@ -55,7 +55,9 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
 		
 	}
 
-	String[] colNames = new String[] { "Action", "User", "Time" };
+	String[] colNames = new String[] { translator.get("ViewLogDialogTableModelColumnAction"),
+			translator.get("ViewLogDialogTableModelColumnUser"),
+			translator.get("ViewLogDialogTableModelColumnTime") };
     
     enum LogColumns {
 		Action, User, Time

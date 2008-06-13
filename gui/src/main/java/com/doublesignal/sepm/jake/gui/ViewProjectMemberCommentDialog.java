@@ -52,7 +52,7 @@ public class ViewProjectMemberCommentDialog extends JDialog {
 		this.jga = jga;
 		this.projectMember = projectMember;
 		initComponents();	
-		this.setTitle(translator.get("ViewProjectMemberCommentDialogTitle")+projectMember.getUserId());
+		this.setTitle(translator.get("ViewProjectMemberCommentDialogTitle", projectMember.getUserId()));
 	}
 
 	public boolean isSaved() {

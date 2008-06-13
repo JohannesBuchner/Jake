@@ -77,10 +77,9 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 
 		if (messagesReceived > 0) {
 			if (messagesReceived == 1)
-				messageReceivedStatusButton.setText("1 Message received");
+				messageReceivedStatusButton.setText(translator.get("StatusPanelSingelMessageReceived"));
 			else
-				messageReceivedStatusButton.setText(messagesReceived
-						+ " Messages received");
+				messageReceivedStatusButton.setText(translator.get("StatusPanelMultibleMessagesReceived", String.valueOf(messagesReceived)));
 
 			messageReceivedStatusButton.setVisible(true);
 		} else {
@@ -89,10 +88,9 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 
 		if (filesConflict > 0) {
 			if (filesConflict == 1)
-				fileConflictStatusButton.setText("File Conflict");
+				fileConflictStatusButton.setText(translator.get("StatusPanelSingelConflict"));
 			else
-				fileConflictStatusButton.setText(filesConflict
-						+ " File Conflicts");
+				fileConflictStatusButton.setText(translator.get("StatusPanelMultibleConflicts", String.valueOf(filesConflict)));
 
 			fileConflictStatusButton.setVisible(true);
 		} else {
@@ -100,12 +98,11 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 		}
 
 		if (connectionOnline) {
-			connectionStatusButton.setText("Connected");
-			connectionStatusButton.setToolTipText("Connected as "
-				+ jakeGuiAccess.getLoginUserid());
+			connectionStatusButton.setText(translator.get("StatusPanelConnected"));
+			connectionStatusButton.setToolTipText(translator.get("StatusPanelConnectedToolTip", jakeGuiAccess.getLoginUserid()));
 		} else {
-			connectionStatusButton.setText("Not Connected");
-			connectionStatusButton.setToolTipText("Press to connect");
+			connectionStatusButton.setText(translator.get("StatusPanelNotConnected"));
+			connectionStatusButton.setToolTipText(translator.get("StatusPanelNotConnectedTooltip"));
 		}
 	}
 

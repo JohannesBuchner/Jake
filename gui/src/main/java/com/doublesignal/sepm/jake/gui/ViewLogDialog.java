@@ -84,7 +84,7 @@ public class ViewLogDialog extends JDialog {
 		okButton = new JButton();
 		viewlogDialogTableModel = new ViewLogDialogTableModel(jakeGuiAccess , jakeObject);
 		//======== this ========
-		setTitle("View Log");
+		setTitle(translator.get("ViewLogDialogTitle"));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -115,7 +115,7 @@ public class ViewLogDialog extends JDialog {
 				((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
 				//---- okButton ----
-				okButton.setText("OK");
+				okButton.setText(translator.get("ButtonConfirm"));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						okButtonActionPerformed(e);
