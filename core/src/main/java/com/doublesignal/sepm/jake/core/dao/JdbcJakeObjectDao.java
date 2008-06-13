@@ -8,6 +8,7 @@ import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Tag;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -20,6 +21,8 @@ import java.util.*;
  */
 public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 		  implements IJakeObjectDao {
+	private Logger log = Logger.getLogger(JdbcJakeObjectDao.class);
+	
 	private final String JAKEOBJECT_SELECT = "SELECT name FROM objects";
 	private final String JAKEOBJECT_WHERE = " WHERE name=?";
 	private final String JAKEOBJECT_INSERT =
@@ -131,6 +134,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 
 		if(object instanceof FileObject) {
 			try {
+				log.debug("Instance of a FileObject");
 				getFileObjectByName(object.getName());
 				/* If we get here, this FileObject already exists in DB - do nothing */
 			} catch (NoSuchFileException e) {
@@ -139,6 +143,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 			}
 		} else if (object instanceof NoteObject) {
 			try {
+				log.debug("Instance of a NoteObject: " + object.getName());
 				getNoteObjectByName(object.getName());
 				/* If we get here, this NoteObject already exists in DB */
 				parameters.put("content", ((NoteObject)object).getContent());
@@ -150,7 +155,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 				getSimpleJdbcTemplate().update(NOTEOBJECT_INSERT, parameters);
 			}
 		}else{
-			InvalidApplicationState.die("JakeObject to save is of unknown type");
+			InvalidApplicationState.die("JakeObject to save is of unknown type: " + object.getClass().getCanonicalName());
 		}
 		
 		this.saveTags(object);

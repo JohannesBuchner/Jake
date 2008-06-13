@@ -196,7 +196,7 @@ public class MockSyncService implements ISyncService {
 			return null;
 
 		/* simulate creating updated version of JakeObject */
-		JakeObject jo = new JakeObject("Projektauftrag/Lastenheft.txt");
+		JakeObject jo = new FileObject("Projektauftrag/Lastenheft.txt");
 
 		String comment = "automated change (MockSync)";
 		/* also has to be the same as in pull */

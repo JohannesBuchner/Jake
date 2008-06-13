@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
@@ -95,7 +96,7 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test
 	public void testGetAllOfJakeObject() {
-		List<LogEntry> entries = dao.getAllOfJakeObject(new JakeObject("subfolder/sepm.txt"));
+		List<LogEntry> entries = dao.getAllOfJakeObject(new FileObject("subfolder/sepm.txt"));
 		LogEntry e = entries.get(0);
 
 		assertEquals("Date should match", new Date(new GregorianCalendar(2008, 4, 31, 17, 22, 12).getTimeInMillis()), e.getTimestamp());
@@ -104,7 +105,7 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test
 	public void testGetMostRecent() throws NoSuchLogEntryException {
-		LogEntry e = dao.getMostRecentFor(new JakeObject("test.docx"));
+		LogEntry e = dao.getMostRecentFor(new FileObject("test.docx"));
 
 		assertEquals("Date should match", new Date(new GregorianCalendar(2008, 5, 1, 7, 22, 10).getTimeInMillis()), e.getTimestamp());
 		assertEquals("User should match", "dominik@jabber.fsinf.at", e.getUserId());
@@ -112,12 +113,12 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test(expected= NoSuchLogEntryException.class)
 	public void testGetMostRecentNonexisting() throws NoSuchLogEntryException {
-		dao.getMostRecentFor(new JakeObject("jaksfsafsadfds"));
+		dao.getMostRecentFor(new FileObject("jaksfsafsadfds"));
 	}
 
 	@Test
 	public void testGetLastPulled() throws NoSuchLogEntryException {
-		LogEntry le = dao.getLastPulledFor(new JakeObject("test.docx"));
+		LogEntry le = dao.getLastPulledFor(new FileObject("test.docx"));
 		assertEquals("Should have the right hash", "07E547D9586F6A73F73FBAC0435ED76951218FB7D0C8D788A309D785436BBB642E93A252A954F23912547D1E8A3B5ED6E1BFD7097821233FA0538F3DB854FEE6", le.getHash());
 		assertEquals("Should be for the right object", "test.docx", le.getJakeObjectName());
 		assertEquals("Should have the right time", new Date(new GregorianCalendar(2008, 4, 31, 21, 0, 0).getTimeInMillis()), le.getTimestamp());
@@ -125,16 +126,16 @@ public class JdbcLogEntryDaoTest extends DBTest {
 
 	@Test(expected= NoSuchLogEntryException.class)
 	public void testGetLastPulledNonexisting() throws NoSuchLogEntryException {
-		dao.getLastPulledFor(new JakeObject("adfhaidslhfiusahflisauh"));
+		dao.getLastPulledFor(new FileObject("adfhaidslhfiusahflisauh"));
 	}
 
 	@Test(expected= NoSuchLogEntryException.class)
 	public void testGetLastPulledVersionWhereThereIsNone() throws NoSuchLogEntryException {
-		dao.getLastPulledFor(new JakeObject("subfolder/sepm.txt"));
+		dao.getLastPulledFor(new FileObject("subfolder/sepm.txt"));
 	}
 
 	public void testGetAllOfJakeObjectNonexisting() throws NoSuchLogEntryException {
-		List<LogEntry> entries = dao.getAllOfJakeObject(new JakeObject("jaksfsafsadfds"));
+		List<LogEntry> entries = dao.getAllOfJakeObject(new FileObject("jaksfsafsadfds"));
 		assertEquals("Should return an empty list", 0, entries.size());
 	}
 }

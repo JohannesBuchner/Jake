@@ -22,6 +22,7 @@ import com.doublesignal.sepm.jake.core.dao.JdbcJakeObjectDao;
 import com.doublesignal.sepm.jake.core.dao.JdbcLogEntryDao;
 import com.doublesignal.sepm.jake.core.dao.JdbcProjectMemberDao;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
@@ -156,24 +157,15 @@ public class JakeGuiAccessTest extends TestCase {
 		String userId = "testuser@domain.de";
 		String hash = "4567897";
 		String comment = "This is a comment!";
-		String jakeObjectName = "'note::1213053294203";
-		String jakeObjectName2 = "'note::1213953294203";
+		String jakeObjectName = "note::1213053294203";
+		String jakeObjectName2 = "note::1213953294203";
 		date = new Date();
-		
 		HsqlJakeDatabase db = setUpDatabase();
-		
-		JakeObject jakeObject = new JakeObject(jakeObjectName);
 		NoteObject noteObject = new NoteObject(jakeObjectName, jakeObjectName);
 		ProjectMember projectMember = new ProjectMember(userId);
-		
-		JakeObject jakeObject2 = new JakeObject(jakeObjectName2);
 		NoteObject noteObject2 = new NoteObject(jakeObjectName2, jakeObjectName2);
-		
-		
 		db.getProjectMemberDao().save(projectMember);
-		db.getJakeObjectDao().save(jakeObject);
 		db.getJakeObjectDao().save(noteObject);
-		db.getJakeObjectDao().save(jakeObject2);
 		db.getJakeObjectDao().save(noteObject2);
 		
 		LogEntry logEntry = new LogEntry(LogAction.TAG_ADD, date,jakeObjectName, hash, userId, comment);

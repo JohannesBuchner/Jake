@@ -8,15 +8,21 @@ import org.junit.Test;
 public class JakeObjectTest {
 	
 	private JakeObject j1, j2, jnull;
+	private class Sub extends JakeObject {
+		public Sub (String name) {
+			super(name);
+		}
+	}
 	
 	/**
 	 * set up
 	 */
 	@Before
 	public void setUp() {
-		j1 = new JakeObject("foo");
-		j2 = new JakeObject("bar");
-		jnull = new JakeObject(null);
+		
+		j1 = new Sub("foo");
+		j2 = new Sub("bar");
+		jnull = new Sub(null);
 	}
 	
 	/**

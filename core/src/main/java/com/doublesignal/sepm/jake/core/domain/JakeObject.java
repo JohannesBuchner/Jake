@@ -9,7 +9,7 @@ import java.util.Set;
  * The <code>JakeObject</code> has a <code>name </code> and may be tagged with
  * <code>tags</code>.
  */
-public class JakeObject {
+public abstract class JakeObject {
 
 	private String name;
 	private HashSet<Tag> tags = new HashSet<Tag>();
