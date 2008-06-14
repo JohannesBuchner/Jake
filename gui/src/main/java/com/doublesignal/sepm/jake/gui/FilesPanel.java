@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
+import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -36,12 +37,15 @@ import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
 @SuppressWarnings("serial")
 public class FilesPanel extends JPanel {
 	private static final Logger log = Logger.getLogger(FilesPanel.class);
-	
-	private static final ITranslationProvider translatorProvider = TranslatorFactory.getTranslator();
-	
+
 	private final JakeGui jakeGui;
     private FilesTableModel filesTableModel;
     private static ITranslationProvider translator = new TextTranslationProvider();
+    private Date lastUpdate;
+
+    {
+        lastUpdate = new Date();
+    }
 
     int tabindex = 0;
 
@@ -74,13 +78,20 @@ public class FilesPanel extends JPanel {
     }
 
     public void updateUI() {
-        super.updateUI();
-        if (filesTableModel != null) {
-            filesTableModel.updateData();
-            if (tabindex >= 0)
-                jakeGui.getMainTabbedPane().setTitleAt(tabindex,
-                        "Files (" + filesTableModel.getFilesCount()
-                                + "/" + FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")");
+        // lazy loading
+
+        if(lastUpdate != null && lastUpdate.getTime()+3 < new Date().getTime())
+        {
+            super.updateUI();
+            if (filesTableModel != null) {
+                filesTableModel.updateData();
+                if (tabindex >= 0)
+                    jakeGui.getMainTabbedPane().setTitleAt(tabindex,
+                            "Files (" + filesTableModel.getFilesCount()
+                                    + "/" +
+                                    FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")");
+            }
+            lastUpdate = new Date(); 
         }
     }
 
@@ -95,7 +106,24 @@ public class FilesPanel extends JPanel {
 
     private void initComponents() {
         filesScrollPane = new JScrollPane();
-        filesTable = new JXTable();
+        filesTable = new JXTable()
+        {
+            private Date lastUpdated;
+
+            {
+                lastUpdated = new Date();
+            }
+
+            public void updateUI() {
+                Date now = new Date();
+                if(lastUpdated == null || this.lastUpdated.getTime()+3 < now.getTime())
+                {
+                    super.updateUI();
+                    lastUpdated = now;
+                }
+            }
+        };
+
         this.setLayout(new BorderLayout());
         filesTableModel = new FilesTableModel(jakeGuiAccess);
         //filesTable.setComponentPopupMenu(filesPopupMenu);
@@ -103,8 +131,7 @@ public class FilesPanel extends JPanel {
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
         filesTable.setRolloverEnabled(false);
-        
-        // sorry, we don't need a mouse adapter
+
         filesTable.addMouseListener(new MouseAdapter() {
     		public void mouseClicked( MouseEvent e ) {
     			log.debug("click reveived");
@@ -134,6 +161,7 @@ public class FilesPanel extends JPanel {
     			}
     		}
         });
+
         TableColumnModel cm = filesTable.getColumnModel();
         cm.getColumn(0).setPreferredWidth(245);
         cm.getColumn(1).setPreferredWidth(50);
@@ -164,7 +192,8 @@ public class FilesPanel extends JPanel {
         viewLogForFileMenuItem = new JMenuItem();
         pushFileMenuItem = new JMenuItem();
         pullFileMenuItem = new JMenuItem();
-
+        importLocalFileMenuItem = new JMenuItem();
+        
         launchFileMenuItem.setText(translator.get("FilesDialogContextMenuItemOpen"));
         launchFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -207,6 +236,16 @@ public class FilesPanel extends JPanel {
                 pullFileMenuItemActionPerformed(event);
             }
         });
+
+        importLocalFileMenuItem.setText("FilesDialogContextMenuItemImportFile");
+        importLocalFileMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                importLocalFileMenuItemActionPerformed(event);
+            }
+        }
+        );
+
+
         
         filesPopupMenu.add(launchFileMenuItem);
         filesPopupMenu.addSeparator();
@@ -216,6 +255,8 @@ public class FilesPanel extends JPanel {
         filesPopupMenu.add(lockFileMenuItem);
         filesPopupMenu.add(deleteFileMenuItem);
         filesPopupMenu.add(viewLogForFileMenuItem);
+        filesPopupMenu.add(importLocalFileMenuItem);
+
     }
 
     private void lockFileMenuItemActionPerformed(ActionEvent event) {
@@ -238,10 +279,12 @@ public class FilesPanel extends JPanel {
         if (UserDialogHelper.askForConfirmation(this, translator.get("FilesPanelDialogConfirmDeleteDialogTitle"),
                 translator.get("FilesPanelDialogConfirmDeleteDialogText", filename))) {
             if (jakeGuiAccess.deleteJakeObject(fileObject)) {
-                UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileDeletedTitle"), translator.get("FilesPanleDialogFileDeletedText", filename),
+                UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileDeletedTitle"),
+                        translator.get("FilesPanleDialogFileDeletedText", filename),
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
-                UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileNotDeletedTitle"), translator.get("FilesPanelDialogFileNotDeletedText", filename),
+                UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileNotDeletedTitle"),
+                        translator.get("FilesPanelDialogFileNotDeletedText", filename),
                         JOptionPane.ERROR_MESSAGE);
             }
 
@@ -266,13 +309,17 @@ public class FilesPanel extends JPanel {
         try {
             jakeGuiAccess.launchFile(filename);
         } catch (InvalidFilenameException e) {
-            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileInvalidText"));
+            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"),
+                    translator.get("FilesPanelDialogCouldNotLaunchFileInvalidText"));
         } catch (LaunchException e) {
-            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileOpenText"));
+            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"),
+                    translator.get("FilesPanelDialogCouldNotLaunchFileOpenText"));
         } catch (IOException e) {
-            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileIOText"));
+            UserDialogHelper.error(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"),
+                    translator.get("FilesPanelDialogCouldNotLaunchFileIOText"));
         } catch (NoProjectLoadedException e) {
-            UserDialogHelper.inform(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"), translator.get("FilesPanelDialogCouldNotLaunchFileNoProjectText"));
+            UserDialogHelper.inform(this, translator.get("FilesPanelDialogCouldNotLaunchFileTitle"),
+                    translator.get("FilesPanelDialogCouldNotLaunchFileNoProjectText"));
         }
     }
 
@@ -324,6 +371,57 @@ public class FilesPanel extends JPanel {
 	}	 
 
 
+        private void importLocalFileMenuItemActionPerformed(ActionEvent event) {
+        log.info("importLocalFileMenuItemActionPerformed");
+            JakeObject fileObject = getSelectedFile();
+            if (fileObject != null) {
+                jakeGuiAccess.importLocalFileIntoProject(fileObject.getName());
+                
+                Integer status = jakeGuiAccess.calculateJakeObjectSyncStatus(fileObject);
+
+                if((status & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
+                {
+                    log.debug("file successfully imported");
+                    return;
+                }
+                else
+                {
+                    UserDialogHelper.translatedError(this, "FilesPanleDialogImportFailedTitle",
+                            "FilesPanleDialogImportFailedText");
+                    log.debug("show some error dialog");
+                }
+
+/*
+
+            if (status != 102) {
+                UserDialogHelper.warning(this, "Import failed",
+                        "The file \n\"" + fileObject.getName() + "\"\n " +
+                                "could not be imported into the project because it is either already \n" +
+                                "a file in the projects repository or has not a valid filename ");
+            } else {
+                if (jakeGuiAccess.importLocalFileIntoProject(fileObject.getName())) {
+                    UserDialogHelper.inform(this, "Import succeeded",
+                            "The file \n\"" + fileObject.getName() + "\"\n" +
+                                    "was succcessfully imported into this JakeProject."
+                    );
+                    filesTable.updateUI();
+                } else {
+                    UserDialogHelper.error(this, "Import failed",
+                            "The file \n\"" + fileObject.getName() + "\"\n " +
+                                    "could not be imported into the project because it is either already \n" +
+                                    "a file in the projects repository or has not a valid filename "
+                    );
+                }
+
+            }
+            */
+
+        }
+
+    }
+
+
+
     private JScrollPane filesScrollPane;
     private JXTable filesTable;
     private final IJakeGuiAccess jakeGuiAccess;
@@ -334,4 +432,5 @@ public class FilesPanel extends JPanel {
     private JMenuItem viewLogForFileMenuItem;
     private JMenuItem pushFileMenuItem;
     private JMenuItem pullFileMenuItem;
+    private JMenuItem importLocalFileMenuItem;
 }

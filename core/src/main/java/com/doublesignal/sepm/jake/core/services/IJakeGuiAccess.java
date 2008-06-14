@@ -521,5 +521,6 @@ public interface IJakeGuiAccess {
 	public void removeModificationListener(IModificationListener ob);
 
 	public Date getLocalLastModified(FileObject conflictingFile);
-	
+
+    boolean importLocalFileIntoProject(String relPath);
 }

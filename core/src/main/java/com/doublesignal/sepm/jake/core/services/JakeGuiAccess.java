@@ -304,6 +304,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		return null;
     }
 
+
+
     public JakeObject addTag(JakeObject jakeObject, Tag tag) {
         log.debug("Adding tag '" + tag + "' to JakeObject '" + jakeObject.getName() + "' ");
         jakeObject.addTag(tag);
@@ -629,38 +631,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
 
 
-    public boolean importExternalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
-        log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
-        File srcFile = new File(absolutePath);
-        if(srcFile == null || !srcFile.exists() )
-            return false;
-
-        File destinationFolder = new File(destinationFolderAbsolutePath);
-        if(!destinationFolder.getAbsolutePath().startsWith(getProject().getRootPath().getAbsolutePath()))
-        {
-            log.debug("destination folder not in projectRootPath");
-            return false;
-        }
-        
-        String filename = srcFile.getName();
-        File destinationFile = new File(destinationFolderAbsolutePath, filename);
-
-        if(destinationFile.exists())
-        {
-            log.debug("destinationFile already exists");
-            return false;
-        }
-
-        try
-        {
-            destinationFile.createNewFile();
-            copyFile(srcFile, destinationFile );
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 
 	public static String getICSName() {
         BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
@@ -1078,4 +1048,96 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	public void removeModificationListener(IModificationListener ob){
 		fss.removeModificationListener(ob);
 	}
+
+
+    /*** Stuff required for filesPanel *******/
+
+    public boolean importExternalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
+        log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
+        File srcFile = new File(absolutePath);
+        if(srcFile == null || !srcFile.exists() )
+            return false;
+
+        File destinationFolder = new File(destinationFolderAbsolutePath);
+        if(!destinationFolder.getAbsolutePath().startsWith(getProject().getRootPath().getAbsolutePath()))
+        {
+            log.debug("destination folder not in projectRootPath");
+            return false;
+        }
+
+        String filename = srcFile.getName();
+        File destinationFile = new File(destinationFolderAbsolutePath, filename);
+
+        if(destinationFile.exists())
+        {
+            log.debug("destinationFile already exists");
+            return false;
+        }
+
+        try
+        {
+            destinationFile.createNewFile();
+            copyFile(srcFile, destinationFile );
+            String relPath = destinationFile.getAbsolutePath().
+                    replaceAll(currentProject.getRootPath().getAbsolutePath(), "");
+            if(File.separatorChar == '\\')
+            {
+                relPath = relPath.replace('\\','/');
+            }
+            importLocalFileIntoProject(relPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean importLocalFileIntoProject(String relPath) {
+        FileObject fileObject = new FileObject(relPath);
+
+        db.getJakeObjectDao().save(fileObject);
+        // create logEntry
+
+
+        try {
+
+            // userId = ics.getUserid();
+            String userId = getLoginUserid();
+            String comment = "";
+            String hash = fss.calculateHashOverFile(fileObject.getName());
+
+            LogEntry logEntry = new LogEntry(
+                    LogAction.NEW_JAKEOBJECT,
+                    new Date(),
+                    fileObject.getName(),
+                    /* hash */
+                    hash,
+                    /* userId */
+                    userId,
+                    /* comment */
+                    comment
+            );
+            logEntry.setIsLastPulled(true);
+
+            db.getLogEntryDao().create(logEntry);
+            log.debug("persisted logentry");
+        } catch (InvalidFilenameException e) {
+            e.printStackTrace();
+            return false;
+        } catch (NotAReadableFileException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        filesDB.add(fileObject);
+
+        filesStatus.put(relPath, calculateJakeObjectSyncStatus(fileObject) | SYNC_EXISTS_LOCALLY | SYNC_IS_IN_PROJECT );
+
+        return true;
+    }
+
+
 }
