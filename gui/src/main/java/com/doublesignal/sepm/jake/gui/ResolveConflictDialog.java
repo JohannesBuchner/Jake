@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.rmi.NoSuchObjectException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,13 +27,18 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
+import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
+import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 
 
 /**
@@ -44,8 +50,8 @@ public class ResolveConflictDialog extends JDialog {
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
-    private FileObject localFile;
-    private FileObject remoteFile;
+    private FileObject conflictingFile;
+    private File remoteContentTempFile;
     private IJakeGuiAccess jakeGuiAccess;
 
 
@@ -54,16 +60,20 @@ public class ResolveConflictDialog extends JDialog {
      * @param owner
      * @param localObject
      * @param jakeGuiAccess
+     * @throws OtherUserOfflineException 
+     * @throws NotLoggedInException 
      */
-    public ResolveConflictDialog(Frame owner, FileObject localObject, IJakeGuiAccess jakeGuiAccess) {
+    public ResolveConflictDialog(Frame owner, IJakeGuiAccess jakeGuiAccess, FileObject localObject) throws NotLoggedInException, OtherUserOfflineException {
 		super(owner);
-        this.localFile = localObject;
+        this.conflictingFile = localObject;
         this.jakeGuiAccess = jakeGuiAccess;
         
+        log.debug("ResolveConflictDialog");
         //load the remote file...
-        //remoteFile = this.jakeGuiAccess.pullRemoteFile(localFile);
-        
-		initComponents();
+        remoteContentTempFile = this.jakeGuiAccess.pullRemoteFileInTempFile(conflictingFile);
+        log.debug("showing ResolveConflictDialog");
+        initComponents();
+        this.setVisible(true);
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent e) {
@@ -72,10 +82,22 @@ public class ResolveConflictDialog extends JDialog {
 	
 	private void okButtonActionPerformed(ActionEvent e) {
 		if (useRemoteFileRadio.isSelected()) {
-			//keep remote file
+			// keep remote file
+			try {
+				jakeGuiAccess.pullJakeObject(conflictingFile);
+			} catch (NoSuchObjectException e1) {
+				InvalidApplicationState.shouldNotHappen(e1);
+			} catch (NotLoggedInException e1) {
+				UserDialogHelper.translatedError(this, "NotLoggedInException");
+			} catch (OtherUserOfflineException e1) {
+				UserDialogHelper.translatedError(this, "OtherUserOfflineException");
+			} catch (NoSuchLogEntryException e1) {
+				InvalidApplicationState.shouldNotHappen(e1);
+			}
 		} else {
-			//keep local file
+			// keep local file == do nothing.
 		}
+		setVisible(false);
 	}
 
 
@@ -144,11 +166,11 @@ public class ResolveConflictDialog extends JDialog {
 
 					try {
 						//---- local editor ----
-						localEditorLabel.setText(jakeGuiAccess.getLastModifier(localFile).getUserId());
+						localEditorLabel.setText(jakeGuiAccess.getLoginUserid());
 						mainPanel.add(localEditorLabel, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 						//---- remote editor ----
-						remoteEditorLabel.setText(jakeGuiAccess.getLastModifier(remoteFile).getUserId());
+						remoteEditorLabel.setText(jakeGuiAccess.getLastModifier(conflictingFile).getUserId());
 						mainPanel.add(remoteEditorLabel, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 						//---- last edited ----
@@ -156,11 +178,11 @@ public class ResolveConflictDialog extends JDialog {
 						mainPanel.add(lastEditLabel, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
 						//---- local last edited ----
-						localFileEditTimeLabel.setText(jakeGuiAccess.getLastModified(localFile).toString());
+						localFileEditTimeLabel.setText(jakeGuiAccess.getLocalLastModified(conflictingFile).toString());
 						mainPanel.add(localFileEditTimeLabel, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
 						//---- remote last edited ----
-						remoteFileEditTimeLabel.setText(jakeGuiAccess.getLastModified(remoteFile).toString());
+						remoteFileEditTimeLabel.setText(jakeGuiAccess.getLastModified(conflictingFile).toString());
 						mainPanel.add(remoteFileEditTimeLabel, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 					} catch (NoSuchLogEntryException e2) {
 						log.warn("no such logentry: " + e2.getMessage());
@@ -173,11 +195,11 @@ public class ResolveConflictDialog extends JDialog {
 					mainPanel.add(fileSizeLabel, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- local file size ----
-					localFileSizeLabel.setText(FilesLib.getHumanReadableFileSize(jakeGuiAccess.getFileSize(localFile)));
+					localFileSizeLabel.setText(FilesLib.getHumanReadableFileSize(jakeGuiAccess.getFileSize(conflictingFile)));
 					mainPanel.add(localFileSizeLabel, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- remote file size ----
-					remoteFileSizeLabel.setText(FilesLib.getHumanReadableFileSize(jakeGuiAccess.getFileSize(remoteFile)));
+					remoteFileSizeLabel.setText(FilesLib.getHumanReadableFileSize(remoteContentTempFile.length()));
 					mainPanel.add(remoteFileSizeLabel, new TableLayoutConstraints(2, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- open local ----
@@ -185,7 +207,7 @@ public class ResolveConflictDialog extends JDialog {
 					openLocalFileButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							try {
-								jakeGuiAccess.launchFile(localFile.getName());
+								jakeGuiAccess.launchFile(conflictingFile.getName());
 							} catch (Exception e1) {
 								log.warn("Failed to launch file: " + e1.getMessage());
 							}
@@ -198,7 +220,7 @@ public class ResolveConflictDialog extends JDialog {
 					openRemoteFileButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							try {
-								jakeGuiAccess.launchFile(remoteFile.getName());
+								jakeGuiAccess.launchExternalFile(remoteContentTempFile);
 							} catch (Exception e1) {
 								log.warn("Failed to launch file: " + e1.getMessage());
 							}
@@ -275,7 +297,7 @@ public class ResolveConflictDialog extends JDialog {
 				headerPanel.add(headerLabel, BorderLayout.WEST);
 
 				//---- filename ----
-				filenameLabel.setText(localFile.getName());
+				filenameLabel.setText(conflictingFile.getName());
 				filenameLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 				headerPanel.add(filenameLabel, BorderLayout.CENTER);
 			}

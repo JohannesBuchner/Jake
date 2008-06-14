@@ -2,6 +2,7 @@ package com.doublesignal.sepm.jake.fss;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * The file system service ought to provide a operating system independent way 
@@ -204,5 +205,13 @@ public interface IFSService {
 	 * @see IModificationListener
 	 */
 	public void removeModificationListener(IModificationListener ob);
+	
+	/**
+	 * get the last modified date for a file
+	 * @throws InvalidFilenameException 
+	 * @throws NotAFileException 
+	 */
+	public long getLastModified(String relpath) 
+		throws InvalidFilenameException, NotAFileException;
 	
 }

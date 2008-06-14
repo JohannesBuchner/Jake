@@ -49,22 +49,22 @@ public class FilesLib {
 	
     public static String getHumanReadableFileStatus(int status) {
     	ArrayList<String> state = new ArrayList<String>();
-    	if((status & IJakeGuiAccess.SYNC_IN_CONFLICT) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusConflict"));
+    	if((status & IJakeGuiAccess.SYNC_IN_CONFLICT) == IJakeGuiAccess.SYNC_IN_CONFLICT)
+    		state.add(translator.get("HumanReadableFileStatusConflict"));
     	if((status & IJakeGuiAccess.SYNC_LOCALLY_CHANGED) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusLocallyChanged"));
+    		state.add(translator.get("HumanReadableFileStatusLocallyChanged"));
     	if((status & IJakeGuiAccess.SYNC_LOCAL_IS_LATEST) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusIsNewestVersion"));
+    		state.add(translator.get("HumanReadableFileStatusIsNewestVersion"));
     	if((status & IJakeGuiAccess.SYNC_REMOTE_IS_NEWER) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusNewerVersionAvailable"));
+    		state.add(translator.get("HumanReadableFileStatusNewerVersionAvailable"));
     	if((status & IJakeGuiAccess.SYNC_EXISTS_LOCALLY) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusLocalCopyExists"));
+    		state.add(translator.get("HumanReadableFileStatusLocalCopyExists"));
     	if((status & IJakeGuiAccess.SYNC_EXISTS_REMOTELY) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusRemoteVersionExists"));
+    		state.add(translator.get("HumanReadableFileStatusRemoteVersionExists"));
     	if((status & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
-       		state.add(translator.get("HumanReadeableFileStatusNotInProject"));
+       		state.add(translator.get("HumanReadableFileStatusNotInProject"));
     	if((status & IJakeGuiAccess.SYNC_HAS_LOGENTRIES) == 0)
-       		state.add(translator.get("HumanReadeableFileStatusNotPushed"));
+       		state.add(translator.get("HumanReadableFileStatusNotPushed"));
     	return join(state, ", ");
     }
 

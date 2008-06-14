@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.fss;
 import java.awt.Desktop;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,16 +21,12 @@ public class FSService implements IFSService {
 	private FileHashCalculator hasher = null;
 	
 	private FolderWatcher fw = null;
+
+	private FileLauncher launcher = null;
 	
 	public FSService() throws NoSuchAlgorithmException{
 		hasher = new FileHashCalculator();
-		if (!Desktop.isDesktopSupported())
-			throw new NoSuchAlgorithmException("Desktop not supported");
-		
-		desktop = Desktop.getDesktop();
-		
-		if (!desktop.isSupported(Desktop.Action.OPEN)) 
-			throw new NoSuchAlgorithmException("Open not supported in Desktop");
+		launcher = new FileLauncher();
 	}
 	
 	public String getRootPath() {
@@ -215,11 +212,7 @@ public class FSService implements IFSService {
 	public void launchFile(String relpath) 
 		throws InvalidFilenameException, LaunchException 
 	{
-		try {
-			desktop.open(new File(getFullpath(relpath)));
-		} catch (IOException e) {
-			throw new LaunchException(e);
-		}
+		launcher.launchFile(new File(getFullpath(relpath)));
 	}
 
 	public long getFileSize(String relpath)
@@ -244,6 +237,13 @@ public class FSService implements IFSService {
 
 	public int getHashLength() {
 		return hasher.getHashLength();
+	}
+
+	public long getLastModified(String relpath) throws InvalidFilenameException, NotAFileException {
+		if(!fileExists(relpath))
+			throw new NotAFileException();
+		File f = new File(getFullpath(relpath));
+		return f.lastModified();
 	}
 
 

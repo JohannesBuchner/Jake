@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -28,8 +29,13 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
+import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
+import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.domain.Project;
+import com.doublesignal.sepm.jake.core.services.IConflictCallback;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataNotValidException;
 import com.doublesignal.sepm.jake.core.services.exceptions.LoginDataRequiredException;
@@ -38,12 +44,14 @@ import com.doublesignal.sepm.jake.gui.helper.MultiColPatternFilter;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 
 /**
  * @author Peter Steinberger
  */
 @SuppressWarnings("serial")
-public class JakeGui extends JPanel implements Observer {
+public class JakeGui extends JPanel implements Observer, IConflictCallback {
 	
 	private static final Logger log = Logger.getLogger(JakeGui.class);
 	
@@ -91,12 +99,14 @@ public class JakeGui extends JPanel implements Observer {
 		initSearchPopupMenu();
 		registerUpdateObservers();
 		updateAll();
-		setStatusMsg(translator.get("JakeGuiStatusMessag"));
+		setStatusMsg(translator.get("JakeGuiStatusMessage"));
 		log.debug("JakeGui loaded.");
 		if(justCreated)
 			peopleViewMenuItemActionPerformed(null);
+		
+		jakeGuiAccess.setConflictCallback(this);
 	}
-
+	
 	public static void showSelectProjectDialog(String foldersuggestion) {
 		new NewProject(foldersuggestion);
 	}
@@ -110,6 +120,46 @@ public class JakeGui extends JPanel implements Observer {
 			log.info("Look & Feel set to: " + UIManager.getLookAndFeel());
 		} catch (Exception e) {
 			// no critical error, can be ignored.
+		}
+	}
+	/*
+
+	public static ResolveConflictDialog createConflictDialog(Frame owner, 
+			IJakeGuiAccess jakeGuiAccess, JakeObject jo) {
+		if (jo instanceof FileObject) {
+			FileObject f = (FileObject) jo;
+			return new ResolveConflictDialog(owner, jakeGuiAccess, f);
+		} else if (jo instanceof NoteObject) {
+			NoteObject n = (NoteObject) jo;
+			/* TODO:
+			 * Maybe just show current content and offer to override with remote
+			 * User can still copy it away (clipboard)
+			 * */
+			
+			/* or, just ignore and do nothing... */ /*
+			InvalidApplicationState.notImplemented();
+		}else{
+			InvalidApplicationState.shouldNotHappen();
+		}
+		return null;
+	}
+	 */
+	public void conflictOccured(JakeObject jo) {
+		if (jo instanceof FileObject) {
+			FileObject f = (FileObject) jo;
+			try {
+				new ResolveConflictDialog(mainFrame, jakeGuiAccess, f);
+			} catch (NotLoggedInException e) {
+				UserDialogHelper.translatedError(mainFrame, "NotLoggedInException");
+				return;
+			} catch (OtherUserOfflineException e) {
+				UserDialogHelper.translatedError(mainFrame, "OtherUserOfflineException");
+				return;
+			}
+		} else if (jo instanceof NoteObject) {
+			InvalidApplicationState.notImplemented();
+		}else{
+			InvalidApplicationState.shouldNotHappen();
 		}
 	}
 

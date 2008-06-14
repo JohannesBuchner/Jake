@@ -59,7 +59,7 @@ public interface IJakeGuiAccess {
 	/**
 	 * A newer remote version exists, we have a modified old version. 
 	 */
-    public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER & SYNC_LOCALLY_CHANGED;
+    public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER | SYNC_LOCALLY_CHANGED;
 
     /**
 	 * Login on the network Missing login information (null values) will be
@@ -499,20 +499,27 @@ public interface IJakeGuiAccess {
 	/**
 	 * For conflict resolving, a external file can be launched.
 	 * @param f
+	 * @throws LaunchException 
+	 * @throws InvalidFilenameException 
 	 */
-	public void launchExternalFile(File f);
+	public void launchExternalFile(File f) throws InvalidFilenameException, LaunchException;
 	
 	/**
 	 * For conflict resolving, a remote version can be pulled in a temporary 
 	 * file
 	 * @param jo
 	 * @return the temporary file
+	 * @throws NotLoggedInException 
+	 * @throws OtherUserOfflineException 
 	 */
-	public File pullRemoteFileInTempFile(FileObject jo);
+	public File pullRemoteFileInTempFile(FileObject jo) 
+		throws NotLoggedInException, OtherUserOfflineException;
 	
 	
 
 	public void addModificationListener(IModificationListener ob);
 	public void removeModificationListener(IModificationListener ob);
+
+	public Date getLocalLastModified(FileObject conflictingFile);
 	
 }

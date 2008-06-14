@@ -27,6 +27,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.rmi.NoSuchObjectException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -47,9 +48,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     
 	private IJakeMessageReceiveListener messageListener;
 	IConflictCallback conflictCallback = null;
-
-
-
+	TreeSet<String> lastConflicts = new TreeSet<String>();
+	
     public void login(String user, String pw) throws LoginDataRequiredException,
             LoginDataNotValidException, NetworkException, LoginUseridNotValidException {
         try {
@@ -292,6 +292,16 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     public Date getLastModified(JakeObject jakeObject) throws NoSuchLogEntryException {
         LogEntry logEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
         return logEntry.getTimestamp();
+    }
+    public Date getLocalLastModified(FileObject jo) {
+        try {
+			return new Date(fss.getLastModified(jo.getName()));
+		} catch (NotAFileException e) {
+			InvalidApplicationState.shouldNotHappen();
+		} catch (InvalidFilenameException e) {
+			InvalidApplicationState.shouldNotHappen();
+		}
+		return null;
     }
 
     public JakeObject addTag(JakeObject jakeObject, Tag tag) {
@@ -696,12 +706,17 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	public void setConflictCallback(IConflictCallback cc) {
 		this.conflictCallback = cc;
 	}
+	private void conflictOccured(final JakeObject jo) {
+		log.debug("conflictOccured on " + jo.getName());
+		if(conflictCallback!=null)
+			conflictCallback.conflictOccured(jo);
+	}
 
 	public void pushJakeObject(JakeObject jo, String commitmsg)
 			throws SyncException, NotLoggedInException {
 		try {
 			sync.push(jo, getConfigOption("userid"), commitmsg);
-		} catch (NoSuchConfigOptionException e1) {
+		} catch (NoSuchConfigOptionException e) {
 			InvalidApplicationState.shouldNotHappen();
 		} catch (ObjectNotConfiguredException e) {
 			InvalidApplicationState.die(e);
@@ -748,6 +763,39 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (CreatingSubDirectoriesFailedException e) {
 			InvalidApplicationState.notImplemented(e);
 		}
+	}
+
+	
+	public File pullRemoteFileInTempFile(FileObject jo) 
+		throws NotLoggedInException, OtherUserOfflineException
+	{
+		log.debug("pullRemoteFileInTempFile");
+		try {
+			byte[] content = sync.pull(jo);
+			File f = new File(fss.getTempFile());
+			FileOutputStream fr = new FileOutputStream(f);
+			fr.write(content);
+			fr.close();
+			log.debug("was successful, tempfile=" + f.getAbsolutePath());
+			return f;
+		} catch (NoSuchObjectException e) {
+			InvalidApplicationState.shouldNotHappen(e);
+		} catch (NotLoggedInException e) {
+			throw e;
+		} catch (TimeoutException e) {
+			InvalidApplicationState.notImplemented();
+		} catch (NetworkException e) {
+			InvalidApplicationState.notImplemented(e);
+		} catch (OtherUserOfflineException e) {
+			throw e;
+		} catch (ObjectNotConfiguredException e) {
+			InvalidApplicationState.shouldNotHappen();
+		} catch (NoSuchLogEntryException e) {
+			InvalidApplicationState.shouldNotHappen(e);
+		} catch (IOException e) {
+			InvalidApplicationState.shouldNotHappen(e);
+		}
+		return null;
 	}
 	
 	private List<JakeObject> syncLogAndGetChanges(String userid)
@@ -885,6 +933,22 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			}
 			
 		}
+		if(conflictCallback != null && ics.isLoggedIn()){
+			if((state & SYNC_IN_CONFLICT) == SYNC_IN_CONFLICT){
+				if(!lastConflicts.contains(jo.getName())){
+					log.debug("new conflict on " + jo.getName());
+					lastConflicts.add(jo.getName());
+					conflictOccured(jo);
+				}
+				else
+					log.debug("old conflict on " + jo.getName());
+			}else{
+				if(lastConflicts.contains(jo.getName())){
+					log.debug("The conflict on " + jo.getName() + " is resolved");
+					lastConflicts.remove(jo.getName());
+				}
+			}
+		}
 		return state;
 	}
 	
@@ -999,12 +1063,13 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return results;
     }
 	
-	public void launchExternalFile(File f){
-		// TODO
-	}
-	
-	public File pullRemoteFileInTempFile(FileObject jo){
-		return null;
+	public void launchExternalFile(File f) throws InvalidFilenameException, LaunchException{
+		try {
+			FileLauncher launcher = new FileLauncher();
+			launcher.launchFile(f);
+		} catch (NoSuchAlgorithmException e) {
+			InvalidApplicationState.shouldNotHappen(e);
+		}
 	}
 	
 	public void addModificationListener(IModificationListener ob){
