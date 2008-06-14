@@ -126,7 +126,7 @@ public class NewProject extends JDialog {
 		
 		if (jga != null) {
 			log.info("starting main window with opened database ...");
-			new JakeGui(jga);
+			new JakeGui(jga, false);
 			setVisible(false);
 		} else {
 			try {
@@ -137,7 +137,7 @@ public class NewProject extends JDialog {
 				jga.addProjectMember(useridTextField.getText());
 				setVisible(false);
 				log.info("created Database, starting main window");
-				new JakeGui(jga);
+				new JakeGui(jga, true);
 			} catch (ExistingProjectException e) {
 				log.error("Project already exists");
 				UserDialogHelper.error(this, translator

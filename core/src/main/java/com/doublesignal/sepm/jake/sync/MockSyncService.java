@@ -75,8 +75,9 @@ public class MockSyncService implements ISyncService {
 		
 		String userid = ics.getUserid();
 		if(le.getUserId().equals(userid)){ 
+			throw new NoSuchLogEntryException();
 			/* retrieve from self, don't know if thats gonna happen */
-			System.err.println("Self-pull");
+			/*System.err.println("Self-pull");
 			if(jo.getName().startsWith("note:")){
 				NoteObject no;
 				try {
@@ -91,7 +92,7 @@ public class MockSyncService implements ISyncService {
 				} catch (Exception e) {
 					throw new OtherUserOfflineException();
 				}
-			}
+			}*/
 		}else{
 			if(!ics.isLoggedIn(userid))
 				throw new OtherUserOfflineException();
@@ -136,7 +137,7 @@ public class MockSyncService implements ISyncService {
 				jo.getName(), hash, userid, commitmsg);
 		
 		db.getLogEntryDao().create(le);
-		
+		db.getLogEntryDao().setIsLastPulled(le);
 		return new ArrayList<ProjectMember>();
 	}
 

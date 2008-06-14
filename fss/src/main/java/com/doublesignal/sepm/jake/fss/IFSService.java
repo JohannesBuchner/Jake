@@ -39,6 +39,7 @@ public interface IFSService {
 	public Boolean folderExists(String relpath) 
 		throws InvalidFilenameException, IOException;
 	
+	@Deprecated
 	/**
 	 * Joins the rootpath with the relpath. The absolute filename is converted 
 	 * to the right path seperator.

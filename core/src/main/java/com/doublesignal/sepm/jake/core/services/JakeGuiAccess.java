@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.core.services;
 
 import com.doublesignal.sepm.jake.core.InvalidApplicationState;
+import com.doublesignal.sepm.jake.core.InvalidApplicationState.StateType;
 import com.doublesignal.sepm.jake.core.dao.*;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
@@ -200,48 +201,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     public List<JakeObject> getJakeObjectsByNameAndTag(String name, List<Tag> tags) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    List<FileObject> getFileObjectsByRelPath(String relPath){
-		List<FileObject> results = new ArrayList<FileObject>();
-
-		String[] files = new String[0];
-		try {
-			files = fss.listFolder(relPath);
-		} catch (InvalidFilenameException e) {
-			InvalidApplicationState.die("should not happen", e);
-		} catch (IOException e) {
-			InvalidApplicationState.die("should not happen", e);
-		}
-
-		File tmp;
-		for (String file : files) {
-			try {
-				tmp = new File(fss.getFullpath(relPath + file));
-				if (tmp.isDirectory()) {
-					results
-							.addAll(getFileObjectsByRelPath(relPath + file
-									+ "/"));
-				}
-				if (tmp.isFile())
-					results.add(new FileObject(relPath + file));
-			} catch (InvalidFilenameException e) {
-				continue;
-				// we simply ignore invalid filenames
-			}
-		}
-		return results;
-	}
-
-    public List<JakeObject> getFileObjects(String relPath) {
-        Set<JakeObject> tmp = new HashSet<JakeObject>();
-        if(filesDB == null || filesFSS == null || filesStatus == null)
-        	refreshFileObjects();
-        tmp.addAll(filesDB);
-        tmp.addAll(filesFSS);
-        List<JakeObject> results = new ArrayList<JakeObject>();
-        results.addAll(tmp);
-        return results;
     }
 
     public List<JakeObject> getJakeObjectsByTags(List<Tag> tags) {
@@ -741,9 +700,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	public void pushJakeObject(JakeObject jo, String commitmsg)
 			throws SyncException, NotLoggedInException {
 		try {
-			sync.push(jo, ics.getUserid(), commitmsg);
-		} catch (NotLoggedInException e) {
-			throw e;
+			sync.push(jo, getConfigOption("userid"), commitmsg);
+		} catch (NoSuchConfigOptionException e1) {
+			InvalidApplicationState.shouldNotHappen();
 		} catch (ObjectNotConfiguredException e) {
 			InvalidApplicationState.die(e);
 		} catch (SyncException e) {
@@ -763,14 +722,15 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			} else {
 				fss.writeFile(jo.getName(), content);
 			}
+			db.getLogEntryDao().setIsLastPulled(db.getLogEntryDao().getMostRecentFor(jo));
 		} catch (NoSuchObjectException e) {
 			throw e;
 		} catch (NotLoggedInException e) {
 			throw e;
 		} catch (TimeoutException e) {
-			InvalidApplicationState.die("unimplemented", e);
+			InvalidApplicationState.notImplemented(e);
 		} catch (NetworkException e) {
-			InvalidApplicationState.die("unimplemented", e);
+			InvalidApplicationState.notImplemented(e);
 		} catch (OtherUserOfflineException e) {
 			throw e;
 		} catch (ObjectNotConfiguredException e) {
@@ -786,11 +746,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (IOException e) {
 			InvalidApplicationState.die(e);
 		} catch (CreatingSubDirectoriesFailedException e) {
-			InvalidApplicationState.die("unimplemented", e);
+			InvalidApplicationState.notImplemented(e);
 		}
 	}
 	
-	public List<JakeObject> syncLogAndGetChanges(String userid)
+	private List<JakeObject> syncLogAndGetChanges(String userid)
 			throws OtherUserOfflineException, NotAProjectMemberException,
 			NotLoggedInException {
 		List<JakeObject> changes = null;
@@ -805,9 +765,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (NotLoggedInException e) {
 			throw e;
 		} catch (TimeoutException e) {
-			InvalidApplicationState.die("unimplemented");
+			InvalidApplicationState.notImplemented();
 		} catch (NetworkException e) {
-			InvalidApplicationState.die("unimplemented");
+			InvalidApplicationState.notImplemented();
 		}
 		return changes;
 	}
@@ -835,33 +795,39 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	private boolean hasLocalModification(JakeObject jo)
 			throws NoSuchFileException, FileNotFoundException,
 			NotAReadableFileException, NoSuchLogEntryException {
+		log.debug("hasLocalModification("+jo.getName()+")");
 		String hash = getLocalContentHash(jo);
+		log.debug("local: " + hash.substring(0,5));
 		LogEntry le = db.getLogEntryDao().getLastPulledFor(jo);
+		log.debug("log:   " + le.getHash().substring(0,5));
 		return !le.getHash().equals(hash);
 	}
 	
-	public int getJakeObjectSyncStatus(JakeObject jo) {
+	public int calculateJakeObjectSyncStatus(JakeObject jo) {
 		int state = 0;
-
-		if (jo.getName().startsWith("note")) {
+		log.debug("getJakeObjectSyncStatus(" + jo.getName() + ")");
+		if (jo.getName().startsWith("note:")) {
 			try {
 				db.getJakeObjectDao().getNoteObjectByName(jo.getName());
+				log.debug("note; local, in project");
 				state |= SYNC_EXISTS_LOCALLY | SYNC_IS_IN_PROJECT;
 			} catch (NoSuchFileException e) {
 			}
 		} else {
+			log.debug("file;");
 			try {
 				if (fss.fileExists(jo.getName()))
 					state |= SYNC_EXISTS_LOCALLY;
-				
+				log.debug("local");
 			} catch (InvalidFilenameException e) {
-				InvalidApplicationState.die("should not happen", e);
+				InvalidApplicationState.shouldNotHappen(e);
 			} catch (IOException e) {
 				/* interpreting as we don't have it accessible */
 			}
 			try {
 				db.getJakeObjectDao().getFileObjectByName(jo.getName());
 				state |= SYNC_IS_IN_PROJECT;
+				log.debug("in project");
 			} catch (NoSuchFileException e) {
 			}
 		}
@@ -870,70 +836,106 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			LogEntry mostRecent;
 			try {
 				mostRecent = db.getLogEntryDao().getMostRecentFor(jo);
+				log.debug("has logentries");
 				state |= SYNC_HAS_LOGENTRIES;
 	
 				if (mostRecent.getAction() != LogAction.DELETE) {
 					state |= SYNC_EXISTS_REMOTELY;
+					log.debug("exists remotely");
 				}
 				LogEntry lastPulled;
 				try {
 					lastPulled = db.getLogEntryDao().getLastPulledFor(jo);
-					if (lastPulled.equals(mostRecent))
+					if ( 
+						lastPulled.getUserId().equals(mostRecent.getUserId()) && 
+						lastPulled.getTimestamp().getTime() == mostRecent.getTimestamp().getTime() &&
+						lastPulled.getJakeObjectName().equals(mostRecent.getJakeObjectName())
+					){
+						log.debug("local is latest");
 						state |= SYNC_LOCAL_IS_LATEST;
-					else if (mostRecent.getTimestamp().getTime() > lastPulled.getTimestamp().getTime())
+					}
+					else if (mostRecent.getTimestamp().getTime() > lastPulled.getTimestamp().getTime()){
+						log.debug("remote is newer");
 						state |= SYNC_REMOTE_IS_NEWER;
+					}else{
+						InvalidApplicationState.die("Weird: not latest, but nothing newer? \n" + 
+							lastPulled.getUserId() + " <=> " + mostRecent.getUserId() + " -- " +  
+							lastPulled.getTimestamp().getTime() + " <=> " + mostRecent.getTimestamp().getTime() + " -- " + 
+							lastPulled.getJakeObjectName() + " <=> " + mostRecent.getJakeObjectName() + " -- " +
+							""
+						);
+						
+					}
 				} catch (NoSuchLogEntryException e) {
+					log.debug("no last pulled");
 				}
 				try {
-					if (hasLocalModification(jo)) {
+					if ((state & SYNC_EXISTS_LOCALLY)!=0 && hasLocalModification(jo)) {
+						log.debug("locally changed");
 						state |= SYNC_LOCALLY_CHANGED;
 					}
 				} catch (NoSuchFileException e) {
+					InvalidApplicationState.shouldNotHappen(e);
 				} catch (FileNotFoundException e) {
+					InvalidApplicationState.shouldNotHappen(e);
 				} catch (NotAReadableFileException e) {
+					InvalidApplicationState.shouldNotHappen(e);
 				}
 			} catch (NoSuchLogEntryException e) {
 			}
+			
 		}
 		return state;
 	}
 	
 	public void refreshFileObject(JakeObject jo) {
-		filesStatus.put(jo.getName(), getJakeObjectSyncStatus(jo));
+		filesStatus.put(jo.getName(), calculateJakeObjectSyncStatus(jo));
+	}
+	
+	public void syncWithProjectMembers(){
+		if(ics.isLoggedIn()){
+			try {
+				for (ProjectMember pm : db.getProjectMemberDao().getAll()) {
+					if(pm.getUserId().equals(ics.getUserid()))
+						continue;
+					try {
+						syncLogAndGetChanges(pm.getUserId());
+					} catch (OtherUserOfflineException e) {
+						/* thats ok. */
+					} catch (NotAProjectMemberException e) {
+						InvalidApplicationState.shouldNotHappen(e);
+					}
+				}
+			} catch (NotLoggedInException e1) {
+				InvalidApplicationState.shouldNotHappen();
+			}
+		}else{
+			log.warn("Not logged in.");
+		}
+		refreshFileObjects();
 	}
 	
 	public void refreshFileObjects() {
 		log.debug("calling refreshFileObjects() ");
 		
-		try {
-			for (ProjectMember pm : db.getProjectMemberDao().getAll()) {
-				try {
-					syncLogAndGetChanges(pm.getUserId());
-				} catch (OtherUserOfflineException e) {
-					/* thats ok. */
-				} catch (NotAProjectMemberException e) {
-					InvalidApplicationState.die("shouldn't occur");
-				}
-			}
-		} catch (NotLoggedInException e) {
-			log.warn("Not logged in.");
-		}
-
 		filesDB = getFileObjectsFromDB();
 		filesFSS = getFileObjectsByRelPath("/");
-		
 		
 		if (filesStatus == null)
 			filesStatus = new HashMap<String, Integer>();
 		
 		for(FileObject file : filesFSS) {
-			System.out.println("in fss: " + file.getName());
+			System.out.println("from fs: '" + file.getName() + "'");
 			filesStatus.put(file.getName(), SYNC_EXISTS_LOCALLY);
 		}
+		int status;
 		for(FileObject file : filesDB) {
-			System.out.println("in db: " + file.getName());
-			filesStatus.put(file.getName(), getJakeObjectSyncStatus(file)
-				| SYNC_IS_IN_PROJECT);
+			System.out.println("from db: '" + file.getName() + "'");
+			status = calculateJakeObjectSyncStatus(file) | SYNC_IS_IN_PROJECT;
+			if(filesFSS.contains(file)){
+				status = status | SYNC_EXISTS_LOCALLY;
+			}
+			filesStatus.put(file.getName(), status);
 		}
 	}
 
@@ -945,6 +947,57 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return results;
     }
 	
+
+    public List<FileObject> getFileObjectsByRelPath(String relPath){
+		List<FileObject> results = new ArrayList<FileObject>();
+
+		String[] files = new String[0];
+		try {
+			files = fss.listFolder(relPath);
+		} catch (InvalidFilenameException e) {
+			InvalidApplicationState.die("should not happen", e);
+		} catch (IOException e) {
+			InvalidApplicationState.die("should not happen", e);
+		}
+		String fileRelPath;
+		for (String file : files) {
+			fileRelPath = relPath + "/" + file;
+			if(fileRelPath.startsWith("/"))
+				fileRelPath = fileRelPath.substring(1);
+			try {
+				if (fss.folderExists(fileRelPath)) {
+					results.addAll(getFileObjectsByRelPath(fileRelPath));
+				}
+				if (fss.fileExists(fileRelPath))
+					results.add(new FileObject(fileRelPath));
+			} catch (InvalidFilenameException e) {
+				/* we simply ignore invalid filenames */
+				log.info("We ignored the invalid-named file: " + fileRelPath);
+				continue;
+			} catch (IOException e) {
+				InvalidApplicationState.die(StateType.SHOULD_NOT_HAPPEN, e);
+			}
+		}
+		return results;
+	}
+
+    public List<JakeObject> getFileObjects() {
+        if(filesDB == null || filesFSS == null || filesStatus == null)
+        	refreshFileObjects();
+        
+        List<JakeObject> results = new ArrayList<JakeObject>();
+        
+        for(FileObject jo : filesDB) {
+        	log.debug( "result-db: " + jo.getName());
+        	results.add(jo);
+        }
+        for(FileObject jo : filesFSS) {
+        	log.debug( "result-fs: " + jo.getName());
+        	if(!results.contains(jo))
+        		results.add(jo);
+        }
+        return results;
+    }
 	
 	public void launchExternalFile(File f){
 		// TODO
@@ -954,4 +1007,10 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		return null;
 	}
 	
+	public void addModificationListener(IModificationListener ob){
+		fss.addModificationListener(ob);
+	}
+	public void removeModificationListener(IModificationListener ob){
+		fss.removeModificationListener(ob);
+	}
 }

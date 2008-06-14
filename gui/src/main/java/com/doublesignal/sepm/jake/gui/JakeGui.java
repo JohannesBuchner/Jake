@@ -80,7 +80,7 @@ public class JakeGui extends JPanel implements Observer {
 		this.jakeGuiAccess = jakeGuiAccess;
 	}
 
-	public JakeGui(IJakeGuiAccess jakeGuiAccess) {
+	public JakeGui(IJakeGuiAccess jakeGuiAccess, boolean justCreated) {
 		loginStatusListeners = new LinkedList<ActionListener>();
 		
 		setJakeGuiAccess(jakeGuiAccess);
@@ -93,7 +93,8 @@ public class JakeGui extends JPanel implements Observer {
 		updateAll();
 		setStatusMsg(translator.get("JakeGuiStatusMessag"));
 		log.debug("JakeGui loaded.");
-		peopleViewMenuItemActionPerformed(null);
+		if(justCreated)
+			peopleViewMenuItemActionPerformed(null);
 	}
 
 	public static void showSelectProjectDialog(String foldersuggestion) {
@@ -133,7 +134,7 @@ public class JakeGui extends JPanel implements Observer {
 	
 	private void updatePrefMenuItems() {
 		try {
-			autoFilePropagateCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPush")));
+			autoFilePushCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPush")));
 			autoFilePullCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoPull")));
 			showOfflineMembersCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("showOfflineProjectMembers")));
 			autoRefreshCheckBoxMenuItem.setSelected(Boolean.parseBoolean(jakeGuiAccess.getConfigOption("autoRefresh")));
@@ -400,7 +401,7 @@ public class JakeGui extends JPanel implements Observer {
 		peoplePanel = new PeoplePanel(this);
 		mainToolBar = new JToolBar();
 		refreshDatapoolViewButton = new JButton();
-		propagateFileButton = new JButton();
+		pushFileButton = new JButton();
 		pullFilesButton = new JButton();
 		newNoteButton = new JButton();
 		searchSpacer = new JPanel(null);
@@ -420,7 +421,7 @@ public class JakeGui extends JPanel implements Observer {
 		signOutNetworkMenuItem = new JMenuItem();
 		showOfflineMembersCheckBoxMenuItem = new JCheckBoxMenuItem();
 		autoRefreshCheckBoxMenuItem = new JCheckBoxMenuItem();
-		autoFilePropagateCheckBoxMenuItem = new JCheckBoxMenuItem();
+		autoFilePushCheckBoxMenuItem = new JCheckBoxMenuItem();
 		autoFilePullCheckBoxMenuItem = new JCheckBoxMenuItem();
 		projectMenu = new JMenu();
 		openProjectFolderMenuItem = new JMenuItem();
@@ -479,12 +480,13 @@ public class JakeGui extends JPanel implements Observer {
 						
 						// ---- refreshDatapoolViewButton ----
 						refreshDatapoolViewButton.setHorizontalAlignment(SwingConstants.RIGHT);
-						refreshDatapoolViewButton.setToolTipText(translator.get("MainToolbarToolTipRefresh"));
+						refreshDatapoolViewButton.setToolTipText(translator.get("MainToolbarToolTipSync"));
 						refreshDatapoolViewButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/sync_project_folder.png")));
 
 						refreshDatapoolViewButton.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent event) {
+								jakeGuiAccess.syncWithProjectMembers();
 								jakeGuiAccess.refreshFileObjects();
 								filesPanel.updateUI();
 							}
@@ -493,11 +495,11 @@ public class JakeGui extends JPanel implements Observer {
 						mainToolBar.add(refreshDatapoolViewButton);
 						mainToolBar.addSeparator();
 
-						// ---- propagateFileButton ----
-						propagateFileButton.setIcon(new ImageIcon(getClass().getResource(
+						// ---- pushFileButton ----
+						pushFileButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/push.png")));
-						propagateFileButton.setToolTipText(translator.get("MainToolbarToolTipPropagateFile"));
-						mainToolBar.add(propagateFileButton);
+						pushFileButton.setToolTipText(translator.get("MainToolbarToolTipPushFile"));
+						mainToolBar.add(pushFileButton);
 
 						// ---- pullFilesButton ----
 						pullFilesButton.setIcon(new ImageIcon(getClass().getResource(
@@ -678,14 +680,14 @@ public class JakeGui extends JPanel implements Observer {
 						});
 						networkMenu.add(autoRefreshCheckBoxMenuItem);
 
-						// ---- autoFilePropagateCheckBoxMenuItem ----
-						autoFilePropagateCheckBoxMenuItem.setText(translator.get("PreferencesLabelAutoPush"));
-						autoFilePropagateCheckBoxMenuItem.addActionListener(new ActionListener() {
+						// ---- autoFilePushCheckBoxMenuItem ----
+						autoFilePushCheckBoxMenuItem.setText(translator.get("PreferencesLabelAutoPush"));
+						autoFilePushCheckBoxMenuItem.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								setAutoPushMenuItemActionPerformed(e);
 							}
 						});
-						networkMenu.add(autoFilePropagateCheckBoxMenuItem);
+						networkMenu.add(autoFilePushCheckBoxMenuItem);
 
 						// ---- autoFilePullCheckBoxMenuItem ----
 						autoFilePullCheckBoxMenuItem.setText(translator.get("PreferencesLabelAutoPull"));
@@ -772,6 +774,7 @@ public class JakeGui extends JPanel implements Observer {
 			mainFrame.pack();
 			mainFrame.setLocationRelativeTo(mainFrame.getOwner());
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			mainFrame.setMinimumSize(new Dimension(1200, 400));
 			mainFrame.setVisible(true);
 		}
 
@@ -915,7 +918,7 @@ public class JakeGui extends JPanel implements Observer {
 	private NotesPanel notesPanel;
 	private JToolBar mainToolBar;
 	private JButton refreshDatapoolViewButton;
-	private JButton propagateFileButton;
+	private JButton pushFileButton;
 	private JButton pullFilesButton;
 	private JButton newNoteButton;
 	private JPanel searchSpacer;
@@ -935,7 +938,7 @@ public class JakeGui extends JPanel implements Observer {
 	private JMenuItem signOutNetworkMenuItem;
 	private JCheckBoxMenuItem showOfflineMembersCheckBoxMenuItem;
 	private JCheckBoxMenuItem autoRefreshCheckBoxMenuItem;
-	private JCheckBoxMenuItem autoFilePropagateCheckBoxMenuItem;
+	private JCheckBoxMenuItem autoFilePushCheckBoxMenuItem;
 	private JCheckBoxMenuItem autoFilePullCheckBoxMenuItem;
 	private JMenu projectMenu;
 	private JMenuItem openProjectFolderMenuItem;

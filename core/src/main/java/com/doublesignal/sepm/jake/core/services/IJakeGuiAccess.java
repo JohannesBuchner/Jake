@@ -247,16 +247,13 @@ public interface IJakeGuiAccess {
 			throws NoSuchFolderException;
 
 	/**
-	 * Gets a list of all the FileObjects in one directory (if relpath is a
-	 * directory) or the FileObject in question
+	 * Gets a list of all the FileObjects
 	 * 
-	 * @param relPath
 	 * @return list of FileObjects
 	 * @throws NoSuchJakeObjectException
 	 */
-	public List<JakeObject> getFileObjects(String relPath)
-            ;
-
+	public List<JakeObject> getFileObjects();
+	
 	/**
 	 * Searches for Jake Objects by specifying a name
 	 * 
@@ -480,17 +477,22 @@ public interface IJakeGuiAccess {
 	 * @throws NotAProjectMemberException
 	 * @throws NotLoggedInException
 	 */
-	public List<JakeObject> syncLogAndGetChanges(String userid) throws OtherUserOfflineException, NotAProjectMemberException, NotLoggedInException;
+	//public List<JakeObject> syncLogAndGetChanges(String userid) throws OtherUserOfflineException, NotAProjectMemberException, NotLoggedInException;
 	
 	/**
 	 * @param jo
 	 * @return status of the JakeObject, or-Combination of the constants SYNC_*
 	 */
-	public int getJakeObjectSyncStatus(JakeObject jo);
+	public int calculateJakeObjectSyncStatus(JakeObject jo);
 	
 	/**
-	 * Performs a sync to all project members one after another, and analyses
-	 * each files sync status.
+	 * Performs a sync to all project members one after another and calls
+	 * refreshFileObjects afterwards.
+	 */
+	public void syncWithProjectMembers();
+	
+	/** 
+	 * analyses each files sync status.
 	 */
 	public void refreshFileObjects();
 	
@@ -507,84 +509,10 @@ public interface IJakeGuiAccess {
 	 * @return the temporary file
 	 */
 	public File pullRemoteFileInTempFile(FileObject jo);
-
-	/*
-
-	public List<JakeObject> getChangedObjects();
-
-	public List<JakeObject> getOutOfSyncObjects();
-
-	public void pullObjects() throws NetworkException;
-
-	public void pushObjects() throws NetworkException;
-
 	
-	public List<FileObject> getFileObjectsFromDB();
 	
-	public void logSync() throws NetworkException;
+
+	public void addModificationListener(IModificationListener ob);
+	public void removeModificationListener(IModificationListener ob);
 	
-	/**
-	 * Returns a list of one or more JakeObjects which are reported as
-	 * OutOfSync, so they can be visualized by the gui.
-	 * 
-	 * @return list of Jake Objects
-	 * /
-	public List<JakeObject> getOutOfSyncObjects();
-
-	/**
-	 * Returns a list of one or more JakeObjects which where changed by a recent
-	 * PullObjects() call, so they can be visualized by the gui.
-	 * 
-	 * @return list of Jake Objects
-	 * /
-	public List<JakeObject> getChangedObjects();
-
-	public void pushObjects() throws NetworkException;
-
-	public void pullObjects() throws NetworkException;
-
-
-	/**
-	 * Get the SyncStatus of a JakeObject
-	 * 
-	 * @param jakeObject
-	 * @return SyncStatus (String)
-	 * /
-	public Integer getFileObjectSyncStatus(JakeObject jakeObject);
-
-
-
-
-	/**
-	 * Shedules the pulling of the given JakeObject *
-	 * 
-	 * @param jakeObject
-	 *            the JakeObject to be pulled
-	 * @throws NotLoggedInException 
-	 * @throws OtherUserOfflineException 
-	 * /
-	void pullJakeObject(JakeObject jakeObject) throws NotLoggedInException, OtherUserOfflineException;
-
-	/**
-    * Pull the remote file of a file that is in conflict.
-    * @param localFile The local file that is in conflict
-    * @return The remote counterpart
-    * /
-   public FileObject pullRemoteFile(FileObject localFile);
-
-    /**
-     * Querys the FSS and Database for the current data and makes sure
-     * the used datastructures are updated accordingly
-     * /
-    void refreshFileObjects();
-    
-	/**
-	 * Shedules the pushing of the given JakeObject
-	 * 
-	 * @param jakeObject
-	 *            the JakeObject which should be distributed
-	 * /
-	void propagateJakeObject(JakeObject jakeObject);
-
-    */
 }

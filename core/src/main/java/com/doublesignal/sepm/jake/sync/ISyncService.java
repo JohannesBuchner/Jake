@@ -84,10 +84,9 @@ public interface ISyncService {
 	 * @throws TimeoutException
 	 * @throws NoSuchObjectException The JakeObject has no logentry
 	 * 
-	 * TODO: write the object content to the jakeobject or return a bytearray or
-	 * something similar (Strings look too human-readable).
-	 * NOTE: We don't have pullAndWriteToFile because JakeObjects don't have to 
-	 * be files
+	 * <p>NOTE: We don't have pullAndWriteToFile because JakeObjects don't have to 
+	 * be files</p>
+	 * <p>NOTE: You probably want to set "is_last_pulled" after pulling</p>
 	 * @throws NoSuchLogEntryException 
 	 */
 	public byte[] pull(JakeObject jo) 

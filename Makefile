@@ -7,6 +7,9 @@ all: gui
 start: gui
 	cd gui; mvn exec:java -Dexec.mainClass=com.doublesignal.sepm.jake.gui.StartJake
 
+quickstart: gui
+	cd gui; mvn exec:java -Dexec.mainClass=com.doublesignal.sepm.jake.gui.StartJake -Dexec.args=${PROJECTFOLDER}
+
 gui: core
 	[[ -e .rebuild_$@ ]] && { cd $@; mvn package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || mvn package install || true

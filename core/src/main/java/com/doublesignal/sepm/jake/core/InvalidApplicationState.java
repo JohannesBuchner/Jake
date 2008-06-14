@@ -10,7 +10,12 @@ import org.apache.log4j.Logger;
 @SuppressWarnings("serial")
 public class InvalidApplicationState {
 	private static Logger log = Logger.getLogger(InvalidApplicationState.class);
-
+	
+	public enum StateType {
+		NOT_IMPLEMENTED,
+		SHOULD_NOT_HAPPEN
+	}
+	
 	private InvalidApplicationState() {
 	}
 	private static String getStackTrace(){
@@ -50,4 +55,22 @@ public class InvalidApplicationState {
 		System.exit(-1);
 	}
 	
+	public static void die(StateType state) {
+		die(state.toString());
+	}
+	public static void die(StateType state, Exception e) {
+		die(state.toString(), e);
+	}
+	public static void shouldNotHappen(){
+		die(StateType.SHOULD_NOT_HAPPEN);
+	}
+	public static void shouldNotHappen(Exception e){
+		die(StateType.SHOULD_NOT_HAPPEN, e);
+	}
+	public static void notImplemented(){
+		die(StateType.NOT_IMPLEMENTED);
+	}
+	public static void notImplemented(Exception e){
+		die(StateType.NOT_IMPLEMENTED, e);
+	}
 }

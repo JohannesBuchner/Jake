@@ -63,4 +63,7 @@ public interface ILogEntryDao {
 	 * @throws NoSuchLogEntryException
 	 */
 	public LogEntry getLastPulledFor(JakeObject jakeObject) throws NoSuchLogEntryException;
+	
+	
+	public void setIsLastPulled(LogEntry logEntry);
 }

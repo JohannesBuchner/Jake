@@ -29,6 +29,12 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 	private static final String LOGENTRY_MOSTRECENT = " ORDER BY timestamp DESC LIMIT 1";
 	private static final String LOGENTRY_LASTPULLED = " AND is_last_pulled=1";
 	private static final String LOGENTRY_ORDER_BY_TIMESTAMP_DESC = " ORDER BY timestamp DESC";
+	private static final String LOGENTRY_UPDATE_SET_IS_LAST_PULLED =
+		  "UPDATE logentries SET is_last_pulled=:is_last_pulled " +
+		  " WHERE object_name=:object_name AND projectmember=:projectmember " +
+		  " AND timestamp=:timestamp ";
+	private static final String LOGENTRY_UPDATE_SET_LAST_PULLED_FALSE_FOR_JAKEOBJECT =
+		  "UPDATE logentries SET is_last_pulled=false WHERE object_name=:object_name";
 
 	public void create(LogEntry logEntry) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
@@ -42,6 +48,17 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 
 		getSimpleJdbcTemplate().update(LOGENTRY_INSERT, parameters);
 	}
+	public void setIsLastPulled(LogEntry logEntry){
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("object_name", logEntry.getJakeObjectName());
+		getSimpleJdbcTemplate().update(LOGENTRY_UPDATE_SET_LAST_PULLED_FALSE_FOR_JAKEOBJECT, parameters);
+		parameters = new HashMap<String, Object>();
+		parameters.put("object_name", logEntry.getJakeObjectName());
+		parameters.put("projectmember", logEntry.getUserId());
+		parameters.put("timestamp", logEntry.getTimestamp());
+		parameters.put("is_last_pulled", true);
+		getSimpleJdbcTemplate().update(LOGENTRY_UPDATE_SET_IS_LAST_PULLED, parameters);
+	}
 
 	public LogEntry get(String name, String projectmember, Date timestamp)
 			  throws NoSuchLogEntryException {
@@ -54,7 +71,7 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 
 	public List<LogEntry> getAll() {
 		return getSimpleJdbcTemplate().query(
-				  LOGENTRY_SELECT,
+				  LOGENTRY_SELECT + LOGENTRY_ORDER_BY_TIMESTAMP_DESC,
 				  new JdbcLogEntryRowMapper()
 		);
 	}

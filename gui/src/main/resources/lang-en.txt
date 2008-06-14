@@ -96,7 +96,7 @@ FilesDialogContextMenuItemSetLock=Set lock...
 FilesDialogContextMenuItemDeleteFile=Delete file
 FilesDialogContextMenuItemViewLog=View log...
 FilesDialogContextMenuItemResolveConflict=Resolve conflict...
-FilesDialogContextMenuItemPropagateFile=Announce file
+FilesDialogContextMenuItemPushFile=Announce file
 FilesDialogContextMenuItemPullFile=Pull file
 FilesDialogContextMenuItemImportFile=Import file
 
@@ -144,8 +144,8 @@ SetSoftLockDialogOverrideLockButton=Override lock
 SetSoftLockDialogLockedByLabel=This lock was set by: 
 SetSoftLockDialogLockedByYouLabel=This lock was set by: You
 
-MainToolbarToolTipRefresh=Refresh datapool view
-MainToolbarToolTipPropagateFile=Propagate locally changed files
+MainToolbarToolTipSync=Sync datapool view with other project members
+MainToolbarToolTipPushFile=Announce locally changed files
 MainToolbarToolTipPull=Pull files from project member
 MainToolbarToolTipSearch=Search for files
 MainToolbarToolTipSearchField=Enter search term here

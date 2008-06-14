@@ -51,12 +51,12 @@ public class FilesLib {
     	ArrayList<String> state = new ArrayList<String>();
     	if((status & IJakeGuiAccess.SYNC_IN_CONFLICT) != 0)
     		state.add(translator.get("HumanReadeableFileStatusConflict"));
+    	if((status & IJakeGuiAccess.SYNC_LOCALLY_CHANGED) != 0)
+    		state.add(translator.get("HumanReadeableFileStatusLocallyChanged"));
     	if((status & IJakeGuiAccess.SYNC_LOCAL_IS_LATEST) != 0)
     		state.add(translator.get("HumanReadeableFileStatusIsNewestVersion"));
     	if((status & IJakeGuiAccess.SYNC_REMOTE_IS_NEWER) != 0)
     		state.add(translator.get("HumanReadeableFileStatusNewerVersionAvailable"));
-    	if((status & IJakeGuiAccess.SYNC_LOCALLY_CHANGED) != 0)
-    		state.add(translator.get("HumanReadeableFileStatusLocallyChanged"));
     	if((status & IJakeGuiAccess.SYNC_EXISTS_LOCALLY) != 0)
     		state.add(translator.get("HumanReadeableFileStatusLocalCopyExists"));
     	if((status & IJakeGuiAccess.SYNC_EXISTS_REMOTELY) != 0)

@@ -5,12 +5,15 @@ import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
+import com.doublesignal.sepm.jake.fss.IModificationListener;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -18,7 +21,7 @@ import java.util.List;
  * 
  */
 @SuppressWarnings("serial")
-public class FilesTableModel extends AbstractTableModel {
+public class FilesTableModel extends AbstractTableModel implements IModificationListener {
 	private static final Logger log = Logger.getLogger(FilesTableModel.class);
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
@@ -30,7 +33,7 @@ public class FilesTableModel extends AbstractTableModel {
     private long summedFilesize = 0;
 
     public long getSummedFilesize() {
-        summedFilesize = 0;
+    	summedFilesize = 0;
         for(JakeObject file : files)
         {
             summedFilesize += jakeGuiAccess.getFileSize((FileObject) file);
@@ -72,6 +75,7 @@ public class FilesTableModel extends AbstractTableModel {
 		log.info("Initializing FilesTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
         updateData();
+        jakeGuiAccess.addModificationListener(this);
 	}
 
 	/**
@@ -79,7 +83,7 @@ public class FilesTableModel extends AbstractTableModel {
 	 */
 	public void updateData() {
 		log.info("calling updateData");
-        this.files = jakeGuiAccess.getFileObjects("/");
+        this.files = jakeGuiAccess.getFileObjects();
     }
 
 	public int getColumnCount() {
@@ -106,7 +110,7 @@ public class FilesTableModel extends AbstractTableModel {
 			return JakeObjLib.getTagString(file.getTags());
 
 		case SyncStatus:
-			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.getJakeObjectSyncStatus(file));
+			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.calculateJakeObjectSyncStatus(file));
 
 		case LastChanged:
 			try {
@@ -151,6 +155,11 @@ public class FilesTableModel extends AbstractTableModel {
 	@Override
 	public String getColumnName(int columnIndex) {
 		return colNames[columnIndex];
+	}
+
+	public void fileModified(File f, ModifyActions action) {
+		jakeGuiAccess.refreshFileObjects();
+		updateData();
 	}
 	
 }

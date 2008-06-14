@@ -5,6 +5,7 @@ import java.util.List;
 import com.doublesignal.sepm.jake.core.dao.HsqlJakeDatabase;
 import com.doublesignal.sepm.jake.core.dao.IJakeDatabase;
 import com.doublesignal.sepm.jake.core.dao.JdbcStupidDatabaseDaoTest;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
@@ -141,12 +142,19 @@ public class MockSyncServiceTest extends FSTestCase {
 		
 		assertEquals(le.get(0).getAction(), LogAction.NEW_VERSION);
 		assertNotNull(le.get(0).getTimestamp());
-		
+		/* outdated since self-pull is not allowed anymore */
+		/*
 		byte[] bcontent = ss.pull(jo);
 		assertNotNull(bcontent);
 		String content = new String(bcontent);
 		
-		assertEquals(content,"Helo funky boy!");
+		assertEquals(content,"Helo funky boy!");*/
+		
+		try{
+			ss.pull(jo);
+			fail("selfpull allowed");
+		}catch(NoSuchLogEntryException e){
+		}
 	}
 
 }

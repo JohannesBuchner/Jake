@@ -103,7 +103,7 @@ public class FilesPanel extends JPanel {
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
         filesTable.setRolloverEnabled(false);
-      
+        
         // sorry, we don't need a mouse adapter
         filesTable.addMouseListener(new MouseAdapter() {
     		public void mouseClicked( MouseEvent e ) {
@@ -111,7 +111,7 @@ public class FilesPanel extends JPanel {
                 if (e.getClickCount() == 2
                         && SwingUtilities.isLeftMouseButton(e)
                         && isFileSelected()) {
-                    openExecutFileMenuItemActionEvent(null);
+                    openExecuteFileMenuItemActionEvent(null);
                 }
     			// Right mouse click
     			if ( SwingUtilities.isRightMouseButton( e ) ) {
@@ -162,13 +162,13 @@ public class FilesPanel extends JPanel {
         lockFileMenuItem = new JMenuItem();
         deleteFileMenuItem = new JMenuItem();
         viewLogForFileMenuItem = new JMenuItem();
-        propagateFileMenuItem = new JMenuItem();
+        pushFileMenuItem = new JMenuItem();
         pullFileMenuItem = new JMenuItem();
 
         launchFileMenuItem.setText(translator.get("FilesDialogContextMenuItemOpen"));
         launchFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                openExecutFileMenuItemActionEvent(event);
+                openExecuteFileMenuItemActionEvent(event);
             }
         }
         );
@@ -193,11 +193,11 @@ public class FilesPanel extends JPanel {
             }
         });
         
-        propagateFileMenuItem.setText(translator.get("FilesDialogContextMenuItemPropagateFile"));
-        propagateFileMenuItem.setToolTipText("Propagate locally changed file");
-        propagateFileMenuItem.addActionListener(new ActionListener() {
+        pushFileMenuItem.setText(translator.get("FilesDialogContextMenuItemPushFile"));
+        pushFileMenuItem.setToolTipText("Push locally changed file");
+        pushFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                propagateFileMenuItemActionPerfomed(event);
+                pushFileMenuItemActionPerfomed(event);
             }
         }
         );
@@ -210,7 +210,7 @@ public class FilesPanel extends JPanel {
         
         filesPopupMenu.add(launchFileMenuItem);
         filesPopupMenu.addSeparator();
-        filesPopupMenu.add(propagateFileMenuItem);
+        filesPopupMenu.add(pushFileMenuItem);
         filesPopupMenu.add(pullFileMenuItem);
         filesPopupMenu.addSeparator();
         filesPopupMenu.add(lockFileMenuItem);
@@ -259,7 +259,7 @@ public class FilesPanel extends JPanel {
         }
     }
 
-    private void openExecutFileMenuItemActionEvent(ActionEvent event) {
+    private void openExecuteFileMenuItemActionEvent(ActionEvent event) {
         log.info("openExecutFileMenuItemActionEvent");
         log.info("got file " + getSelectedFile().getName());
         String filename = getSelectedFile().getName();
@@ -277,13 +277,13 @@ public class FilesPanel extends JPanel {
     }
 
 
-    private void propagateFileMenuItemActionPerfomed(ActionEvent event) {
-		log.info("propagateFileMenuItemActionPerfomed");
+    private void pushFileMenuItemActionPerfomed(ActionEvent event) {
+		log.info("pushFileMenuItemActionPerfomed");
 
 		JakeObject fileObject = getSelectedFile();
 		if (fileObject != null) {
 			String commitmsg = UserDialogHelper.showTextInputDialog(this, 
-					translator.get("CommitMessage"), translator.get("CommitMessageAdvice")); 
+					translator.get("CommitMessage"), ""); 
 			
 			if(commitmsg != null)
 				try {
@@ -332,6 +332,6 @@ public class FilesPanel extends JPanel {
     private JMenuItem lockFileMenuItem;
     private JMenuItem deleteFileMenuItem;
     private JMenuItem viewLogForFileMenuItem;
-    private JMenuItem propagateFileMenuItem;
+    private JMenuItem pushFileMenuItem;
     private JMenuItem pullFileMenuItem;
 }

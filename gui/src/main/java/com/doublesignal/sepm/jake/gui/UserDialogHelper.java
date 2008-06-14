@@ -210,11 +210,11 @@ public class UserDialogHelper {
      * Asks the user to enter a line
      * @param parent
      * @param title
-     * @param question
+     * @param suggestion
      * @return null if canceled, answer else
      */
-    public static String showTextInputDialog(Component parent, String title, String question){
-        return JOptionPane.showInputDialog(parent, title + "\n" + question, question);
+    public static String showTextInputDialog(Component parent, String title, String suggestion){
+        return JOptionPane.showInputDialog(parent, title, suggestion);
     }
     
     /**
@@ -225,10 +225,10 @@ public class UserDialogHelper {
      * @return null if canceled, answer else
      */
     public static String showTranslatedTextInputDialog(
-    		Component parent, String i18ntitle, String i18nquestion)
+    		Component parent, String i18ntitle, String i18nsuggestion)
     {
         return showTextInputDialog(parent, translator.get(i18ntitle), 
-        		translator.get(i18nquestion)); 
+        		translator.get(i18nsuggestion)); 
     }
 
 }
