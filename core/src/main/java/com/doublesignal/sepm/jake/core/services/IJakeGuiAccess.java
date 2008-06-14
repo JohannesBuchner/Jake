@@ -523,4 +523,6 @@ public interface IJakeGuiAccess {
 	public Date getLocalLastModified(FileObject conflictingFile);
 
     boolean importLocalFileIntoProject(String relPath);
+
+    Integer getJakeObjectSyncStatus(JakeObject jakeObject);
 }

@@ -76,4 +76,11 @@ public interface IJakeObjectDao {
 	 */
 	public void removeTagsFrom(JakeObject object, Tag... tags);
 
+
+    /**
+     * Return all tags of a specific JakeObject. 
+     * @param jakeObject
+     * @return List of Tags
+     */
+    public List<Tag> getTagsForObject(JakeObject jakeObject);
 }

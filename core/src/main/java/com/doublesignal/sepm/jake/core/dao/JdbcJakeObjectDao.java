@@ -1,7 +1,6 @@
 package com.doublesignal.sepm.jake.core.dao;
 
 import com.doublesignal.sepm.jake.core.InvalidApplicationState;
-import com.doublesignal.sepm.jake.core.dao.exceptions.QueryFailedException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
@@ -49,7 +48,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 	private final String TAGS_DELETE_ALL =
 			  "DELETE FROM tags WHERE object_name=?";
 
-	private List<Tag> getTagsForObject(JakeObject jo) {
+	public List<Tag> getTagsForObject(JakeObject jo) {
 		return getSimpleJdbcTemplate().query(
 				  TAGS_SELECT,
 				  new JdbcTagRowMapper(),

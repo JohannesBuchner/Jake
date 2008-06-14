@@ -35,20 +35,20 @@ import java.util.*;
  * @author johannes, domdorn, peter, philipp
  */
 public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
-    IICService ics = null;
-    ISyncService sync = null;
-    IFSService fss = null;
-    IJakeDatabase db = null;
+    private IICService ics = null;
+    private ISyncService sync = null;
+    private IFSService fss = null;
+    private IJakeDatabase db = null;
     private Project currentProject;
-    static Logger log = Logger.getLogger(JakeGuiAccess.class);
+    private static Logger log = Logger.getLogger(JakeGuiAccess.class);
 
-    List<FileObject> filesFSS;
-    List<FileObject> filesDB;
-    HashMap<String, Integer> filesStatus;
+    private List<FileObject> filesFSS;
+    private List<FileObject> filesDB;
+    private HashMap<String, Integer> filesStatus;
     
 	private IJakeMessageReceiveListener messageListener;
-	IConflictCallback conflictCallback = null;
-	TreeSet<String> lastConflicts = new TreeSet<String>();
+	private IConflictCallback conflictCallback = null;
+	private TreeSet<String> lastConflicts = new TreeSet<String>();
 	
     public void login(String user, String pw) throws LoginDataRequiredException,
             LoginDataNotValidException, NetworkException, LoginUseridNotValidException {
@@ -309,14 +309,20 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     public JakeObject addTag(JakeObject jakeObject, Tag tag) {
         log.debug("Adding tag '" + tag + "' to JakeObject '" + jakeObject.getName() + "' ");
         jakeObject.addTag(tag);
-        // todo access jakeObjectDao
+        db.getLogEntryDao().create(new LogEntry(LogAction.TAG_ADD, new Date(), jakeObject.getName(), "", getLoginUserid(), tag.getName()));
+
+        db.getJakeObjectDao().addTagsTo(jakeObject, tag);
         return jakeObject;
     }
 
     public JakeObject removeTag(JakeObject jakeObject, Tag tag) {
         log.debug("removing tag '" + tag + "' from JakeObject '" + jakeObject.getName() + "' ");
+
         jakeObject.removeTag(tag);
-        // todo access jakeObjectDao
+        db.getLogEntryDao().create(new LogEntry(LogAction.TAG_REMOVE, new Date(), jakeObject.getName(), "",
+                getLoginUserid(), tag.getName()));
+
+        db.getJakeObjectDao().removeTagsFrom(jakeObject,tag);
         return jakeObject;
     }
 
@@ -582,7 +588,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         	setJakeObjectLockComment(jakeObject, "");
         } else {
         	try {
-    			db.getLogEntryDao().create(new LogEntry(LogAction.UNLOCK, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), ""));
+    			db.getLogEntryDao().create(new LogEntry(LogAction.UNLOCK, new Date(), jakeObject.getName(),
+                        fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), ""));
     		} catch (FileNotFoundException e) {
     			log.warn("failed to create log entry: file not found");
     		} catch (InvalidFilenameException e) {
@@ -595,7 +602,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     
     public void setJakeObjectLockComment(JakeObject jakeObject, String lockComment) {
 		try {
-			db.getLogEntryDao().create(new LogEntry(LogAction.LOCK, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), lockComment));
+			db.getLogEntryDao().create(new LogEntry(LogAction.LOCK, new Date(), jakeObject.getName(),
+                    fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), lockComment));
 		} catch (FileNotFoundException e) {
 			log.warn("failed to create log entry: file not found");
 		} catch (InvalidFilenameException e) {
@@ -614,7 +622,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     	log.debug("trying to delete object: " + jakeObject.getName());
     	Boolean success = false;
         try {
-			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(), fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
+			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(),
+                    fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
 			success = fss.deleteFile(jakeObject.getName());
 			refreshFileObjects();
 		} catch (FileNotFoundException e) {
@@ -949,7 +958,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		refreshFileObjects();
 	}
 	
-	public void refreshFileObjects() {
+	public synchronized void refreshFileObjects() {
 		log.debug("calling refreshFileObjects() ");
 		
 		filesDB = getFileObjectsFromDB();
@@ -971,7 +980,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			}
 			filesStatus.put(file.getName(), status);
 		}
-	}
+
+    }
 
     private List<FileObject> getFileObjectsFromDB() {
         if (filesDB == null)
@@ -1021,14 +1031,28 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         
         List<JakeObject> results = new ArrayList<JakeObject>();
         
-        for(FileObject jo : filesDB) {
-        	log.debug( "result-db: " + jo.getName());
-        	results.add(jo);
-        }
+
         for(FileObject jo : filesFSS) {
         	log.debug( "result-fs: " + jo.getName());
-        	if(!results.contains(jo))
-        		results.add(jo);
+            results.add(jo);
+        }
+        
+        for(FileObject jo : filesDB) {
+        	log.debug( "result-db: " + jo.getName());
+            List<Tag> tags = db.getJakeObjectDao().getTagsForObject(jo);
+
+
+            if(results.contains(new FileObject(jo.getName())))
+                results.remove(new FileObject(jo.getName()));
+
+            for(Tag tag : tags)
+            {
+                jo.addTag(tag);
+            }
+            
+            // add the object
+            results.add(jo);
+
         }
         return results;
     }
@@ -1052,7 +1076,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     /*** Stuff required for filesPanel *******/
 
-    public boolean importExternalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
+    public synchronized boolean importExternalFileIntoProject(String absolutePath, String destinationFolderAbsolutePath) {
         log.debug("calling importLocalFileIntoProject(\n"+ absolutePath +",\n"+destinationFolderAbsolutePath +"\n);");
         File srcFile = new File(absolutePath);
         if(srcFile == null || !srcFile.exists() )
@@ -1092,13 +1116,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         return true;
     }
 
-    public boolean importLocalFileIntoProject(String relPath) {
+    public synchronized boolean importLocalFileIntoProject(String relPath) {
         FileObject fileObject = new FileObject(relPath);
 
         db.getJakeObjectDao().save(fileObject);
         // create logEntry
-
-
         try {
 
             // userId = ics.getUserid();
@@ -1137,6 +1159,22 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         filesStatus.put(relPath, calculateJakeObjectSyncStatus(fileObject) | SYNC_EXISTS_LOCALLY | SYNC_IS_IN_PROJECT );
 
         return true;
+    }
+
+    public Integer getJakeObjectSyncStatus(JakeObject jakeObject) {
+        int status = 0;
+        if(filesStatus.containsKey(jakeObject.getName()))
+        {
+            return filesStatus.get(jakeObject.getName());
+        }
+        else
+        {
+            log.debug("getJakeObjectSyncStatus of "+jakeObject.getName());
+            log.debug("is NOT cached");
+            status = calculateJakeObjectSyncStatus(jakeObject);
+            filesStatus.put(jakeObject.getName(), status);
+        }
+        return status;
     }
 
 

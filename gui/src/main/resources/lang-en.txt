@@ -73,7 +73,7 @@ SearchMenuItemBoth=Both
 FilesPanelDialogConfirmDeleteDialogTitle=Delete file?
 FilesPanelDialogConfirmDeleteDialogText=Are you sure you want to delete the following file? This action may not be undone. <br> %0%
 FilesPanelDialogFileDeletedTitle=File deleted
-FilesPanleDialogFileDeletedText=%0% has been deleted successfully!
+FilesPanelDialogFileDeletedText=%0% has been deleted successfully!
 FilesPanelDialogFileNotDeletedTitle=File not deleted
 FilesPanelDialogFileNotDeletedText=The following file could not have been deleted from the project. Please make sure you have the necessary rights to perform this operation. <br> %0%
 FilesPanelDialogCouldNotLaunchFiledTitle=Couldn't open file
@@ -85,10 +85,10 @@ FilesPanelDialogPropagationMessageTitle=Propagation scheduled
 FilesPanelDialogPropagationMessageText=The propagation of the file %0% was scheduled. It could take some time to propagate it to other project members, depending on the availability of other project members.
 FilesPanelDialogPullMessageTitle=Pulling scheduled
 FilesPanelDialogPullMessageText=The pulling of the file %0% was scheduled. It could take some time to get it from other project members,due to the availability of the other project members.
-FilesPanleDialogImportFailedTitle=Import failed
-FilesPanleDialogImportFailedText=The file %0% could not be imported into the project because it is either already a file in the projects repository or has not a valid filename
-FilesPanleDialogImportSucceededTitle=Import succeeded
-FilesPanleDialogImportSucceededText=The file %0% was successfully imported into this JakeProject.
+FilesPanelDialogImportFailedTitle=Import failed
+FilesPanelDialogImportFailedText=The file %0% could not be imported into the project because it is either already a file in the projects repository or has not a valid filename
+FilesPanelDialogImportSucceededTitle=Import succeeded
+FilesPanelDialogImportSucceededText=The file %0% was successfully imported into this JakeProject.
 
 
 FilesDialogContextMenuItemOpen=Open
@@ -183,7 +183,7 @@ ImportFileDialogFileNotOutsideText=The file you want to import must be outside t
 ImportFileDialogImportButton=Import
 ImportFileDialogJakeIconLabel=Import file
 ImportFileDialogFileLabel=Source file:
-ImportFileDialogBrowserFileButton=Browser...«
+ImportFileDialogBrowserFileButton=Browser...ï¿½
 ImportFileDialogDestinationFolderLabel=Destination folder:
 ImportFileDialogDestinationFolderButton=Browse...
 

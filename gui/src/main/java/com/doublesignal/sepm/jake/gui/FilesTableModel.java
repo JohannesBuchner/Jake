@@ -110,7 +110,7 @@ public class FilesTableModel extends AbstractTableModel implements IModification
 			return JakeObjLib.getTagString(file.getTags());
 
 		case SyncStatus:
-			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.calculateJakeObjectSyncStatus(file));
+			return FilesLib.getHumanReadableFileStatus(jakeGuiAccess.getJakeObjectSyncStatus(file));
 
 		case LastChanged:
 			try {
@@ -137,10 +137,14 @@ public class FilesTableModel extends AbstractTableModel implements IModification
 	{
 		if(columnIndex == FilesColumns.Tags.ordinal())
 		{
-			JakeObject foundJakeObject = files.get(rowIndex);
+            log.debug("setValueAt!");
+            JakeObject foundJakeObject = files.get(rowIndex);
 			log.debug("handling a tag-change event");
-			if (foundJakeObject != null)
-			{
+			if (foundJakeObject != null &&
+                    (jakeGuiAccess.getJakeObjectSyncStatus(foundJakeObject) & IJakeGuiAccess.SYNC_IS_IN_PROJECT) != 0
+            &&      (jakeGuiAccess.getJakeObjectSyncStatus(foundJakeObject) & IJakeGuiAccess.SYNC_HAS_LOGENTRIES) != 0
+            )
+            {
 				String sTags = JakeObjLib.generateNewTagString(jakeGuiAccess, foundJakeObject, (String) columnValue);
 				super.setValueAt(sTags, rowIndex, columnIndex);
 			}

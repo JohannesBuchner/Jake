@@ -80,7 +80,7 @@ public class FilesPanel extends JPanel {
     public void updateUI() {
         // lazy loading
 
-        if(lastUpdate != null && lastUpdate.getTime()+3 < new Date().getTime())
+        if(lastUpdate != null && lastUpdate.getTime()+3000 < new Date().getTime())
         {
             super.updateUI();
             if (filesTableModel != null) {
@@ -237,7 +237,7 @@ public class FilesPanel extends JPanel {
             }
         });
 
-        importLocalFileMenuItem.setText("FilesDialogContextMenuItemImportFile");
+        importLocalFileMenuItem.setText(translator.get("FilesDialogContextMenuItemImportFile"));
         importLocalFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 importLocalFileMenuItemActionPerformed(event);
@@ -280,7 +280,7 @@ public class FilesPanel extends JPanel {
                 translator.get("FilesPanelDialogConfirmDeleteDialogText", filename))) {
             if (jakeGuiAccess.deleteJakeObject(fileObject)) {
                 UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileDeletedTitle"),
-                        translator.get("FilesPanleDialogFileDeletedText", filename),
+                        translator.get("FilesPanelDialogFileDeletedText", filename),
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
                 UserDialogHelper.inform(this, translator.get("FilesPanelDialogFileNotDeletedTitle"),
@@ -375,9 +375,18 @@ public class FilesPanel extends JPanel {
         log.info("importLocalFileMenuItemActionPerformed");
             JakeObject fileObject = getSelectedFile();
             if (fileObject != null) {
-                jakeGuiAccess.importLocalFileIntoProject(fileObject.getName());
-                
-                Integer status = jakeGuiAccess.calculateJakeObjectSyncStatus(fileObject);
+                if( jakeGuiAccess.importLocalFileIntoProject(fileObject.getName()) )
+                {
+                    // possible to add some notification here, but skipped because of usability (avoid dialogs)
+                }
+                else
+                {
+                    UserDialogHelper.error(this, translator.get("FilesPanelDialogImportFailedTitle"),
+                            translator.get("FilesPanelDialogImportFailedText", fileObject.getName()) );
+                    log.debug("show some error dialog");
+
+                }
+/*s                Integer status = jakeGuiAccess.getJakeObjectSyncStatus(fileObject);
 
                 if((status & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
                 {
@@ -386,10 +395,8 @@ public class FilesPanel extends JPanel {
                 }
                 else
                 {
-                    UserDialogHelper.translatedError(this, "FilesPanleDialogImportFailedTitle",
-                            "FilesPanleDialogImportFailedText");
-                    log.debug("show some error dialog");
-                }
+
+                }*/
 
 /*
 
