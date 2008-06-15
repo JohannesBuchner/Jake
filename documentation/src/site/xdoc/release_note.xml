@@ -11,19 +11,18 @@
   <body>
   	<section name="Release Note">
 		<p>The current release of jake is a work in progress prototype. Some core functionalities like synchronization an inter client communication are only simulated. Since it is only a prototype some constraints have been chosen to make implementation easier yet jake is still showing its capabilities anyway.</p>
-		<subsection name="Constriants/Known issues">
+		<subsection name="Constraints/Known issues">
 			<ul>
-				<li>File and folder names must comply to the following expression: [a-zA-Z0-9\-_.]</li>
-				<li>User Names must contain the '@' character to be a valid userId</li>
-				<li>It is not advised to change the the userId of the local user</li>
-				<li>Shared files must not exceed a 2gb file size limit.</li>
+				<li>File and folder names must comply to the following expression: [a-zA-Z0-9\-_.]+</li>
+				<li>User Names must contain the '@' character to be a valid userid</li>
+				<li>Do not change the userid of the local user."</li>
 			</ul>
 		</subsection>
 		<subsection name="Hints">
 			<ul>
-				<li>To successfully log in use a userId for both userId and password.</li>
-				<li>Remote users containing a 's' before the '@' in their userId are always online</li>
-				<li>Remote users containing a 'n' before the '@' in their userId push a new version of  'Projektauftrag/Lastenheft.txt' upen every logsync.</li>
+				<li>To successfully log in use a userId for both userid and password.</li>
+				<li>Remote users containing a 's' before the '@' in their userid are always online</li>
+				<li>Remote users containing a 'n' before the '@' in their userid push a new version of 'Projektauftrag/Lastenheft.txt' upen every logsync.</li>
 			</ul>
 		</subsection>
   	</section>
