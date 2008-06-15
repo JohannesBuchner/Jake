@@ -41,6 +41,7 @@
 		</menu>
 		<menu name="End User">
 			<item name="Installation Notes" href="installation_notes.html" />
+			<item name="Release Note" href="release_note.html" />
 		</menu>
 		
         <menu name="Templates">
