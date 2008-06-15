@@ -7,6 +7,8 @@ import java.util.Observable;
 import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.Logger;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
@@ -26,10 +28,19 @@ public class PeopleTableModel extends AbstractTableModel {
 	
 	private List<ProjectMember> members = new ArrayList<ProjectMember>();
 	private final IJakeGuiAccess jakeGuiAccess;
+	private ProjectMember ownUserId;
 	
 	PeopleTableModel(IJakeGuiAccess jakeGuiAccess) {
 		log.info("Initializing PeopleTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
+		try {
+			ownUserId = jakeGuiAccess.getProjectMember(jakeGuiAccess.getConfigOption("userid"));
+			
+		} catch (NoSuchConfigOptionException e) {
+			
+		} catch (NoSuchProjectMemberException e) {
+			
+		}
 		updateData();
 	}
 
@@ -87,6 +98,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	public void updateData() {
 		log.info("Updating People data...");
 		this.members = jakeGuiAccess.getMembers();
+		this.members.remove(ownUserId);
 		peopleUpdater.dataUpdated();
 
 	}
