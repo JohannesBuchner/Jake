@@ -10,7 +10,7 @@
 
   <body>
   	<section name="Release Note">
-		<p>The current release of jake is a work in progress prototype. Some core functionalities like synchronization an inter client communication are only simulated. Since it is only a prototype some constraints have been chosen to make implementation easier yet jake is still showing its capabilities anyway.</p>
+		<p>The current release of Jake uses mocks to simulate inter client communication and parts of the synchronization. That means that it is not fully operational but demonstrates its features and capabilities</p>
 		<subsection name="Constraints/Known issues">
 			<ul>
 				<li>File and folder names must comply to the following expression: [a-zA-Z0-9\-_.]+</li>
