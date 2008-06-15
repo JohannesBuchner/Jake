@@ -52,7 +52,20 @@ public class FolderWatchTest extends FSTestCase {
 			throw e;
 		}
 	}
-
+	@Test
+	public void testIsWindowsStupid() throws Exception {
+		File f = new File(mytempdir + File.separator + "just_stupid");
+		writeInFile(f, "foo bar");
+		assertTrue(f.exists());
+		f.delete();
+		System.gc();
+		if(f.exists()){
+			System.out.println("WARNING: You are on a stupid Windows. ");
+			f.delete();
+		}
+		assertFalse(f.exists());
+	}
+	
 	@Test
 	public void testDeleteFile() throws Exception {
 		System.out.println(" **** testDeleteFile **** ");
@@ -68,7 +81,7 @@ public class FolderWatchTest extends FSTestCase {
 			fw.addListener(new IModificationListener() {
 				int state = 0;
 				public void fileModified(File f, ModifyActions action) {
-					System.out.println("State: "+state );
+					System.out.println("testDeleteFile: State: "+state );
 					switch(state){
 						case 0:
 							assertEquals("just_deleted", f.getName());
@@ -92,6 +105,7 @@ public class FolderWatchTest extends FSTestCase {
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			f.delete();
 			System.gc();
+			f.delete();
 			assertFalse(f.exists());
 			System.out.println("We expect DELETED");
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
@@ -99,6 +113,7 @@ public class FolderWatchTest extends FSTestCase {
 			fw.cancel();
 		} catch (Exception e) {
 			fw.cancel();
+			f.delete();
 			throw e;
 		}
 	}
@@ -155,10 +170,13 @@ public class FolderWatchTest extends FSTestCase {
 			fw.cancel();
 			f.delete();
 			System.gc();
+			f.delete();
 			assertFalse(f.exists());
 			
 		} catch (Exception e) {
 			fw.cancel();
+			f.delete();
+			
 			throw e;
 		}
 	}
@@ -256,6 +274,8 @@ public class FolderWatchTest extends FSTestCase {
 			writeInFile(f, "foo, bar");
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			f.delete();
+			System.gc();
+			f.delete();
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
 			
 			writeInFile(f2, "Hello World");
@@ -266,12 +286,15 @@ public class FolderWatchTest extends FSTestCase {
 			
 			f2.delete();
 			System.gc();
+			f2.delete();
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
 			
 			awaitNextTimeUnit();
 			
 			writeInFile(f, "bar, bazz");
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
+			f.delete();
+			System.gc();
 			f.delete();
 			assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
 			
@@ -284,7 +307,9 @@ public class FolderWatchTest extends FSTestCase {
 		}
 	}
 	@After
-	public void teardown() throws Exception{
+	public void tearDown() throws Exception{
+		System.gc();
 		super.tearDown();
+		System.gc();
 	}
 }
