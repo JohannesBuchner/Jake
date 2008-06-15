@@ -824,7 +824,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 			mainFrame.pack();
 			mainFrame.setLocationRelativeTo(mainFrame.getOwner());
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			mainFrame.setMinimumSize(new Dimension(1200, 400));
+			mainFrame.setMinimumSize(new Dimension(400, 400));
 			mainFrame.setVisible(true);
 		}
 
