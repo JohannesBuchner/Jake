@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.table.TableColumnModel;
 
 
 import org.apache.log4j.Logger;
@@ -128,6 +129,7 @@ public class ViewLogDialog extends JDialog {
 			dialogPane.add(buttonBar, BorderLayout.SOUTH);
 		}
 		contentPane.add(dialogPane, BorderLayout.CENTER);
+		logTable.setPreferredScrollableViewportSize(new Dimension(800, 379));
 		pack();
 		setLocationRelativeTo(getOwner());
 	}

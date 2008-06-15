@@ -235,5 +235,6 @@ ViewLogDialogTitle=View log
 ViewLogDialogTableModelColumnAction=Action
 ViewLogDialogTableModelColumnUser=User
 ViewLogDialogTableModelColumnTime=Time
+ViewLogDialogTableModelColumnComment=Comment
 
 

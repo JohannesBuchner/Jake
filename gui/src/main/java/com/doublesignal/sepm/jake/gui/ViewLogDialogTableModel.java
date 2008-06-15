@@ -57,10 +57,11 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
 
 	String[] colNames = new String[] { translator.get("ViewLogDialogTableModelColumnAction"),
 			translator.get("ViewLogDialogTableModelColumnUser"),
+			translator.get("ViewLogDialogTableModelColumnComment"),
 			translator.get("ViewLogDialogTableModelColumnTime") };
     
     enum LogColumns {
-		Action, User, Time
+		Action, User, Comment, Time
 		}
     
     public int getColumnCount() {
@@ -82,6 +83,9 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
     		
     	case User:
     		return logEntry.getUserId();
+    	
+    	case Comment:
+    		return logEntry.getComment();
     		
     	case Time:
     		return logEntry.getTimestamp();
