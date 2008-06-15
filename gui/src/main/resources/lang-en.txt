@@ -21,22 +21,22 @@ ButtonCancel=Cancel
 ButtonClose=Close
 
 NewProjectDialogTitle=Jake - the collaborative file sharing client
-NewProjectDialogInfo=<html><body>Jake is a collaborative file sharing client.<br>Begin sharing your files with three simple steps.</body></html>
+NewProjectDialogInfo=<html><body>Jake is a collaborative file sharing client.<br>Begin sharing your files with three simple steps...</body></html>
 NewProjectDialogAdviseSelectFolder=1. Select the folder you want to share:
 NewProjectDialogFolder=Folder:
-NewProjectDialogAdviseNameProject=2. Give your project a name! (or use folder name as default)
+NewProjectDialogAdviseNameProject=2. Give your project a name:
 NewProjectDialogProjectName=Project Name:
-NewProjectDialogAdviseUserid=3. Enter your userid for the %0% service
+NewProjectDialogAdviseUserid=3. Enter your User ID for the %0% service:
 NewProjectDialogUserid=Userid:
 NewProjectDialogOpenProject=Open Project
 NewProjectDialogCreateProject=Create Project
 NewProjectDialogCreateOpenProject=Create/Open Project
 NewProjectDialogInvalidDatabase=Invalid database
 NewProjectDialogInvalidRootPath=Invalid root path
-NewProjectDialogProjectNameTooShort=Project name is too short
-NewProjectDialogInvalidUserIdFormat=Userid is not of correct format
-NewProjectDialogProjectAlreadyExists=Project already exists
-NewProjectDialogInvalidProjectDirectory=Invalid project directory
+NewProjectDialogProjectNameTooShort=The project name you have entered is too short.
+NewProjectDialogInvalidUserIdFormat=The User ID you have entered is invalid.
+NewProjectDialogProjectAlreadyExists=This project already exists.
+NewProjectDialogInvalidProjectDirectory=The project directory is invalid.
 NewProjectDialogFolderLabel=Folder
 NewProjectDialogFolderSelectButton=...
 
@@ -58,7 +58,7 @@ MenuItemLog=Project log
 MenuProject=Project
 MenuItemOpenProjectFolder=Open project folder
 MenuItemNewNote=New note...
-MenuItemRefreshDatapoolView=Refresh datapool view
+MenuItemRefreshDatapoolView=Refresh data pool view
 MenuItemAddFile= Add file...
 MenuItemAddFolder=Add folder...
 MenuItemAddProjectMember=Add project member...
@@ -71,24 +71,24 @@ SearchMenuItemTags=Tags
 SearchMenuItemBoth=Both
 
 FilesPanelDialogConfirmDeleteDialogTitle=Delete file?
-FilesPanelDialogConfirmDeleteDialogText=Are you sure you want to delete the following file? This action may not be undone. <br> %0%
+FilesPanelDialogConfirmDeleteDialogText=Are you sure you want to delete the following file? This action cannot be undone. <br> %0%
 FilesPanelDialogFileDeletedTitle=File deleted
 FilesPanelDialogFileDeletedText=%0% has been deleted successfully!
 FilesPanelDialogFileNotDeletedTitle=File not deleted
-FilesPanelDialogFileNotDeletedText=The following file could not have been deleted from the project. Please make sure you have the necessary rights to perform this operation. <br> %0%
-FilesPanelDialogCouldNotLaunchFiledTitle=Couldn't open file
-FilesPanelDialogCouldNotLaunchFileInvalidText=The file you tried to open seems to be no valid file!
-FilesPanelDialogCouldNotLaunchFileOpenText=Please check your operating systems settings for default file actions
+FilesPanelDialogFileNotDeletedText=The following file could not be deleted from the project. Please make sure you have the necessary rights to perform this operation. <br> %0%
+FilesPanelDialogCouldNotLaunchFiledTitle=Could not open file
+FilesPanelDialogCouldNotLaunchFileInvalidText=The file you tried to open does not seem to be a valid file!
+FilesPanelDialogCouldNotLaunchFileOpenText=Please check your operating system's settings for default file actions
 FilesPanelDialogCouldNotLaunchFileNoProjectText=Could not be opened because no project is loaded
 FilesPanelDialogCouldNotLaunchFileIOText=The file could not be opened due to an IOError
 FilesPanelDialogPropagationMessageTitle=Propagation scheduled
-FilesPanelDialogPropagationMessageText=The propagation of the file %0% was scheduled. It could take some time to propagate it to other project members, depending on the availability of other project members.
+FilesPanelDialogPropagationMessageText=The propagation of the file %0% was scheduled. It could take some time to propagate it to other project members, depending on their availability.
 FilesPanelDialogPullMessageTitle=Pulling scheduled
-FilesPanelDialogPullMessageText=The pulling of the file %0% was scheduled. It could take some time to get it from other project members,due to the availability of the other project members.
+FilesPanelDialogPullMessageText=Pulling of the file %0% was scheduled. It could take some time to retrieve it from other project members, depending on their availability.
 FilesPanelDialogImportFailedTitle=Import failed
-FilesPanelDialogImportFailedText=The file %0% could not be imported into the project because it is either already a file in the projects repository or has not a valid filename
+FilesPanelDialogImportFailedText=The file %0% could not be imported into the project because it already exists in the project folder or has an invalid filename
 FilesPanelDialogImportSucceededTitle=Import succeeded
-FilesPanelDialogImportSucceededText=The file %0% was successfully imported into this JakeProject.
+FilesPanelDialogImportSucceededText=The file %0% was successfully imported into this Jake project.
 
 
 FilesDialogContextMenuItemOpen=Open
@@ -110,7 +110,7 @@ FilesTableModelFileNotInProject= <file not in project>
 
 NotesPanelDialogTitle=Notes (%0%)
 NotesPanelDialogCannotBeUndone=This operation cannot be undone.
-NotesPanelDialogReallyDeleteNode=Really delete this node?
+NotesPanelDialogReallyDeleteNode=Really delete this note?
 NotesPanelDialogMenuNewNote=New Note...
 NotesPanelDialogMenuOpenNote=Open Note...
 NotesPanelDialogMenuRemoveNote=Remove Note...
@@ -144,7 +144,7 @@ SetSoftLockDialogOverrideLockButton=Override lock
 SetSoftLockDialogLockedByLabel=This lock was set by: 
 SetSoftLockDialogLockedByYouLabel=This lock was set by: You
 
-MainToolbarToolTipSync=Sync datapool view with other project members
+MainToolbarToolTipSync=Sync data pool view with other project members
 MainToolbarToolTipPushFile=Announce locally changed files
 MainToolbarToolTipPull=Pull files from project member
 MainToolbarToolTipSearch=Search for files
@@ -152,31 +152,31 @@ MainToolbarToolTipSearchField=Enter search term here
 
 PeoplePaneContextMenuItemShowInfoComments=Show info/comments...
 PeoplePaneContextMenuItemSetNickname=Set nickname...
-PeoplePaneContextMenuItemSetUserID=Set user id
+PeoplePaneContextMenuItemSetUserID=Set user ID
 PeoplePaneContextMenuItemRemoveMember=Remove project member
 
-AddProjectMemberDialogTitle=Enter a user id
+AddProjectMemberDialogTitle=Enter a user ID
 AddProjectMemberDialogSaveButton=Save
 
 ViewProjectMemberCommentDialogButtonSave=Save
-ViewProjectMemberCommentDialogTitle=Show local comment of %0%
+ViewProjectMemberCommentDialogTitle=Show local comment for %0%
 
 HumanReadableFileStatusConflict=In conflict
-HumanReadableFileStatusIsNewestVersion=Is Newest version
+HumanReadableFileStatusIsNewestVersion=Is newest version
 HumanReadableFileStatusNewerVersionAvailable=Newer version available
 HumanReadableFileStatusLocallyChanged=Locally changed
 HumanReadableFileStatusLocalCopyExists=Local
 HumanReadableFileStatusRemoteVersionExists=Remote
-HumanReadableFileStatusNotInProject=Not in Project
+HumanReadableFileStatusNotInProject=Not in project
 HumanReadableFileStatusNotPushed=Not announced
 
 ImportFileDialogSuccessMessageTitle=File successfully imported
-ImportFileDialogSuccessMessageText=Your file was successfully imported into your project!
+ImportFileDialogSuccessMessageText=Your file was successfully imported into the project!
 ImportFileDialogNotImportedMessageTitle=File not imported!
-ImportFileDialogNotImportedMessageText=An Error occurred during importing of the file into your project! Please check your permissions on the file and the project folder and the there is enough available disk space to copy it into the project folder!
+ImportFileDialogNotImportedMessageText=An Error occurred importing the file into your project! Please check if you have sufficient permissions to access the file and the project folder and that there is enough available disk space to copy it into the project folder.
 ImportFileDialogInvalidDirectoryMessageTitle=Invalid directory!
 ImportFileDialogInvalidDirectoryMessageText=You may only select a folder from within the current project.
-ImportFileDialogDestinationFileChooserButton=Set destination Folder
+ImportFileDialogDestinationFileChooserButton=Set destination folder
 ImportFileDialogSourceFileChoosrButton=Import selected file
 ImportFileDialogFileNotOutsideTitle=File must be outside the project folder
 ImportFileDialogFileNotOutsideText=The file you want to import must be outside the current project folder.
@@ -187,7 +187,7 @@ ImportFileDialogBrowserFileButton=Browse...
 ImportFileDialogDestinationFolderLabel=Destination folder:
 ImportFileDialogDestinationFolderButton=Browse...
 
-JakeGuiStatusMessag=Jake's up and running...
+JakeGuiStatusMessag=Jake is up and running...
 
 PeoplePanelTitle=People (%0%/%1%)
 PeoplePanelMenuItemSendMessage=Send message...
@@ -199,7 +199,7 @@ PeopleTabelModelColumnNickname=Nickname
 PeopleTabelModelColumnUserId=User ID
 PeopleTabelModelColumnStatus=Status
 PeopleTabelModelStautsOnline=Online
-PeopleTabelModelStatusOffline=Off-line
+PeopleTabelModelStatusOffline=Offline
 PeopleTabelModelStatusNotLoggedIn=Log in to view status
 PeopleTabelModelStatusNoSuchUserId=Unknown user
 
@@ -207,7 +207,7 @@ ReceiveMessageDialogTitle=Message from %0%
 ReceiveMessageDialogFromLabel=From: 
 ReceiveMessageDialogWhenLabel=When: 
 
-SendMessageDialogMessageEmptyMessageText=The message you tried to send is empty. Please insert some text or cancel  the operation
+SendMessageDialogMessageEmptyMessageText=The message you tried to send is empty. Please insert some text (or click "Cancel").
 SendMessageDialogMessageEmptyMessageTitle=Empty message
 SendMessageDialogMesaageError=Error sending message
 SendMessageDialogMessageRecipientDoesNotExistInProject=The recipient project member does not exist in this project.
