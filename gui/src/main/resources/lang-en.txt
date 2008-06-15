@@ -183,7 +183,7 @@ ImportFileDialogFileNotOutsideText=The file you want to import must be outside t
 ImportFileDialogImportButton=Import
 ImportFileDialogJakeIconLabel=Import file
 ImportFileDialogFileLabel=Source file:
-ImportFileDialogBrowserFileButton=Browser...�
+ImportFileDialogBrowserFileButton=Browse...
 ImportFileDialogDestinationFolderLabel=Destination folder:
 ImportFileDialogDestinationFolderButton=Browse...
 
