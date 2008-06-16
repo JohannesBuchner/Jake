@@ -38,7 +38,7 @@ import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 public class NotesPanel extends JPanel {
 	private static final Logger log = Logger.getLogger(NotesPanel.class);
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
-	
+
 	private final JakeGui gui;
 	private final IJakeGuiAccess jakeGuiAccess;
 	private NotesTableModel notesTableModel;
@@ -47,15 +47,15 @@ public class NotesPanel extends JPanel {
 		log.info("Initializing NotesPanel.");
 		this.gui = gui;
 		this.jakeGuiAccess = gui.getJakeGuiAccess();
-		
+
 		initComponents();
 		initPopupMenu();
 		updateData();
 	}
-	
-    public void setFilters(FilterPipeline filterPipeline) {
-        notesTable.setFilters(filterPipeline);
-    }
+
+	public void setFilters(FilterPipeline filterPipeline) {
+		notesTable.setFilters(filterPipeline);
+	}
 
 	private void newNoteMenuItemActionPerformed(ActionEvent e) {
 		createNewNote();
@@ -78,11 +78,12 @@ public class NotesPanel extends JPanel {
 	}
 
 	private void removeNoteMenuItemActionPerformed(ActionEvent e) {
-		JOptionPane.showConfirmDialog(this, translator.get("NotesPanelDialogCannotBeUndone"),
-				translator.get("NotesPanelDialogReallyDeleteNode"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
-		jakeGuiAccess.removeNote(getSelectedNote());
-		updateData();
+		if (JOptionPane.showConfirmDialog(this, translator.get("NotesPanelDialogCannotBeUndone"),
+				translator.get("NotesPanelDialogReallyDeleteNode"), JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE) == 0) {
+			jakeGuiAccess.removeNote(getSelectedNote());
+			updateData();
+		}
 	}
 
 	private void editNote(NoteObject note) {
@@ -107,7 +108,8 @@ public class NotesPanel extends JPanel {
 	}
 
 	public String getTitle() {
-		return translator.get("NotesPanelDialogTitle", String.valueOf(notesTableModel.getNotes().size()));
+		return translator.get("NotesPanelDialogTitle", String.valueOf(notesTableModel.getNotes()
+				.size()));
 	}
 
 	private boolean isNoteSelected() {
@@ -215,8 +217,8 @@ public class NotesPanel extends JPanel {
 	public int getNameColPos() {
 		return 0;
 	}
-	
+
 	public int getTagsColPos() {
 		return 1;
-	}	
+	}
 }

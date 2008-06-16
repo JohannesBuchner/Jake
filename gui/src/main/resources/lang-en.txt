@@ -150,11 +150,6 @@ MainToolbarToolTipPull=Pull files from project member
 MainToolbarToolTipSearch=Search for files
 MainToolbarToolTipSearchField=Enter search term here
 
-PeoplePaneContextMenuItemShowInfoComments=Show info/comments...
-PeoplePaneContextMenuItemSetNickname=Set nickname...
-PeoplePaneContextMenuItemSetUserID=Set user ID
-PeoplePaneContextMenuItemRemoveMember=Remove project member
-
 AddProjectMemberDialogTitle=Enter a user ID
 AddProjectMemberDialogSaveButton=Save
 
@@ -194,6 +189,9 @@ PeoplePanelMenuItemSendMessage=Send message...
 PeoplePanelMenuItemShowInfo=Show info/comment...
 PeoplePanelMenuItemAddProjectMember=Add project member...
 PeoplePanelMenuItemRemoveProjectMember=Remove project member
+
+PeoplePanelDialogReallyDeletePerson=Really delete Person?
+PeoplePanelDialogCannotBeUndone=This operation cannot be undone.
 
 PeopleTabelModelColumnNickname=Nickname
 PeopleTabelModelColumnUserId=User ID
