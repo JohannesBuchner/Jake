@@ -538,20 +538,20 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             log.debug("Project opened.");
             
         } catch (BadSqlGrammarException e) {
-            System.out.println(e);
+        	e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (DataAccessException e) {
-            System.out.println(e);
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (NotADirectoryException e) {
-            System.out.println(e);
+            e.printStackTrace();
             throw new InvalidRootPathException();
         }
 
         /*
-           * if no exceptions were thrown until here, the database is (assumed) to
-           * be valid.
-           */
+		 * if no exceptions were thrown until here, the database is (assumed) to
+		 * be valid.
+		 */
 
         return jga;
     }
@@ -625,7 +625,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			db.getLogEntryDao().create(new LogEntry(LogAction.DELETE, new Date(), jakeObject.getName(),
                     fss.calculateHash(fss.readFile(jakeObject.getName())), getLoginUserid(), "deleting file"));
 			success = fss.deleteFile(jakeObject.getName());
-			refreshFileObjects();
+			filesStatus.remove(jakeObject.getName());
+			filesFSS.remove(jakeObject.getName());
+			filesDB.remove(jakeObject.getName());
 		} catch (FileNotFoundException e) {
 			log.warn("Failed to delete file: File not found!");
 		} catch (NotAFileException e) {
@@ -779,7 +781,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	
 	private List<JakeObject> syncLogAndGetChanges(String userid)
 			throws OtherUserOfflineException, NotAProjectMemberException,
-			NotLoggedInException {
+			NotLoggedInException 
+	{
 		List<JakeObject> changes = null;
 		try {
 			changes = sync.syncLogAndGetChanges(userid);
@@ -821,13 +824,17 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
 	private boolean hasLocalModification(JakeObject jo)
 			throws NoSuchFileException, FileNotFoundException,
-			NotAReadableFileException, NoSuchLogEntryException {
-		log.debug("hasLocalModification("+jo.getName()+")");
+			NotAReadableFileException, NoSuchLogEntryException 
+	{
+		log.debug("hasLocalModification("+jo.getName()+") start");
 		String hash = getLocalContentHash(jo);
+		log.debug("hash calculated.");
 		log.debug("local: " + hash.substring(0,5));
 		LogEntry le = db.getLogEntryDao().getLastPulledFor(jo);
 		log.debug("log:   " + le.getHash().substring(0,5));
-		return !le.getHash().equals(hash);
+		boolean equal = le.getHash().equals(hash);
+		log.debug("hasLocalModification done.");
+		return !equal;
 	}
 	
 	public int calculateJakeObjectSyncStatus(JakeObject jo) {
@@ -928,11 +935,27 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 				}
 			}
 		}
+		log.debug("getJakeObjectSyncStatus(" + jo.getName() + ") done");
 		return state;
 	}
 	
+	public void refreshFileObject(File f){
+		log.debug("Refreshing file: " + f.getAbsolutePath());
+		for(String relpath : filesStatus.keySet()){
+			if(fss.joinPath(fss.getRootPath(), relpath).equals(f.getAbsolutePath())){
+				FileObject jo = new FileObject(relpath);
+				filesStatus.put(relpath, calculateJakeObjectSyncStatus(jo));
+				log.debug("file found and recalculated.");
+				return;
+			}
+		}
+		InvalidApplicationState.die("File to refresh not found?");
+	}
+	
 	public void refreshFileObject(JakeObject jo) {
+    	log.debug("refreshFileObject start");
 		filesStatus.put(jo.getName(), calculateJakeObjectSyncStatus(jo));
+    	log.debug("refreshFileObject end");
 	}
 	
 	public void syncWithProjectMembers(){
@@ -968,12 +991,12 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 			filesStatus = new HashMap<String, Integer>();
 		
 		for(FileObject file : filesFSS) {
-			System.out.println("from fs: '" + file.getName() + "'");
+			log.debug("from fs: '" + file.getName() + "'");
 			filesStatus.put(file.getName(), SYNC_EXISTS_LOCALLY);
 		}
 		int status;
 		for(FileObject file : filesDB) {
-			System.out.println("from db: '" + file.getName() + "'");
+			log.debug("from db: '" + file.getName() + "'");
 			status = calculateJakeObjectSyncStatus(file) | SYNC_IS_IN_PROJECT;
 			if(filesFSS.contains(file)){
 				status = status | SYNC_EXISTS_LOCALLY;
@@ -984,15 +1007,18 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     private List<FileObject> getFileObjectsFromDB() {
+    	log.debug("getFileObjectsFromDB start");
         if (filesDB == null)
             filesDB = db.getJakeObjectDao().getAllFileObjects();
         List<FileObject> results = new ArrayList<FileObject>();
         results.addAll(filesDB);
+    	log.debug("getFileObjectsFromDB done");
         return results;
     }
 	
 
     public List<FileObject> getFileObjectsByRelPath(String relPath){
+    	log.debug("getFileObjectsByRelPath start");
 		List<FileObject> results = new ArrayList<FileObject>();
 
 		String[] files = new String[0];
@@ -1003,11 +1029,15 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 		} catch (IOException e) {
 			InvalidApplicationState.die("should not happen", e);
 		}
+    	log.debug("getFileObjectsByRelPath files listed");
 		String fileRelPath;
 		for (String file : files) {
 			fileRelPath = relPath + "/" + file;
-			if(fileRelPath.startsWith("/"))
+			
+			while(fileRelPath.startsWith("/")){
 				fileRelPath = fileRelPath.substring(1);
+			}
+			
 			try {
 				if (fss.folderExists(fileRelPath)) {
 					results.addAll(getFileObjectsByRelPath(fileRelPath));
@@ -1022,38 +1052,32 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 				InvalidApplicationState.die(StateType.SHOULD_NOT_HAPPEN, e);
 			}
 		}
+    	log.debug("getFileObjectsByRelPath done");
 		return results;
 	}
 
     public List<JakeObject> getFileObjects() {
+    	log.debug("getFileObjects start");
         if(filesDB == null || filesFSS == null || filesStatus == null)
         	refreshFileObjects();
         
         List<JakeObject> results = new ArrayList<JakeObject>();
-        
-
-        for(FileObject jo : filesFSS) {
-        	log.debug( "result-fs: " + jo.getName());
-            results.add(jo);
-        }
+        results.addAll(filesFSS);
         
         for(FileObject jo : filesDB) {
-        	log.debug( "result-db: " + jo.getName());
             List<Tag> tags = db.getJakeObjectDao().getTagsForObject(jo);
-
-
+            
             if(results.contains(new FileObject(jo.getName())))
                 results.remove(new FileObject(jo.getName()));
-
+            
             for(Tag tag : tags)
             {
                 jo.addTag(tag);
             }
             
-            // add the object
             results.add(jo);
-
         }
+    	log.debug("getFileObjects done");
         return results;
     }
 	
@@ -1120,40 +1144,14 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         FileObject fileObject = new FileObject(relPath);
 
         db.getJakeObjectDao().save(fileObject);
-        // create logEntry
-        try {
-
-            // userId = ics.getUserid();
-            String userId = getLoginUserid();
-            String comment = "";
-            String hash = fss.calculateHashOverFile(fileObject.getName());
-
-            LogEntry logEntry = new LogEntry(
-                    LogAction.NEW_JAKEOBJECT,
-                    new Date(),
-                    fileObject.getName(),
-                    /* hash */
-                    hash,
-                    /* userId */
-                    userId,
-                    /* comment */
-                    comment
-            );
-            logEntry.setIsLastPulled(true);
-
-            db.getLogEntryDao().create(logEntry);
-            log.debug("persisted logentry");
-        } catch (InvalidFilenameException e) {
-            e.printStackTrace();
-            return false;
-        } catch (NotAReadableFileException e) {
-            e.printStackTrace();
-            return false;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-
+        
+        /* We create the Domain-Objects, but no log entries, which would be a 
+         * push. If we did that, we would use the push function. 
+         * Most likely, if users always want to push after a import, we would 
+         * call push after import, from the gui. Don't create logentries here 
+         * manually. 
+         */
+        
         filesDB.add(fileObject);
 
         filesStatus.put(relPath, calculateJakeObjectSyncStatus(fileObject) | SYNC_EXISTS_LOCALLY | SYNC_IS_IN_PROJECT );

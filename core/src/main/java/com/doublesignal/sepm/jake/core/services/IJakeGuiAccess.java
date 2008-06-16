@@ -495,7 +495,15 @@ public interface IJakeGuiAccess {
 	 * analyses each files sync status.
 	 */
 	public void refreshFileObjects();
-	
+	/** 
+	 * analyses the files sync status.
+	 */
+	public void refreshFileObject(File f);
+	/** 
+	 * analyses the JakeObjects sync status.
+	 */
+	public void refreshFileObject(JakeObject jo);
+
 	/**
 	 * For conflict resolving, a external file can be launched.
 	 * @param f
@@ -525,4 +533,5 @@ public interface IJakeGuiAccess {
     boolean importLocalFileIntoProject(String relPath);
 
     Integer getJakeObjectSyncStatus(JakeObject jakeObject);
+
 }

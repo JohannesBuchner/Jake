@@ -25,11 +25,7 @@ public enum LogAction {
 	 * the project was just created, 1st Logentry ever
 	 */
 	PROJECT_CREATED,
-
-    /**
-     * a new jakeobject was added to the project (not a new version!)
-     */
-    NEW_JAKEOBJECT,
+	
     /**
 	 * a new version of a JakeObject was created
 	 */
