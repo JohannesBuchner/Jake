@@ -156,7 +156,8 @@ public class FolderWatcher {
 	}
 
 	private String calculateHash(File f)
-		throws NotAReadableFileException {
+		throws NotAReadableFileException 
+	{
 		int len; 
 		byte[] buf;
 		int n;
@@ -176,7 +177,6 @@ public class FolderWatcher {
 	private void changeHappened(File f, ModifyActions event) {
 		if(isCanceled)
 			return;
-		System.out.println("changeHappened: " + f.getAbsolutePath() + ": " + event); 
 		for(IModificationListener l : listeners){
 			l.fileModified(f, event);
 		}
