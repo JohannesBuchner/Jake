@@ -17,10 +17,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.AbstractDocument.Content;
 
 import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
+import com.doublesignal.sepm.jake.gui.helper.DocumentSizeFilter;
+import com.doublesignal.sepm.jake.gui.helper.DocumentSizeAsciiFilter;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
@@ -30,8 +39,9 @@ import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 @SuppressWarnings("serial")
 public class NoteEditorDialog extends JDialog {
 	private static final Logger log = Logger.getLogger(NoteEditorDialog.class);
-	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
+	
+	private static final int MAX_NOTESLENGTH = 10000;
 	
 	private NoteObject note = null;
 	private boolean isSaved = false;
@@ -43,6 +53,7 @@ public class NoteEditorDialog extends JDialog {
 	 */
 	public NoteEditorDialog(Frame owner) {
 		super(owner, true);
+		log.info("Init Note Editor Dialog");
 		initComponents();
 		this.setTitle(translator.get("NoteEditorDialogNewNoteTitle"));
 	}
@@ -102,7 +113,7 @@ public class NoteEditorDialog extends JDialog {
 		isSaved = false;
 		this.setVisible(false);
 	}
-
+	
 	private void initComponents() {
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();
@@ -122,6 +133,14 @@ public class NoteEditorDialog extends JDialog {
 
 		noteTextArea.setText("");
 		noteTextArea.setLineWrap(true);
+		
+		AbstractDocument doc;
+		Document textareaDoc = noteTextArea.getDocument();
+		if (textareaDoc instanceof AbstractDocument) {
+		    doc = (AbstractDocument)textareaDoc;
+		    doc.setDocumentFilter(new DocumentSizeAsciiFilter(MAX_NOTESLENGTH));
+		}
+		
 		noteScrollPane.setViewportView(noteTextArea);
 		contentPanel.add(noteScrollPane);
 		dialogPane.add(contentPanel, BorderLayout.CENTER);
