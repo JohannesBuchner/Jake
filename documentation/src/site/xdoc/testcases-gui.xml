@@ -463,21 +463,8 @@
 						</tr>
 						<tr>
 							<td>29</td>
-							<td>Error Parsing a Note</td>
-							<td>A note could not be parsed correctly. The corresponding line in the list is highlighted
-								so that the user see's the problem, can open the note and correct the parsing problem
-							</td>
-							<td>List of Notes with at least one with invalid data</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Medium</td>
-							<td>fc</td>
-						</tr>
-						<tr>
-							<td>30</td>
 							<td>Sort notes by creator, date, etc.</td>
-							<td>By clicking on the label of a column, the list is sorted ascendenting or descendenting
+							<td>By clicking on the label of a column, the list is sorted ascended or descended
 								on that column
 							</td>
 							<td>List of Notes</td>
@@ -487,12 +474,12 @@
 							<td>Medium</td>
 							<td>NC</td>
 						</tr>
-                        						<tr>
-							<td>?</td>
+                        <tr>
+							<td>30</td>
 							<!-- test case # //-->
 							<td>The User uses his mouse to resize the windows</td>
 							<td>The Window is resized, the corresponding elements are moved,
-								the textarea gets enlarged.
+								the text area gets enlarged.
 							</td>
 							<td></td>
 							<td>ok</td>
