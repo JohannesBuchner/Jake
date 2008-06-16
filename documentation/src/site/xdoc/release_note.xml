@@ -10,12 +10,13 @@
 
   <body>
   	<section name="Release Note">
-		<p>The current release of Jake uses mocks to simulate inter client communication and parts of the synchronization. That means that it is not fully operational but demonstrates its features and capabilities</p>
+		<p>The current release of Jake uses mocks to simulate inter client communication and parts of the synchronization. That means that it is not network enabled but demonstrates its features and capabilities</p>
 		<subsection name="Constraints/Known issues">
 			<ul>
 				<li>File and folder names must comply to the following expression: [a-zA-Z0-9\-_.]+</li>
 				<li>User Names must contain the '@' character to be a valid userid</li>
-				<li>Do not change the userid of the local user."</li>
+				<li>Do not change the userid of the local user.</li>
+				<li>You might experience the interface to be not as fast as possible.</li>
 			</ul>
 		</subsection>
 		<subsection name="Hints">
