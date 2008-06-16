@@ -538,7 +538,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 							public void actionPerformed(ActionEvent event) {
 								jakeGuiAccess.syncWithProjectMembers();
 								jakeGuiAccess.refreshFileObjects();
-								filesPanel.updateUI();
+								filesPanel.updateUI(true);
 							}
 						});
 

@@ -1,4 +1,4 @@
-AboutDialogText=Jake, a work in progress prototype...
+AboutDialogText=Jake, a collaborative environment
 
 LoginDialogInvalidLoginText=The login data you provided were invalid. Try again!
 LoginDialogInvalidLoginTitle=Failed to log in

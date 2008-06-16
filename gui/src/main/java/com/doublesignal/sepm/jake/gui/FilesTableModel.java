@@ -82,8 +82,10 @@ public class FilesTableModel extends AbstractTableModel implements IModification
 	 * Update whole table data.
 	 */
 	public void updateData() {
-		log.info("calling updateData");
+		log.info("updateData start");
         this.files = jakeGuiAccess.getFileObjects();
+		fireTableDataChanged();
+		log.info("updateData done");
     }
 
 	public int getColumnCount() {
@@ -162,7 +164,7 @@ public class FilesTableModel extends AbstractTableModel implements IModification
 	}
 
 	public void fileModified(File f, ModifyActions action) {
-		jakeGuiAccess.refreshFileObjects();
+		jakeGuiAccess.refreshFileObject(f);
 		updateData();
 	}
 	

@@ -100,7 +100,7 @@ public class PeopleTableModel extends AbstractTableModel {
 		this.members = jakeGuiAccess.getMembers();
 		this.members.remove(ownUserId);
 		peopleUpdater.dataUpdated();
-
+		log.info("updateData done");
 	}
 
 	/**
@@ -119,6 +119,7 @@ public class PeopleTableModel extends AbstractTableModel {
 	private final PeopleUpdaterObservable peopleUpdater = new PeopleUpdaterObservable();
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		log.debug("getValueAt start");
 		ProjectMember member = members.get(rowIndex);
 
 		PeopleColumns col = PeopleColumns.values()[columnIndex];

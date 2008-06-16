@@ -76,11 +76,14 @@ public class FilesPanel extends JPanel {
                             + "/" + FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")"
             );
     }
-
+    
     public void updateUI() {
+    	updateUI(false);
+    }
+    
+    public void updateUI(boolean immidiate) {
         // lazy loading
-
-        if(lastUpdate != null && lastUpdate.getTime()+3000 < new Date().getTime())
+    	if(!immidiate || lastUpdate != null && lastUpdate.getTime()+3000 < new Date().getTime())
         {
             super.updateUI();
             if (filesTableModel != null) {
@@ -218,7 +221,7 @@ public class FilesPanel extends JPanel {
         viewLogForFileMenuItem.setText(translator.get("FilesDialogContextMenuItemViewLog"));
         viewLogForFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                viewLogForFileMenuItemActionPerfomed(event);
+                viewLogForFileMenuItemActionPerformed(event);
             }
         });
         
@@ -226,7 +229,7 @@ public class FilesPanel extends JPanel {
         pushFileMenuItem.setToolTipText("Push locally changed file");
         pushFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                pushFileMenuItemActionPerfomed(event);
+                pushFileMenuItemActionPerformed(event);
             }
         }
         );
@@ -287,13 +290,12 @@ public class FilesPanel extends JPanel {
                         translator.get("FilesPanelDialogFileNotDeletedText", filename),
                         JOptionPane.ERROR_MESSAGE);
             }
-
         }
-        updateUI();
+        updateUI(true);
     }
 
-    private void viewLogForFileMenuItemActionPerfomed(ActionEvent event) {
-        log.info("viewLogForFileMenuItemActionPerfomed");
+    private void viewLogForFileMenuItemActionPerformed(ActionEvent event) {
+        log.info("viewLogForFileMenuItemActionPerformed");
         JakeObject fileObject = getSelectedFile();
         if (fileObject != null) {
         	log.info("view log for a single object");
@@ -324,8 +326,8 @@ public class FilesPanel extends JPanel {
     }
 
 
-    private void pushFileMenuItemActionPerfomed(ActionEvent event) {
-		log.info("pushFileMenuItemActionPerfomed");
+    private void pushFileMenuItemActionPerformed(ActionEvent event) {
+		log.info("pushFileMenuItemActionPerformed");
 
 		JakeObject fileObject = getSelectedFile();
 		if (fileObject != null) {
@@ -342,6 +344,7 @@ public class FilesPanel extends JPanel {
 					UserDialogHelper.translatedError(this, "SyncException");
 				}
 		}
+		updateUI(true);
 	}
     
     private void pullFileMenuItemActionPerformed(ActionEvent event) {
@@ -360,6 +363,7 @@ public class FilesPanel extends JPanel {
 				UserDialogHelper.translatedError(this, "ObjectNotInProject");
 			}
 		}
+		updateUI(true);
 	}
     
 	public int getNameColPos() {
