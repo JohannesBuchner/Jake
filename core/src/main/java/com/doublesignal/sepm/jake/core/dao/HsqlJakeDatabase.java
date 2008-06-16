@@ -33,9 +33,9 @@ public class HsqlJakeDatabase implements IJakeDatabase {
 		logEntryDao.setDataSource(ds);
 	}
 	public void close() throws SQLException{
-		// close the hsql db
+		// close the hsql db, shrinks the table
 		Statement stmt = configurationDao.getDataSource().getConnection().createStatement();
-		stmt.executeUpdate("SHUTDOWN");
+		stmt.executeUpdate("SHUTDOWN COMPACT");
 		
 		configurationDao.getDataSource().getConnection().close();
 		jakeObjectDao.getDataSource().getConnection().close();
