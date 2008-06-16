@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.core.dao;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
@@ -32,6 +33,10 @@ public class HsqlJakeDatabase implements IJakeDatabase {
 		logEntryDao.setDataSource(ds);
 	}
 	public void close() throws SQLException{
+		// close the hsql db
+		Statement stmt = configurationDao.getDataSource().getConnection().createStatement();
+		stmt.executeUpdate("SHUTDOWN");
+		
 		configurationDao.getDataSource().getConnection().close();
 		jakeObjectDao.getDataSource().getConnection().close();
 		projectMemberDao.getDataSource().getConnection().close();
