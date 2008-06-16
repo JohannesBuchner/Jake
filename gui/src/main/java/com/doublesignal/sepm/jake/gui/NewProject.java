@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -86,7 +87,18 @@ public class NewProject extends JDialog {
 		useridTextField.setEditable(true);
 		okButton.setEnabled(false);
 		folderTextField.setBackground(Color.WHITE);
+		
+		// try to close connection
+		if(jga != null) {
+			try {
+				jga.close();
+			} catch (SQLException e) {
+				log.warn("Database cannot be closed");
+				e.printStackTrace();
+			}
+		}
 		jga = null;
+		
 		try {
 			jga = JakeGuiAccess.openProjectByRootpath(rootPath);
 			okButton.setEnabled(true);
