@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -52,9 +53,7 @@ import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
  */
 @SuppressWarnings("serial")
 public class JakeGui extends JPanel implements Observer, IConflictCallback {
-	
 	private static final Logger log = Logger.getLogger(JakeGui.class);
-	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	
 	private Project currentProject = null;
@@ -821,6 +820,19 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 				mainFrame.setJMenuBar(mainMenuBar);
 			}
 			frame1ContentPane.add(this, BorderLayout.CENTER);
+			
+			mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+			    public void windowClosing(WindowEvent winEvt) {
+			        try {
+						jakeGuiAccess.close();
+					} catch (SQLException e) {
+						log.warn("Error on closing database!");
+						e.printStackTrace();
+					}
+			        System.exit(0); 
+			    }
+			});	
+			
 			mainFrame.pack();
 			mainFrame.setLocationRelativeTo(mainFrame.getOwner());
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
