@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -134,7 +136,6 @@ public class NotesPanel extends JPanel {
 
 		this.setLayout(new BorderLayout());
 		notesTableModel = new NotesTableModel(jakeGuiAccess);
-		notesTable.setComponentPopupMenu(notesPopupMenu);
 		notesTable.setColumnControlVisible(true);
 		notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		notesTable.setModel(notesTableModel);
@@ -145,6 +146,31 @@ public class NotesPanel extends JPanel {
 				if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)
 						&& isNoteSelected()) {
 					editNote(getSelectedNote());
+				}
+			}
+		});
+		
+		notesTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				// Right mouse click
+				if (SwingUtilities.isRightMouseButton(e)) {
+					// get the coordinates of the mouse click
+					Point p = e.getPoint();
+
+					// get the row index that contains that coordinate
+					int rowNumber = notesTable.rowAtPoint(p);
+
+					// Get the ListSelectionModel of the JTable
+					ListSelectionModel model = notesTable.getSelectionModel();
+
+					// set the selected interval of rows. Using the "rowNumber"
+					// variable for the beginning and end selects only that one
+					// row.
+					model.setSelectionInterval(rowNumber, rowNumber);
+
+					// Show the table popup
+					notesPopupMenu.show(notesTable, (int) e.getPoint().getX(), (int) e.getPoint()
+							.getY());
 				}
 			}
 		});
