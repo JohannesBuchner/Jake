@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -533,5 +534,11 @@ public interface IJakeGuiAccess {
     boolean importLocalFileIntoProject(String relPath);
 
     Integer getJakeObjectSyncStatus(JakeObject jakeObject);
+    
+    /**
+     * Shutdown the Database
+     * @throws SQLException
+     */
+    public void close() throws SQLException;
 
 }
