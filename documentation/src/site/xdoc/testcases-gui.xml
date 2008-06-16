@@ -442,23 +442,22 @@
 							<td>A list of the stored notes is displayed. The extracted headline and the user which
 								created the note is show.
 							</td>
+							<td>List of Notes</td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-16 11:00 ps</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
 						<tr>
 							<td>28</td>
 							<td>No notes available</td>
-							<td>The List is empty. A small label before or below the list tells that there are no
-								notes yet.
+							<td>The List is empty.
 							</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-16 11:00 ps</td>
 							<td>High</td>
 							<td>NC</td>
 						</tr>
@@ -482,9 +481,9 @@
 								on that column
 							</td>
 							<td>List of Notes</td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-16 11:00 ps</td>
 							<td>Medium</td>
 							<td>NC</td>
 						</tr>
@@ -496,9 +495,9 @@
 								the textarea gets enlarged.
 							</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td>failed, 2008-06-11, 16:00, DD</td>
+							<td>2008-06-16 11:00 ps</td>
 							<td>High</td>
 							<td>NC</td>
 						</tr>
@@ -538,7 +537,7 @@
 								the textarea gets enlarged.
 							</td>
 							<td></td>
-							<td></td>
+							<td>ok</td>
 							<td></td>
 							<td>passed, 2008-06-11, 16:00, DD</td>
 							<td>High</td>
@@ -550,18 +549,16 @@
 							<td>The Input Length is restricted</td>
 							<!-- function //-->
 							<td>When the user reaches the maximum length of the content of the textbox, the textbox
-								is highlighted, the submit/save button is disabled and a warning stating that the
-								maximum
-								amount of characters is reached, is displayed
+								does not allow to enter any more text.
 							</td>
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>passed, 2008-06-16 11:22, PS</td>
 							<!-- passed? -->
 							<td>Very High</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -577,11 +574,11 @@
 							<td>The input is parsed and only legit characters are taken as the notes content</td>
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>passed, 2008-06-16 11:22, PS</td>
 							<!-- passed? -->
 							<td>Medium</td>
 							<!-- priority: very high, high, medium, low, very low -->
