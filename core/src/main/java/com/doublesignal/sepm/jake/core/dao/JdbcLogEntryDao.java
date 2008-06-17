@@ -8,6 +8,7 @@ import java.util.*;
 
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * JDBC implementation of the LogEntry DAO
@@ -45,8 +46,11 @@ public class JdbcLogEntryDao extends SimpleJdbcDaoSupport
 		parameters.put("message", logEntry.getComment());
 		parameters.put("hash", logEntry.getHash());
 		parameters.put("is_last_pulled", logEntry.getIsLastPulled());
-
-		getSimpleJdbcTemplate().update(LOGENTRY_INSERT, parameters);
+		try {
+			getSimpleJdbcTemplate().update(LOGENTRY_INSERT, parameters);
+		} catch (DataIntegrityViolationException e) {
+			logger.warn("Object doesn't exist (yet), so we're doing nothing instead of creating a log entry.");
+		}
 	}
 	public void setIsLastPulled(LogEntry logEntry){
 		Map<String, Object> parameters = new HashMap<String, Object>();
