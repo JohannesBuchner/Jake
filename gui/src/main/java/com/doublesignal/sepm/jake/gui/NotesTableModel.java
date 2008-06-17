@@ -76,14 +76,17 @@ public class NotesTableModel extends AbstractTableModel {
 	private final NotesUpdaterObservable notesUpdater = new NotesUpdaterObservable();
 
 	public static String getNotesTitle(NoteObject note) {
+		String text = note.getContent();
+		if(text.contains("\n"))
+			text = text.substring(1,text.indexOf("\n"));
 		final int MAXLEN = 100;
 		String trailings = "";
-		int endIndex = note.getContent().length();
+		int endIndex = text.length();
 		if (endIndex > MAXLEN) {
 			endIndex = MAXLEN - 3;
 			trailings = "...";
 		}
-		return note.getContent().substring(0, endIndex) + trailings;
+		return text.substring(0, endIndex) + trailings;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
