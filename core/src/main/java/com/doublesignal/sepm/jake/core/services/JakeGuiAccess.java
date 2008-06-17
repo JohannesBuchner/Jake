@@ -1166,7 +1166,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             destinationFile.createNewFile();
             copyFile(srcFile, destinationFile );
             String relPath = destinationFile.getAbsolutePath().
-                    replaceAll(currentProject.getRootPath().getAbsolutePath(), "");
+                    replaceAll(currentProject.getRootPath().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\"), "");
             if(File.separatorChar == '\\')
             {
                 relPath = relPath.replace('\\','/');
