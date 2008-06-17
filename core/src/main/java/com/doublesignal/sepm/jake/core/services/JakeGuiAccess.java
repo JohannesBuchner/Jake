@@ -349,7 +349,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
         try {
             db.connect(rootPath);
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
         try {
@@ -414,13 +414,12 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             log.debug("ClassPathResource: " + propertiesres.getFile().getAbsolutePath());
             copyTextFile(propertiesres.getFile(), propertiesfile);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
-        System.err.println("copying done ...");
         log.debug("copying done ...");
 
     }
@@ -453,17 +452,17 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             log.error("Database invalid - Schema was not accepted by hsqldb");
             throw new InvalidDatabaseException();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
         try{
             jga.checkIfValidDatabase();
         }catch (BadSqlGrammarException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         	log.error("Database invalid - We have to change our schema");
             throw new InvalidDatabaseException();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
         log.debug("project created and loaded.");
@@ -502,7 +501,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 	    	getConfigOption("projectname");
 	    	getConfigOption("userid");
 		} catch (NoSuchConfigOptionException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			throw new InvalidDatabaseException();
 		}
 	}
@@ -538,13 +537,13 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             log.debug("Project opened.");
             
         } catch (BadSqlGrammarException e) {
-        	e.printStackTrace();
+//        	e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (DataAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (NotADirectoryException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new InvalidRootPathException();
         }
 
@@ -1134,7 +1133,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
             }
             importLocalFileIntoProject(relPath);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return false;
         }
         return true;
