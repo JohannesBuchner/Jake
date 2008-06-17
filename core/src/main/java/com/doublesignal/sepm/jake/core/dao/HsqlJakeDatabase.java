@@ -3,6 +3,7 @@ package com.doublesignal.sepm.jake.core.dao;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
@@ -10,6 +11,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  * @author johannes
  */
 public class HsqlJakeDatabase implements IJakeDatabase {
+	
+	private final static Logger log = Logger.getLogger(HsqlJakeDatabase.class);
 	
 	JdbcProjectMemberDao projectMemberDao;
 	JdbcJakeObjectDao jakeObjectDao;
@@ -20,7 +23,7 @@ public class HsqlJakeDatabase implements IJakeDatabase {
 		close();
 		if(database.endsWith(".properties") || database.endsWith(".script"))
 			throw new SQLException("File ends with suffix!");
-		System.err.println("HSQL-CONNECT: " + "jdbc:hsqldb:file:"+database+";ifexists=true;shutdown=false");
+		log.warn("HSQL-CONNECT: " + "jdbc:hsqldb:file:"+database+";ifexists=true;shutdown=false");
 		DriverManagerDataSource ds = new DriverManagerDataSource(
 			"org.hsqldb.jdbcDriver", 
 			"jdbc:hsqldb:"+database+";shutdown=false",

@@ -94,7 +94,7 @@ public class NewProject extends JDialog {
 				jga.close();
 			} catch (SQLException e) {
 				log.warn("Database cannot be closed");
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		jga = null;

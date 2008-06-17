@@ -827,7 +827,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 						jakeGuiAccess.close();
 					} catch (SQLException e) {
 						log.warn("Error on closing database!");
-						e.printStackTrace();
+//						e.printStackTrace();
 					}
 			        System.exit(0); 
 			    }

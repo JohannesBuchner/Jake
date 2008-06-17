@@ -38,6 +38,8 @@ import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
  */
 public class MockSyncService implements ISyncService {
 	
+	private static Logger log = Logger.getLogger(MockSyncService.class);
+	
 	private IFSService fss = null;
 	private IICService ics = null;
 	private IJakeDatabase db = null;
@@ -120,7 +122,7 @@ public class MockSyncService implements ISyncService {
 			db.getJakeObjectDao().save(note);
 		} else {
 			FileObject file = (FileObject) jo;
-			System.out.println("File: " + file.getName());
+			log.debug("File: " + file.getName());
 			db.getJakeObjectDao().save(file);
 			try {
 				hash = fss.calculateHashOverFile(jo.getName());
@@ -181,9 +183,9 @@ public class MockSyncService implements ISyncService {
 			FileObject jo = new FileObject(le.getJakeObjectName());
 			try{
 				db.getJakeObjectDao().getFileObjectByName(le.getJakeObjectName());
-				System.err.println("JakeObject found.");
+				log.warn("JakeObject found.");
 			}catch (NoSuchFileException e){
-				System.err.println("FileObject created.");
+				log.warn("FileObject created.");
 				db.getJakeObjectDao().save(jo);
 			}
 			jolist.add(jo);

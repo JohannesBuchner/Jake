@@ -340,7 +340,7 @@ public class FilesPanel extends JPanel {
 				} catch (NotLoggedInException e) {
 					UserDialogHelper.translatedError(this, "NotLoggedInException");
 				} catch (SyncException e) {
-					e.getInnerException().printStackTrace();
+//					e.getInnerException().printStackTrace();
 					UserDialogHelper.translatedError(this, "SyncException");
 				}
 		}
