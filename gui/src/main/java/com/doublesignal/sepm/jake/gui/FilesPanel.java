@@ -15,6 +15,7 @@ import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.IStateChangeListener;
 import com.doublesignal.sepm.jake.core.services.exceptions.NoProjectLoadedException;
 
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
@@ -35,7 +36,7 @@ import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
  * @author domdorn, peter
  */
 @SuppressWarnings("serial")
-public class FilesPanel extends JPanel {
+public class FilesPanel extends JPanel  implements IStateChangeListener{
 	private static final Logger log = Logger.getLogger(FilesPanel.class);
 
 	private final JakeGui jakeGui;
@@ -67,8 +68,9 @@ public class FilesPanel extends JPanel {
                 .addTab("filestab", new ImageIcon(
                         getClass().getResource("/icons/files.png")),
                         this);
-
-
+        
+        jakeGuiAccess.addJakeObjectStateChangeListener(this);
+        
         tabindex = jakeGui.getMainTabbedPane().indexOfTab("filestab");
         if (tabindex >= 0)
             jakeGui.getMainTabbedPane().setTitleAt(tabindex,
@@ -78,27 +80,41 @@ public class FilesPanel extends JPanel {
     }
     
     public void updateUI() {
-    	updateUI(false);
-    }
-    
-    public void updateUI(boolean immidiate) {
-        // lazy loading
-    	if(!immidiate || lastUpdate != null && lastUpdate.getTime()+3000 < new Date().getTime())
-        {
-            super.updateUI();
-            if (filesTableModel != null) {
-                filesTableModel.updateData();
-                if (tabindex >= 0)
-                    jakeGui.getMainTabbedPane().setTitleAt(tabindex,
-                            "Files (" + filesTableModel.getFilesCount()
-                                    + "/" +
-                                    FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")");
-            }
-            lastUpdate = new Date(); 
-        }
-    }
+		updateUI(false);
+	}
 
+	public void updateUI(boolean immidiate) {
+		if(immidiate == true)
+			updateUI(false);
+		// lazy loading
+		log.debug("files panel update");
+		// if(!immidiate || lastUpdate != null && lastUpdate.getTime()+3000 <
+		// new Date().getTime())
+		// {
+		log.debug("files panel _real_ update");
+		super.updateUI();
+		if (filesTableModel != null) {
+			filesTableModel.updateData();
+			if (tabindex >= 0)
+				jakeGui.getMainTabbedPane().setTitleAt(tabindex, "Files ("
+					+ filesTableModel.getFilesCount() + "/" + 
+					FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize())
+					+ ")");
+		}
+		super.updateUI();
+		this.repaint();
+		lastUpdate = new Date();
+		// }
+	}
 
+	public void stateChanged(JakeObject jo) {
+		if(jo == null)
+			log.debug("everything changed");
+		else 
+			log.debug(jo.getName() + "changed");
+		updateUI(true);
+	}
+	
     public FilterPipeline getFilters() {
         return filesTable.getFilters();
     }

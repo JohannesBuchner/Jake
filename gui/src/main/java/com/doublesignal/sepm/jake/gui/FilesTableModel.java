@@ -4,8 +4,8 @@ import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.ProjectMember;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
+import com.doublesignal.sepm.jake.core.services.IStateChangeListener;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
-import com.doublesignal.sepm.jake.fss.IModificationListener;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ import java.util.List;
  * 
  */
 @SuppressWarnings("serial")
-public class FilesTableModel extends AbstractTableModel implements IModificationListener {
+public class FilesTableModel extends AbstractTableModel {
 	private static final Logger log = Logger.getLogger(FilesTableModel.class);
 	
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
@@ -75,7 +74,6 @@ public class FilesTableModel extends AbstractTableModel implements IModification
 		log.info("Initializing FilesTableModel.");
 		this.jakeGuiAccess = jakeGuiAccess;
         updateData();
-        jakeGuiAccess.addModificationListener(this);
 	}
 
 	/**
@@ -161,11 +159,6 @@ public class FilesTableModel extends AbstractTableModel implements IModification
 	@Override
 	public String getColumnName(int columnIndex) {
 		return colNames[columnIndex];
-	}
-
-	public void fileModified(File f, ModifyActions action) {
-		jakeGuiAccess.refreshFileObject(f);
-		updateData();
 	}
 	
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.util.List;
 
 
 public class FSServiceTestOuter extends FSServiceTestCase {
@@ -164,17 +165,18 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 			}
 		}
 		
-		String[] s = fss.listFolder(folder);		
+		List<String> s = fss.listFolder(folder);
+		String sep = "/";
+		
 		for (int j = 0; j < content.length; j++) {
 			boolean found = false;
-			for (int i = 0; i < s.length; i++) {
-				if(s[i].equals(content[j])){
+			for (int i = 0; i < s.size(); i++) {
+				if(s.get(i).equals(folder + sep + content[j])){
 					found = true;
 					break;
 				}
 			}
 			assertTrue(found);
-			String sep = "/";
 			if(j<4){
 				assertTrue("folder: " + content[j],fss.folderExists(folder + sep + content[j]));
 			}else{
@@ -182,9 +184,47 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 			}
 		}
 		
-		assertTrue(s.length == content.length);
+		assertTrue(s.size() == content.length);
 	}
 	
+	public void testRecursiveListFolder() throws Exception{
+		wipeRoot();
+		recursiveDelete(new File(fss.getRootPath()));
+		
+		String[] content = { "B", "C", "B/foo", "D", "F", "G", "H", "J", "B/foo/bar", "C/foo" };
+		for (int i = 0; i < content.length; i++) {
+			File f = new File(fss.getRootPath() + File.separator + content[i]);
+			if ( i < 4 ) {
+				f.mkdirs();
+				assertTrue(f.isDirectory());
+			} else {
+				f.createNewFile();
+				assertTrue(f.isFile());
+			}
+		}
+		
+		List<String> s = fss.recursiveListFiles();
+
+		for (int j = 0; j < content.length; j++) {
+			boolean found = false;
+			for (int i = 0; i < s.size(); i++) {
+				if(s.get(i).equals(content[j])){
+					found = true;
+					break;
+				}
+			}
+			if(j<4){
+				assertFalse("We don't expect directory " + content[j],found);
+			}else{
+				assertTrue(found);
+				assertTrue("file: " + content[j],  fss.fileExists(content[j]));
+			}
+		}
+		
+		assertTrue(s.size() == content.length - 4);
+		wipeRoot();
+	}
+
 	public void testWriteFile() throws Exception{
 		wipeRoot();
 		try{

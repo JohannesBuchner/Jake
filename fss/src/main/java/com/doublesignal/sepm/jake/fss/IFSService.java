@@ -2,7 +2,7 @@ package com.doublesignal.sepm.jake.fss;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
+import java.util.List;
 
 /**
  * The file system service ought to provide a operating system independent way 
@@ -85,11 +85,20 @@ public interface IFSService {
 	/**
 	 * Lists folder content following isValidRelpath
 	 * @param relpath Folder to be viewed
-	 * @return directory content: file and folder names
+	 * @return directory content: file and folder names as relpaths
 	 * @throws InvalidFilenameException
 	 * @throws IOException
 	 */
-	public String[] listFolder(String relpath) 
+	public List<String> listFolder(String relpath) 
+		throws InvalidFilenameException, IOException;
+	
+	/**
+	 * Lists all files in rootpath following isValidRelpath
+	 * @return directory content: files as relpaths
+	 * @throws InvalidFilenameException
+	 * @throws IOException
+	 */
+	public List<String> recursiveListFiles() 
 		throws InvalidFilenameException, IOException;
 	
 	/**
@@ -111,6 +120,12 @@ public interface IFSService {
 	 */
 	public void setRootPath(String path) 
 		throws IOException, NotADirectoryException;
+	/**
+	 * Unsets the root path (e.g. stops listeners)
+	 * @throws IOException
+	 * @throws NotADirectoryException 
+	 */
+	public void unsetRootPath();
 
 	/**
 	 * Writes the content to the file.
@@ -196,15 +211,15 @@ public interface IFSService {
 	 * It is recursive and when a folder is created, the newly created folder is
 	 * watched too. When a folder is removed a delete-Callback is issued for 
 	 * each file.
-	 * @see IModificationListener
+	 * @see IProjectModificationListener
 	 */
-	public void addModificationListener(IModificationListener ob);
+	public void addModificationListener(IProjectModificationListener ob);
 
 	/**
 	 * Removes a callback for watching the rootpath.
-	 * @see IModificationListener
+	 * @see IProjectModificationListener
 	 */
-	public void removeModificationListener(IModificationListener ob);
+	public void removeModificationListener(IProjectModificationListener ob);
 	
 	/**
 	 * get the last modified date for a file

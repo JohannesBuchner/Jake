@@ -1,9 +1,9 @@
 package com.doublesignal.sepm.jake.fss;
 
-import java.awt.Desktop;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,17 +12,17 @@ import java.util.regex.Pattern;
  * @author johannes
  * @see IFSService
  */
-public class FSService implements IFSService {
+public class FSService implements IFSService, IModificationListener {
 	
 	private String rootPath = null;
-	
-	private Desktop desktop = null;
 	
 	private FileHashCalculator hasher = null;
 	
 	private FolderWatcher fw = null;
 
 	private FileLauncher launcher = null;
+	
+	List<IProjectModificationListener> modificationListener;
 	
 	public FSService() throws NoSuchAlgorithmException{
 		hasher = new FileHashCalculator();
@@ -32,10 +32,16 @@ public class FSService implements IFSService {
 	public String getRootPath() {
 		return rootPath;
 	}
-
-	public void setRootPath(String path) throws FileNotFoundException, NotADirectoryException {
-		if(fw != null)
+	
+	public void unsetRootPath(){
+		if(fw != null) {
 			fw.cancel();
+			fw.removeListener(this);
+		}
+		modificationListener = null;
+	}
+	public void setRootPath(String path) throws FileNotFoundException, NotADirectoryException {
+		unsetRootPath();
 		File f = new File(path);
 		if(!f.exists()) 
 			throw new FileNotFoundException();
@@ -49,17 +55,20 @@ public class FSService implements IFSService {
 			/* won't happen as we use the same algorithm here and it loaded. */
 		}
 		fw.initialRun();
+		fw.addListener(this);
 		fw.run();
 	}
 	
-	public void addModificationListener(IModificationListener l) {
-		if(fw != null)
-			fw.addListener(l);
+	public void addModificationListener(IProjectModificationListener l) {
+		if(modificationListener == null){
+			modificationListener = new ArrayList<IProjectModificationListener>();
+		}
+		modificationListener.add(l);
 	}
 	
-	public void removeModificationListener(IModificationListener l) {
-		if(fw != null)
-			fw.removeListener(l);
+	public void removeModificationListener(IProjectModificationListener l) {
+		if(modificationListener != null)
+			modificationListener.remove(l);
 	}
 	
 	public Boolean fileExists(String relpath) throws InvalidFilenameException {
@@ -67,9 +76,35 @@ public class FSService implements IFSService {
 		return f.exists() && f.isFile();
 	}
 
-	public String[] listFolder(String relpath) throws InvalidFilenameException {
-		File f = new File(getFullpath(relpath));
-		return f.list();
+	public List<String> listFolder(String relpath) throws InvalidFilenameException {
+		while(relpath.startsWith("/")){
+			relpath = relpath.substring(1);
+		}
+		File f = new File(getFullpath("/" + relpath));
+		String[] flist = f.list();
+		List<String> list = new ArrayList<String>();
+		for(String file : flist){
+			if(relpath != "")
+				file = relpath + '/' + file;
+			
+			if(isValidRelpath(file))
+				list.add(file);
+		}
+		return list;
+	}
+
+	public List<String> recursiveListFiles() throws InvalidFilenameException, IOException {
+		List<String> list = new ArrayList<String>();
+		List<String> dirlist = listFolder("");
+		for(int i = 0;i<dirlist.size(); i++){
+			String f = dirlist.get(i);
+			if(folderExists(f)){
+				dirlist.addAll(listFolder(f));
+			}else if(fileExists(f)){
+				list.add(f);
+			}
+		}
+		return list;
 	}
 
 	public byte[] readFile(String relpath) throws InvalidFilenameException, 
@@ -244,6 +279,19 @@ public class FSService implements IFSService {
 			throw new NotAFileException();
 		File f = new File(getFullpath(relpath));
 		return f.lastModified();
+	}
+
+	public void fileModified(File f, ModifyActions action) {
+		if(rootPath == null)
+			return;
+		
+		String relpath = f.getAbsolutePath().replace(rootPath + File.separator, "")
+			.replace(File.separatorChar, '/');
+		if(modificationListener!=null) {
+			for(IProjectModificationListener l : modificationListener){
+				l.fileModified(relpath, action);
+			}
+		}
 	}
 
 

@@ -1,25 +1,18 @@
 package com.doublesignal.sepm.jake.core.services;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.doublesignal.sepm.jake.core.InvalidApplicationState;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchConfigOptionException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberException;
 import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.*;
-import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
 import com.doublesignal.sepm.jake.sync.exceptions.*;
 
@@ -524,15 +517,25 @@ public interface IJakeGuiAccess {
 	public File pullRemoteFileInTempFile(FileObject jo) 
 		throws NotLoggedInException, OtherUserOfflineException;
 	
-	
-
-	public void addModificationListener(IModificationListener ob);
-	public void removeModificationListener(IModificationListener ob);
-
+	/**
+	 * get the lastmodified time for a local file copy (possibly modified)
+	 * @param conflictingFile
+	 * @return
+	 */
 	public Date getLocalLastModified(FileObject conflictingFile);
-
+	
+	/**
+	 * The file should be handled by Jake now.
+	 * @param relPath
+	 * @return TODO
+	 */
     boolean importLocalFileIntoProject(String relPath);
-
+    
+    /**
+     * 
+     * @param jakeObject
+     * @return
+     */
     Integer getJakeObjectSyncStatus(JakeObject jakeObject);
     
     /**
@@ -540,5 +543,7 @@ public interface IJakeGuiAccess {
      * @throws SQLException
      */
     public void close() throws SQLException;
+    
+	public void addJakeObjectStateChangeListener(IStateChangeListener l);
 
 }
