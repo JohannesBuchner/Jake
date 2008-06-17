@@ -70,7 +70,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public void logout() throws NetworkException {
-        log.info("Logout");
+        log.debug("Logout");
         ics.logout();
     }
 
@@ -117,7 +117,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public NoteObject createNote(String content) {
-        log.info("createNote: " + content);
+        log.debug("createNote: " + content);
 
         String userId = "";
         try {
@@ -134,38 +134,38 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
     }
 
     public void editNote(NoteObject note) {
-        log.info("edit Note: " + note);
+        log.debug("edit Note: " + note);
         db.getJakeObjectDao().save(note);
     }
 
     public void removeNote(NoteObject note) {
-        log.info("remove Note:" + note);
+        log.debug("remove Note:" + note);
         db.getJakeObjectDao().delete(note);
     }
     
     public void removeProjectMember(ProjectMember selectedMember)	{
-    	log.info("remove Project Member with ID :" + selectedMember.getUserId());
+    	log.debug("remove Project Member with ID :" + selectedMember.getUserId());
     	db.getProjectMemberDao().remove(selectedMember);
     }
     
     public void editProjectMemberNote(ProjectMember selectedMember , String note)	{
-    	log.info("edit Note for Project Member with ID :" + selectedMember.getUserId());
+    	log.debug("edit Note for Project Member with ID :" + selectedMember.getUserId());
     	db.getProjectMemberDao().editNote(selectedMember,note);
     }
     
     public void editProjectMemberNickName(ProjectMember selectedMember , String nickName)	{
-    	log.info("edit NickName for Project Member with ID :" + selectedMember.getUserId());
+    	log.debug("edit NickName for Project Member with ID :" + selectedMember.getUserId());
     	db.getProjectMemberDao().editNickName(selectedMember,nickName);
     }
     
     
 	public void editProjectMemberUserId(ProjectMember selectedMember , String userId) {
-		log.info("edit UserId for Project Member with ID :" + selectedMember.getUserId());
+		log.debug("edit UserId for Project Member with ID :" + selectedMember.getUserId());
 		db.getProjectMemberDao().editUserId(selectedMember , userId);
 	}
 
     public void setProjectMemberNote(String userId,String note) throws NoSuchProjectMemberException {
-       log.info("Get User by"+userId+" . Set Note "+note);
+       log.debug("Get User by"+userId+" . Set Note "+note);
        db.getProjectMemberDao().getByUserId(userId).setNotes(note);
     }
 
@@ -333,7 +333,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener {
 
     private JakeGuiAccess(String rootPath) throws NotADirectoryException, InvalidDatabaseException,
             InvalidRootPathException {
-        log.info("Setup the JakeGuiAccess Object");
+        log.debug("Setup the JakeGuiAccess Object");
         BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
 
         ics = (IICService) factory.getBean("ICService");
