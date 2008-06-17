@@ -105,18 +105,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 			return null;
 		}
     }
-
-    public FileObject createFileObjectFromExternalFile(String absolutePath)
-            throws NoSuchFileException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List<FileObject> createFileObjects(String relPath) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    
     public NoteObject createNote(String content) {
         log.debug("createNote: " + content);
 
@@ -193,22 +182,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
     public void setConfigOption(String configKey, String configValue) {
         db.getConfigurationDao().setConfigurationValue(configKey, configValue);
     }
-
-    public List<JakeObject> getJakeObjectsByName(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-	public List<JakeObject> getJakeObjectsByNameAndTag(String name, List tags) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<JakeObject> getJakeObjectsByTags(List tags) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+    
     public List<LogEntry> getLog() {
         return db.getLogEntryDao().getAll();
     }
@@ -242,11 +216,6 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
         }
     }
     
-	public List<JakeMessage> getNewMessages() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public List<NoteObject> getNotes() {
         return db.getJakeObjectDao().getAllNoteObjects();
     }
@@ -258,22 +227,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 	public ProjectMember getProjectMember(String userId) throws NoSuchProjectMemberException {
 		return this.db.getProjectMemberDao().getByUserId(userId);
 	}
-
-	public List<Tag> getTags() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List<Tag> getTagsOfObject(JakeObject object) {
-        // TODO ??? brauchen wir das wirklich?? ich glaube nicht. - dominik
-        return null;
-    }
-
-    public List<FileObject> importFolder(String absolutePath) throws NoSuchFolderException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+	
     public void addProjectMember(String networkUserId) {
         ProjectMember PM = new ProjectMember(networkUserId);
         currentProject.addMember(PM);
@@ -350,7 +304,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
         try {
             db.connect(rootPath);
         } catch (SQLException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
         try {
@@ -416,12 +370,13 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             log.debug("ClassPathResource: " + propertiesres.getFile().getAbsolutePath());
             copyTextFile(propertiesres.getFile(), propertiesfile);
         } catch (IOException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (RuntimeException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
+        System.err.println("copying done ...");
         log.debug("copying done ...");
 
     }
@@ -454,17 +409,17 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             log.error("Database invalid - Schema was not accepted by hsqldb");
             throw new InvalidDatabaseException();
         } catch (RuntimeException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
         try{
             jga.checkIfValidDatabase();
         }catch (BadSqlGrammarException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
         	log.error("Database invalid - We have to change our schema");
             throw new InvalidDatabaseException();
         } catch (RuntimeException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         }
         log.debug("project created and loaded.");
@@ -503,7 +458,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 	    	getConfigOption("projectname");
 	    	getConfigOption("userid");
 		} catch (NoSuchConfigOptionException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 			throw new InvalidDatabaseException();
 		}
 	}
@@ -539,13 +494,13 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             log.debug("Project opened.");
             
         } catch (BadSqlGrammarException e) {
-//        	e.printStackTrace();
+        	e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (DataAccessException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidDatabaseException();
         } catch (NotADirectoryException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             throw new InvalidRootPathException();
         }
 
@@ -1173,7 +1128,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             }
             importLocalFileIntoProject(relPath);
         } catch (IOException e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -1220,4 +1175,5 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 		FileObject jo = new FileObject(relpath);
 		refreshFileObject(jo);
 	}
+
 }
