@@ -757,8 +757,8 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 						projectMenu.setText("Project");
 
 						// ---- openProjectFolderMenuItem ----
-						openProjectFolderMenuItem.setText(translator.get("MenuItemOpenProjectFolder"));
-						projectMenu.add(openProjectFolderMenuItem);
+//						openProjectFolderMenuItem.setText(translator.get("MenuItemOpenProjectFolder"));
+//						projectMenu.add(openProjectFolderMenuItem);
 
 						// ---- refreshDatapoolViewProjectMenuItem ----
 						refreshDatapoolViewProjectMenuItem.setText(translator.get("MenuItemRefreshDatapoolView"));
@@ -785,9 +785,9 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 						projectMenu.add(addFileToProjectMenuItem);
 
 						// ---- addFolderToProjectMenuItem ----
-						addFolderToProjectMenuItem.setText(translator.get("MenuItemAddFolder"));
-						projectMenu.add(addFolderToProjectMenuItem);
-						projectMenu.addSeparator();
+//						addFolderToProjectMenuItem.setText(translator.get("MenuItemAddFolder"));
+//						projectMenu.add(addFolderToProjectMenuItem);
+//						projectMenu.addSeparator();
 
 						// ---- addProjectMemberMenuItem ----
 						addProjectMemberMenuItem.setText(translator.get("MenuItemAddProjectMember"));
