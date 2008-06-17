@@ -302,9 +302,9 @@
 							<td>Display the projects log entries</td>
 							<td>The LogEntries are shown to the user</td>
 							<td></td>
+							<td>ok</td>
 							<td></td>
-							<td>exception, log not displayed</td>
-							<td></td>
+							<td>2008-06-17, 22:41, sw</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -313,9 +313,9 @@
 							<td>Show LogEntries of selected object</td>
 							<td>Only the corresponding LogEntries for the selected object(s) are shown</td>
 							<td>the selected JakeObject</td>
+							<td>ok</td>
 							<td></td>
-							<td></td>
-							<td></td>
+							<td>2008-06-17, 22:48, sw</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -404,7 +404,7 @@
 							<td></td>
 							<td>ok, an automatically generated return message is sent to the user.</td>
 							<td></td>
-							<td></td>
+							<td>2008-06-11, 14:45, sw</td>
 							<td>Very High</td>
 							<td>NC</td>
 						</tr>
@@ -651,11 +651,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td>no action</td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-17, 22:52, sw</td>
 							<!-- passed? -->
 							<td>Medium</td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -723,64 +723,17 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-17, 22:53, sw</td>
 							<!-- passed? -->
 							<td>High</td>
 							<!-- priority: very high, high, medium, low, very low -->
 							<td>NC</td>
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
-						<tr>
-							<td>40</td>
-							<!-- test case # //-->
-							<td>View / Change notes</td>
-							<!-- function //-->
-							<td>The user can view and change the set notes of another projectmember, the new notes are
-								stored in the users local database
-							</td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td>Very High</td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td>NC</td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td>41</td>
-							<!-- test case # //-->
-							<td>Input Data Validation</td>
-							<!-- function //-->
-							<td>The Input Data is validated and checked for errors. If a field contains not allowed
-								characters or too much/less information, the save button is disabled and this field
-								highlighted
-							</td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-
-
 					</tbody>
 				</table>
 
@@ -941,11 +894,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td>displpay fake info</td>
+							<td>oko</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td>no</td>
+							<td>2008-06-17, 22:57, sw</td>
 							<!-- passed? -->
 							<td></td>
 							<!-- priority: very high, high, medium, low, very low -->
@@ -1024,7 +977,7 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>this functionality is only simulated by the mock</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
@@ -1047,7 +1000,7 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>this functionality is only simulated by the mock</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
@@ -1276,29 +1229,7 @@
 							<td>sc</td>
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
-						<tr>
-							<td>?</td>
-							<!-- test case # //-->
-							<td></td>
-							<!-- function //-->
-							<td></td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td></td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td></td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						
-						
-						
+
 					</tbody>
 				</table>
 
