@@ -35,4 +35,9 @@ clean:
 up:
 	oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
 
+jar:
+	mvn package
+	echo please copy */target/*-${VERSION}.jar into gui/target/*one-jar.jar
+	echo then you can run it with java -jar "<file>"
+
 .PHONY: gui core fss ics
