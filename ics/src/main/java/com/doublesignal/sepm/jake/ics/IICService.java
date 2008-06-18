@@ -28,19 +28,19 @@ public interface IICService {
 	
 	/**
 	 * Connects and authentificates on the used network service.
-	 * @param userid
+	 * @param userid the network user id to be logged in
 	 * @param pw password
 	 * @return wether the login was successful
-	 * @throws NetworkException
-	 * @throws TimeoutException
+	 * @throws NetworkException if the network connection is down
+	 * @throws TimeoutException if a timeout is received
 	 */
 	public Boolean login(String userid, String pw)
 		throws NetworkException, TimeoutException;
 	
 	/**
 	 * Logs out and disconnects from the used network service.
-	 * @throws NetworkException
-	 * @throws TimeoutException
+	 * @throws NetworkException if the network connection is down and the logout couldn't be propagated
+	 * @throws TimeoutException if a timeout occured
 	 */
 	public void logout()
 		throws NetworkException, TimeoutException;
@@ -59,9 +59,9 @@ public interface IICService {
 	 * @param content          Full object content as String
 	 * @return                 wether the object could be sent. Does not 
 	 *                         guarantee the object has been retrieved.
-	 * @throws NetworkException
-	 * @throws TimeoutException
-	 * @throws NotLoggedInException
+	 * @throws NetworkException  if the network connection is down
+	 * @throws TimeoutException if a timeout occured while transmitting the object
+	 * @throws NotLoggedInException if the user is not logged in
 	 */
 	public Boolean sendObject(String to_userid, String objectidentifier, 
 			byte[] content) 
@@ -83,9 +83,9 @@ public interface IICService {
 	 * @param content          Full message content as String 
 	 * @return                 wether the message could be sent. Does not 
 	 *                         guarantee the object has been retrieved.
-	 * @throws NetworkException
-	 * @throws NotLoggedInException
-	 * @throws TimeoutException
+	 * @throws NetworkException if the network connection is down
+	 * @throws NotLoggedInException if the user is not logged in
+	 * @throws TimeoutException if a timeout occured
 	 */
 	public Boolean sendMessage(String to_userid, String content)
 		throws NetworkException, NotLoggedInException, TimeoutException, 
@@ -94,16 +94,16 @@ public interface IICService {
 	/**
 	 * Registers a callback for the event that a message is received.
 	 * 
-	 * @param rl    object to be called
+	 * @param receiveListener    object to be called
 	 */
-	public void registerReceiveMessageListener(IMessageReceiveListener rl);
+	public void registerReceiveMessageListener(IMessageReceiveListener receiveListener);
 	
 	/**
 	 * Checks if the userid may be reached (has an online status). 
 	 * @param userid the other client to talk to.
-	 * @throws NetworkException
-	 * @throws NotLoggedInException
-	 * @throws TimeoutException
+	 * @throws NetworkException if the network connection is down
+	 * @throws NotLoggedInException if the user is not logged in
+	 * @throws TimeoutException if a timeout is received
 	 */
 	public Boolean isLoggedIn(String userid)
 		throws NoSuchUseridException, NetworkException, NotLoggedInException, 
@@ -112,17 +112,17 @@ public interface IICService {
 	/**
 	 * Registers a callback for the event that the userid goes online or offline
 	 * 
-	 * @param osc     object to be called
-	 * @param userid  
-	 * @throws NoSuchUseridException 
+	 * @param onlineStatusListener     object to be called
+	 * @param userid                   the user id to look for
+	 * @throws NoSuchUseridException    if the user does not exist
 	 */
-	public void registerOnlineStatusListener(IOnlineStatusListener osc, 
+	public void registerOnlineStatusListener(IOnlineStatusListener onlineStatusListener,
 			String userid) throws NoSuchUseridException;
 	
 	/**
 	 * @return the firstname belonging to the userid
-	 * @param userid
-	 * @throws NoSuchUseridException
+	 * @param userid the network user id in question
+	 * @throws NoSuchUseridException if there is no such user
 	 * @throws {@link OtherUserOfflineException}
 	 */
 	public String getFirstname(String userid) throws NoSuchUseridException, 
@@ -130,8 +130,8 @@ public interface IICService {
 
 	/**
 	 * @return the lastname belonging to the userid
-	 * @param userid
-	 * @throws NoSuchUseridException
+	 * @param userid the network user id in question
+	 * @throws NoSuchUseridException if there is no such user
 	 * @throws {@link OtherUserOfflineException}
 	 */
 	public String getLastname(String userid) throws NoSuchUseridException, 
@@ -139,12 +139,14 @@ public interface IICService {
 
 	/**
 	 * @return the userid we are logged in with
-	 * @throws NotLoggedInException
+	 * @throws NotLoggedInException if no user is logged in
 	 */
 	public String getUserid() throws NotLoggedInException;
 	
 	/**
-	 * @return wether the userid has the right format for this implementation
+     * Checks if a user id is of the correct format for this network
+	 * @param userid the user id to check
+     * @return wether the userid has the right format for this implementation
 	 */
 	public boolean isOfCorrectUseridFormat(String userid);
 	

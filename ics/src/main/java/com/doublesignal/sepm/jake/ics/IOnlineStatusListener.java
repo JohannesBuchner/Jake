@@ -9,7 +9,12 @@ package com.doublesignal.sepm.jake.ics;
  */
 
 public interface IOnlineStatusListener {
-	
-	public void onlineStatusChanged(String userid);
+
+    /**
+     * An Object has to implement this method and register itself as an OnlineStatusListener
+     * to get notified of users online status changes.
+     * @param userid the userid which changed its status
+     */
+    public void onlineStatusChanged(String userid);
 
 }

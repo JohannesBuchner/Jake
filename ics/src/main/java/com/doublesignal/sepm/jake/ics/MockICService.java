@@ -63,7 +63,7 @@ public class MockICService implements IICService {
 			throw new NoSuchUseridException();
 		if(userid.equals(myuserid)) 
 			return loggedinstatus;
-		if(loggedinstatus == false)
+		if(!loggedinstatus)
 			throw new NotLoggedInException();
 		
 		/* everyone else not having a s in the name is offline */
@@ -76,7 +76,7 @@ public class MockICService implements IICService {
 			TimeoutException {
 		if(!isOfCorrectUseridFormat(userid)) 
 			throw new NoSuchUseridException();
-		if(loggedinstatus == true)
+		if(loggedinstatus)
 			logout();
 		if(userid.equals(pw)){
 			myuserid = userid;
@@ -153,15 +153,14 @@ public class MockICService implements IICService {
 			TimeoutException, NoSuchUseridException, OtherUserOfflineException {
 		if(!isOfCorrectUseridFormat(to_userid)) 
 			throw new NoSuchUseridException();
-		if(loggedinstatus == false)
+		if(!loggedinstatus)
 			throw new NotLoggedInException();
 		if(!isLoggedIn(to_userid))
 			throw new OtherUserOfflineException();
 		if(to_userid.equals(myuserid)){
-			for (Iterator<IObjectReceiveListener> it = objreceivers.iterator(); it.hasNext();) {
-				IObjectReceiveListener rl = it.next();
-				rl.receivedObject(to_userid, objectidentifier, content);
-			}
+            for (IObjectReceiveListener rl : objreceivers) {
+                rl.receivedObject(to_userid, objectidentifier, content);
+            }
 			return true;
 		}else{
 			/* we can't do anything with the object, so we just accept it. */
