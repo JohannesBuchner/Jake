@@ -56,7 +56,6 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 	private static final Logger log = Logger.getLogger(JakeGui.class);
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 	
-	private Project currentProject = null;
 	private SearchMode searchMode = SearchMode.Both;
 	
 	private LinkedList<ActionListener> loginStatusListeners;
@@ -537,7 +536,8 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 							public void actionPerformed(ActionEvent event) {
 								jakeGuiAccess.syncWithProjectMembers();
 								jakeGuiAccess.refreshFileObjects();
-								filesPanel.updateUI(true);
+								filesPanel.updateUI();
+								notesPanel.updateUI();
 							}
 						});
 

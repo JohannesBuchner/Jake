@@ -217,7 +217,7 @@ public interface IJakeGuiAccess {
 	 * @param relPath
 	 * @return list of one or more FileObjects
 	 */
-	public List<FileObject> createFileObjects(String relPath);
+	//public List<FileObject> createFileObjects(String relPath);
 
 	/**
 	 * Import an external File into our Jake Project by Copying it into the
@@ -226,8 +226,8 @@ public interface IJakeGuiAccess {
 	 * @param absolutePath
 	 * @return a new JakeObject
 	 */
-	public FileObject createFileObjectFromExternalFile(String absolutePath)
-			throws NoSuchFileException;
+	//public FileObject createFileObjectFromExternalFile(String absolutePath)
+	//		throws NoSuchFileException;
 
 	/**
 	 * Imports a whole folder from the filesystem into the project folder and
@@ -237,8 +237,8 @@ public interface IJakeGuiAccess {
 	 * @return
 	 * @throws NoSuchFolderException
 	 */
-	public List<FileObject> importFolder(String absolutePath)
-			throws NoSuchFolderException;
+	//public List<FileObject> importFolder(String absolutePath)
+	//		throws NoSuchFolderException;
 
 	/**
 	 * Gets a list of all the FileObjects
@@ -254,7 +254,7 @@ public interface IJakeGuiAccess {
 	 * @param name
 	 * @return list of JakeObjects
 	 */
-	public List<JakeObject> getJakeObjectsByName(String name);
+	//public List<JakeObject> getJakeObjectsByName(String name);
 
 	/**
 	 * Searches for Jake Objects by specifying one or more tags
@@ -262,7 +262,7 @@ public interface IJakeGuiAccess {
 	 * @param tags
 	 * @return list of JakeObjects
 	 */
-	public List<JakeObject> getJakeObjectsByTags(List<Tag> tags);
+	//public List<JakeObject> getJakeObjectsByTags(List<Tag> tags);
 
 	/**
 	 * Searches for Jake Objects by specifying a name and one or more tags
@@ -271,8 +271,8 @@ public interface IJakeGuiAccess {
 	 * @param tags
 	 * @return list of JakeObjects
 	 */
-	public List<JakeObject> getJakeObjectsByNameAndTag(String name,
-			List<Tag> tags);
+	//public List<JakeObject> getJakeObjectsByNameAndTag(String name,
+	//		List<Tag> tags);
 
 	/**
 	 * get a list of all available tags in the project by generating a list of
@@ -280,7 +280,7 @@ public interface IJakeGuiAccess {
 	 * 
 	 * @return a list of Tag Objects
 	 */
-	public List<Tag> getTags();
+	//public List<Tag> getTags();
 
 	/**
 	 * Get a list of all the tags of an certain object.
@@ -288,7 +288,7 @@ public interface IJakeGuiAccess {
 	 * @param object
 	 * @return a list of Tag Objects
 	 */
-	public List<Tag> getTagsOfObject(JakeObject object);
+	//public List<Tag> getTagsOfObject(JakeObject object);
 
 	/**
 	 * Queries the FSS for the filesize of a specific FileObject

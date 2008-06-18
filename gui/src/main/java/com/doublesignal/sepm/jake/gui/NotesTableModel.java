@@ -78,7 +78,7 @@ public class NotesTableModel extends AbstractTableModel {
 	public static String getNotesTitle(NoteObject note) {
 		String text = note.getContent();
 		if(text.contains("\n"))
-			text = text.substring(1,text.indexOf("\n"));
+			text = text.substring(0,text.indexOf("\n"));
 		final int MAXLEN = 100;
 		String trailings = "";
 		int endIndex = text.length();

@@ -78,14 +78,8 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
                             + "/" + FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")"
             );
     }
-    
-    public void updateUI() {
-		updateUI(false);
-	}
 
-	public void updateUI(boolean immidiate) {
-		if(immidiate == true)
-			updateUI(false);
+	public void updateUI() {
 		// lazy loading
 		log.debug("files panel update");
 		// if(!immidiate || lastUpdate != null && lastUpdate.getTime()+3000 <
@@ -112,7 +106,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 			log.debug("everything changed");
 		else 
 			log.debug(jo.getName() + "changed");
-		updateUI(true);
+		updateUI();
 	}
 	
     public FilterPipeline getFilters() {
@@ -307,7 +301,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
                         JOptionPane.ERROR_MESSAGE);
             }
         }
-        updateUI(true);
+        updateUI();
     }
 
     private void viewLogForFileMenuItemActionPerformed(ActionEvent event) {
@@ -360,7 +354,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 					UserDialogHelper.translatedError(this, "SyncException");
 				}
 		}
-		updateUI(true);
+		updateUI();
 	}
     
     private void pullFileMenuItemActionPerformed(ActionEvent event) {
@@ -379,7 +373,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 				UserDialogHelper.translatedError(this, "ObjectNotInProject");
 			}
 		}
-		updateUI(true);
+		updateUI();
 	}
     
 	public int getNameColPos() {

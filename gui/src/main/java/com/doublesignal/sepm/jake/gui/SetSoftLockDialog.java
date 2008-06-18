@@ -23,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.log4j.Logger;
 
 import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
@@ -37,7 +38,7 @@ public class SetSoftLockDialog extends JDialog {
 	private static final ITranslationProvider translator = TranslatorFactory.getTranslator();
 
 	private IJakeGuiAccess jakeGuiAccess;
-	private FileObject file;
+	private JakeObject file;
 	
 	private JPanel dialogPanel;
 	private JPanel contentPanel;
@@ -50,7 +51,7 @@ public class SetSoftLockDialog extends JDialog {
 	private JButton okButton;
 	private JButton cancelButton;
 
-	public SetSoftLockDialog(Frame owner, IJakeGuiAccess guiAccess, FileObject file) {
+	public SetSoftLockDialog(Frame owner, IJakeGuiAccess guiAccess, JakeObject file) {
 		super(owner);
 		this.jakeGuiAccess = guiAccess;
 		this.file = file;

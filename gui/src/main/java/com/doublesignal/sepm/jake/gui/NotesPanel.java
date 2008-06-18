@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.NoSuchObjectException;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -23,15 +24,18 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
 
+import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
+import com.doublesignal.sepm.jake.core.domain.FileObject;
+import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.NoteObject;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.NotesTableModel.NotesUpdaterObservable;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
+import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
+import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
+import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
 
 @SuppressWarnings("serial")
 /**
@@ -216,6 +220,50 @@ public class NotesPanel extends JPanel {
 			}
 		});
 		notesPopupMenu.add(removeNoteMenuItem);
+		
+		
+
+        viewLogForNoteMenuItem = new JMenuItem();
+        pushNoteMenuItem = new JMenuItem();
+        pullNoteMenuItem = new JMenuItem();
+        lockNoteMenuItem = new JMenuItem();
+        
+        lockNoteMenuItem.setText(translator.get("NotesDialogContextMenuItemSetLock"));
+        lockNoteMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                lockNoteMenuItemActionPerformed(event);
+            }
+        });
+
+        viewLogForNoteMenuItem.setText(translator.get("FilesDialogContextMenuItemViewLog"));
+        viewLogForNoteMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                viewLogForNoteMenuItemActionPerformed(event);
+            }
+        });
+        
+        pushNoteMenuItem.setText(translator.get("FilesDialogContextMenuItemPushFile"));
+        pushNoteMenuItem.setToolTipText("Push locally changed file");
+        pushNoteMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                pushNoteMenuItemActionPerformed(event);
+            }
+        }
+        );
+        pullNoteMenuItem.setText(translator.get("FilesDialogContextMenuItemPullFile"));
+        pullNoteMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                pullNoteMenuItemActionPerformed(event);
+            }
+        });
+        
+        notesPopupMenu.addSeparator();
+        notesPopupMenu.add(pushNoteMenuItem);
+        notesPopupMenu.add(pullNoteMenuItem);
+        notesPopupMenu.addSeparator();
+        notesPopupMenu.add(lockNoteMenuItem);
+        notesPopupMenu.add(viewLogForNoteMenuItem);
+		
 
 		// check the data before drawing the popup menu
 		notesPopupMenu.addPopupMenuListener(new PopupMenuListener() {
@@ -233,12 +281,74 @@ public class NotesPanel extends JPanel {
 		});
 	}
 
+	private void pullNoteMenuItemActionPerformed(ActionEvent event) {
+		log.info("pullNoteMenuItemActionPerformed");
+		JakeObject noteObject = getSelectedNote();
+		if (noteObject != null) {
+			try {
+				jakeGuiAccess.pullJakeObject(noteObject);
+			} catch (NotLoggedInException e) {
+				UserDialogHelper.translatedError(this, "NotLoggedInException");
+			} catch (OtherUserOfflineException e) {
+				UserDialogHelper.translatedError(this, "OtherUserOfflineException");
+			} catch (NoSuchObjectException e) {
+				UserDialogHelper.translatedError(this, "ObjectNotInProject");
+			} catch (NoSuchLogEntryException e) {
+				UserDialogHelper.translatedError(this, "ObjectNotInProject");
+			}
+		}
+		updateUI();	
+	}
+
+	private void pushNoteMenuItemActionPerformed(ActionEvent event) {
+		log.info("pushNoteMenuItemActionPerformed");
+
+		JakeObject noteObject = getSelectedNote();
+		if (noteObject != null) {
+			String commitmsg = UserDialogHelper.showTextInputDialog(this, 
+					translator.get("CommitMessage"), ""); 
+			
+			if(commitmsg != null)
+				try {
+					jakeGuiAccess.pushJakeObject(noteObject, commitmsg);
+				} catch (NotLoggedInException e) {
+					UserDialogHelper.translatedError(this, "NotLoggedInException");
+				} catch (SyncException e) {
+//					e.getInnerException().printStackTrace();
+					UserDialogHelper.translatedError(this, "SyncException");
+				}
+		}
+		updateUI();
+	}
+
+	private void viewLogForNoteMenuItemActionPerformed(ActionEvent event) {
+		log.info("viewLogForNoteMenuItemActionPerformed");
+        JakeObject noteObject = getSelectedNote();
+        if (noteObject != null) {
+        	log.info("view log for a single object");
+        	log.info(noteObject.getName());
+            new ViewLogDialog(gui.getMainFrame() , this.jakeGuiAccess , noteObject).setVisible(true);
+        }
+	}
+
+	private void lockNoteMenuItemActionPerformed(ActionEvent event) {
+        log.info("lockNoteMenuItemActionPerformed");
+        JakeObject noteObject = getSelectedNote();
+        if (noteObject == null || noteObject.getClass() != NoteObject.class)
+            return;
+        new SetSoftLockDialog(gui.getMainFrame(), jakeGuiAccess, (NoteObject)noteObject).setVisible(true);
+	}
+
 	private JScrollPane notesScrollPane;
 	private JXTable notesTable;
 	private JPopupMenu notesPopupMenu;
 	private JMenuItem viewEditNoteMenuItem;
 	private JMenuItem newNoteMenuItem;
 	private JMenuItem removeNoteMenuItem;
+	private JMenuItem viewLogForNoteMenuItem;
+	private JMenuItem pushNoteMenuItem;
+	private JMenuItem pullNoteMenuItem;
+	private JMenuItem lockNoteMenuItem;
 
 	public int getNameColPos() {
 		return 0;
