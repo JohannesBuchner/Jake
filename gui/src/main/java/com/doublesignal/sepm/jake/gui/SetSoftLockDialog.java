@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,15 +21,14 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
-import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.core.domain.LogAction;
 import com.doublesignal.sepm.jake.core.domain.LogEntry;
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
-import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 
+@SuppressWarnings("serial")
 public class SetSoftLockDialog extends JDialog {
 
 	private static final Logger log = Logger.getLogger(SendMessageDialog.class);
