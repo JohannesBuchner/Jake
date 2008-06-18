@@ -99,7 +99,6 @@ public class NoteEditorDialog extends JDialog {
 
 		// update current note object or create new one
 		if (note == null) {
-			// TODO: interface doesn't need this
 			note = NoteObject.createNoteObject("0", getContent());
 		} else {
 			note.setContent(getContent());

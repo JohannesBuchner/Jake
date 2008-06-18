@@ -113,10 +113,12 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 				}
 			});
 
-	/**
-	 * ** Status Bar Buttons ****
+	/*
+	  **** Status Bar Buttons ****
 	 */
-	private void messageReceivedStatusButtonActionPerformed(ActionEvent e) {
+
+
+    private void messageReceivedStatusButtonActionPerformed(ActionEvent e) {
 		for (JakeMessage jm: unreadMessages) {
 			new ReceiveMessageDialog(gui.getMainFrame(), jm).setVisible(true);
 		}

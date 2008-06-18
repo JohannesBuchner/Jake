@@ -7,6 +7,8 @@ import java.rmi.NoSuchObjectException;
 import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.PopupMenuEvent;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
@@ -25,7 +27,6 @@ import com.doublesignal.sepm.jake.fss.InvalidFilenameException;
 import com.doublesignal.sepm.jake.fss.LaunchException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
-import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
 import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
 import com.doublesignal.sepm.jake.sync.exceptions.SyncException;
@@ -196,7 +197,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
         lockFileMenuItem = new JMenuItem();
         deleteFileMenuItem = new JMenuItem();
         viewLogForFileMenuItem = new JMenuItem();
-        pushFileMenuItem = new JMenuItem();
+        announceFileMenuItem = new JMenuItem();
         pullFileMenuItem = new JMenuItem();
         importLocalFileMenuItem = new JMenuItem();
         
@@ -228,9 +229,9 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
             }
         });
         
-        pushFileMenuItem.setText(translator.get("FilesDialogContextMenuItemPushFile"));
-        pushFileMenuItem.setToolTipText("Push locally changed file");
-        pushFileMenuItem.addActionListener(new ActionListener() {
+        announceFileMenuItem.setText(translator.get("FilesDialogContextMenuItemPushFile"));
+        announceFileMenuItem.setToolTipText("Push locally changed file");
+        announceFileMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 pushFileMenuItemActionPerformed(event);
             }
@@ -255,13 +256,66 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
         
         filesPopupMenu.add(launchFileMenuItem);
         filesPopupMenu.addSeparator();
-        filesPopupMenu.add(pushFileMenuItem);
+        filesPopupMenu.add(announceFileMenuItem);
         filesPopupMenu.add(pullFileMenuItem);
         filesPopupMenu.addSeparator();
         filesPopupMenu.add(lockFileMenuItem);
         filesPopupMenu.add(deleteFileMenuItem);
         filesPopupMenu.add(viewLogForFileMenuItem);
         filesPopupMenu.add(importLocalFileMenuItem);
+
+        filesPopupMenu.addPopupMenuListener(new PopupMenuListener()
+        {
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                JakeObject file = getSelectedFile();
+                if (file == null)
+                    return;
+                //disable by default
+                boolean setall = false;
+                launchFileMenuItem.setEnabled(setall);
+                announceFileMenuItem.setEnabled(setall);
+                pullFileMenuItem.setEnabled(setall);
+                lockFileMenuItem.setEnabled(setall);
+                deleteFileMenuItem.setEnabled(setall);
+                viewLogForFileMenuItem.setEnabled(setall);
+                importLocalFileMenuItem.setEnabled(setall);
+                int syncstatus = jakeGuiAccess.getJakeObjectSyncStatus(file);
+
+                if ( (syncstatus & IJakeGuiAccess.SYNC_EXISTS_LOCALLY ) != 0)
+                    launchFileMenuItem.setEnabled(true);
+
+                if( (syncstatus & IJakeGuiAccess.SYNC_EXISTS_LOCALLY ) != 0  &&
+                        (syncstatus & IJakeGuiAccess.SYNC_IS_IN_PROJECT) != 0)
+                    announceFileMenuItem.setEnabled(true);
+
+                if( (syncstatus & IJakeGuiAccess.SYNC_IS_IN_PROJECT) != 0 &&
+                        (syncstatus & IJakeGuiAccess.SYNC_REMOTE_IS_NEWER) != 0)
+                    pullFileMenuItem.setEnabled(true);
+
+                if( (syncstatus & IJakeGuiAccess.SYNC_IS_IN_PROJECT) != 0 &&
+                        (syncstatus & IJakeGuiAccess.SYNC_EXISTS_LOCALLY) != 0)
+                    lockFileMenuItem.setEnabled(true);
+
+                if(((syncstatus & IJakeGuiAccess.SYNC_EXISTS_LOCALLY) != 0) &&
+                        ((syncstatus & IJakeGuiAccess.SYNC_REMOTE_IS_NEWER) == 0)
+                        )
+                    deleteFileMenuItem.setEnabled(true);
+
+                if( (syncstatus & IJakeGuiAccess.SYNC_IS_IN_PROJECT) != 0)
+                    viewLogForFileMenuItem.setEnabled(true);
+
+                if( (syncstatus & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
+                    importLocalFileMenuItem.setEnabled(true);
+
+            }
+
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
+
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
+
+        });
 
     }
 
@@ -406,7 +460,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
     private JMenuItem lockFileMenuItem;
     private JMenuItem deleteFileMenuItem;
     private JMenuItem viewLogForFileMenuItem;
-    private JMenuItem pushFileMenuItem;
+    private JMenuItem announceFileMenuItem;
     private JMenuItem pullFileMenuItem;
     private JMenuItem importLocalFileMenuItem;
 }

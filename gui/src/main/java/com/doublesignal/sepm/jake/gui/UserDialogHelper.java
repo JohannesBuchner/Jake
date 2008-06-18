@@ -124,6 +124,7 @@ public class UserDialogHelper {
      * creates an error-dialog box with a sepcific title
      *
      * @param parent       the parent component, usually <code>this</code>
+     * @param title         the title of the dialog
      * @param errorMessage the error message
      */
     public static void error(Component parent, String title, String errorMessage) {
@@ -208,9 +209,9 @@ public class UserDialogHelper {
     
     /**
      * Asks the user to enter a line
-     * @param parent
-     * @param title
-     * @param suggestion
+     * @param parent            the parent component, usually <code>this</code>
+     * @param title             the title to be shown
+     * @param suggestion        the text to be shown
      * @return null if canceled, answer else
      */
     public static String showTextInputDialog(Component parent, String title, String suggestion){
@@ -219,9 +220,9 @@ public class UserDialogHelper {
     
     /**
      * Asks the user to enter a line, uses the translator
-     * @param parent
-     * @param title
-     * @param question
+     * @param parent            the parent component, usually <code>this</code>
+     * @param i18ntitle         the identifier of the title to be shown
+     * @param i18nsuggestion    the identifier of the text to be shown
      * @return null if canceled, answer else
      */
     public static String showTranslatedTextInputDialog(

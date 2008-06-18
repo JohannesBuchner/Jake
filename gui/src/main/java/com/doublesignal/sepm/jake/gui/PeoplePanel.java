@@ -253,7 +253,6 @@ public class PeoplePanel extends JPanel {
 	}
 
 	public int getNameColPos() {
-		// TODO: make dynamic lookup
 		return 0;
 	}
 

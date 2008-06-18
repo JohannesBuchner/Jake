@@ -104,8 +104,6 @@ public class NotesTableModel extends AbstractTableModel {
             try {
                 return jakeGuiAccess.getLastModified(note).toString();
             } catch (NoSuchLogEntryException e) {
-                //log.debug("THIS SHOULD NOT HAPPEN!");
-                //e.printStackTrace();
             	return translator.get("NotesTableModelNoteNotInProject");
             }
 

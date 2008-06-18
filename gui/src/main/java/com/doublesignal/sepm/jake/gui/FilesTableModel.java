@@ -95,7 +95,9 @@ public class FilesTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		JakeObject file = files.get(rowIndex);
+        if(rowIndex >= files.size())
+            return null;
+        JakeObject file = files.get(rowIndex);
 
 		FilesColumns col = FilesColumns.values()[columnIndex];
 		switch (col) {
@@ -142,7 +144,6 @@ public class FilesTableModel extends AbstractTableModel {
 			log.debug("handling a tag-change event");
 			if (foundJakeObject != null &&
                     (jakeGuiAccess.getJakeObjectSyncStatus(foundJakeObject) & IJakeGuiAccess.SYNC_IS_IN_PROJECT) != 0
-            //&&      (jakeGuiAccess.getJakeObjectSyncStatus(foundJakeObject) & IJakeGuiAccess.SYNC_HAS_LOGENTRIES) != 0
             )
             {
 				String sTags = JakeObjLib.generateNewTagString(jakeGuiAccess, foundJakeObject, (String) columnValue);

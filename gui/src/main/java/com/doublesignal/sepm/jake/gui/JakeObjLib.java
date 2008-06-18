@@ -27,8 +27,8 @@ public final class JakeObjLib {
 	/**
 	 * Get String of Tags
 	 * 
-	 * @param tags
-	 * @return
+	 * @param tags A set of Tags
+	 * @return the concatenated Tag string
 	 */
 	public static String getTagString(Set<Tag> tags) {
 		String sTags = "";
@@ -40,7 +40,13 @@ public final class JakeObjLib {
 		return sTags;
 	}
 
-
+    /**
+     * Updates the tag list of the jakeObject in question
+     * @param jakeGuiAccess
+     * @param jakeObject
+     * @param tagsNew
+     * @return the concatenated Tag string as produced by getTagString() 
+     */
 	public static String generateNewTagString(IJakeGuiAccess jakeGuiAccess, JakeObject jakeObject, String tagsNew)
 	{
 		log.debug("adding tags to jakeObject");

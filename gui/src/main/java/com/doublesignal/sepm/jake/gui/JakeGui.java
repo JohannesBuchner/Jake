@@ -120,28 +120,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 			// no critical error, can be ignored.
 		}
 	}
-	/*
 
-	public static ResolveConflictDialog createConflictDialog(Frame owner, 
-			IJakeGuiAccess jakeGuiAccess, JakeObject jo) {
-		if (jo instanceof FileObject) {
-			FileObject f = (FileObject) jo;
-			return new ResolveConflictDialog(owner, jakeGuiAccess, f);
-		} else if (jo instanceof NoteObject) {
-			NoteObject n = (NoteObject) jo;
-			/* TODO:
-			 * Maybe just show current content and offer to override with remote
-			 * User can still copy it away (clipboard)
-			 * */
-			
-			/* or, just ignore and do nothing... */ /*
-			InvalidApplicationState.notImplemented();
-		}else{
-			InvalidApplicationState.shouldNotHappen();
-		}
-		return null;
-	}
-	 */
 	public void conflictOccured(JakeObject jo) {
 		if (jo instanceof FileObject) {
 			FileObject f = (FileObject) jo;
@@ -425,10 +404,8 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 	}
 
 	public void updateAll() {
-		// TODO: update interface !?
-		// peoplePanel.updateData();
 		notesPanel.updateData();
-	}
+    }
 
 	/**
 	 * Set some system properties to integrate the app better to mac os. These

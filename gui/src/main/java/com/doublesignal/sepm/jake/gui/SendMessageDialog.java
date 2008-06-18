@@ -55,7 +55,6 @@ public class SendMessageDialog extends JDialog {
 				return;
 			}
 			ProjectMember jmRecipient = jakeGuiAccess.getProjectMember(recipient);
-			// TODO: Is this REALLY the value we want?
 			ProjectMember jmSender = jakeGuiAccess.getProjectMember(jakeGuiAccess.getLoginUserid());
 
 			JakeMessage jm = new JakeMessage(jmRecipient, jmSender, this.messageTextArea.getText());

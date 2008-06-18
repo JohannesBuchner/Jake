@@ -94,7 +94,6 @@ public class NewProject extends JDialog {
 				jga.close();
 			} catch (SQLException e) {
 				log.warn("Database cannot be closed");
-//				e.printStackTrace();
 			}
 		}
 		jga = null;
@@ -355,38 +354,21 @@ public class NewProject extends JDialog {
 	}
 
 	private JPanel headerPanel;
-
 	private JLabel jakeIconLabel;
-
 	private JPanel dialogPane;
-
 	private JPanel contentPanel;
-
 	private JLabel infoLabel;
-
 	private JLabel selectFolderLabel;
-
 	private JLabel folderLabel;
-	
-	private JLabel useridLabel;
-
+    private JLabel useridLabel;
 	private JTextField folderTextField;
-	
 	private JTextField useridTextField;
-
 	private JButton folderSelectButton;
-
 	private JLabel adviseNameProjectLabel;
-
 	private JLabel adviseProjectNameLabel;
-
 	private JLabel adviseUseridLabel;
-
 	private JTextField projectNameTextField;
-
 	private JPanel buttonBar;
-
 	private JButton okButton;
-
 	private JButton cancelButton;
 }
