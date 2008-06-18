@@ -26,9 +26,9 @@ public class TextTranslationProvider implements ITranslationProvider {
 	public void setLanguage(String langFile) throws IOException{
 		strings = new HashMap<String, String>();
 		file = new ClassPathResource(langFile);
-		InputStream is = file.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader fr = new BufferedReader(isr);
+
+		BufferedReader fr = new BufferedReader(new InputStreamReader(file.getInputStream()));
+
 		String line = "";
 		while(true){
 			line = fr.readLine();
