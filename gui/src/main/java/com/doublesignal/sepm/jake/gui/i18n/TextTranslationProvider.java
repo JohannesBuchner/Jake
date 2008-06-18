@@ -5,9 +5,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
@@ -27,8 +25,8 @@ public class TextTranslationProvider implements ITranslationProvider {
 		strings = new HashMap<String, String>();
 		file = new ClassPathResource(langFile);
 
-		BufferedReader fr = new BufferedReader(new InputStreamReader(file.getInputStream()));
-
+		BufferedReader fr = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
+		
 		String line = "";
 		while(true){
 			line = fr.readLine();

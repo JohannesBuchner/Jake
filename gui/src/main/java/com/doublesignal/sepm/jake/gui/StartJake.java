@@ -20,21 +20,26 @@ public class StartJake
 	{
 		log.info(translator.get("ConsoleWelcome"));
 		log.debug("starting frontend....");
-		if(args[0].startsWith("--lang=")){
-			String file = args[0].substring("--lang=".length());
-			try{
-				translator.setLanguage(file);
-			}catch(IOException e){
-				log.fatal("language file " + file + " not found");
-				return -1;
+		int i = args.length;
+		if(i>1 && args[0].startsWith("--lang")){
+			try {
+				System.out.println("setting language to " + args[1]);
+				translator.setLanguage(args[1]);
+			}catch(IOException e) {
+				log.fatal("language file " + args[1] + " not found");
+				System.err.println("language file " + args[1] + " not found");
+				System.exit(-1);
 			}
+			i = i - 2;
+		}else{
+			System.err.println("using default language");
 		}
 		JakeGui.setSystemProperties();
 		JakeGui.setNativeLookAndFeel();
-		if(args.length==0){
+		if(i==0){
 			JakeGui.showSelectProjectDialog(null);
 		}else{
-			JakeGui.showSelectProjectDialog(args[args.length - 1]);
+			JakeGui.showSelectProjectDialog(args[i - 1]);
 		}
 		
 		log.debug("loading done.");
