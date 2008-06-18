@@ -37,7 +37,8 @@ up:
 
 jar:
 	mvn package
-	echo please copy */target/*-${VERSION}.jar into gui/target/*one-jar.jar
-	echo then you can run it with java -jar "<file>"
+	@echo please copy */target/*-${VERSION}.jar into the jar folder main of gui/target/*one-jar.jar 
+	@echo (use a zip program)
+	@echo then you can run it with java -jar "<file>"
 
 .PHONY: gui core fss ics
