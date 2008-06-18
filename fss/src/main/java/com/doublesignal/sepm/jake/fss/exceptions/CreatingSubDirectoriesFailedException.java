@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss;
+package com.doublesignal.sepm.jake.fss.exceptions;
 
 /**
  * The operation that should create missing directories recursively, failed.

@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
+import com.doublesignal.sepm.jake.fss.exceptions.NotADirectoryException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 

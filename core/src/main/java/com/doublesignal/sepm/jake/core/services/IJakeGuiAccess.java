@@ -13,6 +13,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.*;
+import com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException;
 import com.doublesignal.sepm.jake.ics.exceptions.*;
 import com.doublesignal.sepm.jake.sync.exceptions.*;
 
@@ -502,7 +503,7 @@ public interface IJakeGuiAccess {
 	 * For conflict resolving, a external file can be launched.
 	 * @param f
 	 * @throws LaunchException 
-	 * @throws InvalidFilenameException 
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException
 	 */
 	public void launchExternalFile(File f) throws InvalidFilenameException, LaunchException;
 	

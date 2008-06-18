@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
+import com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class FileLauncher {
 
 	}
 	public void launchFile(File f) 
-		throws InvalidFilenameException, LaunchException 
+		throws InvalidFilenameException, LaunchException
 	{
 		try {
 			desktop.open(f);

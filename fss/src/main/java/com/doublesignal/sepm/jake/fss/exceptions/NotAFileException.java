@@ -1,4 +1,6 @@
-package com.doublesignal.sepm.jake.fss;
+package com.doublesignal.sepm.jake.fss.exceptions;
+
+import com.doublesignal.sepm.jake.fss.exceptions.NotAReadableFileException;
 
 /**
  * Thrown if tried to read a file which is in fact a directory or something else

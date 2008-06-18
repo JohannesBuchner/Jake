@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
+import com.doublesignal.sepm.jake.fss.exceptions.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -86,7 +88,7 @@ public interface IFSService {
 	 * Lists folder content following isValidRelpath
 	 * @param relpath Folder to be viewed
 	 * @return directory content: file and folder names as relpaths
-	 * @throws InvalidFilenameException
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException
 	 * @throws IOException
 	 */
 	public List<String> listFolder(String relpath) 
@@ -95,7 +97,7 @@ public interface IFSService {
 	/**
 	 * Lists all files in rootpath following isValidRelpath
 	 * @return directory content: files as relpaths
-	 * @throws InvalidFilenameException
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException
 	 * @throws IOException
 	 */
 	public List<String> recursiveListFiles() 
@@ -123,7 +125,7 @@ public interface IFSService {
 	/**
 	 * Unsets the root path (e.g. stops listeners)
 	 * @throws IOException
-	 * @throws NotADirectoryException 
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.NotADirectoryException
 	 */
 	public void unsetRootPath();
 
@@ -133,12 +135,12 @@ public interface IFSService {
 	 * @param content The full, new file content as a String
 	 * @throws InvalidFilenameException
 	 * @throws IOException
-	 * @throws NotAFileException 
-	 * @throws FileTooLargeException 
-	 * @throws CreatingSubDirectoriesFailedException 
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.NotAFileException
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.FileTooLargeException
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.CreatingSubDirectoriesFailedException
 	 */
 	public void writeFile(String relpath, byte[] content) 
-		throws InvalidFilenameException, IOException, FileTooLargeException, 
+		throws InvalidFilenameException, IOException, FileTooLargeException,
 			NotAFileException, CreatingSubDirectoriesFailedException;
 	
 	
@@ -197,7 +199,7 @@ public interface IFSService {
 	/**
 	 * @param relpath
 	 * @return size of the file in Bytes
-	 * @throws InvalidFilenameException
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException
 	 * @throws FileNotFoundException
 	 * @throws NotAFileException
 	 */
@@ -224,7 +226,7 @@ public interface IFSService {
 	/**
 	 * get the last modified date for a file
 	 * @throws InvalidFilenameException 
-	 * @throws NotAFileException 
+	 * @throws com.doublesignal.sepm.jake.fss.exceptions.NotAFileException
 	 */
 	public long getLastModified(String relpath) 
 		throws InvalidFilenameException, NotAFileException;

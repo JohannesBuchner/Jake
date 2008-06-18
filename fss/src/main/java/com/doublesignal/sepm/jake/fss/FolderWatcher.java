@@ -2,7 +2,6 @@ package com.doublesignal.sepm.jake.fss;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -12,6 +11,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.doublesignal.sepm.jake.fss.IModificationListener.ModifyActions;
+import com.doublesignal.sepm.jake.fss.exceptions.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.exceptions.NotAReadableFileException;
 
 /**
  * Implementation of {@link IFSService}

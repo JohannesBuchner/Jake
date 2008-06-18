@@ -1,5 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
+import com.doublesignal.sepm.jake.fss.exceptions.*;
+
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;

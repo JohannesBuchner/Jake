@@ -29,8 +29,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import com.doublesignal.sepm.jake.core.services.IJakeGuiAccess;
@@ -39,7 +37,7 @@ import com.doublesignal.sepm.jake.core.services.exceptions.ExistingProjectExcept
 import com.doublesignal.sepm.jake.core.services.exceptions.InvalidDatabaseException;
 import com.doublesignal.sepm.jake.core.services.exceptions.InvalidRootPathException;
 import com.doublesignal.sepm.jake.core.services.exceptions.NonExistantDatabaseException;
-import com.doublesignal.sepm.jake.fss.NotADirectoryException;
+import com.doublesignal.sepm.jake.fss.exceptions.NotADirectoryException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TranslatorFactory;
 

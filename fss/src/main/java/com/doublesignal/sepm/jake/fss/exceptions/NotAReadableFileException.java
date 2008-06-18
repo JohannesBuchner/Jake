@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss;
+package com.doublesignal.sepm.jake.fss.exceptions;
 
 /**
  * Trying to read a file, a reading error occured.

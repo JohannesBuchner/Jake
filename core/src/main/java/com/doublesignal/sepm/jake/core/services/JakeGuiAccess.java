@@ -8,6 +8,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchProjectMemberExcepti
 import com.doublesignal.sepm.jake.core.domain.*;
 import com.doublesignal.sepm.jake.core.services.exceptions.*;
 import com.doublesignal.sepm.jake.fss.*;
+import com.doublesignal.sepm.jake.fss.exceptions.*;
 import com.doublesignal.sepm.jake.fss.IModificationListener.ModifyActions;
 import com.doublesignal.sepm.jake.ics.IICService;
 import com.doublesignal.sepm.jake.ics.IMessageReceiveListener;
@@ -390,8 +391,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 
     public static JakeGuiAccess createNewProjectByRootpath(
     		String rootPath, String projectname, String userid)
-            throws ExistingProjectException, InvalidDatabaseException, 
-            NotADirectoryException, InvalidRootPathException 
+            throws ExistingProjectException, InvalidDatabaseException,
+            NotADirectoryException, InvalidRootPathException
     {
         rootPath = new File(rootPath).getAbsolutePath();
         log.debug("createNewProjectByRootpath: " + rootPath);

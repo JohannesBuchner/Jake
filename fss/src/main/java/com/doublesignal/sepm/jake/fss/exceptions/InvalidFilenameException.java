@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss;
+package com.doublesignal.sepm.jake.fss.exceptions;
 
 /**
  * If a filename is not acceptable for all operating systems or filesystem 
