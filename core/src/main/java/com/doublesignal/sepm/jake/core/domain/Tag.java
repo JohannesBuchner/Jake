@@ -11,8 +11,8 @@ public class Tag {
 
 	/**
 	 * Construct a new Tag. The tag must not contain white-spaces.
-	 * @param name
-	 * @throws InvalidTagNameException
+	 * @param name the name of the tag to be created
+	 * @throws InvalidTagNameException if the name is not valid
 	 * @see #setName(String)
 	 */
 	public Tag(String name) throws InvalidTagNameException {
@@ -50,7 +50,7 @@ public class Tag {
 			return false;
 		if (name != null && !name.equals(that.getName()))
 			return false;
-		
+
 		return true;
 	}
 

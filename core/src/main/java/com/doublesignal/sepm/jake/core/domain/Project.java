@@ -24,7 +24,7 @@ public class Project {
 
 	/**
 	 * Add Project Member to a Project
-	 * @param member 
+	 * @param member the ProjectMember to be added
 	 */
 	public void addMember(ProjectMember member) {
 		members.add(member);
@@ -40,7 +40,7 @@ public class Project {
 	
 	/**
 	 * Remove Project Member from a Project
-	 * @param member 
+	 * @param member the ProjectMember to be removed 
 	 */
 	public void removeMember(ProjectMember member) {
 		members.remove(member);

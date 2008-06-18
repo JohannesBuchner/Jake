@@ -29,7 +29,10 @@ public class NoteObject extends JakeObject {
 	/**
 	 * Creates a new JakeObject: The name is constructed like this: 'note:' +
 	 * userid + ':' + timestamp
-	 */
+     * @param userid the userid of the creator of the note
+     * @param content the content of the ntoe
+     * @return the new note object
+     */
 	public static NoteObject createNoteObject(String userid, String content) {
 		return new NoteObject("note:" + userid + ":" + System.currentTimeMillis(), content);
 	}

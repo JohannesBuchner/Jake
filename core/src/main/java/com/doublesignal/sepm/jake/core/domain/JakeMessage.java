@@ -23,8 +23,8 @@ public class JakeMessage {
 	 * Create a new JakeMessage. The <code>time</code> is set automatically to
 	 * the current time.
 	 *
-	 * @param recipient
-	 * @param sender
+	 * @param recipient  the projectMember to receive the message
+	 * @param sender    the projectMember which sent the message
 	 * @param content   the content of the message.
 	 */
 	public JakeMessage(ProjectMember recipient, ProjectMember sender, String content) {

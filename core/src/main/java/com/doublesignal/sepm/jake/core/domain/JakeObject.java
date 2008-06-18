@@ -44,8 +44,8 @@ public abstract class JakeObject {
 	 * Add a tag to the object.
 	 *
 	 * @param tag to be added
-	 *
-	 */
+     * @return the tag which was added from the jakeObject
+     */
 	public JakeObject addTag(Tag tag) {
 		tags.add(tag);
 		return this;
@@ -55,6 +55,7 @@ public abstract class JakeObject {
 	 * Removes all <code>tags</code> from the object that are equal to <code>tag</code>.
 	 *
 	 * @param tag to be removed
+     * @return the tag which was removed from the jakeObject
 	 */
 	public JakeObject removeTag(Tag tag) {
 		tags.remove(tag);

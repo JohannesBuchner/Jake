@@ -14,7 +14,7 @@ public interface IProjectMemberDao {
 	/**
 	 * Loads an existing ProjectMember from the database using their networkId.
 	 *
-	 * @param networkId The ProjectMember's network ID
+	 * @param userid The ProjectMember's network user ID
 	 * @return the ProjectMember requested
 	 * @throws NoSuchProjectMemberException if no such ProjectMember is found
 	 */

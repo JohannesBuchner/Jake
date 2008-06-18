@@ -19,7 +19,7 @@ public interface IJakeObjectDao {
 	 *
 	 * @param name The name of the FileObject to be retrieved
 	 * @return The FileObject
-	 * @throws com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException
+	 * @throws NoSuchFileException if no fileObject by that name exists
 	 *
 	 */
 	public FileObject getFileObjectByName(String name) throws NoSuchFileException;
@@ -29,7 +29,7 @@ public interface IJakeObjectDao {
 	 *
 	 * @param name The name of the NoteObject to be retrieved
 	 * @return The NoteObject
-	 * @throws com.doublesignal.sepm.jake.core.services.exceptions.NoSuchFileException
+	 * @throws NoSuchFileException  if no fileObject by that name exists
 	 *
 	 */
 	public NoteObject getNoteObjectByName(String name) throws NoSuchFileException;
@@ -64,22 +64,22 @@ public interface IJakeObjectDao {
 
 	/**
 	 * Convenience method to add one or more tags to a JakeObject
-	 * @param object
-	 * @param tags
+	 * @param jakeObject the jakeObject in question
+	 * @param tags one or more tags
 	 */
-	public void addTagsTo(JakeObject object, Tag... tags);
+	public void addTagsTo(JakeObject jakeObject, Tag... tags);
 
 	/**
 	 * Convenience method to remove one or more tags from a JakeObject
-	 * @param object
-	 * @param tags
+	 * @param jakeObject the jakeObject in question
+	 * @param tags one or more tags
 	 */
-	public void removeTagsFrom(JakeObject object, Tag... tags);
+	public void removeTagsFrom(JakeObject jakeObject, Tag... tags);
 
 
     /**
      * Return all tags of a specific JakeObject. 
-     * @param jakeObject
+     * @param jakeObject the jakeObject in question
      * @return List of Tags
      */
     public List<Tag> getTagsForObject(JakeObject jakeObject);

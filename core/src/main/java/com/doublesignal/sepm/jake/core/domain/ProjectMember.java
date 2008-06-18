@@ -16,7 +16,7 @@ public class ProjectMember {
 
 	/**
 	 * Constructs a new <code>ProjectMember</code> with the given <code>userId</code>.
-	 * @param userId
+	 * @param userId the network User Id of the ProjectMember
 	 */
 	public ProjectMember(String userId) {
 		this.userId = userId;
