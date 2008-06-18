@@ -908,7 +908,7 @@
 						<tr>
 							<td>51</td>
 							<!-- test case # //-->
-							<td>ContextMenu-&gt;Open File/Folder</td>
+							<td>ContextMenu-&gt;Open File</td>
 							<!-- function //-->
 							<td>launch the file with external app</td>
 							<!-- expected result -->
@@ -945,29 +945,7 @@
 							<td>NC</td>
 							<!-- type: normal case nc, failure case fc, special case sc -->
 						</tr>
-                        						<tr>
-							<td>XX TODO</td>
-							<!-- test case # //-->
-							<td>ContextMenu-&gt;Resolve Conflict</td>
-							<!-- function //-->
-							<td>A dialog is presented to the user, where he can resolve a conflict of a file by
-                                selecting the version he wants to make the new current version.</td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td>Very High</td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td>NC</td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-
-                        						<tr>
+   						<tr>
 							<td>XX TODO</td>
 							<!-- test case # //-->
 							<td>ContextMenu-&gt;Propagate File</td>
@@ -1048,51 +1026,11 @@
 							<!-- expected result -->
 							<td></td>
 							<!-- inputs -->
-							<td></td>
+							<td>ok</td>
 							<!-- achieved result [blank] -->
 							<td></td>
 							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td>Medium</td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td>NC</td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td>53</td>
-							<!-- test case # //-->
-							<td>Highlight newer file</td>
-							<!-- function //-->
-							<td>The newer File (Timestamp) is highlighted somehow</td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
-							<!-- passed? -->
-							<td>Medium</td>
-							<!-- priority: very high, high, medium, low, very low -->
-							<td>NC</td>
-							<!-- type: normal case nc, failure case fc, special case sc -->
-						</tr>
-						<tr>
-							<td>54</td>
-							<!-- test case # //-->
-							<td>Highlight bigger filesize</td>
-							<!-- function //-->
-							<td>The File with the bigger filesize is highlighted somehow</td>
-							<!-- expected result -->
-							<td></td>
-							<!-- inputs -->
-							<td></td>
-							<!-- achieved result [blank] -->
-							<td></td>
-							<!-- behaviour in case of error -->
-							<td></td>
+							<td>2008-06-18, 03:54, sw</td>
 							<!-- passed? -->
 							<td>Medium</td>
 							<!-- priority: very high, high, medium, low, very low -->
