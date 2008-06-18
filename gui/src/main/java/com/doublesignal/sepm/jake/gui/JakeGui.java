@@ -729,7 +729,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 
 					// ======== projectMenu ========
 					{
-						projectMenu.setText("Project");
+						projectMenu.setText(translator.get("MenuProject"));
 
 						// ---- openProjectFolderMenuItem ----
 //						openProjectFolderMenuItem.setText(translator.get("MenuItemOpenProjectFolder"));

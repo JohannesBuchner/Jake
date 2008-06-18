@@ -219,10 +219,10 @@ SendMessageDialogTitle=Send message
 SendMessageDialogToLabel=To: 
 SendMessageDialogSendButton=Send
 
-StatusPanelSingelMessageReceived=1 message received
-StatusPanelMultibleMessagesReceived=%0% messages received
-StatusPanelSingelConflict=File conflict
-StatusPanelMultibleConflicts=%0% File conflicts
+StatusPanelSingleMessageReceived=1 message received
+StatusPanelMultipleMessagesReceived=%0% messages received
+StatusPanelSingleConflict=File conflict
+StatusPanelMultipleConflicts=%0% File conflicts
 StatusPanelConnected=Connected
 StatusPanelConnectedToolTip=Connected as %0%
 StatusPanelNotConnected=Not connected
