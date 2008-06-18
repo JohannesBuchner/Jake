@@ -1120,8 +1120,13 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
         {
             destinationFile.createNewFile();
             copyFile(srcFile, destinationFile );
+           
+           /* This pretty construct does nothing more exciting than creating a relative path. Because we have
+            * backslashes in the base path on windows, we need to escape those so we can use it in a regex.
+            * Remember, regexes need double escaping of backslashes (once for Java, once for the regex engine) */
             String relPath = destinationFile.getAbsolutePath().
                     replaceAll(currentProject.getRootPath().getAbsolutePath().replaceAll("\\\\", "\\\\\\\\"), "");
+
             if(File.separatorChar == '\\')
             {
                 relPath = relPath.replace('\\','/');
@@ -1137,9 +1142,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 
     public synchronized boolean importLocalFileIntoProject(String relPath) {
        /* We do not want slashes at the beginning of a file name */
-           if(relPath.startsWith("/")) {
-              relPath = relPath.substring(1);
-           }
+        if(relPath.startsWith("/")) {
+           relPath = relPath.substring(1);
+        }
        
         FileObject fileObject = new FileObject(relPath);
 
