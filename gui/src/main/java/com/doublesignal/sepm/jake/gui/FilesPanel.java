@@ -24,7 +24,7 @@ import com.doublesignal.sepm.jake.core.dao.exceptions.NoSuchLogEntryException;
 import com.doublesignal.sepm.jake.core.domain.FileObject;
 import com.doublesignal.sepm.jake.core.domain.JakeObject;
 import com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException;
-import com.doublesignal.sepm.jake.fss.LaunchException;
+import com.doublesignal.sepm.jake.fss.exceptions.LaunchException;
 import com.doublesignal.sepm.jake.gui.i18n.ITranslationProvider;
 import com.doublesignal.sepm.jake.gui.i18n.TextTranslationProvider;
 import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;

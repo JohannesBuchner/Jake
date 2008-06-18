@@ -1,6 +1,7 @@
 package com.doublesignal.sepm.jake.fss;
 
 import com.doublesignal.sepm.jake.fss.exceptions.InvalidFilenameException;
+import com.doublesignal.sepm.jake.fss.exceptions.LaunchException;
 
 import java.awt.Desktop;
 import java.io.File;
