@@ -36,9 +36,11 @@ up:
 	oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
 
 jar:
-	mvn package
-	@echo please copy */target/*-${VERSION}.jar into the jar folder main of gui/target/*one-jar.jar 
-	@echo (use a zip program)
-	@echo then you can run it with java -jar "<file>"
+	${MVN} package
+	cd releases; rm -rf temp; mkdir -p temp 
+	cd releases/temp; unzip ../../gui/target/gui-${VERSION}.one-jar.jar && cp -v ../../{core,ics,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && zip -r ../jake-current.jar * 
+	cd releases; rm -rf temp;
+	@echo release ready under releases/jake-current.jar
+	@echo run with java -jar releases/jake-current.jar
 
 .PHONY: gui core fss ics
