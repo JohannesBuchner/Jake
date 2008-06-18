@@ -131,7 +131,9 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("name", object.getName());
 
-		if(object instanceof FileObject) {
+      logger.info("Name of JO: " + object.getName());
+
+      if(object instanceof FileObject) {
 			try {
 				log.debug("Instance of a FileObject");
 				getFileObjectByName(object.getName());

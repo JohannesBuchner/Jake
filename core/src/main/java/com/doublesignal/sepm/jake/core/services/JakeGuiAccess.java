@@ -1126,6 +1126,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             {
                 relPath = relPath.replace('\\','/');
             }
+
             importLocalFileIntoProject(relPath);
         } catch (IOException e) {
             e.printStackTrace();
@@ -1135,6 +1136,11 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
     }
 
     public synchronized boolean importLocalFileIntoProject(String relPath) {
+       /* We do not want slashes at the beginning of a file name */
+           if(relPath.startsWith("/")) {
+              relPath = relPath.substring(1);
+           }
+       
         FileObject fileObject = new FileObject(relPath);
 
         db.getJakeObjectDao().save(fileObject);
