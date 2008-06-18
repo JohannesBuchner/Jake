@@ -16,7 +16,7 @@
 				<li>File and folder names must comply to the following expression: [a-zA-Z0-9\-_.]+</li>
 				<li>User Names must contain the '@' character to be a valid userid</li>
 				<li>Do not change the userid of the local user.</li>
-				<li>You might experience the interface to be not as fast as possible.</li>
+				<li>The preferences autopull, autopush, auto-logsync are not respected; the locked state is not shown in the files/notes view nor respected (as a warning) in the operations.</li>
 			</ul>
 		</subsection>
 		<subsection name="Hints">
