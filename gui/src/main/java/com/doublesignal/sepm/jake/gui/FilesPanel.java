@@ -80,11 +80,6 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
     }
 
 	public void updateUI() {
-		// lazy loading
-		log.debug("files panel update");
-		// if(!immidiate || lastUpdate != null && lastUpdate.getTime()+3000 <
-		// new Date().getTime())
-		// {
 		log.debug("files panel _real_ update");
 		super.updateUI();
 		if (filesTableModel != null) {
@@ -98,7 +93,6 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 		super.updateUI();
 		this.repaint();
 		lastUpdate = new Date();
-		// }
 	}
 
 	public void stateChanged(JakeObject jo) {
@@ -139,7 +133,6 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 
         this.setLayout(new BorderLayout());
         filesTableModel = new FilesTableModel(jakeGuiAccess);
-        //filesTable.setComponentPopupMenu(filesPopupMenu);
         filesTable.setColumnControlVisible(true);
         filesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
         filesTable.setModel(filesTableModel);
@@ -350,7 +343,6 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 				} catch (NotLoggedInException e) {
 					UserDialogHelper.translatedError(this, "NotLoggedInException");
 				} catch (SyncException e) {
-//					e.getInnerException().printStackTrace();
 					UserDialogHelper.translatedError(this, "SyncException");
 				}
 		}
@@ -400,43 +392,6 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
                     log.debug("show some error dialog");
 
                 }
-/*s                Integer status = jakeGuiAccess.getJakeObjectSyncStatus(fileObject);
-
-                if((status & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
-                {
-                    log.debug("file successfully imported");
-                    return;
-                }
-                else
-                {
-
-                }*/
-
-/*
-
-            if (status != 102) {
-                UserDialogHelper.warning(this, "Import failed",
-                        "The file \n\"" + fileObject.getName() + "\"\n " +
-                                "could not be imported into the project because it is either already \n" +
-                                "a file in the projects repository or has not a valid filename ");
-            } else {
-                if (jakeGuiAccess.importLocalFileIntoProject(fileObject.getName())) {
-                    UserDialogHelper.inform(this, "Import succeeded",
-                            "The file \n\"" + fileObject.getName() + "\"\n" +
-                                    "was succcessfully imported into this JakeProject."
-                    );
-                    filesTable.updateUI();
-                } else {
-                    UserDialogHelper.error(this, "Import failed",
-                            "The file \n\"" + fileObject.getName() + "\"\n " +
-                                    "could not be imported into the project because it is either already \n" +
-                                    "a file in the projects repository or has not a valid filename "
-                    );
-                }
-
-            }
-            */
-
         }
 
     }
