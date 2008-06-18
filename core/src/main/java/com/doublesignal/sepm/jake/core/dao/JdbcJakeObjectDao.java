@@ -22,16 +22,18 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 		  implements IJakeObjectDao {
 	private Logger log = Logger.getLogger(JdbcJakeObjectDao.class);
 	
-	private final String JAKEOBJECT_SELECT = "SELECT name FROM objects";
-	private final String JAKEOBJECT_WHERE = " WHERE name=?";
+	private final String JAKEOBJECT_SELECT = "SELECT o.name FROM objects o WHERE 1=1";
+	private final String JAKEOBJECT_WHERE = " AND name=?";
 	private final String JAKEOBJECT_INSERT =
 			  "INSERT INTO objects (name) VALUES (:name)";
 	private final String JAKEOBJECT_DELETE =
 			  "DELETE FROM objects WHERE name=:name";
+   private final String JAKEOBJECT_WHERE_NOT_DELETED = " AND (SELECT action FROM logentries l WHERE object_name=o.name" +
+           " ORDER BY timestamp DESC LIMIT 1) <> 'DELETE'";
 
-	private final String NOTEOBJECT_SELECT =
-			  "SELECT name, content FROM noteobjects n JOIN objects o ON n.name = o.name";
-	private final String NOTEOBJECT_WHERE = " WHERE name=?";
+   private final String NOTEOBJECT_SELECT =
+			  "SELECT name, content FROM noteobjects n JOIN objects o ON n.name = o.name WHERE 1=1";
+	private final String NOTEOBJECT_WHERE = " AND name=?";
 	private final String NOTEOBJECT_INSERT =
 			  "INSERT INTO noteobjects (name, content) VALUES (:name, :content)";
 	private final String NOTEOBJECT_UPDATE =
@@ -72,7 +74,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 		try {
 			FileObject fo = getSimpleJdbcTemplate().queryForObject(
 					  JAKEOBJECT_SELECT + JAKEOBJECT_WHERE, new JdbcFileObjectRowMapper(), name);
-			if(fo.getName().startsWith("note:")) {
+         if(fo.getName().startsWith("note:")) {
 				throw new NoSuchFileException("Requested a FileObject, but this is a NoteObject!");
 			}
 			for (Tag t : getTagsForObject(fo)) {
@@ -105,7 +107,7 @@ public class JdbcJakeObjectDao extends SimpleJdbcDaoSupport
 
 	public List<FileObject> getAllFileObjects() {
 		List<FileObject> fos = getSimpleJdbcTemplate().query(
-				  JAKEOBJECT_SELECT,
+				  JAKEOBJECT_SELECT + JAKEOBJECT_WHERE_NOT_DELETED,
 				  new JdbcFileObjectRowMapper()
 		);
 
