@@ -1,75 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.doublesignal.sepm.jake</groupId>
-    <artifactId>parent</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>SEPM 3950 Jake</name>
-    <description>Jake is a collaboration tool for sharing a project folder between project members.</description>
-    <url>http://sepm.doublesignal.com/</url>
-    <modules>
-        <module>core</module>
-        <module>documentation</module>
-        <module>ics</module>
-        <module>gui</module>
-        <module>fss</module>
-    </modules>
-
-    <developers>
-        <developer>
-            <id>chris</id>
-            <name>Christian Sutter</name>
-            <email>chris@doublesignal.com</email>
-            <roles>
-                <role>Team coordinator</role>
-            </roles>
-        </developer>
-
-        <developer>
-            <id>johannes</id>
-            <name>Johannes Buchner</name>
-            <email>e0625457@student.tuwien.ac.at</email>
-            <roles>
-                <role>Documentation</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>simon</id>
-            <name>Simon Wallner</name>
-            <email>contact@simonwallner.at</email>
-            <roles>
-                <role>Team coordinator</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>peter</id>
-            <name>Peter Steinberger</name>
-            <email>mail@petersteinberger.com</email>
-            <roles>
-                <role>second team coordinator</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>philipp</id>
-            <name>Philipp Knobelspies</name>
-            <email>philipp.knobelspies@googlemail.com</email>
-            <roles>
-                <role>second technical architect</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>dominik</id>
-            <name>Dominik Dorn</name>
-            <email>mail.2008@dominikdorn.com</email>
-            <roles>
-                <role>Testing</role>
-            </roles>
-        </developer>
-        <!--
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.doublesignal.sepm.jake</groupId>
+	<artifactId>parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>SEPM 3950 Jake</name>
+	<description>Jake is a collaboration tool for sharing a project folder between project members.</description>
+	<url>http://sepm.doublesignal.com/</url>
+	<modules>
+		<module>core</module>
+		<module>documentation</module>
+		<module>ics</module>
+		<module>gui</module>
+		<module>fss</module>
+	</modules>
+	<developers>
+		<developer>
+			<id>chris</id>
+			<name>Christian Sutter</name>
+			<email>chris@doublesignal.com</email>
+			<roles>
+				<role>Team coordinator</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>johannes</id>
+			<name>Johannes Buchner</name>
+			<email>e0625457@student.tuwien.ac.at</email>
+			<roles>
+				<role>Documentation</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>simon</id>
+			<name>Simon Wallner</name>
+			<email>contact@simonwallner.at</email>
+			<roles>
+				<role>Team coordinator</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>peter</id>
+			<name>Peter Steinberger</name>
+			<email>mail@petersteinberger.com</email>
+			<roles>
+				<role>second team coordinator</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>philipp</id>
+			<name>Philipp Knobelspies</name>
+			<email>philipp.knobelspies@googlemail.com</email>
+			<roles>
+				<role>second technical architect</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>dominik</id>
+			<name>Dominik Dorn</name>
+			<email>mail.2008@dominikdorn.com</email>
+			<roles>
+				<role>Testing</role>
+			</roles>
+		</developer>
+		<!--
             <developer>
                 <id></id>
                 <name></name>
@@ -79,10 +74,9 @@
                 </roles>
             </developer>
         -->
-    </developers>
-
-    <!--  <contributors> -->
-    <!--	<contributor>
+	</developers>
+	<!--  <contributors> -->
+	<!--	<contributor>
             <name></name>
             <email></email>
             <url></url>
@@ -94,7 +88,7 @@
             </roles>
         </contributor>
     -->
-    <!--
+	<!--
 
         <contributor>
             <name></name>
@@ -108,124 +102,132 @@
             </roles>
         </contributor>
     -->
-    <!--   </contributors> -->
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>dstovall.org</id>
-            <url>http://dstovall.org/maven2/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-                <archive>
-                    <manifest>
-                        <mainClass>com.doublesignal.sepm.jake.gui.StartJake</mainClass>
-                    </manifest>
-                </archive>
-            </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.dstovall</groupId>
-                <artifactId>onejar-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <!-- Optional -->
-                            <onejarVersion>0.96</onejarVersion>
-                        </configuration>
-                        <goals>
-                            <goal>one-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-        </plugin>
-
-
-        </plugins>
-    </build>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Internal -->
-            <dependency>
-                <groupId>com.doublesignal.sepm.jake</groupId>
-                <artifactId>sepm-jake-core</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <!-- Dependencies used by all modules -->
-    <dependencies>
-
-        <dependency>
-            <!-- Logging, commons-logging version 1.1 has 
+	<!--   </contributors> -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>dstovall.org</id>
+			<url>http://dstovall.org/maven2/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.doublesignal.sepm.jake.gui.StartJake</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<configuration>
+							<!-- Optional -->
+							<onejarVersion>0.96</onejarVersion>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.doublesignal.sepm.jake.gui.StartJake</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencyManagement>
+		<dependencies>
+			<!-- Internal -->
+			<dependency>
+				<groupId>com.doublesignal.sepm.jake</groupId>
+				<artifactId>sepm-jake-core</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<!-- Dependencies used by all modules -->
+	<dependencies>
+		<dependency>
+			<!-- Logging, commons-logging version 1.1 has 
             log4j as transitive dependency! -->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1</version>
-        </dependency>
-
-        <!-- As Spring is used in the service layer for all modules, this can be done here -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <!-- Database -->
-        <!-- koennen wir ja noch durch apache derby ersetzen... -->
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-        </dependency>
-
-        <!-- For testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-mock</artifactId>
-            <version>${spring-mock.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <!--
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<!-- As Spring is used in the service layer for all modules, this can be done here -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Database -->
+		<!-- koennen wir ja noch durch apache derby ersetzen... -->
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldb.version}</version>
+		</dependency>
+		<!-- For testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-mock</artifactId>
+			<version>${spring-mock.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<!--
                         <plugin>
                             <groupId>org.codehaus.mojo</groupId>
                             <artifactId>jxr-maven-plugin</artifactId>
@@ -234,15 +236,12 @@
                             <artifactId>maven-surefire-plugin</artifactId>
                         </plugin>
             -->
-        </plugins>
-    </reporting>
-
-
-    <properties>
-        <spring.version>2.5</spring.version>
-        <spring-mock.version>2.0</spring-mock.version>
-        <junit.version>4.4</junit.version>
-        <hsqldb.version>1.8.0.1</hsqldb.version>
-    </properties>
-
+		</plugins>
+	</reporting>
+	<properties>
+		<spring.version>2.5</spring.version>
+		<spring-mock.version>2.0</spring-mock.version>
+		<junit.version>4.4</junit.version>
+		<hsqldb.version>1.8.0.1</hsqldb.version>
+	</properties>
 </project>
