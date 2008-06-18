@@ -269,7 +269,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 				log.debug("Trying login with username: " + username + ", password: " + password);
 				try {
 					jakeGuiAccess.login(username, password);
-					log.debug("Savign log in credentials...");
+					log.debug("Saving log in credentials...");
 					jakeGuiAccess.setConfigOption("userid", username);
 					jakeGuiAccess.setConfigOption("password", password);
 					log.debug("Login was successful");
@@ -472,11 +472,9 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 		autoFilePushCheckBoxMenuItem = new JCheckBoxMenuItem();
 		autoFilePullCheckBoxMenuItem = new JCheckBoxMenuItem();
 		projectMenu = new JMenu();
-		openProjectFolderMenuItem = new JMenuItem();
 		refreshDatapoolViewProjectMenuItem = new JMenuItem();
 		newNoteProjectMenuItem = new JMenuItem();
 		addFileToProjectMenuItem = new JMenuItem();
-		addFolderToProjectMenuItem = new JMenuItem();
 		addProjectMemberMenuItem = new JMenuItem();
 		helpMenu = new JMenu();
 		aboutHelpMenuItem = new JMenuItem();
@@ -512,10 +510,10 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 						// ======== peoplePanel ========
 						{
 							
-						mainTabbedPane.addTab("People", new ImageIcon(getClass().getResource(
+						mainTabbedPane.addTab(translator.get("PeopleTabTitle","0","0"), new ImageIcon(getClass().getResource(
 								"/icons/people.png")), peoplePanel);
 
-						mainTabbedPane.addTab("Notes", new ImageIcon(getClass().getResource(
+						mainTabbedPane.addTab(translator.get("NotesTabTitle","0"), new ImageIcon(getClass().getResource(
 								"/icons/notes.png")), notesPanel);
 
 					}
@@ -564,7 +562,7 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 						mainToolBar.addSeparator();
 
 						// ---- newNoteButton ----
-						newNoteButton.setToolTipText("New Note");
+						newNoteButton.setToolTipText(translator.get("NewNote"));
 						newNoteButton.setIcon(new ImageIcon(getClass().getResource(
 								"/icons/notes-new.png")));
 						newNoteButton.addActionListener(new ActionListener() {
@@ -1003,11 +1001,9 @@ public class JakeGui extends JPanel implements Observer, IConflictCallback {
 	private JCheckBoxMenuItem autoFilePushCheckBoxMenuItem;
 	private JCheckBoxMenuItem autoFilePullCheckBoxMenuItem;
 	private JMenu projectMenu;
-	private JMenuItem openProjectFolderMenuItem;
 	private JMenuItem refreshDatapoolViewProjectMenuItem;
 	private JMenuItem newNoteProjectMenuItem;
 	private JMenuItem addFileToProjectMenuItem;
-	private JMenuItem addFolderToProjectMenuItem;
 	private JMenuItem addProjectMemberMenuItem;
 	private JMenu helpMenu;
 	private JMenuItem aboutHelpMenuItem;

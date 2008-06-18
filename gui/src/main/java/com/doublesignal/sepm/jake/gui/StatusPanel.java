@@ -77,9 +77,9 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 
 		if (messagesReceived > 0) {
 			if (messagesReceived == 1)
-				messageReceivedStatusButton.setText(translator.get("StatusPanelSingelMessageReceived"));
+				messageReceivedStatusButton.setText(translator.get("StatusPanelSingleMessageReceived"));
 			else
-				messageReceivedStatusButton.setText(translator.get("StatusPanelMultibleMessagesReceived", String.valueOf(messagesReceived)));
+				messageReceivedStatusButton.setText(translator.get("StatusPanelMultipleMessagesReceived", String.valueOf(messagesReceived)));
 
 			messageReceivedStatusButton.setVisible(true);
 		} else {
@@ -88,9 +88,9 @@ public class StatusPanel extends JPanel implements IJakeMessageReceiveListener {
 
 		if (filesConflict > 0) {
 			if (filesConflict == 1)
-				fileConflictStatusButton.setText(translator.get("StatusPanelSingelConflict"));
+				fileConflictStatusButton.setText(translator.get("StatusPanelSingleConflict"));
 			else
-				fileConflictStatusButton.setText(translator.get("StatusPanelMultibleConflicts", String.valueOf(filesConflict)));
+				fileConflictStatusButton.setText(translator.get("StatusPanelMultipleConflicts", String.valueOf(filesConflict)));
 
 			fileConflictStatusButton.setVisible(true);
 		} else {

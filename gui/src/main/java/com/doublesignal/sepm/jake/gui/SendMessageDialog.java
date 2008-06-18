@@ -65,35 +65,35 @@ public class SendMessageDialog extends JDialog {
 			log.warn("Recipient does not exist in project");
 			JOptionPane.showMessageDialog(this, 
 					translator.get("SendMessageDialogMessageRecipientDoesNotExistInProject"),
-					translator.get("SendMessageDialogMesaageError"),
+					translator.get("SendMessageDialogMessageError"),
 					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (OtherUserOfflineException e1) {
 			JOptionPane.showMessageDialog(this, 
 					translator.get("SendMessageDialogMessageRecipientOffline"),
-					translator.get("SendMessageDialogMesaageError"),
+					translator.get("SendMessageDialogMessageError"),
 					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (NoSuchUseridException e1) {
 			JOptionPane.showMessageDialog(this,
 					translator.get("SendMessageDialogMeaageRecipientDoesNotExistInNetwork"),
-					translator.get("SendMessageDialogMesaageError"),
+					translator.get("SendMessageDialogMessageError"),
 					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (NotLoggedInException e1) {
 			JOptionPane.showMessageDialog(this, 
 					translator.get("SendMessageDialogMessageNotLoggedIn"),
-					translator.get("SendMessageDialogMesaageError"),
+					translator.get("SendMessageDialogMessageError"),
 					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;
 		} catch (NetworkException e1) {
 			JOptionPane.showMessageDialog(this,
 					translator.get("SendMessageDialogMessageGeneralNetworkError"),
-					translator.get("SendMessageDialogMesaageError"),
+					translator.get("SendMessageDialogMessageError"),
 					JOptionPane.ERROR_MESSAGE);
 			this.setVisible(false);
 			return;

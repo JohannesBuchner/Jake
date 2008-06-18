@@ -92,7 +92,7 @@ public class ViewLogDialogTableModel extends AbstractTableModel {
     		
     	default:
     		throw new IllegalArgumentException(
-    				"Cannot get Inoformation for column "+ columnIndex);
+    				"Cannot get Information for column "+ columnIndex);
     	
     	
     	}

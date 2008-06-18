@@ -74,8 +74,8 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
         tabindex = jakeGui.getMainTabbedPane().indexOfTab("filestab");
         if (tabindex >= 0)
             jakeGui.getMainTabbedPane().setTitleAt(tabindex,
-                    "Files (" + filesTableModel.getFilesCount()
-                            + "/" + FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()) + ")"
+            		translator.get("FilesTabTitle", Integer.toString(filesTableModel.getFilesCount()),
+                            FilesLib.getHumanReadableFileSize(filesTableModel.getSummedFilesize()))
             );
     }
 

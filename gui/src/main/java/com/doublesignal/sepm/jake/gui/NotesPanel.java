@@ -128,7 +128,7 @@ public class NotesPanel extends JPanel {
 			log.info("getSelectedNode: (" + selRow + ") " + notesTableModel.getNotes().get(selRow));
 			return (notesTableModel.getNotes().get(selRow));
 		} else {
-			log.info("getSelctedNode: null");
+			log.info("getSelectedNode: null");
 			return null;
 		}
 	}

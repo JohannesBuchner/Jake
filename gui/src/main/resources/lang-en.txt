@@ -207,10 +207,10 @@ ReceiveMessageDialogWhenLabel=When:
 
 SendMessageDialogMessageEmptyMessageText=The message you tried to send is empty. Please insert some text (or click "Cancel").
 SendMessageDialogMessageEmptyMessageTitle=Empty message
-SendMessageDialogMesaageError=Error sending message
+SendMessageDialogMessageError=Error sending message
 SendMessageDialogMessageRecipientDoesNotExistInProject=The recipient project member does not exist in this project.
 SendMessageDialogMessageRecipientOffline=The recipient project member is currently off-line. Try again later.
-SendMessageDialogMeaageRecipientDoesNotExistInNetwork=The recipient project member does not exist on this network.
+SendMessageDialogMessageRecipientDoesNotExistInNetwork=The recipient project member does not exist on this network.
 SendMessageDialogMessageNotLoggedIn=The message could not be sent because you are not logged in.
 SendMessageDialogMessageGeneralNetworkError=The message could not be sent because of a general network error. Please try again later.
 SendMessageDialogMessageSuccessText=Your message to %0% has been sent successfully.
@@ -235,4 +235,14 @@ ViewLogDialogTableModelColumnUser=User
 ViewLogDialogTableModelColumnTime=Time
 ViewLogDialogTableModelColumnComment=Comment
 
+ConsoleWelcome=Welcome to Jake - a collaborative Environment
+NotLoggedInException=You are not logged in. Log in and try again.
+OtherUserOfflineException=The other user needed for this operation is not online.
+NotesDialogContextMenuItemSetLock=Set lock...
+ObjectNotInProject=This object is not managed by the project
+CommitMessage=Enter a commit message to describe what you changed. It will appear in the log of the object with the date and your name.
+SyncException=An error occured during syncronisation. Try again later.
+PeopleTabTitle=People (%0%/%1%)
+NotesTabTitle=Notes (%0%)
+FilesTabTitle=Files (%0%/%1%)
 
