@@ -320,14 +320,8 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 	    fss.addModificationListener(this);
     }
 
-
-    private static void copyTextFile(File source, File target) throws IOException {
-        if(!source.exists())
-        	throw new IOException("Resource " + source.getAbsolutePath() + 
-        			"does not exist.");
-    	BufferedReader fis = new BufferedReader(new FileReader(source));
-        BufferedWriter fos = new BufferedWriter(new FileWriter(target));
-        while (true) {
+    private static void copyTextFile(BufferedReader fis, BufferedWriter fos) throws IOException {
+    	while (true) {
             String l = fis.readLine();
             if (l == null)
                 break;
@@ -338,6 +332,20 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
             fis.close();
         if (fos != null)
             fos.close();
+    }
+    private static void copyTextFile(InputStream source, File target) throws IOException {
+    	BufferedReader fis = new BufferedReader(new InputStreamReader(source)); 
+        BufferedWriter fos = new BufferedWriter(new FileWriter(target));
+        copyTextFile(fis, fos);
+    }
+
+    private static void copyTextFile(File source, File target) throws IOException {
+        if(!source.exists())
+        	throw new IOException("Resource " + source.getAbsolutePath() + 
+        			"does not exist.");
+    	BufferedReader fis = new BufferedReader(new FileReader(source));
+        BufferedWriter fos = new BufferedWriter(new FileWriter(target));
+        copyTextFile(fis, fos);
     }
     
     private void copyFile(File source, File target) throws IOException {
@@ -365,11 +373,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
         log.debug("copying over ...");
         try {
             ClassPathResource scriptres = new ClassPathResource("skeleton.script");
-            log.debug("ClassPathResource: " + scriptres.getFile().getAbsolutePath());
-            copyTextFile(scriptres.getFile(), scriptfile);
+            copyTextFile(scriptres.getInputStream(), scriptfile);
             ClassPathResource propertiesres = new ClassPathResource("skeleton.properties");
-            log.debug("ClassPathResource: " + propertiesres.getFile().getAbsolutePath());
-            copyTextFile(propertiesres.getFile(), propertiesfile);
+            copyTextFile(propertiesres.getInputStream(), propertiesfile);
         } catch (IOException e) {
             e.printStackTrace();
             throw new InvalidDatabaseException();
