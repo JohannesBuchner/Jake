@@ -271,7 +271,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
                 if (file == null)
                     return;
                 //disable by default
-                boolean setall = false;
+                boolean setall = true;
                 launchFileMenuItem.setEnabled(setall);
                 announceFileMenuItem.setEnabled(setall);
                 pullFileMenuItem.setEnabled(setall);
@@ -279,8 +279,8 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
                 deleteFileMenuItem.setEnabled(setall);
                 viewLogForFileMenuItem.setEnabled(setall);
                 importLocalFileMenuItem.setEnabled(setall);
-                int syncstatus = jakeGuiAccess.getJakeObjectSyncStatus(file);
-
+                /*int syncstatus = jakeGuiAccess.getJakeObjectSyncStatus(file);
+		
                 if ( (syncstatus & IJakeGuiAccess.SYNC_EXISTS_LOCALLY ) != 0)
                     launchFileMenuItem.setEnabled(true);
 
@@ -306,7 +306,7 @@ public class FilesPanel extends JPanel  implements IStateChangeListener{
 
                 if( (syncstatus & IJakeGuiAccess.SYNC_IS_IN_PROJECT) == 0)
                     importLocalFileMenuItem.setEnabled(true);
-
+		*/
             }
 
             public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
