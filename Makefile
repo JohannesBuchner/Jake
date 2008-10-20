@@ -39,7 +39,7 @@ jar:
 	${MVN} clean
 	${MVN} package
 	cd releases; rm -rf temp; mkdir -p temp 
-	cd releases/temp; unzip ../../gui/target/gui-${VERSION}.one-jar.jar && cp -v ../../{core,ics,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && zip -r ../jake-current.jar * 
+	cd releases/temp; unzip ../../gui/target/gui-${VERSION}.one-jar.jar && cp -v ../../{core,ics,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && zip -9 -r ../jake-current.jar * 
 	cd releases; rm -rf temp;
 	@echo release ready under releases/jake-current.jar
 	@echo run with java -jar releases/jake-current.jar
