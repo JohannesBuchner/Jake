@@ -106,7 +106,9 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
 			return null;
 		}
     }
-    
+
+
+    /* note verwaltung */
     public NoteObject createNote(String content) {
         log.debug("createNote: " + content);
 
@@ -133,7 +135,12 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
         log.debug("remove Note:" + note);
         db.getJakeObjectDao().delete(note);
     }
-    
+
+    /* note verwaltung ende */
+
+
+    /* projektmember verwaltung */
+
     public void removeProjectMember(ProjectMember selectedMember)	{
     	log.debug("remove Project Member with ID :" + selectedMember.getUserId());
     	db.getProjectMemberDao().remove(selectedMember);
@@ -161,6 +168,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
     }
 
 
+    /* projektmember verwaltung ende */
 
     /**
      * Returns the configuration option for a <code>configKey</code>
@@ -249,6 +257,7 @@ public class JakeGuiAccess implements IJakeGuiAccess, IMessageReceiveListener, I
         LogEntry logEntry = db.getLogEntryDao().getMostRecentFor(jakeObject);
         return logEntry.getTimestamp();
     }
+
     public Date getLocalLastModified(FileObject jo) {
         try {
 			return new Date(fss.getLastModified(jo.getName()));

@@ -110,8 +110,11 @@ public interface ISyncService {
 	public List<ProjectMember> push(JakeObject jo, String userid, 
 			String commitmsg) 
 		throws ObjectNotConfiguredException, SyncException;
-	
-	/* (Only for implementing the SyncService, not for the interface)
+
+
+
+    
+    /* (Only for implementing the SyncService, not for the interface)
 	 * This has to be registered in the used ICService to be called on pull 
 	 * requests. It loads the object content and sends it back to the requester.
 	 * 
