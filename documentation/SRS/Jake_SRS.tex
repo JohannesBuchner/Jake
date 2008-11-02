@@ -1,0 +1,123 @@
+\documentclass[english,a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{multicol}
+\usepackage[naturalnames]{hyperref}
+\usepackage{verbatim}
+%\usepackage[german,boxruled]{algorithm2e}
+\usepackage{varioref}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+%\usepackage[top=tlength, bottom=blength, left=llength, right=rlength]{geometry}
+\usepackage{a4wide}
+
+\newcommand{\tblheader}[1]{\textbf{#1}}
+
+%\addtolength{\oddsidemargin}{-0.75in}
+%\addtolength{\evensidemargin}{-0.75in}
+%\addtolength{\marginparwidth}{-0.5in}
+\setlength\parindent{0cm}
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+\title{ Software Requirements Specification } 
+\author{Simon Wallner}
+\pagestyle{fancy}
+\lhead{Jake}
+\rhead{Software Requirements Secification}
+\lfoot{Jake SRS}
+%\cfoot{\today}
+\cfoot{\number\year-\number\month-\number\day}
+\rfoot{\thepage/\pageref{LastPage}}
+
+\begin{titlepage}
+\begin{center}
+\LARGE{Project \textbf{Jake}}
+
+\vfill
+\Huge{\textbf{Software Requirements Specification}}
+\end{center}
+
+\vspace{2cm}
+\textbf{Exec. Summary:} \\
+SRS for \emph{Jake}
+
+\vfill
+%\vspace{2cm}
+\begin{tabular}{ | l | l | }
+\hline
+ \tblheader{Autor:} & Simon Wallner \\
+\hline
+ \tblheader{Review:} & \\
+\hline
+ \tblheader{Gruppe:} & - \\
+\hline
+\end{tabular}
+
+\vspace{2cm}
+
+\begin{tabular}{ | l | l | p{3.5cm} | p{7cm} | }
+\hline
+  \tblheader{Nr} & \tblheader{Date} & \tblheader{Author} & \tblheader{Change} \\
+\hline
+1 & 2008-11-02 & Simon Wallner & document created \\
+\hline
+
+\end{tabular}
+\thispagestyle{empty}
+\end{titlepage}
+
+\tableofcontents
+\thispagestyle{fancy}
+\clearpage
+
+\pagestyle{fancy}
+
+\section{Introduction}
+\emph{Jake} is an application that simplifies sharing files in small project groups. It's main focus lies on sharing and replication of files over a network.
+
+\subsection{Core Audience}
+Jakes core audience are people with minimum to medium IT training, who are familiar with e-mail and internet application like browsers and instant messengers. 
+
+\subsection{Usage Szenario}
+A project group of 6-12 project members that shares about 5-100 files. All project members have internet access and are online, while they are working. Usually only one person works on a file at one time, therefore merging conflicts are rare. 
+
+\section{Functional Requirements}
+\subsection{Working with Projects }
+Jake operates on the basis of \emph{projects}. A consists of \emph{project files} and \emph{project members}. All project files are rooted in the \emph{project folder}. This project folder exists locally in every project members file system. the project folder and its contents may be treated as any other file/folder in the file system. Changes in the file system are immediately reflected in the application.
+
+It is possible to be connected to more than one project at a time within one instance of Jake. Every project MUST have a unique project folder. Files MUST only be associated with one project, therefore sharing a file with multiple projects is not supported.
+
+Every project is identified by an unique ID and a non-unique \emph{project title}
+
+\subsection{manage projects}
+\subsection{offline content management}
+\subsubsection{files}
+\subsubsection{notes}
+\subsubsection{metadata, tags}
+\subsection{networking}
+\subsection{synchronizing}
+\subsubsection{web of trust}
+\subsubsection{levels of trust}
+\subsection{security}
+\subsection{preferences}
+\subsection{messaging}
+
+\section{Nonfunctional Requirements}
+\subsection{technical limitation and constraints}
+
+\section{Further Documentation}
+- use cases
+- GUI specs/guidelines
+- QA plan
+
+
+
+\end{document}
+
+
+
+

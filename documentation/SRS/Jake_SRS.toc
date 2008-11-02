@@ -1,0 +1,21 @@
+\select@language {ngerman}
+\contentsline {section}{\numberline {0.1}Introduction}{2}{chapter*.1}
+\contentsline {subsection}{\numberline {0.1.1}Core Audience}{2}{section*.2}
+\contentsline {subsection}{\numberline {0.1.2}Usage Szenario}{2}{section*.2}
+\contentsline {section}{\numberline {0.2}Functional Requirements}{2}{section*.2}
+\contentsline {subsection}{\numberline {0.2.1}Working with Projects }{2}{section*.3}
+\contentsline {subsection}{\numberline {0.2.2}manage projects}{3}{section*.3}
+\contentsline {subsection}{\numberline {0.2.3}offline content management}{3}{section*.3}
+\contentsline {subsubsection}{files}{3}{section*.4}
+\contentsline {subsubsection}{notes}{3}{section*.5}
+\contentsline {subsubsection}{metadata, tags}{3}{section*.6}
+\contentsline {subsection}{\numberline {0.2.4}networking}{3}{section*.6}
+\contentsline {subsection}{\numberline {0.2.5}synchronizing}{3}{section*.6}
+\contentsline {subsubsection}{web of trust}{3}{section*.7}
+\contentsline {subsubsection}{levels of trust}{3}{section*.8}
+\contentsline {subsection}{\numberline {0.2.6}security}{3}{section*.8}
+\contentsline {subsection}{\numberline {0.2.7}preferences}{3}{section*.8}
+\contentsline {subsection}{\numberline {0.2.8}messaging}{3}{section*.8}
+\contentsline {section}{\numberline {0.3}Nonfunctional Requirements}{3}{section*.8}
+\contentsline {subsection}{\numberline {0.3.1}technical limitation and constraints}{3}{section*.9}
+\contentsline {section}{\numberline {0.4}Further Documentation}{3}{section*.9}
