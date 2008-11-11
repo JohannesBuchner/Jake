@@ -12,26 +12,39 @@ A project group of 6-12 project members that shares about 5-100 files (ordinary 
 This model scenario may be a small corporate project, or a student project. It is especially useful for projects in distributed teams like architects working in Vienna and Abu Dabi.
 
 \section{Terms and Definitions}
-This sections contains terms and definitions that are used in this document. If you are new to Jake, you might want to skip this section for now and come back later to clarify certain expressions.
+This sections contains terms and definitions that are used in this document. If you 
+%(*! dominik: are new to  *) 
+already know Jake, you might want to skip this section for now and come back later to clarify certain expressions.
 \begin{description}
 
-\item[Jake] The Name of the application this spec is written for.
+\item[Jake] The Name of the application this software requirements specification is written for.
 \item[project] A project is the core unit of Jake. It consists of \emph{project members}, \emph{project files} and \emph{project notes}.
 \item[project member] a project member may share project files with other project members within a project. It is uniquely identified by its \emph{user ID}.
 \item[project files] Files that are shared within a project.
 \item[project folder] Every project is bind to one local project folder in which the project files are stored.
 \item[local files] files that reside in the project folder but are not shared.
 \item[project notes] Besides files, a project may contain notes. Notes are associated to the whole project (in contrary to a note to a file)
+
+%(*! dominiK: where are the notes to the files? if you decide to not make notes to files, then don't mention that here. I want notes to files! 
+% *)
 \item[local notes] notes that are not shared.
-\item[file system] the service provided by the operating system to mv, cp, rm files and folders
+\item[file system] the service provided by the operating system to movev, copy or remove files and folders
 \item[affecting the project] a certain action is said to be affecting the project if the action is visible to other project members. If Alice modifies a file, this action does not affect the project (i.e no one knows that Alice made a modification) unless Alice decides to announce it.
 \item[trust relation] the trust relation forms an \emph{equivalence relation}. It is reflexive: $a \sim a$, symmetric: $a \sim b \Rightarrow b \sim a$ and transitive: $a \sim b \wedge b \sim c \Rightarrow a \sim c$. 
+%(*! dominik: this is not true afaik. As long as I don't add the new user to my trust list, the relation between me and the new user is not transitive. I will get his files although, but the relation is not transitive. Its also useless to mention reflexive because theres no need to trust oneself. I would remove the term equivalence relation completly for the sake of easyness to understand, especially when open source developers should join the project. 
+% *)
 \item[member list] the member list is a set of \emph{project members} a user explicitly trusts.
+%(*! Dominik: as stated somewhere below in this document, I think you swapped "web of trust" and member list. 
+% web of trust are the users i explicitly (and maybe also implicitly) trust. in the member list, every member
+% i can get aware of should be listed
+% *)
 \item[explicit trust relation] if one project member explicitly trusts another project member. It is written as $Alice \sim ^* Bob$
 \item[neighborhood of project member $a_0$] all project members that maintain an explicit trust relation to $a_0$, $\{a_i: a_0 \sim ^* a_i\}$
-
+%(*! Dominik: the members i explicitly trust... *)
 \item[project graph] all project members along with their explicit trust relations form the project graph
-\item[web of trust] in a web of trust each member of the web trusts each other member
+\item[web of trust] in a web of trust each member of the web trusts each other member 
+%(*! dominik: thats not true imo. the web of trust forms the graph of the members trusting each other, it does not mean that every member trusts each other member. 
+% *)
 
 \end{description}
 Besides the above definitions this section uses keywords proposed in RFC 2119\footnote{\texttt{http://www.ietf.org/rfc/rfc2119.txt}}. In general, every part of this specification MUST be fulfilled except the parts that are explicitly marked as OPTIONAL or similar.
@@ -40,70 +53,126 @@ Besides the above definitions this section uses keywords proposed in RFC 2119\fo
 
 \subsection{Manage Projects}
 \subsubsection{Single Instance with many Projects}
-At any time, there MUST NOT be more than one instance of Jake running on one machine. Within this single instance many projects are supported. The number of concurrent \emph{projects} MAY be limited. Every project MUST have its own \emph{project folder}. Files MUST only be associated with one project, therefore sharing a  file with multiple projects is not supported.
+At any time, there MUST NOT be more than one instance of Jake running on one machine. 
+%(*! dominik: thats not true. each instance of jake should be limited to one user-session per machine. if i have an multi-user unix system it should of course be possible to have multiple instances of jake running by different users (e.g. by running a remote X session). We just want to prevent a user within the same session to start jake a second time. this can easily be done with some sort of lockfile. Also the ports jake is using MUST NOT be fixated globally as this would introduce problems in this multi-user environment (port already bound) 
+% *)
+Within this single instance many projects are supported. The number of concurrent \emph{projects} MAY be limited
+%(*! dominik: I don't see a reason why we should do that. With proper programming the only limiting resource we have is the amount of ram the user has on his disposal.. but if you want to stick with that, I'm ok with it. 
+% *). 
+Every project MUST have its own \emph{project folder}. Files MUST only be associated with one project, therefore sharing a file with multiple projects is not supported.
 
 If Jake is started the last application state is restored, (as far as one exists), i.e. the last opened projects are reopened on start. 
+%(*! Dominik: I think we should specify here that we really just save which project was opened and nothing more, because an "application state" is a lot more than just a set of opened projects... actually its every object in the jvm at the moment just before jake was closed and thats nothing we want to do. I know you just mean the list of projects, but then better use another term please 
+% *)
 
 \subsubsection{Creating a new Project}
-In order to create a new project, the user specifies a \emph{project folder} and a \emph{project name}. All existing files in the project folder become \emph{local files}. No \emph{user ID} and network connection is required to create a new project but the project must be bind to a \emph{user ID} in order to invite other users.
+In order to create a new project, the user specifies a \emph{project folder} and a \emph{project name}. All existing files in the project folder become \emph{local files}. No \emph{user ID} and network connection is required to create a new project but the project must be bind to a \emph{user ID} in order to invite other users and start sharing files and notes.
 
 \subsection{Manage Files}
-In Jake all files (i.e. \emph{local} and {project files}) are organized hierarchically in folders. Empty folders MUST be allowed. New folders may be created within Jake. Files may be moved within the project folder or be deleted from it. If a file is deleted from the project folder, it MAY either be moved to the OS trash or to a dedicated trash folder inside the project folder. One of this options MUST be chosen for a concrete implementation. If the file is moved to a dedicated trash folder, this trash folder MUST be hidden from the user within Jake, but the user must be able to examine its contents, restore files and empty it.
+In Jake all files (i.e. \emph{local} and {project files}) are organized hierarchically in folders. Empty folders MUST be allowed. New folders *MAY* be created within Jake. Files *MAY* be moved within the project folder or be deleted from it. If a file is deleted from the project folder, it MAY either be moved to the OS trash or to a dedicated trash folder inside the project folder. One of this options MUST be chosen for a concrete implementation. If the file is moved to a dedicated trash folder, this trash folder MUST be hidden from the user within Jake, but the user MUST BE able to examine its contents, restore files and empty it.
+%(*! Dominik: You are aware of the fact, that this reproduces the functionality of the OS trash that we cannot really rebuild with the amount of time we have. Also one has to create the corresponding GUI elements for browsing the trash. I would propose to not delete files deleted by other users, but simply mark them as deleted and show them e.g. in a different color in the users file list and let the user decide if he really also wants to delete the file from his project folder. So we don't have to rebuild the OS Trash or implement our own. The only thing we have to do is to mark the file as deleted by user x in our database and maybe rename it to oldfilename.oldextension.currenttimestamp so there will be no problems if a user deletes a file and then creates a new one with the same name. For the sake of usability we still can do a "delete all deleted files" function or even create an explicit view for the deleted files, but I'm strictly against moving them to the OS Trash or another folder. If you want, you could also rename it to something like "_JAKEDEL_{currenttimestamp}_OLDFILENAME.OLDEXTENSION" and the file would be still usable the same way directly within the OS File Browser. 
+% *)
 
 Files may be added to the project either by moving them into the project folder via the file system or by \emph{importing} them in Jake.
+These files are threated as \emph{local files} as long as they are not announced. 
 
-Changes in the file system MUST be reflected in the application within a acceptable latency.
+Changes in the file system MUST be reflected in the application within an acceptable latency
+%(*! Dominik: IF the user has activated this. If a user has a lot of projects or a project with a great amount of files, we may not want a daemon periodically checking the users files for changes. This should only be done if the user has activated it (or not deactivated it, depends on default value). There has to be a way to disable automatic discovery while jake is running and start the scan manually, e.g. by the refresh icon we already have in the gui 
+% *)
 
 If a filename violates filename contraints (length, illegal characters) the file name MAY be altered in order to conform with the constraints. This SHOULD happen transparently and obvious to the user (i.e. Übung 1.pdf $\rightarrow$ Uebung\_1.pdf). The user MAY be notified about it.
+%(*! Dominik: I think the filename SHOULD NOT automatically altered as this could break other files depending on the exact name of this file. The illegal filename should be made visible by changing the filename to a different color or something. The user can then choose to manually rename the file within the OS or by selecting an option in the context menu of that file, e.g. "Change illegal filename to 'Uebung_1.pdf'" and/or "Correct illegal filename" where the user then can enter a correct name 
+% *)
 
 Batch operations MUST be provided where applicable.
 
-Cached files from the operating system (\texttt{.DS\_STORE}, \texttt{thumbs.db}) MUST NOT be part of a project and are therefore hidden from the user.
+Cached files from the operating system (e.g. \texttt{.DS\_STORE}, \texttt{thumbs.db}) MUST NOT be part of a project and are therefore hidden from the user.
+
+%(*! Dominik: We should also consider following the cachedir "specification" (see http://www.brynosaurus.com/cachedir/). This states, that files within a directory that has a file named CACHEDIR.TAG (with special content) should not be archived, shared, whatsever. It's not much to implement it but would allow us to get mentioned later on the page => free advertising and a useful feature (e.g. gnu tar/zip also respects this.) 
+% *)
 
 \subsubsection{Announcing Files}
-Only \emph{project files} are shared among the \emph{project members}. In order to contribute a \emph{local file} to the project it must be \emph{announced}. It is the same procedure as if a project member modifies a project file and wants to commit the changes. Changes or new files do not affect the project unless announced.
+Only \emph{project files} are shared among the \emph{project members}. In order to contribute a \emph{local file} to the project it must be \emph{announced}. 
+%(*! It is the same procedure as if a project member modifies a project file and wants to commit the changes. 
+% *)
+Changes or new files do not affect the project unless announced. 
 
-If the user announces a files (or changes to it) he/she may specify a \emph{commit message} to provide additional informations for other project members about the modification/new file.
+If the user announces a file (or changes to it) he/she may specify a \emph{announce message} 
+%(*! Dominik: this was commit message, but we should be consistent. Either we are naming the process announcing, then we have an announce message or we name it commiting, then we have a commit message, but not a mixture of those two! 
+% *) 
+to provide additional informations for other project members about the modification/new file.
 
 In order to delete a file from the project the delete operation is announced to the other project members.
 
 \subsection{Manage Notes}
-In Jake, \emph{notes} are associated with a project. Both \emph{local} and \emph{project notes} exist, where \emph{local notes} are notes that are not shared. They are NOT hierarchically ordered and reside in one common location within Jake. Notes are only accessible through Jake. Notes may be created, displayed, modified and deleted. A note consists of a \emph{title} and a \emph{body}, where the first line of body represents the title. The length of the title MAY be limited. The length of the body MAY be limited.
+In Jake, a \emph{note} is associated generally with a project or with a specific file. Both \emph{local} and \emph{project notes} exist, where \emph{local notes} are notes that are not shared. They are NOT hierarchically ordered and reside in one common location within Jake. Notes are only accessible through Jake. Notes may be created, displayed, modified and deleted. 
+A note consists of a \emph{title} and a \emph{body}, where the first line of body represents the title. The length of the title MAY be limited. The length of the body MAY be limited. 
+%(*! Dominik: I don't like that... I want the title to be a specific datafield and the string to be a specific data field. It's like in an online forum or by emailing... There i also have to specify a title which states very short what the following text is about. We then dont have to do silly parsing of "first lines" (what if the user never hits enter and writes > 200 chars?). Also if the project grows large users will NEED clear titles to QUICKLY find out what a note is about. If you want to argue with "but thats to complicated for the user" you still can take the first line of input as the title, but the user should be able to simply change it. If you want to stick with this first line thing, the editor has to be created in a way, that the user initially sees that this first line will get the title of the note (e.g. making it bold and size+2 or something), but I think it's still clearer for the user to see "the text i enter in the title field will get the title of the note and the text i type in the other field will get the content" and not "wtf... why are the first 30 chars of my my mathematical equation i noted here with latex markup listed in the view of notes?" ... I hope you understand my point. 
+% *)
 
 Announcing notes works analogous to files.
 
 \subsection{Tags}
-Both files and notes may have a \emph{set}(in the mathematical sense; no duplicate elements, unordered) of \emph{tags}. A \emph{tag} is a string. Constraints (length, no spaces, etc.) MAY be enforced on tags. Changes to tags immediately \emph{affect the project}.
+Both files and notes may have a \emph{set}(in the mathematical sense; no duplicate elements, unordered) of \emph{tags}. A \emph{tag} is a 
+%(*! string 
+% *)
+word. Constraints (length, no spaces, etc.) MAY be enforced on tags. Changes to tags immediately \emph{affect the project}.
 
 \subsection{Project Members and the Web of Trust}
 All project members are equal, no one has special rights or stands above others.
 
-All project members in a project along with their \emph{explicit trust relation} form the \emph{project graph}. The\emph{explicit trust relations} are represented by the edges and the project members are represented by the knots.
+All project members in a project along with their \emph{explicit trust relation} form the \emph{project graph}. The\emph{explicit trust relations} are represented by the edges and the project members are represented by the 
+%(*! knots 
+% *) 
+vertices.
 
-Each project member has a set of project members that the explicitly trusts. It is called the \emph{member list}. If two project members have each other in their \emph{member list} an explicit \emph{trust relation} is established. 
+Each project member has a set of project members that he explicitly trusts. It is called the \emph{member list}. If two project members have each other in their \emph{member list} an explicit \emph{trust relation} is established. 
 
-Every connected \emph{project graph} (or connected subgraph) represents a \emph{web of trust}. In Jake, every participant in this web of trust may receive and send files from/to any other participant in the web, either directly or indirectly.
+Every connected \emph{project graph} (or connected subgraph) represents a \emph{web of trust}. In Jake, every participant in this web of trust may receive and send files from/to any other participant in the web, either directly or indirectly. 
+%(*! Dominik: I don't think that is true. I directly receive and send files only to people I explicitly trust. I think you have swaped "web of trust" with "member list". For me, every member of the project is in the member list while only the people that i trust form my "web of trust". 
+% *)
 
 In general the \emph{project graph} is not complete.
 
 \subsubsection{Adding and Removing Users}
-A user may be added to a project if he/she establishes an explicit trust relation to a project member (the project member invites the user, the user accepts the invitation). That way the user becomes a regular project member. Every project member may invite users. 
+A user may be added to a project if he/she establishes an explicit trust relation to a project member by getting invited by an already existing project member. When the new user accepts the invitation, he/she becomes a regular project member. Every project member may invite users. 
 
-Removing project members is not so easy. A project member may only be completely removed from a project if he/she is not connected to the project graph anymore. For Example: $Alice \sim ^* Bob$, $Bob \sim ^* Eve$ and $Alice \sim ^* Eve$. If Alice removes Eve from her \emph{member list} she might still be able to exchange files with Eve even after she removed her from her \emph{member list}. Users SHOULD be made aware of the web of trust and its implications.
+Removing project members is not easy. A project member may only be completely removed from a project if he/she is not connected to the project graph anymore.
+This means, no other user has a trust relation to that user.
+
+For Example: $Alice \sim ^* Bob$, $Bob \sim ^* Eve$ and $Alice \sim ^* Eve$. If Alice removes Eve from her \emph{member list} she might still be able to exchange files with Eve even after she removed her from her \emph{member list}. Users SHOULD be made aware of the web of trust and its implications. 
+%(*! Dominik: I don't think thats correct. As its stated here, it would be possible to directly exchange files between Alice and Eve after Alice removed Eve from her member list/web of trust, but thats not true. True is, that Eve still gets files from Alice and vice-versa indirectly through Bob, but not directly. 
+% *)
 
 \subsubsection{Global Member List}
-Jake MUST provide a \emph{global member list}. This list contains all project members of the project i.e. all project members that are connected to the project member who creates the list. This list MUST be created with best effort, it is not reliable. This fact MUST be clearly communicated  to the user. 
+Jake MUST provide a \emph{global member list}. This list contains all project members of the project i.e. all project members that are connected to the project member who creates the list. This list MUST be created with best effort, it is not reliable. This fact MUST be clearly communicated to the user. 
+%(*! Dominik: For me this is the normal "Member list", but ok.. maybe I'm getting something wrong here... 
+% *)
 
 \subsubsection{Add/Remove Member Alert}
-A project member SHOULD be alerted if someone in the project adds or removes a member. Best effort, non reliable
+A project member SHOULD be alerted if someone in the project adds or removes a member. Best effort, non reliable. 
+%(*! Dominik: Uhh..deletion... do we really want to do that? This should only be done if one of the people in my web of trust adds/deletes another user. If this happens, it is reliable because they will inform everyone in their web of trust of this change. We also have to make sure that no-one is deleted accidentally and this deletion is automatically announced to everyone in the project. e.g. I accidentally delete my boss out of the project and everyone gets informed of this... I surely would get serious problems. Also remember distributed systems: It's very hard to kill rumours/gossip. If I accidentally delete some other member and this gets spread to everyone it will get really hard for me to undo the damage caused by this. If this is just propagated to the people in "my web of trust" theres at least a chance I could limit the damage a little. 
+% *)
 
 \subsection{Auto Add/Remove}
-A project member may set an \emph{auto add/remove flag} at every project member in his/her member list (written as $\sim ^\pm$). Lets make things clear with a short example: $Alice \sim ^\pm Bob$. If Bob adds Carol Alice automatically adds Carol as well. If Bob removes Carol from his list Alice does that as well. The following problem may occur when removing project members: $Alice \sim ^\pm Bob$, $Alice \sim ^\pm  Carol$, $Bob \sim Eve$ and $Carol \sim Eve$. Now Bob removes Eve from his member list. In that case Alice does not remove Eve.
-\emph{Auto add} is always stronger than \emph{auto remove}. Alice does not remove Eve unless Carol removes Eve and therefore no \emph{auto add} relations persist.
+A project member may set an \emph{auto add/remove flag} at every project member in his/her member list (written as $\sim ^\pm$). Lets make things clear with a short example: $Alice \sim ^\pm Bob$. If Bob adds Carol Alice automatically adds Carol as well. If Bob removes Carol from his list Alice does that as well. The following problem may occur when removing project members: $Alice \sim ^\pm Bob$, $Alice \sim ^\pm  Carol$, $Bob \sim Eve$ and $Carol \sim Eve$. Now Bob removes Eve from his member list. In that case Alice does not remove Eve. 
+%(*! Dominik: I don't think that this is a "problem". There should just be the "remove member alert" mentioned above because I have Bob in my web of trust. 
+% *)
+\emph{Auto add} is always stronger than \emph{auto remove}. Alice does not remove Eve unless Carol removes Eve and therefore no \emph{auto add} relations persist. 
+%(*! Dominik: Can I really check if all of my trusted project members have removed someone from their list? I then would have to save a list of every member in "my web of trust". 
+% *)
 
 The \emph{auto add/remove relation}: $a \sim ^\pm b$ is reflective: $a \sim ^\pm a$, transitiv: $a \sim ^\pm b \wedge b\sim ^\pm c \Rightarrow a \sim ^\pm c$ but not symmetric: $a \sim ^\pm b \not\Rightarrow b \sim ^\pm a$
 
-\textbf{Attention: under certain conditions auto add/remove might become a WMD with an unpredictable outcome due to race conditions.}
+%(*! Dominik: Not correct in my opinion. 
+%Reflectiveness does not make sense because I cannot add myself to my contact list. 
+%Not transitive because a does not have a auto add/remove relation to c but just to b. a does only add/remove other members if b does so, not when c does so. Because then it would be possible for someone, lets call him c to kick his inviter b out of the project, which is definitivly not the way it should be. 
+%Not symmetric makes sense. 
+
+% *)
+\textbf{Attention: under certain conditions auto add/remove might become a WMD with an unpredictable outcome due to race conditions.} 
+%(*! Dominik: what is a WMD? Please clarify 
+% *)
 % It might not be a problem if auto add is stronger than auto remove
 % needs further work, to prove the problem and document "certain conditions" worst case situations
 
@@ -111,9 +180,16 @@ The \emph{auto add/remove relation}: $a \sim ^\pm b$ is reflective: $a \sim ^\pm
 \subsection{Sharing and Synchronization}
 A peer only directly communicates with its neighbors. A peer may download files/notes from its neighbors. A peer MUST know which files are available from its neighbors and offer this list to the user. If the user announces a file/note, the peer MUST notify its neighbours about it.
 
+%(*! Dominik: Why suddendly neighbors? Keep it with web of trust or with member list please. 
+%Also not the "peer" does offer the list to the user but the client... the user in conjunction with the client IS the peer
+% *)
+
 The peer MUST always offer the user to download the latest available version of a file.
 
-A \emph{synchronization conflict} may occur under the following condition: A project member modifies a project file. If a newer version of the same file becomes available that is newer then the base version of the modified file (i.e the version of the file before it was modified) a conflict occurs.
+A \emph{synchronization conflict} may occur under the following condition: A project member modifies a project file. If another version of the same file becomes available that is newer (timestamp) then the base version of the modified file (i.e the version of the file before it was modified) a conflict occurs.
+%(*! Dominik: How does one define which file is "newer"? With the timestamp or other means? If with a timestamp, we have to get a reliable source for time. 
+% the jabber server is not a reliable source for the time, at least not as long as every project member uses the same jabber server which we can not enforce. 
+% *)
 
 \subsubsection{Conflict Resolution}
 Both versions of the conflictuous file and additional information (last edit, last edited by, size, etc) are offered to the user. The user may examine both files and do either one of the following options:
@@ -129,11 +205,17 @@ A file or note may be \emph{soft locked}. A \emph{soft lock} consists of a \emph
 
 Whenever an action is to be performed on a locked file or note that may change the file/note, the user MUST be prompted to review this operation and either decline or approve it. The locking message MUST be displayed along the prompt.
 
+As with everything, the propagation of the soft lock can only be done with best effort.
+
+%(*! Dominik: How long does a softlock persist? I think this is not very practible as the lock can only be announced best effort and may be already released when the message of the lock receives the other client. also theres the chance of a race condition where the lock is removed before it is issued which would lead to a lock on a file which would never be released by the other client. I see more problems with the soft lock and its distribution than it could save. We would need a central place where a client can announce a softlock and remove it afterwards, else there is the high chance that another client would receive the lock and unlock message multiple times which could lead to a situation where the file is soft-locked the whole time, annoying the user. 
+% *)
+
 \subsection{Application Start}
 Jake may be started without any project loaded and without being logged in. In this case, new projects may be created, the user may create a new jabber account, the user may login into the network or receive invitations to projects (requires login)
 
 \subsection{Searching}
-Jake MUST provide appropriate means for searching files, notes, project members.
+Jake MUST provide appropriate means for searching files, notes, tags, project members.
+
 \subsection{i18n}
 Jake SHOULD provide appropriate means to support internationalization, in terms of a user language specific interface.
 
@@ -150,7 +232,18 @@ Jake MUST provide sufficient means to create new Jabber accounts from within the
 Jake MAY enforce additional constraints on strings if necessary. Though these constraints SHOULD affect the user as little as possible (replacing illegal characters in file names with '\_' is ok, only allowing \texttt{[a-zA-Z]} is not!)
 
 \subsubsection{Exceptions}
-Jake  MUST be able to tackle exceptions like \texttt{not enough disk space}, \texttt{no read/write access to file} missing config files and things alike in a convenient manner. 
+Jake  MUST be able to tackle exceptions like \texttt{not enough disk space}, \texttt{no read/write access to file}, missing config files and things alike in a convenient manner. 
+
+
+%(*! Dominik: Please add the part I mentioned in the wiki with error codes/track errors. Each error has to get a specific code which the user
+% can lookup on jakes project page and get a description of the error. We have to keep that in mind NOW because later its not possible to
+% introduce that efficiently and cover every error. 
+% It should be some kind of "error knowledge base", where users and developers can lookup the meaning of a specific error, helping the
+% user understand whats wrong and the developer/support user fix the error. 
+% Please, I really want this thing. In my opinion, it's an important part for tracking bugs and raising the quality of our software.
+% *)
+
+
 
 \section{Change History}
 This section contains changes to this document. Each change must be described detailedly.
