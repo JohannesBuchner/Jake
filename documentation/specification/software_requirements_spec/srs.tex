@@ -12,9 +12,7 @@ A project group of 6-12 project members that shares about 5-100 files (ordinary 
 This model scenario may be a small corporate project, or a student project. It is especially useful for projects in distributed teams like architects working in Vienna and Abu Dabi.
 
 \section{Terms and Definitions}
-This sections contains terms and definitions that are used in this document. If you 
-%(*! dominik: are new to  *) 
-already know Jake, you might want to skip this section for now and come back later to clarify certain expressions.
+This sections contains terms and definitions that are used in this document. If you are already familiar with Jake, you might want to skip this section for now and come back later to clarify certain expressions.
 \begin{description}
 
 \item[Jake] The Name of the application this software requirements specification is written for.
@@ -23,70 +21,43 @@ already know Jake, you might want to skip this section for now and come back lat
 \item[project files] Files that are shared within a project.
 \item[project folder] Every project is bind to one local project folder in which the project files are stored.
 \item[local files] files that reside in the project folder but are not shared.
-\item[project notes] Besides files, a project may contain notes. Notes are associated to the whole project (in contrary to a note to a file)
-
-%(*! dominiK: where are the notes to the files? if you decide to not make notes to files, then don't mention that here. I want notes to files! 
-% *)
+\item[project notes] Besides files, a project may contain notes. Notes  are associated to the whole project (in contrary to a note to a file)
 \item[local notes] notes that are not shared.
 \item[file system] the service provided by the operating system to movev, copy or remove files and folders
 \item[affecting the project] a certain action is said to be affecting the project if the action is visible to other project members. If Alice modifies a file, this action does not affect the project (i.e no one knows that Alice made a modification) unless Alice decides to announce it.
-\item[trust relation] the trust relation forms an \emph{equivalence relation}. It is reflexive: $a \sim a$, symmetric: $a \sim b \Rightarrow b \sim a$ and transitive: $a \sim b \wedge b \sim c \Rightarrow a \sim c$. 
-%(*! dominik: this is not true afaik. As long as I don't add the new user to my trust list, the relation between me and the new user is not transitive. I will get his files although, but the relation is not transitive. Its also useless to mention reflexive because theres no need to trust oneself. I would remove the term equivalence relation completly for the sake of easyness to understand, especially when open source developers should join the project. 
-% *)
+\item[trust relation] If the \emph{trust relation} holds true for two project members, it means that they may directly or indirectly exchange files. It is a transitive ($a \sim b \wedge b \sim c \Rightarrow a \sim c$) but not symmetric ($\exists a, b: a \sim b \wedge b \not\sim a$) relation. 
 \item[member list] the member list is a set of \emph{project members} a user explicitly trusts.
-%(*! Dominik: as stated somewhere below in this document, I think you swapped "web of trust" and member list. 
-% web of trust are the users i explicitly (and maybe also implicitly) trust. in the member list, every member
-% i can get aware of should be listed
-% *)
-\item[explicit trust relation] if one project member explicitly trusts another project member. It is written as $Alice \sim ^* Bob$
-\item[neighborhood of project member $a_0$] all project members that maintain an explicit trust relation to $a_0$, $\{a_i: a_0 \sim ^* a_i\}$
-%(*! Dominik: the members i explicitly trust... *)
+\item[explicit trust relation] if one project member explicitly trusts another project member. It is written as $Alice \sim ^* Bob$. It is a transitive ($a \sim b \wedge b \sim c \Rightarrow a \sim c$) but not symmetric ($\exists a, b: a \sim b \wedge b \not\sim a$) relation. 
+\item[neighborhood of project member $a_0$] all project members that $a_0$ explicit trusts: $a_0$, $\{a_i: a_0 \sim ^* a_i\}$
 \item[project graph] all project members along with their explicit trust relations form the project graph
-\item[web of trust] in a web of trust each member of the web trusts each other member 
-%(*! dominik: thats not true imo. the web of trust forms the graph of the members trusting each other, it does not mean that every member trusts each other member. 
-% *)
-
+\item[web of trust] in a web of trust each member of the web trusts each other member.
 \end{description}
+
 Besides the above definitions this section uses keywords proposed in RFC 2119\footnote{\texttt{http://www.ietf.org/rfc/rfc2119.txt}}. In general, every part of this specification MUST be fulfilled except the parts that are explicitly marked as OPTIONAL or similar.
 
 \section{Functional Requirements}
 
 \subsection{Manage Projects}
 \subsubsection{Single Instance with many Projects}
-At any time, there MUST NOT be more than one instance of Jake running on one machine. 
-%(*! dominik: thats not true. each instance of jake should be limited to one user-session per machine. if i have an multi-user unix system it should of course be possible to have multiple instances of jake running by different users (e.g. by running a remote X session). We just want to prevent a user within the same session to start jake a second time. this can easily be done with some sort of lockfile. Also the ports jake is using MUST NOT be fixated globally as this would introduce problems in this multi-user environment (port already bound) 
-% *)
-Within this single instance many projects are supported. The number of concurrent \emph{projects} MAY be limited
-%(*! dominik: I don't see a reason why we should do that. With proper programming the only limiting resource we have is the amount of ram the user has on his disposal.. but if you want to stick with that, I'm ok with it. 
-% *). 
-Every project MUST have its own \emph{project folder}. Files MUST only be associated with one project, therefore sharing a file with multiple projects is not supported.
+At any time, there MUST NOT be more than one instance of Jake running per user session. Within this single instance many projects are supported. The number of concurrent \emph{projects} MAY be limited Every project MUST have its own \emph{project folder}. Files MUST only be associated with one project, therefore sharing a file with multiple projects is not supported.
 
-If Jake is started the last application state is restored, (as far as one exists), i.e. the last opened projects are reopened on start. 
-%(*! Dominik: I think we should specify here that we really just save which project was opened and nothing more, because an "application state" is a lot more than just a set of opened projects... actually its every object in the jvm at the moment just before jake was closed and thats nothing we want to do. I know you just mean the list of projects, but then better use another term please 
-% *)
+If Jake is started the last application state is restored, (as far as one exists), i.e. the last opened projects are reopened on start.
 
 \subsubsection{Creating a new Project}
 In order to create a new project, the user specifies a \emph{project folder} and a \emph{project name}. All existing files in the project folder become \emph{local files}. No \emph{user ID} and network connection is required to create a new project but the project must be bind to a \emph{user ID} in order to invite other users and start sharing files and notes.
 
 \subsection{Manage Files}
-In Jake all files (i.e. \emph{local} and {project files}) are organized hierarchically in folders. Empty folders MUST be allowed. New folders *MAY* be created within Jake. Files *MAY* be moved within the project folder or be deleted from it. If a file is deleted from the project folder, it MAY either be moved to the OS trash or to a dedicated trash folder inside the project folder. One of this options MUST be chosen for a concrete implementation. If the file is moved to a dedicated trash folder, this trash folder MUST be hidden from the user within Jake, but the user MUST BE able to examine its contents, restore files and empty it.
-%(*! Dominik: You are aware of the fact, that this reproduces the functionality of the OS trash that we cannot really rebuild with the amount of time we have. Also one has to create the corresponding GUI elements for browsing the trash. I would propose to not delete files deleted by other users, but simply mark them as deleted and show them e.g. in a different color in the users file list and let the user decide if he really also wants to delete the file from his project folder. So we don't have to rebuild the OS Trash or implement our own. The only thing we have to do is to mark the file as deleted by user x in our database and maybe rename it to oldfilename.oldextension.currenttimestamp so there will be no problems if a user deletes a file and then creates a new one with the same name. For the sake of usability we still can do a "delete all deleted files" function or even create an explicit view for the deleted files, but I'm strictly against moving them to the OS Trash or another folder. If you want, you could also rename it to something like "_JAKEDEL_{currenttimestamp}_OLDFILENAME.OLDEXTENSION" and the file would be still usable the same way directly within the OS File Browser. 
-% *)
+In Jake all files (i.e. \emph{local} and {project files}) are organized hierarchically in folders. Empty folders MUST be allowed. New folders may be created within Jake. Files may be moved within the project folder or be deleted from it. If a file is deleted from the project folder, it MAY either be moved to the OS trash or to a dedicated trash folder inside the project folder. One of this options MUST be chosen for a concrete implementation. If the file is moved to a dedicated trash folder, this trash folder MUST be hidden from the user within Jake, but the user MUST BE able to examine its contents, restore files and empty it. 
 
-Files may be added to the project either by moving them into the project folder via the file system or by \emph{importing} them in Jake.
-These files are threated as \emph{local files} as long as they are not announced. 
+Files may be added to the project either by moving them into the project folder via the file system or by \emph{importing} them in Jake. These files are threated as \emph{local files} as long as they are not announced. 
 
-Changes in the file system MUST be reflected in the application within an acceptable latency
-%(*! Dominik: IF the user has activated this. If a user has a lot of projects or a project with a great amount of files, we may not want a daemon periodically checking the users files for changes. This should only be done if the user has activated it (or not deactivated it, depends on default value). There has to be a way to disable automatic discovery while jake is running and start the scan manually, e.g. by the refresh icon we already have in the gui 
-% *)
-
-If a filename violates filename contraints (length, illegal characters) the file name MAY be altered in order to conform with the constraints. This SHOULD happen transparently and obvious to the user (i.e. Übung 1.pdf $\rightarrow$ Uebung\_1.pdf). The user MAY be notified about it.
+Changes in the file system MUST be reflected in the application within an acceptable latency. If a filename violates filename contraints (length, illegal characters) the file name MAY be altered in order to conform with the constraints. This SHOULD happen transparently and obvious to the user (i.e. Übung 1.pdf $\rightarrow$ Uebung\_1.pdf). The user MAY be notified about it.
 %(*! Dominik: I think the filename SHOULD NOT automatically altered as this could break other files depending on the exact name of this file. The illegal filename should be made visible by changing the filename to a different color or something. The user can then choose to manually rename the file within the OS or by selecting an option in the context menu of that file, e.g. "Change illegal filename to 'Uebung_1.pdf'" and/or "Correct illegal filename" where the user then can enter a correct name 
 % *)
 
 Batch operations MUST be provided where applicable.
 
-Cached files from the operating system (e.g. \texttt{.DS\_STORE}, \texttt{thumbs.db}) MUST NOT be part of a project and are therefore hidden from the user.
+Cached files from the operating system (e.g. \texttt{.DS\_STORE}, \texttt{thumbs.db}, etc.) MUST NOT be part of a project and are therefore hidden from the user.
 
 %(*! Dominik: We should also consider following the cachedir "specification" (see http://www.brynosaurus.com/cachedir/). This states, that files within a directory that has a file named CACHEDIR.TAG (with special content) should not be archived, shared, whatsever. It's not much to implement it but would allow us to get mentioned later on the page => free advertising and a useful feature (e.g. gnu tar/zip also respects this.) 
 % *)
