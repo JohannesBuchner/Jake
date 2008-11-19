@@ -13,7 +13,7 @@ Jakes core audience are people with minimal to medium IT training, who are comfo
 \subsection{Example Usage Scenario}
 A project group of 6-12 project members that shares about 5-100 files (ordinary office files mainly). All project members connected to the internet most of the time, while they are working. Usually only one person works on a file at one time, therefore merging conflicts are rare.
 
-This model scenario may be a small corporate project, or a student project. It is especially useful for projects in distributed teams like architects working in Vienna and Abu Dabi.
+This model scenario may be a small corporate project, or a student project. It is especially useful for projects in distributed teams like architects working in Vienna and Abu Dhabi.
 
 \section{Terms and Definitions}
 This sections contains terms and definitions that are used in this document. If you are already familiar with Jake, you might want to skip this section for now.
@@ -36,7 +36,7 @@ This sections contains terms and definitions that are used in this document. If 
 \item[member list] The member list is a set(unordered, unique) of \emph{project members} a user explicitly trusts.
 % unclear, what exactly is the explicit relation
 \item[explicit trust relation] the \emph{explicit trust relation} ($Alice \sim Bob$) holds true, if $Alice$ explicitly trusts $Bob$. It is a neither transitive ($\exists a, b, c: a \sim b \wedge b \sim c \not\Rightarrow a \sim c$) nor symmetric ($\exists a, b: a \sim b \not\Rightarrow b \sim a$) relation. 
-\item[transitive trust relation] The \emph{transitive trust relation}($Alice \sim ^* Bob$) holds true, if there exists a directed \emph{path} from $Alice$ to $Bob$. It is a transitive ($a \sim ^* b \wedge b \sim ^* c \Rightarrow a \sim ^* c$) but not symmetric ($\exists a, b: a \sim ^* b \wedge b \not\sim ^* a$) relation. 
+\item[transitive trust relation] The \emph{transitive trust relation}($Alice \sim ^+ Bob$) holds true, if there exists a directed \emph{path} ($Alice \sim ^+ Bob : \Leftrightarrow \exists a_1, a_2, .., a_i: Alice \sim a_1 \sim ..\sim a_i \sim Bob$, i.e. the transitive hull) from $Alice$ to $Bob$. It is a transitive ($a \sim ^+ b \wedge b \sim ^+ c \Rightarrow a \sim ^+ c$) but not symmetric ($\exists a, b: a \sim ^+ b \wedge b \not\sim ^+ a$) relation. 
 \item[neighborhood of project member $\mathbf{a_0}$] All project members that $a_0$ explicit trusts: $\{a_i: a_0 \sim ^ a_i\}$
 \item[directed project graph] All project members along with their explicit trust relations form the directed project graph
 \item[web of trust] in a web of trust each member of the web trusts each other member.
@@ -49,12 +49,12 @@ Besides the above definitions this section uses keywords proposed in RFC 2119\fo
 
 \subsection{Manage Projects}
 \subsubsection{Single Instance with many Projects}
-At any time, there MUST NOT be more than one instance of Jake running per user session. Within this single instance many projects are supported. The number of concurrent \emph{projects} MAY be limited. Every project MUST have its own \emph{project folder}. Files MUST only be associated with one project, therefore sharing a file with multiple projects is not supported.
+At any time, there MUST NOT be more than one instance of Jake running per user session. Within this single instance several projects are supported. The number of concurrent \emph{projects} MAY be limited. Every project MUST have its own \emph{project folder}. Files MUST only be associated with one project, therefore sharing a file with multiple projects is not supported.
 
 If Jake is started, the last application state is restored (as far as one exists), i.e. the last opened projects are reopened on start.
 
 \subsubsection{Creating a new Project}
-In order to create a new project, the user specifies a \emph{project folder} and a \emph{project name}. All existing files in the project folder become \emph{local files}. No \emph{user ID} and network connection is required to create a new project but the project must be bind to a \emph{user ID} in order to invite other users and start sharing files and notes.
+In order to create a new project, the user specifies a \emph{project folder} and a \emph{project name}. All existing files in the project folder become \emph{local files}. No \emph{user ID} and network connection is required to create a new project but the project must be bound to a \emph{user ID} in order to invite other users and start sharing files and notes.
 
 \subsubsection{Deleting a project}
 Projects may be deleted within Jake. If a project is deleted all files relating to this project MUST be either deleted from the file system or moved to the OS trash folder, whereas the latter method SHOULD be preferred. The user MUST be prompted to review the deletion and be either approve or decline it. The consequences of this operation MUST be clearly conveyed to the user.
@@ -72,14 +72,14 @@ Batch operations MUST be provided where applicable.
 
 Cached files from the operating system (e.g. \texttt{.DS\_STORE}, \texttt{thumbs.db}, \texttt{\_\_MACOSX}, \texttt{.trash} etc.) MUST NOT be part of a project and are therefore hidden from the user.
 
-\subsubsection{Announcing Files}
-Only \emph{project files} are shared among the \emph{project members}. In order to contribute a \emph{local file} to the project it must be \emph{announced}. 
+\subsubsection{Announcing Files/Notes}
+Only \emph{project files/notes} are shared among the \emph{project members}. In order to contribute a \emph{local file/note} to the project it must be \emph{announced}. 
 
-Changes or new files do not affect the project unless announced. 
+Changes or new files/notes do not affect the project unless announced. 
 
-If the user announces a file (or changes to it) he/she may specify an \emph{announce message} to provide additional informations for other project members about the modification/new file.
+If the user announces a file/note (or changes to it) he/she may specify an \emph{announce message} to provide additional informations for other project members about the modification/new file.
 
-In order to delete a file from the project the delete operation is announced to the other project members.
+In order to delete a file/note from the project the delete operation is announced to the other project members.
 
 \subsection{Manage Notes}
 In Jake, a \emph{note} is associated generally with a project. Both \emph{local} and \emph{project notes} exist, where \emph{local notes} are notes that are not shared. They are NOT hierarchically ordered and reside in one common location within Jake. Notes are only accessible through Jake. Notes may be created, displayed, modified and deleted. 
@@ -88,7 +88,7 @@ A note consists only of a \emph{body}. The first line of a note SHOULD be emphas
 Announcing notes works analogous to files.
 
 \subsection{Tags}
-Both files and notes may have a \emph{set}(in the mathematical sense; no duplicate elements, unordered) of \emph{tags}. A \emph{tag} is a string. Constraints (length, no spaces, illegal characters, etc.) MAY be enforced on tags. Changes to tags immediately \emph{affect the project}.
+Files have a \emph{set} (in the mathematical sense; no duplicate elements, unordered) of \emph{tags}. Tags for notes are OPTIONAL. A \emph{tag} is a string. Constraints (length, no spaces, illegal characters, etc.) MAY be enforced on tags. Changes to tags immediately \emph{affect the project}, and therefore don't need to be announced.
 
 \subsection{Project Members and the Web of Trust}
 All project members are equal, no one has special rights or stands above others.
@@ -107,9 +107,9 @@ In general the \emph{project graph} is not complete.
 A user is added to the project if an existing project member explicitly trusts him/her. A user remains a project member as long as at least one project member explicitly trusts this user.
 
 Removing project members is not easy. A project member may only be completely removed from a project if he/she is not connected to the project graph anymore.
-This means, no other user has an \emph{explicit trust relation} to that user ($\not\exists a_i: a_i \sim ^* a_0$)
+This means, no other user has an \emph{explicit trust relation} to that user ($\not\exists a_i: a_i \sim ^+ a_0$)
 
-For Example: $Alice \sim ^* Bob$, $Bob \sim ^* Eve$ and $Alice \sim ^* Eve$. If Alice removes Eve from her \emph{member list}  Eve still remains a project member, as long as there is at least one project member that trusts Eve ($\exists a_i: a_i \sim ^* Eve$). Users SHOULD be made aware of the web of trust and its implications. 
+For Example: $Alice \sim ^+ Bob$, $Bob \sim ^+ Eve$ and $Alice \sim ^+ Eve$. If Alice removes Eve from her \emph{member list}  Eve still remains a project member, as long as there is at least one project member that trusts Eve ($\exists a_i: a_i \sim ^+ Eve$). Users SHOULD be made aware of the web of trust and its implications. 
 
 \subsubsection{Global Member List}
 Jake MUST provide a \emph{global member list}. This list contains all project members of the project, i.e. all project members that are connected to the project member who creates the list. This list MUST be created with best effort, it is not reliable. This fact MUST be clearly communicated to the user. 
@@ -131,18 +131,24 @@ A peer SHOULD always deliver any file/note to another peer in the project if req
 
 Empty folders may be share as well.
 
-The peer MUST always offer the user to download the latest available version of a file.
+The peer MUST always offer the user to download the latest available version of a file. New versions of notes MUST always be downloaded as soon as they become available.
+
+\subsubsection{Deleting Files, Folders and Notes}
+If a user announces a delete operation for a file/folder every peer that receives the delete operation MUST delete the file/note. If a pear receives a delete operation for a folder it MUST ONLY delete the folder if it is empty. If the folder is not empty the delete operation MUST be discarded.
+
+Conflicts may occur in the process of deleting files, folders and notes.
 
 A \emph{synchronization conflict} may occur under the following condition: A project member modifies a project file. If another version of the same file becomes available that is newer (timestamp) then the base version of the modified file (i.e the version of the file before it was modified) a conflict occurs.
 
 \subsubsection{Conflict Resolution}
 Both versions of the conflictuous file and additional information (last edit, last edited by, size, etc) are offered to the user. The user may examine both files and perform either one of the following actions:
 \begin{itemize}
-\item choose the locally modified file and overwrite the remote version
-\item choose the remote version and discard the local changes by updating the local file to the remote version
+\item Choose the locally modified file and overwrite the remote version.
+\item Choose the remote version and discard the local changes by updating the local file to the remote version.
 \item open both files and merge the files manually, then try to announce the merged file. A new conflict may occur.
-\item postpone the conflict resolution to a later time. The Process of conflict resolution may be restarted at any time.
+\item postpone the conflict resolution to a later time. The process of conflict resolution may be restarted at any time.
 \end{itemize}
+Additionally both con conflicting version may be saved to a different location.
 
 Resolving conflicts in notes is limited to choosing one version or resolving the conflict later.
 
@@ -163,6 +169,9 @@ Paused projects may be resumed at any time.
 
 \subsection{Open/Close a Project}
 Projects may be opened and closed. As in other applications a project must be opened in order work on it. Jake is not aware of closed projects, as if the project never existed. 
+
+\subsection{log in/out}
+The user may log on/off to/from the network service (XMPP in that case).
 
 \subsection{Searching}
 Jake MUST provide appropriate means for searching files, notes, tags, project members.
@@ -188,21 +197,32 @@ Jake  MUST be able to tackle exceptions like \texttt{not enough disk space}, \te
 Jakes error messages should be simple, clear and easy to understand. Problems should be described from a user's perspective and SHOULD NOT use terms and models that lie outside the user context (i.e. ''Network Error: could not open port 666''). If the user wants additional technical information it SHOULD be presented along the error message. 
 
 \subsection{Log Files}
-Jake MUST provide log files for files, notes and the whole project. A Log file is a chronological list that contains operations performed, the user who caused the operations, when the operation had happened and which parts of the project have been influenced. It MAY also contain additional information. Compilation of a log is best effort, non reliable.
+Jake MUST provide log files for files, notes and the whole project. A Log file is a chronological list that contains operations performed, the user who caused the operations, when the operation happened and which parts of the project have been influenced. It MAY also contain additional information. Compilation of a log is best effort, non reliable.
 
 \section{Change History}
 This section contains changes to this document. Each change must be described detailedly.
-\begin{table}[h]
-\begin{tabular}{|l|l|l|l|}
-\hline
-\textbf{Rev.} & \textbf{Date} & \textbf{Author} & \textbf{Change} \\
-\hline
-1 & 2008-11-9 & Simon Wallner & created document \\
-\hline
-2 & 2008-11-15 & Simon Wallner & Updated the SRS according the results of the SRS feedback meeting. Some parts are still unclear \\
-\hline
-\end{tabular}
-\end{table}
+\subsubsection{Rev. 1, 2008-11-9, Simon Wallner}
+created document
+
+\subsubsection{Rev. 2, 2008-11-15, Simon Wallner}
+Updated the SRS according the results of the SRS feedback meeting. Some parts are still unclear
+
+\subsubsection{Rev. 3, 2008-11-19, Simon Wallner}
+Updated the SRS according the last meetings and feedback. The following has changed: 
+\begin{itemize}
+\item tags for notes are now OPTIONAL
+\item added option for saving conflicting files to another location
+\item fixed some typos
+\item clarified the definition of \emph{transitive trust relation}, changed the notation from $\sim ^*$ to $\sim ^+$. It might be more easily mistaken for the \emph{auto add/remove relation} but it is now consistent with the transitive hull syntax used in wikipedia.
+\item note MUST always be downloaded if available, aka autopull notes 
+\end{itemize}
+Some points are still unclear:
+\begin{itemize}
+\item Version conflicts with deleted files are not specified.
+\item MUST delete operations always be announced immediately/automatically? aka auto announce delete?
+\item the web of trust section is still unclear and I'm not sure if we should keep it or drop it.
+\item user switching: what happens if the user logs off from the network? Will all associated projects be closed? How about working offline?
+\end{itemize}
 
 
 
