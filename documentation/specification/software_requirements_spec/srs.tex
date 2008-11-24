@@ -60,7 +60,7 @@ In order to create a new project, the user specifies a \emph{project folder} and
 Projects may be deleted within Jake. If a project is deleted all files relating to this project MUST be either deleted from the file system or moved to the OS trash folder, whereas the latter method SHOULD be preferred. The user MUST be prompted to review the deletion and be either approve or decline it. The consequences of this operation MUST be clearly conveyed to the user.
 
 \subsection{Manage Files}
-In Jake all files (i.e. \emph{local} and {project files}) are organized hierarchically in folders. Empty folders MUST be allowed. New folders may be created within Jake. Files and folders may be moved within the project folder or be deleted from it. If a file/folder is deleted from the project folder, it MAY either be moved to the OS trash or to a dedicated trash folder inside the project folder. One of this options MUST be chosen for a concrete implementation. If the file/folder is moved to a dedicated trash folder, this trash folder MUST be hidden from the user within Jake, but the user MUST BE able to examine its contents, restore files/folders and empty it. 
+In Jake all files (i.e. \emph{local} and {project files}) are organized hierarchically in folders. New folders may be created within Jake. Files and folders may be moved within the project folder or be deleted from it. If a file/folder is deleted from the project folder, it MAY either be moved to the OS trash or to a dedicated trash folder inside the project folder. One of this options MUST be chosen for a concrete implementation. If the file/folder is moved to a dedicated trash folder, this trash folder MUST be hidden from the user within Jake, but the user MUST BE able to examine its contents, restore files/folders and empty it. 
 
 Files may be added to the project either by moving them into the project folder via the file system or by \emph{importing} them in Jake. These files are \emph{local files} as long as they are not announced. 
 
@@ -127,16 +127,14 @@ The \emph{auto add/remove relation} ($a \sim ^\pm b$) is transitive ($a \sim ^\p
 \subsection{Sharing and Synchronization}
 A peer only communicates with other peers from the same project. A peer MUST only download files/notes from peers that are in its \emph{member list}. A peer MUST know which files are available from the peers in the \emph{member list} and offer this list to the user.
 
-A peer SHOULD always deliver any file/note to another peer in the project if requested. It MUST provide information about the available files to other peers from the project. It MUST NOT deliver any data to peers that are not in the project (at the time of the request, as far as the peer knows)
+Folders are not synchronized explicitly. The user may not synchronize empty folders. Folders are only synchronized if they are needed by the contained files. (e.g if a file \texttt{foo/bar.txt} is created and synchronized, the folder \texttt{foo/} will be created to contain the file \texttt{bar.txt}. Empty folders MUST NOT be deleted automatically. 
 
-Empty folders may be share as well.
+A peer SHOULD always deliver any file/note to another peer in the project if requested. It MUST provide information about the available files to other peers from the project. It MUST NOT deliver any data to peers that are not in the project (at the time of the request, as far as the peer knows)
 
 The peer MUST always offer the user to download the latest available version of a file. New versions of notes MUST always be downloaded as soon as they become available.
 
-\subsubsection{Deleting Files, Folders and Notes}
-If a user announces a delete operation for a file/folder every peer that receives the delete operation MUST delete the file/note. If a pear receives a delete operation for a folder it MUST ONLY delete the folder if it is empty. If the folder is not empty the delete operation MUST be discarded.
-
-Conflicts may occur in the process of deleting files, folders and notes.
+\subsubsection{Deleting Files and Notes}
+If a user announces a delete operation for a file/note every peer that receives the delete operation MUST delete the file/note. Conflicts may occur in the process of deleting files, folders and notes.
 
 A \emph{synchronization conflict} may occur under the following condition: A project member modifies a project file. If another version of the same file becomes available that is newer (timestamp) then the base version of the modified file (i.e the version of the file before it was modified) a conflict occurs.
 
@@ -209,6 +207,7 @@ Updated the SRS according the results of the SRS feedback meeting. Some parts ar
 
 \subsubsection{Rev. 3, 2008-11-19, Simon Wallner}
 Updated the SRS according the last meetings and feedback. The following has changed: 
+
 \begin{itemize}
 \item tags for notes are now OPTIONAL
 \item added option for saving conflicting files to another location
@@ -224,6 +223,9 @@ Some points are still unclear:
 \item user switching: what happens if the user logs off from the network? Will all associated projects be closed? How about working offline?
 \end{itemize}
 
+
+\subsubsection{Rev. 4, 2008-11-24, Simon Wallner}
+Updated SRS according to a mail from Johannes: Folders are not synchronized directly anymore. It is not supported to share empty folders. Folder may not be tagged.
 
 
 
