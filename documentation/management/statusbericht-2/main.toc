@@ -10,4 +10,6 @@
 \contentsline {subsection}{\numberline {1.4.1}Zeitplanung}{3}{section*.4}
 \contentsline {subsection}{\numberline {1.4.2}Inhaltliche Planung}{3}{section*.4}
 \contentsline {subsection}{\numberline {1.4.3}Entscheidungen}{3}{section*.4}
-\contentsline {section}{\numberline {1.5}aktualisiertes Gantt-Diagramm}{4}{section*.4}
+\contentsline {section}{\numberline {1.5}Dokumentation und QA}{3}{section*.4}
+\contentsline {subsubsection}{QA}{4}{section*.5}
+\contentsline {section}{\numberline {1.6}aktualisiertes Gantt-Diagramm}{5}{section*.5}
