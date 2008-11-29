@@ -1,0 +1,1048 @@
+\part{Use Cases}
+\section{General}
+
+%reset the uc fields
+\def\ucreset{
+\def\ucid{-}
+\def\ucname{-}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucexceptions{-}
+\def\ucpostconditions{-}
+\def\ucfrequency{-}
+}
+
+\def\ucprint{
+\subsection{\ucname}
+\begin{tabular}{|p{3cm}|p{12cm}|}
+\hline
+ID & \ucid \\ 
+\hline 
+Name & \ucname \\
+\hline
+Status & \ucstatus \\ 
+\hline 
+Goal/Rationale & \ucrationale \\ 
+\hline 
+Summary & \ucsummary \\ 
+\hline
+Preconditions & \ucpreconditions \\
+\hline
+Triggers & \uctriggers \\
+\hline
+Primary Scenario & \ucprimaryscenario \\
+\hline
+Alternative Path & \ucalternativepath \\
+\hline
+Postconditions & \ucpostconditions  \\
+\hline
+Exceptions & \ucexceptions \\
+\hline
+Frequency of use & \ucfrequency  \\
+\hline
+\end{tabular}
+}
+
+
+\ucreset
+\def\ucid{GEN-01}
+\def\ucname{Launch Jake}
+\def\ucstatus{Unfinished (and rather strange ), I'll add extension point/alternative path (saved session) later} % will be omitted in the final version !!!
+\def\ucrationale{Start Jake when it is not currently running}
+\def\ucsummary{In order to use Jake, the application has to be launched first.}
+\def\ucpreconditions{A running operating system with Jake installed and all JVM and library prerequisites met}
+\def\uctriggers{Launching Jake by means of the OS (e.g. from the Start menu in Windows)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item User starts the application
+\item The main Jake window appears
+\end{enumerate}}
+\def\ucpostconditions{Jake is running and the user can login or register.}
+\def\ucfrequency{Daily/Always}
+\ucprint
+
+\section{Network Operations}
+\ucreset
+\def\ucid{NET-01}
+\def\ucname{Log in to Jabber}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to connect to the network in order to use Jake}
+\def\ucsummary{In order to use Jake, a connection to a Jabber network is required. This connection is established by the user entering their network credentials in a dialog.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User interaction (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item User chooses to log in
+\item The user is prompted to enter username and password for the network
+\item Jake attempts to connect to the server and log in
+\item The user is informed of a successful connection (non-modally)
+\end{enumerate}
+}
+\def\ucalternativepath{If the credentials provided in step 2 are incorrect or the Jabber server cannot be reached, the user shall be informed of this and given the option to resume at step 2 in the primary scenario.}
+\def\ucpostconditions{The user is logged in and able to use Jake.}
+\def\ucfrequency{Daily / Always (on startup)}
+\ucprint
+
+\ucreset
+\def\ucid{NET-02}
+\def\ucname{Log out from Jabber}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to disconnect from the network}
+\def\ucsummary{In some situations, the user may want to explicitly disconnect from the network (and not just exit the application), e.g. when they want to register a different account or do not want other people using their account to be able to use Jake with their ID. For this reason, they are able to log out, leaving the application in a similar state as after its first run.}
+\def\ucpreconditions{The user is logged in (NET-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to log out
+\item The user is logged out from the network.
+\end{enumerate}}
+\def\ucpostconditions{The user is logged out and able to log in or register.}
+\def\ucfrequency{Monthly / Seldom}
+\ucprint
+
+\ucreset
+\def\ucid{NET-03}
+\def\ucname{Register Jabber ID}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants a Jabber account to be able to use Jake}
+\def\ucsummary{Users who do not yet have a Jabber account need to create one before using Jake. Jake guides them through the process so they can create an account on a server from within Jake.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to register
+\item The user is prompted to pick a server from a preconfigured list
+\item The user is prompted to fill in a form with the required details (username, password).
+\item The account is created on the server
+\item The user is automatically logged in with their new account
+\end{enumerate}
+}
+\def\ucalternativepath{If the credentials provided in step 3 are incorrect (e.g. password to short, username already taken) or the Jabber server selected in step 2 cannot be reached, the user shall be informed of this and given the option to resume at the respective step in the primary scenario.}
+\def\ucpostconditions{The user has a new Jabber account and is connected to the network with it, now able to use Jake.}
+\def\ucfrequency{Yearly / Once (usually one jabber id is enough)}
+\ucprint
+
+
+\section{Project Management}
+
+\ucreset
+\def\ucid{PRJ-01}
+\def\ucname{Create Project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{A new project is created every time the user wants to share a new directory.}
+\def\ucsummary{Projects are the main working area in Jake.}
+\def\ucpreconditions{Jake is running (GEN-01) [User does not has to be connected? Practical?]}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The User selects "New Project..."
+\item The User chooses a directory OR creates a new one. There should be a default space for this sort of directories. 
+\item The User may changes the default name. The default name is generated as a compilance checked name of the selected directory. 
+\item Project is created and added to the project list.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{Project created.}
+\def\ucexceptions{
+\begin{itemize}
+\item If the directory already has a project there is an error. 
+\item If the directory is not readable there is an rights error. 
+\item If a SUBDIRECTORY of this directory already is a jake project there is an error. [Needs approve! Can we do this? Seems Important! (Eclipse behaviour)]
+\end{itemize}
+}
+\def\ucfrequency{Weekly / Often}
+\ucprint
+
+
+\ucreset
+\def\ucid{PRJ-02}
+\def\ucname{Receive project invitation}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{In order for Jake to be useful to the user, they need to be member of at least one project. By receiving a project invitation, they can easily join a project.}
+\def\ucsummary{A user may receive a project invitation. In order to receive this invitation the user must be logged in.}
+\def\ucpreconditions{Jake is running (GEN-01) and the user is logged in (NET-01).}
+\def\uctriggers{An invitation is received (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item An invitation to a project from another Jake user is received. 
+\item The user is asked to accept/deny the invitation 
+\item The user selects the target folder for the new project 
+\item The project folder is created 
+\item The project is added to the current projects
+\end{enumerate}
+}
+\def\ucalternativepath{If the user declines the invitation, it may either be discarded completely or remain in a list of “undecided” invitations for accepting later.}
+\def\ucpostconditions{The project in the invitation is now active in the local Jake workspace.}
+\def\ucexceptions{-}
+\def\ucfrequency{Weekly/Often}
+\ucprint
+
+
+\ucreset
+\def\ucid{PRJ-03}
+\def\ucname{Open project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to reopen an existing project that is not currently open in Jake, either because it has been closed manually, or for some other reason (e.g. reinstalled Jake)}
+\def\ucsummary{A user may open an existing project by specifying the location of the project folder. The specified project is loaded.}
+\def\ucpreconditions{Jake is running (GEN-01), project is not already opened.}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item User chooses to open project
+\item User is asked to select the project in the local file system
+\item Project is opened
+\end{enumerate}
+}
+\def\ucalternativepath{If an invalid path is selected or the folder chosen is not a Jake project, the user is asked to retry step 2. Additionally, the application could suggest that the user creates a new project at that path (PRJ-01).}
+\def\ucpostconditions{Project is open and ready to use}
+\def\ucexceptions{-}
+\def\ucfrequency{Monthly/Sometimes}
+\ucprint
+
+
+\ucreset
+\def\ucid{PRJ-04}
+\def\ucname{Close project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to close a project, e.g. when it is not needed for a longer period of time.}
+\def\ucsummary{A user may close a project. Closed projects are not displayed in Jake.}
+\def\ucpreconditions{Jake is running (GEN-01) and the project is open.}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to close the project
+\item Confirmation is requested from the user
+\item The project is closed
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The project is closed, no longer active and no longer visible in Jake.}
+\def\ucexceptions{-}
+\def\ucfrequency{Monthly/Sometimes}
+\ucprint
+
+
+\ucreset
+\def\ucid{PRJ-05}
+\def\ucname{Pause project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to temporarily suspend a project, e.g. when lots of files are being synced but they currently need the bandwidth}
+\def\ucsummary{The user may pause a project. Paused projects are still displayed in Jake but the user may not work on them.}
+\def\ucpreconditions{Jake is running (GEN-01) and the project is open and active (running).}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to pause the project
+\item The project is paused
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The project is paused (not active).}
+\def\ucexceptions{-}
+\def\ucfrequency{Weekly/Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{PRJ-06}
+\def\ucname{Resume project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to resume a project that has previously been paused in order to continue working on it.}
+\def\ucsummary{The user may resume a paused project. Resuming a paused project allows the user to work on it again.}
+\def\ucpreconditions{Jake is running (GEN-01) and the project to be resumed is open and has previously been paused (PRJ-05)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to resume the project
+\item The project is resumed
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The project is active again and the user can once again work with it.}
+\def\ucexceptions{-}
+\def\ucfrequency{Weekly/Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{PRJ-07}
+\def\ucname{Delete project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to delete a project, e.g. because they are sure they will not need it anymore.}
+\def\ucsummary{The user may delete a project. By deleting a project its project folder is deleted.}
+\def\ucpreconditions{Jake is running (GEN-01) and the project to be deleted is open}
+\def\uctriggers{User action (active}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to delete the project
+\item The user is made aware of the lack of undoability inherent in this action and confirmation is requested
+\item The project is removed from Jake
+\item The folder is deleted from the filesystem
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The project no longer exists within Jake and the local folder has been deleted.}
+\def\ucexceptions{If there is a problem deleting the folder in the filesystem (e.g. locked files), the user is informed of this and restarting the computer and manually deleting the folder is suggested. The project is nonetheless removed from Jake.}
+\def\ucfrequency{Monthly/Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{PRJ-08}
+\def\ucname{Search inside project}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{n larger projects, single files/folders/notes and users may be hard to find due to the large amount of items in the project. The user wants to find one or more items based on certain criteria.}
+\def\ucsummary{The user may perform a search inside the project. All elements (files, folders, users, notes, tags, etc…) that match the search term are displayed in a results section.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user enters search terms in a search element
+\item Jake presents the results matching the query
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The user is presented with the results of the query and can then perform the usual actions on them.}
+\def\ucexceptions{If there is a problem deleting the folder in the filesystem (e.g. locked files), the user is informed of this and restarting the computer and manually deleting the folder is suggested. The project is nonetheless removed from Jake.}
+\def\ucfrequency{Very frequently}
+\ucprint
+
+\section{People Management}
+
+\ucreset
+\def\ucid{PPL-01}
+\def\ucname{Invite user to project (''Add user'')}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to invite another user to participate in the current project}
+\def\ucsummary{A project member may invite other users to a specific project. The invited users is identified by its user id.}
+\def\ucpreconditions{Jake is running (GEN-01) and the user is logged in (NET-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to invite another user
+\item The user is asked to enter the Jabber ID of the user to be invited
+\item An invitation is sent to the invitee
+\end{enumerate}
+}
+\def\ucalternativepath{If the user chosen does not exist, the user is informed and given the option to resume at step 2. }
+\def\ucpostconditions{An invitation has been sent to the user in question.}
+\def\ucexceptions{Connection error}
+\def\ucfrequency{Weekly/Often}
+\ucprint
+
+\ucreset
+\def\ucid{PPL-02}
+\def\ucname{Explicitly trust project member}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to receive files from another project member.}
+\def\ucsummary{In order to receive files from another project member, the user must explicitly grant trust to this specific project member.}
+\def\ucpreconditions{Jake is running (GEN-01), the user is logged in (NET-01) and the other project member exists in the context of the project.}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to explicitly trust another member.
+\item The member is identified as trusted.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The trustee is now trusted and the user receives files from them.}
+\def\ucexceptions{Weekly/Often}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{PPL-03}
+\def\ucname{Revoke trust ("Remove user")}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to revoke trust granted to a specific project member (e.g. because they share malicious files)}
+\def\ucsummary{The user may revoke the explicit trust granted to a specific project member.}
+\def\ucpreconditions{Jake is running (GEN-01), the user is logged in (NET-01) and the specified other project member exists in the context of the project.}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to revoke trust from the project member
+\item The user is asked to confirm this action
+\item The member is removed and trust revoked.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The project member in question is removed from the user list and no longer trusted.}
+\def\ucexceptions{-}
+\def\ucfrequency{Monthly/Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{PPL-04}
+\def\ucname{Set auto add/remove}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to have changes to the project member list of certain other members propagated to their own}
+\def\ucsummary{The user may set/remove the auto add/remove flag on project members on his/her project member list.}
+\def\ucpreconditions{Jake is running (GEN-01) and the specified user exists in the context of the project}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to set auto add/remove on a project member
+\item The flag is set for this project member.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{Peers from the specified user will now always be added to the user's own member list (and removed, see SRS).}
+\def\ucexceptions{-}
+\def\ucfrequency{Weekly/Sometimes (e.g. when a new user is added)}
+\ucprint
+
+\ucreset
+\def\ucid{PPL-05}
+\def\ucname{Show project member list}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to see all members of the current project}
+\def\ucsummary{Display member list.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to display the project member list
+\item The project member list is displayed
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The project member list is displayed}
+\def\ucexceptions{-}
+\def\ucfrequency{Daily/Often}
+\ucprint
+
+\ucreset
+\def\ucid{PPL-06}
+\def\ucname{Show global project member list}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to see all members of all open projects.}
+\def\ucsummary{Display the global project member list, that contains all known project members.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to display the global project member list
+\item The global project member list is displayed
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The global project member list is displayed.}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes/Weekly}
+\ucprint
+
+\ucreset
+\def\ucid{PPL-07}
+\def\ucname{Receive member alert}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to know who is added to the project by other members}
+\def\ucsummary{If a user is added/removed from the project by another project member, the user will be notified.}
+\def\ucpreconditions{Jake is running (GEN-01) and the user is logged in (NET-01)}
+\def\uctriggers{Incoming member alert (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item A member alert is received by Jake
+\item Jake notifies the user of this event.
+\item Jake adds the new member to its own project member list.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The new member is in the local project member list}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes/weekly}
+\ucprint
+
+\section{File Management - Local/Offline Operations}
+
+\ucreset
+\def\ucid{FIM-01}
+\def\ucname{Show files}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to see the files that are part of a project}
+\def\ucsummary{The files in the project are displayed}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to display the files of a project
+\item The files are displayed.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The user can browse through the project files.}
+\def\ucexceptions{-}
+\def\ucfrequency{Very often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-02}
+\def\ucname{Import files}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to add further files into the project folder}
+\def\ucsummary{The user specifies files/folder to be imported into Jake. The rename assistant may be awakened by this action.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item  The user chooses to add further files
+\item The user is prompted to select the desired files
+\item The files are added to the project and copied to the project folder
+\end{enumerate}
+}
+\def\ucalternativepath{The user may just add the files by means of drag\&drop.
+If a file doesn't conform to the Jake naming standards, the user will be prompted if they want to rename the file (–> FIM-11)}
+\def\ucpostconditions{The files are now part of the project}
+\def\ucexceptions{-}
+\def\ucfrequency{Daily/Often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-03}
+\def\ucname{Reflect changes}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{Changes in the project folder should be mirrored within Jake}
+\def\ucsummary{Whenever changes in the project folder occur, Jake reflects it to the user.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{A change occurs in the filesystem (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The files are added
+\end{enumerate}
+}
+\def\ucalternativepath{If a newly created file doesn't conform to the Jake naming standards, the user will be prompted if they want to rename the file (–> FIM-11)}
+\def\ucpostconditions{The change is reflected within the project view}
+\def\ucexceptions{-}
+\def\ucfrequency{Very often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-04}
+\def\ucname{Delete files/folders}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to delete one or more files/folder from within Jake}
+\def\ucsummary{Delete files/folder, batch enabled.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects one or more files/folders
+\item The user chooses to delete these items
+\item The user is prompted for confirmation
+\item The items are deleted
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The files are no longer part of the project and are moved to the OS trash}
+\def\ucexceptions{-}
+\def\ucfrequency{Daily/Often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-05}
+\def\ucname{Rename file/folder}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to rename a file or folder from within Jake.}
+\def\ucsummary{Rename a file or a folder.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a file/folder
+\item The user chooses to rename this item
+\item The item is renamed.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The item is renamed both within the project and in the local file system}
+\def\ucexceptions{-}
+\def\ucfrequency{Daily/Often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-06}
+\def\ucname{Move files/folders}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to move files or folders within the project directory using Jake}
+\def\ucsummary{Move files or folders, batch enabled.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects one or more files or folders to be moved
+\item The user indicated that they want to move these items
+\item The items are moved, the project view is updated and the changes are applied to the local file system.
+\end{enumerate}
+}
+\def\ucalternativepath{If the operation is invalid in some way, the user is informed of this and no changes are applied.}
+\def\ucpostconditions{The items are in their respective new location both within the project and on the filesystem.}
+\def\ucexceptions{-}
+\def\ucfrequency{Often/Daily}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-07}
+\def\ucname{Create folder}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to create a new folder inside a project}
+\def\ucsummary{Create a new folder from within Jake}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to create a new folder at a specified location
+\item The new folder is created
+\end{enumerate}
+}
+\def\ucalternativepath{If the location or folder name are invalid, the user is informed of this and no changes are applied.}
+\def\ucpostconditions{The new folder is created in the filesystem and displayed in the project.}
+\def\ucexceptions{-}
+\def\ucfrequency{Often/Daily}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-08}
+\def\ucname{Launch file}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to launch a file and display its contents}
+\def\ucsummary{Launch a file with its associated external application from within Jake.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to launch a file
+\item The file is launched by means of the OS
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The file is displayed to the user.}
+\def\ucexceptions{-}
+\def\ucfrequency{Very often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-09}
+\def\ucname{Launch folder in OS-specific file browser}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to open a folder in the OS's file browser}
+\def\ucsummary{Open a folder in the os specific file browser.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to launch a folder
+\item The folder is launched in the OS file browser.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The user can browse through the folder in the OS file browser}
+\def\ucexceptions{-}
+\def\ucfrequency{Very often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-10}
+\def\ucname{Rename illegally-named files}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to share files that have illegal filenames}
+\def\ucsummary{Run the rename assistant to rename files/folders with illegal name.}
+\def\ucpreconditions{Jake is running (GEN-01) and one or more files with illegal names exist}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item  The user chooses to have their files renamed so they can be shared
+\item The user is prompted whether they really want to perform this operation and can see a list of files that would be affected.
+\item The files are renamed.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The files with illegal filenames have been renamed.}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes/Weekly}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-11}
+\def\ucname{Offer renaming}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to share}
+\def\ucsummary{The user kick-starts the rename assistant.}
+\def\ucpreconditions{Jake is running (GEN-01) and one or more files with illegal names exist}
+\def\uctriggers{On import of illegally-named files (passive), triggered by FIM-02.}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user is informed about the existence of illegally named files, including a list of affected files, and is asked whether they want to rename them right now
+\item The files are renamed
+\end{enumerate}
+}
+\def\ucalternativepath{If the user rejects the renaming prompt, the files continue to exist both within the project and on the local filesystem, but are not synced. The user can then manually or automatically rename them at a later date.}
+\def\ucpostconditions{The files with illegal filenames have been renamed (if the user chose to proceed with the process).
+}
+\def\ucexceptions{Sometimes/weekly}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-12}
+\def\ucname{Add tag to file}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to add a tag to a file.}
+\def\ucsummary{The user may add a tag to a file. Only one file at a time.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a file
+\item The user chooses to add a tag and types the tag name
+\item The tag is added to the file
+\end{enumerate}
+}
+\def\ucalternativepath{If the file is already tagged with a tag of the same name, the new tag is ignored.}
+\def\ucpostconditions{The file is tagged with a tag of the chosen name}
+\def\ucexceptions{-}
+\def\ucfrequency{Very Often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-13}
+\def\ucname{Remove tag from file}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to remove a tag from a file.}
+\def\ucsummary{The user may remove a tag from a file. Only one tag from one file at a time.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a tagged file
+\item The user chooses to remove a tag from the file
+\item The tag is removed from the file.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The file is no longer tagged with a tag of that name}
+\def\ucexceptions{-}
+\def\ucfrequency{Very Often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-14}
+\def\ucname{Show file properties}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to get more information about a file in the project}
+\def\ucsummary{Show detailed file properties, i.e name, size, last edit, status, etc.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a file
+\item The user chooses to display further information
+\item Further information about the file is shown
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The user received detailed information about the selected file}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-15}
+\def\ucname{Announce file}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to announce a file to the other project members}
+\def\ucsummary{Announce a file and specify a announce message.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active) or locally modified file with auto-announce enabled (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to announce a file 
+\item The file is announced
+\end{enumerate}
+}
+\def\ucalternativepath{The file is automatically announced should the auto-announce feature be enabled.}
+\def\ucpostconditions{The file is announced and in the log.}
+\def\ucexceptions{-}
+\def\ucfrequency{Very often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-16}
+\def\ucname{Download file}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to download a file from a remote peer}
+\def\ucsummary{Download a file from a remote peer}
+\def\ucpreconditions{Jake is running (GEN-01) and the user is logged in (NET-01)}
+\def\uctriggers{User action (active) or remotely modified file with auto-pull enabled (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to download a file
+\item The file is downloaded
+\end{enumerate}
+}
+\def\ucalternativepath{The file is automatically downloaded should the auto-pull feature be enabled.}
+\def\ucpostconditions{The file exists locally (both in project \& filesystem)}
+\def\ucexceptions{-}
+\def\ucfrequency{Very often}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-17}
+\def\ucname{Resolve conflict}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{When a conflict occurs, the user wants to receive simple assistance in resolving it.}
+\def\ucsummary{Run the conflict resolution assistant.}
+\def\ucpreconditions{Jake is running (GEN-01) and the user is logged in (NET-01)}
+\def\uctriggers{A local operation and a remote operation have resulted in a conflict situation (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user is prompted for action to resolve the conflict.
+\item The user can optionally view the two conflicting items
+\item The user chooses a way of resolving the conflict
+\item The conflict resolution process is performed.
+\end{enumerate}
+}
+\def\ucalternativepath{The user can choose to temporarily dismiss the message and resolve the conflict later by some means that results in step 1 in this use case being triggered.}
+\def\ucpostconditions{There is no longer a conflict.}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{FIM-18}
+\def\ucname{Set/unset soft lock}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to edit a file alone, trying to make sure that nobody else edits it at the same time}
+\def\ucsummary{Set the softlock for a file, optionally specifying a locking message.}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item he user selects a file
+\item The user chooses to set/unset the file's soft lock, optionally specifying a message to indicate their reason for setting the lock
+\item The file is locked.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The file is locked and other users, if their Jake client is aware of the lock, receive some sort of indication of this fact.}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes}
+\ucprint
+
+\section{Note Management - Local/Offline Operations}
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Show notes}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Add note}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{Add a note by specifying its content}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Delete note}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{delete note, batch enabled}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Edit note}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Add/remove/alter tag}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\section{Online/Sharing Operations}
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Announce note}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{announce a note, specify a announce message.}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Download note}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Resolve confilct (active, passive e.g. on announce)}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{run the conflict resolution assistant for notes.}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{(Set/unset soft lock)}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{set/unset soft lock, specify locking message.}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\section{Log Operations}
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Display global project log}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Display file log}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{display the log messages associated with a specific file}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{Display note log}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{display the log messages associated with a specific note}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\section{Preferences}
+
+\ucreset
+\def\ucid{-}
+\def\ucname{edit project prefs}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
+
+\ucreset
+\def\ucid{-}
+\def\ucname{edit global prefs}
+\def\ucstatus{-} % will be omitted in the final version !!!
+\def\ucrationale{-}
+\def\ucsummary{-}
+\def\ucpreconditions{-}
+\def\uctriggers{-}
+\def\ucprimaryscenario{-}
+\def\ucalternativepath{-}
+\def\ucpostconditions{-}
+\def\ucexceptions{-}
+\def\ucfrequency{-}
+\ucprint
