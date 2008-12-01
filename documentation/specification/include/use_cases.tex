@@ -15,18 +15,19 @@
 \def\ucexceptions{-}
 \def\ucpostconditions{-}
 \def\ucfrequency{-}
+\def\ucsee{-}
 }
 
 \def\ucprint{
-\subsection{\ucname}
-\begin{tabular}{|p{3cm}|p{12cm}|}
+\subsection{\ucid: \ucname}
+\begin{tabular}{|p{3.3cm}|p{12cm}|}
 \hline
 ID & \ucid \\ 
 \hline 
 Name & \ucname \\
 \hline
-Status & \ucstatus \\ 
-\hline 
+%Status & \ucstatus \\ 
+%\hline 
 Goal/Rationale & \ucrationale \\ 
 \hline 
 Summary & \ucsummary \\ 
@@ -44,6 +45,8 @@ Postconditions & \ucpostconditions  \\
 Exceptions & \ucexceptions \\
 \hline
 Frequency of use & \ucfrequency  \\
+\hline
+See also & \ucsee \\
 \hline
 \end{tabular}
 }
