@@ -1086,48 +1086,63 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \section{Log Operations}
 
 \ucreset
-\def\ucid{-}
+\def\ucid{LOG-01}
 \def\ucname{Display global project log}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{-}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to see all recent changes in the project}
+\def\ucsummary{A list of recent changes is available for the user to browse through}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to display the project log.
+\item The project log is displayed.
+\end{enumerate}
+}
+\def\ucalternativepath{If there hasn't (yet) been any activity in the project, the user is informed of this.}
+\def\ucpostconditions{The user can view the project log}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Sometimes}
 \ucprint
 
 \ucreset
-\def\ucid{-}
+\def\ucid{LOG-02}
 \def\ucname{Display file log}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{display the log messages associated with a specific file}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to see all recent changes of a file}
+\def\ucsummary{Display the log messages associated with a specific file}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a file.
+\item The user chooses to display the log of this file.
+\item The file log is displayed.
+\end{enumerate}}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpostconditions{The user can view the file log}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Sometimes}
 \ucprint
 
 \ucreset
-\def\ucid{-}
+\def\ucid{LOG-03}
 \def\ucname{Display note log}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{display the log messages associated with a specific note}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to see all recent changes of a note}
+\def\ucsummary{Display the log messages associated with a specific note}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a note.
+\item The user chooses to display the log of this note.
+\item The note log is displayed.
+\end{enumerate}}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpostconditions{The user can view the note log}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Sometimes}
 \ucprint
 
 \section{Preferences}
