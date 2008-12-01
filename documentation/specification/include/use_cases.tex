@@ -1148,31 +1148,41 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \section{Preferences}
 
 \ucreset
-\def\ucid{-}
-\def\ucname{edit project prefs}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{-}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
-\def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucid{PRF-01}
+\def\ucname{Edit project preferences}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to change preferences of the project}
+\def\ucsummary{Project preferences are project properties that can be changed by the user (e.g. auto-pull/auto-announce)}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to edit project preferences.
+\item The user is given a range of options to choose from and change.
+\item If the user changes an option, the changes are applied immediately.
+\end{enumerate}}
+\def\ucalternativepath{Options considered ''dangerous'', should there be any, will prompt additional confirmation from the user}
+\def\ucpostconditions{The preferences are saved and will be considered from this point on.}
+\def\ucexceptions{If the user enters an invalid value for an option, they will be informed of this and must correct it.}
+\def\ucfrequency{Sometimes}
 \ucprint
 
 \ucreset
-\def\ucid{-}
-\def\ucname{edit global prefs}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{-}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
-\def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucid{PRF-02}
+\def\ucname{Edit global preferences}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to change global preferences}
+\def\ucsummary{Global preferences are application properties that can be changed by the user (e.g. i18n/language)}
+\def\ucpreconditions{Jake is running (GEN-01)}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to edit global preferences.
+\item The user is given a range of options to choose from and change.
+\item If the user changes an option, the changes are applied immediately.
+\end{enumerate}}
+\def\ucalternativepath{Options considered ''dangerous'', should there be any, will prompt additional confirmation from the user}
+\def\ucpostconditions{The preferences are saved and will be considered from this point on.}
+\def\ucexceptions{If the user enters an invalid value for an option, they will be informed of this and must correct it.}
+\def\ucfrequency{Sometimes}
 \ucprint
