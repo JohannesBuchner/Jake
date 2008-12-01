@@ -468,7 +468,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The files are displayed.
 \end{enumerate}
 }
-\def\ucalternativepath{-}
+\def\ucalternativepath{If no files exist in the project (yet), this should be made obvious to the user and the process of adding files should be explained.}
 \def\ucpostconditions{The user can browse through the project files.}
 \def\ucexceptions{-}
 \def\ucfrequency{Very often}
@@ -843,7 +843,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \begin{enumerate}
 \item The user selects a locked file.
 \item The user chooses to unset the file's soft lock.
-\item The file is locked.
+\item The file is unlocked.
 \end{enumerate}
 }
 \def\ucalternativepath{-}
@@ -860,135 +860,227 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to display notes associated with a project}
 \def\ucsummary{Notes are text associated with projects. They can only be accessed from within Jake.}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to display the notes of a project.
+\item The notes are displayed.
+\end{enumerate}}
+\def\ucalternativepath{If no notes exist (yet), this should be made obvious to the user.}
+\def\ucpostconditions{The user can browse through the notes.}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Very often}
 \ucprint
 
 \ucreset
-\def\ucid{-}
+\def\ucid{NTE-02}
 \def\ucname{Add note}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to add a new note}
 \def\ucsummary{Add a note by specifying its content}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user chooses to add a new note.
+\item The user is prompted for the note content.
+\item The note is added.
+\end{enumerate}}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
-\def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucpostconditions{The new note is part of the project}
+\def\ucexceptions{If the note content is empty, the user is informed of this and given the option to resume at step 2 in the process.}
+\def\ucfrequency{Often}
 \ucprint
 
 \ucreset
-\def\ucid{-}
+\def\ucid{NTE-03}
 \def\ucname{Delete note}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{delete note, batch enabled}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to delete an unneeded note.}
+\def\ucsummary{Delete note, batch enabled}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note.}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects one or more notes to be deleted.
+\item The user chooses to delete these notes.
+\item The user is prompted for confirmation and informed that this action cannot be undone.
+\item The notes are deleted.
+\end{enumerate}}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpostconditions{The deleted notes no longer exist within the project}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Often}
 \ucprint
 
 \ucreset
-\def\ucid{-}
+\def\ucid{NTE-04}
 \def\ucname{Edit note}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{-}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to edit an existing note to update its contents}
+\def\ucsummary{Editing a note changes its contents.}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note.}
+\def\uctriggers{User action(active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a note to be edited.
+\item The user is prompted for the notes new content (starting off with its old content).
+\item The note is updated.
+\end{enumerate}}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpostconditions{The note now contains the specified new content and its new ''title'' (first line) is displayed in the note view}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Often}
 \ucprint
 
 \ucreset
-\def\ucid{-}
-\def\ucname{Add/remove/alter tag}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{-}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucid{NTE-05}
+\def\ucname{Add tag to note}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to add a tag to a note.}
+\def\ucsummary{The user may add a tag to a note. Only one note at a time.}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a note.
+\item The user chooses to add a tag.
+\item The user is prompted to enter a tag name.
+\item The tag is added to the note.
+\end{enumerate}
+}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpostconditions{The note is tagged with a tag of the chosen name}
+\def\ucexceptions{If the note is already tagged with a tag of the same name, the new tag is ignored.}
+\def\ucfrequency{Very Often}
+\ucprint
+
+\ucreset
+\def\ucid{NTE-06}
+\def\ucname{Remove tag from note}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to remove a tag from a note.}
+\def\ucsummary{The user may remove a tag from a note. Only one tag from one note at a time.}
+\def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and a tagged note exists within}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a tagged note.
+\item The user chooses to remove a tag from the note.
+\item The tag is removed from the note.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The note is no longer tagged with a tag of that name}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Very Often}
 \ucprint
 
 \section{Online/Sharing Operations}
 
 \ucreset
-\def\ucid{-}
+\def\ucid{NTE-07}
 \def\ucname{Announce note}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{announce a note, specify a announce message.}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to announce a note to the rest of the project members}
+\def\ucsummary{Announce a note and specify an announce message.}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note}
+\def\uctriggers{User action (active) or locally modified note with auto-announce enabled (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a note.
+\item The user chooses to announce the selected note.
+\item The note is announced.
+\end{enumerate}
+}
+\def\ucalternativepath{The note is automatically announced should the auto-announce feature be enabled.}
+\def\ucpostconditions{The note is announced and a suitable log entry has been created.}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Very often}
 \ucprint
 
 \ucreset
-\def\ucid{-}
+\def\ucid{NTE-08}
 \def\ucname{Download note}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{-}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucstatus{Review required (esp: I'm not sure what to do with not downloaded remote notes)} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to download a note from a remote peer}
+\def\ucsummary{Download a note from a remote peer}
+\def\ucpreconditions{The user is logged in (NET-01) and a project is open, active and selected that has a newer remote version of a note available}
+\def\uctriggers{User action (active) or remotely modified note with auto-pull enabled (passive)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a note (stub).
+\item The user chooses to download the selected note.
+\item The note is downloaded.
+\end{enumerate}
+}
+\def\ucalternativepath{The note is automatically downloaded should the auto-pull feature be enabled.}
+\def\ucpostconditions{The note is part of the local project)}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Very often}
 \ucprint
 
 \ucreset
-\def\ucid{-}
-\def\ucname{Resolve confilct (active, passive e.g. on announce)}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{run the conflict resolution assistant for notes.}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
-\def\ucalternativepath{-}
-\def\ucpostconditions{-}
-\def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucid{NTE-09}
+\def\ucname{Resolve conflict}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{When a conflict occurs, the user wants to receive simple assistance in resolving it.}
+\def\ucsummary{Run the conflict resolution assistant.}
+\def\ucpreconditions{The user is logged in (NET-01) and a project is open and active and an announce has been performed on a note}
+\def\uctriggers{A local announce and a remote change of note status have resulted in a conflict situation (passive) or user action (active, choosing to resolve an earlier conflict)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user is informed of the conflict and prompted for action to resolve it.
+\item The user chooses a way of resolving the conflict (overwrite remote, overwrite local).
+\item The selected action is performed.
+\end{enumerate}
+}
+\def\ucalternativepath{The user can choose to temporarily dismiss the message and resolve the conflict later by some means that results in step 1 in this use case being triggered.}
+\def\ucpostconditions{There is no longer an acute conflict or the user is aware of actions that need to be taken.}
+\def\ucexceptions{A new conflict may occur when announcing the chosen and the user is informed of this should it happen.}
+\def\ucfrequency{Sometimes}
 \ucprint
 
 \ucreset
-\def\ucid{-}
-\def\ucname{(Set/unset soft lock)}
-\def\ucstatus{-} % will be omitted in the final version !!!
-\def\ucrationale{-}
-\def\ucsummary{set/unset soft lock, specify locking message.}
-\def\ucpreconditions{-}
-\def\uctriggers{-}
-\def\ucprimaryscenario{-}
+\def\ucid{NTE-10}
+\def\ucname{Set soft lock}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user wants to edit a note alone, trying to make sure that nobody else edits it at the same time}
+\def\ucsummary{Set the softlock for a note, optionally specifying a locking message.}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a note.
+\item The user chooses to set the note's soft lock, optionally specifying a message to indicate their reason for setting the lock.
+\end{enumerate}
+}
 \def\ucalternativepath{-}
-\def\ucpostconditions{-}
+\def\ucpostconditions{The note is locked and other users, if their Jake client is aware of the lock, receive some sort of indication of this fact.}
 \def\ucexceptions{-}
-\def\ucfrequency{-}
+\def\ucfrequency{Sometimes}
+\ucprint
+
+\ucreset
+\def\ucid{NTE-11}
+\def\ucname{Unset soft lock}
+\def\ucstatus{Review required} % will be omitted in the final version !!!
+\def\ucrationale{The user has finished editing a note that they have locked and wants to enable other project members to work on it again.}
+\def\ucsummary{Unset the soft lock for a note.}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one locked note}
+\def\uctriggers{User action (active)}
+\def\ucprimaryscenario{
+\begin{enumerate}
+\item The user selects a locked note.
+\item The user chooses to unset the note's soft lock.
+\item The note is unlocked.
+\end{enumerate}
+}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The note is no longer locked and other users, if their Jake client is aware of the unset lock, no longer receive lock notifications.}
+\def\ucexceptions{-}
+\def\ucfrequency{Sometimes}
 \ucprint
 
 \section{Log Operations}
