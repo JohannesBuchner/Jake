@@ -57,15 +57,14 @@ See also & \ucsee \\
 \def\ucname{Launch Jake}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to start Jake when it is not currently running}
-\def\ucsummary{In order to use Jake, the application has to be launched first}
+\def\ucsummary{Jake is started and the main window is displayed}
 \def\ucpreconditions{A running operating system with Jake installed and all JVM and library prerequisites met}
 \def\uctriggers{Launching Jake from the OS}
 \def\ucprimaryscenario{
 \begin{enumerate}
 \item Jake starts and the main window is displayed.
-\item Open projects from the previous session are restored.
+\item Open projects from the previous session (if any) are restored.
 \end{enumerate}}
-\def\ucalternativepath{If Jake is started for the first time, a new local database is created.}
 \def\ucpostconditions{Jake is running. If the user has used Jake before and the previous session's login credentials have been saved, Jake automatically kickstarts use case NET-01.}
 \def\ucfrequency{Daily/Always}
 \ucprint
@@ -77,7 +76,7 @@ See also & \ucsee \\
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to connect to the network in order to use Jake}
 \def\ucsummary{In order to use Jake, a connection to a Jabber network is required. This connection is established by the user entering their network credentials.}
-\def\ucpreconditions{Jake is running (GEN-01)}
+\def\ucpreconditions{Jake is running (GEN-01) and the user is not yet logged in}
 \def\uctriggers{User interaction (active) or application launch with saved credentials (passive)}
 \def\ucprimaryscenario{
 \begin{enumerate}
@@ -88,7 +87,7 @@ See also & \ucsee \\
 \end{enumerate}
 }
 \def\ucalternativepath{If there are saved credentials from a previous session, Jake uses these to automatically login without explicit user action.}
-\def\ucpostconditions{The user is logged in and able to use all features.}
+\def\ucpostconditions{The user is logged in.}
 \def\ucexceptions{If the credentials provided in step 2 are incorrect or the Jabber server cannot be reached, the user shall be informed of this and given the option to resume at step 2 in the primary scenario.}
 \def\ucfrequency{Daily / Always (on startup)}
 \ucprint
@@ -97,8 +96,8 @@ See also & \ucsee \\
 \def\ucid{NET-02}
 \def\ucname{Log out from Jabber}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
-\def\ucrationale{The user wants to disconnect from the network}
-\def\ucsummary{In some situations, the user may want to explicitly disconnect from the network (and not just exit the application), e.g. when they want to register a different account or do not want other people using their account to be able to use Jake with their ID. For this reason, they are able to log out, leaving the application in a similar state as after its first run.}
+\def\ucrationale{In some situations, the user may want to explicitly disconnect from the network (and not just exit the application), e.g. when they want to register a different account or do not want other people using their account to be able to use Jake with their ID. For this reason, they are able to log out, leaving the application in a similar state as after its first run.}
+\def\ucsummary{Log out from the currently used network ID}
 \def\ucpreconditions{The user is logged in (NET-01)}
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
@@ -107,7 +106,7 @@ See also & \ucsee \\
 \item The user is logged out from the network.
 \end{enumerate}}
 \def\ucalternativepath{-}
-\def\ucpostconditions{The user is logged out and able to log in or register.}
+\def\ucpostconditions{The user is logged out.}
 \def\ucfrequency{Monthly / Seldom}
 \ucprint
 
@@ -141,20 +140,20 @@ See also & \ucsee \\
 \def\ucid{PRJ-01}
 \def\ucname{Create Project}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
-\def\ucrationale{A new project is created every time the user wants to share a new directory.}
-\def\ucsummary{Projects are the main working area in Jake.}
+\def\ucrationale{The user wants to create a new project to share with other users}
+\def\ucsummary{Creates a Jake project from a (new or existing) local folder}
 \def\ucpreconditions{Jake is running (GEN-01)}
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
 \begin{enumerate}
 \item The user chooses to create a new project.
 \item The user specifies a local project folder (which may, but doesn't have to, already exist) and a project name. 
-\item The project is created and added to the project list.
+\item The project is created and added to the list of active projects.
 \item Any files which already exist in the local folder become local files of this project.
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The project exists locally.}
+\def\ucpostconditions{The new project has been created and any files already present in the project folder are ready to be shared.}
 \def\ucexceptions{
 If the chosen directory cannot be accessed (e.g. because of filesystem issues or restrictive permissions) or either the directory itself or a subdirectory of it already is a Jake project, the user is informed of this and given the option to resume at step 2 in the creation process.
 }
@@ -167,7 +166,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucname{Receive project invitation}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{In order for Jake to be useful to the user, they need to be member of at least one project. By receiving a project invitation, they can easily join a project.}
-\def\ucsummary{A user may be invited to a project by another user. This process happens via invitations.}
+\def\ucsummary{When users receive project invitations, they may accept them, resulting in that project being created locally.}
 \def\ucpreconditions{The user is logged in (NET-01).}
 \def\uctriggers{An invitation is received (passive)}
 \def\ucprimaryscenario{
@@ -196,8 +195,8 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
 \begin{enumerate}
-\item The user chooses to open project.
-\item The user is asked to select the project in the local filesystem.
+\item The user chooses to open an existing project.
+\item The user is asked to select the project folder in the local filesystem.
 \item The project is opened.
 \end{enumerate}
 }
@@ -233,7 +232,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucid{PRJ-05}
 \def\ucname{Pause project}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
-\def\ucrationale{The user wants to temporarily suspend a project (e.g. when lots of files are being synced but they currently need the bandwidth)}
+\def\ucrationale{The user wants to temporarily suspend a project (e.g. when it is currently not needed)}
 \def\ucsummary{The user may pause a project. Paused projects are still displayed in Jake but the user may not work on them.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project is open, active (= not paused) and selected.}
 \def\uctriggers{User action (active)}
@@ -366,11 +365,11 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \begin{enumerate}
 \item The user chooses to revoke trust from a project member.
 \item The user is asked to confirm this action.
-\item The member is removed and trust revoked.
+\item Trust is revoked from the chosen member.
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The project member in question is removed from the user list and no longer trusted.}
+\def\ucpostconditions{The project member in question is no longer trusted.}
 \def\ucexceptions{-}
 \def\ucfrequency{Monthly/Sometimes}
 \ucprint
@@ -439,18 +438,18 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucid{PPL-07}
 \def\ucname{Receive member alert}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
-\def\ucrationale{The user wants to know who is added to the project by other members}
+\def\ucrationale{The user wants to know who is added to or removed from the project by other members}
 \def\ucsummary{If a user is added/removed from the project by another project member, the user will be notified.}
 \def\ucpreconditions{The user is logged in (NET-01) and the project in question is open and active}
 \def\uctriggers{Incoming member alert (passive)}
 \def\ucprimaryscenario{
 \begin{enumerate}
 \item A member alert is received by Jake.
-\item Jake adds the new member to its own project member list.
+\item The user is notified of the new/removed project member.
 \end{enumerate}
 }
-\def\ucalternativepath{If auto add/remove is disabled for the sending project member in this project, the user will be notified of this event, but the new member will not be added to the list of members.}
-\def\ucpostconditions{The new member is in the local project member list (if auto add/remove is enabled)}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The user has been made aware of the new/removed project member}
 \def\ucexceptions{-}
 \def\ucfrequency{Sometimes/weekly}
 \ucprint
@@ -471,8 +470,8 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The files are displayed.
 \end{enumerate}
 }
-\def\ucalternativepath{If no files exist in the project (yet), this should be made obvious to the user and the process of adding files should be explained.}
-\def\ucpostconditions{The user can browse through the project files.}
+\def\ucalternativepath{-}
+\def\ucpostconditions{The files, if any, are displayed.}
 \def\ucexceptions{-}
 \def\ucfrequency{Very often}
 \ucprint
@@ -492,9 +491,9 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The files are added to the project and copied to the project folder.
 \end{enumerate}
 }
-\def\ucalternativepath{The user may just add the files by means of drag\&drop.}
+\def\ucalternativepath{The user may just add the files by means of copying them into the project folder in the local filesystem.\\If a file doesn't conform to the Jake naming standards, the user will be prompted if they want to rename the file (see FIM-11)}
 \def\ucpostconditions{The files are now part of the project}
-\def\ucexceptions{If a file doesn't conform to the Jake naming standards, the user will be prompted if they want to rename the file (see FIM-11)}
+\def\ucexceptions{-}
 \def\ucfrequency{Daily/Often}
 \ucprint
 
@@ -508,7 +507,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\uctriggers{A change occurs in the filesystem (passive)}
 \def\ucprimaryscenario{
 \begin{enumerate}
-\item New files are added to the project view and files that no longer exist are removed from it.
+\item New files are added to the project view and files that no longer exist are removed from it. Files that have changed are updated accordingly.
 \end{enumerate}
 }
 \def\ucalternativepath{-}
@@ -535,7 +534,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 }
 \def\ucalternativepath{-}
 \def\ucpostconditions{The files are no longer part of the project and are moved to the OS trash}
-\def\ucexceptions{If the files can't be deleted for some reason (e.g. access violation because they are still in use by some other program), the user is informed of this and it is suggested that they close the program and/or try to restart their computer and manually delete the files.}
+\def\ucexceptions{If the files can't be deleted for some reason (e.g. access violation because they are still in use by some other program), the user is informed of this and it may be suggested that they close the program and/or try to restart their computer and manually delete the files.}
 \def\ucfrequency{Daily/Often}
 \ucprint
 
@@ -619,7 +618,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The file is displayed to the user.}
+\def\ucpostconditions{The file is opened in the external application.}
 \def\ucexceptions{If the file cannot be launched for some reason (e.g. access violation, the user is informed accordingly.)}
 \def\ucfrequency{Very often}
 \ucprint
@@ -640,14 +639,14 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The user can browse through the folder in the OS file browser}
+\def\ucpostconditions{The folder is open in the OS file browser}
 \def\ucexceptions{If the OS file browser cannot be launched, the user is informed accordingly.}
 \def\ucfrequency{Very often}
 \ucprint
 
 \ucreset
 \def\ucid{FIM-10}
-\def\ucname{Rename illegally-named files}
+\def\ucname{Run rename assistant}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to share files that have illegal filenames}
 \def\ucsummary{Run the rename assistant to rename files/folders with illegal name.}
@@ -670,8 +669,8 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucid{FIM-11}
 \def\ucname{Offer renaming}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
-\def\ucrationale{The user wants to share}
-\def\ucsummary{The user kick-starts the rename assistant.}
+\def\ucrationale{The user wants to share files that are currently unable to be shared because of an illegal filename.}
+\def\ucsummary{The rename assistant is implicitly started when files with illegal filenames are added to the project folder.}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open and active and one or more files with illegal names exist within}
 \def\uctriggers{On import of illegally-named files (passive), triggered by FIM-02.}
 \def\ucprimaryscenario{
@@ -680,9 +679,8 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The files are renamed.
 \end{enumerate}
 }
-\def\ucalternativepath{If the user rejects the renaming prompt, the files continue to exist both within the project and on the local filesystem, but are not synced. The user can then manually or automatically rename them at a later date.}
-\def\ucpostconditions{The files with illegal filenames have been renamed (if the user chose to proceed with the process).
-}
+\def\ucalternativepath{If the user rejects the renaming prompt, the files continue to exist both within the project and on the local filesystem. The user can then manually or automatically rename them at a later date.}
+\def\ucpostconditions{The files with illegal filenames have been renamed.}
 \def\ucexceptions{If one or more files could not be renamed (e.g. access violation or a file with the same "clean" name exists already), the user is informed of this and it is suggested that they fix the problem manually.}
 \def\ucfrequency{Sometimes/weekly}
 \ucprint
@@ -693,7 +691,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to add a tag to a file.}
 \def\ucsummary{The user may add a tag to a file. Only one file at a time.}
-\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
 \begin{enumerate}
@@ -703,9 +701,9 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The tag is added to the file.
 \end{enumerate}
 }
-\def\ucalternativepath{-}
+\def\ucalternativepath{If the file is already tagged with a tag of the same name, the new tag is ignored.}
 \def\ucpostconditions{The file is tagged with a tag of the chosen name}
-\def\ucexceptions{If the file is already tagged with a tag of the same name, the new tag is ignored.}
+\def\ucexceptions{-}
 \def\ucfrequency{Very Often}
 \ucprint
 
@@ -757,7 +755,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to announce a file to the rest of the project members}
 \def\ucsummary{Announce a file and specify a announce message.}
-\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file that has been changed (added, modified, moved, deleted,...)}
 \def\uctriggers{User action (active) or locally modified file with auto-announce enabled (passive)}
 \def\ucprimaryscenario{
 \begin{enumerate}
@@ -829,7 +827,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The file is locked and other users, if their Jake client is aware of the lock, receive some sort of indication of this fact.}
+\def\ucpostconditions{The file is locked.}
 \def\ucexceptions{-}
 \def\ucfrequency{Sometimes}
 \ucprint
@@ -850,7 +848,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The file is no longer locked and other users, if their Jake client is aware of the unset lock, no longer receive lock notifications.}
+\def\ucpostconditions{The file is no longer locked.}
 \def\ucexceptions{-}
 \def\ucfrequency{Sometimes}
 \ucprint
@@ -862,7 +860,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucname{Show notes}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to display notes associated with a project}
-\def\ucsummary{Notes are text associated with projects. They can only be accessed from within Jake.}
+\def\ucsummary{Notes can be read from within Jake}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
@@ -953,9 +951,9 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The tag is added to the note.
 \end{enumerate}
 }
-\def\ucalternativepath{-}
+\def\ucalternativepath{If the note is already tagged with a tag of the same name, the new tag is ignored.}
 \def\ucpostconditions{The note is tagged with a tag of the chosen name}
-\def\ucexceptions{If the note is already tagged with a tag of the same name, the new tag is ignored.}
+\def\ucexceptions{-}
 \def\ucfrequency{Very Often}
 \ucprint
 
@@ -988,7 +986,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to announce a note to the rest of the project members}
 \def\ucsummary{Announce a note and specify an announce message.}
-\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note}
+\def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note that has not yet been announced}
 \def\uctriggers{User action (active) or locally modified note with auto-announce enabled (passive)}
 \def\ucprimaryscenario{
 \begin{enumerate}
@@ -1026,7 +1024,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 
 \ucreset
 \def\ucid{NTE-09}
-\def\ucname{Resolve conflict}
+\def\ucname{Resolve note conflict}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{When a conflict occurs, the user wants to receive simple assistance in resolving it.}
 \def\ucsummary{Run the conflict resolution assistant.}
@@ -1047,7 +1045,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 
 \ucreset
 \def\ucid{NTE-10}
-\def\ucname{Set soft lock}
+\def\ucname{Set soft lock (note)}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to edit a note alone, trying to make sure that nobody else edits it at the same time}
 \def\ucsummary{Set the softlock for a note, optionally specifying a locking message.}
@@ -1060,14 +1058,14 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The note is locked and other users, if their Jake client is aware of the lock, receive some sort of indication of this fact.}
+\def\ucpostconditions{The note is locked}
 \def\ucexceptions{-}
 \def\ucfrequency{Sometimes}
 \ucprint
 
 \ucreset
 \def\ucid{NTE-11}
-\def\ucname{Unset soft lock}
+\def\ucname{Unset soft lock (note)}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user has finished editing a note that they have locked and wants to enable other project members to work on it again.}
 \def\ucsummary{Unset the soft lock for a note.}
@@ -1081,7 +1079,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \end{enumerate}
 }
 \def\ucalternativepath{-}
-\def\ucpostconditions{The note is no longer locked and other users, if their Jake client is aware of the unset lock, no longer receive lock notifications.}
+\def\ucpostconditions{The note is no longer locked}
 \def\ucexceptions{-}
 \def\ucfrequency{Sometimes}
 \ucprint
@@ -1155,7 +1153,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucname{Edit project preferences}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to change preferences of the project}
-\def\ucsummary{Project preferences are project properties that can be changed by the user (e.g. auto-pull/auto-announce)}
+\def\ucsummary{Project preferences, such as auto-pull/-announce, can be changed by the user}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
@@ -1175,7 +1173,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucname{Edit global preferences}
 \def\ucstatus{Review required} % will be omitted in the final version !!!
 \def\ucrationale{The user wants to change global preferences}
-\def\ucsummary{Global preferences are application properties that can be changed by the user (e.g. i18n/language)}
+\def\ucsummary{Global preferences, such as i18n, can be changed by the user}
 \def\ucpreconditions{Jake is running (GEN-01)}
 \def\uctriggers{User action (active)}
 \def\ucprimaryscenario{
