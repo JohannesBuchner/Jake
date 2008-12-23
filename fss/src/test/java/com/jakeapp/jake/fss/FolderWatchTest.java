@@ -1,7 +1,6 @@
 package com.jakeapp.jake.fss;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;

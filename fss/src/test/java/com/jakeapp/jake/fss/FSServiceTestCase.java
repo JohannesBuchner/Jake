@@ -20,7 +20,5 @@ public class FSServiceTestCase extends FSTestCase {
 		fss = new FSService();
 		fss.setRootPath(mytempdir);
 		assertEquals("rootpath",mytempdir,fss.getRootPath());
-		// TODO
-		//assertFalse(fss.getRootPath().startsWith("/home"));
 	}
 }

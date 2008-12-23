@@ -4,6 +4,8 @@ import com.jakeapp.jake.fss.exceptions.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -119,8 +121,23 @@ public interface IFSService {
 	 * @throws FileNotFoundException if the file is not found
 	 * @throws NotAReadableFileException if the file is not readable
 	 * @throws NotAFileException if the relativePath isn't a file
+	 * @deprecated use the streamed version
 	 */
+	@Deprecated
 	public byte[] readFile(String relativePath)
+		throws InvalidFilenameException, NotAFileException, 
+			FileNotFoundException, NotAReadableFileException;
+	
+	/**
+	 * Gives access to the content of a given file 
+	 * @param relativePath the relative path of the file
+     * @return content of the file
+	 * @throws InvalidFilenameException if the filename is not valid for jake
+	 * @throws FileNotFoundException if the file is not found
+	 * @throws NotAReadableFileException if the file is not readable
+	 * @throws NotAFileException if the relativePath isn't a file
+	 */
+	public InputStream readFileStream(String relativePath)
 		throws InvalidFilenameException, NotAFileException, 
 			FileNotFoundException, NotAReadableFileException;
 	
@@ -149,11 +166,27 @@ public interface IFSService {
 	 * @throws NotAFileException if the relativePath is not a file
 	 * @throws FileTooLargeException if the file is to large to be handled by jake
 	 * @throws CreatingSubDirectoriesFailedException if jake couldn't create subdirectories
+	 * @deprecated use the streamed version
 	 */
+	@Deprecated
 	public void writeFile(String relativePath, byte[] content)
 		throws InvalidFilenameException, IOException, FileTooLargeException,
 			NotAFileException, CreatingSubDirectoriesFailedException;
-	
+
+	/**
+	 * Writes the content to the file.
+	 * Creates subdirectories, if needed.
+	 * @param relativePath the relative path to the file
+     * @param content The new file content
+	 * @throws InvalidFilenameException if the filename is not valid for jake
+	 * @throws IOException if an I/O Error occured
+	 * @throws NotAFileException if the relativePath is not a file
+	 * @throws FileTooLargeException if the file is to large to be handled by jake
+	 * @throws CreatingSubDirectoriesFailedException if jake couldn't create subdirectories
+	 */
+	public void writeFileStream(String relativePath, InputStream stream)
+		throws InvalidFilenameException, IOException, FileTooLargeException,
+			NotAFileException, CreatingSubDirectoriesFailedException;
 	
 	/**
 	 * Gets the operating system preferred temporary directory
@@ -200,8 +233,15 @@ public interface IFSService {
 	/**
 	 * @param bytes content to calculate the hash of
 	 * @return hash over the bytes
+	 * @deprecated use the streamed version
 	 */
 	String calculateHash(byte[] bytes);
+	
+	/**
+	 * @param Stream to calculate the hash of
+	 * @return hash over the content
+	 */
+	String calculateHash(InputStream stream);
 	
 	/**
 	 * @return length of the returning String of the implemented Hash operation

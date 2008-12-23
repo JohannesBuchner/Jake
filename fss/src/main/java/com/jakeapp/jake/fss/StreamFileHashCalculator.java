@@ -1,23 +1,37 @@
 package com.jakeapp.jake.fss;
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * @deprecated You want to use {@link StreamFileHashCalculator}
- * @author johannes
- */
-@Deprecated
-public class FileHashCalculator{
+public class StreamFileHashCalculator{
 	private MessageDigest md;
 	
-	public FileHashCalculator() throws NoSuchAlgorithmException {
+	public StreamFileHashCalculator() throws NoSuchAlgorithmException {
 		md = MessageDigest.getInstance("SHA-512");
 	}
 	
-	public String calculateHash(byte[] bytes) {
-		md.update(bytes);
+	public String calculateHash(File f) throws FileNotFoundException {
+		FileInputStream fis = new FileInputStream(f);
+		return calculateHash(fis);
+	}
+	
+	public String calculateHash(InputStream is) {
+		DigestInputStream dis = new DigestInputStream(is, md);
+		byte[] tmp = new byte[1024];
+		try {
+			while(dis.read(tmp) >= 0);
+		} catch (IOException e) {
+			return null;
+		}
 		byte[] b = md.digest();
+		
 		String s = "";
 		for(int i=0;i<b.length;i++){
 			int c = b[i]; 
