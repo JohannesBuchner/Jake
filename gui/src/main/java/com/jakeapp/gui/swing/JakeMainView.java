@@ -3,55 +3,7 @@
  */
 package com.jakeapp.gui.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.Action;
-import org.jdesktop.application.FrameView;
-import org.jdesktop.application.SingleFrameApplication;
-import org.jdesktop.swingx.JXPanel;
-
-import com.explodingpixels.macwidgets.BottomBarSize;
-import com.explodingpixels.macwidgets.LabeledComponentGroup;
-import com.explodingpixels.macwidgets.MacButtonFactory;
-import com.explodingpixels.macwidgets.MacUtils;
-import com.explodingpixels.macwidgets.MacWidgetFactory;
-import com.explodingpixels.macwidgets.SourceList;
-import com.explodingpixels.macwidgets.SourceListCategory;
-import com.explodingpixels.macwidgets.SourceListClickListener;
-import com.explodingpixels.macwidgets.SourceListContextMenuProvider;
-import com.explodingpixels.macwidgets.SourceListItem;
-import com.explodingpixels.macwidgets.SourceListModel;
-import com.explodingpixels.macwidgets.TriAreaComponent;
+import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.dialogs.JakeMainAboutBox;
@@ -59,13 +11,22 @@ import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.SegmentButtonCreator;
 import com.jakeapp.gui.swing.helpers.SheetHelper;
-import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.gui.swing.panels.InspectorPanel;
-import com.jakeapp.gui.swing.panels.LoginPanel;
-import com.jakeapp.gui.swing.panels.NewsPanel;
-import com.jakeapp.gui.swing.panels.NotesPanel;
-import com.jakeapp.gui.swing.panels.PeoplePanel;
+import com.jakeapp.gui.swing.panels.*;
 import com.jakeapp.gui.swing.sheets.InviteUserSheet;
+import org.apache.log4j.Logger;
+import org.jdesktop.application.Action;
+import org.jdesktop.application.FrameView;
+import org.jdesktop.application.SingleFrameApplication;
+import org.jdesktop.swingx.JXPanel;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The application's main frame.

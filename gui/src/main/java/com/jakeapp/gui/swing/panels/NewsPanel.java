@@ -11,11 +11,9 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import java.awt.Toolkit;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -24,9 +22,8 @@ import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.helpers.Colors;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author studpete

@@ -15,4 +15,7 @@ public class WinStyler implements Styler {
     @Override
     public void MakeWhiteRecessedButton(JButton btn) {
     }
+
+    public void styleToolbarButton(JToggleButton jToggleButton) {
+    }
 }

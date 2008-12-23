@@ -18,4 +18,12 @@ public class MacStyler implements Styler {
         btn.setForeground(Color.WHITE);
         btn.putClientProperty("JButton.buttonType", "recessed");
     }
+
+    public void styleToolbarButton(JToggleButton btn) {
+        if (btn.isSelected()) {
+            btn.setForeground(Color.WHITE);
+        } else {
+            btn.setForeground(Color.BLACK);
+        }
+    }
 }

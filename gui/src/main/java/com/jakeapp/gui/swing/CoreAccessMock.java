@@ -20,7 +20,7 @@ public class CoreAccessMock implements ICoreAccess {
         Project pr2 = new Project("SEPM", null, null, new File("/Users/studpete/"));
         projects.add(pr2);
 
-        Project pr3 = new Project("Freigegebene Musik", null, null, null);
+        Project pr3 = new Project("Shared Music", null, null, new File(""));
         projects.add(pr3);
 
         return projects;
@@ -30,11 +30,11 @@ public class CoreAccessMock implements ICoreAccess {
     public List<Project> getInvitedProjects() {
         List<Project> projects = new ArrayList<Project>();
 
-        Project pr1 = new Project("Urlaubsvideos", null, null, null);
+        Project pr1 = new Project("DEMO INVITATION", null, null, new File(""));
         projects.add(pr1);
 
 
-        Project pr2 = new Project("Geheimakte", null, null, null);
+        Project pr2 = new Project("Not that secret Docs", null, null, new File(""));
         projects.add(pr2);
 
         return projects;

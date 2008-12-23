@@ -15,4 +15,7 @@ public class NullStyler implements Styler {
     @Override
     public void MakeWhiteRecessedButton(JButton btn) {
     }
+
+    public void styleToolbarButton(JToggleButton jToggleButton) {
+    }
 }
