@@ -1,182 +1,154 @@
 <?xml version="1.0"?>
 <project>
-    <parent>
-        <artifactId>parent</artifactId>
-        <groupId>com.jakeapp.jake</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.jakeapp.jake</groupId>
-    <artifactId>core</artifactId>
-    <name>core</name>
-    <version>1.0-SNAPSHOT</version>
-    <url>http://maven.apache.org</url>
-    <dependencies>
-    
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>com.jakeapp.jake</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.jakeapp.jake</groupId>
+	<artifactId>core</artifactId>
+	<name>core</name>
+	<version>1.0-SNAPSHOT</version>
+	<url>http://maven.apache.org</url>
+	<dependencies>
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
 			<artifactId>ics</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
 			<artifactId>fss</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            
-        </dependency>
-
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <!-- all stuff needed for hibernate follows now: -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>${jpa.version}</version>
-            <!-- FIXME -->
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <!--<version>3.3.1.GA</version>-->
-            <version>${hibernate-core.version}</version>
-        </dependency>
-        <!-- spring hibernate support -->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-hibernate3</artifactId>-->
-        <!--<version>2.0.8</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-commons-annotations</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${sl4j-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <!-- take care of log4j version used here! -->
-            <version>${sl4j-log4j12.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-            <!-- compare to org.slf4j-log4j XX -->
-        </dependency>
-        <dependency>
-            <groupId>jboss</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${javassist.version}</version>
-        </dependency>
-        <!-- end of hibernate stuff -->
-        <!-- looks like this is not needed for mvn javadoc:javadoc
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven-javadoc-plugin.version}</version>
-        </dependency>-->
-    </dependencies>
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1-beta-1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <!--<id>bla.run</id>-->
-                        <phase>post-integration-test</phase>
-                    </execution>
-
-                </executions>
-                <configuration>
-                    <mainClass>com.jakeapp.core.Jake</mainClass>
-                    <arguments>
-                        <!-- <argument>-help</argument> -->
-                    </arguments>
-                    <systemProperties>
-                        <!--<systemProperty>
-                            <key>myproperty</key>
-                            <value>myvalue</value>
-                        </systemProperty>-->
-                    </systemProperties>
-
-                </configuration>
-
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-    <properties>
-        <javassist.version>3.7.ga</javassist.version>
-        <log4j.version>1.2.14</log4j.version>
-        <sl4j-log4j12.version>1.5.6</sl4j-log4j12.version>
-        <sl4j-api.version>1.5.6</sl4j-api.version>
-        <hibernate.version>3.3.0.ga</hibernate.version>
-        <hibernate-core.version>3.3.1.GA</hibernate-core.version>
-        <jpa.version>1.0</jpa.version>
-        <maven-javadoc-plugin.version>2.5</maven-javadoc-plugin.version>
-        <junit.version>4.4</junit.version>
-    </properties>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- all stuff needed for hibernate follows now: -->
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>${jpa.version}</version>
+			<!-- FIXME -->
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<!--<version>3.3.1.GA</version>-->
+			<version>${hibernate-core.version}</version>
+		</dependency>
+		<!-- spring hibernate support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${sl4j-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<!-- take care of log4j version used here! -->
+			<version>${sl4j-log4j12.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+			<!-- compare to org.slf4j-log4j XX -->
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>javassist</artifactId>
+			<version>${javassist.version}</version>
+		</dependency>
+		<!-- end of hibernate stuff -->
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1-beta-1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<!--<id>bla.run</id>-->
+						<phase>post-integration-test</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.jakeapp.core.Jake</mainClass>
+					<arguments>
+					</arguments>
+					<systemProperties>
+					</systemProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<configLocation>checkstyle.xml</configLocation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	<properties>
+		<javassist.version>3.7.ga</javassist.version>
+		<log4j.version>1.2.14</log4j.version>
+		<sl4j-log4j12.version>1.5.6</sl4j-log4j12.version>
+		<sl4j-api.version>1.5.6</sl4j-api.version>
+		<hibernate.version>3.3.0.ga</hibernate.version>
+		<hibernate-core.version>3.3.1.GA</hibernate-core.version>
+		<jpa.version>1.0</jpa.version>
+		<maven-javadoc-plugin.version>2.5</maven-javadoc-plugin.version>
+		<junit.version>4.4</junit.version>
+	</properties>
 </project>
