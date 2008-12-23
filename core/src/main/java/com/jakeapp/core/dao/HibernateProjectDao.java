@@ -1,20 +1,18 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.ArrayList;
-import java.io.Serializable;
 
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.dao.DataAccessException;
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
 /**
  * Hibernate implementation of the <code>IProjectDAO</code> Interface.
@@ -28,11 +26,21 @@ public class HibernateProjectDao extends HibernateDaoSupport
     @Override
     //@Transactional
     public Project create(Project project) throws InvalidProjectException {
-        
+    	if (project == null ||
+    			project.getName() == null ||
+    			project.getName().length() == 0
+    	) {
+    		throw new InvalidProjectException();
+    	}
 
+        log.debug("persisting project with uuid " + ((project != null) ? project.getProjectId() : "null"));
+        try {
+        	//TODO: create ID if it is still null
+        	this.getHibernateTemplate().persist(project);	
+        } catch (DataAccessException dae) {
+        	throw new InvalidProjectException(dae);
+        }
 
-        log.debug("persisting project with uuid " + project.getProjectId());
-        getHibernateTemplate().persist(project);
 
 //        Project result = (Project) getHibernateTemplate().get(Project.class, project.getProjectId());
 
@@ -61,12 +69,21 @@ public class HibernateProjectDao extends HibernateDaoSupport
     @Override
     @Transactional
     public Project read(UUID uuid) throws NoSuchProjectException {
-        log.debug("calling read on uuid  " + ((Serializable) uuid).toString());
+    	Project result = null;
 
-        Project result = (Project) getHibernateTemplate().get(Project.class, uuid.toString());
+    	if (uuid==null) {
+    		throw new NoSuchProjectException();
+    	}
 
-        if(result == null)
-        {
+        log.debug("calling read on uuid  " + uuid.toString());
+
+        try {
+        	result = (Project) this.getHibernateTemplate().get(Project.class, uuid.toString());
+        } catch (DataAccessException dae) {
+        	log.warn(dae);
+        }
+
+        if (result == null) {
             log.debug("Didn't find a project belonging to uuid " + uuid.toString());
             throw new NoSuchProjectException();
         }
@@ -116,38 +133,56 @@ public class HibernateProjectDao extends HibernateDaoSupport
      */
     @Transactional
     public Project update(Project project) throws NoSuchProjectException {
-        this.getHibernateTemplate().update(project);
+    	if (project == null || project.getProjectId() == null) {
+    		throw new NoSuchProjectException();
+    	}
+    	
+    	try {
+    		this.getHibernateTemplate().update(project, LockMode.WRITE);
+    	} catch (DataAccessException dae) {
+    		throw new NoSuchProjectException();
+    	}
+
         return project;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Transactional
+	@SuppressWarnings("unchecked")
+	@Transactional
     public List<Project> getAll() {
-        return this.getHibernateTemplate().loadAll(Project.class);
+    	List projects;
+    	List<Project> result = new ArrayList<Project>();
+
+    	log.debug("Retrieving a list of all projects.");
+
+    	projects = this.getHibernateTemplate().loadAll(Project.class);
+		for (Object o : projects) {
+			if (o instanceof Project) {
+				result.add((Project) o);
+			}
+		}
+
+		return result;
     }
 
     /**
      * {@inheritDoc}
      */
     public void delete(Project project) throws NoSuchProjectException {
-        log.info("deleting project: " + project.getProjectId());
-        
-        /* TODO: This doesn't compile
-		try
+    	if (project == null || project.getProjectId() == null) {
+    		throw new NoSuchProjectException();
+    	}
+
+    	log.info("deleting project: " + project.getProjectId());
+
+    	try
         {
-           this.getHibernateTemplate().delete("Project", project, LockMode.READ);
+    		//FIXME LockMode.WRITE causes an Exception
+            this.getHibernateTemplate().delete(project/*, LockMode.WRITE*/);
+        } catch (DataAccessException dae) {
+            throw new NoSuchProjectException(dae);
         }
-        catch( ObjectOptimisticLockingFailureException e)
-        {
-            log.debug("Catched an ObjectOptimisticLockingFailureException");
-            throw new NoSuchProjectException(e.getMessage());
-        }
-        catch (DataAccessException e)
-        {
-            log.warn("Catched a DataAccessException indicating a hibernate error");
-            throw new NoSuchProjectException(e.getMessage());
-        }*/
     }
 }

@@ -1,5 +1,6 @@
 package com.jakeapp.core.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class NoteObject extends JakeObject {
      * Get the content (text) of the note.
      * @return the content of the note
      */
+    @Column(name = "text", nullable = false)
     public String getContent() {
         return this.content;
     }

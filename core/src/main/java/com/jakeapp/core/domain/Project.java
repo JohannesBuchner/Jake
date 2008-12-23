@@ -37,18 +37,18 @@ import org.apache.log4j.Logger;
 //@UniqueConstraint(columnNames = {"projectId"} )
 public class Project implements ILogable {
 	private static final long serialVersionUID = 4634971877310089896L;
-	private static final Logger log = Logger.getLogger(Project.class);
-    
-    private String name;
+	private String name;
     private UUID projectId;
 
     private transient MsgService messageService;
     private File rootPath;
     private transient boolean started;
+    private transient boolean open;
     private transient boolean autoAnnounceEnabled;
     private transient boolean autoPullEnabled;
     private transient boolean autologin;
     private UserId userId;
+    private ServiceCredentials credentials;
 
     /**
      * Construct a Project. Freshly constructed projects are always stopped.
@@ -66,6 +66,7 @@ public class Project implements ILogable {
         this.setProjectId(projectId);
         this.setMessageService(msgService);
         this.setRootPath(rootPath);
+        this.setCredentials(null);
     }
 
 
@@ -79,15 +80,12 @@ public class Project implements ILogable {
         setProjectId(UUID.fromString(projectId));
     }
 
-    public Project()
-    {
+    /**
+     * A public ctor with no arguments is needed for hibernate.
+     */
+    public Project() {
         
     }
-
-
-
-
-
 
     /**
      * Get the project id.
@@ -97,7 +95,7 @@ public class Project implements ILogable {
     @Id
     @Column(name = "UUID", nullable = false, unique = true)
     public String getProjectId() {
-        return this.projectId.toString();
+        return (this.projectId==null) ? null : this.projectId.toString();
     }
 
     /**
@@ -119,7 +117,7 @@ public class Project implements ILogable {
      *
      * @return the message service of the project
      */
-    @Column(name="PROTOCOL", nullable = false)
+    @Column(name = "PROTOCOL", nullable = false)
     @Transient
     public MsgService<? extends UserId> getMessageService() {
         return this.messageService;
@@ -139,8 +137,7 @@ public class Project implements ILogable {
         return this.rootPath.toString();
     }
 
-    public void setRootPath(final String rootPath)
-    {
+    public void setRootPath(final String rootPath) {
         this.rootPath = new File(rootPath);
     }
 
@@ -161,7 +158,8 @@ public class Project implements ILogable {
     /**
      * Set the <code>started</code> flag.
      *
-     * @param started
+     * @param started The new value for started -
+     * set this whenever you start or stop the proejct.
      */
     public void setStarted(boolean started) {
         this.started = started;
@@ -214,7 +212,6 @@ public class Project implements ILogable {
      *
      * @return the userId that is associated with the project.
      */
-    @Column(name="USERID", table = "serviceCredentials", nullable = false)
     @Transient
     public UserId getUserId() {
         return this.userId;
@@ -236,12 +233,48 @@ public class Project implements ILogable {
         return this.autologin;
     }
 
-    public void setAutologinEnabled(boolean enabled) {
+    /**
+	 * @param open the open to set
+	 */
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
+
+
+
+	/**
+	 * @return the open
+	 */
+	@Column(name = "Opened", nullable = false)
+	public boolean isOpen() {
+		return open;
+	}
+
+
+
+	public void setAutologinEnabled(boolean enabled) {
         this.autologin = enabled;
     }
 
 
     /**
+	 * @param credentials the credentials to set
+	 */
+	public void setCredentials(ServiceCredentials credentials) {
+		this.credentials = credentials;
+	}
+
+	/**
+	 * @return the credentials
+	 */
+	//@Column(name="USERID", nullable = false)
+	@ManyToOne(targetEntity = ServiceCredentials.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "userid", nullable = true)
+	public ServiceCredentials getCredentials() {
+		return credentials;
+	}
+
+	/**
      * Tests if to <code>Projects</code> are equal.
      *
      * @param obj The <code>Object</code> to compare this object to.
@@ -250,28 +283,37 @@ public class Project implements ILogable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (this.getClass() != obj.getClass())
-            return false;
+        if (this == obj) {
+			return true;
+		}
+        if (obj == null) {
+			return false;
+		}
+        if (this.getClass() != obj.getClass()) {
+			return false;
+		}
         final Project other = (Project) obj;
         if (this.name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!this.name.equals(other.name))
-            return false;
+            if (other.name != null) {
+				return false;
+			}
+        } else if (!this.name.equals(other.name)) {
+			return false;
+		}
         if (this.projectId == null) {
-            if (other.projectId != null)
-                return false;
-        } else if (!this.projectId.equals(other.projectId))
-            return false;
+            if (other.projectId != null) {
+				return false;
+			}
+        } else if (!this.projectId.equals(other.projectId)) {
+			return false;
+		}
         if (this.rootPath == null) {
-            if (other.rootPath != null)
-                return false;
-        } else if (!this.rootPath.equals(other.rootPath))
-            return false;
+            if (other.rootPath != null) {
+				return false;
+			}
+        } else if (!this.rootPath.equals(other.rootPath)) {
+			return false;
+		}
         return true;
     }
 

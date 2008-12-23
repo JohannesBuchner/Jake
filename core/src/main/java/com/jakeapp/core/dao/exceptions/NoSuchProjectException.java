@@ -14,4 +14,8 @@ public class NoSuchProjectException extends Exception {
     public NoSuchProjectException(final String message) {
 		super(message);
 	}
+    
+    public NoSuchProjectException(final Throwable cause) {
+		super(cause);
+	}
 }

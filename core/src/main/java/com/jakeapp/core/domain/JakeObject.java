@@ -14,7 +14,8 @@ import javax.persistence.MappedSuperclass;
 @Entity
 @MappedSuperclass
 public abstract class JakeObject implements ILogable {
-
+	private static final long serialVersionUID = -3601181472574035652L;
+	
 	@Id
     private UUID uuid;
     private Project project;

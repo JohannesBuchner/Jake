@@ -13,6 +13,7 @@
         <property name="sessionFactory" ref="hbnSessionFactory"/>
     </bean>
 
+	<bean id="projectDao" class="com.jakeapp.core.dao.HibernateProjectDao" parent="abstractDaoPattern"/>
 	<bean id="projectMemberDao" class="com.jakeapp.core.dao.HibernateProjectMemberDao" parent="abstractDaoPattern"/>
 <!-- 
     <bean id="configurationDao" class="com.jakeapp.core.dao.HibernateConfigurationDao" parent="abstractDaoPattern"/>
@@ -25,6 +26,7 @@
         <description>hibernate session factory</description>
         <property name="annotatedClasses">
             <list>
+            	<value>com.jakeapp.core.domain.Project</value>
                 <value>com.jakeapp.core.domain.ProjectMember</value>
                 <value>com.jakeapp.core.domain.UserId</value>
                 <value>com.jakeapp.core.domain.FileObject</value>
@@ -50,7 +52,7 @@
                 
             </props>
         </property>
-        <property name="dataSource" ref="hsqldbDataSource"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 		
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" scope="prototype">

@@ -4,10 +4,8 @@ import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
-import org.springframework.dao.support.DaoSupport;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.apache.log4j.Logger;
@@ -23,9 +21,10 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
 
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public ServiceCredentials create(ServiceCredentials credentials)  throws InvalidCredentialsException {
-
-
         if(credentials == null)
             throw new InvalidCredentialsException();
 
@@ -42,7 +41,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
 
         try
         {
-          getHibernateTemplate().persist(credentials);
+          getHibernateTemplate().save(credentials);
         }
         catch(DataAccessException e)
         {
@@ -52,6 +51,9 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public ServiceCredentials read(UUID uuid) throws NoSuchServiceCredentialsException {
         ServiceCredentials result = (ServiceCredentials) getHibernateTemplate().get(ServiceCredentials.class, uuid.toString());
         if(result == null)
@@ -61,6 +63,9 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public ServiceCredentials update(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
 
         try
@@ -76,6 +81,9 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public void delete(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
         try
         {

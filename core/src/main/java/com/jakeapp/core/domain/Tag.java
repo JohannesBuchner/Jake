@@ -25,7 +25,7 @@ public class Tag implements ILogable {
     }
 
     /**
-     * Get the name of the tag
+     * Get the name of the tag.
      *
      * @return the name of the tag
      */
@@ -42,28 +42,32 @@ public class Tag implements ILogable {
      *                                 a whitespace-character
      */
     public void setName(String name) throws InvalidTagNameException {
-        if (name.contains(" "))
-            throw new InvalidTagNameException(
+        if (name.matches(".*\\s.*")) {
+			throw new InvalidTagNameException(
                     "A Tag may not contain a whitespace");
+		}
         this.name = name;
     }
 
     /**
      * Test if two <code>tag</code>s are equal.
-     *
+     * @param obj The object to compare this object to.
      * @return <code>true</code> iff the <code>name</code>s are equal.
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass()))
-            return false;
+        if (obj == null || !this.getClass().equals(obj.getClass())) {
+			return false;
+		}
 
         Tag that = (Tag) obj;
 
-        if (this.name == null && that.getName() != null)
-            return false;
-        if (this.name != null && !this.name.equals(that.getName()))
-            return false;
+        if (this.name == null && that.getName() != null) {
+			return false;
+		}
+        if (this.name != null && !this.name.equals(that.getName())) {
+			return false;
+		}
 
         return true;
     }

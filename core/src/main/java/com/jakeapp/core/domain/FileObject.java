@@ -3,6 +3,7 @@ package com.jakeapp.core.domain;
 import java.io.File;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
@@ -48,6 +49,7 @@ public class FileObject extends JakeObject {
      *
      * @return the <code>relPath</code> to the file
      */
+    @Column( name = "path", nullable = false )
     public String getRelPath() {
         return this.relPath;
     }

@@ -18,9 +18,10 @@ public interface IProjectDao {
      * Create (persist) this Project into the database.
      * @param project The Project to be persisted
      * @return the persisted project.
-     * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException if the supplied Project is invalid
+     * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
+     * if the supplied Project is invalid
      */
-    public Project create(Project project) throws InvalidProjectException;
+    Project create(Project project) throws InvalidProjectException;
 
     /**
      * Retrieve a specific Project from the database.
@@ -28,7 +29,7 @@ public interface IProjectDao {
      * @return The Project found
      * @throws NoSuchProjectException If no project by that uuid exists
      */
-    public Project read(UUID uuid) throws NoSuchProjectException;
+    Project read(UUID uuid) throws NoSuchProjectException;
 
 	/**
 	 * Persist a <code>Project</code>.
@@ -36,7 +37,7 @@ public interface IProjectDao {
 	 * @return the persisted <code>Project</code>.
      * @throws NoSuchProjectException If no project with that uuid exists to be updated
 	 */
-    public Project update(Project project) throws NoSuchProjectException;
+    Project update(Project project) throws NoSuchProjectException;
 
     /**
      * Get all projects that are stored in Jake's global database.
@@ -49,6 +50,6 @@ public interface IProjectDao {
      * @param project the project to be deleted.
      * @throws NoSuchProjectException if project does not exist.
      */
-    public void delete(Project project) throws NoSuchProjectException;
+    void delete(Project project) throws NoSuchProjectException;
 
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jakeapp.TestingConstants;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 
 
@@ -23,28 +24,28 @@ public class TagTest {
 		}
 	}
 
-	@Test(timeout = 1000,expected=InvalidTagNameException.class)
+	@Test(timeout = TestingConstants.UNITTESTTIME,expected=InvalidTagNameException.class)
 	public void Tag_shouldThrowOnInvalidTagname() throws InvalidTagNameException {
 	    /* CALL */
 	    new Tag("my new tag");
 	    /* CALL */
 	}
 	
-	@Test(timeout = 1000,expected=InvalidTagNameException.class)
+	@Test(timeout = TestingConstants.UNITTESTTIME,expected=InvalidTagNameException.class)
 	public void setName_shouldThrowOnInvalidTagname() throws InvalidTagNameException {
 	    /* CALL */
 	    t.setName("my new tag");
 	    /* CALL */
 	}
 	
-	@Test(timeout = 1000,expected=InvalidTagNameException.class)
+	@Test(timeout = TestingConstants.UNITTESTTIME,expected=InvalidTagNameException.class)
 	public void setName_shouldThrowOnTagnameContainingWhitespace() throws InvalidTagNameException {
 	    /* CALL */
 	    t.setName("\t\n");
 	    /* CALL */
 	}
 	
-	@Test(timeout = 1000)
+	@Test(timeout = TestingConstants.UNITTESTTIME)
 	public void getName_shouldReturntheNameSetBefore() throws InvalidTagNameException {
 		final String tagname = "tag"; 
 		String retval;

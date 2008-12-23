@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Column;
+import javax.persistence.Transient;
 
 /**
  * A representation of the users credentials. It consists of a
@@ -92,15 +93,34 @@ public class ServiceCredentials {
      * @return the ip address/hostname set.
      */
 
-    @Column(name = "serveraddress", nullable = false)
+    @Transient
     public InetAddress getServerAddress() {
         return this.serverAddress;
+    }
+
+    @Column(name = "serveraddress", nullable = false)
+    public String getServerAddressString()
+    {
+        return this.serverAddress.toString();
     }
 
     public void setServerAddress(InetAddress serverAddress) {
         this.serverAddress = serverAddress;
     }
 
+    public void setServerAddressString(String serverAddress) throws InvalidCredentialsException {
+        // TODO fix dirty unsafe code! 
+    	final int NAME_POS = 1;
+
+        String[] parts = serverAddress.split("/");
+        if (parts.length > NAME_POS) {
+        	try {
+            	this.serverAddress = InetAddress.getByName(parts[NAME_POS]);
+        	} catch (UnknownHostException e) {
+        		throw new InvalidCredentialsException(e);
+        	}
+        }
+    }
 
     /**
      * Returns the port on the specified <code>serverAddress</code> where
@@ -139,12 +159,34 @@ public class ServiceCredentials {
     }
 
 
-    public void setServerAddress(String serverAddress) throws InvalidCredentialsException {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ServiceCredentials)) return false;
 
-        try {
-            InetAddress.getByName(serverAddress);
-        } catch (UnknownHostException e) {
-            throw new InvalidCredentialsException(e);
-        }
+        ServiceCredentials that = (ServiceCredentials) o;
+
+        if (encryptionUsed != that.encryptionUsed) return false;
+        if (serverPort != that.serverPort) return false;
+        if (plainTextPassword != null ? !plainTextPassword.equals(that.plainTextPassword) : that.plainTextPassword != null)
+            return false;
+        if (!resourceName.equals(that.resourceName)) return false;
+        if (!serverAddress.equals(that.serverAddress)) return false;
+        if (!userId.equals(that.userId)) return false;
+        if (!uuid.equals(that.uuid)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + (plainTextPassword != null ? plainTextPassword.hashCode() : 0);
+        result = 31 * result + serverAddress.hashCode();
+        result = 31 * result + (int) (serverPort ^ (serverPort >>> 32));
+        result = 31 * result + (encryptionUsed ? 1 : 0);
+        result = 31 * result + resourceName.hashCode();
+        return result;
     }
 }

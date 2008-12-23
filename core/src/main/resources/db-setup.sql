@@ -65,6 +65,7 @@
 	ID				CHAR(36)		PRIMARY KEY,
 	memberID			CHAR(36)		NOT NULL,
 	objectID			CHAR(36),
+	comment				VARCHAR(255),
 	hash				VARCHAR(255)		NOT NULL,
 	time				DATETIME		NOT NULL,
 	processed			BOOLEAN,

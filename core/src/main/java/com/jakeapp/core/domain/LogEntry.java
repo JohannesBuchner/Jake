@@ -3,6 +3,7 @@ package com.jakeapp.core.domain;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -71,6 +72,7 @@ public class LogEntry<T extends ILogable> {
 	 * @return the <code>uuid</code> for this <code>LogEntry</code>.
 	 */
 	@Id
+	@Column(name="ID", nullable=false)
 	public UUID getUuid() {
 		return this.uuid;
 	}
@@ -86,6 +88,7 @@ public class LogEntry<T extends ILogable> {
 	/**
 	 * @return The action that caused this <code>LogEntry</code>.
 	 */
+	@Column(name="action",nullable=false)
 	public LogAction getLogAction() {
 		return this.logAction;
 	}
@@ -99,6 +102,7 @@ public class LogEntry<T extends ILogable> {
 	 * @return The creation date of this <code>LogEntry</code>,
      * when it was first created (possibly on another client).
 	 */
+	@Column(name="time",nullable=false)
 	public Date getTimestamp() {
 		return this.timestamp;
 	}
@@ -136,6 +140,7 @@ public class LogEntry<T extends ILogable> {
 	 * @return The <code>ProjectMember</code> that caused this
      * <code>LogEntry</code>.
 	 */
+	@Column(name="memberID", table = "projectmember", nullable = false)
 	public ProjectMember getMember() {
 		return this.member;
 	}
@@ -149,6 +154,7 @@ public class LogEntry<T extends ILogable> {
 	 * that caused the LogEntry. If the user did not enter any comments,
      * an empty String is returned.
 	 */
+	@Column(name = "comment", nullable = true)
 	public String getComment() {
 		return this.comment;
 	}
@@ -161,6 +167,7 @@ public class LogEntry<T extends ILogable> {
 	 * @return The hash the modified object had when causing this
      * <code>LogEntry</code>.
 	 */
+	@Column(name = "hash", nullable = false)
 	public String getChecksum() {
 		return this.checksum;
 	}
@@ -174,6 +181,7 @@ public class LogEntry<T extends ILogable> {
 	 *  current version of the Object the LogEntry refers to, or it the
 	 *  version of the corresponding Object is even newer.
 	 */
+	@Column(name = "processed", nullable = false)
 	public boolean isProcessed() {
 		return this.processed;
 	}

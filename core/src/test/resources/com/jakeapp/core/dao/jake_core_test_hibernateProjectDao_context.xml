@@ -49,6 +49,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.jakeapp.core.domain.Project</value>
+				<value>com.jakeapp.core.domain.ServiceCredentials</value>
             </list>
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
@@ -102,6 +103,4 @@
     <bean id="projectDao" class="com.jakeapp.core.dao.HibernateProjectDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
-
-
 </beans>
