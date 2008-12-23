@@ -14,7 +14,7 @@ public interface IFrontendService {
 
     /**
      * This method is used to authenticate a client accessing the jake-core.
-     * On a successfull
+     * On a successful
      * authentication a Session-Identifier (sessionId) is returned
      *
      * @param credentials a Map of credentials // TODO to be specified

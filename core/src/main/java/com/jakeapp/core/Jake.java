@@ -6,7 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 /**
- * This class is the main entry point for jake CORE (server mode) respectivly
+ * This class is the main entry point for jake CORE (server mode) respectively
  * the jake CORE &amp; GUI mode.
  */
 public class Jake {
