@@ -134,7 +134,8 @@ public class HibernateProjectDao extends HibernateDaoSupport
     public void delete(Project project) throws NoSuchProjectException {
         log.info("deleting project: " + project.getProjectId());
         
-        try
+        /* TODO: This doesn't compile
+		try
         {
            this.getHibernateTemplate().delete("Project", project, LockMode.READ);
         }
@@ -147,6 +148,6 @@ public class HibernateProjectDao extends HibernateDaoSupport
         {
             log.warn("Catched a DataAccessException indicating a hibernate error");
             throw new NoSuchProjectException(e.getMessage());
-        }
+        }*/
     }
 }
