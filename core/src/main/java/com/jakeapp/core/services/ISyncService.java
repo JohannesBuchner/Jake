@@ -1,13 +1,13 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import java.util.List;
+
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-
-import java.util.List;
 
 public interface ISyncService {
 

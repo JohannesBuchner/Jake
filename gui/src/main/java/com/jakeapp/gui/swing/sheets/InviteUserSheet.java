@@ -11,14 +11,16 @@
 
 package com.jakeapp.gui.swing.sheets;
 
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.interfaces.Closeable;
-import com.jakeapp.gui.swing.interfaces.Sheet;
+import java.awt.Color;
+
+import javax.swing.JButton;
+
 import org.jdesktop.application.Action;
 import org.jdesktop.swingx.JXPanel;
 
-import javax.swing.*;
-import java.awt.*;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.interfaces.Closeable;
+import com.jakeapp.gui.swing.interfaces.Sheet;
 
 /**
  * @author studpete

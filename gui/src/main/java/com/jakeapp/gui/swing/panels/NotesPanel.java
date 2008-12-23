@@ -11,15 +11,23 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.gui.swing.helpers.Colors;
-import com.jakeapp.gui.swing.listener.TableMouseListener;
+import java.awt.Insets;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import javax.swing.*;
-import java.awt.*;
+import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.listener.TableMouseListener;
 
 /**
  * @author studpete

@@ -4,11 +4,12 @@
 
 package com.jakeapp.gui.swing;
 
-import com.jakeapp.gui.swing.controls.SheetableJFrame;
+import javax.swing.UIManager;
+
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
-import javax.swing.*;
+import com.jakeapp.gui.swing.controls.SheetableJFrame;
 
 /**
  * The main class of the application.

@@ -1,10 +1,10 @@
 package com.jakeapp.core.services;
 
+import java.util.List;
+import java.util.Map;
+
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
-
-import java.util.Map;
-import java.util.List;
 
 /**
  * This is the only visible interface to other components accessing

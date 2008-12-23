@@ -11,14 +11,15 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.gui.swing.helpers.Colors;
+import java.awt.Color;
+
 import org.jdesktop.application.Action;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 
-import java.awt.*;
+import com.jakeapp.gui.swing.helpers.Colors;
 
 /**
  * @author studpete
