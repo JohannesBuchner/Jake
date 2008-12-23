@@ -1,6 +1,6 @@
-package com.doublesignal.sepm.jake.fss;
+package com.jakeapp.jake.fss;
 
-import com.doublesignal.sepm.jake.fss.exceptions.*;
+import com.jakeapp.jake.fss.exceptions.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -86,7 +86,7 @@ public interface IFSService {
 	 * termination) 
 	 * @param relativePath the file to be edited/viewed
 	 * @throws InvalidFilenameException if the filename is not valid for jake
-	 * @throws com.doublesignal.sepm.jake.fss.exceptions.LaunchException if the file couldn't be launched
+	 * @throws com.jakeapp.jake.fss.exceptions.LaunchException if the file couldn't be launched
 	 * @throws IOException if an I/O Error occured
 	 */
 	public void launchFile(String relativePath)

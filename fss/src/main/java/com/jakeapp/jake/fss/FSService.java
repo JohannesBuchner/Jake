@@ -1,6 +1,6 @@
-package com.doublesignal.sepm.jake.fss;
+package com.jakeapp.jake.fss;
 
-import com.doublesignal.sepm.jake.fss.exceptions.*;
+import com.jakeapp.jake.fss.exceptions.*;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;

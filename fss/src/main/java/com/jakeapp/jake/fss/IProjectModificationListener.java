@@ -1,6 +1,6 @@
-package com.doublesignal.sepm.jake.fss;
+package com.jakeapp.jake.fss;
 
-import com.doublesignal.sepm.jake.fss.IModificationListener.ModifyActions;
+import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 
 /**
  * Objects listening for file modifications have to implement this.

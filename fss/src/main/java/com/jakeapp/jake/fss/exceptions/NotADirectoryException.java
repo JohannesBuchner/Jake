@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss.exceptions;
+package com.jakeapp.jake.fss.exceptions;
 
 /**
  * Thrown if tried to reach a directory which is in fact a file or something else

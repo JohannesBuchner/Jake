@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss.exceptions;
+package com.jakeapp.jake.fss.exceptions;
 
 import java.io.IOException;
 

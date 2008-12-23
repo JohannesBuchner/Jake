@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss;
+package com.jakeapp.jake.fss;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.doublesignal.sepm.jake.fss.IModificationListener.ModifyActions;
-import com.doublesignal.sepm.jake.fss.exceptions.NotADirectoryException;
-import com.doublesignal.sepm.jake.fss.exceptions.NotAReadableFileException;
+import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
+import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
 /**
  * Implementation of {@link IFSService}

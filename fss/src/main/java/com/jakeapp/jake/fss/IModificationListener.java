@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.fss;
+package com.jakeapp.jake.fss;
 
 import java.io.File;
 
