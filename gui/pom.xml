@@ -83,17 +83,15 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <includeProjectDependencies>true</includeProjectDependencies>
                     <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
                     <arguments>
-                        <argument>argument1</argument>
                     </arguments>
-                    <systemProperties>
+                    <!--<systemProperties>
                         <systemProperty>
                             <key>myproperty</key>
                             <value>myvalue</value>
                         </systemProperty>
-                    </systemProperties>
+                    </systemProperties>-->
                     <workingDirectory>target/classes</workingDirectory>
                 </configuration>
             </plugin>

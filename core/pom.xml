@@ -125,7 +125,7 @@
                         <goals>
                             <goal>java</goal>
                         </goals>
-                        <id>bla.run</id>
+                        <!--<id>bla.run</id>-->
                         <phase>post-integration-test</phase>
                     </execution>
 
@@ -136,10 +136,10 @@
                         <!-- <argument>-help</argument> -->
                     </arguments>
                     <systemProperties>
-                        <systemProperty>
+                        <!--<systemProperty>
                             <key>myproperty</key>
                             <value>myvalue</value>
-                        </systemProperty>
+                        </systemProperty>-->
                     </systemProperties>
 
                 </configuration>

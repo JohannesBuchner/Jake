@@ -5,10 +5,10 @@ MVN=mvn ${MVNEXTRAARGS}
 all: gui
 
 start: gui
-	cd gui; ${MVN} exec:java -Dexec.mainClass=com.doublesignal.sepm.jake.gui.StartJake
+	cd gui; ${MVN} exec:java
 
 quickstart: gui
-	cd gui; ${MVN} exec:java -Dexec.mainClass=com.doublesignal.sepm.jake.gui.StartJake -Dexec.args=${PROJECTFOLDER}
+	cd gui; ${MVN} exec:java -Dexec.args=${PROJECTFOLDER}
 
 gui: core
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
