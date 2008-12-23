@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.ics;
+package com.jakeapp.jake.ics;
 
 import com.doublesignal.sepm.jake.ics.exceptions.*;
 import org.apache.log4j.Logger;

@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.ics.exceptions;
+package com.jakeapp.jake.ics.exceptions;
 
 /**
  * @author domdorn, johannes

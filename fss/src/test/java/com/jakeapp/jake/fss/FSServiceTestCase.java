@@ -2,8 +2,6 @@ package com.jakeapp.jake.fss;
 
 import java.io.File;
 
-import com.jakeapp.jake.fss.FSService;
-
 
 public class FSServiceTestCase extends FSTestCase {
 	protected FSService fss = null;

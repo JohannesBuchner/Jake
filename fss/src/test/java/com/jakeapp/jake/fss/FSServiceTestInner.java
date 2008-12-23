@@ -1,10 +1,9 @@
 package com.jakeapp.jake.fss;
 
-import com.jakeapp.jake.fss.FSService;
-import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
+
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 
 public class FSServiceTestInner extends FSTestCase {

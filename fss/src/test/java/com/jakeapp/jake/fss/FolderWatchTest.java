@@ -11,9 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jakeapp.jake.fss.FolderWatcher;
-import com.jakeapp.jake.fss.IModificationListener;
-
 public class FolderWatchTest extends FSTestCase {
 
 	FolderWatcher fw = null;

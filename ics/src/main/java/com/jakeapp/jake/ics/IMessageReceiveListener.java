@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.ics;
+package com.jakeapp.jake.ics;
 
 
 /**

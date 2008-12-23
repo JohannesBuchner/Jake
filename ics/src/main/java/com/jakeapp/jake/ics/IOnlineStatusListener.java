@@ -1,4 +1,4 @@
-package com.doublesignal.sepm.jake.ics;
+package com.jakeapp.jake.ics;
 
 /**
  * Objects wanting to notice if users go online and offline have to implement 

@@ -1,10 +1,10 @@
-package com.doublesignal.sepm.jake.ics;
+package com.jakeapp.jake.ics;
 
-import com.doublesignal.sepm.jake.ics.exceptions.NetworkException;
-import com.doublesignal.sepm.jake.ics.exceptions.NoSuchUseridException;
-import com.doublesignal.sepm.jake.ics.exceptions.NotLoggedInException;
-import com.doublesignal.sepm.jake.ics.exceptions.OtherUserOfflineException;
-import com.doublesignal.sepm.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 
 
 
