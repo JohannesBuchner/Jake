@@ -1109,10 +1109,26 @@ public class JakeMainView extends FrameView {
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
-        updateToolBar();
-        updateTitle();
+        updateAll();
 
         // relay it to the other panels!
         newsPanel.setProject(currentProject);
+    }
+
+    /**
+     * Updates the window
+     */
+    private void updateAll() {
+        updateToolBar();
+        updateTitle();
+        updateView();
+    }
+
+
+    /**
+     *
+     */
+    private void updateView() {
+
     }
 }
