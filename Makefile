@@ -4,8 +4,12 @@ MVN=mvn ${MVNEXTRAARGS}
 
 all: gui
 
-start: gui
+start: gui2
 	cd gui; ${MVN} exec:java
+
+gui2: 
+	mvn -Dmaven.test.skip=true install
+
 
 quickstart: gui
 	cd gui; ${MVN} exec:java -Dexec.args=${PROJECTFOLDER}
