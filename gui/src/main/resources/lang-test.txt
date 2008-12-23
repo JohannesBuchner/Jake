@@ -1,3 +1,0 @@
-HELLO_WORLD=Hallo Welt!
-HELLO=Hallo %0%!
-NETWORK_TIMEOUT_ON_USER=Die Netzwerkverbindung zu %0% brach nach %1% Sekunden ab.

@@ -1,8 +1,0 @@
-DROP TABLE IF EXISTS testtable;
-
-CREATE TABLE testtable (
-	a INTEGER,
-	b INTEGER,
-	PRIMARY KEY (a)
-);
-
