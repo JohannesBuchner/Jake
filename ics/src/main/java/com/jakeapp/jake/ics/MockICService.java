@@ -1,10 +1,14 @@
 package com.jakeapp.jake.ics;
 
-import com.doublesignal.sepm.jake.ics.exceptions.*;
+import java.util.HashSet;
+
 import org.apache.log4j.Logger;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 
 public class MockICService implements IICService {
 	Logger log = Logger.getLogger(MockICService.class);
