@@ -24,6 +24,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +41,33 @@ public class JakeMainView extends FrameView {
     private NewsPanel newsPanel = new NewsPanel();
     private FilePanel filePanel = new FilePanel();
     private NotesPanel notesPanel = new NotesPanel();
-    private PeoplePanel peoplePanel = new PeoplePanel();
+    private ProjectInvitationPanel invitationPanel = new ProjectInvitationPanel();
     private LoginPanel loginPanel = new LoginPanel();
     private List<JToggleButton> contextSwitcherButtons;
     private JPanel contextSwitcherPane = createContextSwitcherPane();
     private JPanel inspectorPanel = new InspectorPanel();
+
+    private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
+    private ContextPanels contextPanelView = ContextPanels.Login;
+
+    /**
+     * Project View: set of toggle buttons. Alwasy one state setup.
+     */
+    enum ProjectViewPanels {
+        News, Files, Notes
+    }
+
+    ;
+
+    /**
+     * Special context states.
+     */
+    enum ContextPanels {
+        Login, Project, Invitation
+    }
+
+    ;
+
 
     // source list management
     private Map<SourceListItem, Project> sourceListProjectMap;
@@ -90,9 +113,6 @@ public class JakeMainView extends FrameView {
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
 
-        // always begin with showing the login
-        contentPanel.add(loginPanel, BorderLayout.CENTER);
-
         // add the toolbar
         TriAreaComponent toolBar = createToolBar();
         this.getFrame().add(toolBar.getComponent(), BorderLayout.NORTH);
@@ -109,6 +129,7 @@ public class JakeMainView extends FrameView {
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
         this.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        setContextPanelView(ContextPanels.Login);
 
         updateTitle();
     }
@@ -125,7 +146,7 @@ public class JakeMainView extends FrameView {
             getFrame().setTitle(projectPath + " - " + jakeStr);
 
             // mac only
-            getFrame().getRootPane().putClientProperty("Window.documentFile", getCurrentProject().getRootPath());
+            getFrame().getRootPane().putClientProperty("Window.documentFile", new File(getCurrentProject().getRootPath()));
 
         } else {
             getFrame().setTitle(jakeStr);
@@ -397,56 +418,26 @@ public class JakeMainView extends FrameView {
 
     private JButton connectionButton;
 
-    public void setContextPaneFromSelection() {
 
+    /**
+     * Called after pressing the toggle buttons for project view.
+     */
+    public void setProjectViewFromToolBarButtons() {
+
+        // TODO: remove hack
         // show connection info
-        contentPanel.remove(loginPanel);
-        connectionButton.setText("pstein@fsinf.ac.at");
+        //contentPanel.remove(loginPanel);
+        //connectionButton.setText("pstein@fsinf.ac.at");
 
 
-        if (contextSwitcherButtons.get(0).isSelected()) {
-            if (Platform.isMac()) {
-                contextSwitcherButtons.get(0).setForeground(Color.WHITE);
-            }
-            contentPanel.add(newsPanel, BorderLayout.CENTER);
-        } else {
-            contentPanel.remove(newsPanel);
-            contextSwitcherButtons.get(0).setForeground(Color.BLACK);
+        // determine toggle button selection
+        if (contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).isSelected()) {
+            setProjectViewPanel(ProjectViewPanels.News);
+        } else if (contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).isSelected()) {
+            setProjectViewPanel(ProjectViewPanels.Files);
+        } else if (contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).isSelected()) {
+            setProjectViewPanel(ProjectViewPanels.Notes);
         }
-
-        if (contextSwitcherButtons.get(1).isSelected()) {
-            if (Platform.isMac()) {
-                contextSwitcherButtons.get(1).setForeground(Color.WHITE);
-            }
-            contentPanel.add(filePanel, BorderLayout.CENTER);
-        } else {
-            contentPanel.remove(filePanel);
-            contextSwitcherButtons.get(1).setForeground(Color.BLACK);
-        }
-
-        if (contextSwitcherButtons.get(2).isSelected()) {
-            if (Platform.isMac()) {
-                contextSwitcherButtons.get(2).setForeground(Color.WHITE);
-            }
-            contentPanel.add(notesPanel, BorderLayout.CENTER);
-        } else {
-            contextSwitcherButtons.get(2).setForeground(Color.BLACK);
-            contentPanel.remove(notesPanel);
-        }
-
-        /*
-        if (contextSwitcherButtons.get(3).isSelected()) {
-            if (Platform.isMac()) {
-                contextSwitcherButtons.get(3).setForeground(Color.WHITE);
-            }
-            contentPanel.add(peoplePanel, BorderLayout.CENTER);
-        } else {
-            contextSwitcherButtons.get(3).setForeground(Color.BLACK);
-            contentPanel.remove(peoplePanel);
-        }
-         * */
-
-        contentPanel.updateUI();
     }
 
     /**
@@ -481,7 +472,6 @@ public class JakeMainView extends FrameView {
         contextSwitcherButtons = SegmentButtonCreator.createSegmentedTexturedButtons(3, switcherGroup);
 
         contextSwitcherButtons.get(0).setText("Project");
-        contextSwitcherButtons.get(0).setSelected(true);
         contextSwitcherButtons.get(1).setText("Files");
         contextSwitcherButtons.get(2).setText("Notes");
 
@@ -489,20 +479,20 @@ public class JakeMainView extends FrameView {
         contextSwitcherButtons.get(0).addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                setContextPaneFromSelection();
+                setProjectViewFromToolBarButtons();
             }
         });
         contextSwitcherButtons.get(1).addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                setContextPaneFromSelection();
+                setProjectViewFromToolBarButtons();
             }
         });
 
         contextSwitcherButtons.get(2).addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                setContextPaneFromSelection();
+                setProjectViewFromToolBarButtons();
             }
         });
 
@@ -511,7 +501,7 @@ public class JakeMainView extends FrameView {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                setContextPaneFromSelection();
+                setProjectViewFromToolBarButtons();
             }
         });
          * */
@@ -751,7 +741,7 @@ public class JakeMainView extends FrameView {
                     contentPanel.add(contextSwitcherPane, BorderLayout.NORTH);
 
                     contextSwitcherButtons.get(0).setSelected(true);
-                    setContextPaneFromSelection();
+                    setProjectViewFromToolBarButtons();
 
                 }
         */
@@ -1125,10 +1115,101 @@ public class JakeMainView extends FrameView {
     }
 
 
+    public ProjectViewPanels getProjectViewPanel() {
+        return projectViewPanel;
+    }
+
     /**
+     * Set the Project View Panel.
+     * Only works if the ContextView is set to Project.
      *
+     * @param view
+     */
+    public void setProjectViewPanel(ProjectViewPanels view) {
+        this.projectViewPanel = view;
+        updateProjectViewPanel();
+    }
+
+    /**
+     * Updates the state of the toogle bottons to keep them in sync with
+     * ProjectViewPanels - state.
+     */
+    private void updateProjectToggleButtons() {
+        contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).setSelected(getProjectViewPanel() == ProjectViewPanels.News);
+        contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).setSelected(getProjectViewPanel() == ProjectViewPanels.Files);
+        contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).setSelected(getProjectViewPanel() == ProjectViewPanels.Notes);
+
+        // adapt button style
+        for (JToggleButton btn : contextSwitcherButtons) {
+            Platform.getStyler().styleToolbarButton(btn);
+        }
+    }
+
+    /**
+     * Updates the Project View, called after setting with setProjectViewPanel
+     */
+    private void updateProjectViewPanel() {
+        ProjectViewPanels view = getProjectViewPanel();
+
+        // only set if project panels are shown!
+        boolean show = getContextPanelView() == ContextPanels.Project;
+
+        showContentPanel(newsPanel, show && view == ProjectViewPanels.News);
+        showContentPanel(filePanel, show && view == ProjectViewPanels.Files);
+        showContentPanel(notesPanel, show && view == ProjectViewPanels.Notes);
+
+
+        updateProjectToggleButtons();
+    }
+
+
+    public ContextPanels getContextPanelView() {
+        return contextPanelView;
+    }
+
+    public void setContextPanelView(ContextPanels view) {
+        this.contextPanelView = view;
+
+        showContentPanel(loginPanel, view == ContextPanels.Login);
+        showContentPanel(invitationPanel, view == ContextPanels.Invitation);
+
+        updateProjectViewPanel();
+
+    }
+
+
+    /**
+     * Called everytime a new project is selected.
+     * Updates the view depending on that selection
+     * Called automatically on setProject()
      */
     private void updateView() {
+        Project pr = getCurrentProject();
 
+        //TODO: need better way to determine if project needs invitaton!
+        boolean needsInvite = pr.getName().compareTo("DEMO INVITATION") == 0;
+
+        // determine what to show
+        if (pr == null) {
+            setContextPanelView(ContextPanels.Login);
+        } else if (needsInvite) {
+            setContextPanelView(ContextPanels.Invitation);
+        } else {
+            setContextPanelView(ContextPanels.Project);
+        }
+    }
+
+    /**
+     * Helper to set content panel once.
+     * Used internally by updateView()
+     */
+    private void showContentPanel(JPanel panel, boolean show) {
+        if (show) {
+            contentPanel.add(panel, BorderLayout.CENTER);
+        } else if (!show) {
+            contentPanel.remove(panel);
+        }
+
+        contentPanel.updateUI();
     }
 }
