@@ -32,7 +32,7 @@ public class JakeTrayIcon {
                     System.out.println("Tray Icon - Mouse clicked!");
 
                     if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && !Platform.isMac()) {
-                        showMainWindow();
+                        toggleShowHideMainWindow();
                     }
                 }
 
@@ -64,12 +64,12 @@ public class JakeTrayIcon {
             ActionListener showJakeListener = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     log.info("Showing main window");
-                    showMainWindow();
+                    toggleShowHideMainWindow();
                 }
             };
 
             PopupMenu popup = new PopupMenu();
-            MenuItem showJakeItem = new MenuItem("Show");
+            MenuItem showJakeItem = new MenuItem("Show/Hide");
             showJakeItem.addActionListener(showJakeListener);
             MenuItem defaultItem = new MenuItem("Quit Jake");
             defaultItem.addActionListener(exitListener);
@@ -106,7 +106,7 @@ public class JakeTrayIcon {
 
     }
 
-    private void showMainWindow() {
-        JakeMainView.getMainView().getFrame().setVisible(true);
+    private void toggleShowHideMainWindow() {
+        JakeMainView.getMainView().getFrame().setVisible(!JakeMainView.getMainView().getFrame().isVisible());
     }
 }
