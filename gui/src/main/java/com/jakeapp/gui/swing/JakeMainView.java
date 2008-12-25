@@ -7,10 +7,7 @@ import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.dialogs.JakeMainAboutBox;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.SegmentButtonCreator;
-import com.jakeapp.gui.swing.helpers.SheetHelper;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
 import com.jakeapp.gui.swing.sheets.InviteUserSheet;
 import org.apache.log4j.Logger;
@@ -35,6 +32,7 @@ import java.util.Map;
 public class JakeMainView extends FrameView {
 
     private static final Logger log = Logger.getLogger(JakeMainView.class);
+    private static JakeMainView mainView;
     private ICoreAccess core;
 
     // all the ui panels
@@ -90,6 +88,8 @@ public class JakeMainView extends FrameView {
     public JakeMainView(SingleFrameApplication app) {
         super(app);
 
+        setMainView(this);
+
         // initializeJakeMainHelper the core connection
         setCore(new CoreAccessMock());
 
@@ -105,6 +105,9 @@ public class JakeMainView extends FrameView {
         // set app size
         this.getFrame().setMinimumSize(new Dimension(600, 600));
         this.getFrame().setSize(new Dimension(800, 800));
+
+        // init toolbar icon
+        JakeTrayIcon tray = new JakeTrayIcon();
 
         // initialize the mantisse gui components (menu)
         initComponents();
@@ -877,7 +880,7 @@ public class JakeMainView extends FrameView {
         projectMenu.add(jSeparator2);
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getActionMap(JakeMainView.class, this);
-        exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
+        exitMenuItem.setAction(actionMap.get("hideApplicationAction")); // NOI18N
         exitMenuItem.setName("exitMenuItem"); // NOI18N
         projectMenu.add(exitMenuItem);
 
@@ -1220,5 +1223,20 @@ public class JakeMainView extends FrameView {
         }
 
         contentPanel.updateUI();
+    }
+
+
+    public static JakeMainView getMainView() {
+        return mainView;
+    }
+
+    private static void setMainView(JakeMainView mainView) {
+        JakeMainView.mainView = mainView;
+    }
+
+
+    @Action
+    public void hideApplicationAction() {
+        getFrame().setVisible(false);
     }
 }
