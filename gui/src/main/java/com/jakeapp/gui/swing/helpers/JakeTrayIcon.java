@@ -69,7 +69,7 @@ public class JakeTrayIcon {
             };
 
             PopupMenu popup = new PopupMenu();
-            MenuItem showJakeItem = new MenuItem("Show/Hide");
+            MenuItem showJakeItem = new MenuItem(JakeMainView.getResouceMap().getString(isMainWindowVisible() ? "windowHide" : "windowShow"));
             showJakeItem.addActionListener(showJakeListener);
             MenuItem defaultItem = new MenuItem("Quit Jake");
             defaultItem.addActionListener(exitListener);
@@ -78,18 +78,17 @@ public class JakeTrayIcon {
 
             trayIcon = new TrayIcon(image, "Jake", popup);
 
-            /*
+
             ActionListener actionListener = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    trayIcon.displayMessage("Action Event",
-                            "An Action Event Has Been Performed!",
-                            TrayIcon.MessageType.INFO);
+                    JOptionPane.showMessageDialog(null,
+                            "An Action Event Has Been Performed!");
                 }
             };
-            */
+
 
             trayIcon.setImageAutoSize(true);
-            //trayIcon.addActionListener(actionListener);
+            trayIcon.addActionListener(actionListener);
             trayIcon.addMouseListener(mouseListener);
 
             try {
@@ -107,6 +106,10 @@ public class JakeTrayIcon {
     }
 
     private void toggleShowHideMainWindow() {
-        JakeMainView.getMainView().getFrame().setVisible(!JakeMainView.getMainView().getFrame().isVisible());
+        JakeMainView.getMainView().getFrame().setVisible(!isMainWindowVisible());
+    }
+
+    private boolean isMainWindowVisible() {
+        return JakeMainView.getMainView().getFrame().isVisible();
     }
 }

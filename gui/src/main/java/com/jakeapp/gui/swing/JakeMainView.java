@@ -13,6 +13,7 @@ import com.jakeapp.gui.swing.sheets.InviteUserSheet;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
+import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.swingx.JXPanel;
 
@@ -102,6 +103,10 @@ public class JakeMainView extends FrameView {
             setMacSystemProperties();
         }
 
+        // set window icon
+        this.getFrame().setIconImage(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+                getClass().getResource("/icons/jakeapp.png"))).getImage());
+
         // set app size
         this.getFrame().setMinimumSize(new Dimension(600, 600));
         this.getFrame().setSize(new Dimension(800, 800));
@@ -135,6 +140,16 @@ public class JakeMainView extends FrameView {
         setContextPanelView(ContextPanels.Login);
 
         updateTitle();
+    }
+
+
+    /**
+     * Public Resource Map
+     *
+     * @return
+     */
+    public static ResourceMap getResouceMap() {
+        return mainView.getResourceMap();
     }
 
 
