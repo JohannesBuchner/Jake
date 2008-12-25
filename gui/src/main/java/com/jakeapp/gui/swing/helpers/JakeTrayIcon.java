@@ -115,7 +115,14 @@ public class JakeTrayIcon {
     }
 
     private void toggleShowHideMainWindow() {
+        if (!isMainWindowVisible()) {
+            //JakeMainView.getMainView().getFrame().setExtendedState(JFrame.ICONIFIED);
+        }
         JakeMainView.getMainView().getFrame().setVisible(!isMainWindowVisible());
+        if (isMainWindowVisible()) {
+            JakeMainView.getMainView().getFrame().requestFocus();
+            //JakeMainView.getMainView().getFrame().setExtendedState(JFrame.NORMAL);
+        }
     }
 
     private boolean isMainWindowVisible() {
