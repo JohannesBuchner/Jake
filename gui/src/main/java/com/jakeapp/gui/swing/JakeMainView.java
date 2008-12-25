@@ -141,18 +141,21 @@ public class JakeMainView extends FrameView {
     private void updateTitle() {
         String jakeStr = getResourceMap().getString("windowTitle");
 
-        if (getCurrentProject() != null) {
+        if (getCurrentProject() != null && !isInvitationProject(getCurrentProject())) {
             String projectPath = getCurrentProject().getRootPath().toString();
             getFrame().setTitle(projectPath + " - " + jakeStr);
 
             // mac only
-            getFrame().getRootPane().putClientProperty("Window.documentFile", new File(getCurrentProject().getRootPath()));
-
+            if (Platform.isMac()) {
+                getFrame().getRootPane().putClientProperty("Window.documentFile", new File(getCurrentProject().getRootPath()));
+            }
         } else {
             getFrame().setTitle(jakeStr);
 
             // mac only
-            getFrame().getRootPane().putClientProperty("Window.documentFile", null);
+            if (Platform.isMac()) {
+                getFrame().getRootPane().putClientProperty("Window.documentFile", null);
+            }
         }
     }
 
@@ -211,6 +214,7 @@ public class JakeMainView extends FrameView {
         ButtonGroup group = new ButtonGroup();
         group.add(addProjectButton);
         group.add(removeProjectButton);
+
 
         bottomBar.addComponentToLeft(addProjectButton, 0);
         bottomBar.addComponentToLeft(removeProjectButton);
@@ -398,12 +402,15 @@ public class JakeMainView extends FrameView {
      */
     private void updateToolBar() {
         boolean hasProject = getCurrentProject() != null;
-        createNoteButton.setEnabled(hasProject);
-        invitePeopleButton.setEnabled(hasProject);
+        boolean isInvite = isInvitationProject(getCurrentProject());
+        boolean isFilePaneOpen = getContextPanelView() == ContextPanels.Project && getProjectViewPanel() == ProjectViewPanels.Files;
+
+        createNoteButton.setEnabled(hasProject && !isInvite);
+        invitePeopleButton.setEnabled(hasProject && !isInvite);
         for (JToggleButton btn : contextSwitcherButtons) {
-            btn.setEnabled(hasProject);
+            btn.setEnabled(hasProject && !isInvite);
         }
-        inspectorButton.setEnabled(hasProject);
+        inspectorButton.setEnabled(hasProject && isFilePaneOpen);
     }
 
 
@@ -736,15 +743,6 @@ public class JakeMainView extends FrameView {
 
         setCurrentProject(project);
 
-
-        /* if (contextSwitcherPane.getParent() != contentPanel) {
-                    contentPanel.add(contextSwitcherPane, BorderLayout.NORTH);
-
-                    contextSwitcherButtons.get(0).setSelected(true);
-                    setProjectViewFromToolBarButtons();
-
-                }
-        */
         contentPanel.updateUI();
     }
 
@@ -1135,9 +1133,12 @@ public class JakeMainView extends FrameView {
      * ProjectViewPanels - state.
      */
     private void updateProjectToggleButtons() {
-        contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).setSelected(getProjectViewPanel() == ProjectViewPanels.News);
-        contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).setSelected(getProjectViewPanel() == ProjectViewPanels.Files);
-        contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).setSelected(getProjectViewPanel() == ProjectViewPanels.Notes);
+        boolean canBeSelected = getContextPanelView() == ContextPanels.Project;
+        contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.News);
+        contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.Files);
+        contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.Notes);
+
+        // problem: 
 
         // adapt button style
         for (JToggleButton btn : contextSwitcherButtons) {
@@ -1160,6 +1161,9 @@ public class JakeMainView extends FrameView {
 
 
         updateProjectToggleButtons();
+
+        // toolbar changes with viewPort
+        updateToolBar();
     }
 
 
@@ -1178,6 +1182,13 @@ public class JakeMainView extends FrameView {
     }
 
 
+    private boolean isInvitationProject(Project pr) {
+        //TODO: need better way to determine if project needs invitaton!
+        boolean needsInvite = pr != null && pr.getName().compareTo("DEMO INVITATION") == 0;
+        return needsInvite;
+    }
+
+
     /**
      * Called everytime a new project is selected.
      * Updates the view depending on that selection
@@ -1186,9 +1197,7 @@ public class JakeMainView extends FrameView {
     private void updateView() {
         Project pr = getCurrentProject();
 
-        //TODO: need better way to determine if project needs invitaton!
-        boolean needsInvite = pr.getName().compareTo("DEMO INVITATION") == 0;
-
+        boolean needsInvite = isInvitationProject(pr);
         // determine what to show
         if (pr == null) {
             setContextPanelView(ContextPanels.Login);
