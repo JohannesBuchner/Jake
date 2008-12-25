@@ -5,17 +5,10 @@
 
 package com.jakeapp.gui.swing.helpers.styler;
 
-import javax.swing.*;
-
 /**
  * @author studpete
  */
-public class NullStyler implements Styler {
+public class NullStyler extends AbstractStyler {
 
-    @Override
-    public void MakeWhiteRecessedButton(JButton btn) {
-    }
 
-    public void styleToolbarButton(JToggleButton jToggleButton) {
-    }
 }

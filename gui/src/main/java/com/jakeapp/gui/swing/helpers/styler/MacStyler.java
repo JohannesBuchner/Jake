@@ -11,7 +11,7 @@ import java.awt.*;
 /**
  * @author studpete
  */
-public class MacStyler implements Styler {
+public class MacStyler extends AbstractStyler {
 
     @Override
     public void MakeWhiteRecessedButton(JButton btn) {
@@ -19,6 +19,7 @@ public class MacStyler implements Styler {
         btn.putClientProperty("JButton.buttonType", "recessed");
     }
 
+    @Override
     public void styleToolbarButton(JToggleButton btn) {
         if (btn.isSelected()) {
             btn.setForeground(Color.WHITE);

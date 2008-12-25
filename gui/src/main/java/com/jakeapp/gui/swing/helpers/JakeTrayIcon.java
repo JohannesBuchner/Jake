@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.gui.swing.JakeMainView;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +30,10 @@ public class JakeTrayIcon {
 
                 public void mouseClicked(MouseEvent e) {
                     System.out.println("Tray Icon - Mouse clicked!");
+
+                    if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && !Platform.isMac()) {
+                        showMainWindow();
+                    }
                 }
 
                 public void mouseEntered(MouseEvent e) {
@@ -59,7 +64,7 @@ public class JakeTrayIcon {
             ActionListener showJakeListener = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     log.info("Showing main window");
-                    JakeMainView.getMainView().getFrame().setVisible(true);
+                    showMainWindow();
                 }
             };
 
@@ -99,5 +104,9 @@ public class JakeTrayIcon {
 
         }
 
+    }
+
+    private void showMainWindow() {
+        JakeMainView.getMainView().getFrame().setVisible(true);
     }
 }

@@ -107,6 +107,7 @@
                 <configuration>
                     <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
                     <arguments>
+                        <argument>-Xdock:icon=icons/jakeapp-large.png -Xdock:name="Jake"</argument>
                     </arguments>
                     <workingDirectory>target/classes</workingDirectory>
                 </configuration>
