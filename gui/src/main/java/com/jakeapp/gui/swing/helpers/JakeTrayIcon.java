@@ -17,6 +17,7 @@ import java.awt.event.MouseListener;
  */
 public class JakeTrayIcon {
     private static final Logger log = Logger.getLogger(JakeTrayIcon.class);
+    private MenuItem showHideJakeTrayMenuItem;
 
     public JakeTrayIcon() {
         final TrayIcon trayIcon;
@@ -46,6 +47,10 @@ public class JakeTrayIcon {
 
                 public void mousePressed(MouseEvent e) {
                     System.out.println("Tray Icon - Mouse pressed!");
+
+                    // update menu
+                    showHideJakeTrayMenuItem.setLabel(getShowHideWindowString());
+
                 }
 
                 public void mouseReleased(MouseEvent e) {
@@ -69,11 +74,11 @@ public class JakeTrayIcon {
             };
 
             PopupMenu popup = new PopupMenu();
-            MenuItem showJakeItem = new MenuItem(JakeMainView.getResouceMap().getString(isMainWindowVisible() ? "windowHide" : "windowShow"));
-            showJakeItem.addActionListener(showJakeListener);
+            showHideJakeTrayMenuItem = new MenuItem(getShowHideWindowString());
+            showHideJakeTrayMenuItem.addActionListener(showJakeListener);
             MenuItem defaultItem = new MenuItem("Quit Jake");
             defaultItem.addActionListener(exitListener);
-            popup.add(showJakeItem);
+            popup.add(showHideJakeTrayMenuItem);
             popup.add(defaultItem);
 
             trayIcon = new TrayIcon(image, "Jake", popup);
@@ -103,6 +108,10 @@ public class JakeTrayIcon {
 
         }
 
+    }
+
+    private String getShowHideWindowString() {
+        return JakeMainView.getResouceMap().getString(isMainWindowVisible() ? "windowHide" : "windowShow");
     }
 
     private void toggleShowHideMainWindow() {
