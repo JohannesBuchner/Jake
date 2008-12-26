@@ -631,9 +631,11 @@ public class JakeMainView extends FrameView {
                     getProjectSourceList().setSelectedItem(item);
                 }
 
+                /*
                 if (button == button.LEFT || button == button.RIGHT) {
-                    showProject(project);
+                    setCurrentProject(project);
                 }
+                */
             }
 
             public void sourceListCategoryClicked(SourceListCategory category,
@@ -645,8 +647,20 @@ public class JakeMainView extends FrameView {
         };
 
 
+        final SourceListSelectionListener projectSelectionListener = new SourceListSelectionListener() {
+
+            public void sourceListItemSelected(SourceListItem item) {
+                // get the project from the hashmap
+                Project project = sourceListProjectMap.get(item);
+
+                setCurrentProject(project);
+            }
+        };
+
+
         SourceList sourceList = new SourceList(projectSourceListModel);
         sourceList.addSourceListClickListener(projectClickListener);
+        sourceList.addSourceListSelectionListener(projectSelectionListener);
 //        projectSourceList.setFocusable(false);
 
 
@@ -760,24 +774,6 @@ public class JakeMainView extends FrameView {
         return inspectorPanel.getParent() != null;
     }
 
-
-    /**
-     * Called when we switch to another project context.
-     *
-     * @param project
-     */
-    private void showProject(Project project) {
-
-        //TODO: hack to test the "no project-state"
-        if (project.getRootPath() == null) {
-            project = null;
-        }
-
-
-        setCurrentProject(project);
-
-        contentPanel.updateUI();
-    }
 
     /**
      * Evaluates the Project and returns a Start/Stop-String depending on its state.
@@ -1126,6 +1122,12 @@ public class JakeMainView extends FrameView {
     }
 
     public void setCurrentProject(Project currentProject) {
+
+        //TODO: hack to test the "no project-state"
+        if (currentProject.getRootPath() == null) {
+            currentProject = null;
+        }
+
         this.currentProject = currentProject;
         updateAll();
 
@@ -1236,6 +1238,7 @@ public class JakeMainView extends FrameView {
         } else {
             setContextPanelView(ContextPanels.Project);
         }
+        contentPanel.updateUI();
     }
 
     /**

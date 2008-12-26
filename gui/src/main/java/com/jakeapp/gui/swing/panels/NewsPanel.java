@@ -36,6 +36,7 @@ public class NewsPanel extends javax.swing.JPanel {
      */
     public NewsPanel() {
         initComponents();
+        setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class));
 
         // ensure opaque(=draw background) is false (default on mac, not default on win/lin)
         autoUploadCB.setOpaque(false);
@@ -73,7 +74,8 @@ public class NewsPanel extends javax.swing.JPanel {
         autoDownloadCB.setSelected(getProject().isAutoPullEnabled());
         autoUploadCB.setSelected(getProject().isAutoAnnounceEnabled());
 
-        projectRunningButton.setText(getResourceMap().getString("projectRunningButton." + (getProject().isStarted() ? "start" : "stop")));
+        String startStopStr = getResourceMap().getString("projectRunningButton." + (getProject().isStarted() ? "start" : "stop"));
+        projectRunningButton.setText(startStopStr);
 
         // update the icon (start/stop-state)
         projectIconLabel.setIcon(getProject().isStarted() ? startIcon : stopIcon);
@@ -113,12 +115,12 @@ public class NewsPanel extends javax.swing.JPanel {
         optionsLabel = new javax.swing.JLabel();
         autoDownloadCB = new javax.swing.JCheckBox();
 
-        setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class));
-        setBackground(getResourceMap().getColor("Form.background")); // NOI18N
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class);
+        setBackground(resourceMap.getColor("Form.background")); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        newsContentPanel.setBackground(getResourceMap().getColor("newsContentPanel.background")); // NOI18N
+        newsContentPanel.setBackground(resourceMap.getColor("newsContentPanel.background")); // NOI18N
         newsContentPanel.setName("newsContentPanel"); // NOI18N
         newsContentPanel.setLayout(new javax.swing.BoxLayout(newsContentPanel, javax.swing.BoxLayout.Y_AXIS));
 
@@ -128,7 +130,7 @@ public class NewsPanel extends javax.swing.JPanel {
         titlePanel.setOpaque(false);
         titlePanel.setPreferredSize(new java.awt.Dimension(389, 120));
 
-        projectFolderHyperlink.setText(getResourceMap().getString("projectFolderHyperlink.text")); // NOI18N
+        projectFolderHyperlink.setText(resourceMap.getString("projectFolderHyperlink.text")); // NOI18N
         projectFolderHyperlink.setFocusable(false);
         projectFolderHyperlink.setName("projectFolderHyperlink"); // NOI18N
         projectFolderHyperlink.addActionListener(new java.awt.event.ActionListener() {
@@ -137,42 +139,41 @@ public class NewsPanel extends javax.swing.JPanel {
             }
         });
 
-        projectStatusLabel.setText(getResourceMap().getString("projectStatusLabel.text")); // NOI18N
+        projectStatusLabel.setText(resourceMap.getString("projectStatusLabel.text")); // NOI18N
         projectStatusLabel.setName("projectStatusLabel"); // NOI18N
 
-        projectRunningButton.setText(getResourceMap().getString("projectRunningButton.text")); // NOI18N
+        projectRunningButton.setText(resourceMap.getString("projectRunningButton.text")); // NOI18N
         projectRunningButton.setName("projectRunningButton"); // NOI18N
 
-        projectIconLabel.setIcon(getResourceMap().getIcon("projectIconLabel.icon")); // NOI18N
+        projectIconLabel.setIcon(resourceMap.getIcon("projectIconLabel.icon")); // NOI18N
         projectIconLabel.setName("projectIconLabel"); // NOI18N
 
         projectTitlePanel.setName("projectTitlePanel"); // NOI18N
         projectTitlePanel.setOpaque(false);
         projectTitlePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        projectLabel.setFont(getResourceMap().getFont("projectLabel.font")); // NOI18N
+        projectLabel.setFont(resourceMap.getFont("projectLabel.font")); // NOI18N
         projectLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        projectLabel.setText(getResourceMap().getString("projectLabel.text")); // NOI18N
+        projectLabel.setText(resourceMap.getString("projectLabel.text")); // NOI18N
         projectLabel.setName("projectLabel"); // NOI18N
-        projectTitlePanel.add(projectLabel);
 
         javax.swing.GroupLayout titlePanelLayout = new javax.swing.GroupLayout(titlePanel);
         titlePanel.setLayout(titlePanelLayout);
         titlePanelLayout.setHorizontalGroup(
                 titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(titlePanelLayout.createSequentialGroup()
-                        .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(titlePanelLayout.createSequentialGroup()
-                                        .addGap(20, 20, 20)
-                                        .addComponent(projectRunningButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, titlePanelLayout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(projectIconLabel)
-                                .addGap(27, 27, 27)))
                         .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(projectTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
+                                .addGroup(titlePanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(projectRunningButton))
+                                .addGroup(titlePanelLayout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(projectIconLabel)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(projectTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
                                 .addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(projectLabel)
                                 .addComponent(projectStatusLabel))
                         .addContainerGap())
         );
@@ -180,17 +181,21 @@ public class NewsPanel extends javax.swing.JPanel {
                 titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(titlePanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(titlePanelLayout.createSequentialGroup()
-                                        .addComponent(projectTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                                        .addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(projectIconLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(projectIconLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                .addGroup(titlePanelLayout.createSequentialGroup()
+                                .addComponent(projectLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(projectTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11)))
                         .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(projectRunningButton)
                                 .addComponent(projectStatusLabel))
-                        .addContainerGap())
+                        .addGap(30, 30, 30))
         );
 
         newsContentPanel.add(titlePanel);
@@ -198,9 +203,9 @@ public class NewsPanel extends javax.swing.JPanel {
         actionPanel.setName("actionPanel"); // NOI18N
         actionPanel.setOpaque(false);
 
-        eventsLabel.setFont(getResourceMap().getFont("eventsLabel.font")); // NOI18N
-        eventsLabel.setForeground(getResourceMap().getColor("eventsLabel.foreground")); // NOI18N
-        eventsLabel.setText(getResourceMap().getString("eventsLabel.text")); // NOI18N
+        eventsLabel.setFont(resourceMap.getFont("eventsLabel.font")); // NOI18N
+        eventsLabel.setForeground(resourceMap.getColor("eventsLabel.foreground")); // NOI18N
+        eventsLabel.setText(resourceMap.getString("eventsLabel.text")); // NOI18N
         eventsLabel.setName("eventsLabel"); // NOI18N
 
         eventsScrollPanel.setName("eventsScrollPanel"); // NOI18N
@@ -246,9 +251,9 @@ public class NewsPanel extends javax.swing.JPanel {
         peopleList.setRolloverEnabled(true);
         peopleScrollPanel.setViewportView(peopleList);
 
-        peopleLabel.setFont(getResourceMap().getFont("peopleLabel.font")); // NOI18N
-        peopleLabel.setForeground(getResourceMap().getColor("peopleLabel.foreground")); // NOI18N
-        peopleLabel.setText(getResourceMap().getString("peopleLabel.text")); // NOI18N
+        peopleLabel.setFont(resourceMap.getFont("peopleLabel.font")); // NOI18N
+        peopleLabel.setForeground(resourceMap.getColor("peopleLabel.foreground")); // NOI18N
+        peopleLabel.setText(resourceMap.getString("peopleLabel.text")); // NOI18N
         peopleLabel.setName("peopleLabel"); // NOI18N
 
         javax.swing.GroupLayout actionPanelLayout = new javax.swing.GroupLayout(actionPanel);
@@ -287,16 +292,16 @@ public class NewsPanel extends javax.swing.JPanel {
         optionsPanel.setPreferredSize(new java.awt.Dimension(697, 100));
 
         autoUploadCB.setSelected(true);
-        autoUploadCB.setText(getResourceMap().getString("autoUploadCB.text")); // NOI18N
+        autoUploadCB.setText(resourceMap.getString("autoUploadCB.text")); // NOI18N
         autoUploadCB.setName("autoUploadCB"); // NOI18N
 
-        optionsLabel.setFont(getResourceMap().getFont("optionsLabel.font")); // NOI18N
-        optionsLabel.setForeground(getResourceMap().getColor("optionsLabel.foreground")); // NOI18N
-        optionsLabel.setText(getResourceMap().getString("optionsLabel.text")); // NOI18N
+        optionsLabel.setFont(resourceMap.getFont("optionsLabel.font")); // NOI18N
+        optionsLabel.setForeground(resourceMap.getColor("optionsLabel.foreground")); // NOI18N
+        optionsLabel.setText(resourceMap.getString("optionsLabel.text")); // NOI18N
         optionsLabel.setName("optionsLabel"); // NOI18N
 
         autoDownloadCB.setSelected(true);
-        autoDownloadCB.setText(getResourceMap().getString("autoDownloadCB.text")); // NOI18N
+        autoDownloadCB.setText(resourceMap.getString("autoDownloadCB.text")); // NOI18N
         autoDownloadCB.setName("autoDownloadCB"); // NOI18N
 
         javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
