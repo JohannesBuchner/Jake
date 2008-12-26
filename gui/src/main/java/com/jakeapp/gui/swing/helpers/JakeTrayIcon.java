@@ -84,16 +84,16 @@ public class JakeTrayIcon {
             trayIcon = new TrayIcon(image, "Jake", popup);
 
 
-            ActionListener actionListener = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null,
-                            "An Action Event Has Been Performed!");
-                }
-            };
-
+            /*  ActionListener actionListener = new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null,
+                                        "An Action Event Has Been Performed!");
+                            }
+                        };
+            */
 
             trayIcon.setImageAutoSize(true);
-            trayIcon.addActionListener(actionListener);
+            // trayIcon.addActionListener(actionListener);
             trayIcon.addMouseListener(mouseListener);
 
             try {
