@@ -11,15 +11,13 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import java.awt.Color;
-
+import com.jakeapp.gui.swing.helpers.Platform;
+import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Action;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.PinstripePainter;
 
-import com.jakeapp.gui.swing.helpers.Colors;
+import javax.swing.*;
+import java.awt.*;
+
 
 /**
  * @author studpete
@@ -34,20 +32,12 @@ public class LoginPanel extends javax.swing.JPanel {
 
         messageLabel.setText("<html><h1>Welcome to Jake</h1>To start sharing, you need to Sign In with an XMPP/Jabber-ID.<br>If you do not have such an ID, Jake will create one for you.</html>");
 
-        loginControlPanel.setBackground(Color.RED);
-
         loginRadioButton.setOpaque(false);
         registerRadioButton.setOpaque(false);
         rememberPasswordCheckBox.setOpaque(false);
 
         // set the background painter
-        MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.5f));
-        GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-                GlossPainter.GlossPosition.TOP);
-        PinstripePainter pp = new PinstripePainter(Colors.Gray.alpha(0.1f),
-                45d);
-        loginHeaderPanel.setBackgroundPainter(new CompoundPainter(mp, pp, gp));
-
+        loginHeaderPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
         // make initial update
         selectionChanged();
@@ -66,7 +56,7 @@ public class LoginPanel extends javax.swing.JPanel {
         buttonGroup1 = new javax.swing.ButtonGroup();
         loginHeaderPanel = new org.jdesktop.swingx.JXPanel();
         jPanel3 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         messagePanel = new javax.swing.JPanel();
         messageLabel = new javax.swing.JLabel();
         loginControlPanel = new org.jdesktop.swingx.JXPanel();
@@ -111,9 +101,9 @@ public class LoginPanel extends javax.swing.JPanel {
 
         loginHeaderPanel.add(jPanel3);
 
-        jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setOpaque(false);
-        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
+        mainPanel.setName("mainPanel"); // NOI18N
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(new javax.swing.BoxLayout(mainPanel, javax.swing.BoxLayout.Y_AXIS));
 
         messagePanel.setName("messagePanel"); // NOI18N
         messagePanel.setOpaque(false);
@@ -126,7 +116,7 @@ public class LoginPanel extends javax.swing.JPanel {
                 messagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(messagePanelLayout.createSequentialGroup()
                         .addGap(46, 46, 46)
-                        .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                        .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
                         .addGap(67, 67, 67))
         );
         messagePanelLayout.setVerticalGroup(
@@ -137,7 +127,7 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jPanel2.add(messagePanel);
+        mainPanel.add(messagePanel);
 
         loginControlPanel.setMaximumSize(new java.awt.Dimension(491, 348));
         loginControlPanel.setMinimumSize(new java.awt.Dimension(491, 348));
@@ -278,7 +268,7 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addContainerGap(59, Short.MAX_VALUE))
         );
 
-        jPanel2.add(loginControlPanel);
+        mainPanel.add(loginControlPanel);
 
         jPanel4.setName("jPanel4"); // NOI18N
         jPanel4.setOpaque(false);
@@ -294,9 +284,9 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addGap(0, 5, Short.MAX_VALUE)
         );
 
-        jPanel2.add(jPanel4);
+        mainPanel.add(jPanel4);
 
-        loginHeaderPanel.add(jPanel2);
+        loginHeaderPanel.add(mainPanel);
 
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setOpaque(false);
@@ -330,6 +320,29 @@ public class LoginPanel extends javax.swing.JPanel {
         loginControlPanel.setVisible(false);
 
         messageLabel.setText("<html><h1>Success!</h1>You are now signed in as <em>peter@fsinf.ac.at</em><br><b>Drag&Drop a Folder into the App to start sharing.</html>");
+
+
+        // TODO: extract, fix, i18n, ...
+
+        JPanel loginSuccessPanel = new JPanel();
+        loginSuccessPanel.setOpaque(false);
+        loginSuccessPanel.setLayout(new MigLayout("nogrid, fillx"));
+
+        JLabel iconSuccess = new JLabel();
+        iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+                getClass().getResource("/icons/dropfolder.png"))));
+
+        loginSuccessPanel.add(iconSuccess, "wrap, al center");
+
+        JLabel messageSuccess = new JLabel("Drag and drop folders you wanna share here.");
+        messageSuccess.setFont(Platform.getStyler().getH1Font());
+        messageSuccess.setForeground(Color.DARK_GRAY);
+
+        loginSuccessPanel.add(messageSuccess, "al center");
+
+        mainPanel.remove(loginControlPanel);
+        mainPanel.add(loginSuccessPanel);
+        mainPanel.updateUI();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -344,13 +357,13 @@ public class LoginPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTextField jTextField2;
     private org.jdesktop.swingx.JXPanel loginControlPanel;
     private org.jdesktop.swingx.JXPanel loginHeaderPanel;
     private javax.swing.JRadioButton loginRadioButton;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel messageLabel;
     private javax.swing.JPanel messagePanel;
     private javax.swing.JRadioButton registerRadioButton;

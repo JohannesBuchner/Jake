@@ -4,6 +4,7 @@ import com.jakeapp.gui.swing.helpers.Colors;
 import org.jdesktop.swingx.painter.*;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * User: studpete
@@ -17,6 +18,12 @@ public abstract class AbstractStyler implements Styler {
     }
 
     public void styleToolbarButton(JToggleButton jToggleButton) {
+    }
+
+    public Font getH1Font() {
+        // TODO: search nicer font for windows? do they have lucida??
+        // TODO: cache font.
+        return new Font("Lucida Grande", Font.BOLD, 18);
     }
 
     public Painter getContentPanelBackgroundPainter() {

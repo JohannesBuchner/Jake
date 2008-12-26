@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers.styler;
 import org.jdesktop.swingx.painter.Painter;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author studpete
@@ -29,4 +30,9 @@ public interface Styler {
      * @return
      */
     Painter getContentPanelBackgroundPainter();
+
+    /**
+     * Returns the Font for Bold large fonts.
+     */
+    Font getH1Font();
 }

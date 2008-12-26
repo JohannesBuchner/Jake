@@ -35,36 +35,36 @@
                 <Property name="name" type="java.lang.String" value="startStopProjectMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem9">
+            <MenuItem class="javax.swing.JMenuItem" name="deleteProjectMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Meta+BACK_SPACE"/>
                 </Property>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem9.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem9" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="deleteProjectMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="deleteProjectMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator4">
+            <MenuItem class="javax.swing.JSeparator" name="projectSeparator1">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator4" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="projectSeparator1" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem10">
+            <MenuItem class="javax.swing.JMenuItem" name="invitePeopleMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Meta+A"/>
                 </Property>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem10.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem10" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="invitePeopleMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="invitePeopleMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem28">
+            <MenuItem class="javax.swing.JMenuItem" name="createNoteMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Meta+N"/>
                 </Property>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem28.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem28" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="createNoteMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="createNoteMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator13">
@@ -72,62 +72,56 @@
                 <Property name="name" type="java.lang.String" value="jSeparator13" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+            <MenuItem class="javax.swing.JMenuItem" name="signInOutMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Meta+L"/>
                 </Property>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem2.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem2" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="signInOutMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="signInOutMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator2">
+            <MenuItem class="javax.swing.JSeparator" name="exitSeparator">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator2" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="exitSeparator" noResource="true"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
               <Properties>
-                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-                  <action class="com.jakeapp.gui.swing.JakeMainView" id="hideApplicationAction" methodName="hideApplicationAction"/>
-                </Property>
+                <Property name="text" type="java.lang.String" resourceKey="exitMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="exitMenuItem" noResource="true"/>
               </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu5">
+        <Menu class="javax.swing.JMenu" name="editMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="jMenu5.text"/>
-            <Property name="name" type="java.lang.String" value="jMenu5" noResource="true"/>
+            <Property name="text" type="java.lang.String" resourceKey="editMenu.text"/>
+            <Property name="name" type="java.lang.String" value="editMenu" noResource="true"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem23">
+            <MenuItem class="javax.swing.JMenuItem" name="cutMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem23.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem23" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="cutMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="cutMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem24">
+            <MenuItem class="javax.swing.JMenuItem" name="copyMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem24.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem24" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="copyMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="copyMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem25">
+            <MenuItem class="javax.swing.JMenuItem" name="selectAllMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem25.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem25" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="selectAllMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="selectAllMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem26">
+            <MenuItem class="javax.swing.JMenuItem" name="preferencesMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem26.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem26" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="preferencesMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="preferencesMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator11">
@@ -135,140 +129,135 @@
                 <Property name="name" type="java.lang.String" value="jSeparator11" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="editMenuSeparator">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem1.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem1" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="editMenuSeparator.text"/>
+                <Property name="name" type="java.lang.String" value="editMenuSeparator" noResource="true"/>
               </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu4">
+        <Menu class="javax.swing.JMenu" name="viewMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="jMenu4.text"/>
-            <Property name="name" type="java.lang.String" value="jMenu4" noResource="true"/>
+            <Property name="text" type="java.lang.String" resourceKey="viewMenu.text"/>
+            <Property name="name" type="java.lang.String" value="viewMenu" noResource="true"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem19">
+            <MenuItem class="javax.swing.JMenuItem" name="showProjectMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem19.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem19" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="showProjectMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="showProjectMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem20">
+            <MenuItem class="javax.swing.JMenuItem" name="showFilesMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem20.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem20" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="showFilesMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="showFilesMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem22">
+            <MenuItem class="javax.swing.JMenuItem" name="showNotesMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem22.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem22" noResource="true"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator10">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator10" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="showNotesMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="showNotesMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu3">
+        <Menu class="javax.swing.JMenu" name="actionMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="jMenu3.text"/>
-            <Property name="name" type="java.lang.String" value="jMenu3" noResource="true"/>
+            <Property name="text" type="java.lang.String" resourceKey="actionMenu.text"/>
+            <Property name="name" type="java.lang.String" value="actionMenu" noResource="true"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem5">
+            <MenuItem class="javax.swing.JMenuItem" name="openMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem5.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem5" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="openMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="openMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator5">
+            <MenuItem class="javax.swing.JSeparator" name="openMenuSeparator">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator5" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="openMenuSeparator" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
+            <MenuItem class="javax.swing.JMenuItem" name="announceMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem6.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem6" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="announceMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="announceMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem11">
+            <MenuItem class="javax.swing.JMenuItem" name="pullMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem11.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem11" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="pullMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="pullMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem27">
+            <MenuItem class="javax.swing.JMenuItem" name="fixFilenameMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem27.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem27" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="fixFilenameMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="fixFilenameMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator6">
+            <MenuItem class="javax.swing.JSeparator" name="actionNetworkSeparator">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator6" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="actionNetworkSeparator" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem12">
+            <MenuItem class="javax.swing.JMenuItem" name="deleteMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem12.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem12" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="deleteMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="deleteMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem13">
+            <MenuItem class="javax.swing.JMenuItem" name="renameMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem13.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem13" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="renameMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="renameMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator7">
+            <MenuItem class="javax.swing.JSeparator" name="actionFileSeparator">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator7" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="actionFileSeparator" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem14">
+            <MenuItem class="javax.swing.JMenuItem" name="showHideInspectorMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem14.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem14" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="showHideInspectorMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="showHideInspectorMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator8">
+            <MenuItem class="javax.swing.JSeparator" name="actionInspectorMenuItem">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator8" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="actionInspectorMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem15">
+            <MenuItem class="javax.swing.JMenuItem" name="importMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem15.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem15" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="importMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="importMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem16">
+            <MenuItem class="javax.swing.JMenuItem" name="newFolderMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem16.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem16" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="newFolderMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="newFolderMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JSeparator" name="jSeparator9">
+            <MenuItem class="javax.swing.JSeparator" name="actionImportSeparator">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator9" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="actionImportSeparator" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem17">
+            <MenuItem class="javax.swing.JMenuItem" name="lockMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem17.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem17" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="lockMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="lockMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem18">
+            <MenuItem class="javax.swing.JMenuItem" name="lockWithMessageMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem18.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem18" noResource="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="lockWithMessageMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="lockWithMessageMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -283,10 +272,13 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
+            <MenuItem class="javax.swing.JMenuItem" name="visitWebsiteMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="jMenuItem4.text"/>
-                <Property name="name" type="java.lang.String" value="jMenuItem4" noResource="true"/>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+                  <action class="com.jakeapp.gui.swing.JakeMainView" id="showJakeWebsite" methodName="showJakeWebsite"/>
+                </Property>
+                <Property name="text" type="java.lang.String" resourceKey="visitWebsiteMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="visitWebsiteMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">

@@ -6,7 +6,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.dialogs.JakeMainAboutBox;
+import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
 import com.jakeapp.gui.swing.sheets.InviteUserSheet;
@@ -23,6 +23,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,7 @@ public class JakeMainView extends FrameView {
 
     private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
     private ContextPanels contextPanelView = ContextPanels.Login;
+
 
     /**
      * Project View: set of toggle buttons. Alwasy one state setup.
@@ -116,6 +120,17 @@ public class JakeMainView extends FrameView {
 
         // initialize the mantisse gui components (menu)
         initComponents();
+
+        // adapt the menu if we live on a mac
+        if (Platform.isMac()) {
+            // mac has a special application menu that
+            // implements Quit.
+            projectMenu.remove(exitMenuItem);
+            projectMenu.remove(exitSeparator);
+
+            // install the about handler
+            new MacOSAppMenuHandler();
+        }
 
         // init the content panel
         contentPanel = new JPanel();
@@ -785,7 +800,7 @@ public class JakeMainView extends FrameView {
     public void showAboutBox() {
         if (aboutBox == null) {
             JFrame mainFrame = JakeMainApp.getApplication().getMainFrame();
-            aboutBox = new JakeMainAboutBox(mainFrame);
+            aboutBox = new JakeAboutDialog(mainFrame);
             aboutBox.setLocationRelativeTo(mainFrame);
         }
         JakeMainApp.getApplication().show(aboutBox);
@@ -805,45 +820,44 @@ public class JakeMainView extends FrameView {
         projectMenu = new javax.swing.JMenu();
         createProjectMenuItem = new javax.swing.JMenuItem();
         startStopProjectMenuItem = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jSeparator4 = new javax.swing.JSeparator();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuItem28 = new javax.swing.JMenuItem();
+        deleteProjectMenuItem = new javax.swing.JMenuItem();
+        projectSeparator1 = new javax.swing.JSeparator();
+        invitePeopleMenuItem = new javax.swing.JMenuItem();
+        createNoteMenuItem = new javax.swing.JMenuItem();
         jSeparator13 = new javax.swing.JSeparator();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JSeparator();
-        javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
-        jMenuItem23 = new javax.swing.JMenuItem();
-        jMenuItem24 = new javax.swing.JMenuItem();
-        jMenuItem25 = new javax.swing.JMenuItem();
-        jMenuItem26 = new javax.swing.JMenuItem();
+        signInOutMenuItem = new javax.swing.JMenuItem();
+        exitSeparator = new javax.swing.JSeparator();
+        exitMenuItem = new javax.swing.JMenuItem();
+        editMenu = new javax.swing.JMenu();
+        cutMenuItem = new javax.swing.JMenuItem();
+        copyMenuItem = new javax.swing.JMenuItem();
+        selectAllMenuItem = new javax.swing.JMenuItem();
+        preferencesMenuItem = new javax.swing.JMenuItem();
         jSeparator11 = new javax.swing.JSeparator();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem19 = new javax.swing.JMenuItem();
-        jMenuItem20 = new javax.swing.JMenuItem();
-        jMenuItem22 = new javax.swing.JMenuItem();
-        jSeparator10 = new javax.swing.JSeparator();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JSeparator();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
-        jMenuItem27 = new javax.swing.JMenuItem();
-        jSeparator6 = new javax.swing.JSeparator();
-        jMenuItem12 = new javax.swing.JMenuItem();
-        jMenuItem13 = new javax.swing.JMenuItem();
-        jSeparator7 = new javax.swing.JSeparator();
-        jMenuItem14 = new javax.swing.JMenuItem();
-        jSeparator8 = new javax.swing.JSeparator();
-        jMenuItem15 = new javax.swing.JMenuItem();
-        jMenuItem16 = new javax.swing.JMenuItem();
-        jSeparator9 = new javax.swing.JSeparator();
-        jMenuItem17 = new javax.swing.JMenuItem();
-        jMenuItem18 = new javax.swing.JMenuItem();
+        editMenuSeparator = new javax.swing.JMenuItem();
+        viewMenu = new javax.swing.JMenu();
+        showProjectMenuItem = new javax.swing.JMenuItem();
+        showFilesMenuItem = new javax.swing.JMenuItem();
+        showNotesMenuItem = new javax.swing.JMenuItem();
+        actionMenu = new javax.swing.JMenu();
+        openMenuItem = new javax.swing.JMenuItem();
+        openMenuSeparator = new javax.swing.JSeparator();
+        announceMenuItem = new javax.swing.JMenuItem();
+        pullMenuItem = new javax.swing.JMenuItem();
+        fixFilenameMenuItem = new javax.swing.JMenuItem();
+        actionNetworkSeparator = new javax.swing.JSeparator();
+        deleteMenuItem = new javax.swing.JMenuItem();
+        renameMenuItem = new javax.swing.JMenuItem();
+        actionFileSeparator = new javax.swing.JSeparator();
+        showHideInspectorMenuItem = new javax.swing.JMenuItem();
+        actionInspectorMenuItem = new javax.swing.JSeparator();
+        importMenuItem = new javax.swing.JMenuItem();
+        newFolderMenuItem = new javax.swing.JMenuItem();
+        actionImportSeparator = new javax.swing.JSeparator();
+        lockMenuItem = new javax.swing.JMenuItem();
+        lockWithMessageMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        visitWebsiteMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -865,160 +879,158 @@ public class JakeMainView extends FrameView {
         startStopProjectMenuItem.setName("startStopProjectMenuItem"); // NOI18N
         projectMenu.add(startStopProjectMenuItem);
 
-        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.META_MASK));
-        jMenuItem9.setText(resourceMap.getString("jMenuItem9.text")); // NOI18N
-        jMenuItem9.setName("jMenuItem9"); // NOI18N
-        projectMenu.add(jMenuItem9);
+        deleteProjectMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.META_MASK));
+        deleteProjectMenuItem.setText(resourceMap.getString("deleteProjectMenuItem.text")); // NOI18N
+        deleteProjectMenuItem.setName("deleteProjectMenuItem"); // NOI18N
+        projectMenu.add(deleteProjectMenuItem);
 
-        jSeparator4.setName("jSeparator4"); // NOI18N
-        projectMenu.add(jSeparator4);
+        projectSeparator1.setName("projectSeparator1"); // NOI18N
+        projectMenu.add(projectSeparator1);
 
-        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.META_MASK));
-        jMenuItem10.setText(resourceMap.getString("jMenuItem10.text")); // NOI18N
-        jMenuItem10.setName("jMenuItem10"); // NOI18N
-        projectMenu.add(jMenuItem10);
+        invitePeopleMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.META_MASK));
+        invitePeopleMenuItem.setText(resourceMap.getString("invitePeopleMenuItem.text")); // NOI18N
+        invitePeopleMenuItem.setName("invitePeopleMenuItem"); // NOI18N
+        projectMenu.add(invitePeopleMenuItem);
 
-        jMenuItem28.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.META_MASK));
-        jMenuItem28.setText(resourceMap.getString("jMenuItem28.text")); // NOI18N
-        jMenuItem28.setName("jMenuItem28"); // NOI18N
-        projectMenu.add(jMenuItem28);
+        createNoteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.META_MASK));
+        createNoteMenuItem.setText(resourceMap.getString("createNoteMenuItem.text")); // NOI18N
+        createNoteMenuItem.setName("createNoteMenuItem"); // NOI18N
+        projectMenu.add(createNoteMenuItem);
 
         jSeparator13.setName("jSeparator13"); // NOI18N
         projectMenu.add(jSeparator13);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.META_MASK));
-        jMenuItem2.setText(resourceMap.getString("jMenuItem2.text")); // NOI18N
-        jMenuItem2.setName("jMenuItem2"); // NOI18N
-        projectMenu.add(jMenuItem2);
+        signInOutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.META_MASK));
+        signInOutMenuItem.setText(resourceMap.getString("signInOutMenuItem.text")); // NOI18N
+        signInOutMenuItem.setName("signInOutMenuItem"); // NOI18N
+        projectMenu.add(signInOutMenuItem);
 
-        jSeparator2.setName("jSeparator2"); // NOI18N
-        projectMenu.add(jSeparator2);
+        exitSeparator.setName("exitSeparator"); // NOI18N
+        projectMenu.add(exitSeparator);
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getActionMap(JakeMainView.class, this);
-        exitMenuItem.setAction(actionMap.get("hideApplicationAction")); // NOI18N
+        exitMenuItem.setText(resourceMap.getString("exitMenuItem.text")); // NOI18N
         exitMenuItem.setName("exitMenuItem"); // NOI18N
         projectMenu.add(exitMenuItem);
 
         menuBar.add(projectMenu);
 
-        jMenu5.setText(resourceMap.getString("jMenu5.text")); // NOI18N
-        jMenu5.setName("jMenu5"); // NOI18N
+        editMenu.setText(resourceMap.getString("editMenu.text")); // NOI18N
+        editMenu.setName("editMenu"); // NOI18N
 
-        jMenuItem23.setText(resourceMap.getString("jMenuItem23.text")); // NOI18N
-        jMenuItem23.setName("jMenuItem23"); // NOI18N
-        jMenu5.add(jMenuItem23);
+        cutMenuItem.setText(resourceMap.getString("cutMenuItem.text")); // NOI18N
+        cutMenuItem.setName("cutMenuItem"); // NOI18N
+        editMenu.add(cutMenuItem);
 
-        jMenuItem24.setText(resourceMap.getString("jMenuItem24.text")); // NOI18N
-        jMenuItem24.setName("jMenuItem24"); // NOI18N
-        jMenu5.add(jMenuItem24);
+        copyMenuItem.setText(resourceMap.getString("copyMenuItem.text")); // NOI18N
+        copyMenuItem.setName("copyMenuItem"); // NOI18N
+        editMenu.add(copyMenuItem);
 
-        jMenuItem25.setText(resourceMap.getString("jMenuItem25.text")); // NOI18N
-        jMenuItem25.setName("jMenuItem25"); // NOI18N
-        jMenu5.add(jMenuItem25);
+        selectAllMenuItem.setText(resourceMap.getString("selectAllMenuItem.text")); // NOI18N
+        selectAllMenuItem.setName("selectAllMenuItem"); // NOI18N
+        editMenu.add(selectAllMenuItem);
 
-        jMenuItem26.setText(resourceMap.getString("jMenuItem26.text")); // NOI18N
-        jMenuItem26.setName("jMenuItem26"); // NOI18N
-        jMenu5.add(jMenuItem26);
+        preferencesMenuItem.setText(resourceMap.getString("preferencesMenuItem.text")); // NOI18N
+        preferencesMenuItem.setName("preferencesMenuItem"); // NOI18N
+        editMenu.add(preferencesMenuItem);
 
         jSeparator11.setName("jSeparator11"); // NOI18N
-        jMenu5.add(jSeparator11);
+        editMenu.add(jSeparator11);
 
-        jMenuItem1.setText(resourceMap.getString("jMenuItem1.text")); // NOI18N
-        jMenuItem1.setName("jMenuItem1"); // NOI18N
-        jMenu5.add(jMenuItem1);
+        editMenuSeparator.setText(resourceMap.getString("editMenuSeparator.text")); // NOI18N
+        editMenuSeparator.setName("editMenuSeparator"); // NOI18N
+        editMenu.add(editMenuSeparator);
 
-        menuBar.add(jMenu5);
+        menuBar.add(editMenu);
 
-        jMenu4.setText(resourceMap.getString("jMenu4.text")); // NOI18N
-        jMenu4.setName("jMenu4"); // NOI18N
+        viewMenu.setText(resourceMap.getString("viewMenu.text")); // NOI18N
+        viewMenu.setName("viewMenu"); // NOI18N
 
-        jMenuItem19.setText(resourceMap.getString("jMenuItem19.text")); // NOI18N
-        jMenuItem19.setName("jMenuItem19"); // NOI18N
-        jMenu4.add(jMenuItem19);
+        showProjectMenuItem.setText(resourceMap.getString("showProjectMenuItem.text")); // NOI18N
+        showProjectMenuItem.setName("showProjectMenuItem"); // NOI18N
+        viewMenu.add(showProjectMenuItem);
 
-        jMenuItem20.setText(resourceMap.getString("jMenuItem20.text")); // NOI18N
-        jMenuItem20.setName("jMenuItem20"); // NOI18N
-        jMenu4.add(jMenuItem20);
+        showFilesMenuItem.setText(resourceMap.getString("showFilesMenuItem.text")); // NOI18N
+        showFilesMenuItem.setName("showFilesMenuItem"); // NOI18N
+        viewMenu.add(showFilesMenuItem);
 
-        jMenuItem22.setText(resourceMap.getString("jMenuItem22.text")); // NOI18N
-        jMenuItem22.setName("jMenuItem22"); // NOI18N
-        jMenu4.add(jMenuItem22);
+        showNotesMenuItem.setText(resourceMap.getString("showNotesMenuItem.text")); // NOI18N
+        showNotesMenuItem.setName("showNotesMenuItem"); // NOI18N
+        viewMenu.add(showNotesMenuItem);
 
-        jSeparator10.setName("jSeparator10"); // NOI18N
-        jMenu4.add(jSeparator10);
+        menuBar.add(viewMenu);
 
-        menuBar.add(jMenu4);
+        actionMenu.setText(resourceMap.getString("actionMenu.text")); // NOI18N
+        actionMenu.setName("actionMenu"); // NOI18N
 
-        jMenu3.setText(resourceMap.getString("jMenu3.text")); // NOI18N
-        jMenu3.setName("jMenu3"); // NOI18N
+        openMenuItem.setText(resourceMap.getString("openMenuItem.text")); // NOI18N
+        openMenuItem.setName("openMenuItem"); // NOI18N
+        actionMenu.add(openMenuItem);
 
-        jMenuItem5.setText(resourceMap.getString("jMenuItem5.text")); // NOI18N
-        jMenuItem5.setName("jMenuItem5"); // NOI18N
-        jMenu3.add(jMenuItem5);
+        openMenuSeparator.setName("openMenuSeparator"); // NOI18N
+        actionMenu.add(openMenuSeparator);
 
-        jSeparator5.setName("jSeparator5"); // NOI18N
-        jMenu3.add(jSeparator5);
+        announceMenuItem.setText(resourceMap.getString("announceMenuItem.text")); // NOI18N
+        announceMenuItem.setName("announceMenuItem"); // NOI18N
+        actionMenu.add(announceMenuItem);
 
-        jMenuItem6.setText(resourceMap.getString("jMenuItem6.text")); // NOI18N
-        jMenuItem6.setName("jMenuItem6"); // NOI18N
-        jMenu3.add(jMenuItem6);
+        pullMenuItem.setText(resourceMap.getString("pullMenuItem.text")); // NOI18N
+        pullMenuItem.setName("pullMenuItem"); // NOI18N
+        actionMenu.add(pullMenuItem);
 
-        jMenuItem11.setText(resourceMap.getString("jMenuItem11.text")); // NOI18N
-        jMenuItem11.setName("jMenuItem11"); // NOI18N
-        jMenu3.add(jMenuItem11);
+        fixFilenameMenuItem.setText(resourceMap.getString("fixFilenameMenuItem.text")); // NOI18N
+        fixFilenameMenuItem.setName("fixFilenameMenuItem"); // NOI18N
+        actionMenu.add(fixFilenameMenuItem);
 
-        jMenuItem27.setText(resourceMap.getString("jMenuItem27.text")); // NOI18N
-        jMenuItem27.setName("jMenuItem27"); // NOI18N
-        jMenu3.add(jMenuItem27);
+        actionNetworkSeparator.setName("actionNetworkSeparator"); // NOI18N
+        actionMenu.add(actionNetworkSeparator);
 
-        jSeparator6.setName("jSeparator6"); // NOI18N
-        jMenu3.add(jSeparator6);
+        deleteMenuItem.setText(resourceMap.getString("deleteMenuItem.text")); // NOI18N
+        deleteMenuItem.setName("deleteMenuItem"); // NOI18N
+        actionMenu.add(deleteMenuItem);
 
-        jMenuItem12.setText(resourceMap.getString("jMenuItem12.text")); // NOI18N
-        jMenuItem12.setName("jMenuItem12"); // NOI18N
-        jMenu3.add(jMenuItem12);
+        renameMenuItem.setText(resourceMap.getString("renameMenuItem.text")); // NOI18N
+        renameMenuItem.setName("renameMenuItem"); // NOI18N
+        actionMenu.add(renameMenuItem);
 
-        jMenuItem13.setText(resourceMap.getString("jMenuItem13.text")); // NOI18N
-        jMenuItem13.setName("jMenuItem13"); // NOI18N
-        jMenu3.add(jMenuItem13);
+        actionFileSeparator.setName("actionFileSeparator"); // NOI18N
+        actionMenu.add(actionFileSeparator);
 
-        jSeparator7.setName("jSeparator7"); // NOI18N
-        jMenu3.add(jSeparator7);
+        showHideInspectorMenuItem.setText(resourceMap.getString("showHideInspectorMenuItem.text")); // NOI18N
+        showHideInspectorMenuItem.setName("showHideInspectorMenuItem"); // NOI18N
+        actionMenu.add(showHideInspectorMenuItem);
 
-        jMenuItem14.setText(resourceMap.getString("jMenuItem14.text")); // NOI18N
-        jMenuItem14.setName("jMenuItem14"); // NOI18N
-        jMenu3.add(jMenuItem14);
+        actionInspectorMenuItem.setName("actionInspectorMenuItem"); // NOI18N
+        actionMenu.add(actionInspectorMenuItem);
 
-        jSeparator8.setName("jSeparator8"); // NOI18N
-        jMenu3.add(jSeparator8);
+        importMenuItem.setText(resourceMap.getString("importMenuItem.text")); // NOI18N
+        importMenuItem.setName("importMenuItem"); // NOI18N
+        actionMenu.add(importMenuItem);
 
-        jMenuItem15.setText(resourceMap.getString("jMenuItem15.text")); // NOI18N
-        jMenuItem15.setName("jMenuItem15"); // NOI18N
-        jMenu3.add(jMenuItem15);
+        newFolderMenuItem.setText(resourceMap.getString("newFolderMenuItem.text")); // NOI18N
+        newFolderMenuItem.setName("newFolderMenuItem"); // NOI18N
+        actionMenu.add(newFolderMenuItem);
 
-        jMenuItem16.setText(resourceMap.getString("jMenuItem16.text")); // NOI18N
-        jMenuItem16.setName("jMenuItem16"); // NOI18N
-        jMenu3.add(jMenuItem16);
+        actionImportSeparator.setName("actionImportSeparator"); // NOI18N
+        actionMenu.add(actionImportSeparator);
 
-        jSeparator9.setName("jSeparator9"); // NOI18N
-        jMenu3.add(jSeparator9);
+        lockMenuItem.setText(resourceMap.getString("lockMenuItem.text")); // NOI18N
+        lockMenuItem.setName("lockMenuItem"); // NOI18N
+        actionMenu.add(lockMenuItem);
 
-        jMenuItem17.setText(resourceMap.getString("jMenuItem17.text")); // NOI18N
-        jMenuItem17.setName("jMenuItem17"); // NOI18N
-        jMenu3.add(jMenuItem17);
+        lockWithMessageMenuItem.setText(resourceMap.getString("lockWithMessageMenuItem.text")); // NOI18N
+        lockWithMessageMenuItem.setName("lockWithMessageMenuItem"); // NOI18N
+        actionMenu.add(lockWithMessageMenuItem);
 
-        jMenuItem18.setText(resourceMap.getString("jMenuItem18.text")); // NOI18N
-        jMenuItem18.setName("jMenuItem18"); // NOI18N
-        jMenu3.add(jMenuItem18);
-
-        menuBar.add(jMenu3);
+        menuBar.add(actionMenu);
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
         helpMenu.setName("helpMenu"); // NOI18N
 
-        jMenuItem4.setText(resourceMap.getString("jMenuItem4.text")); // NOI18N
-        jMenuItem4.setName("jMenuItem4"); // NOI18N
-        helpMenu.add(jMenuItem4);
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getActionMap(JakeMainView.class, this);
+        visitWebsiteMenuItem.setAction(actionMap.get("showJakeWebsite")); // NOI18N
+        visitWebsiteMenuItem.setText(resourceMap.getString("visitWebsiteMenuItem.text")); // NOI18N
+        visitWebsiteMenuItem.setName("visitWebsiteMenuItem"); // NOI18N
+        helpMenu.add(visitWebsiteMenuItem);
 
         aboutMenuItem.setAction(actionMap.get("showAboutBox")); // NOI18N
         aboutMenuItem.setName("aboutMenuItem"); // NOI18N
@@ -1038,50 +1050,50 @@ public class JakeMainView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSeparator actionFileSeparator;
+    private javax.swing.JSeparator actionImportSeparator;
+    private javax.swing.JSeparator actionInspectorMenuItem;
+    private javax.swing.JMenu actionMenu;
+    private javax.swing.JSeparator actionNetworkSeparator;
+    private javax.swing.JMenuItem announceMenuItem;
+    private javax.swing.JMenuItem copyMenuItem;
+    private javax.swing.JMenuItem createNoteMenuItem;
     private javax.swing.JMenuItem createProjectMenuItem;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem14;
-    private javax.swing.JMenuItem jMenuItem15;
-    private javax.swing.JMenuItem jMenuItem16;
-    private javax.swing.JMenuItem jMenuItem17;
-    private javax.swing.JMenuItem jMenuItem18;
-    private javax.swing.JMenuItem jMenuItem19;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem20;
-    private javax.swing.JMenuItem jMenuItem22;
-    private javax.swing.JMenuItem jMenuItem23;
-    private javax.swing.JMenuItem jMenuItem24;
-    private javax.swing.JMenuItem jMenuItem25;
-    private javax.swing.JMenuItem jMenuItem26;
-    private javax.swing.JMenuItem jMenuItem27;
-    private javax.swing.JMenuItem jMenuItem28;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JMenuItem cutMenuItem;
+    private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JMenuItem deleteProjectMenuItem;
+    private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem editMenuSeparator;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JSeparator exitSeparator;
+    private javax.swing.JMenuItem fixFilenameMenuItem;
+    private javax.swing.JMenuItem importMenuItem;
+    private javax.swing.JMenuItem invitePeopleMenuItem;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator10;
     private javax.swing.JSeparator jSeparator11;
     private javax.swing.JSeparator jSeparator13;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JSeparator jSeparator7;
-    private javax.swing.JSeparator jSeparator8;
-    private javax.swing.JSeparator jSeparator9;
+    private javax.swing.JMenuItem lockMenuItem;
+    private javax.swing.JMenuItem lockWithMessageMenuItem;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem newFolderMenuItem;
+    private javax.swing.JMenuItem openMenuItem;
+    private javax.swing.JSeparator openMenuSeparator;
+    private javax.swing.JMenuItem preferencesMenuItem;
     private javax.swing.JMenu projectMenu;
+    private javax.swing.JSeparator projectSeparator1;
+    private javax.swing.JMenuItem pullMenuItem;
+    private javax.swing.JMenuItem renameMenuItem;
+    private javax.swing.JMenuItem selectAllMenuItem;
+    private javax.swing.JMenuItem showFilesMenuItem;
+    private javax.swing.JMenuItem showHideInspectorMenuItem;
+    private javax.swing.JMenuItem showNotesMenuItem;
+    private javax.swing.JMenuItem showProjectMenuItem;
+    private javax.swing.JMenuItem signInOutMenuItem;
     private javax.swing.JMenuItem startStopProjectMenuItem;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JMenu viewMenu;
+    private javax.swing.JMenuItem visitWebsiteMenuItem;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JPanel contentPanel;
     /*
@@ -1253,5 +1265,17 @@ public class JakeMainView extends FrameView {
     @Action
     public void hideApplicationAction() {
         getFrame().setVisible(false);
+    }
+
+
+    @Action
+    public void showJakeWebsite() {
+        try {
+            Desktop.getDesktop().browse(new URI(getResourceMap().getString("JakeWebsite")));
+        } catch (IOException e) {
+            log.warn("Unable to open Website!", e);
+        } catch (URISyntaxException e) {
+            log.warn("Unable to open Website, invalid syntax", e);
+        }
     }
 }
