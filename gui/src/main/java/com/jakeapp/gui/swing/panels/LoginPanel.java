@@ -11,9 +11,13 @@
 
 package com.jakeapp.gui.swing.panels;
 
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.helpers.Platform;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,13 +26,16 @@ import java.awt.*;
 /**
  * @author studpete
  */
-public class LoginPanel extends javax.swing.JPanel {
+public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus, ConnectionStatus {
+    private ResourceMap resourceMap;
 
     /**
      * Creates new form LoginRegisterPanel
      */
     public LoginPanel() {
         initComponents();
+        setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(LoginPanel.class));
+
 
         messageLabel.setText("<html><h1>Welcome to Jake</h1>To start sharing, you need to Sign In with an XMPP/Jabber-ID.<br>If you do not have such an ID, Jake will create one for you.</html>");
 
@@ -55,16 +62,15 @@ public class LoginPanel extends javax.swing.JPanel {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         loginHeaderPanel = new org.jdesktop.swingx.JXPanel();
-        jPanel3 = new javax.swing.JPanel();
+        mainLoginPanel = new javax.swing.JPanel();
         mainPanel = new javax.swing.JPanel();
         messagePanel = new javax.swing.JPanel();
         messageLabel = new javax.swing.JLabel();
         loginControlPanel = new org.jdesktop.swingx.JXPanel();
-        jButton1 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jComboBox2 = new javax.swing.JComboBox();
+        signInRegisterButton = new javax.swing.JButton();
+        passwordLabel = new javax.swing.JLabel();
+        usernameLabel = new javax.swing.JLabel();
+        usernameComboBox = new javax.swing.JComboBox();
         rememberPasswordCheckBox = new javax.swing.JCheckBox();
         registerRadioButton = new javax.swing.JRadioButton();
         loginRadioButton = new javax.swing.JRadioButton();
@@ -73,8 +79,7 @@ public class LoginPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jButton2 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        passwordField = new javax.swing.JPasswordField();
 
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(LoginPanel.class);
         setBackground(resourceMap.getColor("Form.background")); // NOI18N
@@ -85,21 +90,21 @@ public class LoginPanel extends javax.swing.JPanel {
         loginHeaderPanel.setName("loginHeaderPanel"); // NOI18N
         loginHeaderPanel.setLayout(new javax.swing.BoxLayout(loginHeaderPanel, javax.swing.BoxLayout.X_AXIS));
 
-        jPanel3.setName("jPanel3"); // NOI18N
-        jPanel3.setOpaque(false);
+        mainLoginPanel.setName("mainLoginPanel"); // NOI18N
+        mainLoginPanel.setOpaque(false);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout mainLoginPanelLayout = new javax.swing.GroupLayout(mainLoginPanel);
+        mainLoginPanel.setLayout(mainLoginPanelLayout);
+        mainLoginPanelLayout.setHorizontalGroup(
+                mainLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        mainLoginPanelLayout.setVerticalGroup(
+                mainLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(0, 509, Short.MAX_VALUE)
         );
 
-        loginHeaderPanel.add(jPanel3);
+        loginHeaderPanel.add(mainLoginPanel);
 
         mainPanel.setName("mainPanel"); // NOI18N
         mainPanel.setOpaque(false);
@@ -124,7 +129,7 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addGroup(messagePanelLayout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(24, Short.MAX_VALUE))
+                        .addContainerGap(30, Short.MAX_VALUE))
         );
 
         mainPanel.add(messagePanel);
@@ -135,24 +140,21 @@ public class LoginPanel extends javax.swing.JPanel {
         loginControlPanel.setOpaque(false);
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getActionMap(LoginPanel.class, this);
-        jButton1.setAction(actionMap.get("signIn")); // NOI18N
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
+        signInRegisterButton.setAction(actionMap.get("signIn")); // NOI18N
+        signInRegisterButton.setText(resourceMap.getString("signInRegisterButton.text")); // NOI18N
+        signInRegisterButton.setName("signInRegisterButton"); // NOI18N
 
-        jLabel2.setForeground(resourceMap.getColor("jLabel2.foreground")); // NOI18N
-        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
+        passwordLabel.setForeground(resourceMap.getColor("passwordLabel.foreground")); // NOI18N
+        passwordLabel.setText(resourceMap.getString("passwordLabel.text")); // NOI18N
+        passwordLabel.setName("passwordLabel"); // NOI18N
 
-        jLabel1.setForeground(resourceMap.getColor("jLabel1.foreground")); // NOI18N
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+        usernameLabel.setForeground(resourceMap.getColor("usernameLabel.foreground")); // NOI18N
+        usernameLabel.setText(resourceMap.getString("usernameLabel.text")); // NOI18N
+        usernameLabel.setName("usernameLabel"); // NOI18N
 
-        jTextField2.setText(resourceMap.getString("jTextField2.text")); // NOI18N
-        jTextField2.setName("jTextField2"); // NOI18N
-
-        jComboBox2.setEditable(true);
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"pstein", "csutter"}));
-        jComboBox2.setName("jComboBox2"); // NOI18N
+        usernameComboBox.setEditable(true);
+        usernameComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"   ", "pstein", "csutter"}));
+        usernameComboBox.setName("usernameComboBox"); // NOI18N
 
         rememberPasswordCheckBox.setSelected(true);
         rememberPasswordCheckBox.setText(resourceMap.getString("rememberPasswordCheckBox.text")); // NOI18N
@@ -182,7 +184,7 @@ public class LoginPanel extends javax.swing.JPanel {
         jLabel3.setName("jLabel3"); // NOI18N
 
         jComboBox1.setEditable(true);
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"jabber.fsinf.at"}));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"jabber.fsinf.at", "jabber.org", "jabber.ccc.de", "macjabber.de", "swissjabber.ch", "binaryfreedom.info"}));
         jComboBox1.setName("jComboBox1"); // NOI18N
 
         jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
@@ -213,40 +215,44 @@ public class LoginPanel extends javax.swing.JPanel {
 
         advancedServerOptionsHolderPanel.add(advancedServerOptionsPanel, java.awt.BorderLayout.CENTER);
 
+        passwordField.setText(resourceMap.getString("passwordField.text")); // NOI18N
+        passwordField.setName("passwordField"); // NOI18N
+
         javax.swing.GroupLayout loginControlPanelLayout = new javax.swing.GroupLayout(loginControlPanel);
         loginControlPanel.setLayout(loginControlPanelLayout);
         loginControlPanelLayout.setHorizontalGroup(
                 loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginControlPanelLayout.createSequentialGroup()
+                        .addGroup(loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(loginControlPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(signInRegisterButton))
+                                .addGroup(loginControlPanelLayout.createSequentialGroup()
                                 .addGap(42, 42, 42)
                                 .addGroup(loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(loginControlPanelLayout.createSequentialGroup()
-                                                .addGap(21, 21, 21)
-                                                .addGroup(loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jComboBox2, 0, 383, Short.MAX_VALUE)
-                                                .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
-                                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
-                                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
-                                                .addComponent(rememberPasswordCheckBox)))
-                                        .addGroup(loginControlPanelLayout.createSequentialGroup()
+                                .addGroup(loginControlPanelLayout.createSequentialGroup()
+                                        .addGap(21, 21, 21)
                                         .addGroup(loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(loginControlPanelLayout.createSequentialGroup()
-                                                        .addComponent(registerRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
-                                                        .addGap(149, 149, 149))
-                                                .addGroup(loginControlPanelLayout.createSequentialGroup()
-                                                        .addComponent(loginRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                                                        .addGap(89, 89, 89))
-                                                .addComponent(advancedServerOptionsHolderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(3, 3, 3)))
-                                .addGap(45, 45, 45))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginControlPanelLayout.createSequentialGroup()
-                        .addContainerGap(345, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(59, 59, 59))
+                                        .addComponent(usernameComboBox, 0, 383, Short.MAX_VALUE)
+                                        .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                                        .addComponent(usernameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                                        .addComponent(rememberPasswordCheckBox)
+                                        .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)))
+                                .addGroup(loginControlPanelLayout.createSequentialGroup()
+                                .addGroup(loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(loginControlPanelLayout.createSequentialGroup()
+                                                .addComponent(registerRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                                                .addGap(149, 149, 149))
+                                        .addGroup(loginControlPanelLayout.createSequentialGroup()
+                                                .addComponent(loginRadioButton, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                                                .addGap(89, 89, 89))
+                                        .addComponent(advancedServerOptionsHolderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(3, 3, 3)))))
+                        .addGap(45, 45, 45))
         );
         loginControlPanelLayout.setVerticalGroup(
                 loginControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginControlPanelLayout.createSequentialGroup()
+                        .addGroup(loginControlPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(loginRadioButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -254,69 +260,59 @@ public class LoginPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(advancedServerOptionsHolderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
+                        .addComponent(usernameLabel)
                         .addGap(1, 1, 1)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(usernameComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(passwordLabel)
                         .addGap(2, 2, 2)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rememberPasswordCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(signInRegisterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(59, Short.MAX_VALUE))
         );
 
         mainPanel.add(loginControlPanel);
 
-        jPanel4.setName("jPanel4"); // NOI18N
-        jPanel4.setOpaque(false);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 491, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 5, Short.MAX_VALUE)
-        );
-
-        mainPanel.add(jPanel4);
-
         loginHeaderPanel.add(mainPanel);
-
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setOpaque(false);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 509, Short.MAX_VALUE)
-        );
-
-        loginHeaderPanel.add(jPanel1);
 
         add(loginHeaderPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     @Action
     public void selectionChanged() {
-        //for(Component comp : advancedServerOptionsPanel.getComponents()) {
         advancedServerOptionsPanel.setVisible(registerRadioButton.isSelected());
-        // }
 
+        // update the button
+        udpdateSignInRegisterButton();
+
+    }
+
+    private void udpdateSignInRegisterButton() {
+        if (isModeSignIn()) {
+            signInRegisterButton.setText(getResourceMap().getString("loginSignIn"));
+        } else {
+            signInRegisterButton.setText(getResourceMap().getString("loginRegister"));
+        }
+    }
+
+    private boolean isModeSignIn() {
+        return loginRadioButton.isSelected();
     }
 
     @Action
     public void signIn() {
+
+
+        if (isModeSignIn()) {
+            JakeMainView.getMainView().getCore().signIn(usernameLabel.getText(), passwordLabel.getText());
+        } else {
+            JakeMainView.getMainView().getCore().register(usernameLabel.getText(), passwordLabel.getText());
+        }
+
+
         loginControlPanel.setVisible(false);
 
         messageLabel.setText("<html><h1>Success!</h1>You are now signed in as <em>peter@fsinf.ac.at</em><br><b>Drag&Drop a Folder into the App to start sharing.</html>");
@@ -343,31 +339,44 @@ public class LoginPanel extends javax.swing.JPanel {
         mainPanel.remove(loginControlPanel);
         mainPanel.add(loginSuccessPanel);
         mainPanel.updateUI();
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedServerOptionsHolderPanel;
     private javax.swing.JPanel advancedServerOptionsPanel;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JTextField jTextField2;
     private org.jdesktop.swingx.JXPanel loginControlPanel;
     private org.jdesktop.swingx.JXPanel loginHeaderPanel;
     private javax.swing.JRadioButton loginRadioButton;
+    private javax.swing.JPanel mainLoginPanel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel messageLabel;
     private javax.swing.JPanel messagePanel;
+    private javax.swing.JPasswordField passwordField;
+    private javax.swing.JLabel passwordLabel;
     private javax.swing.JRadioButton registerRadioButton;
     private javax.swing.JCheckBox rememberPasswordCheckBox;
+    private javax.swing.JButton signInRegisterButton;
+    private javax.swing.JComboBox usernameComboBox;
+    private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 
+
+    public void setRegistrationStatus(RegisterStati status) {
+    }
+
+    public void setConnectionStatus(ConnectionStati status) {
+    }
+
+    public ResourceMap getResourceMap() {
+        return resourceMap;
+    }
+
+    public void setResourceMap(ResourceMap resourceMap) {
+        this.resourceMap = resourceMap;
+    }
 }
