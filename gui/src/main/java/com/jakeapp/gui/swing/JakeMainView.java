@@ -129,7 +129,7 @@ public class JakeMainView extends FrameView {
             projectMenu.remove(exitSeparator);
 
             // install the about handler
-            new MacOSAppMenuHandler();
+            // new MacOSAppMenuHandler();
         }
 
         // init the content panel
