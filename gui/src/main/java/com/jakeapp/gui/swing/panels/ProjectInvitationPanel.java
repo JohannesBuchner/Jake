@@ -35,14 +35,18 @@ public class ProjectInvitationPanel extends JXPanel {
 
         this.add(title, "span 1, al center, wrap");
 
+        JLabel projectName = new JLabel("Projectname");
+        projectName.setFont(projectName.getFont().deriveFont(Font.BOLD));
+        this.add(projectName, "span 1 ,al center, wrap");
+
         JLabel icon = new JLabel();
         icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-new-large.png"))));
 
         this.add(icon, "span 1, al center, wrap");
 
-        JLabel projectName = new JLabel("Projectname");
-        projectName.setFont(projectName.getFont().deriveFont(Font.BOLD));
-        this.add(projectName, "span 1 ,al center, wrap");
+        JLabel userName = new JLabel("From: studpete<at>gmail.com");
+        userName.setFont(projectName.getFont().deriveFont(Font.BOLD));
+        this.add(userName, "span 1 ,al center, wrap");
 
         JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
         folderSelectPanel.setOpaque(false);
