@@ -29,6 +29,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -126,6 +127,12 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
 
         // make initial update
         selectionChanged();
+
+
+        // update the view (maybe already logged in)
+        if (JakeMainView.getMainView().getCore().isSignedIn()) {
+            showSignInSuccess();
+        }
     }
 
     /**
@@ -498,6 +505,15 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         JPanel loginSuccessPanel = new JPanel();
         loginSuccessPanel.setOpaque(false);
         loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
+
+        JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
+        signOutButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent actionEvent) {
+                JakeMainView.getMainView().getCore().signOut();
+            }
+        });
+        loginSuccessPanel.add(signOutButton, "wrap, al center");
 
         JLabel iconSuccess = new JLabel();
         iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(

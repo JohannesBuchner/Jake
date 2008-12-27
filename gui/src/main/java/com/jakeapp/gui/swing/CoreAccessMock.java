@@ -12,6 +12,8 @@ import java.util.List;
 public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
 
+    private boolean isSignedIn = false;
+
     /**
      * Core Access Mock initialisation code
      */
@@ -67,6 +69,7 @@ public class CoreAccessMock implements ICoreAccess {
                 }
 
                 callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+                isSignedIn = true;
             }
         };
 
@@ -96,6 +99,37 @@ public class CoreAccessMock implements ICoreAccess {
 
     public void register(String user, String pass) {
         log.info("Registering user: " + user + " pass: " + pass);
+
+        Runnable runner = new Runnable() {
+            public void run() {
+
+                // registering
+                callbackRegistrationStatus(RegistrationStatus.RegisterStati.RegistrationActive, "");
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                callbackRegistrationStatus(RegistrationStatus.RegisterStati.RegisterSuccess, "");
+
+                // logging in after registering
+                callbackConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+                isSignedIn = true;
+            }
+        };
+
+        // start our runner thread, that makes callbacks to connection status
+        new Thread(runner).start();
     }
 
     public void registerRegistrationStatusCallback(RegistrationStatus cb) {
@@ -106,6 +140,20 @@ public class CoreAccessMock implements ICoreAccess {
         log.info("Deregisters registration status callback: " + cb);
 
     }
+
+
+    public boolean isSignedIn() {
+        // TODO: implement mock
+        return false;
+    }
+
+
+    public void signOut() {
+        isSignedIn = false;
+
+        callbackConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
+    }
+
 
     private void callbackRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
         for (RegistrationStatus callback : registrationStatus) {

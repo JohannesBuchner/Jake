@@ -292,8 +292,21 @@ public class JakeMainView extends FrameView {
 
             public void actionPerformed(ActionEvent event) {
                 JPopupMenu menu = new JPopupMenu();
-                menu.add(new JMenuItem("Sign Out"));
-                menu.show((JButton) event.getSource(), ((JButton) event.getSource()).getX(), ((JButton) event.getSource()).getY() - 20);
+                JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
+                        getCore().isSignedIn() ? "menuSignOut" : "menuSignIn"));
+
+                signInOut.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        setContextPanelView(ContextPanels.Login);
+                    }
+                });
+
+                menu.add(signInOut);
+
+                // calculate contextmenu directly above signin-status button
+                menu.show((JButton) event.getSource(), ((JButton) event.getSource()).getX(),
+                        ((JButton) event.getSource()).getY() - 20);
             }
         });
 

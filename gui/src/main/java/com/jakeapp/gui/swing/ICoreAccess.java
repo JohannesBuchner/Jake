@@ -71,4 +71,16 @@ public interface ICoreAccess {
      * @param cb
      */
     void deRegisterRegistrationStatusCallback(RegistrationStatus cb);
+
+    /**
+     * Returns true if a user is signed in successfully.
+     *
+     * @return
+     */
+    boolean isSignedIn();
+
+    /**
+     * Signs the current user out.
+     */
+    void signOut();
 }
