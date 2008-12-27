@@ -19,15 +19,15 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-3,0,0,1,-21"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,51,0,0,2,0"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Container class="org.jdesktop.swingx.JXPanel" name="loginHeaderPanel">
+    <Container class="org.jdesktop.swingx.JXPanel" name="loginPanel">
       <Properties>
-        <Property name="background" type="java.awt.Color" resourceKey="loginHeaderPanel.background"/>
-        <Property name="name" type="java.lang.String" value="loginHeaderPanel" noResource="true"/>
+        <Property name="background" type="java.awt.Color" resourceKey="loginPanel.background"/>
+        <Property name="name" type="java.lang.String" value="loginPanel" noResource="true"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -35,34 +35,18 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
-        <Property name="axis" type="int" value="0"/>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="mainLoginPanel">
           <Properties>
             <Property name="name" type="java.lang.String" value="mainLoginPanel" noResource="true"/>
             <Property name="opaque" type="boolean" value="false"/>
           </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="509" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-        </Container>
-        <Container class="javax.swing.JPanel" name="mainPanel">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="mainPanel" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="Center"/>
+            </Constraint>
+          </Constraints>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
             <Property name="axis" type="int" value="1"/>
@@ -70,26 +54,40 @@
           <SubComponents>
             <Container class="javax.swing.JPanel" name="messagePanel">
               <Properties>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[494, 140]"/>
+                </Property>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[494, 140]"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="messagePanel" noResource="true"/>
                 <Property name="opaque" type="boolean" value="false"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[494, 140]"/>
+                </Property>
               </Properties>
 
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
-                          <Component id="messageLabel" pref="378" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" pref="87" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="messageLabel" min="-2" pref="348" max="-2" attributes="0"/>
+                          <EmptySpace pref="31" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-                          <Component id="messageLabel" min="-2" pref="93" max="-2" attributes="0"/>
-                          <EmptySpace pref="30" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="messageLabel" alignment="0" min="-2" pref="80" max="-2" attributes="1"/>
+                              <Component id="jLabel1" alignment="0" min="-2" pref="95" max="-2" attributes="1"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -97,7 +95,17 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="messageLabel">
                   <Properties>
+                    <Property name="verticalAlignment" type="int" value="1"/>
                     <Property name="name" type="java.lang.String" value="messageLabel" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel1">
+                  <Properties>
+                    <Property name="horizontalAlignment" type="int" value="2"/>
+                    <Property name="icon" type="javax.swing.Icon" resourceKey="jLabel1.icon"/>
+                    <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
+                    <Property name="verticalAlignment" type="int" value="1"/>
+                    <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -105,7 +113,7 @@
             <Container class="org.jdesktop.swingx.JXPanel" name="loginControlPanel">
               <Properties>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[491, 348]"/>
+                  <Dimension value="[491, 32000]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[491, 348]"/>
@@ -118,67 +126,58 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="35" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="signInRegisterButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="usernameComboBox" alignment="0" pref="383" max="32767" attributes="1"/>
-                                              <Component id="passwordLabel" alignment="0" pref="383" max="32767" attributes="0"/>
-                                              <Component id="usernameLabel" alignment="0" pref="383" max="32767" attributes="0"/>
-                                              <Component id="rememberPasswordCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="passwordField" alignment="0" pref="383" max="32767" attributes="0"/>
-                                          </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="usernameComboBox" alignment="0" pref="376" max="32767" attributes="1"/>
+                                      <Component id="passwordLabel" alignment="0" max="32767" attributes="1"/>
+                                      <Group type="102" alignment="0" attributes="1">
+                                          <Component id="rememberPasswordCheckBox" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="signInRegisterButton" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="registerRadioButton" pref="252" max="32767" attributes="0"/>
-                                                  <EmptySpace min="-2" pref="149" max="-2" attributes="0"/>
-                                              </Group>
-                                              <Group type="102" alignment="0" attributes="0">
-                                                  <Component id="loginRadioButton" pref="312" max="32767" attributes="0"/>
-                                                  <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
-                                              </Group>
-                                              <Component id="advancedServerOptionsHolderPanel" alignment="0" min="-2" max="-2" attributes="2"/>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="passwordField" alignment="0" pref="375" max="32767" attributes="1"/>
+                                      <Component id="usernameLabel" alignment="0" max="32767" attributes="1"/>
                                   </Group>
                               </Group>
+                              <Component id="registerRadioButton" alignment="0" min="-2" pref="319" max="-2" attributes="0"/>
+                              <Component id="loginRadioButton" alignment="0" min="-2" pref="379" max="-2" attributes="0"/>
+                              <Component id="advancedServerOptionsHolderPanel" alignment="0" min="-2" max="-2" attributes="2"/>
                           </Group>
-                          <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" max="-2" attributes="1"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="88" max="32767" attributes="0"/>
                           <Component id="loginRadioButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Component id="registerRadioButton" min="-2" max="-2" attributes="2"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="advancedServerOptionsHolderPanel" min="-2" max="-2" attributes="2"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="usernameLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                           <Component id="usernameComboBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                           <Component id="passwordField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="rememberPasswordCheckBox" min="-2" pref="25" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="signInRegisterButton" min="-2" pref="31" max="-2" attributes="0"/>
-                          <EmptySpace pref="59" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                  <Component id="rememberPasswordCheckBox" min="-2" pref="25" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="signInRegisterButton" min="-2" pref="31" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -187,7 +186,7 @@
                 <Component class="javax.swing.JButton" name="signInRegisterButton">
                   <Properties>
                     <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-                      <action class="com.jakeapp.gui.swing.main.LoginPanel" id="signIn" methodName="signIn"/>
+                      <action class="com.jakeapp.gui.swing.panels.LoginPanel" id="signInRegisterButtonPressed" methodName="signInRegisterButtonPressed"/>
                     </Property>
                     <Property name="text" type="java.lang.String" resourceKey="signInRegisterButton.text"/>
                     <Property name="name" type="java.lang.String" value="signInRegisterButton" noResource="true"/>
@@ -219,6 +218,9 @@
                     </Property>
                     <Property name="name" type="java.lang.String" value="usernameComboBox" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="usernameComboBoxActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="rememberPasswordCheckBox">
                   <Properties>
@@ -280,38 +282,45 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel3" min="-2" pref="55" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                                  <Component id="jComboBox1" min="-2" pref="130" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="registrationInfoPanel" alignment="0" min="-2" pref="373" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                                          <Component id="serverLabel" min="-2" pref="55" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="serverComboBox" pref="183" max="32767" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="advancedServerButton" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
+                                  <Component id="registrationInfoPanel" min="-2" pref="53" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="serverComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="advancedServerButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="serverLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel3">
+                        <Component class="javax.swing.JLabel" name="serverLabel">
                           <Properties>
-                            <Property name="text" type="java.lang.String" resourceKey="jLabel3.text"/>
-                            <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
+                            <Property name="text" type="java.lang.String" resourceKey="serverLabel.text"/>
+                            <Property name="name" type="java.lang.String" value="serverLabel" noResource="true"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JComboBox" name="jComboBox1">
+                        <Component class="javax.swing.JComboBox" name="serverComboBox">
                           <Properties>
                             <Property name="editable" type="boolean" value="true"/>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -324,15 +333,23 @@
                                 <StringItem index="5" value="binaryfreedom.info"/>
                               </StringArray>
                             </Property>
-                            <Property name="name" type="java.lang.String" value="jComboBox1" noResource="true"/>
+                            <Property name="name" type="java.lang.String" value="serverComboBox" noResource="true"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton2">
+                        <Component class="javax.swing.JButton" name="advancedServerButton">
                           <Properties>
-                            <Property name="text" type="java.lang.String" resourceKey="jButton2.text"/>
-                            <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
+                            <Property name="text" type="java.lang.String" resourceKey="advancedServerButton.text"/>
+                            <Property name="name" type="java.lang.String" value="advancedServerButton" noResource="true"/>
                           </Properties>
                         </Component>
+                        <Container class="javax.swing.JPanel" name="registrationInfoPanel">
+                          <Properties>
+                            <Property name="name" type="java.lang.String" value="registrationInfoPanel" noResource="true"/>
+                            <Property name="opaque" type="boolean" value="false"/>
+                          </Properties>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                        </Container>
                       </SubComponents>
                     </Container>
                   </SubComponents>
@@ -342,6 +359,9 @@
                     <Property name="text" type="java.lang.String" resourceKey="passwordField.text"/>
                     <Property name="name" type="java.lang.String" value="passwordField" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="passwordFieldActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

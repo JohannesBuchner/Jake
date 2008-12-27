@@ -40,14 +40,14 @@ public class JakeMainView extends FrameView {
     private ICoreAccess core;
 
     // all the ui panels
-    private NewsPanel newsPanel = new NewsPanel();
-    private FilePanel filePanel = new FilePanel();
-    private NotesPanel notesPanel = new NotesPanel();
+    private NewsPanel newsPanel;
+    private FilePanel filePanel;
+    private NotesPanel notesPanel;
     private ProjectInvitationPanel invitationPanel = new ProjectInvitationPanel();
-    private LoginPanel loginPanel = new LoginPanel();
+    private LoginPanel loginPanel;
     private List<JToggleButton> contextSwitcherButtons;
     private JPanel contextSwitcherPane = createContextSwitcherPane();
-    private JPanel inspectorPanel = new InspectorPanel();
+    private JPanel inspectorPanel;
 
     private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
     private ContextPanels contextPanelView = ContextPanels.Login;
@@ -97,6 +97,14 @@ public class JakeMainView extends FrameView {
 
         // initializeJakeMainHelper the core connection
         setCore(new CoreAccessMock());
+
+        // init the panels
+        loginPanel = new LoginPanel();
+        newsPanel = new NewsPanel();
+        filePanel = new FilePanel();
+        notesPanel = new NotesPanel();
+        inspectorPanel = new InspectorPanel();
+
 
         // initialize helper code
         JakeMainHelper.initializeJakeMainHelper();

@@ -12,7 +12,9 @@ import java.util.List;
 public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
 
-
+    /**
+     * Core Access Mock initialisation code
+     */
     public CoreAccessMock() {
         connectionStatus = new ArrayList<ConnectionStatus>();
         registrationStatus = new ArrayList<RegistrationStatus>();
@@ -53,6 +55,23 @@ public class CoreAccessMock implements ICoreAccess {
 
     public void signIn(String user, String pass) {
         log.info("Signs in: " + user + "pass: " + pass);
+
+        Runnable runner = new Runnable() {
+            public void run() {
+                callbackConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+            }
+        };
+
+        // start our runner thread, that makes callbacks to connection status
+        new Thread(runner).start();
     }
 
     public void registerConnectionStatusCallback(ConnectionStatus cb) {
@@ -64,8 +83,15 @@ public class CoreAccessMock implements ICoreAccess {
     public void deRegisterConnectionStatusCallback(ConnectionStatus cb) {
         log.info("Deregisters connection status callback: " + cb);
 
-
         connectionStatus.remove(cb);
+    }
+
+
+    private void callbackConnectionStatus(ConnectionStatus.ConnectionStati state, String str) {
+        log.info("spead callback event...");
+        for (ConnectionStatus callback : connectionStatus) {
+            callback.setConnectionStatus(state, str);
+        }
     }
 
     public void register(String user, String pass) {
@@ -79,6 +105,12 @@ public class CoreAccessMock implements ICoreAccess {
     public void deRegisterRegistrationStatusCallback(RegistrationStatus cb) {
         log.info("Deregisters registration status callback: " + cb);
 
+    }
+
+    private void callbackRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
+        for (RegistrationStatus callback : registrationStatus) {
+            callback.setRegistrationStatus(state, str);
+        }
     }
 
 

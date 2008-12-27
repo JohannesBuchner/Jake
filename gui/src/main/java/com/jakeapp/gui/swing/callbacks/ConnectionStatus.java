@@ -18,5 +18,5 @@ public interface ConnectionStatus {
      *
      * @param status
      */
-    void setConnectionStatus(ConnectionStati status);
+    void setConnectionStatus(final ConnectionStati status, final String msg);
 }

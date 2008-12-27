@@ -8,15 +8,15 @@ package com.jakeapp.gui.swing.callbacks;
  */
 public interface RegistrationStatus {
     enum RegisterStati {
-        None, RegistrationActive, RegisterSuccess
+        None, RegistrationActive, RegisterSuccess, NoConnection, UnknownError
     }
 
     ;
 
     /**
-     * Set the Connection Status
+     * Set the Registration Status
      *
      * @param status
      */
-    void setRegistrationStatus(RegisterStati status);
+    void setRegistrationStatus(final RegisterStati status, final String msg);
 }
