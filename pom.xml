@@ -12,6 +12,7 @@
 		<module>core</module>
 		<module>documentation</module>
 		<module>ics</module>
+		<module>ics-xmpp</module>
 		<module>gui</module>
 		<module>fss</module>
 	</modules>
