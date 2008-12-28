@@ -20,8 +20,8 @@ public class FileObject extends JakeObject {
     private String relPath;
     private String checksum;
     private File absolutePath;
-
-
+    private transient boolean locallyModified = false;
+    
     /**
      * Default ctor.
      */
@@ -41,6 +41,16 @@ public class FileObject extends JakeObject {
     public FileObject(UUID uuid, Project project, String relPath) {
         super(uuid, project);
         this.setRelPath(relPath);
+        this.setChecksum("");
+        
+        /*
+         * locallyModified is always initialized with false. After
+         * While the application was not up and running, changes may have
+         * happened. The File-System-Service detects the changes that happened
+         * before starting the application and sets the locallyModified flag
+         * accordingly.
+         */
+        this.setLocallyModified(false);
     }
 
     /**
@@ -86,4 +96,21 @@ public class FileObject extends JakeObject {
     public void setChecksum(String checksum) {
         this.checksum = checksum;
     }
+
+	/**
+	 * Sets the value of <code>locallyModified</code>.
+	 * @param locallyModified <code>true</code> when a local change is detected.
+	 * 	<code>false</code> if local changes are announced and a LogEntry reflecting
+	 * the modifications is created.
+	 */
+	public void setLocallyModified(boolean locallyModified) {
+		this.locallyModified = locallyModified;
+	}
+
+	/**
+	 * @return true, if the file was locally modified.
+	 */
+	public boolean isLocallyModified() {
+		return locallyModified;
+	}
 }

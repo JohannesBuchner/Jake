@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
+import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
 import com.jakeapp.jake.fss.exceptions.FileTooLargeException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.LaunchException;
@@ -321,6 +322,46 @@ public class FSService implements IFSService, IModificationListener {
 				&& f.list().length > 0 && f.delete());
 
 		return true;
+	}
+	
+	@Override
+	public boolean moveFile(String from, String to)
+			throws InvalidFilenameException, NotAReadableFileException, FileAlreadyExistsException, IOException, CreatingSubDirectoriesFailedException {
+		File fileFrom,fileTo;
+		boolean result = true;
+		
+		if (!this.isValidRelpath(to)) {
+			throw new InvalidFilenameException(to);
+		}
+		
+		fileFrom = new File(this.getFullpath(from));
+		fileTo = new File(this.getFullpath(to));
+		
+		if (!fileFrom.exists()) {
+			throw new NotAFileException();
+		}
+		
+		if (!fileFrom.canRead()) {
+			throw new NotAReadableFileException();
+		}
+		
+		if (!fileFrom.isFile()) {
+			throw new NotAFileException();
+		}
+		
+		if (fileTo.exists()) {
+			throw new FileAlreadyExistsException();
+		}
+		
+		if (!fileFrom.renameTo(fileTo)) {
+			//FALLBACK SOLUTION FOR MOVE - copy the file and remove it
+			
+			//TODO this should be atomic
+			this.writeFileStream(to, this.readFileStream(from));
+			this.deleteFile(from);
+		}
+		
+		return result;		
 	}
 
 	public void launchFile(String relpath) throws InvalidFilenameException,

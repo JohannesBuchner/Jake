@@ -26,6 +26,11 @@ public enum LogAction {
 	 * the FileObject in question was deleted.
 	 */
     FILE_DELETE,
+    
+    /**
+	 * the FileObject in question was moved to another location.
+	 */
+    FILE_MOVEDTO,
 
     /**
 	 * a new version of a NoteObject was created.

@@ -210,7 +210,7 @@ public interface IFSService {
 		throws IOException;
 	
 	/**
-	 * Deletes the file and recursively removes parent folders if they are empty
+	 * Deletes the file and recursively res parent folders if they are empty
 	 * @param relativePath the relative path to the file to be deleted
      * @return wether the delete was successful
 	 * @throws InvalidFilenameException if the filename is invalid for jake
@@ -218,6 +218,22 @@ public interface IFSService {
 	 * @throws NotAFileException if the relativePath is not a file
 	 */
 	public boolean deleteFile(String relativePath) throws InvalidFilenameException, FileNotFoundException, NotAFileException;
+	
+	/**
+	 * 
+	 * @param from the relative path to the file to be moved
+	 * @param to the relative path of the destination to move the file to
+	 * @return <code>true</code> if the operation was successful.
+	 * @throws InvalidFilenameException if destination's filename is invalid
+	 * @throws NotAReadableFileException if <code>from</code> points to a directory rather
+	 * than to a file or if there is no file at <code>from</code> that can be read.
+	 * @throws FileAlreadyExistsException if the file <code>to</code> points to
+	 * 	already exists.
+	 * @throws IOException if an IO-Error occured when reading or writing the files
+	 * @throws CreatingSubDirectoriesFailedException If creating the directories, that should
+	 * contain the file after the move operation, failed.
+	 */
+	public boolean moveFile(String from, String to) throws InvalidFilenameException, NotAReadableFileException, FileAlreadyExistsException, IOException, CreatingSubDirectoriesFailedException;
 	
 	
 	/**

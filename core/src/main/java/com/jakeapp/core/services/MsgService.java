@@ -6,11 +6,7 @@ import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 
-import java.util.Map;
 import java.util.List;
-
-
-import org.apache.log4j.Logger;
 
 /**
  * Abstract MessagingService declasring what the classes for the

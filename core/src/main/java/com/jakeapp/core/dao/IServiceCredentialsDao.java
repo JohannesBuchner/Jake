@@ -1,6 +1,5 @@
 package com.jakeapp.core.dao;
 
-import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
