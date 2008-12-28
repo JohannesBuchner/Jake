@@ -1,10 +1,12 @@
-package com.jakeapp.jake.ics;
+package com.jakeapp.jake.ics.msgservice;
+
+import com.jakeapp.jake.ics.UserId;
 
 
 /**
  * Objects wanting to receive objects have to implement this
  * 
- * @see IICService
+ * @see IMsgService
  * @author johannes
  */
 
@@ -17,7 +19,7 @@ public interface IObjectReceiveListener {
      * @param identifier the identifier of this object (useually relPath or note:xxx)
      * @param content the content itself as a byte array
      */
-    public void receivedObject(String from_userid, String identifier,
+    public void receivedObject(UserId from, String identifier,
 			byte[] content);
 	
 	

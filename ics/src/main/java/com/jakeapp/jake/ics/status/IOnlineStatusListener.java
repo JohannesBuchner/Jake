@@ -1,10 +1,12 @@
-package com.jakeapp.jake.ics;
+package com.jakeapp.jake.ics.status;
+
+import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
  * Objects wanting to notice if users go online and offline have to implement 
  * this 
  * 
- * @see IICService
+ * @see IMsgService
  * @author johannes
  */
 

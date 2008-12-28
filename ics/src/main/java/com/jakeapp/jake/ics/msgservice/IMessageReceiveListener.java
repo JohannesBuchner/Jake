@@ -1,10 +1,12 @@
-package com.jakeapp.jake.ics;
+package com.jakeapp.jake.ics.msgservice;
+
+import com.jakeapp.jake.ics.UserId;
 
 
 /**
  * Objects wanting to receive messages have to implement this
  * 
- * @see IICService
+ * @see IMsgService
  * @author johannes
  */
 
@@ -15,6 +17,6 @@ public interface IMessageReceiveListener {
      * @param from_userid the user id which sent the message
      * @param content the content of the message
      */
-    public void receivedMessage(String from_userid, String content);
+    public void receivedMessage(UserId from_userid, String content);
 	
 }
