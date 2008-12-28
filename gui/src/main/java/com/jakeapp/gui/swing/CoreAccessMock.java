@@ -12,12 +12,13 @@ import java.util.List;
 public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
 
-    private boolean isSignedIn = false;
+    private boolean isSignedIn;
 
     /**
      * Core Access Mock initialisation code
      */
     public CoreAccessMock() {
+        isSignedIn = false;
         connectionStatus = new ArrayList<ConnectionStatus>();
         registrationStatus = new ArrayList<RegistrationStatus>();
     }
@@ -118,13 +119,14 @@ public class CoreAccessMock implements ICoreAccess {
                 callbackConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
 
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
                 isSignedIn = true;
+
+                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
             }
         };
 
@@ -143,8 +145,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
     public boolean isSignedIn() {
-        // TODO: implement mock
-        return false;
+        return isSignedIn;
     }
 
 
@@ -152,6 +153,10 @@ public class CoreAccessMock implements ICoreAccess {
         isSignedIn = false;
 
         callbackConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
+    }
+
+    public String[] getLastSignInNames() {
+        return new String[]{"pstein", "csutter"};
     }
 
 

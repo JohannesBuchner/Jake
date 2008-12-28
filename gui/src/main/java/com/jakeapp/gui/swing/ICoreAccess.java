@@ -83,4 +83,12 @@ public interface ICoreAccess {
      * Signs the current user out.
      */
     void signOut();
+
+
+    /**
+     * Returns an Array of the last isers that signed in.
+     *
+     * @return
+     */
+    String[] getLastSignInNames();
 }

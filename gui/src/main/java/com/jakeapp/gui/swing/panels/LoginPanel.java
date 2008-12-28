@@ -41,6 +41,7 @@ import java.net.URISyntaxException;
 public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus, ConnectionStatus {
     private ResourceMap resourceMap;
     private static final Logger log = Logger.getLogger(LoginPanel.class);
+    private JPanel loginSuccessPanel;
 
 
     /**
@@ -54,6 +55,7 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         JakeMainView.getMainView().getCore().registerConnectionStatusCallback(this);
         JakeMainView.getMainView().getCore().registerRegistrationStatusCallback(this);
 
+        // fill the registraton info panel
         registrationInfoPanel.setLayout(new MigLayout("wrap 2"));
         JLabel registrationLabel1 = new JLabel(getResourceMap().getString("registrationLabel1"));
         registrationLabel1.setForeground(Color.DARK_GRAY);
@@ -76,13 +78,6 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         registrationInfoPanel.add(new JXHyperlink(linkAction));
         registrationInfoPanel.setOpaque(false);
         registrationInfoPanel.updateUI();
-
-        /*JLabel imageLabel = new JLabel();
-        imageLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/jakewelcome.png"))));
-*/
-        messageLabel.setText(getResourceMap().getString("loginMessageLabel"));
-
 
         // make controls transparent
         loginRadioButton.setOpaque(false);
@@ -124,16 +119,65 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         // set the background painter
         loginPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
-
         // make initial update
-        selectionChanged();
+        updateView();
+    }
+
+    /**
+     * Updates the main view.
+     * Shows the signIn-Register/signInStatus Panel, evaluates state.
+     */
+    private void updateView() {
+        log.info("updating login view. signedIn=" + JakeMainView.getMainView().getCore().isSignedIn());
+
+        // load the default name list
+        usernameComboBox.setModel(new DefaultComboBoxModel(JakeMainView.getMainView().getCore().getLastSignInNames()));
 
 
         // update the view (maybe already logged in)
         if (JakeMainView.getMainView().getCore().isSignedIn()) {
             showSignInSuccess();
+        } else {
+            showSignInForm();
         }
     }
+
+    /**
+     * Shows the Sign In Form.
+     */
+    private void showSignInForm() {
+        log.info("Show Sign In Form...");
+
+        // set signIn button
+        selectionChanged();
+
+        // set the welcome jake-text
+        messageLabel.setText(getResourceMap().getString("loginMessageLabel"));
+
+        loginPanel.remove(getLoginSuccessPanel());
+
+        if (loginControlPanel.getParent() != mainLoginPanel) {
+            mainLoginPanel.add(loginControlPanel);
+        }
+
+        mainLoginPanel.updateUI();
+    }
+
+
+    /**
+     * Show Sign In success.
+     */
+    private void showSignInSuccess() {
+        log.info("Show Sign In Success.");
+
+        // change the message on top
+        messageLabel.setText(getResourceMap().getString("signInSuccessMessage"));
+
+        loginPanel.add(getLoginSuccessPanel(), BorderLayout.SOUTH);
+        mainLoginPanel.remove(loginControlPanel);
+        mainLoginPanel.updateUI();
+    }
+
 
     /**
      * This method is called from within the constructor to
@@ -143,7 +187,8 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents
+            () {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         loginPanel = new org.jdesktop.swingx.JXPanel();
@@ -382,6 +427,7 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
      *
      * @return
      */
+
     private boolean isSignInRegisterButtonEnabled() {
         return !(usernameComboBox.getSelectedItem().toString().isEmpty() || passwordField.getPassword().length == 0);
     }
@@ -400,7 +446,6 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
 
         // update the button
         updateSignInRegisterButton();
-
     }
 
     private void updateSignInRegisterButton() {
@@ -457,13 +502,15 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
 
 
     public void setRegistrationStatus(final RegisterStati status, final String msg) {
+        log.info("got registration status update: " + status);
+
         Runnable runner = new Runnable() {
             public void run() {
+                updateView();
+
                 if (status == RegisterStati.RegistrationActive) {
                     signInRegisterButton.setText(getResourceMap().getString("loginRegisterProceed"));
                     signInRegisterButton.setEnabled(false);
-                } else if (status == RegisterStati.RegisterSuccess) {
-                    showRegistrationSuccess();
                 }
             }
         };
@@ -471,6 +518,7 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         SwingUtilities.invokeLater(runner);
     }
 
+    // TODO!
     private void showRegistrationSuccess() {
     }
 
@@ -479,11 +527,12 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
 
         Runnable runner = new Runnable() {
             public void run() {
+                // always update view
+                updateView();
+
                 if (status == ConnectionStati.SigningIn) {
                     signInRegisterButton.setText(getResourceMap().getString("loginSignInProceed"));
                     signInRegisterButton.setEnabled(false);
-                } else if (status == ConnectionStati.Online) {
-                    showSignInSuccess();
                 }
             }
         };
@@ -492,20 +541,13 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
     }
 
 
-    /**
-     * Show Sign In success.
-     */
-    private void showSignInSuccess() {
-        log.info("Show Sign In Success.");
-
-        // change the message on top
-        messageLabel.setText(getResourceMap().getString("signInSuccessMessage"));
-
+    private JPanel createSignInSuccessPanel() {
         // create the drag & drop hint
         JPanel loginSuccessPanel = new JPanel();
         loginSuccessPanel.setOpaque(false);
         loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
 
+        // the sign out button
         JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
         signOutButton.addActionListener(new ActionListener() {
 
@@ -530,11 +572,7 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         messageSuccess2.setFont(Platform.getStyler().getH1Font());
         messageSuccess2.setForeground(Color.DARK_GRAY);
         loginSuccessPanel.add(messageSuccess2, "al center");
-
-
-        loginPanel.add(loginSuccessPanel, BorderLayout.SOUTH);
-        mainLoginPanel.remove(loginControlPanel);
-        mainLoginPanel.updateUI();
+        return loginSuccessPanel;
     }
 
     public ResourceMap getResourceMap() {
@@ -543,5 +581,21 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
 
     public void setResourceMap(ResourceMap resourceMap) {
         this.resourceMap = resourceMap;
+    }
+
+    /**
+     * Returns the Login Success Panel.
+     * Uses lazy-loading to create the panel.
+     */
+    public JPanel getLoginSuccessPanel() {
+        if (loginSuccessPanel == null) {
+            loginSuccessPanel = createSignInSuccessPanel();
+        }
+
+        return loginSuccessPanel;
+    }
+
+    public void setLoginSuccessPanel(JPanel loginSuccessPanel) {
+        this.loginSuccessPanel = loginSuccessPanel;
     }
 }
