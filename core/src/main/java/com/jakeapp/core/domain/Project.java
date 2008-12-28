@@ -288,6 +288,7 @@ public class Project implements ILogable {
      *
      * @return
      */
+	@Override
     public String toString() {
         return "Project " + getName() + "(" + getProjectId() + "), " +
                 getRootPath() + " started: " + isStarted();

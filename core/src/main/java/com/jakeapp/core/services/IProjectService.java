@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 
 import java.util.List;
@@ -154,5 +155,16 @@ public interface IProjectService {
      */
     public void assignUserToProject(Project project, UserId userId)
             throws IllegalArgumentException, IllegalAccessException;
-
+    
+    /**
+     * Sets the level of trust we have to the specified user.
+     * If the user does not exist yet in the <code>Project</code> the user is invited.
+     * @param project The <code>Project</code> to apply the new level
+     * of trust to.
+     * @param userid The user whose trustlevel gets changed.
+     * @param trust The new level of trust for the specified user.
+     * @throws IllegalArgumentException if project or userId are null
+     * @throws IllegalAccessException   if the project has no userId set yet.
+     */
+    public void setTrust(Project project,UserId userid,TrustState trust) throws IllegalArgumentException, IllegalAccessException;
 }

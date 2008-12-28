@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 
 import java.util.List;
@@ -83,4 +84,10 @@ public class ProjectServiceMock implements IProjectService {
             throws IllegalArgumentException, IllegalAccessException {
         // TODO
     }
+
+	@Override
+	public void setTrust(Project project, UserId userid, TrustState trust) {
+		// TODO Auto-generated method stub
+		
+	}
 }

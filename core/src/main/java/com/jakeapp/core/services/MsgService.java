@@ -153,8 +153,18 @@ public abstract class MsgService<T extends UserId> {
             throw new IllegalArgumentException("friend must not be null");
         return this.checkFriends(friend);
     }
+    
     protected abstract boolean checkFriends(T friend);
-
+    
+    /**
+     * Searches for Users matching a pattern, to add them as
+     * trusted users later.
+     * @param pattern The pattern that is searched for in Usernames.
+     * 	Implementations of <code>MsgService</code> may look for the pattern
+     *  in other userdata as well.
+     * @return A list of users matching the pattern.
+     */
+    public abstract List<T> findUser(String pattern);
 
     /**
      * Get the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
