@@ -64,6 +64,32 @@ public interface IProjectService {
      */
     public boolean stopProject(Project project)
             throws IllegalArgumentException, FileNotFoundException;
+    
+    /**
+     * Loads the given project (load database)
+     *
+     * @param project the name of the project to be loaded.
+     * @throws IllegalArgumentException if the supplied name is null
+     * @throws FileNotFoundException    if the rootPath of the loaded
+     *                                  <code>Project</code> does
+     *                                  not exist anymore
+     */
+    public Project openProject(String project)
+            throws IllegalArgumentException, FileNotFoundException;
+
+
+    /**
+     * Stops the given project and removes it from the list of projects.
+     *
+     * @param project the <code>Project</code> to be closed.
+     * @throws IllegalArgumentException if the supplied
+     *                                  <code>Project</code> is null
+     * @throws FileNotFoundException    if the rootPath of the
+     *                                  <code>Project</code> does not exist
+     *                                  anymore
+     */
+    public void closeProject(Project project)
+            throws IllegalArgumentException, FileNotFoundException;
 
 
     /**

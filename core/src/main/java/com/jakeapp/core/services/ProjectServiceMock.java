@@ -39,6 +39,20 @@ public class ProjectServiceMock implements IProjectService {
             throws IllegalArgumentException, FileNotFoundException {
         return false; // TODO
     }
+    
+	@Override
+	public void closeProject(Project project) throws IllegalArgumentException,
+			FileNotFoundException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Project openProject(String project) throws IllegalArgumentException,
+			FileNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     @Override
     public boolean deleteProject(Project project)

@@ -6,14 +6,10 @@ import com.jakeapp.core.domain.Tag;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 /**
  * A hibernate noteObject DAO.
  */
 public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> {
-
-    private static Logger log = Logger.getLogger(HibernateNoteObjectDao.class);
 
     /**
      * {@inheritDoc}

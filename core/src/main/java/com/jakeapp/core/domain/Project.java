@@ -46,6 +46,7 @@ public class Project implements ILogable {
     private transient boolean autologin;
     private UserId userId;
     private ServiceCredentials credentials;
+    private transient InvitationState invitationState;
 
     /**
      * Construct a Project. Freshly constructed projects are always stopped.
@@ -266,6 +267,21 @@ public class Project implements ILogable {
     public ServiceCredentials getCredentials() {
         return credentials;
     }
+    
+	/**
+	 * @param invitationState the invitationState to set
+	 */
+	public void setInvitationState(InvitationState invitationState) {
+		this.invitationState = invitationState;
+	}
+
+
+	/**
+	 * @return the invitationState
+	 */
+	public InvitationState getInvitationState() {
+		return invitationState;
+	}
 
     /**
      * The toString-Representation for debugging.

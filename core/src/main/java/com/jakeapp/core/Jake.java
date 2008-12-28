@@ -48,7 +48,7 @@ public class Jake {
             if (console) {
                 log.debug("Load main application context");
 
-                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+                /*ApplicationContext applicationContext =*/ new ClassPathXmlApplicationContext(
                         new String[]{"jake-core-context.xml"});
 
 

@@ -18,9 +18,6 @@ import org.apache.log4j.Logger;
  * need to implement.
  */
 public abstract class MsgService<T extends UserId> {
-
-    private static Logger log = Logger.getLogger(MsgService.class);
-
     private String name = "notInitialized";
     private VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
     private T userId;
@@ -168,4 +165,9 @@ public abstract class MsgService<T extends UserId> {
      * @return the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
      */
     public abstract String getServiceName();
+    
+    /**
+     * Creates an account for the Service, with the specified ServiceCredentials.
+     */
+    public abstract void createAccount();
 }

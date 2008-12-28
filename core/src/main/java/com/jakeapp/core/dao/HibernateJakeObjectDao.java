@@ -7,7 +7,6 @@ import com.jakeapp.core.domain.Tag;
 import java.util.List;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.apache.log4j.Logger;
 
 /**
  * A generic hibernate DAO for <code>JakeObject</code>s.
@@ -16,8 +15,6 @@ import org.apache.log4j.Logger;
  */
 public abstract class HibernateJakeObjectDao<T extends JakeObject>
         extends HibernateDaoSupport implements IJakeObjectDao<T> {
-     private static Logger log = 
-    	 Logger.getLogger(HibernateJakeObjectDao.class);
 
     /**
      * {@inheritDoc}

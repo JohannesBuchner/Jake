@@ -2,7 +2,6 @@ package com.jakeapp.core.dao;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.dao.support.DaoSupport;
 
 import com.jakeapp.core.domain.Project;
@@ -13,8 +12,6 @@ import com.jakeapp.core.domain.ProjectMember;
  */
 public class HibernateProjectMemberDao extends DaoSupport
         implements IProjectMemberDao {
-    private static Logger log = Logger.getLogger(HibernateProjectMemberDao.class);
-    
     /**
      * {@inheritDoc}
      */
