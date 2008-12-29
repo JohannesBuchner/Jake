@@ -36,6 +36,9 @@ public class CoreAccessMock implements ICoreAccess {
         Project pr3 = new Project("Shared Music", null, null, new File("/Users"));
         projects.add(pr3);
 
+        // Yes, we need a windows testing project too...
+        Project pr4 = new Project("Windows Project", null, null, new File("C:\\test"));
+        projects.add(pr4);
     }
 
 

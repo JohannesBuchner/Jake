@@ -15,12 +15,14 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.controls.DisabledGlassPane;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 /**
  * @author studpete
@@ -28,6 +30,7 @@ import java.awt.*;
 public class NewsPanel extends javax.swing.JPanel {
     private static final Logger log = Logger.getLogger(NewsPanel.class);
     private Project project;
+    private DisabledGlassPane folderError;
     private ResourceMap resourceMap;
     private Icon startIcon;
     private Icon stopIcon;
@@ -50,6 +53,8 @@ public class NewsPanel extends javax.swing.JPanel {
         // set the background painter
         newsContentPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
+        folderError = new DisabledGlassPane();
+        newsContentPanel.add(folderError);
 
         eventsTable.setSortable(true);
         eventsTable.setColumnControlVisible(true);
@@ -70,6 +75,14 @@ public class NewsPanel extends javax.swing.JPanel {
         // TODO: remove hack
         if (getProject() == null) {
             return;
+        }
+
+        if(!JakeMainHelper.hasValidRootPath(getProject())) {
+             // TODO: Get rid of this ugly hack and everything related to it
+            log.warn("Project root path " + getProject().getRootPath() + " is invalid.");
+             folderError.activate("FOLDER DOES NOT EXIST");
+        } else {
+            folderError.deactivate();
         }
 
         // update all text in panel

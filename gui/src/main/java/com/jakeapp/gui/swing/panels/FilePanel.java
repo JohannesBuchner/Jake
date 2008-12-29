@@ -12,6 +12,7 @@ package com.jakeapp.gui.swing.panels;
 
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -27,6 +28,7 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
+import com.jakeapp.core.domain.Project;
 
 /**
  * @author studpete
@@ -34,6 +36,8 @@ import com.jakeapp.gui.swing.listener.TableMouseListener;
 public class FilePanel extends javax.swing.JPanel {
 
     private PopupMenu fileMenu;
+
+    private Project project;
 
     /**
      * Creates new form FilePanel
@@ -58,8 +62,11 @@ public class FilePanel extends javax.swing.JPanel {
         //        1, 1, 1, 1, Color.DARK_GRAY));
 
 
+        // TODO: Fix this. Essentially, the problem is that we need to set some sort
+        // of model before we have a project, so this creates a new model of the root
+        // point in the FS. Maybe replace this by a dummy model or find a nicer way of
+        // injection.
         TreeTableModel treeTableModel = new FileSystemModel();
-
         fileTreeTable.setTreeTableModel(treeTableModel);
 
         fileTreeTable.setScrollsOnExpand(true);
@@ -195,4 +202,14 @@ public class FilePanel extends javax.swing.JPanel {
     private javax.swing.JButton newFilesButton;
     private javax.swing.JButton resolveButton;
     // End of variables declaration//GEN-END:variables
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+        TreeTableModel treeTableModel = new FileSystemModel(new File(project.getRootPath()));
+        fileTreeTable.setTreeTableModel(treeTableModel);
+    }
 }

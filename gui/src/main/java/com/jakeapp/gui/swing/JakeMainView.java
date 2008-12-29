@@ -1118,6 +1118,7 @@ public class JakeMainView extends FrameView {
 
         // relay it to the other panels!
         newsPanel.setProject(currentProject);
+        filePanel.setProject(currentProject);
     }
 
     /**

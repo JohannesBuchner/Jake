@@ -6,6 +6,8 @@ import com.jakeapp.gui.swing.JakeMainView;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 
+import java.io.File;
+
 /**
  * JakeMainHelper has static functions that are used all across the ui codebase.
  * User: studpete
@@ -38,5 +40,20 @@ public class JakeMainHelper {
     public static String printProjectStatus(Project project) {
         // TODO: determine status
         return "Project is ...TODO!";
+    }
+
+    @Deprecated
+    /**
+     * Checks if the project has a valid root path (i.e. one that exists and
+     * is a directory)
+     *
+     * @param project The project to validate
+     * @return Whether or not the root path is valid
+     */
+    public static boolean hasValidRootPath(Project project) {
+        // TODO: THIS SHOULD NOT BE DONE HERE!
+        // Fucking ugly hack until we decide on how to handle invalid project root paths
+        File prjfolder = new File(project.getRootPath());
+        return !(!prjfolder.exists() || !prjfolder.isDirectory());
     }
 }
