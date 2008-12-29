@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.SheetableJFrame;
 import com.jakeapp.gui.swing.helpers.Platform;
+import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * The main class of the application.
  */
 public class JakeMainApp extends SingleFrameApplication implements ProjectSelectionChanged {
-
+    private static final Logger log = Logger.getLogger(JakeMainApp.class);
     private static JakeMainApp app;
     private ICoreAccess core;
     private Project project = null;
@@ -133,7 +134,11 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
      */
     private void fireProjectSelectionChanged() {
         for (ProjectSelectionChanged psc : projectSelectionChanged) {
-            psc.setProject(getProject());
+            try {
+                psc.setProject(getProject());
+            } catch (RuntimeException ex) {
+                log.error("Catched an exception while setting the new project: ", ex);
+            }
         }
     }
 

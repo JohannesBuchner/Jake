@@ -40,7 +40,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
     public JakeSourceList(ICoreAccess core) {
         super(core);
 
-        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+        // JakeMainApp.getApp().addProjectSelectionChangedListener(this);
         JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
 
         sourceList = createSourceList();

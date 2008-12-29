@@ -6,6 +6,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -75,6 +76,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
 
     // menu actions
     ProjectAction startStopProjectAction = new StartStopProjectAction();
+    ProjectAction createProjectAction = new CreateProjectAction();
 
     public JakeMainView(SingleFrameApplication app) {
         super(app);
@@ -124,10 +126,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
             // new MacOSAppMenuHandler();
         }
 
-        // set menu actions
-        startStopProjectMenuItem.setAction(startStopProjectAction);
-
-
         // init the content panel
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
@@ -143,6 +141,10 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
         // create status bar
         jakeStatusBar = new JakeStatusBar(getCore());
         statusPanel.add(jakeStatusBar.getComponent());
+
+        // set menu actions
+        startStopProjectMenuItem.setAction(startStopProjectAction);
+        //createProjectButton.setAction(createProjectAction);
 
         // set default window behaviour
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
