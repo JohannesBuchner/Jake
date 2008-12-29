@@ -8,7 +8,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jakeapp.jake</groupId>
 	<artifactId>ics-xmpp</artifactId>
-	<name>XMPP ics-implementation</name>
+	<name>ics-xmpp</name>
+	<description>An implementation of the ICS using XMPP.</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<repositories>

@@ -8,7 +8,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jakeapp.jake</groupId>
 	<artifactId>ics</artifactId>
-	<name>ics - Interclient Communication Service</name>
+	<name>ics</name>
+	<description>The Interclient Communication Service provides low-level clients communication methods.</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<dependencies>

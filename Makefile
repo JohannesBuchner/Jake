@@ -33,13 +33,18 @@ ics:
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_ics-xmpp; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
 
-ics-xmpp:
+ics-xmpp: ics
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
+	rm -f .rebuild_$@
 
 clean:
 	${MVN} clean
+
+mrproper: clean
+	rm -rf ~/.m2/repository/com/{jakeapp,doublesignal}/
+	rm -f target/*-${VERSION}.jar
 
 up:
 	oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done

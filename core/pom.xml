@@ -9,6 +9,7 @@
 	<groupId>com.jakeapp.jake</groupId>
 	<artifactId>core</artifactId>
 	<name>core</name>
+	<description>Application logic of Jake</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<dependencies>
