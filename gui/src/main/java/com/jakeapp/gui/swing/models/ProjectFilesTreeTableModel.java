@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.ArrayList;
 
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.TagSet;
+
+import javax.swing.*;
 
 /**
  * A tree table model representing a folder (including subfolders and files contained
@@ -122,13 +125,15 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
             return String.class;
         case 2:
             return String.class;
+        case 3:
+            return TagSet.class;
         default:
             return super.getColumnClass(column);
         }
     }
 
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -140,6 +145,8 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
             return "Size";
         case 2:
             return "Last modified";
+        case 3:
+            return "Tags";
         default:
             return super.getColumnName(column);
         }
@@ -156,6 +163,8 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
                 return isLeaf(node) ? JakeMainHelper.getSize(file.length(), 0, false, true) : "";
             case 2:
                 return JakeMainHelper.getRelativeTime(new Date(file.lastModified()));
+            case 3:
+                return isLeaf(node) ? new TagSet() : null;
             }
         }
 
@@ -214,5 +223,24 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
         }
 
         return true;
+    }
+
+    public boolean isCellEditable(Object node, int column) {
+        if (node instanceof File) {
+            File file = (File) node;
+
+            switch (column) {
+            case 0:
+                return false;   // TODO: Modify me to allow renaming of files & folders
+            case 1:
+                return false;
+            case 2:
+                return false;
+            case 3:
+                return isLeaf(node);
+            }
+        }
+
+        return false;
     }
 }
