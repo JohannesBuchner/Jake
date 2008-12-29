@@ -2,26 +2,39 @@ package com.jakeapp.jake.ics;
 
 import junit.framework.TestCase;
 
+import org.junit.Before;
+
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.impl.mock.MockICService;
 import com.jakeapp.jake.ics.impl.mock.MockUserId;
+import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 
 public class TestXmppICStatusService extends TestCase {
 	private ICService ics = null; 
 	
-	private static UserId wrongUserid1 = new MockUserId("foo.bar");
-	private static UserId offlineUserId = new MockUserId("foo.bar@baz");
-	private static UserId onlineUserId = new MockUserId("IhasSses@host");
-	private static UserId shortUserid1 = new MockUserId("foobar@baz");
-	private static String somePassword = "bar";
+	private static XmppUserId wrongUserid1 = new XmppUserId("foo.bar");
+	private static XmppUserId offlineUserId = new XmppUserId("foo.bar@" + TestEnvironment.host);
+	private static XmppUserId onlineUserId = new XmppUserId("IhasSses@" + TestEnvironment.host);
+	private static XmppUserId shortUserid1 = new XmppUserId("foobar@" + TestEnvironment.host);
 	
-	@Override
-	public void setUp(){
-		ics = new MockICService();
+	private static String somePassword = "bar";
+
+	private static String testUser1Passwd = "testpasswd1";
+
+	private static String testnamespace = "mynamespace";
+
+	private static String testgroupname = "mygroupname";
+
+	@Before
+	public void setUp() throws Exception {
+		TestEnvironment.assureUserIdExistsAndConnect(shortUserid1, testUser1Passwd);
+		TestEnvironment.assureUserIdExistsAndConnect(onlineUserId, testUser1Passwd);
+		TestEnvironment.assureUserIdExistsAndConnect(offlineUserId, testUser1Passwd);
+
+		this.ics = new XmppICService(testnamespace, testgroupname);
 	}
 	
 	/* we use firstname.lastname@host or nick@host notation for the Mock */
@@ -55,14 +68,14 @@ public class TestXmppICStatusService extends TestCase {
 			fail();
 		}catch (NoSuchUseridException e) {
 		}
-		assertTrue(ics.getStatusService().login(shortUserid1, shortUserid1.getUserId()));
+		assertTrue(ics.getStatusService().login(shortUserid1, testUser1Passwd));
 		assertTrue(ics.getStatusService().isLoggedIn(shortUserid1));
 		assertFalse(ics.getStatusService().isLoggedIn(offlineUserId));
 		assertTrue(ics.getStatusService().isLoggedIn(onlineUserId));
 		ics.getStatusService().logout();
 		assertFalse(ics.getStatusService().isLoggedIn());
 		
-		assertTrue(ics.getStatusService().login(offlineUserId, offlineUserId.getUserId()));
+		assertTrue(ics.getStatusService().login(offlineUserId, testUser1Passwd));
 		ics.getStatusService().logout();
 	}
 	private Boolean messageSaysOk = false;
@@ -113,7 +126,7 @@ public class TestXmppICStatusService extends TestCase {
 		
 		ics.getMsgService().registerReceiveMessageListener(mymsglistener);
 		ics.getMsgService().registerReceiveObjectListener(myobjlistener);
-		assertTrue(ics.getStatusService().login(shortUserid1, shortUserid1.getUserId()));
+		assertTrue(ics.getStatusService().login(shortUserid1, testUser1Passwd));
 		ics.getMsgService().sendObject(shortUserid1, "42:12", new byte[]{12, 32, 12, 34} );
 		ics.getMsgService().sendMessage(shortUserid1, "hello I");
 		ics.getMsgService().sendMessage(new MockUserId("bar@host"), "hello you!");
