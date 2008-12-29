@@ -20,6 +20,14 @@ import java.util.Date;
 public class JakeMainHelper {
     private static final Logger log = Logger.getLogger(JakeMainHelper.class);
 
+    // Date & Time constants - just in case they change anytime soon ;)
+    private static int SECOND = 1;
+    private static int MINUTE = 60 * SECOND;
+    private static int HOUR = 60 * MINUTE;
+    private static int DAY = 24 * HOUR;
+    private static int MONTH = 30 * DAY;
+    private static int YEAR = 365 * MONTH;
+
     public static void initializeJakeMainHelper() {
     }
 
@@ -163,7 +171,38 @@ public class JakeMainHelper {
      * @return A string containing a relative description of the date
      */
     public static String getRelativeTime(Date date) {
-        // TODO: Implement me
-        return "Implement me :)";
+        long now = System.currentTimeMillis();
+        long then = date.getTime();
+
+        long delta = (now - then) / 1000;
+
+        if (delta < 1 * MINUTE) {
+            return "less than a minute ago";
+        }
+        if (delta < 2 * MINUTE) {
+            return "a minute ago";
+        }
+        if (delta < 45 * MINUTE) {
+            return (delta / MINUTE) + " minutes ago";
+        }
+        if (delta < 90 * MINUTE) {
+            return "an hour ago";
+        }
+        if (delta < 24 * HOUR) {
+            return (delta / HOUR) + " hours ago";
+        }
+        if (delta < 48 * HOUR) {
+            return "yesterday";
+        }
+        if (delta < 30 * DAY) {
+            return (delta / DAY) + " days ago";
+        }
+        if (delta < 12 * MONTH) {
+            long months = delta / MONTH;
+            return months <= 1 ? "one month ago" : months + " months ago";
+        } else {
+            long years = delta / YEAR;
+            return years <= 1 ? "one year ago" : years + " years ago";
+        }
     }
 }
