@@ -6,6 +6,7 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.ArrayList;
 
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 
@@ -20,6 +21,27 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
     
     // The returned file length for directories.
     private static final Long DIRECTORY = 0L;
+
+    /**
+     * Hideous and crappy performing way of getting the children of a folder node
+     * that are NOT hidden.
+     * 
+     * @param parent
+     * @return
+     */
+    protected static String[] getChildren(File parent) {
+        String[] children = parent.list();
+        ArrayList<String> returnChildren = new ArrayList<String>();
+        for(String c: children) {
+            File f = new File(parent, c);
+
+            if(!f.isHidden()) {
+                returnChildren.add(c);
+            }
+        }
+
+        return returnChildren.toArray(new String[]{});
+    }
 
     /**
      * Creates a file system model using the root directory as the model root.
@@ -64,7 +86,7 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
         }
 
         File parentFile = (File) parent;
-        String[] children = parentFile.list();
+        String[] children = getChildren(parentFile);
 
         if (children != null) {
             return new File(parentFile, children[index]);
@@ -78,7 +100,7 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
      */
     public int getChildCount(Object parent) {
         if (parent instanceof File) {
-            String[] children = ((File) parent).list();
+            String[] children = getChildren((File) parent);
 
             if (children != null) {
                 return children.length;
@@ -126,6 +148,7 @@ public class ProjectFilesTreeTableModel extends AbstractTreeTableModel {
     public Object getValueAt(Object node, int column) {
         if (node instanceof File) {
             File file = (File) node;
+
             switch (column) {
             case 0:
                 return file.getName();
