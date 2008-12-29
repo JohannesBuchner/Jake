@@ -76,14 +76,5 @@ public interface IStatusService {
 	 */
 	public UserId getUserId(String userid);
 
-	/**
-	 * Registers a callback for the event that the userid goes online or offline
-	 * 
-	 * @param onlineStatusListener     object to be called
-	 * @param userid                   the user id to look for
-	 * @throws NoSuchUseridException    if the user does not exist
-	 */
-	public void registerOnlineStatusListener(IOnlineStatusListener onlineStatusListener,
-			UserId userid) throws NoSuchUseridException;
 	
 }

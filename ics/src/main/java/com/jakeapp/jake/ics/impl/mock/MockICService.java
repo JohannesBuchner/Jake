@@ -14,6 +14,7 @@ public class MockICService extends ICService {
 		MockMsgAndStatusService service = new MockMsgAndStatusService();
 		this.msgService = service;
 		this.statusService = service;
+		this.usersService = service;
 	}
 
 	@Override

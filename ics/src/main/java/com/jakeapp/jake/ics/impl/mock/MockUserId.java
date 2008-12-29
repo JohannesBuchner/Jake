@@ -17,11 +17,12 @@ public class MockUserId extends UserId {
 		super(userId.getUserId());
 	}
 
+	@Override
 	public boolean isOfCorrectUseridFormat() {
-		if (userId.contains("@")
-				&& userId.lastIndexOf("@") == userId.lastIndexOf("@")
-				&& userId.indexOf("@") > 0
-				&& userId.indexOf("@") < userId.length() - 1)
+		if (this.userId.contains("@")
+				&& this.userId.lastIndexOf("@") == this.userId.lastIndexOf("@")
+				&& this.userId.indexOf("@") > 0
+				&& this.userId.indexOf("@") < this.userId.length() - 1)
 			return true;
 		return false;
 	}

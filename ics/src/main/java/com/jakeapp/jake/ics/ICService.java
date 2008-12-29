@@ -3,6 +3,7 @@ package com.jakeapp.jake.ics;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
+import com.jakeapp.jake.ics.status.IUsersService;
 
 /**
  * 
@@ -30,6 +31,8 @@ abstract public class ICService {
 	protected IStatusService statusService;
 
 	protected IMsgService msgService;
+	
+	protected IUsersService usersService;
 
 	protected IFileTransferService fileTransferService;
 
@@ -49,6 +52,15 @@ abstract public class ICService {
 	 */
 	public IMsgService getMsgService() {
 		return this.msgService;
+	}
+
+	/**
+	 * our friends ... the people we talk to, you know?
+	 * 
+	 * @return the service
+	 */
+	public IUsersService getUsersService() {
+		return this.usersService;
 	}
 
 	/**

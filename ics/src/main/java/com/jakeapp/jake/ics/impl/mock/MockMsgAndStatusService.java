@@ -1,6 +1,8 @@
 package com.jakeapp.jake.ics.impl.mock;
 
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +17,7 @@ import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.status.IStatusService;
+import com.jakeapp.jake.ics.status.IUsersService;
 
 /**
  * This implements both the IMsgService and the IStatusService, usually you will
@@ -22,7 +25,7 @@ import com.jakeapp.jake.ics.status.IStatusService;
  * 
  * @author johannes
  */
-public class MockMsgAndStatusService implements IMsgService, IStatusService {
+public class MockMsgAndStatusService implements IMsgService, IStatusService, IUsersService {
 
 	private static Logger log = Logger.getLogger(MockMsgAndStatusService.class);
 
@@ -42,6 +45,8 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService {
 
 	private HashSet<IMessageReceiveListener> msgreceivers = new HashSet<IMessageReceiveListener>();
 
+	private Set<UserId> friends = new HashSet<UserId>();
+	
 	public String getFirstname(UserId userid) throws NoSuchUseridException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
@@ -64,6 +69,21 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService {
 				userid.getUserId().indexOf("@"));
 	}
 
+	public UserId getUserId(String userid) {
+		UserId ui = new MockUserId(userid);
+		if (ui.isOfCorrectUseridFormat())
+			return ui;
+		else
+			return null;
+	}
+
+	public UserId getUserid() throws NotLoggedInException {
+		if (!isLoggedIn())
+			throw new NotLoggedInException();
+
+		return myuserid;
+	}
+
 	public Boolean isLoggedIn() {
 		return loggedinstatus;
 	}
@@ -71,17 +91,17 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService {
 	/**
 	 * users having a s in the userid before the \@ are online
 	 */
-	public Boolean isLoggedIn(UserId to) throws NoSuchUseridException,
+	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
 			NetworkException, NotLoggedInException, TimeoutException {
-		if (!new MockUserId(to).isOfCorrectUseridFormat())
+		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-		if (to.equals(myuserid))
+		if (userid.equals(myuserid))
 			return loggedinstatus;
 		if (!loggedinstatus)
 			throw new NotLoggedInException();
 
 		/* everyone else not having a s in the name is offline */
-		return to.getUserId().substring(0, to.getUserId().indexOf("@"))
+		return userid.getUserId().substring(0, userid.getUserId().indexOf("@"))
 				.contains("s");
 	}
 
@@ -110,11 +130,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService {
 	/**
 	 * noone comes or goes offline, so this is futile
 	 */
-	public void registerOnlineStatusListener(IOnlineStatusListener osc,
-			UserId userid) throws NoSuchUseridException {
-		if (!new MockUserId(userid).isOfCorrectUseridFormat())
-			throw new NoSuchUseridException();
-		/* about userid: we don't care, because we are tired. */
+	public void registerOnlineStatusListener(IOnlineStatusListener osc) {
 		onlinereceivers.add(osc);
 	}
 
@@ -185,22 +201,42 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService {
 		}
 	}
 
-	public UserId getUserid() throws NotLoggedInException {
-		if (!isLoggedIn())
-			throw new NotLoggedInException();
-
-		return myuserid;
-	}
-
 	public String getServiceName() {
 		return "Mock";
 	}
 
-	public UserId getUserId(String userid) {
-		UserId ui = new MockUserId(userid);
-		if (ui.isOfCorrectUseridFormat())
-			return ui;
-		else
-			return null;
+	@Override
+	public void addUser(UserId user, String name) throws NoSuchUseridException,
+			NotLoggedInException, IOException {
+		this.friends.add(user);
+	}
+
+	@Override
+	public Iterable<UserId> getUsers() throws NotLoggedInException {
+		return this.friends;
+	}
+
+	@Override
+	public boolean isCapable(UserId userid) throws IOException,
+			NotLoggedInException, NoSuchUseridException {
+		return true;
+	}
+
+	@Override
+	public boolean isFriend(UserId xmppid) throws NotLoggedInException,
+			NoSuchUseridException {
+		return this.friends.contains(xmppid);
+	}
+
+	@Override
+	public void removeUser(UserId user) throws NotLoggedInException,
+			NoSuchUseridException, IOException {
+		this.friends.remove(user);
+	}
+
+	@Override
+	public void requestOnlineNotification(UserId userid)
+			throws NotLoggedInException {
+		// TODO can't really implement this ...
 	}
 }

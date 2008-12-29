@@ -3,7 +3,7 @@ package com.jakeapp.jake.ics.impl.xmpp;
 import com.jakeapp.jake.ics.UserId;
 
 /**
- * Identifies a user within the ICS implementation
+ * Identifies a user within the XMPP network
  * 
  * @author johannes
  */
@@ -17,11 +17,14 @@ public class XmppUserId extends UserId {
 		super(userId.getUserId());
 	}
 
+	@Override
 	public boolean isOfCorrectUseridFormat() {
-		if (userId.contains("@")
-				&& userId.lastIndexOf("@") == userId.lastIndexOf("@")
-				&& userId.indexOf("@") > 0
-				&& userId.indexOf("@") < userId.length() - 1)
+		// TODO: this might not be the full wisdom ...
+		
+		if (this.userId.contains("@")
+				&& this.userId.lastIndexOf("@") == this.userId.lastIndexOf("@")
+				&& this.userId.indexOf("@") > 0
+				&& this.userId.indexOf("@") < this.userId.length() - 1)
 			return true;
 		return false;
 	}
