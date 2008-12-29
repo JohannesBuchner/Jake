@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jakeapp.jake</groupId>
     <artifactId>gui-swing</artifactId>
-    <name>jake swing-gui</name>
+    <name>jake swing-gui frontend</name>
     <version>1.0-SNAPSHOT</version>
     <url>http://maven.apache.org</url>
     <repositories>

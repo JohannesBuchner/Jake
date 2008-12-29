@@ -20,7 +20,7 @@ gui: core
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q && ${MVN} package install || true
 	rm -f .rebuild_gui
 
-core: fss ics
+core: fss ics ics-xmpp
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_gui; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_gui; } || true
@@ -30,6 +30,11 @@ fss:
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
 ics:
+	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_ics-xmpp; touch ../.rebuild_core; } || true
+	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
+
+ics-xmpp:
+	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
 
@@ -48,4 +53,4 @@ jar:
 	@echo release ready under releases/jake-current.jar
 	@echo run with java -jar releases/jake-current.jar
 
-.PHONY: gui core fss ics
+.PHONY: gui core fss ics ics-xmpp start quickstart
