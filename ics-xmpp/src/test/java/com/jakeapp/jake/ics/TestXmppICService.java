@@ -10,7 +10,7 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 
-public class TestMockICService extends TestCase {
+public class TestXmppICService extends TestCase {
 	private ICService ics = null; 
 	
 	private static UserId wrongUserid1 = new MockUserId("foo.bar");
