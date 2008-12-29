@@ -12,6 +12,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
@@ -198,7 +199,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
     public void setProject(Project project) {
         this.project = project;
-        TreeTableModel treeTableModel = new FileSystemModel(new File(project.getRootPath()));
+        TreeTableModel treeTableModel = new ProjectFilesTreeTableModel(new File(project.getRootPath()));
         fileTreeTable.setTreeTableModel(treeTableModel);
     }
 }

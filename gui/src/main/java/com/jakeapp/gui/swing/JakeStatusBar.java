@@ -189,7 +189,7 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
         int projectFileCount = getCore().getProjectFileCout(getProject());
         String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
 
-        int projectSizeTotal = getCore().getProjectSizeTotal(getProject());
+        long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
         String projectSize = JakeMainHelper.getSize(projectSizeTotal);
 
         // update project statistics

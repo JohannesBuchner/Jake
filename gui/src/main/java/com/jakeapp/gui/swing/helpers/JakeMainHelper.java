@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 
 /**
  * JakeMainHelper has static functions that are used all across the ui codebase.
@@ -50,15 +51,15 @@ public class JakeMainHelper {
     }
 
 
-    static public String getSize(int size) {
-        return getSize(size, 2, false, true);
+    static public String getSize(long size) {
+        return getSize(size, 2, true, true);
     }
 
-    static public String getSize(int size, int precision) {
+    static public String getSize(long size, int precision) {
         return getSize(size, precision, true, true);
     }
 
-    static public String getSize(int size, int precision, boolean longName) {
+    static public String getSize(long size, int precision, boolean longName) {
         return getSize(size, precision, longName, true);
     }
 
@@ -76,7 +77,7 @@ public class JakeMainHelper {
      *                  optional - defaults to true
      * @return String           : the converted size
      */
-    static public String getSize(int size, int precision,
+    static public String getSize(long size, int precision,
                                  boolean longName, boolean realSize) {
         int base = realSize ? 1024 : 1000;
         int pos = 0;
@@ -99,7 +100,7 @@ public class JakeMainHelper {
     static public String getSizePrefix(int pos) {
         switch (pos) {
             case 0:
-                return "";
+                return " ";
             case 1:
                 return "kilo";
             case 2:
@@ -152,5 +153,17 @@ public class JakeMainHelper {
         // Fucking ugly hack until we decide on how to handle invalid project root paths
         File prjfolder = new File(project.getRootPath());
         return !(!prjfolder.exists() || !prjfolder.isDirectory());
+    }
+
+    /**
+     * Makes a fancy relative time description from a date object (e.g.
+     * "2 minutes ago", "5 days ago", "2 years ago", ...)
+     *
+     * @param date Any date
+     * @return A string containing a relative description of the date
+     */
+    public static String getRelativeTime(Date date) {
+        // TODO: Implement me
+        return "Implement me :)";
     }
 }
