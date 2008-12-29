@@ -12,22 +12,24 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.DisabledGlassPane;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.controls.DisabledGlassPane;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 /**
  * @author studpete
  */
-public class NewsPanel extends javax.swing.JPanel {
+public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged {
     private static final Logger log = Logger.getLogger(NewsPanel.class);
     private Project project;
     private DisabledGlassPane folderError;
@@ -42,6 +44,10 @@ public class NewsPanel extends javax.swing.JPanel {
     public NewsPanel() {
         initComponents();
         setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class));
+
+        // register the callbacks
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+        JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
 
         // init actions!
         projectRunningButton.setAction(startStopProjectAction);
@@ -77,10 +83,10 @@ public class NewsPanel extends javax.swing.JPanel {
             return;
         }
 
-        if(!JakeMainHelper.hasValidRootPath(getProject())) {
-             // TODO: Get rid of this ugly hack and everything related to it
+        if (!JakeMainHelper.hasValidRootPath(getProject())) {
+            // TODO: Get rid of this ugly hack and everything related to it
             log.warn("Project root path " + getProject().getRootPath() + " is invalid.");
-             folderError.activate("FOLDER DOES NOT EXIST");
+            folderError.activate("FOLDER DOES NOT EXIST");
         } else {
             folderError.deactivate();
         }
@@ -408,5 +414,9 @@ public class NewsPanel extends javax.swing.JPanel {
 
     public void setResourceMap(ResourceMap resourceMap) {
         this.resourceMap = resourceMap;
+    }
+
+    public void projectChanged(ProjectChangedEvent ev) {
+        updatePanel();
     }
 }

@@ -10,7 +10,7 @@ import com.jakeapp.core.domain.Project;
 public interface ProjectChanged {
 
     /**
-     * Dis
+     * Inner class that saves project & change reason
      */
     class ProjectChangedEvent {
         private Project project;

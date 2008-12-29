@@ -1,7 +1,8 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -29,9 +30,9 @@ public class StartStopProjectAction extends ProjectAction {
 
         if (!getProject().isStarted()) {
             // TODO: exception handling
-            JakeMainView.getMainView().getCore().startProject(getProject());
+            JakeMainApp.getApp().getCore().startProject(getProject());
         } else {
-            JakeMainView.getMainView().getCore().stopProject(getProject());
+            JakeMainApp.getApp().getCore().stopProject(getProject());
         }
     }
 
@@ -41,7 +42,7 @@ public class StartStopProjectAction extends ProjectAction {
 
         if (getProject() != null) {
             String oldName = (String) getValue(Action.NAME);
-            String newName = JakeMainView.getMainView().getProjectStartStopString(getProject());
+            String newName = JakeMainHelper.getProjectStartStopString(getProject());
 
             putValue(Action.NAME, newName);
 

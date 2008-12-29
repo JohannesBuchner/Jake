@@ -133,4 +133,29 @@ public interface ICoreAccess {
      * @param project
      */
     void startProject(Project project);
+
+    /**
+     * Returns absolute Number of files of the project.
+     *
+     * @param project
+     * @return
+     */
+    int getProjectFileCout(Project project);
+
+    /**
+     * Returns absolute Size of all files in the project.
+     *
+     * @param project
+     * @return size in bytes.
+     */
+    int getProjectSizeTotal(Project project);
+
+
+    /**
+     * Checks if the project needs an invitation or not.
+     *
+     * @param project the project to check
+     * @return true of invitation is needed
+     */
+    boolean isInvitationProject(Project project);
 }

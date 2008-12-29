@@ -217,6 +217,22 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
 
+    public int getProjectFileCout(Project project) {
+        return 100;
+    }
+
+    public int getProjectSizeTotal(Project project) {
+        return 50000;
+    }
+
+    public boolean isInvitationProject(Project pr) {
+
+        //TODO: need better way to determine if project needs invitaton!
+        boolean needsInvite = pr != null && pr.getName().compareTo("DEMO INVITATION") == 0;
+        return needsInvite;
+    }
+
+
     private void callbackRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
         for (RegistrationStatus callback : registrationStatus) {
             callback.setRegistrationStatus(state, str);

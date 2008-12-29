@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.ProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
@@ -26,21 +27,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView {
-
+public class JakeMainView extends FrameView implements ProjectSelectionChanged {
     private static final Logger log = Logger.getLogger(JakeMainView.class);
     private static JakeMainView mainView;
-    private ICoreAccess core;
+    private Project project;
 
     // all the ui panels
     private NewsPanel newsPanel;
@@ -49,12 +44,13 @@ public class JakeMainView extends FrameView {
     private ProjectInvitationPanel invitationPanel = new ProjectInvitationPanel();
     private LoginPanel loginPanel;
     private List<JToggleButton> contextSwitcherButtons;
-    private JPanel contextSwitcherPane = createContextSwitcherPane();
+    private JPanel contextSwitcherPane = createContextSwitcherPanel();
     private JPanel inspectorPanel;
 
     private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
     private ContextPanels contextPanelView = ContextPanels.Login;
     private JakeStatusBar jakeStatusBar;
+    private JakeTrayIcon tray;
 
 
     /**
@@ -64,8 +60,6 @@ public class JakeMainView extends FrameView {
         News, Files, Notes
     }
 
-    ;
-
     /**
      * Special context states.
      */
@@ -73,23 +67,10 @@ public class JakeMainView extends FrameView {
         Login, Project, Invitation
     }
 
-    ;
-
-
-    // source list management
-    private Map<SourceListItem, Project> sourceListProjectMap;
-    private Icon projectStartedIcon;
-    private Icon projectStoppedIcon;
-    private Icon projectInvitedIcon;
-    private SourceListModel projectSourceListModel;
-    private SourceListCategory invitedProjectsCategory;
-    private SourceListCategory myProjectsCategory;
-    private SourceList projectSourceList;
+    // toolbar
     private AbstractButton createProjectButton;
     private AbstractButton createNoteButton;
     private AbstractButton invitePeopleButton;
-
-    private Project currentProject = null;
     private AbstractButton inspectorButton;
 
     // menu actions
@@ -100,8 +81,10 @@ public class JakeMainView extends FrameView {
 
         setMainView(this);
 
-        // initializeJakeMainHelper the core connection
-        setCore(new CoreAccessMock());
+        tray = new JakeTrayIcon();
+
+        // register for project selection changes
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
         // init the panels
         loginPanel = new LoginPanel();
@@ -127,9 +110,6 @@ public class JakeMainView extends FrameView {
         // set app size
         this.getFrame().setMinimumSize(new Dimension(600, 600));
         this.getFrame().setSize(new Dimension(800, 800));
-
-        // init toolbar icon
-        JakeTrayIcon tray = new JakeTrayIcon();
 
         // initialize the mantisse gui components (menu)
         initComponents();
@@ -161,7 +141,7 @@ public class JakeMainView extends FrameView {
         this.getFrame().add(splitPane, BorderLayout.CENTER);
 
         // create status bar
-        jakeStatusBar = new JakeStatusBar(getResourceMap(), getCore());
+        jakeStatusBar = new JakeStatusBar(getCore());
         statusPanel.add(jakeStatusBar.getComponent());
 
         // set default window behaviour
@@ -187,8 +167,7 @@ public class JakeMainView extends FrameView {
 
             Runnable runner = new Runnable() {
                 public void run() {
-                    // TODO: make more specific instead of full update...
-                    updateSourceList();
+                    updateAll();
                 }
             };
 
@@ -207,7 +186,7 @@ public class JakeMainView extends FrameView {
     /**
      * Public Resource Map
      *
-     * @return
+     * @return the JakeMainView Resource Map.
      */
     public static ResourceMap getResouceMap() {
         return mainView.getResourceMap();
@@ -220,13 +199,13 @@ public class JakeMainView extends FrameView {
     private void updateTitle() {
         String jakeStr = getResourceMap().getString("windowTitle");
 
-        if (getCurrentProject() != null && !isInvitationProject(getCurrentProject())) {
-            String projectPath = getCurrentProject().getRootPath().toString();
+        if (getProject() != null && !getCore().isInvitationProject(getProject())) {
+            String projectPath = getProject().getRootPath();
             getFrame().setTitle(projectPath + " - " + jakeStr);
 
             // mac only
             if (Platform.isMac()) {
-                getFrame().getRootPane().putClientProperty("Window.documentFile", new File(getCurrentProject().getRootPath()));
+                getFrame().getRootPane().putClientProperty("Window.documentFile", new File(getProject().getRootPath()));
             }
         } else {
             getFrame().setTitle(jakeStr);
@@ -241,7 +220,7 @@ public class JakeMainView extends FrameView {
     /**
      * Creates the unified toolbar on top.
      *
-     * @return
+     * @return TriAreaComponent of toolbar.
      */
     private TriAreaComponent createToolBar() {
         // create empty toolbar
@@ -379,8 +358,8 @@ public class JakeMainView extends FrameView {
      * Enables/disables the toolbar depending on current dataset
      */
     private void updateToolBar() {
-        boolean hasProject = getCurrentProject() != null;
-        boolean isInvite = isInvitationProject(getCurrentProject());
+        boolean hasProject = getProject() != null;
+        boolean isInvite = getCore().isInvitationProject(getProject());
         boolean isFilePaneOpen = getContextPanelView() == ContextPanels.Project && getProjectViewPanel() == ProjectViewPanels.Files;
 
         createNoteButton.setEnabled(hasProject && !isInvite);
@@ -430,25 +409,13 @@ public class JakeMainView extends FrameView {
     }
 
     /**
-     * Context Switcher Pane
+     * Context Switcher Panel
      *
-     * @return
+     * @return the context switcher panel
      */
-    private JPanel createContextSwitcherPane() {
+    private JPanel createContextSwitcherPanel() {
         JXPanel switcherPanel = new JXPanel();
         switcherPanel.setOpaque(false);
-
-        /*
-        switcherPanel.setBorder(BorderFactory.createMatteBorder(
-                1, 0, 1, 0, Color.LIGHT_GRAY));
-
-        // set the background painter
-        MattePainter mp = new MattePainter(Colors.Blue.alpha(0.5f));
-        GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-                GlossPainter.GlossPosition.TOP);
-        switcherPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
-        */
-
 
         ButtonGroup switcherGroup = new ButtonGroup();
         contextSwitcherButtons = SegmentButtonCreator.createSegmentedTexturedButtons(3, switcherGroup);
@@ -457,37 +424,16 @@ public class JakeMainView extends FrameView {
         contextSwitcherButtons.get(1).setText("Files");
         contextSwitcherButtons.get(2).setText("Notes");
 
-
-        contextSwitcherButtons.get(0).addActionListener(new ActionListener() {
-
+        class ContextSwitchActionListener implements ActionListener {
             public void actionPerformed(ActionEvent event) {
                 setProjectViewFromToolBarButtons();
             }
-        });
-        contextSwitcherButtons.get(1).addActionListener(new ActionListener() {
+        }
+        ContextSwitchActionListener cslistener = new ContextSwitchActionListener();
 
-            public void actionPerformed(ActionEvent event) {
-                setProjectViewFromToolBarButtons();
-            }
-        });
-
-        contextSwitcherButtons.get(2).addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                setProjectViewFromToolBarButtons();
-            }
-        });
-
-        /*
-        contextSwitcherButtons.get(3).addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                setProjectViewFromToolBarButtons();
-            }
-        });
-         * */
-
+        contextSwitcherButtons.get(0).addActionListener(cslistener);
+        contextSwitcherButtons.get(1).addActionListener(cslistener);
+        contextSwitcherButtons.get(2).addActionListener(cslistener);
 
         JPanel flowButtons = new JPanel();
         flowButtons.setOpaque(false);
@@ -508,22 +454,20 @@ public class JakeMainView extends FrameView {
         switcherPanel.add(resolveConflictBotton, BorderLayout.WEST);
          */
 
-
         return switcherPanel;
     }
 
     /**
      * Creates the SplitPane for SourceList and the Main Content Area.
      *
-     * @returns the JSplitPane
+     * @return the JSplitPane
      */
     private JSplitPane createSourceListAndMainArea() {
-
-        // create the source list and save it in class members.
-        setProjectSourceList(createSourceList());
+        JakeSourceList sourceList = new JakeSourceList(getCore());
 
         // creates the special SplitPlane
-        JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(getProjectSourceList(), contentPanel);
+        JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(
+                sourceList.getSourceList(), contentPanel);
 
         // TODO: divider location should be a saved property
         splitPane.setDividerLocation(200);
@@ -532,204 +476,11 @@ public class JakeMainView extends FrameView {
         return splitPane;
     }
 
-    /**
-     * Creates the source list (lightblue project tree on the left)
-     *
-     * @return the generated sourcelist.
-     */
-    private SourceList createSourceList() {
-
-        // init the icons
-        projectStartedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-open.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-        projectStoppedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-        projectInvitedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-new.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-
-        // init the project <-> sourcelistitem - map
-        sourceListProjectMap = new HashMap<SourceListItem, Project>();
-
-        // inits the main data model
-        projectSourceListModel = new SourceListModel();
-
-        myProjectsCategory = new SourceListCategory(getResourceMap().getString("projectTreeMyProjects"));
-        invitedProjectsCategory = new SourceListCategory(getResourceMap().getString("projectTreeInvitedProjects"));
-        projectSourceListModel.addCategory(myProjectsCategory);
-        projectSourceListModel.addCategory(invitedProjectsCategory);
-
-        // run the inital update, later updated by events
-        updateSourceList();
-
-        // init the SourceListClickListener for project
-        final SourceListClickListener projectClickListener = new SourceListClickListener() {
-
-            public void sourceListItemClicked(SourceListItem item, Button button,
-                                              int clickCount) {
-                log.info(item.getText() + " clicked " + clickCount + " time" + JakeMainHelper.getPluralModifer(clickCount) + ".");
-
-                // get the project from the hashmap
-                Project project = sourceListProjectMap.get(item);
-
-                if (button == button.RIGHT) {
-                    // select the clicked project
-                    getProjectSourceList().setSelectedItem(item);
-                }
-
-                /*
-                if (button == button.LEFT || button == button.RIGHT) {
-                    setCurrentProject(project);
-                }
-                */
-            }
-
-            public void sourceListCategoryClicked(SourceListCategory category,
-                                                  Button button, int clickCount) {
-                log.info(category.getText() + " clicked " + clickCount + " time" + JakeMainHelper.getPluralModifer(clickCount) + ".");
-
-                // we don't need that event
-            }
-        };
-
-
-        final SourceListSelectionListener projectSelectionListener = new SourceListSelectionListener() {
-
-            public void sourceListItemSelected(SourceListItem item) {
-                log.info("Source List Selection: " + item);
-
-                if (item != null) {
-                    // get the project from the hashmap
-                    Project project = sourceListProjectMap.get(item);
-
-                    setCurrentProject(project);
-                } else {
-                    setCurrentProject(null);
-
-                    // show the login context panel
-                    setContextPanelView(ContextPanels.Login);
-                }
-            }
-        };
-
-
-        SourceList sourceList = new SourceList(projectSourceListModel);
-        sourceList.addSourceListClickListener(projectClickListener);
-        sourceList.addSourceListSelectionListener(projectSelectionListener);
-
-        // use the fancy scrollbars on mac
-        if (Platform.isMac()) {
-            sourceList.useIAppStyleScrollBars();
-        }
-//        projectSourceList.setFocusable(false);
-
-
-        final SourceListContextMenuProvider menuProvider = new SourceListContextMenuProvider() {
-
-            public JPopupMenu createContextMenu() {
-                JPopupMenu popupMenu = new JPopupMenu();
-                // popupMenu.add(new JMenuItem("Generic Menu for SourceList"));
-                return popupMenu;
-            }
-
-            public JPopupMenu createContextMenu(SourceListItem item) {
-                log.info("Creating context Menu for SourceListitem " + item);
-
-                // get the project from the projectSourceList
-                Project project = sourceListProjectMap.get(item);
-
-                // create the menu on the fly
-                JPopupMenu popupMenu = new JPopupMenu();
-                popupMenu.setLightWeightPopupEnabled(false);
-
-                String startStopString = getProjectStartStopString(project);
-
-                JMenuItem startStopMenuItem = new JMenuItem(startStopString);
-                startStopMenuItem.setAction(startStopProjectAction);
-                popupMenu.add(startStopMenuItem);
-                popupMenu.add(new JMenuItem(getResourceMap().getString("renameProjectPopupMenuItem")));
-                popupMenu.add(new JMenuItem("Remove..."));
-                popupMenu.add(new JSeparator());
-                popupMenu.add(new JCheckBoxMenuItem("Auto Push"));
-                popupMenu.add(new JCheckBoxMenuItem("Auto Pull"));
-                return popupMenu;
-            }
-
-            public JPopupMenu createContextMenu(SourceListCategory category) {
-                JPopupMenu popupMenu = new JPopupMenu();
-                //popupMenu.add(new JMenuItem("Menu for " + category.getText()));
-                return popupMenu;
-            }
-        };
-
-
-        sourceList.setSourceListContextMenuProvider(menuProvider);
-        return sourceList;
-    }
-
-
-    /**
-     * Updates the SourceList (project list)
-     */
-    private void updateSourceList() {
-        log.info("updating source list...");
-
-        Project selectedProject = getCurrentProject();
-        SourceListItem projectSLI = null;
-
-        // clear our old mapped data!
-        sourceListProjectMap.clear();
-
-        // clear & update 'my projects'
-        // TODO: remove this hack 2x (prevent collapsing of sourcelist)
-        // TODO: do not deleted & recreate slis (creates selection events we dont wanna have)
-        projectSourceListModel.addItemToCategory(new SourceListItem(""), myProjectsCategory);
-        while (myProjectsCategory.getItemCount() > 1) {
-            projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
-        }
-
-        List<Project> myprojects = getCore().getMyProjects();
-        for (Project project : myprojects) {
-            Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
-            SourceListItem sli = new SourceListItem(project.getName(), prIcon);
-
-            // TODO: we need a new event source like project.getTotalNewEventCount()
-            int newEventsCount = 0;
-            if (newEventsCount > 0) {
-                sli.setCounterValue(newEventsCount);
-            }
-
-            projectSourceListModel.addItemToCategory(sli, myProjectsCategory);
-            sourceListProjectMap.put(sli, project);
-
-            // check if project was selected, save this SourceListItem.
-            if (selectedProject == project) {
-                projectSLI = sli;
-            }
-        }
-        projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
-
-        // clear & update 'invited projects'
-        projectSourceListModel.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
-        while (invitedProjectsCategory.getItemCount() > 1) {
-            projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
-        }
-        List<Project> iprojects = getCore().getInvitedProjects();
-        for (Project project : iprojects) {
-            Icon prIcon = projectInvitedIcon;
-            SourceListItem sli = new SourceListItem(project.getName(), prIcon);
-
-            projectSourceListModel.addItemToCategory(sli, invitedProjectsCategory);
-            sourceListProjectMap.put(sli, project);
-        }
-        projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
-
-        if (projectSourceList != null && projectSLI != null) {
-            projectSourceList.setSelectedItem(projectSLI);
-        }
-    }
-
 
     /**
      * Show or hide the inspector panel.
      *
-     * @param show
+     * @param show: shows the inspector panel when set to true.
      */
     private void showHideInspectorPanel(boolean show) {
         if (show) {
@@ -752,23 +503,6 @@ public class JakeMainView extends FrameView {
         return inspectorPanel.getParent() != null;
     }
 
-
-    /**
-     * Evaluates the Project and returns a Start/Stop-String depending on its state.
-     *
-     * @param project
-     * @return String with either Start or Stop.
-     */
-    public String getProjectStartStopString(Project project) {
-        String startStopString;
-        if (!project.isStarted()) {
-            startStopString = getResourceMap().getString("projectTreeStartProject");
-        } else {
-            startStopString = getResourceMap().getString("projectTreeStopProject");
-        }
-
-        return startStopString;
-    }
 
     @Action
     public void showAboutBox() {
@@ -1079,47 +813,6 @@ public class JakeMainView extends FrameView {
      * */
     private JDialog aboutBox;
 
-    public ICoreAccess getCore() {
-        return core;
-    }
-
-    public void setCore(ICoreAccess core) {
-        this.core = core;
-    }
-
-    public SourceList getProjectSourceList() {
-        return projectSourceList;
-    }
-
-    public void setProjectSourceList(SourceList projectSourceList) {
-        this.projectSourceList = projectSourceList;
-    }
-
-    public Project getCurrentProject() {
-        return currentProject;
-    }
-
-    public void setCurrentProject(Project currentProject) {
-
-        //TODO: hack to test the "no project-state"
-        if (currentProject != null && currentProject.getRootPath() == null) {
-            currentProject = null;
-        }
-
-        this.currentProject = currentProject;
-
-        // relay to items
-        jakeStatusBar.setProject(currentProject);
-
-        updateAll();
-
-        // relay it to actions
-        startStopProjectAction.setProject(currentProject);
-
-        // relay it to the other panels!
-        newsPanel.setProject(currentProject);
-        filePanel.setProject(currentProject);
-    }
 
     /**
      * Updates the window
@@ -1139,7 +832,7 @@ public class JakeMainView extends FrameView {
      * Set the Project View Panel.
      * Only works if the ContextView is set to Project.
      *
-     * @param view
+     * @param view: the project view panel that should be active.
      */
     public void setProjectViewPanel(ProjectViewPanels view) {
         this.projectViewPanel = view;
@@ -1199,23 +892,15 @@ public class JakeMainView extends FrameView {
 
     }
 
-
-    private boolean isInvitationProject(Project pr) {
-        //TODO: need better way to determine if project needs invitaton!
-        boolean needsInvite = pr != null && pr.getName().compareTo("DEMO INVITATION") == 0;
-        return needsInvite;
-    }
-
-
     /**
      * Called everytime a new project is selected.
      * Updates the view depending on that selection
      * Called automatically on setProject()
      */
     private void updateView() {
-        Project pr = getCurrentProject();
+        Project pr = getProject();
 
-        boolean needsInvite = isInvitationProject(pr);
+        boolean needsInvite = getCore().isInvitationProject(pr);
         // determine what to show
         if (pr == null) {
             setContextPanelView(ContextPanels.Login);
@@ -1230,11 +915,14 @@ public class JakeMainView extends FrameView {
     /**
      * Helper to set content panel once.
      * Used internally by updateView()
+     *
+     * @param panel: the panel to show/hide.
+     * @param show:  true to show panel.
      */
     private void showContentPanel(JPanel panel, boolean show) {
         if (show) {
             contentPanel.add(panel, BorderLayout.CENTER);
-        } else if (!show) {
+        } else {
             contentPanel.remove(panel);
         }
 
@@ -1258,15 +946,27 @@ public class JakeMainView extends FrameView {
 
 
     @Action
-    public void showJakeWebsite() {
-        try {
-            Desktop.getDesktop().browse(new URI(getResourceMap().getString("JakeWebsite")));
-        } catch (IOException e) {
-            log.warn("Unable to open Website!", e);
-        } catch (URISyntaxException e) {
-            log.warn("Unable to open Website, invalid syntax", e);
-        }
+    public static void showJakeWebsite() {
+        JakeMainHelper.showJakeWebsite();
     }
 
 
+    private ICoreAccess getCore() {
+        return JakeMainApp.getApp().getCore();
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    /**
+     * Called from the event interface
+     *
+     * @param project
+     */
+    public void setProject(Project project) {
+        this.project = project;
+
+        updateAll();
+    }
 }

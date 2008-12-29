@@ -4,19 +4,33 @@
 
 package com.jakeapp.gui.swing;
 
-import javax.swing.UIManager;
-
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.SheetableJFrame;
+import com.jakeapp.gui.swing.helpers.Platform;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
-import com.jakeapp.gui.swing.controls.SheetableJFrame;
+import javax.swing.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The main class of the application.
  */
-public class JakeMainApp extends SingleFrameApplication {
+public class JakeMainApp extends SingleFrameApplication implements ProjectSelectionChanged {
+
+    private static JakeMainApp app;
+    private ICoreAccess core;
+    private Project project = null;
+    private List<ProjectSelectionChanged> projectSelectionChanged =
+            new LinkedList<ProjectSelectionChanged>();
 
     public JakeMainApp() {
+        this.app = this;
+
+        // initializeJakeMainHelper the core connection
+        setCore(new CoreAccessMock());
     }
 
     /**
@@ -24,7 +38,7 @@ public class JakeMainApp extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-        this.setMainFrame(new SheetableJFrame("Jake Long"));
+        this.setMainFrame(new SheetableJFrame("Jake"));
         show(new JakeMainView(this));
     }
 
@@ -68,8 +82,68 @@ public class JakeMainApp extends SingleFrameApplication {
 
         // MacOSX specific: set menu name to 'Jake'
         // has to be called VERY early to succeed (prior to any gui stuff, later calls will be ignored)
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+        if (Platform.isMac()) {
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+        }
 
         launch(JakeMainApp.class, args);
+    }
+
+
+    /**
+     * Returns single instance of the App.
+     *
+     * @return
+     */
+    public static JakeMainApp getApp() {
+        return app;
+    }
+
+    public ICoreAccess getCore() {
+        return core;
+    }
+
+    public void setCore(ICoreAccess core) {
+        this.core = core;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+
+    public void setProject(Project project) {
+
+        //TODO: hack to test the "no project-state"
+        if (project != null && project.getRootPath() == null) {
+            project = null;
+        }
+
+        if (this.project != project) {
+            this.project = project;
+
+            // fire the event and relay to all items/components/actions/panels
+            fireProjectSelectionChanged();
+        }
+    }
+
+    /**
+     * Fires a project selection change event, calling all
+     * registered members of the event.
+     */
+    private void fireProjectSelectionChanged() {
+        for (ProjectSelectionChanged psc : projectSelectionChanged) {
+            psc.setProject(getProject());
+        }
+    }
+
+    public void addProjectSelectionChangedListener(ProjectSelectionChanged psc) {
+        projectSelectionChanged.add(psc);
+    }
+
+    public void removeProjectSelectionChangedListener(ProjectSelectionChanged psc) {
+        if (projectSelectionChanged.contains(psc)) {
+            projectSelectionChanged.remove(psc);
+        }
     }
 }

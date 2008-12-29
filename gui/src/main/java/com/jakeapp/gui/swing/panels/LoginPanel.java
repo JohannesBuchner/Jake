@@ -11,7 +11,7 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.helpers.Platform;
@@ -52,8 +52,8 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(LoginPanel.class));
 
         // register the connection & reg status callback!
-        JakeMainView.getMainView().getCore().registerConnectionStatusCallback(this);
-        JakeMainView.getMainView().getCore().registerRegistrationStatusCallback(this);
+        JakeMainApp.getApp().getCore().registerConnectionStatusCallback(this);
+        JakeMainApp.getApp().getCore().registerRegistrationStatusCallback(this);
 
         // fill the registraton info panel
         registrationInfoPanel.setLayout(new MigLayout("wrap 2"));
@@ -128,14 +128,14 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
      * Shows the signIn-Register/signInStatus Panel, evaluates state.
      */
     private void updateView() {
-        log.info("updating login view. signedIn=" + JakeMainView.getMainView().getCore().isSignedIn());
+        log.info("updating login view. signedIn=" + JakeMainApp.getApp().getCore().isSignedIn());
 
         // load the default name list
-        usernameComboBox.setModel(new DefaultComboBoxModel(JakeMainView.getMainView().getCore().getLastSignInNames()));
+        usernameComboBox.setModel(new DefaultComboBoxModel(JakeMainApp.getApp().getCore().getLastSignInNames()));
 
 
         // update the view (maybe already logged in)
-        if (JakeMainView.getMainView().getCore().isSignedIn()) {
+        if (JakeMainApp.getApp().getCore().isSignedIn()) {
             showSignInSuccess();
         } else {
             showSignInForm();
@@ -469,11 +469,11 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         if (isSignInRegisterButtonEnabled()) {
 
             if (isModeSignIn()) {
-                JakeMainView.getMainView().getCore().signIn(
+                JakeMainApp.getApp().getCore().signIn(
                         usernameComboBox.getSelectedItem().toString(),
                         passwordField.getPassword().toString());
             } else {
-                JakeMainView.getMainView().getCore().register(
+                JakeMainApp.getApp().getCore().register(
                         usernameComboBox.getSelectedItem().toString(),
                         passwordField.getPassword().toString());
             }
@@ -556,7 +556,7 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         signOutButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent actionEvent) {
-                JakeMainView.getMainView().getCore().signOut();
+                JakeMainApp.getApp().getCore().signOut();
             }
         });
         loginSuccessPanel.add(signOutButton, "wrap, al center, growx");

@@ -3,11 +3,10 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,20 +18,16 @@ import java.awt.event.ActionListener;
  * Date: Dec 29, 2008
  * Time: 10:59:04 AM
  */
-public class JakeStatusBar implements ConnectionStatus {
+public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus {
     private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
     private JLabel statusLabel;
     private JButton connectionButton;
-    private ResourceMap resourceMap;
-    private Project project;
-    private ICoreAccess core;
     private TriAreaComponent statusBar;
 
 
-    public JakeStatusBar(ResourceMap resourceMap, ICoreAccess core) {
-        setResourceMap(resourceMap);
-        this.core = core;
+    public JakeStatusBar(ICoreAccess core) {
+        super(core);
 
         // registering the connection status callback
         getCore().registerConnectionStatusCallback(this);
@@ -40,30 +35,10 @@ public class JakeStatusBar implements ConnectionStatus {
         statusBar = createStatusBar();
     }
 
-    private ResourceMap getResourceMap() {
-        return resourceMap;
-    }
-
-    private ICoreAccess getCore() {
-        return core;
-    }
-
-    private void setResourceMap(ResourceMap resourceMap) {
-        this.resourceMap = resourceMap;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
     /**
      * Returns the Status Bar component.
      *
-     * @return
+     * @return the status bar component.
      */
     public Component getComponent() {
         return statusBar.getComponent();
@@ -86,23 +61,21 @@ public class JakeStatusBar implements ConnectionStatus {
             msg = getResourceMap().getString("statusLoginNotSignedIn");
         }
         connectionButton.setText(msg);
-
-
     }
 
     /**
      * Create status bar code
      *
-     * @return
+     * @return TriAreaComponent of status bar.
      */
     private TriAreaComponent createStatusBar() {
-        // status bar creation code
+        log.info("creating status bar...");
 
         // only draw the 'fat' statusbar if we are in a mac. does not look good on win/linux -> USELESS?
         BottomBarSize bottombarSize = Platform.isMac() ? BottomBarSize.LARGE : BottomBarSize.SMALL;
 
         TriAreaComponent bottomBar = MacWidgetFactory.createBottomBar(bottombarSize);
-        statusLabel = MacWidgetFactory.createEmphasizedLabel("200 Files, 2,9 GB");
+        statusLabel = MacWidgetFactory.createEmphasizedLabel("");
 
         // make status label 2 px smaller
         statusLabel.setFont(statusLabel.getFont().deriveFont(statusLabel.getFont().getSize() - 2f));
@@ -187,10 +160,10 @@ public class JakeStatusBar implements ConnectionStatus {
                 signInOut.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent actionEvent) {
-                        if (!JakeMainView.getMainView().getCore().isSignedIn()) {
+                        if (!JakeMainApp.getApp().getCore().isSignedIn()) {
                             JakeMainView.getMainView().setContextPanelView(JakeMainView.ContextPanels.Login);
                         } else {
-                            JakeMainView.getMainView().getCore().signOut();
+                            JakeMainApp.getApp().getCore().signOut();
                         }
                     }
                 });
@@ -206,5 +179,20 @@ public class JakeStatusBar implements ConnectionStatus {
         bottomBar.addComponentToRight(connectionButton);
 
         return bottomBar;
+    }
+
+
+    @Override
+    protected void projectUpdated() {
+
+        // update the status bar label
+        int projectFileCount = getCore().getProjectFileCout(getProject());
+        String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
+
+        int projectSizeTotal = getCore().getProjectSizeTotal(getProject());
+        String projectSize = JakeMainHelper.getSize(projectSizeTotal);
+
+        // update project statistics
+        statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
     }
 }
