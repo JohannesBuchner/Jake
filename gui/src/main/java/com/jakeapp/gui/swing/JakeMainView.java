@@ -144,7 +144,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
 
         // set menu actions
         startStopProjectMenuItem.setAction(startStopProjectAction);
-        //createProjectButton.setAction(createProjectAction);
+        createProjectButton.setAction(createProjectAction);
 
         // set default window behaviour
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());

@@ -3,10 +3,10 @@ package com.jakeapp.gui.swing.actions;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import net.roydesign.ui.FolderDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -29,8 +29,11 @@ public class CreateProjectAction extends ProjectAction {
     public void actionPerformed(ActionEvent actionEvent) {
         log.info("Create Project: " + getProject());
 
-        FileDialog fd = new FileDialog(JakeMainView.getMainView().getFrame(), "Choose Directory", FileDialog.LOAD);
-        fd.setVisible(true);
+        //FileDialog fd = new FileDialog(JakeMainView.getMainView().getFrame(), "Choose Directory", FileDialog.LOAD);
+        //fd.setVisible(true);
+
+        FolderDialog fod = new FolderDialog(JakeMainView.getMainView().getFrame(), "Choose Directory");
+        fod.setVisible(true);
     }
 
 
