@@ -10,30 +10,23 @@
  */
 package com.jakeapp.gui.swing.panels;
 
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.io.File;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.listener.TableMouseListener;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
-import com.jakeapp.gui.swing.helpers.Colors;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.listener.TableMouseListener;
-import com.jakeapp.core.domain.Project;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 
 /**
  * @author studpete
  */
-public class FilePanel extends javax.swing.JPanel {
+public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged {
 
     private PopupMenu fileMenu;
 
@@ -45,13 +38,9 @@ public class FilePanel extends javax.swing.JPanel {
     public FilePanel() {
         initComponents();
 
-        // set the background painter
-        MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.5f));
-        GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-                GlossPainter.GlossPosition.TOP);
-        //PinstripePainter pp = new PinstripePainter(Colors.Gray.alpha(0.2f),
-        //                                          45d);
-        infoPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+
+        infoPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
         // make the buttons more fancy
         Platform.getStyler().MakeWhiteRecessedButton(newFilesButton);
