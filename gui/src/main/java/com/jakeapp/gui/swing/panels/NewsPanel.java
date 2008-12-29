@@ -36,6 +36,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
     private ResourceMap resourceMap;
     private Icon startIcon;
     private Icon stopIcon;
+    private Icon invalidIcon;
     private StartStopProjectAction startStopProjectAction = new StartStopProjectAction();
 
     /**
@@ -59,9 +60,6 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         // set the background painter
         newsContentPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
-        folderError = new DisabledGlassPane();
-        newsContentPanel.add(folderError);
-
         eventsTable.setSortable(true);
         eventsTable.setColumnControlVisible(true);
         eventsTable.setHighlighters(HighlighterFactory.createSimpleStriping());
@@ -70,6 +68,8 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
                 getClass().getResource("/icons/folder-open.png")));
         stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
                 getClass().getResource("/icons/folder.png")));
+        invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+                getClass().getResource("/icons/folder_invalid.png")));
     }
 
     /**
@@ -83,12 +83,16 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
             return;
         }
 
+        // TODO: Get rid of this ugly hack and everything related to it
         if (!JakeMainHelper.hasValidRootPath(getProject())) {
-            // TODO: Get rid of this ugly hack and everything related to it
             log.warn("Project root path " + getProject().getRootPath() + " is invalid.");
-            folderError.activate("FOLDER DOES NOT EXIST");
+            projectStatusLabel.setText("ERROR: Project folder does not exist");
+            projectStatusLabel.setForeground(Color.RED);
+            projectIconLabel.setIcon(invalidIcon);
+
+            return;
         } else {
-            folderError.deactivate();
+            projectStatusLabel.setForeground(Color.BLACK);
         }
 
         // update all text in panel
