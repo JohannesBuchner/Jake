@@ -60,7 +60,7 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
 
-    public void signIn(String user, String pass) {
+    public void signIn(final String user, final String pass) {
         log.info("Signs in: " + user + "pass: " + pass);
 
         Runnable runner = new Runnable() {
@@ -73,8 +73,10 @@ public class CoreAccessMock implements ICoreAccess {
                     e.printStackTrace();
                 }
 
-                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
                 isSignedIn = true;
+                currentUser = user;
+
+                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
             }
         };
 
@@ -153,6 +155,11 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
 
+    public String getSignInUser() {
+        return currentUser;
+    }
+
+
     public void signOut() {
         isSignedIn = false;
 
@@ -213,9 +220,10 @@ public class CoreAccessMock implements ICoreAccess {
         }
     }
 
+    private String currentUser = null;
 
+    // event spread
     private List<ConnectionStatus> connectionStatus;
     private List<RegistrationStatus> registrationStatus;
-
     private List<ProjectChanged> projectChanged;
 }

@@ -45,8 +45,8 @@ public class PeoplePanel extends javax.swing.JPanel {
         this.add(new JScrollPane(peopleTreeTable), BorderLayout.CENTER);
 
 
-        // Icon onlineIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("resources/icons/user-online.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-        //  Icon offlineIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("resources//icons/user-offline.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+        // Icon onlineIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResourceMap("resources/icons/user-online.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+        //  Icon offlineIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResourceMap("resources//icons/user-offline.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 
         // TableColumn someColumn = jTable1.getColumnModel().getColumn(0);
         // someColumn.setCellRenderer(new IconifiedRenderer());

@@ -33,7 +33,7 @@ public interface ICoreAccess {
      * @param user
      * @param pass
      */
-    void signIn(String user, String pass);
+    void signIn(final String user, final String pass);
 
     /**
      * Registers the Connection Status Callback
@@ -79,6 +79,14 @@ public interface ICoreAccess {
      * @return
      */
     boolean isSignedIn();
+
+    /**
+     * Returns the Username of the current logged in user
+     *
+     * @return
+     */
+    String getSignInUser();
+
 
     /**
      * Signs the current user out.

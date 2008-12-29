@@ -54,6 +54,7 @@ public class JakeMainView extends FrameView {
 
     private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
     private ContextPanels contextPanelView = ContextPanels.Login;
+    private JakeStatusBar jakeStatusBar;
 
 
     /**
@@ -88,8 +89,6 @@ public class JakeMainView extends FrameView {
     private AbstractButton createNoteButton;
     private AbstractButton invitePeopleButton;
 
-    // status bar resources
-    private JLabel statusLabel;
     private Project currentProject = null;
     private AbstractButton inspectorButton;
 
@@ -162,8 +161,8 @@ public class JakeMainView extends FrameView {
         this.getFrame().add(splitPane, BorderLayout.CENTER);
 
         // create status bar
-        TriAreaComponent bottomBar = createStatusBar();
-        statusPanel.add(bottomBar.getComponent());
+        jakeStatusBar = new JakeStatusBar(getResourceMap(), getCore());
+        statusPanel.add(jakeStatusBar.getComponent());
 
         // set default window behaviour
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
@@ -181,7 +180,7 @@ public class JakeMainView extends FrameView {
      * Inner class that handles the project changed events
      * for status bar / source list.
      */
-    public class ProjectChangedCallback implements ProjectChanged {
+    private class ProjectChangedCallback implements ProjectChanged {
 
         public void projectChanged(ProjectChangedEvent ev) {
             log.info("Received project changed callback.");
@@ -237,120 +236,6 @@ public class JakeMainView extends FrameView {
                 getFrame().getRootPane().putClientProperty("Window.documentFile", null);
             }
         }
-    }
-
-
-    /**
-     * Create status bar code
-     *
-     * @return
-     */
-    private TriAreaComponent createStatusBar() {
-        // status bar creation code
-
-        // only draw the 'fat' statusbar if we are in a mac. does not look good on win/linux -> USELESS?
-        BottomBarSize bottombarSize = Platform.isMac() ? BottomBarSize.LARGE : BottomBarSize.SMALL;
-
-        TriAreaComponent bottomBar = MacWidgetFactory.createBottomBar(bottombarSize);
-        statusLabel = MacWidgetFactory.createEmphasizedLabel("200 Files, 2,9 GB");
-
-        // make status label 2 px smaller
-        statusLabel.setFont(statusLabel.getFont().deriveFont(statusLabel.getFont().getSize() - 2f));
-
-        bottomBar.addComponentToCenter(statusLabel);
-
-        //Font statusButtonFont = statusLabel.getFont().deriveFont(statusLabel.getFont().getSize()-2f)
-
-        // control button code
-        Icon plusIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/plus.png")));
-
-        JButton addProjectButton = new JButton();
-        addProjectButton.setIcon(plusIcon);
-        addProjectButton.setToolTipText("Add Project...");
-
-        addProjectButton.putClientProperty("JButton.buttonType", "segmentedTextured");
-        addProjectButton.putClientProperty("JButton.segmentPosition", "first");
-
-        if (Platform.isWin()) {
-            addProjectButton.setFocusPainted(false);
-        }
-
-        bottomBar.addComponentToLeft(addProjectButton);
-
-        Icon minusIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/minus.png")));
-        JButton removeProjectButton = new JButton();
-        removeProjectButton.setIcon(minusIcon);
-        removeProjectButton.setToolTipText("Remove Project...");
-
-        removeProjectButton.putClientProperty("JButton.buttonType", "segmentedTextured");
-        removeProjectButton.putClientProperty("JButton.segmentPosition", "last");
-
-        if (Platform.isWin()) {
-            addProjectButton.setFocusPainted(false);
-        }
-
-        ButtonGroup group = new ButtonGroup();
-        group.add(addProjectButton);
-        group.add(removeProjectButton);
-
-
-        bottomBar.addComponentToLeft(addProjectButton, 0);
-        bottomBar.addComponentToLeft(removeProjectButton);
-
-        /*
-        JButton playPauseProjectButton = new JButton(">/||");
-        if(!Platform.isMac()) playPauseProjectButton.setFont(statusButtonFont);
-        playPauseProjectButton.putClientProperty("JButton.buttonType", "textured");
-        bottomBar.addComponentToLeft(playPauseProjectButton, 0);
-
-
-        playPauseProjectButton.addActionListener(new ActionListener() {
-
-        public void actionPerformed(ActionEvent event) {
-        new SheetTest();
-        }
-        });
-         */
-
-        // connection info
-        Icon loginIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/login.png")));
-        connectionButton = new JButton(getResourceMap().getString("statusLoginNotLoggedIn"));
-        connectionButton.setIcon(loginIcon);
-        connectionButton.setHorizontalTextPosition(SwingConstants.LEFT);
-
-        connectionButton.putClientProperty("JButton.buttonType", "textured");
-        connectionButton.putClientProperty("JComponent.sizeVariant", "small");
-        if (!Platform.isMac()) {
-            connectionButton.setFont(connectionButton.getFont().deriveFont(connectionButton.getFont().getSize() - 2f));
-        }
-
-        connectionButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent event) {
-                JPopupMenu menu = new JPopupMenu();
-                JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
-                        getCore().isSignedIn() ? "menuSignOut" : "menuSignIn"));
-
-                signInOut.addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        setContextPanelView(ContextPanels.Login);
-                    }
-                });
-
-                menu.add(signInOut);
-
-                // calculate contextmenu directly above signin-status button
-                menu.show((JButton) event.getSource(), ((JButton) event.getSource()).getX(),
-                        ((JButton) event.getSource()).getY() - 20);
-            }
-        });
-
-        bottomBar.addComponentToRight(connectionButton);
-        return bottomBar;
     }
 
     /**
@@ -412,7 +297,7 @@ public class JakeMainView extends FrameView {
         /*
         // Announce File
         Icon announceIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/announce.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+                getClass().getResourceMap("/icons/announce.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
         JButton announceJButton = new JButton("Announce", announceIcon);
 
 
@@ -425,7 +310,7 @@ public class JakeMainView extends FrameView {
 
         // Pull File
         Icon pullIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/pull.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+                getClass().getResourceMap("/icons/pull.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 
         JButton jPullButton = new JButton("Pull", pullIcon);
         AbstractButton pullButton =
@@ -438,7 +323,7 @@ public class JakeMainView extends FrameView {
 /*
         // Lock File
         Icon lockIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/lock.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+                getClass().getResourceMap("/icons/lock.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
         JButton jLockButton = new JButton("Lock File", lockIcon);
         AbstractButton lockButton =
                 MacButtonFactory.makeUnifiedToolBarButton(
@@ -514,9 +399,6 @@ public class JakeMainView extends FrameView {
     private void addPeopleAction() {
         SheetHelper.ShowJDialogAsSheet(getFrame(), new InviteUserSheet());
     }
-
-
-    private JButton connectionButton;
 
 
     /**
@@ -1225,6 +1107,10 @@ public class JakeMainView extends FrameView {
         }
 
         this.currentProject = currentProject;
+
+        // relay to items
+        jakeStatusBar.setProject(currentProject);
+
         updateAll();
 
         // relay it to actions
@@ -1380,4 +1266,6 @@ public class JakeMainView extends FrameView {
             log.warn("Unable to open Website, invalid syntax", e);
         }
     }
+
+
 }

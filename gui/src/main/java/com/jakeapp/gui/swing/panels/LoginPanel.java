@@ -469,9 +469,13 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         if (isSignInRegisterButtonEnabled()) {
 
             if (isModeSignIn()) {
-                JakeMainView.getMainView().getCore().signIn(usernameLabel.getText(), passwordLabel.getText());
+                JakeMainView.getMainView().getCore().signIn(
+                        usernameComboBox.getSelectedItem().toString(),
+                        passwordField.getPassword().toString());
             } else {
-                JakeMainView.getMainView().getCore().register(usernameLabel.getText(), passwordLabel.getText());
+                JakeMainView.getMainView().getCore().register(
+                        usernameComboBox.getSelectedItem().toString(),
+                        passwordField.getPassword().toString());
             }
         }
     }
