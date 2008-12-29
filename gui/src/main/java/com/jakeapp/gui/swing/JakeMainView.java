@@ -6,6 +6,9 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.actions.ProjectAction;
+import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
@@ -90,6 +93,9 @@ public class JakeMainView extends FrameView {
     private Project currentProject = null;
     private AbstractButton inspectorButton;
 
+    // menu actions
+    ProjectAction startStopProjectAction = new StartStopProjectAction();
+
     public JakeMainView(SingleFrameApplication app) {
         super(app);
 
@@ -135,10 +141,13 @@ public class JakeMainView extends FrameView {
             // implements Quit.
             projectMenu.remove(exitMenuItem);
             projectMenu.remove(exitSeparator);
-
             // install the about handler
             // new MacOSAppMenuHandler();
         }
+
+        // set menu actions
+        startStopProjectMenuItem.setAction(startStopProjectAction);
+
 
         // init the content panel
         contentPanel = new JPanel();
@@ -160,9 +169,39 @@ public class JakeMainView extends FrameView {
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
         this.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        registerCallbacks();
+
         setContextPanelView(ContextPanels.Login);
 
         updateTitle();
+    }
+
+
+    /**
+     * Inner class that handles the project changed events
+     * for status bar / source list.
+     */
+    public class ProjectChangedCallback implements ProjectChanged {
+
+        public void projectChanged(ProjectChangedEvent ev) {
+            log.info("Received project changed callback.");
+
+            Runnable runner = new Runnable() {
+                public void run() {
+                    // TODO: make more specific instead of full update...
+                    updateSourceList();
+                }
+            };
+
+            SwingUtilities.invokeLater(runner);
+        }
+    }
+
+    /**
+     * Registers the callbacks with the core
+     */
+    private void registerCallbacks() {
+        getCore().registerProjectChangedCallback(new ProjectChangedCallback());
     }
 
 
@@ -671,10 +710,19 @@ public class JakeMainView extends FrameView {
         final SourceListSelectionListener projectSelectionListener = new SourceListSelectionListener() {
 
             public void sourceListItemSelected(SourceListItem item) {
-                // get the project from the hashmap
-                Project project = sourceListProjectMap.get(item);
+                log.info("Source List Selection: " + item);
 
-                setCurrentProject(project);
+                if (item != null) {
+                    // get the project from the hashmap
+                    Project project = sourceListProjectMap.get(item);
+
+                    setCurrentProject(project);
+                } else {
+                    setCurrentProject(null);
+
+                    // show the login context panel
+                    setContextPanelView(ContextPanels.Login);
+                }
             }
         };
 
@@ -682,6 +730,11 @@ public class JakeMainView extends FrameView {
         SourceList sourceList = new SourceList(projectSourceListModel);
         sourceList.addSourceListClickListener(projectClickListener);
         sourceList.addSourceListSelectionListener(projectSelectionListener);
+
+        // use the fancy scrollbars on mac
+        if (Platform.isMac()) {
+            sourceList.useIAppStyleScrollBars();
+        }
 //        projectSourceList.setFocusable(false);
 
 
@@ -705,7 +758,9 @@ public class JakeMainView extends FrameView {
 
                 String startStopString = getProjectStartStopString(project);
 
-                popupMenu.add(new JMenuItem(startStopString));
+                JMenuItem startStopMenuItem = new JMenuItem(startStopString);
+                startStopMenuItem.setAction(startStopProjectAction);
+                popupMenu.add(startStopMenuItem);
                 popupMenu.add(new JMenuItem(getResourceMap().getString("renameProjectPopupMenuItem")));
                 popupMenu.add(new JMenuItem("Remove..."));
                 popupMenu.add(new JSeparator());
@@ -726,19 +781,27 @@ public class JakeMainView extends FrameView {
         return sourceList;
     }
 
+
     /**
      * Updates the SourceList (project list)
      */
     private void updateSourceList() {
-        log.info("updading source list...");
+        log.info("updating source list...");
+
+        Project selectedProject = getCurrentProject();
+        SourceListItem projectSLI = null;
 
         // clear our old mapped data!
         sourceListProjectMap.clear();
 
         // clear & update 'my projects'
-        while (myProjectsCategory.getItemCount() > 0) {
+        // TODO: remove this hack 2x (prevent collapsing of sourcelist)
+        // TODO: do not deleted & recreate slis (creates selection events we dont wanna have)
+        projectSourceListModel.addItemToCategory(new SourceListItem(""), myProjectsCategory);
+        while (myProjectsCategory.getItemCount() > 1) {
             projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
         }
+
         List<Project> myprojects = getCore().getMyProjects();
         for (Project project : myprojects) {
             Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
@@ -752,10 +815,17 @@ public class JakeMainView extends FrameView {
 
             projectSourceListModel.addItemToCategory(sli, myProjectsCategory);
             sourceListProjectMap.put(sli, project);
+
+            // check if project was selected, save this SourceListItem.
+            if (selectedProject == project) {
+                projectSLI = sli;
+            }
         }
+        projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 
         // clear & update 'invited projects'
-        while (invitedProjectsCategory.getItemCount() > 0) {
+        projectSourceListModel.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
+        while (invitedProjectsCategory.getItemCount() > 1) {
             projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
         }
         List<Project> iprojects = getCore().getInvitedProjects();
@@ -765,6 +835,11 @@ public class JakeMainView extends FrameView {
 
             projectSourceListModel.addItemToCategory(sli, invitedProjectsCategory);
             sourceListProjectMap.put(sli, project);
+        }
+        projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+
+        if (projectSourceList != null && projectSLI != null) {
+            projectSourceList.setSelectedItem(projectSLI);
         }
     }
 
@@ -1145,12 +1220,15 @@ public class JakeMainView extends FrameView {
     public void setCurrentProject(Project currentProject) {
 
         //TODO: hack to test the "no project-state"
-        if (currentProject.getRootPath() == null) {
+        if (currentProject != null && currentProject.getRootPath() == null) {
             currentProject = null;
         }
 
         this.currentProject = currentProject;
         updateAll();
+
+        // relay it to actions
+        startStopProjectAction.setProject(currentProject);
 
         // relay it to the other panels!
         newsPanel.setProject(currentProject);

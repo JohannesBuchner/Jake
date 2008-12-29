@@ -555,7 +555,7 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
                 JakeMainView.getMainView().getCore().signOut();
             }
         });
-        loginSuccessPanel.add(signOutButton, "wrap, al center");
+        loginSuccessPanel.add(signOutButton, "wrap, al center, growx");
 
         JLabel iconSuccess = new JLabel();
         iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(

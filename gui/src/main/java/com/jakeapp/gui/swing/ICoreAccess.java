@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 
 import java.util.List;
@@ -91,4 +92,37 @@ public interface ICoreAccess {
      * @return
      */
     String[] getLastSignInNames();
+
+
+    /******************* Project functions ********************/
+
+    /**
+     * Registers the Project changed Callback.
+     * This is called when a project changes somehow.
+     *
+     * @param cb
+     */
+    void registerProjectChangedCallback(ProjectChanged cb);
+
+    /**
+     * Deregisters the project changed callbac.
+     *
+     * @param cb
+     */
+    void deregisterProjectChangedCallback(ProjectChanged cb);
+
+    /**
+     * Stops the given project
+     *
+     * @param project
+     */
+    void stopProject(Project project);
+
+
+    /**
+     * Starts the given project
+     *
+     * @param project
+     */
+    void startProject(Project project);
 }

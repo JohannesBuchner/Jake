@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,7 @@ public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
 
     private boolean isSignedIn;
+    private List<Project> projects = new ArrayList<Project>();
 
     /**
      * Core Access Mock initialisation code
@@ -21,13 +23,9 @@ public class CoreAccessMock implements ICoreAccess {
         isSignedIn = false;
         connectionStatus = new ArrayList<ConnectionStatus>();
         registrationStatus = new ArrayList<RegistrationStatus>();
-    }
+        projectChanged = new ArrayList<ProjectChanged>();
 
-
-    @Override
-    public List<Project> getMyProjects() {
-        List<Project> projects = new ArrayList<Project>();
-
+        // init the demo projects
         Project pr1 = new Project("ASE", null, null, new File("/Users/studpete/Desktop"));
         pr1.setStarted(true);
         projects.add(pr1);
@@ -35,12 +33,18 @@ public class CoreAccessMock implements ICoreAccess {
         Project pr2 = new Project("SEPM", null, null, new File("/Users/studpete/"));
         projects.add(pr2);
 
-        Project pr3 = new Project("Shared Music", null, null, new File(""));
+        Project pr3 = new Project("Shared Music", null, null, new File("/Users"));
         projects.add(pr3);
 
+    }
+
+
+    @Override
+    public List<Project> getMyProjects() {
         return projects;
     }
 
+    // TODO: change this: invitations are only runtime specific... (are they?)
     @Override
     public List<Project> getInvitedProjects() {
         List<Project> projects = new ArrayList<Project>();
@@ -160,6 +164,49 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
 
+    public void registerProjectChangedCallback(ProjectChanged cb) {
+        log.info("Mock: register project changed callback: " + cb);
+
+        projectChanged.add(cb);
+    }
+
+    public void deregisterProjectChangedCallback(ProjectChanged cb) {
+        log.info("Mock: deregister project changed callback: " + cb);
+
+        if (projectChanged.contains(cb)) {
+            projectChanged.remove(cb);
+        }
+    }
+
+    private void callbackProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
+        for (ProjectChanged callback : projectChanged) {
+            callback.projectChanged(ev);
+        }
+    }
+
+
+    public void stopProject(Project project) {
+        log.info("stop project: " + project);
+
+        //if(!project.isStarted())
+        //    throw new ProjectNotStartedException();
+
+        project.setStarted(false);
+
+        // generate event
+        callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+    }
+
+    public void startProject(Project project) {
+        project.setStarted(true);
+
+        // generate event
+        callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+    }
+
+
     private void callbackRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
         for (RegistrationStatus callback : registrationStatus) {
             callback.setRegistrationStatus(state, str);
@@ -169,4 +216,6 @@ public class CoreAccessMock implements ICoreAccess {
 
     private List<ConnectionStatus> connectionStatus;
     private List<RegistrationStatus> registrationStatus;
+
+    private List<ProjectChanged> projectChanged;
 }

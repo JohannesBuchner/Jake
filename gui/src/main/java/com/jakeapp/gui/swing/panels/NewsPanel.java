@@ -12,6 +12,7 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -30,6 +31,7 @@ public class NewsPanel extends javax.swing.JPanel {
     private ResourceMap resourceMap;
     private Icon startIcon;
     private Icon stopIcon;
+    private StartStopProjectAction startStopProjectAction = new StartStopProjectAction();
 
     /**
      * Creates new form NewsPanel
@@ -37,6 +39,9 @@ public class NewsPanel extends javax.swing.JPanel {
     public NewsPanel() {
         initComponents();
         setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class));
+
+        // init actions!
+        projectRunningButton.setAction(startStopProjectAction);
 
         // ensure opaque(=draw background) is false (default on mac, not default on win/lin)
         autoUploadCB.setOpaque(false);
@@ -74,8 +79,9 @@ public class NewsPanel extends javax.swing.JPanel {
         autoDownloadCB.setSelected(getProject().isAutoPullEnabled());
         autoUploadCB.setSelected(getProject().isAutoAnnounceEnabled());
 
-        String startStopStr = getResourceMap().getString("projectRunningButton." + (getProject().isStarted() ? "start" : "stop"));
-        projectRunningButton.setText(startStopStr);
+        //String startStopStr = getResourceMap().getString("projectRunningButton." + (getProject().isStarted() ? "start" : "stop"));
+        // projectRunningButton.setText(startStopStr);
+
 
         // update the icon (start/stop-state)
         projectIconLabel.setIcon(getProject().isStarted() ? startIcon : stopIcon);
@@ -312,7 +318,7 @@ public class NewsPanel extends javax.swing.JPanel {
                         .addContainerGap()
                         .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(optionsPanelLayout.createSequentialGroup()
-                                        .addComponent(optionsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(optionsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                                         .addGap(168, 168, 168))
                                 .addGroup(optionsPanelLayout.createSequentialGroup()
                                 .addGap(21, 21, 21)
@@ -376,6 +382,10 @@ public class NewsPanel extends javax.swing.JPanel {
 
     public void setProject(Project project) {
         this.project = project;
+
+        // relay to actions
+        startStopProjectAction.setProject(getProject());
+
         updatePanel();
     }
 
