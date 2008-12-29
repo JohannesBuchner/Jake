@@ -20,7 +20,7 @@ public class XmppUserId extends UserId {
 	@Override
 	public boolean isOfCorrectUseridFormat() {
 		// TODO: this might not be the full wisdom ...
-		
+
 		if (this.userId.contains("@")
 				&& this.userId.lastIndexOf("@") == this.userId.lastIndexOf("@")
 				&& this.userId.indexOf("@") > 0
@@ -28,4 +28,13 @@ public class XmppUserId extends UserId {
 			return true;
 		return false;
 	}
+
+	public String getHost() {
+		return this.userId.substring(this.userId.indexOf("@") + 1);
+	}
+
+	public String getUsername() {
+		return this.userId.substring(0, this.userId.indexOf("@"));
+	}
+
 }

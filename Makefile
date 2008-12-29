@@ -52,10 +52,6 @@ lazyclean:
 	mkdir fss/target/
 	mv .backup.fss-${VERSION}.jar fss/target/fss-${VERSION}.jar
 
-lazymrproper: lazyclean
-	rm -rf ~/.m2/repository/com/{jakeapp,doublesignal}/
-
-
 up:
 	oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
 
