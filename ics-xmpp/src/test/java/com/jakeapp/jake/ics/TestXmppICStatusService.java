@@ -10,7 +10,7 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 
-public class TestXmppICService extends TestCase {
+public class TestXmppICStatusService extends TestCase {
 	private ICService ics = null; 
 	
 	private static UserId wrongUserid1 = new MockUserId("foo.bar");
@@ -65,19 +65,6 @@ public class TestXmppICService extends TestCase {
 		assertTrue(ics.getStatusService().login(offlineUserId, offlineUserId.getUserId()));
 		ics.getStatusService().logout();
 	}
-	
-	public void testregisterOnlineStatusListener() throws Exception {
-		assertTrue(ics.getStatusService().login(shortUserid1, shortUserid1.getUserId()));
-
-		IOnlineStatusListener mylistener = new IOnlineStatusListener(){
-			public void onlineStatusChanged(String userid) {
-				assertEquals(userid, shortUserid1);
-			}
-		};
-		ics.getStatusService().registerOnlineStatusListener(mylistener, shortUserid1);
-		ics.getStatusService().logout();
-	}
-	
 	private Boolean messageSaysOk = false;
 	private Boolean objectSaysOk = false;
 	public void testReceiveSend() throws Exception {
