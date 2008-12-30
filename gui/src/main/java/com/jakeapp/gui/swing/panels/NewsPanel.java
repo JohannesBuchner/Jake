@@ -16,7 +16,6 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.DisabledGlassPane;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -25,6 +24,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -34,7 +35,6 @@ import java.io.IOException;
 public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged {
     private static final Logger log = Logger.getLogger(NewsPanel.class);
     private Project project;
-    private DisabledGlassPane folderError;
     private ResourceMap resourceMap;
     private Icon startIcon;
     private Icon stopIcon;
@@ -72,6 +72,18 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
                 getClass().getResource("/icons/folder.png")));
         invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
                 getClass().getResource("/icons/folder_invalid.png")));
+
+        autoDownloadCB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                getProject().setAutoPullEnabled(autoDownloadCB.isSelected());
+            }
+        });
+
+        autoUploadCB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                getProject().setAutoAnnounceEnabled(autoUploadCB.isSelected());
+            }
+        });
     }
 
     /**
@@ -104,9 +116,9 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         autoDownloadCB.setSelected(getProject().isAutoPullEnabled());
         autoUploadCB.setSelected(getProject().isAutoAnnounceEnabled());
 
-        //String startStopStr = getResourceMap().getString("projectRunningButton." + (getProject().isStarted() ? "start" : "stop"));
-        // projectRunningButton.setText(startStopStr);
-
+        // update the checkboxes
+        autoDownloadCB.setSelected(getProject().isAutoPullEnabled());
+        autoUploadCB.setSelected(getProject().isAutoAnnounceEnabled());
 
         // update the icon (start/stop-state)
         projectIconLabel.setIcon(getProject().isStarted() ? startIcon : stopIcon);

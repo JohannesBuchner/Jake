@@ -240,7 +240,7 @@ public class JakeMainHelper {
 
             JFileChooser fileChooser = new JFileChooser();
             if (defaultFolder != null) {
-                fileChooser.setSelectedFile(new File(defaultFolder));
+                fileChooser.setCurrentDirectory(new File(defaultFolder));
             }
             fileChooser.setMultiSelectionEnabled(false);
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
