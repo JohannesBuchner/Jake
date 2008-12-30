@@ -57,7 +57,7 @@ public class FileIconLabelHelper {
         // TODO: Fix me once we stop using random states
         // should be: switch(state) {
 
-        State randomState = getRandomState();
+        State randomState = getRandomState(file);
 
         switch(randomState) {
             case CONFLICT:
@@ -96,10 +96,23 @@ public class FileIconLabelHelper {
      * TODO: Remove me
      * @return A random state
      */
-    private static State getRandomState() {
-        Random r = new Random();
-        int n = r.nextInt(6);
-        State[] values = State.values(); // this static method will get an array of 'e'
-        return values[n];
+    private static State getRandomState(File f) {
+        if(!f.getName().contains("e")) {
+            return State.NONE;
+        }
+        if(f.getName().contains("c")) {
+            return State.CONFLICT;
+        }
+        if(f.getName().contains("n")) {
+            return State.NEWER_AVAILABLE;
+        }
+        if(f.getName().contains("l")) {
+            return State.LOCALLY_CHANGED;
+        }
+        if(f.getName().contains("o")) {
+            return State.ONLY_EXISTS_REMOTELY;
+        }
+
+        return State.HAVE_LATEST;
     }
 }
