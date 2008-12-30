@@ -14,10 +14,11 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.TagSetRenderer;
+import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TagSet;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
-import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
@@ -67,6 +68,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
         fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
         fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
+        fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
 
 
         fileTreeTable.addMouseListener(new TableMouseListener(fileTreeTable) {
