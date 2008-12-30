@@ -1,5 +1,7 @@
 package com.jakeapp.core.domain;
 
+import org.junit.Test;
+
 /**
  * TODO: Fill in purpose of this file
  * User: Dominik
@@ -11,7 +13,16 @@ package com.jakeapp.core.domain;
 public abstract class UserIdTest {
 
 
-    
+    /**
+     * this is here to prevent the
+     * initializationError0(com.jakeapp.XXXUserIdTest)
+     * error. If someone knows a better way, please tell us.
+     */
+    @Test
+    public void defaultTest()
+    {
+
+    }
     
 
 }

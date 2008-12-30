@@ -68,6 +68,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
 
     /**
      * This test tries to persist a null value which should not work.
+     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
     @Test(expected = InvalidCredentialsException.class)
     public final void create_shouldFailPersistNull() throws InvalidCredentialsException {
@@ -77,6 +78,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
 
     /**
      * This test tries to persist empty service credentials, which should not work.
+     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
     @Test(expected = InvalidCredentialsException.class)
     public final void create_persistEmptyCredentials() throws InvalidCredentialsException {

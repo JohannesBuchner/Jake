@@ -140,6 +140,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
      * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
      *
      */
+    @Transactional
     @Test(timeout = TestingConstants.UNITTESTTIME)
     public final void delete_shouldCreateAndDeleteAProject() throws NoSuchProjectException, InvalidProjectException {
         UUID current = UUID.fromString(project_3_uuid);
@@ -195,14 +196,10 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     public final void deleteNonExistingProject_shouldThrowException() throws NoSuchProjectException {
     	UUID random_non_exisitng = null;
     	Project example = null;
-    	try {
-    		random_non_exisitng = UUID.randomUUID();
-    		example = new Project();
-    		example.setProjectId(random_non_exisitng);
-    	}
-    	catch (Throwable t) {
-    		
-    	}
+        random_non_exisitng = UUID.randomUUID();
+        example = new Project();
+        example.setProjectId(random_non_exisitng);
+
 
 
         projectDao.delete(example);
@@ -250,7 +247,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
      *
      * @throws InvalidProjectException
      */
-    @Test(timeout = TestingConstants.UNITTESTTIME)
+    @Test(timeout = TestingConstants.UNITTESTTIME, expected = InvalidProjectException.class)
     public final void create_persistProjectWithNullUUID() throws InvalidProjectException {
         Project project = new Project();
         project.setName("projectName");

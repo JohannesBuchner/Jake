@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
+import org.junit.Assert.*;
 import org.apache.log4j.Logger;
 import org.hsqldb.jdbc.jdbcDataSource;
 import org.springframework.core.io.ClassPathResource;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedInputStream;
 import java.util.Scanner;
+import java.net.URL;
 
 /**
  * TODO: Fill in purpose of this file
@@ -44,6 +46,7 @@ public class MultipleDatabaseTest {
     public void afterTest() {
         new File("root.script").delete();
         new File("root.properties").delete();
+        new File("root.log").delete();
     }
 
 
@@ -78,15 +81,19 @@ public class MultipleDatabaseTest {
         System.out.println("test.getDatabase() = " + test.getDatabase());
     }
 
-    @Test
+/*    @Test(expected= IOException.class)
     public void simpleClassPathTest() throws IOException {
-        log.debug(ClassLoader.getSystemResource("/_import.sql").openStream());
-    }
+        URL resource = ClassLoader.getSystemResource("/com/jakeapp/core/misc/_import.sql");
+        org.junit.Assert.assertNotNull(resource);
+
+        log.debug(resource.openStream());
+//        log.debug(ClassLoader.getSystemResource("/com/jakeapp/core/misc/_import.sql").openStream());
+    }*/
 
 
     @Test
     public void loadSQLFileFromClassPath() throws IOException {
-        ClassPathResource importScript = new ClassPathResource("/_import.sql");
+        ClassPathResource importScript = new ClassPathResource("/com/jakeapp/core/misc/_import.sql");
 
         log.debug("importScript.getFilename() = " + importScript.getFilename());
         log.debug(importScript.getInputStream());
@@ -109,7 +116,7 @@ public class MultipleDatabaseTest {
         defaultDataSource.setUser("sa");
         defaultDataSource.setPassword("");
 
-        ClassPathResource importScript = new ClassPathResource("/_import.sql");
+        ClassPathResource importScript = new ClassPathResource("/com/jakeapp/core/misc/_import.sql");
 
 
         Statement stmt = defaultDataSource.getConnection("sa", "").createStatement();

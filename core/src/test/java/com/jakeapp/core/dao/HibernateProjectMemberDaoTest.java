@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -45,6 +47,14 @@ public class HibernateProjectMemberDaoTest {
 			fail();
 		}
     }
+
+    @AfterClass
+    public static void afterTest() {
+        new File("root.script").delete();
+        new File("root.properties").delete();
+        new File("root.log").delete();
+    }
+
 
     @Test
     public void persist_persist()

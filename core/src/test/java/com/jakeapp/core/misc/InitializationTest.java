@@ -4,12 +4,7 @@ import org.junit.Test;
 import org.apache.log4j.Logger;
 
 /**
- * TODO: Fill in purpose of this file
- * User: Dominik
- * Date: Dec 11, 2008
- * Time: 12:16:41 AM
- * Module: ${MAVEN-MODULE-NAME}
- * Version: ${MAVEN-VERSION}
+ * Test to try some things with default initialization. 
  */
 public class InitializationTest {
 

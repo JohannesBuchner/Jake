@@ -9,4 +9,5 @@ package com.jakeapp.core.domain;
  * Version: ${MAVEN-VERSION}
  */
 public class XMPPUserIdTest extends UserIdTest {
+    
 }

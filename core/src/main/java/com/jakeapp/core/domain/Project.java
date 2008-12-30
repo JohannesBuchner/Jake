@@ -240,7 +240,7 @@ public class Project implements ILogable {
     /**
      * @return the open
      */
-    @Column(name = "Opened", nullable = false)
+    @Column(name = "OPENED", nullable = false)
     public boolean isOpen() {
         return open;
     }

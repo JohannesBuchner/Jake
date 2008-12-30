@@ -33,6 +33,9 @@ public class HibernateProjectDao extends HibernateDaoSupport
     		throw new InvalidProjectException();
     	}
 
+        if(project.getProjectId() == null)
+            throw new InvalidProjectException("projectId must not be null");
+
         log.debug("persisting project with uuid " + ((project != null) ? project.getProjectId() : "null"));
         try {
         	//TODO: create ID if it is still null
@@ -180,7 +183,8 @@ public class HibernateProjectDao extends HibernateDaoSupport
     	try
         {
     		//FIXME LockMode.WRITE causes an Exception
-            this.getHibernateTemplate().delete(project/*, LockMode.WRITE*/);
+         //   this.getHibernateTemplate().delete(project/*, LockMode.WRITE*/);
+            this.getHibernateTemplate().delete(project, LockMode.NONE);
         } catch (DataAccessException dae) {
             throw new NoSuchProjectException(dae);
         }

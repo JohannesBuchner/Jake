@@ -1,5 +1,7 @@
 package com.jakeapp;
 
+import org.junit.Test;
+
 
 /**
  * Constants for Testing-Constraints.
@@ -14,4 +16,16 @@ public class TestingConstants {
 	public TestingConstants() {
 		
 	}
+
+
+    /**
+     * this is here to prevent the
+     * initializationError0(com.jakeapp.TestingConstants)
+     * error. If someone knows a better way, please tell us.
+     */
+    @Test
+    public void defaultTest()
+    {
+        
+    }
 }

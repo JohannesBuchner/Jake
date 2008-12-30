@@ -7,7 +7,7 @@
 	value				VARCHAR(255)
   );
 
-  CREATE TABLE usercredentials (
+  CREATE TABLE servicecredentials (
 	UUID				CHAR(36)		PRIMARY KEY,
 	protocol			VARCHAR(255)		NOT NULL,
 	username			VARCHAR(255)		NOT NULL,
@@ -19,14 +19,14 @@
   );
 
   CREATE TABLE project (
-	uuid				CHAR(36)		PRIMARY KEY,
-	userid				CHAR(36)		NOT NULL,
-	rootpath			VARCHAR(255)		NOT NULL,
-	name				VARCHAR(255)		NOT NULL,
-	opened BOOLEAN DEFAULT FALSE,
-    started BOOLEAN DEFAULT FALSE,
+    uuid                CHAR(36)        PRIMARY KEY,
+    userid              CHAR(36)            NOT NULL,
+    rootpath            VARCHAR(255)        NOT NULL,
+    name                VARCHAR(255)        NOT NULL,
+    opened              BOOLEAN DEFAULT FALSE,
+    started             BOOLEAN DEFAULT FALSE,
     autoannounce        BOOLEAN DEFAULT FALSE,
     autopull            BOOLEAN DEFAULT FALSE,
     autologin           BOOLEAN DEFAULT FALSE,
-	FOREIGN KEY (userid) REFERENCES usercredentials(UUID)
+    FOREIGN KEY (userid) REFERENCES usercredentials(UUID)
   );
