@@ -25,7 +25,8 @@ import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 /**
  * Unit Tests for HibernateProjectDao
  */
-@ContextConfiguration(locations = "/com/jakeapp/core/dao/jake_core_test_hibernateProjectDao_context.xml")
+//@ContextConfiguration(locations = "/com/jakeapp/core/dao/jake_core_test_hibernateProjectDao_context.xml")
+@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
 public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     private static final String DAO_BEAN_ID = "projectDao";
     private static final String TEMPLATE_BEAN_ID = "hibernateTemplate";

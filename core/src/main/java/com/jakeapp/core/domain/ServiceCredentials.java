@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;
+import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,7 +18,10 @@ import javax.persistence.Transient;
  * and a <code>plainTextPassword</code>.
  */
 @Entity(name = "servicecredentials")
-public class ServiceCredentials {
+public class ServiceCredentials implements Serializable {
+    private static final long serialVersionUID = -3550631428630088119L;
+
+
     private UUID uuid;
     private String userId;
     private String plainTextPassword;
@@ -30,6 +34,7 @@ public class ServiceCredentials {
     private String resourceName;
 
     private ProtocolType protocol;
+
 
 
     public ServiceCredentials() {

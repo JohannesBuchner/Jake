@@ -2,16 +2,15 @@ package com.jakeapp.core.domain;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * An abstract representation of a userID.
  */
 
-@Entity
+@Entity (name="users")
+@DiscriminatorColumn(name = "protocol", discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class UserId implements ILogable {
 
     private UUID uuid;
@@ -19,7 +18,9 @@ public abstract class UserId implements ILogable {
     private String nickname;
     private String firstName;
     private String surName;
-    private ProtocolType protocolType;
+    private transient ProtocolType protocolType;
+
+    private ServiceCredentials credentials;
 
     /**
      * Default ctor.
@@ -54,10 +55,25 @@ public abstract class UserId implements ILogable {
      *
      * @return the uuid of this user.
      */
-    @Id
+    @Transient
     public UUID getUuid() {
         return this.uuid;
     }
+
+
+    @Id
+    @Column(name="uuid")
+    private String getUuidString()
+    {
+        return this.uuid.toString();
+    }
+
+    private void setUuidString(String uuid)
+    {
+        this.uuid = UUID.fromString(uuid);
+    }
+        
+
 
     /**
      * Get the user ID.
@@ -82,6 +98,7 @@ public abstract class UserId implements ILogable {
      *
      * @return the first name of the user
      */
+    @Column(name="firstname")
     public String getFirstName() {
         return this.firstName;
     }
@@ -91,8 +108,28 @@ public abstract class UserId implements ILogable {
      *
      * @return the surname of the user
      */
+    @Column(name="surname")
     public String getSurName() {
         return this.surName;
+    }
+
+//    @Column(name = "sc_uuid")
+//    @JoinColumn(name = "sc_uuid")
+//    @JoinTable(name = "servicecredentials")
+//    @ManyToOne(fetch = FetchType.LAZY)
+    //@Column(name = "sc_uuid")
+    //@OneToOne(targetEntity = ServiceCredentials.class, fetch = FetchType.LAZY)
+    @Column(name = "sc_uuid")
+    //@JoinColumn(name = "sc_uuid")
+    //@JoinTable(name = "servicecredentials")
+    //@OneToOne(fetch = FetchType.LAZY)
+    //@JoinColumns(value = )
+    public ServiceCredentials getCredentials() {
+        return credentials;
+    }
+
+    private void setCredentials(ServiceCredentials credentials) {
+        this.credentials = credentials;
     }
 
     /**
@@ -100,6 +137,8 @@ public abstract class UserId implements ILogable {
      *
      * @return the Type of the protocol associated with that user
      */
+
+    @Column(name="servicecredentials.protocol", insertable = false, updatable = false)   
     public ProtocolType getProtocolType() {
         return this.protocolType;
     }

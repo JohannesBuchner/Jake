@@ -40,8 +40,9 @@
     nickname            VARCHAR (255),
     firstname           VARCHAR (255),
     surname             VARCHAR (255),
-    sc_uuid             CHAR (36),
-  FOREIGN KEY (sc_uuid) REFERENCES servicecredentials(UUID)
+    protocol            VARCHAR (255),
+    sc_uuid             CHAR (36) NULL,
+    FOREIGN KEY (sc_uuid) REFERENCES servicecredentials(UUID)
   );
   ALTER TABLE users ADD CONSTRAINT userid_uniq UNIQUE (userid);
 

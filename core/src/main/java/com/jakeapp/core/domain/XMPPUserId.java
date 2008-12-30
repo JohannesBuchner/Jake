@@ -1,16 +1,18 @@
 package com.jakeapp.core.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.DiscriminatorValue;
 import java.util.UUID;
 
 /**
  * UserId for the XMPP-Messaging Type.
  */
+@Entity
+@DiscriminatorValue("XMPP")
 public class XMPPUserId extends UserId {
     private static final long serialVersionUID = -6654192869495553670L;
-
     {
-        //TODO: gehtda nixa? fixen!
-        //this.protocolType = ProtocolType.XMPPP;
+        this.setProtocolType(ProtocolType.XMPPP);
     }
 
     /**
@@ -22,5 +24,6 @@ public class XMPPUserId extends UserId {
         super(uuid, userId, nickname, firstName, surName);
     }
 
+    
 
 }

@@ -20,7 +20,7 @@ import java.util.UUID;
 import static junit.framework.Assert.assertEquals;
 
 
-@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateServiceCredentialsDao_context.xml"})
+@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
 public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringContextTests {
     private static Logger log = Logger.getLogger(HibernateServiceCredentialsDaoTest.class);
     private static IServiceCredentialsDao serviceCredentialsDao;
