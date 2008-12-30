@@ -4,6 +4,9 @@ import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -18,16 +21,22 @@ import java.awt.event.ActionListener;
  * Date: Dec 29, 2008
  * Time: 10:59:04 AM
  */
-public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus {
+public class JakeStatusBar extends JakeGuiComponent implements
+        ConnectionStatus, ProjectSelectionChanged, ProjectChanged, ProjectViewChanged {
     private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
     private JLabel statusLabel;
     private JButton connectionButton;
     private TriAreaComponent statusBar;
+    private JakeMainView.ProjectViewPanels projectViewPanel;
 
 
     public JakeStatusBar(ICoreAccess core) {
         super(core);
+
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+        JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
+        JakeMainView.getMainView().addProjectViewChangedListener(this);
 
         // registering the connection status callback
         getCore().registerConnectionStatusCallback(this);
@@ -71,7 +80,7 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
     private TriAreaComponent createStatusBar() {
         log.info("creating status bar...");
 
-        // only draw the 'fat' statusbar if we are in a mac. does not look good on win/linux -> USELESS?
+        // only draw the 'fat' statusbar if we are in a mac. does not look good on win/linux
         BottomBarSize bottombarSize = Platform.isMac() ? BottomBarSize.LARGE : BottomBarSize.SMALL;
 
         TriAreaComponent bottomBar = MacWidgetFactory.createBottomBar(bottombarSize);
@@ -85,6 +94,7 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
         //Font statusButtonFont = statusLabel.getFont().deriveFont(statusLabel.getFont().getSize()-2f)
 
         // control button code
+        /*
         Icon plusIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
                 getClass().getResource("/icons/plus.png")));
 
@@ -98,8 +108,6 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
         if (Platform.isWin()) {
             addProjectButton.setFocusPainted(false);
         }
-
-        bottomBar.addComponentToLeft(addProjectButton);
 
         Icon minusIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
                 getClass().getResource("/icons/minus.png")));
@@ -119,23 +127,25 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
         group.add(removeProjectButton);
 
 
+        /*
         bottomBar.addComponentToLeft(addProjectButton, 0);
         bottomBar.addComponentToLeft(removeProjectButton);
+        */
 
         /*
-        JButton playPauseProjectButton = new JButton(">/||");
-        if(!Platform.isMac()) playPauseProjectButton.setFont(statusButtonFont);
-        playPauseProjectButton.putClientProperty("JButton.buttonType", "textured");
-        bottomBar.addComponentToLeft(playPauseProjectButton, 0);
+       JButton playPauseProjectButton = new JButton(">/||");
+       if(!Platform.isMac()) playPauseProjectButton.setFont(statusButtonFont);
+       playPauseProjectButton.putClientProperty("JButton.buttonType", "textured");
+       bottomBar.addComponentToLeft(playPauseProjectButton, 0);
 
 
-        playPauseProjectButton.addActionListener(new ActionListener() {
+       playPauseProjectButton.addActionListener(new ActionListener() {
 
-        public void actionPerformed(ActionEvent event) {
-        new SheetTest();
-        }
-        });
-         */
+       public void actionPerformed(ActionEvent event) {
+       new SheetTest();
+       }
+       });
+        */
 
         // connection info
         Icon loginIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -161,10 +171,11 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
 
                     public void actionPerformed(ActionEvent actionEvent) {
                         if (!JakeMainApp.getApp().getCore().isSignedIn()) {
-                            JakeMainView.getMainView().setContextPanelView(JakeMainView.ContextPanels.Login);
                         } else {
                             JakeMainApp.getApp().getCore().signOut();
                         }
+
+                        JakeMainView.getMainView().setContextPanelView(JakeMainView.ContextPanels.Login);
                     }
                 });
 
@@ -184,15 +195,59 @@ public class JakeStatusBar extends JakeGuiComponent implements ConnectionStatus 
 
     @Override
     protected void projectUpdated() {
+        updateProjectLabel();
+    }
 
-        // update the status bar label
-        int projectFileCount = getCore().getProjectFileCout(getProject());
-        String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
 
-        long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
-        String projectSize = JakeMainHelper.getSize(projectSizeTotal);
+    /**
+     * Updates the project label.
+     * This is context specific.
+     */
+    public void updateProjectLabel() {
 
-        // update project statistics
-        statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
+        if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Files) {
+            // update the status bar label
+            int projectFileCount = getCore().getProjectFileCout(getProject());
+            String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
+
+            long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
+            String projectSize = JakeMainHelper.getSize(projectSizeTotal);
+
+            // update project statistics
+            statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
+        } else if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Notes) {
+            int notesCount = getCore().getNotes(getProject()).size();
+            String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
+
+            statusLabel.setText(notesCount + " " + notesCountStr);
+
+        } else {
+            // project view
+            int peopleCount = getCore().getPeople(getProject()).size();
+
+            // nobody there...
+            if (peopleCount == 0) {
+                String aloneStr = getResourceMap().getString("projectAddPeopleToStart");
+                statusLabel.setText(aloneStr);
+            } else {
+                String peopleCountStr = getResourceMap().getString("projectPeople");
+                statusLabel.setText(peopleCount + " " + peopleCountStr);
+            }
+        }
+    }
+
+
+    public void projectChanged(ProjectChangedEvent ev) {
+        projectUpdated();
+    }
+
+    public void setProjectViewPanel(JakeMainView.ProjectViewPanels panel) {
+        this.projectViewPanel = panel;
+
+        projectUpdated();
+    }
+
+    public JakeMainView.ProjectViewPanels getProjectViewPanel() {
+        return projectViewPanel;
     }
 }

@@ -13,6 +13,7 @@ import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
@@ -30,6 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,30 +57,20 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private JakeStatusBar jakeStatusBar;
     private JakeTrayIcon tray;
 
-
-    /**
-     * Called when the core is reporting an error.
-     * (maybe from an async call)
-     *
-     * @param ee
-     */
-    public void reportError(JakeErrorEvent ee) {
-        JOptionPane.showMessageDialog(getFrame(), ee.getException().getMessage(),
-                getResourceMap().getString("JakeErrorMessageTitle"), JOptionPane.ERROR_MESSAGE);
-    }
+    private List<ProjectViewChanged> projectViewChanged = new ArrayList<ProjectViewChanged>();
 
 
     /**
      * Project View: set of toggle buttons. Alwasy one state setup.
      */
-    enum ProjectViewPanels {
+    public enum ProjectViewPanels {
         News, Files, Notes
     }
 
     /**
      * Special context states.
      */
-    enum ContextPanels {
+    public enum ContextPanels {
         Login, Project, Invitation
     }
 
@@ -855,6 +847,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     public void setProjectViewPanel(ProjectViewPanels view) {
         this.projectViewPanel = view;
         updateProjectViewPanel();
+        fireProjectViewChanged();
     }
 
     /**
@@ -986,5 +979,35 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         this.project = project;
 
         updateAll();
+    }
+
+    /**
+     * Called when the core is reporting an error.
+     * (maybe from an async call)
+     *
+     * @param ee
+     */
+    public void reportError(JakeErrorEvent ee) {
+        JOptionPane.showMessageDialog(getFrame(), ee.getException().getMessage(),
+                getResourceMap().getString("JakeErrorMessageTitle"), JOptionPane.ERROR_MESSAGE);
+    }
+
+
+    public void addProjectViewChangedListener(ProjectViewChanged pvc) {
+        projectViewChanged.add(pvc);
+    }
+
+    public void removeProjectViewChangedListener(ProjectViewChanged pvc) {
+        projectViewChanged.remove(pvc);
+    }
+
+    /**
+     * Fires a project selection change event, calling all
+     * registered members of the event.
+     */
+    private void fireProjectViewChanged() {
+        for (ProjectViewChanged psc : projectViewChanged) {
+            psc.setProjectViewPanel(getProjectViewPanel());
+        }
     }
 }

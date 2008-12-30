@@ -1,6 +1,8 @@
 package com.jakeapp.gui.swing;
 
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -200,4 +202,27 @@ public interface ICoreAccess {
      * @param project: project that should be deleted
      */
     void deleteProject(Project project);
+
+
+    /******************* Notes functions ********************/
+
+
+    /**
+     * Returns the list of all notes
+     *
+     * @param project: project that should be evaluated
+     * @return
+     */
+    List<NoteObject> getNotes(Project project);
+
+
+    /******************* People functions ********************/
+
+    /**
+     * Get all project members for the current project
+     *
+     * @param project: project that should be evaluated
+     * @return
+     */
+    List<ProjectMember> getPeople(Project project);
 }

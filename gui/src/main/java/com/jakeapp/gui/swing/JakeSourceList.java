@@ -24,7 +24,8 @@ import java.util.Map;
  * Date: Dec 29, 2008
  * Time: 11:43:29 AM
  */
-public class JakeSourceList extends JakeGuiComponent implements ProjectSelectionChanged, ProjectChanged {
+public class JakeSourceList extends JakeGuiComponent implements
+        ProjectSelectionChanged, ProjectChanged {
     private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
     // source list management
@@ -313,6 +314,4 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 
         SwingUtilities.invokeLater(runner);
     }
-
-
 }

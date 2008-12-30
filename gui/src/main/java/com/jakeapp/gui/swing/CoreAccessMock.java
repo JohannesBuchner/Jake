@@ -1,6 +1,8 @@
 package com.jakeapp.gui.swing;
 
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -286,6 +288,14 @@ public class CoreAccessMock implements ICoreAccess {
 
         // start our runner thread, that makes a callback to project status
         new Thread(runner).start();
+    }
+
+    public List<NoteObject> getNotes(Project project) {
+        return new ArrayList<NoteObject>();
+    }
+
+    public List<ProjectMember> getPeople(Project project) {
+        return new ArrayList<ProjectMember>();
     }
 
 
