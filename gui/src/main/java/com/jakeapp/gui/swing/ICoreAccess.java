@@ -45,14 +45,14 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void registerConnectionStatusCallback(ConnectionStatus cb);
+    void addConnectionStatusCallbackListener(ConnectionStatus cb);
 
     /**
      * Deregisters the Connecton Status Callback
      *
      * @param cb
      */
-    void deRegisterConnectionStatusCallback(ConnectionStatus cb);
+    void removeConnectionStatusCallbackListener(ConnectionStatus cb);
 
     /**
      * Register on sync sercices.
@@ -68,7 +68,7 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void registerRegistrationStatusCallback(RegistrationStatus cb);
+    void addRegistrationStatusCallbackListener(RegistrationStatus cb);
 
 
     /**
@@ -76,7 +76,7 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void deRegisterRegistrationStatusCallback(RegistrationStatus cb);
+    void removeRegistrationStatusCallbackListener(RegistrationStatus cb);
 
     /**
      * Returns true if a user is signed in successfully.
@@ -133,14 +133,14 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void registerProjectChangedCallback(ProjectChanged cb);
+    void addProjectChangedCallbackListener(ProjectChanged cb);
 
     /**
      * Deregisters the project changed callbac.
      *
      * @param cb
      */
-    void deregisterProjectChangedCallback(ProjectChanged cb);
+    void removeProjectChangedCallbackListener(ProjectChanged cb);
 
     /**
      * Stops the given project
@@ -209,6 +209,16 @@ public interface ICoreAccess {
      * @param project
      */
     void rejectProject(Project project);
+
+
+    /**
+     * Changes the project name.
+     * Needed in the interface, because we need change events.
+     *
+     * @param project
+     * @param prName
+     */
+    void setProjectName(Project project, String prName);
 
     /******************* Notes functions ********************/
 

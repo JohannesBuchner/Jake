@@ -190,7 +190,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         // register for project selection changes
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
-        getCore().registerProjectChangedCallback(new ProjectChangedCallback());
+        getCore().addProjectChangedCallbackListener(new ProjectChangedCallback());
         getCore().addErrorListener(this);
     }
 

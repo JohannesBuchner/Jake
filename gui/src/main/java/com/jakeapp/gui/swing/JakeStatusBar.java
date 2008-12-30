@@ -33,12 +33,12 @@ public class JakeStatusBar extends JakeGuiComponent implements
         super(core);
 
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-        JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
+        JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
         JakeMainView.getMainView().addProjectViewChangedListener(this);
         JakeMainView.getMainView().addContextViewChangedListener(this);
 
         // registering the connection status callback
-        getCore().registerConnectionStatusCallback(this);
+        getCore().addConnectionStatusCallbackListener(this);
 
         statusBar = createStatusBar();
     }

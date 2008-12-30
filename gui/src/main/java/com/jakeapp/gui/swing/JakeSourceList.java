@@ -2,10 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.actions.DeleteProjectAction;
-import com.jakeapp.gui.swing.actions.ProjectAction;
-import com.jakeapp.gui.swing.actions.RenameProjectAction;
-import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
@@ -38,6 +35,7 @@ public class JakeSourceList extends JakeGuiComponent implements
     private SourceListCategory myProjectsCategory;
     private SourceList sourceList;
     private JPopupMenu sourceListContextMenu;
+    private JPopupMenu sourceListInvitiationContextMenu;
 
     ProjectAction startStopProjectAction = new StartStopProjectAction();
     private SourceListSelectionListener projectSelectionListener;
@@ -46,14 +44,16 @@ public class JakeSourceList extends JakeGuiComponent implements
         super(core);
 
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-        JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
+        JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
 
         sourceListContextMenu = createSourceListContextMenu();
+        sourceListInvitiationContextMenu = createSourceListInvitationContextMenu();
         sourceList = createSourceList();
 
         // run the inital update, later updated by events
         updateSourceList();
     }
+
 
     /**
      * Creates the source list (lightblue project tree on the left)
@@ -137,8 +137,13 @@ public class JakeSourceList extends JakeGuiComponent implements
             }
 
             public JPopupMenu createContextMenu(SourceListItem item) {
-                return sourceListContextMenu;
-                //return createSourceListContextMenu(item);
+                Project project = sourceListProjectMap.get(item);
+
+                if (project.isInvitation()) {
+                    return sourceListInvitiationContextMenu;
+                } else {
+                    return sourceListContextMenu;
+                }
             }
 
             public JPopupMenu createContextMenu(SourceListCategory category) {
@@ -153,7 +158,7 @@ public class JakeSourceList extends JakeGuiComponent implements
     }
 
     /**
-     * One-time creation of the context menu
+     * One-time creation of the context menu: generic projects
      *
      * @return
      */
@@ -169,12 +174,30 @@ public class JakeSourceList extends JakeGuiComponent implements
 
         JMenuItem renameMenuItem = new JMenuItem();
         renameMenuItem.setAction(new RenameProjectAction());
-
-        popupMenu.add(new JMenuItem(getResourceMap().getString("renameProjectPopupMenuItem")));
+        popupMenu.add(renameMenuItem);
 
         JMenuItem deleteProjectMenuItem = new JMenuItem();
         deleteProjectMenuItem.setAction(new DeleteProjectAction());
         popupMenu.add(deleteProjectMenuItem);
+
+        return popupMenu;
+    }
+
+    /**
+     * One-time creation of the context menu: invitiations
+     *
+     * @return
+     */
+    private JPopupMenu createSourceListInvitationContextMenu() {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem joinMenuItem = new JMenuItem();
+        joinMenuItem.setAction(new JoinProjectAction());
+        popupMenu.add(joinMenuItem);
+
+        JMenuItem rejectMenuItem = new JMenuItem();
+        rejectMenuItem.setAction(new RejectProjectAction());
+        popupMenu.add(rejectMenuItem);
 
         return popupMenu;
     }

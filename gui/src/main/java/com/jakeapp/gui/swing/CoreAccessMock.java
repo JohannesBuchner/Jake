@@ -98,7 +98,7 @@ public class CoreAccessMock implements ICoreAccess {
 
         Runnable runner = new Runnable() {
             public void run() {
-                callbackConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
+                fireConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
 
                 try {
                     Thread.sleep(2000);
@@ -109,7 +109,7 @@ public class CoreAccessMock implements ICoreAccess {
                 isSignedIn = true;
                 currentUser = user;
 
-                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+                fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
             }
         };
 
@@ -117,20 +117,20 @@ public class CoreAccessMock implements ICoreAccess {
         new Thread(runner).start();
     }
 
-    public void registerConnectionStatusCallback(ConnectionStatus cb) {
+    public void addConnectionStatusCallbackListener(ConnectionStatus cb) {
         log.info("Registers connection status callback: " + cb);
 
         connectionStatus.add(cb);
     }
 
-    public void deRegisterConnectionStatusCallback(ConnectionStatus cb) {
+    public void removeConnectionStatusCallbackListener(ConnectionStatus cb) {
         log.info("Deregisters connection status callback: " + cb);
 
         connectionStatus.remove(cb);
     }
 
 
-    private void callbackConnectionStatus(ConnectionStatus.ConnectionStati state, String str) {
+    private void fireConnectionStatus(ConnectionStatus.ConnectionStati state, String str) {
         log.info("spead callback event...");
         for (ConnectionStatus callback : connectionStatus) {
             callback.setConnectionStatus(state, str);
@@ -144,7 +144,7 @@ public class CoreAccessMock implements ICoreAccess {
             public void run() {
 
                 // registering
-                callbackRegistrationStatus(RegistrationStatus.RegisterStati.RegistrationActive, "");
+                fireRegistrationStatus(RegistrationStatus.RegisterStati.RegistrationActive, "");
 
                 try {
                     Thread.sleep(2000);
@@ -152,10 +152,10 @@ public class CoreAccessMock implements ICoreAccess {
                     e.printStackTrace();
                 }
 
-                callbackRegistrationStatus(RegistrationStatus.RegisterStati.RegisterSuccess, "");
+                fireRegistrationStatus(RegistrationStatus.RegisterStati.RegisterSuccess, "");
 
                 // logging in after registering
-                callbackConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
+                fireConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
 
                 try {
                     Thread.sleep(1500);
@@ -165,7 +165,7 @@ public class CoreAccessMock implements ICoreAccess {
 
                 isSignedIn = true;
 
-                callbackConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+                fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
             }
         };
 
@@ -173,11 +173,11 @@ public class CoreAccessMock implements ICoreAccess {
         new Thread(runner).start();
     }
 
-    public void registerRegistrationStatusCallback(RegistrationStatus cb) {
+    public void addRegistrationStatusCallbackListener(RegistrationStatus cb) {
         log.info("Registers registration status callback: " + cb);
     }
 
-    public void deRegisterRegistrationStatusCallback(RegistrationStatus cb) {
+    public void removeRegistrationStatusCallbackListener(RegistrationStatus cb) {
         log.info("Deregisters registration status callback: " + cb);
 
     }
@@ -196,7 +196,7 @@ public class CoreAccessMock implements ICoreAccess {
     public void signOut() {
         isSignedIn = false;
 
-        callbackConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
+        fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
     }
 
     public String[] getLastSignInNames() {
@@ -204,13 +204,13 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
 
-    public void registerProjectChangedCallback(ProjectChanged cb) {
+    public void addProjectChangedCallbackListener(ProjectChanged cb) {
         log.info("Mock: register project changed callback: " + cb);
 
         projectChanged.add(cb);
     }
 
-    public void deregisterProjectChangedCallback(ProjectChanged cb) {
+    public void removeProjectChangedCallbackListener(ProjectChanged cb) {
         log.info("Mock: deregister project changed callback: " + cb);
 
         if (projectChanged.contains(cb)) {
@@ -218,7 +218,7 @@ public class CoreAccessMock implements ICoreAccess {
         }
     }
 
-    private void callbackProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
+    private void fireProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
         for (ProjectChanged callback : projectChanged) {
             callback.projectChanged(ev);
         }
@@ -234,7 +234,7 @@ public class CoreAccessMock implements ICoreAccess {
         project.setStarted(false);
 
         // generate event
-        callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+        fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
                 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
     }
 
@@ -242,7 +242,7 @@ public class CoreAccessMock implements ICoreAccess {
         project.setStarted(true);
 
         // generate event
-        callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+        fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
                 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
     }
 
@@ -281,7 +281,7 @@ public class CoreAccessMock implements ICoreAccess {
                         throw new ProjectNotFoundException("Project not found in list!");
                     }
 
-                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                    fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
                             ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
 
                 } catch (RuntimeException run) {
@@ -317,7 +317,7 @@ public class CoreAccessMock implements ICoreAccess {
                     project.setInvitationState(InvitationState.ACCEPTED);
 
 
-                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                    fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
                             ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
                 } catch (RuntimeException run) {
@@ -347,7 +347,7 @@ public class CoreAccessMock implements ICoreAccess {
                 try {
                     invitedProjects.remove(project);
 
-                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                    fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
                             ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
 
                 } catch (RuntimeException run) {
@@ -358,6 +358,13 @@ public class CoreAccessMock implements ICoreAccess {
 
         // start our runner thread, that makes a callback to project status
         new Thread(runner).start();
+    }
+
+    public void setProjectName(Project project, String prName) {
+        project.setName(prName);
+
+        fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
     }
 
     public List<NoteObject> getNotes(Project project) {
@@ -389,7 +396,7 @@ public class CoreAccessMock implements ICoreAccess {
                     pr1.setStarted(true);
                     projects.add(pr1);
 
-                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(pr1,
+                    fireProjectChanged(new ProjectChanged.ProjectChangedEvent(pr1,
                             ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
                 } catch (RuntimeException run) {
@@ -403,7 +410,7 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
 
-    private void callbackRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
+    private void fireRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
         for (RegistrationStatus callback : registrationStatus) {
             callback.setRegistrationStatus(state, str);
         }

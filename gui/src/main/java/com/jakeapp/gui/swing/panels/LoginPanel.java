@@ -52,8 +52,8 @@ public class LoginPanel extends javax.swing.JPanel implements RegistrationStatus
         setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(LoginPanel.class));
 
         // register the connection & reg status callback!
-        JakeMainApp.getApp().getCore().registerConnectionStatusCallback(this);
-        JakeMainApp.getApp().getCore().registerRegistrationStatusCallback(this);
+        JakeMainApp.getApp().getCore().addConnectionStatusCallbackListener(this);
+        JakeMainApp.getApp().getCore().addRegistrationStatusCallbackListener(this);
 
         // fill the registraton info panel
         registrationInfoPanel.setLayout(new MigLayout("wrap 2"));
