@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.RosterPacket.ItemStatus;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 
 import com.jakeapp.jake.ics.UserId;
@@ -79,7 +80,7 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public UserId getUserid() throws NotLoggedInException {
+	public XmppUserId getUserid() throws NotLoggedInException {
 		if (!isLoggedIn())
 			throw new NotLoggedInException();
 
@@ -96,19 +97,25 @@ public class XmppStatusService implements IStatusService {
 			NetworkException, NotLoggedInException, TimeoutException {
 		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-		if (userid.equals(getUserid()))
+		if (XmppUserId.isSameUser(getUserid(),userid))
 			return isLoggedIn();
 		if (!isLoggedIn())
 			throw new NotLoggedInException();
-
-		Presence p = getRoster().getPresence(userid.toString());
 		
+		if (getRoster().getEntry(userid.toString()) != null) {
+			log.debug("Type for " + userid + ": "
+					+ getRoster().getEntry(userid.toString()).getType());
+			log.debug("Status for " + userid + ": "
+					+ getRoster().getEntry(userid.toString()).getStatus());
+		}
+		Presence p = getRoster().getPresence(userid.toString());
+		log.debug("Presence for " + userid + ": " + p);
 		if (p.isAvailable())
 			return true;
 		else
 			return false;
 	}
-	
+
 	private Roster getRoster() throws NotLoggedInException {
 		if (!this.con.getService().getStatusService().isLoggedIn())
 			throw new NotLoggedInException();
@@ -122,16 +129,19 @@ public class XmppStatusService implements IStatusService {
 			throw new NoSuchUseridException();
 		if (isLoggedIn())
 			logout();
+		this.con.setConnection(null);
 
 		XMPPConnection connection;
 		try {
 			connection = XmppCommons.login(userid.getUserId(), pw);
 		} catch (IOException e) {
+			log.debug("login failed (wrong pw)");
 			throw new NetworkException(e);
 		}
 		if (connection == null) {
 			return false;
 		}
+		connection.sendPacket(new Presence(Presence.Type.available));
 		this.con.setConnection(connection);
 		addDiscoveryFeature();
 		registerForEvents();
@@ -146,12 +156,21 @@ public class XmppStatusService implements IStatusService {
 
 			public void presenceChanged(Presence presence) {
 				final String xmppid = presence.getFrom();
-				XmppStatusService.log.debug("presenceChanged: " + xmppid + " - " + presence);
-				try {
-					XmppStatusService.this.con.getService().getUsersService().requestOnlineNotification(new XmppUserId(xmppid));
-				} catch (NotLoggedInException e) {
-					log.debug("Shouldn't happen", e);
+				XmppStatusService.log.debug("presenceChanged: " + xmppid
+						+ " - " + presence);
+
+				if (isLoggedIn()) {
+					try {
+						XmppStatusService.this.con.getService()
+								.getUsersService().requestOnlineNotification(
+										new XmppUserId(xmppid));
+					} catch (NotLoggedInException e) {
+						log.debug("Shouldn't happen", e);
+					}
+				} else {
+					// skip. We don't want notifications after we logout.
 				}
+
 			}
 		});
 	}

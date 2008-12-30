@@ -32,4 +32,16 @@ public class TestXmppUserId {
 	public void testLongUserName() throws Exception {
 		Assert.assertEquals("johannes.buchner", longUserId.getUsername());
 	}
+	@Test
+	public void testSameUserDifferentRessource() throws Exception {
+		Assert.assertTrue(XmppUserId.isSameUser(new XmppUserId("foo@bar/Pidgin"), new XmppUserId("foo@bar/MIRC")));
+	}
+	@Test
+	public void testEqualsUsesToString() throws Exception {
+		Assert.assertEquals(longUserId, longUserId.getUserId());
+	}
+	@Test
+	public void testToString() throws Exception {
+		Assert.assertEquals(longUserId.getUserId(), longUserId.toString());
+	}
 }

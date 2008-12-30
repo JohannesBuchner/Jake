@@ -26,7 +26,7 @@ public class TestMockICUsersService {
 	public void testregisterOnlineStatusListener() throws Exception {
 
 		IOnlineStatusListener mylistener = new IOnlineStatusListener(){
-			public void onlineStatusChanged(String userid) {
+			public void onlineStatusChanged(UserId userid) {
 				Assert.assertEquals(userid, shortUserid1);
 			}
 		};

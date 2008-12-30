@@ -1,5 +1,6 @@
 package com.jakeapp.jake.ics.status;
 
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -17,6 +18,6 @@ public interface IOnlineStatusListener {
      * to get notified of users online status changes.
      * @param userid the userid which changed its status
      */
-    public void onlineStatusChanged(String userid);
+    public void onlineStatusChanged(UserId userid);
 
 }

@@ -9,6 +9,7 @@ import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
@@ -30,8 +31,6 @@ public class XmppUsersService implements IUsersService {
 
 	public Set<IOnlineStatusListener> onlinereceivers = new HashSet<IOnlineStatusListener>();
 
-	public String groupname;
-
 	public XmppUsersService(XmppConnectionData connection) {
 		this.con = connection;
 	}
@@ -46,7 +45,7 @@ public class XmppUsersService implements IUsersService {
 		assertLoggedIn();
 		RosterEntry re = getGroup().getEntry(getXmppId(user));
 		if (re == null) {
-			String[] groups = { this.groupname };
+			String[] groups = { this.con.getGroupname() };
 			try {
 				getRoster().createEntry(getXmppId(user), name, groups);
 			} catch (XMPPException e) {
@@ -99,11 +98,12 @@ public class XmppUsersService implements IUsersService {
 
 	public RosterGroup getGroup() throws NotLoggedInException {
 		assertLoggedIn();
-		RosterGroup rg = getRoster().getGroup(this.groupname);
+		log.debug("Using group " + this.con.getGroupname());
+		RosterGroup rg = getRoster().getGroup(this.con.getGroupname());
 		if (rg == null) {
-			rg = getRoster().createGroup(this.groupname);
+			rg = getRoster().createGroup(this.con.getGroupname());
 		}
-		return getRoster().getGroup(this.groupname);
+		return rg;
 	}
 
 	private boolean isFriend(String xmppid) throws NotLoggedInException {
@@ -159,13 +159,14 @@ public class XmppUsersService implements IUsersService {
 
 	public void notifyAboutPresenceChange(String xmppid) {
 		for (IOnlineStatusListener osl : this.onlinereceivers) {
-			osl.onlineStatusChanged(xmppid);
+			osl.onlineStatusChanged(new XmppUserId(xmppid));
 		}
 	}
-	
+
 	private boolean isCapable(String xmppid) throws IOException {
 		ServiceDiscoveryManager discoManager = ServiceDiscoveryManager
 				.getInstanceFor(this.con.getConnection());
+		log.debug("discovering user " + xmppid);
 		DiscoverInfo discoInfo;
 		try {
 			discoInfo = discoManager.discoverInfo(xmppid);
@@ -173,6 +174,12 @@ public class XmppUsersService implements IUsersService {
 			log.debug("Something weird happened", e);
 			throw new IOException(e);
 		}
+		log.debug("discovery returned: " + discoInfo.getExtensions().size()
+				+ " features");
+		for (PacketExtension i : discoInfo.getExtensions()) {
+			log.debug("discovery returned: namespace: " + i.getNamespace());
+		}
+
 		if (discoInfo.containsFeature(this.con.getNamespace())) {
 			log.info("user came online with our feature");
 			return true;
@@ -182,7 +189,8 @@ public class XmppUsersService implements IUsersService {
 		}
 	}
 
-	public boolean isCapable(UserId userid) throws IOException, NotLoggedInException, NoSuchUseridException {
+	public boolean isCapable(UserId userid) throws IOException,
+			NotLoggedInException, NoSuchUseridException {
 		assertLoggedIn();
 		return isCapable(getXmppId(userid));
 	}
@@ -201,7 +209,8 @@ public class XmppUsersService implements IUsersService {
 	}
 
 	@Override
-	public boolean isFriend(UserId userid) throws NotLoggedInException, NoSuchUseridException {
+	public boolean isFriend(UserId userid) throws NotLoggedInException,
+			NoSuchUseridException {
 		assertLoggedIn();
 		return getGroup().contains(getXmppId(userid));
 	}

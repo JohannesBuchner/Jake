@@ -24,7 +24,7 @@ abstract public class UserId {
 			return false;
 		if (getClass() != obj.getClass()) {
 			// added string compare magic:
-			if(obj.getClass().equals(String.class) && userId.equals(obj))
+			if (obj.getClass().equals(String.class) && userId.equals(obj))
 				return true;
 			return false;
 		}
@@ -51,5 +51,7 @@ abstract public class UserId {
 
 	abstract public boolean isOfCorrectUseridFormat();
 
-
+	public String toString() {
+		return getUserId();
+	}
 }
