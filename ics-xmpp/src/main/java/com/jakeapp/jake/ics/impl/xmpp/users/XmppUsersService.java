@@ -55,9 +55,10 @@ public class XmppUsersService implements IUsersService {
 	}
 
 	private String getXmppId(UserId user) throws NoSuchUseridException {
-		if (!(new XmppUserId(user).isOfCorrectUseridFormat()))
+		XmppUserId xu = new XmppUserId(user);
+		if (!xu.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-		return user.getUserId();
+		return xu.getUserIdWithOutResource();
 	}
 
 	private void assertLoggedIn() throws NotLoggedInException {

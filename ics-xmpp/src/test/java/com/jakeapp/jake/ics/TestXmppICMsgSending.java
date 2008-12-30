@@ -5,12 +5,12 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 
 import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
 
 public class TestXmppICMsgSending {
 
@@ -54,7 +54,9 @@ public class TestXmppICMsgSending {
 	private Boolean messageSaysOk = false;
 
 	private Boolean objectSaysOk = false;
-
+	
+	@Ignore
+	// TODO! 
 	public void testReceiveSend() throws Exception {
 		messageSaysOk = false;
 		objectSaysOk = false;
@@ -80,41 +82,13 @@ public class TestXmppICMsgSending {
 				}
 			}
 		};
-		IObjectReceiveListener myobjlistener = new IObjectReceiveListener() {
-
-			private int i = 0;
-
-			public void receivedObject(UserId from_userid, String identifier,
-					byte[] content) {
-				i++;
-				if (i == 1) {
-					Assert.assertEquals(shortUserid1, from_userid.getUserId());
-					Assert.assertEquals("42:12", identifier);
-					Assert.assertEquals(new String(new byte[] { 12, 32, 12, 34 }),
-							new String(content));
-				}/*
-				 * commented since we don't reuse sendObject in the
-				 * MockImplementation of sendMessage else if(i<=3){
-				 * assertEquals(identifier, "message"); }
-				 */
-
-				else {
-					Assert.fail();
-				}
-				objectSaysOk = (i == 1);
-			}
-		};
 
 		ics.getMsgService().registerReceiveMessageListener(mymsglistener);
-		ics.getMsgService().registerReceiveObjectListener(myobjlistener);
-		ics.getMsgService().sendObject(shortUserid1, "42:12",
-				new byte[] { 12, 32, 12, 34 });
 		ics.getMsgService().sendMessage(shortUserid1, "hello I");
 		ics.getMsgService().sendMessage(new MockUserId("bar@host"),
 				"hello you!");
 		ics.getMsgService().sendMessage(new MockUserId("baz@host"),
 				"What's up?");
-		Assert.assertTrue(objectSaysOk);
 		Assert.assertTrue(messageSaysOk);
 	}
 

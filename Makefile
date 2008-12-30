@@ -18,26 +18,31 @@ gui: core
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || ${MVN} package install || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q && ${MVN} package install || true
-	rm -f .rebuild_gui
+	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; }
+	@rm -f .rebuild_gui
 
 core: fss ics ics-xmpp
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_gui; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_gui; } || true
-	rm -f .rebuild_$@
+	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; }
+	@rm -f .rebuild_$@
 
 fss:
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
+	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; }
 ics:
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_ics-xmpp; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
+	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; }
 
 ics-xmpp: ics
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
 	cd $@; [[ -e target/$@-${VERSION}.jar ]] || { ${MVN} package install; touch ../.rebuild_core; } || true
 	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q &&  { ${MVN} package install; touch ../.rebuild_core; } || true
-	rm -f .rebuild_$@
+	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; }
+	@rm -f .rebuild_$@
 
 clean:
 	${MVN} clean

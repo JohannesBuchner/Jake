@@ -1,9 +1,6 @@
 package com.jakeapp.jake.ics.impl.xmpp;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.impl.mock.MockUserId;
 
 /**
  * Identifies a user within the XMPP network
@@ -42,6 +39,7 @@ public class XmppUserId extends UserId {
 
 	/**
 	 * compares the UserIds ignoring the resource part
+	 * 
 	 * @param a
 	 * @param b
 	 * @return
@@ -49,13 +47,29 @@ public class XmppUserId extends UserId {
 	public static boolean isSameUser(UserId ua, UserId ub) {
 		return isSameUser(ua.getUserId(), ub.getUserId());
 	}
-	
+
+	public String getUserIdWithOutResource() {
+		return stripResource(this.userId);
+	}
+
+	private static String stripResource(String userId) {
+		if (userId != null && userId.contains("/"))
+			return userId.substring(0, userId.lastIndexOf("/"));
+
+		return userId;
+	}
+
+	public String getUserIdWithResource() {
+		return this.userId;
+	}
+
+	@Override
+	public String getUserId() {
+		return getUserIdWithOutResource();
+	}
+
 	private static boolean isSameUser(String a, String b) {
-		if(a.contains("/"))
-			a = a.substring(0,a.lastIndexOf("/"));
-		if(b.contains("/"))
-			b = b.substring(0,b.lastIndexOf("/"));
-		return a.equals(b);
+		return stripResource(a).equals(stripResource(b));
 	}
 
 	@Override
@@ -66,15 +80,16 @@ public class XmppUserId extends UserId {
 			return false;
 		if (getClass() != obj.getClass()) {
 			// added string compare magic:
-			if(obj.getClass().equals(String.class) && isSameUser(userId, (String)obj))
+			if (obj.getClass().equals(String.class)
+					&& isSameUser(this.userId, (String) obj))
 				return true;
 			return false;
 		}
 		UserId other = (UserId) obj;
-		if (userId == null) {
+		if (this.userId == null) {
 			if (other.getUserId() != null)
 				return false;
-		} else if (!isSameUser(userId,other.getUserId()))
+		} else if (!isSameUser(this.userId, other.getUserId()))
 			return false;
 		return true;
 	}

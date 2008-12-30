@@ -67,10 +67,8 @@ public class TestMockICStatusService extends TestCase {
 	}
 	
 	private Boolean messageSaysOk = false;
-	private Boolean objectSaysOk = false;
 	public void testReceiveSend() throws Exception {
 		messageSaysOk = false;
-		objectSaysOk = false;
 		
 		IMessageReceiveListener mymsglistener = new IMessageReceiveListener(){
 			private int i = 0;
@@ -91,35 +89,12 @@ public class TestMockICStatusService extends TestCase {
 				}
 			}
 		};
-		IObjectReceiveListener myobjlistener = new IObjectReceiveListener(){
-			private int i = 0;
-			public void receivedObject(UserId from_userid, String identifier, byte[] content) {
-				i++;
-				if(i == 1){
-					assertEquals(shortUserid1, from_userid.getUserId());
-					assertEquals("42:12", identifier);
-					assertEquals(new String(new byte[]{12, 32, 12, 34} ), new String(content));					
-				}/* 
-				commented since we don't reuse sendObject in the MockImplementation of sendMessage
-				else if(i<=3){
-					assertEquals(identifier, "message"); 
-				}*/
-				
-				else{
-					fail();
-				}
-				objectSaysOk = (i == 1);
-			}
-		};
 		
 		ics.getMsgService().registerReceiveMessageListener(mymsglistener);
-		ics.getMsgService().registerReceiveObjectListener(myobjlistener);
 		assertTrue(ics.getStatusService().login(shortUserid1, shortUserid1.getUserId()));
-		ics.getMsgService().sendObject(shortUserid1, "42:12", new byte[]{12, 32, 12, 34} );
 		ics.getMsgService().sendMessage(shortUserid1, "hello I");
 		ics.getMsgService().sendMessage(new MockUserId("bar@host"), "hello you!");
 		ics.getMsgService().sendMessage(new MockUserId("baz@host"), "What's up?");
-		assertTrue(objectSaysOk);
 		assertTrue(messageSaysOk);
 	}
 

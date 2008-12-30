@@ -19,6 +19,7 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import com.jakeapp.jake.ics.status.IUsersService;
 
 public class TestXmppICUsersService {
 
@@ -61,6 +62,25 @@ public class TestXmppICUsersService {
 			this.ics2.getStatusService().logout();
 		TestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
 		TestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
+	}
+
+	private void assertContainsExactlyUsers(Iterable<UserId> users,
+			UserId[] expected) {
+		List<String> ul = new LinkedList<String>();
+		for (UserId u : users) {
+			ul.add(new XmppUserId(u).getUserIdWithResource());
+			log.debug("have " + u);
+		}
+		for (int i = 0; i < expected.length; i++) {
+			log.debug("want "
+					+ new XmppUserId(expected[i]).getUserIdWithOutResource());
+			Assert.assertTrue("User " + expected[i] + " expected",
+					ul.remove(new XmppUserId(expected[i])
+							.getUserIdWithOutResource()));
+		}
+		Assert.assertEquals("no remaining users: "
+				+ (ul.size() > 0 ? "especially not you, " + ul.get(0) : ""), 0,
+				ul.size());
 	}
 
 	@Test
@@ -108,14 +128,10 @@ public class TestXmppICUsersService {
 	public void testGetUserList_ContainsOtherUser() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
-
-		int i = 0;
-		for (UserId u : this.ics.getUsersService().getUsers()) {
-			log.debug(u.toString());
-			Assert.assertEquals(testUser2, u);
-			i++;
-		}
-		Assert.assertEquals(1, i);
+		
+		UserId[] expected = { testUser2 };
+		assertContainsExactlyUsers(this.ics.getUsersService().getUsers(),
+				expected);
 	}
 
 	@Test
@@ -125,20 +141,9 @@ public class TestXmppICUsersService {
 		XmppUserId randomGuy = new XmppUserId("justmademe@up.to/proveapoint");
 		this.ics.getUsersService().addUser(randomGuy, "randomguy");
 
-		int i = 0;
-		boolean testUser2found = false;
-		boolean randomGuyFound = false;
-		for (UserId u : this.ics.getUsersService().getUsers()) {
-			log.debug(u.toString());
-			if (testUser2.equals(u))
-				testUser2found = true;
-			if (randomGuy.equals(u))
-				randomGuyFound = true;
-			i++;
-		}
-		Assert.assertEquals(2, i);
-		Assert.assertTrue(testUser2found);
-		Assert.assertTrue(randomGuyFound);
+		UserId[] expected = { randomGuy, testUser2 };
+		assertContainsExactlyUsers(this.ics.getUsersService().getUsers(),
+				expected);
 	}
 
 	@Test
@@ -150,60 +155,41 @@ public class TestXmppICUsersService {
 		this.ics.getUsersService().removeUser(
 				new XmppUserId("justmademe@up.to/otherressource"));
 
-		int i = 0;
-		boolean testUser2found = false;
-		boolean randomGuyFound = false;
-		for (UserId u : this.ics.getUsersService().getUsers()) {
-			log.debug(u.toString());
-			if (testUser2.equals(u))
-				testUser2found = true;
-			if (randomGuy.equals(u))
-				randomGuyFound = true;
-			i++;
-		}
-		Assert.assertEquals(1, i);
-		Assert.assertTrue(testUser2found);
-		Assert.assertFalse(randomGuyFound);
-	}
-
-	private boolean containsExactlyUsers(Iterable<UserId> users,
-			UserId[] expected) {
-		List<UserId> e = new LinkedList<UserId>();
-		for(UserId u : users){
-			e.add(u);
-		}
-		for(int i = 0 ; i<expected.length; i++){
-			
-		}
+		UserId[] expected = { testUser2 };
+		assertContainsExactlyUsers(this.ics.getUsersService().getUsers(),
+				expected);
 	}
 
 	@Test
 	public void testRemoveAddUserDoubles() throws Exception {
-
-		this.ics.getUsersService().addUser(testUser2, "other");
-		this.ics.getUsersService().addUser(testUser2, "other");
-		this.ics.getUsersService().addUser(testUser2, "other");
 		XmppUserId randomGuy = new XmppUserId("justmademe@up.to/proveapoint");
-		this.ics.getUsersService().addUser(randomGuy, "randomguy");
-		this.ics.getUsersService().addUser(randomGuy, "randomguy");
-		this.ics.getUsersService().removeUser(
-				new XmppUserId("justmademe@up.to/otherressource"));
-		this.ics.getUsersService().removeUser(
-				new XmppUserId("justmademe@up.to/otherressource"));
+		XmppUserId randomGuyOtherRessource = new XmppUserId(
+				"justmademe@up.to/otherressource");
+		UserId[] state0 = {};
+		UserId[] state1 = { testUser2 };
+		UserId[] state2 = { testUser2, randomGuy };
+		UserId[] state3 = { testUser2, randomGuy };
+		UserId[] state4 = { testUser2 };
+		UserId[] state5 = {};
+		UserId[] state6 = {};
 
-		int i = 0;
-		boolean testUser2found = false;
-		boolean randomGuyFound = false;
-		for (UserId u : this.ics.getUsersService().getUsers()) {
-			log.debug(u.toString());
-			if (testUser2.equals(u))
-				testUser2found = true;
-			if (randomGuy.equals(u))
-				randomGuyFound = true;
-			i++;
-		}
-		Assert.assertEquals(1, i);
-		Assert.assertTrue(testUser2found);
-		Assert.assertFalse(randomGuyFound);
+		IUsersService us = this.ics.getUsersService();
+
+		assertContainsExactlyUsers(us.getUsers(), state0);
+		us.addUser(testUser2, "other");
+		assertContainsExactlyUsers(us.getUsers(), state1);
+		us.addUser(testUser2, "other");
+		us.addUser(testUser2, "other");
+		assertContainsExactlyUsers(us.getUsers(), state1);
+		us.addUser(randomGuy, "randomguy");
+		assertContainsExactlyUsers(us.getUsers(), state2);
+		us.addUser(randomGuyOtherRessource, "randomguy");
+		assertContainsExactlyUsers(us.getUsers(), state3);
+		us.removeUser(randomGuy);
+		assertContainsExactlyUsers(us.getUsers(), state4);
+		us.removeUser(testUser2);
+		assertContainsExactlyUsers(us.getUsers(), state5);
+		us.removeUser(randomGuy);
+		assertContainsExactlyUsers(us.getUsers(), state6);
 	}
 }

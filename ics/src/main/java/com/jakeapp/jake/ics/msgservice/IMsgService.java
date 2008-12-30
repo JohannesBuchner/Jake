@@ -26,35 +26,8 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
  **/
 
 public interface IMsgService {
-
-	/**
-	 * Sends a object to another user.
-	 * @param to_userid        Userid to send to 
-	 * @param objectidentifier name of the content so the receiver knows what 
-	 *                         it is receiving
-	 * @param content          Full object content as String
-	 * @return                 wether the object could be sent. Does not 
-	 *                         guarantee the object has been retrieved.
-	 * @throws NetworkException  if the network connection is down
-	 * @throws TimeoutException if a timeout occured while transmitting the object
-	 * @throws NotLoggedInException if the user is not logged in
-	 */
-	public Boolean sendObject(UserId to_userid, String objectidentifier, 
-			byte[] content) 
-		throws NetworkException, NotLoggedInException, TimeoutException,
-			NoSuchUseridException, OtherUserOfflineException;
-	
-	/**
-	 * Registers a callback for the event that a object is received.
-	 * If sendMessage() uses sendObject(), this is also called for messages. 
-	 * 
-	 * @param rl    object to be called
-	 */
-	public void registerReceiveObjectListener(IObjectReceiveListener rl);
-	
 	/**
 	 * Sends a message to another user.
-	 * May call sendObject with the objectidentifier "message".
 	 * @param to_userid        Userid to send to
 	 * @param content          Full message content as String 
 	 * @return                 wether the message could be sent. Does not 
@@ -71,8 +44,9 @@ public interface IMsgService {
 	 * Registers a callback for the event that a message is received.
 	 * 
 	 * @param receiveListener    object to be called
+	 * @throws NotLoggedInException 
 	 */
-	public void registerReceiveMessageListener(IMessageReceiveListener receiveListener);
+	public void registerReceiveMessageListener(IMessageReceiveListener receiveListener) throws NotLoggedInException;
 	
 
 }
