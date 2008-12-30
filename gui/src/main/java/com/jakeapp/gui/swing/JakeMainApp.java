@@ -36,6 +36,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
     /**
      * At startup create and show the main frame of the application.
+     * (Called from the Swing Application Framework)
      */
     @Override
     protected void startup() {

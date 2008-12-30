@@ -5,6 +5,7 @@ import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -248,8 +249,48 @@ public class CoreAccessMock implements ICoreAccess {
         return needsInvite;
     }
 
-    public void createProject(final String path) {
 
+    public void deleteProject(final Project project) {
+        log.info("Mock: delete project: " + project);
+
+        if (project == null) {
+            throw new IllegalArgumentException("Cannot delete empty project!");
+        }
+
+
+        Runnable runner = new Runnable() {
+            public void run() {
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    // search project in list
+                    boolean ret = projects.remove(project);
+
+                    if (!ret) {
+                        throw new ProjectNotFoundException("Project not found in list!");
+                    }
+
+                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                            ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
+
+                } catch (RuntimeException run) {
+                    fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+                }
+            }
+        };
+
+        // start our runner thread, that makes a callback to project status
+        new Thread(runner).start();
+    }
+
+
+    public void createProject(final String name, final String path) {
+        log.info("Mock: create project: " + name + " path: " + path);
         if (path == null) {
             //throw new
         }
@@ -264,8 +305,7 @@ public class CoreAccessMock implements ICoreAccess {
                 }
 
                 try {
-                    Project pr1 = new Project(path.substring(path.lastIndexOf("/") + 1,
-                            path.length()), null, null, new File(path));
+                    Project pr1 = new Project(name, null, null, new File(path));
                     pr1.setStarted(true);
                     projects.add(pr1);
 

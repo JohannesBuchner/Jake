@@ -44,6 +44,21 @@ public class JakeMainHelper {
     }
 
     /**
+     * Returns the last folder from a path.
+     *
+     * @param path (e.g. /User/user/foobar))
+     * @return last folder of part (e.g. foobar)
+     */
+    public static String getLastFolderFromPath(String path) {
+        if (path.indexOf("/") != -1) {
+            return path.substring(path.lastIndexOf("/") + 1,
+                    path.length());
+        } else {
+            return path;
+        }
+    }
+
+    /**
      * Evaluates the Project and returns a Start/Stop-String depending on its state.
      *
      * @param project

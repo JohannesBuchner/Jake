@@ -2,7 +2,9 @@ package com.jakeapp.gui.swing;
 
 import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.actions.DeleteProjectAction;
 import com.jakeapp.gui.swing.actions.ProjectAction;
+import com.jakeapp.gui.swing.actions.RenameProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -34,6 +36,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
     private SourceListCategory invitedProjectsCategory;
     private SourceListCategory myProjectsCategory;
     private SourceList sourceList;
+    private JPopupMenu sourceListContextMenu;
 
     ProjectAction startStopProjectAction = new StartStopProjectAction();
     private SourceListSelectionListener projectSelectionListener;
@@ -44,6 +47,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
         JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
 
+        sourceListContextMenu = createSourceListContextMenu();
         sourceList = createSourceList();
 
         // run the inital update, later updated by events
@@ -132,26 +136,8 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
             }
 
             public JPopupMenu createContextMenu(SourceListItem item) {
-                log.info("Creating context Menu for SourceListitem " + item);
-
-                // get the project from the sourceList
-                Project project = sourceListProjectMap.get(item);
-
-                // create the menu on the fly
-                JPopupMenu popupMenu = new JPopupMenu();
-                popupMenu.setLightWeightPopupEnabled(false);
-
-                String startStopString = JakeMainHelper.getProjectStartStopString(project);
-
-                JMenuItem startStopMenuItem = new JMenuItem(startStopString);
-                startStopMenuItem.setAction(startStopProjectAction);
-                popupMenu.add(startStopMenuItem);
-                popupMenu.add(new JMenuItem(getResourceMap().getString("renameProjectPopupMenuItem")));
-                popupMenu.add(new JMenuItem("Remove..."));
-                popupMenu.add(new JSeparator());
-                popupMenu.add(new JCheckBoxMenuItem("Auto Push"));
-                popupMenu.add(new JCheckBoxMenuItem("Auto Pull"));
-                return popupMenu;
+                return sourceListContextMenu;
+                //return createSourceListContextMenu(item);
             }
 
             public JPopupMenu createContextMenu(SourceListCategory category) {
@@ -163,6 +149,33 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 
         sourceList.setSourceListContextMenuProvider(menuProvider);
         return sourceList;
+    }
+
+    /**
+     * One-time creation of the context menu
+     *
+     * @return
+     */
+    private JPopupMenu createSourceListContextMenu() {
+
+        // create the menu
+        JPopupMenu popupMenu = new JPopupMenu();
+        // popupMenu.setLightWeightPopupEnabled(false);
+
+        JMenuItem startStopMenuItem = new JMenuItem();
+        startStopMenuItem.setAction(startStopProjectAction);
+        popupMenu.add(startStopMenuItem);
+
+        JMenuItem renameMenuItem = new JMenuItem();
+        renameMenuItem.setAction(new RenameProjectAction());
+
+        popupMenu.add(new JMenuItem(getResourceMap().getString("renameProjectPopupMenuItem")));
+
+        JMenuItem deleteProjectMenuItem = new JMenuItem();
+        deleteProjectMenuItem.setAction(new DeleteProjectAction());
+        popupMenu.add(deleteProjectMenuItem);
+
+        return popupMenu;
     }
 
     /**

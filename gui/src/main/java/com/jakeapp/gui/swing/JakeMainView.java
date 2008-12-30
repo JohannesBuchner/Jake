@@ -7,6 +7,7 @@ import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
+import com.jakeapp.gui.swing.actions.DeleteProjectAction;
 import com.jakeapp.gui.swing.actions.ProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -154,6 +155,10 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
         // set menu actions
         startStopProjectMenuItem.setAction(startStopProjectAction);
+
+        ProjectAction deleteProjectAction = new DeleteProjectAction();
+        deleteProjectMenuItem.setAction(deleteProjectAction);
+        deleteMenuItem.setAction(deleteProjectAction);
 
         // set default window behaviour
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());

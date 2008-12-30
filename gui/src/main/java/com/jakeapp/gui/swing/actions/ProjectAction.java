@@ -17,6 +17,9 @@ public abstract class ProjectAction extends JakeAction implements ProjectSelecti
 
     public ProjectAction() {
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+
+        // initial load
+        setProject(JakeMainApp.getApp().getProject());
     }
 
     public ProjectAction(Project project) {

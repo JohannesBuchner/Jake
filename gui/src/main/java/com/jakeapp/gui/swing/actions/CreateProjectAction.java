@@ -21,7 +21,7 @@ public class CreateProjectAction extends ProjectAction {
         super();
 
         putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
-                getString("toolbarCreateProject"));
+                getString("createProjectMenuItem.text"));
 
         Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
                 getClass().getResource("/icons/createproject.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
@@ -37,7 +37,8 @@ public class CreateProjectAction extends ProjectAction {
 
         // create the directory if path was not null
         if (path != null) {
-            JakeMainApp.getApp().getCore().createProject(path);
+            JakeMainApp.getApp().getCore().createProject(
+                    JakeMainHelper.getLastFolderFromPath(path), path);
         }
     }
 

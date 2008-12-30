@@ -186,7 +186,18 @@ public interface ICoreAccess {
      * Works asyn, fires the callback when finished.
      * Throws exceptions if path is null or invalid.
      *
-     * @param path
+     * @param name: name of the project
+     * @param path: path of the project
      */
-    void createProject(String path);
+    void createProject(String name, String path);
+
+
+    /**
+     * Deletes a project.
+     * Works asyn, fires the callback when finished.
+     * Throws exceptions if path is null or invalid.
+     *
+     * @param project: project that should be deleted
+     */
+    void deleteProject(Project project);
 }
