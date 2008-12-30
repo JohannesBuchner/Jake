@@ -267,29 +267,38 @@ public class Project implements ILogable {
     public ServiceCredentials getCredentials() {
         return credentials;
     }
-    
-	/**
-	 * @param invitationState the invitationState to set
-	 */
-	public void setInvitationState(InvitationState invitationState) {
-		this.invitationState = invitationState;
-	}
+
+    /**
+     * @param invitationState the invitationState to set
+     */
+    public void setInvitationState(InvitationState invitationState) {
+        this.invitationState = invitationState;
+    }
 
 
-	/**
-	 * @return the invitationState
-	 */
+    /**
+     * @return the invitationState
+     */
     @Transient
-	public InvitationState getInvitationState() {
-		return invitationState;
-	}
+    public InvitationState getInvitationState() {
+        return invitationState;
+    }
+
+    /**
+     * Convenicence Methode for getInvitationState.
+     *
+     * @return: true if project is invited only.
+     */
+    public boolean isInvitation() {
+        return getInvitationState() == InvitationState.INVITED;
+    }
 
     /**
      * The toString-Representation for debugging.
      *
      * @return
      */
-	@Override
+    @Override
     public String toString() {
         return "Project " + getName() + "(" + getProjectId() + "), " +
                 getRootPath() + " started: " + isStarted();
