@@ -223,11 +223,14 @@ public class JakeMainHelper {
         }
     }
 
-    public static String openDirectoryChooser() {
+    public static String openDirectoryChooser(String defaultFolder) {
         log.info("user is choosing a directory");
         // uses the awt native folder dialog on mac
         if (Platform.isMac()) {
             FolderDialog fod = new FolderDialog(JakeMainView.getMainView().getFrame(), "Choose Directory");
+            if (defaultFolder != null) {
+                fod.setFile(defaultFolder);
+            }
             fod.setVisible(true);
             return fod.getDirectory();
         } else {
@@ -236,8 +239,12 @@ public class JakeMainHelper {
             // TODO: maybe we can get the native folder chooser for windows?
 
             JFileChooser fileChooser = new JFileChooser();
+            if (defaultFolder != null) {
+                fileChooser.setSelectedFile(new File(defaultFolder));
+            }
             fileChooser.setMultiSelectionEnabled(false);
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
             int returnCode = fileChooser.showOpenDialog(null);
             if (returnCode == JFileChooser.APPROVE_OPTION) {
                 return fileChooser.getSelectedFile().getAbsolutePath();
@@ -253,10 +260,14 @@ public class JakeMainHelper {
      * @param project
      */
     public static String getDefaultProjectLocation(Project project) {
+        if (project == null) {
+            return "";
+        }
+
         javax.swing.JFileChooser fr = new javax.swing.JFileChooser();
         javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
 
         // TODO: make customizeable, cleanup project name
-        return fw.getDefaultDirectory() + System.getProperty("path.separator").toString() + project.getName();
+        return fw.getDefaultDirectory() + Platform.getPathSeparator() + project.getName();
     }
 }

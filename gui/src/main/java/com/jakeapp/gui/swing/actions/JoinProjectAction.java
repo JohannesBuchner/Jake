@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
  */
 public class JoinProjectAction extends ProjectAction {
     private static final Logger log = Logger.getLogger(JoinProjectAction.class);
+    private String projectLocation;
 
     public JoinProjectAction() {
         super();
@@ -28,12 +29,20 @@ public class JoinProjectAction extends ProjectAction {
         log.info("Joining Project: " + getProject());
 
         JakeMainApp.getApp().getCore().joinProject(
-                JakeMainHelper.getDefaultProjectLocation(getProject()),
-                getProject());
+                getProjectLocation(), getProject());
     }
 
 
     @Override
     public void updateAction() {
+        setProjectLocation(JakeMainHelper.getDefaultProjectLocation(getProject()));
+    }
+
+    public String getProjectLocation() {
+        return projectLocation;
+    }
+
+    public void setProjectLocation(String projectLocation) {
+        this.projectLocation = projectLocation;
     }
 }

@@ -203,6 +203,13 @@ public interface ICoreAccess {
     void joinProject(String loc, Project project);
 
 
+    /**
+     * Rejects join of a invited project.
+     *
+     * @param project
+     */
+    void rejectProject(Project project);
+
     /******************* Notes functions ********************/
 
 

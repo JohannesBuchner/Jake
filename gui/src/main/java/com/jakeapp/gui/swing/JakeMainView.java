@@ -911,7 +911,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private void updateView() {
         Project pr = getProject();
 
-        boolean needsInvite = pr.getInvitationState() == InvitationState.INVITED;
+        boolean needsInvite = pr != null && pr.getInvitationState() == InvitationState.INVITED;
         // determine what to show
         if (pr == null) {
             setContextViewPanel(ContextPanels.Login);
@@ -988,7 +988,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
      * @param ee
      */
     public void reportError(JakeErrorEvent ee) {
-        JOptionPane.showMessageDialog(getFrame(), ee.getException().getMessage(),
+        JOptionPane.showMessageDialog(getFrame(), ee.getException().toString(),
                 getResourceMap().getString("JakeErrorMessageTitle"), JOptionPane.ERROR_MESSAGE);
     }
 

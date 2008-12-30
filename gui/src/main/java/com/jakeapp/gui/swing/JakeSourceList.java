@@ -223,6 +223,10 @@ public class JakeSourceList extends JakeGuiComponent implements
         projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 
         // clear & update 'invited projects'
+        if (!projectSourceListModel.getCategories().contains(invitedProjectsCategory)) {
+            projectSourceListModel.addCategory(invitedProjectsCategory);
+        }
+
         projectSourceListModel.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
         while (invitedProjectsCategory.getItemCount() > 1) {
             projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
@@ -241,6 +245,10 @@ public class JakeSourceList extends JakeGuiComponent implements
             }
         }
         projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+
+        if (invitedProjectsCategory.getItemCount() == 0) {
+            projectSourceListModel.removeCategory(invitedProjectsCategory);
+        }
 
         if (getSourceList() != null && projectSLI != null) {
             log.info("setting selected item: " + projectSLI);

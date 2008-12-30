@@ -52,9 +52,17 @@ public class CoreAccessMock implements ICoreAccess {
         pr4.setInvitationState(InvitationState.ACCEPTED);
         projects.add(pr4);
 
-        Project ipr1 = new Project("DEMO INVITATION", new UUID(22, 33), null, new File(""));
+        Project ipr1 = new Project("DEMO INVITATION 1", new UUID(212, 33), null, new File(""));
         ipr1.setInvitationState(InvitationState.INVITED);
         invitedProjects.add(ipr1);
+
+        Project ipr2 = new Project("DEMO INVITATION 2", new UUID(222, 33), null, new File(""));
+        ipr2.setInvitationState(InvitationState.INVITED);
+        invitedProjects.add(ipr2);
+
+        Project ipr3 = new Project("DEMO INVITATION 3", new UUID(232, 33), null, new File(""));
+        ipr3.setInvitationState(InvitationState.INVITED);
+        invitedProjects.add(ipr3);
     }
 
 
@@ -322,6 +330,35 @@ public class CoreAccessMock implements ICoreAccess {
         new Thread(runner).start();
     }
 
+
+    public void rejectProject(final Project project) {
+        log.info("Mock: reject project: " + project);
+
+
+        Runnable runner = new Runnable() {
+            public void run() {
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    invitedProjects.remove(project);
+
+                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                            ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
+
+                } catch (RuntimeException run) {
+                    fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+                }
+            }
+        };
+
+        // start our runner thread, that makes a callback to project status
+        new Thread(runner).start();
+    }
 
     public List<NoteObject> getNotes(Project project) {
         return new ArrayList<NoteObject>();
