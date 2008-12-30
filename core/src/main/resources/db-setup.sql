@@ -1,19 +1,16 @@
-  DROP TABLE IF EXISTS projectoptions CASCADE;
+
+
+
+--  DROP TABLE IF EXISTS projectoptions CASCADE;
+-- this is already done in db-setup-global.sql
+--  CREATE TABLE projectoptions (
+--	name				VARCHAR(255)		PRIMARY KEY,
+--  	autoannounce			BOOLEAN,
+--	autopull			BOOLEAN
+--  );
+
+
   DROP TABLE IF EXISTS projectmember CASCADE;
-  DROP TABLE IF EXISTS note CASCADE;
-  DROP TABLE IF EXISTS file CASCADE;
-  DROP TABLE IF EXISTS logEntry CASCADE;
-  DROP TABLE IF EXISTS jakeobject CASCADE;
-  DROP TABLE IF EXISTS tag CASCADE;
-
-
-
-  CREATE TABLE projectoptions (
-	name				VARCHAR(255)		PRIMARY KEY,
-  	autoannounce			BOOLEAN,
-	autopull			BOOLEAN
-  );
-
   CREATE TABLE projectmember (
 	memberID			CHAR(36),
 	nickname			VARCHAR(100)		NOT NULL,
@@ -21,7 +18,7 @@
 	PRIMARY KEY (memberID)
   );
 
-
+  DROP TABLE IF EXISTS jakeobject CASCADE;
   CREATE TABLE jakeobject (
 	objectID			CHAR(36),
 	deleted				BOOLEAN,
@@ -29,6 +26,7 @@
 	PRIMARY KEY (objectID)
   );
 
+  DROP TABLE IF EXISTS note CASCADE;
   CREATE TABLE note (
 	objectID			CHAR(36),
 	text				VARCHAR(255)		NOT NULL,
@@ -37,12 +35,7 @@
   );
 
 
-  CREATE TABLE tag (
-  	objectId CHAR(36)		PRIMARY KEY,
-	text				VARCHAR(255)		NOT NULL
-  );
-
-
+  DROP TABLE IF EXISTS file CASCADE;
   CREATE TABLE file (
 	objectID			CHAR(36),
 	path				VARCHAR(255),
@@ -51,6 +44,13 @@
 	PRIMARY KEY (objectID),
 	FOREIGN KEY (objectID) REFERENCES jakeobject(objectID)
   );
+
+  DROP TABLE IF EXISTS tag CASCADE;
+  CREATE TABLE tag (
+  	objectId CHAR(36)		PRIMARY KEY,
+	text				VARCHAR(255)		NOT NULL
+  );
+
 
 
 --  CREATE TABLE object_taggedwith_tag (
@@ -61,6 +61,7 @@
 --	FOREIGN KEY (tag) REFERENCES tag(ID)
 --  );
 
+  DROP TABLE IF EXISTS logEntry CASCADE;
   CREATE TABLE logEntry (
 	ID				CHAR(36)		PRIMARY KEY,
 	memberID			CHAR(36)		NOT NULL,

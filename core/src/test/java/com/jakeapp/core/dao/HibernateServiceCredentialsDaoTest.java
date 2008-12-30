@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.After;
 import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
@@ -47,6 +48,8 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         validCredentials.setServerAddress(addr);
         validCredentials.setServerPort(5222);
 
+        validCredentials.setProtocol(ProtocolType.XMPPP);
+
 
         HibernateTemplate template = (HibernateTemplate) applicationContext.getBean("hibernateTemplate");
 
@@ -71,6 +74,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
      * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
     @Test(expected = InvalidCredentialsException.class)
+    @Transactional
     public final void create_shouldFailPersistNull() throws InvalidCredentialsException {
         serviceCredentialsDao.create(null);
     }
@@ -81,6 +85,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
      * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
     @Test(expected = InvalidCredentialsException.class)
+    @Transactional
     public final void create_persistEmptyCredentials() throws InvalidCredentialsException {
         ServiceCredentials credentials = new ServiceCredentials();
 

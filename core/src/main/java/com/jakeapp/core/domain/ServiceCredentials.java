@@ -16,18 +16,24 @@ import javax.persistence.Transient;
  * <code>userId</code>
  * and a <code>plainTextPassword</code>.
  */
-@Entity
+@Entity(name = "servicecredentials")
 public class ServiceCredentials {
     private UUID uuid;
     private String userId;
     private String plainTextPassword;
     private InetAddress serverAddress;
     private long serverPort;
+
+
+    private boolean autologin;
     private boolean encryptionUsed;
-    private String resourceName = "JakeApp";
+    private String resourceName;
+
+    private ProtocolType protocol;
 
 
     public ServiceCredentials() {
+        this.resourceName = "JakeApp";
     }
 
     /**
@@ -39,10 +45,11 @@ public class ServiceCredentials {
     public ServiceCredentials(String userId, String plainTextPassword) {
         this.userId = userId;
         this.plainTextPassword = plainTextPassword;
+        this.resourceName = "JakeApp";
     }
 
     @Id
-    @Column(name = "uuid", unique = true, nullable = false)
+    @Column(name = "uuid", nullable = false)
     public String getUuid() {
         if(uuid == null)
             return null;
@@ -62,7 +69,7 @@ public class ServiceCredentials {
      *
      * @return the userId
      */
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", unique = true, nullable = false)
     public String getUserId() {
         return userId;
     }
@@ -98,15 +105,17 @@ public class ServiceCredentials {
         return this.serverAddress;
     }
 
-    @Column(name = "serveraddress", nullable = false)
+    @Column(name = "server", nullable = false)
     public String getServerAddressString()
     {
         return this.serverAddress.toString();
     }
 
+    @Transient
     public void setServerAddress(InetAddress serverAddress) {
         this.serverAddress = serverAddress;
     }
+
 
     public void setServerAddressString(String serverAddress) throws InvalidCredentialsException {
         // TODO fix dirty unsafe code! 
@@ -149,7 +158,7 @@ public class ServiceCredentials {
         this.encryptionUsed = encryptionUsed;
     }
 
-
+    @Column(name = "resourcename", nullable = false)
     public String getResourceName() {
         return this.resourceName;
     }
@@ -158,6 +167,35 @@ public class ServiceCredentials {
         this.resourceName = resourceName;
     }
 
+
+    @Column(name="autologin")
+    public boolean isAutologin() {
+        return autologin;
+    }
+
+    public void setAutologin(boolean autologin) {
+        this.autologin = autologin;
+    }
+
+    private void setProtocolType(String protocol)
+    {
+        this.protocol = ProtocolType.get(protocol);
+    }
+
+    @Column(name = "protocol")
+    private String getProtocolType()
+    {
+        return this.protocol.toString();
+    }
+
+    @Transient
+    public ProtocolType getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(ProtocolType protocol) {
+        this.protocol = protocol;
+    }
 
     @Override
     public boolean equals(Object o) {
