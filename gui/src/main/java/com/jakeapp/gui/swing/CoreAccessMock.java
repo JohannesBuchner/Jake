@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import org.apache.log4j.Logger;
@@ -24,6 +25,7 @@ public class CoreAccessMock implements ICoreAccess {
         connectionStatus = new ArrayList<ConnectionStatus>();
         registrationStatus = new ArrayList<RegistrationStatus>();
         projectChanged = new ArrayList<ProjectChanged>();
+        errorCallback = new ArrayList<ErrorCallback>();
 
         // init the demo projects
         Project pr1 = new Project("ASE", null, null, new File("/Users/studpete/Desktop"));
@@ -62,6 +64,20 @@ public class CoreAccessMock implements ICoreAccess {
         return projects;
     }
 
+
+    public void addErrorListener(ErrorCallback ec) {
+        errorCallback.add(ec);
+    }
+
+    public void removeErrorListener(ErrorCallback ec) {
+        errorCallback.remove(ec);
+    }
+
+    private void fireErrorListener(ErrorCallback.JakeErrorEvent ee) {
+        for (ErrorCallback callback : errorCallback) {
+            callback.reportError(ee);
+        }
+    }
 
     public void signIn(final String user, final String pass) {
         log.info("Signs in: " + user + "pass: " + pass);
@@ -232,6 +248,40 @@ public class CoreAccessMock implements ICoreAccess {
         return needsInvite;
     }
 
+    public void createProject(final String path) {
+
+        if (path == null) {
+            //throw new
+        }
+
+        Runnable runner = new Runnable() {
+            public void run() {
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Project pr1 = new Project(path.substring(path.lastIndexOf("/") + 1,
+                            path.length()), null, null, new File(path));
+                    pr1.setStarted(true);
+                    projects.add(pr1);
+
+                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(pr1,
+                            ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
+
+                } catch (RuntimeException run) {
+                    fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+                }
+            }
+        };
+
+        // start our runner thread, that makes a callback to project status
+        new Thread(runner).start();
+    }
+
 
     private void callbackRegistrationStatus(RegistrationStatus.RegisterStati state, String str) {
         for (RegistrationStatus callback : registrationStatus) {
@@ -245,4 +295,5 @@ public class CoreAccessMock implements ICoreAccess {
     private List<ConnectionStatus> connectionStatus;
     private List<RegistrationStatus> registrationStatus;
     private List<ProjectChanged> projectChanged;
+    private List<ErrorCallback> errorCallback;
 }

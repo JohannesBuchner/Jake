@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView implements ProjectSelectionChanged {
+public class JakeMainView extends FrameView implements ProjectSelectionChanged, ErrorCallback {
     private static final Logger log = Logger.getLogger(JakeMainView.class);
     private static JakeMainView mainView;
     private Project project;
@@ -52,6 +53,18 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
     private ContextPanels contextPanelView = ContextPanels.Login;
     private JakeStatusBar jakeStatusBar;
     private JakeTrayIcon tray;
+
+
+    /**
+     * Called when the core is reporting an error.
+     * (maybe from an async call)
+     *
+     * @param ee
+     */
+    public void reportError(JakeErrorEvent ee) {
+        JOptionPane.showMessageDialog(getFrame(), ee.getException().getMessage(),
+                getResourceMap().getString("JakeErrorMessageTitle"), JOptionPane.ERROR_MESSAGE);
+    }
 
 
     /**
@@ -75,8 +88,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
     private AbstractButton inspectorButton;
 
     // menu actions
-    ProjectAction startStopProjectAction = new StartStopProjectAction();
-    ProjectAction createProjectAction = new CreateProjectAction();
+    private ProjectAction startStopProjectAction = new StartStopProjectAction();
+    private ProjectAction createProjectAction;
 
     public JakeMainView(SingleFrameApplication app) {
         super(app);
@@ -84,9 +97,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
         setMainView(this);
 
         tray = new JakeTrayIcon();
-
-        // register for project selection changes
-        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
         // init the panels
         loginPanel = new LoginPanel();
@@ -144,7 +154,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
 
         // set menu actions
         startStopProjectMenuItem.setAction(startStopProjectAction);
-        createProjectButton.setAction(createProjectAction);
 
         // set default window behaviour
         WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
@@ -181,7 +190,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
      * Registers the callbacks with the core
      */
     private void registerCallbacks() {
+        // register for project selection changes
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+
         getCore().registerProjectChangedCallback(new ProjectChangedCallback());
+        getCore().addErrorListener(this);
     }
 
 
@@ -230,15 +243,13 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged {
 
 
         // Create Project
-        Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResource("/icons/createproject.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-        JButton createProjectJButton = new JButton(getResourceMap().getString("toolbarCreateProject"), createProjectIcon);
-
+        createProjectAction = new CreateProjectAction();
+        JButton createProjectJButton = new JButton();
+        createProjectJButton.setAction(createProjectAction);
         createProjectButton = MacButtonFactory.makeUnifiedToolBarButton(createProjectJButton);
         createProjectButton.setEnabled(true);
         createProjectButton.setBorder(new LineBorder(Color.BLACK, 0));
         toolBar.addComponentToLeft(createProjectButton, 10);
-
 
         // Create Note
         Icon noteIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(

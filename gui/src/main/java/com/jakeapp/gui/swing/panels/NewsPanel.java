@@ -25,6 +25,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author studpete
@@ -369,11 +371,11 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 
     private void projectFolderHyperlinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectFolderHyperlinkActionPerformed
         log.info("Opening the Folder: " + getProject().getRootPath());
-        /*try {
-            //Desktop.getDesktop().open(getProject().getRootPath());
+        try {
+            Desktop.getDesktop().open(new File(getProject().getRootPath()));
         } catch (IOException e) {
             log.warn("Unable to open folder: " + getProject().getRootPath(), e);
-        }*/
+        }
     }//GEN-LAST:event_projectFolderHyperlinkActionPerformed
 
 

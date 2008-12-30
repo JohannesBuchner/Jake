@@ -1,10 +1,12 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -15,12 +17,15 @@ import java.awt.event.ActionEvent;
 public class CreateProjectAction extends ProjectAction {
     private static final Logger log = Logger.getLogger(CreateProjectAction.class);
 
-    public CreateProjectAction(Project project) {
-        super(project);
-    }
-
     public CreateProjectAction() {
         super();
+
+        putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
+                getString("toolbarCreateProject"));
+
+        Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+                getClass().getResource("/icons/createproject.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+        putValue(Action.LARGE_ICON_KEY, createProjectIcon);
     }
 
 
@@ -29,21 +34,15 @@ public class CreateProjectAction extends ProjectAction {
 
         String path = JakeMainHelper.openDirectoryChooser();
         log.info("Directory was: " + path);
+
+        // create the directory if path was not null
+        if (path != null) {
+            JakeMainApp.getApp().getCore().createProject(path);
+        }
     }
 
 
     @Override
     public void updateAction() {
-
-        if (getProject() != null) {
-            String oldName = (String) getValue(Action.NAME);
-            String newName = JakeMainHelper.getProjectStartStopString(getProject());
-
-            putValue(Action.NAME, newName);
-
-            firePropertyChange(Action.NAME, oldName, newName);
-        }
-
-        setEnabled(getProject() != null);
     }
 }

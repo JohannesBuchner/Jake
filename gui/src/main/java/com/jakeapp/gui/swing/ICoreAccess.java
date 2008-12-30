@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 
@@ -10,22 +11,24 @@ import java.util.List;
 
 public interface ICoreAccess {
 
-    /**
-     * Get all my projects(started/stopped), but not the invited ones.
-     * List is alphabetically sorted.
-     *
-     * @return list of projects.
-     */
-    List<Project> getMyProjects();
+    /******************* Generic functions ********************/
 
     /**
-     * Get projects where i am invited to.
-     * List is alphabetically sorted.
+     * Adds an error listener for error events
      *
-     * @return list of invited projects.
+     * @param ec
      */
-    List<Project> getInvitedProjects();
+    void addErrorListener(ErrorCallback ec);
 
+    /**
+     * Removes the error listener for error events
+     *
+     * @param ec
+     */
+    void removeErrorListener(ErrorCallback ec);
+
+
+    /******************* User functions ********************/
 
     /**
      * Sync Sercice Log In.
@@ -104,6 +107,24 @@ public interface ICoreAccess {
 
     /******************* Project functions ********************/
 
+
+    /**
+     * Get all my projects(started/stopped), but not the invited ones.
+     * List is alphabetically sorted.
+     *
+     * @return list of projects.
+     */
+    List<Project> getMyProjects();
+
+    /**
+     * Get projects where i am invited to.
+     * List is alphabetically sorted.
+     *
+     * @return list of invited projects.
+     */
+    List<Project> getInvitedProjects();
+
+
     /**
      * Registers the Project changed Callback.
      * This is called when a project changes somehow.
@@ -158,4 +179,14 @@ public interface ICoreAccess {
      * @return true of invitation is needed
      */
     boolean isInvitationProject(Project project);
+
+
+    /**
+     * Creates a new project.
+     * Works asyn, fires the callback when finished.
+     * Throws exceptions if path is null or invalid.
+     *
+     * @param path
+     */
+    void createProject(String path);
 }

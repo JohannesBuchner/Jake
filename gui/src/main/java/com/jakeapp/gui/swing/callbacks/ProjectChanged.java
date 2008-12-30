@@ -3,6 +3,10 @@ package com.jakeapp.gui.swing.callbacks;
 import com.jakeapp.core.domain.Project;
 
 /**
+ * The global ProjectChanged-Callback Interface.
+ * Fires events when projects change.
+ * Every registrant get all events.
+ * Project is saved as event source.
  * User: studpete
  * Date: Dec 28, 2008
  * Time: 11:39:30 PM
@@ -31,9 +35,9 @@ public interface ProjectChanged {
 
         // TODO: need more reasons
         public enum ProjectChangedReason {
-            State, Name, Invited
+            Created, State, Name, Invited
         }
     }
 
-    void projectChanged(ProjectChangedEvent ev);
+    void projectChanged(final ProjectChangedEvent ev);
 }

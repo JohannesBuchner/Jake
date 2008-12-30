@@ -11,14 +11,13 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Tag;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.controls.TagSetRenderer;
-import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.TagSetRenderer;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TagSet;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
+import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
@@ -204,7 +203,11 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
     public void setProject(Project project) {
         this.project = project;
-        TreeTableModel treeTableModel = new ProjectFilesTreeTableModel(new File(project.getRootPath()));
-        fileTreeTable.setTreeTableModel(treeTableModel);
+
+        // we have to cope with no project selected state.
+        if (project != null) {
+            TreeTableModel treeTableModel = new ProjectFilesTreeTableModel(new File(project.getRootPath()));
+            fileTreeTable.setTreeTableModel(treeTableModel);
+        }
     }
 }

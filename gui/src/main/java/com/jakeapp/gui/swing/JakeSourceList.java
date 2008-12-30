@@ -6,6 +6,7 @@ import com.jakeapp.gui.swing.actions.ProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -40,7 +41,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
     public JakeSourceList(ICoreAccess core) {
         super(core);
 
-        // JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
         JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
 
         sourceList = createSourceList();
@@ -168,7 +169,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
      * Updates the SourceList (project list)
      */
     private void updateSourceList() {
-        log.info("updating source list...");
+        log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 
         sourceList.removeSourceListSelectionListener(projectSelectionListener);
 
@@ -201,7 +202,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
             sourceListProjectMap.put(sli, project);
 
             // check if project was selected, save this SourceListItem.
-            if (selectedProject == project) {
+            if (selectedProject != null && selectedProject.getRootPath().compareTo(project.getRootPath()) == 0) {
                 projectSLI = sli;
             }
         }
@@ -228,13 +229,37 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
         projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
 
         if (getSourceList() != null && projectSLI != null) {
+            log.info("setting selected item: " + projectSLI);
             getSourceList().setSelectedItem(projectSLI);
         }
 
         sourceList.addSourceListSelectionListener(projectSelectionListener);
 
         if (projectSLI == null) {
+            log.info("selected project not found, selecting null");
             JakeMainApp.getApp().setProject(null);
+        }
+    }
+
+
+    /**
+     * Selects a certail project in the sourceList.
+     * Throws a ProjectNotFoundException if the project was not found in the sourceList.
+     *
+     * @param project: the project that will be selected.
+     */
+    public void selectProject(Project project) {
+        boolean success = false;
+        for (Map.Entry<SourceListItem, Project> slip : sourceListProjectMap.entrySet()) {
+            if (slip.getValue() == project) {
+                sourceList.setSelectedItem(slip.getKey());
+                success = true;
+                break;
+            }
+        }
+
+        if (!success) {
+            throw new ProjectNotFoundException("The project was not found in the list");
         }
     }
 
@@ -257,16 +282,24 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
      *
      * @param ev
      */
-    public void projectChanged(ProjectChangedEvent ev) {
+    public void projectChanged(final ProjectChangedEvent ev) {
         log.info("Received project changed callback.");
 
         Runnable runner = new Runnable() {
             public void run() {
+
                 // TODO: make more specific instead of full update...
                 updateSourceList();
+
+                // select a new created project
+                if (ev.getReason() == ProjectChangedEvent.ProjectChangedReason.Created) {
+                    selectProject(ev.getProject());
+                }
             }
         };
 
         SwingUtilities.invokeLater(runner);
     }
+
+
 }
