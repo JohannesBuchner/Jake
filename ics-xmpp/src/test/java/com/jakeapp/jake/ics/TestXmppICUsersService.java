@@ -28,7 +28,7 @@ public class TestXmppICUsersService {
 
 	private ICService ics;
 
-	private XmppICService ics2;
+	private ICService ics2;
 
 	private static XmppUserId testUser1 = new XmppUserId(TestEnvironment
 			.getXmppId("testuser1"));

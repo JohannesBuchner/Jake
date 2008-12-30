@@ -1,33 +1,42 @@
 package com.jakeapp.jake.ics;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Test;
 
-import com.jakeapp.jake.ics.impl.mock.MockUserId;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 
 public class TestXmppICMsgSending {
 
-	private static final Logger log = Logger.getLogger(TestXmppICMsgSending.class);
+	private static final Logger log = Logger
+			.getLogger(TestXmppICMsgSending.class);
 
-	private ICService ics = null;
+	private ICService ics;
 
-	private static XmppUserId offlineUserId = new XmppUserId("foo.bar@"
-			+ TestEnvironment.host);
+	private ICService ics2;
 
-	private static XmppUserId onlineUserId = new XmppUserId("IhasSses@"
-			+ TestEnvironment.host);
-
-	private static XmppUserId shortUserid1 = new XmppUserId("foobar@"
-			+ TestEnvironment.host);
+	private static XmppUserId testUser1 = new XmppUserId(TestEnvironment
+			.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
+
+	private static XmppUserId testUser2 = new XmppUserId(TestEnvironment
+			.getXmppId("testuser2"));
+
+	private static String testUser2Passwd = "testpasswd2";
 
 	private static String testnamespace = "mynamespace";
 
@@ -35,61 +44,122 @@ public class TestXmppICMsgSending {
 
 	@Before
 	public void setUp() throws Exception {
-		TestEnvironment.assureUserIdExistsAndConnect(shortUserid1,
-				testUser1Passwd);
-		TestEnvironment.assureUserIdExistsAndConnect(onlineUserId,
-				testUser1Passwd);
-		TestEnvironment.assureUserIdExistsAndConnect(offlineUserId,
-				testUser1Passwd);
+		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
+		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
-		Assert.assertTrue(ics.getStatusService().login(shortUserid1, testUser1Passwd));
+		Assert.assertTrue(this.ics.getStatusService().login(testUser1,
+				testUser1Passwd));
+		this.ics2 = new XmppICService(testnamespace, testgroupname);
 	}
-	
+
 	@After
 	public void teardown() throws Exception {
-		ics.getStatusService().logout();
+		if (this.ics != null)
+			this.ics.getStatusService().logout();
+		if (this.ics2 != null)
+			this.ics2.getStatusService().logout();
+		TestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
+		TestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
 	}
 
-	private Boolean messageSaysOk = false;
-
-	private Boolean objectSaysOk = false;
-	
-	@Ignore
-	// TODO! 
+	@Test
 	public void testReceiveSend() throws Exception {
-		messageSaysOk = false;
-		objectSaysOk = false;
+		final String testmsgcontent1 = "Testmessagecontent1";
+		final String testmsgcontent2 = "Testmessagecontent2";
+		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent1);
+		final Semaphore s = new Semaphore(0);
+		final Counter c = new Counter();
 
-		IMessageReceiveListener mymsglistener = new IMessageReceiveListener() {
+		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd));
+		this.ics2.getMsgService().registerReceiveMessageListener(
+				new IMessageReceiveListener() {
 
-			private int i = 0;
+					@Override
+					public void receivedMessage(UserId from_userid,
+							String content) {
+						s.release();
+						c.inc();
+						log.debug("receivedMessage call " + c.getValue());
+						log.debug("receivedMessage: " + from_userid + " says "
+								+ content);
+						if (c.getValue() == 1) {
+							Assert.assertEquals(testUser1, from_userid);
+							Assert.assertEquals(testmsgcontent1, content);
+						} else if (c.getValue() == 2) {
+							Assert.assertEquals(testUser1, from_userid);
+							Assert.assertEquals(testmsgcontent2, content);
+						} else {
+							Assert.fail("unexpected call");
+						}
+					}
 
-			public void receivedMessage(UserId from_userid, String content) {
-				i++;
-				if (i == 1) {
-					Assert.assertEquals(shortUserid1, from_userid.getUserId());
-					Assert.assertEquals("hello I", content);
-				} else if (i == 2) {
-					Assert.assertEquals("bar@host", from_userid.getUserId());
-					Assert.assertEquals("hello you! to you too", content);
-				} else if (i == 3) {
-					Assert.assertEquals("baz@host", from_userid.getUserId());
-					Assert.assertEquals("What's up? to you too", content);
-					messageSaysOk = true;
-				} else {
-					Assert.fail();
-				}
-			}
-		};
-
-		ics.getMsgService().registerReceiveMessageListener(mymsglistener);
-		ics.getMsgService().sendMessage(shortUserid1, "hello I");
-		ics.getMsgService().sendMessage(new MockUserId("bar@host"),
-				"hello you!");
-		ics.getMsgService().sendMessage(new MockUserId("baz@host"),
-				"What's up?");
-		Assert.assertTrue(messageSaysOk);
+				});
+		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent2);
+		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
 	}
 
+	@Test
+	public void testReceiveSend_MultipleInteractions() throws Exception {
+		final String testmsgcontent1 = "Testmessagecontent1";
+		final String testmsgcontent2 = testmsgcontent1 + " >> really?";
+		final String testmsgcontent3 = testmsgcontent2 + " >> yeah, srsly!";
+		final Semaphore s = new Semaphore(0);
+		final Counter c = new Counter();
+
+		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd));
+		this.ics2.getMsgService().registerReceiveMessageListener(
+				new IMessageReceiveListener() {
+
+					@Override
+					public void receivedMessage(UserId from_userid,
+							String content) {
+						s.release();
+						c.inc();
+						log.debug("receivedMessage call " + c.getValue());
+						log.debug("receivedMessage: " + from_userid + " says "
+								+ content);
+						if (c.getValue() == 1) {
+							Assert.assertEquals(testUser1, from_userid);
+							Assert.assertEquals(testmsgcontent1, content);
+							try {
+								TestXmppICMsgSending.this.ics2.getMsgService()
+										.sendMessage(from_userid,
+												content + " >> really?");
+							} catch (Exception e) {
+								log.error("", e);
+								Assert.fail("Unexpected exception");
+							}
+						} else if (c.getValue() == 2) {
+							Assert.assertEquals(testUser1, from_userid);
+							Assert.assertEquals(testmsgcontent3, content);
+						} else {
+							Assert.fail("Unexpected call");
+						}
+					}
+
+				});
+		this.ics.getMsgService().registerReceiveMessageListener(
+				new IMessageReceiveListener() {
+					// practically a echo service
+					@Override
+					public void receivedMessage(UserId from_userid,
+							String content) {
+						try {
+							TestXmppICMsgSending.this.ics.getMsgService()
+									.sendMessage(from_userid,
+											content + " >> yeah, srsly!");
+							Assert.assertEquals(testmsgcontent2, content);
+						} catch (Exception e) {
+							log.error("", e);
+							Assert.fail("Unexpected exception");
+						}
+					}
+
+				});
+		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent1);
+		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
+	}
 }
