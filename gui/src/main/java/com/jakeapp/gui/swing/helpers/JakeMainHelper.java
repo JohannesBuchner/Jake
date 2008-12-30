@@ -2,8 +2,10 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainView;
+import net.roydesign.ui.FolderDialog;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -203,6 +205,30 @@ public class JakeMainHelper {
         } else {
             long years = delta / YEAR;
             return years <= 1 ? "one year ago" : years + " years ago";
+        }
+    }
+
+    public static String openDirectoryChooser() {
+        log.info("user is choosing a directory");
+        // uses the awt native folder dialog on mac
+        if (Platform.isMac()) {
+            FolderDialog fod = new FolderDialog(JakeMainView.getMainView().getFrame(), "Choose Directory");
+            fod.setVisible(true);
+            return fod.getDirectory();
+        } else {
+            // falls back to standard swing folder chooser
+            // on the other platforms
+            // TODO: maybe we can get the native folder chooser for windows?
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setMultiSelectionEnabled(false);
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnCode = fileChooser.showOpenDialog(null);
+            if (returnCode == JFileChooser.APPROVE_OPTION) {
+                return fileChooser.getSelectedFile().getAbsolutePath();
+            } else {
+                return null;
+            }
         }
     }
 }
