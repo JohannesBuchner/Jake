@@ -4,6 +4,7 @@ package com.jakeapp.jake.ics.impl.xmpp.msgservice;
 import org.apache.log4j.Logger;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.util.Base64;
 
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -52,6 +53,10 @@ public class XmppMsgService implements IMsgService {
 		this.packetListener.add(receiveListener);
 	}
 
+	/*
+	 * note: you can only send packets that are a acceptable XML content
+	 * Base64-encoding might be a good idea...
+	 */
 	@Override
 	public Boolean sendMessage(UserId to_userid, String content)
 			throws NotLoggedInException, NoSuchUseridException {
@@ -60,10 +65,11 @@ public class XmppMsgService implements IMsgService {
 			throw new NotLoggedInException();
 		if (!new XmppUserId(to_userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-
+		
+		String safecontent = Base64.encodeBytes(content.getBytes(), Base64.GZIP);
 		Message m = new Message(to_userid.getUserId());
 		m.addExtension(new GenericPacketExtension(this.con.getNamespace(),
-				content));
+				safecontent));
 		log.info("Sending message to " + to_userid.getUserId());
 		log.debug("Content:" + content);
 		this.con.getConnection().sendPacket(m);

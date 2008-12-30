@@ -10,11 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
@@ -160,6 +155,38 @@ public class TestXmppICMsgSending {
 
 				});
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent1);
+		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
+	}
+	@Test
+	public void testReceiveSend_XML() throws Exception {
+		final String testmsgcontent = "<msg>hello</msg>";
+		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent);
+		final Semaphore s = new Semaphore(0);
+		final Counter c = new Counter();
+
+		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd));
+		this.ics2.getMsgService().registerReceiveMessageListener(
+				new IMessageReceiveListener() {
+
+					@Override
+					public void receivedMessage(UserId from_userid,
+							String content) {
+						s.release();
+						c.inc();
+						log.debug("receivedMessage call " + c.getValue());
+						log.debug("receivedMessage: " + from_userid + " says "
+								+ content);
+						if (c.getValue() == 1) {
+							Assert.assertEquals(testUser1, from_userid);
+							Assert.assertEquals(testmsgcontent, content);
+						} else {
+							Assert.fail("unexpected call");
+						}
+					}
+
+				});
+		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent);
 		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
 	}
 }
