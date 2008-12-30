@@ -5,15 +5,13 @@ package com.jakeapp.gui.swing;
 
 import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
+import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.DeleteProjectAction;
 import com.jakeapp.gui.swing.actions.ProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
@@ -46,18 +44,19 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private NewsPanel newsPanel;
     private FilePanel filePanel;
     private NotesPanel notesPanel;
-    private ProjectInvitationPanel invitationPanel = new ProjectInvitationPanel();
+    private ProjectInvitationPanel invitationPanel;
     private LoginPanel loginPanel;
     private List<JToggleButton> contextSwitcherButtons;
     private JPanel contextSwitcherPane = createContextSwitcherPanel();
     private JPanel inspectorPanel;
 
     private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
-    private ContextPanels contextPanelView = ContextPanels.Login;
+    private ContextPanels contextViewPanel = ContextPanels.Login;
     private JakeStatusBar jakeStatusBar;
     private JakeTrayIcon tray;
 
     private List<ProjectViewChanged> projectViewChanged = new ArrayList<ProjectViewChanged>();
+    private List<ContextViewChanged> contextViewChanged = new ArrayList<ContextViewChanged>();
 
 
     /**
@@ -97,6 +96,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         filePanel = new FilePanel();
         notesPanel = new NotesPanel();
         inspectorPanel = new InspectorPanel();
+        invitationPanel = new ProjectInvitationPanel();
 
 
         // initialize helper code
@@ -158,7 +158,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
         registerCallbacks();
 
-        setContextPanelView(ContextPanels.Login);
+        setContextViewPanel(ContextPanels.Login);
 
         updateTitle();
     }
@@ -211,7 +211,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private void updateTitle() {
         String jakeStr = getResourceMap().getString("windowTitle");
 
-        if (getProject() != null && !getCore().isInvitationProject(getProject())) {
+        if (getProject() != null && getProject().getInvitationState() == InvitationState.ACCEPTED) {
             String projectPath = getProject().getRootPath();
             getFrame().setTitle(projectPath + " - " + jakeStr);
 
@@ -369,8 +369,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
      */
     private void updateToolBar() {
         boolean hasProject = getProject() != null;
-        boolean isInvite = getCore().isInvitationProject(getProject());
-        boolean isFilePaneOpen = getContextPanelView() == ContextPanels.Project && getProjectViewPanel() == ProjectViewPanels.Files;
+        boolean isInvite = getProject() != null && getProject().getInvitationState() == InvitationState.INVITED;
+        boolean isFilePaneOpen = getContextViewPanel() == ContextPanels.Project && getProjectViewPanel() == ProjectViewPanels.Files;
 
         createNoteButton.setEnabled(hasProject && !isInvite);
         invitePeopleButton.setEnabled(hasProject && !isInvite);
@@ -855,7 +855,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
      * ProjectViewPanels - state.
      */
     private void updateProjectToggleButtons() {
-        boolean canBeSelected = getContextPanelView() == ContextPanels.Project;
+        boolean canBeSelected = getContextViewPanel() == ContextPanels.Project;
         contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.News);
         contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.Files);
         contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.Notes);
@@ -875,7 +875,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         ProjectViewPanels view = getProjectViewPanel();
 
         // only set if project panels are shown!
-        boolean show = getContextPanelView() == ContextPanels.Project;
+        boolean show = getContextViewPanel() == ContextPanels.Project;
 
         showContentPanel(newsPanel, show && view == ProjectViewPanels.News);
         showContentPanel(filePanel, show && view == ProjectViewPanels.Files);
@@ -889,18 +889,18 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     }
 
 
-    public ContextPanels getContextPanelView() {
-        return contextPanelView;
+    public ContextPanels getContextViewPanel() {
+        return contextViewPanel;
     }
 
-    public void setContextPanelView(ContextPanels view) {
-        this.contextPanelView = view;
+    public void setContextViewPanel(ContextPanels view) {
+        this.contextViewPanel = view;
 
         showContentPanel(loginPanel, view == ContextPanels.Login);
         showContentPanel(invitationPanel, view == ContextPanels.Invitation);
 
         updateProjectViewPanel();
-
+        fireContextViewChanged();
     }
 
     /**
@@ -911,14 +911,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private void updateView() {
         Project pr = getProject();
 
-        boolean needsInvite = getCore().isInvitationProject(pr);
+        boolean needsInvite = pr.getInvitationState() == InvitationState.INVITED;
         // determine what to show
         if (pr == null) {
-            setContextPanelView(ContextPanels.Login);
+            setContextViewPanel(ContextPanels.Login);
         } else if (needsInvite) {
-            setContextPanelView(ContextPanels.Invitation);
+            setContextViewPanel(ContextPanels.Invitation);
         } else {
-            setContextPanelView(ContextPanels.Project);
+            setContextViewPanel(ContextPanels.Project);
         }
         contentPanel.updateUI();
     }
@@ -1008,6 +1008,25 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private void fireProjectViewChanged() {
         for (ProjectViewChanged psc : projectViewChanged) {
             psc.setProjectViewPanel(getProjectViewPanel());
+        }
+    }
+
+
+    public void addContextViewChangedListener(ContextViewChanged pvc) {
+        contextViewChanged.add(pvc);
+    }
+
+    public void removeContextViewChangedListener(ContextViewChanged pvc) {
+        contextViewChanged.remove(pvc);
+    }
+
+    /**
+     * Fires a project selection change event, calling all
+     * registered members of the event.
+     */
+    private void fireContextViewChanged() {
+        for (ContextViewChanged psc : contextViewChanged) {
+            psc.setContextViewPanel(getContextViewPanel());
         }
     }
 }

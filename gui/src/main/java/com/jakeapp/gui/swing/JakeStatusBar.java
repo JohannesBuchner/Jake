@@ -3,10 +3,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -22,13 +19,14 @@ import java.awt.event.ActionListener;
  * Time: 10:59:04 AM
  */
 public class JakeStatusBar extends JakeGuiComponent implements
-        ConnectionStatus, ProjectSelectionChanged, ProjectChanged, ProjectViewChanged {
+        ConnectionStatus, ProjectSelectionChanged, ProjectChanged, ProjectViewChanged, ContextViewChanged {
     private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
     private JLabel statusLabel;
     private JButton connectionButton;
     private TriAreaComponent statusBar;
     private JakeMainView.ProjectViewPanels projectViewPanel;
+    private JakeMainView.ContextPanels contextViewPanel;
 
 
     public JakeStatusBar(ICoreAccess core) {
@@ -37,6 +35,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
         JakeMainApp.getApp().getCore().registerProjectChangedCallback(this);
         JakeMainView.getMainView().addProjectViewChangedListener(this);
+        JakeMainView.getMainView().addContextViewChangedListener(this);
 
         // registering the connection status callback
         getCore().registerConnectionStatusCallback(this);
@@ -175,7 +174,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
                             JakeMainApp.getApp().getCore().signOut();
                         }
 
-                        JakeMainView.getMainView().setContextPanelView(JakeMainView.ContextPanels.Login);
+                        JakeMainView.getMainView().setContextViewPanel(JakeMainView.ContextPanels.Login);
                     }
                 });
 
@@ -205,34 +204,41 @@ public class JakeStatusBar extends JakeGuiComponent implements
      */
     public void updateProjectLabel() {
 
-        if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Files) {
-            // update the status bar label
-            int projectFileCount = getCore().getProjectFileCout(getProject());
-            String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
+        if (getContextViewPanel() == JakeMainView.ContextPanels.Project) {
+            if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Files) {
+                // update the status bar label
+                int projectFileCount = getCore().getProjectFileCout(getProject());
+                String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
 
-            long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
-            String projectSize = JakeMainHelper.getSize(projectSizeTotal);
+                long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
+                String projectSize = JakeMainHelper.getSize(projectSizeTotal);
 
-            // update project statistics
-            statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
-        } else if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Notes) {
-            int notesCount = getCore().getNotes(getProject()).size();
-            String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
+                // update project statistics
+                statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
+            } else if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Notes) {
+                int notesCount = getCore().getNotes(getProject()).size();
+                String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
 
-            statusLabel.setText(notesCount + " " + notesCountStr);
+                statusLabel.setText(notesCount + " " + notesCountStr);
 
-        } else {
-            // project view
-            int peopleCount = getCore().getPeople(getProject()).size();
-
-            // nobody there...
-            if (peopleCount == 0) {
-                String aloneStr = getResourceMap().getString("projectAddPeopleToStart");
-                statusLabel.setText(aloneStr);
             } else {
-                String peopleCountStr = getResourceMap().getString("projectPeople");
-                statusLabel.setText(peopleCount + " " + peopleCountStr);
+                // project view
+                int peopleCount = getCore().getPeople(getProject()).size();
+
+                // nobody there...
+                if (peopleCount == 0) {
+                    String aloneStr = getResourceMap().getString("projectAddPeopleToStart");
+                    statusLabel.setText(aloneStr);
+                } else {
+                    String peopleCountStr = getResourceMap().getString("projectPeople");
+                    statusLabel.setText(peopleCount + " " + peopleCountStr);
+                }
             }
+        } else if (getContextViewPanel() == JakeMainView.ContextPanels.Invitation) {
+            statusLabel.setText("");
+        } else {
+            statusLabel.setText("");
+            // login
         }
     }
 
@@ -249,5 +255,14 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
     public JakeMainView.ProjectViewPanels getProjectViewPanel() {
         return projectViewPanel;
+    }
+
+    public void setContextViewPanel(JakeMainView.ContextPanels contextViewPanel) {
+        this.contextViewPanel = contextViewPanel;
+        projectUpdated();
+    }
+
+    public JakeMainView.ContextPanels getContextViewPanel() {
+        return contextViewPanel;
     }
 }

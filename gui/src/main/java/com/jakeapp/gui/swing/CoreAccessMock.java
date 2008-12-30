@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing;
 
+import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
@@ -13,12 +14,14 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
 
     private boolean isSignedIn;
     private List<Project> projects = new ArrayList<Project>();
+    private List<Project> invitedProjects = new ArrayList<Project>();
 
     /**
      * Core Access Mock initialisation code
@@ -31,19 +34,27 @@ public class CoreAccessMock implements ICoreAccess {
         errorCallback = new ArrayList<ErrorCallback>();
 
         // init the demo projects
-        Project pr1 = new Project("ASE", null, null, new File("/Users/studpete/Desktop"));
+        Project pr1 = new Project("ASE", new UUID(212, 383), null, new File("/Users/studpete/Desktop"));
         pr1.setStarted(true);
+        pr1.setInvitationState(InvitationState.ACCEPTED);
         projects.add(pr1);
 
-        Project pr2 = new Project("SEPM", null, null, new File("/Users/studpete/"));
+        Project pr2 = new Project("SEPM", new UUID(222, 373), null, new File("/Users/studpete/"));
+        pr2.setInvitationState(InvitationState.ACCEPTED);
         projects.add(pr2);
 
-        Project pr3 = new Project("Shared Music", null, null, new File("/Users"));
+        Project pr3 = new Project("Shared Music", new UUID(232, 363), null, new File("/Users"));
+        pr3.setInvitationState(InvitationState.ACCEPTED);
         projects.add(pr3);
 
         // Yes, we need a windows testing project too...
-        Project pr4 = new Project("Windows Project", null, null, new File("C:\\test"));
+        Project pr4 = new Project("Windows Project", new UUID(242, 353), null, new File("C:\\test"));
+        pr4.setInvitationState(InvitationState.ACCEPTED);
         projects.add(pr4);
+
+        Project ipr1 = new Project("DEMO INVITATION", new UUID(22, 33), null, new File(""));
+        ipr1.setInvitationState(InvitationState.INVITED);
+        invitedProjects.add(ipr1);
     }
 
 
@@ -55,16 +66,8 @@ public class CoreAccessMock implements ICoreAccess {
     // TODO: change this: invitations are only runtime specific... (are they?)
     @Override
     public List<Project> getInvitedProjects() {
-        List<Project> projects = new ArrayList<Project>();
 
-        Project pr1 = new Project("DEMO INVITATION", null, null, new File(""));
-        projects.add(pr1);
-
-
-        Project pr2 = new Project("Not that secret Docs", null, null, new File(""));
-        projects.add(pr2);
-
-        return projects;
+        return invitedProjects;
     }
 
 
@@ -244,13 +247,6 @@ public class CoreAccessMock implements ICoreAccess {
         return 50000;
     }
 
-    public boolean isInvitationProject(Project pr) {
-
-        //TODO: need better way to determine if project needs invitaton!
-        boolean needsInvite = pr != null && pr.getName().compareTo("DEMO INVITATION") == 0;
-        return needsInvite;
-    }
-
 
     public void deleteProject(final Project project) {
         log.info("Mock: delete project: " + project);
@@ -290,6 +286,43 @@ public class CoreAccessMock implements ICoreAccess {
         new Thread(runner).start();
     }
 
+    public void joinProject(final String path, final Project project) {
+        log.info("Mock: join project: " + project + " path: " + path);
+
+        if (path == null) {
+            //throw new
+        }
+
+        Runnable runner = new Runnable() {
+            public void run() {
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    project.setRootPath(path);
+                    projects.add(project);
+                    invitedProjects.remove(project);
+                    project.setInvitationState(InvitationState.ACCEPTED);
+
+
+                    callbackProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                            ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
+
+                } catch (RuntimeException run) {
+                    fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+                }
+            }
+        };
+
+        // start our runner thread, that makes a callback to project status
+        new Thread(runner).start();
+    }
+
+
     public List<NoteObject> getNotes(Project project) {
         return new ArrayList<NoteObject>();
     }
@@ -315,7 +348,7 @@ public class CoreAccessMock implements ICoreAccess {
                 }
 
                 try {
-                    Project pr1 = new Project(name, null, null, new File(path));
+                    Project pr1 = new Project(name, new UUID(22, 33), null, new File(path));
                     pr1.setStarted(true);
                     projects.add(pr1);
 

@@ -121,11 +121,6 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
     public void setProject(Project project) {
 
-        //TODO: hack to test the "no project-state"
-        if (project != null && project.getRootPath() == null) {
-            project = null;
-        }
-
         if (this.project != project) {
             this.project = project;
 

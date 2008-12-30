@@ -35,7 +35,7 @@ public interface ProjectChanged {
 
         // TODO: need more reasons
         public enum ProjectChangedReason {
-            Created, State, Name, Deleted, Invited
+            Created, State, Name, Deleted, Joined
         }
     }
 

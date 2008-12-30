@@ -114,7 +114,7 @@ public class JakeSourceList extends JakeGuiComponent implements
                     JakeMainApp.getApp().setProject(null);
 
                     // show the login context panel
-                    JakeMainView.getMainView().setContextPanelView(JakeMainView.ContextPanels.Login);
+                    JakeMainView.getMainView().setContextViewPanel(JakeMainView.ContextPanels.Login);
                 }
             }
         };
@@ -236,7 +236,7 @@ public class JakeSourceList extends JakeGuiComponent implements
             sourceListProjectMap.put(sli, project);
 
             // check if project was selected, save this SourceListItem.
-            if (selectedProject == project) {
+            if (selectedProject != null && selectedProject.getProjectId().compareTo(project.getProjectId()) == 0) {
                 projectSLI = sli;
             }
         }

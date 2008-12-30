@@ -175,15 +175,6 @@ public interface ICoreAccess {
 
 
     /**
-     * Checks if the project needs an invitation or not.
-     *
-     * @param project the project to check
-     * @return true of invitation is needed
-     */
-    boolean isInvitationProject(Project project);
-
-
-    /**
      * Creates a new project.
      * Works asyn, fires the callback when finished.
      * Throws exceptions if path is null or invalid.
@@ -202,6 +193,14 @@ public interface ICoreAccess {
      * @param project: project that should be deleted
      */
     void deleteProject(Project project);
+
+    /**
+     * Joins into a invited project
+     *
+     * @param loc
+     * @param project
+     */
+    void joinProject(String loc, Project project);
 
 
     /******************* Notes functions ********************/

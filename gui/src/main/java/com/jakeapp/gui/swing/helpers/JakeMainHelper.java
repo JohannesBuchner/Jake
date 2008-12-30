@@ -246,4 +246,17 @@ public class JakeMainHelper {
             }
         }
     }
+
+    /**
+     * Returns a default location for the new project.
+     *
+     * @param project
+     */
+    public static String getDefaultProjectLocation(Project project) {
+        javax.swing.JFileChooser fr = new javax.swing.JFileChooser();
+        javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
+
+        // TODO: make customizeable, cleanup project name
+        return fw.getDefaultDirectory() + System.getProperty("path.separator").toString() + project.getName();
+    }
 }

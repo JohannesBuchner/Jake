@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.panels;
 
+import com.jakeapp.gui.swing.actions.JoinProjectAction;
 import com.jakeapp.gui.swing.helpers.Platform;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXPanel;
@@ -60,6 +61,8 @@ public class ProjectInvitationPanel extends JXPanel {
         btnPanel.setOpaque(false);
 
         JButton joinButton = new JButton("Join");
+        joinButton.setAction(new JoinProjectAction());
+
         JButton rejectButton = new JButton("Reject");
 
         btnPanel.add(joinButton, "tag ok");
