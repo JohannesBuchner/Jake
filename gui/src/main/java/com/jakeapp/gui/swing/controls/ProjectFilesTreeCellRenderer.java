@@ -13,15 +13,9 @@ import java.io.File;
 public class ProjectFilesTreeCellRenderer implements TreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+        if(!(value instanceof File)) return null;
+        
         File file = (File) value;
-
-        JLabel label = new JLabel();
-
-        Icon icon = FileIconLabelHelper.getIcon(file, FileIconLabelHelper.State.NONE);
-
-        label.setIcon(icon);
-        label.setText(file.getName());
-
-        return label;
+        return FileIconLabelHelper.getIconLabel(file, FileIconLabelHelper.State.NONE);
     }
 }

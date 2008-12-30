@@ -22,7 +22,7 @@ public class DecoratedIcon implements Icon {
     ;
 
     public DecoratedIcon(Icon original, Icon decoration) {
-        this(original, decoration, Location.LOWER_LEFT);
+        this(original, decoration, Location.LOWER_RIGHT);
     }
 
     public DecoratedIcon(Icon original, Icon decoration, Location loc) {
