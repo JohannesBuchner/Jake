@@ -69,7 +69,6 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
         // we use the system laf everywhere except linux.
         // gtk is ugly here - we us nimbus (when available)
-
         try {
             if (Platform.isWin() || Platform.isMac()) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -85,6 +84,8 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
             log.warn("LAF Exception: ", e);
         }
 
+        //System.setProperty("awt.useSystemAAFontSettings","on");
+        //System.setProperty("swing.aatext", "true");
 
         // MacOSX specific: set menu name to 'Jake'
         // has to be called VERY early to succeed (prior to any gui stuff, later calls will be ignored)
