@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.controls;
 
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -16,12 +18,14 @@ import java.io.File;
 public class ProjectFilesTreeCellRenderer implements TreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        FileSystemView fsv = FileSystemView.getFileSystemView();
+        // Apparently doesn't work on Crapple's Mac OS. Sweet.
+        // FileSystemView fsv = FileSystemView.getFileSystemView();
+
         File file = (File) value;
 
         JLabel label = new JLabel();
 
-        Icon icon = fsv.getSystemIcon(file);
+        Icon icon = JakeMainHelper.getFileIcon(file);
 
         label.setIcon(icon);
         label.setText(file.getName());

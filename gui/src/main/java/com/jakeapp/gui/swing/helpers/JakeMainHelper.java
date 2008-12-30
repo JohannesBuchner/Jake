@@ -30,6 +30,10 @@ public class JakeMainHelper {
     private static int MONTH = 30 * DAY;
     private static int YEAR = 365 * MONTH;
 
+    // We need this for getFileIcon() - it would be a waste of resources to
+    // create it every time we call the method
+    private static JFileChooser fileChooser = new JFileChooser();
+
     public static void initializeJakeMainHelper() {
     }
 
@@ -245,5 +249,17 @@ public class JakeMainHelper {
                 return null;
             }
         }
+    }
+
+    /**
+     * Retrieves the icon for a given file from the filesystem. This is a crappy
+     * hack instead of using the superior FileSystemView because MacOS and Linux
+     * don't like the "better" way of doing things - typical ;)
+     *
+     * @param file The file to get the icon for
+     * @return The file's icon
+     */
+    public static Icon getFileIcon(File file) {
+        return fileChooser.getIcon(file);
     }
 }
