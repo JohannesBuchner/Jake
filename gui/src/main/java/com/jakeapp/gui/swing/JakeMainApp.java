@@ -67,18 +67,22 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
      */
     public static void main(String[] args) {
 
-        try {
-            // use the improved win laf
-            // if (Platform.isWin()) {
-            //     UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-            // } else {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            // }
-            //  UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-            //  UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        // we use the system laf everywhere except linux.
+        // gtk is ugly here - we us nimbus (when available)
 
+        try {
+            if (Platform.isWin() || Platform.isMac()) {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } else {
+                // try to use nimbus (avaailable starting j6u10)
+                try {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                } catch (Exception r) {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+            }
         } catch (Exception e) {
-            System.out.println("LAF Error: " + e.getMessage());
+            log.warn("LAF Exception: ", e);
         }
 
 

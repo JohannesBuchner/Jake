@@ -14,11 +14,25 @@ import com.jakeapp.gui.swing.helpers.styler.WinStyler;
  * @author studpete
  */
 public class Platform {
+    enum OperatingSystem {
+        Windows, Mac, Linux, Other
+    }
+
+    private static OperatingSystem os;
 
     private static Styler styler;
 
     // static initializeJakeMainHelper code
     static {
+        if (System.getProperty("os.name").startsWith("Mac OS")) {
+            os = OperatingSystem.Mac;
+        } else if (System.getProperty("os.name").startsWith("Win")) {
+            os = OperatingSystem.Windows;
+        } else if (System.getProperty("os.name").startsWith("Lin")) {
+            os = OperatingSystem.Linux;
+        } else {
+            os = OperatingSystem.Other;
+        }
 
         if (isMac()) {
             styler = new MacStyler();
@@ -45,8 +59,7 @@ public class Platform {
      * @return true if this JVM is running on a Mac.
      */
     public static boolean isMac() {
-        System.out.println(System.getProperty("os.name"));
-        return System.getProperty("os.name").startsWith("Mac OS");
+        return os == OperatingSystem.Mac;
     }
 
     /**
@@ -55,8 +68,7 @@ public class Platform {
      * @return true if this JVM is running on Windows.
      */
     public static boolean isWin() {
-        System.out.println(System.getProperty("os.name"));
-        return System.getProperty("os.name").startsWith("Win");
+        return os == OperatingSystem.Windows;
     }
 
     /**
@@ -65,8 +77,7 @@ public class Platform {
      * @return true if this JVM is running on Linux.
      */
     public static boolean isLin() {
-        System.out.println(System.getProperty("os.name"));
-        return System.getProperty("os.name").startsWith("Linux");
+        return os == OperatingSystem.Linux;
     }
 
     public static Styler getStyler() {
