@@ -66,6 +66,15 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
      * Main method launching the application.
      */
     public static void main(String[] args) {
+        startGui(args);
+    }
+
+    /**
+     * Starts the GUI!
+     *
+     * @param args
+     */
+    private static void startGui(String[] args) {
 
         // we use the system laf everywhere except linux.
         // gtk is ugly here - we us nimbus (when available)
@@ -73,7 +82,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
             if (Platform.isWin() || Platform.isMac()) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } else {
-                // try to use nimbus (avaailable starting j6u10)
+                // try to use nimbus (available starting j6u10)
                 try {
                     UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
                 } catch (Exception r) {
