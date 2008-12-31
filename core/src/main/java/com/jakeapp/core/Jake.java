@@ -47,10 +47,31 @@ public class Jake {
 
             if (console) {
                 log.debug("Load main application context");
+                log.debug("selected console");
+                
+                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+                        new String[]{"/com/jakeapp/core/applicationContext.xml"});
 
-                /*ApplicationContext applicationContext =*/ new ClassPathXmlApplicationContext(
-                        new String[]{"jake-core-context.xml"});
 
+
+
+            }
+
+            if(gui)
+            {
+                log.debug("Load main application context");
+                log.debug("selected gui");
+
+//                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+//                        new String[]{"/com/jakeapp/core/applicationContext.xml"});
+
+//                JakeGuiStartHelper.launch((ICoreAccess) applicationContext.getBean("coreAccess"));
+                
+                //JakeMainApp app = (JakeMainApp) applicationContext.getBean("swingGui");
+               // JakeMainApp.main(null);
+                //app.setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
+
+                //app.startGui();
 
             }
 

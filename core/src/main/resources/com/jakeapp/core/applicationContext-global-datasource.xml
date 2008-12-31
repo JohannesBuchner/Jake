@@ -71,28 +71,6 @@
 
     </bean>
 
-
-    <!--    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-
-        <property name="dataSource" ref="mainDataSource" />
-        <property name="mappingLocations">
-            <list>
-                <value>classpath*:/com/jakeapp/core/dao/hibernate/*.hbm.xml</value>
-            </list>
-        </property>
-                <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.current_session_context_class">thread</prop>
-                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
-                <prop key="hibernate.default_batch_fetch_size">0</prop>
-                <prop key="hibernate.jdbc.batch_size">0</prop>
-            </props>
-        </property>
-    </bean>-->
-
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
@@ -101,19 +79,5 @@
           class="org.springframework.orm.hibernate3.HibernateTemplate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-
-    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.HibernateServiceCredentialsDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
-    </bean>
-
-    <bean id="projectDao" class="com.jakeapp.core.dao.HibernateProjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
-    </bean>
-
-
-    <bean id="userIdDao" class="com.jakeapp.core.dao.HibernateUserIdDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
-    </bean>
-
 
 </beans>

@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -22,6 +23,7 @@ public class CoreAccessMock implements ICoreAccess {
     private boolean isSignedIn;
     private List<Project> projects = new ArrayList<Project>();
     private List<Project> invitedProjects = new ArrayList<Project>();
+    private IFrontendService frontendService;
 
     /**
      * Core Access Mock initialisation code
@@ -78,6 +80,11 @@ public class CoreAccessMock implements ICoreAccess {
         return invitedProjects;
     }
 
+
+    @Override
+    public void setFrontendService(IFrontendService frontendService) {
+        this.frontendService = frontendService;
+    }
 
     public void addErrorListener(ErrorCallback ec) {
         errorCallback.add(ec);

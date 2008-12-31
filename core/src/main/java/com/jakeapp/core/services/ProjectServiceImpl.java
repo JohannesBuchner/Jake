@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.io.FileNotFoundException;
 
 
-public class ProjectServiceMock implements IProjectService {
+public class ProjectServiceImpl implements IProjectService {
     private List<Project> projectList = new ArrayList<Project>();
 
 

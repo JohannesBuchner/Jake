@@ -112,7 +112,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
 
 
-    @Test
+ /*   @Test
     @Transactional
     public final void createRead_sampleValidUser() throws UnknownHostException, InvalidCredentialsException,
             InvalidUserIdException, NoSuchUserIdException {
@@ -138,7 +138,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
         assertEquals(user_someFriend, result);
     }
-
+*/
     
 
 

@@ -11,6 +11,8 @@ import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
 import java.util.LinkedList;
@@ -31,7 +33,12 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
         this.app = this;
 
         // initializeJakeMainHelper the core connection
-        setCore(new CoreAccessMock());
+        //setCore(new CoreAccessMock());
+
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+                new String[]{"/com/jakeapp/core/applicationContext.xml",
+                        "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
+        setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
     }
 
     /**
@@ -102,7 +109,10 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
         }
 
+
         launch(JakeMainApp.class, args);
+
+
     }
 
 

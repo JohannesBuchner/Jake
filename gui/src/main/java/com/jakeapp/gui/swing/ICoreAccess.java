@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -12,6 +13,17 @@ import java.util.List;
 
 
 public interface ICoreAccess {
+
+    /**************** Main core integration point *************/
+
+    /**
+     * Sets a frontendService to use by the gui - either a direct
+     * java implementation or e.g. a proxy (sockets, rmi, corba, whatever)
+     * @param frontendService the <code>FrontendService</code> to use
+     * by the gui
+     */
+    public void setFrontendService(IFrontendService frontendService);
+
 
     /******************* Generic functions ********************/
 
