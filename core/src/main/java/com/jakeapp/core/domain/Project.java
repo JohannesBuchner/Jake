@@ -289,6 +289,7 @@ public class Project implements ILogable {
      *
      * @return: true if project is invited only.
      */
+    @Transient
     public boolean isInvitation() {
         return getInvitationState() == InvitationState.INVITED;
     }
