@@ -44,6 +44,18 @@
                 <Property name="name" type="java.lang.String" value="deleteProjectMenuItem" noResource="true"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="joinProjectMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="joinProjectMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="joinProjectMenuItem" noResource="true"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="rejectProjectMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="rejectProjectMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="rejectProjectMenuItem" noResource="true"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="projectSeparator1">
               <Properties>
                 <Property name="name" type="java.lang.String" value="projectSeparator1" noResource="true"/>

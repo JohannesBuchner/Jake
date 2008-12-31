@@ -539,6 +539,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         createProjectMenuItem = new javax.swing.JMenuItem();
         startStopProjectMenuItem = new javax.swing.JMenuItem();
         deleteProjectMenuItem = new javax.swing.JMenuItem();
+        joinProjectMenuItem = new javax.swing.JMenuItem();
+        rejectProjectMenuItem = new javax.swing.JMenuItem();
         projectSeparator1 = new javax.swing.JSeparator();
         invitePeopleMenuItem = new javax.swing.JMenuItem();
         createNoteMenuItem = new javax.swing.JMenuItem();
@@ -601,6 +603,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         deleteProjectMenuItem.setText(resourceMap.getString("deleteProjectMenuItem.text")); // NOI18N
         deleteProjectMenuItem.setName("deleteProjectMenuItem"); // NOI18N
         projectMenu.add(deleteProjectMenuItem);
+
+        joinProjectMenuItem.setText(resourceMap.getString("joinProjectMenuItem.text")); // NOI18N
+        joinProjectMenuItem.setName("joinProjectMenuItem"); // NOI18N
+        projectMenu.add(joinProjectMenuItem);
+
+        rejectProjectMenuItem.setText(resourceMap.getString("rejectProjectMenuItem.text")); // NOI18N
+        rejectProjectMenuItem.setName("rejectProjectMenuItem"); // NOI18N
+        projectMenu.add(rejectProjectMenuItem);
 
         projectSeparator1.setName("projectSeparator1"); // NOI18N
         projectMenu.add(projectSeparator1);
@@ -791,6 +801,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private javax.swing.JSeparator jSeparator11;
     private javax.swing.JSeparator jSeparator13;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JMenuItem joinProjectMenuItem;
     private javax.swing.JMenuItem lockMenuItem;
     private javax.swing.JMenuItem lockWithMessageMenuItem;
     private javax.swing.JMenuBar menuBar;
@@ -801,6 +812,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
     private javax.swing.JMenu projectMenu;
     private javax.swing.JSeparator projectSeparator1;
     private javax.swing.JMenuItem pullMenuItem;
+    private javax.swing.JMenuItem rejectProjectMenuItem;
     private javax.swing.JMenuItem renameMenuItem;
     private javax.swing.JMenuItem selectAllMenuItem;
     private javax.swing.JMenuItem showFilesMenuItem;
