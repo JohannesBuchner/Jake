@@ -19,9 +19,15 @@ public class XMPPUserId extends UserId {
      * Construct a new <code>XMPPUserId</code>.
      * {@inheritDoc}
      */
-    public XMPPUserId(UUID uuid, String userId, String nickname,
+    public XMPPUserId(ServiceCredentials credentials, UUID uuid, String userId, String nickname,
                       String firstName, String surName) {
-        super(uuid, userId, nickname, firstName, surName);
+        super(credentials, uuid, userId, nickname, firstName, surName);
+    }
+
+
+    private XMPPUserId()
+    {
+        
     }
 
     

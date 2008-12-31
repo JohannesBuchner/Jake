@@ -81,8 +81,12 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
     @After
     public void tearDown() {
+
+        
+        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
+
         /* rollback for true unit testing */
-        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
+        //this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
     }
 
     /**

@@ -184,7 +184,7 @@ public class ServiceCredentials implements Serializable {
 
     private void setProtocolType(String protocol)
     {
-        this.protocol = ProtocolType.get(protocol);
+        this.protocol = ProtocolType.getValue(protocol);
     }
 
     @Column(name = "protocol")

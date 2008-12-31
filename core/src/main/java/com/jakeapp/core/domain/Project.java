@@ -279,7 +279,7 @@ public class Project implements ILogable {
     /**
      * @return the invitationState
      */
-    @Transient
+    @Transient // TODO change here to save invitation state
     public InvitationState getInvitationState() {
         return invitationState;
     }

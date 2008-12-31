@@ -1,16 +1,24 @@
 package com.jakeapp.core.domain;
 
-import java.util.UUID;
+//import org.hibernate.annotations.Entity;
+//import org.hibernate.type.DiscriminatorType;
+
+import com.jakeapp.core.dao.IUserIdDao;
+import com.jakeapp.core.dao.IServiceCredentialsDao;
 
 import javax.persistence.*;
+import java.util.UUID;
+
+
+
 
 /**
  * An abstract representation of a userID.
  */
 
-@Entity (name="users")
+@Entity(name="users")
 @DiscriminatorColumn(name = "protocol", discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 public abstract class UserId implements ILogable {
 
     private UUID uuid;
@@ -22,6 +30,7 @@ public abstract class UserId implements ILogable {
 
     private ServiceCredentials credentials;
 
+
     /**
      * Default ctor.
      */
@@ -32,15 +41,17 @@ public abstract class UserId implements ILogable {
     /**
      * Construct a new userID.
      *
+     * @param credentials the credentials this userId belongs to
      * @param uuid      the universally unique user id within this jake project
      * @param userId    the instant-messenger userId
      * @param nickname  the nickname contained in the userID
      * @param firstName the first name of the user
      * @param surName   the surname of the user
      */
-    protected UserId(UUID uuid,
+    protected UserId(ServiceCredentials credentials, UUID uuid,
                      String userId, String nickname,
                      String firstName, String surName) {
+        this.setCredentials(credentials);
         this.setUuid(uuid);
         this.setUserId(userId);
         this.setNickname(nickname);
@@ -119,11 +130,38 @@ public abstract class UserId implements ILogable {
 //    @ManyToOne(fetch = FetchType.LAZY)
     //@Column(name = "sc_uuid")
     //@OneToOne(targetEntity = ServiceCredentials.class, fetch = FetchType.LAZY)
-    @Column(name = "sc_uuid")
+    //@Column(name = "sc_uuid")
     //@JoinColumn(name = "sc_uuid")
     //@JoinTable(name = "servicecredentials")
     //@OneToOne(fetch = FetchType.LAZY)
     //@JoinColumns(value = )
+
+
+    //@Column(name = "sc_uuid")
+//    @ManyToOne(targetEntity = ServiceCredentials.class)
+//    @JoinColumn(name = "uuid")
+//    @Column(name = "sc_uuid")
+
+   // @Any( metaDef="property", metaColumn = @Column( name = "property_type" ), fetch=FetchType.EAGER )
+    @Column(name = "sc_uuid")
+//    @JoinColumn( name = "sc_uuid", referencedColumnName = "uuid", table = "xxxx")
+    @JoinTable(name = "DDDD")
+    private String getCredentialsUuid()
+    {
+        if(credentials != null && credentials.getUserId() != null)
+            return credentials.getUuid().toString();
+
+        return null;
+    }
+
+    private void setCredentialsUuid(String bla)
+    {
+       ServiceCredentials credentials = new ServiceCredentials();
+        credentials.setUuid(UUID.fromString(bla));
+        this.setCredentials(credentials);
+    }
+
+    @Transient
     public ServiceCredentials getCredentials() {
         return credentials;
     }
@@ -138,7 +176,8 @@ public abstract class UserId implements ILogable {
      * @return the Type of the protocol associated with that user
      */
 
-    @Column(name="servicecredentials.protocol", insertable = false, updatable = false)   
+    //@Column(name="servicecredentials.protocol", insertable = false, updatable = false)
+    @Column(name = "protocol", insertable = false, updatable = false)
     public ProtocolType getProtocolType() {
         return this.protocolType;
     }
@@ -185,4 +224,6 @@ public abstract class UserId implements ILogable {
     public void setProtocolType(ProtocolType protocolType) {
         this.protocolType = protocolType;
     }
+
+
 }

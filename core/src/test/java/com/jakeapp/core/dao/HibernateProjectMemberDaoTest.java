@@ -50,9 +50,9 @@ public class HibernateProjectMemberDaoTest {
 
     @AfterClass
     public static void afterTest() {
-        new File("root.script").delete();
-        new File("root.properties").delete();
-        new File("root.log").delete();
+//        new File("root.script").delete();
+//        new File("root.properties").delete();
+//        new File("root.log").delete();
     }
 
 

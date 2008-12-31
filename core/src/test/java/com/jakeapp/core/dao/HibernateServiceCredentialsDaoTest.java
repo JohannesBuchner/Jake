@@ -62,10 +62,10 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         HibernateTemplate template = (HibernateTemplate) applicationContext.getBean("hibernateTemplate");
 
         /* commit transactions to test if they are really working */
-//        template.getSessionFactory().getCurrentSession().getTransaction().commit();
+        template.getSessionFactory().getCurrentSession().getTransaction().commit();
 
         /* rollback for true unit testing */
-        template.getSessionFactory().getCurrentSession().getTransaction().rollback();
+//        template.getSessionFactory().getCurrentSession().getTransaction().rollback();
 
     }
 

@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchUserIdException;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Interface for working with <code>UserId</code> objects.
@@ -25,6 +26,13 @@ public interface IUserIdDao {
      * @throws InvalidUserIdException if the suppllied UserId is invalid
 	 */
     public UserId persist(final UserId user) throws InvalidUserIdException;
+
+
+
+    public UserId read(final UserId user) throws InvalidUserIdException, NoSuchUserIdException;
+
+
+    public UserId read(final UUID uuid) throws InvalidUserIdException, NoSuchUserIdException;
 
     /**
      * Get all Users by this ServiceCredentials
