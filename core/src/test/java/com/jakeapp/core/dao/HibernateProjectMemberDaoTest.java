@@ -1,23 +1,6 @@
 package com.jakeapp.core.dao;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.domain.XMPPUserId;
 
 /**
  * Unit test for the HibernateProjectMemberDao
@@ -69,9 +52,9 @@ public class HibernateProjectMemberDaoTest {
     {
     	try {
 			log.info("Test: persist_persist...");
-			projectMemberDao.persist(project, member1);
+			projectMemberDao.create(project, member1);
 		} catch (RuntimeException e) {
-			log.debug("failed to persist entity...");
+			log.debug("failed to create entity...");
 			e.printStackTrace();
 			fail();
 		}
@@ -80,7 +63,7 @@ public class HibernateProjectMemberDaoTest {
     @Test
     public void persist_persistRead() {
     	log.info("Test: persist_persistRead...");
-    	projectMemberDao.persist(project, member1);
+    	projectMemberDao.create(project, member1);
     	try {
     		assertNotNull(projectMemberDao.getAll(project));
 			assertTrue(projectMemberDao.getAll(project).contains(member1));
@@ -94,7 +77,7 @@ public class HibernateProjectMemberDaoTest {
     @Test
     public void makeTransient_persistReadMakeTransientRead() {
     	log.info("Test: makeTransient_persistReadMakeTransientRead...");
-    	projectMemberDao.persist(project, member1);
+    	projectMemberDao.create(project, member1);
     	try {
     		assertNotNull(projectMemberDao.getAll(project));
 			assertTrue(projectMemberDao.getAll(project).contains(member1));

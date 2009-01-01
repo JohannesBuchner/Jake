@@ -17,7 +17,7 @@ public interface IUserIdDao {
 
 
 	/**
-	 * Persists a <code>UserId</code>. If the
+	 * Creates a <code>UserId</code>. If the
      * <code>UserId</code> does
 	 * not yet exist in the database, a new entry is created.
 	 * Otherwise an existing entry is updated.
@@ -25,7 +25,7 @@ public interface IUserIdDao {
 	 * @return the <code>UserId</code> that has been persisted
      * @throws InvalidUserIdException if the suppllied UserId is invalid
 	 */
-    public UserId persist(final UserId user) throws InvalidUserIdException;
+    public UserId create(final UserId user) throws InvalidUserIdException;
 
 
 

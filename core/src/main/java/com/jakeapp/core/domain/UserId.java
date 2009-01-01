@@ -9,7 +9,7 @@ import com.jakeapp.core.dao.IServiceCredentialsDao;
 import javax.persistence.*;
 import java.util.UUID;
 
-
+import org.apache.log4j.Logger;
 
 
 /**
@@ -20,7 +20,8 @@ import java.util.UUID;
 @DiscriminatorColumn(name = "protocol", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 public abstract class UserId implements ILogable {
-
+    private static final Logger log = Logger.getLogger(UserId.class);
+    
     private UUID uuid;
     private String userId;
     private String nickname;
@@ -177,9 +178,25 @@ public abstract class UserId implements ILogable {
      */
 
     //@Column(name="servicecredentials.protocol", insertable = false, updatable = false)
-    @Column(name = "protocol", insertable = false, updatable = false)
+//    @Column(name = "protocol", insertable = false, updatable = false)
+//    @Enumerated(EnumType.STRING)
+    @Transient
     public ProtocolType getProtocolType() {
         return this.protocolType;
+    }
+
+    @Column(name="protocol", insertable = false, updatable = false)
+    protected String getProtocolTypeString()
+    {
+        return this.protocolType.toString();
+    }
+
+
+    private void setProtocolTypeString(String type)
+    {
+        log.debug("setProtocolTypeString: " + type);
+        this.protocolType = ProtocolType.getValue(type);
+        log.debug("found: " + this.protocolType.toString());
     }
 
     /**
@@ -226,4 +243,34 @@ public abstract class UserId implements ILogable {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserId)) return false;
+
+        UserId userId1 = (UserId) o;
+
+
+        if(!credentials.getUuid().equals(userId1.credentials.getUuid())) return false; // MODDED!
+        if (!firstName.equals(userId1.firstName)) return false;
+        if (!nickname.equals(userId1.nickname)) return false;
+        if (protocolType != userId1.protocolType) return false;
+        if (!surName.equals(userId1.surName)) return false;
+        if (!userId.equals(userId1.userId)) return false;
+        if (!uuid.equals(userId1.uuid)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + nickname.hashCode();
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + surName.hashCode();
+        result = 31 * result + protocolType.hashCode();
+        result = 31 * result + credentials.hashCode();
+        return result;
+    }
 }

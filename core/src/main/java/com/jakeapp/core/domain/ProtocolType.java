@@ -6,8 +6,8 @@ package com.jakeapp.core.domain;
 public enum ProtocolType {
     XMPPP("XMPP"),
     ICQ("ICQ"),
-    MSN("MSN"),
-    UNKNOWN("");
+    MSN("MSN");
+
 
     private String realName;
 
@@ -18,48 +18,23 @@ public enum ProtocolType {
 
     public String toString()
     {
-/*
-        switch (this) {
-
-            case ICQ:
-                return "ICQ";
-
-            case MSN:
-                return "MSN";
-
-            
-            default:
-            case XMPPP:
-                return "XMPP";
-        }
-*/
-
         return this.realName;
-
     }
 
 
-    public static ProtocolType getValue(String protocol)
+    public static ProtocolType getValue(final String protocol)
     {
-      try
-      {
-          return valueOf(protocol.toUpperCase());
-      }
-      catch(Exception e)
-      {
-          return ProtocolType.UNKNOWN;
-      }
-//
-//        if(protocol.equals("XMPP"))
-//            return ProtocolType.XMPPP;
-//
-//        if(protocol.equals("MSN"))
-//            return ProtocolType.MSN;
-//
-//        if(protocol.equals("ICQ"))
-//            return ProtocolType.ICQ;
-//
-//        return null;
+
+        if(protocol.toUpperCase().equals("XMPP"))
+            return ProtocolType.XMPPP;
+
+        if(protocol.toUpperCase().equals("MSN"))
+            return ProtocolType.MSN;
+
+        if(protocol.toUpperCase().equals("ICQ"))
+            return ProtocolType.ICQ;
+
+        return null;
     }
 
 }

@@ -21,9 +21,18 @@ public class HibernateUserIdDao extends HibernateDaoSupport implements IUserIdDa
 
     @Override
     @Transactional
-    public UserId persist(UserId user) throws InvalidUserIdException
+    public UserId create(UserId user) throws InvalidUserIdException
     {
         if(user == null)
+            throw new InvalidUserIdException();
+
+        if(user.getCredentials() == null)
+            throw new InvalidUserIdException();
+
+        if(user.getProtocolType() == null)
+            throw new InvalidUserIdException();
+
+        if(user.getUuid() == null)
             throw new InvalidUserIdException();
 
         log.debug("Persisting User with uuid : " + user.getUuid().toString());
