@@ -3,7 +3,7 @@ package com.jakeapp.jake.ics.filetransfer;
 
 public interface FileTransferRequest {
 
-	public IncomingFileTransfer accept();
+	public IIncomingFileTransfer accept();
 
 	public String getFileName();
 

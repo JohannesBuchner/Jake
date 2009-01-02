@@ -1,16 +1,14 @@
 package com.jakeapp.jake.ics.filetransfer;
 
-import java.io.File;
-import java.io.InputStream;
-
 import com.jakeapp.jake.ics.UserId;
 
+
 /**
- * for javadoc, see Smacks IncomingFileTransfer.
+ * for javadoc, see Smacks FileTransfer.
  * 
  * @author johannes
  */
-public interface IncomingFileTransfer {
+public interface IFileTransfer {
 
 	public void cancel();
 
@@ -31,9 +29,4 @@ public interface IncomingFileTransfer {
 	public Status getStatus();
 
 	public boolean isDone();
-
-	public InputStream recieveFile() throws TransferException;
-
-	public void recieveFile(File arg0) throws TransferException;
-
 }

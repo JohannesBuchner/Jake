@@ -5,7 +5,7 @@ import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 
 
 public class XmppFileTransferRequest implements com.jakeapp.jake.ics.filetransfer.FileTransferRequest {
-	public com.jakeapp.jake.ics.filetransfer.IncomingFileTransfer accept() {
+	public com.jakeapp.jake.ics.filetransfer.IIncomingFileTransfer accept() {
 		return new XmppIncomingFileTransfer(request.accept());
 	}
 

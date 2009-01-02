@@ -5,19 +5,26 @@ import java.io.InputStream;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.filetransfer.IOutgoingFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.Status;
 import com.jakeapp.jake.ics.filetransfer.TransferException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
-public class XmppIncomingFileTransfer implements
-		com.jakeapp.jake.ics.filetransfer.IIncomingFileTransfer {
+public class XmppOutgoingFileTransfer implements
+		com.jakeapp.jake.ics.filetransfer.IOutgoingFileTransfer {
 
-	private IncomingFileTransfer t;
+	public OutgoingFileTransfer t;
 
-	public XmppIncomingFileTransfer(IncomingFileTransfer t) {
+	public void sendStream(InputStream in, String fileName, long fileSize,
+			String description) {
+		t.sendStream(in, fileName, fileSize, description);
+	}
+
+	public XmppOutgoingFileTransfer(OutgoingFileTransfer t) {
 		this.t = t;
 	}
 
@@ -60,21 +67,4 @@ public class XmppIncomingFileTransfer implements
 	public boolean isDone() {
 		return t.isDone();
 	}
-
-	public InputStream recieveFile() throws TransferException {
-		try {
-			return t.recieveFile();
-		} catch (XMPPException e) {
-			throw new TransferException(e);
-		}
-	}
-
-	public void recieveFile(File arg0) throws TransferException {
-		try {
-			t.recieveFile(arg0);
-		} catch (XMPPException e) {
-			throw new TransferException(e);
-		}
-	}
-
 }
