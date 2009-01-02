@@ -4,6 +4,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
+import local.test.Counter;
 
 import org.apache.log4j.Logger;
 import org.junit.After;

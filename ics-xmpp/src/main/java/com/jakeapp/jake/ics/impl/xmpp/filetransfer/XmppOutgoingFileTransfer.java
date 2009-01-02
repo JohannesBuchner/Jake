@@ -8,14 +8,14 @@ import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.filetransfer.IOutgoingFileTransfer;
-import com.jakeapp.jake.ics.filetransfer.Status;
 import com.jakeapp.jake.ics.filetransfer.TransferException;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IOutgoingFileTransfer;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
 public class XmppOutgoingFileTransfer implements
-		com.jakeapp.jake.ics.filetransfer.IOutgoingFileTransfer {
+		com.jakeapp.jake.ics.filetransfer.runningtransfer.IOutgoingFileTransfer {
 
 	public OutgoingFileTransfer t;
 

@@ -1,6 +1,9 @@
-package com.jakeapp.jake.ics.filetransfer;
+package com.jakeapp.jake.ics.filetransfer.runningtransfer;
+
+import java.io.File;
 
 import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 
 
 /**
@@ -18,7 +21,7 @@ public interface IFileTransfer {
 
 	public String getFileName();
 
-	public String getFilePath();
+	public File getLocalFile();
 
 	public long getFileSize();
 
@@ -29,4 +32,8 @@ public interface IFileTransfer {
 	public Status getStatus();
 
 	public boolean isDone();
+	
+	public FileRequest getFileRequest();
+	
+	public Boolean isReceiving();
 }

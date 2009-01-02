@@ -1,6 +1,7 @@
 package com.jakeapp.jake.ics.filetransfer.methods;
 
-import com.jakeapp.jake.ics.filetransfer.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -11,6 +12,11 @@ import com.jakeapp.jake.ics.msgservice.IMsgService;
  */
 public interface ITransferMethodFactory {
 
-	public ITransferMethod getTransferMethod(IMsgService negotiationService,
-			INegotiationSuccessListener negListener);
+	/**
+	 * 
+	 * @param negotiationService
+	 * @return
+	 * @throws NotLoggedInException
+	 */
+	public ITransferMethod getTransferMethod(IMsgService negotiationService, UserId user) throws NotLoggedInException;
 }

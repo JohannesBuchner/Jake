@@ -1,38 +1,34 @@
 package com.jakeapp.jake.ics.filetransfer.methods;
 
-import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
+import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileRequestFileMapper;
 
+/**
+ * constructed by the corresponding TransferMethodFactory
+ * 
+ * @author johannes
+ * 
+ */
+public interface ITransferMethod {
 
-public abstract class ITransferMethod {
-	protected IMsgService msgService;
-	protected INegotiationSuccessListener negListener;
-	
-	public ITransferMethod(IMsgService negotiationService,
-			INegotiationSuccessListener negListener) {
-		this.msgService = negotiationService;
-		this.negListener = negListener;
-		startServer();
-	}
-	
 	/**
 	 * Start the server so others can request files
-	 */
-	protected abstract void startServer();
-	
-	/**
-	 * starts the negotiation and calls back the
-	 * {@link INegotiationSuccessListener}
 	 * 
-	 * @param partner the user to connect to
+	 * @param l
+	 * @param mapper
+	 * @throws NotLoggedInException
 	 */
-	public abstract void startNegotiation(UserId partner);
+	public void startServing(IncomingTransferListener l,
+			FileRequestFileMapper mapper) throws NotLoggedInException;
 
 	/**
-	 * 
+	 * Request a file
+	 * @param request
+	 * @param nsl
 	 */
-	public abstract void send();
+	public void request(FileRequest request, INegotiationSuccessListener nsl);
 
-	
 }

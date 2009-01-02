@@ -7,13 +7,13 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.filetransfer.Status;
 import com.jakeapp.jake.ics.filetransfer.TransferException;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
 public class XmppIncomingFileTransfer implements
-		com.jakeapp.jake.ics.filetransfer.IIncomingFileTransfer {
+		com.jakeapp.jake.ics.filetransfer.runningtransfer.IIncomingFileTransfer {
 
 	private IncomingFileTransfer t;
 

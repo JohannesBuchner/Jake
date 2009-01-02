@@ -1,4 +1,4 @@
-package com.jakeapp.jake.ics.filetransfer;
+package com.jakeapp.jake.ics.filetransfer.runningtransfer;
 
 /**
  * A class to represent the current status of the file transfer.

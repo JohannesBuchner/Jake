@@ -3,8 +3,8 @@ package com.jakeapp.jake.ics.impl.xmpp.filetransfer;
 import org.jivesoftware.smackx.filetransfer.FileTransfer;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.filetransfer.IFileTransfer;
-import com.jakeapp.jake.ics.filetransfer.Status;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
 
 public class XmppFileTransfer implements IFileTransfer {

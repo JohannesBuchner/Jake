@@ -8,6 +8,8 @@ import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 /**
  * For transferring huge files
  * 
+ * This is the meta class that handles (aggregates) the transfer methods
+ * 
  * @author johannes
  */
 public interface IFileTransferService {

@@ -183,6 +183,7 @@
 		<spring.version>2.5</spring.version>
 		<spring-mock.version>2.0</spring-mock.version>
 		<junit.version>4.4</junit.version>
+		<jmock.version>2.5.1</jmock.version>
 		<hsqldb.version>1.8.0.1</hsqldb.version>
 	</properties>
 </project>
