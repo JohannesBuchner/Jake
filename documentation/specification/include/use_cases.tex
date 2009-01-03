@@ -1,10 +1,11 @@
 \part{Use Cases}
-\section{General}
+
 
 %reset the uc fields
 \def\ucreset{
 \def\ucid{-}
 \def\ucname{-}
+\def\ucscope{-}
 \def\ucrationale{-}
 \def\ucsummary{-}
 \def\ucpreconditions{-}
@@ -25,12 +26,14 @@ ID & \ucid \\
 \hline 
 Name & \ucname \\
 \hline
+Scope & \ucscope \\
+\hline
 %Status & \ucstatus \\ 
 %\hline 
-Goal/Rationale & \ucrationale \\ 
-\hline 
 Summary & \ucsummary \\ 
 \hline
+Goal/Rationale & \ucrationale \\ 
+\hline 
 Preconditions & \ucpreconditions \\
 \hline
 Triggers & \uctriggers \\
@@ -50,10 +53,29 @@ See also & \ucsee \\
 \end{tabular}
 }
 
+\section{Terms and definitions, Fields}
+\begin{description}
+
+\item[ID] Unique \emph{ID} of the use case. Once set, it is immutable.
+\item[Name] Descriptive name of the use case. It should be short yet long enough to describe the use case.
+\item[Scope] The scope of the use case, e.g \emph{per project, per file, etc}. The scope may be chained together like \emph{per project: per file}. 
+\item[Summary] Short summary of the use case.
+\item[Goal/Rationale] The \emph{goal} and the \emph{rationale} of the use case. What's its goal and why does it matter to the user.
+\item[Preconditions] Preconditions of the use case that must be met in order to perform this use case.
+\item[Triggers] Triggers that kick-start the use case.
+\item[Primary Scenario] The basic course of events.
+\item[Alternative Path] Deviating paths from the basic course of events.
+\item[Postconditions] Conditions that must be met after the use case has been executed.
+\item[Frequency of use] How often the use case will be used. This field is based on a wild guess and is usually something like, \emph{daily, weekly, monthly, etc}.
+\item[See also] References to other use cases or other related information, e.g. \emph{log in} refers to \emph{log out} and vice versa. 
+\end{description}
+
+\section{General}
 
 \ucreset
 \def\ucid{GEN-01}
 \def\ucname{Launch Jake}
+\def\ucscope{per client instance}
 \def\ucrationale{The user wants to start Jake when it is not currently running}
 \def\ucsummary{Jake is started and the main window is displayed}
 \def\ucpreconditions{A running operating system with Jake installed and all JVM and library prerequisites met}
@@ -71,6 +93,7 @@ See also & \ucsee \\
 \ucreset
 \def\ucid{NET-01}
 \def\ucname{Log in to Jabber}
+\def\ucscope{per client instance}
 \def\ucrationale{The user wants to connect to the network in order to use Jake}
 \def\ucsummary{In order to use Jake, a connection to a Jabber network is required. This connection is established by the user entering their network credentials.}
 \def\ucpreconditions{Jake is running (GEN-01) and the user is not yet logged in}
@@ -92,6 +115,7 @@ See also & \ucsee \\
 \ucreset
 \def\ucid{NET-02}
 \def\ucname{Log out from Jabber}
+\def\ucscope{per client instance}
 \def\ucrationale{In some situations, the user may want to explicitly disconnect from the network (and not just exit the application), e.g. when they want to register a different account or do not want other people using their account to be able to use Jake with their ID. For this reason, they are able to log out, leaving the application in a similar state as after its first run.}
 \def\ucsummary{Log out from the currently used network ID}
 \def\ucpreconditions{The user is logged in (NET-01)}
@@ -109,6 +133,7 @@ See also & \ucsee \\
 \ucreset
 \def\ucid{NET-03}
 \def\ucname{Register Jabber ID}
+\def\ucscope{per client instance}
 \def\ucrationale{The user wants a Jabber account to be able to use Jake}
 \def\ucsummary{Users who do not yet have a Jabber account need to create one before using Jake. Jake guides them through the process so they can create an account on a server from within Jake.}
 \def\ucpreconditions{Jake is running (GEN-01)}
@@ -134,6 +159,7 @@ See also & \ucsee \\
 \ucreset
 \def\ucid{PRJ-01}
 \def\ucname{Create Project}
+\def\ucscope{per client isntance}
 \def\ucrationale{The user wants to create a new project to share with other users}
 \def\ucsummary{Creates a Jake project from a (new or existing) local folder}
 \def\ucpreconditions{Jake is running (GEN-01)}
@@ -181,6 +207,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRJ-03}
 \def\ucname{Open project}
+\def\ucscope{per client instance}
 \def\ucrationale{The user wants to reopen an existing project that is not currently open in Jake, either because it has been closed manually, or for some other reason (e.g. reinstalled Jake)}
 \def\ucsummary{A user may open an existing project by specifying the location of the project folder. The specified project is loaded.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project to be opened is not already open.}
@@ -201,6 +228,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRJ-04}
 \def\ucname{Close project}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to close a project, e.g. when it is not needed for a longer period of time.}
 \def\ucsummary{A user may close a project. Closed projects are not displayed in Jake.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project to be closed is open and selected.}
@@ -222,6 +250,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRJ-05}
 \def\ucname{Pause project}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to temporarily suspend a project (e.g. when it is currently not needed)}
 \def\ucsummary{The user may pause a project. Paused projects are still displayed in Jake but the user may not work on them.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project is open, active (= not paused) and selected.}
@@ -241,6 +270,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRJ-06}
 \def\ucname{Resume project}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to resume a project that has been paused in order to continue working on it.}
 \def\ucsummary{The user may resume a paused project. Resuming a paused project allows the user to work on it again.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project to be resumed is open, selected and has previously been paused (PRJ-05)}
@@ -260,6 +290,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRJ-07}
 \def\ucname{Delete project}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to delete a project, e.g. because they are sure they will not need it anymore.}
 \def\ucsummary{The user may delete a project. By deleting a project, its project folder is deleted.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project to be deleted is open and selected}
@@ -281,6 +312,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRJ-08}
 \def\ucname{Search inside project}
+\def\ucscope{per project}
 \def\ucrationale{In larger projects, single files/folders/notes and users may be hard to find due to the large amount of items in the project. The user wants to find one or more items based on certain criteria.}
 \def\ucsummary{The user may perform a search inside the project. All elements (files, folders, users, notes, tags, etc.) that match the search term are displayed in a results section.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -302,6 +334,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PPL-01}
 \def\ucname{Invite user to project (''Add user'')}
+\def\ucscope{per project: per user}
 \def\ucrationale{The user wants to invite another user to participate in the current project}
 \def\ucsummary{A project member may invite other users to a specific project. The invited user is identified by their user id.}
 \def\ucpreconditions{The user is logged in (NET-01) and a project is open, active and selected}
@@ -322,6 +355,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PPL-02}
 \def\ucname{Explicitly trust project member}
+\def\ucscope{per project: per project member}
 \def\ucrationale{The user wants to receive files from another project member.}
 \def\ucsummary{In order to receive files from another project member, the user must explicitly grant trust to this specific project member.}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and the project member to be trusted exists in the context of the project.}
@@ -341,6 +375,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PPL-03}
 \def\ucname{Revoke trust (''Remove user'')}
+\def\ucscope{per project: per project member}
 \def\ucrationale{The user wants to revoke trust granted to a specific project member (e.g. because they share malicious files)}
 \def\ucsummary{The user may revoke the explicit trust granted to a specific project member.}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and the project member for which trust should be revoked exists in the context of the project.}
@@ -361,6 +396,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PPL-04}
 \def\ucname{Set auto add/remove}
+\def\ucscope{per project: per project member}
 \def\ucrationale{The user wants to have changes to the project member list of certain other members propagated to their own}
 \def\ucsummary{The user may set/remove the auto add/remove flag on project members on his/her project member list.}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and the specified user exists in the context of the project}
@@ -380,6 +416,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PPL-05}
 \def\ucname{Show project member list}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to see all members of the current project}
 \def\ucsummary{Display a list of project members.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -399,6 +436,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PPL-07}
 \def\ucname{Receive member alert}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to know who is added to or removed from the project by other members}
 \def\ucsummary{If a user is added/removed from the project by another project member, the user will be notified.}
 \def\ucpreconditions{The user is logged in (NET-01) and the project in question is open and active}
@@ -420,6 +458,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-01}
 \def\ucname{Show files}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to see the files that are part of a project}
 \def\ucsummary{The files in the project are displayed}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -439,6 +478,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-02}
 \def\ucname{Import files}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to add further files into the project folder}
 \def\ucsummary{The user specifies files/folder to be imported into Jake. The rename assistant may be awakened by this action.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -450,7 +490,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \item The files are added to the project and copied to the project folder.
 \end{enumerate}
 }
-\def\ucalternativepath{The user may just add the files by means of copying them into the project folder in the local filesystem.\\ If a file doesn't conform to the Jake naming standards, the user will be prompted if they want to rename the file (see FIM-11)}
+\def\ucalternativepath{The user may just add the files by means of copying them into the project folder in the local filesystem. If a file doesn't conform to the Jake naming standards, the user will be prompted if they want to rename the file (see FIM-11)}
 \def\ucpostconditions{The files are now part of the project}
 \def\ucexceptions{-}
 \def\ucfrequency{Daily/Often}
@@ -459,6 +499,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-03}
 \def\ucname{Reflect changes}
+\def\ucscope{per project: per set of files/folders}
 \def\ucrationale{Changes in the project folder should be mirrored within Jake}
 \def\ucsummary{Whenever changes in the project folder occur, Jake reflects it to the user.}
 \def\ucpreconditions{Jake is running (GEN-01) and the project where the change occurred is open and active}
@@ -477,6 +518,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-04}
 \def\ucname{Delete files/folders}
+\def\ucscope{per project: per set of files/folders}
 \def\ucrationale{The user wants to delete one or more files/folder from within Jake}
 \def\ucsummary{Files/folders are deleted after requesting confirmation.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file or folder}
@@ -498,6 +540,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-05}
 \def\ucname{Rename file/folder}
+\def\ucscope{per project: per file/folder}
 \def\ucrationale{The user wants to rename a file or folder from within Jake.}
 \def\ucsummary{Rename a file or a folder.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file or folder}
@@ -519,6 +562,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-06}
 \def\ucname{Move files/folders}
+\def\ucscope{per project: per set of files/folders}
 \def\ucrationale{The user wants to move files or folders within the project directory using Jake}
 \def\ucsummary{Move files or folders within the project folder.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file or folder as well as a suitable move target.}
@@ -539,6 +583,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-07}
 \def\ucname{Create folder}
+\def\ucscope{per project: per containing folder}
 \def\ucrationale{The user wants to create a new folder inside a project}
 \def\ucsummary{Create a new folder from within Jake}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -559,6 +604,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-08}
 \def\ucname{Launch file}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to launch a file and display its contents}
 \def\ucsummary{Launch a file with its associated external application from within Jake.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
@@ -579,6 +625,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-09}
 \def\ucname{Launch folder in OS-specific file browser}
+\def\ucscope{per project: per folder}
 \def\ucrationale{The user wants to open a folder in the OS's file browser}
 \def\ucsummary{Open a folder in the os specific file browser.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one folder}
@@ -599,7 +646,8 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-10}
 \def\ucname{Run rename assistant}
-\def\ucrationale{The user wants to share files that have illegal filenames}
+\def\ucscope{per project: per set of files/folders}
+\def\ucrationale{The user wants to share files/folders that have illegal filenames}
 \def\ucsummary{Run the rename assistant to rename files/folders with illegal name.}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and one or more files with illegal names exist within it}
 \def\uctriggers{User action (active)}
@@ -619,9 +667,10 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-11}
 \def\ucname{Offer renaming}
-\def\ucrationale{The user wants to share files that are currently unable to be shared because of an illegal filename.}
+\def\ucscope{per project: per files/folders}
+\def\ucrationale{The user wants to share files/folders that are currently unable to be shared because of an illegal filename.}
 \def\ucsummary{The rename assistant is implicitly started when files with illegal filenames are added to the project folder.}
-\def\ucpreconditions{Jake is running (GEN-01), a project is open and active and one or more files with illegal names exist within}
+\def\ucpreconditions{Jake is running (GEN-01), a project is open and active and one or more files/folders with illegal names exist within}
 \def\uctriggers{On import of illegally-named files (passive), triggered by FIM-02.}
 \def\ucprimaryscenario{
 \begin{enumerate}
@@ -638,6 +687,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-12}
 \def\ucname{Add tag to file}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to add a tag to a file.}
 \def\ucsummary{Add a tag to a file (one file and one tag at a time).}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
@@ -660,6 +710,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-13}
 \def\ucname{Remove tag from file}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to remove a tag from a file.}
 \def\ucsummary{Remove a tag from a file. (one tag from one file at a time).}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and a tagged file exists within}
@@ -681,6 +732,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-14}
 \def\ucname{Show file properties}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to get more information about a file in the project}
 \def\ucsummary{Show detailed file properties, i.e name, size, last edit, status, etc.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active, selected and contains at least one file}
@@ -703,6 +755,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-15}
 \def\ucname{Announce file}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to announce a file to the rest of the project members}
 \def\ucsummary{Announce a file and specify a announce message.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file that has been changed (added, modified, moved, deleted,...)}
@@ -723,6 +776,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-16}
 \def\ucname{Download file}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to download a file from a remote peer}
 \def\ucsummary{Download a file from a remote peer}
 \def\ucpreconditions{The user is logged in (NET-01) and a project is open, active and selected that has a newer remote version of a file available}
@@ -743,6 +797,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-17}
 \def\ucname{Resolve conflict}
+\def\ucscope{per project: per file}
 \def\ucrationale{When a conflict occurs, the user wants to receive simple assistance in resolving it.}
 \def\ucsummary{Run the conflict resolution assistant.}
 \def\ucpreconditions{The user is logged in (NET-01) and a project is open and active and an announce has been performed}
@@ -763,6 +818,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-18}
 \def\ucname{Set soft lock}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to edit a file alone, trying to make sure that nobody else edits it at the same time}
 \def\ucsummary{Set the softlock for a file, optionally specifying a locking message.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
@@ -782,6 +838,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{FIM-19}
 \def\ucname{Unset soft lock}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user has finished editing a file that they have locked and wants to enable other project members to work on it again.}
 \def\ucsummary{Unset the soft lock for a file.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one locked file}
@@ -804,6 +861,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-01}
 \def\ucname{Show notes}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to display notes associated with a project}
 \def\ucsummary{Notes can be read from within Jake}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -822,6 +880,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-02}
 \def\ucname{Add note}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to add a new note}
 \def\ucsummary{Add a note by specifying its content}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -841,6 +900,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-03}
 \def\ucname{Delete note}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to delete an unneeded note.}
 \def\ucsummary{Delete note(s)}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note.}
@@ -861,6 +921,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-04}
 \def\ucname{Edit note}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to edit an existing note to update its contents}
 \def\ucsummary{Editing a note to change its content.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note.}
@@ -880,6 +941,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-05}
 \def\ucname{Add tag to note}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to add a tag to a note.}
 \def\ucsummary{The user may add a tag to a note (one note at a time).}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -902,6 +964,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-06}
 \def\ucname{Remove tag from note}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to remove a tag from a note.}
 \def\ucsummary{The user may remove a tag from a note. (one tag from one note at a time)}
 \def\ucpreconditions{Jake is running (GEN-01), a project is open, active and selected and a tagged note exists within}
@@ -925,6 +988,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-07}
 \def\ucname{Announce note}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to announce a note to the rest of the project members}
 \def\ucsummary{Announce a note and specify an announce message.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note that has not yet been announced}
@@ -945,6 +1009,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-08}
 \def\ucname{Download note}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to download a note from a remote peer}
 \def\ucsummary{Download a note from a remote peer}
 \def\ucpreconditions{The user is logged in (NET-01) and a project is open, active and selected that has a newer remote version of a note available}
@@ -965,6 +1030,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-09}
 \def\ucname{Resolve note conflict}
+\def\ucscope{per project: per note}
 \def\ucrationale{When a conflict occurs, the user wants to receive simple assistance in resolving it.}
 \def\ucsummary{Run the conflict resolution assistant.}
 \def\ucpreconditions{The user is logged in (NET-01) and a project is open and active and an announce has been performed on a note}
@@ -985,6 +1051,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-10}
 \def\ucname{Set soft lock (note)}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to edit a note alone, trying to make sure that nobody else edits it at the same time}
 \def\ucsummary{Set the softlock for a note, optionally specifying a locking message.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note}
@@ -1004,6 +1071,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{NTE-11}
 \def\ucname{Unset soft lock (note)}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user has finished editing a note that they have locked and wants to enable other project members to work on it again.}
 \def\ucsummary{Unset the soft lock for a note.}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one locked note}
@@ -1026,6 +1094,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{LOG-01}
 \def\ucname{Display global project log}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to see all recent changes in the project}
 \def\ucsummary{A list of recent changes is available for the user to browse through}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -1045,6 +1114,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{LOG-02}
 \def\ucname{Display file log}
+\def\ucscope{per project: per file}
 \def\ucrationale{The user wants to see all recent changes of a file}
 \def\ucsummary{Display the log messages associated with a specific file}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one file}
@@ -1064,6 +1134,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{LOG-03}
 \def\ucname{Display note log}
+\def\ucscope{per project: per note}
 \def\ucrationale{The user wants to see all recent changes of a note}
 \def\ucsummary{Display the log messages associated with a specific note}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected and contains at least one note}
@@ -1085,6 +1156,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRF-01}
 \def\ucname{Edit project preferences}
+\def\ucscope{per project}
 \def\ucrationale{The user wants to change preferences of the project}
 \def\ucsummary{Project preferences, such as auto-pull/-announce, can be changed by the user}
 \def\ucpreconditions{Jake is running (GEN-01) and a project is open, active and selected}
@@ -1104,6 +1176,7 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \ucreset
 \def\ucid{PRF-02}
 \def\ucname{Edit global preferences}
+\def\ucscope{per client instance}
 \def\ucrationale{The user wants to change global preferences}
 \def\ucsummary{Global preferences, such as i18n, can be changed by the user}
 \def\ucpreconditions{Jake is running (GEN-01)}
@@ -1119,3 +1192,19 @@ If the chosen directory cannot be accessed (e.g. because of filesystem issues or
 \def\ucexceptions{If the user enters an invalid value for an option, they will be informed of this and must correct it.}
 \def\ucfrequency{Sometimes}
 \ucprint
+
+\section{Change History}
+\subsubsection{Rev 1, 2008-11-29, Simon}
+Merged the use caes from the wiki into this document.
+
+\subsubsection{Rev 2, 2008-11-30, Chris}
+Extended use cases
+
+\subsubsection{Rev 3, 2008-12-01, Simon}
+Added a \emph{see also} section and ommited the \emph{status} field.
+
+\subsubsection{Rev 4. 2008-12-16, Chris}
+Changes according to the review, some slight generala changes, improved some summaries.
+
+\subsubsection{Rev 5, 2009-01-03, Simon}
+Added a \emph{scope} section to the use cases, added a short explanation of the fileds at the beginning of the use cases. Added the change history based on the svn log.
