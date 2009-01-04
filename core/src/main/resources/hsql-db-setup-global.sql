@@ -11,4 +11,4 @@ CREATE TABLE project ( uuid CHAR(36)  PRIMARY KEY, userid  CHAR(36), rootpath   
 
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users ( uuid CHAR(36) PRIMARY KEY, userid VARCHAR (255) NOT NULL, nickname VARCHAR (255), firstname VARCHAR (255), surname VARCHAR (255), protocol VARCHAR (255), sc_uuid CHAR (36), FOREIGN KEY (sc_uuid) REFERENCES servicecredentials(UUID) );
-ALTER TABLE users ADD CONSTRAINT userid_uniq UNIQUE (userid);
+ALTER TABLE users ADD CONSTRAINT userid_uniq UNIQUE (sc_uuid, userid);

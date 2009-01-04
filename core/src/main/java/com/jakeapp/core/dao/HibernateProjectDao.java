@@ -78,7 +78,7 @@ public class HibernateProjectDao extends HibernateDaoSupport
     		throw new NoSuchProjectException();
     	}
 
-        log.debug("calling read on uuid  " + uuid.toString());
+        log.debug("calling get on uuid  " + uuid.toString());
 
         try {
         	result = (Project) this.getHibernateTemplate().get(Project.class, uuid.toString());

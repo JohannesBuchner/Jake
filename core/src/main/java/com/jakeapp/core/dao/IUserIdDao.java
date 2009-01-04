@@ -29,10 +29,17 @@ public interface IUserIdDao {
 
 
 
-    public UserId read(final UserId user) throws InvalidUserIdException, NoSuchUserIdException;
+    public UserId get(final UserId user) throws InvalidUserIdException, NoSuchUserIdException;
 
 
-    public UserId read(final UUID uuid) throws InvalidUserIdException, NoSuchUserIdException;
+    /**
+     * Gets a User by the given UUID
+     * @param uuid the UUID given
+     * @return a UserId-Object
+     * @throws InvalidUserIdException
+     * @throws NoSuchUserIdException
+     */
+    public UserId get(final UUID uuid) throws InvalidUserIdException, NoSuchUserIdException;
 
     /**
      * Get all Users by this ServiceCredentials
@@ -42,6 +49,14 @@ public interface IUserIdDao {
      */
     public List<UserId> getAll(final ServiceCredentials credentials) throws InvalidCredentialsException;
 
+
+    /**
+     * Updates the given userId in the database.
+     * @param userId the UserId to be updated
+     * @return the updated userId
+     * @throws NoSuchUserIdException If the supplied UserId (uuid + protocol) are not present in the database
+     */
+    public UserId update(final UserId userId) throws NoSuchUserIdException;
 
     /**
      * Make a given <code>ProjectMember</code> transient of a specific project

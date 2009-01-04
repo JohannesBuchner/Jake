@@ -44,6 +44,6 @@
     sc_uuid             CHAR (36) NULL,
     FOREIGN KEY (sc_uuid) REFERENCES servicecredentials(UUID)
   );
-  ALTER TABLE users ADD CONSTRAINT userid_uniq UNIQUE (userid);
+  ALTER TABLE users ADD CONSTRAINT userid_uniq UNIQUE (sc_uuid, userid);
 
   

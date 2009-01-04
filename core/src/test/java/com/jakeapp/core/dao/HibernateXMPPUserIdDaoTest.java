@@ -78,9 +78,9 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
     @After
     public void tearDown() {
-        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
+       // this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
         /* rollback for true unit testing */
-        //this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
+        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
     }
 
 
@@ -131,7 +131,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         userIdDao.create(user_someFriend);
 
 
-        UserId result = userIdDao.read(UUID.fromString("9b1360d9-f8ae-45ed-9005-fbce103dcf0a"));
+        UserId result = userIdDao.get(UUID.fromString("9b1360d9-f8ae-45ed-9005-fbce103dcf0a"));
         assertEquals(user_someFriend, result);
     }
 
@@ -143,7 +143,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
 
     @Transactional
-    @Test (expected = InvalidUserIdException.class)
+    @Test(expected = InvalidUserIdException.class)
     public final void create_persistNullCredentials() throws InvalidUserIdException {
         UserId userId = new XMPPUserId(
                 null,
@@ -175,7 +175,97 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         userIdDao.create(userid);
     }
 
-    
+
+    @Transactional
+    @Test
+    public final void create_readByUserId_test() throws
+            NoSuchUserIdException, InvalidUserIdException, InvalidCredentialsException, UnknownHostException {
+        ServiceCredentials credentials = new ServiceCredentials();
+        credentials.setUuid(UUID.fromString("493d336a-8b85-447c-af31-daa688f8a07c"));
+        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setUserId("christine@jabber.mueller.com");
+        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerPort(5000);
+
+        serviceCredentialsDao.create(credentials);
+
+
+        UserId userid = new XMPPUserId(
+                credentials,
+                UUID.fromString("acc20ab0-be08-4489-b1de-a4b673553e74"),
+                "stefanie@jabber.fsinf.at", "Steffi", "Stefanie", "Maier");
+
+        userIdDao.create(userid);
+
+        UserId result;
+        result = userIdDao.get(userid);
+
+        assertEquals(userid, result);
+
+    }
+
+
+    @Transactional
+    @Test
+    public final void create_readByUserUUID_test() throws
+            NoSuchUserIdException, InvalidUserIdException, UnknownHostException, InvalidCredentialsException {
+        ServiceCredentials credentials = new ServiceCredentials();
+        credentials.setUuid(UUID.fromString("4935666a-8b85-447c-af31-daa688f8a07c"));
+        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setUserId("johanna@jabber.mueller.com");
+        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerPort(5000);
+
+        serviceCredentialsDao.create(credentials);
+
+
+        UserId userid = new XMPPUserId(
+                credentials,
+                UUID.fromString("acc20ab0-be10-4489-b1de-a4b673553e74"),
+                "stefanie@jabber.fsinf.at", "Steffi", "Stefanie", "Maier");
+
+        userIdDao.create(userid);
+
+        UserId result;
+        result = userIdDao.get(userid.getUuid());
+
+        assertEquals(userid, result);
+
+    }
+
+
+    @Transactional
+    @Test
+    public final void update_read_test() throws InvalidUserIdException, NoSuchUserIdException, UnknownHostException, InvalidCredentialsException {
+        ServiceCredentials credentials = new ServiceCredentials();
+        credentials.setUuid(UUID.fromString("3335666a-8b85-447c-af31-daa688f8a07c"));
+        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setUserId("kristina@jabber.mueller.com");
+        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerPort(5000);
+
+        serviceCredentialsDao.create(credentials);
+
+        UserId test = new XMPPUserId(
+                credentials,
+                UUID.fromString("55520ab0-be10-4489-b1de-a4b673553e74"),
+                "test@jabber.user.at", "Test", "Test", "User");
+
+        userIdDao.create(test);
+
+        UserId result = userIdDao.get(test.getUuid());
+
+        assertEquals(test,result);
+
+        test.setNickname("Michaela");
+
+        userIdDao.update(test);
+
+        UserId nextResult = userIdDao.get(test.getUuid());
+
+        assertEquals(test,nextResult);
+
+    }
 
 
 }
