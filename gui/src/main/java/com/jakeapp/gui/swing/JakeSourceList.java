@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 
@@ -131,7 +132,7 @@ public class JakeSourceList extends JakeGuiComponent implements
         final SourceListContextMenuProvider menuProvider = new SourceListContextMenuProvider() {
 
             public JPopupMenu createContextMenu() {
-                JPopupMenu popupMenu = new JPopupMenu();
+                JPopupMenu popupMenu = new JakePopupMenu();
                 // popupMenu.add(new JMenuItem("Generic Menu for SourceList"));
                 return popupMenu;
             }
@@ -147,7 +148,7 @@ public class JakeSourceList extends JakeGuiComponent implements
             }
 
             public JPopupMenu createContextMenu(SourceListCategory category) {
-                JPopupMenu popupMenu = new JPopupMenu();
+                JPopupMenu popupMenu = new JakePopupMenu();
                 //popupMenu.add(new JMenuItem("Menu for " + category.getText()));
                 return popupMenu;
             }
@@ -165,7 +166,7 @@ public class JakeSourceList extends JakeGuiComponent implements
     private JPopupMenu createSourceListContextMenu() {
 
         // create the menu
-        JPopupMenu popupMenu = new JPopupMenu();
+        JPopupMenu popupMenu = new JakePopupMenu();
         // popupMenu.setLightWeightPopupEnabled(false);
 
         JMenuItem startStopMenuItem = new JMenuItem();
@@ -189,7 +190,7 @@ public class JakeSourceList extends JakeGuiComponent implements
      * @return
      */
     private JPopupMenu createSourceListInvitationContextMenu() {
-        JPopupMenu popupMenu = new JPopupMenu();
+        JPopupMenu popupMenu = new JakePopupMenu();
 
         JMenuItem joinMenuItem = new JMenuItem();
         joinMenuItem.setAction(new JoinProjectAction());

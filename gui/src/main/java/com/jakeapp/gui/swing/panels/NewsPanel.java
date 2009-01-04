@@ -19,6 +19,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.PeopleListCellRenderer;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.PeopleListModel;
@@ -101,19 +102,54 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
     }
 
     private class PeopleListMouseListener implements MouseListener {
+
         @Override
         public void mouseClicked(MouseEvent me) {
-            if (me.isPopupTrigger()) {
+            if (SwingUtilities.isRightMouseButton(me)) {
+                log.info("right clicked");
+                // get the coordinates of the mouse click
+                Point p = me.getPoint();
 
+                // get the row index that contains that coordinate
+                int rowNumber = peopleList.locationToIndex(p);
+
+                // Get the ListSelectionModel of the JTable
+                ListSelectionModel model = peopleList.getSelectionModel();
+
+                // set the selected interval of rows. Using the "rowNumber"
+                // variable for the beginning and end selects only that one
+                // row.
+                model.setSelectionInterval(rowNumber, rowNumber);
+
+                showMenu(me);
             }
+        }
+
+        private void showMenu(MouseEvent me) {
+            log.info("triggered popup event");
+
+            JPopupMenu pm = new JakePopupMenu();
+
+            JMenuItem m1 = new JMenuItem("Rename");
+            pm.add(m1);
+
+            pm.add(new JCheckBoxMenuItem("Trusted", true));
+            pm.add(new JCheckBoxMenuItem("Trust added people"));
+
+            pm.show(peopleList, (int) me.getPoint().getX(), (int) me.getPoint()
+                    .getY());
         }
 
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
+            log.info("mousePressed");
+            //showMenu(mouseEvent);
         }
 
         @Override
         public void mouseReleased(MouseEvent mouseEvent) {
+            log.info("mouseReleased");
+            //showMenu(mouseEvent);
         }
 
         @Override

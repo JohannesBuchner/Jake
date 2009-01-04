@@ -28,6 +28,11 @@ public class StartStopProjectAction extends ProjectAction {
     public void actionPerformed(ActionEvent actionEvent) {
         log.info("Start/Stop Project: " + getProject());
 
+        // do nothing if we don't have a project
+        if (getProject() == null) {
+            return;
+        }
+
         if (!getProject().isStarted()) {
             // TODO: exception handling
             JakeMainApp.getApp().getCore().startProject(getProject());

@@ -39,8 +39,4 @@ public class RenameProjectAction extends ProjectAction {
             JakeMainApp.getApp().getCore().setProjectName(getProject(), prName);
         }
     }
-
-    @Override
-    public void updateAction() {
-    }
 }
