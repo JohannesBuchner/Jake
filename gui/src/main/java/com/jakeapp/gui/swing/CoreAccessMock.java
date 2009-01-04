@@ -1,9 +1,6 @@
 package com.jakeapp.gui.swing;
 
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -379,7 +376,37 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
     public List<ProjectMember> getPeople(Project project) {
-        return new ArrayList<ProjectMember>();
+        log.info("Mock: getPeople from project " + project);
+        List<ProjectMember> people = new ArrayList<ProjectMember>();
+
+        if (project != null) {
+
+            people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User1", "pass2"),
+                    new UUID(22, 33), "pstein@jabber.fsinf.at", "", "Peter", "Steinberger"), TrustState.TRUST));
+
+            people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User2", "pass2"),
+                    new UUID(222, 333), "test@jabber.org", "Pr-" + project.getName(), "ProjectTestUser", project.getName()), TrustState.AUTO_ADD_REMOVE));
+
+
+            people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User3", "pass3"),
+                    new UUID(22, 33), "max@jabber.org", "Max", "Max", "Mustermann"), TrustState.NO_TRUST));
+        }
+
+        return people;
+    }
+
+    @Override
+    public boolean setPeopleNickname(ProjectMember pm, String nick) {
+        // TODO: ignore this and create a regex for checking!
+        if (nick.indexOf("<") != -1) {
+            return false;
+        } else {
+            pm.getUserId().setNickname(nick);
+
+            // TODO: fire event?
+
+            return true;
+        }
     }
 
 

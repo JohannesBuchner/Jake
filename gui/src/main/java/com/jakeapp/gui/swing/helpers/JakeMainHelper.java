@@ -33,6 +33,17 @@ public class JakeMainHelper {
     public static void initializeJakeMainHelper() {
     }
 
+    /**
+     * Shows the default message dialog with custom msgCode
+     *
+     * @param msgCode: string, queried from JakeMainView-properties file.
+     */
+    public static void showMsg(String msgCode, int msgType) {
+        JOptionPane.showMessageDialog(JakeMainView.getMainView().getFrame(),
+                JakeMainView.getMainView().getResourceMap().getString(msgCode),
+                JakeMainView.getMainView().getResourceMap().getString("JakeMsgTitle"), msgType);
+    }
+
 
     public static String getPluralModifer(int clickCount) {
         return clickCount == 1 ? "" : "s";

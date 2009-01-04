@@ -17,17 +17,11 @@ public class Platform {
 
     /**
      * Returns the Path separator.
-     * The Java version returns ':' for mac, which is outdated.
-     * So we use this custom function to get the separator.
      *
      * @return pf specific path separator
      */
     public static String getPathSeparator() {
-        if (isMac()) {
-            return "/";
-        } else {
-            return System.getProperty("path.separator");
-        }
+        return System.getProperty("file.separator");
     }
 
     enum OperatingSystem {

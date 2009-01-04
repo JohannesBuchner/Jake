@@ -16,8 +16,12 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.JListMutable;
+import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.PeopleListCellRenderer;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.models.PeopleListModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -26,6 +30,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -84,7 +90,41 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
                 getProject().setAutoAnnounceEnabled(autoUploadCB.isSelected());
             }
         });
+
+        // configure the people list
+        peopleList.setHighlighters(HighlighterFactory.createSimpleStriping());
+        peopleList.setModel(new PeopleListModel());
+        peopleList.setCellRenderer(new PeopleListCellRenderer());
+        ((JListMutable) peopleList).setListCellEditor(new PeopleListCellEditor(new JTextField()));
+
+        peopleList.addMouseListener(new PeopleListMouseListener());
     }
+
+    private class PeopleListMouseListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent me) {
+            if (me.isPopupTrigger()) {
+
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent mouseEvent) {
+        }
+    }
+
 
     /**
      * Update the news panel.
@@ -126,6 +166,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         // update the event table
 
         // update the people table
+        //peopleList.add
     }
 
     /**
@@ -151,7 +192,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         eventsScrollPanel = new javax.swing.JScrollPane();
         eventsTable = new org.jdesktop.swingx.JXTable();
         peopleScrollPanel = new javax.swing.JScrollPane();
-        peopleList = new org.jdesktop.swingx.JXList();
+        peopleList = new JListMutable();
         peopleLabel = new javax.swing.JLabel();
         optionsPanel = new javax.swing.JPanel();
         autoUploadCB = new javax.swing.JCheckBox();
@@ -437,4 +478,5 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
     public void projectChanged(ProjectChangedEvent ev) {
         updatePanel();
     }
+
 }

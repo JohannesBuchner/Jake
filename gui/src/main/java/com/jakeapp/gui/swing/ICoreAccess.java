@@ -19,8 +19,9 @@ public interface ICoreAccess {
     /**
      * Sets a frontendService to use by the gui - either a direct
      * java implementation or e.g. a proxy (sockets, rmi, corba, whatever)
+     *
      * @param frontendService the <code>FrontendService</code> to use
-     * by the gui
+     *                        by the gui
      */
     public void setFrontendService(IFrontendService frontendService);
 
@@ -253,4 +254,14 @@ public interface ICoreAccess {
      * @return
      */
     List<ProjectMember> getPeople(Project project);
+
+    /**
+     * Sets the nickname of people.
+     * Checks for error
+     *
+     * @param pm
+     * @param nick
+     * @return
+     */
+    boolean setPeopleNickname(ProjectMember pm, String nick);
 }
