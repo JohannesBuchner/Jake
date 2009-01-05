@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.gui.swing.JakeMainApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,12 +14,12 @@ import java.awt.*;
  * Time: 2:34:20 PM
  */
 public class PeopleListCellRenderer extends DefaultListCellRenderer {
-    final static ImageIcon onlineFullTrustIcon = new ImageIcon("icons/user-online-fulltrust.png");
-    final static ImageIcon onlineTrustIcon = new ImageIcon("icons/user-online-trust.png");
-    final static ImageIcon onlineNoTrustIcon = new ImageIcon("icons/user-online-notrust.png");
-    final static ImageIcon offlineFullTrustIcon = new ImageIcon("icons/user-offline-fulltrust.png");
-    final static ImageIcon offlineTrustIcon = new ImageIcon("icons/user-offline-trust.png");
-    final static ImageIcon offlineNoTrustIcon = new ImageIcon("icons/user-offline-notrust.png");
+    final static ImageIcon onlineFullTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-fulltrust.png")));
+    final static ImageIcon onlineTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-trust.png")));
+    final static ImageIcon onlineNoTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
+    final static ImageIcon offlineFullTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-offline-fulltrust.png")));
+    final static ImageIcon offlineTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-offline-trust.png")));
+    final static ImageIcon offlineNoTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-offline-notrust.png")));
 
 
     /* This is the only method defined by ListCellRenderer.  We just
