@@ -43,7 +43,7 @@ public class NotesTableModel extends DefaultTableModel {
 	}
 	
 	public NotesTableModel() {
-        this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesPanel.class);
+        this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
 		this.notes = new ArrayList<NoteMetaDataWrapper>();
 		this.core = JakeMainApp.getApp().getCore();
