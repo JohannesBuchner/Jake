@@ -96,7 +96,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
             InvalidCredentialsException {
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("0c7e2ef4-9422-4140-b1ff-426c10684357"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("michael@mayers.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
@@ -117,7 +117,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
             InvalidUserIdException, NoSuchUserIdException {
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("a4515dd9-8208-412a-943e-5059cc6ce0f5"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("stefan@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
@@ -159,7 +159,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("e0540238-93a2-48b1-8f6e-7ac04cec8efb"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("lisl@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
@@ -182,7 +182,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
             NoSuchUserIdException, InvalidUserIdException, InvalidCredentialsException, UnknownHostException {
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("493d336a-8b85-447c-af31-daa688f8a07c"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("christine@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
@@ -211,7 +211,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
             NoSuchUserIdException, InvalidUserIdException, UnknownHostException, InvalidCredentialsException {
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("4935666a-8b85-447c-af31-daa688f8a07c"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("johanna@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
@@ -239,7 +239,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
     public final void update_read_test() throws InvalidUserIdException, NoSuchUserIdException, UnknownHostException, InvalidCredentialsException {
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("3335666a-8b85-447c-af31-daa688f8a07c"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("kristina@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);

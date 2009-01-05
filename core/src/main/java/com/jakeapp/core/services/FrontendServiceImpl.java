@@ -1,10 +1,11 @@
 package com.jakeapp.core.services;
 
+import java.util.List;
+import java.util.Map;
+
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
-
-import java.util.Map;
-import java.util.List;
+import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +31,7 @@ public class FrontendServiceImpl implements IFrontendService {
     }
 
     @Override
-    public List<MsgService> getMsgServices(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+    public List<IMsgService> getMsgServices(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
         return null; // TODO
     }
 

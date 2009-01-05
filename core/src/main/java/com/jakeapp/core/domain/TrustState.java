@@ -13,8 +13,8 @@ package com.jakeapp.core.domain;
 public enum TrustState {
     /**
      * AUTO_ADD_REMOVE: (formerly FULL_TRUST)
-     * Means, "I" fully trust this other ProjectMember and also do
-     * the things he does (add other members, delete files, etc. ).
+     * Means, "I" trust this ProjectMember and follow his/her list of trusted users. 
+     * If he/she adds or removes other members to his/her list, I do so to.
      */
     AUTO_ADD_REMOVE,
 

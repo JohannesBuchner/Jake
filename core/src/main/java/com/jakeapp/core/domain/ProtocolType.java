@@ -4,7 +4,7 @@ package com.jakeapp.core.domain;
  * An enumeration for possible protocol types.
  */
 public enum ProtocolType {
-    XMPPP("XMPP"),
+    XMPP("XMPP"),
     ICQ("ICQ"),
     MSN("MSN");
 
@@ -26,7 +26,7 @@ public enum ProtocolType {
     {
 
         if(protocol.toUpperCase().equals("XMPP"))
-            return ProtocolType.XMPPP;
+            return ProtocolType.XMPP;
 
         if(protocol.toUpperCase().equals("MSN"))
             return ProtocolType.MSN;

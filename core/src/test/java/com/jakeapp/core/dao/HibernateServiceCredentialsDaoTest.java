@@ -48,7 +48,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         validCredentials.setServerAddress(addr);
         validCredentials.setServerPort(5222);
 
-        validCredentials.setProtocol(ProtocolType.XMPPP);
+        validCredentials.setProtocol(ProtocolType.XMPP);
 
 
         HibernateTemplate template = (HibernateTemplate) applicationContext.getBean("hibernateTemplate");

@@ -12,7 +12,7 @@ import java.util.UUID;
 public class XMPPUserId extends UserId {
     private static final long serialVersionUID = -6654192869495553670L;
     {
-        this.setProtocolType(ProtocolType.XMPPP);
+        this.setProtocolType(ProtocolType.XMPP);
     }
 
     /**
