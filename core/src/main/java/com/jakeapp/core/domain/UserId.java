@@ -3,25 +3,22 @@ package com.jakeapp.core.domain;
 //import org.hibernate.annotations.Entity;
 //import org.hibernate.type.DiscriminatorType;
 
-import com.jakeapp.core.dao.IUserIdDao;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
+import org.apache.log4j.Logger;
 
 import javax.persistence.*;
 import java.util.UUID;
-
-import org.apache.log4j.Logger;
 
 
 /**
  * An abstract representation of a userID.
  */
 
-@Entity(name="users")
+@Entity(name = "users")
 @DiscriminatorColumn(name = "protocol", discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy= InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class UserId implements ILogable {
     private static final Logger log = Logger.getLogger(UserId.class);
-    
+
     private UUID uuid;
     private String userId;
     private String nickname;
@@ -43,11 +40,11 @@ public abstract class UserId implements ILogable {
      * Construct a new userID.
      *
      * @param credentials the credentials this userId belongs to
-     * @param uuid      the universally unique user id within this jake project
-     * @param userId    the instant-messenger userId
-     * @param nickname  the nickname contained in the userID
-     * @param firstName the first name of the user
-     * @param surName   the surname of the user
+     * @param uuid        the universally unique user id within this jake project
+     * @param userId      the instant-messenger userId
+     * @param nickname    the nickname contained in the userID
+     * @param firstName   the first name of the user
+     * @param surName     the surname of the user
      */
     protected UserId(ServiceCredentials credentials, UUID uuid,
                      String userId, String nickname,
@@ -74,17 +71,14 @@ public abstract class UserId implements ILogable {
 
 
     @Id
-    @Column(name="uuid")
-    private String getUuidString()
-    {
+    @Column(name = "uuid")
+    private String getUuidString() {
         return this.uuid.toString();
     }
 
-    private void setUuidString(String uuid)
-    {
+    private void setUuidString(String uuid) {
         this.uuid = UUID.fromString(uuid);
     }
-        
 
 
     /**
@@ -110,7 +104,7 @@ public abstract class UserId implements ILogable {
      *
      * @return the first name of the user
      */
-    @Column(name="firstname")
+    @Column(name = "firstname")
     public String getFirstName() {
         return this.firstName;
     }
@@ -120,7 +114,7 @@ public abstract class UserId implements ILogable {
      *
      * @return the surname of the user
      */
-    @Column(name="surname")
+    @Column(name = "surname")
     public String getSurName() {
         return this.surName;
     }
@@ -143,21 +137,20 @@ public abstract class UserId implements ILogable {
 //    @JoinColumn(name = "uuid")
 //    @Column(name = "sc_uuid")
 
-   // @Any( metaDef="property", metaColumn = @Column( name = "property_type" ), fetch=FetchType.EAGER )
+    // @Any( metaDef="property", metaColumn = @Column( name = "property_type" ), fetch=FetchType.EAGER )
+
     @Column(name = "sc_uuid")
 //    @JoinColumn( name = "sc_uuid", referencedColumnName = "uuid", table = "xxxx")
-    @JoinTable(name = "DDDD")
-    private String getCredentialsUuid()
-    {
-        if(credentials != null && credentials.getUserId() != null)
+@JoinTable(name = "DDDD")
+private String getCredentialsUuid() {
+        if (credentials != null && credentials.getUserId() != null)
             return credentials.getUuid().toString();
 
         return null;
     }
 
-    private void setCredentialsUuid(String bla)
-    {
-       ServiceCredentials credentials = new ServiceCredentials();
+    private void setCredentialsUuid(String bla) {
+        ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString(bla));
         this.setCredentials(credentials);
     }
@@ -185,15 +178,13 @@ public abstract class UserId implements ILogable {
         return this.protocolType;
     }
 
-    @Column(name="protocol", insertable = false, updatable = false)
-    protected String getProtocolTypeString()
-    {
+    @Column(name = "protocol", insertable = false, updatable = false)
+    protected String getProtocolTypeString() {
         return this.protocolType.toString();
     }
 
 
-    private void setProtocolTypeString(String type)
-    {
+    private void setProtocolTypeString(String type) {
         log.debug("setProtocolTypeString: " + type);
         this.protocolType = ProtocolType.getValue(type);
         log.debug("found: " + this.protocolType.toString());
@@ -242,6 +233,16 @@ public abstract class UserId implements ILogable {
         this.protocolType = protocolType;
     }
 
+    /**
+     * The String representation of UserID
+     *
+     * @return string of UserID.
+     */
+    public String toString() {
+        return getUserId() + ": " + getFirstName() + " " +
+                getSurName() + " '" + getNickname() + "' ";
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -251,7 +252,7 @@ public abstract class UserId implements ILogable {
         UserId userId1 = (UserId) o;
 
 
-        if(!credentials.getUuid().equals(userId1.credentials.getUuid())) return false; // MODDED!
+        if (!credentials.getUuid().equals(userId1.credentials.getUuid())) return false; // MODDED!
         if (!firstName.equals(userId1.firstName)) return false;
         if (!nickname.equals(userId1.nickname)) return false;
         if (protocolType != userId1.protocolType) return false;
