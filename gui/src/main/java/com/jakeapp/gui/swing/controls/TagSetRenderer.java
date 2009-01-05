@@ -1,26 +1,25 @@
 package com.jakeapp.gui.swing.controls;
 
-import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
 
 import javax.swing.table.TableCellRenderer;
 import javax.swing.*;
-import javax.swing.text.Document;
 import java.awt.*;
 
 /**
- * Renders a TagSet within a table cell
- *
- * ATTENTION: THIS IS A CONSTRUCTION SITE! WEAR HARD HATS AT ALL TIMES!
+ * Created by IntelliJ IDEA.
+ * User: Chris
+ * Date: Jan 5, 2009
+ * Time: 10:29:07 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class TagSetRenderer extends JTextField implements TableCellRenderer {
-    public TagSetRenderer() {
-        super("tag1 tag2 tag3");
-    }
+public class TagSetRenderer extends JXPanel implements TableCellRenderer {
+   public TagSetRenderer() {
+      this.add(new JLabel("fuck"));
+   }
 
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        if(value == null) return new JLabel("");
-        return this;
-    }
+   @Override
+   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+      return this;
+   }
 }

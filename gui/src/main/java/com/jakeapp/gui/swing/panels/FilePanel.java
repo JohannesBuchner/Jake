@@ -13,8 +13,10 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.TagSetRenderer;
+import com.jakeapp.gui.swing.controls.TagSetEditor;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.controls.FilesTreeTableTagCellEditor;
+import com.jakeapp.gui.swing.controls.TagSetRenderer;
 import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TagSet;
@@ -32,184 +34,186 @@ import java.io.File;
  */
 public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged {
 
-    private PopupMenu fileMenu;
+   private PopupMenu fileMenu;
 
-    private Project project;
+   private Project project;
 
-    /**
-     * Creates new form FilePanel
-     */
-    public FilePanel() {
-        initComponents();
+   /**
+    * Creates new form FilePanel
+    */
+   public FilePanel() {
+      initComponents();
 
-        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+      JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
-        infoPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+      infoPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
-        // make the buttons more fancy
-        Platform.getStyler().MakeWhiteRecessedButton(newFilesButton);
-        Platform.getStyler().MakeWhiteRecessedButton(resolveButton);
-        Platform.getStyler().MakeWhiteRecessedButton(illegalFilenamesButton);
+      // make the buttons more fancy
+      Platform.getStyler().MakeWhiteRecessedButton(newFilesButton);
+      Platform.getStyler().MakeWhiteRecessedButton(resolveButton);
+      Platform.getStyler().MakeWhiteRecessedButton(illegalFilenamesButton);
 
-        //infoPanel.setBorder(BorderFactory.createMatteBorder(
-        //        1, 1, 1, 1, Color.DARK_GRAY));
-
-
-        // TODO: Fix this. Essentially, the problem is that we need to set some sort
-        // of model before we have a project, so this creates a new model of the root
-        // point in the FS. Maybe replace this by a dummy model or find a nicer way of
-        // injection.
-        TreeTableModel treeTableModel = new FileSystemModel();
-        fileTreeTable.setTreeTableModel(treeTableModel);
-
-        fileTreeTable.setScrollsOnExpand(true);
-        fileTreeTable.setSortable(true);
-        fileTreeTable.setColumnControlVisible(true);
-        fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
-
-        fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
-        fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
+      //infoPanel.setBorder(BorderFactory.createMatteBorder(
+      //        1, 1, 1, 1, Color.DARK_GRAY));
 
 
-        fileTreeTable.addMouseListener(new TableMouseListener(fileTreeTable) {
+      // TODO: Fix this. Essentially, the problem is that we need to set some sort
+      // of model before we have a project, so this creates a new model of the root
+      // point in the FS. Maybe replace this by a dummy model or find a nicer way of
+      // injection.
+      TreeTableModel treeTableModel = new FileSystemModel();
+      fileTreeTable.setTreeTableModel(treeTableModel);
 
-            @Override
-            public void showPopup(JComponent comp, int x, int y) {
-                fileMenu.show(comp, x, y);
-            }
+      fileTreeTable.setScrollsOnExpand(true);
+      fileTreeTable.setSortable(true);
+      fileTreeTable.setColumnControlVisible(true);
+      fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
-            @Override
-            public void editAction() {
-
-                // Get the frame
-                JFrame frame = (JFrame) SwingUtilities.getRoot(fileTreeTable);
-
-                //AddEditNoteDialog.ShowAsDialog(new Object(), frame);
-            }
-        });
-
-
-        fileMenu = new PopupMenu();
-        fileMenu.add(new MenuItem("Open"));
-        fileMenu.addSeparator();
-        fileMenu.add(new MenuItem("Announce..."));
-        fileMenu.add(new MenuItem("Pull"));
-        fileMenu.addSeparator();
-        fileMenu.add(new MenuItem("Delete"));
-        fileMenu.add(new MenuItem("Rename"));
-        fileMenu.addSeparator();
-        fileMenu.add(new MenuItem("Show/Hide Inspector"));
-        fileMenu.addSeparator();
-        fileMenu.add(new MenuItem("Import... "));
-        fileMenu.add(new MenuItem("New Folder... "));
-        fileMenu.addSeparator();
-        fileMenu.add(new MenuItem("Lock/Unlock"));
-        fileMenu.add(new MenuItem("Lock with Message... "));
-
-        fileTreeTable.add(fileMenu);
+      fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
+      fileTreeTable.setDefaultEditor(TagSet.class, new FilesTreeTableTagCellEditor());
+      // WHY THE FUCK IS THIS NOT WORKING?!!!!!
+      // fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
 
 
-        // fileTreeTable.getTableHeader().setDefaultRenderer(new ITunesTableHeaderRenderer());
+      fileTreeTable.addMouseListener(new TableMouseListener(fileTreeTable) {
 
-        //fileTreeTable.
-    }
+         @Override
+         public void showPopup(JComponent comp, int x, int y) {
+            fileMenu.show(comp, x, y);
+         }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+         @Override
+         public void editAction() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        fileTreeTable = new org.jdesktop.swingx.JXTreeTable();
-        infoPanel = new org.jdesktop.swingx.JXPanel();
-        jLabel1 = new javax.swing.JLabel();
-        newFilesButton = new javax.swing.JButton();
-        resolveButton = new javax.swing.JButton();
-        illegalFilenamesButton = new javax.swing.JButton();
+            // Get the frame
+            JFrame frame = (JFrame) SwingUtilities.getRoot(fileTreeTable);
 
-        setName("Form"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
+            //AddEditNoteDialog.ShowAsDialog(new Object(), frame);
+         }
+      });
 
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        fileTreeTable.setName("fileTreeTable"); // NOI18N
-        jScrollPane1.setViewportView(fileTreeTable);
+      fileMenu = new PopupMenu();
+      fileMenu.add(new MenuItem("Open"));
+      fileMenu.addSeparator();
+      fileMenu.add(new MenuItem("Announce..."));
+      fileMenu.add(new MenuItem("Pull"));
+      fileMenu.addSeparator();
+      fileMenu.add(new MenuItem("Delete"));
+      fileMenu.add(new MenuItem("Rename"));
+      fileMenu.addSeparator();
+      fileMenu.add(new MenuItem("Show/Hide Inspector"));
+      fileMenu.addSeparator();
+      fileMenu.add(new MenuItem("Import... "));
+      fileMenu.add(new MenuItem("New Folder... "));
+      fileMenu.addSeparator();
+      fileMenu.add(new MenuItem("Lock/Unlock"));
+      fileMenu.add(new MenuItem("Lock with Message... "));
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+      fileTreeTable.add(fileMenu);
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(FilePanel.class);
-        infoPanel.setBackground(resourceMap.getColor("infoPanel.background")); // NOI18N
-        infoPanel.setName("infoPanel"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel1.setForeground(resourceMap.getColor("jLabel1.foreground")); // NOI18N
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+      // fileTreeTable.getTableHeader().setDefaultRenderer(new ITunesTableHeaderRenderer());
 
-        newFilesButton.setText(resourceMap.getString("newFilesButton.text")); // NOI18N
-        newFilesButton.setName("newFilesButton"); // NOI18N
-        newFilesButton.setSelected(true);
+      //fileTreeTable.
+   }
 
-        resolveButton.setText(resourceMap.getString("resolveButton.text")); // NOI18N
-        resolveButton.setName("resolveButton"); // NOI18N
+   /**
+    * This method is called from within the constructor to
+    * initialize the form.
+    * WARNING: Do NOT modify this code. The content of this method is
+    * always regenerated by the Form Editor.
+    */
+   @SuppressWarnings("unchecked")
+   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+   private void initComponents() {
 
-        illegalFilenamesButton.setText(resourceMap.getString("illegalFilenamesButton.text")); // NOI18N
-        illegalFilenamesButton.setName("illegalFilenamesButton"); // NOI18N
+      jScrollPane1 = new javax.swing.JScrollPane();
+      fileTreeTable = new org.jdesktop.swingx.JXTreeTable();
+      infoPanel = new org.jdesktop.swingx.JXPanel();
+      jLabel1 = new javax.swing.JLabel();
+      newFilesButton = new javax.swing.JButton();
+      resolveButton = new javax.swing.JButton();
+      illegalFilenamesButton = new javax.swing.JButton();
 
-        javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
-        infoPanel.setLayout(infoPanelLayout);
-        infoPanelLayout.setHorizontalGroup(
-                infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
-                        .addComponent(resolveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(illegalFilenamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(newFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-        );
-        infoPanelLayout.setVerticalGroup(
-                infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(infoPanelLayout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(jLabel1))
-                        .addComponent(newFilesButton)
-                        .addComponent(illegalFilenamesButton)
-                        .addComponent(resolveButton)
-        );
+      setName("Form"); // NOI18N
+      setLayout(new java.awt.BorderLayout());
 
-        add(infoPanel, java.awt.BorderLayout.PAGE_START);
-    }// </editor-fold>//GEN-END:initComponents
+      jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.jdesktop.swingx.JXTreeTable fileTreeTable;
-    private javax.swing.JButton illegalFilenamesButton;
-    private org.jdesktop.swingx.JXPanel infoPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton newFilesButton;
-    private javax.swing.JButton resolveButton;
-    // End of variables declaration//GEN-END:variables
+      fileTreeTable.setName("fileTreeTable"); // NOI18N
+      jScrollPane1.setViewportView(fileTreeTable);
 
-    public Project getProject() {
-        return project;
-    }
+      add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-    public void setProject(Project project) {
-        this.project = project;
+      org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(FilePanel.class);
+      infoPanel.setBackground(resourceMap.getColor("infoPanel.background")); // NOI18N
+      infoPanel.setName("infoPanel"); // NOI18N
 
-        // we have to cope with no project selected state.
-        if (project != null) {
-            TreeTableModel treeTableModel = new ProjectFilesTreeTableModel(new File(project.getRootPath()));
-            fileTreeTable.setTreeTableModel(treeTableModel);
-        }
-    }
+      jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+      jLabel1.setForeground(resourceMap.getColor("jLabel1.foreground")); // NOI18N
+      jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+      jLabel1.setName("jLabel1"); // NOI18N
+
+      newFilesButton.setText(resourceMap.getString("newFilesButton.text")); // NOI18N
+      newFilesButton.setName("newFilesButton"); // NOI18N
+      newFilesButton.setSelected(true);
+
+      resolveButton.setText(resourceMap.getString("resolveButton.text")); // NOI18N
+      resolveButton.setName("resolveButton"); // NOI18N
+
+      illegalFilenamesButton.setText(resourceMap.getString("illegalFilenamesButton.text")); // NOI18N
+      illegalFilenamesButton.setName("illegalFilenamesButton"); // NOI18N
+
+      javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
+      infoPanel.setLayout(infoPanelLayout);
+      infoPanelLayout.setHorizontalGroup(
+            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+                  .addContainerGap()
+                  .addComponent(jLabel1)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
+                  .addComponent(resolveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                  .addComponent(illegalFilenamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                  .addComponent(newFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addContainerGap())
+      );
+      infoPanelLayout.setVerticalGroup(
+            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addGroup(infoPanelLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel1))
+                  .addComponent(newFilesButton)
+                  .addComponent(illegalFilenamesButton)
+                  .addComponent(resolveButton)
+      );
+
+      add(infoPanel, java.awt.BorderLayout.PAGE_START);
+   }// </editor-fold>//GEN-END:initComponents
+
+   // Variables declaration - do not modify//GEN-BEGIN:variables
+   private org.jdesktop.swingx.JXTreeTable fileTreeTable;
+   private javax.swing.JButton illegalFilenamesButton;
+   private org.jdesktop.swingx.JXPanel infoPanel;
+   private javax.swing.JLabel jLabel1;
+   private javax.swing.JScrollPane jScrollPane1;
+   private javax.swing.JButton newFilesButton;
+   private javax.swing.JButton resolveButton;
+   // End of variables declaration//GEN-END:variables
+
+   public Project getProject() {
+      return project;
+   }
+
+   public void setProject(Project project) {
+      this.project = project;
+
+      // we have to cope with no project selected state.
+      if (project != null) {
+         TreeTableModel treeTableModel = new ProjectFilesTreeTableModel(new File(project.getRootPath()));
+         fileTreeTable.setTreeTableModel(treeTableModel);
+      }
+   }
 }
