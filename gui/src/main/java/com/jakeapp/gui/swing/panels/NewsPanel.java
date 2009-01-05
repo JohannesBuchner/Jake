@@ -106,7 +106,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         @Override
         public void mouseClicked(MouseEvent me) {
             if (SwingUtilities.isRightMouseButton(me)) {
-                log.info("right clicked");
+                log.debug("right clicked");
                 // get the coordinates of the mouse click
                 Point p = me.getPoint();
 
@@ -119,7 +119,10 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
                 // set the selected interval of rows. Using the "rowNumber"
                 // variable for the beginning and end selects only that one
                 // row.
-                model.setSelectionInterval(rowNumber, rowNumber);
+                // ONLY select new item if we didn't select multiple items.
+                if (peopleList.getSelectedValues().length <= 1) {
+                    model.setSelectionInterval(rowNumber, rowNumber);
+                }
 
                 showMenu(me);
             }

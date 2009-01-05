@@ -407,14 +407,15 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
     @Override
-    public boolean setPeopleNickname(ProjectMember pm, String nick) {
+    public boolean setPeopleNickname(Project project, ProjectMember pm, String nick) {
         // TODO: ignore this and create a regex for checking!
         if (nick.indexOf("<") != -1) {
             return false;
         } else {
             pm.getUserId().setNickname(nick);
 
-            // TODO: fire event?
+            fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                    ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 
             return true;
         }

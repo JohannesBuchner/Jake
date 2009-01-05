@@ -70,7 +70,7 @@ public class PeopleListModel extends AbstractListModel
 
     @Override
     public void setValueAt(Object value, int index) {
-        if (!JakeMainApp.getApp().getCore().setPeopleNickname(people.get(index), (String) value)) {
+        if (!JakeMainApp.getApp().getCore().setPeopleNickname(getProject(), people.get(index), (String) value)) {
 
             JakeMainHelper.showMsg("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
 

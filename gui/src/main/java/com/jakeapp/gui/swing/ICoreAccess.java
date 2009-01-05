@@ -260,11 +260,11 @@ public interface ICoreAccess {
      * Sets the nickname of people.
      * Checks for error
      *
+     * @param project
      * @param pm
-     * @param nick
-     * @return
+     * @param nick    @return
      */
-    boolean setPeopleNickname(ProjectMember pm, String nick);
+    boolean setPeopleNickname(Project project, ProjectMember pm, String nick);
 
     /**
      * Set the Trust State of people.
