@@ -16,7 +16,7 @@ public interface ProjectChanged {
     /**
      * Inner class that saves project & change reason
      */
-    class ProjectChangedEvent {
+    public class ProjectChangedEvent {
         private Project project;
         private ProjectChangedReason reason;
 
@@ -26,11 +26,11 @@ public interface ProjectChanged {
         }
 
         public Project getProject() {
-            return project;
+            return this.project;
         }
 
         public ProjectChangedReason getReason() {
-            return reason;
+            return this.reason;
         }
 
         public enum ProjectChangedReason {
@@ -38,5 +38,5 @@ public interface ProjectChanged {
         }
     }
 
-    void projectChanged(final ProjectChangedEvent ev);
+    public void projectChanged(final ProjectChangedEvent ev);
 }

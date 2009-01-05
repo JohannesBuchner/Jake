@@ -10,7 +10,10 @@ import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
@@ -371,8 +374,29 @@ public class CoreAccessMock implements ICoreAccess {
     }
 
     public List<NoteObject> getNotes(Project project) {
-        return new ArrayList<NoteObject>();
+    	List<NoteObject> list = new ArrayList<NoteObject>();
+    	list.add(new NoteObject(new UUID(1, 1), project, "Project: " + project.getName()));
+    	list.add(new NoteObject(new UUID(1, 1), project,"If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
+    	list.add(new NoteObject(new UUID(2, 1), project,"Apple pays Chuck Norris 99 cents every time he listens to a song."));
+    	list.add(new NoteObject(new UUID(3, 1), project,"Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
+    	list.add(new NoteObject(new UUID(4, 1), project,"Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
+    	list.add(new NoteObject(new UUID(4, 1), project,"Chuck Norris can kill two stones with one bird."));
+    	list.add(new NoteObject(new UUID(5, 1), project,"The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
+    	list.add(new NoteObject(new UUID(6, 1), project,"Chuck Norris does not sleep. He waits."));
+    	list.add(new NoteObject(new UUID(7, 1), project,"There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
+    	list.add(new NoteObject(new UUID(8, 1), project,"Guns don't kill people, Chuck Norris does."));
+        return list;
     }
+    
+    @Override
+	public Date getLastEdit(NoteObject note, Project project) {
+		return new Date();
+	}
+
+	@Override
+	public ProjectMember getLastEditor(NoteObject note, Project project) {
+		return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"),TrustState.TRUST);
+	}
 
     /**
      * Generates a list so that people are remembered when they change.

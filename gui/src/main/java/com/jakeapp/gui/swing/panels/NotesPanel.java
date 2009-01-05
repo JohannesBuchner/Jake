@@ -19,20 +19,39 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.SelectionMapper;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.ICoreAccess;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
 
 /**
- * @author studpete
+ * @author studpete, simon
  */
-public class NotesPanel extends javax.swing.JPanel {
+public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged, ListSelectionListener {
+	
+	private static final long serialVersionUID = -7703570005631651276L;
+	private static Logger log = Logger.getLogger(NotesPanel.class);
+	private ICoreAccess core;
+	private NotesTableModel notesTableModel;
+	private ResourceMap resourceMap;
+	private JTextArea noteReader;
 
     /**
      * Creates new form NotesPanel
@@ -40,24 +59,41 @@ public class NotesPanel extends javax.swing.JPanel {
     public NotesPanel() {
         initComponents();
 
-        notesTable.setSortable(true);
-        notesTable.setColumnControlVisible(true);
-        notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+        this.notesTableModel = new NotesTableModel(); 
+        this.notesTable.setModel(this.notesTableModel);
+        this.setProject(JakeMainApp.getApp().getProject());
+        
+        this.core = JakeMainApp.getApp().getCore();
+        
+        
+        // register the callbacks
+        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+        JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+        this.notesTable.getSelectionModel().addListSelectionListener(this);
+        
+        // get resource map
+		this.resourceMap = org.jdesktop.application.Application.getInstance(
+				com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+				.getResourceMap(NotesPanel.class);
+
+
+        this.notesTable.setSortable(true);
+        this.notesTable.setColumnControlVisible(true);
+        this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
         final PopupMenu notesPopupMenu = new PopupMenu();
         this.add(notesPopupMenu);
 
-        notesPopupMenu.add(new MenuItem("Open"));
-        notesPopupMenu.add(new MenuItem("New..."));
-        notesPopupMenu.add(new MenuItem("Delete"));
-
-
-        notesTable.addMouseListener(new TableMouseListener(notesTable) {
+        //TODO wire context menu
+        notesPopupMenu.add(new MenuItem(this.getResourceMap().getString("contextMenuNewNote")));
+        notesPopupMenu.add(new MenuItem(this.getResourceMap().getString("contextMenuDeleteNote")));
+        
+        this.notesTable.addMouseListener(new TableMouseListener(this.notesTable) {
 
             @Override
             public void showPopup(JComponent comp, int x, int y) {
-                notesPopupMenu.show(comp, x, y);
-            }
+						notesPopupMenu.show(comp, x, y);
+					}
 
             @Override
             public void editAction() {
@@ -70,22 +106,21 @@ public class NotesPanel extends javax.swing.JPanel {
         });
 
 
-        JTextArea noteReader = new JTextArea();
+        this.noteReader = new JTextArea();
         // noteReader.setBorder(new LineBorder(Color.BLACK, 1));
-        noteReader.setLineWrap(true);
-        noteReader.setOpaque(false);
-        noteReader.setText("Enter your Note here.\nChanges will be saved automatically.");
-        noteReader.setMargin(new Insets(8, 8, 8, 8));
+        this.noteReader.setLineWrap(true);
+        this.noteReader.setOpaque(false);
+        this.noteReader.setText("Enter your Note here.\nChanges will be saved automatically.");
+        this.noteReader.setMargin(new Insets(8, 8, 8, 8));
 
-        JScrollPane noteReaderScrollPane = new JScrollPane(noteReader);
-        noteReaderScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        noteReaderScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
+        noteReaderScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        noteReaderScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //noteReaderScrollPane.setBounds(70, 479, 278, 111);
         noteReaderScrollPane.setOpaque(false);
         noteReaderScrollPane.getViewport().setOpaque(false);
-        ;
 
-        noteReadPanel.add(noteReaderScrollPane);
+        this.noteReadPanel.add(noteReaderScrollPane);
 
 
         // set the background painter
@@ -94,13 +129,46 @@ public class NotesPanel extends javax.swing.JPanel {
                 GlossPainter.GlossPosition.TOP);
         //PinstripePainter pp = new PinstripePainter(Colors.White.alpha(0.1f),
         //                                          45d);
-        noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
+        this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
     }
+           
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if (this.notesTable.getSelectedRow() == -1) {
+			this.noteReader.setText("");
+		} else {
+			String text;
+			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
+			this.noteReader.setText(text);
+		}
+	}
 
-    private boolean isNoteSelected() {
-        return notesTable.getSelectedRow() >= 0;
+	private ResourceMap getResourceMap() {
+		return this.resourceMap;
+	}
+
+	@Override
+	public void projectChanged(ProjectChangedEvent ignored) {
+    	this.notesTableModel.update();
+	}
+
+	@Override
+	public void setProject(Project pr) {
+		this.notesTableModel.update(pr);
+	}
+    
+	/**
+     * Get the current <code>ICoreAccess</code>.    
+     * @return the current core
+     */
+	private ICoreAccess getCore() {
+		return this.core;
+	}
+
+	private boolean isNoteSelected() {
+        return this.notesTable.getSelectedRow() >= 0;
     }
-
+	
     /**
      * This method is called from within the constructor to
      * initialize the form.

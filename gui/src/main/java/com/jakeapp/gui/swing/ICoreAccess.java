@@ -10,6 +10,7 @@ import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -34,14 +35,14 @@ public interface ICoreAccess {
      *
      * @param ec
      */
-    void addErrorListener(ErrorCallback ec);
+    public void addErrorListener(ErrorCallback ec);
 
     /**
      * Removes the error listener for error events
      *
      * @param ec
      */
-    void removeErrorListener(ErrorCallback ec);
+    public void removeErrorListener(ErrorCallback ec);
 
 
     /******************* User functions ********************/
@@ -52,21 +53,21 @@ public interface ICoreAccess {
      * @param user
      * @param pass
      */
-    void signIn(final String user, final String pass);
+    public void signIn(final String user, final String pass);
 
     /**
      * Registers the Connection Status Callback
      *
      * @param cb
      */
-    void addConnectionStatusCallbackListener(ConnectionStatus cb);
+    public void addConnectionStatusCallbackListener(ConnectionStatus cb);
 
     /**
      * Deregisters the Connecton Status Callback
      *
      * @param cb
      */
-    void removeConnectionStatusCallbackListener(ConnectionStatus cb);
+    public void removeConnectionStatusCallbackListener(ConnectionStatus cb);
 
     /**
      * Register on sync sercices.
@@ -74,7 +75,7 @@ public interface ICoreAccess {
      * @param user
      * @param pass
      */
-    void register(String user, String pass);
+    public void register(String user, String pass);
 
 
     /**
@@ -82,7 +83,7 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void addRegistrationStatusCallbackListener(RegistrationStatus cb);
+    public void addRegistrationStatusCallbackListener(RegistrationStatus cb);
 
 
     /**
@@ -90,27 +91,27 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void removeRegistrationStatusCallbackListener(RegistrationStatus cb);
+    public void removeRegistrationStatusCallbackListener(RegistrationStatus cb);
 
     /**
      * Returns true if a user is signed in successfully.
      *
      * @return
      */
-    boolean isSignedIn();
+    public boolean isSignedIn();
 
     /**
      * Returns the Username of the current logged in user
      *
      * @return
      */
-    String getSignInUser();
+    public String getSignInUser();
 
 
     /**
      * Signs the current user out.
      */
-    void signOut();
+    public void signOut();
 
 
     /**
@@ -118,7 +119,7 @@ public interface ICoreAccess {
      *
      * @return
      */
-    String[] getLastSignInNames();
+    public String[] getLastSignInNames();
 
 
     /******************* Project functions ********************/
@@ -130,7 +131,7 @@ public interface ICoreAccess {
      *
      * @return list of projects.
      */
-    List<Project> getMyProjects();
+    public List<Project> getMyProjects();
 
     /**
      * Get projects where i am invited to.
@@ -138,7 +139,7 @@ public interface ICoreAccess {
      *
      * @return list of invited projects.
      */
-    List<Project> getInvitedProjects();
+    public List<Project> getInvitedProjects();
 
 
     /**
@@ -147,21 +148,21 @@ public interface ICoreAccess {
      *
      * @param cb
      */
-    void addProjectChangedCallbackListener(ProjectChanged cb);
+    public void addProjectChangedCallbackListener(ProjectChanged cb);
 
     /**
      * Deregisters the project changed callbac.
      *
      * @param cb
      */
-    void removeProjectChangedCallbackListener(ProjectChanged cb);
+    public void removeProjectChangedCallbackListener(ProjectChanged cb);
 
     /**
      * Stops the given project
      *
      * @param project
      */
-    void stopProject(Project project);
+    public void stopProject(Project project);
 
 
     /**
@@ -169,7 +170,7 @@ public interface ICoreAccess {
      *
      * @param project
      */
-    void startProject(Project project);
+    public void startProject(Project project);
 
     /**
      * Returns absolute Number of files of the project.
@@ -177,7 +178,7 @@ public interface ICoreAccess {
      * @param project
      * @return
      */
-    int getProjectFileCout(Project project);
+    public int getProjectFileCout(Project project);
 
     /**
      * Returns absolute Size of all files in the project.
@@ -185,7 +186,7 @@ public interface ICoreAccess {
      * @param project
      * @return size in bytes.
      */
-    int getProjectSizeTotal(Project project);
+    public int getProjectSizeTotal(Project project);
 
 
     /**
@@ -196,7 +197,7 @@ public interface ICoreAccess {
      * @param name: name of the project
      * @param path: path of the project
      */
-    void createProject(String name, String path);
+    public void createProject(String name, String path);
 
 
     /**
@@ -206,7 +207,7 @@ public interface ICoreAccess {
      *
      * @param project: project that should be deleted
      */
-    void deleteProject(Project project);
+    public void deleteProject(Project project);
 
     /**
      * Joins into a invited project
@@ -214,7 +215,7 @@ public interface ICoreAccess {
      * @param loc
      * @param project
      */
-    void joinProject(String loc, Project project);
+    public void joinProject(String loc, Project project);
 
 
     /**
@@ -222,7 +223,7 @@ public interface ICoreAccess {
      *
      * @param project
      */
-    void rejectProject(Project project);
+    public void rejectProject(Project project);
 
 
     /**
@@ -232,7 +233,7 @@ public interface ICoreAccess {
      * @param project
      * @param prName
      */
-    void setProjectName(Project project, String prName);
+    public void setProjectName(Project project, String prName);
 
     /******************* Notes functions ********************/
 
@@ -243,8 +244,23 @@ public interface ICoreAccess {
      * @param project: project that should be evaluated
      * @return
      */
-    List<NoteObject> getNotes(Project project);
+    public List<NoteObject> getNotes(Project project);
+    
+    /**
+     * Get the <code>Date</code> of the last edit of the note.
+     * @param note the note in question
+     * @param project the project the note is associated with
+     * @return the date of the last edit
+     */
+    public Date getLastEdit(NoteObject note, Project project);
 
+    /**
+     * Get the <code>ProjectMemeber<code> who last edited the given note.
+     * @param note the note in question
+     * @param project the project the note is associated with
+     * @return the <code>ProjectMember</code> who last edited this note.
+     */
+    public ProjectMember getLastEditor(NoteObject note, Project project);
 
     /******************* People functions ********************/
 
@@ -254,7 +270,7 @@ public interface ICoreAccess {
      * @param project: project that should be evaluated
      * @return
      */
-    List<ProjectMember> getPeople(Project project);
+    public List<ProjectMember> getPeople(Project project);
 
     /**
      * Sets the nickname of people.
@@ -264,7 +280,7 @@ public interface ICoreAccess {
      * @param pm
      * @param nick    @return
      */
-    boolean setPeopleNickname(Project project, ProjectMember pm, String nick);
+    public boolean setPeopleNickname(Project project, ProjectMember pm, String nick);
 
     /**
      * Set the Trust State of people.
@@ -273,5 +289,5 @@ public interface ICoreAccess {
      * @param member
      * @param trust
      */
-    void peopleSetTrustState(Project project, ProjectMember member, TrustState trust);
+    public void peopleSetTrustState(Project project, ProjectMember member, TrustState trust);
 }
