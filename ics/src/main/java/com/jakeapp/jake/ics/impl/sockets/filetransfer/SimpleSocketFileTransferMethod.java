@@ -61,11 +61,13 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 
 	private Map<UUID, FileRequest> incomingRequests = new HashMap<UUID, FileRequest>();
 
-	private ServerSocket socket;
+	private ServerSocket server;
 
 	private FileRequestFileMapper mapper;
 
 	private UserId myUserId;
+
+	private IncomingTransferListener incomingTransferListener;
 
 	private static final int UUID_LENGTH = UUID.randomUUID().toString().length();
 
@@ -77,6 +79,9 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		this.negotiationService.registerReceiveMessageListener(this);
 	}
 
+	/*
+	 * first step, client requests something
+	 */
 	@Override
 	public void request(FileRequest r, INegotiationSuccessListener nsl) {
 		log.debug(myUserId + ": We request " + r);
@@ -111,37 +116,15 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		log.debug(myUserId + ": receivedMessage : " + from_userid + " : " + inner);
 
 		if (inner.startsWith(ADDRESS_REQUEST)) {
-			// we are the server
-			String filename = inner.substring(ADDRESS_REQUEST.length());
-			FileRequest fr = new FileRequest(filename, true, from_userid);
-			File localFile = mapper.getFileForRequest(fr);
-
-			InetSocketAddress add = provideAddresses();
-			log.debug(myUserId.getUserId() + " : " + from_userid + " wants our ip, "
-					+ add);
-			log.debug(myUserId.getUserId() + " : " + from_userid + " wants  " + filename
-					+ " which is our file, " + localFile);
-			String response = SimpleSocketFileTransferFactory.START;
-			if (add != null) {
-				if (localFile != null) {
-					response += GOT_REQUESTED_FILE + registerTransferKey(localFile, fr)
-							+ filename;
-				}
-				response += ADDRESS_RESPONSE + add.toString();
-			} else {
-				response += ADDRESS_RESPONSE;
-			}
-			response += SimpleSocketFileTransferFactory.END;
-			try {
-				this.negotiationService.sendMessage(from_userid, response);
-			} catch (Exception e) {
-				SimpleSocketFileTransferFactory.log.warn("sending failed", e);
-			}
+			handleAddressRequest(from_userid, inner);
 			/*
 			 * ADDRESS_RESPONSE:
 			 * [GOT_REQUESTED_FILE<uuid><filename>]ADDRESS_RESPONSE[<address>]
 			 */
 		} else if (inner.equals(ADDRESS_RESPONSE)) {
+			/*
+			 * third step, client receives no ok from server
+			 */
 			// we are the client, server doesn't have it
 			for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
 				INegotiationSuccessListener nsl = this.listeners.get(r);
@@ -149,78 +132,134 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 				removeOutgoing(r);
 			}
 		} else if (inner.startsWith(GOT_REQUESTED_FILE)) {
-			// we are the client
-			try {
-				String innerWithoutType = inner.substring(GOT_REQUESTED_FILE.length());
-				UUID transferKey = UUID.fromString(innerWithoutType.substring(0,
-						UUID_LENGTH));
-				log.debug(myUserId + ": I got the transferKey " + transferKey);
-
-				String innerWithoutTransferKey = innerWithoutType.substring(UUID_LENGTH);
-
-				int pos = innerWithoutTransferKey.indexOf(ADDRESS_RESPONSE);
-
-				String filename = innerWithoutTransferKey.substring(0, pos);
-
-				String address = innerWithoutTransferKey.substring(pos
-						+ ADDRESS_RESPONSE.length());
-
-				FileRequest fr = new FileRequest(filename, false, from_userid);
-
-				log.debug(myUserId + ": Do I have the request to " + from_userid + "? "
-						+ outgoingRequests.contains(fr) + " : " + fr);
-
-				if (!outgoingRequests.contains(fr)) {
-					log.warn(from_userid
-							+ " violated the protocol (sent offer without request)");
-					return;
-				}
-
-				try {
-					if (!address.contains(":")) {
-						throw new OtherUserOfflineException();
-					}
-					String[] add = address.split(":", 2);
-					if (add[0].charAt(0) == '/')
-						add[0] = add[0].substring(1);
-					log.debug("setting ip address ...");
-					InetSocketAddress other = new InetSocketAddress(add[0], Integer
-							.parseInt(add[1]));
-					log.debug("setting ip address :" + other);
-
-					this.serverAdresses.put(from_userid, other);
-					for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
-						INegotiationSuccessListener nsl = this.listeners.get(r);
-
-						SimpleSocketFileTransfer ft = null;
-						ft = new SimpleSocketFileTransfer(r, other, transferKey);
-						new Thread(ft).start();
-						log.info("negotiation with " + from_userid + " succeeded");
-						nsl.succeeded(ft);
-						removeOutgoing(r);
-					}
-				} catch (Exception e) {
-					log.info("negotiation with " + from_userid + " failed: " + e);
-					for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
-						INegotiationSuccessListener nsl = this.listeners.get(r);
-						nsl.failed(e);
-						removeOutgoing(r);
-					}
-				}
-			} catch (IndexOutOfBoundsException e) {
-				log.warn(from_userid
-						+ " packet came not as [GOT_REQUESTED_FILE<uuid><filename>]"
-						+ "ADDRESS_RESPONSE[<address>]");
-				return;
-			} catch (IllegalArgumentException e) {
-				log.warn(from_userid
-						+ " violated the protocol (sent invalid transferKey)");
-				return;
-			}
-			log.debug("done with " + ADDRESS_RESPONSE + " from " + from_userid);
+			/*
+			 * third step, client receives ok from server
+			 */
+			handleServerOk(from_userid, inner);
 			return;
 		} else {
 			log.warn("unknown request from " + from_userid + ": " + content);
+		}
+	}
+
+	private void handleServerOk(UserId from_userid, String inner) {
+		// we are the client
+		try {
+			String innerWithoutType = inner.substring(GOT_REQUESTED_FILE.length());
+			UUID transferKey = UUID
+					.fromString(innerWithoutType.substring(0, UUID_LENGTH));
+			log.debug(myUserId + ": I got the transferKey " + transferKey);
+
+			String innerWithoutTransferKey = innerWithoutType.substring(UUID_LENGTH);
+
+			int pos = innerWithoutTransferKey.indexOf(ADDRESS_RESPONSE);
+
+			String filename = innerWithoutTransferKey.substring(0, pos);
+
+			String address = innerWithoutTransferKey.substring(pos
+					+ ADDRESS_RESPONSE.length());
+
+			FileRequest fr = new FileRequest(filename, false, from_userid);
+
+			log.debug(myUserId + ": Do I have the request to " + from_userid + "? "
+					+ outgoingRequests.contains(fr) + " : " + fr);
+
+			if (!outgoingRequests.contains(fr)) {
+				log.warn(from_userid
+						+ " violated the protocol (sent offer without request)");
+				return;
+			}
+
+			try {
+				if (!address.contains(":")) {
+					throw new OtherUserOfflineException();
+				}
+				String[] add = address.split(":", 2);
+				if (add[0].charAt(0) == '/')
+					add[0] = add[0].substring(1);
+				log.debug("setting ip address ...");
+				InetSocketAddress other = new InetSocketAddress(add[0], Integer
+						.parseInt(add[1]));
+				log.debug("setting ip address :" + other);
+
+				this.serverAdresses.put(from_userid, other);
+				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
+					INegotiationSuccessListener nsl = this.listeners.get(r);
+
+					/*
+					 * fourth step, the client starts the out-of-band transfer
+					 */
+					SimpleSocketFileTransfer ft = new SimpleSocketFileTransfer(r, other,
+							transferKey);
+					new Thread(ft).start();
+					log.info("negotiation with " + from_userid + " succeeded");
+					nsl.succeeded(ft);
+					removeOutgoing(r);
+				}
+			} catch (Exception e) {
+				log.info("negotiation with " + from_userid + " failed: " + e);
+				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
+					INegotiationSuccessListener nsl = this.listeners.get(r);
+					nsl.failed(e);
+					removeOutgoing(r);
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			log.warn(from_userid
+					+ " packet came not as [GOT_REQUESTED_FILE<uuid><filename>]"
+					+ "ADDRESS_RESPONSE[<address>]");
+			return;
+		} catch (IllegalArgumentException e) {
+			log.warn(from_userid + " violated the protocol (sent invalid transferKey)");
+			return;
+		}
+		log.debug("done with " + ADDRESS_RESPONSE + " from " + from_userid);
+	}
+
+	private void handleAddressRequest(UserId from_userid, String inner) {
+		/*
+		 * second step, server receives request
+		 */
+		// we are the server
+		String filename = inner.substring(ADDRESS_REQUEST.length());
+		FileRequest fr = new FileRequest(filename, true, from_userid);
+
+		InetSocketAddress add = provideAddresses();
+		log.debug(myUserId.getUserId() + " : " + from_userid + " wants our ip, " + add
+				+ " and wants  " + filename);
+		log.debug("Do we serve at all? ");
+		String response = SimpleSocketFileTransferFactory.START;
+		boolean success = true;
+		if (add == null) {
+			success = false;
+		} else {
+			log.debug("Do we accept?");
+			if (!incomingTransferListener.accept(fr)) {
+				success = false;
+			} else {
+				log.debug("Do we have the file?");
+
+				File localFile = mapper.getFileForRequest(fr);
+
+				if (localFile != null) {
+					response += GOT_REQUESTED_FILE + registerTransferKey(localFile, fr)
+							+ filename;
+					response += ADDRESS_RESPONSE + add.toString();
+				} else {
+					success = false;
+				}
+			}
+		}
+		if (!success) {
+			response += ADDRESS_RESPONSE;
+			log.debug("Not answering with a positive response");
+		}
+		response += SimpleSocketFileTransferFactory.END;
+		
+		try {
+			this.negotiationService.sendMessage(from_userid, response);
+		} catch (Exception e) {
+			SimpleSocketFileTransferFactory.log.warn("sending failed", e);
 		}
 	}
 
@@ -254,22 +293,43 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		this.listeners.remove(r);
 	}
 
+	public boolean isServing() {
+		return this.incomingTransferListener != null;
+	}
+
 	@Override
 	public void startServing(IncomingTransferListener l, FileRequestFileMapper mapper)
 			throws NotLoggedInException {
 		log.debug(this.myUserId + ": startServing");
 
+		this.incomingTransferListener = l;
 		this.mapper = mapper;
 		try {
-			this.socket = new ServerSocket(SimpleSocketFileTransferFactory.PORT);
+			this.server = new ServerSocket(SimpleSocketFileTransferFactory.PORT);
 		} catch (IOException e) {
 			SimpleSocketFileTransferFactory.log.error(e);
 			throw new NotLoggedInException();
 		}
-		new Thread(new ServingThread(this.socket, l)).start();
+		new Thread(new ServingThread(this.server, l)).start();
+	}
+
+	@Override
+	public void stopServing() {
+		this.incomingTransferListener = null;
+		if (this.server != null) {
+			try {
+				this.server.close();
+				Thread.yield();
+			} catch (IOException e) {
+				log.warn("closing server socket failed", e);
+			}
+		}
 	}
 
 	public InetSocketAddress provideAddresses() {
+		if (!isServing())
+			return null;
+
 		Enumeration<NetworkInterface> ifaces;
 		try {
 			ifaces = NetworkInterface.getNetworkInterfaces();
@@ -284,7 +344,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 				InetAddress iaddress = iaddresses.nextElement();
 				if (!iaddress.isLoopbackAddress() && !iaddress.isLinkLocalAddress()) {
 					// host candidate
-					return new InetSocketAddress(iaddress.getHostAddress(), socket
+					return new InetSocketAddress(iaddress.getHostAddress(), server
 							.getLocalPort());
 				}
 			}
@@ -308,16 +368,22 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 
 		public void run() {
 			try {
-				while (!SimpleSocketFileTransferMethod.this.socket.isClosed()) {
+				while (!SimpleSocketFileTransferMethod.this.server.isClosed()) {
 					Socket client = this.socket.accept();
 					this.log
 							.debug("Incoming connection. Starting another ClientHandler thread.");
 					new Thread(new ClientHandler(client, this.listener)).run();
 				};
 			} catch (IOException e) {
-				this.log.error("SocketServer quitting unexpectedly", e);
+				if(!isServing()) {
+					this.log.info("SocketServer shutted down");
+				}else{
+					stopServing();
+					this.log.error("SocketServer quitting unexpectedly", e);
+				}
 			}
 		}
+
 
 	}
 
@@ -348,11 +414,12 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 
 				FileRequest fr = SimpleSocketFileTransferMethod.this.incomingRequests
 						.get(requestKey);
-				if (fr != null && this.listener.accept(fr)) {
+				if (fr != null) {
 					this.log.debug("request: " + fr + " accepted");
 					sendContent(fr, this.listener);
 					// prevent replay attacks
-					SimpleSocketFileTransferMethod.this.incomingRequests.remove(requestKey);
+					SimpleSocketFileTransferMethod.this.incomingRequests
+							.remove(requestKey);
 				} else if (fr == null) {
 					log.warn("got invalid/unknown requestKey");
 				} else {
@@ -412,7 +479,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		public void cancel() {
 			super.cancel();
 			try {
-				SimpleSocketFileTransferMethod.this.socket.close();
+				SimpleSocketFileTransferMethod.this.server.close();
 			} catch (IOException e) {
 				log.error(e);
 			}

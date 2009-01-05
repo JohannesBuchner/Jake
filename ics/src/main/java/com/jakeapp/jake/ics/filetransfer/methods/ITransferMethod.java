@@ -31,4 +31,9 @@ public interface ITransferMethod {
 	 */
 	public void request(FileRequest request, INegotiationSuccessListener nsl);
 
+	/**
+	 * Shutdown the server in a clean way
+	 */
+	public void stopServing();
+
 }

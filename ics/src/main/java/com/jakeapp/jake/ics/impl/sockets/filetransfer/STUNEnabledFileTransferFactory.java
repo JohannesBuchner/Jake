@@ -145,6 +145,12 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 			return adds;
 		}
 
+		@Override
+		public void stopServing() {
+			// TODO Auto-generated method stub
+			
+		}
+
 	}
 
 }

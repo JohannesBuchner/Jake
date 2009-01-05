@@ -8,22 +8,24 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 import local.test.Tracer;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
+import com.jakeapp.jake.ics.filetransfer.exceptions.OtherUserDoesntHaveRequestedContentException;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
@@ -42,7 +44,7 @@ public class TestSocketFileTransfer {
 
 	private UserId userid1 = new MockUserId("requester@testhost");
 
-	private SimpleSocketFileTransferFactory sftf = new SimpleSocketFileTransferFactory();
+	private SimpleSocketFileTransferFactory sftf;
 
 	private String filename = "myfile.txt";
 
@@ -50,11 +52,13 @@ public class TestSocketFileTransfer {
 
 	private FileRequest inrequest = new FileRequest(this.filename, true, this.userid1);
 
-	private SimpleFakeMessageExchanger msgX = new SimpleFakeMessageExchanger();
+	private SimpleFakeMessageExchanger msgX;
 
 	private Tracer t;
 
 	private File testfile;
+
+	private Queue<ITransferMethod> runningServers = new ConcurrentLinkedQueue<ITransferMethod>();
 
 	@Before
 	public void setUp() throws Exception {
@@ -62,14 +66,92 @@ public class TestSocketFileTransfer {
 		testfile = new File("testContent.bin");
 		if (!testfile.exists()) {
 			log.debug(testfile.getAbsolutePath());
-			// starting within eclipse: 
+			// starting within eclipse:
 			testfile = new File("src/test/resources/testContent.bin");
 			if (!testfile.exists())
 				throw new Exception("Testfile " + testfile + " not found.");
 		}
+		msgX = new SimpleFakeMessageExchanger();
+		sftf = new SimpleSocketFileTransferFactory();
+	}
+
+
+	@After
+	public void teardown() throws Exception {
+		msgX = null;
+		sftf = null;
+		for (ITransferMethod tm : runningServers) {
+			tm.stopServing();
+			runningServers.remove(tm);
+		}
 	}
 
 	private IFileTransfer fileTransfer;
+
+	private void createFriendlyPeer(final Tracer t, UserId userid2)
+			throws NotLoggedInException {
+		createPeer(t, userid2, true);
+	}
+
+	private void createMeanPeer(final Tracer t, UserId userid2)
+			throws NotLoggedInException {
+		createPeer(t, userid2, false);
+	}
+
+	private void createPeer(final Tracer t, UserId userid2, final boolean acceptAction)
+			throws NotLoggedInException {
+		createPeer(t, userid2, acceptAction, true);
+	}
+
+	private void createEmptyPeer(final Tracer t, UserId userid2)
+			throws NotLoggedInException {
+		createPeer(t, userid2, true, false);
+	}
+
+	private void createPeer(final Tracer t, UserId userid2, final boolean acceptAction,
+			final boolean hasTestFile) throws NotLoggedInException {
+		log.debug("createFriendlyPeer: creating MsgService");
+		IMsgService msg = msgX.addUser(userid2);
+		msg.registerReceiveMessageListener(new IMessageReceiveListener() {
+
+			private Logger log = Logger.getLogger("Peer:IMessageReceiveListener");
+
+			@Override
+			public void receivedMessage(UserId from_userid, String content) {
+				this.log.info("receivedMessage: " + from_userid + ": " + content);
+				this.log.info("don't care, transfer should handle it");
+			}
+		});
+		ITransferMethod tfm = sftf.getTransferMethod(msg, userid2);
+		runningServers.add(tfm);
+
+		FileRequestFileMapper mapper;
+		if (hasTestFile)
+			mapper = new TestFileMapper(t);
+		else
+			mapper = new NoFilesMapper();
+
+		tfm.startServing(new IncomingTransferListener() {
+
+			private Logger log = Logger.getLogger("Peer:IncomingTransferListener");
+
+			@Override
+			public boolean accept(FileRequest req) {
+				log.debug("accept(): " + req);
+				Assert.assertEquals(inrequest, req);
+				Assert.assertEquals(inrequest.getFileName(), req.getFileName());
+				return acceptAction;
+			}
+
+			@Override
+			public void started(IFileTransfer ft) {
+				log.debug("started(): " + ft);
+				t.step("started on server");
+				Assert.assertEquals(inrequest, ft.getFileRequest());
+			}
+		}, mapper);
+	}
+
 
 	@Test
 	public void testSocketMethod_accepting() throws Exception {
@@ -78,6 +160,7 @@ public class TestSocketFileTransfer {
 
 		ITransferMethod tfm;
 		tfm = sftf.getTransferMethod(msg, userid1);
+		runningServers.add(tfm);
 
 		tfm.request(this.outrequest, new INegotiationSuccessListener() {
 
@@ -87,6 +170,7 @@ public class TestSocketFileTransfer {
 			public void failed(Throwable reason) {
 				this.log.debug("clientside negotiation failed: " + reason);
 				t.step("clientside negotiation failed");
+				Assert.fail();
 			}
 
 			@Override
@@ -103,90 +187,89 @@ public class TestSocketFileTransfer {
 
 		this.log.debug("main: waiting for filetransfer to finish: " + this.fileTransfer);
 
-		this.t.await("getting content from fs,accepted request,started on server", 100,
-				TimeUnit.MILLISECONDS);
-
+		
 		while (!this.fileTransfer.isDone()) {
 			try {
 				log.debug(this.t.toString());
-				Thread.sleep(100);
+				Thread.sleep(40);
 			} catch (InterruptedException e) {
 				// best effort, doesn't matter
 			}
 		}
+		Assert.assertTrue(this.t.await("getting content from fs,started on server", 40,
+				TimeUnit.MILLISECONDS));
 		log.debug(this.t.toString());
+		Assert.assertTrue("timeout", this.t.isDone(40, TimeUnit.MILLISECONDS));
+	}
+
+	@Test
+	public void testUnavailableFile() throws Exception {
+		IMsgService msg = msgX.addUser(userid1);
+		createEmptyPeer(t, userid2);
+
+		ITransferMethod tfm;
+		tfm = sftf.getTransferMethod(msg, userid1);
+		runningServers.add(tfm);
+
+		tfm.request(this.outrequest, new INegotiationSuccessListener() {
+
+			private Logger log = Logger.getLogger("Main:INegotiationSuccessListener");
+
+			@Override
+			public void failed(Throwable reason) {
+				this.log.debug("clientside negotiation failed: " + reason);
+				t.step("clientside negotiation failed");
+				Assert.assertEquals(reason.getClass(),
+						OtherUserDoesntHaveRequestedContentException.class);
+			}
+
+			@Override
+			public void succeeded(IFileTransfer ft) {
+				this.log.debug("clientside negotiation succeeded" + ft);
+				t.step("clientside negotiation succeeded");
+				Assert.fail();
+			}
+		});
+
+		Assert.assertTrue(this.t.awaitStep("clientside negotiation failed", 1,
+				TimeUnit.SECONDS));
+
 		Assert.assertTrue("timeout", this.t.isDone(1000, TimeUnit.MILLISECONDS));
 	}
 
-	private void createFriendlyPeer(final Tracer t, UserId userid2)
-			throws NotLoggedInException {
-		log.debug("createFriendlyPeer: creating MsgService");
-		IMsgService msg = msgX.addUser(userid2);
-		msg.registerReceiveMessageListener(new IMessageReceiveListener() {
+	@Test
+	public void testCancellingServer() throws Exception {
+		IMsgService msg = msgX.addUser(userid1);
+		createMeanPeer(t, userid2);
 
-			private Logger log = Logger.getLogger("Peer:IMessageReceiveListener");
+		ITransferMethod tfm;
+		tfm = sftf.getTransferMethod(msg, userid1);
+		runningServers.add(tfm);
+
+		tfm.request(this.outrequest, new INegotiationSuccessListener() {
+
+			private Logger log = Logger.getLogger("Main:INegotiationSuccessListener");
 
 			@Override
-			public void receivedMessage(UserId from_userid, String content) {
-				this.log.info("receivedMessage: " + from_userid + ": " + content);
-				this.log.info("don't care, transfer should handle it");
+			public void failed(Throwable reason) {
+				this.log.debug("clientside negotiation failed: " + reason);
+				t.step("clientside negotiation failed");
+				Assert.assertEquals(reason.getClass(),
+						OtherUserDoesntHaveRequestedContentException.class);
+			}
+
+			@Override
+			public void succeeded(IFileTransfer ft) {
+				this.log.debug("clientside negotiation succeeded" + ft);
+				t.step("clientside negotiation succeeded");
+				Assert.fail();
 			}
 		});
-		ITransferMethod tfm = sftf.getTransferMethod(msg, userid2);
 
-		tfm.startServing(new IncomingTransferListener() {
+		Assert.assertTrue(this.t.awaitStep("clientside negotiation failed", 1,
+				TimeUnit.SECONDS));
 
-			private Logger log = Logger.getLogger("Peer:IncomingTransferListener");
-
-			@Override
-			public boolean accept(FileRequest req) {
-				log.debug("accept(): " + req);
-				Assert.assertEquals(inrequest, req);
-				Assert.assertEquals(inrequest.getFileName(), req.getFileName());
-				t.step("accepted request");
-				return true;
-			}
-
-			@Override
-			public void started(IFileTransfer ft) {
-				log.debug("started(): " + ft);
-				t.step("started on server");
-				Assert.assertEquals(inrequest, ft.getFileRequest());
-			}
-		}, new FileRequestFileMapper() {
-
-			private Logger log = Logger.getLogger("Peer:FileRequestFileMapper");
-
-			@Override
-			public File getFileForRequest(FileRequest r) {
-				this.log.debug("getFileForRequest(): " + r);
-				Assert
-						.assertEquals(TestSocketFileTransfer.this.filename, r
-								.getFileName());
-				t.step("getting content from fs");
-				try {
-					return getTestContentFile();
-				} catch (FileNotFoundException e) {
-					this.log.debug(e);
-					return null;
-				} catch (IOException e) {
-					this.log.debug(e);
-					return null;
-				}
-			}
-		});
-	}
-
-	@Test
-	@Ignore
-	public void testUnavailableFile() {
-		// TODO
-	}
-
-	@Test
-	@Ignore
-	public void testCancellingServer() {
-		// TODO
+		Assert.assertTrue("timeout", this.t.isDone(1000, TimeUnit.MILLISECONDS));
 	}
 
 	public File getTestContentFile() throws IOException {
@@ -215,5 +298,40 @@ public class TestSocketFileTransfer {
 
 		Assert.assertEquals(lenorig, len);
 		Assert.assertEquals(new String(cbuforig), new String(cbuftmp));
+	}
+
+	private final class TestFileMapper implements FileRequestFileMapper {
+
+		private final Tracer t;
+
+		private Logger log = Logger.getLogger("Peer:FileRequestFileMapper");
+
+		private TestFileMapper(Tracer t) {
+			this.t = t;
+		}
+
+		@Override
+		public File getFileForRequest(FileRequest r) {
+			this.log.debug("getFileForRequest(): " + r);
+			Assert.assertEquals(TestSocketFileTransfer.this.filename, r.getFileName());
+			t.step("getting content from fs");
+			try {
+				return getTestContentFile();
+			} catch (FileNotFoundException e) {
+				this.log.debug(e);
+				return null;
+			} catch (IOException e) {
+				this.log.debug(e);
+				return null;
+			}
+		}
+	}
+
+	private final class NoFilesMapper implements FileRequestFileMapper {
+
+		@Override
+		public File getFileForRequest(@SuppressWarnings("unused") FileRequest r) {
+			return null;
+		}
 	}
 }
