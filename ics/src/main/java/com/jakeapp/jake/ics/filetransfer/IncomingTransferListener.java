@@ -6,7 +6,7 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 /**
  * A transfer is coming in.
  * 
- * This should handle wether it is accepted, the transfer and progress
+ * This should handle whether it is accepted, the transfer and progress
  * 
  * @author johannes
  * 

@@ -51,6 +51,7 @@ abstract public class UserId {
 
 	abstract public boolean isOfCorrectUseridFormat();
 
+	@Override
 	public String toString() {
 		return getUserId();
 	}

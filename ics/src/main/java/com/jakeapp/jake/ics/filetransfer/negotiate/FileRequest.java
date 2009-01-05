@@ -49,13 +49,25 @@ public class FileRequest {
 		this.data = data;
 	}
 
+	public long getFileSize() {
+		return fileSize;
+	}
+
+
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
+	}
+
+	public String toString() {
+		return getFileName() + " " + (isIncoming() ? "from" : "to") + " "
+				+ getPeer();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((fileName == null) ? 0 : fileName.hashCode());
-		result = prime * result + (incoming ? 1231 : 1237);
+		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
 		result = prime * result + ((peer == null) ? 0 : peer.hashCode());
 		return result;
 	}
@@ -74,28 +86,11 @@ public class FileRequest {
 				return false;
 		} else if (!fileName.equals(other.fileName))
 			return false;
-		if (incoming != other.incoming)
-			return false;
 		if (peer == null) {
 			if (other.peer != null)
 				return false;
 		} else if (!peer.equals(other.peer))
 			return false;
 		return true;
-	}
-
-
-	public long getFileSize() {
-		return fileSize;
-	}
-
-
-	public void setFileSize(long fileSize) {
-		this.fileSize = fileSize;
-	}
-
-	public String toString() {
-		return getFileName() + " " + (isIncoming() ? "from" : "to") + " "
-				+ getPeer();
 	}
 }

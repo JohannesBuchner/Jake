@@ -52,14 +52,19 @@ public class SimpleFakeMessageExchanger {
 				TimeoutException, NoSuchUseridException,
 				OtherUserOfflineException {
 			log.debug(user + " -> " + to_userid + " : " + content);
-			users.get(to_userid).notify(to_userid, content);
+			users.get(to_userid).notify(user, content);
 			return true;
 		}
 		
-		public void notify(UserId userid, String content) {
+		/**
+		 * we got a message from sender
+		 * @param sender
+		 * @param content
+		 */
+		public void notify(UserId sender, String content) {
 			for(IMessageReceiveListener l : listener) {
 				log.debug("notifying a listener");
-				l.receivedMessage(userid, content);
+				l.receivedMessage(sender, content);
 			}
 		}
 	}

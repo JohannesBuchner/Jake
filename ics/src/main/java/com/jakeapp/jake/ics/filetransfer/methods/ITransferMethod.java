@@ -15,7 +15,7 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileRequestFileMapper;
 public interface ITransferMethod {
 
 	/**
-	 * Start the server so others can request files
+	 * Start the server so others may request files
 	 * 
 	 * @param l
 	 * @param mapper
@@ -25,7 +25,7 @@ public interface ITransferMethod {
 			FileRequestFileMapper mapper) throws NotLoggedInException;
 
 	/**
-	 * Request a file
+	 * We want to request a file, i.e. start the negotiation
 	 * @param request
 	 * @param nsl
 	 */

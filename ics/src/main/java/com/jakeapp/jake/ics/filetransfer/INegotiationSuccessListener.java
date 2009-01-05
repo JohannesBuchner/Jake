@@ -13,7 +13,7 @@ public interface INegotiationSuccessListener {
 	/**
 	 * This TransferMethod didn't work. Maybe try some other TransferMethod?
 	 */
-	public void failed();
+	public void failed(Throwable reason);
 
 	/**
 	 * This TransferMethod worked. Follow the IFileTransfer now.

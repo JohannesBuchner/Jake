@@ -64,7 +64,7 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 				negotiationService.sendMessage(r.getPeer(), offer);
 			} catch (Exception e) {
 				log.info("negotiation failed", e);
-				nsl.failed();
+				nsl.failed(e);
 			}
 		}
 

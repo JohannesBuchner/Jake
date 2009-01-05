@@ -1,5 +1,6 @@
 package local.test;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
@@ -13,7 +14,7 @@ public class Tracer {
 
 	private static Logger log = Logger.getLogger(Tracer.class);
 
-	private Queue<String> trace = new SynchronousQueue<String>();
+	private List<String> trace = new LinkedList<String>();
 
 	private Semaphore s = new Semaphore(0);
 
@@ -22,7 +23,7 @@ public class Tracer {
 		this.s.release();
 	}
 
-	public synchronized Queue<String> getTrace() {
+	public synchronized Iterable<String> getTrace() {
 		return this.trace;
 	}
 
@@ -38,7 +39,7 @@ public class Tracer {
 				//
 			}
 		}
-	
+
 		return isDone();
 	}
 
@@ -46,9 +47,10 @@ public class Tracer {
 	 * checks that no steps are left
 	 */
 	public boolean isDone() {
-		if (getTrace().size() != 0) {
+		log.debug("Checking if done ...");
+		if (this.trace.size() != 0) {
 			StringBuilder steps = new StringBuilder("more steps left: ");
-			for(String step : getTrace()) {
+			for (String step : getTrace()) {
 				steps.append(step);
 				steps.append(", ");
 			}
@@ -68,12 +70,14 @@ public class Tracer {
 	public boolean awaitStep(String value, long time, TimeUnit unit) {
 		while (true) {
 			try {
+				log.debug("Waiting for '" + value + "' ... ");
 				if (this.s.tryAcquire(time, unit)) {
 					if (this.trace.remove(value)) {
+						log.debug("'" + value + "' reached.");
 						return true;
 					}
 				} else {
-					log.debug(toString());
+					log.debug("Waiting failed: Current " + toString());
 					return false;
 				}
 			} catch (InterruptedException e) {
@@ -84,10 +88,12 @@ public class Tracer {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("Trace: ");
-		for(String step: trace) {
+		StringBuilder sb = new StringBuilder("Trace[");
+		for (String step : getTrace()) {
 			sb.append(step);
+			sb.append(",");
 		}
+		sb.append("]");
 		return sb.toString();
 	}
 
