@@ -1,21 +1,16 @@
 package com.jakeapp.jake.ics.impl.xmpp.filetransfer;
 
-import java.io.File;
 import java.io.InputStream;
 
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.filetransfer.TransferException;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.IOutgoingFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
+import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
-public class XmppOutgoingFileTransfer implements
-		com.jakeapp.jake.ics.filetransfer.runningtransfer.IOutgoingFileTransfer {
+public class XmppOutgoingFileTransfer extends FileTransfer {
 
 	public OutgoingFileTransfer t;
 
@@ -66,5 +61,10 @@ public class XmppOutgoingFileTransfer implements
 
 	public boolean isDone() {
 		return t.isDone();
+	}
+
+	@Override
+	public Boolean isReceiving() {
+		return true;
 	}
 }

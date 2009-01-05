@@ -9,11 +9,12 @@ import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.filetransfer.TransferException;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
+import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
-public class XmppIncomingFileTransfer implements
-		com.jakeapp.jake.ics.filetransfer.runningtransfer.IIncomingFileTransfer {
+public class XmppIncomingFileTransfer extends
+		FileTransfer {
 
 	private IncomingFileTransfer t;
 
@@ -75,6 +76,11 @@ public class XmppIncomingFileTransfer implements
 		} catch (XMPPException e) {
 			throw new TransferException(e);
 		}
+	}
+
+	@Override
+	public Boolean isReceiving() {
+		return true;
 	}
 
 }
