@@ -65,7 +65,7 @@ public class JakePopupMenu extends JPopupMenu {
 
                     final MenuItem ami;
 
-                    if (JCheckBoxMenuItem.class.isInstance(co) || JCheckBoxMenuItem.class.isInstance(co)) {
+                    if (JCheckBoxMenuItem.class.isInstance(co)) {
                         CheckboxMenuItem cami = new CheckboxMenuItem(mi.getText(), ((JCheckBoxMenuItem) co).getState());
 
                         // relay item state changed events
@@ -76,10 +76,37 @@ public class JakePopupMenu extends JPopupMenu {
                                 for (ItemListener il : ((JCheckBoxMenuItem) co).getItemListeners()) {
                                     il.itemStateChanged(itemEvent);
                                 }
+
+                                // emulate actionPerfomed-event that would be sended from JMenuItem.
+                                if (mi.getAction() != null) {
+                                    mi.getAction().actionPerformed(new ActionEvent(mi, 0, null));
+                                } else {
+                                    for (ActionListener al : mi.getActionListeners()) {
+                                        al.actionPerformed(new ActionEvent(mi, 0, null));
+                                    }
+                                }
                             }
                         });
                         ami = cami;
-                    } else {
+                    }
+                    // Disabeld code because it's not used currently.
+                    /*
+                    else if(JRadioButtonMenuItem.class.isInstance(co)){
+                        CheckboxMenuItem cami = new CheckboxMenuItem(mi.getText(), ((JRadioButtonMenuItem) co).isSelected());
+
+                        // relay item state changed events
+                        cami.addItemListener(new ItemListener() {
+
+                            @Override
+                            public void itemStateChanged(ItemEvent itemEvent) {
+                                for (ItemListener il : ((JRadioButtonMenuItem) co).getItemListeners()) {
+                                    il.itemStateChanged(itemEvent);
+                                }
+                            }
+                        });
+                        ami = cami;
+                    } */
+                    else {
                         ami = new MenuItem(mi.getText());
                     }
 
@@ -99,6 +126,7 @@ public class JakePopupMenu extends JPopupMenu {
 
                         @Override
                         public void actionPerformed(ActionEvent actionEvent) {
+                            log.debug("referring action to JMenuItem... " + actionEvent);
                             if (mi.getAction() != null) {
                                 mi.getAction().actionPerformed(actionEvent);
                             } else {

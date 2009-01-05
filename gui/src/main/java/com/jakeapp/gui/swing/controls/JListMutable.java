@@ -103,6 +103,13 @@ public class JListMutable extends JXList implements CellEditorListener {
         }
     }
 
+    /**
+     * Begins editing the Cell.
+     *
+     * @param index: cell index for edit mode
+     * @param e
+     * @return
+     */
     public boolean editCellAt(int index, EventObject e) {
         if (editor != null && !editor.stopCellEditing())
             return false;
@@ -206,7 +213,7 @@ public class JListMutable extends JXList implements CellEditorListener {
 
     /*-------------------------------------------------[ Editing Actions]---------------------------------------------------*/
 
-    private static class StartEditingAction extends AbstractAction {
+    public static class StartEditingAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             JListMutable list = (JListMutable) e.getSource();
             if (!list.hasFocus()) {

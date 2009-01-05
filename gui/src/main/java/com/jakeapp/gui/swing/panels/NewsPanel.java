@@ -13,7 +13,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
@@ -130,11 +130,13 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 
             JPopupMenu pm = new JakePopupMenu();
 
-            JMenuItem m1 = new JMenuItem("Rename");
-            pm.add(m1);
-
-            pm.add(new JCheckBoxMenuItem("Trusted", true));
-            pm.add(new JCheckBoxMenuItem("Trust added people"));
+            pm.add(new JMenuItem(new InvitePeopleAction(true)));
+            pm.add(new JSeparator());
+            pm.add(new JMenuItem(new RenamePeopleAction((JListMutable) peopleList)));
+            pm.add(new JSeparator());
+            pm.add(new JCheckBoxMenuItem(new TrustFullPeopleAction(peopleList)));
+            pm.add(new JCheckBoxMenuItem(new TrustPeopleAction(peopleList)));
+            pm.add(new JCheckBoxMenuItem(new TrustNoPeopleAction(peopleList)));
 
             pm.show(peopleList, (int) me.getPoint().getX(), (int) me.getPoint()
                     .getY());
@@ -187,7 +189,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 
         // update all text in panel
         projectLabel.setText(getProject().getName());
-        projectFolderHyperlink.setText(getProject().getRootPath().toString());
+        projectFolderHyperlink.setText(getProject().getRootPath());
         projectStatusLabel.setText(JakeMainHelper.printProjectStatus(getProject()));
         autoDownloadCB.setSelected(getProject().isAutoPullEnabled());
         autoUploadCB.setSelected(getProject().isAutoAnnounceEnabled());

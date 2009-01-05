@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -264,4 +265,13 @@ public interface ICoreAccess {
      * @return
      */
     boolean setPeopleNickname(ProjectMember pm, String nick);
+
+    /**
+     * Set the Trust State of people.
+     *
+     * @param project
+     * @param member
+     * @param trust
+     */
+    void peopleSetTrustState(Project project, ProjectMember member, TrustState trust);
 }

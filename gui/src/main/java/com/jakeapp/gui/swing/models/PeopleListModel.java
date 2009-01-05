@@ -35,7 +35,7 @@ public class PeopleListModel extends AbstractListModel
     }
 
     public int getSize() {
-        return people.size();
+        return people != null ? people.size() : 0;
     }
 
     public Object getElementAt(int i) {

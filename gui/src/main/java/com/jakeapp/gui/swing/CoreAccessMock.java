@@ -10,9 +10,7 @@ import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CoreAccessMock implements ICoreAccess {
     private static final Logger log = Logger.getLogger(CoreAccessMock.class);
@@ -20,6 +18,7 @@ public class CoreAccessMock implements ICoreAccess {
     private boolean isSignedIn;
     private List<Project> projects = new ArrayList<Project>();
     private List<Project> invitedProjects = new ArrayList<Project>();
+    private Map<Project, List<ProjectMember>> peopleProjectMap = new HashMap<Project, List<ProjectMember>>();
     private IFrontendService frontendService;
 
     /**
@@ -375,11 +374,21 @@ public class CoreAccessMock implements ICoreAccess {
         return new ArrayList<NoteObject>();
     }
 
+    /**
+     * Generates a list so that people are remembered when they change.
+     *
+     * @param project: project that should be evaluated
+     * @return
+     */
     public List<ProjectMember> getPeople(Project project) {
         log.info("Mock: getPeople from project " + project);
-        List<ProjectMember> people = new ArrayList<ProjectMember>();
 
-        if (project != null) {
+        if (project == null) {
+            return null;
+        }
+
+        if (!peopleProjectMap.containsKey(project)) {
+            List<ProjectMember> people = new ArrayList<ProjectMember>();
 
             people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User1", "pass2"),
                     new UUID(22, 33), "pstein@jabber.fsinf.at", "", "Peter", "Steinberger"), TrustState.TRUST));
@@ -390,9 +399,11 @@ public class CoreAccessMock implements ICoreAccess {
 
             people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User3", "pass3"),
                     new UUID(22, 33), "max@jabber.org", "Max", "Max", "Mustermann"), TrustState.NO_TRUST));
+
+            peopleProjectMap.put(project, people);
         }
 
-        return people;
+        return peopleProjectMap.get(project);
     }
 
     @Override
@@ -407,6 +418,14 @@ public class CoreAccessMock implements ICoreAccess {
 
             return true;
         }
+    }
+
+    @Override
+    public void peopleSetTrustState(Project project, ProjectMember member, TrustState trust) {
+        member.setTrustState(trust);
+
+        fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+                ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
     }
 
 
