@@ -11,47 +11,37 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import java.awt.Insets;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.SelectionMapper;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 
 /**
  * @author studpete, simon
  */
 public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged, ListSelectionListener {
-	
-	private static final long serialVersionUID = -7703570005631651276L;
-	private static Logger log = Logger.getLogger(NotesPanel.class);
-	private ICoreAccess core;
-	private NotesTableModel notesTableModel;
-	private ResourceMap resourceMap;
-	private JTextArea noteReader;
+
+    private static final long serialVersionUID = -7703570005631651276L;
+    private static Logger log = Logger.getLogger(NotesPanel.class);
+    private ICoreAccess core;
+    private NotesTableModel notesTableModel;
+    private ResourceMap resourceMap;
+    private JTextArea noteReader;
 
     /**
      * Creates new form NotesPanel
@@ -59,49 +49,43 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
     public NotesPanel() {
         initComponents();
 
-        this.notesTableModel = new NotesTableModel(); 
+        this.notesTableModel = new NotesTableModel();
         this.notesTable.setModel(this.notesTableModel);
         this.setProject(JakeMainApp.getApp().getProject());
-        
+
         this.core = JakeMainApp.getApp().getCore();
-        
-        
+
+
         // register the callbacks
         JakeMainApp.getApp().addProjectSelectionChangedListener(this);
         JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
         this.notesTable.getSelectionModel().addListSelectionListener(this);
-        
+
         // get resource map
-		this.resourceMap = org.jdesktop.application.Application.getInstance(
-				com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-				.getResourceMap(NotesPanel.class);
+        this.resourceMap = org.jdesktop.application.Application.getInstance(
+                com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+                .getResourceMap(NotesPanel.class);
 
 
         this.notesTable.setSortable(true);
         this.notesTable.setColumnControlVisible(true);
         this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
-        final PopupMenu notesPopupMenu = new PopupMenu();
-        this.add(notesPopupMenu);
+        final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
         //TODO wire context menu
-        notesPopupMenu.add(new MenuItem(this.getResourceMap().getString("contextMenuNewNote")));
-        notesPopupMenu.add(new MenuItem(this.getResourceMap().getString("contextMenuDeleteNote")));
-        
+        notesPopupMenu.add(new JMenuItem(this.getResourceMap().getString("contextMenuNewNote")));
+        notesPopupMenu.add(new JMenuItem(this.getResourceMap().getString("contextMenuDeleteNote")));
+
         this.notesTable.addMouseListener(new TableMouseListener(this.notesTable) {
 
             @Override
             public void showPopup(JComponent comp, int x, int y) {
-						notesPopupMenu.show(comp, x, y);
-					}
+                notesPopupMenu.show(comp, x, y);
+            }
 
             @Override
             public void editAction() {
-
-                // Get the frame
-                JFrame frame = (JFrame) SwingUtilities.getRoot(notesTable);
-
-                //AddEditNoteDialog.ShowAsDialog(new Object(), frame);
             }
         });
 
@@ -116,59 +100,47 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
         JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
         noteReaderScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         noteReaderScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        //noteReaderScrollPane.setBounds(70, 479, 278, 111);
         noteReaderScrollPane.setOpaque(false);
         noteReaderScrollPane.getViewport().setOpaque(false);
 
         this.noteReadPanel.add(noteReaderScrollPane);
 
-
         // set the background painter
         MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
         GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
                 GlossPainter.GlossPosition.TOP);
-        //PinstripePainter pp = new PinstripePainter(Colors.White.alpha(0.1f),
-        //                                          45d);
         this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
     }
-           
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		if (this.notesTable.getSelectedRow() == -1) {
-			this.noteReader.setText("");
-		} else {
-			String text;
-			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
-			this.noteReader.setText(text);
-		}
-	}
 
-	private ResourceMap getResourceMap() {
-		return this.resourceMap;
-	}
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (this.notesTable.getSelectedRow() == -1) {
+            this.noteReader.setText("");
+        } else {
+            String text;
+            text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
+            this.noteReader.setText(text);
+        }
+    }
 
-	@Override
-	public void projectChanged(ProjectChangedEvent ignored) {
-    	this.notesTableModel.update();
-	}
+    private ResourceMap getResourceMap() {
+        return this.resourceMap;
+    }
 
-	@Override
-	public void setProject(Project pr) {
-		this.notesTableModel.update(pr);
-	}
-    
-	/**
-     * Get the current <code>ICoreAccess</code>.    
-     * @return the current core
-     */
-	private ICoreAccess getCore() {
-		return this.core;
-	}
+    @Override
+    public void projectChanged(ProjectChangedEvent ignored) {
+        this.notesTableModel.update();
+    }
 
-	private boolean isNoteSelected() {
+    @Override
+    public void setProject(Project pr) {
+        this.notesTableModel.update(pr);
+    }
+
+    private boolean isNoteSelected() {
         return this.notesTable.getSelectedRow() >= 0;
     }
-	
+
     /**
      * This method is called from within the constructor to
      * initialize the form.
@@ -234,5 +206,4 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
     private org.jdesktop.swingx.JXPanel noteReadPanel;
     private org.jdesktop.swingx.JXTable notesTable;
     // End of variables declaration//GEN-END:variables
-
 }

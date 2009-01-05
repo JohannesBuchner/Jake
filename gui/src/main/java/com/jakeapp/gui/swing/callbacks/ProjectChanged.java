@@ -7,9 +7,6 @@ import com.jakeapp.core.domain.Project;
  * Fires events when projects change.
  * Every registrant get all events.
  * Project is saved as event source.
- * User: studpete
- * Date: Dec 28, 2008
- * Time: 11:39:30 PM
  */
 public interface ProjectChanged {
 
