@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import org.apache.log4j.Logger;
 

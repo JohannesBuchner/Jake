@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;

@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.actions;
+package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;

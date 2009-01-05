@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.actions;
+package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.TrustState;

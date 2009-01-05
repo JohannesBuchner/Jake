@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.actions.abstracts.PeopleListAction;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

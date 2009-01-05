@@ -5,6 +5,7 @@ import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 
@@ -162,7 +163,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
         connectionButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                JPopupMenu menu = new JPopupMenu();
+                JPopupMenu menu = new JakePopupMenu();
                 JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
                         getCore().isSignedIn() ? "menuSignOut" : "menuSignIn"));
 
