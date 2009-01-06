@@ -1,4 +1,4 @@
-package e.gui;
+package com.jakeapp.gui.swing.controls;
 
 import javax.swing.*;
 import java.awt.*;

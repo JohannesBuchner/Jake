@@ -275,7 +275,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("33354444-8b85-447c-af31-daa688f8a07c"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("michael@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
@@ -320,7 +320,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
         ServiceCredentials credentials = new ServiceCredentials();
         credentials.setUuid(UUID.fromString("33354444-8b85-aaaa-af31-daa688f8a07c"));
-        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("michael@jabber.mueller.com");
         credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
