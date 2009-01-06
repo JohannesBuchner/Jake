@@ -12,21 +12,22 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.TagSetEditor;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
 import com.jakeapp.gui.swing.controls.FilesTreeTableTagCellEditor;
-import com.jakeapp.gui.swing.controls.TagSetRenderer;
 import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TagSet;
-import com.jakeapp.gui.swing.listener.TableMouseListener;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 /**
@@ -74,25 +75,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
       // WHY THE FUCK IS THIS NOT WORKING?!!!!!
       // fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
 
+      fileTreeTable.addMouseListener(new FileTreeTableMouseListener());
 
-      fileTreeTable.addMouseListener(new TableMouseListener(fileTreeTable) {
-
-         @Override
-         public void showPopup(JComponent comp, int x, int y) {
-            fileMenu.show(comp, x, y);
-         }
-
-         @Override
-         public void editAction() {
-
-            // Get the frame
-            JFrame frame = (JFrame) SwingUtilities.getRoot(fileTreeTable);
-
-            //AddEditNoteDialog.ShowAsDialog(new Object(), frame);
-         }
-      });
-
-
+      /*
       fileMenu = new PopupMenu();
       fileMenu.add(new MenuItem("Open"));
       fileMenu.addSeparator();
@@ -111,11 +96,78 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
       fileMenu.add(new MenuItem("Lock with Message... "));
 
       fileTreeTable.add(fileMenu);
-
+      */
 
       // fileTreeTable.getTableHeader().setDefaultRenderer(new ITunesTableHeaderRenderer());
 
       //fileTreeTable.
+   }
+
+   private class FileTreeTableMouseListener implements MouseListener {
+
+      @Override
+      public void mouseClicked(MouseEvent me) {
+         if (SwingUtilities.isRightMouseButton(me)) {
+            // get the coordinates of the mouse click
+            Point p = me.getPoint();
+
+            // get the row index that contains that coordinate
+            int rowNumber = fileTreeTable.rowAtPoint(p);
+
+            // Get the ListSelectionModel of the JTable
+            ListSelectionModel model = fileTreeTable.getSelectionModel();
+
+            // set the selected interval of rows. Using the "rowNumber"
+            // variable for the beginning and end selects only that one
+            // row.
+            // ONLY select new item if we didn't select multiple items.
+            if (fileTreeTable.getSelectedRowCount() <= 1) {
+               model.setSelectionInterval(rowNumber, rowNumber);
+            }
+
+            showMenu(me);
+         }
+      }
+
+      private void showMenu(MouseEvent me) {
+         JPopupMenu pm = new JakePopupMenu();
+
+         pm.add(new JMenuItem(new OpenFileAction(fileTreeTable)));
+         pm.add(new JSeparator());
+         pm.add(new JMenuItem(new AnnounceFileAction(fileTreeTable)));
+         pm.add(new JMenuItem(new PullFileAction(fileTreeTable)));
+         pm.add(new JSeparator());
+         pm.add(new JMenuItem(new DeleteFileAction(fileTreeTable)));
+         pm.add(new JMenuItem(new RenameFileAction(fileTreeTable)));
+         pm.add(new JSeparator());
+         pm.add(new JMenuItem(new InspectorFileAction(fileTreeTable)));
+         pm.add(new JSeparator());
+         pm.add(new JMenuItem(new ImportFileAction(fileTreeTable)));
+         pm.add(new JMenuItem(new NewFolderFileAction(fileTreeTable)));
+         pm.add(new JSeparator());
+         pm.add(new JMenuItem(new LockFileAction(fileTreeTable)));
+         pm.add(new JMenuItem(new LockWithMessageFileAction(fileTreeTable)));
+
+
+         pm.show(fileTreeTable, (int) me.getPoint().getX(), (int) me.getPoint()
+               .getY());
+      }
+
+      @Override
+      public void mousePressed(MouseEvent mouseEvent) {
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent mouseEvent) {
+      }
+
+      @Override
+      public void mouseEntered(MouseEvent mouseEvent) {
+      }
+
+      @Override
+      public void mouseExited(MouseEvent mouseEvent) {
+      }
    }
 
    /**
