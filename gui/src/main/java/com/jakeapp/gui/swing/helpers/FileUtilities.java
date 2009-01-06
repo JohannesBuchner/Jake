@@ -24,8 +24,8 @@ public class FileUtilities {
      * @return last folder of part (e.g. foobar)
      */
     public static String getLastFolderFromPath(String path) {
-        if (path.indexOf("/") != -1) {
-            return path.substring(path.lastIndexOf("/") + 1,
+        if (path.indexOf(getPathSeparator()) != -1) {
+            return path.substring(path.lastIndexOf(getPathSeparator()) + 1,
                     path.length());
         } else {
             return path;
@@ -100,7 +100,7 @@ public class FileUtilities {
         javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
 
         // TODO: make customizeable, cleanup project name
-        return fw.getDefaultDirectory() + Platform.getPathSeparator() + project.getName();
+        return fw.getDefaultDirectory() + getPathSeparator() + project.getName();
     }
 
 
@@ -351,5 +351,14 @@ public class FileUtilities {
             default:
                 return "?-";
         }
+    }
+
+    /**
+     * Returns the Path separator.
+     *
+     * @return pf specific path separator
+     */
+    public static String getPathSeparator() {
+        return System.getProperty("file.separator");
     }
 }

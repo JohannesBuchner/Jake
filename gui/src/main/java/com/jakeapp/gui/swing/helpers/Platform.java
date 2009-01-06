@@ -19,15 +19,6 @@ import java.awt.*;
 public class Platform {
     private static final Logger log = Logger.getLogger(Platform.class);
 
-    /**
-     * Returns the Path separator.
-     *
-     * @return pf specific path separator
-     */
-    public static String getPathSeparator() {
-        return System.getProperty("file.separator");
-    }
-
     enum OperatingSystem {
         Windows, Mac, Linux, Other
     }
