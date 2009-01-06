@@ -12,6 +12,14 @@
 	<description>The File System Service provides an operating and filesystem independent abstraction of the project folder.</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
+	<repositories>
+		<repository>
+			<id>custom-repo</id>
+			<name>our own repo</name>
+			<url>http://dev.jakeapp.com/build/maven-repository/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -23,6 +31,11 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit</groupId>
+			<artifactId>junitext</artifactId>
+			<version>0.2.4</version>
 		</dependency>
 	</dependencies>
 	<properties>

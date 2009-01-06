@@ -27,7 +27,7 @@
         <repository>
             <id>macwidgets-repo</id>
             <name>macwidgets repo</name>
-            <url>http://dev.jakeapp.com:8080/maven-repository/</url>
+            <url>http://dev.jakeapp.com/build/maven-repository/</url>
             <layout>default</layout>
         </repository>
         <repository>
