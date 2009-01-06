@@ -13,14 +13,17 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
+import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
 import com.jakeapp.gui.swing.renderer.EventCellRenderer;
@@ -49,6 +52,8 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private Icon stopIcon;
 	private Icon invalidIcon;
 	private StartStopProjectAction startStopProjectAction = new StartStopProjectAction();
+	private Timer eventsTableUpdateTimer;
+	private final static int EventTableUpdateDelay = 20000; // 20 sec
 
 	/**
 	 * Creates new form NewsPanel
@@ -72,11 +77,11 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		newsContentPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
 		startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/folder-open.png")));
+				  getClass().getResource("/icons/folder-open.png")));
 		stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/folder.png")));
+				  getClass().getResource("/icons/folder.png")));
 		invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/folder_invalid.png")));
+				  getClass().getResource("/icons/folder_invalid.png")));
 
 		autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -109,6 +114,17 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		eventsTable.setDoubleBuffered(true);
 		eventsTable.setRolloverEnabled(true);
 		eventsTable.addMouseListener(new EventsTableMouseListener());
+
+// install event table update timer
+		eventsTableUpdateTimer = new Timer(EventTableUpdateDelay, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				log.debug("Updating eventsTable");
+				eventsTable.updateUI();
+			}
+		});
+		eventsTableUpdateTimer.start();
+
 	}
 
 	/**
@@ -178,7 +194,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 			pm.add(new JCheckBoxMenuItem(new TrustNoPeopleAction(peopleList)));
 
 			pm.show(peopleList, (int) me.getPoint().getX(), (int) me.getPoint()
-				 .getY());
+					  .getY());
 		}
 
 		@Override
@@ -322,42 +338,42 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		javax.swing.GroupLayout titlePanelLayout = new javax.swing.GroupLayout(titlePanel);
 		titlePanel.setLayout(titlePanelLayout);
 		titlePanelLayout.setHorizontalGroup(
-			 titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(titlePanelLayout.createSequentialGroup()
-				  .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(titlePanelLayout.createSequentialGroup()
-							 .addContainerGap()
-							 .addComponent(projectRunningButton))
-						.addGroup(titlePanelLayout.createSequentialGroup()
-						.addGap(28, 28, 28)
-						.addComponent(projectIconLabel)))
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				  .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addComponent(projectTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
-						.addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addComponent(projectLabel)
-						.addComponent(projectStatusLabel))
-				  .addContainerGap())
+				  titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(titlePanelLayout.createSequentialGroup()
+							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addGroup(titlePanelLayout.createSequentialGroup()
+												  .addContainerGap()
+												  .addComponent(projectRunningButton))
+										.addGroup(titlePanelLayout.createSequentialGroup()
+										.addGap(28, 28, 28)
+										.addComponent(projectIconLabel)))
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(projectTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+										.addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addComponent(projectLabel)
+										.addComponent(projectStatusLabel))
+							 .addContainerGap())
 		);
 		titlePanelLayout.setVerticalGroup(
-			 titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(titlePanelLayout.createSequentialGroup()
-				  .addContainerGap()
-				  .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-						.addGroup(titlePanelLayout.createSequentialGroup()
-							 .addComponent(projectIconLabel)
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-						.addGroup(titlePanelLayout.createSequentialGroup()
-						.addComponent(projectLabel)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(projectTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addGap(11, 11, 11)))
-				  .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-						.addComponent(projectRunningButton)
-						.addComponent(projectStatusLabel))
-				  .addGap(30, 30, 30))
+				  titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(titlePanelLayout.createSequentialGroup()
+							 .addContainerGap()
+							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+										.addGroup(titlePanelLayout.createSequentialGroup()
+												  .addComponent(projectIconLabel)
+												  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+										.addGroup(titlePanelLayout.createSequentialGroup()
+										.addComponent(projectLabel)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(projectTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addGap(11, 11, 11)))
+							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+										.addComponent(projectRunningButton)
+										.addComponent(projectStatusLabel))
+							 .addGap(30, 30, 30))
 		);
 
 		newsContentPanel.add(titlePanel);
@@ -373,18 +389,18 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		eventsScrollPanel.setName("eventsScrollPanel"); // NOI18N
 
 		eventsTable.setModel(new javax.swing.table.DefaultTableModel(
-			 new Object[][]{
-				  {"Uebersicht.odt was created", "Simon", "Yesterday"},
-				  {null, null, null},
-				  {null, null, null},
-				  {null, null, null}
-			 },
-			 new String[]{
-				  "Event", "Person", "Date"
-			 }
+				  new Object[][]{
+							 {"Uebersicht.odt was created", "Simon", "Yesterday"},
+							 {null, null, null},
+							 {null, null, null},
+							 {null, null, null}
+				  },
+				  new String[]{
+							 "Event", "Person", "Date"
+				  }
 		) {
 			boolean[] canEdit = new boolean[]{
-				 false, false, false
+					  false, false, false
 			};
 
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -421,28 +437,28 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		javax.swing.GroupLayout actionPanelLayout = new javax.swing.GroupLayout(actionPanel);
 		actionPanel.setLayout(actionPanelLayout);
 		actionPanelLayout.setHorizontalGroup(
-			 actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(actionPanelLayout.createSequentialGroup()
-				  .addContainerGap()
-				  .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addComponent(eventsLabel)
-						.addComponent(eventsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				  .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addComponent(peopleLabel)
-						.addComponent(peopleScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-				  .addContainerGap())
+				  actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(actionPanelLayout.createSequentialGroup()
+							 .addContainerGap()
+							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(eventsLabel)
+										.addComponent(eventsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addComponent(peopleLabel)
+										.addComponent(peopleScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+							 .addContainerGap())
 		);
 		actionPanelLayout.setVerticalGroup(
-			 actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, actionPanelLayout.createSequentialGroup()
-				  .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-						.addComponent(eventsLabel)
-						.addComponent(peopleLabel))
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				  .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addComponent(eventsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-				  .addComponent(peopleScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)))
+				  actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, actionPanelLayout.createSequentialGroup()
+							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+										.addComponent(eventsLabel)
+										.addComponent(peopleLabel))
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addComponent(eventsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+							 .addComponent(peopleScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)))
 		);
 
 		newsContentPanel.add(actionPanel);
@@ -469,30 +485,30 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(optionsPanel);
 		optionsPanel.setLayout(optionsPanelLayout);
 		optionsPanelLayout.setHorizontalGroup(
-			 optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(optionsPanelLayout.createSequentialGroup()
-				  .addContainerGap()
-				  .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(optionsPanelLayout.createSequentialGroup()
-							 .addComponent(optionsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-							 .addGap(168, 168, 168))
-						.addGroup(optionsPanelLayout.createSequentialGroup()
-						.addGap(21, 21, 21)
-						.addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-						.addComponent(autoUploadCB, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(autoDownloadCB, javax.swing.GroupLayout.Alignment.LEADING))))
-				  .addGap(441, 441, 441))
+				  optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(optionsPanelLayout.createSequentialGroup()
+							 .addContainerGap()
+							 .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										.addGroup(optionsPanelLayout.createSequentialGroup()
+												  .addComponent(optionsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+												  .addGap(168, 168, 168))
+										.addGroup(optionsPanelLayout.createSequentialGroup()
+										.addGap(21, 21, 21)
+										.addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+										.addComponent(autoUploadCB, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(autoDownloadCB, javax.swing.GroupLayout.Alignment.LEADING))))
+							 .addGap(441, 441, 441))
 		);
 		optionsPanelLayout.setVerticalGroup(
-			 optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, optionsPanelLayout.createSequentialGroup()
-				  .addContainerGap(20, Short.MAX_VALUE)
-				  .addComponent(optionsLabel)
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				  .addComponent(autoDownloadCB)
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				  .addComponent(autoUploadCB)
-				  .addContainerGap())
+				  optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, optionsPanelLayout.createSequentialGroup()
+							 .addContainerGap(20, Short.MAX_VALUE)
+							 .addComponent(optionsLabel)
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+							 .addComponent(autoDownloadCB)
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+							 .addComponent(autoUploadCB)
+							 .addContainerGap())
 		);
 
 		newsContentPanel.add(optionsPanel);
