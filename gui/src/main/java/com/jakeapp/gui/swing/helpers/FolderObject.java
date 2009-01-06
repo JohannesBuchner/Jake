@@ -37,6 +37,14 @@ public class FolderObject {
       return folderChildren;
    }
 
+   public List<Object> getAllChildren() {
+      List<Object> ret = new ArrayList<Object>();
+      ret.addAll(folderChildren);
+      ret.addAll(fileChildren);
+
+      return ret;
+   }
+
    public void addFolder(FolderObject folder) {
       folderChildren.add(folder);
    }

@@ -21,12 +21,14 @@ import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TagSet;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.jdesktop.swingx.JXTreeTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,16 +69,16 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
       // of model before we have a project, so this creates a new model of the root
       // point in the FS. Maybe replace this by a dummy model or find a nicer way of
       // injection.
-      TreeTableModel treeTableModel = new FileSystemModel();
-      fileTreeTable.setTreeTableModel(treeTableModel);
+      // TreeTableModel treeTableModel = new FileSystemModel();
+      // fileTreeTable.setTreeTableModel(treeTableModel);
 
       fileTreeTable.setScrollsOnExpand(true);
       fileTreeTable.setSortable(true);
       fileTreeTable.setColumnControlVisible(true);
       fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
-      fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
-      fileTreeTable.setDefaultEditor(TagSet.class, new FilesTreeTableTagCellEditor());
+      // fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
+      // fileTreeTable.setDefaultEditor(TagSet.class, new FilesTreeTableTagCellEditor());
       // WHY THE FUCK IS THIS NOT WORKING?!!!!!
       // fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
 
@@ -161,7 +163,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
    private void initComponents() {
 
       jScrollPane1 = new javax.swing.JScrollPane();
-      fileTreeTable = new ETreeTable();
+      // FIXME: Make this an ETreeTable
+      fileTreeTable = new JXTreeTable();
       infoPanel = new org.jdesktop.swingx.JXPanel();
       jLabel1 = new javax.swing.JLabel();
       newFilesButton = new javax.swing.JButton();
@@ -246,7 +249,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
       if (project != null) {
          TreeTableModel treeTableModel = null;
          try {
-            treeTableModel = new FolderObjectsTreeTableModel(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject()));
+            treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
          } catch (ProjectFolderMissingException e) {
             log.warn("Project folder missing!!");
          }

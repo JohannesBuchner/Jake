@@ -18,6 +18,29 @@ public class ProjectFilesTreeNode {
       this.folder = true;
    }
 
+   @Deprecated
+   public String getRelPath() {
+      if (this.file) {
+         return fileObj.getRelPath();
+      } else if (this.folder) {
+         return folderObj.getRelPath();
+      } else {
+         return "NOT_A_FILE_OR_FOLDER";
+      }
+   }
+
+   public ProjectFilesTreeNode(Object o) {
+      if (o instanceof FileObject) {
+         this.fileObj = (FileObject) o;
+         this.file = true;
+      } else if (o instanceof FolderObject) {
+         this.folderObj = (FolderObject) o;
+         this.folder = true;
+      } else {
+         throw new IllegalArgumentException();
+      }
+   }
+
    public FileObject getFileObject() {
       return fileObj;
    }

@@ -1,112 +1,167 @@
 package com.jakeapp.gui.swing.models;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.core.domain.FileObject;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Chris
- * Date: Jan 6, 2009
- * Time: 2:02:37 PM
- * To change this template use File | Settings | File Templates.
- */
-public class FolderObjectsTreeTableModel extends AbstractTreeTableModel {
-   public FolderObjectsTreeTableModel(FolderObject folder) {
-      super(folder);
+import javax.swing.tree.TreePath;
+import javax.swing.event.TreeModelListener;
+
+public class FolderObjectsTreeTableModel implements TreeTableModel {
+   private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
+
+   private ProjectFilesTreeNode root;
+
+   public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
+      this.root = root;
    }
 
    @Override
-   public int getColumnCount() {
-      return 4;
-   }
-
-   @Override
-   public Object getValueAt(Object node, int column) {
-      if (node instanceof FileObject) {
-         FileObject file = (FileObject) node;
-
-         switch (column) {
-            case 0:
-               return new ProjectFilesTreeNode(file);
-            case 1:
-               return isLeaf(node) ? FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(file), 0, false, true) : "";
-            case 2:
-               return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(file));
-            case 3:
-               return isLeaf(node) ? new TagSet() : null;
-         }
-      } else if (node instanceof FolderObject) {
-         FolderObject folder = (FolderObject) node;
-
-         switch (column) {
-            case 0:
-               return new ProjectFilesTreeNode(folder);
-            case 1:
-               // Size of directory = 0
-               return "";
-            case 2:
-               // No last modified date for folder
-               return "";
-            case 3:
-               return null;
-         }
-      }
-
-      return null;
-   }
-
-   @Override
-   public Object getChild(Object parent, int index) {
-      if (!(parent instanceof FolderObject)) return null;
-      FolderObject fo = (FolderObject) parent;
-
-      ArrayList<Object> children = new ArrayList<Object>();
-      children.addAll(fo.getFolderChildren());
-      children.addAll(fo.getFileChildren());
-
-      return children.get(index);
-   }
-
-   @Override
-   public int getChildCount(Object parent) {
-      if (!(parent instanceof FolderObject)) return 0;
-
-      FolderObject fo = (FolderObject) parent;
-      return fo.getFileChildren().size() + fo.getFolderChildren().size();
-   }
-
-   @Override
-   public int getIndexOfChild(Object parent, Object child) {
-      if (!(parent instanceof FolderObject)) return -1;
-      FolderObject fo = (FolderObject) parent;
-
-      ArrayList<Object> children = new ArrayList<Object>();
-      children.addAll(fo.getFolderChildren());
-      children.addAll(fo.getFileChildren());
-
-      return children.indexOf(child);
-   }
-
-   @Override
-   public Class<?> getColumnClass(int column) {
-      switch (column) {
+   public Class<?> getColumnClass(int columnIndex) {
+      switch (columnIndex) {
          case 0:
-            return ProjectFilesTreeNode.class;
+            return String.class;
          case 1:
             return String.class;
          case 2:
             return String.class;
-         case 3:
-            return TagSet.class;
          default:
-            return super.getColumnClass(column);
+            return null;
       }
+   }
+
+   @Override
+   public int getColumnCount() {
+      return 3;
+   }
+
+   @Override
+   public String getColumnName(int column) {
+      switch (column) {
+         case 0:
+            return "Name";
+         case 1:
+            return "Size";
+         case 2:
+            return "Last Modified";
+         default:
+            return null;
+      }
+   }
+
+   @Override
+   public int getHierarchicalColumn() {
+      // First column is the hierarchical one (filename)
+      return 0;
+   }
+
+   @Override
+   public Object getValueAt(Object node, int column) {
+      if (!(node instanceof ProjectFilesTreeNode))
+         throw new IllegalArgumentException("Not a ProjectFilesTreeNode but a " + node.getClass().toString());
+      ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
+
+      if (ournode.isFile()) {
+         switch (column) {
+            case 0:
+               return ournode.getRelPath();
+            case 1:
+               return "FILESIZE";
+            case 2:
+               return "FILELASTMOD";
+            default:
+               return "INVALIDCOLUMN";
+         }
+      } else {
+         switch (column) {
+            case 0:
+               return ournode.getRelPath();
+            case 1:
+               return "FOLDERSIZE";
+            case 2:
+               return "FOLDERLASTMOD";
+            default:
+               return "INVALIDCOLUMN";
+         }
+      }
+   }
+
+   @Override
+   public boolean isCellEditable(Object node, int column) {
+      // TODO: Some cells may need to be editable
+      return false;
+   }
+
+   @Override
+   public void setValueAt(Object value, Object node, int column) {
+      // TODO: Maybe we'll need to do something here
+   }
+
+   @Override
+   public ProjectFilesTreeNode getRoot() {
+      return root;
+   }
+
+   @Override
+   public ProjectFilesTreeNode getChild(Object parent, int index) {
+      if (!(parent instanceof ProjectFilesTreeNode)) throw new IllegalArgumentException("Not a ProjectFilesTreeNode");
+      ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) parent;
+
+      // Files have no children
+      if (ournode.isFile()) return null;
+
+      FolderObject fo = ournode.getFolderObject();
+
+      return new ProjectFilesTreeNode(fo.getAllChildren().get(index));
+   }
+
+   @Override
+   public int getChildCount(Object parent) {
+      if (!(parent instanceof ProjectFilesTreeNode)) throw new IllegalArgumentException("Not a ProjectFilesTreeNode");
+      ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) parent;
+
+      // Files have no children
+      if (ournode.isFile()) return 0;
+
+      FolderObject fo = ournode.getFolderObject();
+
+      return fo.getAllChildren().size();
+   }
+
+   @Override
+   public boolean isLeaf(Object node) {
+      // All leaves must be files and all files must be leaves
+      if (!(node instanceof ProjectFilesTreeNode)) throw new IllegalArgumentException("Not a ProjectFilesTreeNode");
+      ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
+      return ournode.isFile();
+   }
+
+   @Override
+   public void valueForPathChanged(TreePath path, Object newValue) {
+      // TODO: WTF is this good for?
+   }
+
+   @Override
+   public int getIndexOfChild(Object parent, Object child) {
+      return 0;  //To change body of implemented methods use File | Settings | File Templates.
+   }
+
+   @Override
+   public void addTreeModelListener(TreeModelListener l) {
+      // TODO: Do we need one?
+   }
+
+   @Override
+   public void removeTreeModelListener(TreeModelListener l) {
+      // TODO: Do we need one?
    }
 }
