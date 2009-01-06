@@ -7,7 +7,7 @@ import java.awt.*;
 /**
  * @author: studpete
  */
-public class JakeDialog extends JSheet {
+public class JakeDialog extends EscapeDialog {
 	private ResourceMap resourceMap;
 
 	public JakeDialog(Frame owner) {

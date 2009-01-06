@@ -11,43 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class EscapeDialog extends JDialog {
-	public EscapeDialog() {
-		this((Frame) null, false);
-	}
+public class EscapeDialog extends JSheet {
 
 	public EscapeDialog(Frame owner) {
-		this(owner, false);
+		super(owner);
 	}
 
-	public EscapeDialog(Frame owner, boolean modal) {
-		this(owner, null, modal);
-	}
-
-	public EscapeDialog(Frame owner, String title) {
-		this(owner, title, false);
-	}
-
-	public EscapeDialog(Frame owner, String title, boolean modal) {
-		super(owner, title, modal);
-	}
-
-	public EscapeDialog(Dialog owner) {
-		this(owner, false);
-	}
-
-	public EscapeDialog(Dialog owner, boolean modal) {
-		this(owner, null, modal);
-	}
-
-	public EscapeDialog(Dialog owner, String title) {
-		this(owner, title, false);
-	}
-
-	public EscapeDialog(Dialog owner, String title, boolean modal) {
-		super(owner, title, modal);
-	}
-
+	@Override
 	protected JRootPane createRootPane() {
 		ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {

@@ -110,11 +110,7 @@ public class InvitePeopleDialog extends JakeDialog {
 	public static void showDialog(Project project, JFrame frame) {
 		InvitePeopleDialog ipd = new InvitePeopleDialog(project, frame);
 		ipd.setSize(500, 190);
-		/*
-		ipd.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		ipd.setResizable(false);
-		ipd.setLocationRelativeTo(JakeMainView.getMainView().getFrame());
-		*/
 		ipd.setVisible(true);
 	}
 }
