@@ -2,12 +2,16 @@ package com.jakeapp.jake.fss;
 
 import java.io.File;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
 
-public class FSTestCase extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class FSTestCase  {
 	protected String mytempdir = null; 
 	
-	@Override
+	@Before
 	public void setUp() throws Exception {
 		String systmpdir = System.getProperty("java.io.tmpdir","");
 		if(!systmpdir.endsWith(File.separator))
@@ -16,18 +20,17 @@ public class FSTestCase extends TestCase {
 		//assertTrue(systmpdir.startsWith("C:\\") || systmpdir.startsWith("/tmp"));
 		
 		File f = new File(systmpdir);
-		assertEquals("tmpdir",systmpdir, f.getAbsolutePath()+File.separator);
+		Assert.assertEquals("tmpdir",systmpdir, f.getAbsolutePath()+File.separator);
 		f = new File(systmpdir + File.separator + "fstest");
 		if(f.exists()){
-			assertTrue("recursiveDelete",recursiveDelete(f));
+			Assert.assertTrue("recursiveDelete",recursiveDelete(f));
 		}
-		assertTrue("mkdir",f.mkdir());
+		Assert.assertTrue("mkdir",f.mkdir());
 		
-		assertTrue("create successful",f.exists() );
+		Assert.assertTrue("create successful",f.exists() );
 		
 		mytempdir = f.getAbsolutePath();
 		//System.out.println("Using "+systmpdir+" for FSS tests");
-		super.setUp();
 	}
 	
 	protected boolean recursiveDelete(File f) {
@@ -53,19 +56,18 @@ public class FSTestCase extends TestCase {
 	/**
 	 * Makes this class executable
 	 */
+	@Test
 	public void testnotest(){
 		
 	}
 	
-	@Override
+	@After
 	public void tearDown() throws Exception {
 		File f = new File(mytempdir);
 		if(f.exists()){
-			assertTrue("recursiveDelete",recursiveDelete(f));
+			Assert.assertTrue("recursiveDelete",recursiveDelete(f));
 		}
-		assertFalse("Cleanup done",f.exists());
-		
-		super.tearDown();
+		Assert.assertFalse("Cleanup done",f.exists());
 	}
 	
 }
