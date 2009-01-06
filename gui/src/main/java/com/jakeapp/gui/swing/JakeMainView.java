@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.DeleteProjectAction;
+import com.jakeapp.gui.swing.actions.InvitePeopleAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.*;
@@ -16,7 +17,6 @@ import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
-import com.jakeapp.gui.swing.sheets.InviteUserSheet;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -270,19 +270,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		toolBar.addComponentToLeft(createNoteButton, 10);
 
 		// Add People
-		Icon addPeopleIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/people.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-		JButton invitePeopleJButton = new JButton(getResourceMap().getString("toolbarInvitePeople"), addPeopleIcon);
+		JButton invitePeopleJButton = new JButton(new InvitePeopleAction(false));
 		invitePeopleButton = MacButtonFactory.makeUnifiedToolBarButton(invitePeopleJButton);
-		invitePeopleJButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				addPeopleAction();
-			}
-
-		});
-		invitePeopleButton.setEnabled(true);
 		invitePeopleButton.setBorder(new LineBorder(Color.BLACK, 0));
 		toolBar.addComponentToLeft(invitePeopleButton, 10);
 
@@ -387,10 +376,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 	private void createNoteAction() {
 		//AddEditNoteDialog.ShowAsDialog(null, getFrame());
-	}
-
-	private void addPeopleAction() {
-		SheetHelper.ShowJDialogAsSheet(getFrame(), new InviteUserSheet());
 	}
 
 

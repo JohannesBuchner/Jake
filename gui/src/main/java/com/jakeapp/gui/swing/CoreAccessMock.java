@@ -500,6 +500,16 @@ public class CoreAccessMock implements ICoreAccess {
 				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 	}
 
+
+	@Override
+	public void invitePeople(Project project, String userid) {
+		log.info("Mock: invite pm: " + userid + " to project: " + project);
+
+		// TODO: implement the invite
+
+	}
+
+
 	@Override
 	public List<LogEntry> getLog(Project project, int entries) {
 		List<LogEntry> log = new ArrayList<LogEntry>();

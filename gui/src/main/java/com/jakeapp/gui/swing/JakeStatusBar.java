@@ -96,7 +96,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		// control button code
 		/*
 				  Icon plusIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-							 getClass().getResource("/icons/plus.png")));
+							 getClass().getResourceMap("/icons/plus.png")));
 
 				  JButton addProjectButton = new JButton();
 				  addProjectButton.setIcon(plusIcon);
@@ -110,7 +110,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 				  }
 
 				  Icon minusIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-							 getClass().getResource("/icons/minus.png")));
+							 getClass().getResourceMap("/icons/minus.png")));
 				  JButton removeProjectButton = new JButton();
 				  removeProjectButton.setIcon(minusIcon);
 				  removeProjectButton.setToolTipText("Remove Project...");

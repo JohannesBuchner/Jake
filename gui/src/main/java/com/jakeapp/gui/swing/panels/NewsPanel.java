@@ -19,6 +19,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
@@ -134,6 +135,9 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		@Override
 		public void mouseClicked(MouseEvent mouseEvent) {
+
+			JSheet.showMessageSheet(eventsTable, "TEST");
+
 		}
 
 		@Override
