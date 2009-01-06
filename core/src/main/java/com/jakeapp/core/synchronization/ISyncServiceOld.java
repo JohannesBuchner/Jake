@@ -133,30 +133,4 @@ public interface ISyncServiceOld {
 	 * If the following are not set, a ObjectNotConfiguredException is thrown 
 	 * from the other operations.
 	 */
-	
-	/**
-	 * Set the ICService to be used.
-	 * This must be set before operations can be used.
-	 * @see IMsgService
-	 */
-	public void setICService(IMsgService ics);
-	
-	/**
-	 * Set the database to be used.
-	 * This must be set before operations can be used.
-	 */
-	//public void setDatabase(IJakeDatabase db);
-	
-	/**
-	 * set the filesystem service to be used.
-	 * This must be set before operations can be used.
-	 * @see IFSService
-	 */
-	public void setFSService(IFSService fss);
-	
-	/**
-	 * @return true iff setLogEntries, setProjectMembers and setFSService were
-	 *         called before
-	 */
-	public boolean isConfigured();
 }

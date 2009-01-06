@@ -40,7 +40,7 @@ public interface IFrontendService {
             throws IllegalArgumentException, NotLoggedInException;
 
     /**
-     * Gets an instance of a IProjectService
+     * Gets an instance of a {@link IMetaProjectService}
      *
      * @param sessionId a Session-Identifier
      * @return a ProjectService on success
@@ -48,7 +48,7 @@ public interface IFrontendService {
      * @throws NotLoggedInException     if no such session existed
      * @throws IllegalStateException    if no ProjectService is available
      */
-    public IProjectService getProjectService(String sessionId)
+    public IMetaProjectService getMetaProjectService(String sessionId)
             throws IllegalArgumentException, NotLoggedInException,
             IllegalStateException;
 

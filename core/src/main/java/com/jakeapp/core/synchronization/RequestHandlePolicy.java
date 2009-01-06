@@ -3,6 +3,7 @@ package com.jakeapp.core.synchronization;
 import java.io.InputStream;
 
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 
 /**
@@ -30,4 +31,11 @@ public interface RequestHandlePolicy {
 	 */
 	public InputStream handleJakeObjectRequest(UserId from,  JakeObject jo);
 	
+
+	/**
+	 * Checks if it is ok to return the log.
+	 * @param jo
+	 * @return whether retrieving is allowed
+	 */
+	public boolean handleLogSyncRequest(Project project, UserId from);
 }

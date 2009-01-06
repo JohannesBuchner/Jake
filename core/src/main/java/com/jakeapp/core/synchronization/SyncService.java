@@ -1,14 +1,21 @@
 package com.jakeapp.core.synchronization;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.services.FriendlySyncServiceImpl;
 import com.jakeapp.core.synchronization.exceptions.NoSuchObjectException;
 import com.jakeapp.core.synchronization.exceptions.NotAProjectMemberException;
 import com.jakeapp.core.synchronization.exceptions.ObjectNotConfiguredException;
@@ -21,59 +28,70 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 
-public class SyncService implements ISyncService {
-
-	static Map<Project, ISyncService> instances = new HashMap<Project, ISyncService>();
-
-	static ISyncService getInstance(IMsgService ics, IFSService fss, Project project,
-			RequestHandlePolicy rhp) {
-		if(!instances.containsKey(project))
-			instances.put(project, new SyncService(fss, ics, project, rhp));
-		return instances.get(project);
-	}
-
-	private SyncService(IFSService fss, IMsgService ics, Project project,
-			RequestHandlePolicy rhp) {
-		super();
-		this.fss = fss;
-		this.ics = ics;
-		this.project = project;
-		this.rhp = rhp;
-		// TODO
-	}
+public class SyncService extends FriendlySyncServiceImpl {
 
 	private IMsgService ics;
 
-	private IFSService fss;
-
-	private Project project;
+	private Map<Project, IFSService> fssMap;
 
 	private RequestHandlePolicy rhp;
 
 	@Override
-	public List<ProjectMember> announce(JakeObject jo, String userid,
-			String commitmsg) throws ObjectNotConfiguredException,
-			SyncException {
+	protected Iterable<JakeObject> getMissingJakeObjects(Project project) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InputStream pull(JakeObject jo) throws NetworkException,
-			NotLoggedInException, TimeoutException, OtherUserOfflineException,
-			ObjectNotConfiguredException, NoSuchObjectException,
-			NoSuchLogEntryException {
+	protected Iterable<UserId> getProjectMembers(Project project) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<JakeObject> syncLogAndReturnChangedObjects(String userid)
-			throws NetworkException, NotLoggedInException, TimeoutException,
-			ObjectNotConfiguredException, OtherUserOfflineException,
-			NotAProjectMemberException {
+	public void announce(JakeObject jo, LogEntry<ILogable> action) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Iterable<JakeObject> getObjectsInConflict(Project project)
+			throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean isObjectLocked(JakeObject object) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void poke(Project project, UserId userId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pullObject(JakeObject jo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setObjectLocked(JakeObject object, String message)
+			throws IllegalArgumentException, ProjectNotLoadedException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Collection<? extends LogEntry> startLogSync(Project project, UserId userId)
+			throws IllegalArgumentException, IllegalProtocolException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

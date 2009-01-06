@@ -11,8 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.io.FileNotFoundException;
 
-
-public interface IProjectService {
+/**
+ * This handles the list of projects and their states
+ * 
+ * TODO: add table here what kind of states a project can have.
+ * 
+ * @author dominik, ..., johannes
+ *
+ */
+public interface IMetaProjectService {
 
     /**
      * Get a list of all Projects known to jake
