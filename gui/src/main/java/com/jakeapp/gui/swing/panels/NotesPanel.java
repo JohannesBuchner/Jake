@@ -16,12 +16,12 @@ import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -69,7 +69,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
         this.notesTable.setSortable(true);
         this.notesTable.setColumnControlVisible(true);
-        this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+        //this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
         final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
@@ -153,7 +153,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        notesTable = new org.jdesktop.swingx.JXTable();
+        notesTable = new ETable();
         noteReadPanel = new org.jdesktop.swingx.JXPanel();
 
         setName("Form"); // NOI18N
