@@ -1,7 +1,11 @@
 package com.jakeapp.core.domain;
 
+import org.springframework.stereotype.Repository;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.persistence.Column;
 
 /**
  * The representation of a project member. It consists of an <code>ID</code>
@@ -14,17 +18,13 @@ public class ProjectMember implements ILogable {
     private static final long serialVersionUID = -9208035210417004558L;
     private UserId userId;
     private TrustState trustState;
-
-
-    {
-        this.trustState = TrustState.NO_TRUST;
-    }
-
+    private String nickname;
+    
     /**
      * Default constructor.
      */
     public ProjectMember() {
-        //default ctor for hibernate
+            this.trustState = TrustState.NO_TRUST;
     }
 
     /**
@@ -47,6 +47,25 @@ public class ProjectMember implements ILogable {
     public void setTrustState(TrustState trustState) {
         this.trustState = trustState;
     }
+
+	/**
+	 * @return The level of trust the user has to this projectMember.
+	 */
+	@Column(name="trustlevel")
+    public TrustState getTrustState() {
+		return this.trustState;
+	}
+    
+
+    /**
+     * @return the <code>userId</code> of this <code>ProjectMember</code>.
+    */
+    @Id
+    @Column(name = "memberId")
+    public UserId getUserId() {
+        return this.userId;
+    }
+
 
     /**
      * @return The level of trust the user has to this projectMember.
@@ -74,5 +93,26 @@ public class ProjectMember implements ILogable {
      */
     public String toString() {
         return getUserId() + " trust: " + getTrustState();
+    }
+
+    @Transient
+    private String getUserIdString()
+    {
+        return this.userId.getUuid().toString();
+    }
+
+    private void setUserIdString(String uuid)
+    {
+        //this.userId = new // TODO 
+    }
+
+
+    @Column(name="nickname", length = 100)
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

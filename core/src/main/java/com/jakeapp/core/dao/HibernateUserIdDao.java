@@ -24,7 +24,6 @@ public class HibernateUserIdDao extends HibernateDaoSupport implements IUserIdDa
     private static Logger log = Logger.getLogger(HibernateUserIdDao.class);
 
     @Override
-    @Transactional
     public UserId create(UserId user) throws InvalidUserIdException {
         if (user == null)
             throw new InvalidUserIdException();
@@ -48,13 +47,11 @@ public class HibernateUserIdDao extends HibernateDaoSupport implements IUserIdDa
     @Override
     public UserId get(UserId user) throws InvalidUserIdException {
         log.debug("Reading user by example " + user.toString());
-        List<UserId> results =this.getHibernateTemplate().findByExample(user);
+        List<UserId> results = this.getHibernateTemplate().findByExample(user);
 
-        if(results.size() > 0)
-        {
+        if (results.size() > 0) {
             return (UserId) results.get(0);
-        }
-        else
+        } else
             throw new InvalidUserIdException("User not found");
 
 
@@ -113,5 +110,23 @@ public class HibernateUserIdDao extends HibernateDaoSupport implements IUserIdDa
             throw new NoSuchUserIdException();
         }
 
+    }
+
+    @Override
+    public void delete(UUID user) throws NoSuchUserIdException {
+        if (user == null)
+            throw new NoSuchUserIdException("uuid must not be null");
+
+
+        UserId userId = null;
+        try {
+            userId = this.get(user);
+        } catch (InvalidUserIdException e) {
+            throw new NoSuchUserIdException(e);
+        }
+
+        if (userId == null)
+            throw new NoSuchUserIdException("UserId with uuid " + user.toString() + " not found");
+        this.getHibernateTemplate().delete(userId);
     }
 }

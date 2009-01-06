@@ -78,7 +78,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
     @After
     public void tearDown() {
-       // this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
+        // this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
         /* rollback for true unit testing */
         this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
     }
@@ -255,7 +255,7 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
         UserId result = userIdDao.get(test.getUuid());
 
-        assertEquals(test,result);
+        assertEquals(test, result);
 
         test.setNickname("Michaela");
 
@@ -263,7 +263,97 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
 
         UserId nextResult = userIdDao.get(test.getUuid());
 
-        assertEquals(test,nextResult);
+        assertEquals(test, nextResult);
+
+    }
+
+
+    @Transactional
+    @Test
+    public final void create_delete_test() throws
+            InvalidUserIdException, NoSuchUserIdException, InvalidCredentialsException, UnknownHostException {
+
+        ServiceCredentials credentials = new ServiceCredentials();
+        credentials.setUuid(UUID.fromString("33354444-8b85-447c-af31-daa688f8a07c"));
+        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setUserId("michael@jabber.mueller.com");
+        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerPort(5000);
+
+        try {
+            serviceCredentialsDao.create(credentials);
+        } catch (InvalidCredentialsException e) {
+            throw new InvalidCredentialsException(e); // this should not happen
+        }
+
+        UserId test = new XMPPUserId(
+                credentials,
+                UUID.fromString("55520000-be10-4489-b1de-a4b673553e74"),
+                "test@jabber.org", "Test", "Test", "User");
+
+        userIdDao.create(test);
+
+
+        try {
+            userIdDao.delete(test);
+        } catch (NoSuchUserIdException e) {
+            throw new NoSuchUserIdException(e); // this should not happen
+        }
+
+        try {
+            UserId stillexists = userIdDao.get(test.getUuid());
+            assert (stillexists == null);
+        } catch (InvalidUserIdException e) {
+            throw new InvalidUserIdException(e);
+        } catch (NoSuchUserIdException e) {
+            // this should be catched
+        }
+
+
+    }
+
+
+    @Transactional
+    @Test
+    public final void create_delete_with_uuid_test() throws
+            InvalidUserIdException, NoSuchUserIdException, InvalidCredentialsException, UnknownHostException {
+
+        ServiceCredentials credentials = new ServiceCredentials();
+        credentials.setUuid(UUID.fromString("33354444-8b85-aaaa-af31-daa688f8a07c"));
+        credentials.setProtocol(ProtocolType.XMPPP);
+        credentials.setUserId("michael@jabber.mueller.com");
+        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerPort(5000);
+
+        try {
+            serviceCredentialsDao.create(credentials);
+        } catch (InvalidCredentialsException e) {
+            throw new InvalidCredentialsException(e); // this should not happen
+        }
+
+        UserId test = new XMPPUserId(
+                credentials,
+                UUID.fromString("55520000-be10-aaaa-b1de-a4b673553e74"),
+                "test@jabber.org", "Test", "Test", "User");
+
+        userIdDao.create(test);
+
+
+        try {
+            userIdDao.delete(test.getUuid());
+        } catch (NoSuchUserIdException e) {
+            throw new NoSuchUserIdException(e); // this should not happen
+        }
+
+        try {
+            UserId stillexists = userIdDao.get(test.getUuid());
+            assert (stillexists == null);
+        } catch (InvalidUserIdException e) {
+            throw new InvalidUserIdException(e);
+        } catch (NoSuchUserIdException e) {
+            // this should be catched
+        }
+
 
     }
 

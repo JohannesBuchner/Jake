@@ -52,7 +52,7 @@ public interface IProjectMemberDao {
      * <code>ProjectMember</code> is not associated with the given
      * <code>Project</code>.
      */
-    public void makeTransient(final Project project,
+    public void delete(final Project project,
                               final ProjectMember projectMember)
             throws NoSuchProjectMemberException;
 }

@@ -16,13 +16,13 @@ public enum TrustState {
      * Means, "I" trust this ProjectMember and follow his/her list of trusted users. 
      * If he/she adds or removes other members to his/her list, I do so to.
      */
-    AUTO_ADD_REMOVE,
+    AUTO_ADD_REMOVE(2),
 
     /**
      * TRUST: I "normally" trust this ProjectMember, files will be
      * pulled from him or her.
      */
-    TRUST,
+    TRUST(1),
 
 
     /**
@@ -33,5 +33,26 @@ public enum TrustState {
      * to this Nodes neighborhood.
      * This is the default level of trust.
      */
-    NO_TRUST
+    NO_TRUST(0);
+
+
+    private int trustState;
+
+    private TrustState(int state) {
+        this.trustState = state;
+    }
+
+    public String toString() {
+        switch (trustState) {
+            default:
+            case 0:
+                return TrustState.NO_TRUST.toString();
+            case 1:
+                return TrustState.TRUST.toString();
+            case 2:
+                return TrustState.AUTO_ADD_REMOVE.toString();
+        }
+    }
+
+
 }

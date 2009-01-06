@@ -1,13 +1,21 @@
 package com.jakeapp.core.dao;
 
 import org.junit.Test;
+import org.apache.log4j.Logger;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import com.jakeapp.core.domain.Project;
+
+import java.util.UUID;
+import java.io.File;
 
 /**
  * Unit test for the HibernateProjectMemberDao
  * @author Simon
  *
  */
-public class HibernateProjectMemberDaoTest {
+@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml"})
+public class HibernateProjectMemberDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void bla()
@@ -15,28 +23,37 @@ public class HibernateProjectMemberDaoTest {
         // just to prevent InitializationError
     }
 
- /*   
+
     private static final Logger log = Logger.getLogger(HibernateProjectMemberDaoTest.class);
     private static IProjectMemberDao projectMemberDao;
     private static final String contextXML = "jake_core_test_context.xml";
     
     private static final Project project = new Project("project", new UUID(2, 3), null, new File("test"));
-    private static final ProjectMember member1 = new ProjectMember(new XMPPUserId(new UUID(1, 1), "foo", "bar", "", ""), null);
-    private static final ProjectMember member2 = new ProjectMember(new XMPPUserId(new UUID(2, 2), "foo2", "bar2", "", ""), null);
+    //private static final ProjectMember member1 = new ProjectMember(new XMPPUserId(new UUID(1, 1), "foo", "bar", "", ""), null);
+    //private static final ProjectMember member2 = new ProjectMember(new XMPPUserId(new UUID(2, 2), "foo2", "bar2", "", ""), null);
+
+    public static IProjectMemberDao getProjectMemberDao() {
+        return projectMemberDao;
+    }
+
+    public static void setProjectMemberDao(IProjectMemberDao projectMemberDao) {
+        HibernateProjectMemberDaoTest.projectMemberDao = projectMemberDao;
+    }
 
 
+    /*
     @BeforeClass
     public static void setupClass() {
-    	try {
-			log.debug("starting setupClass");
-			ApplicationContext context = new ClassPathXmlApplicationContext(contextXML);
-			projectMemberDao = (IProjectMemberDao) context.getBean("projectMemberDao");
-			log.debug("setup done");
-		} catch (Exception e) {
-			log.debug("exception cought!");
-			e.printStackTrace();
-			fail();
-		}
+        try {
+            log.debug("starting setupClass");
+            ApplicationContext context = new ClassPathXmlApplicationContext(contextXML);
+            projectMemberDao = (IProjectMemberDao) context.getBean("projectMemberDao");
+            log.debug("setup done");
+        } catch (Exception e) {
+            log.debug("exception cought!");
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @AfterClass
@@ -50,54 +67,54 @@ public class HibernateProjectMemberDaoTest {
     @Test
     public void persist_persist()
     {
-    	try {
-			log.info("Test: persist_persist...");
-			projectMemberDao.create(project, member1);
-		} catch (RuntimeException e) {
-			log.debug("failed to create entity...");
-			e.printStackTrace();
-			fail();
-		}
+        try {
+            log.info("Test: persist_persist...");
+            projectMemberDao.create(project, member1);
+        } catch (RuntimeException e) {
+            log.debug("failed to create entity...");
+            e.printStackTrace();
+            fail();
+        }
     }
-    
+
     @Test
     public void persist_persistRead() {
-    	log.info("Test: persist_persistRead...");
-    	projectMemberDao.create(project, member1);
-    	try {
-    		assertNotNull(projectMemberDao.getAll(project));
-			assertTrue(projectMemberDao.getAll(project).contains(member1));
-		} catch (NoSuchProjectException e) {
-			log.debug("exception caught");		
-			e.printStackTrace();
-			fail();
-		}
+        log.info("Test: persist_persistRead...");
+        projectMemberDao.create(project, member1);
+        try {
+            assertNotNull(projectMemberDao.getAll(project));
+            assertTrue(projectMemberDao.getAll(project).contains(member1));
+        } catch (NoSuchProjectException e) {
+            log.debug("exception caught");
+            e.printStackTrace();
+            fail();
+        }
     }
-    
+
     @Test
     public void makeTransient_persistReadMakeTransientRead() {
-    	log.info("Test: makeTransient_persistReadMakeTransientRead...");
-    	projectMemberDao.create(project, member1);
-    	try {
-    		assertNotNull(projectMemberDao.getAll(project));
-			assertTrue(projectMemberDao.getAll(project).contains(member1));
-			
-			projectMemberDao.makeTransient(project, member1);
-			
-    		assertNotNull(projectMemberDao.getAll(project));
-			assertFalse(projectMemberDao.getAll(project).contains(member1));
-			
-		} catch (Exception e) {
-			log.debug("exception caught");		
-			e.printStackTrace();
-			fail();
-		}
+        log.info("Test: makeTransient_persistReadMakeTransientRead...");
+        projectMemberDao.create(project, member1);
+        try {
+            assertNotNull(projectMemberDao.getAll(project));
+            assertTrue(projectMemberDao.getAll(project).contains(member1));
+
+            projectMemberDao.delete(project, member1);
+
+            assertNotNull(projectMemberDao.getAll(project));
+            assertFalse(projectMemberDao.getAll(project).contains(member1));
+
+        } catch (Exception e) {
+            log.debug("exception caught");
+            e.printStackTrace();
+            fail();
+        }
     }
-    
+
     @Test(expected=NoSuchProjectMemberException.class)
     public void makeTransient_throwNoSuchProjectException() throws NoSuchProjectMemberException{
-    	log.info("Test: makeTransient_throwNoSuchProjectException...");
-    	projectMemberDao.makeTransient(project, member2);
+        log.info("Test: makeTransient_throwNoSuchProjectException...");
+        projectMemberDao.delete(project, member2);
     }
 
     */
