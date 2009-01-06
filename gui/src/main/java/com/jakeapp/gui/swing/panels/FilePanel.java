@@ -15,18 +15,13 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.ETreeTable;
-import com.jakeapp.gui.swing.controls.FilesTreeTableTagCellEditor;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.TagSet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.JXTreeTable;
 
@@ -34,7 +29,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 
 /**
  * @author studpete
@@ -77,7 +71,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
       fileTreeTable.setColumnControlVisible(true);
       fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 
-      // fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
+      fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
       // fileTreeTable.setDefaultEditor(TagSet.class, new FilesTreeTableTagCellEditor());
       // WHY THE FUCK IS THIS NOT WORKING?!!!!!
       // fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
