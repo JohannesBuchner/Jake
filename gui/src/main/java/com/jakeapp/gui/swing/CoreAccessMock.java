@@ -8,6 +8,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import org.apache.log4j.Logger;
 
@@ -34,7 +35,7 @@ public class CoreAccessMock implements ICoreAccess {
         errorCallback = new ArrayList<ErrorCallback>();
 
         // init the demo projects
-        Project pr1 = new Project("ASE", new UUID(212, 383), null, new File("/Users/studpete/Desktop"));
+        Project pr1 = new Project("ASE", new UUID(212, 383), null, new File(FileUtilities.getUserHomeDirectory() + "Desktop"));
         pr1.setStarted(true);
         pr1.setInvitationState(InvitationState.ACCEPTED);
         projects.add(pr1);
@@ -192,9 +193,9 @@ public class CoreAccessMock implements ICoreAccess {
         return isSignedIn;
     }
 
-
-    public String getSignInUser() {
-        return currentUser;
+    @Override
+    public ProjectMember getCurrentProjectMember() {
+        return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
     }
 
 

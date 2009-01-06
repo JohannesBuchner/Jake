@@ -1,8 +1,14 @@
 package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.JakeObjectHelpers;
+import com.jakeapp.gui.swing.helpers.Translator;
+import com.jakeapp.gui.swing.panels.NewsPanel;
 import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -19,49 +25,58 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
     private static final Logger log = Logger.getLogger(EventCellRenderer.class);
 
     // file actions
-    final static ImageIcon fileAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon fileAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/file-add.png")));
-    final static ImageIcon fileRemoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon fileRemoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/file-remove.png")));
-    final static ImageIcon fileMoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon fileMoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/file-moved.png")));
-    final static ImageIcon fileUpdateIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon fileUpdateIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/file-updated.png")));
-    final static ImageIcon fileLockIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon fileLockIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/file-lock.png")));
-    final static ImageIcon fileUnlockIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon fileUnlockIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/file-unlock.png")));
 
     // project actions
-    final static ImageIcon projectCreatedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
+    private final static ImageIcon projectCreatedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
             "project-created.png")));
 
     // people actions
-    final static ImageIcon peopleAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon peopleAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/user-add.png")));
-    final static ImageIcon peopleRemoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon peopleRemoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/user-remove.png")));
-    final static ImageIcon peopleInviteIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon peopleInviteIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/user-invited.png")));
-    final static ImageIcon peopleAcceptInvitationIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon peopleAcceptInvitationIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/user-inviteok.png")));
-    final static ImageIcon peopleChangeTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+    private final static ImageIcon peopleChangeTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
             JakeMainApp.class.getResource("/icons/user-trust.png")));
 
     // tag actions
-    final static ImageIcon tagAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
+    private final static ImageIcon tagAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
             "tags-add.png")));
-    final static ImageIcon tagRemovecon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
+    private final static ImageIcon tagRemovecon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
             "tags-remove.png")));
 
     // note actions
-    final static ImageIcon noteAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
+    private final static ImageIcon noteAddIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
             "note-add.png")));
-    final static ImageIcon noteRemoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
+    private final static ImageIcon noteRemoveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
             "note-remove.png")));
-    final static ImageIcon noteUpdateIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
+    private final static ImageIcon noteUpdateIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/" +
             "note-updated.png")));
 
+    // get notes resource map
+    private static final ResourceMap newsResourceMap = org.jdesktop.application.Application.getInstance(
+            com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+            .getResourceMap(NewsPanel.class);
+    ;
+
+    public EventCellRenderer() {
+        log.debug("Init EventCellRenderer.");
+    }
 
     /* This is the only method defined by DefaultTableCellRenderer.  We just
     * reconfigure the Jlabel each time we're called.
@@ -73,8 +88,135 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
          * Pre-format the data we wanna show for LogEntry
          */
         LogEntry loge = (LogEntry) value;
+        String msg = "";
 
-        String valStr = "<html>" + "Log: " + loge.getLogAction() + "</html>";
+        // HACK: do not crash!
+        if (loge.getBelongsTo() == null) {
+            try {
+                loge.setBelongsTo(new Tag("BelongsToStub"));
+            } catch (InvalidTagNameException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // begin the string with e.g. "You" or "Peter" (Nicknames/FullNames)
+        msg += JakeObjectHelpers.getLocalizedUserNick(loge.getMember()) + " ";
+
+        /* Build the String and set the operation Icon.
+         */
+        switch (loge.getLogAction()) {
+            case FILE_ADD: {
+                setIcon(fileAddIcon);
+                msg += Translator.get(newsResourceMap, "eventsAddedFile", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case FILE_DELETE: {
+                setIcon(fileRemoveIcon);
+                msg += Translator.get(newsResourceMap, "eventsRemovedFile", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case FILE_MOVEDTO: {
+                setIcon(fileMoveIcon);
+                msg += Translator.get(newsResourceMap, "eventsMovedFile", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case FILE_NEW_VERSION: {
+                setIcon(fileUpdateIcon);
+                msg += Translator.get(newsResourceMap, "eventsUpdatedFile", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case PROJECT_CREATED: {
+                setIcon(projectCreatedIcon);
+                msg += Translator.get(newsResourceMap, "eventsProjectCreated", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case NOTE_ADD: {
+                setIcon(noteAddIcon);
+                msg += Translator.get(newsResourceMap, "eventsNoteAdded", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case NOTE_DELETE: {
+                setIcon(noteRemoveIcon);
+                msg += Translator.get(newsResourceMap, "eventsNoteRemoved", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case NOTE_NEW_VERSION: {
+                setIcon(noteUpdateIcon);
+                msg += Translator.get(newsResourceMap, "eventNoteUpdated", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case OBJECT_LOCK: {
+                setIcon(fileLockIcon);
+                msg += Translator.get(newsResourceMap, "eventsObjectLock", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case OBJECT_UNLOCK: {
+                setIcon(fileUnlockIcon);
+                msg += Translator.get(newsResourceMap, "eventsObjectUnlock", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case PROJECTMEMBER_ADDED: {
+                setIcon(peopleAddIcon);
+                msg += Translator.get(newsResourceMap, "eventsProjectMemberAdded", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case PROJECTMEMBER_INVITED: {
+                setIcon(peopleInviteIcon);
+                msg += Translator.get(newsResourceMap, "eventsProjectMemberInvited", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case PROJECTMEMBER_INVITATION_ACCEPTED: {
+                setIcon(peopleAcceptInvitationIcon);
+                msg += Translator.get(newsResourceMap, "eventsProjectMemberInvitationAccepted");
+            }
+            break;
+
+            case PROJECTMEMBER_TRUSTCHANGE: {
+                setIcon(peopleChangeTrustIcon);
+                // TODO: how to get that info???
+                msg += Translator.get(newsResourceMap, "eventsProjectMemberTrustChanged", loge.getBelongsTo().toString(), "");
+            }
+            break;
+
+            // TODO: POSSIBLE???
+            case PROJECTMEMBER_REMOVED: {
+                setIcon(peopleRemoveIcon);
+                msg += Translator.get(newsResourceMap, "eventsProjectMemberRemoved", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case TAG_ADD: {
+                setIcon(tagAddIcon);
+                msg += Translator.get(newsResourceMap, "eventsTagsAdd", loge.getBelongsTo().toString());
+            }
+            break;
+
+            case TAG_REMOVE: {
+                setIcon(tagRemovecon);
+                msg += Translator.get(newsResourceMap, "eventsTagsRemove", loge.getBelongsTo().toString());
+            }
+            break;
+
+            default: {
+                log.warn("Unsupported action: " + loge.getLogAction());
+                setIcon(null);
+                msg += loge.getLogAction();
+            }
+        }
+
+        String valStr = "<html>" + msg + "</html>";
 
         /* The DefaultListCellRenderer class will take care of
         * the JLabels text property, it's foreground and background
@@ -82,101 +224,6 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
         */
         super.getTableCellRendererComponent(table, valStr, isSelected, hasFocus, row, column);
 
-        /* We additionally set the JLabels icon property here.
-         */
-
-        switch (loge.getLogAction()) {
-            case FILE_ADD: {
-                setIcon(fileAddIcon);
-            }
-            break;
-
-            case FILE_DELETE: {
-                setIcon(fileRemoveIcon);
-            }
-            break;
-
-            case FILE_MOVEDTO: {
-                setIcon(fileMoveIcon);
-            }
-            break;
-
-            case FILE_NEW_VERSION: {
-                setIcon(fileUpdateIcon);
-            }
-            break;
-
-            case PROJECT_CREATED: {
-                setIcon(projectCreatedIcon);
-            }
-            break;
-
-            case NOTE_ADD: {
-                setIcon(noteAddIcon);
-            }
-            break;
-
-            case NOTE_DELETE: {
-                setIcon(noteRemoveIcon);
-            }
-            break;
-
-            case NOTE_NEW_VERSION: {
-                setIcon(noteUpdateIcon);
-            }
-            break;
-
-            case OBJECT_LOCK: {
-                setIcon(fileLockIcon);
-            }
-            break;
-
-            case OBJECT_UNLOCK: {
-                setIcon(fileUnlockIcon);
-            }
-            break;
-
-            case PROJECTMEMBER_ADDED: {
-                setIcon(peopleAddIcon);
-            }
-            break;
-
-            case PROJECTMEMBER_INVITED: {
-                setIcon(peopleInviteIcon);
-            }
-            break;
-
-            case PROJECTMEMBER_INVITATION_ACCEPTED: {
-                setIcon(peopleAcceptInvitationIcon);
-            }
-            break;
-
-            case PROJECTMEMBER_TRUSTCHANGE: {
-                setIcon(peopleChangeTrustIcon);
-            }
-            break;
-
-            // TODO: POSSIBLE???
-            case PROJECTMEMBER_REMOVED: {
-                setIcon(peopleRemoveIcon);
-            }
-            break;
-
-            case TAG_ADD: {
-                setIcon(tagAddIcon);
-            }
-            break;
-
-            case TAG_REMOVE: {
-                setIcon(tagRemovecon);
-            }
-            break;
-
-            default: {
-                log.warn("Unsupported action: " + loge.getLogAction());
-                setIcon(null);
-            }
-        }
 
         // set the tooltip text
         setToolTipText("<html><font size=5>" + loge.getLogAction() + "</font><br><b>" +

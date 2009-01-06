@@ -73,10 +73,6 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         // set the background painter
         newsContentPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
-        eventsTable.setSortable(true);
-        eventsTable.setColumnControlVisible(true);
-        eventsTable.setHighlighters(HighlighterFactory.createSimpleStriping());
-
         startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
                 getClass().getResource("/icons/folder-open.png")));
         stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -107,6 +103,40 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         // config the recent events table
         eventsTable.setModel(new EventsTableModel());
         eventsTable.getColumn(0).setCellRenderer(new EventCellRenderer());
+        eventsTable.setSortable(false);
+        eventsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        //eventsTable.setBorder(BorderFactory.createEtchedBorder());
+        eventsTable.setColumnControlVisible(false);
+        eventsTable.setEditable(false);
+        eventsTable.setDoubleBuffered(true);
+        eventsTable.setRolloverEnabled(true);
+        eventsTable.addMouseListener(new EventsTableMouseListener());
+    }
+
+    /**
+     * private inner mouselistener for events table.
+     */
+    private class EventsTableMouseListener implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent mouseEvent) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent mouseEvent) {
+        }
     }
 
     private class PeopleListMouseListener implements MouseListener {

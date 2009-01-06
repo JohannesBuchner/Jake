@@ -100,11 +100,9 @@ public interface ICoreAccess {
     public boolean isSignedIn();
 
     /**
-     * Returns the Username of the current logged in user
-     *
-     * @return
+     * Returns the current logged in project member.
      */
-    public String getSignInUser();
+    public ProjectMember getCurrentProjectMember();
 
 
     /**
