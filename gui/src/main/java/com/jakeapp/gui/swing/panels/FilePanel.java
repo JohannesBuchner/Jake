@@ -12,6 +12,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
@@ -23,6 +24,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.FileSystemModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +36,7 @@ import java.io.File;
  * @author studpete
  */
 public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged {
+   private static final Logger log = Logger.getLogger(FilePanel.class);
 
    private PopupMenu fileMenu;
 
