@@ -75,9 +75,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
             case 0:
                return ournode.getRelPath();
             case 1:
-               return "FILESIZE";
+               return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
             case 2:
-               return "FILELASTMOD";
+               return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
             default:
                return "INVALIDCOLUMN";
          }
@@ -86,9 +86,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
             case 0:
                return ournode.getRelPath();
             case 1:
-               return "FOLDERSIZE";
+               return "";
             case 2:
-               return "FOLDERLASTMOD";
+               return "";
             default:
                return "INVALIDCOLUMN";
          }
