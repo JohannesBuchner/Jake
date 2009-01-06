@@ -108,7 +108,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		private void showMenu(MouseEvent me) {
 			JPopupMenu pm = new JakePopupMenu();
 
-			pm.add(new JMenuItem(new OpenFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new OpenFileAction(fileTreeTable, getProject())));
 			pm.add(new JSeparator());
 			pm.add(new JMenuItem(new AnnounceFileAction(fileTreeTable)));
 			pm.add(new JMenuItem(new PullFileAction(fileTreeTable)));

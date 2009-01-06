@@ -5,6 +5,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.GuiUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.core.domain.Project;
 
 import java.awt.event.ActionEvent;
 
@@ -14,10 +15,12 @@ import javax.swing.*;
 
 public class OpenFileAction extends FileAction {
 	private JXTreeTable fileTable;
+	private Project project;
 
-	public OpenFileAction(JXTreeTable fileTable) {
+	public OpenFileAction(JXTreeTable fileTable, Project project) {
 		super(fileTable);
 		this.fileTable = fileTable;
+		this.project = project;
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("openMenuItem.text");
@@ -34,7 +37,7 @@ public class OpenFileAction extends FileAction {
 		if (node.isFile()) {
 			GuiUtilities.selectFileInFileViewer(node.getFileObject().getAbsolutePath().getAbsolutePath());
 		} else {
-			// TODO: Implement me for folders!
+			GuiUtilities.selectFileInFileViewer(project.getRootPath() + node.getFolderObject().getRelPath());
 		}
 
 	}
