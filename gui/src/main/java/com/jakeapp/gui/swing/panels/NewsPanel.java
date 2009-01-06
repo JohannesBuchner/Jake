@@ -19,8 +19,14 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
+import com.jakeapp.gui.swing.renderer.EventCellRenderer;
+import com.jakeapp.gui.swing.renderer.PeopleListCellRenderer;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -97,6 +103,10 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         ((JListMutable) peopleList).setListCellEditor(new PeopleListCellEditor(new JTextField()));
 
         peopleList.addMouseListener(new PeopleListMouseListener());
+
+        // config the recent events table
+        eventsTable.setModel(new EventsTableModel());
+        eventsTable.getColumn(0).setCellRenderer(new EventCellRenderer());
     }
 
     private class PeopleListMouseListener implements MouseListener {

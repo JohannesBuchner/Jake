@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.helpers;
+package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;

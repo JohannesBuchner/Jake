@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.jakeapp.gui.swing.helpers;
+package com.jakeapp.gui.swing.renderer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
