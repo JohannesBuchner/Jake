@@ -118,46 +118,48 @@ public class FolderWatcher {
 		private void checkFolder(File folder) {
 			if (isCanceled)
 				return;
-			for (File f : folder.listFiles()) {
-				if (f.isDirectory()) {
-					checkFolder(f);
-				}
-				if (f.isFile()) {
-					if (files.contains(f)) {
-						if (f.lastModified() != lastmodifieddates.get(f)) {
+			File[] fl = folder.listFiles();
+			if (fl != null)
+				for (File f : fl) {
+					if (f.isDirectory()) {
+						checkFolder(f);
+					}
+					if (f.isFile()) {
+						if (files.contains(f)) {
+							if (f.lastModified() != lastmodifieddates.get(f)) {
+								String newhash = null;
+								try {
+									newhash = calculateHash(f);
+								} catch (NotAReadableFileException e) {
+									e.printStackTrace();
+								}
+
+								lastmodifieddates.put(f, f.lastModified());
+								if (!newhash.equals(hashes.get(f))) {
+									hashes.put(f, newhash);
+									changeHappened(f, ModifyActions.MODIFIED);
+								} else {
+									/*
+									 * System.out.println("Got modification update, "
+									 * + "but hash stayed the same.");
+									 */
+								}
+							}
+						} else {
 							String newhash = null;
 							try {
 								newhash = calculateHash(f);
 							} catch (NotAReadableFileException e) {
-								e.printStackTrace();
 							}
 
 							lastmodifieddates.put(f, f.lastModified());
-							if (!newhash.equals(hashes.get(f))) {
-								hashes.put(f, newhash);
-								changeHappened(f, ModifyActions.MODIFIED);
-							} else {
-								/*
-								 * System.out.println("Got modification update, "
-								 * + "but hash stayed the same.");
-								 */
-							}
-						}
-					} else {
-						String newhash = null;
-						try {
-							newhash = calculateHash(f);
-						} catch (NotAReadableFileException e) {
-						}
+							hashes.put(f, newhash);
+							files.add(f);
 
-						lastmodifieddates.put(f, f.lastModified());
-						hashes.put(f, newhash);
-						files.add(f);
-
-						changeHappened(f, ModifyActions.CREATED);
+							changeHappened(f, ModifyActions.CREATED);
+						}
 					}
 				}
-			}
 		}
 	}
 
