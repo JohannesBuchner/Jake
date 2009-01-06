@@ -111,6 +111,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
         }
 
+        Platform.fixWmClass();
         launch(JakeMainApp.class, args);
     }
 

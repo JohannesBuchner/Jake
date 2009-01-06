@@ -12,6 +12,7 @@ import com.jakeapp.gui.swing.actions.DeleteProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
@@ -350,7 +351,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
         //toolBar.add(announceButton);
 
 
-        JTextField textField = new JTextField(10);
+        JTextField textField = new SearchField("Search");
         textField.putClientProperty("JTextField.variant", "search");
         toolBar.addComponentToRight(new LabeledComponentGroup("Search", textField).getComponent());
 

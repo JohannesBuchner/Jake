@@ -7,7 +7,7 @@ import com.jakeapp.gui.swing.actions.JoinProjectAction;
 import com.jakeapp.gui.swing.actions.RejectProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXPanel;
@@ -68,14 +68,14 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
         JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
         folderSelectPanel.setOpaque(false);
 
-        folderTextField = new JTextField(JakeMainHelper.getDefaultProjectLocation(getProject()));
+        folderTextField = new JTextField(FileUtilities.getDefaultProjectLocation(getProject()));
         folderTextField.setEditable(false);
         folderSelectPanel.add(folderTextField);
 
         JButton folderChooserButton = new JButton("...");
         folderChooserButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                String folder = JakeMainHelper.openDirectoryChooser(null);
+                String folder = FileUtilities.openDirectoryChooser(null);
                 if (folder != null) {
                     folderTextField.setText(folder);
                     joinProjectAction.setProjectLocation(folder);
@@ -113,7 +113,7 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
     }
 
     private void setProjectDefaultLocation() {
-        folderTextField.setText(JakeMainHelper.getDefaultProjectLocation(getProject()));
+        folderTextField.setText(FileUtilities.getDefaultProjectLocation(getProject()));
     }
 
     public void projectChanged(ProjectChangedEvent ev) {

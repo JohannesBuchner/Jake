@@ -4,7 +4,7 @@ import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.gui.swing.callbacks.*;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -212,7 +212,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
                 String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
 
                 long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
-                String projectSize = JakeMainHelper.getSize(projectSizeTotal);
+                String projectSize = FileUtilities.getSize(projectSizeTotal);
 
                 // update project statistics
                 statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);

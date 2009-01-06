@@ -18,10 +18,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.PeopleListCellRenderer;
-import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.PeopleListModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -179,7 +176,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
         }
 
         // TODO: Get rid of this ugly hack and everything related to it
-        if (!JakeMainHelper.hasValidRootPath(getProject())) {
+        if (!FileUtilities.hasValidRootPath(getProject())) {
             log.warn("Project root path " + getProject().getRootPath() + " is invalid.");
             projectStatusLabel.setText("ERROR: Project folder does not exist");
             projectStatusLabel.setForeground(Color.RED);

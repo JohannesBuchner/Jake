@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.actions;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -33,13 +33,13 @@ public class CreateProjectAction extends ProjectAction {
     public void actionPerformed(ActionEvent actionEvent) {
         log.info("Create Project: " + getProject());
 
-        String path = JakeMainHelper.openDirectoryChooser(null);
+        String path = FileUtilities.openDirectoryChooser(null);
         log.info("Directory was: " + path);
 
         // create the directory if path was not null
         if (path != null) {
             JakeMainApp.getApp().getCore().createProject(
-                    JakeMainHelper.getLastFolderFromPath(path), path);
+                    FileUtilities.getLastFolderFromPath(path), path);
         }
     }
 
