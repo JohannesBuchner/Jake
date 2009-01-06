@@ -16,7 +16,6 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
-
 public class FSServiceTestOuter extends FSServiceTestCase {
 
 	@Test

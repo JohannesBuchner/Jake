@@ -6,8 +6,9 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 
+@Ignore
 public class FSTestCase  {
 	protected String mytempdir = null; 
 	
@@ -51,14 +52,6 @@ public class FSTestCase  {
 			}
 			return f.delete();
 		}
-	}
-	
-	/**
-	 * Makes this class executable
-	 */
-	@Test
-	public void testnotest(){
-		
 	}
 	
 	@After
