@@ -20,7 +20,7 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
-import com.jakeapp.jake.ics.status.IUsersService;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 
 public class XmppUsersService implements IUsersService {

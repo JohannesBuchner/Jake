@@ -17,7 +17,7 @@ import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.status.IStatusService;
-import com.jakeapp.jake.ics.status.IUsersService;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 /**
  * This implements both the IMsgService and the IStatusService, usually you will
@@ -25,9 +25,10 @@ import com.jakeapp.jake.ics.status.IUsersService;
  * 
  * @author johannes
  */
-public class MockMsgAndStatusService implements IMsgService, IStatusService, IUsersService {
+public class MockMsgAndStatusService implements IMsgService, IStatusService,
+		IUsersService {
 
-	private static Logger log = Logger.getLogger(MockMsgAndStatusService.class);
+	static Logger log = Logger.getLogger(MockMsgAndStatusService.class);
 
 	/**
 	 * are we online?
@@ -46,7 +47,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService, IUs
 	private HashSet<IMessageReceiveListener> msgreceivers = new HashSet<IMessageReceiveListener>();
 
 	private Set<UserId> friends = new HashSet<UserId>();
-	
+
 	public String getFirstname(UserId userid) throws NoSuchUseridException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
@@ -64,8 +65,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService, IUs
 		if (!userid.getUserId().contains(".")) {
 			return "";
 		}
-		return userid.getUserId().substring(
-				userid.getUserId().indexOf(".") + 1,
+		return userid.getUserId().substring(userid.getUserId().indexOf(".") + 1,
 				userid.getUserId().indexOf("@"));
 	}
 
@@ -101,8 +101,8 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService, IUs
 			throw new NotLoggedInException();
 
 		/* everyone else not having a s in the name is offline */
-		return userid.getUserId().substring(0, userid.getUserId().indexOf("@"))
-				.contains("s");
+		return userid.getUserId().substring(0, userid.getUserId().indexOf("@")).contains(
+				"s");
 	}
 
 	/**
@@ -147,11 +147,10 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService, IUs
 	/**
 	 * If you send a message to someone, a reply is generated.
 	 */
-	public Boolean sendMessage(UserId to_userid, String content)
-			throws NetworkException, NotLoggedInException, TimeoutException,
-			NoSuchUseridException, OtherUserOfflineException {
-		log.info("Sending message to " + to_userid + " with content \""
-				+ content + "\"");
+	public Boolean sendMessage(UserId to_userid, String content) throws NetworkException,
+			NotLoggedInException, TimeoutException, NoSuchUseridException,
+			OtherUserOfflineException {
+		log.info("Sending message to " + to_userid + " with content \"" + content + "\"");
 		UserId to = new MockUserId(to_userid);
 		if (!to.isOfCorrectUseridFormat()) {
 			log.warn("Couldn't send message: Recipient invalid");
@@ -217,8 +216,8 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService, IUs
 	}
 
 	@Override
-	public boolean isCapable(UserId userid) throws IOException,
-			NotLoggedInException, NoSuchUseridException {
+	public boolean isCapable(UserId userid) throws IOException, NotLoggedInException,
+			NoSuchUseridException {
 		return true;
 	}
 
@@ -235,8 +234,12 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService, IUs
 	}
 
 	@Override
-	public void requestOnlineNotification(UserId userid)
-			throws NotLoggedInException {
+	public void requestOnlineNotification(UserId userid) throws NotLoggedInException {
 		// TODO can't really implement this ...
+	}
+
+	@Override
+	public IMsgService getFriendMsgService() {
+		return new FriendsOnlyMsgService(this, this);
 	}
 }

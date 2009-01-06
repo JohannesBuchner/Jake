@@ -67,5 +67,10 @@ public class SimpleFakeMessageExchanger {
 				l.receivedMessage(sender, content);
 			}
 		}
+
+		@Override
+		public IMsgService getFriendMsgService() {
+			return this;
+		}
 	}
 }

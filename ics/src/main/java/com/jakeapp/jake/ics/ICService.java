@@ -3,7 +3,7 @@ package com.jakeapp.jake.ics;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
-import com.jakeapp.jake.ics.status.IUsersService;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 /**
  * 

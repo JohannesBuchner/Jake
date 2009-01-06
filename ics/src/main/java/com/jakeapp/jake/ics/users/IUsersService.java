@@ -1,10 +1,11 @@
-package com.jakeapp.jake.ics.status;
+package com.jakeapp.jake.ics.users;
 
 import java.io.IOException;
 
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 
 /**
  * provides abstraction to our friends-group 

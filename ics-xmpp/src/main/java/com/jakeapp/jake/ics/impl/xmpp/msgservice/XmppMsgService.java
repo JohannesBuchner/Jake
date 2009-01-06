@@ -12,6 +12,7 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.impl.mock.FriendsOnlyMsgService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
@@ -75,5 +76,10 @@ public class XmppMsgService implements IMsgService {
 		this.con.getConnection().sendPacket(m);
 
 		return true;
+	}
+
+	@Override
+	public IMsgService getFriendMsgService() {
+		return new FriendsOnlyMsgService(this.con.getService().getUsersService(), this);
 	}
 }
