@@ -12,6 +12,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETreeTable;
@@ -21,6 +22,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TagSet;
 import com.jakeapp.gui.swing.models.ProjectFilesTreeTableModel;
+import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.FileSystemModel;
@@ -242,7 +244,12 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
       // we have to cope with no project selected state.
       if (project != null) {
-         TreeTableModel treeTableModel = new ProjectFilesTreeTableModel(new File(project.getRootPath()));
+         TreeTableModel treeTableModel = null;
+         try {
+            treeTableModel = new FolderObjectsTreeTableModel(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject()));
+         } catch (ProjectFolderMissingException e) {
+            log.warn("Project folder missing!!");
+         }
          fileTreeTable.setTreeTableModel(treeTableModel);
       }
    }

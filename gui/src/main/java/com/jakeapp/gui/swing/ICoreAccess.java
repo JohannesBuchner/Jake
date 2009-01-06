@@ -266,6 +266,13 @@ public interface ICoreAccess {
     */
    public long getFileSize(FileObject file);
 
+   /**
+    * Gets the last modified date for a FileObject in the filesystem
+    *
+    * @param file
+    *
+    * @return
+    */
    public Date getFileLastModified(FileObject file);
 
 

@@ -4,11 +4,9 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 import java.io.File;
 import java.util.Date;
+import java.util.ArrayList;
 
-import com.jakeapp.gui.swing.helpers.TagSet;
-import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.TimeUtilities;
-import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.core.domain.FileObject;
 
@@ -20,6 +18,10 @@ import com.jakeapp.core.domain.FileObject;
  * To change this template use File | Settings | File Templates.
  */
 public class FolderObjectsTreeTableModel extends AbstractTreeTableModel {
+   public FolderObjectsTreeTableModel(FolderObject folder) {
+      super(folder);
+   }
+
    @Override
    public int getColumnCount() {
       return 4;
@@ -32,7 +34,7 @@ public class FolderObjectsTreeTableModel extends AbstractTreeTableModel {
 
          switch (column) {
             case 0:
-               return file;
+               return new ProjectFilesTreeNode(file);
             case 1:
                return isLeaf(node) ? FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(file), 0, false, true) : "";
             case 2:
@@ -41,11 +43,11 @@ public class FolderObjectsTreeTableModel extends AbstractTreeTableModel {
                return isLeaf(node) ? new TagSet() : null;
          }
       } else if (node instanceof FolderObject) {
-         FolderObject file = (FolderObject) node;
+         FolderObject folder = (FolderObject) node;
 
          switch (column) {
             case 0:
-               return file;
+               return new ProjectFilesTreeNode(folder);
             case 1:
                // Size of directory = 0
                return "";
@@ -62,24 +64,41 @@ public class FolderObjectsTreeTableModel extends AbstractTreeTableModel {
 
    @Override
    public Object getChild(Object parent, int index) {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      if (!(parent instanceof FolderObject)) return null;
+      FolderObject fo = (FolderObject) parent;
+
+      ArrayList<Object> children = new ArrayList<Object>();
+      children.addAll(fo.getFolderChildren());
+      children.addAll(fo.getFileChildren());
+
+      return children.get(index);
    }
 
    @Override
    public int getChildCount(Object parent) {
-      return 0;  //To change body of implemented methods use File | Settings | File Templates.
+      if (!(parent instanceof FolderObject)) return 0;
+
+      FolderObject fo = (FolderObject) parent;
+      return fo.getFileChildren().size() + fo.getFolderChildren().size();
    }
 
    @Override
    public int getIndexOfChild(Object parent, Object child) {
-      return 0;  //To change body of implemented methods use File | Settings | File Templates.
+      if (!(parent instanceof FolderObject)) return -1;
+      FolderObject fo = (FolderObject) parent;
+
+      ArrayList<Object> children = new ArrayList<Object>();
+      children.addAll(fo.getFolderChildren());
+      children.addAll(fo.getFileChildren());
+
+      return children.indexOf(child);
    }
 
    @Override
    public Class<?> getColumnClass(int column) {
       switch (column) {
          case 0:
-            return File.class;
+            return ProjectFilesTreeNode.class;
          case 1:
             return String.class;
          case 2:
