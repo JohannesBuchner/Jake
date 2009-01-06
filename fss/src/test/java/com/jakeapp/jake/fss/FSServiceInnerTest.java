@@ -3,18 +3,23 @@ package com.jakeapp.jake.fss;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import junit.framework.Assert;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.googlecode.junit.ext.Prerequisite;
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 
-public class FSServiceTestInner extends FSTestCase {
+@RunWith(PrerequisiteAwareClassRunner.class)
+public class FSServiceInnerTest extends FSTestCase {
 	FSService fss = null;
 	
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testIsValidRelpath() throws Exception{
 		
 		Assert.assertTrue(fss.isValidRelpath("/"));
@@ -46,6 +51,7 @@ public class FSServiceTestInner extends FSTestCase {
 		Assert.assertFalse("notestyle",fss.isValidRelpath("note:random"));
 	}
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testSetRootPath() throws Exception{
 		String oldrootpath = fss.getRootPath();
 		
@@ -80,6 +86,7 @@ public class FSServiceTestInner extends FSTestCase {
 	}
 	
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testGetTempDir() throws Exception{
 		if(File.separatorChar == '/'){
 			Assert.assertEquals("/tmp", fss.getTempDir());
@@ -91,6 +98,7 @@ public class FSServiceTestInner extends FSTestCase {
 	}
 	
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testGetTempFile() throws Exception{
 		String filename = fss.getTempFile();
 		Assert.assertTrue("in Temp dir",filename.startsWith(fss.getTempDir() + 
@@ -100,10 +108,12 @@ public class FSServiceTestInner extends FSTestCase {
 	}
 	
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testHashLength() throws Exception{
 		Assert.assertEquals(fss.getHashLength(), 128); 
 	}
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testHash() throws Exception{
 		Assert.assertEquals(fss.calculateHash("foobar".getBytes()), 
 			"0a50261ebd1a390fed2bf326f2673c145582a6342d523204973d0219337f81616a8069b012587cf5635f6925f1b56c360230c19b273500ee013e030601bf2425");
@@ -113,6 +123,7 @@ public class FSServiceTestInner extends FSTestCase {
 	
 	@Override
 	@Before
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void setUp() throws Exception {
 		super.setUp();
 		fss = new FSService();
@@ -120,4 +131,5 @@ public class FSServiceTestInner extends FSTestCase {
 		Assert.assertEquals("rootpath",mytempdir,fss.getRootPath());
 		Assert.assertFalse(fss.getRootPath().startsWith("/home"));
 	}
+	
 }

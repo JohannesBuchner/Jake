@@ -33,9 +33,10 @@
 			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>junitext</artifactId>
-			<version>0.2.4</version>
+			<groupId>com.googlecode.junit.ext</groupId>
+			<artifactId>junit-ext</artifactId>
+			<version>0.6</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<properties>

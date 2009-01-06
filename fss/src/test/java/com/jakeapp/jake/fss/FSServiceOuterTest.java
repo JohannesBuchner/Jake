@@ -10,15 +10,20 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.googlecode.junit.ext.Prerequisite;
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
-public class FSServiceTestOuter extends FSServiceTestCase {
+@RunWith(PrerequisiteAwareClassRunner.class)
+public class FSServiceOuterTest extends FSServiceTestCase {
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testGetFullpath() throws Exception {
 		String sep = File.separator;
 		String root = mytempdir;
@@ -38,6 +43,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testReadFile() throws Exception {
 		wipeRoot();
 		Assert.assertFalse("got a tempdir", mytempdir == null
@@ -114,6 +120,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testFolderExists() throws Exception {
 		wipeRoot();
 		Assert.assertTrue(fss.folderExists("/"));
@@ -136,6 +143,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testFileExists() throws Exception {
 		wipeRoot();
 		Assert.assertFalse(fss.fileExists("/fileDoesNotExist"));
@@ -163,6 +171,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testListFolder() throws Exception {
 		wipeRoot();
 		String folder = "jakeAtestFolder";
@@ -206,6 +215,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testRecursiveListFolder() throws Exception {
 		wipeRoot();
 		recursiveDelete(new File(fss.getRootPath()));
@@ -246,6 +256,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testWriteFile() throws Exception {
 		wipeRoot();
 		try {
@@ -289,6 +300,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testDeleteFile() throws Exception {
 		wipeRoot();
 		{
@@ -329,6 +341,7 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testHashFile() throws Exception {
 		fss.writeFile("bar/baz/random", "Foobar".getBytes());
 
@@ -343,15 +356,18 @@ public class FSServiceTestOuter extends FSServiceTestCase {
 	 * awt/swing is not started
 	 **/
 	@Test
+	@Prerequisite(checker = ThrowStuffInMyFaceChecker.class)
 	public void launchTest() throws Exception {
 		fss.writeFile("launch1.txt", "Foobar".getBytes());
 		fss.writeFile("launch2.html",
 				"<html><body><h1>Woot!</h1></body></html>".getBytes());
+		Thread.yield();
 		fss.launchFile("launch1.txt");
 		fss.launchFile("launch2.html");
 	}
 
 	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testFileSize() throws Exception {
 		fss.writeFile("launch1.txt", "Foobar".getBytes());
 		fss.writeFile("launch2.html",

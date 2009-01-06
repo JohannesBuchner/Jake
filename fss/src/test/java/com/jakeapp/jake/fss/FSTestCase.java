@@ -7,8 +7,8 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 
-@Ignore
 public class FSTestCase  {
 	protected String mytempdir = null; 
 	
@@ -62,5 +62,10 @@ public class FSTestCase  {
 		}
 		Assert.assertFalse("Cleanup done",f.exists());
 	}
-	
+
+	@Test
+	@Ignore
+	public void notest() {
+		
+	}
 }

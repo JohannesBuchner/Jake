@@ -1,15 +1,18 @@
 package com.jakeapp.jake.fss;
 
-import java.awt.Desktop;
 import java.io.File;
 
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
-import org.junitext.Prerequisite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@Ignore
+import com.googlecode.junit.ext.Prerequisite;
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
+
+@RunWith(PrerequisiteAwareClassRunner.class)
 public class FSServiceTestCase extends FSTestCase {
 
 	static Logger log = Logger.getLogger(FSServiceTestCase.class);
@@ -25,21 +28,12 @@ public class FSServiceTestCase extends FSTestCase {
 	}
 
 	@Override
-	@Prerequisite(requires = "hasSupportedDesktop")
+	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void setUp() throws Exception {
 		super.setUp();
 
 		fss = new FSService();
 		fss.setRootPath(mytempdir);
 		Assert.assertEquals("rootpath", mytempdir, fss.getRootPath());
-	}
-
-	public boolean hasSupportedDesktop() {
-		if (Desktop.isDesktopSupported()) {
-			return true;
-		} else {
-			log.warn("Desktop not supported, skipping tests!");
-			return false;
-		}
 	}
 }

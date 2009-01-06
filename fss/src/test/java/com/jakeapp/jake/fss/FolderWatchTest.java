@@ -11,24 +11,20 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junitext.Prerequisite;
+import org.junit.runner.RunWith;
 
+import com.googlecode.junit.ext.Prerequisite;
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
+
+@RunWith(PrerequisiteAwareClassRunner.class)
 public class FolderWatchTest extends FSTestCase {
-	private static final String ALLOWSLOWTESTS_PROPERTY = "com.jakeapp.jake.fss.tests.allowslowtests";
 
-	static Logger log = Logger.getLogger(FolderWatchTest.class);
+	private static final Logger log = Logger.getLogger(FolderWatchTest.class);
 
 	FolderWatcher fw = null;
 
-	public boolean allowSlowTests() {
-		String prop = System.getProperty(ALLOWSLOWTESTS_PROPERTY);
-		if(prop.isEmpty() || prop.equals("false")) {
-			return false;
-		}
-		return true;
-	}
-	
 	@Override
 	@Before
 	public void setUp() throws Exception {
@@ -37,14 +33,15 @@ public class FolderWatchTest extends FSTestCase {
 
 	@Test
 	public void testCreateFile() throws Exception {
-		log.info(" **** testCreateFile **** ");
+		log.debug(" **** testCreateFile **** ");
 		File f = new File(mytempdir + File.separator + "just_created");
 		try {
 			fw = new FolderWatcher(new File(mytempdir), 100);
 			fw.initialRun();
-			
+
 			final CountDownLatch latch = new CountDownLatch(1);
 			fw.addListener(new IModificationListener() {
+
 				public void fileModified(File f, ModifyActions action) {
 					Assert.assertEquals("just_created", f.getName());
 					Assert.assertEquals(ModifyActions.CREATED, action);
@@ -52,9 +49,9 @@ public class FolderWatchTest extends FSTestCase {
 				}
 			});
 			fw.run();
-			
+
 			f.createNewFile();
-			
+
 			log.debug("We expect CREATED");
 			if (!latch.await(3, TimeUnit.SECONDS)) {
 				Assert.fail("No callback occured");
@@ -67,6 +64,7 @@ public class FolderWatchTest extends FSTestCase {
 			throw e;
 		}
 	}
+
 	@Test
 	public void testIsWindowsStupid() throws Exception {
 		File f = new File(mytempdir + File.separator + "just_stupid");
@@ -74,30 +72,32 @@ public class FolderWatchTest extends FSTestCase {
 		Assert.assertTrue(f.exists());
 		f.delete();
 		System.gc();
-		if(f.exists()){
+		if (f.exists()) {
 			log.info("WARNING: You are on a stupid Windows. ");
 			f.delete();
 		}
 		Assert.assertFalse(f.exists());
 	}
-	
+
 	@Test
 	public void testDeleteFile() throws Exception {
-		log.info(" **** testDeleteFile **** ");
+		log.debug(" **** testDeleteFile **** ");
 		File f = new File(mytempdir + File.separator + "just_deleted");
 		long interval = 1000;
-		
+
 		try {
 			final Semaphore s = new Semaphore(0);
-			
+
 			fw = new FolderWatcher(new File(mytempdir), interval);
 			fw.initialRun();
-			
+
 			fw.addListener(new IModificationListener() {
+
 				int state = 0;
+
 				public void fileModified(File f, ModifyActions action) {
-					log.info("testDeleteFile: State: "+state );
-					switch(state){
+					log.debug("testDeleteFile: State: " + state);
+					switch (state) {
 						case 0:
 							Assert.assertEquals("just_deleted", f.getName());
 							Assert.assertEquals(ModifyActions.CREATED, action);
@@ -110,21 +110,21 @@ public class FolderWatchTest extends FSTestCase {
 							Assert.fail("Unknown state");
 					}
 					state++;
-					log.info("Releasing, we are now in state "+state );
+					log.debug("Releasing, we are now in state " + state);
 					s.release();
 				}
 			});
 			fw.run();
 			f.createNewFile();
-			log.info("We expect CREATED");
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
+			log.debug("We expect CREATED");
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
 			f.delete();
 			System.gc();
 			f.delete();
 			Assert.assertFalse(f.exists());
-			log.info("We expect DELETED");
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
-			
+			log.debug("We expect DELETED");
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			fw.cancel();
 		} catch (Exception e) {
 			fw.cancel();
@@ -132,75 +132,76 @@ public class FolderWatchTest extends FSTestCase {
 			throw e;
 		}
 	}
-	
+
 	@Test
 	public void testModifyFile() throws Exception {
-		
-		log.info("**** testModifyFile **** ");
+
+		log.debug("**** testModifyFile **** ");
 		File f = new File(mytempdir + File.separator + "just_edited");
 		writeInFile(f, "foo, bar");
 		long interval = 700;
-		
+
 		try {
 			final Semaphore s = new Semaphore(0);
 			fw = new FolderWatcher(new File(mytempdir), interval);
 			fw.initialRun();
-			
+
 			IModificationListener failer = new IModificationListener() {
+
 				public void fileModified(File f, ModifyActions action) {
-					Assert.fail("Got unwanted event: " + f.getAbsolutePath() + 
-							":" + action);
+					Assert.fail("Got unwanted event: " + f.getAbsolutePath() + ":"
+							+ action);
 				}
 			};
 			fw.addListener(failer);
 			fw.run();
-			
+
 			awaitNextTimeUnit();
-			
-			log.info("We expect no event.");
-			
+
+			log.debug("We expect no event.");
+
 			writeInFile(f, "foo, bar");
-			
-			Thread.sleep(interval*3);
-			
+
+			Thread.sleep(interval * 3);
+
 			fw.removeListener(failer);
 			fw.addListener(new IModificationListener() {
+
 				public void fileModified(File f, ModifyActions action) {
-					log.info("got event: " + f.getAbsolutePath() + 
-							":" + action);
+					log.debug("got event: " + f.getAbsolutePath() + ":" + action);
 					Assert.assertEquals("just_edited", f.getName());
 					Assert.assertEquals(ModifyActions.MODIFIED, action);
 					s.release();
 				}
 			});
-			
+
 			awaitNextTimeUnit();
-			
-			log.info("We expect no event.");
-			
+
+			log.debug("We expect no event.");
+
 			writeInFile(f, "bar, baz");
-			Assert.assertTrue("Real content change", 
-				s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
-			
+			Assert.assertTrue("Real content change", s.tryAcquire(interval * 3,
+					TimeUnit.MILLISECONDS));
+
 			fw.cancel();
 			f.delete();
 			System.gc();
 			f.delete();
 			Assert.assertFalse(f.exists());
-			
+
 		} catch (Exception e) {
 			fw.cancel();
 			f.delete();
-			
+
 			throw e;
 		}
 	}
-	
-	
+
+
 	private void awaitNextTimeUnit() throws InterruptedException {
-		log.info("Waiting a second ... ");
+		log.debug("Waiting a second ... ");
 		Thread.sleep(1000); /* modifications are measured in seconds */
-		log.info("ok.");
+		log.debug("ok.");
 	}
 
 	private void writeInFile(File f, String content) throws Exception {
@@ -210,38 +211,44 @@ public class FolderWatchTest extends FSTestCase {
 		fwriter = null;
 		System.gc();
 	}
-	
+
 	@Test
-	public void testWithSmallInterval() throws Exception{
+	public void testWithSmallInterval() throws Exception {
 		runSzenarioTest(10);
 	}
+
 	@Test
-	public void testWithNormalInterval() throws Exception{
+	public void testWithNormalInterval() throws Exception {
 		runSzenarioTest(100);
 	}
+
 	@Test
-	@Prerequisite(requires = "allowSlowTests")
-	public void testWithBigInterval() throws Exception{
+	@Prerequisite(checker = AllowSlowChecker.class)
+	public void testWithBigInterval() throws Exception {
 		runSzenarioTest(1000);
 	}
+
 	private void runSzenarioTest(long interval) throws Exception {
-		log.info("runSzenarioTest: with interval " + interval);
+		log.debug("runSzenarioTest: with interval " + interval);
 		final File f = new File(mytempdir + File.separator + "just_modified");
 		final File f2 = new File(mytempdir + File.separator + "just_modified2");
 		final Semaphore s = new Semaphore(0);
-		
+
 		try {
 			fw = new FolderWatcher(new File(mytempdir), interval);
 			fw.initialRun();
-			
+
 			fw.addListener(new IModificationListener() {
+
 				int state = 0;
+
 				String afile = f.getName();
+
 				String bfile = f2.getName();
-				
+
 				public void fileModified(File f, ModifyActions action) {
-					log.info("State: "+state );
-					switch(state){
+					log.debug("State: " + state);
+					switch (state) {
 						case 0:
 							Assert.assertEquals(afile, f.getName());
 							Assert.assertEquals(ModifyActions.CREATED, action);
@@ -283,37 +290,37 @@ public class FolderWatchTest extends FSTestCase {
 			});
 			fw.run();
 			f.createNewFile();
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
-			
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			awaitNextTimeUnit();
-			
+
 			writeInFile(f, "foo, bar");
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
 			f.delete();
 			System.gc();
 			f.delete();
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
-			
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			writeInFile(f2, "Hello World");
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
-			
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			writeInFile(f, "bar, baz");
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
-			
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			f2.delete();
 			System.gc();
 			f2.delete();
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS));
-			
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			awaitNextTimeUnit();
-			
+
 			writeInFile(f, "bar, bazz");
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
 			f.delete();
 			System.gc();
 			f.delete();
-			Assert.assertTrue(s.tryAcquire(interval*3, TimeUnit.MILLISECONDS)); 
-			
+			Assert.assertTrue(s.tryAcquire(interval * 3, TimeUnit.MILLISECONDS));
+
 			fw.cancel();
 		} catch (Exception e) {
 			f.delete();
@@ -322,8 +329,9 @@ public class FolderWatchTest extends FSTestCase {
 			throw e;
 		}
 	}
+
 	@After
-	public void tearDown() throws Exception{
+	public void tearDown() throws Exception {
 		System.gc();
 		super.tearDown();
 		System.gc();
