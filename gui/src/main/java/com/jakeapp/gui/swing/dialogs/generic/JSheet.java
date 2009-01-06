@@ -15,6 +15,7 @@ package com.jakeapp.gui.swing.dialogs.generic;
  */
 
 import com.jakeapp.gui.swing.helpers.Methods;
+import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -174,8 +175,7 @@ public class JSheet extends JDialog {
 	}
 
 	protected boolean isShowAsSheet() {
-		return true;
-		//return UIManager.getBoolean("Sheet.showAsSheet");
+		return Platform.showAsSheet();
 	}
 
 	/**

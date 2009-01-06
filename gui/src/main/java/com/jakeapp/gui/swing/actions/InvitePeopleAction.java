@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import com.jakeapp.gui.swing.dialogs.InvitePeopleDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -40,8 +40,6 @@ public class InvitePeopleAction extends ProjectAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.info("Invite People to: " + getProject());
 
-		JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(), "blub");
-
-		//InvitePeopleDialog.showDialog(getProject(), JakeMainView.getMainView().getFrame());
+		InvitePeopleDialog.showDialog(getProject(), JakeMainView.getMainView().getFrame());
 	}
 }
