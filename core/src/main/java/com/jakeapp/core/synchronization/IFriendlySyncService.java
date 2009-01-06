@@ -1,14 +1,10 @@
-package com.jakeapp.core.services;
-
-import java.util.List;
+package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-import com.jakeapp.core.synchronization.ISyncService;
 
 /**
  * Provides loops for {@link ISyncService}

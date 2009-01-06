@@ -1,27 +1,14 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.List;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-import com.jakeapp.core.synchronization.exceptions.NoSuchObjectException;
-import com.jakeapp.core.synchronization.exceptions.NotAProjectMemberException;
-import com.jakeapp.core.synchronization.exceptions.ObjectNotConfiguredException;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**

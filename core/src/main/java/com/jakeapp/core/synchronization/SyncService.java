@@ -15,7 +15,6 @@ import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-import com.jakeapp.core.services.FriendlySyncServiceImpl;
 import com.jakeapp.core.synchronization.exceptions.NoSuchObjectException;
 import com.jakeapp.core.synchronization.exceptions.NotAProjectMemberException;
 import com.jakeapp.core.synchronization.exceptions.ObjectNotConfiguredException;

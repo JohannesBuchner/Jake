@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -31,7 +32,7 @@ public class FrontendServiceImpl implements IFrontendService {
     }
 
     @Override
-    public List<IMsgService> getMsgServices(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+    public List<ICService> getICServices(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
         return null; // TODO
     }
 

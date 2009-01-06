@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -63,7 +64,7 @@ public interface IFrontendService {
      * @throws IllegalStateException    if no MessageServices are configured
      *                                  for this component
      */
-    public List<IMsgService> getMsgServices(String sessionId)
+    public List<ICService> getICServices(String sessionId)
             throws IllegalArgumentException, NotLoggedInException,
             IllegalStateException;
 

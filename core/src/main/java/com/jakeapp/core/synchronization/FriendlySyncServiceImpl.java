@@ -1,4 +1,4 @@
-package com.jakeapp.core.services;
+package com.jakeapp.core.synchronization;
 
 import java.util.LinkedList;
 import java.util.List;
