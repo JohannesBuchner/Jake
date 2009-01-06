@@ -2,9 +2,9 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -17,57 +17,56 @@ import java.net.URISyntaxException;
  * Time: 5:41:44 PM
  */
 public class JakeMainHelper {
-    private static final Logger log = Logger.getLogger(JakeMainHelper.class);
+	private static final Logger log = Logger.getLogger(JakeMainHelper.class);
 
-    public static void initializeJakeMainHelper() {
-    }
+	public static void initializeJakeMainHelper() {
+	}
 
-    /**
-     * Shows the default message dialog with custom msgCode
-     *
-     * @param msgCode: string, queried from JakeMainView-properties file.
-     */
-    public static void showMsg(String msgCode, int msgType) {
-        JOptionPane.showMessageDialog(JakeMainView.getMainView().getFrame(),
-                JakeMainView.getMainView().getResourceMap().getString(msgCode),
-                JakeMainView.getMainView().getResourceMap().getString("JakeMsgTitle"), msgType);
-    }
-
-
-    public static String getPluralModifer(int clickCount) {
-        return clickCount == 1 ? "" : "s";
-    }
-
-    public static String printProjectStatus(Project project) {
-        // TODO: determine status
-        return "Project is ...TODO!";
-    }
-
-    /**
-     * Evaluates the Project and returns a Start/Stop-String depending on its state.
-     *
-     * @param project
-     * @return String with either Start or Stop.
-     */
-    public static String getProjectStartStopString(Project project) {
-        String startStopString;
-        if (!project.isStarted()) {
-            startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStartProject");
-        } else {
-            startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStopProject");
-        }
-
-        return startStopString;
-    }
+	/**
+	 * Shows the default message dialog with custom msgCode
+	 *
+	 * @param msgCode: string, queried from JakeMainView-properties file.
+	 */
+	public static void showMsg(String msgCode, int msgType) {
+		JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(),
+				  JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
+	}
 
 
-    public static void showJakeWebsite() {
-        try {
-            Desktop.getDesktop().browse(new URI(JakeMainView.getMainView().getResourceMap().getString("JakeWebsite")));
-        } catch (IOException e) {
-            log.warn("Unable to open Website!", e);
-        } catch (URISyntaxException e) {
-            log.warn("Unable to open Website, invalid syntax", e);
-        }
-    }
+	public static String getPluralModifer(int clickCount) {
+		return clickCount == 1 ? "" : "s";
+	}
+
+	public static String printProjectStatus(Project project) {
+		// TODO: determine status
+		return "Project is ...TODO!";
+	}
+
+	/**
+	 * Evaluates the Project and returns a Start/Stop-String depending on its state.
+	 *
+	 * @param project
+	 * @return String with either Start or Stop.
+	 */
+	public static String getProjectStartStopString(Project project) {
+		String startStopString;
+		if (!project.isStarted()) {
+			startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStartProject");
+		} else {
+			startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStopProject");
+		}
+
+		return startStopString;
+	}
+
+
+	public static void showJakeWebsite() {
+		try {
+			Desktop.getDesktop().browse(new URI(JakeMainView.getMainView().getResourceMap().getString("JakeWebsite")));
+		} catch (IOException e) {
+			log.warn("Unable to open Website!", e);
+		} catch (URISyntaxException e) {
+			log.warn("Unable to open Website, invalid syntax", e);
+		}
+	}
 }

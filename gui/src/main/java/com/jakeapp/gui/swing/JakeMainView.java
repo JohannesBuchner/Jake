@@ -15,6 +15,7 @@ import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
 import org.apache.log4j.Logger;
@@ -989,8 +990,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * @param ee
 	 */
 	public void reportError(JakeErrorEvent ee) {
-		JOptionPane.showMessageDialog(getFrame(), ee.getException().toString(),
-				  getResourceMap().getString("JakeErrorMessageTitle"), JOptionPane.ERROR_MESSAGE);
+		JSheet.showMessageSheet(getFrame(), ee.getException().toString(),
+				  JOptionPane.ERROR_MESSAGE, null);
 	}
 
 

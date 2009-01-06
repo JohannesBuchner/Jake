@@ -5,12 +5,14 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.models.InvitePeopleComboBoxModel;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 /**
  * People Invitation Dialog. Opens modal dialog to add ProjectMembers
@@ -21,6 +23,7 @@ import java.awt.event.ActionListener;
 // TODO: enable add by name (for already known)
 // TODO: enable guess list; filter already added
 public class InvitePeopleDialog extends JakeDialog {
+	private static final Logger log = Logger.getLogger(InvitePeopleDialog.class);
 	private Project project;
 	private JComboBox peopleComboBox;
 
@@ -52,12 +55,22 @@ public class InvitePeopleDialog extends JakeDialog {
 		//this.add(addUser, "");
 
 		// generate a auto-completion combobox
-		peopleComboBox = new JComboBox();
+		peopleComboBox = new JComboBox() {
+			public void processKeyEvent(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					invitePeopleAction();
+					//super.processKeyEvent(e);
+				} else {
+					e.consume();
+				}
+			}
+		};
 		peopleComboBox.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				invitePeopleAction();
+				// fired when selecting or press enter
+
 			}
 		});
 		peopleComboBox.setEditable(true);
