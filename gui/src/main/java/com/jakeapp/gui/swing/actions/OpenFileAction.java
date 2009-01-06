@@ -2,6 +2,9 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.GuiUtilities;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import java.awt.event.ActionEvent;
 
@@ -10,20 +13,29 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class OpenFileAction extends FileAction {
-   public OpenFileAction(JXTreeTable fileTable) {
-      super(fileTable);
+	private JXTreeTable fileTable;
 
-      String actionStr = JakeMainView.getMainView().getResourceMap().
-            getString("openMenuItem.text");
+	public OpenFileAction(JXTreeTable fileTable) {
+		super(fileTable);
+		this.fileTable = fileTable;
 
-      putValue(Action.NAME, actionStr);
+		String actionStr = JakeMainView.getMainView().getResourceMap().
+			 getString("openMenuItem.text");
 
-      // only enable if exact one element is selected.
-      setEnabled(fileTable.getSelectedRowCount() == 1);
-   }
+		putValue(Action.NAME, actionStr);
 
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      // TODO: Implement me!
-   }
+		// only enable if exact one element is selected.
+		setEnabled(fileTable.getSelectedRowCount() == 1);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTable.getValueAt(fileTable.getSelectedRow(), 0);
+		if (node.isFile()) {
+			GuiUtilities.selectFileInFileViewer(node.getFileObject().getAbsolutePath().getAbsolutePath());
+		} else {
+			// TODO: Implement me for folders!
+		}
+
+	}
 }
