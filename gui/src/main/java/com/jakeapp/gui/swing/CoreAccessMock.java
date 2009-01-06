@@ -421,6 +421,16 @@ public class CoreAccessMock implements ICoreAccess {
       return 0;
    }
 
+   @Override
+   public Date getFileLastModified(FileObject file) {
+      // TODO: Make this useful
+      return new Date();
+   }
+
+   public long getFileSize(FileObject file) {
+      return 1234;
+   }
+
    public List<NoteObject> getNotes(Project project) {
       List<NoteObject> list = new ArrayList<NoteObject>();
       list.add(new NoteObject(new UUID(1, 1), project, "Project: " + project.getName()));

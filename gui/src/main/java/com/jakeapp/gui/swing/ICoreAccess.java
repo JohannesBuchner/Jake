@@ -257,6 +257,17 @@ public interface ICoreAccess {
     */
    public int getFileStatus(FileObject file);
 
+   /**
+    * Gets the size of a FileObject in the filesystem
+    *
+    * @param file
+    *
+    * @return
+    */
+   public long getFileSize(FileObject file);
+
+   public Date getFileLastModified(FileObject file);
+
 
    /******************* Notes functions ********************/
 
