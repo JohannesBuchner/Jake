@@ -2,6 +2,7 @@ package com.jakeapp.core.dao;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import org.springframework.dao.support.DaoSupport;
 import org.springframework.dao.DataAccessException;
@@ -36,6 +37,7 @@ public class HibernateProjectMemberDao extends HibernateDaoSupport
     }
 
     @Override
+    @SuppressWarnings({"Unchecked"})
     public ProjectMember get(UUID memberId) throws NoSuchProjectMemberException {
 
         List<ProjectMember> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
@@ -57,9 +59,13 @@ public class HibernateProjectMemberDao extends HibernateDaoSupport
     /**
      * {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings({"Unchecked"})
     public List<ProjectMember> getAll(Project project) {
-        List<ProjectMember> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM ProjectMember").list();
+        List<ProjectMember> results = new ArrayList<ProjectMember>();
+
+        results.addAll(this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM ProjectMember").list());
 
         return results;
     }

@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.Tag;
 import java.util.List;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.apache.log4j.Logger;
 
 /**
  * A generic hibernate DAO for <code>JakeObject</code>s.
@@ -16,17 +17,30 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 public abstract class HibernateJakeObjectDao<T extends JakeObject>
         extends HibernateDaoSupport implements IJakeObjectDao<T> {
 
+    private static Logger log = Logger.getLogger(HibernateJakeObjectDao.class);
+
     /**
      * {@inheritDoc}
      */
     public T persist(T jakeObject) {
-        return null;
+
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().save(jakeObject);
+
+        return jakeObject;
     }
 
     /**
      * {@inheritDoc}
      */
     public List<T> getAll() {
+
+        String queryString = "FROM " + getClass().getTypeParameters().getClass().getName() + " WHERE uuid = ?";
+
+        log.debug("queryString: "+ queryString);
+
+        List<T> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery(queryString).list();
+
         return null;
     }
     /**

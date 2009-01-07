@@ -54,6 +54,10 @@
                 <value>com.jakeapp.core.domain.XMPPUserId</value>
                 <!--<value>com.jakeapp.core.domain.UserId</value>-->
                 <value>com.jakeapp.core.domain.ProjectMember</value>
+
+                <value>com.jakeapp.core.domain.JakeObject</value>
+                <value>com.jakeapp.core.domain.NoteObject</value>
+
             </list>
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
@@ -119,12 +123,25 @@
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 
+
     <!-- local stuff -->
-
-
     <bean id="projectMemberDao" class="com.jakeapp.core.dao.HibernateProjectMemberDao">
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
+
+
+    <!--<bean id="jakeObjectDao" class="com.jakeapp.core.dao.HibernateJakeObjectDao" abstract="true">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>-->
+
+    <bean id="noteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+<!--
+    <bean id="fileObjectDao" class="com.jakeapp.core.dao.HibernateFileObjectDao" parent="jakeObjectDao">
+
+    </bean>-->
+
 
 
 </beans>

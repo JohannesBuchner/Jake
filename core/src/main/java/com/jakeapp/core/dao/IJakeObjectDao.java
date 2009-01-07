@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A generic interface for <code>JakeObject</code>s. 
@@ -22,6 +23,17 @@ public interface IJakeObjectDao <T extends JakeObject> {
 	 * @return The <code>JakeObject</code> that has been persisted
 	 */
     T persist(T jakeObject);
+
+
+    /**
+     * Gets the <code>JakeObject</code> with the given Id
+     * @param project
+     * @param objectId
+     * @return
+     */
+    T get(Project project, UUID objectId);
+
+
 
     /**
      * Get all <code>JakeObject</code>s that are associated with the
@@ -45,7 +57,7 @@ public interface IJakeObjectDao <T extends JakeObject> {
      * @param jakeObject the <code>JakeObject</code> to be tagged
      * @param tag the tag to be added 
      * @return the <code>JakeObject</code> that has been tagged
-     */
+     */         
     public T addTagTo(T jakeObject, final Tag tag);
 
 	/**

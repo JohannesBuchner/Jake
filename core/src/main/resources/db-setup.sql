@@ -13,7 +13,7 @@
   DROP TABLE IF EXISTS projectmember CASCADE;
   CREATE TABLE projectmember (
 	memberID			CHAR(36),
-	nickname			VARCHAR(100)		NOT NULL,
+	nickname			VARCHAR(100)		NULL,
 	trustlevel			INTEGER			NOT NULL,
 	PRIMARY KEY (memberID)
   );

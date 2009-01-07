@@ -13,5 +13,11 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users ( uuid CHAR(36) PRIMARY KEY, userid VARCHAR (255) NOT NULL, nickname VARCHAR (255), firstname VARCHAR (255), surname VARCHAR (255), protocol VARCHAR (255), sc_uuid CHAR (36) );
 ALTER TABLE users ADD CONSTRAINT userid_uniq UNIQUE (sc_uuid, userid);
 
---DROP TABLE IF EXISTS projectmember CASCADE;
---CREATE TABLE projectmember (memberID			CHAR(36), nickname			VARCHAR(100)		NOT NULL, trustlevel			INTEGER			NOT NULL, PRIMARY KEY (memberID) );
+DROP TABLE IF EXISTS projectmember CASCADE;
+CREATE TABLE projectmember (memberID			CHAR(36), nickname			VARCHAR(100)		NULL, trustlevel			INTEGER			NOT NULL, PRIMARY KEY (memberID) );
+
+DROP TABLE IF EXISTS jakeobject CASCADE;
+CREATE TABLE jakeobject ( objectID			CHAR(36), deleted				BOOLEAN, modified			BOOLEAN, PRIMARY KEY (objectID) );
+
+DROP TABLE IF EXISTS note CASCADE;
+CREATE TABLE note ( objectID			CHAR(36), text				VARCHAR(255)		NOT NULL, PRIMARY KEY (objectID), FOREIGN KEY (objectID) REFERENCES jakeobject(objectID) );

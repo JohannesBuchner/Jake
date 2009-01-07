@@ -8,7 +8,7 @@ import java.util.UUID;
  * A Representation of a Note. The note consists of a <code>uuid</code>, <code>
  * content</code> and is associated with one <code>Project</code>.
  */
-@Entity
+@Entity(name = "note")
 public class NoteObject extends JakeObject {
 	private static final long serialVersionUID = -8838089386183264658L;
     private String content;

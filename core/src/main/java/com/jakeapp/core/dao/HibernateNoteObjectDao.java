@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A hibernate noteObject DAO.
@@ -17,6 +18,11 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> {
     @Override
     public NoteObject persist(NoteObject jakeObject) {
         return super.persist(jakeObject);
+    }
+
+    @Override
+    public NoteObject get(Project project, UUID objectId) {
+        return null; // TODO
     }
 
     /**

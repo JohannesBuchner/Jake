@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
 
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -17,6 +18,11 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> {
     @Override
     public final FileObject persist(final FileObject jakeObject) {
         return super.persist(jakeObject);
+    }
+
+    @Override
+    public FileObject get(Project project, UUID objectId) {
+        return null; // TODO
     }
 
     /**
