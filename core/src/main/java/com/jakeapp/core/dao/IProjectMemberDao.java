@@ -6,6 +6,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The Interface for project member DAOs.
@@ -24,8 +25,17 @@ public interface IProjectMemberDao {
 	 * @param projectMember the <code>ProjectMember</code> to be persisted
 	 * @return the <code>ProjectMember</code> that has been persisted
 	 */
-    ProjectMember persist(final Project project,
+    public ProjectMember persist(final Project project,
                                  ProjectMember projectMember);
+
+
+    /**
+     * Gets a <code>ProjectMember</code> be specifing his <code>memberId</code>.
+     * @param memberId // TODO
+     * @return // TODO
+     * @throws NoSuchProjectMemberException if no <code>ProjectMember</code> is found
+     */
+    public ProjectMember get(final UUID memberId) throws NoSuchProjectMemberException;
 
     /**
      * Get all <code>ProjectMember</code>s that are associated with a

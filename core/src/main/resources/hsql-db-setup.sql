@@ -10,9 +10,9 @@ DROP TABLE IF EXISTS tag CASCADE;
 
 
 
-CREATE TABLE projectoptions (       name				VARCHAR(255)		PRIMARY KEY,    autoannounce			BOOLEAN,  autopull			BOOLEAN);
+-- CREATE TABLE projectoptions (       name				VARCHAR(255)		PRIMARY KEY,    autoannounce			BOOLEAN,  autopull			BOOLEAN);
 
-CREATE TABLE projectmember (memberID			CHAR(36), nickname			VARCHAR(100)		NOT NULL, trustlevel			INTEGER			NOT NULL, PRIMARY KEY (memberID) );
+CREATE TABLE projectmember (memberID			CHAR(36), nickname			VARCHAR(100)		NOT NULL, trustlevel			VARCHAR(100)			NOT NULL, PRIMARY KEY (memberID) );
 
 CREATE TABLE jakeobject ( objectID			CHAR(36), deleted				BOOLEAN, modified			BOOLEAN, PRIMARY KEY (objectID) );
 

@@ -48,11 +48,11 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="annotatedClasses">
             <list>
-                <!--<value>com.jakeapp.core.domain.Project</value>-->
-                <!--<value>com.jakeapp.core.domain.ServiceCredentials</value>-->
-                <!--<value>com.jakeapp.core.domain.UserId</value>-->
-                <!--<value>com.jakeapp.core.domain.XMPPUserId</value>-->
+                <value>com.jakeapp.core.domain.Project</value>
+                <value>com.jakeapp.core.domain.ServiceCredentials</value>
                 <value>com.jakeapp.core.domain.UserId</value>
+                <value>com.jakeapp.core.domain.XMPPUserId</value>
+                <!--<value>com.jakeapp.core.domain.UserId</value>-->
                 <value>com.jakeapp.core.domain.ProjectMember</value>
             </list>
         </property>
@@ -104,7 +104,9 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-<!--
+
+
+    <!-- global stuff -->
     <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.HibernateServiceCredentialsDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
@@ -116,7 +118,9 @@
     <bean id="userIdDao" class="com.jakeapp.core.dao.HibernateUserIdDao">
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
--->
+
+    <!-- local stuff -->
+
 
     <bean id="projectMemberDao" class="com.jakeapp.core.dao.HibernateProjectMemberDao">
         <property name="hibernateTemplate" ref="hibernateTemplate" />

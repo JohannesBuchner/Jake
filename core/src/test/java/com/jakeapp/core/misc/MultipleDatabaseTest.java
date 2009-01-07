@@ -78,7 +78,7 @@ public class MultipleDatabaseTest {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        System.out.println("test.getDatabase() = " + test.getDatabase());
+        log.debug("test.getDatabase() = " + test.getDatabase());
     }
 
 /*    @Test(expected= IOException.class)

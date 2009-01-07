@@ -141,8 +141,8 @@ public abstract class UserId implements ILogable {
 
     @Column(name = "sc_uuid")
 //    @JoinColumn( name = "sc_uuid", referencedColumnName = "uuid", table = "xxxx")
-@JoinTable(name = "DDDD")
-private String getCredentialsUuid() {
+    @JoinTable(name = "DDDD")
+    private String getCredentialsUuid() {
         if (credentials != null && credentials.getUserId() != null)
             return credentials.getUuid().toString();
 
