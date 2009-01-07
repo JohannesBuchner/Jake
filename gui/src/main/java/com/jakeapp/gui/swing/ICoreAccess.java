@@ -335,6 +335,15 @@ public interface ICoreAccess {
 	 */
 	void invitePeople(Project project, String userid);
 
+	/**
+	 * Returns suggested people for invitation.
+	 * Returns a list of known people that are not in current project.
+	 *
+	 * @param project: current project
+	 * @return list of strings (people-xmpp-ids)
+	 */
+	List<ProjectMember> getSuggestedPeople(Project project);
+
 	/******************* Log functions ********************/
 
 

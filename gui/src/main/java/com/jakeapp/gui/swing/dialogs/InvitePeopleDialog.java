@@ -1,12 +1,15 @@
 package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
+import com.jakeapp.gui.swing.helpers.JakeObjectHelpers;
 import com.jakeapp.gui.swing.models.InvitePeopleComboBoxModel;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jdesktop.swingx.autocomplete.ObjectToStringConverter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,6 +45,11 @@ public class InvitePeopleDialog extends JakeDialog {
 	private void initComponents() {
 		this.setLayout(new MigLayout("wrap 2, insets dialog, fill"));
 
+		JLabel title = new JLabel(getResourceMap().getString("inviteTitle"));
+		title.setFont(title.getFont().deriveFont(Font.BOLD));
+		this.add(title, "span 2, gapbottom 10");
+
+
 		JLabel picture = new JLabel();
 
 		picture.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -74,8 +82,24 @@ public class InvitePeopleDialog extends JakeDialog {
 			}
 		});
 		peopleComboBox.setEditable(true);
-		peopleComboBox.setModel(new InvitePeopleComboBoxModel());
+		final ObjectToStringConverter conv = new ObjectToStringConverter() {
+			@Override
+			public String getPreferredStringForItem(Object o) {
+				if (ProjectMember.class.isInstance(o)) {
+					ProjectMember member = (ProjectMember) o;
+
+					return member.getUserId().getUserId() + " (" + JakeObjectHelpers.getNickOrFullName(member, 30) + ")";
+				} else {
+					return o.toString();
+				}
+			}
+		};
+
+		peopleComboBox.setModel(new InvitePeopleComboBoxModel(project));
+
 		AutoCompleteDecorator.decorate(peopleComboBox);
+
+		//peopleComboBox.setEditor(new AutoCompleteComboBoxEditor(peopleComboBox.getEditor(), conv));
 		this.add(peopleComboBox, "span 2, growx");
 
 		JPanel buttons = new JPanel(new MigLayout("nogrid, fill, ins 0"));
@@ -123,7 +147,7 @@ public class InvitePeopleDialog extends JakeDialog {
 	public static void showDialog(Project project, JFrame frame) {
 		InvitePeopleDialog ipd = new InvitePeopleDialog(project, frame);
 		ipd.setSize(500, 190);
-		ipd.setResizable(false);
+		ipd.setResizable(true);
 		ipd.setVisible(true);
 	}
 }
