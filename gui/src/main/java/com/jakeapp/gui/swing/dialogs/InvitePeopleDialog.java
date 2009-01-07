@@ -45,9 +45,11 @@ public class InvitePeopleDialog extends JakeDialog {
 	private void initComponents() {
 		this.setLayout(new MigLayout("wrap 2, insets dialog, fill"));
 
-		JLabel title = new JLabel(getResourceMap().getString("inviteTitle"));
-		title.setFont(title.getFont().deriveFont(Font.BOLD));
+		//if (Platform.showAsSheet()) {
+		JLabel title = new JLabel(getTitle());
+		title.setFont(title.getFont().deriveFont(Font.BOLD, 14));
 		this.add(title, "span 2, gapbottom 10");
+		//}
 
 
 		JLabel picture = new JLabel();

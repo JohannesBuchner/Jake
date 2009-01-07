@@ -272,8 +272,10 @@ public class JSheet extends JDialog {
 
 	public void addNotify() {
 		super.addNotify();
-		if (UIManager.getBoolean("Sheet.showAsSheet")) {
-			// QuaquaUtilities.setWindowAlpha(this, 240);
+		if (Platform.showAsSheet()) {
+			if (Platform.isMac()) {
+				this.getRootPane().putClientProperty("Window.alpha", 0.9d);
+			}
 		}
 	}
 

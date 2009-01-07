@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,11 +9,15 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * @author: studpete
  */
 public class GuiUtilities {
+	private static final Logger log = Logger.getLogger(GuiUtilities.class);
+
 	/**
 	 * An invisible cursor, useful if you want to hide the cursor when the
 	 * user is typing.
@@ -83,6 +89,78 @@ public class GuiUtilities {
 			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 		}
 	};
+
+	/**
+	 * Guesses whether setFrameAlpha is likely to work.
+	 */
+	public static boolean canSetFrameAlpha() {
+		// setFrameAlpha works on any version of Mac OS we can still run on.
+		// setFrameAlpha may or may not work on any given Linux, and we've no good way of knowing.
+		// setFrameAlpha only works on Windows if you're running Java 6 "6u10" (it doesn't even work on Java 7 yet).
+		return !Platform.isWin() || getAwtUtilitiesSetWindowOpacity() != null;
+	}
+
+	private static Method getAwtUtilitiesSetWindowOpacity() {
+		// When we require Java 6, we can move this inside setFrameAlpha (and remove the workarounds currently there).
+		// Until then, it's useful as a kind of "feature test" for setFrameAlpha on Windows (via canSetFrameAlpha).
+		try {
+			// This is only available on 6u10 and later (see Sun bug 6633275).
+			// com.sun.awt.AWTUtilities.setWindowOpacity(frame, alpha);
+			final Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
+			return awtUtilitiesClass.getMethod("setWindowOpacity", Window.class, float.class);
+		} catch (Exception ex) {
+			// No setWindowOpacity for you, then. Not unexpected.
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the opacity (1.0 => fully opaque, 0.0 => fully transparent) of the given Frame.
+	 * http://elliotth.blogspot.com/2007/08/transparent-java-windows-on-x11.html
+	 */
+	public static void setFrameAlpha(JFrame frame, double alpha) {
+		final Method setWindowOpacityMethod = getAwtUtilitiesSetWindowOpacity();
+		if (setWindowOpacityMethod != null) {
+			try {
+				setWindowOpacityMethod.invoke(null, (Window) frame, (float) alpha);
+			} catch (Throwable th) {
+				log.warn("com.sun.awt.AWTUtilities.setWindowOpacity failed.", th);
+			}
+			return;
+		}
+
+		try {
+			Field peerField = Component.class.getDeclaredField("peer");
+			peerField.setAccessible(true);
+			Object peer = peerField.get(frame);
+			if (peer == null) {
+				return;
+			}
+
+			if (Platform.isMac()) {
+				frame.getRootPane().putClientProperty("Window.alpha", alpha);
+
+			} else if (Platform.isWin()) {
+				// If you weren't taken care of above, we have no work-around for you.
+			} else {
+				// FIXME: remove this when everyone has setWindowOpacity, which is likely to be long before Compiz becomes less trouble than it's worth.
+
+				// long windowId = peer.getWindow();
+				Class<?> xWindowPeerClass = Class.forName("sun.awt.X11.XWindowPeer");
+				Method getWindowMethod = xWindowPeerClass.getMethod("getWindow");
+				long windowId = ((Long) getWindowMethod.invoke(peer, new Object[0])).longValue();
+
+				long value = (int) (0xff * alpha) << 24;
+				// sun.awt.X11.XAtom.get("_NET_WM_WINDOW_OPACITY").setCard32Property(windowId, value);
+				Class<?> xAtomClass = Class.forName("sun.awt.X11.XAtom");
+				Method getMethod = xAtomClass.getMethod("get", String.class);
+				Method setCard32PropertyMethod = xAtomClass.getMethod("setCard32Property", long.class, long.class);
+				setCard32PropertyMethod.invoke(getMethod.invoke(null, "_NET_WM_WINDOW_OPACITY"), windowId, value);
+			}
+		} catch (Throwable th) {
+			log.warn("Failed to apply frame alpha.", th);
+		}
+	}
 
 	// prevent instantiation
 	private GuiUtilities() {
