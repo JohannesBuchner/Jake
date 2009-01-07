@@ -10,11 +10,15 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.googlecode.junit.ext.Prerequisite;
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 
+@RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppICMsgSending {
 
 	private static final Logger log = Logger
@@ -39,6 +43,7 @@ public class TestXmppICMsgSending {
 	private static String testgroupname = "mygroupname";
 
 	@Before
+	@Prerequisite(checker = TestEnvironment.class)
 	public void setUp() throws Exception {
 		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
 		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
@@ -50,6 +55,7 @@ public class TestXmppICMsgSending {
 	}
 
 	@After
+	@Prerequisite(checker = TestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.ics != null)
 			this.ics.getStatusService().logout();
@@ -60,6 +66,7 @@ public class TestXmppICMsgSending {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testReceiveSend() throws Exception {
 		final String testmsgcontent1 = "Testmessagecontent1";
 		final String testmsgcontent2 = "Testmessagecontent2";
@@ -97,6 +104,7 @@ public class TestXmppICMsgSending {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testReceiveSend_MultipleInteractions() throws Exception {
 		final String testmsgcontent1 = "Testmessagecontent1";
 		final String testmsgcontent2 = testmsgcontent1 + " >> really?";
@@ -159,6 +167,7 @@ public class TestXmppICMsgSending {
 		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
 	}
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testReceiveSend_XML() throws Exception {
 		final String testmsgcontent = "<msg>hello</msg>";
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent);

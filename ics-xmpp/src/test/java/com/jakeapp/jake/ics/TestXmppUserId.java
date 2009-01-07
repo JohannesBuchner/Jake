@@ -3,10 +3,13 @@ package com.jakeapp.jake.ics;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
+@RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppUserId {
 
 	private XmppUserId shortUserId = new XmppUserId("foo@bar");

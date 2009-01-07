@@ -11,7 +11,10 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.googlecode.junit.ext.Prerequisite;
+import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -21,6 +24,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.users.IUsersService;
 
+@RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppICUsersService {
 
 	private static final Logger log = Logger
@@ -45,6 +49,7 @@ public class TestXmppICUsersService {
 	private static String testgroupname = "mygroupname";
 
 	@Before
+	@Prerequisite(checker = TestEnvironment.class)
 	public void setUp() throws Exception {
 		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
 		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
@@ -55,6 +60,7 @@ public class TestXmppICUsersService {
 	}
 
 	@After
+	@Prerequisite(checker = TestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.ics != null)
 			this.ics.getStatusService().logout();
@@ -84,6 +90,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testOnlineStatusListener() throws Exception {
 		final Semaphore s = new Semaphore(0);
 
@@ -119,12 +126,14 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testIsLoggedInAfterRequest() throws Exception {
 		testOnlineStatusListener();
 		Assert.assertTrue(this.ics.getStatusService().isLoggedIn(testUser2));
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testGetUserList_ContainsOtherUser() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
@@ -135,6 +144,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testGetUserList_ContainsOtherUsers() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
@@ -147,6 +157,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testRemoveUserList() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
@@ -161,6 +172,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
+	@Prerequisite(checker = TestEnvironment.class)
 	public void testRemoveAddUserDoubles() throws Exception {
 		XmppUserId randomGuy = new XmppUserId("justmademe@up.to/proveapoint");
 		XmppUserId randomGuyOtherRessource = new XmppUserId(

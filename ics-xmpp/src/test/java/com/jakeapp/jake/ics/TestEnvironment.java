@@ -8,16 +8,47 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.junit.Ignore;
 
+import com.googlecode.junit.ext.Checker;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 @Ignore
-public class TestEnvironment {
+public class TestEnvironment implements Checker {
+
 	private static final Logger log = Logger.getLogger(TestEnvironment.class);
 
-	public static String host = "localhost";
+	private static final String TESTSERVER_PROPERTY = "com.jakeapp.jake.ics.impl.xmpp.test.serverHostname";
 
-	public static void assureUserExists(String hostname, String username,
-			String password) throws XMPPException {
+	private static String host;
+	static {
+		String prop = System.getProperty(TESTSERVER_PROPERTY);
+		if (prop == null || prop.isEmpty() || prop.equals("false")) {
+			log.warn("Skipping tests against server. ");
+			log.info("call with -Dcom.jakeapp.jake.ics.impl.xmpp.test.serverHostname="
+					+ "localhost if you want to perform all the tests");
+			host = null;
+		} else {
+			host = prop;
+		}
+	}
+
+	public static boolean serverIsAvailable() {
+		if (host == null) {
+			return false;
+		} else {
+			try {
+				XMPPConnection c = new XMPPConnection(host);
+				c.connect();
+				c.disconnect();
+				return true;
+			} catch (XMPPException e) {
+				log.warn("Server not working!");
+				return false;
+			}
+		}
+	}
+
+	public static void assureUserExists(String hostname, String username, String password)
+			throws XMPPException {
 		assureUserExistsAndConnect(hostname, username, password).disconnect();
 	}
 
@@ -36,8 +67,7 @@ public class TestEnvironment {
 			connection.login(username, password);
 		} catch (XMPPException e) {
 			System.err.println(e.getMessage());
-			Assert.assertTrue(connection.getAccountManager()
-					.supportsAccountCreation());
+			Assert.assertTrue(connection.getAccountManager().supportsAccountCreation());
 			connection.getAccountManager().createAccount(username, password);
 			connection.disconnect();
 			connection.connect();
@@ -47,8 +77,8 @@ public class TestEnvironment {
 		return connection;
 	}
 
-	public static XMPPConnection assureUserIdExistsAndConnect(
-			XmppUserId userid, String password) throws XMPPException {
+	public static XMPPConnection assureUserIdExistsAndConnect(XmppUserId userid,
+			String password) throws XMPPException {
 		String hostname = userid.getHost();
 		String username = userid.getUsername();
 		return assureUserExistsAndConnect(hostname, username, password);
@@ -61,13 +91,23 @@ public class TestEnvironment {
 		assureUserDeleted(hostname, username, password);
 	}
 
-	public static void assureUserDeleted(String host, String username,
-			String password) throws XMPPException {
-		assureUserExistsAndConnect(host, username, password)
-				.getAccountManager().deleteAccount();
+	public static void assureUserDeleted(String host, String username, String password)
+			throws XMPPException {
+		assureUserExistsAndConnect(host, username, password).getAccountManager()
+				.deleteAccount();
 	}
-	
+
 	public static String getXmppId(String username) {
 		return username + "@" + host;
 	}
+
+	public static String getHost() {
+		return host;
+	}
+
+	@Override
+	public boolean satisfy() {
+		return host != null;
+	}
+	
 }
