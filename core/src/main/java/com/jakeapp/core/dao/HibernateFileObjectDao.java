@@ -41,13 +41,6 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> {
         super.delete(jakeObject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final List<Tag> getTags(final FileObject jakeObject) {
-        return super.getTags(jakeObject);
-    }
 
     /**
      * {@inheritDoc}

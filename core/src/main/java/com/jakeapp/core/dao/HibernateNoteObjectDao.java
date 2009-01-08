@@ -41,13 +41,6 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> {
         super.delete(jakeObject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Tag> getTags(NoteObject jakeObject) {
-        return super.getTags(jakeObject);
-    }
 
     /**
      * {@inheritDoc}

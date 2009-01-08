@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
@@ -19,6 +20,8 @@ import java.util.List;
 
 @ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml"})
 public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests {
+
+    private static Logger log = Logger.getLogger(HibernateNoteObjectDaoTest.class);
 
     private IJakeObjectDao noteObjectDao;
     private HibernateTemplate template;
@@ -133,28 +136,40 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
 
     }
 
-    @Test
+  /*  @Test
     public void testGetTags() {
         // Add your code here
         Assert.fail();
-    }
+    }*/
 
+    @Transactional
     @Test
     public void testAddTagTo() throws InvalidTagNameException, NoSuchJakeObjectException {
 
         Tag t1 = new Tag("test");
+        Tag t2 = new Tag("test2");
 
         NoteObject noteObject1 = new NoteObject(UUID.fromString("0faaa8f-2222-4c39-9925-99a93cdc2b86"),
                 null, "Das ist ein tag Test");
 
         noteObjectDao.persist(noteObject1);
+        noteObjectDao.addTagTo(noteObject1, t1);
+        noteObjectDao.addTagTo(noteObject1, t2);
 
+        List<Tag> results = noteObjectDao.getTagsFor(noteObject1);
 
-        noteObjectDao.addTagsTo(noteObject1, t1);
+        Assert.assertTrue(results.contains(t1));
+        Assert.assertTrue(results.contains(t2));
 
-        
+        for(Tag t : results)
+        {
+            log.debug(t);
+        }
+
     }
 
+
+ /*
     @Test
     public void testRemoveTagFrom() {
         // Add your code here
@@ -177,5 +192,5 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
     public void testRemoveTagsFrom() {
         // Add your code here
         Assert.fail();
-    }
+    }*/
 }

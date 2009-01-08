@@ -85,10 +85,10 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     public void delete(T jakeObject) {       
         this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(jakeObject);
     }
-
-    /**
+/*
+    *//**
      * {@inheritDoc}
-     */
+     *//*
     public List<Tag> getTags(T jakeObject) {
 
 
@@ -98,7 +98,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
                 createQuery(query).setString(0, jakeObject.getUuid().toString()).list();
 
         return results;
-    }
+    }*/
 
     /**
      * {@inheritDoc}
@@ -138,7 +138,16 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
      */
     @Override
     public List<Tag> getTagsFor(T jakeObject) {
-        return null;
+
+        List<Tag> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM tag WHERE objectId = ? ").setString(0, jakeObject.getUuid().toString()).list();
+
+
+                //createCriteria(Tag.class).createCriteria("object", jakeObject.getUuid().toString()).list();
+
+                //createQuery("FROM Tag WHERE jakeObject = ? ").setEntity(0, jakeObject).list();
+
+        return results;
     }
 
     /**

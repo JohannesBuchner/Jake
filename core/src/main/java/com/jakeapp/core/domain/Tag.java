@@ -2,18 +2,20 @@ package com.jakeapp.core.domain;
 
 import javax.persistence.*;
 
+
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import org.hibernate.annotations.ForeignKey;
 
 /**
  * A simple tag. It only consists of a <code>name</code>.
  */
-@Entity(name="tag")
-
+@Entity(name = "tag")
+@UniqueConstraint(columnNames = {"objectid", "text"})
 public class Tag implements ILogable {
     private static final long serialVersionUID = -2201488676480921149L;
-	private String name;
-
     private JakeObject jakeObject;
+    private String name;
+
 
     /**
      * Construct a new Tag.
@@ -26,7 +28,7 @@ public class Tag implements ILogable {
         super();
         this.setName(name);
     }
-    
+
     /**
      * Get the name of the tag.
      *
@@ -48,45 +50,44 @@ public class Tag implements ILogable {
      */
     public void setName(String name) throws InvalidTagNameException {
         if (name.matches(".*\\s.*")) {
-			throw new InvalidTagNameException(
+            throw new InvalidTagNameException(
                     "A Tag may not contain a whitespace");
-		}
+        }
         this.name = name;
     }
 
-    @Id
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    public JakeObject getObject()
-    {
+
+    @OneToOne
+    @JoinColumn(name = "objectid", columnDefinition = "char(36)")
+    public JakeObject getObject() {
         return this.jakeObject;
     }
 
 
-    public void setObject(JakeObject object)
-    {
+    public void setObject(JakeObject object) {
         this.jakeObject = object;
     }
 
     /**
      * Test if two <code>tag</code>s are equal.
+     *
      * @param obj The object to compare this object to.
      * @return <code>true</code> iff the <code>name</code>s are equal.
      */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !this.getClass().equals(obj.getClass())) {
-			return false;
-		}
+            return false;
+        }
 
         Tag that = (Tag) obj;
 
         if (this.name == null && that.getName() != null) {
-			return false;
-		}
+            return false;
+        }
         if (this.name != null && !this.name.equals(that.getName())) {
-			return false;
-		}
+            return false;
+        }
 
         return true;
     }
@@ -101,8 +102,8 @@ public class Tag implements ILogable {
      *
      * @return the name of the tag.
      */
-	@Override
-	public String toString() {
-		return this.name;
+    @Override
+    public String toString() {
+        return this.name;
 	}
 }
