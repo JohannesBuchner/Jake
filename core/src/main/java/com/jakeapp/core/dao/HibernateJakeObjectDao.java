@@ -1,19 +1,26 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 
 import java.util.List;
+import java.util.UUID;
+import java.lang.reflect.ParameterizedType;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
+import org.springframework.dao.DataAccessException;
 import org.apache.log4j.Logger;
+import org.hibernate.ObjectNotFoundException;
 
 /**
  * A generic hibernate DAO for <code>JakeObject</code>s.
+ *
  * @param <T> The type of the persisted Entity, subtype of
- * 	<code>JakeObject</code>
+ * <code>JakeObject</code>
  */
+@Repository
 public abstract class HibernateJakeObjectDao<T extends JakeObject>
         extends HibernateDaoSupport implements IJakeObjectDao<T> {
 
@@ -32,70 +39,113 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     /**
      * {@inheritDoc}
      */
+    public T get(UUID objectId) throws NoSuchJakeObjectException  
+    {
+        log.debug("getAll(Project) Test ========================================");
+
+        ParameterizedType parameterizedType = (ParameterizedType) this.getClass().getGenericSuperclass();
+        String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0]).getName();
+        log.debug("xxx: " + parameterName);
+
+
+        String queryString = "FROM " + parameterName + " WHERE objectId = ? ";
+
+        List<T> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery(queryString).setString(0, objectId.toString()).list();
+
+        if(results.size() > 0)
+             return (T) results.get(0);
+
+        throw new NoSuchJakeObjectException("jakeobject with uuid " +  objectId.toString() +"not found");
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public List<T> getAll() {
+        log.debug("getAll(Project) Test ========================================");
 
-        String queryString = "FROM " + getClass().getTypeParameters().getClass().getName() + " WHERE uuid = ?";
+        ParameterizedType parameterizedType = (ParameterizedType) this.getClass().getGenericSuperclass();
+        String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0]).getName();
+        log.debug("xxx: " + parameterName);
 
-        log.debug("queryString: "+ queryString);
+
+        String queryString = "FROM " + parameterName + " ";
 
         List<T> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery(queryString).list();
 
-        return null;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    public List<T> getAll(Project project) {
-        return null;
+        return results;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void makeTransient(T jakeObject) {
+    public void delete(T jakeObject) {       
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(jakeObject);
     }
 
     /**
      * {@inheritDoc}
      */
     public List<Tag> getTags(T jakeObject) {
-        return null;
+
+
+        String query = "FROM Tag WHERE object = ?";
+
+        List<Tag> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery(query).setString(0, jakeObject.getUuid().toString()).list();
+
+        return results;
     }
+
     /**
      * {@inheritDoc}
      */
     public T addTagTo(T jakeObject, Tag tag) {
-        return null;
+
+        log.debug("Adding object "+ jakeObject + " to tag " + tag);
+        tag.setObject(jakeObject);
+
+        log.debug("persisting tag");
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(tag);
+
+        return jakeObject;
     }
+
     /**
      * {@inheritDoc}
      */
     public T removeTagFrom(T jakeObject, Tag tag) {
+        tag.setObject(jakeObject);
+
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(tag);
+
+        return jakeObject;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addTagsTo(T jakeObject, Tag... tags) {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Tag> getTagsFor(T jakeObject) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-	@Override
-	public void addTagsTo(T jakeObject, Tag... tags) {
-
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-	public List<Tag> getTagsFor(T jakeObject) {
-		return null;
-	}
-
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-	public void removeTagsFrom(T jakeObject, Tag... tags) {
+    @Override
+    public void removeTagsFrom(T jakeObject, Tag... tags) {
 
 	}
 }

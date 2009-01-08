@@ -1,8 +1,8 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,8 +21,8 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> {
     }
 
     @Override
-    public FileObject get(Project project, UUID objectId) {
-        return null; // TODO
+    public FileObject get(UUID objectId) throws NoSuchJakeObjectException {
+        return super.get(objectId);
     }
 
     /**
@@ -37,16 +37,8 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> {
      * {@inheritDoc}
      */
     @Override
-    public final List<FileObject> getAll(final Project project) {
-        return super.getAll(project);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final void makeTransient(final FileObject jakeObject) {
-        super.makeTransient(jakeObject);
+    public final void delete(final FileObject jakeObject) {
+        super.delete(jakeObject);
     }
 
     /**

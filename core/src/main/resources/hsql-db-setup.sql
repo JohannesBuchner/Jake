@@ -20,6 +20,6 @@ CREATE TABLE note ( objectID			CHAR(36), text				VARCHAR(255)		NOT NULL, PRIMARY
 
 CREATE TABLE file (    objectID			CHAR(36),  path				VARCHAR(255),  hash				VARCHAR(255),  isDirectory			BOOLEAN,  PRIMARY KEY (objectID),  FOREIGN KEY (objectID) REFERENCES jakeobject(objectID));
 
-CREATE TABLE tag (  	objectId CHAR(36)		PRIMARY KEY,	text				VARCHAR(255)		NOT NULL );
+CREATE TABLE tag (               	objectId CHAR(36) NOT NULL,	text				VARCHAR(255)		NOT NULL, PRIMARY KEY (objectId, text).   FOREIGN KEY (objectId) REFERENCES jakeobject(objectId)  );
 
 CREATE TABLE logEntry (  ID				CHAR(36)		PRIMARY KEY,  memberID			CHAR(36)		NOT NULL,  objectID			CHAR(36),  hash				VARCHAR(255)		NOT NULL,  time				DATETIME		NOT NULL,  processed			BOOLEAN,  action				INTEGER			NOT NULL,  FOREIGN KEY (memberID) REFERENCES projectmember(memberID),  FOREIGN KEY (objectID) REFERENCES jakeobject(objectID));

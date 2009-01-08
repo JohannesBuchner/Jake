@@ -1,8 +1,8 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,8 +21,8 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> {
     }
 
     @Override
-    public NoteObject get(Project project, UUID objectId) {
-        return null; // TODO
+    public NoteObject get(UUID objectId) throws NoSuchJakeObjectException {
+        return super.get(objectId);
     }
 
     /**
@@ -37,16 +37,8 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> {
      * {@inheritDoc}
      */
     @Override
-    public List<NoteObject> getAll(Project project) {
-        return super.getAll(project);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void makeTransient(NoteObject jakeObject) {
-        super.makeTransient(jakeObject);
+    public void delete(NoteObject jakeObject) {
+        super.delete(jakeObject);
     }
 
     /**

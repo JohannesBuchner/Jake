@@ -21,3 +21,6 @@ CREATE TABLE jakeobject ( objectID			CHAR(36), deleted				BOOLEAN, modified			BO
 
 DROP TABLE IF EXISTS note CASCADE;
 CREATE TABLE note ( objectID			CHAR(36), text				VARCHAR(255)		NOT NULL, PRIMARY KEY (objectID), FOREIGN KEY (objectID) REFERENCES jakeobject(objectID) );
+
+DROP TABLE IF EXISTS tag CASCADE;
+CREATE TABLE tag (               	objectId CHAR(36) NOT NULL,	text				VARCHAR(255)		NOT NULL, PRIMARY KEY (objectId, text),   FOREIGN KEY (objectId) REFERENCES jakeobject(objectId)  );

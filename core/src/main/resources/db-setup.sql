@@ -47,8 +47,10 @@
 
   DROP TABLE IF EXISTS tag CASCADE;
   CREATE TABLE tag (
-  	objectId CHAR(36)		PRIMARY KEY,
-	text				VARCHAR(255)		NOT NULL
+  	objectId CHAR(36) NOT NUL,
+	text				VARCHAR(255)		NOT NULL,
+    PRIMARY KEY (objectid, text),
+    FOREIGN KEY (objectId) REFERENCES jakeobject(objectId)
   );
 
 

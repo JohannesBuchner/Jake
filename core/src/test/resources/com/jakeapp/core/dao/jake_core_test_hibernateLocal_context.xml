@@ -57,6 +57,8 @@
 
                 <value>com.jakeapp.core.domain.JakeObject</value>
                 <value>com.jakeapp.core.domain.NoteObject</value>
+                <value>com.jakeapp.core.domain.FileObject</value>
+                <value>com.jakeapp.core.domain.Tag</value>
 
             </list>
         </property>

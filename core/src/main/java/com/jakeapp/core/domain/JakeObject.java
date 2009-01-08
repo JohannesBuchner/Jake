@@ -33,7 +33,7 @@ public abstract class JakeObject implements ILogable {
     /**
      * Construct a new <code>JakeObject</code>.
      * @param uuid the <code>uuid</code> of the <code>JakeObject</code>
-     * @param project the <code>Project</code> that is associated with the 
+     * @param project the <code>Project</code> that is associated with the
      * <code>JakeObject</code>
      * @throws IllegalArgumentException if uuid was not valid
      * @see JakeObject#setUuid(UUID)

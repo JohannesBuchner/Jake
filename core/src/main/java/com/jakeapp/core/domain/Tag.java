@@ -1,16 +1,19 @@
 package com.jakeapp.core.domain;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 
 /**
  * A simple tag. It only consists of a <code>name</code>.
  */
-@Entity
+@Entity(name="tag")
+
 public class Tag implements ILogable {
     private static final long serialVersionUID = -2201488676480921149L;
 	private String name;
+
+    private JakeObject jakeObject;
 
     /**
      * Construct a new Tag.
@@ -23,12 +26,14 @@ public class Tag implements ILogable {
         super();
         this.setName(name);
     }
-
+    
     /**
      * Get the name of the tag.
      *
      * @return the name of the tag
      */
+    @Id
+    @Column(name = "text")
     public String getName() {
         return this.name;
     }
@@ -47,6 +52,20 @@ public class Tag implements ILogable {
                     "A Tag may not contain a whitespace");
 		}
         this.name = name;
+    }
+
+    @Id
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    public JakeObject getObject()
+    {
+        return this.jakeObject;
+    }
+
+
+    public void setObject(JakeObject object)
+    {
+        this.jakeObject = object;
     }
 
     /**

@@ -13,6 +13,8 @@ public class NoteObject extends JakeObject {
 	private static final long serialVersionUID = -8838089386183264658L;
     private String content;
 
+    private NoteObject(){}
+
     /**
      * Construct a new <code>NoteObject</code> with the given params.
      * @param uuid the <code>uuid</code> of the note
