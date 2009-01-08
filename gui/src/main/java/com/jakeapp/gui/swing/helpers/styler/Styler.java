@@ -9,30 +9,37 @@ import java.awt.*;
  * @author studpete
  */
 public interface Styler {
-    /**
-     * Adapts the toggle button in the toolbar, changes via state.
-     *
-     * @param btn
-     */
-    public void MakeWhiteRecessedButton(JButton btn);
+	/**
+	 * Adapts the toggle button in the toolbar, changes via state.
+	 *
+	 * @param btn
+	 */
+	public void MakeWhiteRecessedButton(JButton btn);
 
-    /**
-     * Styles the Toolbar Buttons depending on the PF
-     *
-     * @param jToggleButton
-     */
-    void styleToolbarButton(JToggleButton jToggleButton);
+	/**
+	 * Styles the Toolbar Buttons depending on the PF
+	 *
+	 * @param jToggleButton
+	 */
+	void styleToolbarButton(JToggleButton jToggleButton);
 
-    /**
-     * Get the content panel background painter.
-     * Can be adapted per platform
-     *
-     * @return
-     */
-    Painter getContentPanelBackgroundPainter();
+	/**
+	 * Get the content panel background painter.
+	 * Can be adapted per platform
+	 *
+	 * @return
+	 */
+	Painter getContentPanelBackgroundPainter();
 
-    /**
-     * Returns the Font for Bold large fonts.
-     */
-    Font getH1Font();
+	/**
+	 * Returns the Font for Bold large fonts.
+	 */
+	Font getH1Font();
+
+	/**
+	 * Returns the large font used in sheets/dialogs
+	 *
+	 * @return larger font than normal
+	 */
+	Font getSheetLargeFont();
 }

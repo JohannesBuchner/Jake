@@ -12,18 +12,18 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
-import org.jdesktop.swingx.JXTreeTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,10 +54,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		Platform.getStyler().MakeWhiteRecessedButton(newFilesButton);
 		Platform.getStyler().MakeWhiteRecessedButton(resolveButton);
 		Platform.getStyler().MakeWhiteRecessedButton(illegalFilenamesButton);
-
-		//infoPanel.setBorder(BorderFactory.createMatteBorder(
-		//        1, 1, 1, 1, Color.DARK_GRAY));
-
 
 		// TODO: Fix this. Essentially, the problem is that we need to set some sort
 		// of model before we have a project, so this creates a new model of the root
@@ -109,6 +105,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			JPopupMenu pm = new JakePopupMenu();
 
 			pm.add(new JMenuItem(new OpenFileAction(fileTreeTable, getProject())));
+			// TODO: show always? dynamically? (alwasy for now...while dev)
+			pm.add(new JMenuItem(new ResolveConflictFileAction(fileTreeTable)));
 			pm.add(new JSeparator());
 			pm.add(new JMenuItem(new AnnounceFileAction(fileTreeTable)));
 			pm.add(new JMenuItem(new PullFileAction(fileTreeTable)));
@@ -126,7 +124,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(fileTreeTable, (int) me.getPoint().getX(), (int) me.getPoint()
-				 .getY());
+					  .getY());
 		}
 
 		@Override
@@ -197,26 +195,26 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
 		infoPanel.setLayout(infoPanelLayout);
 		infoPanelLayout.setHorizontalGroup(
-			 infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
-				  .addContainerGap()
-				  .addComponent(jLabel1)
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
-				  .addComponent(resolveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-				  .addComponent(illegalFilenamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-				  .addComponent(newFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-				  .addContainerGap())
+				  infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+							 .addContainerGap()
+							 .addComponent(jLabel1)
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
+							 .addComponent(resolveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+							 .addComponent(illegalFilenamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+							 .addComponent(newFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+							 .addContainerGap())
 		);
 		infoPanelLayout.setVerticalGroup(
-			 infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				  .addGroup(infoPanelLayout.createSequentialGroup()
-						.addGap(8, 8, 8)
-						.addComponent(jLabel1))
-				  .addComponent(newFilesButton)
-				  .addComponent(illegalFilenamesButton)
-				  .addComponent(resolveButton)
+				  infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+							 .addGroup(infoPanelLayout.createSequentialGroup()
+										.addGap(8, 8, 8)
+										.addComponent(jLabel1))
+							 .addComponent(newFilesButton)
+							 .addComponent(illegalFilenamesButton)
+							 .addComponent(resolveButton)
 		);
 
 		add(infoPanel, java.awt.BorderLayout.PAGE_START);

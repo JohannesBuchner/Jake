@@ -260,7 +260,20 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// update the event table
 
 		// update the people table
-		//peopleList.add
+
+
+		/*
+		SourceListControlBar cb = new SourceListControlBar();
+		cb.createAndAddButton(startIcon, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JSheet.showMessageSheet(peopleList, "Bla");
+			}
+		});
+		
+		this.add(cb.getComponent());
+*/
 	}
 
 	/**

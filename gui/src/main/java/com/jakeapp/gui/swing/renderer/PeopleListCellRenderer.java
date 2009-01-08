@@ -10,10 +10,8 @@ import java.awt.*;
 /**
  * The PeopleListCellRenderer.
  * Renders People info with Status Icon.
- * User: studpete
- * Date: Jan 4, 2009
- * Time: 2:34:20 PM
  */
+// TODO: localize
 public class PeopleListCellRenderer extends DefaultListCellRenderer {
 	final static ImageIcon onlineFullTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-fulltrust.png")));
 	final static ImageIcon onlineTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-trust.png")));

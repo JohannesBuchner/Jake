@@ -1,24 +1,58 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTreeTable;
 
 public abstract class FileAction extends ProjectAction {
-   private static final Logger log = Logger.getLogger(FileAction.class);
+	private static final Logger log = Logger.getLogger(FileAction.class);
 
-   private JXTreeTable fileTable;
+	private JXTreeTable fileTable;
 
-   public FileAction(JXTreeTable fileTable) {
-      super();
-      this.fileTable = fileTable;
-   }
+	/**
+	 * Creates the file action.
+	 * Depends on a JXTreeTable
+	 *
+	 * @param fileTable
+	 */
+	// TODO: abstract this! no depend on whole component!
+	public FileAction(JXTreeTable fileTable) {
+		super();
+		this.fileTable = fileTable;
+	}
 
-   public JXTreeTable getFileTable() {
-      return fileTable;
-   }
+	/**
+	 * Checks if a single file (no folder) is selected
+	 *
+	 * @return true if single file, no folder
+	 */
+	protected boolean isSingleFileSelected() {
+		boolean enabled = (fileTable.getSelectedRowCount() == 1 &&
+				  ((ProjectFilesTreeNode) fileTable.getValueAt(fileTable.getSelectedRow(), 0)).isFile());
+		return enabled;
+	}
 
-   public void setFile(JXTreeTable fileTable) {
-      this.fileTable = fileTable;
-   }
+	/**
+	 * Returns a FileObject from the File Table.
+	 *
+	 * @return file object or null of no/multiple selected.
+	 */
+	protected FileObject getSelectedFile() {
+		if (!isSingleFileSelected()) {
+			return null;
+		} else {
+			return ((ProjectFilesTreeNode) fileTable.getValueAt(
+					  fileTable.getSelectedRow(), 0)).getFileObject();
+		}
+	}
+
+
+	public JXTreeTable getFileTable() {
+		return fileTable;
+	}
+
+	protected void setFileTable(JXTreeTable fileTable) {
+		this.fileTable = fileTable;
+	}
 }

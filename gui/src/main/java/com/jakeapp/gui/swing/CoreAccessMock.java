@@ -523,7 +523,7 @@ public class CoreAccessMock implements ICoreAccess {
 	public List<ProjectMember> getSuggestedPeople(Project project) {
 		List<ProjectMember> members = new ArrayList<ProjectMember>();
 		members.add(getPeople(project).get(0));
-		members.add(getPeople(project).get(1));
+//		members.add(getPeople(project).get(1));
 		return members;
 	}
 
