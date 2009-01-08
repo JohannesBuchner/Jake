@@ -195,7 +195,9 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public ProjectMember getCurrentProjectMember() {
-		return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
+		// TODO: fix
+		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
+		//return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
 	}
 
 
@@ -442,7 +444,10 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public ProjectMember getLastEditor(NoteObject note, Project project) {
-		return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
+		// TODO: fix
+		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
+
+		//	return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
 	}
 
 	/**
@@ -461,6 +466,11 @@ public class CoreAccessMock implements ICoreAccess {
 		if (!peopleProjectMap.containsKey(project)) {
 			List<ProjectMember> people = new ArrayList<ProjectMember>();
 
+			// TODO: fix
+			people.add(new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE));
+
+
+			/*
 			people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User1", "pass2"),
 					  new UUID(22, 33), "pstein@jabber.fsinf.at", "", "Peter", "Steinberger"), TrustState.TRUST));
 
@@ -470,7 +480,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 			people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User3", "pass3"),
 					  new UUID(22, 33), "max@jabber.org", "Max", "Max", "Mustermann"), TrustState.NO_TRUST));
-
+*/
 			peopleProjectMap.put(project, people);
 		}
 
@@ -483,7 +493,7 @@ public class CoreAccessMock implements ICoreAccess {
 		if (nick.indexOf("<") != -1) {
 			return false;
 		} else {
-			pm.getUserId().setNickname(nick);
+			pm.setNickname(nick);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));

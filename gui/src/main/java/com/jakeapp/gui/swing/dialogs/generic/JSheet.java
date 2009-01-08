@@ -14,6 +14,7 @@ package com.jakeapp.gui.swing.dialogs.generic;
  * the copyright holders. For details see accompanying license terms.
  */
 
+import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.Methods;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -235,7 +236,8 @@ public class JSheet extends JDialog {
 					owner.addComponentListener(ownerMovementHandler);
 				} else {
 					if (owner instanceof Frame) {
-						setTitle(((Frame) owner).getTitle());
+						//setTitle(((Frame) owner).getTitle());
+						setTitle(AppUtilities.getAppName());
 					}
 				}
 			}

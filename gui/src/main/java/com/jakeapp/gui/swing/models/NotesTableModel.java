@@ -1,55 +1,53 @@
 package com.jakeapp.gui.swing.models;
 
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.ICoreAccess;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+
+import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.table.DefaultTableModel;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
-import com.jakeapp.gui.swing.ICoreAccess;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.TimeUtilities;
-
 /**
  * Table model for the notes table.
- * @author Simon
  *
+ * @author Simon
  */
 public class NotesTableModel extends DefaultTableModel {
-	
+
 	private static final long serialVersionUID = -2745782032637383756L;
 
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
-		
+
 	private List<String> columnNames;
 	private List<NoteMetaDataWrapper> notes;
 	private ResourceMap resourceMap;
 	private Project currentProject;
 	private ICoreAccess core;
-	
+
 	private class NoteMetaDataWrapper {
 		public NoteObject note;
 		public Date lastEdit;
 		public String lastEditor;
+
 		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor) {
 			this.note = note;
 			this.lastEdit = lastEdit;
 			this.lastEditor = lastEditor;
 		}
 	}
-	
+
 	public NotesTableModel() {
-        this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
+		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
 		this.notes = new ArrayList<NoteMetaDataWrapper>();
 		this.core = JakeMainApp.getApp().getCore();
-		this.columnNames = new ArrayList<String>();  
+		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHEaderNote"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
@@ -62,7 +60,7 @@ public class NotesTableModel extends DefaultTableModel {
 	public NoteObject getNoteAtRow(int row) {
 		return this.notes.get(row).note;
 	}
-	
+
 	@Override
 	public int getColumnCount() {
 		return this.columnNames.size();
@@ -77,19 +75,20 @@ public class NotesTableModel extends DefaultTableModel {
 	public int getRowCount() {
 		return this.notes != null ? this.notes.size() : 0;
 	}
-	
+
 	/**
 	 * Update the contents of the table model. It tries to update with the current project.
 	 */
 	public void update() {
 		this.update(this.currentProject);
 	}
-	
+
 	/**
-	 * Update the contents of the table model for a given project. 
-	 * @param project the project from which the notes should be loaded. 
+	 * Update the contents of the table model for a given project.
+	 *
+	 * @param project the project from which the notes should be loaded.
 	 */
-	public void update (Project project) {
+	public void update(Project project) {
 		if (project == null) {
 			return;
 		}
@@ -97,13 +96,15 @@ public class NotesTableModel extends DefaultTableModel {
 		this.notes.clear();
 		List<NoteObject> incommingNotes = this.core.getNotes(project);
 		for (NoteObject n : incommingNotes) {
-			UserId id = this.core.getLastEditor(n, project).getUserId(); 
+			//UserId id = this.core.getLastEditor(n, project).getUserId();
 			this.notes.add(new NoteMetaDataWrapper(n,
-					this.core.getLastEdit(n, project),
-					id.getFirstName() + id.getSurName()));
+					  this.core.getLastEdit(n, project),
+					  "first + last"));
+			// TODO: fix ProjectMember-changes
+			//id.getFirstName() + id.getSurName()));
 		}
 	}
-	
+
 	@Override
 	public Object getValueAt(int row, int column) {
 		String value;

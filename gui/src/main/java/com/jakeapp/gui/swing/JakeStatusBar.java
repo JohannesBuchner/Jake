@@ -65,7 +65,9 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		String msg;
 
 		if (getCore().isSignedIn()) {
-			msg = getCore().getCurrentProjectMember().getUserId().getUserId();
+			// TODO: fix asap!
+			msg = "breaked!!!!";
+			//msg = getCore().getCurrentProjectMember().getUserIdS();
 		} else {
 			msg = getResourceMap().getString("statusLoginNotSignedIn");
 		}

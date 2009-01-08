@@ -90,7 +90,8 @@ public class InvitePeopleDialog extends JakeDialog {
 				if (ProjectMember.class.isInstance(o)) {
 					ProjectMember member = (ProjectMember) o;
 
-					return member.getUserId().getUserId() + " (" + JakeObjectHelpers.getNickOrFullName(member, 30) + ")";
+					return member.getUserId()
+							  + " (" + JakeObjectHelpers.getNickOrFullName(member, 30) + ")";
 				} else {
 					return o.toString();
 				}
@@ -149,6 +150,7 @@ public class InvitePeopleDialog extends JakeDialog {
 	public static void showDialog(Project project, JFrame frame) {
 		InvitePeopleDialog ipd = new InvitePeopleDialog(project, frame);
 		ipd.setSize(500, 190);
+		ipd.setMinimumSize(new Dimension(500, 180));
 		ipd.setResizable(true);
 		ipd.setVisible(true);
 	}

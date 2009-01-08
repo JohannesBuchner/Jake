@@ -24,11 +24,12 @@ public class JakeObjectHelpers {
 	 * @return nickname or full name, if nn not set.
 	 */
 	public static String getNickOrFullName(ProjectMember member) {
-		String nickOrFullName;
-		if (member.getUserId().getNickname().length() == 0) {
-			nickOrFullName = member.getUserId().getFirstName() + " " + member.getUserId().getSurName();
+		String nickOrFullName = "";
+		if (member.getNickname().length() == 0) {
+			// TODO: where did those properties go???
+			//nickOrFullName = member.getFirstName() + " " + member.getSurName();
 		} else {
-			nickOrFullName = member.getUserId().getNickname();
+			nickOrFullName = member.getNickname();
 		}
 		return nickOrFullName;
 	}
