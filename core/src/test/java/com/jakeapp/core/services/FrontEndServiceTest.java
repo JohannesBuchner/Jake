@@ -36,7 +36,7 @@ public class FrontEndServiceTest {
 	}
 
 	@BeforeClass
-	public void setUpClass() {
+	public static void setUpClass() {
 		VALID_CREDENTIALS = new HashMap<String,String>();
 		//TODO find out valid credentials
 		VALID_CREDENTIALS.put("to", "do");
@@ -51,8 +51,8 @@ public class FrontEndServiceTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test(timeout = TestingConstants.UNITTESTTIME,expected = InvalidCredentialsException.class)
-	public void authenticate_shouldFailWithEmptyCredentials() throws IllegalArgumentException, InvalidCredentialsException {
+	@Test(timeout = TestingConstants.UNITTESTTIME)
+	public void authenticate_shouldNOTFailWithEmptyCredentials() throws IllegalArgumentException, InvalidCredentialsException {
 		this.getService().authenticate(new HashMap<String,String>());
 	}
 
