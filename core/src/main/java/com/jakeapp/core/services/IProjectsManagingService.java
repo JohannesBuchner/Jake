@@ -1,6 +1,7 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 
 import java.util.List;
 import java.util.Map;
@@ -197,6 +198,6 @@ public interface IProjectsManagingService {
      * @return
      * @throws IllegalArgumentException
      */
-    public List<NoteObject> getNotes(Project project) throws IllegalArgumentException;
+    public List<NoteObject> getNotes(Project project) throws IllegalArgumentException, ProjectNotLoadedException;
 
 }

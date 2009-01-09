@@ -2,50 +2,40 @@ package com.jakeapp.core.services;
 
 import java.util.*;
 
+
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.jake.ics.ICService;
+import org.apache.log4j.Logger;
 
 /**
  * Implementation of the FrontendServiceInterface
  */
 public class FrontendServiceImpl implements IFrontendService {
+    private static Logger log = Logger.getLogger(FrontendServiceImpl.class);
+
     private IProjectsManagingService projectsManagingService;
     private List<MsgService> msgServices = new ArrayList<MsgService>();
     private MsgServiceFactory msgServiceFactory;
 
     /**
      * Constructor
+     *
      * @param projectsManagingService
      * @param msgServiceFactory
-
      */
     public FrontendServiceImpl(
             IProjectsManagingService projectsManagingService,
             MsgServiceFactory msgServiceFactory
     ) {
         this.setProjectsManagingService(projectsManagingService);
-        this.setSessions(new HashMap<String,FrontendSession>());
+        this.setSessions(new HashMap<String, FrontendSession>());
         this.msgServiceFactory = msgServiceFactory;
 
 
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private IProjectsManagingService getProjectsManagingService() {
@@ -56,94 +46,97 @@ public class FrontendServiceImpl implements IFrontendService {
         this.projectsManagingService = projectsManagingService;
     }
 
-    private Map<String,FrontendSession> sessions;
-	
-	/**
-	 * Checks frontend-credentials and throws exceptions if they
-	 * are not correct.
-	 * @see #authenticate(Map)
-	 * @param credentials The credentials to be checked
-     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
-     * @throws IllegalArgumentException
-	 */
-	private void checkCredentials(Map<String, String> credentials)
-		throws IllegalArgumentException, InvalidCredentialsException { 
-		
-		if (credentials == null) throw new IllegalArgumentException();
-		
-		//TODO do further checking for later versions
-	}
-	
-	private void setSessions(Map<String,FrontendSession> sessions) {
-		this.sessions = sessions;
-	}
+    private Map<String, FrontendSession> sessions;
 
-	private Map<String,FrontendSession> getSessions() {
-		return sessions;
-	}
-	
-	private void addSession(String sessid,FrontendSession session) {
-		this.getSessions().put(sessid,session);
-	}
-	
-	private boolean removeSession(String sessid) {
-		FrontendSession fes;
-		
-		fes = this.getSessions().remove(sessid);
-		
-		return fes != null;
-	}
-	
-	/**
-     * /// TODO Do we really need this!? -- Dominik
+    /**
+     * Checks frontend-credentials and throws exceptions if they
+     * are not correct.
      *
-	 * retrieves a session
-	 * @param sessionId The id associated with the session after it was created
-	 * @throws IllegalArgumentException if <code>sessionId</code> was null
-	 * @throws NotLoggedInException if no Session associated with <code>sessionId</code> exists.
+     * @param credentials The credentials to be checked
+     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
+     *
+     * @throws IllegalArgumentException
+     * @see #authenticate(Map)
+     */
+    private void checkCredentials(Map<String, String> credentials)
+            throws IllegalArgumentException, InvalidCredentialsException {
+
+        if (credentials == null) throw new IllegalArgumentException();
+
+        //TODO do further checking for later versions
+    }
+
+    private void setSessions(Map<String, FrontendSession> sessions) {
+        this.sessions = sessions;
+    }
+
+    private Map<String, FrontendSession> getSessions() {
+        return sessions;
+    }
+
+    private void addSession(String sessid, FrontendSession session) {
+        this.getSessions().put(sessid, session);
+    }
+
+    private boolean removeSession(String sessid) {
+        FrontendSession fes;
+
+        fes = this.getSessions().remove(sessid);
+
+        return fes != null;
+    }
+
+    /**
+     * /// TODO Do we really need this!? -- Dominik
+     * <p/>
+     * retrieves a session
+     *
+     * @param sessionId The id associated with the session after it was created
      * @return // TODO
-	 */
-	private FrontendSession getSession(String sessionId) throws IllegalArgumentException, NotLoggedInException {
-		FrontendSession result;
-		
-		if (sessionId == null) throw new IllegalArgumentException();
-		result = this.getSessions().get(sessionId);
-		
-		if (result == null) throw new NotLoggedInException();
-		
-		return result;
-	}
-	
+     * @throws IllegalArgumentException if <code>sessionId</code> was null
+     * @throws NotLoggedInException     if no Session associated with <code>sessionId</code> exists.
+     */
+    private FrontendSession getSession(String sessionId) throws IllegalArgumentException, NotLoggedInException {
+        FrontendSession result;
+
+        if (sessionId == null) throw new IllegalArgumentException();
+        result = this.getSessions().get(sessionId);
+
+        if (result == null) throw new NotLoggedInException();
+
+        return result;
+    }
+
     /**
      * @return A sessionid for a new session
      */
-	private String makeSessionID() {
-		return UUID.randomUUID().toString();
-	}
-	
+    private String makeSessionID() {
+        return UUID.randomUUID().toString();
+    }
+
 
     @Override
     public String authenticate(Map<String, String> credentials) throws IllegalArgumentException, InvalidCredentialsException {
-    	String sessid;
-    	
-    	this.checkCredentials(credentials);
-    	
-    	//create new session
-    	sessid = makeSessionID();
-    	this.addSession(sessid, new FrontendSession());
-    	
+        String sessid;
+
+        this.checkCredentials(credentials);
+
+        //create new session
+        sessid = makeSessionID();
+        this.addSession(sessid, new FrontendSession());
+
         return sessid;
     }
 
     @Override
     public boolean logout(String sessionId) throws IllegalArgumentException, NotLoggedInException {
-    	boolean successfullyRemoved;
-    	
-    	if (sessionId == null) throw new IllegalArgumentException();
-    	
-    	successfullyRemoved = this.removeSession(sessionId);
-    	if (!successfullyRemoved) throw new NotLoggedInException();
-    	
+        boolean successfullyRemoved;
+
+        if (sessionId == null) throw new IllegalArgumentException();
+
+        successfullyRemoved = this.removeSession(sessionId);
+        if (!successfullyRemoved) throw new NotLoggedInException();
+
         return true;
     }
 
@@ -151,22 +144,32 @@ public class FrontendServiceImpl implements IFrontendService {
     public IProjectsManagingService getProjectsManagingService(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
         sessionCheck(sessionId);
         // 3. return ProjectsManagingService
-            return this.getProjectsManagingService();
+        return this.getProjectsManagingService();
     }
 
     private void sessionCheck(String sessionId) throws NotLoggedInException {
+
+
         // 1. check if session is null, if so throw  IllegalArgumentException
-        if(sessionId == null || sessionId.isEmpty())
+        if (sessionId == null || sessionId.isEmpty())
             throw new IllegalArgumentException("invalid sessionid");
 
         // 2. check session validity
-        if(!sessions.containsKey(sessionId))
-                throw new NotLoggedInException("Invalid Session; Not logged in");
+        if (!sessions.containsKey(sessionId)) {
+            log.debug("sessions dont contain ssesionid " + sessionId);
+            log.debug("this are the stored sessions ");
+            for(String entry : sessions.keySet())
+            {
+                log.debug(entry);
+            }
+            throw new NotLoggedInException("Invalid Session; Not logged in");
+        }
+
     }
 
     @Override
     public List<ICService> getICServices(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
-    	return this.getSession(sessionId).getICServices();
+        return this.getSession(sessionId).getICServices();
     }
 
     @Override

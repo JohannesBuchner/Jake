@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
@@ -302,6 +303,7 @@ public interface ICoreAccess {
 	 * @return The file's status
 	 *         <p/>
 	 *         TODO: Is this really an int?
+     *          TODO: // shouldn't we refactor this to something like Enum SyncStatus
 	 */
 	public int getFileStatus(Project project, FileObject file);
 
@@ -331,7 +333,7 @@ public interface ICoreAccess {
 	 * @param project: project that should be evaluated
 	 * @return
 	 */
-	public List<NoteObject> getNotes(Project project);
+	public List<NoteObject> getNotes(Project project) throws NotLoggedInException, ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.

@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
@@ -432,19 +433,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
         return fo;
     }
 
-    public List<NoteObject> getNotes(Project project) {
-        List<NoteObject> list = new ArrayList<NoteObject>();
-        list.add(new NoteObject(new UUID(1, 1), project, "Project: " + project.getName()));
-        list.add(new NoteObject(new UUID(1, 1), project, "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
-        list.add(new NoteObject(new UUID(2, 1), project, "Apple pays Chuck Norris 99 cents every time he listens to a song."));
-        list.add(new NoteObject(new UUID(3, 1), project, "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
-        list.add(new NoteObject(new UUID(4, 1), project, "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
-        list.add(new NoteObject(new UUID(4, 1), project, "Chuck Norris can kill two stones with one bird."));
-        list.add(new NoteObject(new UUID(5, 1), project, "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
-        list.add(new NoteObject(new UUID(6, 1), project, "Chuck Norris does not sleep. He waits."));
-        list.add(new NoteObject(new UUID(7, 1), project, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
-        list.add(new NoteObject(new UUID(8, 1), project, "Guns don't kill people, Chuck Norris does."));
-        return list;
+    public List<NoteObject> getNotes(Project project) throws NotLoggedInException, ProjectNotLoadedException {
+        return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(project);
     }
 
     @Override

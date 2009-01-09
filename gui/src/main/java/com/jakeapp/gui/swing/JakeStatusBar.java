@@ -7,6 +7,8 @@ import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -219,8 +221,22 @@ public class JakeStatusBar extends JakeGuiComponent implements
 				// update project statistics
 				statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
 			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Notes) {
-				int notesCount = getCore().getNotes(getProject()).size();
-				String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
+                int notesCount = 0;
+                try {
+                    /**
+                     * TODO 4 Peter:
+                     * achtung.. das hollt jedes mal
+                     * die ganzen Notes aus der Datenbank... bitte irgendwo zwischenspeichern.
+                     */
+                    notesCount = getCore().getNotes(getProject()).size();
+                } catch (NotLoggedInException e) {
+                    // TODO 4 peter
+                    e.printStackTrace();
+                } catch (ProjectNotLoadedException e) {
+                    // TODO 4 Peter
+                    e.printStackTrace();
+                }
+                String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
 
 				statusLabel.setText(notesCount + " " + notesCountStr);
 

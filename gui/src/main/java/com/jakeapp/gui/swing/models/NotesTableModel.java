@@ -2,6 +2,8 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -94,11 +96,23 @@ public class NotesTableModel extends DefaultTableModel {
 		}
 		this.currentProject = project;
 		this.notes.clear();
-		List<NoteObject> incommingNotes = this.core.getNotes(project);
-		for (NoteObject n : incommingNotes) {
+		List<NoteObject> incommingNotes = new ArrayList<NoteObject>();
+
+
+        try {
+            incommingNotes = this.core.getNotes(project);
+        } catch (NotLoggedInException e) {
+            // TODO 4 Peter/Chris
+            e.printStackTrace();
+        } catch (ProjectNotLoadedException e) {
+            // TODO 4 Peter/Chris
+            e.printStackTrace();
+        }
+        
+        for (NoteObject n : incommingNotes) {
 			//UserId id = this.core.getLastEditor(n, project).getUserId();
 			this.notes.add(new NoteMetaDataWrapper(n,
-					  this.core.getLastEdit(n, project),
+					  this.core.getLastEdit(n, project), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
 					  "first + last"));
 			// TODO: fix ProjectMember-changes
 			//id.getFirstName() + id.getSurName()));
