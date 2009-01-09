@@ -14,6 +14,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.ETreeTable;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
@@ -21,7 +22,6 @@ import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -65,7 +65,12 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		fileTreeTable.setScrollsOnExpand(true);
 		fileTreeTable.setSortable(true);
 		fileTreeTable.setColumnControlVisible(true);
-		fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+
+		// ETreeTable performs its own striping on the mac
+		// TODO: make this more beautiful...
+		if (!Platform.isMac()) {
+			fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+		}
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
 		// fileTreeTable.setDefaultEditor(TagSet.class, new FilesTreeTableTagCellEditor());
@@ -156,7 +161,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		jScrollPane1 = new javax.swing.JScrollPane();
 		// FIXME: Make this an ETreeTable
-		fileTreeTable = new JXTreeTable();
+		fileTreeTable = new ETreeTable();
 		infoPanel = new org.jdesktop.swingx.JXPanel();
 		jLabel1 = new javax.swing.JLabel();
 		newFilesButton = new javax.swing.JButton();

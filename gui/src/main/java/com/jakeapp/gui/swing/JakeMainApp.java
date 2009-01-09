@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.SheetableJFrame;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
@@ -16,203 +17,213 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * The main class of the application.
  */
 public class JakeMainApp extends SingleFrameApplication implements ProjectSelectionChanged {
-    private static final Logger log = Logger.getLogger(JakeMainApp.class);
-    private static JakeMainApp app;
-    private ICoreAccess core;
-    private Project project = null;
-    private List<ProjectSelectionChanged> projectSelectionChanged =
-            new LinkedList<ProjectSelectionChanged>();
+	private static final Logger log = Logger.getLogger(JakeMainApp.class);
+	private static JakeMainApp app;
+	private ICoreAccess core;
+	private Project project = null;
+	private List<ProjectSelectionChanged> projectSelectionChanged =
+			  new LinkedList<ProjectSelectionChanged>();
 
-    public JakeMainApp() {
-        this.app = this;
+	public JakeMainApp() {
+		this.app = this;
 
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-                new String[]{"/com/jakeapp/core/applicationContext.xml"
-                        /**
-                         * Uncomment the following line to use the real implementation
-                         */
+
+		// TODO: johannes, please fix
+		boolean johannesWorkaroundEnable = true;
+		if (johannesWorkaroundEnable) {
+			setCore(new CoreAccessMock());
+		} else {
+
+			ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+					  new String[]{"/com/jakeapp/core/applicationContext.xml"
+								 /**
+								  * Uncomment the following line to use the real implementation
+								  */
 //                        ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
 
 
-                        /**
-                         * Uncomment the following line to use peter/chris mock implementation
-                         */
-                        ,"/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+								 /**
+								  * Uncomment the following line to use peter/chris mock implementation
+								  */
+								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
-                });
-        setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
+					  });
+			setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
 
-        Map<String,String> backendCredentials = new HashMap<String,String>();
-        backendCredentials.put("frontendUsername", "swingGui");
-        backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
-        backendCredentials.put("backendHost", "127.0.0.1");
-        backendCredentials.put("backendPort", "5000");
-        backendCredentials.put("backendName", "defaultBackendServiceName");
+			Map<String, String> backendCredentials = new HashMap<String, String>();
+			backendCredentials.put("frontendUsername", "swingGui");
+			backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
+			backendCredentials.put("backendHost", "127.0.0.1");
+			backendCredentials.put("backendPort", "5000");
+			backendCredentials.put("backendName", "defaultBackendServiceName");
 
 
-        try {
-            core.authenticateOnBackend(backendCredentials);
-        } catch (InvalidCredentialsException e) {
-            /**
-             * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich sein, dass GUI und Core entkoppelt sind
-             * und uebers netzwerk kommunizieren. Sofern das Gui sich nicht beim core authentifizieren kann (weil die
-             * credentials falsch sind), soll dem user eine box angezeigt werden, wo er dann spaeter auch die
-             * core-daten (host, port, serviceName etc.) aendern kann. Muss in dieser Phase des Projektes noch nicht
-             * gemacht werden, nur damit du's weisst.
-              */
-            log.warn("Failed to login to backend");
-            e.printStackTrace();  
-        }
+			try {
+				core.authenticateOnBackend(backendCredentials);
+			} catch (InvalidCredentialsException e) {
+				/**
+				 * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich sein, dass GUI und Core entkoppelt sind
+				 * und uebers netzwerk kommunizieren. Sofern das Gui sich nicht beim core authentifizieren kann (weil die
+				 * credentials falsch sind), soll dem user eine box angezeigt werden, wo er dann spaeter auch die
+				 * core-daten (host, port, serviceName etc.) aendern kann. Muss in dieser Phase des Projektes noch nicht
+				 * gemacht werden, nur damit du's weisst.
+				 *
+				 * TODO: @ anonymous author: in english, please ;)
+				 */
+				String msg = "Failed to login to backend";
+				JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(), msg);
+				log.warn(msg);
+				e.printStackTrace();
+			}
+		}
+	}
 
-    }
+	/**
+	 * At startup create and show the main frame of the application.
+	 * (Called from the Swing Application Framework)
+	 */
+	@Override
+	protected void startup() {
+		this.setMainFrame(new SheetableJFrame("Jake"));
+		show(new JakeMainView(this));
+	}
 
-    /**
-     * At startup create and show the main frame of the application.
-     * (Called from the Swing Application Framework)
-     */
-    @Override
-    protected void startup() {
-        this.setMainFrame(new SheetableJFrame("Jake"));
-        show(new JakeMainView(this));
-    }
+	/**
+	 * This method is to initialize the specified window by injecting resources.
+	 * Windows shown in our application come fully initialized from the GUI
+	 * builder, so this additional configuration is not needed.
+	 */
+	@Override
+	protected void configureWindow(java.awt.Window root) {
+	}
 
-    /**
-     * This method is to initialize the specified window by injecting resources.
-     * Windows shown in our application come fully initialized from the GUI
-     * builder, so this additional configuration is not needed.
-     */
-    @Override
-    protected void configureWindow(java.awt.Window root) {
-    }
+	/**
+	 * A convenient static getter for the application instance.
+	 *
+	 * @return the instance of JakeMock2App
+	 */
+	public static JakeMainApp getApplication() {
+		return Application.getInstance(JakeMainApp.class);
+	}
 
-    /**
-     * A convenient static getter for the application instance.
-     *
-     * @return the instance of JakeMock2App
-     */
-    public static JakeMainApp getApplication() {
-        return Application.getInstance(JakeMainApp.class);
-    }
+	/**
+	 * Main method launching the application.
+	 */
+	public static void main(String[] args) {
+		startGui(args);
+	}
 
-    /**
-     * Main method launching the application.
-     */
-    public static void main(String[] args) {
-        startGui(args);
-    }
+	/**
+	 * Starts the GUI!
+	 *
+	 * @param args
+	 */
+	private static void startGui(String[] args) {
 
-    /**
-     * Starts the GUI!
-     *
-     * @param args
-     */
-    private static void startGui(String[] args) {
+		// we use the system laf everywhere except linux.
+		// gtk is ugly here - we us nimbus (when available)
+		try {
+			if (Platform.isWin() || Platform.isMac()) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} else {
+				// try to use nimbus (available starting j6u10)
+				try {
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				} catch (Exception r) {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				}
+			}
+		} catch (Exception e) {
+			log.warn("LAF Exception: ", e);
+		}
 
-        // we use the system laf everywhere except linux.
-        // gtk is ugly here - we us nimbus (when available)
-        try {
-            if (Platform.isWin() || Platform.isMac()) {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } else {
-                // try to use nimbus (available starting j6u10)
-                try {
-                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-                } catch (Exception r) {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                }
-            }
-        } catch (Exception e) {
-            log.warn("LAF Exception: ", e);
-        }
+		//System.setProperty("awt.useSystemAAFontSettings","on");
+		//System.setProperty("swing.aatext", "true");
 
-        //System.setProperty("awt.useSystemAAFontSettings","on");
-        //System.setProperty("swing.aatext", "true");
+		// MacOSX specific: set menu name to 'Jake'
+		// has to be called VERY early to succeed (prior to any gui stuff, later calls will be ignored)
+		if (Platform.isMac()) {
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+		}
 
-        // MacOSX specific: set menu name to 'Jake'
-        // has to be called VERY early to succeed (prior to any gui stuff, later calls will be ignored)
-        if (Platform.isMac()) {
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
-        }
-
-        Platform.fixWmClass();
-        launch(JakeMainApp.class, args);
-    }
-
-
-    /**
-     * Returns single instance of the App.
-     *
-     * @return
-     */
-    public static JakeMainApp getApp() {
-        return app;
-    }
-
-    public ICoreAccess getCore() {
-        return core;
-    }
-
-    public void setCore(ICoreAccess core) {
-        this.core = core;
-    }
-
-    public Project getProject() {
-        return project;
-    }
+		Platform.fixWmClass();
+		launch(JakeMainApp.class, args);
+	}
 
 
-    public void setProject(Project project) {
+	/**
+	 * Returns single instance of the App.
+	 *
+	 * @return
+	 */
+	public static JakeMainApp getApp() {
+		return app;
+	}
 
-        if (this.project != project) {
-            this.project = project;
+	public ICoreAccess getCore() {
+		return core;
+	}
 
-            // fire the event and relay to all items/components/actions/panels
-            fireProjectSelectionChanged();
-        }
-    }
+	public void setCore(ICoreAccess core) {
+		this.core = core;
+	}
 
-    /**
-     * Fires a project selection change event, calling all
-     * registered members of the event.
-     */
-    private void fireProjectSelectionChanged() {
-        for (ProjectSelectionChanged psc : projectSelectionChanged) {
-            try {
-                psc.setProject(getProject());
-            } catch (RuntimeException ex) {
-                log.error("Catched an exception while setting the new project: ", ex);
-            }
-        }
-    }
-
-    public void addProjectSelectionChangedListener(ProjectSelectionChanged psc) {
-        projectSelectionChanged.add(psc);
-    }
-
-    public void removeProjectSelectionChangedListener(ProjectSelectionChanged psc) {
-        if (projectSelectionChanged.contains(psc)) {
-            projectSelectionChanged.remove(psc);
-        }
-    }
+	public Project getProject() {
+		return project;
+	}
 
 
-    public void saveQuit()
-    {
-        log.debug("Calling saveQuit");
-        this.core.backendLogOff();
-        this.core = null;
+	public void setProject(Project project) {
 
-        System.exit(0);
-    }
+		if (this.project != project) {
+			this.project = project;
+
+			// fire the event and relay to all items/components/actions/panels
+			fireProjectSelectionChanged();
+		}
+	}
+
+	/**
+	 * Fires a project selection change event, calling all
+	 * registered members of the event.
+	 */
+	private void fireProjectSelectionChanged() {
+		for (ProjectSelectionChanged psc : projectSelectionChanged) {
+			try {
+				psc.setProject(getProject());
+			} catch (RuntimeException ex) {
+				log.error("Catched an exception while setting the new project: ", ex);
+			}
+		}
+	}
+
+	public void addProjectSelectionChangedListener(ProjectSelectionChanged psc) {
+		projectSelectionChanged.add(psc);
+	}
+
+	public void removeProjectSelectionChangedListener(ProjectSelectionChanged psc) {
+		if (projectSelectionChanged.contains(psc)) {
+			projectSelectionChanged.remove(psc);
+		}
+	}
+
+
+	public void saveQuit() {
+		log.debug("Calling saveQuit");
+		this.core.backendLogOff();
+		this.core = null;
+
+		System.exit(0);
+	}
 }

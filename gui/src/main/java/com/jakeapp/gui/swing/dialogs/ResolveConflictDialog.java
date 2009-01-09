@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
+import com.jakeapp.gui.swing.helpers.FileObjectHelper;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
@@ -46,7 +47,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		initDialog();
 
 		// set custom properties
-		setDialogTitle("resolveConflictTitle");
+		setDialogTitle("resolveConflictTitle" + " " + FileObjectHelper.getName(fo.getAbsolutePath()));
 		setMessage("resolveHeader");
 		setPicture("/icons/file-conflict-large.png");
 	}
@@ -56,10 +57,12 @@ public class ResolveConflictDialog extends JakeDialog {
 	protected JButton initComponents() {
 
 		// create the custom content for resolve conflict.
-		JPanel customPanel = new JPanel(new MigLayout("wrap 2, fill, ins 0"));
+		JPanel customPanel = new JPanel(new MigLayout("wrap 3, fill, ins 0"));
 
-		JLabel localLabel = new JLabel("<html>From: " + fo);
+		JLabel localLabel = new JLabel("<html>Local: " + fo);
 		JButton viewLocal = new JButton("Open Local");
+
+		JLabel remoteLabel = new JLabel("<html>Remote: " + fo);
 		JButton viewRemote = new JButton("Open Remote");
 
 		ActionListener updateResolveAction = new ActionListener() {
@@ -70,6 +73,7 @@ public class ResolveConflictDialog extends JakeDialog {
 			}
 		};
 
+
 		useLocalRadioButton = new JRadioButton("Use local");
 		useLocalRadioButton.addActionListener(updateResolveAction);
 		useRemoteRadioButton = new JRadioButton("Use remote");
@@ -79,7 +83,19 @@ public class ResolveConflictDialog extends JakeDialog {
 		grp.add(useLocalRadioButton);
 		grp.add(useRemoteRadioButton);
 
+		// add local info
+		customPanel.add(localLabel, "");
+		customPanel.add(viewLocal, "");
+		customPanel.add(useLocalRadioButton, "");
 
+		// add remote info
+		customPanel.add(remoteLabel, "");
+		customPanel.add(viewRemote, "");
+		customPanel.add(useRemoteRadioButton, "");
+
+		this.add(customPanel);
+
+		// add the buttons on bottom
 		addCancelBtn();
 		resolveBtn = new JButton();
 		resolveBtn.addActionListener(new ActionListener() {
@@ -88,6 +104,7 @@ public class ResolveConflictDialog extends JakeDialog {
 				resolveConflictAction();
 			}
 		});
+		updateResolveButton();
 
 		return resolveBtn;
 	}
