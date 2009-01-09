@@ -37,12 +37,13 @@ public interface IProjectsManagingService {
      *
      * @param name     the name the new <code>Project</code> should have
      * @param rootPath the Path to the rootFolder of this <code>Project</code>
+     * @param msgService The MessageService this project should be assigned to. <b>THIS CAN BE NULL!</b>
      * @return the loaded instance of this <code>Project</code>
      * @throws FileNotFoundException    if the rootPath is invalid
      * @throws IllegalArgumentException if the supplied <code>name</code>
      *                                  is invalid
      */
-    public Project createProject(String name, String rootPath)
+    public Project createProject(String name, String rootPath, MsgService msgService)
             throws FileNotFoundException, IllegalArgumentException;
 
 
@@ -84,6 +85,7 @@ public interface IProjectsManagingService {
      * @throws FileNotFoundException    if the rootPath of the loaded
      *                                  <code>Project</code> does
      *                                  not exist anymore
+     * @return the started Project
      */
     public Project openProject(String project)
             throws IllegalArgumentException, FileNotFoundException;

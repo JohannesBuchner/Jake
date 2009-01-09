@@ -9,11 +9,7 @@ import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.jake.ics.ICService;
 
 /**
- * Created by IntelliJ IDEA.
- * User: domdorn
- * Date: Dec 31, 2008
- * Time: 12:21:54 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of the FrontendServiceInterface
  */
 public class FrontendServiceImpl implements IFrontendService {
     private IProjectsManagingService projectsManagingService;
@@ -23,6 +19,7 @@ public class FrontendServiceImpl implements IFrontendService {
     /**
      * Constructor
      * @param projectsManagingService
+     * @param msgServiceFactory
 
      */
     public FrontendServiceImpl(
@@ -66,6 +63,8 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * are not correct.
 	 * @see #authenticate(Map)
 	 * @param credentials The credentials to be checked
+     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
+     * @throws IllegalArgumentException
 	 */
 	private void checkCredentials(Map<String, String> credentials)
 		throws IllegalArgumentException, InvalidCredentialsException { 
@@ -183,7 +182,8 @@ public class FrontendServiceImpl implements IFrontendService {
 
     @Override
     public MsgService addAccount(String sessionId, ServiceCredentials credentials) throws NotLoggedInException, InvalidCredentialsException {
-        return null; // TODO
+        sessionCheck(sessionId);
+        return msgServiceFactory.addAccount(credentials);
     }
 
     @Override

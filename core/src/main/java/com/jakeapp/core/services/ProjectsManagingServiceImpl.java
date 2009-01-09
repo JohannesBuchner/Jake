@@ -79,8 +79,13 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     }
 
     @Override
-    public Project createProject(String name, String rootPath)
+    public Project createProject(String name, String rootPath, MsgService msgService)
             throws FileNotFoundException, IllegalArgumentException {
+        Project project = new Project(name, UUID.randomUUID(), msgService, new File(rootPath));
+
+
+
+
         return null; // TODO
     }
 

@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.core.services.MsgService;
 
 /**
  * The Project Entity holds general information about a project in Jake.
@@ -45,7 +45,7 @@ public class Project implements ILogable {
     private String name;
     private UUID projectId;
 
-    private transient IMsgService messageService;
+    private transient MsgService messageService;
     private File rootPath;
     private transient boolean started;
     private transient boolean open;
@@ -66,7 +66,7 @@ public class Project implements ILogable {
      *                   the  path of the project folder.
      */
     public Project(String name, UUID projectId,
-                   IMsgService msgService,
+                   MsgService msgService,
                    File rootPath) {
         this.setName(name);
         this.setProjectId(projectId);
@@ -123,11 +123,11 @@ public class Project implements ILogable {
      */
     @Column(name = "PROTOCOL", nullable = false)
     @Transient
-    public IMsgService getMessageService() {
+    public MsgService getMessageService() {
         return this.messageService;
     }
 
-    public void setMessageService(IMsgService messageService) {
+    public void setMessageService(MsgService messageService) {
         this.messageService = messageService;
     }
 

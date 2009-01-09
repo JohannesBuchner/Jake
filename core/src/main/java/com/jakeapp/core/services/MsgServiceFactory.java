@@ -2,6 +2,7 @@ package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import org.apache.log4j.Logger;
 
@@ -93,4 +94,20 @@ public class MsgServiceFactory {
         }
         return msgServices; 
     }
+
+
+
+    public boolean registerAccount()
+    {
+
+        return false;
+    }
+
+
+    public MsgService addAccount(ServiceCredentials credentials) throws InvalidCredentialsException // TODO ProtocolNotSupportedException
+    {
+
+        return null;
+    }
+
 }

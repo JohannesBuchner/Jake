@@ -3,6 +3,7 @@ package com.jakeapp.core.services;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.JakeMessage;
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 
@@ -11,7 +12,8 @@ import java.util.List;
 /**
  * Abstract MessagingService declasring what the classes for the
  * instant-messaging protocols (XMPP, ICQ, etc.)
- * need to implement. 
+ * need to implement.
+ *
  * @author dominik
  */
 
@@ -21,23 +23,23 @@ public abstract class MsgService<T extends UserId> {
     private T userId;
     private ServiceCredentials serviceCredentials;
 
-	/**
-	 * @return Servicecredentials if they are already set.
-	 */
-	protected ServiceCredentials getServiceCredentials() {
-		return serviceCredentials;
-	}
-	
-	protected void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return Servicecredentials if they are already set.
+     */
+    protected ServiceCredentials getServiceCredentials() {
+        return serviceCredentials;
+    }
 
-	/**
-	 * @return The name of the Service associated to this <code>MsgService</code>.
-	 */
-	protected String getName() {
-		return name;
-	}
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return The name of the Service associated to this <code>MsgService</code>.
+     */
+    protected String getName() {
+        return name;
+    }
 
     /**
      * This method gets called by clients to login on this message service.
@@ -59,15 +61,16 @@ public abstract class MsgService<T extends UserId> {
     /**
      * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
      * are valid.
+     *
      * @return <code>true</code> iff the credentials are valid.
      * @throws InvalidCredentialsException if the credentials stored
-     * in this <code>MsgService</code> are 
-     * insufficiently specified (e.g. they are null)
+     *                                     in this <code>MsgService</code> are
+     *                                     insufficiently specified (e.g. they are null)
      */
     protected boolean checkCredentails() throws InvalidCredentialsException {
-    	if (this.getServiceCredentials() == null) {
-    		throw new InvalidCredentialsException("credentials must not be null");
-    	}
+        if (this.getServiceCredentials() == null) {
+            throw new InvalidCredentialsException("credentials must not be null");
+        }
         if (serviceCredentials.getUserId() == null)
             throw new InvalidCredentialsException(
                     "credentials.userId must not be null");
@@ -100,7 +103,6 @@ public abstract class MsgService<T extends UserId> {
     }
 
 
-
     public abstract void sendMessage(JakeMessage message);
 
     //public void addMessageReceiveListener(IMessageReceiveListener listener);
@@ -116,6 +118,12 @@ public abstract class MsgService<T extends UserId> {
         return this.visibilityStatus;
     }
 
+    /**
+     * @param credentials
+     * @return
+     * @Deprecated use MsgServiceFactory.registerAccount() / addAccount() for this
+     */
+    @Deprecated
     public final T registerId(ServiceCredentials credentials) {
         this.serviceCredentials = credentials;
         return this.doRegister();
@@ -123,6 +131,11 @@ public abstract class MsgService<T extends UserId> {
     }
 
 
+    /**
+     * @return
+     * @Deprecated use MsgServiceFactory.registerAccount() / addAccount() for this
+     */
+    @Deprecated
     protected abstract T doRegister();
 
     public T getUserId() {
@@ -155,27 +168,42 @@ public abstract class MsgService<T extends UserId> {
             throw new IllegalArgumentException("friend must not be null");
         return this.checkFriends(friend);
     }
-    
+
     protected abstract boolean checkFriends(T friend);
-    
+
     /**
      * Searches for Users matching a pattern, to add them as
      * trusted users later.
+     *
      * @param pattern The pattern that is searched for in Usernames.
-     * 	Implementations of <code>MsgService</code> may look for the pattern
-     *  in other userdata as well.
+     *                Implementations of <code>MsgService</code> may look for the pattern
+     *                in other userdata as well.
      * @return A list of users matching the pattern.
      */
     public abstract List<T> findUser(String pattern);
 
     /**
      * Get the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
+     *
      * @return the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
      */
     public abstract String getServiceName();
-    
+
+    /**
+     * Get the type of this MsgService (e.g. to display fancy buttons)
+     *
+     * @return The <code>ProtocolType</code> of this MessageService
+     */
+    public final ProtocolType getServiceType() {
+        return this.getServiceCredentials().getProtocol();
+    }
+
+
     /**
      * Creates an account for the Service, with the specified ServiceCredentials.
+     *
+     * @Deprecated use MsgServiceFactory.registerAccount() / addAccount() for this
      */
+    @Deprecated
     public abstract void createAccount();
 }
