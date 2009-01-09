@@ -1,14 +1,19 @@
 package com.jakeapp.core.services;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.apache.log4j.Logger;
+
+import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.jake.ics.ICService;
-import org.apache.log4j.Logger;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.SyncServiceImpl;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -22,6 +27,8 @@ public class FrontendServiceImpl implements IFrontendService {
 	private List<MsgService> msgServices = new ArrayList<MsgService>();
 
 	private MsgServiceFactory msgServiceFactory;
+
+	private Map<String, FrontendSession> sessions;
 
 	/**
 	 * Constructor
@@ -44,8 +51,6 @@ public class FrontendServiceImpl implements IFrontendService {
 			IProjectsManagingService projectsManagingService) {
 		this.projectsManagingService = projectsManagingService;
 	}
-
-	private Map<String, FrontendSession> sessions;
 
 	/**
 	 * Checks frontend-credentials and throws exceptions if they are not
@@ -88,7 +93,8 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	/**
-	 * /// TODO Do we really need this!? -- Dominik <p/> retrieves a session
+	 * /// TODO Do we really need this!? -- Dominik <p/> retrieves a session Yes
+	 * we do!
 	 * 
 	 * @param sessionId
 	 *            The id associated with the session after it was created
@@ -100,16 +106,8 @@ public class FrontendServiceImpl implements IFrontendService {
 	 */
 	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
 			NotLoggedInException {
-		FrontendSession result;
-
-		if (sessionId == null)
-			throw new IllegalArgumentException();
-		result = this.getSessions().get(sessionId);
-
-		if (result == null)
-			throw new NotLoggedInException();
-
-		return result;
+		checkSession(sessionId);
+		return this.getSessions().get(sessionId);
 	}
 
 	/**
@@ -152,12 +150,12 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	public IProjectsManagingService getProjectsManagingService(String sessionId)
 			throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
-		sessionCheck(sessionId);
+		checkSession(sessionId);
 		// 3. return ProjectsManagingService
 		return this.getProjectsManagingService();
 	}
 
-	private void sessionCheck(String sessionId) throws NotLoggedInException {
+	private void checkSession(String sessionId) throws NotLoggedInException {
 
 
 		// 1. check if session is null, if so throw IllegalArgumentException
@@ -179,7 +177,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	public List<MsgService> getMsgServices(String sessionId)
 			throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
-		sessionCheck(sessionId);
+		checkSession(sessionId);
 		return this.getSession(sessionId).getMsgServices();
 		// or
 		// return this.msgServiceFactory.getAll();
@@ -189,7 +187,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	public boolean createAccount(String sessionId, ServiceCredentials credentials)
 			throws NotLoggedInException, InvalidCredentialsException,
 			ProtocolNotSupportedException, Exception {
-		sessionCheck(sessionId);
+		checkSession(sessionId);
 		return msgServiceFactory.createAccount(credentials);
 	}
 
@@ -197,15 +195,21 @@ public class FrontendServiceImpl implements IFrontendService {
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
 			throws NotLoggedInException, InvalidCredentialsException,
 			ProtocolNotSupportedException {
-		sessionCheck(sessionId);
+		checkSession(sessionId);
 		return msgServiceFactory.addMsgService(credentials);
 	}
 
 	@Override
 	public void ping(String sessionId) throws IllegalArgumentException,
 			NotLoggedInException {
-		sessionCheck(sessionId);
+		checkSession(sessionId);
 
 		// TODO
+	}
+
+	@Override
+	public IFriendlySyncService getSyncService(String sessionId)
+			throws NotLoggedInException {
+		return getSession(sessionId).getSync();
 	}
 }

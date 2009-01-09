@@ -15,6 +15,8 @@ import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.services.FrontendSession;
+import com.jakeapp.core.services.IFrontendSession;
 import com.jakeapp.core.synchronization.exceptions.NoSuchObjectException;
 import com.jakeapp.core.synchronization.exceptions.NotAProjectMemberException;
 import com.jakeapp.core.synchronization.exceptions.ObjectNotConfiguredException;
@@ -29,11 +31,16 @@ import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
-	private IMsgService ics;
-
 	private Map<Project, IFSService> fssMap;
 
 	private RequestHandlePolicy rhp;
+
+	private IFrontendSession pk;
+
+	public SyncServiceImpl(IFrontendSession pk) {
+		this.pk = pk;
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	protected Iterable<JakeObject> getMissingJakeObjects(Project project) {
@@ -90,6 +97,18 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 			throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void startServing() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopServing() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

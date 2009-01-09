@@ -2,6 +2,7 @@ package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.synchronization.ISyncService;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.io.FileNotFoundException;
  */
 public interface IProjectsManagingService {
 
-    /**
+	/**
      * Get a list of all Projects known to jake
      *
      * @return a list of all known jake projects

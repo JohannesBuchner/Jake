@@ -139,5 +139,15 @@ public interface ISyncService {
 	public void setObjectLocked(JakeObject object, String message)
 			throws IllegalArgumentException, ProjectNotLoadedException;
 
+	/**
+	 * start offering files to others, etc.
+	 * TODO
+	 */
+	public void startServing();
 
+	/**
+	 * start offering files to others, etc.
+	 * TODO
+	 */
+	public void stopServing();
 }

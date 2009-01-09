@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.jake.ics.ICService;
 
 /**
@@ -76,6 +77,21 @@ public interface IFrontendService {
 	 *             if no MessageServices are configured for this component
 	 */
 	public List<MsgService> getMsgServices(String sessionId) throws NotLoggedInException;
+
+	/**
+	 * Gets the SyncService
+	 * 
+	 * @param sessionId
+	 *            a Session-Identifier
+	 * @return 
+	 * @throws IllegalArgumentException
+	 *             if the supplied session is null
+	 * @throws NotLoggedInException
+	 *             if no such session existed
+	 * @throws IllegalStateException
+	 *             if no MessageServices are configured for this component
+	 */
+	public ISyncService getSyncService(String sessionId) throws NotLoggedInException;
 
 
 	/**
