@@ -20,8 +20,10 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 
 /**
  * The Main Jake Menu Bar.
@@ -273,7 +275,7 @@ public class JakeMenuBar extends JScreenMenuBar {
 					public void hyperlinkUpdate(HyperlinkEvent e) {
 						if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 							try {
-								MRJAdapter.openURL(e.getURL().toString());
+								Desktop.getDesktop().browse(new URI(e.getURL().toString()));
 							}
 							catch (Exception ex) {
 								ex.printStackTrace();
