@@ -60,9 +60,7 @@ public class JakeTrayIcon {
 
             ActionListener exitListener = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    // TODO: make save shutdown
-                    log.info("Exiting...");
-                    System.exit(0);
+                    quit();
                 }
             };
 
@@ -108,6 +106,13 @@ public class JakeTrayIcon {
 
         }
 
+    }
+
+    private void quit() {
+//        // TODO: make save shutdown
+//        log.info("Exiting...");
+//        System.exit(0);
+        JakeMainView.getMainView().quit();
     }
 
     private String getShowHideWindowString() {

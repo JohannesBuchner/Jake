@@ -36,8 +36,14 @@ public interface ICoreAccess {
      * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException if the credentials supplied to the
      * backend are invalid
      */
-    public void authenticateOnFrontend(Map<String, String> authenticationData) throws InvalidCredentialsException;
+    public void authenticateOnBackend(Map<String, String> authenticationData) throws InvalidCredentialsException;
 
+
+    /**
+     * This method has to be called when the application shuts down or the user explicitly wants to logout this
+     * frontend from the backend (destroy the session)
+     */
+    public void backendLogOff(); 
 
 
 	/******************* Generic functions ********************/

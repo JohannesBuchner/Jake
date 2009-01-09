@@ -93,7 +93,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
     @Override
-    public void authenticateOnFrontend(Map<String, String> authenticationData) {
+    public void authenticateOnBackend(Map<String, String> authenticationData) {
         sessionId = "8482090f-c666-4f41-baef-14bb4fb0c439";
 //        this.isSignedIn = true;
 
@@ -105,6 +105,14 @@ public class CoreAccessMock implements ICoreAccess {
 
         }
 */
+    }
+
+    @Override
+    public void backendLogOff() {
+        this.sessionId = "";
+
+        
+
     }
 
     public void addErrorListener(ErrorCallback ec) {

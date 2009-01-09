@@ -62,7 +62,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 
         try {
-            core.authenticateOnFrontend(backendCredentials);
+            core.authenticateOnBackend(backendCredentials);
         } catch (InvalidCredentialsException e) {
             /**
              * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich sein, dass GUI und Core entkoppelt sind
@@ -204,5 +204,15 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
         if (projectSelectionChanged.contains(psc)) {
             projectSelectionChanged.remove(psc);
         }
+    }
+
+
+    public void saveQuit()
+    {
+        log.debug("Calling saveQuit");
+        this.core.backendLogOff();
+        this.core = null;
+
+        System.exit(0);
     }
 }

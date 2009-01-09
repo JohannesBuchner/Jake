@@ -61,8 +61,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
     }
 
     @Override
-    public void authenticateOnFrontend(Map<String, String> authenticationData) throws InvalidCredentialsException {
+    public void authenticateOnBackend(Map<String, String> authenticationData) throws InvalidCredentialsException {
         this.sessionId = this.frontendService.authenticate(authenticationData);
+    }
+
+    @Override
+    public void backendLogOff() {
+        try {
+            this.frontendService.logout(this.sessionId);
+        } catch (NotLoggedInException e) {
+            // silently ignore this exception. may be removed from frontendservice in the future
+
+        }
+        this.sessionId = "";
     }
 
     public void addErrorListener(ErrorCallback ec) {

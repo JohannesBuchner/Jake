@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.ResourceMap;
-import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.swingx.JXPanel;
 
 import javax.swing.*;
@@ -59,6 +58,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private List<ContextViewChanged> contextViewChanged = new ArrayList<ContextViewChanged>();
 	private JPanel statusPanel;
 
+    private JakeMainApp app;
+
 
 	/**
 	 * Project View: set of toggle buttons. Alwasy one state setup.
@@ -81,10 +82,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private AbstractButton inspectorButton;
 
 
-	public JakeMainView(SingleFrameApplication app) {
+//	public JakeMainView(SingleFrameApplication app) {
+	public JakeMainView(JakeMainApp app) {
 		super(app);
 
 		setMainView(this);
+        this.app = app;
 
 		tray = new JakeTrayIcon();
 
@@ -739,4 +742,10 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			psc.setContextViewPanel(getContextViewPanel());
 		}
 	}
+
+    public void quit()
+    {
+        app.saveQuit();
+    }
+
 }
