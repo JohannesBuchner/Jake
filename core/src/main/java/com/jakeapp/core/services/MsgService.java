@@ -12,6 +12,7 @@ import java.util.List;
  * Abstract MessagingService declasring what the classes for the
  * instant-messaging protocols (XMPP, ICQ, etc.)
  * need to implement. 
+ * @author dominik
  */
 
 public abstract class MsgService<T extends UserId> {
