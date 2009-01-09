@@ -151,18 +151,27 @@ public interface ICoreAccess {
 	 * Returns true if a user is signed in successfully.
 	 *
 	 * @return
+     * // TODO 4 Peter
+     * @Deprecated Either redefine this to return true if the frontend is successfully connected to the backend
+     * or get the "sign-in-status" from the MsgService.getVisibilityStatus()
 	 */
+    @Deprecated
 	public boolean isSignedIn();
 
 	/**
 	 * Returns the current logged in project member.
+     * @Deprecated What do you want? get all MsgServices and their status? Or just those, that are online? tell dominik
+     * @return
 	 */
+    @Deprecated
 	public ProjectMember getCurrentProjectMember();
 
 
 	/**
 	 * Signs the current user out.
+     * @Deprecated please use MsgService.logout()
 	 */
+    @Deprecated
 	public void signOut();
 
 
@@ -182,6 +191,7 @@ public interface ICoreAccess {
 	 * List is alphabetically sorted.
 	 *
 	 * @return list of projects.
+     * @throws com.jakeapp.core.domain.exceptions.NotLoggedInException
 	 */
 	public List<Project> getMyProjects() throws NotLoggedInException;
 
@@ -190,6 +200,7 @@ public interface ICoreAccess {
 	 * List is alphabetically sorted.
 	 *
 	 * @return list of invited projects.
+     * @throws com.jakeapp.core.domain.exceptions.NotLoggedInException
 	 */
 	public List<Project> getInvitedProjects() throws NotLoggedInException;
 

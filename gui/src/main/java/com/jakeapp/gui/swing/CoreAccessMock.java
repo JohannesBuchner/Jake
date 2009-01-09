@@ -95,21 +95,6 @@ public class CoreAccessMock implements ICoreAccess {
         this.frontendService = frontendService;
     }
 
-/*    @Override
-    public void authenticateOnBackend(Map<String, String> authenticationData) {
-        sessionId = "8482090f-c666-4f41-baef-14bb4fb0c439";
-//        this.isSignedIn = true;
-
-*//*
-        try {
-
-            sessionId = this.frontendService.authenticate(authenticationData);
-        } catch (InvalidCredentialsException e) {
-
-        }
-*//*
-    }*/
-
     @Override
     public void authenticateOnBackend(Map<String, String> authenticationData) throws InvalidCredentialsException {
         this.sessionId = this.frontendService.authenticate(authenticationData);
