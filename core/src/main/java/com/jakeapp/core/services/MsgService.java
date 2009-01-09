@@ -23,7 +23,7 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * @return Servicecredentials if they are already set.
 	 */
-	private ServiceCredentials getServiceCredentials() {
+	protected ServiceCredentials getServiceCredentials() {
 		return serviceCredentials;
 	}
 	
