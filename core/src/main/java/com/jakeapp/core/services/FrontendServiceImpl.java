@@ -17,8 +17,18 @@ import com.jakeapp.jake.ics.ICService;
  * To change this template use File | Settings | File Templates.
  */
 public class FrontendServiceImpl implements IFrontendService {
-	
-	private Map<String,FrontendSession> sessions;
+    private IProjectsManagingService projectsManagingService;
+
+
+    private IProjectsManagingService getProjectsManagingService() {
+        return projectsManagingService;
+    }
+
+    private void setProjectsManagingService(IProjectsManagingService projectsManagingService) {
+        this.projectsManagingService = projectsManagingService;
+    }
+
+    private Map<String,FrontendSession> sessions;
 	
 	/**
 	 * Checks frontend-credentials and throws exceptions if they
@@ -78,7 +88,8 @@ public class FrontendServiceImpl implements IFrontendService {
 		return UUID.randomUUID().toString();
 	}
 	
-	public FrontendServiceImpl() {
+	public FrontendServiceImpl(IProjectsManagingService projectsManagingService) {
+        this.setProjectsManagingService(projectsManagingService);
 		this.setSessions(new HashMap<String,FrontendSession>());
 	}
 	
@@ -108,8 +119,18 @@ public class FrontendServiceImpl implements IFrontendService {
     }
 
     @Override
-    public IProjectsManagingService getMetaProjectService(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
-        return this.getSession(sessionId).getMetaProjectService();
+    public IProjectsManagingService getProjectsManagingService(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+        // TODO:
+        // 1. check if session is null, if so throw  IllegalArgumentException
+        if(sessionId == null || sessionId.isEmpty())
+            throw new IllegalArgumentException("invalid sessionid");
+
+        // 2. check session validity
+            if(!sessions.containsKey(sessionId))
+                throw new NotLoggedInException("Invalid Session; Not logged in");
+
+        // 3. return ProjectsManagingService
+            return this.getProjectsManagingService();
     }
 
     @Override

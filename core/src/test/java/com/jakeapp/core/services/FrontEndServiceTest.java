@@ -44,7 +44,11 @@ public class FrontEndServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		this.setService(new FrontendServiceImpl());
+
+		this.setService(new FrontendServiceImpl(
+                null // IProjectsManagingService
+                )
+        );
 	}
 
 	@After

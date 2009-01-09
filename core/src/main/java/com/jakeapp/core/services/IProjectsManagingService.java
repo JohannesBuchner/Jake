@@ -1,11 +1,6 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +22,14 @@ public interface IProjectsManagingService {
      * @return a list of all known jake projects
      */
     public List<Project> getProjectList();
+
+
+    /**
+     * Get a list of all Projects known to Jake matching the given InvitationState
+     * @param state The invitationState requested
+     * @return a list of all known jake projects matching the given InvitationState
+     */
+    public List<Project> getProjectList(InvitationState state);
 
     /**
      * Creates a new <code>Project</code> given the supplied

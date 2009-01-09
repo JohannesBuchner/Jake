@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -23,6 +24,12 @@ public class CoreAccessMock implements ICoreAccess {
 	private List<Project> invitedProjects = new ArrayList<Project>();
 	private Map<Project, List<ProjectMember>> peopleProjectMap = new HashMap<Project, List<ProjectMember>>();
 	private IFrontendService frontendService;
+
+    /**
+     * SessionId returned by the authentication Method of FrontendService.authenticate.
+     */
+    private String sessionId;
+
 
 	/**
 	 * Core Access Mock initialisation code
@@ -85,7 +92,22 @@ public class CoreAccessMock implements ICoreAccess {
 		this.frontendService = frontendService;
 	}
 
-	public void addErrorListener(ErrorCallback ec) {
+    @Override
+    public void authenticateOnFrontend(Map<String, String> authenticationData) {
+        sessionId = "8482090f-c666-4f41-baef-14bb4fb0c439";
+//        this.isSignedIn = true;
+
+/*
+        try {
+
+            sessionId = this.frontendService.authenticate(authenticationData);
+        } catch (InvalidCredentialsException e) {
+
+        }
+*/
+    }
+
+    public void addErrorListener(ErrorCallback ec) {
 		errorCallback.add(ec);
 	}
 

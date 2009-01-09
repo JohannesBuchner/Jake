@@ -1,6 +1,8 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -11,6 +13,7 @@ import com.jakeapp.gui.swing.helpers.FolderObject;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public interface ICoreAccess {
@@ -25,6 +28,16 @@ public interface ICoreAccess {
 	 *                        by the gui
 	 */
 	public void setFrontendService(IFrontendService frontendService);
+
+
+    /**
+     * Credentials needed to authenticate this GUI on the backend
+     * @param authenticationData A map consiting of credentials (not credentials to MsgServices!)
+     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException if the credentials supplied to the
+     * backend are invalid
+     */
+    public void authenticateOnFrontend(Map<String, String> authenticationData) throws InvalidCredentialsException;
+
 
 
 	/******************* Generic functions ********************/
@@ -128,7 +141,7 @@ public interface ICoreAccess {
 	 *
 	 * @return list of projects.
 	 */
-	public List<Project> getMyProjects();
+	public List<Project> getMyProjects() throws NotLoggedInException;
 
 	/**
 	 * Get projects where i am invited to.
@@ -136,7 +149,7 @@ public interface ICoreAccess {
 	 *
 	 * @return list of invited projects.
 	 */
-	public List<Project> getInvitedProjects();
+	public List<Project> getInvitedProjects() throws NotLoggedInException;
 
 
 	/**

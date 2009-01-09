@@ -25,8 +25,8 @@
 
 
     <bean id="frontendService" class="com.jakeapp.core.services.FrontendServiceImpl">
-        
-
+        <constructor-arg ref="projectsManagingService" index="0"
+                         type="com.jakeapp.core.services.IProjectsManagingService"/>
     </bean>
 
 

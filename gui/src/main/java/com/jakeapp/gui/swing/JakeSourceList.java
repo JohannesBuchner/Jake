@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -226,7 +227,13 @@ public class JakeSourceList extends JakeGuiComponent implements
             projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
         }
 
-        java.util.List<Project> myprojects = getCore().getMyProjects();
+        java.util.List<Project> myprojects = null;
+        try {
+            myprojects = getCore().getMyProjects();
+        } catch (NotLoggedInException e) {
+            //TODO @ Peter: Show error message
+            e.printStackTrace(); 
+        }
         for (Project project : myprojects) {
             Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
             SourceListItem sli = new SourceListItem(project.getName(), prIcon);
@@ -256,7 +263,13 @@ public class JakeSourceList extends JakeGuiComponent implements
         while (invitedProjectsCategory.getItemCount() > 1) {
             projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
         }
-        java.util.List<Project> iprojects = getCore().getInvitedProjects();
+        java.util.List<Project> iprojects = null;
+        try {
+            iprojects = getCore().getInvitedProjects();
+        } catch (NotLoggedInException e) {
+            // TODO @ Peter: reauthenticate, retry action, if it still fails show error message 
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         for (Project project : iprojects) {
             Icon prIcon = projectInvitedIcon;
             SourceListItem sli = new SourceListItem(project.getName(), prIcon);

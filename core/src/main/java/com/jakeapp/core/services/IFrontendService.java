@@ -48,7 +48,7 @@ public interface IFrontendService {
      * @throws NotLoggedInException     if no such session existed
      * @throws IllegalStateException    if no ProjectService is available
      */
-    public IProjectsManagingService getMetaProjectService(String sessionId)
+    public IProjectsManagingService getProjectsManagingService(String sessionId)
             throws IllegalArgumentException, NotLoggedInException,
             IllegalStateException;
 
