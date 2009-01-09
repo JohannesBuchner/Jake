@@ -11,199 +11,196 @@ import java.util.List;
 
 /**
  * Abstract MessagingService declasring what the classes for the
- * instant-messaging protocols (XMPP, ICQ, etc.)
- * need to implement.
- *
+ * instant-messaging protocols (XMPP, ICQ, etc.) need to implement.
+ * 
  * @author dominik
  */
 
 public abstract class MsgService<T extends UserId> {
-    private String name = "notInitialized";
-    private VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
-    private T userId;
-    private ServiceCredentials serviceCredentials;
 
-    /**
-     * @return Servicecredentials if they are already set.
-     */
-    protected ServiceCredentials getServiceCredentials() {
-        return serviceCredentials;
-    }
+	private String name = "notInitialized";
 
-    protected void setName(String name) {
-        this.name = name;
-    }
+	private VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
 
-    /**
-     * @return The name of the Service associated to this <code>MsgService</code>.
-     */
-    protected String getName() {
-        return name;
-    }
+	private T userId;
 
-    /**
-     * This method gets called by clients to login on this message service.
-     *
-     * @return true on success, false on error
-     * @throws InvalidCredentialsException if the credentials supplied to
-     *                                     this message service are invalid
-     */
-    public final boolean login() throws InvalidCredentialsException {
-        if (serviceCredentials == null)
-            throw new InvalidCredentialsException("serviceCredentials are null");
+	private ServiceCredentials serviceCredentials;
 
-        if (!checkCredentails())
-            return false;
+	/**
+	 * @return Servicecredentials if they are already set.
+	 */
+	protected ServiceCredentials getServiceCredentials() {
+		return serviceCredentials;
+	}
 
-        return this.doLogin();
-    }
+	protected void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
-     * are valid.
-     *
-     * @return <code>true</code> iff the credentials are valid.
-     * @throws InvalidCredentialsException if the credentials stored
-     *                                     in this <code>MsgService</code> are
-     *                                     insufficiently specified (e.g. they are null)
-     */
-    protected boolean checkCredentails() throws InvalidCredentialsException {
-        if (this.getServiceCredentials() == null) {
-            throw new InvalidCredentialsException("credentials must not be null");
-        }
-        if (serviceCredentials.getUserId() == null)
-            throw new InvalidCredentialsException(
-                    "credentials.userId must not be null");
+	/**
+	 * @return The name of the Service associated to this
+	 *         <code>MsgService</code>.
+	 */
+	protected String getName() {
+		return name;
+	}
 
-        if (serviceCredentials.getPlainTextPassword() == null)
-            throw new InvalidCredentialsException(
-                    "credentials.plainTextPassword must not be null");
+	/**
+	 * This method gets called by clients to login on this message service.
+	 * 
+	 * @return true on success, false on wrong password
+	 * @throws Exception
+	 *             the login failed for another reason
+	 */
+	public final boolean login() throws Exception {
+		if (serviceCredentials == null)
+			throw new InvalidCredentialsException("serviceCredentials are null");
 
+		if (!checkCredentails())
+			return false;
 
-        if (serviceCredentials.getServerAddress() == null)
-            throw new InvalidCredentialsException(
-                    "credentials.serverAddress must not be null");
+		return this.doLogin();
+	}
 
-        return this.doCredentialsCheck();
-    }
+	/**
+	 * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
+	 * are valid.
+	 * 
+	 * @return <code>true</code> iff the credentials are valid.
+	 * @throws InvalidCredentialsException
+	 *             if the credentials stored in this <code>MsgService</code> are
+	 *             insufficiently specified (e.g. they are null)
+	 */
+	protected boolean checkCredentails() throws InvalidCredentialsException {
+		if (this.getServiceCredentials() == null) {
+			throw new InvalidCredentialsException("credentials must not be null");
+		}
+		if (serviceCredentials.getUserId() == null)
+			throw new InvalidCredentialsException("credentials.userId must not be null");
 
-    protected abstract boolean doCredentialsCheck();
-
-    protected abstract boolean doLogin();
+		if (serviceCredentials.getPlainTextPassword() == null)
+			throw new InvalidCredentialsException(
+					"credentials.plainTextPassword must not be null");
 
 
-    public final void logout() {
-        this.doLogout();
-    }
+		if (serviceCredentials.getServerAddress() == null)
+			throw new InvalidCredentialsException(
+					"credentials.serverAddress must not be null");
 
-    protected abstract void doLogout();
+		return this.doCredentialsCheck();
+	}
 
-    public void setCredentials(ServiceCredentials credentials) {
-        this.serviceCredentials = credentials;
-    }
+	protected abstract boolean doCredentialsCheck();
 
+	protected abstract boolean doLogin() throws Exception;
 
-    public abstract void sendMessage(JakeMessage message);
+	/**
+	 * idempotent
+	 * 
+	 * @throws Exception
+	 */
+	public final void logout() throws Exception {
+		this.doLogout();
+	}
 
-    //public void addMessageReceiveListener(IMessageReceiveListener listener);
+	/**
+	 * has to be idempotent
+	 * 
+	 * @throws Exception
+	 */
+	protected abstract void doLogout() throws Exception;
 
-    //public void removeMessageReceiveListener(IMessageReceiveListener listener);
-
-    public boolean setVisibilityStatus(VisibilityStatus newStatus) {
-        this.visibilityStatus = newStatus;
-        return false;
-    }
-
-    public VisibilityStatus getVisibilityStatus() {
-        return this.visibilityStatus;
-    }
-
-    /**
-     * @param credentials
-     * @return
-     * @Deprecated use MsgServiceFactory.registerAccount() / addAccount() for this
-     */
-    @Deprecated
-    public final T registerId(ServiceCredentials credentials) {
-        this.serviceCredentials = credentials;
-        return this.doRegister();
-
-    }
+	public void setCredentials(ServiceCredentials credentials) {
+		this.serviceCredentials = credentials;
+	}
 
 
-    /**
-     * @return
-     * @Deprecated use MsgServiceFactory.registerAccount() / addAccount() for this
-     */
-    @Deprecated
-    protected abstract T doRegister();
+	public abstract void sendMessage(JakeMessage message);
 
-    public T getUserId() {
-        return this.userId;
-    }
+	// public void addMessageReceiveListener(IMessageReceiveListener listener);
 
-    public abstract List<T> getUserList();
+	// public void removeMessageReceiveListener(IMessageReceiveListener
+	// listener);
 
-    /**
-     * Get a UserId Instance from this Messaging-Service
-     *
-     * @param userId the String representation of the userId
-     * @return a &lt;T extends UserId&gt; Object
-     * @throws UserIdFormatException if the format of the input
-     *                               is not valid for this Messaging-Service
-     */
-    public abstract T getUserId(String userId) throws UserIdFormatException;
+	public boolean setVisibilityStatus(VisibilityStatus newStatus) {
+		this.visibilityStatus = newStatus;
+		return false;
+	}
 
-    /**
-     * Find out if the supplied &lt;T extends UserId&gt; is a
-     * friend of the current
-     * user of this MsgService
-     *
-     * @param friend the <code>T extends UserId</code> to check friendship
-     * @return true if friends, false if not
-     * @throws IllegalArgumentException if the supplied friend is null
-     */
-    public final boolean isFriend(T friend) throws IllegalArgumentException {
-        if (friend == null)
-            throw new IllegalArgumentException("friend must not be null");
-        return this.checkFriends(friend);
-    }
+	public VisibilityStatus getVisibilityStatus() {
+		return this.visibilityStatus;
+	}
 
-    protected abstract boolean checkFriends(T friend);
+	public T getUserId() {
+		return this.userId;
+	}
 
-    /**
-     * Searches for Users matching a pattern, to add them as
-     * trusted users later.
-     *
-     * @param pattern The pattern that is searched for in Usernames.
-     *                Implementations of <code>MsgService</code> may look for the pattern
-     *                in other userdata as well.
-     * @return A list of users matching the pattern.
-     */
-    public abstract List<T> findUser(String pattern);
+	public abstract List<T> getUserList();
 
-    /**
-     * Get the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
-     *
-     * @return the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
-     */
-    public abstract String getServiceName();
+	/**
+	 * Get a UserId Instance from this Messaging-Service
+	 * 
+	 * @param userId
+	 *            the String representation of the userId
+	 * @return a &lt;T extends UserId&gt; Object
+	 * @throws UserIdFormatException
+	 *             if the format of the input is not valid for this
+	 *             Messaging-Service
+	 */
+	public abstract T getUserId(String userId) throws UserIdFormatException;
 
-    /**
-     * Get the type of this MsgService (e.g. to display fancy buttons)
-     *
-     * @return The <code>ProtocolType</code> of this MessageService
-     */
-    public final ProtocolType getServiceType() {
-        return this.getServiceCredentials().getProtocol();
-    }
+	/**
+	 * Find out if the supplied &lt;T extends UserId&gt; is a friend of the
+	 * current user of this MsgService
+	 * 
+	 * @param friend
+	 *            the <code>T extends UserId</code> to check friendship
+	 * @return true if friends, false if not
+	 * @throws IllegalArgumentException
+	 *             if the supplied friend is null
+	 */
+	public final boolean isFriend(T friend) throws IllegalArgumentException {
+		if (friend == null)
+			throw new IllegalArgumentException("friend must not be null");
+		return this.checkFriends(friend);
+	}
 
+	protected abstract boolean checkFriends(T friend);
 
-    /**
-     * Creates an account for the Service, with the specified ServiceCredentials.
-     *
-     * @Deprecated use MsgServiceFactory.registerAccount() / addAccount() for this
-     */
-    @Deprecated
-    public abstract void createAccount();
+	/**
+	 * Searches for Users matching a pattern, to add them as trusted users
+	 * later.
+	 * 
+	 * @param pattern
+	 *            The pattern that is searched for in Usernames. Implementations
+	 *            of <code>MsgService</code> may look for the pattern in other
+	 *            userdata as well.
+	 * @return A list of users matching the pattern.
+	 */
+	public abstract List<T> findUser(String pattern);
+
+	/**
+	 * Get the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
+	 * 
+	 * @return the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
+	 */
+	public abstract String getServiceName();
+
+	/**
+	 * Get the type of this MsgService (e.g. to display fancy buttons)
+	 * 
+	 * @return The <code>ProtocolType</code> of this MessageService
+	 */
+	public final ProtocolType getServiceType() {
+		return this.getServiceCredentials().getProtocol();
+	}
+
+	/**
+	 * Creates an account for the Service, with the specified
+	 * ServiceCredentials. You have to have setCredentials first.
+	 * 
+	 * @return success status
+	 * @throws Exception
+	 */
+	protected abstract boolean createAccount() throws Exception;
 }

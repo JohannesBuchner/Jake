@@ -38,6 +38,17 @@ public interface IStatusService {
 	public void logout() throws NetworkException, TimeoutException;
 
 	/**
+	 * Creates a new user account.
+	 * 
+	 * @throws NetworkException
+	 *             if the network connection is down and the logout couldn't be
+	 *             propagated
+	 * @throws TimeoutException
+	 *             if a timeout occurred
+	 */
+	public Boolean createAccount(UserId userid, String pw) throws NetworkException, TimeoutException;
+
+	/**
 	 * Checks whether the user is logged in. The implementation has to assert
 	 * that the user is still connected.
 	 */

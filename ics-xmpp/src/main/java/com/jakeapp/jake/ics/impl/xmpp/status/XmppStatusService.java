@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.RosterPacket.ItemStatus;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 
 import com.jakeapp.jake.ics.UserId;
@@ -125,7 +124,8 @@ public class XmppStatusService implements IStatusService {
 	@Override
 	public Boolean login(UserId userid, String pw) throws NetworkException,
 			TimeoutException {
-		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
+		XmppUserId xuid = new XmppUserId(userid);
+		if (!xuid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (isLoggedIn())
 			logout();
@@ -133,7 +133,7 @@ public class XmppStatusService implements IStatusService {
 
 		XMPPConnection connection;
 		try {
-			connection = XmppCommons.login(userid.getUserId(), pw);
+			connection = XmppCommons.login(xuid.getUserId(), pw, xuid.getResource());
 		} catch (IOException e) {
 			log.debug("login failed (wrong pw)");
 			throw new NetworkException(e);
@@ -180,6 +180,28 @@ public class XmppStatusService implements IStatusService {
 	public void logout() throws NetworkException, TimeoutException {
 		XmppCommons.logout(this.con.getConnection());
 		this.con.setConnection(null);
+	}
+
+	@Override
+	public Boolean createAccount(UserId userid, String pw) throws NetworkException,
+			TimeoutException {
+		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
+			throw new NoSuchUseridException();
+		if (isLoggedIn())
+			logout();
+		this.con.setConnection(null);
+
+		XMPPConnection connection;
+		try {
+			connection = XmppCommons.createAccount(userid.getUserId(), pw);
+		} catch (IOException e) {
+			log.debug("create failed: " + e.getMessage());
+			throw new NetworkException(e);
+		}
+		if(connection == null)
+			return false;
+		XmppCommons.logout(connection);
+		return true;
 	}
 
 }

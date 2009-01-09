@@ -242,4 +242,11 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	public IMsgService getFriendMsgService() {
 		return new FriendsOnlyMsgService(this, this);
 	}
+
+	@Override
+	public Boolean createAccount(UserId userid, String pw) throws NetworkException,
+			TimeoutException {
+		// TODO can't really implement this ...
+		return null;
+	}
 }

@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.jakeapp.jake.ics.ICService;
@@ -11,15 +12,20 @@ import com.jakeapp.jake.ics.ICService;
  * @author christopher
  */
 public class FrontendSession {
+	
+	private List<MsgService> msgServices = new LinkedList<MsgService>();
+	
+	private IProjectsManagingService pms = new ProjectsManagingServiceImpl();
+	
 	public FrontendSession() {
 		//TODO create and store ics-Service-Implementations
 	}
 	
     public IProjectsManagingService getProjectsManagingService() throws  IllegalStateException {
-        return null; // TODO
+        return pms;
     }
 
-    public List<ICService> getICServices() throws  IllegalStateException {
-        return null; // TODO
+    public List<MsgService> getMsgServices() throws  IllegalStateException {
+        return msgServices;
     }
 }

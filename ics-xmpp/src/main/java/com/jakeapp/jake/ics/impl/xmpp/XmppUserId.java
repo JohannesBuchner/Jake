@@ -59,6 +59,18 @@ public class XmppUserId extends UserId {
 		return userId;
 	}
 
+	/**
+	 * 
+	 * @param userId
+	 * @return null if no resource
+	 */
+	public String getResource() {
+		if (this.userId != null && this.userId.contains("/"))
+			return this.userId.substring(this.userId.lastIndexOf("/") + 1);
+		else
+			return null;
+	}
+
 	public String getUserIdWithResource() {
 		return this.userId;
 	}

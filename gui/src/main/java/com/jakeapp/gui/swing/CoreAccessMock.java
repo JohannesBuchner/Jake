@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -624,14 +625,16 @@ public class CoreAccessMock implements ICoreAccess {
 
 
     @Override
-    public boolean registerAccount(ServiceCredentials credentials)
-            throws NotLoggedInException, InvalidCredentialsException {
-        return this.frontendService.registerAccount(this.sessionId, credentials);
+    public boolean createAccount(ServiceCredentials credentials)
+            throws  NotLoggedInException, InvalidCredentialsException,
+			ProtocolNotSupportedException, Exception  {
+        return this.frontendService.createAccount(this.sessionId, credentials);
     }
 
     @Override
     public MsgService addAccount(ServiceCredentials credentials)
-            throws NotLoggedInException, InvalidCredentialsException {
+            throws NotLoggedInException, InvalidCredentialsException,
+			ProtocolNotSupportedException {
         return this.frontendService.addAccount(this.sessionId, credentials);
     }
 
