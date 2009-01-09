@@ -1,6 +1,8 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.util.ApplicationContextFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -12,8 +14,30 @@ import java.io.File;
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     private List<Project> projectList = new ArrayList<Project>();
+    private ApplicationContextFactory applicationContextFactory;
+
+    private IProjectDao projectDao;
 
 
+    /************** GETTERS & SETTERS *************/
+
+    public IProjectDao getProjectDao() {
+        return projectDao;
+    }
+
+    public void setProjectDao(IProjectDao projectDao) {
+        this.projectDao = projectDao;
+    }
+
+    public ApplicationContextFactory getApplicationContextFactory() {
+        return applicationContextFactory;
+    }
+
+    public void setApplicationContextFactory(ApplicationContextFactory applicationContextFactory) {
+        this.applicationContextFactory = applicationContextFactory;
+    }
+
+    /******** STARTING IMPLEMENTATIONS **************/
     @Override
     public List<Project> getProjectList() {
 
@@ -149,5 +173,15 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     public void setTrust(Project project, UserId userid, TrustState trust) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public List<FileObject> getFiles(Project project, String relPath) throws IllegalArgumentException {
+        return null; // TODO
+    }
+
+    @Override
+    public List<NoteObject> getNotes(Project project) throws IllegalArgumentException {
+        return null; // TODO
     }
 }

@@ -9,9 +9,20 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
+    <bean id="applicationContextFactory" class="com.jakeapp.core.util.ApplicationContextFactory">
+        <description>The factory to create and configure application contexts</description>
+        <property name="configLocation">
+            <list>
+                <value>/com/jakeapp/core/applicationContextFactory-local-datasource.xml</value>
+                <value>/com/jakeapp/core/applicationContextFactory-local-daos.xml</value>
+            </list>
+        </property>
+    </bean>
+
 
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
-        
+        <property name="projectDao" ref="projectDao"/>
+        <property name="applicationContextFactory" ref="applicationContextFactory" />
     </bean>
 
 
@@ -25,8 +36,8 @@
 
 
     <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
-       <constructor-arg index="0" ref="serviceCredentialsDao"
-                        type="com.jakeapp.core.dao.IServiceCredentialsDao" />
+        <constructor-arg index="0" ref="serviceCredentialsDao"
+                         type="com.jakeapp.core.dao.IServiceCredentialsDao"/>
     </bean>
 
 
@@ -34,13 +45,8 @@
         <constructor-arg ref="projectsManagingService" index="0"
                          type="com.jakeapp.core.services.IProjectsManagingService"/>
         <constructor-arg ref="msgServiceFactory" index="1"
-                         type="com.jakeapp.core.services.MsgServiceFactory" />
+                         type="com.jakeapp.core.services.MsgServiceFactory"/>
     </bean>
 
 
-
-
-
-
-    
 </beans>

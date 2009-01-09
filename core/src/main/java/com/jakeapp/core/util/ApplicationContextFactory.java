@@ -20,9 +20,13 @@ import com.jakeapp.core.domain.Project;
 public class ApplicationContextFactory {
 	private static Logger log = Logger.getLogger(ApplicationContextFactory.class);
 	private Hashtable<String, ConfigurableApplicationContext> contextTable;
-	private String configLocation;
-	
+	private String[] configLocation;
+
+
+    public ApplicationContextFactory()
 	{
+        log.debug("Creating the ApplicationContextFactory");
+
 		this.contextTable = new Hashtable<String, ConfigurableApplicationContext>(); 
 	}
 	
@@ -67,7 +71,12 @@ public class ApplicationContextFactory {
 	 * beans.xml etc.)
 	 * @see ClassPathXmlApplicationContext
 	 */
-	public void setConfigLocation(String configLocation) {
+	public void setConfigLocation(String[] configLocation) {
+        log.debug("Setting config Location to: ");
+        for(String bla : configLocation)
+        {
+            log.debug(bla);
+        }
 		this.configLocation = configLocation;
 	}
 }

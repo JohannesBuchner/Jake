@@ -179,4 +179,24 @@ public interface IProjectsManagingService {
      * @throws IllegalAccessException   if the project has no userId set yet.
      */
     public void setTrust(Project project,UserId userid,TrustState trust) throws IllegalArgumentException, IllegalAccessException;
+
+
+    /**
+     * // TODO
+     * @param project
+     * @param relPath
+     * @return
+     * @throws IllegalArgumentException
+     */
+    public List<FileObject> getFiles(Project project, String relPath) throws IllegalArgumentException;
+
+
+    /**
+     * // TODO
+     * @param project
+     * @return
+     * @throws IllegalArgumentException
+     */
+    public List<NoteObject> getNotes(Project project) throws IllegalArgumentException;
+
 }

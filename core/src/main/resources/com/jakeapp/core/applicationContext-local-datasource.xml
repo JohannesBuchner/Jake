@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <bean id="projectDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" scope="prototype">
+        <description>basic memory DB data source</description>
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:test/${db_path}"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+        <property name="connectionProperties">
+            <props>
+                <prop key="shutdown">true</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
