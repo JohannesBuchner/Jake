@@ -6,7 +6,6 @@ import java.util.Map;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
  * This is the only visible interface to other components accessing
@@ -41,7 +40,7 @@ public interface IFrontendService {
             throws IllegalArgumentException, NotLoggedInException;
 
     /**
-     * Gets an instance of a {@link IMetaProjectService}
+     * Gets an instance of a {@link IProjectsManagingService}
      *
      * @param sessionId a Session-Identifier
      * @return a ProjectService on success
@@ -49,7 +48,7 @@ public interface IFrontendService {
      * @throws NotLoggedInException     if no such session existed
      * @throws IllegalStateException    if no ProjectService is available
      */
-    public IMetaProjectService getMetaProjectService(String sessionId)
+    public IProjectsManagingService getMetaProjectService(String sessionId)
             throws IllegalArgumentException, NotLoggedInException,
             IllegalStateException;
 

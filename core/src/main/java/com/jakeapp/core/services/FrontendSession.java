@@ -15,7 +15,7 @@ public class FrontendSession {
 		//TODO create and store ics-Service-Implementations
 	}
 	
-    public IMetaProjectService getMetaProjectService() throws  IllegalStateException {
+    public IProjectsManagingService getMetaProjectService() throws  IllegalStateException {
         return null; // TODO
     }
 

@@ -27,7 +27,7 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 
-public class SyncService extends FriendlySyncServiceImpl {
+public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private IMsgService ics;
 

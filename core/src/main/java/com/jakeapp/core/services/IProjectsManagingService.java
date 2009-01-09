@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
  * @author dominik, ..., johannes
  *
  */
-public interface IMetaProjectService {
+public interface IProjectsManagingService {
 
     /**
      * Get a list of all Projects known to jake

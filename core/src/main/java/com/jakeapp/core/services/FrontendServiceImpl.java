@@ -108,7 +108,7 @@ public class FrontendServiceImpl implements IFrontendService {
     }
 
     @Override
-    public IMetaProjectService getMetaProjectService(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+    public IProjectsManagingService getMetaProjectService(String sessionId) throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
         return this.getSession(sessionId).getMetaProjectService();
     }
 

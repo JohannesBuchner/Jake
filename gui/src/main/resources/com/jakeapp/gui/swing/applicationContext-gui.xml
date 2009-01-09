@@ -10,7 +10,7 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 
-    <bean id="coreAccess" class="com.jakeapp.gui.swing.CoreAccessMock" >
+    <bean id="coreAccess" class="com.jakeapp.gui.swing.SpringCoreAccessImpl" >
       <property name="frontendService" ref="frontendService" />
     </bean>
 

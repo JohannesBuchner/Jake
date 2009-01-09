@@ -10,26 +10,13 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 
-    <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
-        
+    <bean id="coreAccess" class="com.jakeapp.gui.swing.CoreAccessMock" >
+      <property name="frontendService" ref="frontendService" />
     </bean>
 
-
-    <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
-
-    </bean>
-
-    <bean id="msgService" class="com.jakeapp.core.services.MsgService" abstract="true">
-
-    </bean>
+    <!--<bean id="swingGui" class="com.jakeapp.gui.swing.JakeMainApp">-->
+       <!--<property name="core" ref="coreAccess" />-->
+    <!--</bean>-->
 
 
-    <bean id="frontendService" class="com.jakeapp.core.services.FrontendServiceImpl">
-        
-
-    </bean>
-
-
-
-    
 </beans>

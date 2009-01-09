@@ -11,7 +11,11 @@ import java.util.List;
  * This file describes the interface of a general synchronization strategy,
  * used to
  * keep notes, files, folders, tags, etc. in sync.
+ *
+ *
+ * ATTENTION Please don't delete for now
  */
+@Deprecated
 public interface SynchronizationStrategy {
 
 

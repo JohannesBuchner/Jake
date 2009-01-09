@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.io.FileNotFoundException;
 
 
-public class MetaProjectServiceImpl implements IMetaProjectService {
+public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     private List<Project> projectList = new ArrayList<Project>();
 
 
