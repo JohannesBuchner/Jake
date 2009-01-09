@@ -24,10 +24,21 @@
     </bean>
 
 
+    <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
+       <constructor-arg index="0" ref="serviceCredentialsDao"
+                        type="com.jakeapp.core.dao.IServiceCredentialsDao" />
+    </bean>
+
+
     <bean id="frontendService" class="com.jakeapp.core.services.FrontendServiceImpl">
         <constructor-arg ref="projectsManagingService" index="0"
                          type="com.jakeapp.core.services.IProjectsManagingService"/>
+        <constructor-arg ref="msgServiceFactory" index="1"
+                         type="com.jakeapp.core.services.MsgServiceFactory" />
     </bean>
+
+
+
 
 
 

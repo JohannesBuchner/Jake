@@ -2,7 +2,9 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
+import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -634,4 +636,26 @@ public class CoreAccessMock implements ICoreAccess {
 	private List<RegistrationStatus> registrationStatus;
 	private List<ProjectChanged> projectChanged;
 	private List<ErrorCallback> errorCallback;
+
+
+    @Override
+    public List<MsgService> getMsgServics() throws NotLoggedInException {
+        return this.frontendService.getMsgServices(this.sessionId);
+    }
+
+
+    @Override
+    public boolean registerAccount(ServiceCredentials credentials)
+            throws NotLoggedInException, InvalidCredentialsException {
+        return this.frontendService.registerAccount(this.sessionId, credentials);
+    }
+
+    @Override
+    public MsgService addAccount(ServiceCredentials credentials)
+            throws NotLoggedInException, InvalidCredentialsException {
+        return this.frontendService.addAccount(this.sessionId, credentials);
+    }
+    
+
+
 }

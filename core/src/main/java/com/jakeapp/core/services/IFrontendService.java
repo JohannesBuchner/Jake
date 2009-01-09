@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.jake.ics.ICService;
 
 /**
@@ -63,10 +64,47 @@ public interface IFrontendService {
      * @throws IllegalStateException    if no MessageServices are configured
      *                                  for this component
      */
+    @Deprecated
     public List<ICService> getICServices(String sessionId)
             throws IllegalArgumentException, NotLoggedInException,
             IllegalStateException;
 
+
+    /**
+     * Gets a list of the currently available MessageServices
+     *
+     * @param sessionId a Session-Identifier
+     * @return a List of MessageServices
+     * @throws IllegalArgumentException if the supplied session is null
+     * @throws NotLoggedInException     if no such session existed
+     * @throws IllegalStateException    if no MessageServices are configured
+     *                                  for this component
+     */
+    public List<MsgService> getMsgServices(String sessionId) throws NotLoggedInException;
+
+
+    /**
+     * Method that creates an account by the IM-Provider
+     * @param sessionId
+     * @param credentials
+     * @return
+     * @throws NotLoggedInException
+     * @throws InvalidCredentialsException
+     */
+    public boolean registerAccount(String sessionId, ServiceCredentials credentials )
+            throws NotLoggedInException, InvalidCredentialsException;
+
+
+    /**
+     * // TODO
+     * @param sessionId
+     * @param credentials
+     * @return
+     * @throws NotLoggedInException
+     * @throws InvalidCredentialsException
+     */
+    public MsgService addAccount(String sessionId, ServiceCredentials credentials )
+        throws NotLoggedInException, InvalidCredentialsException; // TODO ProtocolNotSupportedException
 
     /**
      * Pings the core to prevent session expiry

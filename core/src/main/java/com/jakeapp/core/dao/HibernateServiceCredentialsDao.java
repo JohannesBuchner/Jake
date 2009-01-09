@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
 import java.util.UUID;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -60,6 +61,15 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
             throw new NoSuchServiceCredentialsException();
 
         return result;
+    }
+
+    @Override
+    public List<ServiceCredentials> getAll() {
+       
+        List<ServiceCredentials> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM ServiceCredentials").list();
+
+        return results;
     }
 
     @Override

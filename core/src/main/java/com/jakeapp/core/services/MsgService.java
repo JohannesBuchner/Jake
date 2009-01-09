@@ -11,10 +11,9 @@ import java.util.List;
 /**
  * Abstract MessagingService declasring what the classes for the
  * instant-messaging protocols (XMPP, ICQ, etc.)
- * need to implement.
- * @deprecated use ICS's IMsgService
+ * need to implement. 
  */
-@Deprecated
+
 public abstract class MsgService<T extends UserId> {
     private String name = "notInitialized";
     private VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;

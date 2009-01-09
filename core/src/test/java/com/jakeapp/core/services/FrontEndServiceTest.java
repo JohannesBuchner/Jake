@@ -46,7 +46,8 @@ public class FrontEndServiceTest {
 	public void setUp() throws Exception {
 
 		this.setService(new FrontendServiceImpl(
-                null // IProjectsManagingService
+                 null // IProjectsManagingService
+                ,null
                 )
         );
 	}

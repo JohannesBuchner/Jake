@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
+import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -43,7 +44,16 @@ public interface ICoreAccess {
      * This method has to be called when the application shuts down or the user explicitly wants to logout this
      * frontend from the backend (destroy the session)
      */
-    public void backendLogOff(); 
+    public void backendLogOff();
+
+
+    /**
+     * This returns a list with MsgServices already registered in the core
+     * @return a list with MsgServices already registered in the core
+     * @throws NotLoggedInException if the frontend has no session on the core
+     */
+    public List<MsgService> getMsgServics() throws NotLoggedInException;
+
 
 
 	/******************* Generic functions ********************/
@@ -70,7 +80,9 @@ public interface ICoreAccess {
 	 *
 	 * @param user
 	 * @param pass
+     * @Deprecated use (boolean) msgService.login() instead
 	 */
+    @Deprecated
 	public void signIn(final String user, final String pass);
 
 	/**
@@ -92,8 +104,31 @@ public interface ICoreAccess {
 	 *
 	 * @param user
 	 * @param pass
+     * @Deprecated use (boolean) registerAccount(ServiceCredentials)
 	 */
+    @Deprecated
 	public void register(String user, String pass);
+
+
+    /**
+     * This tries to register a new Account with the given credentials (real register on XMPP/ICQ/MSN/etc.)
+     * @param credentials
+     * @throws NotLoggedInException
+     * @return true on success, false otherwise
+     */
+    public boolean registerAccount(ServiceCredentials credentials) throws NotLoggedInException, InvalidCredentialsException;
+
+
+    /**
+     * This adds a new Account/MsgService to the core-database of jake so it can be used to
+     * login and be used with projects
+     * @param credentials
+     * @return a MsgService instance of the concrete Protocol
+     * @throws NotLoggedInException
+     * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException If the given Credentials are not valid
+     */
+    public MsgService addAccount(ServiceCredentials credentials)
+            throws NotLoggedInException, InvalidCredentialsException;
 
 
 	/**
