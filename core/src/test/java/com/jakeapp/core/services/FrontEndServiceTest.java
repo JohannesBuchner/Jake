@@ -80,8 +80,8 @@ public class FrontEndServiceTest {
 		//CALL
 	}
 
-	@Test(timeout = TestingConstants.UNITTESTTIME,expected = NotLoggedInException.class)
+/*	@Test(timeout = TestingConstants.UNITTESTTIME,expected = NotLoggedInException.class)
 	public void ping_shouldFailWithNoLogin() throws IllegalArgumentException, NotLoggedInException {
 		this.getService().ping(SESSIONID1);
-	}
+	}*/
 }
