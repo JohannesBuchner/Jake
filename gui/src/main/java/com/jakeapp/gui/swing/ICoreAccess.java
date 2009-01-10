@@ -76,7 +76,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-			  throws InvalidCredentialsException;
+		 throws InvalidCredentialsException;
 
 
 	/**
@@ -161,8 +161,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public boolean createAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -178,8 +178,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -362,7 +362,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-			  throws ProjectFolderMissingException;
+		 throws ProjectFolderMissingException;
 
 	/**
 	 * Gets the sync status of a file
@@ -413,7 +413,7 @@ public interface ICoreAccess {
 	 * @param destFolderRelPath
 	 * @return true on success, false on error
 	 */
-	boolean importExternalFileIntoProject(String absPath, String destFolderRelPath);
+	public boolean importExternalFileIntoProject(String absPath, String destFolderRelPath);
 
 
 	/**
@@ -423,6 +423,37 @@ public interface ICoreAccess {
 	 * @return the projectMember
 	 */
 	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException;
+
+	// TODO: What happens to FileObjects and FolderObjects? Are we going to have a common superclass?
+	/**
+	 * Deletes a file (moves it to system trash)
+	 *
+	 * @param file The file to be deleted
+	 */
+	public void deleteToTrash(FileObject file);
+
+	/**
+	 * Deletes a folder (moves it to system trash)
+	 *
+	 * @param folder The folder to be deleted
+	 */
+	public void deleteToTrash(FolderObject folder);
+
+	/**
+	 * Renames a file
+	 *
+	 * @param file    The file to rename
+	 * @param newName The new name for the file
+	 */
+	public void rename(FileObject file, String newName);
+
+	/**
+	 * Renames a folder
+	 *
+	 * @param folder  The folder to rename
+	 * @param newName The new name for the folder
+	 */
+	public void rename(FolderObject folder, String newName);
 
 
 	/******************* Notes functions ********************/
@@ -435,12 +466,12 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-			  ProjectNotLoadedException;
+		 ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
 	 *
-	 * @param note	 the note in question
+	 * @param note    the note in question
 	 * @param project the project the note is associated with
 	 * @return the date of the last edit
 	 */
@@ -449,7 +480,7 @@ public interface ICoreAccess {
 	/**
 	 * Get the <code>ProjectMemeber<code> who last edited the given note.
 	 *
-	 * @param note	 the note in question
+	 * @param note    the note in question
 	 * @param project the project the note is associated with
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 */
@@ -483,7 +514,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-											  TrustState trust);
+	                                TrustState trust);
 
 
 	/**

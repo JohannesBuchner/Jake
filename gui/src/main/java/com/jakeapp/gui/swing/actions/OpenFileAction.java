@@ -27,7 +27,7 @@ public class OpenFileAction extends FileAction {
 
 		putValue(Action.NAME, actionStr);
 
-		// only enable if exact one element is selected.
+		// only enable if exactly one element is selected.
 		setEnabled(fileTable.getSelectedRowCount() == 1);
 	}
 
@@ -39,6 +39,5 @@ public class OpenFileAction extends FileAction {
 		} else {
 			GuiUtilities.selectFileInFileViewer(project.getRootPath() + node.getFolderObject().getRelPath());
 		}
-
 	}
 }
