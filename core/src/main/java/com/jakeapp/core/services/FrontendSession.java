@@ -5,7 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.SyncServiceImpl;
 import com.jakeapp.jake.ics.ICService;
@@ -18,14 +21,24 @@ import com.jakeapp.jake.ics.ICService;
  */
 public class FrontendSession implements IFrontendSession {
 	
+	private static Logger log = Logger.getLogger(FrontendSession.class);
+	
 	private List<MsgService> msgServices = new LinkedList<MsgService>();
 	
 	private IProjectsManagingService pms;
 	
+	private ICServicesManager icsManager = new ICServicesManager();
+	
+	private void setIcsManager(ICServicesManager icsManager) {
+		this.icsManager = icsManager;
+	}
+
+	private ICServicesManager getIcsManager() {
+		return icsManager;
+	}
+	
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync = new SyncServiceImpl(this);
-	
-	private Map<Project, ICService> icss = new HashMap<Project, ICService>();
 
 	public FrontendSession(IProjectsManagingService pms) {
 		this.pms = pms;
@@ -45,12 +58,12 @@ public class FrontendSession implements IFrontendSession {
 
 	@Override
 	public ICService getICSForProject(Project p) {
-		return icss.get(p);
-	}
-
-	@Override
-	public void createICSForProject(Project p) {
-		// TODO Auto-generated method stub
-		
+		ICService result = null;
+		try {
+			result = this.getIcsManager().getICService(p);
+		} catch (ProtocolNotSupportedException e) {
+			log.error("Retrieving an ICService for a Project failed: ",e);
+		}
+		return result;
 	}
 }

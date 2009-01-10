@@ -19,19 +19,30 @@ public class ICServicesManager {
 	private Map<Project, ICService> services;
 
 	public ICService getICService(Project p) throws ProtocolNotSupportedException {
+		ICService ics = null;
+		
+		if (this.services.containsKey(p))
+			ics = this.services.get(p);
+		else {
+			ics = this.createICService(p);
+			this.services.put(p, ics);
+		}
+		
+		return ics;
+	}
+	
+	private ICService createICService(Project p) throws ProtocolNotSupportedException {
 		ServiceCredentials cred = p.getCredentials();
 		ICService ics = null;
-		if (!this.services.containsKey(p)) {
-			if (cred.getProtocol().equals(ProtocolType.XMPP)) {
-				log.debug("Creating new XMPPICService for userId " + cred.getUserId());
-				ics = new XmppICService(XMPPMsgService.namespace, p.getName());
-			} else {
-				log.warn("Currently unsupported protocol given");
-				throw new ProtocolNotSupportedException();
-			}
-			if(ics != null)
-				this.services.put(p, ics);
+		
+		if (cred.getProtocol().equals(ProtocolType.XMPP)) {
+			log.debug("Creating new XMPPICService for userId " + cred.getUserId());
+			ics = new XmppICService(XMPPMsgService.namespace, p.getName());
+		} else {
+			log.warn("Currently unsupported protocol given");
+			throw new ProtocolNotSupportedException();
 		}
-		return this.services.get(p);
+		
+		return ics;
 	}
 }

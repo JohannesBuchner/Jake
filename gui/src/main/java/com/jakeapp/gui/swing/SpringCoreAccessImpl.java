@@ -119,18 +119,47 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public void signIn(final String user, final String pass) {
 		log.info("Signs in: " + user + "pass: " + pass);
-
+		
+		ServiceCredentials credentials;
+		
+		credentials = new ServiceCredentials(user,pass); 
+		//TODO
+		//This is the only protocoltype used right now. In the future
+		//there may be more...
+		credentials.setProtocol(ProtocolType.XMPP);
+		
+		//XXX are credentials prepared enough??
+		this.signIn(credentials);
+	}
+	
+	public void signIn(final ServiceCredentials credentials) {
 		Runnable runner = new Runnable() {
 
 			public void run() {
 				fireConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
+				
+				
+				try {
+					MsgService toLogin = frontendService.addAccount(sessionId, credentials);
+					isSignedIn = toLogin.login();
+					
+					currentUser = credentials.getUserId();
 
-				// TODO!!!!111
-				// frontendService.getMsgServices(sessionId).
-				isSignedIn = true;
-				currentUser = user;
-
-				fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+					fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
+				} catch (NotLoggedInException e) {
+					log.debug("Tried to sign in without a session",e);
+				} catch (ProtocolNotSupportedException e) {
+					// this should never happen...
+					log.error("Login with this protocol is not supported.",e);
+				} catch (InvalidCredentialsException e) {
+				} catch (Exception e) {
+				}
+				finally {
+					if (!isSignedIn) {
+						// XXX NOTIFY GUI ABOUT THIS!!
+						fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
+					}
+				}
 			}
 		};
 

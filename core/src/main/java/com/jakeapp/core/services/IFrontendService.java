@@ -123,7 +123,7 @@ public interface IFrontendService {
 	 */
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
 			throws NotLoggedInException, InvalidCredentialsException,
-			ProtocolNotSupportedException; // TODO ProtocolNotSupportedException
+			ProtocolNotSupportedException;
 
 	/**
 	 * Pings the core to prevent session expiry

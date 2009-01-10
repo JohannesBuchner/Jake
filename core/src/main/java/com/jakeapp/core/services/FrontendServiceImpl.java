@@ -177,7 +177,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	public List<MsgService> getMsgServices(String sessionId)
 			throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
-		checkSession(sessionId);
 		return this.getSession(sessionId).getMsgServices();
 		// or
 		// return this.msgServiceFactory.getAll();
