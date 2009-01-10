@@ -97,8 +97,8 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public boolean isCellEditable(Object node, int column) {
-		// TODO: Some cells may need to be editable
-		return false;
+		// Name is editable (rename)
+		return (column == 0);
 	}
 
 	@Override
