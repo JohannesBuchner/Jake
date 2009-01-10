@@ -67,7 +67,7 @@ public class FrontEndServiceTest {
 	}
 	
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NotLoggedInException.class)
-	public void logout_shouldFailSecondTime() throws IllegalArgumentException, NotLoggedInException, InvalidCredentialsException {
+	public void logout_shouldNotFailSecondTime() throws IllegalArgumentException, NotLoggedInException, InvalidCredentialsException {
 		String sessionid = this.getService().authenticate(VALID_CREDENTIALS);
 		this.getService().logout(sessionid);
 		

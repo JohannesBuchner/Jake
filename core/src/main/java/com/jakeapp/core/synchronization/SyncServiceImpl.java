@@ -39,7 +39,6 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	public SyncServiceImpl(IFrontendSession pk) {
 		this.pk = pk;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

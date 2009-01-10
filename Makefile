@@ -1,6 +1,7 @@
 VERSION="1.0-SNAPSHOT"
 SHELL="bash"
 MVN=mvn ${MVNEXTRAARGS}
+GUITYPE="swing"
 
 all: gui
 
@@ -10,14 +11,16 @@ start: gui2
 gui2: 
 	mvn -Dmaven.test.skip=true install
 
+instantquit: gui
+	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.instantquit
 
 quickstart: gui
 	cd gui; ${MVN} exec:java -Dexec.args=${PROJECTFOLDER}
 
 gui: core
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
-	cd $@; [[ -e target/$@-${VERSION}.jar ]] || ${MVN} package install || true
-	cd $@; find src/ -type f -newer target/$@-${VERSION}.jar | grep -v "\.svn" -q && ${MVN} package install || true
+	cd $@; [[ -e target/$@-${GUITYPE}-${VERSION}.jar ]] || ${MVN} package install || true
+	cd $@; find src/ -type f -newer target/$@-${GUITYPE}-${VERSION}.jar | grep -v "\.svn" -q && ${MVN} package install || true
 	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; } || true
 	@rm -f .rebuild_gui
 

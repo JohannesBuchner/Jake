@@ -25,39 +25,45 @@ import java.util.Map;
 /**
  * The main class of the application.
  */
-public class JakeMainApp extends SingleFrameApplication implements ProjectSelectionChanged {
+public class JakeMainApp extends SingleFrameApplication implements
+		ProjectSelectionChanged {
+
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
+
 	private static JakeMainApp app;
+
 	private ICoreAccess core;
+
 	private Project project = null;
-	private List<ProjectSelectionChanged> projectSelectionChanged =
-			  new LinkedList<ProjectSelectionChanged>();
+
+	private List<ProjectSelectionChanged> projectSelectionChanged = new LinkedList<ProjectSelectionChanged>();
 
 	public JakeMainApp() {
 		this.app = this;
 
 
 		// TODO: johannes, please fix
-		boolean johannesWorkaroundEnable = true;
+		boolean johannesWorkaroundEnable = false;
 		if (johannesWorkaroundEnable) {
 			setCore(new CoreAccessMock());
 		} else {
 
 			ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-					  new String[]{"/com/jakeapp/core/applicationContext.xml"
-								 /**
-								  * Uncomment the following line to use the real implementation
-								  */
-//                        ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
+					new String[] { "/com/jakeapp/core/applicationContext.xml"
+					/**
+					 * Uncomment the following line to use the real
+					 * implementation
+					 */
+					// ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
+
+							/**
+							 * Uncomment the following line to use peter/chris
+							 * mock implementation
+							 */
+							, "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
-								 /**
-								  * Uncomment the following line to use peter/chris mock implementation
-								  */
-								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
-
-
-					  });
+					});
 			setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
 
@@ -73,12 +79,15 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 				core.authenticateOnBackend(backendCredentials);
 			} catch (InvalidCredentialsException e) {
 				/**
-				 * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich sein, dass GUI und Core entkoppelt sind
-				 * und uebers netzwerk kommunizieren. Sofern das Gui sich nicht beim core authentifizieren kann (weil die
-				 * credentials falsch sind), soll dem user eine box angezeigt werden, wo er dann spaeter auch die
-				 * core-daten (host, port, serviceName etc.) aendern kann. Muss in dieser Phase des Projektes noch nicht
-				 * gemacht werden, nur damit du's weisst.
-				 *
+				 * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich
+				 * sein, dass GUI und Core entkoppelt sind und uebers netzwerk
+				 * kommunizieren. Sofern das Gui sich nicht beim core
+				 * authentifizieren kann (weil die credentials falsch sind),
+				 * soll dem user eine box angezeigt werden, wo er dann spaeter
+				 * auch die core-daten (host, port, serviceName etc.) aendern
+				 * kann. Muss in dieser Phase des Projektes noch nicht gemacht
+				 * werden, nur damit du's weisst.
+				 * 
 				 * TODO: @ anonymous author: in english, please ;)
 				 */
 				String msg = "Failed to login to backend";
@@ -87,11 +96,15 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 				e.printStackTrace();
 			}
 		}
+		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
+			saveQuit();
+		}
+
 	}
 
 	/**
-	 * At startup create and show the main frame of the application.
-	 * (Called from the Swing Application Framework)
+	 * At startup create and show the main frame of the application. (Called
+	 * from the Swing Application Framework)
 	 */
 	@Override
 	protected void startup() {
@@ -110,7 +123,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * A convenient static getter for the application instance.
-	 *
+	 * 
 	 * @return the instance of JakeMock2App
 	 */
 	public static JakeMainApp getApplication() {
@@ -126,7 +139,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * Starts the GUI!
-	 *
+	 * 
 	 * @param args
 	 */
 	private static void startGui(String[] args) {
@@ -139,7 +152,8 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 			} else {
 				// try to use nimbus (available starting j6u10)
 				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					UIManager
+							.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 				} catch (Exception r) {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				}
@@ -148,11 +162,12 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 			log.warn("LAF Exception: ", e);
 		}
 
-		//System.setProperty("awt.useSystemAAFontSettings","on");
-		//System.setProperty("swing.aatext", "true");
+		// System.setProperty("awt.useSystemAAFontSettings","on");
+		// System.setProperty("swing.aatext", "true");
 
 		// MacOSX specific: set menu name to 'Jake'
-		// has to be called VERY early to succeed (prior to any gui stuff, later calls will be ignored)
+		// has to be called VERY early to succeed (prior to any gui stuff, later
+		// calls will be ignored)
 		if (Platform.isMac()) {
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
 		}
@@ -164,7 +179,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * Returns single instance of the App.
-	 *
+	 * 
 	 * @return
 	 */
 	public static JakeMainApp getApp() {
@@ -195,8 +210,8 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	}
 
 	/**
-	 * Fires a project selection change event, calling all
-	 * registered members of the event.
+	 * Fires a project selection change event, calling all registered members of
+	 * the event.
 	 */
 	private void fireProjectSelectionChanged() {
 		for (ProjectSelectionChanged psc : projectSelectionChanged) {

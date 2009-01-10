@@ -25,11 +25,13 @@
         <property name="applicationContextFactory" ref="applicationContextFactory" />
     </bean>
 
-
+	<!-- this is per session and a very internal part of the core that can not
+	 be replaced and does not have to be injected, so I'll will hardwire it
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
 
     </bean>
-
+	-->
+	
     <bean id="msgService" class="com.jakeapp.core.services.MsgService" abstract="true">
 
     </bean>

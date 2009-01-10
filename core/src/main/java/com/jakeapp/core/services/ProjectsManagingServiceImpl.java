@@ -23,12 +23,14 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private IFrontendSession pk;
 
-
-	public ProjectsManagingServiceImpl(IFrontendSession pk) {
+	public ProjectsManagingServiceImpl() {
 		this.pk = pk;
 	}
 
 	/************** GETTERS & SETTERS *************/
+	public void setFrontendSession(IFrontendSession pk) {
+		this.pk = pk;
+	}
 
 	public IProjectDao getProjectDao() {
 		return projectDao;

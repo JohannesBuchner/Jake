@@ -25,9 +25,18 @@ public class MsgServiceFactory {
 
 	private List<MsgService> msgServices = new ArrayList<MsgService>();
 
+	private boolean initialised = false;
+
+	private void ensureInitialised() {
+		if (!initialised) {
+			createTestdata();
+			initialised = true;
+		}
+	}
+
 	public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao) {
 		this.serviceCredentialsDao = serviceCredentialsDao;
-		createTestdata();
+		// can not initialise here, this produces spring/hibernate errors!
 	}
 
 	private void createTestdata() {
@@ -88,6 +97,7 @@ public class MsgServiceFactory {
 
 	public MsgService createMsgService(ServiceCredentials credentials)
 			throws ProtocolNotSupportedException {
+		ensureInitialised();
 		MsgService result = null;
 		if (credentials.getProtocol().equals(ProtocolType.XMPP)) {
 			log
@@ -104,6 +114,7 @@ public class MsgServiceFactory {
 	}
 
 	public List<MsgService> getAll() {
+		ensureInitialised();
 		return msgServices;
 	}
 

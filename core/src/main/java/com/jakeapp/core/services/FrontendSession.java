@@ -20,11 +20,16 @@ public class FrontendSession implements IFrontendSession {
 	
 	private List<MsgService> msgServices = new LinkedList<MsgService>();
 	
-	private IProjectsManagingService pms = new ProjectsManagingServiceImpl(this);
+	private IProjectsManagingService pms;
 	
+	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync = new SyncServiceImpl(this);
 	
 	private Map<Project, ICService> icss = new HashMap<Project, ICService>();
+
+	public FrontendSession(IProjectsManagingService pms) {
+		this.pms = pms;
+	}
 	
     public IProjectsManagingService getProjectsManagingService() throws  IllegalStateException {
         return pms;

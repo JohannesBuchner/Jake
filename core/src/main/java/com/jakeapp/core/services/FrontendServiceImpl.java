@@ -127,7 +127,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 		// create new session
 		sessid = makeSessionID();
-		this.addSession(sessid, new FrontendSession());
+		this.addSession(sessid, new FrontendSession(this.getProjectsManagingService()));
 
 		return sessid;
 	}
@@ -212,4 +212,5 @@ public class FrontendServiceImpl implements IFrontendService {
 			throws NotLoggedInException {
 		return getSession(sessionId).getSync();
 	}
+
 }
