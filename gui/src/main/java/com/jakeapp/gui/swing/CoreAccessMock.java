@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing;
 
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
@@ -605,8 +606,28 @@ public class CoreAccessMock implements ICoreAccess {
 		return new Date();
 	}
 
+	@Override
+	public boolean importExternalFileIntoProject(String absPath, String destFolderRelPath) {
+		return false;
+	}
+
+	@Override
+	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException {
+		return new ProjectMember(new UUID(1, 1), "LastModifierNick", TrustState.AUTO_ADD_REMOVE);
+	}
+
 	public long getFileSize(FileObject file) {
 		return 1234;
+	}
+
+	@Override
+	public long getLocalFileSize(FileObject fo) {
+		return 8888;
+	}
+
+	@Override
+	public Date getLocalFileLastModified(FileObject fo) {
+		return new Date();
 	}
 
 	private String currentUser = null;

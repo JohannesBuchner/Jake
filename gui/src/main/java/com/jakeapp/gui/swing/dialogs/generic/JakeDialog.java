@@ -5,6 +5,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.helpers.Platform;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
@@ -19,6 +20,7 @@ import java.awt.event.ActionListener;
  * @author: studpete
  */
 public abstract class JakeDialog extends EscapeDialog {
+	private static final Logger log = Logger.getLogger(JakeDialog.class);
 	private ResourceMap resourceMap;
 	private ResourceMap commonResourceMap;
 	private JLabel dialogTitleLabel;
@@ -84,7 +86,7 @@ public abstract class JakeDialog extends EscapeDialog {
 		this.add(pictureLabel, "dock west, gap 10 10");
 
 		explanationLabel = new JLabel();
-		this.add(explanationLabel, "gapbottom 15");
+		this.add(explanationLabel, "growy, gapbottom 10");
 
 		buttonsPanel = new JPanel(new MigLayout("nogrid, fill, ins 0"));
 
@@ -119,7 +121,7 @@ public abstract class JakeDialog extends EscapeDialog {
 				setVisible(false);
 			}
 		});
-		buttonsPanel.add(closeBtn, "tag cancel, aligny bottom");
+		buttonsPanel.add(closeBtn, "tag cancel, aligny bottom, gaptop 10");
 	}
 
 
@@ -129,10 +131,11 @@ public abstract class JakeDialog extends EscapeDialog {
 	 * The window title is always "Jake" (sheets don't have a title at all)
 	 * The Title has a larger font, which is customizeable per platform in styler package.
 	 *
-	 * @param locstr: localizable string of title
+	 * @param str: string of title
 	 */
-	protected void setDialogTitle(String locstr) {
-		dialogTitleLabel.setText(getResourceMap().getString(locstr));
+	protected void setDialogTitle(String str) {
+		log.debug("Dialog Title: " + str);
+		dialogTitleLabel.setText(str);
 	}
 
 	/**
@@ -194,6 +197,7 @@ public abstract class JakeDialog extends EscapeDialog {
 		}
 		this.setMinimumSize(new Dimension(width, height));
 		this.setResizable(true);
+		this.setAnimated(true);
 		this.setVisible(true);
 	}
 

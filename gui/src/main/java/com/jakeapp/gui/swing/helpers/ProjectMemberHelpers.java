@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.panels.NotesPanel;
+import com.jakeapp.gui.swing.panels.NewsPanel;
 import org.jdesktop.application.ResourceMap;
 
 /**
@@ -10,12 +10,13 @@ import org.jdesktop.application.ResourceMap;
  *
  * @author: studpete
  */
-public class JakeObjectHelpers {
+public class ProjectMemberHelpers {
 
 	// get notes resource map
+	// TODO: move to own
 	private static final ResourceMap newsResourceMap = org.jdesktop.application.Application.getInstance(
 			  com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-			  .getResourceMap(NotesPanel.class);
+			  .getResourceMap(NewsPanel.class);
 
 	/**
 	 * Returns the Nickname, or - if no nickname is set - the Full Name.

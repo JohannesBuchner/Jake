@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.JakeObjectHelpers;
+import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +37,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 					*/
 		ProjectMember member = (ProjectMember) value;
 
-		String nickOrFullName = JakeObjectHelpers.getNickOrFullName(member);
+		String nickOrFullName = ProjectMemberHelpers.getNickOrFullName(member);
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";

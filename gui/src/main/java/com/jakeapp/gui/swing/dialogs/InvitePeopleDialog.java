@@ -33,7 +33,7 @@ public class InvitePeopleDialog extends JakeDialog {
 		initDialog();
 
 		// set custom properties
-		setDialogTitle("inviteTitle");
+		setDialogTitle(getResourceMap().getString("inviteTitle"));
 		setMessage("inviteHeader");
 		setPicture("/icons/user-large.png");
 	}

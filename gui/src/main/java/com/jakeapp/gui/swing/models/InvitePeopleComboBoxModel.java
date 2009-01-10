@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.JakeObjectHelpers;
+import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 
 		@Override
 		public String toString() {
-			return getPm().getUserId() + " (" + JakeObjectHelpers.getNickOrFullName(getPm(), 30) + ")";
+			return getPm().getUserId() + " (" + ProjectMemberHelpers.getNickOrFullName(getPm(), 30) + ")";
 		}
 
 		public ProjectMember getPm() {
