@@ -485,6 +485,13 @@ public interface ICoreAccess {
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 */
 	public ProjectMember getLastEditor(NoteObject note, Project project);
+	
+	/**
+	 * Determine if a note is only local or if it is a shared note.
+	 * @param note the note in question
+	 * @return <code>true</code> iff this note is a local note.
+	 */
+	public boolean isLocalNote(NoteObject note);
 
 	/******************* People functions ********************/
 

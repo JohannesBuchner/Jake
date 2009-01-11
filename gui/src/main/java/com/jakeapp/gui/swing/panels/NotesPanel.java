@@ -11,8 +11,24 @@
 
 package com.jakeapp.gui.swing.panels;
 
+import java.awt.Insets;
+
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -21,16 +37,6 @@ import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.listener.TableMouseListener;
 import com.jakeapp.gui.swing.models.NotesTableModel;
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
 
 /**
  * @author studpete, simon
@@ -122,6 +128,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
         }
     }
 
+    
     private ResourceMap getResourceMap() {
         return this.resourceMap;
     }
@@ -140,6 +147,35 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
         return this.notesTable.getSelectedRow() >= 0;
     }
 
+    /**
+     * Delete the currently selected note. The user is prompted to confirm the deletion.
+     */
+    private void deleteSelectedNote() {
+    	//TODO
+    }
+    
+    /**
+     * Create a new note both in the persistence and in the notes table.
+     */
+    private void newNote() {
+    	//TODO
+    }
+    
+    /**
+     * Commit the currently selected note. 
+     */
+    private void shareSelectedNote() {
+    	//TODO
+    }
+    
+    /**
+     * Safe the currently selected note. If it is a local note, it is only saved, if it is a shared note
+     * it is automatically commited.
+     */
+    private void safeSelectedNote() {
+    	//TODO
+    }
+    
     /**
      * This method is called from within the constructor to
      * initialize the form.

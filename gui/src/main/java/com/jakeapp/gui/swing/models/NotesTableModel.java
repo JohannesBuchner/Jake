@@ -36,11 +36,13 @@ public class NotesTableModel extends DefaultTableModel {
 		public NoteObject note;
 		public Date lastEdit;
 		public String lastEditor;
+		public boolean isLocal;
 
-		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor) {
+		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor, boolean isLocal) {
 			this.note = note;
 			this.lastEdit = lastEdit;
 			this.lastEditor = lastEditor;
+			this.isLocal = isLocal;
 		}
 	}
 
@@ -113,7 +115,8 @@ public class NotesTableModel extends DefaultTableModel {
 			//UserId id = this.core.getLastEditor(n, project).getUserId();
 			this.notes.add(new NoteMetaDataWrapper(n,
 					  this.core.getLastEdit(n, project), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
-					  "first + last"));
+					  "first + last",
+					  core.isLocalNote(n)));
 			// TODO: fix ProjectMember-changes
 			//id.getFirstName() + id.getSurName()));
 		}
@@ -122,15 +125,16 @@ public class NotesTableModel extends DefaultTableModel {
 	@Override
 	public Object getValueAt(int row, int column) {
 		String value;
+		NoteMetaDataWrapper note = this.getNotes().get(row);
 		switch (column) {
 			case 0: //content
-				value = this.getNotes().get(row).note.getContent();
+				value = note.note.getContent();
 				break;
 			case 1: //last edit
-				value = TimeUtilities.getRelativeTime(this.getNotes().get(row).lastEdit);
+				value = TimeUtilities.getRelativeTime(note.lastEdit);
 				break;
 			case 2: //last editor
-				value = this.getNotes().get(row).lastEditor;
+				value = note.lastEditor;
 				break;
 			default:
 				value = "illegal column count!";

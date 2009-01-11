@@ -516,6 +516,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1),
 		// "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
 	}
+	
+
+	@Override
+	public boolean isLocalNote(NoteObject note) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	/**
 	 * Generates a list so that people are remembered when they change.
