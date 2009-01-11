@@ -3,6 +3,8 @@ package com.jakeapp.core.services;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 
 import java.util.List;
@@ -129,16 +131,16 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public boolean startProject(Project project) throws IllegalArgumentException,
-			FileNotFoundException {
-		pk.getSync().startServing();
+	public boolean startProject(Project project, ChangeListener cl) throws IllegalArgumentException,
+			FileNotFoundException, ProjectException {
+		pk.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
 		return false; // TODO
 	}
 
 	@Override
 	public boolean stopProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException {
-		pk.getSync().stopServing();
+		pk.getSync().stopServing(project);
 		return false; // TODO
 	}
 

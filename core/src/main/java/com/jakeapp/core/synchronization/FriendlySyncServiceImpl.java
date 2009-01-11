@@ -1,14 +1,13 @@
 package com.jakeapp.core.synchronization;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 
 
 public abstract class FriendlySyncServiceImpl implements IFriendlySyncService {
@@ -37,13 +36,12 @@ public abstract class FriendlySyncServiceImpl implements IFriendlySyncService {
 	}
 
 	@Override
-	public Iterable<LogEntry> startLogSync(Project project)
+	public Map<UserId, Iterable<LogEntry>> startLogSync(Project project)
 			throws IllegalArgumentException, IllegalProtocolException {
-		List<LogEntry> le = new LinkedList<LogEntry>();
+		Map<UserId, Iterable<LogEntry>> lm = new HashMap<UserId, Iterable<LogEntry>>();
 		for (UserId userId : getProjectMembers(project)) {
-			le.addAll(this.startLogSync(project, userId));
+			lm.put(userId, this.startLogSync(project, userId));
 		}
-		return le;
+		return lm;
 	}
-
 }

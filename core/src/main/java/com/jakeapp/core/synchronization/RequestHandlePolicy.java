@@ -26,14 +26,16 @@ public interface RequestHandlePolicy {
 
 	/**
 	 * Checks if it is ok to return the object.
+	 * 
 	 * @param jo
 	 * @return null if not allowed, the content otherwise
 	 */
-	public InputStream handleJakeObjectRequest(UserId from,  JakeObject jo);
-	
+	public InputStream handleJakeObjectRequest(UserId from, JakeObject jo);
+
 
 	/**
 	 * Checks if it is ok to return the log.
+	 * 
 	 * @param jo
 	 * @return whether retrieving is allowed
 	 */

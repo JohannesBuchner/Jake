@@ -1,37 +1,26 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-import com.jakeapp.core.services.FrontendSession;
 import com.jakeapp.core.services.IFrontendSession;
-import com.jakeapp.core.synchronization.exceptions.NoSuchObjectException;
-import com.jakeapp.core.synchronization.exceptions.NotAProjectMemberException;
-import com.jakeapp.core.synchronization.exceptions.ObjectNotConfiguredException;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 
 public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private Map<Project, IFSService> fssMap;
+
+	private Map<Project, ChangeListener> clMap;
 
 	private RequestHandlePolicy rhp;
 
@@ -56,7 +45,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	@Override
 	public void announce(JakeObject jo, LogEntry<ILogable> action) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -75,40 +64,53 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	@Override
 	public void poke(Project project, UserId userId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pullObject(JakeObject jo) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setObjectLocked(JakeObject object, String message)
 			throws IllegalArgumentException, ProjectNotLoadedException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public Collection<? extends LogEntry> startLogSync(Project project, UserId userId)
+	public Iterable<LogEntry> startLogSync(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void startServing() {
+	public Iterable<FileStatus> getFiles(Project p) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void stopServing() {
-		// TODO Auto-generated method stub
+	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl) throws ProjectException {
+		FSService fs;
+		try {
+			fs = new FSService();
+		} catch (NoSuchAlgorithmException e) {
+			throw new ProjectException(e);
+		}
 		
+		fssMap.put(p, fs);
+		clMap.put(p, cl);
+
 	}
 
+	@Override
+	public void stopServing(Project p) {
+		// TODO Auto-generated method stub
+
+	}
 
 }

@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -69,7 +70,7 @@ public interface ISyncService {
 	 * @throws IllegalProtocolException
 	 *             if the supplied UserId is of the wrong protocol-type
 	 */
-	public Collection<? extends LogEntry> startLogSync(Project project, UserId userId)
+	public Iterable<LogEntry> startLogSync(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
@@ -140,14 +141,23 @@ public interface ISyncService {
 			throws IllegalArgumentException, ProjectNotLoadedException;
 
 	/**
-	 * start offering files to others, etc.
-	 * TODO
+	 * start offering files to others, etc. TODO
+	 * 
+	 * @throws ProjectException
 	 */
-	public void startServing();
+	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
+			throws ProjectException;
 
 	/**
-	 * start offering files to others, etc.
-	 * TODO
+	 * start offering files to others, etc. TODO
 	 */
-	public void stopServing();
+	public void stopServing(Project p);
+
+	/**
+	 * gets the files and their information
+	 * 
+	 * @return
+	 */
+	public Iterable<FileStatus> getFiles(Project p);
+
 }

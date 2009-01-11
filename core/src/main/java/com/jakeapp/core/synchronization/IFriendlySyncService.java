@@ -1,5 +1,7 @@
 package com.jakeapp.core.synchronization;
 
+import java.util.Map;
+
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
@@ -16,7 +18,8 @@ public interface IFriendlySyncService extends ISyncService {
 	 * @throws IllegalProtocolException 
 	 * @see ISyncService#startLogSync(Project, UserId) 
 	 */
-	public Iterable<LogEntry> startLogSync(Project project) throws IllegalArgumentException, IllegalProtocolException;
+	@SuppressWarnings("unchecked")
+	public Map<UserId, Iterable<LogEntry>> startLogSync(Project project) throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
 	 * @see ISyncService#poke(Project, UserId)
