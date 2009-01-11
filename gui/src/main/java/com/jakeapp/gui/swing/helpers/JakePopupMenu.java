@@ -126,7 +126,7 @@ public class JakePopupMenu extends JPopupMenu {
 
                         @Override
                         public void actionPerformed(ActionEvent actionEvent) {
-                            log.debug("referring action to JMenuItem... " + actionEvent);
+                            //log.debug("referring action to JMenuItem... " + actionEvent);
                             if (mi.getAction() != null) {
                                 mi.getAction().actionPerformed(actionEvent);
                             } else {
