@@ -13,7 +13,6 @@ import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
 import org.apache.log4j.Logger;
@@ -58,7 +57,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private List<ContextViewChanged> contextViewChanged = new ArrayList<ContextViewChanged>();
 	private JPanel statusPanel;
 
-    private JakeMainApp app;
+	private JakeMainApp app;
 
 
 	/**
@@ -82,12 +81,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private AbstractButton inspectorButton;
 
 
-//	public JakeMainView(SingleFrameApplication app) {
+	//	public JakeMainView(SingleFrameApplication app) {
 	public JakeMainView(JakeMainApp app) {
 		super(app);
 
 		setMainView(this);
-        this.app = app;
+		this.app = app;
 
 		tray = new JakeTrayIcon();
 
@@ -701,8 +700,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * @param ee
 	 */
 	public void reportError(JakeErrorEvent ee) {
-		JSheet.showMessageSheet(getFrame(), ee.getException().toString(),
-				  JOptionPane.ERROR_MESSAGE, null);
+		ExceptionUtilities.showError(ee);
 	}
 
 
@@ -743,9 +741,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		}
 	}
 
-    public void quit()
-    {
-        app.saveQuit();
-    }
+	public void quit() {
+		app.saveQuit();
+	}
 
 }

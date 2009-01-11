@@ -26,7 +26,7 @@ import java.util.Map;
  * The main class of the application.
  */
 public class JakeMainApp extends SingleFrameApplication implements
-		ProjectSelectionChanged {
+		  ProjectSelectionChanged {
 
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
 
@@ -49,21 +49,21 @@ public class JakeMainApp extends SingleFrameApplication implements
 		} else {
 
 			ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-					new String[] { "/com/jakeapp/core/applicationContext.xml"
-					/**
-					 * Uncomment the following line to use the real
-					 * implementation
-					 */
-					// ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
+					  new String[]{"/com/jakeapp/core/applicationContext.xml"
+								 /**
+								  * Uncomment the following line to use the real
+								  * implementation
+								  */
+								 // ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
 
-							/**
-							 * Uncomment the following line to use peter/chris
-							 * mock implementation
-							 */
-							, "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+								 /**
+								  * Uncomment the following line to use peter/chris
+								  * mock implementation
+								  */
+								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
-					});
+					  });
 			setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
 
@@ -87,7 +87,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 				 * auch die core-daten (host, port, serviceName etc.) aendern
 				 * kann. Muss in dieser Phase des Projektes noch nicht gemacht
 				 * werden, nur damit du's weisst.
-				 * 
+				 *
 				 * TODO: @ anonymous author: in english, please ;)
 				 */
 				String msg = "Failed to login to backend";
@@ -123,7 +123,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	/**
 	 * A convenient static getter for the application instance.
-	 * 
+	 *
 	 * @return the instance of JakeMock2App
 	 */
 	public static JakeMainApp getApplication() {
@@ -139,7 +139,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	/**
 	 * Starts the GUI!
-	 * 
+	 *
 	 * @param args
 	 */
 	private static void startGui(String[] args) {
@@ -153,7 +153,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 				// try to use nimbus (available starting j6u10)
 				try {
 					UIManager
-							.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+							  .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 				} catch (Exception r) {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				}
@@ -170,28 +170,45 @@ public class JakeMainApp extends SingleFrameApplication implements
 		// calls will be ignored)
 		if (Platform.isMac()) {
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+		} else if (Platform.isLin()) {
+			Platform.fixWmClass();
 		}
 
-		Platform.fixWmClass();
+
 		launch(JakeMainApp.class, args);
 	}
 
 
 	/**
 	 * Returns single instance of the App.
-	 * 
+	 *
 	 * @return
 	 */
 	public static JakeMainApp getApp() {
 		return app;
 	}
 
-	public ICoreAccess getCore() {
-		return core;
+	/**
+	 * The getCore is made static for convenience reasons.
+	 * We only have one core, and one app.
+	 *
+	 * @return
+	 */
+	public static ICoreAccess getCore() {
+		return getApp().core;
 	}
 
 	public void setCore(ICoreAccess core) {
 		this.core = core;
+	}
+
+	/**
+	 * Convenience call to get the main gui frame faster.
+	 *
+	 * @return
+	 */
+	public static JFrame getFrame() {
+		return JakeMainView.getMainView().getFrame();
 	}
 
 	public Project getProject() {

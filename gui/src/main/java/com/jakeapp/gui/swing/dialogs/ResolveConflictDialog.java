@@ -1,14 +1,16 @@
 package com.jakeapp.gui.swing.dialogs;
 
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.JakeAction;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
-import com.jakeapp.gui.swing.helpers.FileObjectHelper;
-import com.jakeapp.gui.swing.helpers.GuiUtilities;
-import com.jakeapp.gui.swing.helpers.StringUtilities;
+import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
@@ -17,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.NoSuchObjectException;
 
 /**
  * People Invitation Dialog. Opens modal dialog to add ProjectMembers
@@ -60,7 +63,7 @@ public class ResolveConflictDialog extends JakeDialog {
 	@Override
 	protected JButton initComponents() {
 
-		// create the custom content for resolve conflict.
+		// create the custom content for resolve conflict. (with row gaps)
 		JPanel customPanel = new JPanel(new MigLayout("wrap 3, ins 0, fill", "", "[]unrel[]rel[]"));
 
 		JPanel hyp = new JPanel(new MigLayout("nogrid, ins 0, fill"));
@@ -75,7 +78,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		// surround with html to wrap text
 		path.setText(fo.getAbsolutePath().toString());
 
-		//TODO: this doesn't work?
+		//TODO: works on windows only?
 		path.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		hyp.add(new JLabel(getResourceMap().getString("pathTitle")));
@@ -98,7 +101,7 @@ public class ResolveConflictDialog extends JakeDialog {
 							 + FileObjectHelper.getLocalTimeRel(fo) + ")", localNewer) + "</html>");
 		JButton viewLocal = new JButton(getResourceMap().getString("openFileButton"));
 
-		JLabel remoteLabel = new JLabel("<html>" + getResourceMap().getString("remoteLabelBegin") + " " + FileObjectHelper.getLastModifier(fo) + ": " +
+		JLabel remoteLabel = new JLabel("<html><font color=red>" + FileObjectHelper.getLastModifier(fo) + "</font>" + getResourceMap().getString("remoteLabelBegin") + " " +
 				  StringUtilities.boldIf(FileObjectHelper.getSizeHR(fo), !localLarger) + ", " +
 				  StringUtilities.boldIf(FileObjectHelper.getTime(fo) + " ("
 							 + FileObjectHelper.getTimeRel(fo) + ")", !localNewer) + "</html>");
@@ -113,7 +116,7 @@ public class ResolveConflictDialog extends JakeDialog {
 
 		useLocalRadioButton = new JRadioButton(getResourceMap().getString("resolveMyButton"));
 		useLocalRadioButton.addActionListener(updateResolveAction);
-		useRemoteRadioButton = new JRadioButton(getResourceMap().getString("resolveThemButton"));
+		useRemoteRadioButton = new JRadioButton(getUseRemoteFileString());
 		useRemoteRadioButton.addActionListener(updateResolveAction);
 
 		ButtonGroup grp = new ButtonGroup();
@@ -154,16 +157,27 @@ public class ResolveConflictDialog extends JakeDialog {
 	private void updateResolveButton() {
 		String btnStr;
 		if (isLocalSelected()) {
-			btnStr = "resolveMyButton";
+			btnStr = getResourceMap().getString("resolveMyButton");
 		} else if (isRemoteSelected()) {
-			btnStr = "resolveThemButton";
+			btnStr = getUseRemoteFileString();
 		} else {
 			// nothing selected
-			btnStr = "resolveSelectOption";
+			btnStr = getResourceMap().getString("resolveSelectOption");
 		}
 
-		resolveBtn.setText(getResourceMap().getString(btnStr));
+		resolveBtn.setText(btnStr);
 		resolveBtn.setEnabled(isLocalSelected() || isRemoteSelected());
+	}
+
+	private String getUseRemoteFileString() {
+		try {
+			return Translator.get(getResourceMap(), "resolveThemButton",
+					  ProjectMemberHelpers.getNickOrFullName(JakeMainApp.getCore().getLastModifier(fo)));
+		} catch (NoSuchLogEntryException e) {
+			log.error(e);
+			ExceptionUtilities.showError(e);
+			return "";
+		}
 	}
 
 	/**
@@ -188,8 +202,40 @@ public class ResolveConflictDialog extends JakeDialog {
 	 * Reads the comboBox and sends the invites to the core.
 	 */
 	private void resolveConflictAction() {
-		//JakeMainApp.getApp().getCore().invitePeople(project, peopleComboBox.getSelectedItem().toString());
-		// TODO
+
+		// if local file is selected, we have to announce that.
+		if (isLocalSelected()) {
+			try {
+				JakeMainApp.getApp().getCore().pushJakeObject(fo, null);
+			} catch (SyncException e) {
+				log.error(e);
+				ExceptionUtilities.showError(e);
+			} catch (NotLoggedInException e) {
+				log.error(e);
+				ExceptionUtilities.showError(e);
+			}
+		} else {
+
+			// remote file must have been selected.
+			// so pull the file from remote (overwrites our file)
+			try {
+				JakeMainApp.getApp().getCore().pullJakeObject(fo);
+			} catch (NotLoggedInException e) {
+				log.error(e);
+				ExceptionUtilities.showError(e);
+			} catch (OtherUserOfflineException e) {
+				log.error(e);
+				ExceptionUtilities.showError(e);
+			} catch (NoSuchObjectException e) {
+				log.error(e);
+				ExceptionUtilities.showError(e);
+			} catch (NoSuchLogEntryException e) {
+				log.error(e);
+				ExceptionUtilities.showError(e);
+			}
+		}
+
+		// in any case - close the dialog
 		closeDialog();
 	}
 
@@ -201,6 +247,6 @@ public class ResolveConflictDialog extends JakeDialog {
 	 */
 	public static void showDialog(Project project, FileObject fo) {
 		ResolveConflictDialog dlg = new ResolveConflictDialog(project, fo);
-		dlg.showDialogSized(750, 280);
+		dlg.showDialogSized(700, 280);
 	}
 }

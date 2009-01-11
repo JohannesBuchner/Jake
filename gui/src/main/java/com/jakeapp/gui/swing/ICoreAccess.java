@@ -8,13 +8,16 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 
+import java.rmi.NoSuchObjectException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +79,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-		 throws InvalidCredentialsException;
+			  throws InvalidCredentialsException;
 
 
 	/**
@@ -161,8 +164,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public boolean createAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, Exception;
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -178,8 +181,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, Exception;
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -362,7 +365,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-		 throws ProjectFolderMissingException;
+			  throws ProjectFolderMissingException;
 
 	/**
 	 * Gets the sync status of a file
@@ -442,7 +445,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file    The file to rename
+	 * @param file	 The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -456,6 +459,24 @@ public interface ICoreAccess {
 	public void rename(FolderObject folder, String newName);
 
 
+	/**
+	 * @param jo
+	 * @param commitmsg
+	 * @throws SyncException
+	 * @throws NotLoggedInException
+	 */
+	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
+
+	/**
+	 * @param jo
+	 * @throws NotLoggedInException
+	 * @throws OtherUserOfflineException
+	 * @throws java.rmi.NoSuchObjectException
+	 * @throws NoSuchLogEntryException
+	 */
+	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException;
+
+
 	/******************* Notes functions ********************/
 
 
@@ -466,12 +487,12 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-		 ProjectNotLoadedException;
+			  ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
 	 *
-	 * @param note    the note in question
+	 * @param note	 the note in question
 	 * @param project the project the note is associated with
 	 * @return the date of the last edit
 	 */
@@ -480,14 +501,15 @@ public interface ICoreAccess {
 	/**
 	 * Get the <code>ProjectMemeber<code> who last edited the given note.
 	 *
-	 * @param note    the note in question
+	 * @param note	 the note in question
 	 * @param project the project the note is associated with
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 */
 	public ProjectMember getLastEditor(NoteObject note, Project project);
-	
+
 	/**
 	 * Determine if a note is only local or if it is a shared note.
+	 *
 	 * @param note the note in question
 	 * @return <code>true</code> iff this note is a local note.
 	 */
@@ -521,7 +543,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-	                                TrustState trust);
+											  TrustState trust);
 
 
 	/**

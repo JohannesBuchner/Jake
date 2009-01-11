@@ -195,9 +195,14 @@ public abstract class JakeDialog extends EscapeDialog {
 		} else {
 			this.setSize((int) this.getSize().getWidth(), height);
 		}
-		this.setMinimumSize(new Dimension(width, height));
+		// set minimum size slightly smaller, so that the dialog does not enlarge,
+		// when the user tries to resize (some jdk-bug, i think)
+		this.setMinimumSize(new Dimension(width - 10, height - 10));
 		this.setResizable(true);
+
+		// animation only works with mac os & sheets
 		this.setAnimated(true);
+
 		this.setVisible(true);
 	}
 
