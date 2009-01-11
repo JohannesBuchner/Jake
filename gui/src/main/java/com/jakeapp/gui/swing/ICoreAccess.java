@@ -569,8 +569,8 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project : the project
-	 * @param entries : amount of entries
+	 * @param project : the project to query
+	 * @param entries : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, int entries);
