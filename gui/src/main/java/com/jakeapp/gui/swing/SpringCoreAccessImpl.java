@@ -20,6 +20,7 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.rmi.NoSuchObjectException;
 import java.util.*;
 
@@ -641,33 +642,36 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void createProject(final String name, final String path) {
-		log.info("Mock: create project: " + name + " path: " + path);
+		log.info("Create project: " + name + " path: " + path);
+		
+		//preconditions
 		if (path == null) {
-			// throw new
+			throw new NullPointerException();
 		}
 
 		Runnable runner = new Runnable() {
-
 			public void run() {
-
+				Project pr = null;
+				MsgService messageService;
+				
 				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					Project pr1 = new Project(name, new UUID(22, 33), null,
-							  new File(path));
-					pr1.setStarted(true);
-					projects.add(pr1);
+					//add Project to core-internal list
+					pr = frontendService.getProjectsManagingService(sessionId).createProject(name,path, null);
+					
+					/*
+					 * The project is created, but not started and no user is assigned to it.
+					 */
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-							  pr1,
+							  pr,
 							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+				} catch (FileNotFoundException e) {
+					//TODO report to gui that the rootpath is invalid
+				} catch (NotLoggedInException e) {
+					log.debug("Tried to create a project while not authenticated to the core.",e);
 				}
 			}
 		};
