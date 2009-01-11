@@ -128,7 +128,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		//there may be more...
 		credentials.setProtocol(ProtocolType.XMPP);
 		
-		//XXX are credentials prepared enough??
 		this.signIn(credentials);
 	}
 	
@@ -265,8 +264,18 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void signOut() {
-		isSignedIn = false;
-
+		if (!this.isSignedIn()) {
+			
+			
+			try {
+				this.frontendService.signOut(this.sessionId);
+			} catch (NotLoggedInException e) {
+				//silently discard invalid session
+			}
+			
+			this.isSignedIn = false;
+		}
+		
 		fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
 	}
 
