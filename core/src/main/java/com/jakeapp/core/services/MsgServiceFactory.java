@@ -100,8 +100,7 @@ public class MsgServiceFactory {
 		ensureInitialised();
 		MsgService result = null;
 		if (credentials.getProtocol().equals(ProtocolType.XMPP)) {
-			log
-					.debug("Creating new XMPPMsgService for userId "
+			log.debug("Creating new XMPPMsgService for userId "
 							+ credentials.getUserId());
 			result = new XMPPMsgService();
 			result.setCredentials(credentials);

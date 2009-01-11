@@ -124,6 +124,15 @@ public interface IFrontendService {
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
 			throws NotLoggedInException, InvalidCredentialsException,
 			ProtocolNotSupportedException;
+	
+	/**
+	 * Logs all Message services that are currently active out.
+	 * After calling this method all MessageServices within the specified
+	 * Session are logged out.
+	 * @param sessionId 
+	 * @throws NotLoggedInException If <code>sessionId</code> is invalid.
+	 */
+	void signOut(String sessionId) throws NotLoggedInException;
 
 	/**
 	 * Pings the core to prevent session expiry

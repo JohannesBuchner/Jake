@@ -197,6 +197,26 @@ public class FrontendServiceImpl implements IFrontendService {
 		checkSession(sessionId);
 		return msgServiceFactory.addMsgService(credentials);
 	}
+	
+
+	@Override
+	public void signOut(String sessionId) throws NotLoggedInException {
+		FrontendSession session;
+		Iterable<MsgService> msgServices;
+		
+		session = this.getSession(sessionId);
+		msgServices = session.getMsgServices();
+		//logout
+		for (MsgService msg:msgServices) {
+			try {
+				msg.logout();
+			} catch (Exception e) {
+				log.debug("Logging out failed: ",e);
+			}
+		}
+		//clear
+		session.clearMsgServices();
+	}
 
 	@Override
 	public void ping(String sessionId) throws IllegalArgumentException,
@@ -211,5 +231,4 @@ public class FrontendServiceImpl implements IFrontendService {
 			throws NotLoggedInException {
 		return getSession(sessionId).getSync();
 	}
-
 }

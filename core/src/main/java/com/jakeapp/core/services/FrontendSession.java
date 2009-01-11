@@ -66,4 +66,11 @@ public class FrontendSession implements IFrontendSession {
 		}
 		return result;
 	}
+
+	/**
+	 * Removes all created Message-Services from this Session
+	 */
+	public void clearMsgServices() {
+		this.msgServices.clear();	
+	}
 }
