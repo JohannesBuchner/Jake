@@ -19,7 +19,7 @@ quickstart: gui
 
 gui: core
 	[[ -e .rebuild_$@ ]] && { cd $@; ${MVN} package install; } || true
-	cd $@; [[ -e target/$@-${GUITYPE}-${VERSION}.jar ]] || ${MVN} package install || true
+	cd $@; [[ -e target/$@-${GUITYPE}-${VERSION}.jar ]] || ${MVN} package install 
 	cd $@; find src/ -type f -newer target/$@-${GUITYPE}-${VERSION}.jar | grep -v "\.svn" -q && ${MVN} package install || true
 	@cd $@; [ -e target/surefire-reports/ ] && { echo Tests in error in $@:; cat target/surefire-reports/*.txt|grep '<<<'|grep '^[^()]*[(][^(]*[)]' -Eo || echo "(none)" ; echo; } || true
 	@rm -f .rebuild_gui
@@ -63,13 +63,14 @@ lazyclean:
 up:
 	oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
 
-jar:
-	${MVN} clean
-	${MVN} package
-	cd releases; rm -rf temp; mkdir -p temp 
-	cd releases/temp; unzip ../../gui/target/gui-${VERSION}.one-jar.jar && cp -v ../../{core,ics,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && zip -9 -r ../jake-current.jar * 
-	cd releases; rm -rf temp;
-	@echo release ready under releases/jake-current.jar
-	@echo run with java -jar releases/jake-current.jar
+#needs one-jar plugin
+#jar:
+#	${MVN} clean
+#	${MVN} package
+#	cd releases; rm -rf temp; mkdir -p temp 
+#	cd releases/temp; unzip ../../gui/target/gui-${VERSION}.one-jar.jar && cp -v ../../{core,ics,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && zip -9 -r ../jake-current.jar * 
+#	cd releases; rm -rf temp;
+#	@echo release ready under releases/jake-current.jar
+#	@echo run with java -jar releases/jake-current.jar
 
 .PHONY: gui core fss ics ics-xmpp start quickstart

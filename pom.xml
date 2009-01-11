@@ -108,7 +108,7 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
+			</plugin><!--
 			<plugin>
 				<groupId>org.dstovall</groupId>
 				<artifactId>onejar-maven-plugin</artifactId>
@@ -116,7 +116,7 @@
 				<executions>
 					<execution>
 						<configuration>
-							<!-- Optional -->
+							<!- - Optional - ->
 							<onejarVersion>0.96</onejarVersion>
 						</configuration>
 						<goals>
@@ -124,7 +124,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 	<dependencyManagement>
