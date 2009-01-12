@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class JakeMainView extends FrameView implements ProjectSelectionChanged, ErrorCallback {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
+	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
 	private Project project;
 	private boolean inspectorEnabled;
@@ -149,6 +150,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanelSplit.setBorder(null);
 		contentPanelSplit.setResizeWeight(1.0);
 		contentPanelSplit.setEnabled(true);
+		contentPanelSplit.setDividerSize(CONTENT_SPLITTERSIZE);
 		contentPanelSplit.addPropertyChangeListener(new ResizeListener(contentPanelSplit));
 		updateInspectorPanelVisibility();
 
@@ -210,7 +212,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 				// hide inspector!
 				if ((splitPane.getWidth() - current) < 155) {
-					setInspectorEnabled(false);
+
+					// only hide if this was done by user
+					// inspector is hidden sometimes, but remember the original state!
+					if (isInspectorAllowed()) {
+						setInspectorEnabled(false);
+					}
 				}
 				// limit the minimum size manually, to detect closing wish
 				else if ((splitPane.getWidth() - current) < InspectorPanel.INSPECTOR_SIZE) {
@@ -546,7 +553,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Checks isInspectorEnabled property.
 	 */
 	private void updateInspectorPanelVisibility() {
-		final int DIVIDER_SIZE = 2;
 		log.debug("pre: isInspectorEnabled: " + isInspectorEnabled() +
 				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
 				  " isInspectorAllowed: " + isInspectorAllowed());
@@ -554,15 +560,22 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			// add inspector IF allowed
 			if (isInspectorAllowed() && !isInspectorPanelVisible()) {
 				inspectorPanel.setVisible(true);
-				contentPanelSplit.setDividerSize(DIVIDER_SIZE);
 				contentPanelSplit.setDividerLocation(contentPanelSplit.getWidth() -
-						  InspectorPanel.INSPECTOR_SIZE - 1 - DIVIDER_SIZE);
+						  InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
+			} else if (!isInspectorAllowed()) {
+				inspectorPanel.setVisible(false);
 			}
 		} else {
 			if (isInspectorPanelVisible()) {
 				inspectorPanel.setVisible(false);
-				contentPanelSplit.setDividerSize(2);
 			}
+		}
+
+		// hide divider if not allowed
+		if (!isInspectorAllowed()) {
+			contentPanelSplit.setDividerSize(0);
+		} else {
+			contentPanelSplit.setDividerSize(CONTENT_SPLITTERSIZE);
 		}
 
 		// refresh panel

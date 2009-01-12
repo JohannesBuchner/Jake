@@ -10,6 +10,7 @@
  */
 package com.jakeapp.gui.swing.panels;
 
+import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -27,7 +28,6 @@ import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -264,8 +264,21 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.setBackground(Color.WHITE);
 
 		// add control bar
-		JXPanel controlPanel = new JXPanel(new MigLayout("wrap 2, ins 2, fill, gap 0! 0!"));
-		controlPanel.setBackground(Platform.getStyler().getFilterPaneColor());
+		final JPanel controlPanel = new JPanel(new MigLayout("wrap 2, ins 2, fill, gap 0! 0!"));
+		controlPanel.setBackground(Platform.getStyler().getFilterPaneColor(true));
+
+		// change color on window loose/gain focus
+		WindowUtils.installWindowFocusListener(new WindowFocusListener() {
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				controlPanel.setBackground(Platform.getStyler().getFilterPaneColor(true));
+			}
+
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				controlPanel.setBackground(Platform.getStyler().getFilterPaneColor(false));
+			}
+		}, controlPanel);
 
 		treeBtn = new JToggleButton(getResourceMap().getString("treeButton"));
 		treeBtn.setUI(new HudButtonUI());

@@ -53,7 +53,8 @@ public interface Styler {
 	/**
 	 * Returns the (dark) filter color for e.g. filepane
 	 *
+	 * @param windowFocus
 	 * @return
 	 */
-	Color getFilterPaneColor();
+	Color getFilterPaneColor(boolean windowFocus);
 }

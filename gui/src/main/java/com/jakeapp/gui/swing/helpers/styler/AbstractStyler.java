@@ -44,7 +44,10 @@ public abstract class AbstractStyler implements Styler {
 		return SystemColor.window;
 	}
 
-	public Color getFilterPaneColor() {
-		return Color.DARK_GRAY;
+	public Color getFilterPaneColor(boolean windowFocus) {
+		if (windowFocus)
+			return Color.DARK_GRAY;
+		else
+			return Color.GRAY;
 	}
 }
