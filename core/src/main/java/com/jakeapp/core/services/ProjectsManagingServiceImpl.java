@@ -1,6 +1,7 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -9,7 +10,7 @@ import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 
-import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
@@ -36,17 +38,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private IFrontendSession frontendSession;
 
 	public ProjectsManagingServiceImpl() {
-		this.frontendSession = frontendSession;
 	}
 
 	/************** GETTERS & SETTERS *************/
-	public void setFrontendSession(IFrontendSession pk) {
-		this.frontendSession = pk;
-	}
-	
-	private IFrontendSession getFrontendSession() {
-		return this.frontendSession;
-	}
 
 	private void setFileServices(Map<Project,IFSService> fileServices) {
 		this.fileServices = fileServices;
@@ -78,11 +72,14 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		return this.getFileServices().get(p);
 	}
 
+	private List<Project> getInternalProjectList() {
+		return this.projectList;
+	}
+
 	/******** STARTING IMPLEMENTATIONS **************/
 	@Override
 	public List<Project> getProjectList() {
-
-		return null;
+		return Collections.unmodifiableList(this.getInternalProjectList());
 	}
 
 	@Override
@@ -150,8 +147,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public Project createProject(String name, String rootPath, MsgService msgService)
 			throws FileNotFoundException, IllegalArgumentException {
+		ApplicationContext context;
 		
-		FSService fss;
 		File projectRoot = new File(rootPath);
 		
 		//create a new, empty project
@@ -173,18 +170,32 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throw new FileNotFoundException();
 		}
 		
+		//create an applicationContext for the Project
+		context = this.applicationContextFactory.getApplicationContext(project);
 		
-		//TODO create the new Project in the database
+		//TODO retrieve the dao from the context
 		
-		//TODO add the project to the service's internal project list
-
+		//create the new Project in the global database
+		try {
+			project = this.getProjectDao().create(project);
+		} catch (InvalidProjectException e) {
+			log.debug("Creating a project failed.",e);
+			project = null;
+		}
+		
+		if (project!=null) {
+			//add the project to the service's internal project list	
+			this.getInternalProjectList().add(project);
+		}
+		
+		//TODO create a new Project-local database
 		
 		return project; 
 	}
 
 	/**
 	 * Initializes a project folder by putting special files
-	 * (database, self-implemented trash, ...) in it.
+	 * (self-implemented trash, ...) in it.
 	 */
 	private void initializeProjectFolder() throws IOException {
 		//empty implementation
