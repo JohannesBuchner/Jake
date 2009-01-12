@@ -31,6 +31,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**
@@ -100,10 +102,41 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
 
 		fileTreeTable.addMouseListener(new FileTreeTableMouseListener(this));
+		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
 	}
 
 	public static FilePanel getInstance() {
 		return instance;
+	}
+
+	private class FileTreeTableKeyListener implements KeyListener {
+		private FilePanel panel;
+
+		public FileTreeTableKeyListener(FilePanel p) {
+			this.panel = p;
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// Do nothing
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// Do nothing
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			java.util.List<FileObject> list = new ArrayList<FileObject>();
+			for (int row : fileTreeTable.getSelectedRows()) {
+				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, 0);
+				if (node.isFile()) {
+					list.add(node.getFileObject());
+				}
+			}
+			panel.notifyFileSelectionListeners(list);
+		}
 	}
 
 	private class FileTreeTableMouseListener implements MouseListener {
@@ -178,7 +211,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(fileTreeTable, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+				 .getY());
 		}
 
 		@Override
@@ -248,26 +281,26 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
 		infoPanel.setLayout(infoPanelLayout);
 		infoPanelLayout.setHorizontalGroup(
-				  infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
-							 .addContainerGap()
-							 .addComponent(jLabel1)
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
-							 .addComponent(resolveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-							 .addComponent(illegalFilenamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-							 .addComponent(newFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-							 .addContainerGap())
+			 infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				  .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+				  .addContainerGap()
+				  .addComponent(jLabel1)
+				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
+				  .addComponent(resolveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+				  .addComponent(illegalFilenamesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+				  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+				  .addComponent(newFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+				  .addContainerGap())
 		);
 		infoPanelLayout.setVerticalGroup(
-				  infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(infoPanelLayout.createSequentialGroup()
-										.addGap(8, 8, 8)
-										.addComponent(jLabel1))
-							 .addComponent(newFilesButton)
-							 .addComponent(illegalFilenamesButton)
-							 .addComponent(resolveButton)
+			 infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				  .addGroup(infoPanelLayout.createSequentialGroup()
+						.addGap(8, 8, 8)
+						.addComponent(jLabel1))
+				  .addComponent(newFilesButton)
+				  .addComponent(illegalFilenamesButton)
+				  .addComponent(resolveButton)
 		);
 
 		add(infoPanel, java.awt.BorderLayout.PAGE_START);
