@@ -170,6 +170,9 @@ public class JakeMainApp extends SingleFrameApplication implements
 			// calls will be ignored)
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
 
+			// TODO: also not working as expected, see macwidgets issue 48
+			//System.setProperty("apple.awt.draggableWindowBackground", "true");
+
 			// TODO: broken? has no use on mac java 6?
 			System.setProperty("apple.awt.brushMetalRounded", "true");
 		} else if (Platform.isLin()) {

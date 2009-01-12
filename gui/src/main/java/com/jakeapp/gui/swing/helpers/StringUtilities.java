@@ -43,4 +43,14 @@ public class StringUtilities {
 	private StringUtilities() {
 
 	}
+
+	/**
+	 * Surrounds string with html
+	 *
+	 * @param str
+	 * @return string with html tags sorrounded.
+	 */
+	public static String htmlize(String str) {
+		return "<html>" + str + "</html>";
+	}
 }

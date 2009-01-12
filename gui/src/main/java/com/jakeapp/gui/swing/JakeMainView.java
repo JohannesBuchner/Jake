@@ -48,8 +48,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private JPanel contextSwitcherPane = createContextSwitcherPanel();
 	private JPanel inspectorPanel;
 
-	private ProjectViewPanels projectViewPanel = ProjectViewPanels.News;
-	private ContextPanels contextViewPanel = ContextPanels.Login;
+	private ProjectViewPanelEnum projectViewPanel = ProjectViewPanelEnum.News;
+	private ContextPanelEnum contextViewPanel = ContextPanelEnum.Login;
 	private JakeStatusBar jakeStatusBar;
 	private JakeTrayIcon tray;
 
@@ -63,14 +63,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	/**
 	 * Project View: set of toggle buttons. Alwasy one state setup.
 	 */
-	public enum ProjectViewPanels {
+	public enum ProjectViewPanelEnum {
 		News, Files, Notes
 	}
 
 	/**
 	 * Special context states.
 	 */
-	public enum ContextPanels {
+	public enum ContextPanelEnum {
 		Login, Project, Invitation
 	}
 
@@ -155,7 +155,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		registerCallbacks();
 
-		setContextViewPanel(ContextPanels.Login);
+		setContextViewPanel(ContextPanelEnum.Login);
 
 		updateTitle();
 
@@ -359,7 +359,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private void updateToolBar() {
 		boolean hasProject = getProject() != null;
 		boolean isInvite = getProject() != null && getProject().getInvitationState() == InvitationState.INVITED;
-		boolean isFilePaneOpen = getContextViewPanel() == ContextPanels.Project && getProjectViewPanel() == ProjectViewPanels.Files;
+		boolean isFilePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectViewPanelEnum.Files;
 
 		createNoteButton.setEnabled(hasProject && !isInvite);
 		invitePeopleButton.setEnabled(hasProject && !isInvite);
@@ -387,12 +387,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 
 		// determine toggle button selection
-		if (contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).isSelected()) {
-			setProjectViewPanel(ProjectViewPanels.News);
-		} else if (contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).isSelected()) {
-			setProjectViewPanel(ProjectViewPanels.Files);
-		} else if (contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).isSelected()) {
-			setProjectViewPanel(ProjectViewPanels.Notes);
+		if (contextSwitcherButtons.get(ProjectViewPanelEnum.News.ordinal()).isSelected()) {
+			setProjectViewPanel(ProjectViewPanelEnum.News);
+		} else if (contextSwitcherButtons.get(ProjectViewPanelEnum.Files.ordinal()).isSelected()) {
+			setProjectViewPanel(ProjectViewPanelEnum.Files);
+		} else if (contextSwitcherButtons.get(ProjectViewPanelEnum.Notes.ordinal()).isSelected()) {
+			setProjectViewPanel(ProjectViewPanelEnum.Notes);
 		}
 	}
 
@@ -548,7 +548,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	}
 
 
-	public ProjectViewPanels getProjectViewPanel() {
+	public ProjectViewPanelEnum getProjectViewPanel() {
 		return projectViewPanel;
 	}
 
@@ -558,7 +558,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 *
 	 * @param view: the project view panel that should be active.
 	 */
-	public void setProjectViewPanel(ProjectViewPanels view) {
+	public void setProjectViewPanel(ProjectViewPanelEnum view) {
 		this.projectViewPanel = view;
 		updateProjectViewPanel();
 		fireProjectViewChanged();
@@ -569,10 +569,10 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * ProjectViewPanels - state.
 	 */
 	private void updateProjectToggleButtons() {
-		boolean canBeSelected = getContextViewPanel() == ContextPanels.Project;
-		contextSwitcherButtons.get(ProjectViewPanels.News.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.News);
-		contextSwitcherButtons.get(ProjectViewPanels.Files.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.Files);
-		contextSwitcherButtons.get(ProjectViewPanels.Notes.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanels.Notes);
+		boolean canBeSelected = getContextViewPanel() == ContextPanelEnum.Project;
+		contextSwitcherButtons.get(ProjectViewPanelEnum.News.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.News);
+		contextSwitcherButtons.get(ProjectViewPanelEnum.Files.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.Files);
+		contextSwitcherButtons.get(ProjectViewPanelEnum.Notes.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.Notes);
 
 		// problem:
 
@@ -586,14 +586,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Updates the Project View, called after setting with setProjectViewPanel
 	 */
 	private void updateProjectViewPanel() {
-		ProjectViewPanels view = getProjectViewPanel();
+		ProjectViewPanelEnum view = getProjectViewPanel();
 
 		// only set if project panels are shown!
-		boolean show = getContextViewPanel() == ContextPanels.Project;
+		boolean show = getContextViewPanel() == ContextPanelEnum.Project;
 
-		showContentPanel(newsPanel, show && view == ProjectViewPanels.News);
-		showContentPanel(filePanel, show && view == ProjectViewPanels.Files);
-		showContentPanel(notesPanel, show && view == ProjectViewPanels.Notes);
+		showContentPanel(newsPanel, show && view == ProjectViewPanelEnum.News);
+		showContentPanel(filePanel, show && view == ProjectViewPanelEnum.Files);
+		showContentPanel(notesPanel, show && view == ProjectViewPanelEnum.Notes);
 
 
 		updateProjectToggleButtons();
@@ -603,15 +603,15 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	}
 
 
-	public ContextPanels getContextViewPanel() {
+	public ContextPanelEnum getContextViewPanel() {
 		return contextViewPanel;
 	}
 
-	public void setContextViewPanel(ContextPanels view) {
+	public void setContextViewPanel(ContextPanelEnum view) {
 		this.contextViewPanel = view;
 
-		showContentPanel(loginPanel, view == ContextPanels.Login);
-		showContentPanel(invitationPanel, view == ContextPanels.Invitation);
+		showContentPanel(loginPanel, view == ContextPanelEnum.Login);
+		showContentPanel(invitationPanel, view == ContextPanelEnum.Invitation);
 
 		updateProjectViewPanel();
 		fireContextViewChanged();
@@ -628,11 +628,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		boolean needsInvite = pr != null && pr.getInvitationState() == InvitationState.INVITED;
 		// determine what to show
 		if (pr == null) {
-			setContextViewPanel(ContextPanels.Login);
+			setContextViewPanel(ContextPanelEnum.Login);
 		} else if (needsInvite) {
-			setContextViewPanel(ContextPanels.Invitation);
+			setContextViewPanel(ContextPanelEnum.Invitation);
 		} else {
-			setContextViewPanel(ContextPanels.Project);
+			setContextViewPanel(ContextPanelEnum.Project);
 		}
 		contentPanel.updateUI();
 	}

@@ -355,8 +355,20 @@ public class FileUtilities {
 	 * @return
 	 */
 	public static String getPathFromPathWithFile(String path) {
-		// TODO: strip name!
-		return path;
-		//int pos = path.in
+		log.debug("in: " + path);
+		if (path == null || path.length() == 0) {
+			return path;
+		}
+
+		int sepPos = 0, sepPosLast = 0;
+
+		// find last pos
+		while ((sepPos = path.indexOf(getPathSeparator(), sepPos)) > -1) {
+			sepPosLast = sepPos;
+			sepPos++;
+		}
+
+		log.debug("out: " + path.substring(0, sepPosLast));
+		return path.substring(0, sepPosLast);
 	}
 }

@@ -9,5 +9,5 @@ import com.jakeapp.gui.swing.JakeMainView;
  * Time: 8:44:22 PM
  */
 public interface ProjectViewChanged {
-    public void setProjectViewPanel(JakeMainView.ProjectViewPanels panel);
+	public void setProjectViewPanel(JakeMainView.ProjectViewPanelEnum panel);
 }

@@ -20,7 +20,7 @@ public class ConfigControlsHelper {
 		table.getColumn(0).setCellRenderer(new EventCellRenderer());
 		table.setSortable(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.setColumnControlVisible(false);
+		table.setColumnControlVisible(true);
 		table.setEditable(false);
 		table.setDoubleBuffered(true);
 		//table.setRolloverEnabled(true);

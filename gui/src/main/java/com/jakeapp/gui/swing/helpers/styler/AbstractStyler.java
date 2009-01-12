@@ -39,4 +39,12 @@ public abstract class AbstractStyler implements Styler {
 	public Font getSheetLargeFont() {
 		return new JLabel().getFont().deriveFont(Font.BOLD, 14);
 	}
+
+	public Color getWindowBackground() {
+		return SystemColor.window;
+	}
+
+	public Color getFilterPaneColor() {
+		return Color.DARK_GRAY;
+	}
 }

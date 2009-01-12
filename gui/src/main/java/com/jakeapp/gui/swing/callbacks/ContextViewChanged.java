@@ -9,5 +9,5 @@ import com.jakeapp.gui.swing.JakeMainView;
  * Time: 8:44:22 PM
  */
 public interface ContextViewChanged {
-    public void setContextViewPanel(JakeMainView.ContextPanels panel);
+	public void setContextViewPanel(JakeMainView.ContextPanelEnum panel);
 }

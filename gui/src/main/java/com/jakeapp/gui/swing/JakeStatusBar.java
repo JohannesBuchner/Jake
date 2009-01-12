@@ -3,12 +3,12 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -28,8 +28,8 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	private JLabel statusLabel;
 	private JButton connectionButton;
 	private TriAreaComponent statusBar;
-	private JakeMainView.ProjectViewPanels projectViewPanel;
-	private JakeMainView.ContextPanels contextViewPanel;
+	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
+	private JakeMainView.ContextPanelEnum contextViewPanel;
 
 
 	public JakeStatusBar(ICoreAccess core) {
@@ -179,7 +179,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 							JakeMainApp.getApp().getCore().signOut();
 						}
 
-						JakeMainView.getMainView().setContextViewPanel(JakeMainView.ContextPanels.Login);
+						JakeMainView.getMainView().setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
 					}
 				});
 
@@ -209,8 +209,8 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	 */
 	public void updateProjectLabel() {
 
-		if (getContextViewPanel() == JakeMainView.ContextPanels.Project) {
-			if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Files) {
+		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
+			if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Files) {
 				// update the status bar label
 				int projectFileCount = getCore().getProjectFileCount(getProject());
 				String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
@@ -220,23 +220,23 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 				// update project statistics
 				statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
-			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanels.Notes) {
-                int notesCount = 0;
-                try {
-                    /**
-                     * TODO 4 Peter:
-                     * achtung.. das hollt jedes mal
-                     * die ganzen Notes aus der Datenbank... bitte irgendwo zwischenspeichern.
-                     */
-                    notesCount = getCore().getNotes(getProject()).size();
-                } catch (NotLoggedInException e) {
-                    // TODO 4 peter
-                    e.printStackTrace();
-                } catch (ProjectNotLoadedException e) {
-                    // TODO 4 Peter
-                    e.printStackTrace();
-                }
-                String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
+			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
+				int notesCount = 0;
+				try {
+					/**
+					 * TODO 4 Peter:
+					 * achtung.. das hollt jedes mal
+					 * die ganzen Notes aus der Datenbank... bitte irgendwo zwischenspeichern.
+					 */
+					notesCount = getCore().getNotes(getProject()).size();
+				} catch (NotLoggedInException e) {
+					// TODO 4 peter
+					e.printStackTrace();
+				} catch (ProjectNotLoadedException e) {
+					// TODO 4 Peter
+					e.printStackTrace();
+				}
+				String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
 
 				statusLabel.setText(notesCount + " " + notesCountStr);
 
@@ -257,7 +257,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 					statusLabel.setText("");
 				}
 			}
-		} else if (getContextViewPanel() == JakeMainView.ContextPanels.Invitation) {
+		} else if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Invitation) {
 			statusLabel.setText("");
 		} else {
 			statusLabel.setText("");
@@ -270,22 +270,22 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		projectUpdated();
 	}
 
-	public void setProjectViewPanel(JakeMainView.ProjectViewPanels panel) {
+	public void setProjectViewPanel(JakeMainView.ProjectViewPanelEnum panel) {
 		this.projectViewPanel = panel;
 
 		projectUpdated();
 	}
 
-	public JakeMainView.ProjectViewPanels getProjectViewPanel() {
+	public JakeMainView.ProjectViewPanelEnum getProjectViewPanel() {
 		return projectViewPanel;
 	}
 
-	public void setContextViewPanel(JakeMainView.ContextPanels contextViewPanel) {
+	public void setContextViewPanel(JakeMainView.ContextPanelEnum contextViewPanel) {
 		this.contextViewPanel = contextViewPanel;
 		projectUpdated();
 	}
 
-	public JakeMainView.ContextPanels getContextViewPanel() {
+	public JakeMainView.ContextPanelEnum getContextViewPanel() {
 		return contextViewPanel;
 	}
 }

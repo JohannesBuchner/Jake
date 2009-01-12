@@ -42,4 +42,18 @@ public interface Styler {
 	 * @return larger font than normal
 	 */
 	Font getSheetLargeFont();
+
+	/**
+	 * Returns the default color for window background
+	 *
+	 * @return
+	 */
+	Color getWindowBackground();
+
+	/**
+	 * Returns the (dark) filter color for e.g. filepane
+	 *
+	 * @return
+	 */
+	Color getFilterPaneColor();
 }
