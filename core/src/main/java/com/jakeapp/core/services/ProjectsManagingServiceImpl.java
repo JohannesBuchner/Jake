@@ -6,32 +6,54 @@ import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.jake.fss.FSService;
+import com.jakeapp.jake.fss.IFSService;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
 
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
+	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
 
 	private List<Project> projectList = new ArrayList<Project>();
+	
+	private Map<Project,IFSService> fileServices = new HashMap<Project,IFSService>();
 
 	private ApplicationContextFactory applicationContextFactory;
 
 	private IProjectDao projectDao;
 
-	private IFrontendSession pk;
+	private IFrontendSession frontendSession;
 
 	public ProjectsManagingServiceImpl() {
-		this.pk = pk;
+		this.frontendSession = frontendSession;
 	}
 
 	/************** GETTERS & SETTERS *************/
 	public void setFrontendSession(IFrontendSession pk) {
-		this.pk = pk;
+		this.frontendSession = pk;
+	}
+	
+	private IFrontendSession getFrontendSession() {
+		return this.frontendSession;
+	}
+
+	private void setFileServices(Map<Project,IFSService> fileServices) {
+		this.fileServices = fileServices;
+	}
+
+	private Map<Project,IFSService> getFileServices() {
+		return fileServices;
 	}
 
 	public IProjectDao getProjectDao() {
@@ -49,6 +71,11 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	public void setApplicationContextFactory(
 			ApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
+	}
+	
+	@Override
+	public IFSService getFileServices(Project p) {
+		return this.getFileServices().get(p);
 	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
@@ -123,24 +150,57 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public Project createProject(String name, String rootPath, MsgService msgService)
 			throws FileNotFoundException, IllegalArgumentException {
-		Project project = new Project(name, UUID.randomUUID(), msgService, new File(
-				rootPath));
+		
+		FSService fss;
+		File projectRoot = new File(rootPath);
+		
+		//create a new, empty project
+		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
+		
+		//create and initialize the Project's root folder
+		/*
+		 * Since the FSService would start to watch the directory immediately, it is not created yet.
+		 */
+		projectRoot.mkdirs();
+		if (!projectRoot.isDirectory() || !projectRoot.canWrite()) {
+			log.warn("Creating a Project's root path failed.");
+			throw new FileNotFoundException();
+		}
+		
+		try {
+			this.initializeProjectFolder();
+		} catch (IOException e) {
+			throw new FileNotFoundException();
+		}
+		
+		
+		//TODO create the new Project in the database
+		
+		//TODO add the project to the service's internal project list
 
+		
+		return project; 
+	}
 
-		return null; // TODO
+	/**
+	 * Initializes a project folder by putting special files
+	 * (database, self-implemented trash, ...) in it.
+	 */
+	private void initializeProjectFolder() throws IOException {
+		//empty implementation
 	}
 
 	@Override
 	public boolean startProject(Project project, ChangeListener cl) throws IllegalArgumentException,
 			FileNotFoundException, ProjectException {
-		pk.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
+		frontendSession.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
 		return false; // TODO
 	}
 
 	@Override
 	public boolean stopProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException {
-		pk.getSync().stopServing(project);
+		frontendSession.getSync().stopServing(project);
 		return false; // TODO
 	}
 

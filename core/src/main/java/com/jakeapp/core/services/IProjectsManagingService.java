@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.IFSService;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,8 @@ public interface IProjectsManagingService {
 	 * @param name
 	 *            the name the new <code>Project</code> should have
 	 * @param rootPath
-	 *            the Path to the rootFolder of this <code>Project</code>
+	 *            the Path to the rootFolder of this <code>Project</code>. If
+	 *            it does not yet exist, it is created.
 	 * @param msgService
 	 *            The MessageService this project should be assigned to. <b>THIS
 	 *            CAN BE NULL!</b>
@@ -235,5 +237,12 @@ public interface IProjectsManagingService {
 	 */
 	public List<NoteObject> getNotes(Project project) throws IllegalArgumentException,
 			ProjectNotLoadedException;
+	
+	/**
+	 * Returns a service for file-operations 
+	 * @param p
+	 * @return
+	 */
+	IFSService getFileServices(Project p);
 
 }
