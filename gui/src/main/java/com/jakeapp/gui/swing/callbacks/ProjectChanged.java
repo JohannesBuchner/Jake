@@ -10,30 +10,30 @@ import com.jakeapp.core.domain.Project;
  */
 public interface ProjectChanged {
 
-    /**
-     * Inner class that saves project & change reason
-     */
-    public class ProjectChangedEvent {
-        private Project project;
-        private ProjectChangedReason reason;
+	/**
+	 * Inner class that saves project & change reason
+	 */
+	public class ProjectChangedEvent {
+		private Project project;
+		private ProjectChangedReason reason;
 
-        public ProjectChangedEvent(Project project, ProjectChangedReason reason) {
-            this.project = project;
-            this.reason = reason;
-        }
+		public ProjectChangedEvent(Project project, ProjectChangedReason reason) {
+			this.project = project;
+			this.reason = reason;
+		}
 
-        public Project getProject() {
-            return this.project;
-        }
+		public Project getProject() {
+			return this.project;
+		}
 
-        public ProjectChangedReason getReason() {
-            return this.reason;
-        }
+		public ProjectChangedReason getReason() {
+			return this.reason;
+		}
 
-        public enum ProjectChangedReason {
-            Created, State, Name, Deleted, Joined, Rejected, People;
-        }
-    }
+		public enum ProjectChangedReason {
+			Created, State, Name, Deleted, Joined, Rejected, People, Invited;
+		}
+	}
 
-    public void projectChanged(final ProjectChangedEvent ev);
+	public void projectChanged(final ProjectChangedEvent ev);
 }
