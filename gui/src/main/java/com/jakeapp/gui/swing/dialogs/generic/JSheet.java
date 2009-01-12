@@ -176,7 +176,7 @@ public class JSheet extends JDialog {
 	}
 
 	protected boolean isShowAsSheet() {
-		return Platform.showAsSheet();
+		return Platform.isSetShowAsSheet();
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class JSheet extends JDialog {
 
 	public void addNotify() {
 		super.addNotify();
-		if (Platform.showAsSheet()) {
+		if (Platform.isSetShowAsSheet()) {
 			if (Platform.isMac()) {
 				this.getRootPane().putClientProperty("Window.alpha", 0.9d);
 			}

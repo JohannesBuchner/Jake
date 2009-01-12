@@ -27,6 +27,8 @@ public abstract class JakeDialog extends EscapeDialog {
 	private JLabel pictureLabel;
 	private JLabel explanationLabel;
 	private JPanel buttonsPanel;
+	private JButton cancelBtn;
+	private JButton defaultBtn;
 
 	public Project getProject() {
 		return project;
@@ -92,7 +94,7 @@ public abstract class JakeDialog extends EscapeDialog {
 
 		// call overloaded initComponents and add default button.
 		// There has to be at least one button!
-		JButton defaultBtn = initComponents();
+		defaultBtn = initComponents();
 		getButtonsPanel().add(defaultBtn, "tag ok, aligny bottom");
 
 		// add button panel as last
@@ -113,15 +115,15 @@ public abstract class JakeDialog extends EscapeDialog {
 	 * Adds a default "Cancel" Button to the App.
 	 */
 	protected void addCancelBtn() {
-		JButton closeBtn = new JButton(commonResourceMap.getString("cancelButton"));
-		closeBtn.addActionListener(new ActionListener() {
+		cancelBtn = new JButton(commonResourceMap.getString("cancelButton"));
+		cancelBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				setVisible(false);
 			}
 		});
-		buttonsPanel.add(closeBtn, "tag cancel, aligny bottom, gaptop 10");
+		buttonsPanel.add(cancelBtn, "tag cancel, aligny bottom, gaptop 10");
 	}
 
 
@@ -202,6 +204,13 @@ public abstract class JakeDialog extends EscapeDialog {
 
 		// animation only works with mac os & sheets
 		this.setAnimated(true);
+
+		// request focus to the buttons
+		if (cancelBtn != null) {
+			cancelBtn.requestFocus();
+		} else {
+			defaultBtn.requestFocus();
+		}
 
 		this.setVisible(true);
 	}

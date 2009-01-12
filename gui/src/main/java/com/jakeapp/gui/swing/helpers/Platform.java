@@ -11,7 +11,9 @@ import com.jakeapp.gui.swing.helpers.styler.Styler;
 import com.jakeapp.gui.swing.helpers.styler.WinStyler;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author studpete
@@ -25,7 +27,7 @@ public class Platform {
 	 *
 	 * @return
 	 */
-	public static boolean showAsSheet() {
+	public static boolean isSetShowAsSheet() {
 		if (isMac()) {
 			return true;
 		} else {
@@ -138,6 +140,42 @@ public class Platform {
 		} catch (Throwable th) {
 			log.warn("Failed to fix WM_CLASS for " + AppUtilities.getAppName() + " windows.", th);
 		}
+	}
+
+
+	/**
+	 * Currently not used.
+	 * Event counter feature - like in mail.app.
+	 * Should be possible on windows too.
+	 * (tray icon change?)
+	 *
+	 * @param num
+	 */
+	public static void setEventCounter(int num) {
+		log.debug("set event count to: " + num);
+		java.awt.Image originalIcon = Toolkit.getDefaultToolkit().getImage(Platform.class.getResource("/icons/jakeapp-large.png"));
+		ImageIcon ico = new ImageIcon(originalIcon);
+
+		BufferedImage newIcon = new BufferedImage(ico.getIconWidth(), ico.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+
+		Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
+
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics.setColor(Color.decode("#E40000"));
+
+		graphics.drawImage(originalIcon, 0, 0, null);
+
+		graphics.fillOval(ico.getIconWidth() - 40, 0, 35, 35);
+
+		graphics.setColor(Color.WHITE);
+		graphics.setFont(new Font("Helvetica", Font.BOLD, 23));
+		graphics.drawString(Integer.toString(num), ico.getIconWidth() - 28, 25);
+
+		graphics.dispose();
+
+		// TODO: find a way to set app icon
+		// may need jni interface!
+		//setApplicationIconImage(newIcon);
 	}
 
 	// prevent construction

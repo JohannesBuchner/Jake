@@ -15,7 +15,7 @@ public class ExceptionUtilities {
 	/**
 	 * Displays an exception to the user.
 	 *
-	 * @param e
+	 * @param e: the exception to parse and show
 	 */
 	// TODO: provide a same way of logging, showing details.
 	// Custom Dialog would be great!
@@ -31,5 +31,15 @@ public class ExceptionUtilities {
 	 */
 	public static void showError(ErrorCallback.JakeErrorEvent ee) {
 		showError(ee.getException());
+	}
+
+	/**
+	 * Displays an error to the user
+	 *
+	 * @param msg: message as string
+	 */
+	public static void showError(String msg) {
+		JSheet.showMessageSheet(JakeMainApp.getFrame(), msg,
+				  JOptionPane.ERROR_MESSAGE, null);
 	}
 }

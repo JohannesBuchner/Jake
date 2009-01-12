@@ -26,7 +26,7 @@ public class FileUtilities {
 	public static String getLastFolderFromPath(String path) {
 		if (path.indexOf(getPathSeparator()) != -1) {
 			return path.substring(path.lastIndexOf(getPathSeparator()) + 1,
-				 path.length());
+					  path.length());
 		} else {
 			return path;
 		}
@@ -36,6 +36,7 @@ public class FileUtilities {
 		log.info("user is choosing a directory");
 		// uses the awt native folder dialog on mac
 		if (Platform.isMac()) {
+			// TODO: can we put that into a sheet?
 			FolderDialog fod = new FolderDialog(JakeMainView.getMainView().getFrame(), "Choose Directory");
 			if (defaultFolder != null) {
 				fod.setFile(defaultFolder);
@@ -274,7 +275,7 @@ public class FileUtilities {
 	/**
 	 * Get the human-readable size for an amount of bytes
 	 *
-	 * @param size      : the number of bytes to be converted
+	 * @param size		: the number of bytes to be converted
 	 * @param precision : number of decimal places to round to;
 	 *                  optional - defaults to 2
 	 * @param longName  : whether or not the returned size tag
@@ -283,10 +284,10 @@ public class FileUtilities {
 	 * @param realSize  : whether or not to use the real (base
 	 *                  1024) or commercial (base 1000) size;
 	 *                  optional - defaults to true
-	 * @return String           : the converted size
+	 * @return String			  : the converted size
 	 */
 	static public String getSize(long size, int precision,
-	                             boolean longName, boolean realSize) {
+										  boolean longName, boolean realSize) {
 		int base = realSize ? 1024 : 1000;
 		int pos = 0;
 		double decSize = (double) size;

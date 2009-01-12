@@ -36,6 +36,12 @@
             <url>http://mvnrepository.com/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>org.codehaus.mojo</id>
+            <name>org.codehaus.mojo</name>
+            <url>http://repository.codehaus.org/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -84,6 +90,11 @@
             <artifactId>mrjadapter</artifactId>
             <version>1.1</version>
         </dependency>
+        <dependency>
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>quaqua</artifactId>
+            <version>5.0.1</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -98,6 +109,42 @@
             </resource>
         </resources>
         <plugins>
+
+            <!--
+            DOES NOT WORK... :( :(
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>osxappbundle-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
+                            <bundleName>Jake</bundleName>
+                            <additionalClasspath>
+                                <path>/System/Library/Java/</path>
+                            </additionalClasspath>
+                            <vmOptions>-Xdock:icon=icons/jakeapp-large.png -Xdock:name="Jake"</vmOptions>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.doublesignal.sepm.jake.gui.StartJake</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

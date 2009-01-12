@@ -7,8 +7,9 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.SheetableJFrame;
+import com.jakeapp.gui.swing.controls.GlassJFrame;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
@@ -93,9 +94,10 @@ public class JakeMainApp extends SingleFrameApplication implements
 				String msg = "Failed to login to backend";
 				JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(), msg);
 				log.warn(msg);
-				e.printStackTrace();
+				ExceptionUtilities.showError(msg);
 			}
 		}
+
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
 			saveQuit();
 		}
@@ -108,7 +110,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 	 */
 	@Override
 	protected void startup() {
-		this.setMainFrame(new SheetableJFrame("Jake"));
+		this.setMainFrame(new GlassJFrame("Jake"));
 		show(new JakeMainView(this));
 	}
 
@@ -152,9 +154,9 @@ public class JakeMainApp extends SingleFrameApplication implements
 			} else {
 				// try to use nimbus (available starting j6u10)
 				try {
-					UIManager
-							  .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 				} catch (Exception r) {
+					// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				}
 			}
@@ -162,14 +164,14 @@ public class JakeMainApp extends SingleFrameApplication implements
 			log.warn("LAF Exception: ", e);
 		}
 
-		// System.setProperty("awt.useSystemAAFontSettings","on");
-		// System.setProperty("swing.aatext", "true");
-
-		// MacOSX specific: set menu name to 'Jake'
-		// has to be called VERY early to succeed (prior to any gui stuff, later
-		// calls will be ignored)
 		if (Platform.isMac()) {
+			// MacOSX specific: set menu name to 'Jake'
+			// has to be called VERY early to succeed (prior to any gui stuff, later
+			// calls will be ignored)
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+
+			// TODO: broken? has no use on mac java 6?
+			System.setProperty("apple.awt.brushMetalRounded", "true");
 		} else if (Platform.isLin()) {
 			Platform.fixWmClass();
 		}

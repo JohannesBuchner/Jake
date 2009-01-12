@@ -95,7 +95,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		newsPanel = new NewsPanel();
 		filePanel = new FilePanel();
 		notesPanel = new NotesPanel();
-		inspectorPanel = new InspectorPanel();
+		inspectorPanel = new InspectorPanel2();
 		invitationPanel = new ProjectInvitationPanel();
 
 
@@ -158,6 +158,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		setContextViewPanel(ContextPanels.Login);
 
 		updateTitle();
+
+		Platform.setEventCounter(5);
 	}
 
 
