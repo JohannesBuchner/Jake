@@ -35,7 +35,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private IProjectDao projectDao;
 
-	private IFrontendSession frontendSession;
+	private InternalFrontendService frontendService;
 
 	public ProjectsManagingServiceImpl() {
 	}
@@ -154,14 +154,14 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public boolean startProject(Project project, ChangeListener cl) throws IllegalArgumentException,
 			FileNotFoundException, ProjectException {
-		frontendSession.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
+		frontendService.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
 		return false; // TODO
 	}
 
 	@Override
 	public boolean stopProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException {
-		frontendSession.getSync().stopServing(project);
+		frontendService.getSync().stopServing(project);
 		return false; // TODO
 	}
 

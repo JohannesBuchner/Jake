@@ -65,6 +65,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		errorCallback = new ArrayList<ErrorCallback>();
 	}
 
+	private IFrontendService getFrontendService() {
+		return this.frontendService;
+	}
+	
+	private String getSessionId() {
+		return this.sessionId;
+	}
+	
 	@Override
 	public List<Project> getMyProjects() throws NotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
@@ -351,16 +359,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		Runnable runner = new Runnable() {
 
 			public void run() {
-
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
+				boolean ret;
+				
 				try {
 					// search project in list
-					boolean ret = projects.remove(project);
+					ret = getFrontendService().getProjectsManagingService(getSessionId()).deleteProject(project);
 
 					if (!ret) {
 						throw new ProjectNotFoundException("Project not found in list!");
@@ -372,6 +375,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+				} catch (FileNotFoundException e) {
+					//TODO report to gui that the rootpath is invalid
+					log.warn("Project cannot be deleted: its folder does not exist.",e);
+				} catch (NotLoggedInException e) {
+					log.debug("Tried to sign in without a session", e);
 				}
 			}
 		};

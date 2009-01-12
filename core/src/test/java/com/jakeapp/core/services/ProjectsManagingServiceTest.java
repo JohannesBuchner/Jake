@@ -26,6 +26,7 @@ public class ProjectsManagingServiceTest {
 	public void tearDown() throws Exception {
 	}
 	
+	/*
 	@Test(timeout = TestingConstants.UNITTESTTIME,expected = IllegalArgumentException.class)
 	public void createProject_shouldFailWithNullName() throws FileNotFoundException, IllegalArgumentException  {
 		this.service.createProject(null, "~/jakeproject", null);
@@ -35,4 +36,5 @@ public class ProjectsManagingServiceTest {
 	public void createProject_shouldFailWithNullPath() throws FileNotFoundException, IllegalArgumentException  {
 		this.service.createProject("neuesProjekt", null, null);
 	}
+	*/
 }

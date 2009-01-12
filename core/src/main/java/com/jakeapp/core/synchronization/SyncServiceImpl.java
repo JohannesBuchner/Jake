@@ -10,7 +10,9 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.services.FrontendServiceImpl;
 import com.jakeapp.core.services.IFrontendSession;
+import com.jakeapp.core.services.InternalFrontendService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
@@ -24,10 +26,10 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private RequestHandlePolicy rhp;
 
-	private IFrontendSession pk;
+	private InternalFrontendService pk;
 
-	public SyncServiceImpl(IFrontendSession pk) {
-		this.pk = pk;
+	public SyncServiceImpl(InternalFrontendService frontendService) {
+		this.pk = frontendService;
 	}
 
 	@Override

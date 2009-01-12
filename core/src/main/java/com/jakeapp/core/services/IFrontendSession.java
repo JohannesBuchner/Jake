@@ -7,9 +7,4 @@ import com.jakeapp.jake.ics.ICService;
 
 
 public interface IFrontendSession {
-	
-	public ICService getICSForProject(Project p);
-
-	public IFriendlySyncService getSync();
-	
 }

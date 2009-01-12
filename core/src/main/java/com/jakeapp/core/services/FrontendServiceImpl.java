@@ -8,28 +8,33 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.SyncServiceImpl;
+import com.jakeapp.jake.ics.ICService;
 
 /**
  * Implementation of the FrontendServiceInterface
  */
-public class FrontendServiceImpl implements IFrontendService {
+public class FrontendServiceImpl implements IFrontendService, InternalFrontendService {
 
 	private static Logger log = Logger.getLogger(FrontendServiceImpl.class);
 
 	private IProjectsManagingService projectsManagingService;
 
-	private List<MsgService> msgServices = new ArrayList<MsgService>();
-
 	private MsgServiceFactory msgServiceFactory;
 
 	private Map<String, FrontendSession> sessions;
-
+	
+	private ICServicesManager icsManager = new ICServicesManager();
+	
+	/* this is hardwired because there will always be only one sync. EVVAAR!! */
+	private IFriendlySyncService sync = new SyncServiceImpl(this);
+	
 	/**
 	 * Constructor
 	 * 
@@ -127,7 +132,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 		// create new session
 		sessid = makeSessionID();
-		this.addSession(sessid, new FrontendSession(this.getProjectsManagingService()));
+		this.addSession(sessid, new FrontendSession());
 
 		return sessid;
 	}
@@ -177,10 +182,13 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	public List<MsgService> getMsgServices(String sessionId)
 			throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
-		return this.getSession(sessionId).getMsgServices();
-		// or
-		// return this.msgServiceFactory.getAll();
+		this.checkSession(sessionId);
+		return this.getMsgServices();
 	}
+	
+	private List<MsgService> getMsgServices() throws  IllegalStateException {
+        return this.msgServiceFactory.getAll();
+    }
 
 	@Override
 	public boolean createAccount(String sessionId, ServiceCredentials credentials)
@@ -203,18 +211,10 @@ public class FrontendServiceImpl implements IFrontendService {
 		FrontendSession session;
 		Iterable<MsgService> msgServices;
 		
-		session = this.getSession(sessionId);
-		msgServices = session.getMsgServices();
-		//logout
-		for (MsgService msg:msgServices) {
-			try {
-				msg.logout();
-			} catch (Exception e) {
-				log.debug("Logging out failed: ",e);
-			}
-		}
-		//clear
-		session.clearMsgServices();
+		this.checkSession(sessionId);
+		this.getSessions().remove(sessionId);
+		
+		/* do not logout - other UIs may access the core */
 	}
 
 	@Override
@@ -228,6 +228,34 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	public IFriendlySyncService getSyncService(String sessionId)
 			throws NotLoggedInException {
-		return getSession(sessionId).getSync();
+		this.checkSession(sessionId);
+		return this.sync;
 	}
+	
+	/* InternalFrontendService implementation*/
+	
+	private void setIcsManager(ICServicesManager icsManager) {
+		this.icsManager = icsManager;
+	}
+
+	private ICServicesManager getIcsManager() {
+		return icsManager;
+	}
+
+	@Override
+	public ICService getICSForProject(Project p) {
+		ICService result = null;
+		try {
+			result = this.getIcsManager().getICService(p);
+		} catch (ProtocolNotSupportedException e) {
+			log.error("Retrieving an ICService for a Project failed: ",e);
+		}
+		return result;
+	}
+
+	@Override
+	public IFriendlySyncService getSync() {
+		return this.sync;
+	}
+	
 }
