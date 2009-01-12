@@ -38,6 +38,10 @@ public class MsgServiceFactory {
 		this.serviceCredentialsDao = serviceCredentialsDao;
 		// can not initialise here, this produces spring/hibernate errors!
 	}
+	
+	private IServiceCredentialsDao getServiceCredentialsDao() {
+		return serviceCredentialsDao;
+	}
 
 	private void createTestdata() {
 		List<ServiceCredentials> credentialsList;
@@ -156,6 +160,10 @@ public class MsgServiceFactory {
 			throws InvalidCredentialsException, ProtocolNotSupportedException {
 		MsgService svc = this.createMsgService(credentials);
 		msgServices.add(svc);
+		
+		//add account in database
+		this.getServiceCredentialsDao().create(credentials);
+		
 		return svc;
 	}
 

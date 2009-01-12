@@ -198,7 +198,6 @@ public class FrontendServiceImpl implements IFrontendService {
 		return msgServiceFactory.addMsgService(credentials);
 	}
 	
-
 	@Override
 	public void signOut(String sessionId) throws NotLoggedInException {
 		FrontendSession session;
