@@ -52,7 +52,7 @@ public class Platform {
 	static {
 		if (System.getProperty("os.name").startsWith("Mac OS")) {
 			os = OperatingSystem.Mac;
-		} else if (System.getProperty("os.name").startsWith("Win")) {
+		} else if (System.getProperty("os.name").startsWith("Windows")) {
 			os = OperatingSystem.Windows;
 		} else if (System.getProperty("os.name").startsWith("Lin")) {
 			os = OperatingSystem.Linux;
@@ -71,7 +71,7 @@ public class Platform {
 			pftools = new NullPfTools();
 		}
 
-		log.info("Detected Platform: " + os + ", Loaded Styler: " +
+		log.info("Detected Platform: " + os + " " + System.getProperty("os.name") + ", Loaded Styler: " +
 				  styler.getClass().getName());
 	}
 
