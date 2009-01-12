@@ -5,6 +5,10 @@
 
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.gui.swing.helpers.pftools.AbstractPfTools;
+import com.jakeapp.gui.swing.helpers.pftools.MacPfTools;
+import com.jakeapp.gui.swing.helpers.pftools.NullPfTools;
+import com.jakeapp.gui.swing.helpers.pftools.WinPfTools;
 import com.jakeapp.gui.swing.helpers.styler.MacStyler;
 import com.jakeapp.gui.swing.helpers.styler.NullStyler;
 import com.jakeapp.gui.swing.helpers.styler.Styler;
@@ -42,6 +46,7 @@ public class Platform {
 	private static OperatingSystem os;
 
 	private static Styler styler;
+	private static AbstractPfTools pftools;
 
 	// static initializeJakeMainHelper code
 	static {
@@ -57,10 +62,13 @@ public class Platform {
 
 		if (isMac()) {
 			styler = new MacStyler();
+			pftools = new MacPfTools();
 		} else if (isWin()) {
 			styler = new WinStyler();
+			pftools = new WinPfTools();
 		} else {
 			styler = new NullStyler();
+			pftools = new NullPfTools();
 		}
 
 		log.info("Detected Platform: " + os + ", Loaded Styler: " +
@@ -113,10 +121,23 @@ public class Platform {
 		return os == OperatingSystem.Linux;
 	}
 
+	/**
+	 * Returns the pf dependant styler.
+	 *
+	 * @return
+	 */
 	public static Styler getStyler() {
 		return styler;
 	}
 
+	/**
+	 * Returns the pf dependant toolkit
+	 *
+	 * @return
+	 */
+	public static AbstractPfTools getToolkit() {
+		return pftools;
+	}
 
 	/**
 	 * Overrides AWT's default guess of what to use as our windows' WM_CLASS.

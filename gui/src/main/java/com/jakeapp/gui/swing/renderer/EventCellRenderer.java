@@ -216,7 +216,8 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 			}
 		}
 
-		String valStr = "<html>" + msg + "</html>";
+		// do not insert html as this auto-wraps messages (not wanted)
+		String valStr = msg; //"<html>" + msg + "</html>";
 
 		/* The DefaultListCellRenderer class will take care of
 				  * the JLabels text property, it's foreground and background

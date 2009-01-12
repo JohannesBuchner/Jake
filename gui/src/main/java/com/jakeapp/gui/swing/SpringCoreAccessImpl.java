@@ -624,7 +624,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public List<LogEntry> getLog(Project project, int entries) {
+	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries) {
 		List<LogEntry> log = new ArrayList<LogEntry>();
 
 		if (project != null) {
@@ -643,7 +643,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public void createProject(final String name, final String path) {
 		log.info("Create project: " + name + " path: " + path);
-		
+
 		//preconditions
 		if (path == null) {
 			throw new NullPointerException();
@@ -653,14 +653,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			public void run() {
 				Project pr = null;
 				MsgService messageService;
-				
+
 				try {
 					//add Project to core-internal list
-					pr = frontendService.getProjectsManagingService(sessionId).createProject(name,path, null);
-					
+					pr = frontendService.getProjectsManagingService(sessionId).createProject(name, path, null);
+
 					/*
-					 * The project is created, but not started and no user is assigned to it.
-					 */
+										 * The project is created, but not started and no user is assigned to it.
+										 */
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 							  pr,
@@ -671,7 +671,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				} catch (FileNotFoundException e) {
 					//TODO report to gui that the rootpath is invalid
 				} catch (NotLoggedInException e) {
-					log.debug("Tried to create a project while not authenticated to the core.",e);
+					log.debug("Tried to create a project while not authenticated to the core.", e);
 				}
 			}
 		};

@@ -95,7 +95,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		newsPanel = new NewsPanel();
 		filePanel = new FilePanel();
 		notesPanel = new NotesPanel();
-		inspectorPanel = new InspectorPanel2();
+		inspectorPanel = new InspectorPanel();
 		invitationPanel = new ProjectInvitationPanel();
 
 

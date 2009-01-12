@@ -551,7 +551,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
 	@Override
-	public List<LogEntry> getLog(Project project, int entries) {
+	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries) {
 		List<LogEntry> log = new ArrayList<LogEntry>();
 
 		if (project != null) {

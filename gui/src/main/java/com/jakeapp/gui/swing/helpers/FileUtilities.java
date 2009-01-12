@@ -347,4 +347,16 @@ public class FileUtilities {
 	public static String getPathSeparator() {
 		return System.getProperty("file.separator");
 	}
+
+	/**
+	 * returns the path of a pathfile string
+	 *
+	 * @param path
+	 * @return
+	 */
+	public static String getPathFromPathWithFile(String path) {
+		// TODO: strip name!
+		return path;
+		//int pos = path.in
+	}
 }

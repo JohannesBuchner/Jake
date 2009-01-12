@@ -26,13 +26,13 @@ public class FileObjectHelper {
 	}
 
 	/**
-	 * Returns the path of a file.
+	 * Returns the path of a file (without name)
 	 *
 	 * @param file
 	 * @return
 	 */
 	public static String getPath(File file) {
-		return file.getPath();
+		return FileUtilities.getPathFromPathWithFile(file.getPath());
 	}
 
 	/**

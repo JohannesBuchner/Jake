@@ -20,13 +20,9 @@ import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.helpers.FolderObject;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
-import com.jakeapp.gui.swing.renderer.EventCellRenderer;
 import com.jakeapp.gui.swing.renderer.PeopleListCellRenderer;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -54,6 +50,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private StartStopProjectAction startStopProjectAction = new StartStopProjectAction();
 	private Timer eventsTableUpdateTimer;
 	private final static int EventTableUpdateDelay = 20000; // 20 sec
+	private EventsTableModel eventTableModel;
 
 	/**
 	 * Creates new form NewsPanel
@@ -104,18 +101,15 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		peopleList.addMouseListener(new PeopleListMouseListener());
 
 		// config the recent events table
-		eventsTable.setModel(new EventsTableModel());
-		eventsTable.getColumn(0).setCellRenderer(new EventCellRenderer());
-		eventsTable.setSortable(false);
-		eventsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		eventTableModel = new EventsTableModel(getProject());
+		eventsTable.setModel(eventTableModel);
+		ConfigControlsHelper.configEventsTable(eventsTable);
+
+
 		//eventsTable.setBorder(BorderFactory.createEtchedBorder());
-		eventsTable.setColumnControlVisible(false);
-		eventsTable.setEditable(false);
-		eventsTable.setDoubleBuffered(true);
-		eventsTable.setRolloverEnabled(true);
 		eventsTable.addMouseListener(new EventsTableMouseListener());
 
-// install event table update timer
+		// install event table update timer
 		eventsTableUpdateTimer = new Timer(EventTableUpdateDelay, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -124,8 +118,8 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 			}
 		});
 		eventsTableUpdateTimer.start();
-
 	}
+
 
 	/**
 	 * private inner mouselistener for events table.
@@ -224,6 +218,9 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 	 */
 	private void updatePanel() {
 		log.info("updating panel with " + getProject());
+
+		// set model project
+		eventTableModel.setProject(getProject());
 
 		// TODO: remove hack
 		if (getProject() == null) {
