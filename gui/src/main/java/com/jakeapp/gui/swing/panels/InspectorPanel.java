@@ -33,6 +33,7 @@ import java.io.File;
 public class InspectorPanel extends JXPanel implements
 		  ProjectChanged, ProjectSelectionChanged, FileSelectionChanged, ProjectViewChanged {
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
+	public static final int INSPECTOR_SIZE = 250;
 	private Project project;
 	private ResourceMap resourceMap;
 	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
@@ -69,19 +70,20 @@ public class InspectorPanel extends JXPanel implements
 	private void initComponents() {
 
 		// not resizeable, fixed width
-		Dimension absSize = new Dimension(250, 250);
-		this.setMinimumSize(absSize);
-		this.setMaximumSize(new Dimension((int) absSize.getWidth(), Integer.MAX_VALUE));
-		this.setPreferredSize(absSize);
+		Dimension absSize = new Dimension(INSPECTOR_SIZE, INSPECTOR_SIZE);
+		this.setMinimumSize(new Dimension(100, 100));
+		//this.setMaximumSize(new Dimension((int) absSize.getWidth(), Integer.MAX_VALUE));
+		//this.setPreferredSize(absSize);
 
 		this.setBackground(Platform.getStyler().getWindowBackground());
 
 		eventsTableModel = new EventsTableModel();
 		eventsTable = new ETable();
 		eventsTable.setModel(eventsTableModel);
-		eventsTable.setMinimumSize(new Dimension(200, 200));
+		eventsTable.setMinimumSize(new Dimension(50, INSPECTOR_SIZE));
 		ConfigControlsHelper.configEventsTable(eventsTable);
-		this.add(eventsTable, "dock south, grow 200 200, gpy 200");
+		eventsTable.updateUI();
+		this.add(eventsTable, "dock south, grow 150 150, gpy 150");
 
 		// TODO: make this a proper layout!
 
@@ -97,9 +99,14 @@ public class InspectorPanel extends JXPanel implements
 		sizeLabel = new JLabel();
 		this.add(sizeLabel, "span 2, wrap");
 
+		Font smallFont = UIManager.getFont("Label.font").deriveFont(Font.PLAIN, 10);
+
 		// last time+user modified
-		this.add(new JLabel(getResourceMap().getString("modifiedLabel")));
+		JLabel lastAccessTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
+		lastAccessTextLabel.setFont(smallFont);
+		this.add(lastAccessTextLabel, "right");
 		lastAccessTimeAndUser = new JLabel();
+		lastAccessTimeAndUser.setFont(smallFont);
 		this.add(lastAccessTimeAndUser, "growy, wrap");
 
 		// add tags
@@ -108,8 +115,11 @@ public class InspectorPanel extends JXPanel implements
 		this.add(tagsLabel, "growy, wrap");
 
 		// add full path
-		this.add(new JLabel(getResourceMap().getString("pathLabel")));
+		JLabel fullPathTextLabel = new JLabel(getResourceMap().getString("pathLabel"));
+		fullPathTextLabel.setFont(smallFont);
+		this.add(fullPathTextLabel, "right");
 		fullPathLabel = new JLabel();
+		fullPathLabel.setFont(smallFont);
 		this.add(fullPathLabel, "growy, wrap");
 
 		// config the history table
@@ -155,6 +165,8 @@ public class InspectorPanel extends JXPanel implements
 			// hide table contents
 			eventsTableModel.setProject(null);
 		}
+
+		eventsTable.updateUI();
 	}
 
 	protected ResourceMap getResourceMap() {
