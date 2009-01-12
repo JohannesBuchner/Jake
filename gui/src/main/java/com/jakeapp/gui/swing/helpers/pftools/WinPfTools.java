@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * Mac implementation if PfTools
@@ -42,7 +41,7 @@ public class WinPfTools extends AbstractPfTools {
 				return ico;
 			}
 
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			log.warn(e);
 			return null;
 		}
