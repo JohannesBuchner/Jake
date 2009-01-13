@@ -18,7 +18,8 @@ import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETreeTable;
-import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.HudButtonUI;
@@ -122,6 +123,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
+		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class, new ProjectFilesTableCellRenderer());
 
 		fileTreeTable.addMouseListener(new FileTreeTableMouseListener(this));
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
@@ -299,7 +301,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		ActionListener updateViewAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO: update view
+				switchFileDisplay();
 				log.debug("updating view in filepanel...");
 			}
 		};
@@ -310,18 +312,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		ButtonGroup showGrp = new ButtonGroup();
 		showGrp.add(flatBtn);
 		showGrp.add(treeBtn);
-
-		// I can't believe Java STILL doesn't have foreach support for Enumerations - pathetic!
-		// Add a mouse listener to each view changing button
-		for (Enumeration e = showGrp.getElements(); e.hasMoreElements();) {
-			AbstractButton b = (AbstractButton) e.nextElement();
-			b.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					switchFileDisplay();
-				}
-			});
-		}
 
 		allBtn = new JToggleButton(getResourceMap().getString("filterAllButton"));
 		allBtn.setUI(new HudButtonUI());
@@ -354,8 +344,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// add file table
 		fileTable = new ETable();
 
-		// fileTreeTableScrollPane.setViewportView(fileTreeTable);
-		fileTreeTableScrollPane.setViewportView(fileTable);
+		// Default display (first): TreeTable
+		fileTreeTableScrollPane.setViewportView(fileTreeTable);
 
 		this.add(fileTreeTableScrollPane, "grow");
 	}
