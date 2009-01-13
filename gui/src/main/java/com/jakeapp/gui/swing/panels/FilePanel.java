@@ -19,6 +19,7 @@ import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETreeTable;
 import com.jakeapp.gui.swing.controls.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.HudButtonUI;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
@@ -37,6 +38,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * @author studpete
@@ -56,6 +58,18 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton allBtn;
 	private JToggleButton newBtn;
 	private JToggleButton conflictsBtn;
+
+
+	/**
+	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
+	 */
+	public void switchFileDisplay() {
+		if (flatBtn.isSelected()) {
+			fileTreeTableScrollPane.setViewportView(fileTable);
+		} else {
+			fileTreeTableScrollPane.setViewportView(fileTreeTable);
+		}
+	}
 
 	public void addFileSelectionListener(FileSelectionChanged listener) {
 		fileSelectionListeners.add(listener);
@@ -104,6 +118,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// TODO: make this more beautiful...
 		if (!Platform.isMac()) {
 			fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+			fileTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
@@ -296,6 +311,17 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		showGrp.add(flatBtn);
 		showGrp.add(treeBtn);
 
+		// I can't believe Java STILL doesn't have foreach support for Enumerations - pathetic!
+		// Add a mouse listener to each view changing button
+		for (Enumeration e = showGrp.getElements(); e.hasMoreElements();) {
+			AbstractButton b = (AbstractButton) e.nextElement();
+			b.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					switchFileDisplay();
+				}
+			});
+		}
 
 		allBtn = new JToggleButton(getResourceMap().getString("filterAllButton"));
 		allBtn.setUI(new HudButtonUI());
@@ -324,12 +350,18 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// add file treetable
 		fileTreeTableScrollPane = new javax.swing.JScrollPane();
 		fileTreeTable = new ETreeTable();
-		//fileTreeTable.setBackground(Color.WHITE);
-		fileTreeTableScrollPane.setViewportView(fileTreeTable);
+
+		// add file table
+		fileTable = new ETable();
+
+		// fileTreeTableScrollPane.setViewportView(fileTreeTable);
+		fileTreeTableScrollPane.setViewportView(fileTable);
+
 		this.add(fileTreeTableScrollPane, "grow");
 	}
 
 	private org.jdesktop.swingx.JXTreeTable fileTreeTable;
+	private org.jdesktop.swingx.JXTable fileTable;
 	private javax.swing.JScrollPane fileTreeTableScrollPane;
 
 	public Project getProject() {
@@ -341,16 +373,18 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// we have to cope with no project selected state.
 		if (project != null) {
-			// FIXME: CHANGE THIS BACK TO TreeTableModel
-			TableModel treeTableModel = null;
+			TreeTableModel treeTableModel = null;
+			TableModel tableModel = null;
+
 			try {
-				// FIXME: CHANGE THIS BACK!!!
-				// treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
-				treeTableModel = new FileObjectsTableModel(JakeMainApp.getApp().getCore().getAllProjectFiles(JakeMainApp.getApp().getProject()));
+				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+				tableModel = new FileObjectsTableModel(JakeMainApp.getApp().getCore().getAllProjectFiles(JakeMainApp.getApp().getProject()));
 			} catch (ProjectFolderMissingException e) {
 				log.warn("Project folder missing!!");
 			}
-			fileTreeTable.setModel(treeTableModel);
+
+			fileTreeTable.setTreeTableModel(treeTableModel);
+			fileTable.setModel(tableModel);
 		}
 	}
 }

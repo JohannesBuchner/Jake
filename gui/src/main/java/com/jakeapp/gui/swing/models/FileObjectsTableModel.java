@@ -6,14 +6,21 @@ import com.jakeapp.core.domain.FileObject;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Flat representation of FolderObjectTreeTableModel
  */
 public class FileObjectsTableModel extends AbstractTableModel {
+	private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
 	private List<FileObject> files;
 
 	public FileObjectsTableModel(List<FileObject> files) {
 		this.files = files;
+		log.debug("FilesTableModel: " + files.toArray());
+		for (FileObject f : files) {
+			log.debug("  FILE: " + f.getRelPath());
+		}
 	}
 
 	@Override
