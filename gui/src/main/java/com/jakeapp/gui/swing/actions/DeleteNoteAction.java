@@ -29,7 +29,7 @@ public class DeleteNoteAction extends NoteAction {
 	public void actionPerformed(ActionEvent event) {
 
 		// we rely that notes is never null!
-		for (NoteObject note : getNotes()) {
+		for (NoteObject note : getSelectedNotes()) {
 			try {
 				JakeMainApp.getCore().deleteNote(note);
 				// TODO: be not that generic on error handling!
@@ -42,6 +42,6 @@ public class DeleteNoteAction extends NoteAction {
 
 	@Override
 	public void updateAction() {
-		setEnabled(getNotes().size() > 0);
+		setEnabled(getSelectedNotes().size() > 0);
 	}
 }

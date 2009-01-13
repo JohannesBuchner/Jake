@@ -280,22 +280,35 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 	public void addNoteSelectionListener(NoteSelectionChanged listener) {
-		noteSelectionListeners.add(listener);
+		this.noteSelectionListeners.add(listener);
 	}
 
 	public void removeNoteSelectionListener(NoteSelectionChanged listener) {
-		noteSelectionListeners.remove(listener);
+		this.noteSelectionListeners.remove(listener);
 	}
 
 	public void notifyNoteSelectionListeners(java.util.List<NoteObject> objs) {
 		log.debug("notify selection listeners: " + objs.toArray());
-		for (NoteSelectionChanged c : noteSelectionListeners) {
+		for (NoteSelectionChanged c : this.noteSelectionListeners) {
 			c.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(objs));
 		}
 	}
 
+	/**
+	 * Get a <code>List</code> of selected notes.
+	 * @return the list of currently selected notes. If nothing is selected, an empty list is returned.
+	 */
 	public List<NoteObject> getSelectedNotes() {
-		// TODO: add notes here!
-		return new ArrayList<NoteObject>();
+		List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
+		int selectedRow = this.notesTable.getSelectedRow();
+		
+		if (selectedRow == -1) {
+			return selectedNotes;
+		} 
+		int rowCount = this.notesTable.getSelectedRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(selectedRow + i));				
+		}
+		return selectedNotes; 
 	}
 }

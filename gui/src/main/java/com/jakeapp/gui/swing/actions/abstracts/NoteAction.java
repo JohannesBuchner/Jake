@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class NoteAction extends ProjectAction
 		  implements NoteSelectionChanged {
 
-	private List<NoteObject> notes;
+	private List<NoteObject> selectedNotes;
 
 	/**
 	 * Constructs a new NoteAction that works with the given notesTable.
@@ -22,7 +22,7 @@ public abstract class NoteAction extends ProjectAction
 	public NoteAction() {
 		super();
 
-		setNotes(NotesPanel.getInstance().getSelectedNotes());
+		setSelectedNotes(NotesPanel.getInstance().getSelectedNotes());
 
 		NotesPanel.getInstance().addNoteSelectionListener(this);
 	}
@@ -33,18 +33,18 @@ public abstract class NoteAction extends ProjectAction
 	 * @param event
 	 */
 	public void noteSelectionChanged(NoteSelectedEvent event) {
-		setNotes(event.getNotes());
+		setSelectedNotes(event.getNotes());
 
 		// call the update action event
 		updateAction();
 	}
 
 
-	public List<NoteObject> getNotes() {
-		return notes;
+	public List<NoteObject> getSelectedNotes() {
+		return this.selectedNotes;
 	}
 
-	public void setNotes(List<NoteObject> notes) {
-		this.notes = notes;
+	public void setSelectedNotes(List<NoteObject> notes) {
+		this.selectedNotes = notes;
 	}
 }
