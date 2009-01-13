@@ -1,6 +1,7 @@
 package com.jakeapp.core.domain;
 
 import java.util.UUID;
+import java.io.Serializable;
 
 import javax.persistence.*;
 
@@ -11,10 +12,9 @@ import javax.persistence.*;
 
 @Entity(name = "jakeobject")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class JakeObject implements ILogable {
+public abstract class JakeObject implements ILogable, Serializable {
 	private static final long serialVersionUID = -3601181472574035652L;
 	
-	@Id
     private UUID uuid;
     private Project project;
 
@@ -55,7 +55,7 @@ public abstract class JakeObject implements ILogable {
 
 
     @Id
-    @Column(name = "objectId", unique = true)
+    @Column(name = "objectId", unique = true, columnDefinition = "char(36)")
     private String getUuidString()
     {
         return this.uuid.toString();

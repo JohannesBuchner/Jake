@@ -10,9 +10,7 @@ import java.lang.reflect.ParameterizedType;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.dao.DataAccessException;
 import org.apache.log4j.Logger;
-import org.hibernate.ObjectNotFoundException;
 
 /**
  * A generic hibernate DAO for <code>JakeObject</code>s.
@@ -114,23 +112,17 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
         return jakeObject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public T removeTagFrom(T jakeObject, Tag tag) {
-        tag.setObject(jakeObject);
-
-        this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(tag);
-
-        return jakeObject;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void addTagsTo(T jakeObject, Tag... tags) {
-
+         for(Tag t : tags)
+         {
+             t.setObject(jakeObject);
+             this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(t);
+         }
     }
 
     /**
@@ -140,7 +132,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     public List<Tag> getTagsFor(T jakeObject) {
 
         List<Tag> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM tag WHERE objectId = ? ").setString(0, jakeObject.getUuid().toString()).list();
+                createQuery("FROM tag WHERE objectid = ? ").setString(0, jakeObject.getUuid().toString()).list();
 
 
                 //createCriteria(Tag.class).createCriteria("object", jakeObject.getUuid().toString()).list();
@@ -155,6 +147,32 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
      */
     @Override
     public void removeTagsFrom(T jakeObject, Tag... tags) {
-
+        
+        for(Tag t : tags)
+        {
+            t.setObject(jakeObject);
+            
+             int result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+//                     createQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
+                createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
+                     setString(0, t.getName()).setString(1, jakeObject.getUuid().toString()).executeUpdate();
+            log.debug("result: " + result);
+        }
 	}
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public T removeTagFrom(T jakeObject, Tag tag) {
+
+        tag.setObject(jakeObject);
+        
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
+                setString(0, tag.getName()).setString(1, jakeObject.getUuid().toString()).executeUpdate();
+
+        return jakeObject;
+    }
+
 }

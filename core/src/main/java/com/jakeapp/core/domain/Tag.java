@@ -4,14 +4,18 @@ import javax.persistence.*;
 
 
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.dao.HibernateTagPK;
 import org.hibernate.annotations.ForeignKey;
+
+import java.io.Serializable;
 
 /**
  * A simple tag. It only consists of a <code>name</code>.
  */
 @Entity(name = "tag")
 @UniqueConstraint(columnNames = {"objectid", "text"})
-public class Tag implements ILogable {
+@IdClass(HibernateTagPK.class)
+public class Tag implements ILogable, Serializable {
     private static final long serialVersionUID = -2201488676480921149L;
     private JakeObject jakeObject;
     private String name;
@@ -35,7 +39,6 @@ public class Tag implements ILogable {
      * @return the name of the tag
      */
     @Id
-    @Column(name = "text")
     public String getName() {
         return this.name;
     }
@@ -56,9 +59,7 @@ public class Tag implements ILogable {
         this.name = name;
     }
 
-
-    @OneToOne
-    @JoinColumn(name = "objectid", columnDefinition = "char(36)")
+    @Id
     public JakeObject getObject() {
         return this.jakeObject;
     }
@@ -71,30 +72,27 @@ public class Tag implements ILogable {
     /**
      * Test if two <code>tag</code>s are equal.
      *
-     * @param obj The object to compare this object to.
+     * @param o The object to compare this object to.
      * @return <code>true</code> iff the <code>name</code>s are equal.
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || !this.getClass().equals(obj.getClass())) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        Tag that = (Tag) obj;
+        Tag tag = (Tag) o;
 
-        if (this.name == null && that.getName() != null) {
-            return false;
-        }
-        if (this.name != null && !this.name.equals(that.getName())) {
-            return false;
-        }
+        if (jakeObject != null ? !jakeObject.equals(tag.jakeObject) : tag.jakeObject != null) return false;
+        if (!name.equals(tag.name)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        int result = jakeObject != null ? jakeObject.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     /**
