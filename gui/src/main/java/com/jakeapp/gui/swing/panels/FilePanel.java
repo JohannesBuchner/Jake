@@ -32,6 +32,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
@@ -69,6 +70,23 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		} else {
 			fileTreeTableScrollPane.setViewportView(fileTreeTable);
 		}
+	}
+
+	/**
+	 * Switches to flat view and applies a filter pipeline
+	 *
+	 * @param pipeline The filter pipeline to apply
+	 */
+	public void switchToFlatAndFilter(FilterPipeline pipeline) {
+		fileTreeTableScrollPane.setViewportView(fileTable);
+		fileTable.setFilters(pipeline);
+	}
+
+	/**
+	 * Resets all applied filters
+	 */
+	public void resetFilter() {
+		fileTable.setFilters(null);
 	}
 
 	public void addFileSelectionListener(FileSelectionChanged listener) {

@@ -12,17 +12,22 @@ import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.panels.*;
+import com.sun.corba.se.spi.activation._ActivatorImplBase;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.PatternFilter;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -125,7 +130,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// set window icon
 		this.getFrame().setIconImage(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/jakeapp.png"))).getImage());
+			 getClass().getResource("/icons/jakeapp.png"))).getImage());
 
 		// set app size
 		this.getFrame().setMinimumSize(new Dimension(600, 600));
@@ -144,7 +149,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
 		contentPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				  contentPanel, inspectorPanel);
+			 contentPanel, inspectorPanel);
 		contentPanelSplit.setOneTouchExpandable(false);
 		contentPanelSplit.setContinuousLayout(true);
 		contentPanelSplit.setBorder(null);
@@ -320,7 +325,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// Create Note
 		Icon noteIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/notes.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+			 getClass().getResource("/icons/notes.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton jCreateNodeButton = new JButton(getResourceMap().getString("toolbarCreateNote"), noteIcon);
 
 		createNoteButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateNodeButton);
@@ -382,7 +387,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 */
 
 		Icon inspectorIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+			 getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton inspectorJButton = new JButton("Inspector", inspectorIcon);
 		inspectorJButton.addActionListener(new ActionListener() {
 
@@ -409,10 +414,23 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		//toolBar.add(announceButton);
 
 
-		JTextField textField = new SearchField("");
+		SearchField textField = new SearchField();
 		textField.putClientProperty("JTextField.variant", "search");
+		textField.setSendsNotificationForEachKeystroke(true);
 		toolBar.addComponentToRight(new LabeledComponentGroup("Search", textField).getComponent());
 
+		// TODO: Make prettier?
+		final FilePanel fp = filePanel;
+		textField.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				log.debug("Search field: " + e.getActionCommand());
+				PatternFilter filter = new FileObjectNameFilter(e.getActionCommand());
+				FilterPipeline pipeline = new FilterPipeline(filter);
+				fp.switchToFlatAndFilter(pipeline);
+			}
+		});
 
 		toolBar.addComponentToCenter(new LabeledComponentGroup("View", contextSwitcherPane).getComponent());
 
@@ -537,7 +555,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// creates the special SplitPlane
 		JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(
-				  sourceList.getSourceList(), contentPanelSplit);
+			 sourceList.getSourceList(), contentPanelSplit);
 
 		// TODO: divider location should be a saved property
 		splitPane.setDividerLocation(180);
@@ -554,14 +572,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	private void updateInspectorPanelVisibility() {
 		log.debug("pre: isInspectorEnabled: " + isInspectorEnabled() +
-				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-				  " isInspectorAllowed: " + isInspectorAllowed());
+			 " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+			 " isInspectorAllowed: " + isInspectorAllowed());
 		if (isInspectorEnabled()) {
 			// add inspector IF allowed
 			if (isInspectorAllowed() && !isInspectorPanelVisible()) {
 				inspectorPanel.setVisible(true);
 				contentPanelSplit.setDividerLocation(contentPanelSplit.getWidth() -
-						  InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
+					 InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
 			} else if (!isInspectorAllowed()) {
 				inspectorPanel.setVisible(false);
 			}
@@ -582,8 +600,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanel.updateUI();
 
 		log.debug("now: isInspectorEnabled: " + isInspectorEnabled() +
-				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-				  " isInspectorAllowed: " + isInspectorAllowed());
+			 " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+			 " isInspectorAllowed: " + isInspectorAllowed());
 	}
 
 	private boolean isInspectorPanelVisible() {
