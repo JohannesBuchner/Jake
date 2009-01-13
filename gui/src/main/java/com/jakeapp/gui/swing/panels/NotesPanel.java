@@ -15,6 +15,7 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.ETable;
@@ -35,6 +36,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,7 +46,9 @@ import java.util.UUID;
 public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged, ListSelectionListener {
 
 	private static final long serialVersionUID = -7703570005631651276L;
+	private static NotesPanel instance;
 	private static Logger log = Logger.getLogger(NotesPanel.class);
+	private java.util.List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
 	private NotesTableModel notesTableModel;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
@@ -54,6 +59,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 * Creates new form NotesPanel
 	 */
 	public NotesPanel() {
+		instance = this;
 		// init components
 		initComponents();
 
@@ -70,7 +76,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.resourceMap = org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext()
 				  .getResourceMap(NotesPanel.class);
-		
+
 		//get core
 		this.core = JakeMainApp.getCore();
 
@@ -140,28 +146,30 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private ResourceMap getResourceMap() {
 		return this.resourceMap;
 	}
-	
+
 	/**
 	 * get The core.
+	 *
 	 * @return the core
 	 */
 	private ICoreAccess getCore() {
 		return this.core;
 	}
-	
-	
+
+
 	private Project getCurrentProject() {
 		return this.currentProject;
 	}
 
 	/**
 	 * Get the current Project.
+	 *
 	 * @param currentProject
 	 */
 	private void setCurrentProject(Project currentProject) {
 		this.currentProject = currentProject;
 	}
-	
+
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ignored) {
@@ -183,7 +191,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 */
 	private void newNote() {
 		this.core.newNote(new NoteObject(new UUID(1, 4), this.getCurrentProject(), "new note"),
-				this.getCurrentProject());
+				  this.getCurrentProject());
 	}
 
 	/**
@@ -266,4 +274,28 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private org.jdesktop.swingx.JXPanel noteReadPanel;
 	private org.jdesktop.swingx.JXTable notesTable;
 	// End of variables declaration//GEN-END:variables
+
+	public static NotesPanel getInstance() {
+		return instance;
+	}
+
+	public void addNoteSelectionListener(NoteSelectionChanged listener) {
+		noteSelectionListeners.add(listener);
+	}
+
+	public void removeNoteSelectionListener(NoteSelectionChanged listener) {
+		noteSelectionListeners.remove(listener);
+	}
+
+	public void notifyNoteSelectionListeners(java.util.List<NoteObject> objs) {
+		log.debug("notify selection listeners: " + objs.toArray());
+		for (NoteSelectionChanged c : noteSelectionListeners) {
+			c.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(objs));
+		}
+	}
+
+	public List<NoteObject> getSelectedNotes() {
+		// TODO: add notes here!
+		return new ArrayList<NoteObject>();
+	}
 }

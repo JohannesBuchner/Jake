@@ -94,6 +94,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		statusLabel.setFont(statusLabel.getFont().deriveFont(statusLabel.getFont().getSize() - 2f));
 
 		bottomBar.addComponentToCenter(statusLabel);
+		bottomBar.installWindowDraggerOnWindow(JakeMainView.getMainView().getFrame());
 
 		//Font statusButtonFont = statusLabel.getFont().deriveFont(statusLabel.getFont().getSize()-2f)
 
