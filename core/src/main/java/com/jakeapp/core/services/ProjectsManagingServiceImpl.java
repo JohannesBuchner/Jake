@@ -1,30 +1,35 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.synchronization.ChangeListener;
-import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.util.ApplicationContextFactory;
-import com.jakeapp.jake.fss.FSService;
-import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAFileException;
-
-import java.util.Collections;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.UUID;
-import java.io.FileNotFoundException;
-import java.io.File;
-import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
+
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.InvitationState;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
@@ -157,28 +162,74 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public boolean startProject(Project project, ChangeListener cl) throws IllegalArgumentException,
 			FileNotFoundException, ProjectException {
+		//Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		if (!project.isOpen() || project.isStarted()) return false;
+		
+		try {
+			this.getFileServices(project).setRootPath(project.getRootPath());
+		} catch (Exception e) {
+			throw new ProjectException(e);
+		}
+		
 		frontendService.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
-		return false; // TODO
+		
+		project.setStarted(true);	
+		
+		return true;
 	}
 
 	@Override
 	public boolean stopProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException {
-		frontendService.getSync().stopServing(project);
-		return false; // TODO
+		//Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		if (!project.isOpen() || !project.isStarted()) return false;
+		
+		try {
+			frontendService.getSync().stopServing(project);
+			//stops monitoring the project
+			this.getFileServices(project).unsetRootPath();
+		}
+		finally {
+			project.setStarted(false);
+		}
+		
+		return true;
 	}
 
 	@Override
 	public void closeProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException {
-		// TODO Auto-generated method stub
-
+		//Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		
+		//Make sure project is stopped
+		if (project.isStarted())
+			this.stopProject(project);
+		
+		//remove project from internal list
+		this.getInternalProjectList().remove(project);
+		//remove the project's file services
+		this.getFileServices().remove(project);
+		
+		//Remove Project from the database
+		try {
+			this.getProjectDao().delete(project);
+		} catch (NoSuchProjectException e) {
+			log.warn("Project does not exist in DB and cannot be deleted from it.",e);
+		}
 	}
 
 	@Override
 	public Project openProject(String project) throws IllegalArgumentException,
 			FileNotFoundException {
+		//Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		
 		// TODO Auto-generated method stub
+		// TODO the interface for this method is very bogus
+		
 		return null;
 	}
 
@@ -207,16 +258,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		//Make sure project is stopped & closed
 		if (project.isOpen())
 			this.closeProject(project);
-		
-		//Remove Project from the database
-		try {
-			this.getProjectDao().delete(project);
-		} catch (NoSuchProjectException e) {
-			log.warn("Project does not exist in DB and cannot be deleted from it.",e);
-		}
-		
-		//remove project from internal list
-		this.getInternalProjectList().remove(project);
 		
 		if (t!=null) throw t;
 		
