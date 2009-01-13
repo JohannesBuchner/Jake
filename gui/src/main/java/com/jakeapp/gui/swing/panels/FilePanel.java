@@ -22,10 +22,7 @@ import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.helpers.HudButtonUI;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
 import net.miginfocom.swing.MigLayout;
@@ -327,11 +324,11 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		allBtn.setSelected(true);
 
 		newBtn = new JToggleButton(getResourceMap().getString("filterNewButton"));
-		newBtn.setUI(new HudButtonUI());
+		newBtn.setUI(new GreenHudButtonUI());
 		controlPanel.add(newBtn, "right");
 
 		conflictsBtn = new JToggleButton(getResourceMap().getString("filterConflictsButton"));
-		conflictsBtn.setUI(new HudButtonUI());
+		conflictsBtn.setUI(new RedHudButtonUI());
 		controlPanel.add(conflictsBtn, "right, wrap");
 
 		this.add(controlPanel, "growx");
