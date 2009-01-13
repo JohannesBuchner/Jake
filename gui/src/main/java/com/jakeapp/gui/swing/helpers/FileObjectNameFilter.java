@@ -23,16 +23,13 @@ public class FileObjectNameFilter extends PatternFilter {
 	protected String getInputString(int row, int column) {
 		Filter filter = getMappingFilter();
 		if (filter != null) {
-			log.debug("Returning " + filter.getStringAt(row, column));
 			return filter.getStringAt(row, column);
 		}
 		if (adapter != null) {
 			ProjectFilesTreeNode node = (ProjectFilesTreeNode) adapter.getValueAt(row, column);
-			log.debug("Returning " + node.getFileObject().getRelPath());
 			return node.getFileObject().getRelPath();
 		}
 
-		log.warn("Returning NULL");
 		return null;
 	}
 }

@@ -33,6 +33,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * The application's main frame.
@@ -426,9 +427,18 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				log.debug("Search field: " + e.getActionCommand());
-				PatternFilter filter = new FileObjectNameFilter(e.getActionCommand());
-				FilterPipeline pipeline = new FilterPipeline(filter);
-				fp.switchToFlatAndFilter(pipeline);
+				if (e.getActionCommand().equals("")) {
+					fp.resetFilter();
+				} else {
+					try {
+						PatternFilter filter = new FileObjectNameFilter(e.getActionCommand());
+						FilterPipeline pipeline = new FilterPipeline(filter);
+						fp.switchToFlatAndFilter(pipeline);
+					}
+					catch (PatternSyntaxException ex) {
+						log.info("Invalid regex was entered in search field", ex);
+					}
+				}
 			}
 		});
 

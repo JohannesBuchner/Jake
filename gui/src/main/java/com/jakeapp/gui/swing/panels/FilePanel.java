@@ -60,6 +60,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton newBtn;
 	private JToggleButton conflictsBtn;
 
+	private boolean treeViewActive = true;
+
 
 	/**
 	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
@@ -67,8 +69,13 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	public void switchFileDisplay() {
 		if (flatBtn.isSelected()) {
 			fileTreeTableScrollPane.setViewportView(fileTable);
+			treeViewActive = false;
+			resetFilter();
 		} else {
-			fileTreeTableScrollPane.setViewportView(fileTreeTable);
+			// We don't need this anymore because resetFilter() does it for us 
+			// fileTreeTableScrollPane.setViewportView(fileTreeTable);
+			treeViewActive = true;
+			resetFilter();
 		}
 	}
 
@@ -80,13 +87,19 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	public void switchToFlatAndFilter(FilterPipeline pipeline) {
 		fileTreeTableScrollPane.setViewportView(fileTable);
 		fileTable.setFilters(pipeline);
+		flatBtn.setSelected(true);
 	}
 
 	/**
 	 * Resets all applied filters
 	 */
 	public void resetFilter() {
+		System.err.println("STATUS OF TVA: " + treeViewActive);
 		fileTable.setFilters(null);
+		if (treeViewActive) {
+			fileTreeTableScrollPane.setViewportView(fileTreeTable);
+			treeBtn.setSelected(true);
+		}
 	}
 
 	public void addFileSelectionListener(FileSelectionChanged listener) {
