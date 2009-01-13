@@ -24,7 +24,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param jakeObject The <code>JakeObject</code>to be persisted
      * @return The <code>JakeObject</code> that has been persisted
      */
-    public T persist(T jakeObject);
+    public T persist(final T jakeObject);
 
 
     /**
@@ -33,7 +33,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param objectId
      * @return
      */
-    public T get(UUID objectId) throws NoSuchJakeObjectException ;
+    public T get(final UUID objectId) throws NoSuchJakeObjectException ;
 
 
     /**
@@ -52,7 +52,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @throws NoSuchJakeObjectException if the given <code>JakeObject</code>
      *                                   does not exist.
      */
-    public void delete(T jakeObject) throws NoSuchJakeObjectException;
+    public void delete(final T jakeObject) throws NoSuchJakeObjectException;
 
     /**
      * Add a tag to a <code>JakeObject</code>.
@@ -61,7 +61,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param tag        the tag to be added
      * @return the <code>JakeObject</code> that has been tagged
      */
-    public T addTagTo(T jakeObject, final Tag tag) throws NoSuchJakeObjectException ;
+    public T addTagTo(final T jakeObject, final Tag tag) throws NoSuchJakeObjectException ;
 
     /**
      * Convenience method to add one or more tags to a JakeObject
@@ -69,7 +69,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param jakeObject the jakeObject in question
      * @param tags       one or more tags
      */
-    public void addTagsTo(T jakeObject, final Tag... tags) throws NoSuchJakeObjectException ;
+    public void addTagsTo(final T jakeObject, final Tag... tags) throws NoSuchJakeObjectException ;
 
     /**
      * Remove a tag from a <code>JakeObject</code>. The tag will be removed if
@@ -80,7 +80,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param tag        the tag to be removed
      * @return The <code>JakeObject</code> from which the tag has been removed.
      */
-    public T removeTagFrom(T jakeObject, final Tag tag) throws NoSuchJakeObjectException ;
+    public T removeTagFrom(final T jakeObject, final Tag tag) throws NoSuchJakeObjectException ;
 
     /**
      * Convenience method to remove one or more tags from a JakeObject.
@@ -92,7 +92,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param jakeObject the jakeObject in question
      * @param tags       one or more tags
      */
-    public void removeTagsFrom(T jakeObject, Tag... tags) throws NoSuchJakeObjectException ;
+    public void removeTagsFrom(final T jakeObject, final Tag... tags) throws NoSuchJakeObjectException ;
 
 
     /**
@@ -101,6 +101,6 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param jakeObject the jakeObject in question
      * @return List of Tags
      */
-    public List<Tag> getTagsFor(T jakeObject) throws NoSuchJakeObjectException ;
+    public List<Tag> getTagsFor(final T jakeObject) throws NoSuchJakeObjectException ;
 
 }

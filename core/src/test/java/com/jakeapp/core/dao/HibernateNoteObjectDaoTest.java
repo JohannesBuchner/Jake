@@ -23,10 +23,10 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
 
     private static Logger log = Logger.getLogger(HibernateNoteObjectDaoTest.class);
 
-    private IJakeObjectDao noteObjectDao;
+    private INoteObjectDao noteObjectDao;
     private HibernateTemplate template;
 
-    public void setNoteObjectDao(IJakeObjectDao noteObjectDao) {
+    public void setNoteObjectDao(INoteObjectDao noteObjectDao) {
         this.noteObjectDao = noteObjectDao;
     }
 
@@ -41,17 +41,17 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
     @Before
     public void setUp() {
         // Add your code here
-        this.setNoteObjectDao((IJakeObjectDao) this.applicationContext.getBean("noteObjectDao"));
+        this.setNoteObjectDao((INoteObjectDao) this.applicationContext.getBean("noteObjectDao"));
         this.setTemplate((HibernateTemplate) applicationContext.getBean("hibernateTemplate"));
         this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().begin();
     }
 
     @After
     public void tearDown() {
-        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
+//        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
 
         /* rollback for true unit testing */
-//        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
+        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
     }
 
     @Transactional
@@ -238,7 +238,7 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
         Assert.assertTrue(results.contains(t3));
         Assert.assertTrue(results.contains(t4));
 
-        noteObjectDao.removeTagsFrom(noteObject1, new Tag[]{ t1, t2, t3 });
+        noteObjectDao.removeTagsFrom(noteObject1, new Tag[]{t1, t2, t3});
         results.clear();
         results = noteObjectDao.getTagsFor(noteObject1);
 

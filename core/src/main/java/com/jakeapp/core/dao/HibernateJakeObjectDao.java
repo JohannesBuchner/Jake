@@ -27,7 +27,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     /**
      * {@inheritDoc}
      */
-    public T persist(T jakeObject) {
+    public T persist(final T jakeObject) {
 
         this.getHibernateTemplate().getSessionFactory().getCurrentSession().save(jakeObject);
 
@@ -37,7 +37,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     /**
      * {@inheritDoc}
      */
-    public T get(UUID objectId) throws NoSuchJakeObjectException  
+    public T get(final UUID objectId) throws NoSuchJakeObjectException
     {
         log.debug("getAll(Project) Test ========================================");
 
@@ -80,7 +80,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     /**
      * {@inheritDoc}
      */
-    public void delete(T jakeObject) {       
+    public void delete(final T jakeObject) {       
         this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(jakeObject);
     }
 /*
@@ -101,7 +101,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     /**
      * {@inheritDoc}
      */
-    public T addTagTo(T jakeObject, Tag tag) {
+    public T addTagTo(final T jakeObject, final Tag tag) {
 
         log.debug("Adding object "+ jakeObject + " to tag " + tag);
         tag.setObject(jakeObject);
@@ -117,7 +117,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
      * {@inheritDoc}
      */
     @Override
-    public void addTagsTo(T jakeObject, Tag... tags) {
+    public void addTagsTo(final T jakeObject, final Tag... tags) {
          for(Tag t : tags)
          {
              t.setObject(jakeObject);
@@ -129,7 +129,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
      * {@inheritDoc}
      */
     @Override
-    public List<Tag> getTagsFor(T jakeObject) {
+    public List<Tag> getTagsFor(final T jakeObject) {
 
         List<Tag> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("FROM tag WHERE objectid = ? ").setString(0, jakeObject.getUuid().toString()).list();
@@ -146,7 +146,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
      * {@inheritDoc}
      */
     @Override
-    public void removeTagsFrom(T jakeObject, Tag... tags) {
+    public void removeTagsFrom(final T jakeObject, final Tag... tags) {
         
         for(Tag t : tags)
         {
@@ -164,7 +164,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
     /**
      * {@inheritDoc}
      */
-    public T removeTagFrom(T jakeObject, Tag tag) {
+    public T removeTagFrom(final T jakeObject, final Tag tag) {
 
         tag.setObject(jakeObject);
         

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * The <code>FileObject</code> represents a file in the application.
@@ -69,6 +70,7 @@ public class FileObject extends JakeObject {
      *
      * @return the absolute path to the file
      */
+    @Transient
     public File getAbsolutePath() {
         return this.absolutePath;
     }
@@ -76,7 +78,8 @@ public class FileObject extends JakeObject {
     // TODO: are there any constraints on the path, like forward- or backslash?
     private void setRelPath(String relPath) {
         this.relPath = relPath;
-        this.setAbsolutePath(new File(this.getProject().getRootPath(),
+        if(this.getProject() != null)
+            this.setAbsolutePath(new File(this.getProject().getRootPath(),
                 relPath));
     }
 

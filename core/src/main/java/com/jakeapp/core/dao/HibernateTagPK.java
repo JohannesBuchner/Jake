@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Column;
 import java.io.Serializable;
 
+@SuppressWarnings({"SerializableClassInSecureContext"})
 @Embeddable
 public class HibernateTagPK implements Serializable {
     private String name;

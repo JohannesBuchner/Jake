@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * A hibernate file object DAO.
  */
-public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> {
+public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> implements IFileObjectDao {
     /**
      * {@inheritDoc}
      */

@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * A hibernate noteObject DAO.
  */
-public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> {
+public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> implements INoteObjectDao {
 
     /**
      * {@inheritDoc}
