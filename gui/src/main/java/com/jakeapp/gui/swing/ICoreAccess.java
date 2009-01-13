@@ -525,6 +525,19 @@ public interface ICoreAccess {
 	 * @return <code>true</code> iff this note is a local note.
 	 */
 	public boolean isLocalNote(NoteObject note);
+	
+	/**
+	 * Delete the given note, no matter if it is a local or shared note.
+	 * @param note the note to be deleted. 
+	 */
+	public void deleteNote(NoteObject note);
+	
+	/**
+	 * Add a new note. 
+	 * @param note the note to be added
+	 * @param project the project the note is associated with
+	 */
+	public void newNote(NoteObject note, Project project);
 
 	/******************* People functions ********************/
 

@@ -55,6 +55,8 @@ public class NotesTableModel extends DefaultTableModel {
 		this.columnNames.add(this.getResourceMap().getString("tableHEaderNote"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
+		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
+
 	}
 
 	private ResourceMap getResourceMap() {
@@ -135,6 +137,9 @@ public class NotesTableModel extends DefaultTableModel {
 				break;
 			case 2: //last editor
 				value = note.lastEditor;
+				break;
+			case 3: //is local
+				value = Boolean.toString(note.isLocal);
 				break;
 			default:
 				value = "illegal column count!";

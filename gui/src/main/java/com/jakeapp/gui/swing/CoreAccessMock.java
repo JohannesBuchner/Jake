@@ -32,6 +32,7 @@ public class CoreAccessMock implements ICoreAccess {
 	private List<Project> invitedProjects = new ArrayList<Project>();
 	private Map<Project, List<ProjectMember>> peopleProjectMap = new HashMap<Project, List<ProjectMember>>();
 	private IFrontendService frontendService;
+	private List<NoteObject> notesList;
 
 	/**
 	 * SessionId returned by the authentication Method of FrontendService.authenticate.
@@ -79,6 +80,19 @@ public class CoreAccessMock implements ICoreAccess {
 		Project ipr3 = new Project("DEMO INVITATION 3", new UUID(232, 33), null, new File(""));
 		ipr3.setInvitationState(InvitationState.INVITED);
 		invitedProjects.add(ipr3);
+		
+		//mock notes
+		this.notesList = new ArrayList<NoteObject>();
+		this.notesList.add(new NoteObject(new UUID(1, 1), pr1, "Chuck Norris does not need an undo function"));
+		this.notesList.add(new NoteObject(new UUID(1, 1), pr1, "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
+		this.notesList.add(new NoteObject(new UUID(2, 1), pr1, "Apple pays Chuck Norris 99 cents every time he listens to a song."));
+		this.notesList.add(new NoteObject(new UUID(3, 1),	pr1, "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
+		this.notesList.add(new NoteObject(new UUID(4, 1),	pr1, "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
+		this.notesList.add(new NoteObject(new UUID(4, 1), pr1, "Chuck Norris can kill two stones with one bird."));
+		this.notesList.add(new NoteObject(new UUID(5, 1),	pr1, "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
+		this.notesList.add(new NoteObject(new UUID(6, 1), pr1, "Chuck Norris does not sleep. He waits."));
+		this.notesList.add(new NoteObject(new UUID(7, 1), pr1, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
+		this.notesList.add(new NoteObject(new UUID(8, 1), pr1, "Guns don't kill people, Chuck Norris does."));
 	}
 
 
@@ -483,7 +497,8 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException, ProjectNotLoadedException {
-		return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(project);
+		//return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(project);
+		return this.notesList;
 	}
 
 	@Override
@@ -503,7 +518,16 @@ public class CoreAccessMock implements ICoreAccess {
 	public boolean isLocalNote(NoteObject note) {
 		return new Random().nextBoolean();
 	}
+	
+	@Override
+	public void deleteNote(NoteObject note) {
+		this.notesList.remove(note);
+	}
 
+	@Override
+	public void newNote(NoteObject note, Project project) {
+		this.notesList.add(note);
+	}
 
 	/**
 	 * Generates a list so that people are remembered when they change.
@@ -734,6 +758,4 @@ public class CoreAccessMock implements ICoreAccess {
 		 ProtocolNotSupportedException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
 	}
-
-
 }

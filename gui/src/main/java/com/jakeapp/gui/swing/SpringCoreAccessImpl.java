@@ -577,6 +577,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+		@Override
+	public void deleteNote(NoteObject note) {
+		// TODO Auto-generated method stub
+			log.info("mock delete note: " + note.toString());
+	}
+
+	@Override
+		public void newNote(NoteObject note, Project project) {
+			// TODO Auto-generated method stub
+		}
 
 	/**
 	 * Generates a list so that people are remembered when they change.

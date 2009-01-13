@@ -11,7 +11,9 @@
 
 package com.jakeapp.gui.swing.panels;
 
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -33,6 +35,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.UUID;
 
 /**
  * @author studpete, simon
@@ -44,6 +47,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private NotesTableModel notesTableModel;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
+	private ICoreAccess core;
+	private Project currentProject;
 
 	/**
 	 * Creates new form NotesPanel
@@ -65,6 +70,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.resourceMap = org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext()
 				  .getResourceMap(NotesPanel.class);
+		
+		//get core
+		this.core = JakeMainApp.getCore();
 
 
 		this.notesTable.setSortable(true);
@@ -120,6 +128,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public void valueChanged(ListSelectionEvent e) {
 		if (this.notesTable.getSelectedRow() == -1) {
 			this.noteReader.setText("");
+			//TODO: en/disable context menu entries for delete, commit, etc...
 		} else {
 			String text;
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
@@ -131,6 +140,28 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private ResourceMap getResourceMap() {
 		return this.resourceMap;
 	}
+	
+	/**
+	 * get The core.
+	 * @return the core
+	 */
+	private ICoreAccess getCore() {
+		return this.core;
+	}
+	
+	
+	private Project getCurrentProject() {
+		return this.currentProject;
+	}
+
+	/**
+	 * Get the current Project.
+	 * @param currentProject
+	 */
+	private void setCurrentProject(Project currentProject) {
+		this.currentProject = currentProject;
+	}
+	
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ignored) {
@@ -139,7 +170,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	@Override
 	public void setProject(Project pr) {
-		this.notesTableModel.update(pr);
+		this.setCurrentProject(pr);
+		this.notesTableModel.update(this.getCurrentProject());
 	}
 
 	private boolean isNoteSelected() {
@@ -147,17 +179,11 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 	/**
-	 * Delete the currently selected note. The user is prompted to confirm the deletion.
-	 */
-	private void deleteSelectedNote() {
-		//TODO
-	}
-
-	/**
 	 * Create a new note both in the persistence and in the notes table.
 	 */
 	private void newNote() {
-		//TODO
+		this.core.newNote(new NoteObject(new UUID(1, 4), this.getCurrentProject(), "new note"),
+				this.getCurrentProject());
 	}
 
 	/**
