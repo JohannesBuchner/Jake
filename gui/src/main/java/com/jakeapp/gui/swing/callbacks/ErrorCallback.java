@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.callbacks;
 
+import java.io.FileNotFoundException;
+
 
 /**
  * The generic Error Callback.
@@ -10,17 +12,17 @@ package com.jakeapp.gui.swing.callbacks;
 public interface ErrorCallback {
 
     class JakeErrorEvent {
-        private RuntimeException exception;
+        private Exception exception;
 
-        public JakeErrorEvent(RuntimeException exception) {
-            this.setException(exception);
+        public JakeErrorEvent(Exception e) {
+            this.setException(e);
         }
 
-        public RuntimeException getException() {
+        public Exception getException() {
             return exception;
         }
 
-        public void setException(RuntimeException exception) {
+        public void setException(Exception exception) {
             this.exception = exception;
         }
     }

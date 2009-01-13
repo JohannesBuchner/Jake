@@ -325,6 +325,13 @@ public class FSService implements IFSService, IModificationListener {
 	}
 	
 	@Override
+	public boolean trashFile(String relativePath)
+			throws InvalidFilenameException, FileNotFoundException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
 	public boolean moveFile(String from, String to)
 			throws InvalidFilenameException, NotAReadableFileException, FileAlreadyExistsException, IOException, CreatingSubDirectoriesFailedException {
 		File fileFrom,fileTo;

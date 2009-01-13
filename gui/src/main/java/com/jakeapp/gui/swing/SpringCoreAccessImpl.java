@@ -16,11 +16,16 @@ import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
+import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.util.*;
 
@@ -323,7 +328,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// if(!project.isStarted())
 		// throw new ProjectNotStartedException();
 
-		project.setStarted(false);
+		//project.setStarted(false);
+		try {
+			this.getFrontendService().getProjectsManagingService(this.getSessionId()).stopProject(project);
+		} catch (IllegalArgumentException e) {
+			log.debug("Illegal project for stopping specified.", e);
+		} catch (FileNotFoundException e) {
+			log.warn("Project-Folder not found.", e);
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			log.debug("Cannot access ProjectManagingService.", e);
+		} catch (NotLoggedInException e) {
+			log.debug("Tried access session without signing in.", e);
+		}
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
@@ -331,7 +348,18 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public void startProject(Project project) {
-		project.setStarted(true);
+		try {
+			this.getFrontendService().getProjectsManagingService(this.getSessionId()).stopProject(project);
+		} catch (IllegalArgumentException e) {
+			log.debug("Illegal project for starting specified.", e);
+		} catch (FileNotFoundException e) {
+			log.warn("Project-Folder not found.", e);
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			log.debug("Cannot access ProjectManagingService.", e);
+		} catch (NotLoggedInException e) {
+			log.debug("Tried access session without signing in.", e);
+		}
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
@@ -349,7 +377,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void deleteProject(final Project project) {
-		log.info("Mock: delete project: " + project);
+		log.info("Delete project: " + project);
 
 		if (project == null) {
 			throw new IllegalArgumentException("Cannot delete empty project!");
@@ -677,7 +705,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
 				} catch (FileNotFoundException e) {
-					//TODO report to gui that the rootpath is invalid
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 				} catch (NotLoggedInException e) {
 					log.debug("Tried to create a project while not authenticated to the core.", e);
 				}
@@ -714,22 +742,91 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void deleteToTrash(FileObject file) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		try {
+			this.getFrontendService().
+				getProjectsManagingService(this.getSessionId()).
+					getFileServices(file.getProject()).
+						trashFile(file.getRelPath());
+		} catch (FileNotFoundException e) {
+			log.debug("Tried to delete nonexisting file", e);
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (IllegalArgumentException e) {
+			log.debug("Cannot delete FileObject", e);
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			log.debug("Project service is not available.");
+		} catch (InvalidFilenameException e) {
+			log.debug("Filename of FileObject invalid: " + file.getRelPath());
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (NotLoggedInException e) {
+			log.debug("Tried access session without signing in.", e);
+		}
 	}
 
 	@Override
 	public void deleteToTrash(FolderObject folder) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		/*
+		 * not implemented yet - the same as with FileObject,
+		 * but FolderObject has no Project (yet). Deleting
+		 * something without a Project is not supported, however.
+		 */
 	}
 
 	@Override
 	public void rename(FileObject file, String newName) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		this.renamePath(file.getRelPath(),file.getProject(), newName);
 	}
-
+	
 	@Override
 	public void rename(FolderObject folder, String newName) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		//TODO obtain project
+		//TODO call renamePath
+	}
+
+	/**
+	 * Renames a file
+	 * @param fromPath relative Path of source
+	 * @param project Project to retrieve a FSService for - fromPath should be in the Project. 
+	 * @param newName new name
+	 */
+	private void renamePath(String fromPath, Project project, String newName) {
+		String to;
+		File toFile;
+		
+		
+		/*
+		 * create a File with the same parent as the passed
+		 * FROM-Path, but with a different name.
+		 */
+		toFile = new File(new File(fromPath).getParentFile(),newName);
+		
+		
+		try {
+			this.getFrontendService().
+				getProjectsManagingService(this.getSessionId()).
+					getFileServices(project).moveFile(fromPath, toFile.toString());
+		} catch (IllegalArgumentException e) {
+			log.warn("Cannot rename file");
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			log.debug("Project service is not available.");
+		} catch (InvalidFilenameException e) {
+			log.debug("Filename of FileObject invalid: " + fromPath);
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (NotAReadableFileException e) {
+			log.warn("Cannot move an unreadable file");
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (FileAlreadyExistsException e) {
+			log.warn("Cannot move file: destination already exists.");
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (IOException e) {
+			log.warn("Cannot rename file");
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (CreatingSubDirectoriesFailedException e) {
+			log.error("Creating a subdirectory that should not be created failed...");
+		} catch (NotLoggedInException e) {
+			log.debug("Tried access session without signing in.", e);
+		}
 	}
 
 	@Override

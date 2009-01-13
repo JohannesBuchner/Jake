@@ -4,11 +4,14 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAFileException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -182,7 +185,42 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public boolean deleteProject(Project project) throws IllegalArgumentException,
 			SecurityException, FileNotFoundException {
-		return false; // TODO
+		boolean result = true;
+		IFSService fss;
+		FileNotFoundException t = null;
+		
+		//Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		
+		//Remove the Project's root folder
+		fss = this.getFileServices(project);
+		if (fss!=null) {
+			try {
+				fss.trashFile(project.getRootPath());
+			} catch (InvalidFilenameException e) {
+				log.warn("Deleting Project with invalid rootpath.",e);
+			} catch (FileNotFoundException e) {
+				t = e;
+			}
+		}
+		
+		//Make sure project is stopped & closed
+		if (project.isOpen())
+			this.closeProject(project);
+		
+		//Remove Project from the database
+		try {
+			this.getProjectDao().delete(project);
+		} catch (NoSuchProjectException e) {
+			log.warn("Project does not exist in DB and cannot be deleted from it.",e);
+		}
+		
+		//remove project from internal list
+		this.getInternalProjectList().remove(project);
+		
+		if (t!=null) throw t;
+		
+		return result; 
 	}
 
 	@Override
