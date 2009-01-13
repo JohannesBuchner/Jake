@@ -54,7 +54,7 @@ public class Project implements ILogable {
     private transient boolean autologin;
     private UserId userId;
     private ServiceCredentials credentials;
-    private transient InvitationState invitationState;
+    private transient InvitationState invitationState = InvitationState.ACCEPTED;
 
     /**
      * Construct a Project. Freshly constructed projects are always stopped.

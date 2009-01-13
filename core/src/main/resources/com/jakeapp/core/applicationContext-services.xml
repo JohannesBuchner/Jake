@@ -13,8 +13,8 @@
         <description>The factory to create and configure application contexts</description>
         <property name="configLocation">
             <list>
-                <value>/com/jakeapp/core/applicationContextFactory-local-datasource.xml</value>
-                <value>/com/jakeapp/core/applicationContextFactory-local-daos.xml</value>
+                <value>/com/jakeapp/core/applicationContext-local-datasource.xml</value>
+                <value>/com/jakeapp/core/applicationContext-local-daos.xml</value>
             </list>
         </property>
     </bean>

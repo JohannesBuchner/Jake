@@ -25,7 +25,14 @@ public class ProjectsManagingServiceTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
+
+    @Test
+    public void doNothing()
+    {
+        // empty test to prevent initializationError. // TODO CHRISTOPHER: Please do this yourself!!! NOT ALWAYS ME! :)
+    }
+
 	/*
 	@Test(timeout = TestingConstants.UNITTESTTIME,expected = IllegalArgumentException.class)
 	public void createProject_shouldFailWithNullName() throws FileNotFoundException, IllegalArgumentException  {

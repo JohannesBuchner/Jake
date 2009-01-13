@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -30,6 +31,8 @@ import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
+
+import javax.management.InvalidApplicationException;
 
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
@@ -85,30 +88,49 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
-	@Override
+	@Transactional
+    @Override
 	public List<Project> getProjectList() {
-		return this.getProjectDao().getAll();
+        log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
+
+
+
+        List<Project> results =this.getProjectDao().getAll();
+        if(results != null)
+        {
+            log.debug("found " + results.size() + " projects to return");
+            return results;
+        }
+        log.warn("didn't got any results!!!!!");
+        throw new RuntimeException(" this should return an empty list");
 		//return Collections.unmodifiableList(this.getInternalProjectList());
 	}
 
-	@Override
+	@Transactional
+    @Override
 	public List<Project> getProjectList(InvitationState state) {
 		
 		//FIXME not very elegant: can't we do that via DB-Select?
+        // Yes we can. -- domdorn
+
+//        return this.getProjectList(); // TODO TMP by domdorn // FIXME
 		List<Project> all = this.getProjectList();
 		List<Project> result = new ArrayList<Project>();
-		
+
 		for (Project p : all)
 			if (p.getInvitationState().equals(state))
 				result.add(p);
-		
+
 		return result;
 	}
 
+
+    @Transactional
 	@Override
 	public Project createProject(String name, String rootPath, MsgService msgService)
 			throws FileNotFoundException, IllegalArgumentException {
-		
+
+        log.debug("Creating a Project with name " + name + " and path "  +rootPath);
 		File projectRoot = new File(rootPath);
 		
 		//create a new, empty project
@@ -125,27 +147,40 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		}
 		
 		try {
-			this.initializeProjectFolder();
+			log.debug("initializing project folder");
+            this.initializeProjectFolder();
 		} catch (IOException e) {
+            log.debug("initializing project folder didn't work");
 			throw new FileNotFoundException();
 		}
 		
 		//create the new Project in the global database
 		try {
-			project = this.getProjectDao().create(project);
-		} catch (InvalidProjectException e) {
-			log.debug("Creating a project failed.",e);
+			log.debug("persisting project in DB");
+            project = this.getProjectDao().create(project);
+		    log.debug("got the following project back " + project);
+        } catch (InvalidProjectException e) {
+			// TODO WTF? das sollte doch wenn dann geworfen werden!
+
+            log.debug("Creating a project failed.",e);
 			project = null;
 		}
-		
+
+
 		if (project!=null) {
-			//add the project to the service's internal project list	
+			log.debug("Project is not null, adding it to internal project list");
+            //add the project to the service's internal project list
 			this.getInternalProjectList().add(project);
 		}
+        else
+        {
+            log.warn("PROJECT IS NULL!");
+        }
 		
 		//create an applicationContext for the Project
 		this.applicationContextFactory.getApplicationContext(project);
-		
+
+
 		//TODO create a new Project-local database
 		
 		return project; 
