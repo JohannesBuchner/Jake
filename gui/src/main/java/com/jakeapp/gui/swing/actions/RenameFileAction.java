@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 
 public class RenameFileAction extends FileAction {
-	public RenameFileAction(JXTreeTable fileTable) {
+	public RenameFileAction(JTable fileTable) {
 		super(fileTable);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().

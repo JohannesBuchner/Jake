@@ -10,20 +10,20 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class InspectorFileAction extends FileAction {
-   public InspectorFileAction(JXTreeTable fileTable) {
-      super(fileTable);
+	public InspectorFileAction(JTable fileTable) {
+		super(fileTable);
 
-      String actionStr = JakeMainView.getMainView().getResourceMap().
-            getString("showHideInspectorMenuItem.text");
+		String actionStr = JakeMainView.getMainView().getResourceMap().
+			 getString("showHideInspectorMenuItem.text");
 
-      putValue(Action.NAME, actionStr);
+		putValue(Action.NAME, actionStr);
 
-      // only enable if exact one element is selected.
-      setEnabled(fileTable.getSelectedRowCount() == 1);
-   }
+		// only enable if exact one element is selected.
+		setEnabled(fileTable.getSelectedRowCount() == 1);
+	}
 
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      // TODO: Implement me!
-   }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO: Implement me!
+	}
 }

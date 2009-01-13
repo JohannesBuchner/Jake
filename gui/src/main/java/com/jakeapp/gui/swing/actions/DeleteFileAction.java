@@ -15,7 +15,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 
 public class DeleteFileAction extends FileAction {
-	public DeleteFileAction(JXTreeTable fileTable) {
+	public DeleteFileAction(JTable fileTable) {
 		super(fileTable);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().

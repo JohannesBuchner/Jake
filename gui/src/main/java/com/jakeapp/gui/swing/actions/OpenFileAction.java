@@ -14,10 +14,10 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class OpenFileAction extends FileAction {
-	private JXTreeTable fileTable;
+	private JTable fileTable;
 	private Project project;
 
-	public OpenFileAction(JXTreeTable fileTable, Project project) {
+	public OpenFileAction(JTable fileTable, Project project) {
 		super(fileTable);
 		this.fileTable = fileTable;
 		this.project = project;

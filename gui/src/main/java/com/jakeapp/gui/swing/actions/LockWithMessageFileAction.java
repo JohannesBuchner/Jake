@@ -12,7 +12,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class LockWithMessageFileAction extends FileAction {
-	public LockWithMessageFileAction(JXTreeTable fileTable) {
+	public LockWithMessageFileAction(JTable fileTable) {
 		super(fileTable);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().

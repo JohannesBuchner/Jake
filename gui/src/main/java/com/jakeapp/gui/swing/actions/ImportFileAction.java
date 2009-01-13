@@ -12,7 +12,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class ImportFileAction extends FileAction {
-	public ImportFileAction(JXTreeTable fileTable) {
+	public ImportFileAction(JTable fileTable) {
 		super(fileTable);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().

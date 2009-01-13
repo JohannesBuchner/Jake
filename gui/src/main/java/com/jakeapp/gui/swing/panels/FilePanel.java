@@ -39,7 +39,6 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 /**
  * @author studpete
@@ -125,7 +124,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
 		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class, new ProjectFilesTableCellRenderer());
 
-		fileTreeTable.addMouseListener(new FileTreeTableMouseListener(this));
+		fileTreeTable.addMouseListener(new FileContainerMouseListener(this, fileTreeTable));
+		fileTable.addMouseListener(new FileContainerMouseListener(this, fileTable));
+
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
 	}
 
@@ -141,21 +142,11 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.resourceMap = resourceMap;
 	}
 
-	private class FileTreeTableKeyListener implements KeyListener {
+	private class FileTreeTableKeyListener extends KeyAdapter {
 		private FilePanel panel;
 
 		public FileTreeTableKeyListener(FilePanel p) {
 			this.panel = p;
-		}
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// Do nothing
-		}
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// Do nothing
 		}
 
 		@Override
@@ -171,12 +162,14 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 	}
 
-	private class FileTreeTableMouseListener implements MouseListener {
+	private class FileContainerMouseListener extends MouseAdapter {
 		private FilePanel panel;
+		private JTable container;
 
-		public FileTreeTableMouseListener(FilePanel p) {
+		public FileContainerMouseListener(FilePanel p, JTable fileContainer) {
 			super();
 			this.panel = p;
+			this.container = fileContainer;
 		}
 
 		@Override
@@ -186,18 +179,18 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				Point p = me.getPoint();
 
 				// get the row index that contains that coordinate
-				int rowNumber = fileTreeTable.rowAtPoint(p);
+				int rowNumber = container.rowAtPoint(p);
 
 				// Get the ListSelectionModel of the JTable
-				ListSelectionModel model = fileTreeTable.getSelectionModel();
+				ListSelectionModel model = container.getSelectionModel();
 
 				// set the selected interval of rows. Using the "rowNumber"
 				// variable for the beginning and end selects only that one
 				// row.
 				// ONLY select new item if we didn't select multiple items.
-				if (fileTreeTable.getSelectedRowCount() <= 1) {
+				if (container.getSelectedRowCount() <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(rowNumber, 0);
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(rowNumber, 0);
 					if (node.isFile()) {
 						java.util.List<FileObject> list = new ArrayList<FileObject>();
 						list.add(node.getFileObject());
@@ -210,8 +203,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				showMenu(me);
 			} else if (SwingUtilities.isLeftMouseButton(me)) {
 				java.util.List<FileObject> list = new ArrayList<FileObject>();
-				for (int row : fileTreeTable.getSelectedRows()) {
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, 0);
+				for (int row : container.getSelectedRows()) {
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(row, 0);
 					if (node.isFile()) {
 						list.add(node.getFileObject());
 					}
@@ -223,43 +216,27 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		private void showMenu(MouseEvent me) {
 			JPopupMenu pm = new JakePopupMenu();
 
-			pm.add(new JMenuItem(new OpenFileAction(fileTreeTable, getProject())));
+			pm.add(new JMenuItem(new OpenFileAction(container, getProject())));
 			// TODO: show always? dynamically? (alwasy for now...while dev)
-			pm.add(new JMenuItem(new ResolveConflictFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new ResolveConflictFileAction(container)));
 			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new AnnounceFileAction(fileTreeTable)));
-			pm.add(new JMenuItem(new PullFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new AnnounceFileAction(container)));
+			pm.add(new JMenuItem(new PullFileAction(container)));
 			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new DeleteFileAction(fileTreeTable)));
-			pm.add(new JMenuItem(new RenameFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new DeleteFileAction(container)));
+			pm.add(new JMenuItem(new RenameFileAction(container)));
 			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new InspectorFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new InspectorFileAction(container)));
 			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new ImportFileAction(fileTreeTable)));
-			pm.add(new JMenuItem(new NewFolderFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new ImportFileAction(container)));
+			pm.add(new JMenuItem(new NewFolderFileAction(container)));
 			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new LockFileAction(fileTreeTable)));
-			pm.add(new JMenuItem(new LockWithMessageFileAction(fileTreeTable)));
+			pm.add(new JMenuItem(new LockFileAction(container)));
+			pm.add(new JMenuItem(new LockWithMessageFileAction(container)));
 
 
-			pm.show(fileTreeTable, (int) me.getPoint().getX(), (int) me.getPoint()
+			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
 				 .getY());
-		}
-
-		@Override
-		public void mousePressed(MouseEvent mouseEvent) {
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent mouseEvent) {
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent mouseEvent) {
-		}
-
-		@Override
-		public void mouseExited(MouseEvent mouseEvent) {
 		}
 	}
 

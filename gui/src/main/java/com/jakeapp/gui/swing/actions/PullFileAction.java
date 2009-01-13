@@ -10,17 +10,17 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class PullFileAction extends FileAction {
-   public PullFileAction(JXTreeTable fileTable) {
-      super(fileTable);
+	public PullFileAction(JTable fileTable) {
+		super(fileTable);
 
-      String actionStr = JakeMainView.getMainView().getResourceMap().
-            getString("pullMenuItem.text");
+		String actionStr = JakeMainView.getMainView().getResourceMap().
+			 getString("pullMenuItem.text");
 
-      putValue(Action.NAME, actionStr);
-   }
+		putValue(Action.NAME, actionStr);
+	}
 
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      // TODO: Implement me!
-   }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO: Implement me!
+	}
 }

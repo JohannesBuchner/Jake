@@ -10,17 +10,17 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class AnnounceFileAction extends FileAction {
-   public AnnounceFileAction(JXTreeTable fileTable) {
-      super(fileTable);
+	public AnnounceFileAction(JTable fileTable) {
+		super(fileTable);
 
-      String actionStr = JakeMainView.getMainView().getResourceMap().
-            getString("announceMenuItem.text");
+		String actionStr = JakeMainView.getMainView().getResourceMap().
+			 getString("announceMenuItem.text");
 
-      putValue(Action.NAME, actionStr);
-   }
+		putValue(Action.NAME, actionStr);
+	}
 
-   @Override
-   public void actionPerformed(ActionEvent e) {
-      // TODO: Implement me!
-   }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO: Implement me!
+	}
 }

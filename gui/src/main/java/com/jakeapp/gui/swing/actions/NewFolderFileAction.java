@@ -12,7 +12,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class NewFolderFileAction extends FileAction {
-	public NewFolderFileAction(JXTreeTable fileTable) {
+	public NewFolderFileAction(JTable fileTable) {
 		super(fileTable);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().

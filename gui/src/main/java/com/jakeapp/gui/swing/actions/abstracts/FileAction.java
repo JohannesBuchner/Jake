@@ -5,10 +5,12 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTreeTable;
 
+import javax.swing.*;
+
 public abstract class FileAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(FileAction.class);
 
-	private JXTreeTable fileTable;
+	private JTable fileTable;
 
 	/**
 	 * Creates the file action.
@@ -17,7 +19,7 @@ public abstract class FileAction extends ProjectAction {
 	 * @param fileTable
 	 */
 	// TODO: abstract this! no depend on whole component!
-	public FileAction(JXTreeTable fileTable) {
+	public FileAction(JTable fileTable) {
 		super();
 		this.fileTable = fileTable;
 	}
@@ -29,7 +31,7 @@ public abstract class FileAction extends ProjectAction {
 	 */
 	protected boolean isSingleFileSelected() {
 		boolean enabled = (fileTable.getSelectedRowCount() == 1 &&
-				  ((ProjectFilesTreeNode) fileTable.getValueAt(fileTable.getSelectedRow(), 0)).isFile());
+			 ((ProjectFilesTreeNode) fileTable.getValueAt(fileTable.getSelectedRow(), 0)).isFile());
 		return enabled;
 	}
 
@@ -43,16 +45,16 @@ public abstract class FileAction extends ProjectAction {
 			return null;
 		} else {
 			return ((ProjectFilesTreeNode) fileTable.getValueAt(
-					  fileTable.getSelectedRow(), 0)).getFileObject();
+				 fileTable.getSelectedRow(), 0)).getFileObject();
 		}
 	}
 
 
-	public JXTreeTable getFileTable() {
+	public JTable getFileTable() {
 		return fileTable;
 	}
 
-	protected void setFileTable(JXTreeTable fileTable) {
+	protected void setFileTable(JTable fileTable) {
 		this.fileTable = fileTable;
 	}
 }

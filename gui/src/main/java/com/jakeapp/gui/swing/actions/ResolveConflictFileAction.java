@@ -9,11 +9,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ResolveConflictFileAction extends FileAction {
-	public ResolveConflictFileAction(JXTreeTable fileTable) {
+	public ResolveConflictFileAction(JTable fileTable) {
 		super(fileTable);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-				  getString("resolveConflictMenuitem.text");
+			 getString("resolveConflictMenuitem.text");
 
 		putValue(Action.NAME, actionStr);
 
