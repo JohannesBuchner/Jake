@@ -25,6 +25,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
+import com.jakeapp.gui.swing.models.FileObjectsTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -32,6 +33,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -80,7 +82,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -94,13 +96,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		//Platform.getStyler().MakeWhiteRecessedButton(resolveButton);
 		//Platform.getStyler().MakeWhiteRecessedButton(illegalFilenamesButton);
 
-		// TODO: Fix this. Essentially, the problem is that we need to set some sort
-		// of model before we have a project, so this creates a new model of the root
-		// point in the FS. Maybe replace this by a dummy model or find a nicer way of
-		// injection.
-		// TreeTableModel treeTableModel = new FileSystemModel();
-		// fileTreeTable.setTreeTableModel(treeTableModel);
-
 		fileTreeTable.setScrollsOnExpand(true);
 		fileTreeTable.setSortable(true);
 		fileTreeTable.setColumnControlVisible(true);
@@ -112,9 +107,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
-		// fileTreeTable.setDefaultEditor(TagSet.class, new FilesTreeTableTagCellEditor());
-		// WHY THE FUCK IS THIS NOT WORKING?!!!!!
-		// fileTreeTable.setDefaultRenderer(TagSet.class, new TagSetRenderer());
 
 		fileTreeTable.addMouseListener(new FileTreeTableMouseListener(this));
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
@@ -234,7 +226,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(fileTreeTable, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+				 .getY());
 		}
 
 		@Override
@@ -349,13 +341,16 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// we have to cope with no project selected state.
 		if (project != null) {
-			TreeTableModel treeTableModel = null;
+			// FIXME: CHANGE THIS BACK TO TreeTableModel
+			TableModel treeTableModel = null;
 			try {
-				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+				// FIXME: CHANGE THIS BACK!!!
+				// treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+				treeTableModel = new FileObjectsTableModel(JakeMainApp.getApp().getCore().getAllProjectFiles(JakeMainApp.getApp().getProject()));
 			} catch (ProjectFolderMissingException e) {
 				log.warn("Project folder missing!!");
 			}
-			fileTreeTable.setTreeTableModel(treeTableModel);
+			fileTreeTable.setModel(treeTableModel);
 		}
 	}
 }

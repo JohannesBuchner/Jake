@@ -21,6 +21,7 @@ import java.rmi.NoSuchObjectException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 
 public interface ICoreAccess {
@@ -79,7 +80,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-			  throws InvalidCredentialsException;
+		 throws InvalidCredentialsException;
 
 
 	/**
@@ -164,8 +165,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public boolean createAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -181,8 +182,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -365,7 +366,17 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-			  throws ProjectFolderMissingException;
+		 throws ProjectFolderMissingException;
+
+	/**
+	 * Retrieves all files within a project
+	 *
+	 * @param project The project in question
+	 * @return A collection of all FileObjects in the project
+	 * @throws ProjectFolderMissingException if the project folder doesn't exist
+	 */
+	public List<FileObject> getAllProjectFiles(Project project)
+		 throws ProjectFolderMissingException;
 
 	/**
 	 * Gets the sync status of a file
@@ -445,7 +456,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file	 The file to rename
+	 * @param file    The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -487,12 +498,12 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-			  ProjectNotLoadedException;
+		 ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
 	 *
-	 * @param note	 the note in question
+	 * @param note    the note in question
 	 * @param project the project the note is associated with
 	 * @return the date of the last edit
 	 */
@@ -501,7 +512,7 @@ public interface ICoreAccess {
 	/**
 	 * Get the <code>ProjectMemeber<code> who last edited the given note.
 	 *
-	 * @param note	 the note in question
+	 * @param note    the note in question
 	 * @param project the project the note is associated with
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 */
@@ -543,7 +554,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-											  TrustState trust);
+	                                TrustState trust);
 
 
 	/**
@@ -569,9 +580,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project	  : the project to query. can be null.
+	 * @param project     : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries	  : amount of entries. -1 for everything.
+	 * @param entries     : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);
