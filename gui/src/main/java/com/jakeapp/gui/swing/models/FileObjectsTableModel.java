@@ -28,8 +28,10 @@ public class FileObjectsTableModel extends AbstractTableModel {
 			case 0:
 				return "Name";
 			case 1:
-				return "Size";
+				return "in";
 			case 2:
+				return "Size";
+			case 3:
 				return "Last Modified";
 			default:
 				return null;
@@ -45,6 +47,8 @@ public class FileObjectsTableModel extends AbstractTableModel {
 				return String.class;
 			case 2:
 				return String.class;
+			case 3:
+				return String.class;
 			default:
 				return null;
 		}
@@ -57,7 +61,7 @@ public class FileObjectsTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -67,8 +71,15 @@ public class FileObjectsTableModel extends AbstractTableModel {
 			case 0:
 				return ournode;
 			case 1:
-				return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+				String s = ournode.getFileObject().getRelPath();
+				if (s.contains(System.getProperty("file.separator"))) {
+					return System.getProperty("file.separator") + s.substring(0, s.lastIndexOf(System.getProperty("file.separator")));
+				} else {
+					return System.getProperty("file.separator");
+				}
 			case 2:
+				return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+			case 3:
 				return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
 			default:
 				return "INVALIDCOLUMN";
