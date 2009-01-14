@@ -11,19 +11,27 @@
 
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.ICoreAccess;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.ETable;
-import com.jakeapp.gui.swing.helpers.Colors;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.listener.TableMouseListener;
-import com.jakeapp.gui.swing.models.NotesTableModel;
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -31,14 +39,19 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.ICoreAccess;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.actions.DeleteNoteAction;
+import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.controls.ETable;
+import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.models.NotesTableModel;
 
 /**
  * @author studpete, simon
@@ -54,6 +67,60 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private JTextArea noteReader;
 	private ICoreAccess core;
 	private Project currentProject;
+	
+	private class NoteContainerMouseListener extends MouseAdapter {
+		private NotesPanel panel;
+		private JTable table;
+		private NotesTableModel tableModel;
+		private JPopupMenu popupMenu;
+		{
+			this.popupMenu = new JakePopupMenu();
+			this.popupMenu.add(new JMenuItem(new DeleteNoteAction()));
+		}
+
+		public NoteContainerMouseListener(NotesPanel panel, JTable table, NotesTableModel tableModel) {
+			super();
+			this.panel = panel;
+			this.table = table;
+			this.tableModel = tableModel;
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent me) {
+			if (SwingUtilities.isRightMouseButton(me)) {
+				// get the coordinates of the mouse click
+				Point p = me.getPoint();
+
+				// get the row index that contains that coordinate
+				int rowNumber = this.table.rowAtPoint(p);
+
+				// Get the ListSelectionModel of the JTable
+				ListSelectionModel model = this.table.getSelectionModel();
+
+				// ONLY select new item if we didn't select multiple items.
+				if (this.table.getSelectedRowCount() <= 1 && rowNumber != -1){
+					model.setSelectionInterval(rowNumber, rowNumber);
+					List<NoteObject> selectedRows = new ArrayList<NoteObject>();
+					selectedRows.add(this.tableModel.getNoteAtRow(rowNumber));
+					this.panel.notifyNoteSelectionListeners(selectedRows);
+				} else if (rowNumber == -1) {
+					this.panel.notifyNoteSelectionListeners(new ArrayList<NoteObject>());
+				}
+				showMenu(me);
+
+			} else if (SwingUtilities.isLeftMouseButton(me)) {
+				java.util.List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
+				for (int row : this.table.getSelectedRows()) {
+						selectedNotes.add(this.tableModel.getNoteAtRow(row));
+				}
+				this.panel.notifyNoteSelectionListeners(selectedNotes);
+			}
+		}
+
+		private void showMenu(MouseEvent me) {
+			this.popupMenu.show(this.table, (int) me.getPoint().getX(), (int) me.getPoint().getY());
+		}
+	}
 
 	/**
 	 * Creates new form NotesPanel
@@ -84,29 +151,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notesTable.setSortable(true);
 		this.notesTable.setColumnControlVisible(true);
 
+
 		// todo: make this a styler property
 		if (!Platform.isMac()) {
 			this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
 		final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
-		//TODO wire context menu
-
-		notesPopupMenu.add(new JMenuItem(this.getResourceMap().getString("contextMenuNewNote")));
-		notesPopupMenu.add(new JMenuItem(this.getResourceMap().getString("contextMenuDeleteNote")));
-
-		this.notesTable.addMouseListener(new TableMouseListener(this.notesTable) {
-
-			@Override
-			public void showPopup(JComponent comp, int x, int y) {
-				notesPopupMenu.show(comp, x, y);
-			}
-
-			@Override
-			public void editAction() {
-			}
-		});
-
+		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable, this.notesTableModel));
 
 		this.noteReader = new JTextArea();
 		this.noteReader.setLineWrap(true);
@@ -143,7 +195,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 
-	private ResourceMap getResourceMap() {
+	public ResourceMap getResourceMap() {
 		return this.resourceMap;
 	}
 
@@ -287,10 +339,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteSelectionListeners.remove(listener);
 	}
 
-	public void notifyNoteSelectionListeners(java.util.List<NoteObject> objs) {
-		log.debug("notify selection listeners: " + objs.toArray());
-		for (NoteSelectionChanged c : this.noteSelectionListeners) {
-			c.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(objs));
+	public void notifyNoteSelectionListeners(java.util.List<NoteObject> selectedNotes) {
+		log.debug("notify selection listeners: " + selectedNotes.toArray());
+		for (NoteSelectionChanged listener : this.noteSelectionListeners) {
+			listener.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(selectedNotes));
 		}
 	}
 
@@ -299,15 +351,15 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 * @return the list of currently selected notes. If nothing is selected, an empty list is returned.
 	 */
 	public List<NoteObject> getSelectedNotes() {
+		log.debug("get selected notes...");
 		List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
-		int selectedRow = this.notesTable.getSelectedRow();
-		
-		if (selectedRow == -1) {
+				
+		if (this.notesTable.getSelectedRow() == -1) {
 			return selectedNotes;
 		} 
-		int rowCount = this.notesTable.getSelectedRowCount();
-		for (int i = 0; i < rowCount; i++) {
-			selectedNotes.add(this.notesTableModel.getNoteAtRow(selectedRow + i));				
+		
+		for (int row : this.notesTable.getSelectedRows()) {
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));				
 		}
 		return selectedNotes; 
 	}

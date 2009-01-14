@@ -6,7 +6,10 @@ import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * Abstract superclass for actions on notes.
@@ -17,16 +20,15 @@ public abstract class NoteAction extends ProjectAction
 		  implements NoteSelectionChanged {
 
 	private static final long serialVersionUID = 8541763489137302803L;
+	private static Logger log = Logger.getLogger(NoteAction.class);
 
 	private List<NoteObject> selectedNotes;
-	private Project currentProject;
 
 	/**
 	 * Constructs a new NoteAction that works with the given notesTable.
 	 */
 	public NoteAction() {
 		super();
-
 		setSelectedNotes(NotesPanel.getInstance().getSelectedNotes());
 
 		NotesPanel.getInstance().addNoteSelectionListener(this);
@@ -45,6 +47,10 @@ public abstract class NoteAction extends ProjectAction
 	}
 
 	public List<NoteObject> getSelectedNotes() {
+		//FIXME: hack, hack, hack, don't know why it returns null ???
+		if (this.selectedNotes == null) {
+			return new ArrayList<NoteObject>();
+		}
 		return this.selectedNotes;
 	}
 

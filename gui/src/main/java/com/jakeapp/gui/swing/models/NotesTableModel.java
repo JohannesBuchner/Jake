@@ -10,7 +10,11 @@ import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.table.DefaultTableModel;
+
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +35,7 @@ public class NotesTableModel extends DefaultTableModel {
 	private ResourceMap resourceMap;
 	private Project currentProject;
 	private ICoreAccess core;
+	private Icon padlock;
 
 	private class NoteMetaDataWrapper {
 		public NoteObject note;
@@ -56,12 +61,14 @@ public class NotesTableModel extends DefaultTableModel {
 		this.notes = new ArrayList<NoteMetaDataWrapper>();
 		this.core = JakeMainApp.getApp().getCore();
 		this.columnNames = new ArrayList<String>();
+		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
 		this.columnNames.add(this.getResourceMap().getString("tableHEaderNote"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
-		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
-
+		
+		this.padlock = new ImageIcon(Toolkit.getDefaultToolkit()
+				.getImage(JakeMainApp.class.getResource("/icons/file-lock.png")));
 	}
 
 	private ResourceMap getResourceMap() {
@@ -133,23 +140,27 @@ public class NotesTableModel extends DefaultTableModel {
 
 	@Override
 	public Object getValueAt(int row, int column) {
-		String value;
+		Object value;
 		NoteMetaDataWrapper note = this.getNotes().get(row);
 		switch (column) {
-			case 0: //content
+			case 0: // soft lock
+				if (note.isSoftLocked) {
+					value = this.padlock;
+				} else {
+					value = "";
+				}
+				break;
+			case 1: //content
 				value = note.note.getContent();
 				break;
-			case 1: //last edit
+			case 2: //last edit
 				value = TimeUtilities.getRelativeTime(note.lastEdit);
 				break;
-			case 2: //last editor
+			case 3: //last editor
 				value = note.lastEditor;
 				break;
-			case 3: //is local
-				value = Boolean.toString(note.isLocal);
-				break;
-			case 4: // soft lock
-				value = Boolean.toString(note.isSoftLocked);
+			case 4: //is local
+				value = note.isLocal;
 				break;
 			default:
 				value = "illegal column count!";
@@ -166,4 +177,15 @@ public class NotesTableModel extends DefaultTableModel {
 	public boolean isCellEditable(int row, int column) {
 		return false;
 	}
+
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		
+		if (columnIndex == 0) {
+			return Icon.class;
+		}
+		return Object.class;
+	}
+	
+	
 }
