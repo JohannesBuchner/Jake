@@ -573,7 +573,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
     @Override
-    public boolean isLocalNote(NoteObject note) {
+    public boolean isLocalNote(NoteObject note, Project project) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -878,4 +878,22 @@ public class SpringCoreAccessImpl implements ICoreAccess {
     private List<ProjectChanged> projectChanged;
 
     private List<ErrorCallback> errorCallback;
+
+	@Override
+	public String getLockingMessage(JakeObject jakeObject, Project project) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isSoftLocked(JakeObject jakeObject, Project project) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeSoftLock(JakeObject jakeObject, Project project) {
+		// TODO Auto-generated method stub
+		
+	}
 }

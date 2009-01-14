@@ -515,7 +515,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public boolean isLocalNote(NoteObject note) {
+	public boolean isLocalNote(NoteObject note, Project project) {
 		return new Random().nextBoolean();
 	}
 	
@@ -757,5 +757,24 @@ public class CoreAccessMock implements ICoreAccess {
 		 throws NotLoggedInException, InvalidCredentialsException,
 		 ProtocolNotSupportedException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
+	}
+
+
+	@Override
+	public String getLockingMessage(JakeObject jakeObject, Project project) {
+		return "All your base are belong to Chuck Norris.";
+	}
+
+
+	@Override
+	public boolean isSoftLocked(JakeObject jakeObject, Project project) {
+		return new Random().nextBoolean();
+
+	}
+
+
+	@Override
+	public void removeSoftLock(JakeObject jakeObject, Project project) {
+		// TODO Auto-generated method stub
 	}
 }

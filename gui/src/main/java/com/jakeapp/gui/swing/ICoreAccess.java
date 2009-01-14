@@ -522,9 +522,10 @@ public interface ICoreAccess {
 	 * Determine if a note is only local or if it is a shared note.
 	 *
 	 * @param note the note in question
+	 * @param project the <code>Project</code> the given note is associated with.
 	 * @return <code>true</code> iff this note is a local note.
 	 */
-	public boolean isLocalNote(NoteObject note);
+	public boolean isLocalNote(NoteObject note, Project project);
 	
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.
@@ -538,7 +539,33 @@ public interface ICoreAccess {
 	 * @param project the project the note is associated with
 	 */
 	public void newNote(NoteObject note, Project project);
-
+	
+	/******************* Soft Lock ***************************/
+	
+	/**
+	 * Determine if the given jakeObject is soft locked.
+	 * @param jakeObject the jakeObject in question.
+	 * @param project the <code>Project</code> the jakeObject is associated with.
+	 * @return <code>true</code> iff the given <code>JakeObject</code> is soft locked.
+	 */
+	public boolean isSoftLocked(JakeObject jakeObject, Project project);
+	
+	/**
+	 * Get the locking message of a soft locked <code>JakeObject</code>
+	 * @param jakeObject the JakeObject in question
+	 * @param project the <code>Project</code> the jakeObject is associated with.
+	 * @return the locking message of the given <code>JakeObject</code>. The method may return <code>
+	 * null</code> iff the given <code>JakeObject</code> is not locked.
+	 */
+	public String getLockingMessage(JakeObject jakeObject, Project project);
+	
+	/**
+	 * Remove the soft lock from a given <code>JakeObject</code>. 
+	 * @param jakeObject the <code>JakeObject</code> that should be unlocked.
+	 * @param project the <code>Project</code> the jakeObject is associated with.
+	 */
+	public void removeSoftLock(JakeObject jakeObject, Project project);
+	
 	/******************* People functions ********************/
 
 	/**
