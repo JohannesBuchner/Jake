@@ -9,6 +9,7 @@ import com.jakeapp.jake.fss.IFSService;
 
 import java.util.List;
 import java.util.Map;
+import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
@@ -100,18 +101,20 @@ public interface IProjectsManagingService {
 
 	/**
 	 * Loads the given project (load database)
-	 * 
-	 * @param project
-	 *            the name of the project to be loaded.
+	 * @param rootPath 
+	 *   The location where the project is. It must be a folder and it must
+	 *   contain a database file describing the Jake-Project. 
+	 * @param name Name of the Project
 	 * @throws IllegalArgumentException
 	 *             if the supplied name is null
 	 * @throws FileNotFoundException
 	 *             if the rootPath of the loaded <code>Project</code> does not
-	 *             exist anymore
-	 * @return the started Project
+	 *             exist anymore or it is not a readable directory or the database-
+	 *             file cannot be opened.
+	 * @return the opened, but not yet started, <code>Project</code>
 	 */
-	public Project openProject(String project) throws IllegalArgumentException,
-			FileNotFoundException;
+	Project openProject(File rootPath, String name)
+	throws IllegalArgumentException, FileNotFoundException;
 
 
 	/**
@@ -244,5 +247,4 @@ public interface IProjectsManagingService {
 	 * @return
 	 */
 	IFSService getFileServices(Project p);
-
 }

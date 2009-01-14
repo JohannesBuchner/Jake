@@ -3,6 +3,7 @@ package com.jakeapp.core.services;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,19 +29,16 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
-
-import javax.management.InvalidApplicationException;
-
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
 
 	private List<Project> projectList = new ArrayList<Project>();
 	
-	private Map<Project,IFSService> fileServices = new HashMap<Project,IFSService>();
+	private Map<Project,IFSService> fileServices;
 
 	private ApplicationContextFactory applicationContextFactory;
 
@@ -49,6 +47,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private InternalFrontendService frontendService;
 
 	public ProjectsManagingServiceImpl() {
+		this.setFileServices(new HashMap<Project,IFSService>());
 	}
 
 	/************** GETTERS & SETTERS *************/
@@ -242,6 +241,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		//Make sure project is stopped
 		if (project.isStarted())
 			this.stopProject(project);
+		project.setOpen(false);
 		
 		//remove project from internal list
 		this.getInternalProjectList().remove(project);
@@ -257,15 +257,56 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public Project openProject(String project) throws IllegalArgumentException,
+	public Project openProject(File rootPath, String name) throws IllegalArgumentException,
 			FileNotFoundException {
+		Project result;
+		
 		//Check preconditions
-		if (project == null) throw new IllegalArgumentException();
+		if (rootPath == null) throw new IllegalArgumentException();
 		
-		// TODO Auto-generated method stub
-		// TODO the interface for this method is very bogus
+		//Check if we can at least read the specified directory
+		if (!rootPath.canRead()) {
+			log.warn("Cannot read project folder: " + rootPath.toString());
+			throw new FileNotFoundException();
+		}
+		//Check if rootpath is indeed a directory
+		if (!rootPath.isDirectory()) {
+			log.warn("Project folder is not a directory: " + rootPath.toString());
+			throw new FileNotFoundException();
+		}
 		
-		return null;
+		//TODO Check if the Project-internal Database can be read (and read it!) 
+		
+		//create Project
+		result = new Project(
+			name,
+			UUID.randomUUID(),
+			null, //msgService
+			rootPath
+		);
+		
+		//add Project to the global database
+		try {
+			this.getProjectDao().create(result);
+		} catch (InvalidProjectException e) {
+			log.error("Opening a project failed: Project was invalid");
+			throw new IllegalArgumentException();
+		}
+		
+		//add the project's file services
+		 try {
+			this.getFileServices().put(result, new FSService());
+		} catch (NoSuchAlgorithmException e) {
+			log.error("Fileservices are not supported.");
+			//TODO rethrow something?
+		}
+		
+		//add project to internal list
+		this.getInternalProjectList().add(result);
+		
+		result.setOpen(true);
+		
+		return result;
 	}
 
 	@Override
