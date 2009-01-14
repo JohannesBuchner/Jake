@@ -128,9 +128,9 @@ public class NotesTableModel extends DefaultTableModel {
         for (NoteObject n : incommingNotes) {
 			//UserId id = this.core.getLastEditor(n, project).getUserId();
 			this.notes.add(new NoteMetaDataWrapper(n,
-					  this.core.getLastEdit(n, project), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
+					  this.core.getLastEdit(n), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
 					  "first + last",
-					  core.isLocalNote(n, project),
+					  core.isLocalNote(n),
 					  core.isSoftLocked(n, project),
 					  core.getLockingMessage(n, project)));
 			// TODO: fix ProjectMember-changes

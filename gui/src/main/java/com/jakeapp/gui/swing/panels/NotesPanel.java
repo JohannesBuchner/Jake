@@ -242,8 +242,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 * Create a new note both in the persistence and in the notes table.
 	 */
 	private void newNote() {
-		this.core.newNote(new NoteObject(new UUID(1, 4), this.getCurrentProject(), "new note"),
-				  this.getCurrentProject());
+		this.core.newNote(new NoteObject(new UUID(1, 4), this.getCurrentProject(), "new note"));
 	}
 
 	/**

@@ -490,7 +490,6 @@ public interface ICoreAccess {
 
 	/******************* Notes functions ********************/
 
-
 	/**
 	 * Returns the list of all notes
 	 *
@@ -504,42 +503,37 @@ public interface ICoreAccess {
 	 * Get the <code>Date</code> of the last edit of the note.
 	 *
 	 * @param note    the note in question
-	 * @param project the project the note is associated with
 	 * @return the date of the last edit
 	 */
-	public Date getLastEdit(NoteObject note, Project project);
+	public Date getLastEdit(NoteObject note);
 
 	/**
 	 * Get the <code>ProjectMemeber<code> who last edited the given note.
 	 *
 	 * @param note    the note in question
-	 * @param project the project the note is associated with
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 */
-	public ProjectMember getLastEditor(NoteObject note, Project project);
+	public ProjectMember getLastEditor(NoteObject note);
 
 	/**
 	 * Determine if a note is only local or if it is a shared note.
 	 *
 	 * @param note the note in question
-	 * @param project the <code>Project</code> the given note is associated with.
 	 * @return <code>true</code> iff this note is a local note.
 	 */
-	public boolean isLocalNote(NoteObject note, Project project);
+	public boolean isLocalNote(NoteObject note);
 	
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.
 	 * @param note the note to be deleted. 
-	 * @param project the project the note is associated with.
 	 */
-	public void deleteNote(NoteObject note, Project project);
+	public void deleteNote(NoteObject note);
 	
 	/**
 	 * Add a new note. 
 	 * @param note the note to be added
-	 * @param project the project the note is associated with
 	 */
-	public void newNote(NoteObject note, Project project);
+	public void newNote(NoteObject note);
 	
 	/******************* Soft Lock ***************************/
 	

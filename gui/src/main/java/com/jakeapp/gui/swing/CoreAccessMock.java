@@ -502,12 +502,12 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public Date getLastEdit(NoteObject note, Project project) {
+	public Date getLastEdit(NoteObject note) {
 		return new Date();
 	}
 
 	@Override
-	public ProjectMember getLastEditor(NoteObject note, Project project) {
+	public ProjectMember getLastEditor(NoteObject note) {
 		// TODO: fix
 		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
 
@@ -515,17 +515,17 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public boolean isLocalNote(NoteObject note, Project project) {
+	public boolean isLocalNote(NoteObject note) {
 		return new Random().nextBoolean();
 	}
 	
 	@Override
-	public void deleteNote(NoteObject note, Project project) {
+	public void deleteNote(NoteObject note) {
 		this.notesList.remove(note);
 	}
 
 	@Override
-	public void newNote(NoteObject note, Project project) {
+	public void newNote(NoteObject note) {
 		this.notesList.add(note);
 	}
 

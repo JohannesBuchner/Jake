@@ -47,7 +47,7 @@ public class DeleteNoteAction extends NoteAction {
 				if (evt.getOption() == 0) {
 					log.info("Deleting Notes...");
 					for (NoteObject note : getSelectedNotes()) {
-						JakeMainApp.getCore().deleteNote(note, getProject());
+						JakeMainApp.getCore().deleteNote(note);
 					}
 				}
 			}

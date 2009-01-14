@@ -557,12 +557,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
     }
 
     @Override
-    public Date getLastEdit(NoteObject note, Project project) {
+    public Date getLastEdit(NoteObject note) {
         return new Date();
     }
 
     @Override
-    public ProjectMember getLastEditor(NoteObject note, Project project) {
+    public ProjectMember getLastEditor(NoteObject note) {
         // TODO: fix
         return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
 
@@ -573,19 +573,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
     @Override
-    public boolean isLocalNote(NoteObject note, Project project) {
+    public boolean isLocalNote(NoteObject note) {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public void deleteNote(NoteObject note, Project project) {
+    public void deleteNote(NoteObject note) {
         // TODO Auto-generated method stub
         log.info("mock delete note: " + note.toString());
     }
 
     @Override
-    public void newNote(NoteObject note, Project project) {
+    public void newNote(NoteObject note) {
         // TODO Auto-generated method stub
     }
 
