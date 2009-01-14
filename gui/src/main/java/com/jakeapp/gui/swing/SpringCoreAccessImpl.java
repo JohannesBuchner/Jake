@@ -579,7 +579,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
     }
 
     @Override
-    public void deleteNote(NoteObject note) {
+    public void deleteNote(NoteObject note, Project project) {
         // TODO Auto-generated method stub
         log.info("mock delete note: " + note.toString());
     }

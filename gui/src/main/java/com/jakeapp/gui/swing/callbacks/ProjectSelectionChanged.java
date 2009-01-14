@@ -11,5 +11,5 @@ import com.jakeapp.core.domain.Project;
  * Time: 11:35:48 AM
  */
 public interface ProjectSelectionChanged {
-    void setProject(Project pr);
+    public void setProject(Project pr);
 }

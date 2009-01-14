@@ -157,7 +157,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 
-	private Project getCurrentProject() {
+	public Project getCurrentProject() {
 		return this.currentProject;
 	}
 

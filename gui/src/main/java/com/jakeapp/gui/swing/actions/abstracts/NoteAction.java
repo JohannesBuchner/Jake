@@ -1,7 +1,9 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 
 import java.util.List;
@@ -14,7 +16,10 @@ import java.util.List;
 public abstract class NoteAction extends ProjectAction
 		  implements NoteSelectionChanged {
 
+	private static final long serialVersionUID = 8541763489137302803L;
+
 	private List<NoteObject> selectedNotes;
+	private Project currentProject;
 
 	/**
 	 * Constructs a new NoteAction that works with the given notesTable.
@@ -38,7 +43,6 @@ public abstract class NoteAction extends ProjectAction
 		// call the update action event
 		updateAction();
 	}
-
 
 	public List<NoteObject> getSelectedNotes() {
 		return this.selectedNotes;

@@ -520,7 +520,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 	
 	@Override
-	public void deleteNote(NoteObject note) {
+	public void deleteNote(NoteObject note, Project project) {
 		this.notesList.remove(note);
 	}
 

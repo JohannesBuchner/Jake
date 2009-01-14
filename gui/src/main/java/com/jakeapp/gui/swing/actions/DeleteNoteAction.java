@@ -31,7 +31,7 @@ public class DeleteNoteAction extends NoteAction {
 		// we rely that notes is never null!
 		for (NoteObject note : getSelectedNotes()) {
 			try {
-				JakeMainApp.getCore().deleteNote(note);
+				JakeMainApp.getCore().deleteNote(note, this.getProject());
 				// TODO: be not that generic on error handling!
 			} catch (Exception e) {
 				log.error(e);

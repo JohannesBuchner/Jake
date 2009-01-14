@@ -37,12 +37,16 @@ public class NotesTableModel extends DefaultTableModel {
 		public Date lastEdit;
 		public String lastEditor;
 		public boolean isLocal;
+		public boolean isSoftLocked;
+		public String lockingMessage;
 
-		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor, boolean isLocal) {
+		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor, boolean isLocal, boolean isSoftLocked, String lockingMessage) {
 			this.note = note;
 			this.lastEdit = lastEdit;
 			this.lastEditor = lastEditor;
 			this.isLocal = isLocal;
+			this.isSoftLocked = isSoftLocked;
+			this.lockingMessage = lockingMessage;
 		}
 	}
 
@@ -56,6 +60,7 @@ public class NotesTableModel extends DefaultTableModel {
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
+		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
 
 	}
 
@@ -118,7 +123,9 @@ public class NotesTableModel extends DefaultTableModel {
 			this.notes.add(new NoteMetaDataWrapper(n,
 					  this.core.getLastEdit(n, project), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
 					  "first + last",
-					  core.isLocalNote(n)));
+					  core.isLocalNote(n, project),
+					  core.isSoftLocked(n, project),
+					  core.getLockingMessage(n, project)));
 			// TODO: fix ProjectMember-changes
 			//id.getFirstName() + id.getSurName()));
 		}
@@ -140,6 +147,9 @@ public class NotesTableModel extends DefaultTableModel {
 				break;
 			case 3: //is local
 				value = Boolean.toString(note.isLocal);
+				break;
+			case 4: // soft lock
+				value = Boolean.toString(note.isSoftLocked);
 				break;
 			default:
 				value = "illegal column count!";

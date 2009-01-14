@@ -530,8 +530,9 @@ public interface ICoreAccess {
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.
 	 * @param note the note to be deleted. 
+	 * @param project the project the note is associated with.
 	 */
-	public void deleteNote(NoteObject note);
+	public void deleteNote(NoteObject note, Project project);
 	
 	/**
 	 * Add a new note. 
