@@ -1,6 +1,7 @@
 package com.jakeapp.jake.ics;
 
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
+import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
@@ -31,10 +32,10 @@ abstract public class ICService {
 	protected IStatusService statusService;
 
 	protected IMsgService msgService;
-	
+
 	protected IUsersService usersService;
 
-	protected IFileTransferService fileTransferService;
+	protected ITransferMethodFactory fileTransferMethodFactory;
 
 	/**
 	 * login, logout, etc.
@@ -66,10 +67,11 @@ abstract public class ICService {
 	/**
 	 * for sending huge files
 	 * 
-	 * @return the service
+	 * @return the factory, or null if this IC doesn't provide one itself (over
+	 *         internal communication lines, reusing the connection)
 	 */
-	public IFileTransferService getFileTransferService() {
-		return this.fileTransferService;
+	public ITransferMethodFactory getTransferMethodFactory() {
+		return this.fileTransferMethodFactory;
 	}
 
 	/**

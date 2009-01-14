@@ -1,7 +1,7 @@
-package com.jakeapp.jake.ics.filetransfer;
+package com.jakeapp.jake.ics.filetransfer.exceptions;
 
 /**
- * Something went wrong with the transfer
+ * Something went wrong during the transfer
  * @author johannes
  */
 @SuppressWarnings("serial")

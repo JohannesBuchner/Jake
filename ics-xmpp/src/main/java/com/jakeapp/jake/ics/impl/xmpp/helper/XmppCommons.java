@@ -38,7 +38,7 @@ public class XmppCommons {
 		
 		if (connection == null) {
 			log.debug("connecting/logging in normally");
-			connection = XmppCommons.login(username, pw, hostname);
+			connection = XmppCommons.login(username, pw, hostname, resource);
 		}
 		return connection;
 	}

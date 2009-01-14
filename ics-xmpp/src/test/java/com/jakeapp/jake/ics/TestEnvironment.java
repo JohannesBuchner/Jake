@@ -23,7 +23,7 @@ public class TestEnvironment implements Checker {
 		String prop = System.getProperty(TESTSERVER_PROPERTY);
 		if (prop == null || prop.isEmpty() || prop.equals("false")) {
 			log.warn("Skipping tests against server. ");
-			log.info("call with -Dcom.jakeapp.jake.ics.impl.xmpp.test.serverHostname="
+			log.info("call with -D" + TESTSERVER_PROPERTY + "="
 					+ "localhost if you want to perform all the tests");
 			host = null;
 		} else {
@@ -109,5 +109,5 @@ public class TestEnvironment implements Checker {
 	public boolean satisfy() {
 		return host != null;
 	}
-	
+
 }

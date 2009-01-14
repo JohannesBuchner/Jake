@@ -1,7 +1,7 @@
 package com.jakeapp.jake.ics.impl.sockets.filetransfer;
 
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -14,11 +14,12 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.filetransfer.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
@@ -87,12 +88,12 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 		private String handlePacket(UserId from_userid, String[] fields) {
 			if (fields.length == 0)
 				return null;
-			if (fields[0].equals(NegotiationState.request)
+			/*if (fields[0].equals(NegotiationState.request)
 					&& fields.length == 3) {
 				String type = fields[1];
 				String filename = fields[2];
 				String response = START + NegotiationState.serverips;
-				for (TcpAddress ip : provideAddresses()) {
+				for (InetSocketAddress ip : provideAddresses()) {
 					response += "|" + ip.toString();
 				}
 				response += END;
@@ -100,7 +101,7 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 			} else if (fields[0].equals(NegotiationState.serverips)
 					&& fields.length > 1) {
 				try {
-					TcpAddress other = new TcpAddress(fields[1]);
+					InetSocketAddress other = new InetSocketAddress(fields[1]);
 					String response = START + NegotiationState.clientips;
 					// TODO: improvable (multiple addresses, STUN, etc)
 					response += END;
@@ -122,7 +123,7 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 				String response = START + NegotiationState.clientdecision;
 				response += END;
 				return response;
-			}
+			}*/
 			return null;
 		}
 
@@ -138,9 +139,9 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 			}
 		}
 
-		public Iterable<TcpAddress> provideAddresses() {
-			List<TcpAddress> adds = new LinkedList<TcpAddress>();
-			adds.add(new TcpAddress(socket.getInetAddress(), socket
+		public Iterable<InetSocketAddress> provideAddresses() {
+			List<InetSocketAddress> adds = new LinkedList<InetSocketAddress>();
+			adds.add(new InetSocketAddress(socket.getInetAddress(), socket
 					.getLocalPort()));
 			return adds;
 		}

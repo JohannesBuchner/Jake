@@ -1,10 +1,10 @@
 package com.jakeapp.jake.ics.filetransfer.methods;
 
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.filetransfer.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
-import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileRequestFileMapper;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 
 /**
  * constructed by the corresponding TransferMethodFactory

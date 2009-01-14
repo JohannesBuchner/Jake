@@ -3,11 +3,17 @@ package com.jakeapp.jake.ics.filetransfer;
 import java.io.File;
 
 /**
- * pop in anything you want here ...
+ * contains additional data the filetransfer or user of the filetransfer might
+ * want to store
+ * 
  * @author johannes
- *
+ * 
  */
-public abstract class AdditionalFileTransferData {
+final public class AdditionalFileTransferData {
+
+	public AdditionalFileTransferData(File f) {
+		setDataFile(f);
+	}
 
 	private File dataFile;
 

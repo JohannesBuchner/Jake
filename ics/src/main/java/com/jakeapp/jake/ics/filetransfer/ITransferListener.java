@@ -8,7 +8,7 @@ public interface ITransferListener {
 	 * An error occured and ended the transfer
 	 * @param error
 	 */
-	public void onFailure(AdditionalFileTransferData transfer, Error error);
+	public void onFailure(AdditionalFileTransferData transfer, String error);
 
 	/**
 	 * Transfer completed

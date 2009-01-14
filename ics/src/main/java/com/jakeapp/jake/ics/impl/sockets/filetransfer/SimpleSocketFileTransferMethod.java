@@ -28,11 +28,12 @@ import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
-import com.jakeapp.jake.ics.filetransfer.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.exceptions.OtherUserDoesntHaveRequestedContentException;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
@@ -263,16 +264,9 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		}
 	}
 
-	private class LocalFile extends AdditionalFileTransferData {
-
-		public LocalFile(File f) {
-			this.setDataFile(f);
-		}
-	}
-
 	private UUID registerTransferKey(File localFile, FileRequest fr) {
 		UUID u = UUID.randomUUID();
-		fr.setData(new LocalFile(localFile));
+		fr.setData(new AdditionalFileTransferData(localFile));
 		this.incomingRequests.put(u, fr);
 		return u;
 	}

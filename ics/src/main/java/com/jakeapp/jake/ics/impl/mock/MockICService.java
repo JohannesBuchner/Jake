@@ -6,7 +6,7 @@ import com.jakeapp.jake.ics.ICService;
 public class MockICService extends ICService {
 
 	public MockICService() {
-		this.fileTransferService = null; // not implemented
+		this.fileTransferMethodFactory = null; // not implemented
 		/*
 		 * This implements both, usually you will want to share common data
 		 * using the constructors
