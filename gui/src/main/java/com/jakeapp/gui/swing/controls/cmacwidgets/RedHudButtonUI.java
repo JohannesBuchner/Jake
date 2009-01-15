@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.helpers;
+package com.jakeapp.gui.swing.controls.cmacwidgets;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -6,24 +6,24 @@ import java.awt.*;
 
 
 // TODO: will be integrated into macwidgets
-public class HudButtonUI extends BasicButtonUI {
+public class RedHudButtonUI extends BasicButtonUI {
 
 	/* Font constants. */
 	public static final float FONT_SIZE = 11.0f;
-	public static final Color FONT_COLOR = Color.WHITE;
+	public static final Color FONT_COLOR = new Color(255, 79, 79);
 
 	/* Color constants. */
 	private static final Color TOP_COLOR = new Color(170, 170, 170, 50);
 	private static final Color BOTTOM_COLOR = new Color(17, 17, 17, 50);
-	private static final Color TOP_SELECTED_COLOR = new Color(200, 200, 200, 153);
-	private static final Color BOTTOM_SELECTED_COLOR = new Color(111, 111, 111, 153);
-	private static final Color TOP_PRESSED_COLOR = new Color(249, 249, 249, 153);
-	private static final Color BOTTOM_PRESSED_COLOR = new Color(176, 176, 176, 153);
-	private static final Color LIGHT_SHADOW_COLOR = new Color(0, 0, 0, 145);
-	private static final Color DARK_SHADOW_COLOR = new Color(0, 0, 0, 50);
+	private static final Color TOP_SELECTED_COLOR = new Color(200, 162, 162, 153);
+	private static final Color BOTTOM_SELECTED_COLOR = new Color(111, 79, 79, 153);
+	private static final Color TOP_PRESSED_COLOR = new Color(255, 217, 217, 153);
+	private static final Color BOTTOM_PRESSED_COLOR = new Color(176, 138, 138, 153);
+	private static final Color LIGHT_SHADOW_COLOR = new Color(102, 0, 0, 145);
+	private static final Color DARK_SHADOW_COLOR = new Color(102, 0, 0, 50);
 
 	/* Border constants. */
-	private static final Color BORDER_COLOR = new Color(0xc5c8cf);
+	private static final Color BORDER_COLOR = new Color(255, 102, 102);
 	private static final int BORDER_WIDTH = 1;
 
 	/* Margin constants. */
@@ -35,7 +35,7 @@ public class HudButtonUI extends BasicButtonUI {
 	/**
 	 * Creates a HUD style {@link javax.swing.plaf.ButtonUI} with full rounded edges.
 	 */
-	public HudButtonUI() {
+	public RedHudButtonUI() {
 		fRoundedness = Roundedness.ROUNDED_BUTTON;
 	}
 
@@ -74,7 +74,7 @@ public class HudButtonUI extends BasicButtonUI {
 	}
 
 	/**
-	 * Paints a HUD style button background onto the given {@link Graphics2D} context.
+	 * Paints a HUD style button background onto the given {@link java.awt.Graphics2D} context.
 	 * The background will be painted from 0,0 to width/height.
 	 *
 	 * @param graphics	 the graphics context to paint onto.

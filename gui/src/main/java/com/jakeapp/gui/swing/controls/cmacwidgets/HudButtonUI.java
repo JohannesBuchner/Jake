@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.helpers;
+package com.jakeapp.gui.swing.controls.cmacwidgets;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -6,24 +6,24 @@ import java.awt.*;
 
 
 // TODO: will be integrated into macwidgets
-public class GreenHudButtonUI extends BasicButtonUI {
+public class HudButtonUI extends BasicButtonUI {
 
 	/* Font constants. */
 	public static final float FONT_SIZE = 11.0f;
-	public static final Color FONT_COLOR = new Color(137, 255, 79);
+	public static final Color FONT_COLOR = Color.WHITE;
 
 	/* Color constants. */
 	private static final Color TOP_COLOR = new Color(170, 170, 170, 50);
 	private static final Color BOTTOM_COLOR = new Color(17, 17, 17, 50);
-	private static final Color TOP_SELECTED_COLOR = new Color(162, 200, 162, 153);
-	private static final Color BOTTOM_SELECTED_COLOR = new Color(79, 111, 79, 153);
-	private static final Color TOP_PRESSED_COLOR = new Color(217, 255, 217, 153);
-	private static final Color BOTTOM_PRESSED_COLOR = new Color(138, 176, 138, 153);
-	private static final Color LIGHT_SHADOW_COLOR = new Color(0, 102, 0, 145);
-	private static final Color DARK_SHADOW_COLOR = new Color(0, 102, 0, 50);
+	private static final Color TOP_SELECTED_COLOR = new Color(200, 200, 200, 153);
+	private static final Color BOTTOM_SELECTED_COLOR = new Color(111, 111, 111, 153);
+	private static final Color TOP_PRESSED_COLOR = new Color(249, 249, 249, 153);
+	private static final Color BOTTOM_PRESSED_COLOR = new Color(176, 176, 176, 153);
+	private static final Color LIGHT_SHADOW_COLOR = new Color(0, 0, 0, 145);
+	private static final Color DARK_SHADOW_COLOR = new Color(0, 0, 0, 50);
 
 	/* Border constants. */
-	private static final Color BORDER_COLOR = new Color(102, 255, 102);
+	private static final Color BORDER_COLOR = new Color(0xc5c8cf);
 	private static final int BORDER_WIDTH = 1;
 
 	/* Margin constants. */
@@ -35,7 +35,7 @@ public class GreenHudButtonUI extends BasicButtonUI {
 	/**
 	 * Creates a HUD style {@link javax.swing.plaf.ButtonUI} with full rounded edges.
 	 */
-	public GreenHudButtonUI() {
+	public HudButtonUI() {
 		fRoundedness = Roundedness.ROUNDED_BUTTON;
 	}
 
@@ -52,7 +52,7 @@ public class GreenHudButtonUI extends BasicButtonUI {
 		// add space for the drop shadow underneath the button.
 		int bottomMargin = TOP_AND_BOTTOM_MARGIN + getHudControlShadowSize();
 		b.setBorder(BorderFactory.createEmptyBorder(TOP_AND_BOTTOM_MARGIN,
-			 LEFT_AND_RIGHT_MARGIN, bottomMargin, LEFT_AND_RIGHT_MARGIN));
+				  LEFT_AND_RIGHT_MARGIN, bottomMargin, LEFT_AND_RIGHT_MARGIN));
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class GreenHudButtonUI extends BasicButtonUI {
 		// that the paint method will also paint the shadow "below" button.
 		int buttonHeight = button.getHeight() - getHudControlShadowSize();
 		paintHudControlBackground(graphics, button, button.getWidth(),
-			 buttonHeight, fRoundedness);
+				  buttonHeight, fRoundedness);
 
 		graphics.dispose();
 
@@ -74,20 +74,20 @@ public class GreenHudButtonUI extends BasicButtonUI {
 	}
 
 	/**
-	 * Paints a HUD style button background onto the given {@link java.awt.Graphics2D} context.
+	 * Paints a HUD style button background onto the given {@link Graphics2D} context.
 	 * The background will be painted from 0,0 to width/height.
 	 *
-	 * @param graphics    the graphics context to paint onto.
-	 * @param button      the button being painted.
-	 * @param width       the width of the area to paint.
-	 * @param height      the height of the area to paint.
+	 * @param graphics	 the graphics context to paint onto.
+	 * @param button		the button being painted.
+	 * @param width		 the width of the area to paint.
+	 * @param height		the height of the area to paint.
 	 * @param roundedness the roundedness to use when painting the background.
 	 */
 	public static void paintHudControlBackground(
-		 Graphics2D graphics, AbstractButton button, int width, int height,
-		 Roundedness roundedness) {
+			  Graphics2D graphics, AbstractButton button, int width, int height,
+			  Roundedness roundedness) {
 		graphics.setRenderingHint(
-			 RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				  RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// TODO replace with real drop shadow painting. see Romain Guy's article for
 		// TODO more info on real drop shadows:
@@ -102,7 +102,7 @@ public class GreenHudButtonUI extends BasicButtonUI {
 		graphics.setColor(DARK_SHADOW_COLOR);
 		int smallerShadowArcDiameter = height - 1;
 		graphics.drawRoundRect(0, 0, width - 1, height + 1, smallerShadowArcDiameter,
-			 smallerShadowArcDiameter);
+				  smallerShadowArcDiameter);
 
 		// fill the button with the gradient paint.
 		graphics.setPaint(createButtonPaint(button, BORDER_WIDTH));
@@ -118,7 +118,7 @@ public class GreenHudButtonUI extends BasicButtonUI {
 	 * and bottom of the button by the given line border size.
 	 */
 	private static Paint createButtonPaint(AbstractButton button,
-	                                       int lineBorderWidth) {
+														int lineBorderWidth) {
 		boolean isPressed = button.getModel().isPressed();
 		boolean isSelected = button.getModel().isSelected();
 		Color topColor = isPressed ? TOP_PRESSED_COLOR : (isSelected ? TOP_SELECTED_COLOR : TOP_COLOR);

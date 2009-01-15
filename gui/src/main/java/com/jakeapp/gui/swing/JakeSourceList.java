@@ -123,6 +123,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		};
 
 		SourceList sourceList = new SourceList(projectSourceListModel);
+
 		sourceList.addSourceListClickListener(projectClickListener);
 		sourceList.addSourceListSelectionListener(projectSelectionListener);
 

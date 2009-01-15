@@ -21,7 +21,6 @@ import java.rmi.NoSuchObjectException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 
 public interface ICoreAccess {
@@ -80,7 +79,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-		 throws InvalidCredentialsException;
+			  throws InvalidCredentialsException;
 
 
 	/**
@@ -165,8 +164,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public boolean createAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, Exception;
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -182,8 +181,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, Exception;
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -366,7 +365,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-		 throws ProjectFolderMissingException;
+			  throws ProjectFolderMissingException;
 
 	/**
 	 * Retrieves all files within a project
@@ -376,7 +375,7 @@ public interface ICoreAccess {
 	 * @throws ProjectFolderMissingException if the project folder doesn't exist
 	 */
 	public List<FileObject> getAllProjectFiles(Project project)
-		 throws ProjectFolderMissingException;
+			  throws ProjectFolderMissingException;
 
 	/**
 	 * Gets the sync status of a file
@@ -420,14 +419,14 @@ public interface ICoreAccess {
 
 
 	/**
-	 * Imports a file which is not currently in the project folder by
+	 * Imports a file OR folder which is not currently in the project folder by
 	 * copying it into a folder inside the projects root folder.
 	 *
 	 * @param absPath
 	 * @param destFolderRelPath
 	 * @return true on success, false on error
 	 */
-	public boolean importExternalFileIntoProject(String absPath, String destFolderRelPath);
+	public boolean importExternalFileFolderIntoProject(String absPath, String destFolderRelPath);
 
 
 	/**
@@ -456,7 +455,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file    The file to rename
+	 * @param file	 The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -497,12 +496,12 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-		 ProjectNotLoadedException;
+			  ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
 	 *
-	 * @param note    the note in question
+	 * @param note the note in question
 	 * @return the date of the last edit
 	 */
 	public Date getLastEdit(NoteObject note);
@@ -510,7 +509,7 @@ public interface ICoreAccess {
 	/**
 	 * Get the <code>ProjectMemeber<code> who last edited the given note.
 	 *
-	 * @param note    the note in question
+	 * @param note the note in question
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 */
 	public ProjectMember getLastEditor(NoteObject note);
@@ -522,45 +521,50 @@ public interface ICoreAccess {
 	 * @return <code>true</code> iff this note is a local note.
 	 */
 	public boolean isLocalNote(NoteObject note);
-	
+
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.
-	 * @param note the note to be deleted. 
+	 *
+	 * @param note the note to be deleted.
 	 */
 	public void deleteNote(NoteObject note);
-	
+
 	/**
-	 * Add a new note. 
+	 * Add a new note.
+	 *
 	 * @param note the note to be added
 	 */
 	public void newNote(NoteObject note);
-	
+
 	/******************* Soft Lock ***************************/
-	
+
 	/**
 	 * Determine if the given jakeObject is soft locked.
+	 *
 	 * @param jakeObject the jakeObject in question.
-	 * @param project the <code>Project</code> the jakeObject is associated with.
+	 * @param project	 the <code>Project</code> the jakeObject is associated with.
 	 * @return <code>true</code> iff the given <code>JakeObject</code> is soft locked.
 	 */
 	public boolean isSoftLocked(JakeObject jakeObject, Project project);
-	
+
 	/**
 	 * Get the locking message of a soft locked <code>JakeObject</code>
+	 *
 	 * @param jakeObject the JakeObject in question
-	 * @param project the <code>Project</code> the jakeObject is associated with.
+	 * @param project	 the <code>Project</code> the jakeObject is associated with.
 	 * @return the locking message of the given <code>JakeObject</code>. The method may return <code>
-	 * null</code> iff the given <code>JakeObject</code> is not locked.
+	 *         null</code> iff the given <code>JakeObject</code> is not locked.
 	 */
 	public String getLockingMessage(JakeObject jakeObject, Project project);
-	
+
 	/**
-	 * Remove the soft lock from a given <code>JakeObject</code>. 
+	 * Remove the soft lock from a given <code>JakeObject</code>.
+	 *
 	 * @param jakeObject the <code>JakeObject</code> that should be unlocked.
-	 * @param project the <code>Project</code> the jakeObject is associated with.
+	 * @param project	 the <code>Project</code> the jakeObject is associated with.
 	 */
 	public void removeSoftLock(JakeObject jakeObject, Project project);
-	
+
 	/******************* People functions ********************/
 
 	/**
@@ -589,7 +593,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-	                                TrustState trust);
+											  TrustState trust);
 
 
 	/**
@@ -615,9 +619,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project     : the project to query. can be null.
+	 * @param project	  : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries     : amount of entries. -1 for everything.
+	 * @param entries	  : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);

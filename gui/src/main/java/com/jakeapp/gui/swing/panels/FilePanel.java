@@ -17,19 +17,20 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.ETreeTable;
-import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
-import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
-import com.jakeapp.gui.swing.controls.ETable;
+import com.jakeapp.gui.swing.controls.cmacwidgets.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.helpers.*;
-import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
+import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
+import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
+import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
@@ -108,7 +109,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	}
 
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
-		log.debug("notify selection listeners: " + objs.toArray());
+		log.debug("notify selection listeners");
 		for (FileSelectionChanged c : fileSelectionListeners) {
 			c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
 		}
@@ -124,7 +125,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -202,6 +203,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		@Override
 		public void mouseClicked(MouseEvent me) {
+			log.info("mouseClicked: " + me);
 			if (SwingUtilities.isRightMouseButton(me)) {
 				// get the coordinates of the mouse click
 				Point p = me.getPoint();
@@ -219,7 +221,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				if (container.getSelectedRowCount() <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
 					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(rowNumber, 0);
-					if (node.isFile()) {
+					if (node != null && node.isFile()) {
 						java.util.List<FileObject> list = new ArrayList<FileObject>();
 						list.add(node.getFileObject());
 						panel.notifyFileSelectionListeners(list);
@@ -241,6 +243,12 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			}
 		}
 
+		/**
+		 * Global Menu for FilesPanel.
+		 * Should show anywhere on right click, supporting multiselect
+		 *
+		 * @param me
+		 */
 		private void showMenu(MouseEvent me) {
 			JPopupMenu pm = new JakePopupMenu();
 
@@ -264,7 +272,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-				 .getY());
+					  .getY());
 		}
 	}
 
@@ -344,10 +352,10 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// add file treetable
 		fileTreeTableScrollPane = new javax.swing.JScrollPane();
-		fileTreeTable = new ETreeTable();
+		fileTreeTable = new ITunesTreeTable();
 
 		// add file table
-		fileTable = new ETable();
+		fileTable = new ITunesTable();
 
 		// Default display (first): TreeTable
 		fileTreeTableScrollPane.setViewportView(fileTreeTable);
