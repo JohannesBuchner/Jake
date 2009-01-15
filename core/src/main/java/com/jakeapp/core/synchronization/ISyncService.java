@@ -1,7 +1,9 @@
 package com.jakeapp.core.synchronization;
 
-import java.util.Collection;
+import java.io.File;
+import java.io.IOException;
 
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
@@ -157,7 +159,10 @@ public interface ISyncService {
 	 * gets the files and their information
 	 * 
 	 * @return
+	 * @throws IOException 
 	 */
-	public Iterable<FileStatus> getFiles(Project p);
+	public Iterable<FileStatus> getFiles(Project p) throws IOException;
+
+	public boolean isObjectInConflict(JakeObject jo);
 
 }

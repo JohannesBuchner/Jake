@@ -76,6 +76,8 @@ public class FileObject extends JakeObject {
     }
 
     // TODO: are there any constraints on the path, like forward- or backslash?
+    // Yes there are and you shouldn't provide getAbsolutePath. That always has to flow
+    // over the fss. 
     private void setRelPath(String relPath) {
         this.relPath = relPath;
         if(this.getProject() != null)

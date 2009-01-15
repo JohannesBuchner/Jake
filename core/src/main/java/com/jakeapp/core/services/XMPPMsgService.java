@@ -24,32 +24,30 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 	private String host;
 
-	private long port;
-
 	@Override
 	protected boolean doCredentialsCheck() {
 		ServiceCredentials cred = this.getServiceCredentials();
-		user = new XmppUserId(cred.getUserId());
-		if (!user.isOfCorrectUseridFormat()) {
-			user = null;
+		this.user = new XmppUserId(cred.getUserId());
+		if (!this.user.isOfCorrectUseridFormat()) {
+			this.user = null;
 			return false;
 		}
-		host = cred.getServerAddressString();
-		if (host == "" || host == null) {
-			host = user.getHost();
+		this.host = cred.getServerAddressString();
+		if (this.host == "" || this.host == null) {
+			this.host = this.user.getHost();
 		}
 		return true;
 	}
 
 	@Override
 	protected boolean doLogin() throws Exception {
-		return ics.getStatusService().login(user,
+		return this.ics.getStatusService().login(this.user,
 				this.getServiceCredentials().getPlainTextPassword());
 	}
 
 	@Override
 	protected void doLogout() throws Exception {
-		ics.getStatusService().logout();
+		this.ics.getStatusService().logout();
 	}
 
 	@Override
