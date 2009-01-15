@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,16 +112,25 @@ public class FSService implements IFSService, IModificationListener {
 		return list;
 	}
 
-	public List<String> recursiveListFiles() throws InvalidFilenameException,
+	public List<String> recursiveListFiles() throws 
 			IOException {
 		List<String> list = new ArrayList<String>();
-		List<String> dirlist = listFolder("");
+		List<String> dirlist;
+		try {
+			dirlist = listFolder("");
+		} catch (InvalidFilenameException e) {
+			throw new IOException(e);
+		}
 		for (int i = 0; i < dirlist.size(); i++) {
 			String f = dirlist.get(i);
-			if (folderExists(f)) {
-				dirlist.addAll(listFolder(f));
-			} else if (fileExists(f)) {
-				list.add(f);
+			try {
+				if (folderExists(f)) {
+					dirlist.addAll(listFolder(f));
+				} else if (fileExists(f)) {
+					list.add(f);
+				}
+			} catch (InvalidFilenameException e) {
+				// won't happen
 			}
 		}
 		return list;
