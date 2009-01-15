@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.FileObject;
@@ -145,6 +147,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throw new FileNotFoundException();
 		}
 		
+		//TODO create a new Project-local database
+		
 		try {
 			log.debug("initializing project folder");
             this.initializeProjectFolder();
@@ -153,34 +157,16 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throw new FileNotFoundException();
 		}
 		
-		//create the new Project in the global database
-		try {
-			log.debug("persisting project in DB");
-            project = this.getProjectDao().create(project);
-		    log.debug("got the following project back " + project);
-        } catch (InvalidProjectException e) {
-			// TODO WTF? das sollte doch wenn dann geworfen werden!
-
-            log.debug("Creating a project failed.",e);
-			project = null;
-		}
-
-
-		if (project!=null) {
-			log.debug("Project is not null, adding it to internal project list");
-            //add the project to the service's internal project list
-			this.getInternalProjectList().add(project);
-		}
-        else
-        {
-            log.warn("PROJECT IS NULL!");
-        }
+		//Open the project
+		this.openProject(projectRoot, name);
+		
 		
 		//create an applicationContext for the Project
-		this.applicationContextFactory.getApplicationContext(project);
+		//this.applicationContextFactory.getApplicationContext(project);
 
-
-		//TODO create a new Project-local database
+		
+		project.setMessageService(msgService);
+		
 		
 		return project; 
 	}
@@ -341,26 +327,74 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public Map<Project, List<LogEntry<? extends ILogable>>> getLog() {
-		return null; // TODO
-	}
-
-	@Override
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			throws IllegalArgumentException {
-		return null; // TODO
+		ApplicationContext context;
+		ILogEntryDao dao;
+		List<LogEntry<? extends ILogable>> result = null;
+		
+		if (project==null) throw new IllegalArgumentException();
+		
+		context = this.getApplicationContextFactory().getApplicationContext(project);
+		
+		//TODO retrieve Logentrydao out of context
+		dao = null;
+		
+		//get Log via LogentryDao
+		try {
+			result = dao.getAll(project);
+		} catch (NoSuchProjectException e) {
+			throw new IllegalArgumentException(e);
+		}
+		
+		return result;
 	}
 
 	@Override
 	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
 			throws IllegalArgumentException {
-		return null; // TODO
+		ApplicationContext context;
+		Project project;
+		ILogEntryDao dao;
+		List<LogEntry<JakeObject>> entries = null;
+		List<LogEntry<? extends ILogable>> result = null;
+		
+		if (jakeObject==null) throw new IllegalArgumentException();
+		project = jakeObject.getProject();
+		if (project==null) throw new IllegalArgumentException();
+		
+		context = this.getApplicationContextFactory().getApplicationContext(project);
+		
+		//TODO retrieve Logentrydao out of context
+		dao = null;	
+		
+		entries = dao.getAllOfJakeObject(jakeObject);
+		
+		//transform dao-result to resulttype
+		result = new ArrayList<LogEntry<? extends ILogable>>();
+		result.addAll(entries);
+		
+		return result;
 	}
 
 	@Override
 	public void assignUserToProject(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalAccessException {
-		// TODO
+	
+		//Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		if (userId == null) throw new IllegalArgumentException();
+		if (project.getUserId() != null) throw new IllegalStateException();
+		
+		//connect userId and project
+		project.setUserId(userId);
+		
+		//persist Project-changes
+		try {
+			this.getProjectDao().update(project);
+		} catch (NoSuchProjectException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	@Override

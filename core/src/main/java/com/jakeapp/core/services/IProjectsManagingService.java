@@ -150,15 +150,6 @@ public interface IProjectsManagingService {
 	public boolean deleteProject(Project project) throws IllegalArgumentException,
 			SecurityException, FileNotFoundException;
 
-
-	/**
-	 * get all log entries from all projects, grouped by Project
-	 * 
-	 * @return a Map with the Project as key and a List of <code>LogEntry</code>
-	 *         s.
-	 */
-	public Map<Project, List<LogEntry<? extends ILogable>>> getLog();
-
 	/**
 	 * Get all LogEntrys from the supplied project
 	 * 
@@ -167,7 +158,7 @@ public interface IProjectsManagingService {
 	 * @return a List of <code>LogEntry</code>s corresponding to this
 	 *         <code>Project</code>
 	 * @throws IllegalArgumentException
-	 *             if the supplied <code>Project</code> is null
+	 *             if the supplied <code>Project</code> is null or does not exist.
 	 */
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			throws IllegalArgumentException;
