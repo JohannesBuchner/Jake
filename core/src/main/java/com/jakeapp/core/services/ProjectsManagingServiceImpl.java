@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.IProjectMemberDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
@@ -24,6 +25,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
@@ -86,6 +88,22 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private List<Project> getInternalProjectList() {
 		return this.projectList;
+	}
+	
+	private ApplicationContext getContext(Project p) {
+		return this.getApplicationContextFactory().getApplicationContext(p);
+	}
+	
+	private ILogEntryDao getLogEntryDao(Project p) {
+		ApplicationContext context = this.getContext(p);
+		//TODO retrieve Logentrydao out of context
+		return null;
+	}
+	
+	private IProjectMemberDao getProjectMemberDao(Project p) {
+		ApplicationContext context = this.getContext(p);
+		//TODO retrieve ProjectMemberDao out of context
+		return null;
 	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
@@ -329,16 +347,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			throws IllegalArgumentException {
-		ApplicationContext context;
 		ILogEntryDao dao;
 		List<LogEntry<? extends ILogable>> result = null;
 		
 		if (project==null) throw new IllegalArgumentException();
 		
-		context = this.getApplicationContextFactory().getApplicationContext(project);
-		
-		//TODO retrieve Logentrydao out of context
-		dao = null;
+		dao = this.getLogEntryDao(project);
 		
 		//get Log via LogentryDao
 		try {
@@ -353,7 +367,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
 			throws IllegalArgumentException {
-		ApplicationContext context;
 		Project project;
 		ILogEntryDao dao;
 		List<LogEntry<JakeObject>> entries = null;
@@ -363,10 +376,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		project = jakeObject.getProject();
 		if (project==null) throw new IllegalArgumentException();
 		
-		context = this.getApplicationContextFactory().getApplicationContext(project);
-		
-		//TODO retrieve Logentrydao out of context
-		dao = null;	
+		//retrieve Logentrydao out of context
+		dao = this.getLogEntryDao(project);	
 		
 		entries = dao.getAllOfJakeObject(jakeObject);
 		
@@ -377,10 +388,11 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		return result;
 	}
 
+	@Transactional
 	@Override
 	public void assignUserToProject(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalAccessException {
-	
+		
 		//Check preconditions
 		if (project == null) throw new IllegalArgumentException();
 		if (userId == null) throw new IllegalArgumentException();
@@ -395,12 +407,80 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		} catch (NoSuchProjectException e) {
 			throw new IllegalArgumentException(e);
 		}
+		
+		//set UserId as ProjectMember
+		this.addProjectMember(project, userId);
+		this.setTrust(project, userId, TrustState.AUTO_ADD_REMOVE);
+	}
+	
+	/**
+	 * Adds a new Projectmember to a Project. It may not exist in the Project yet.
+	 * @param project Project to add a member to. May not be null.
+	 * @param userId Member to add. May not be null.
+	 */
+	private ProjectMember addProjectMember(Project project, UserId userId) {
+		IProjectMemberDao dao;
+		ProjectMember member;
+	
+		//retrieve ProjectMemberDao out of context
+		dao = this.getProjectMemberDao(project);	
+		
+		//create ProjectMember and add it to Project
+		member = new ProjectMember(
+			userId.getUuid(), userId.getNickname(), this.getDefaultTrustState()
+		);
+		member = dao.persist(project, member);
+		
+		return member;
+	}
+
+	private TrustState getDefaultTrustState() {
+		return TrustState.NO_TRUST;
+	}
+	
+	/**
+	 * @param project may not be null
+	 * @param userId may not be null
+	 * @return null if the User with the ID userId is not found in the Project. The
+	 * 	corresponding ProjectMember if it exisits.
+	 */
+	private ProjectMember getProjectMember(Project project, UserId userId,IProjectMemberDao dao) {
+		//TODO
+		
+		return null;
 	}
 
 	@Override
-	public void setTrust(Project project, UserId userid, TrustState trust) {
-		// TODO Auto-generated method stub
+	public void setTrust(Project project, UserId userId, TrustState trust)
+		throws IllegalArgumentException, IllegalAccessException {
+		IProjectMemberDao dao;
+		ProjectMember member;
+		
+		///Check preconditions
+		if (project == null) throw new IllegalArgumentException();
+		if (userId == null) throw new IllegalArgumentException();
+		if (project.getUserId() != null) throw new IllegalAccessException();
 
+		dao = this.getProjectMemberDao(project);
+		
+		//get (or add) the Project member belonging to userId
+		member = this.getProjectMember(project, userId, dao);
+		if (member == null) {
+			this.addProjectMember(project, userId);
+			//invite ProjectMember to Project
+			this.inviteMember(member);
+		}
+		
+		//set the new trustlevel
+		member.setTrustState(trust);
+		
+		//persist changes to member
+		dao.persist(project, member);
+	}
+
+	private void inviteMember(ProjectMember member) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

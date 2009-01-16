@@ -197,7 +197,7 @@ public interface IProjectsManagingService {
 	 * 
 	 * @param project
 	 *            The <code>Project</code> to apply the new level of trust to.
-	 * @param userid
+	 * @param userId
 	 *            The user whose trustlevel gets changed.
 	 * @param trust
 	 *            The new level of trust for the specified user.
@@ -206,7 +206,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalAccessException
 	 *             if the project has no userId set yet.
 	 */
-	public void setTrust(Project project, UserId userid, TrustState trust)
+	public void setTrust(Project project, UserId userId, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException;
 
 
