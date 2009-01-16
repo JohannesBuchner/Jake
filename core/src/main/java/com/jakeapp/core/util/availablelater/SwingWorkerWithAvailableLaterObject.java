@@ -7,7 +7,16 @@ import java.util.concurrent.Semaphore;
 
 import javax.swing.SwingWorker;
 
-
+/**
+ * So you wanted to make a SwingWorker, and your inner method gets back a
+ * {@link AvailableLaterObject}. This resolves this double-Thread waiting
+ * problem. You only have to implement {@link #calculateFunction()} (instead of
+ * doInBackground) and {@link #done()} as usual.
+ * 
+ * @author johannes
+ * 
+ * @param <T>
+ */
 public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 		SwingWorker<T, StatusUpdate> implements AvailibilityListener {
 
@@ -19,9 +28,13 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 
 	@Override
 	protected T doInBackground() throws Exception {
-		this.value = calculateFunction();
+		try {
+			this.value = calculateFunction();
+		} catch (Exception e) {
+			this.error = error;
+		}
 		s.acquire();
-		if(error != null)
+		if (error != null)
 			throw error;
 		return this.value.get();
 	}
