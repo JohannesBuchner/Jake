@@ -233,7 +233,7 @@ public interface ICoreAccess {
 
 
 	/**
-	 * Returns an Array of the last isers that signed in.
+	 * Returns an Array of the last users that signed in.
 	 *
 	 * @return
 	 */

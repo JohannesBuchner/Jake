@@ -1,6 +1,6 @@
 package com.jakeapp.core.services;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -50,6 +51,11 @@ public class FrontendServiceImpl implements IFrontendService, InternalFrontendSe
 
 	private IProjectsManagingService getProjectsManagingService() {
 		return projectsManagingService;
+	}
+	
+	private IServiceCredentialsDao getServiceCredentialsDao() {
+		//TODO retrieve the dao
+		return null;
 	}
 
 	private void setProjectsManagingService(
@@ -257,5 +263,9 @@ public class FrontendServiceImpl implements IFrontendService, InternalFrontendSe
 	public IFriendlySyncService getSync() {
 		return this.sync;
 	}
-	
+
+	@Override
+	public Collection<ServiceCredentials> getLastLogins() {
+		return this.getServiceCredentialsDao().getAll();
+	}
 }

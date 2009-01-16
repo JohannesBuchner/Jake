@@ -297,7 +297,21 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public String[] getLastSignInNames() {
-		return new String[]{"pstein", "csutter"};
+		Collection<ServiceCredentials> credentials;
+		String[] result;
+		int i = 0;
+		
+		credentials = this.getFrontendService().getLastLogins();
+		result = new String[credentials.size()];
+		
+		for (ServiceCredentials credential:credentials) {
+			result[i] = credential.getUserId();
+			
+			i++;
+		}
+			
+		return result;
+		//return new String[]{"pstein", "csutter"};
 	}
 
 

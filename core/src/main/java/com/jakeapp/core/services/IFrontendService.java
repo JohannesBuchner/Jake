@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,6 @@ import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.ISyncService;
-import com.jakeapp.jake.ics.ICService;
 
 /**
  * This is the only visible interface to other components accessing the jake
@@ -147,4 +147,9 @@ public interface IFrontendService {
 	public void ping(String sessionId) throws IllegalArgumentException,
 			NotLoggedInException;
 
+	/**
+	 * @return All stored Service-credentials that were 'recently' used.
+	 * 	A definition of recently is pending.
+	 */
+	public Collection<ServiceCredentials> getLastLogins();
 }
