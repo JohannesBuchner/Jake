@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -105,14 +106,18 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		//TODO retrieve ProjectMemberDao out of context
 		return null;
 	}
+	
+	private INoteObjectDao getNoteObjectDao(Project project) {
+		ApplicationContext context = this.getContext(project);
+		//TODO retrieve NoteObjectDao out of context
+		return null;
+	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
 	@Transactional
     @Override
 	public List<Project> getProjectList() {
         log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
-
-
 
         List<Project> results =this.getProjectDao().getAll();
         if(results != null)
@@ -484,15 +489,26 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public List<FileObject> getFiles(Project project, String relPath)
-			throws IllegalArgumentException {
-		return null; // TODO
-	}
-
-	@Override
 	public List<NoteObject> getNotes(Project project) throws IllegalArgumentException,
 			ProjectNotLoadedException {
-
+		List<NoteObject> result;
+		INoteObjectDao dao;
+		
+		//preconditions
+		if (project==null) throw new IllegalArgumentException();
+		if (!this.isProjectLoaded(project)) {
+			throw new ProjectNotLoadedException("Project with uuid "
+						+ project.getUserId() + " is not loaded");
+		}
+				
+		
+		//get Dao
+		dao = this.getNoteObjectDao(project);
+		
+		result = dao.getAll();
+		
+		
+		/*
 		if (false) // TODO check if project is loaded
 			throw new ProjectNotLoadedException("Project with uuid "
 					+ project.getUserId() + " is not loaded");
@@ -534,5 +550,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		list.add(new NoteObject(new UUID(8, 1), project,
 				"Guns don't kill people, Chuck Norris does."));
 		return list;
+		*/
+		
+		return result;
+	}
+
+	private boolean isProjectLoaded(Project project) {
+		return this.getInternalProjectList().contains(project);
 	}
 }

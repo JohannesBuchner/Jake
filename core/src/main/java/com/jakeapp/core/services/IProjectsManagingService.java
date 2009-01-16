@@ -3,12 +3,10 @@ package com.jakeapp.core.services;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.ChangeListener;
-import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.jake.fss.IFSService;
 
 import java.util.List;
-import java.util.Map;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -211,23 +209,28 @@ public interface IProjectsManagingService {
 
 
 	/**
-	 * // TODO
+	 * Retrieves all Files of a Project that are immediate
+	 * children of the specified relPath. If the relpath is
+	 * empty all files in the Project's root folder are returned.
 	 * 
 	 * @param project
 	 * @param relPath
-	 * @return
-	 * @throws IllegalArgumentException
+	 * @return The fileObjects that belong are found
+	 * 	in the specified folder.
+	 * @throws IllegalArgumentException if project or relpath are null
+	 * @throws FileNotFoundException if relPath does not point to a directory
 	 */
-	public List<FileObject> getFiles(Project project, String relPath)
-			throws IllegalArgumentException;
+	//FIXME is never called - do we need this??
+	//public List<FileObject> getFiles(Project project, String relPath)
+	//		throws IllegalArgumentException, FileNotFoundException;
 
 
 	/**
-	 * // TODO
-	 * 
-	 * @param project
-	 * @return
-	 * @throws IllegalArgumentException
+	 * Retrieves all Notes for a Project
+	 * @param project The Project to retrieve all notes for
+	 * @return all Notes
+	 * @throws IllegalArgumentException if <code>project</code> is null.
+	 * @throws ProjectNotLoadedException if the project is not open.
 	 */
 	public List<NoteObject> getNotes(Project project) throws IllegalArgumentException,
 			ProjectNotLoadedException;
