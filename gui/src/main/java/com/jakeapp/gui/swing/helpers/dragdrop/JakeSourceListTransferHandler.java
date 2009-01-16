@@ -103,6 +103,8 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 	}
 
 	public boolean importData(TransferHandler.TransferSupport support) {
+		log.info("Import Data.");
+
 		if (!canImport(support)) {
 			return false;
 		}
@@ -123,11 +125,13 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			List<File> files = (List<File>) data;
 
 			if (isNewProject(dl, files)) {
+				log.info("generate new project!");
 				File newProjectFile = files.get(0);
 				JakeMainApp.getCore().createProject(
 						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath());
 			} else if (isAddToProject(dl, files)) {
-
+				log.info("add to project!");
+				JakeMainApp.getCore().importExternalFileFolderIntoProject(files, null);
 			}
 
 			/* loop through the files in the file list (debug) */
@@ -153,7 +157,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 	 */
 	private boolean isNewProject(JTree.DropLocation dl, List<File> files) {
 		// add as new project
-		if (dl.getChildIndex() == -1) {
+		if (dl.getChildIndex() >= 0) {
 
 			// just say ok if there is no file list
 			if (files == null) {
@@ -174,7 +178,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 	 */
 	private boolean isAddToProject(JTree.DropLocation dl, List<File> files) {
 		// add as new project
-		if (dl.getChildIndex() >= 0) {
+		if (dl.getChildIndex() == -1) {
 
 			// just say ok if there is no file list
 			if (files == null) {
