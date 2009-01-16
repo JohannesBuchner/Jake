@@ -29,7 +29,7 @@ public class JakeMainHelper {
 	 */
 	public static void showMsg(String msgCode, int msgType) {
 		JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(),
-				  JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
+			 JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
 	}
 
 
@@ -58,7 +58,6 @@ public class JakeMainHelper {
 
 		return startStopString;
 	}
-
 
 	public static void showJakeWebsite() {
 		try {

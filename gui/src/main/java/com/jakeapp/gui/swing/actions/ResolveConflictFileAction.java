@@ -23,7 +23,6 @@ public class ResolveConflictFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		ResolveConflictDialog.showDialog(getProject(), getSelectedFile());
 	}
 }
