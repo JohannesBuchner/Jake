@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -17,6 +18,7 @@ import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.helpers.TagHelper;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import org.apache.log4j.Logger;
 
@@ -284,7 +286,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 	public void startProject(Project project) {
@@ -292,7 +294,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 
@@ -331,7 +333,7 @@ public class CoreAccessMock implements ICoreAccess {
 					}
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -367,7 +369,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -397,7 +399,7 @@ public class CoreAccessMock implements ICoreAccess {
 					invitedProjects.remove(project);
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -413,7 +415,7 @@ public class CoreAccessMock implements ICoreAccess {
 		project.setName(prName);
 
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
 	}
 
 	@Override
@@ -485,7 +487,7 @@ public class CoreAccessMock implements ICoreAccess {
 			if (f.isDirectory()) {
 				log.debug("File mocking: Recursing into subdirectory " + relPath + f.getName() + System.getProperty("file.separator"));
 				FolderObject subfolder = recursiveFolderObjectHelper(prj, f, relPath + f.getName() + System.getProperty("file.separator"),
-						  f.getName());
+					 f.getName());
 				fo.addFolder(subfolder);
 			} else {
 				log.debug("File mocking: Adding file " + relPath + f.getName());
@@ -575,7 +577,7 @@ public class CoreAccessMock implements ICoreAccess {
 			pm.setNickname(nick);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+				 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 
 			return true;
 		}
@@ -586,7 +588,7 @@ public class CoreAccessMock implements ICoreAccess {
 		member.setTrustState(trust);
 
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 	}
 
 
@@ -614,12 +616,12 @@ public class CoreAccessMock implements ICoreAccess {
 		if (project != null) {
 			// yeah... what a beautiful interface ;o)
 			log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
-					  project, null, getPeople(project).get(0),
-					  "comment 1", "checksum???", true));
+				 project, null, getPeople(project).get(0),
+				 "comment 1", "checksum???", true));
 
 			log.add(new LogEntry(new UUID(1, 2), LogAction.FILE_ADD, new Date(),
-					  project, null, getPeople(project).get(0),
-					  "comment 1", "checksum???", true));
+				 project, null, getPeople(project).get(0),
+				 "comment 1", "checksum???", true));
 		}
 
 		return log;
@@ -647,7 +649,7 @@ public class CoreAccessMock implements ICoreAccess {
 					projects.add(pr1);
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(pr1,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -706,6 +708,26 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
+	public Set<Tag> getTagsForFileObject(FileObject fo) {
+		Set<Tag> tags = new HashSet<Tag>();
+
+		try {
+			tags.add(new Tag("blubb"));
+			tags.add(new Tag("bar"));
+			tags.add(new Tag("foo"));
+		} catch (InvalidTagNameException e) {
+			// This won't happen.
+		}
+
+		return tags;
+	}
+
+	@Override
+	public void setTagsForFileObject(FileObject fo, Set<Tag> tags) {
+		log.info("Mock: setTagsForFileObject " + fo.getRelPath() + " (" + TagHelper.tagsToString(tags) + ")");
+	}
+
+	@Override
 	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
 		log.info("Mock: pushJakeObject: " + jo + " with msg: " + commitmsg);
 	}
@@ -747,15 +769,15 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public boolean createAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception {
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception {
 		return this.frontendService.createAccount(this.sessionId, credentials);
 	}
 
 	@Override
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException {
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 

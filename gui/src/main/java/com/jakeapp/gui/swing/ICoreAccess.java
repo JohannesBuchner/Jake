@@ -21,6 +21,7 @@ import java.rmi.NoSuchObjectException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public interface ICoreAccess {
@@ -79,7 +80,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-			  throws InvalidCredentialsException;
+		 throws InvalidCredentialsException;
 
 
 	/**
@@ -164,8 +165,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public boolean createAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -181,8 +182,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -365,7 +366,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-			  throws ProjectFolderMissingException;
+		 throws ProjectFolderMissingException;
 
 	/**
 	 * Retrieves all files within a project
@@ -375,7 +376,7 @@ public interface ICoreAccess {
 	 * @throws ProjectFolderMissingException if the project folder doesn't exist
 	 */
 	public List<FileObject> getAllProjectFiles(Project project)
-			  throws ProjectFolderMissingException;
+		 throws ProjectFolderMissingException;
 
 	/**
 	 * Gets the sync status of a file
@@ -455,7 +456,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file	 The file to rename
+	 * @param file    The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -468,6 +469,21 @@ public interface ICoreAccess {
 	 */
 	public void rename(FolderObject folder, String newName);
 
+	/**
+	 * Gets the tags for a given FileObject
+	 *
+	 * @param fo
+	 * @return
+	 */
+	public Set<Tag> getTagsForFileObject(FileObject fo);
+
+	/**
+	 * Sets the tags for a FileObject.
+	 *
+	 * @param fo
+	 * @param tags
+	 */
+	public void setTagsForFileObject(FileObject fo, Set<Tag> tags);
 
 	/**
 	 * @param jo
@@ -496,7 +512,7 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-			  ProjectNotLoadedException;
+		 ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
@@ -542,7 +558,7 @@ public interface ICoreAccess {
 	 * Determine if the given jakeObject is soft locked.
 	 *
 	 * @param jakeObject the jakeObject in question.
-	 * @param project	 the <code>Project</code> the jakeObject is associated with.
+	 * @param project    the <code>Project</code> the jakeObject is associated with.
 	 * @return <code>true</code> iff the given <code>JakeObject</code> is soft locked.
 	 */
 	public boolean isSoftLocked(JakeObject jakeObject, Project project);
@@ -551,7 +567,7 @@ public interface ICoreAccess {
 	 * Get the locking message of a soft locked <code>JakeObject</code>
 	 *
 	 * @param jakeObject the JakeObject in question
-	 * @param project	 the <code>Project</code> the jakeObject is associated with.
+	 * @param project    the <code>Project</code> the jakeObject is associated with.
 	 * @return the locking message of the given <code>JakeObject</code>. The method may return <code>
 	 *         null</code> iff the given <code>JakeObject</code> is not locked.
 	 */
@@ -561,7 +577,7 @@ public interface ICoreAccess {
 	 * Remove the soft lock from a given <code>JakeObject</code>.
 	 *
 	 * @param jakeObject the <code>JakeObject</code> that should be unlocked.
-	 * @param project	 the <code>Project</code> the jakeObject is associated with.
+	 * @param project    the <code>Project</code> the jakeObject is associated with.
 	 */
 	public void removeSoftLock(JakeObject jakeObject, Project project);
 
@@ -593,7 +609,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-											  TrustState trust);
+	                                TrustState trust);
 
 
 	/**
@@ -619,9 +635,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project	  : the project to query. can be null.
+	 * @param project     : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries	  : amount of entries. -1 for everything.
+	 * @param entries     : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);

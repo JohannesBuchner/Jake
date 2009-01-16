@@ -8,10 +8,13 @@ import java.io.File;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Tag;
 
 import javax.swing.tree.TreePath;
 import javax.swing.event.TreeModelListener;
@@ -34,6 +37,10 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 				return String.class;
 			case 2:
 				return String.class;
+			case 3:
+				return String.class;
+			case 4:
+				return String.class;
 			default:
 				return null;
 		}
@@ -41,7 +48,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 3;
+		return 5;
 	}
 
 	@Override
@@ -53,6 +60,10 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 				return "Size";
 			case 2:
 				return "Last Modified";
+			case 3:
+				return "Status";
+			case 4:
+				return "Tags";
 			default:
 				return null;
 		}
@@ -78,6 +89,10 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 					return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
 				case 2:
 					return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+				case 3:
+					return "STATUS";
+				case 4:
+					return TagHelper.tagsToString(JakeMainApp.getApp().getCore().getTagsForFileObject(ournode.getFileObject()));
 				default:
 					return "INVALIDCOLUMN";
 			}
@@ -89,6 +104,10 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 					return "";
 				case 2:
 					return "";
+				case 3:
+					return "";
+				case 4:
+					return "";
 				default:
 					return "INVALIDCOLUMN";
 			}
@@ -97,13 +116,25 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public boolean isCellEditable(Object node, int column) {
-		// Name is editable (rename)
-		return (column == 0);
+		// Tags are editable, but only for files
+		ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
+		return column == 4 && ournode.isFile();
 	}
 
 	@Override
 	public void setValueAt(Object value, Object node, int column) {
-		// TODO: Maybe we'll need to do something here
+		ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
+		if (column == 4 && ournode.isFile()) {
+			// Change tags
+			FileObject fileobj = ournode.getFileObject();
+
+			try {
+				Set<Tag> tags = TagHelper.stringToTags(fileobj, (String) value);
+				JakeMainApp.getApp().getCore().setTagsForFileObject(fileobj, tags);
+			} catch (InvalidTagStringFormatException e) {
+				log.warn("Invalid tag string ('" + value + "')");
+			}
+		}
 	}
 
 	@Override
@@ -152,7 +183,8 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
-		return 0;  //To change body of implemented methods use File | Settings | File Templates.
+		// TODO: WTF is this good for?
+		return 0;
 	}
 
 	@Override

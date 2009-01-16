@@ -27,12 +27,14 @@ public abstract class AbstractStyler implements Styler {
 	}
 
 	public Painter getContentPanelBackgroundPainter() {
+		if (true) {
+			// TODO: Debugging only, return to normal later
+			return new MattePainter(new Color(0xdddddd));
+		}
 		MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.6f));
 		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.5f),
-				  GlossPainter.GlossPosition.TOP);
-		PinstripePainter pp = new PinstripePainter(Colors.Gray.alpha(0.01f),
-				  45d);
-		return new CompoundPainter(mp, pp, gp);
+			 GlossPainter.GlossPosition.TOP);
+		return new CompoundPainter(mp, gp);
 	}
 
 

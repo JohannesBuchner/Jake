@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import java.io.File;
 import java.util.Random;
@@ -9,6 +11,8 @@ import java.awt.*;
  * Creates a fancy label for file and folder nodes in the FileTreeTable
  */
 public class FileIconLabelHelper {
+	private static final Logger log = Logger.getLogger(FileIconLabelHelper.class);
+
 	private static Icon conflict = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 		 FileIconLabelHelper.class.getResource("/annotations/conflict.png")));
 	private static Icon haveLatest = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -42,7 +46,13 @@ public class FileIconLabelHelper {
 		JLabel label = new JLabel();
 		label.setOpaque(false);
 
-		Icon nativeIcon = fileChooser.getIcon(file);
+		Icon nativeIcon;
+		try {
+			nativeIcon = fileChooser.getIcon(file);
+		} catch (NullPointerException e) {
+			log.info("Error getting icon for " + file.getAbsolutePath());
+			nativeIcon = null;
+		}
 
 		// File or folder name
 		label.setText(file.getName());
