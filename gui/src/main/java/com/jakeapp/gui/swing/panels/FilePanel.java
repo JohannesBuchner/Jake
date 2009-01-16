@@ -92,7 +92,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	 * Resets all applied filters
 	 */
 	public void resetFilter() {
-		System.err.println("STATUS OF TVA: " + treeViewActive);
 		fileTable.setFilters(null);
 		if (treeViewActive) {
 			fileTreeTableScrollPane.setViewportView(fileTreeTable);
@@ -125,7 +124,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -272,7 +271,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+				 .getY());
 		}
 	}
 
@@ -382,12 +381,11 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			try {
 				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
 				tableModel = new FileObjectsTableModel(JakeMainApp.getApp().getCore().getAllProjectFiles(JakeMainApp.getApp().getProject()));
+				fileTreeTable.setTreeTableModel(treeTableModel);
+				fileTable.setModel(tableModel);
 			} catch (ProjectFolderMissingException e) {
-				log.warn("Project folder missing!!");
+				log.warn("Project folder missing!");
 			}
-
-			fileTreeTable.setTreeTableModel(treeTableModel);
-			fileTable.setModel(tableModel);
 		}
 	}
 }

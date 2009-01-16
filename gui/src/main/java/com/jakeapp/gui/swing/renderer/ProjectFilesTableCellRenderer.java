@@ -5,6 +5,7 @@ import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
 import com.jakeapp.gui.swing.JakeMainApp;
 
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -12,7 +13,10 @@ import java.io.File;
 /**
  * Renders file nodes in the ProjectFilesTable
  */
-public class ProjectFilesTableCellRenderer implements TableCellRenderer {
+public class ProjectFilesTableCellRenderer extends DefaultTableCellRenderer {
+	public ProjectFilesTableCellRenderer() {
+		this.setOpaque(false);
+	}
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
