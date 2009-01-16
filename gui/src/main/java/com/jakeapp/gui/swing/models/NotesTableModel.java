@@ -62,10 +62,10 @@ public class NotesTableModel extends DefaultTableModel {
 		this.core = JakeMainApp.getApp().getCore();
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
-		this.columnNames.add(this.getResourceMap().getString("tableHEaderNote"));
+		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
+		this.columnNames.add(this.getResourceMap().getString("tableHeaderNote"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
-		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
 		
 		this.padlock = new ImageIcon(Toolkit.getDefaultToolkit()
 				.getImage(JakeMainApp.class.getResource("/icons/file-lock.png")));

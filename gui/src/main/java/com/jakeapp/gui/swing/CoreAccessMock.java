@@ -14,6 +14,8 @@ import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
@@ -524,12 +526,16 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public void deleteNote(NoteObject note) {
-		this.notesList.remove(note);
+		log.debug("removing note: " + note + "from notes");
+		log.debug("success: " + Boolean.toString(this.notesList.remove(note)));
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.Deleted));
 	}
 
 	@Override
 	public void newNote(NoteObject note) {
+		log.debug("adding note: " + note);
 		this.notesList.add(note);
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.Deleted));
 	}
 
 	/**

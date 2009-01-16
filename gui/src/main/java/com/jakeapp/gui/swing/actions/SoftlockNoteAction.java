@@ -8,26 +8,23 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 
 /**
- * Note Action that commits the selected notes. Batch enabled!
+ * Note Action to lock and unlock a note, on/off checkbox behaviour.
  * @author Simon
  *
  */
-public class CommitNoteAction extends NoteAction {
+public class SoftlockNoteAction extends NoteAction {
 	
-	public CommitNoteAction() {
+	public SoftlockNoteAction() {
 		super();
 
-		String actionStr = JakeMainView.getMainView().getResourceMap().getString("commitNoteMenuItem");
+		String actionStr = JakeMainView.getMainView().getResourceMap().getString("deleteNoteMenuItem");
 		putValue(Action.NAME, actionStr);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+
 	}
 
-	@Override
-	public void updateAction() {
-		this.setEnabled(this.getSelectedNotes().size() > 0);
-	}
 }

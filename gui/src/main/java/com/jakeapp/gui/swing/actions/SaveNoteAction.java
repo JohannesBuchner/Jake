@@ -14,6 +14,8 @@ import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
  */
 public class SaveNoteAction extends NoteAction {
 	
+	private static final long serialVersionUID = 196271937528474367L;
+
 	public SaveNoteAction() {
 		super();
 
@@ -24,7 +26,10 @@ public class SaveNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-
 	}
-
+	
+	@Override
+	public void updateAction() {
+		this.setEnabled(this.getSelectedNotes().size() > 0);
+	}
 }

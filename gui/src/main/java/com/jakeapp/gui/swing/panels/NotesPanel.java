@@ -11,6 +11,36 @@
 
 package com.jakeapp.gui.swing.panels;
 
+
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
@@ -26,23 +56,6 @@ import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author studpete, simon
@@ -227,6 +240,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ignored) {
+		log.info("received projectChangedEvent: " + ignored.toString());
 		this.notesTableModel.update();
 	}
 
@@ -364,5 +378,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
 		}
 		return selectedNotes;
+	}
+	
+	public void resetFilter() {
+		log.debug("resetting filter...");
+		this.notesTable.setFilters(null);
+	}
+	
+	public void setFilter(FilterPipeline filterPipeline) {
+		this.notesTable.setFilters(filterPipeline);
 	}
 }

@@ -44,6 +44,7 @@ public class DeleteNoteAction extends NoteAction {
 				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0], new SheetListener() {
 			@Override
 			public void optionSelected(SheetEvent evt) {
+				log.debug("button clicked... getOption: " + evt.getOption());
 				if (evt.getOption() == 0) {
 					log.info("Deleting Notes...");
 					for (NoteObject note : getSelectedNotes()) {
