@@ -14,11 +14,13 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
@@ -38,11 +40,13 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
-	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
+
+	private static final Logger log = Logger
+			.getLogger(ProjectsManagingServiceImpl.class);
 
 	private List<Project> projectList = new ArrayList<Project>();
-	
-	private Map<Project,IFSService> fileServices;
+
+	private Map<Project, IFSService> fileServices;
 
 	private ApplicationContextFactory applicationContextFactory;
 
@@ -51,16 +55,16 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private InternalFrontendService frontendService;
 
 	public ProjectsManagingServiceImpl() {
-		this.setFileServices(new HashMap<Project,IFSService>());
+		this.setFileServices(new HashMap<Project, IFSService>());
 	}
 
 	/************** GETTERS & SETTERS *************/
 
-	private void setFileServices(Map<Project,IFSService> fileServices) {
+	private void setFileServices(Map<Project, IFSService> fileServices) {
 		this.fileServices = fileServices;
 	}
 
-	private Map<Project,IFSService> getFileServices() {
+	private Map<Project, IFSService> getFileServices() {
 		return fileServices;
 	}
 
@@ -80,7 +84,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			ApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
 	}
-	
+
 	@Override
 	public IFSService getFileServices(Project p) {
 		return this.getFileServices().get(p);
@@ -89,54 +93,59 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private List<Project> getInternalProjectList() {
 		return this.projectList;
 	}
-	
+
 	private ApplicationContext getContext(Project p) {
 		return this.getApplicationContextFactory().getApplicationContext(p);
 	}
-	
+
 	private ILogEntryDao getLogEntryDao(Project p) {
 		ApplicationContext context = this.getContext(p);
-		//TODO retrieve Logentrydao out of context
+		// TODO retrieve Logentrydao out of context
 		return null;
 	}
-	
+
 	private IProjectMemberDao getProjectMemberDao(Project p) {
 		ApplicationContext context = this.getContext(p);
-		//TODO retrieve ProjectMemberDao out of context
+		// TODO retrieve ProjectMemberDao out of context
+		return null;
+	}
+
+	private INoteObjectDao getNoteObjectDao(Project project) {
+		ApplicationContext context = this.getContext(project);
+		// TODO retrieve NoteObjectDao out of context
 		return null;
 	}
 	
-	private INoteObjectDao getNoteObjectDao(Project project) {
+	private IFileObjectDao getFileObjectDao(Project project) {
 		ApplicationContext context = this.getContext(project);
-		//TODO retrieve NoteObjectDao out of context
+		// TODO retrieve NoteObjectDao out of context
 		return null;
 	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
 	@Transactional
-    @Override
+	@Override
 	public List<Project> getProjectList() {
-        log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
+		log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
 
-        List<Project> results =this.getProjectDao().getAll();
-        if(results != null)
-        {
-            log.debug("found " + results.size() + " projects to return");
-            return results;
-        }
-        log.warn("didn't got any results!!!!!");
-        throw new RuntimeException(" this should return an empty list");
-		//return Collections.unmodifiableList(this.getInternalProjectList());
+		List<Project> results = this.getProjectDao().getAll();
+		if (results != null) {
+			log.debug("found " + results.size() + " projects to return");
+			return results;
+		}
+		log.warn("didn't got any results!!!!!");
+		throw new RuntimeException(" this should return an empty list");
+		// return Collections.unmodifiableList(this.getInternalProjectList());
 	}
 
 	@Transactional
-    @Override
+	@Override
 	public List<Project> getProjectList(InvitationState state) {
-		
-		//FIXME not very elegant: can't we do that via DB-Select?
-        // Yes we can. -- domdorn
 
-//        return this.getProjectList(); // TODO TMP by domdorn // FIXME
+		// FIXME not very elegant: can't we do that via DB-Select?
+		// Yes we can. -- domdorn
+
+		// return this.getProjectList(); // TODO TMP by domdorn // FIXME
 		List<Project> all = this.getProjectList();
 		List<Project> result = new ArrayList<Project>();
 
@@ -148,204 +157,219 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 
-    @Transactional
+	@Transactional
 	@Override
-	public Project createProject(String name, String rootPath, MsgService msgService)
-			throws FileNotFoundException, IllegalArgumentException {
+	public Project createProject(String name, String rootPath,
+			MsgService msgService) throws FileNotFoundException,
+			IllegalArgumentException {
 
-        log.debug("Creating a Project with name " + name + " and path "  +rootPath);
+		log.debug("Creating a Project with name " + name + " and path "
+				+ rootPath);
 		File projectRoot = new File(rootPath);
-		
-		//create a new, empty project
-		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
-		
-		//create and initialize the Project's root folder
+
+		// create a new, empty project
+		Project project = new Project(name, UUID.randomUUID(), msgService,
+				projectRoot);
+
+		// create and initialize the Project's root folder
 		/*
-		 * Since the FSService would start to watch the directory immediately, it is not created yet.
+		 * Since the FSService would start to watch the directory immediately,
+		 * it is not created yet.
 		 */
 		projectRoot.mkdirs();
 		if (!projectRoot.isDirectory() || !projectRoot.canWrite()) {
 			log.warn("Creating a Project's root path failed.");
 			throw new FileNotFoundException();
 		}
-		
-		//TODO create a new Project-local database
-		
+
+		// TODO create a new Project-local database
+
 		try {
 			log.debug("initializing project folder");
-            this.initializeProjectFolder();
+			this.initializeProjectFolder();
 		} catch (IOException e) {
-            log.debug("initializing project folder didn't work");
+			log.debug("initializing project folder didn't work");
 			throw new FileNotFoundException();
 		}
-		
-		//Open the project
-		this.openProject(projectRoot, name);
-		
-		
-		//create an applicationContext for the Project
-		//this.applicationContextFactory.getApplicationContext(project);
 
-		
+		// Open the project
+		this.openProject(projectRoot, name);
+
+
+		// create an applicationContext for the Project
+		// this.applicationContextFactory.getApplicationContext(project);
+
+
 		project.setMessageService(msgService);
-		
-		
-		return project; 
+
+
+		return project;
 	}
 
 	/**
-	 * Initializes a project folder by putting special files
-	 * (self-implemented trash, ...) in it.
+	 * Initializes a project folder by putting special files (self-implemented
+	 * trash, ...) in it.
 	 */
 	private void initializeProjectFolder() throws IOException {
-		//empty implementation
+		// empty implementation
 	}
 
 	@Override
-	public boolean startProject(Project project, ChangeListener cl) throws IllegalArgumentException,
-			FileNotFoundException, ProjectException {
-		//Check preconditions
-		if (project == null) throw new IllegalArgumentException();
-		if (!project.isOpen() || project.isStarted()) return false;
-		
+	public boolean startProject(Project project, ChangeListener cl)
+			throws IllegalArgumentException, FileNotFoundException,
+			ProjectException {
+		// Check preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
+		if (!project.isOpen() || project.isStarted())
+			return false;
+
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
-		
-		frontendService.getSync().startServing(project, new TrustRequestHandlePolicy(project), cl);
-		
-		project.setStarted(true);	
-		
+
+		frontendService.getSync().startServing(project,
+				new TrustRequestHandlePolicy(project), cl);
+
+		project.setStarted(true);
+
 		return true;
 	}
 
 	@Override
-	public boolean stopProject(Project project) throws IllegalArgumentException,
-			FileNotFoundException {
-		//Check preconditions
-		if (project == null) throw new IllegalArgumentException();
-		if (!project.isOpen() || !project.isStarted()) return false;
-		
+	public boolean stopProject(Project project)
+			throws IllegalArgumentException, FileNotFoundException {
+		// Check preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
+		if (!project.isOpen() || !project.isStarted())
+			return false;
+
 		try {
 			frontendService.getSync().stopServing(project);
-			//stops monitoring the project
+			// stops monitoring the project
 			this.getFileServices(project).unsetRootPath();
-		}
-		finally {
+		} finally {
 			project.setStarted(false);
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	public void closeProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException {
-		//Check preconditions
-		if (project == null) throw new IllegalArgumentException();
-		
-		//Make sure project is stopped
+		// Check preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
+
+		// Make sure project is stopped
 		if (project.isStarted())
 			this.stopProject(project);
 		project.setOpen(false);
-		
-		//remove project from internal list
+
+		// remove project from internal list
 		this.getInternalProjectList().remove(project);
-		//remove the project's file services
+		// remove the project's file services
 		this.getFileServices().remove(project);
-		
-		//Remove Project from the database
+
+		// Remove Project from the database
 		try {
 			this.getProjectDao().delete(project);
 		} catch (NoSuchProjectException e) {
-			log.warn("Project does not exist in DB and cannot be deleted from it.",e);
+			log
+					.warn(
+							"Project does not exist in DB and cannot be deleted from it.",
+							e);
 		}
 	}
 
 	@Override
-	public Project openProject(File rootPath, String name) throws IllegalArgumentException,
-			FileNotFoundException {
+	public Project openProject(File rootPath, String name)
+			throws IllegalArgumentException, FileNotFoundException {
 		Project result;
-		
-		//Check preconditions
-		if (rootPath == null) throw new IllegalArgumentException();
-		
-		//Check if we can at least read the specified directory
+
+		// Check preconditions
+		if (rootPath == null)
+			throw new IllegalArgumentException();
+
+		// Check if we can at least read the specified directory
 		if (!rootPath.canRead()) {
 			log.warn("Cannot read project folder: " + rootPath.toString());
 			throw new FileNotFoundException();
 		}
-		//Check if rootpath is indeed a directory
+		// Check if rootpath is indeed a directory
 		if (!rootPath.isDirectory()) {
-			log.warn("Project folder is not a directory: " + rootPath.toString());
+			log.warn("Project folder is not a directory: "
+					+ rootPath.toString());
 			throw new FileNotFoundException();
 		}
-		
-		//TODO Check if the Project-internal Database can be read (and read it!) 
-		
-		//create Project
-		result = new Project(
-			name,
-			UUID.randomUUID(),
-			null, //msgService
-			rootPath
-		);
-		
-		//add Project to the global database
+
+		// TODO Check if the Project-internal Database can be read (and read
+		// it!)
+
+		// create Project
+		result = new Project(name, UUID.randomUUID(), null, // msgService
+				rootPath);
+
+		// add Project to the global database
 		try {
 			this.getProjectDao().create(result);
 		} catch (InvalidProjectException e) {
 			log.error("Opening a project failed: Project was invalid");
 			throw new IllegalArgumentException();
 		}
-		
-		//add the project's file services
-		 try {
+
+		// add the project's file services
+		try {
 			this.getFileServices().put(result, new FSService());
 		} catch (NoSuchAlgorithmException e) {
 			log.error("Fileservices are not supported.");
-			//TODO rethrow something?
+			// TODO rethrow something?
 		}
-		
-		//add project to internal list
+
+		// add project to internal list
 		this.getInternalProjectList().add(result);
-		
+
 		result.setOpen(true);
-		
+
 		return result;
 	}
 
 	@Override
-	public boolean deleteProject(Project project) throws IllegalArgumentException,
-			SecurityException, FileNotFoundException {
+	public boolean deleteProject(Project project)
+			throws IllegalArgumentException, SecurityException,
+			FileNotFoundException {
 		boolean result = true;
 		IFSService fss;
 		FileNotFoundException t = null;
-		
-		//Check preconditions
-		if (project == null) throw new IllegalArgumentException();
-		
-		//Remove the Project's root folder
+
+		// Check preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
+
+		// Remove the Project's root folder
 		fss = this.getFileServices(project);
-		if (fss!=null) {
+		if (fss != null) {
 			try {
 				fss.trashFile(project.getRootPath());
 			} catch (InvalidFilenameException e) {
-				log.warn("Deleting Project with invalid rootpath.",e);
+				log.warn("Deleting Project with invalid rootpath.", e);
 			} catch (FileNotFoundException e) {
 				t = e;
 			}
 		}
-		
-		//Make sure project is stopped & closed
+
+		// Make sure project is stopped & closed
 		if (project.isOpen())
 			this.closeProject(project);
-		
-		if (t!=null) throw t;
-		
-		return result; 
+
+		if (t != null)
+			throw t;
+
+		return result;
 	}
 
 	@Override
@@ -353,18 +377,19 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throws IllegalArgumentException {
 		ILogEntryDao dao;
 		List<LogEntry<? extends ILogable>> result = null;
-		
-		if (project==null) throw new IllegalArgumentException();
-		
+
+		if (project == null)
+			throw new IllegalArgumentException();
+
 		dao = this.getLogEntryDao(project);
-		
-		//get Log via LogentryDao
+
+		// get Log via LogentryDao
 		try {
 			result = dao.getAll(project);
 		} catch (NoSuchProjectException e) {
 			throw new IllegalArgumentException(e);
 		}
-		
+
 		return result;
 	}
 
@@ -375,20 +400,22 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		ILogEntryDao dao;
 		List<LogEntry<JakeObject>> entries = null;
 		List<LogEntry<? extends ILogable>> result = null;
-		
-		if (jakeObject==null) throw new IllegalArgumentException();
+
+		if (jakeObject == null)
+			throw new IllegalArgumentException();
 		project = jakeObject.getProject();
-		if (project==null) throw new IllegalArgumentException();
-		
-		//retrieve Logentrydao out of context
-		dao = this.getLogEntryDao(project);	
-		
+		if (project == null)
+			throw new IllegalArgumentException();
+
+		// retrieve Logentrydao out of context
+		dao = this.getLogEntryDao(project);
+
 		entries = dao.getAllOfJakeObject(jakeObject);
-		
-		//transform dao-result to resulttype
+
+		// transform dao-result to resulttype
 		result = new ArrayList<LogEntry<? extends ILogable>>();
 		result.addAll(entries);
-		
+
 		return result;
 	}
 
@@ -396,165 +423,197 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public void assignUserToProject(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalAccessException {
-		
-		//Check preconditions
-		if (project == null) throw new IllegalArgumentException();
-		if (userId == null) throw new IllegalArgumentException();
-		if (project.getUserId() != null) throw new IllegalStateException();
-		
-		//connect userId and project
+
+		// Check preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
+		if (userId == null)
+			throw new IllegalArgumentException();
+		if (project.getUserId() != null)
+			throw new IllegalStateException();
+
+		// connect userId and project
 		project.setUserId(userId);
-		
-		//persist Project-changes
+
+		// persist Project-changes
 		try {
 			this.getProjectDao().update(project);
 		} catch (NoSuchProjectException e) {
 			throw new IllegalArgumentException(e);
 		}
-		
-		//set UserId as ProjectMember
+
+		// set UserId as ProjectMember
 		this.addProjectMember(project, userId);
 		this.setTrust(project, userId, TrustState.AUTO_ADD_REMOVE);
 	}
-	
+
 	/**
-	 * Adds a new Projectmember to a Project. It may not exist in the Project yet.
-	 * @param project Project to add a member to. May not be null.
-	 * @param userId Member to add. May not be null.
+	 * Adds a new Projectmember to a Project. It may not exist in the Project
+	 * yet.
+	 * 
+	 * @param project
+	 *            Project to add a member to. May not be null.
+	 * @param userId
+	 *            Member to add. May not be null.
 	 */
 	private ProjectMember addProjectMember(Project project, UserId userId) {
 		IProjectMemberDao dao;
 		ProjectMember member;
-	
-		//retrieve ProjectMemberDao out of context
-		dao = this.getProjectMemberDao(project);	
-		
-		//create ProjectMember and add it to Project
-		member = new ProjectMember(
-			userId.getUuid(), userId.getNickname(), this.getDefaultTrustState()
-		);
+
+		// retrieve ProjectMemberDao out of context
+		dao = this.getProjectMemberDao(project);
+
+		// create ProjectMember and add it to Project
+		member = new ProjectMember(userId.getUuid(), userId.getNickname(), this
+				.getDefaultTrustState());
 		member = dao.persist(project, member);
-		
+
 		return member;
 	}
 
 	private TrustState getDefaultTrustState() {
 		return TrustState.NO_TRUST;
 	}
-	
+
 	/**
-	 * @param project may not be null
-	 * @param userId may not be null
-	 * @return null if the User with the ID userId is not found in the Project. The
-	 * 	corresponding ProjectMember if it exisits.
+	 * @param project
+	 *            may not be null
+	 * @param userId
+	 *            may not be null
+	 * @return null if the User with the ID userId is not found in the Project.
+	 *         The corresponding ProjectMember if it exisits.
 	 */
-	private ProjectMember getProjectMember(Project project, UserId userId,IProjectMemberDao dao) {
-		//TODO
-		
+	private ProjectMember getProjectMember(Project project, UserId userId,
+			IProjectMemberDao dao) {
+		// TODO
+
 		return null;
 	}
 
 	@Override
 	public void setTrust(Project project, UserId userId, TrustState trust)
-		throws IllegalArgumentException, IllegalAccessException {
+			throws IllegalArgumentException, IllegalAccessException {
 		IProjectMemberDao dao;
 		ProjectMember member;
-		
-		///Check preconditions
-		if (project == null) throw new IllegalArgumentException();
-		if (userId == null) throw new IllegalArgumentException();
-		if (project.getUserId() != null) throw new IllegalAccessException();
+
+		// /Check preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
+		if (userId == null)
+			throw new IllegalArgumentException();
+		if (project.getUserId() != null)
+			throw new IllegalAccessException();
 
 		dao = this.getProjectMemberDao(project);
-		
-		//get (or add) the Project member belonging to userId
+
+		// get (or add) the Project member belonging to userId
 		member = this.getProjectMember(project, userId, dao);
 		if (member == null) {
 			this.addProjectMember(project, userId);
-			//invite ProjectMember to Project
+			// invite ProjectMember to Project
 			this.inviteMember(member);
 		}
-		
-		//set the new trustlevel
+
+		// set the new trustlevel
 		member.setTrustState(trust);
-		
-		//persist changes to member
+
+		// persist changes to member
 		dao.persist(project, member);
 	}
 
 	private void inviteMember(ProjectMember member) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public List<NoteObject> getNotes(Project project) throws IllegalArgumentException,
-			ProjectNotLoadedException {
+	public List<NoteObject> getNotes(Project project)
+			throws IllegalArgumentException, ProjectNotLoadedException {
 		List<NoteObject> result;
 		INoteObjectDao dao;
-		
-		//preconditions
-		if (project==null) throw new IllegalArgumentException();
+
+		// preconditions
+		if (project == null)
+			throw new IllegalArgumentException();
 		if (!this.isProjectLoaded(project)) {
 			throw new ProjectNotLoadedException("Project with uuid "
-						+ project.getUserId() + " is not loaded");
-		}
-				
-		
-		//get Dao
-		dao = this.getNoteObjectDao(project);
-		
-		result = dao.getAll();
-		
-		
-		/*
-		if (false) // TODO check if project is loaded
-			throw new ProjectNotLoadedException("Project with uuid "
 					+ project.getUserId() + " is not loaded");
+		}
 
-		// todo replace with dao access
-		List<NoteObject> list = new ArrayList<NoteObject>();
-		list
-				.add(new NoteObject(new UUID(1, 1), project, "Project: "
-						+ project.getName()));
-		list
-				.add(new NoteObject(
-						new UUID(1, 1),
-						project,
-						"If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
-		list.add(new NoteObject(new UUID(2, 1), project,
-				"Apple pays Chuck Norris 99 cents every time he listens to a song."));
-		list
-				.add(new NoteObject(
-						new UUID(3, 1),
-						project,
-						"Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
-		list
-				.add(new NoteObject(
-						new UUID(4, 1),
-						project,
-						"Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
-		list.add(new NoteObject(new UUID(4, 1), project,
-				"Chuck Norris can kill two stones with one bird."));
-		list
-				.add(new NoteObject(
-						new UUID(5, 1),
-						project,
-						"The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
-		list.add(new NoteObject(new UUID(6, 1), project,
-				"Chuck Norris does not sleep. He waits."));
-		list
-				.add(new NoteObject(new UUID(7, 1), project,
-						"There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
-		list.add(new NoteObject(new UUID(8, 1), project,
-				"Guns don't kill people, Chuck Norris does."));
-		return list;
-		*/
-		
+
+		// get Dao
+		dao = this.getNoteObjectDao(project);
+
+		result = dao.getAll();
+
+
+		/*
+		 * if (false) // TODO check if project is loaded throw new
+		 * ProjectNotLoadedException("Project with uuid " + project.getUserId()
+		 * + " is not loaded");
+		 * 
+		 * // todo replace with dao access List<NoteObject> list = new
+		 * ArrayList<NoteObject>(); list .add(new NoteObject(new UUID(1, 1),
+		 * project, "Project: " + project.getName())); list .add(new NoteObject(
+		 * new UUID(1, 1), project,
+		 * "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"
+		 * )); list.add(new NoteObject(new UUID(2, 1), project,
+		 * "Apple pays Chuck Norris 99 cents every time he listens to a song."
+		 * )); list .add(new NoteObject( new UUID(3, 1), project,
+		 * "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."
+		 * )); list .add(new NoteObject( new UUID(4, 1), project,
+		 * "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."
+		 * )); list.add(new NoteObject(new UUID(4, 1), project,
+		 * "Chuck Norris can kill two stones with one bird.")); list .add(new
+		 * NoteObject( new UUID(5, 1), project,
+		 * "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."
+		 * )); list.add(new NoteObject(new UUID(6, 1), project,
+		 * "Chuck Norris does not sleep. He waits.")); list .add(new
+		 * NoteObject(new UUID(7, 1), project,
+		 * "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "
+		 * )); list.add(new NoteObject(new UUID(8, 1), project,
+		 * "Guns don't kill people, Chuck Norris does.")); return list;
+		 */
+
 		return result;
 	}
 
 	private boolean isProjectLoaded(Project project) {
 		return this.getInternalProjectList().contains(project);
+	}
+
+	@Override
+	public int getProjectFileCount(Project project) 
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
+		// FIXME not efficient?
+		return this.getAllProjectFiles(project).size();
+	}
+
+	@Override
+	public long getProjectSizeTotal(Project project)
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
+		long result = 0;
+		List<FileObject> files;
+
+		files = this.getAllProjectFiles(project);
+		for (FileObject file : files) {
+			try {
+				result += file.getAbsolutePath().length();
+			} catch (SecurityException se) {
+				// empty catch
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<FileObject> getAllProjectFiles(Project project)
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
+		IFileObjectDao dao;
+		
+		dao = this.getFileObjectDao(project);
+		
+		return dao.getAll();
 	}
 }

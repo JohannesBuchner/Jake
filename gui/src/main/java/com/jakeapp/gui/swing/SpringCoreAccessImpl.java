@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
@@ -13,6 +14,7 @@ import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
@@ -95,6 +97,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void setFrontendService(IFrontendService frontendService) {
 		this.frontendService = frontendService;
 	}
+	
+	private void handleNotLoggedInException(NotLoggedInException e) {
+		log.debug("Tried access core without a session", e);
+	}
 
 	@Override
 	public void authenticateOnBackend(Map<String, String> authenticationData)
@@ -163,7 +169,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 					fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
 				} catch (NotLoggedInException e) {
-					log.debug("Tried to sign in without a session", e);
+					handleNotLoggedInException(e);
 				} catch (ProtocolNotSupportedException e) {
 					// this should never happen...
 					log.error("Login with this protocol is not supported.", e);
@@ -311,18 +317,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		return result;
-		//return new String[]{"pstein", "csutter"};
 	}
 
 
 	public void addProjectChangedCallbackListener(ProjectChanged cb) {
-		log.info("Mock: register project changed callback: " + cb);
+		log.info("Register project changed callback: " + cb);
 
 		projectChanged.add(cb);
 	}
 
 	public void removeProjectChangedCallbackListener(ProjectChanged cb) {
-		log.info("Mock: deregister project changed callback: " + cb);
+		log.info("Deregister project changed callback: " + cb);
 
 		if (projectChanged.contains(cb)) {
 			projectChanged.remove(cb);
@@ -339,10 +344,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void stopProject(Project project) {
 		log.info("stop project: " + project);
 
-		// if(!project.isStarted())
-		// throw new ProjectNotStartedException();
-
-		//project.setStarted(false);
 		try {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId()).stopProject(project);
 		} catch (IllegalArgumentException e) {
@@ -353,7 +354,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (IllegalStateException e) {
 			log.debug("Cannot access ProjectManagingService.", e);
 		} catch (NotLoggedInException e) {
-			log.debug("Tried access session without signing in.", e);
+			this.handleNotLoggedInException(e);
 		}
 
 		// generate event
@@ -372,7 +373,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (IllegalStateException e) {
 			log.debug("Cannot access ProjectManagingService.", e);
 		} catch (NotLoggedInException e) {
-			log.debug("Tried access session without signing in.", e);
+			this.handleNotLoggedInException(e);
 		}
 
 		// generate event
@@ -382,11 +383,51 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public int getProjectFileCount(Project project) {
-		return 100;
+		int result = 0;
+		
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+		
+		return result;
 	}
 
-	public int getProjectSizeTotal(Project project) {
-		return 50000;
+	public long getProjectSizeTotal(Project project) {
+		long result = 0;
+		
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+		
+		return result;
 	}
 
 
@@ -421,7 +462,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					//TODO report to gui that the rootpath is invalid
 					log.warn("Project cannot be deleted: its folder does not exist.", e);
 				} catch (NotLoggedInException e) {
-					log.debug("Tried to sign in without a session", e);
+					handleNotLoggedInException(e);
 				}
 			}
 		};
@@ -527,7 +568,25 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<FileObject> getAllProjectFiles(Project project) throws ProjectFolderMissingException {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		try {
+			return this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -872,7 +931,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (CreatingSubDirectoriesFailedException e) {
 			log.error("Creating a subdirectory that should not be created failed...");
 		} catch (NotLoggedInException e) {
-			log.debug("Tried access session without signing in.", e);
+			this.handleNotLoggedInException(e);
 		}
 	}
 

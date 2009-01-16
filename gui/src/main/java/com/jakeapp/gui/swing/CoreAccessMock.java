@@ -303,7 +303,7 @@ public class CoreAccessMock implements ICoreAccess {
 		return 100;
 	}
 
-	public int getProjectSizeTotal(Project project) {
+	public long getProjectSizeTotal(Project project) {
 		return 50000;
 	}
 

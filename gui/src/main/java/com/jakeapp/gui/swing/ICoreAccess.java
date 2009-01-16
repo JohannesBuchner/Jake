@@ -308,7 +308,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return size in bytes.
 	 */
-	public int getProjectSizeTotal(Project project);
+	public long getProjectSizeTotal(Project project);
 
 
 	/**

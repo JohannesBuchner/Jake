@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -45,8 +46,8 @@ public interface IProjectsManagingService {
 	 * @param name
 	 *            the name the new <code>Project</code> should have
 	 * @param rootPath
-	 *            the Path to the rootFolder of this <code>Project</code>. If
-	 *            it does not yet exist, it is created.
+	 *            the Path to the rootFolder of this <code>Project</code>. If it
+	 *            does not yet exist, it is created.
 	 * @param msgService
 	 *            The MessageService this project should be assigned to. <b>THIS
 	 *            CAN BE NULL!</b>
@@ -56,8 +57,9 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException
 	 *             if the supplied <code>name</code> is invalid
 	 */
-	public Project createProject(String name, String rootPath, MsgService msgService)
-			throws FileNotFoundException, IllegalArgumentException;
+	public Project createProject(String name, String rootPath,
+			MsgService msgService) throws FileNotFoundException,
+			IllegalArgumentException;
 
 
 	/**
@@ -78,7 +80,8 @@ public interface IProjectsManagingService {
 	 *             missing, desktop not supported by java, etc.)
 	 */
 	public boolean startProject(Project project, ChangeListener cl)
-			throws IllegalArgumentException, FileNotFoundException, ProjectException;
+			throws IllegalArgumentException, FileNotFoundException,
+			ProjectException;
 
 
 	/**
@@ -94,25 +97,27 @@ public interface IProjectsManagingService {
 	 *             if the rootPath of the <code>Project</code> does not exist
 	 *             anymore
 	 */
-	public boolean stopProject(Project project) throws IllegalArgumentException,
-			FileNotFoundException;
+	public boolean stopProject(Project project)
+			throws IllegalArgumentException, FileNotFoundException;
 
 	/**
 	 * Loads the given project (load database)
-	 * @param rootPath 
-	 *   The location where the project is. It must be a folder and it must
-	 *   contain a database file describing the Jake-Project. 
-	 * @param name Name of the Project
+	 * 
+	 * @param rootPath
+	 *            The location where the project is. It must be a folder and it
+	 *            must contain a database file describing the Jake-Project.
+	 * @param name
+	 *            Name of the Project
 	 * @throws IllegalArgumentException
 	 *             if the supplied name is null
 	 * @throws FileNotFoundException
 	 *             if the rootPath of the loaded <code>Project</code> does not
-	 *             exist anymore or it is not a readable directory or the database-
-	 *             file cannot be opened.
+	 *             exist anymore or it is not a readable directory or the
+	 *             database- file cannot be opened.
 	 * @return the opened, but not yet started, <code>Project</code>
 	 */
 	Project openProject(File rootPath, String name)
-	throws IllegalArgumentException, FileNotFoundException;
+			throws IllegalArgumentException, FileNotFoundException;
 
 
 	/**
@@ -145,8 +150,9 @@ public interface IProjectsManagingService {
 	 *             user should be informed that he should not manually delete
 	 *             projects.
 	 */
-	public boolean deleteProject(Project project) throws IllegalArgumentException,
-			SecurityException, FileNotFoundException;
+	public boolean deleteProject(Project project)
+			throws IllegalArgumentException, SecurityException,
+			FileNotFoundException;
 
 	/**
 	 * Get all LogEntrys from the supplied project
@@ -156,7 +162,8 @@ public interface IProjectsManagingService {
 	 * @return a List of <code>LogEntry</code>s corresponding to this
 	 *         <code>Project</code>
 	 * @throws IllegalArgumentException
-	 *             if the supplied <code>Project</code> is null or does not exist.
+	 *             if the supplied <code>Project</code> is null or does not
+	 *             exist.
 	 */
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			throws IllegalArgumentException;
@@ -209,36 +216,68 @@ public interface IProjectsManagingService {
 
 
 	/**
-	 * Retrieves all Files of a Project that are immediate
-	 * children of the specified relPath. If the relpath is
-	 * empty all files in the Project's root folder are returned.
+	 * Retrieves all Files of a Project that are immediate children of the
+	 * specified relPath. If the relpath is empty all files in the Project's
+	 * root folder are returned.
 	 * 
 	 * @param project
 	 * @param relPath
-	 * @return The fileObjects that belong are found
-	 * 	in the specified folder.
-	 * @throws IllegalArgumentException if project or relpath are null
-	 * @throws FileNotFoundException if relPath does not point to a directory
+	 * @return The fileObjects that belong are found in the specified folder.
+	 * @throws IllegalArgumentException
+	 *             if project or relpath are null
+	 * @throws FileNotFoundException
+	 *             if relPath does not point to a directory
 	 */
-	//FIXME is never called - do we need this??
-	//public List<FileObject> getFiles(Project project, String relPath)
-	//		throws IllegalArgumentException, FileNotFoundException;
-
+	// FIXME is never called - do we need this??
+	// public List<FileObject> getFiles(Project project, String relPath)
+	// throws IllegalArgumentException, FileNotFoundException;
 
 	/**
 	 * Retrieves all Notes for a Project
-	 * @param project The Project to retrieve all notes for
+	 * 
+	 * @param project
+	 *            The Project to retrieve all notes for
 	 * @return all Notes
-	 * @throws IllegalArgumentException if <code>project</code> is null.
-	 * @throws ProjectNotLoadedException if the project is not open.
+	 * @throws IllegalArgumentException
+	 *             if <code>project</code> is null.
+	 * @throws ProjectNotLoadedException
+	 *             if the project is not open.
 	 */
-	public List<NoteObject> getNotes(Project project) throws IllegalArgumentException,
-			ProjectNotLoadedException;
-	
+	public List<NoteObject> getNotes(Project project)
+			throws IllegalArgumentException, ProjectNotLoadedException;
+
 	/**
-	 * Returns a service for file-operations 
+	 * Returns a service for file-operations
+	 * 
 	 * @param p
 	 * @return
 	 */
 	IFSService getFileServices(Project p);
+
+	/**
+	 * @return The number of files in a Project
+	 * @see #getAllProjectFiles(Project)
+	 */
+	int getProjectFileCount(Project project) throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
+
+	/**
+	 * @param project
+	 * @return The amount of bytes all files in a project take up.
+	 * @see #getAllProjectFiles(Project)
+	 */
+	long getProjectSizeTotal(Project project)
+	throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
+
+
+	/**
+	 * Retrieves all Files that exist in a <code>Project</code>
+	 * 
+	 * @param project
+	 * @return A List of all files.
+	 * @throws NoSuchProjectException If the specified Project does not exist.
+	 * @throws FileNotFoundException If the root path of the specified Project is not found.
+	 * @throws IllegalArgumentException If project is null.
+	 */
+	List<FileObject> getAllProjectFiles(Project project)
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
 }
