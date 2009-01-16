@@ -35,7 +35,7 @@ public class NotesTableModel extends DefaultTableModel {
 	private ResourceMap resourceMap;
 	private Project currentProject;
 	private ICoreAccess core;
-	private Icon padlock;
+	private Icon padlock, shared_note;
 
 	private class NoteMetaDataWrapper {
 		public NoteObject note;
@@ -69,6 +69,9 @@ public class NotesTableModel extends DefaultTableModel {
 		
 		this.padlock = new ImageIcon(Toolkit.getDefaultToolkit()
 				.getImage(JakeMainApp.class.getResource("/icons/file-lock.png")));
+		this.shared_note = new ImageIcon(Toolkit.getDefaultToolkit()
+				.getImage(JakeMainApp.class.getResource("/icons/shared_note.png")));
+
 	}
 
 	private ResourceMap getResourceMap() {
@@ -150,18 +153,22 @@ public class NotesTableModel extends DefaultTableModel {
 					value = "";
 				}
 				break;
-			case 1: //content
+			case 1: //is local
+				if (!note.isLocal) {
+					value = this.shared_note;
+				} else
+					value = "";
+				break;
+			case 2: //content
 				value = note.note.getContent();
 				break;
-			case 2: //last edit
+			case 3: //last edit
 				value = TimeUtilities.getRelativeTime(note.lastEdit);
 				break;
-			case 3: //last editor
+			case 4: //last editor
 				value = note.lastEditor;
 				break;
-			case 4: //is local
-				value = note.isLocal;
-				break;
+
 			default:
 				value = "illegal column count!";
 				log.warn("column count out of range. Range is 0-2, actually was :" + Integer.toString(row));
@@ -181,7 +188,7 @@ public class NotesTableModel extends DefaultTableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		
-		if (columnIndex == 0) {
+		if (columnIndex <= 1) {
 			return Icon.class;
 		}
 		return Object.class;

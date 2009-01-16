@@ -11,11 +11,42 @@
 
 package com.jakeapp.gui.swing.panels;
 
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.DeleteNoteAction;
+import com.jakeapp.gui.swing.actions.NewNoteAction;
+import com.jakeapp.gui.swing.actions.SaveNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -24,23 +55,6 @@ import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author studpete, simon
@@ -65,7 +79,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		{
 			this.popupMenu = new JakePopupMenu();
+			this.popupMenu.add(new JMenuItem(new NewNoteAction()));
 			this.popupMenu.add(new JMenuItem(new DeleteNoteAction()));
+			this.popupMenu.add(new JMenuItem(new CommitNoteAction()));
+			// this.popupMenu.add(new JMenuItem(new SaveNoteAction()));
 		}
 
 		public NoteContainerMouseListener(NotesPanel panel, JTable table, NotesTableModel tableModel) {
@@ -140,9 +157,16 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		this.notesTable.setSortable(true);
 		this.notesTable.setColumnControlVisible(true);
+		
+		// FIXME: set column with for soft lock and shared note
+		this.notesTable.getColumnModel().getColumn(0).setResizable(false); // lock
+		this.notesTable.getColumnModel().getColumn(0).setMaxWidth(20); 
+		this.notesTable.getColumnModel().getColumn(1).setResizable(false); // shared note
+		this.notesTable.getColumnModel().getColumn(1).setMaxWidth(20);
+		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
 
-		// todo: make this a styler property
+		// TODO: make this a styler property
 		if (!Platform.isMac()) {
 			this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
