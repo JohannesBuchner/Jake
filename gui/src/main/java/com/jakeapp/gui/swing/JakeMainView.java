@@ -312,8 +312,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private TriAreaComponent createToolBar() {
 		// create empty toolbar
 		TriAreaComponent toolBar = MacWidgetFactory.createUnifiedToolBar();
-
-
 		// Create Project
 		ProjectAction createProjectAction;
 		createProjectAction = new CreateProjectAction();

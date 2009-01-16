@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.helpers.pftools;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 
 /**
@@ -26,6 +25,10 @@ public class WinPfTools extends AbstractPfTools {
 	 */
 	@Override
 	public Icon getFileIcon(File file, int size) {
+		return null;
+
+		// TODO: fix this, call using reflections!
+		/*
 		try {
 			sun.awt.shell.ShellFolder sf = sun.awt.shell.ShellFolder.getShellFolder(file);
 
@@ -44,6 +47,6 @@ public class WinPfTools extends AbstractPfTools {
 		} catch (Exception e) {
 			log.warn(e);
 			return null;
-		}
+		}*/
 	}
 }

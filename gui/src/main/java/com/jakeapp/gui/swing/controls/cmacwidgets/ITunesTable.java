@@ -1,7 +1,5 @@
 package com.jakeapp.gui.swing.controls.cmacwidgets;
 
-import com.explodingpixels.data.Rating;
-import com.explodingpixels.macwidgets.ITunesRatingTableCellRenderer;
 import com.explodingpixels.macwidgets.ITunesTableHeaderRenderer;
 import com.explodingpixels.macwidgets.MacFontUtils;
 import com.explodingpixels.widgets.TableUtils;
@@ -80,7 +78,7 @@ public class ITunesTable extends JXTable {
 	}
 
 	private void installCellRenderers() {
-		setDefaultRenderer(Rating.class, new ITunesRatingTableCellRenderer());
+//		setDefaultRenderer(Rating.class, new ITunesRatingTableCellRenderer());
 	}
 
 	private Color getRowColor(int row) {

@@ -1,6 +1,8 @@
 package com.jakeapp.gui.swing.helpers.dragdrop;
 
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
+import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -121,7 +123,9 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			List<File> files = (List<File>) data;
 
 			if (isNewProject(dl, files)) {
-				//JakeMainApp.getCore().createProject(, files[0].);				
+				File newProjectFile = files.get(0);
+				JakeMainApp.getCore().createProject(
+						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath());
 			} else if (isAddToProject(dl, files)) {
 
 			}

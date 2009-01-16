@@ -294,7 +294,9 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		actionPanel = new javax.swing.JPanel();
 		eventsLabel = new javax.swing.JLabel();
 		eventsScrollPanel = new javax.swing.JScrollPane();
+
 		eventsTable = new ITunesTable();
+
 		peopleScrollPanel = new javax.swing.JScrollPane();
 		peopleList = new JListMutable();
 		peopleLabel = new javax.swing.JLabel();
