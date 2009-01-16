@@ -44,6 +44,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 
 		log.info("DataFlavors: " + DebugHelper.arrayToString(t.getTransferDataFlavors()));
 
+		// TODO: we do not get any data from the transferable
 
 		/* fetch the data from the Transferable */
 		Object data = null;
@@ -51,29 +52,34 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			data = t.getTransferData(DataFlavor.javaFileListFlavor);
 			log.info("data=" + data);
 
-			Object data2 = t.getTransferData(DataFlavor.stringFlavor);
-			log.info("data2= " + data2);
+			//Object data2 = t.getTransferData(DataFlavor.);
+			//log.info("data2= " + data2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		/* data of type javaFileListFlavor is a list of files */
-		List<File> fileList = (List<File>) data;
-		log.info("FileList: " + fileList);
+		List<File> files = (List<File>) data;
+		log.info("FileList: " + files);
 
 		// insert = new project
-		if (dl.getChildIndex() == -1) {
+		if (isNewProject(dl, files)) {
 
-			if (fileList != null && fileList.size() == 1 && fileList.get(0).isDirectory()) {
+			support.setDropAction(TransferHandler.COPY);
+
+			/*if (fileList != null && fileList.size() == 1 && fileList.get(0).isDirectory()) {
 				log.info("Conditions for new project are met!");
 				support.setDropAction(TransferHandler.LINK);
 				return true;
-			}
+			}*/
 		} else {
-			if (fileList != null && fileList.size() > 0) {
+
+			support.setDropAction(TransferHandler.LINK);
+
+			/*if (fileList != null && fileList.size() > 0) {
 				support.setDropAction(TransferHandler.COPY);
 				return true;
-			}
+			}*/
 		}
 		return true;
 
@@ -112,23 +118,19 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			Object data = t.getTransferData(DataFlavor.javaFileListFlavor);
 
 			/* data of type javaFileListFlavor is a list of files */
-			List<File> fileList = (List<File>) data;
+			List<File> files = (List<File>) data;
 
-			/* loop through the files in the file list */
-			for (File file : fileList) {
-				/* This is where you place your code for opening the
-									  * document represented by the "file" variable.
-									  * For example:
-									  * - create a new internal frame with a text area to
-									  *   represent the document
-									  * - use a BufferedReader to read lines of the document
-									  *   and append to the text area
-									  * - add the internal frame to the desktop pane,
-									  *   set its bounds and make it visible
-									  */
-				log.info("file: " + file.getAbsoluteFile());
+			if (isNewProject(dl, files)) {
+				//JakeMainApp.getCore().createProject(, files[0].);				
+			} else if (isAddToProject(dl, files)) {
 
 			}
+
+			/* loop through the files in the file list (debug) */
+			for (File file : files) {
+				log.info("file: " + file.getAbsoluteFile());
+			}
+
 		} catch (UnsupportedFlavorException e) {
 			return false;
 		} catch (IOException e) {
@@ -136,6 +138,48 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks if drop location should create a new project
+	 *
+	 * @param dl
+	 * @param files
+	 * @return
+	 */
+	private boolean isNewProject(JTree.DropLocation dl, List<File> files) {
+		// add as new project
+		if (dl.getChildIndex() == -1) {
+
+			// just say ok if there is no file list
+			if (files == null) {
+				return true;
+			} else {
+				return files.size() == 1 && files.get(0).isDirectory();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if drop locaton want to add files/folders to a project.
+	 *
+	 * @param dl
+	 * @param files
+	 * @return
+	 */
+	private boolean isAddToProject(JTree.DropLocation dl, List<File> files) {
+		// add as new project
+		if (dl.getChildIndex() >= 0) {
+
+			// just say ok if there is no file list
+			if (files == null) {
+				return true;
+			} else {
+				return files.size() > 0;
+			}
+		}
+		return false;
 	}
 }
 

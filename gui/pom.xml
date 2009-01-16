@@ -78,7 +78,7 @@
         <dependency>
             <groupId>com.explodingpixels</groupId>
             <artifactId>macwidgets</artifactId>
-            <version>r153-jake</version>
+            <version>r154-jake</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>

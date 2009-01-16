@@ -11,6 +11,7 @@ import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -54,14 +55,15 @@ public class JakeSourceList extends JakeGuiComponent implements
 		sourceList = createSourceList();
 
 		// TODO: enable when joh updates macwidgets
-		/*
+
+
 		// get internal tree
 		JTree tree = sourceList.getTree();
 
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(new JakeSourceListTransferHandler());
-		*/
+
 
 		// run the inital update, later updated by events
 		updateSourceList();
