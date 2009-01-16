@@ -53,6 +53,16 @@ public class JakeSourceList extends JakeGuiComponent implements
 		sourceListInvitiationContextMenu = createSourceListInvitationContextMenu();
 		sourceList = createSourceList();
 
+		// TODO: enable when joh updates macwidgets
+		/*
+		// get internal tree
+		JTree tree = sourceList.getTree();
+
+		tree.setDragEnabled(true);
+		tree.setDropMode(DropMode.ON_OR_INSERT);
+		tree.setTransferHandler(new JakeSourceListTransferHandler());
+		*/
+
 		// run the inital update, later updated by events
 		updateSourceList();
 	}

@@ -11,6 +11,7 @@ import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.*;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
@@ -169,10 +170,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		jakeStatusBar = new JakeStatusBar(getCore());
 		statusPanel.add(jakeStatusBar.getComponent());
 
-
 		// set default window behaviour
 		WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
 		this.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		// register dragdrop handler
+		this.getFrame().setTransferHandler(new FileDropHandler());
 
 		registerCallbacks();
 
