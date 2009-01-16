@@ -21,7 +21,7 @@ import com.jakeapp.gui.swing.actions.NewNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
@@ -274,7 +274,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		jSplitPane1 = new javax.swing.JSplitPane();
 		jScrollPane2 = new javax.swing.JScrollPane();
-		notesTable = new ITunesTable();
+		notesTable = new ETable();
 		noteReadPanel = new org.jdesktop.swingx.JXPanel();
 
 		setName("Form"); // NOI18N
