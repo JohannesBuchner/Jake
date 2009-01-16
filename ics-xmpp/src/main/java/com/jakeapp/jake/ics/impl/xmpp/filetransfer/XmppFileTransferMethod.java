@@ -29,9 +29,11 @@ import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 /**
  * {@link ITransferMethod} for Xmpp. Use {@link XmppFileTransferFactory} to
@@ -41,7 +43,8 @@ import com.jakeapp.jake.ics.msgservice.IMsgService;
  * 
  */
 // TODO: timeouts for negotiations
-public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveListener {
+public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveListener,
+		ILoginStateListener {
 
 
 	private static Logger log = Logger.getLogger(XmppFileTransferMethod.class);
@@ -68,13 +71,17 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 
 	private XMPPConnection connection;
 
-	public XmppFileTransferMethod(XMPPConnection connection,
-			IMsgService negotiationService, UserId user) throws NotLoggedInException {
+	private XmppConnectionData con;
+
+	public XmppFileTransferMethod(XmppConnectionData con, IMsgService negotiationService,
+			UserId user) {
 		log.debug("creating XmppFileTransferMethod for user " + user);
 		this.myUserId = user;
-		this.connection = connection;
+		this.con = con;
+		this.connection = con.getConnection();
 		this.negotiationService = negotiationService;
 		this.negotiationService.registerReceiveMessageListener(this);
+		this.con.getService().getStatusService().registerLoginStateListener(this);
 		startReceiving();
 	}
 
@@ -150,7 +157,8 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 						+ filename);
 		String response = XmppFileTransferFactory.START;
 		boolean success = true;
-		if (isServing()) {
+		if (!isServing()) {
+			log.debug("We don't serve");
 			success = false;
 		} else {
 			log.debug("Do we accept?");
@@ -164,9 +172,14 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 				if (localFile == null) {
 					success = false;
 				} else {
-					IFileTransfer ft = sendFile(localFile, from_userid
-							.getUserIdWithResource(), filename, fr);
-					incomingTransferListener.started(ft);
+					log.debug("Does the partner have a resource?");
+					if (from_userid.getResource().length() == 0)
+						success = false;
+					else {
+						IFileTransfer ft = sendFile(localFile, from_userid
+								.getUserIdWithResource(), filename, fr);
+						incomingTransferListener.started(ft);
+					}
 				}
 			}
 		}
@@ -184,6 +197,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	}
 
 	public IFileTransfer sendFile(File f, String to, String filename, FileRequest request) {
+		log.debug(this.myUserId + " : Sending file " + f.getAbsolutePath() + " to " + to);
 		// Create the file transfer manager
 		FileTransferManager manager = new FileTransferManager(this.connection);
 
@@ -207,10 +221,11 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	 * public LocalFile(File f) { this.setDataFile(f); } }
 	 */
 
-	private List<FileRequest> getRequestsForUser(Queue<FileRequest> frq, UserId userid) {
+	private List<FileRequest> getRequestsForUser(Queue<FileRequest> frq, XmppUserId userid) {
 		List<FileRequest> rq = new LinkedList<FileRequest>();
 		for (FileRequest r : frq) {
-			if (r.getPeer().equals(userid)) {
+			log.debug(r.getPeer() + " - " + r.getFileName());
+			if (userid.isSameUserAs(r.getPeer())) {
 				rq.add(r);
 			}
 		}
@@ -230,8 +245,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	@Override
 	public void startServing(IncomingTransferListener l, FileRequestFileMapper mapper)
 			throws NotLoggedInException {
-		log.debug(this.myUserId + ": startServing");
-
+		log.debug(this.myUserId + ": starting to serve");
 		this.incomingTransferListener = l;
 		this.mapper = mapper;
 	}
@@ -246,19 +260,28 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	 * registers the filetransfer hook
 	 */
 	public void startReceiving() {
+		log.debug(myUserId);
+
+		if (this.connection == null) {
+			log.debug(myUserId + ": not logged in");
+			return;
+		}
 		// Create the file transfer manager
 		final FileTransferManager manager = new FileTransferManager(this.connection);
 
+		log.debug(myUserId + ": adding receiver hook");
 		// Create the listener
 		manager.addFileTransferListener(new FileTransferListener() {
 
 			// incoming transfer
 			synchronized public void fileTransferRequest(FileTransferRequest request) {
 				// Check to see if the request should be accepted
-
+				log.debug(XmppFileTransferMethod.this.myUserId
+						+ "incoming fileTransfer: " + request.getDescription() + " from "
+						+ request.getRequestor());
 				for (FileRequest r : getRequestsForUser(outgoingRequests, new XmppUserId(
 						request.getRequestor()))) {
-					if (r.getFileName().equals(request.getFileName())) {
+					if (r.getFileName().equals(request.getDescription())) {
 						// Accept it
 						INegotiationSuccessListener nsl = XmppFileTransferMethod.this.listeners
 								.get(r);
@@ -289,5 +312,14 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 				// ressource (e.g. the normal chat client).
 			}
 		});
+	}
+
+	@Override
+	public void loginHappened() {
+		this.startReceiving();
+	}
+
+	@Override
+	public void logoutHappened() {
 	}
 }

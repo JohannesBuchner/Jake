@@ -110,5 +110,10 @@ public interface IStatusService {
 	 */
 	public UserId getUserId(String userid);
 
-
+	/**
+	 * on login/logout this method should be invoked
+	 * @param lsl
+	 */
+	public void registerLoginStateListener(ILoginStateListener lsl);
+	
 }

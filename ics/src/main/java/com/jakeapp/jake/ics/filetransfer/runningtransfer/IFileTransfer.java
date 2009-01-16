@@ -17,6 +17,9 @@ public interface IFileTransfer {
 
 	public long getAmountWritten();
 
+	/**
+	 * @return null if no error occured, the error description otherwise 
+	 */
 	public String getError();
 
 	public String getFileName();

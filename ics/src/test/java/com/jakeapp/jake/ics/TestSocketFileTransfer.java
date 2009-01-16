@@ -35,7 +35,6 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFa
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
-//@RunWith(JMock.class)
 public class TestSocketFileTransfer {
 
 	private static Logger log = Logger.getLogger(TestSocketFileTransfer.class);
@@ -72,7 +71,7 @@ public class TestSocketFileTransfer {
 				throw new Exception("Testfile " + testfile + " not found.");
 		}
 		msgX = new SimpleFakeMessageExchanger();
-		sftf = new SimpleSocketFileTransferFactory();
+		sftf = new SimpleSocketFileTransferFactory(10);
 	}
 
 
@@ -187,7 +186,7 @@ public class TestSocketFileTransfer {
 
 		this.log.debug("main: waiting for filetransfer to finish: " + this.fileTransfer);
 
-		
+
 		while (!this.fileTransfer.isDone()) {
 			try {
 				log.debug(this.t.toString());
@@ -200,6 +199,8 @@ public class TestSocketFileTransfer {
 				TimeUnit.MILLISECONDS));
 		log.debug(this.t.toString());
 		Assert.assertTrue("timeout", this.t.isDone(40, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(testfile.length() > 0);
+		Assert.assertEquals(testfile.length(), this.fileTransfer.getLocalFile().length());
 	}
 
 	@Test

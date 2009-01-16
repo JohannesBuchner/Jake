@@ -3,19 +3,16 @@ package com.jakeapp.jake.ics;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
+import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
-@RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppUserId {
 
 	private XmppUserId shortUserId = new XmppUserId("foo@bar");
 
-	private XmppUserId longUserId = new XmppUserId(
-			"johannes.buchner@my.favorite.host");
+	private XmppUserId longUserId = new XmppUserId("johannes.buchner@my.favorite.host");
 
 	@Test
 	public void testShortHost() throws Exception {
@@ -31,18 +28,53 @@ public class TestXmppUserId {
 	public void testShortUserName() throws Exception {
 		Assert.assertEquals("foo", shortUserId.getUsername());
 	}
+
 	@Test
 	public void testLongUserName() throws Exception {
 		Assert.assertEquals("johannes.buchner", longUserId.getUsername());
 	}
+
 	@Test
 	public void testSameUserDifferentRessource() throws Exception {
-		Assert.assertTrue(XmppUserId.isSameUser(new XmppUserId("foo@bar/Pidgin"), new XmppUserId("foo@bar/MIRC")));
+		Assert.assertTrue(XmppUserId.isSameUser(new XmppUserId("foo@bar/Pidgin"),
+				new XmppUserId("foo@bar/MIRC")));
 	}
+
 	@Test
-	public void testEqualsUsesToString() throws Exception {
+	public void testEqualsDifferentRessource1() {
+		Assert.assertEquals(new XmppUserId("foo@bar/Pidgin"), new XmppUserId(
+				"foo@bar/MIRC"));
+	}
+
+	@Test
+	public void testEqualsDifferentRessource2() {
+		Assert.assertEquals(new XmppUserId("foo@bar/MIRC"), (UserId) new MockUserId(
+				"foo@bar/Pidgin"));
+	}
+
+	@Test
+	public void testEqualsDifferentRessource2a() {
+		Assert.assertFalse(((UserId) new MockUserId("foo@bar/Pidgin")).equals(new XmppUserId(
+				"foo@bar/MIRC")));
+	}
+
+	@Test
+	public void testEqualsDifferentRessource3() {
+		Assert.assertFalse(((UserId) new MockUserId("foo@baz/Pidgin"))
+				.equals(new XmppUserId("foo@bar/MIRC")));
+	}
+
+	@Test
+	public void testEqualsDifferentRessource4() {
+		Assert.assertFalse(new XmppUserId("foo@bar/MIRC").equals((UserId) new MockUserId(
+				"foo@baz/Pidgin")));
+	}
+
+	@Test
+	public void testEqualsUsesToString() {
 		Assert.assertEquals(longUserId, longUserId.getUserId());
 	}
+
 	@Test
 	public void testToString() throws Exception {
 		Assert.assertEquals(longUserId.getUserId(), longUserId.toString());

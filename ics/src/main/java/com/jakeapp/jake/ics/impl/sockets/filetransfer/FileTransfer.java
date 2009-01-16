@@ -70,6 +70,7 @@ public abstract class FileTransfer implements IFileTransfer {
 
 	@Override
 	public void cancel() {
+		log.debug("cancelling transfer");
 		this.status = Status.cancelled;
 	}
 

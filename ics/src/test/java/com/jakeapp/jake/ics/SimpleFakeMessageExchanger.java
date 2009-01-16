@@ -32,6 +32,7 @@ public class SimpleFakeMessageExchanger {
 	private class Spitter implements IMsgService {
 
 		private List<IMessageReceiveListener> listener = new LinkedList<IMessageReceiveListener>();
+
 		private UserId user;
 
 		public Spitter(UserId user) {
@@ -39,30 +40,28 @@ public class SimpleFakeMessageExchanger {
 		}
 
 		@Override
-		public void registerReceiveMessageListener(
-				IMessageReceiveListener receiveListener)
-				throws NotLoggedInException {
+		public void registerReceiveMessageListener(IMessageReceiveListener receiveListener) {
 			log.debug("registering MessageReceiveListener on " + user);
 			listener.add(receiveListener);
 		}
 
 		@Override
 		public Boolean sendMessage(UserId to_userid, String content)
-				throws NetworkException, NotLoggedInException,
-				TimeoutException, NoSuchUseridException,
-				OtherUserOfflineException {
+				throws NetworkException, NotLoggedInException, TimeoutException,
+				NoSuchUseridException, OtherUserOfflineException {
 			log.debug(user + " -> " + to_userid + " : " + content);
 			users.get(to_userid).notify(user, content);
 			return true;
 		}
-		
+
 		/**
 		 * we got a message from sender
+		 * 
 		 * @param sender
 		 * @param content
 		 */
 		public void notify(UserId sender, String content) {
-			for(IMessageReceiveListener l : listener) {
+			for (IMessageReceiveListener l : listener) {
 				log.debug("notifying a listener");
 				l.receivedMessage(sender, content);
 			}

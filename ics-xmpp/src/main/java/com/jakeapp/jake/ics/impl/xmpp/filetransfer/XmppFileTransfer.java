@@ -35,6 +35,8 @@ public class XmppFileTransfer implements IFileTransfer {
 	private File localFile;
 
 	public XmppFileTransfer(FileTransfer ft, FileRequest fr, File localFile) {
+		log.info("new watchable FileTransfer: " + fr.getFileName() + " with "
+				+ fr.getPeer() + " using local file " + localFile);
 		this.transfer = ft;
 		this.request = fr;
 		this.localFile = localFile;
@@ -52,7 +54,10 @@ public class XmppFileTransfer implements IFileTransfer {
 
 	@Override
 	public String getError() {
-		return transfer.getError().toString();
+		if (transfer.getError() == null)
+			return null;
+		else
+			return transfer.getError().toString();
 	}
 
 	@Override
@@ -87,7 +92,11 @@ public class XmppFileTransfer implements IFileTransfer {
 
 	@Override
 	public Status getStatus() {
-		return Status.valueOf(transfer.getStatus().toString());
+		for (Status s : Status.values()) {
+			if (s.toString().equals(transfer.getStatus().toString()))
+				return s;
+		}
+		return null;
 	}
 
 	@Override

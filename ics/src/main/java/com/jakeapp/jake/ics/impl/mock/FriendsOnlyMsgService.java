@@ -31,8 +31,7 @@ public class FriendsOnlyMsgService implements IMsgService {
 
 	@Override
 	public void registerReceiveMessageListener(
-			final IMessageReceiveListener receiveListener)
-			throws NotLoggedInException {
+			final IMessageReceiveListener receiveListener) {
 		new FriendsOnlyReceiveFilter(receiveListener, this.users);
 	}
 

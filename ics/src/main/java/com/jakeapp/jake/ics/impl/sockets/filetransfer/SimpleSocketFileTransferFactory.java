@@ -15,7 +15,13 @@ public class SimpleSocketFileTransferFactory implements ITransferMethodFactory {
 
 	protected static final String END = "]]></filetransfer>";
 
-	public static final int PORT = 43214;
+	public static final int DEFAULT_PORT = 0;
+
+	public static final int DEFAULT_MAXIMAL_REQUEST_AGE_SECONDS = 60;
+
+	private int port = DEFAULT_PORT;
+
+	private int maximalRequestAgeSeconds = DEFAULT_MAXIMAL_REQUEST_AGE_SECONDS;
 
 	static Logger log = Logger.getLogger(SimpleSocketFileTransferFactory.class);
 
@@ -23,8 +29,20 @@ public class SimpleSocketFileTransferFactory implements ITransferMethodFactory {
 		//
 	}
 
+	public SimpleSocketFileTransferFactory(int maximalRequestAgeSeconds) {
+		this.maximalRequestAgeSeconds = maximalRequestAgeSeconds;
+	}
+
+	public SimpleSocketFileTransferFactory(int maximalRequestAgeSeconds, int port) {
+		this(maximalRequestAgeSeconds);
+		this.port = port;
+	}
+
 	@Override
-	public ITransferMethod getTransferMethod(IMsgService negotiationService, UserId user) throws NotLoggedInException {
-		return new SimpleSocketFileTransferMethod(negotiationService, user);
+	public ITransferMethod getTransferMethod(IMsgService negotiationService, UserId user)
+			throws NotLoggedInException {
+		return new SimpleSocketFileTransferMethod(this.maximalRequestAgeSeconds,
+				this.port, negotiationService,
+				user);
 	}
 }

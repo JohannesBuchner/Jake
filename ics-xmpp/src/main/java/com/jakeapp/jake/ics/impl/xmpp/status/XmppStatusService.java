@@ -1,6 +1,8 @@
 package com.jakeapp.jake.ics.impl.xmpp.status;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jivesoftware.smack.Roster;
@@ -19,6 +21,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.impl.xmpp.helper.RosterPresenceChangeListener;
 import com.jakeapp.jake.ics.impl.xmpp.helper.XmppCommons;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IStatusService;
 
 
@@ -27,6 +30,8 @@ public class XmppStatusService implements IStatusService {
 	private static final Logger log = Logger.getLogger(XmppStatusService.class);
 
 	private XmppConnectionData con;
+
+	private List<ILoginStateListener> lsll = new LinkedList<ILoginStateListener>();
 
 	public XmppStatusService(XmppConnectionData connection) {
 		this.con = connection;
@@ -147,7 +152,9 @@ public class XmppStatusService implements IStatusService {
 		registerForEvents();
 
 		getRoster().setSubscriptionMode(Roster.SubscriptionMode.accept_all);
-
+		for (ILoginStateListener lsl : lsll) {
+			lsl.loginHappened();
+		}
 		return true;
 	}
 
@@ -180,6 +187,9 @@ public class XmppStatusService implements IStatusService {
 	public void logout() throws NetworkException, TimeoutException {
 		XmppCommons.logout(this.con.getConnection());
 		this.con.setConnection(null);
+		for (ILoginStateListener lsl : lsll) {
+			lsl.logoutHappened();
+		}
 	}
 
 	@Override
@@ -202,6 +212,11 @@ public class XmppStatusService implements IStatusService {
 			return false;
 		XmppCommons.logout(connection);
 		return true;
+	}
+
+	@Override
+	public void registerLoginStateListener(ILoginStateListener lsl) {
+		lsll.add(lsl);
 	}
 
 }

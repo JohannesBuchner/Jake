@@ -1,4 +1,5 @@
 package com.jakeapp.jake.ics.impl.xmpp.helper;
+
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
@@ -17,58 +18,65 @@ public class XmppCommons {
 	}
 
 	/**
-	 * provides unified login that works both for 
-	 * gmail-alike (username: foo@gmail.com at host:gmail.com) and 
-	 * standard-providers (username: bar at host:jabber.org)
-	 *  
-	 * @param xmppid xmpp id
-	 * @param pw xmpp password
+	 * provides unified login that works both for gmail-alike (username:
+	 * foo@gmail.com at host:gmail.com) and standard-providers (username: bar at
+	 * host:jabber.org)
+	 * 
+	 * @param xmppid
+	 *            xmpp id
+	 * @param pw
+	 *            xmpp password
 	 * @return the connection on success, or null on login failure
 	 * @throws IOException
-	 * @see {@link XmppCommons#login(String, String, String)} for parameters 
-	 * 	and return value
+	 * @see {@link XmppCommons#login(String, String, String)} for parameters and
+	 *      return value
 	 */
-	public static XMPPConnection login(String xmppid, String pw, String resource) throws IOException {
+	public static XMPPConnection login(String xmppid, String pw, String resource)
+			throws IOException {
 
 		String hostname = xmppid.replaceAll(".*@", "");
 		String username = xmppid.replaceAll("@.*", "");
 
 		log.debug("connecting/logging in with full xmppid (gmail et al)");
 		XMPPConnection connection = XmppCommons.login(xmppid, pw, hostname, resource);
-		
+
 		if (connection == null) {
 			log.debug("connecting/logging in normally");
 			connection = XmppCommons.login(username, pw, hostname, resource);
 		}
 		return connection;
 	}
-	
+
 	/**
-	 * provides unified createAccount that works both for 
-	 * gmail-alike (username: foo@gmail.com at host:gmail.com) and 
-	 * standard-providers (username: bar at host:jabber.org)
-	 *  
-	 * @param xmppid xmpp id
-	 * @param pw xmpp password
+	 * provides unified createAccount that works both for gmail-alike (username:
+	 * foo@gmail.com at host:gmail.com) and standard-providers (username: bar at
+	 * host:jabber.org)
+	 * 
+	 * @param xmppid
+	 *            xmpp id
+	 * @param pw
+	 *            xmpp password
 	 * @return the connection on success, or null on login failure
 	 * @throws IOException
-	 * @see {@link XmppCommons#login(String, String, String)} for parameters 
-	 * 	and return value
+	 * @see {@link XmppCommons#login(String, String, String)} for parameters and
+	 *      return value
 	 */
-	public static XMPPConnection createAccount(String xmppid, String pw) throws IOException {
+	public static XMPPConnection createAccount(String xmppid, String pw)
+			throws IOException {
 
 		String hostname = xmppid.replaceAll(".*@", "");
 		String username = xmppid.replaceAll("@.*", "");
 
 		log.debug("connecting/logging in with full xmppid (gmail et al)");
 		XMPPConnection connection = XmppCommons.createAccount(xmppid, pw, hostname);
-		
+
 		if (connection == null) {
 			log.debug("connecting/logging in normally");
 			connection = XmppCommons.createAccount(username, pw, hostname);
 		}
 		return connection;
-	}	
+	}
+
 	/**
 	 * connect and login
 	 * 
@@ -79,8 +87,8 @@ public class XmppCommons {
 	 * @throws IOException
 	 *             on connect failure
 	 */
-	public static XMPPConnection login(String username, String pw, String hostname, String resource)
-			throws IOException {
+	public static XMPPConnection login(String username, String pw, String hostname,
+			String resource) throws IOException {
 
 		log.debug("host: " + hostname);
 		XMPPConnection connection = new XMPPConnection(hostname);
@@ -94,7 +102,7 @@ public class XmppCommons {
 		log.debug("user: " + username + " passwd: " + pw);
 		try {
 			log.debug("login ... ");
-			if(resource == null)
+			if (resource == null)
 				connection.login(username, pw);
 			else
 				connection.login(username, pw, resource);
@@ -121,10 +129,10 @@ public class XmppCommons {
 	 */
 	public static XMPPConnection createAccount(String username, String pw, String hostname)
 			throws IOException {
-	
+
 		log.debug("host: " + hostname);
 		XMPPConnection connection = new XMPPConnection(hostname);
-	
+
 		try {
 			connection.connect();
 		} catch (XMPPException e) {
@@ -159,15 +167,15 @@ public class XmppCommons {
 	}
 
 	/**
-	 * Nullsafe method to test if the connection connected and authenticated. 
+	 * Nullsafe method to test if the connection connected and authenticated.
+	 * 
 	 * @param connection
 	 * @return
 	 */
 	public static boolean isLoggedIn(XMPPConnection connection) {
-		if(connection == null || !connection.isAuthenticated())
+		if (connection == null)
 			return false;
-		else
-			return true;
+		log.debug(connection.getUser() + " - auth: " + connection.isAuthenticated());
+		return connection.isAuthenticated();
 	}
-
 }

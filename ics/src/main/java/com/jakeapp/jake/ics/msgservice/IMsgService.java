@@ -51,14 +51,13 @@ public interface IMsgService {
 			OtherUserOfflineException;
 
 	/**
-	 * Registers a callback for the event that a message is received.
+	 * Registers a callback for the event that a message is received. These will
+	 * be kept over logouts.
 	 * 
 	 * @param receiveListener
 	 *            object to be called
-	 * @throws NotLoggedInException
 	 */
-	public void registerReceiveMessageListener(IMessageReceiveListener receiveListener)
-			throws NotLoggedInException;
+	public void registerReceiveMessageListener(IMessageReceiveListener receiveListener);
 
 	/**
 	 * get a MsgService that can only send and receive from the UserIds in

@@ -2,6 +2,8 @@ package com.jakeapp.jake.ics.impl.mock;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -15,6 +17,7 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
@@ -47,6 +50,8 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	private HashSet<IMessageReceiveListener> msgreceivers = new HashSet<IMessageReceiveListener>();
 
 	private Set<UserId> friends = new HashSet<UserId>();
+
+	private List<ILoginStateListener> lsll = new LinkedList<ILoginStateListener>();
 
 	public String getFirstname(UserId userid) throws NoSuchUseridException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
@@ -117,6 +122,9 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 		if (userid.equals(pw)) {
 			myuserid = userid;
 			loggedinstatus = true;
+			for (ILoginStateListener lsl : lsll) {
+				lsl.loginHappened();
+			}
 			return true;
 		} else
 			return false;
@@ -125,6 +133,9 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	public void logout() {
 		myuserid = null;
 		loggedinstatus = false;
+		for (ILoginStateListener lsl : lsll) {
+			lsl.logoutHappened();
+		}
 	}
 
 	/**
@@ -248,5 +259,10 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 			TimeoutException {
 		// TODO can't really implement this ...
 		return null;
+	}
+
+	@Override
+	public void registerLoginStateListener(ILoginStateListener lsl) {
+		lsll.add(lsl);
 	}
 }

@@ -3,6 +3,8 @@ package com.jakeapp.jake.ics.filetransfer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.exceptions.CommunicationProblemException;
@@ -11,10 +13,14 @@ import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 
 public class FailoverCapableFileTransferService implements IFileTransferService {
+
+	private static final Logger log = Logger
+			.getLogger(FailoverCapableFileTransferService.class);
 
 	private List<ITransferMethod> methods = new LinkedList<ITransferMethod>();
 
@@ -55,6 +61,7 @@ public class FailoverCapableFileTransferService implements IFileTransferService 
 
 		public FailoverRequest(FileRequest request, INegotiationSuccessListener nsl) {
 			this.request = request;
+			this.parentListener = nsl;
 			FailoverCapableFileTransferService.this.getTransferMethod(this.counter)
 					.request(this.request, this);
 		}
@@ -62,19 +69,23 @@ public class FailoverCapableFileTransferService implements IFileTransferService 
 		@Override
 		public void failed(Throwable reason) {
 			this.counter++;
-			if (reason.getClass().equals(CommunicationProblemException.class)) {
-				ITransferMethod method = FailoverCapableFileTransferService.this
-						.getTransferMethod(this.counter);
-				if (method != null) {
-					method.request(this.request, this);
-					return;
-				}
-				this.parentListener.failed(reason);
+			// if
+			// (reason.getClass().equals(CommunicationProblemException.class)) {
+			ITransferMethod method = FailoverCapableFileTransferService.this
+					.getTransferMethod(this.counter);
+			if (method != null) {
+				log.info("failing over to method#" + this.counter + " : " + method);
+				method.request(this.request, this);
+				return;
 			}
+			log.info("no methods left, failure");
+			this.parentListener.failed(reason);
+			// }
 		}
 
 		@Override
 		public void succeeded(IFileTransfer ft) {
+			log.info("success with method#" + this.counter);
 			this.parentListener.succeeded(ft);
 		}
 

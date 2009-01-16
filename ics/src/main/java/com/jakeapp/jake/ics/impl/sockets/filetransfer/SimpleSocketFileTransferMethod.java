@@ -13,12 +13,15 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -27,6 +30,7 @@ import org.apache.log4j.Logger;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
@@ -42,7 +46,8 @@ import com.jakeapp.jake.ics.msgservice.IMsgService;
 public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		IMessageReceiveListener {
 
-	private static Logger log = Logger.getLogger(SimpleSocketFileTransferMethod.class);
+	private static final Logger log = Logger
+			.getLogger(SimpleSocketFileTransferMethod.class);
 
 	private static final String ADDRESS_REQUEST = "<addressrequest/>";
 
@@ -62,6 +67,8 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 
 	private Map<UUID, FileRequest> incomingRequests = new HashMap<UUID, FileRequest>();
 
+	private Map<FileRequest, Long> requestAge = new HashMap<FileRequest, Long>();
+
 	private ServerSocket server;
 
 	private FileRequestFileMapper mapper;
@@ -70,14 +77,54 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 
 	private IncomingTransferListener incomingTransferListener;
 
+	private final int maximalRequestAgeSeconds;
+
+	private final int port;
+
 	private static final int UUID_LENGTH = UUID.randomUUID().toString().length();
 
-	public SimpleSocketFileTransferMethod(IMsgService negotiationService, UserId user)
-			throws NotLoggedInException {
+	public SimpleSocketFileTransferMethod(int maximalRequestAgeSeconds, int port,
+			IMsgService negotiationService, UserId user) {
 		log.debug("creating SimpleSocketFileTransferMethod for user " + user);
+		this.maximalRequestAgeSeconds = maximalRequestAgeSeconds;
+		this.port = port;
 		this.myUserId = user;
 		this.negotiationService = negotiationService;
 		this.negotiationService.registerReceiveMessageListener(this);
+
+		startTimeoutTimer();
+	}
+
+	private void startTimeoutTimer() {
+		Timer timer = new Timer(true);
+		timer.schedule(new TimerTask() {
+
+			private final Logger log = Logger
+					.getLogger(SimpleSocketFileTransferMethod.class);
+
+			@Override
+			public void run() {
+				long now = new Date().getTime();
+
+				for (FileRequest key : SimpleSocketFileTransferMethod.this.requestAge
+						.keySet()) {
+					long starttime = SimpleSocketFileTransferMethod.this.requestAge
+							.get(key);
+					long age = (now - starttime) / 1000;
+					this.log.debug("checking timeout: " + key + " age: " + age);
+					if (age > SimpleSocketFileTransferMethod.this.maximalRequestAgeSeconds) {
+						this.log.debug("removing old request");
+						synchronized (SimpleSocketFileTransferMethod.this.requestAge) {
+							SimpleSocketFileTransferMethod.this.requestAge.remove(key);
+							SimpleSocketFileTransferMethod.this.outgoingRequests
+									.remove(key);
+							SimpleSocketFileTransferMethod.this.listeners.remove(key)
+									.failed(new TimeoutException());
+						}
+					}
+				}
+			}
+		}, 0, this.maximalRequestAgeSeconds * 1000 / 2);
 	}
 
 	/*
@@ -89,8 +136,11 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		String request = SimpleSocketFileTransferFactory.START + ADDRESS_REQUEST
 				+ r.getFileName() + SimpleSocketFileTransferFactory.END;
 
-		this.listeners.put(r, nsl);
-		this.outgoingRequests.add(r);
+		synchronized (this.requestAge) {
+			this.listeners.put(r, nsl);
+			this.outgoingRequests.add(r);
+			this.requestAge.put(r, new Date().getTime());
+		}
 
 		log.debug("requests I have to " + r.getPeer() + " : "
 				+ this.outgoingRequests.size() + " : " + this.outgoingRequests);
@@ -198,7 +248,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 					removeOutgoing(r);
 				}
 			} catch (Exception e) {
-				log.info("negotiation with " + from_userid + " failed: " + e);
+				log.info("negotiation with " + from_userid + " failed: ", e);
 				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
 					INegotiationSuccessListener nsl = this.listeners.get(r);
 					nsl.failed(e);
@@ -256,7 +306,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 			log.debug("Not answering with a positive response");
 		}
 		response += SimpleSocketFileTransferFactory.END;
-		
+
 		try {
 			this.negotiationService.sendMessage(from_userid, response);
 		} catch (Exception e) {
@@ -283,8 +333,11 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 
 	private void removeOutgoing(FileRequest r) {
 		log.debug("I'm done with outgoing request " + r + " (one way or the other)");
-		this.outgoingRequests.remove(r);
-		this.listeners.remove(r);
+		synchronized (this.requestAge) {
+			this.outgoingRequests.remove(r);
+			this.listeners.remove(r);
+			this.requestAge.remove(r);
+		}
 	}
 
 	public boolean isServing() {
@@ -299,7 +352,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		this.incomingTransferListener = l;
 		this.mapper = mapper;
 		try {
-			this.server = new ServerSocket(SimpleSocketFileTransferFactory.PORT);
+			this.server = new ServerSocket(this.port);
 		} catch (IOException e) {
 			SimpleSocketFileTransferFactory.log.error(e);
 			throw new NotLoggedInException();
@@ -369,9 +422,9 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 					new Thread(new ClientHandler(client, this.listener)).run();
 				};
 			} catch (IOException e) {
-				if(!isServing()) {
+				if (!isServing()) {
 					this.log.info("SocketServer shutted down");
-				}else{
+				} else {
 					stopServing();
 					this.log.error("SocketServer quitting unexpectedly", e);
 				}
@@ -454,6 +507,8 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 						this.amountWritten += len;
 						out.write(b, 0, len);
 					}
+					out.flush();
+					out.close();
 					log.debug("sending content done:" + amountWritten + " bytes written");
 				} else {
 					setError(new FileNotFoundException());

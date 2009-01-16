@@ -77,7 +77,7 @@ public class XmppUserId extends UserId {
 
 	@Override
 	public String getUserId() {
-		return getUserIdWithOutResource();
+		return getUserIdWithResource();
 	}
 
 	private static boolean isSameUser(String a, String b) {
@@ -90,7 +90,7 @@ public class XmppUserId extends UserId {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass()) {
+		if (!(obj instanceof UserId)) {
 			// added string compare magic:
 			if (obj.getClass().equals(String.class)
 					&& isSameUser(this.userId, (String) obj))
@@ -104,5 +104,9 @@ public class XmppUserId extends UserId {
 		} else if (!isSameUser(this.userId, other.getUserId()))
 			return false;
 		return true;
+	}
+
+	public boolean isSameUserAs(UserId peer) {
+		return isSameUser(this.userId, peer.getUserId());
 	}
 }

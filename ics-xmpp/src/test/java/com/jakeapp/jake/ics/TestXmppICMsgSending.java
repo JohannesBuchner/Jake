@@ -1,6 +1,5 @@
 package com.jakeapp.jake.ics;
 
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
@@ -71,18 +70,14 @@ public class TestXmppICMsgSending {
 		final String testmsgcontent1 = "Testmessagecontent1";
 		final String testmsgcontent2 = "Testmessagecontent2";
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent1);
-		final Semaphore s = new Semaphore(0);
 		final Counter c = new Counter();
 
-		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd));
 		this.ics2.getMsgService().registerReceiveMessageListener(
 				new IMessageReceiveListener() {
 
 					@Override
 					public void receivedMessage(UserId from_userid,
 							String content) {
-						s.release();
 						c.inc();
 						log.debug("receivedMessage call " + c.getValue());
 						log.debug("receivedMessage: " + from_userid + " says "
@@ -99,8 +94,10 @@ public class TestXmppICMsgSending {
 					}
 
 				});
+		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd));
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent2);
-		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
+		Assert.assertTrue(c.await(2, 7, TimeUnit.SECONDS));
 	}
 
 	@Test
@@ -109,7 +106,6 @@ public class TestXmppICMsgSending {
 		final String testmsgcontent1 = "Testmessagecontent1";
 		final String testmsgcontent2 = testmsgcontent1 + " >> really?";
 		final String testmsgcontent3 = testmsgcontent2 + " >> yeah, srsly!";
-		final Semaphore s = new Semaphore(0);
 		final Counter c = new Counter();
 
 		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
@@ -120,7 +116,6 @@ public class TestXmppICMsgSending {
 					@Override
 					public void receivedMessage(UserId from_userid,
 							String content) {
-						s.release();
 						c.inc();
 						log.debug("receivedMessage call " + c.getValue());
 						log.debug("receivedMessage: " + from_userid + " says "
@@ -164,14 +159,12 @@ public class TestXmppICMsgSending {
 
 				});
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent1);
-		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
+		Assert.assertTrue(c.await(2, 5, TimeUnit.SECONDS));
 	}
 	@Test
 	@Prerequisite(checker = TestEnvironment.class)
 	public void testReceiveSend_XML() throws Exception {
 		final String testmsgcontent = "<msg>hello</msg>";
-		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent);
-		final Semaphore s = new Semaphore(0);
 		final Counter c = new Counter();
 
 		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
@@ -182,7 +175,6 @@ public class TestXmppICMsgSending {
 					@Override
 					public void receivedMessage(UserId from_userid,
 							String content) {
-						s.release();
 						c.inc();
 						log.debug("receivedMessage call " + c.getValue());
 						log.debug("receivedMessage: " + from_userid + " says "
@@ -197,6 +189,6 @@ public class TestXmppICMsgSending {
 
 				});
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent);
-		Assert.assertTrue(s.tryAcquire(2, 5, TimeUnit.SECONDS));
+		Assert.assertTrue(c.await(1, 5, TimeUnit.SECONDS));
 	}
 }

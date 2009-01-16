@@ -7,50 +7,51 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.Base64;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.mock.FriendsOnlyMsgService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 
-public class XmppMsgService implements IMsgService {
+public class XmppMsgService implements IMsgService, ILoginStateListener {
 
 	private static final Logger log = Logger.getLogger(XmppMsgService.class);
 
 	private XmppConnectionData con;
 
 	private IncomingGenericPacketListener packetListener;
+	
+	private boolean initialized = false;
 
-	private void initialize() throws NotLoggedInException {
-		if (!this.con.getService().getStatusService().isLoggedIn())
-			throw new NotLoggedInException();
+	private void initialize() {
+		if (this.initialized || !this.con.getService().getStatusService().isLoggedIn())
+			return;
 
 		ProviderManager.getInstance().addExtensionProvider("custom",
 				this.con.getNamespace(),
 				new GenericPacketProvider(this.con.getNamespace()));
 
-		this.packetListener = new IncomingGenericPacketListener(this.con
-				.getNamespace());
 		this.con.getConnection().addPacketListener(this.packetListener,
 				this.packetListener);
+		this.initialized = true;
 	}
 
 	public XmppMsgService(XmppConnectionData connection) {
 		this.con = connection;
+		this.con.getService().getStatusService().registerLoginStateListener(this);
+		this.packetListener = new IncomingGenericPacketListener(this.con
+				.getNamespace());
+		initialize();
 	}
 
 	@Override
 	public void registerReceiveMessageListener(
-			IMessageReceiveListener receiveListener)
-			throws NotLoggedInException {
-		if (this.packetListener == null)
-			initialize();
+			IMessageReceiveListener receiveListener) {
+		initialize();
 		this.packetListener.add(receiveListener);
 	}
 
@@ -81,5 +82,15 @@ public class XmppMsgService implements IMsgService {
 	@Override
 	public IMsgService getFriendMsgService() {
 		return new FriendsOnlyMsgService(this.con.getService().getUsersService(), this);
+	}
+
+	@Override
+	public void loginHappened() {
+		initialize();
+	}
+
+	@Override
+	public void logoutHappened() {
+		this.initialized = false;
 	}
 }

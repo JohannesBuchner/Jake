@@ -33,7 +33,7 @@ public class XmppFileTransferFactory implements ITransferMethodFactory {
 	@Override
 	public ITransferMethod getTransferMethod(IMsgService negotiationService, UserId user)
 			throws NotLoggedInException {
-		return new XmppFileTransferMethod(connection.getConnection(), negotiationService,
+		return new XmppFileTransferMethod(connection, negotiationService,
 				user);
 	}
 }

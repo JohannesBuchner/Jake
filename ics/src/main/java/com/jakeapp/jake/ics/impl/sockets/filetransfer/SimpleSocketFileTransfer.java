@@ -4,10 +4,12 @@
 package com.jakeapp.jake.ics.impl.sockets.filetransfer;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -37,8 +39,8 @@ public class SimpleSocketFileTransfer extends FileTransfer implements Runnable {
 
 	private Socket s;
 
-	SimpleSocketFileTransfer(FileRequest r, InetSocketAddress other, UUID transferKey)
-			throws IOException {
+	public SimpleSocketFileTransfer(FileRequest r, InetSocketAddress other,
+			UUID transferKey) throws IOException {
 		this.request = r;
 		this.other = other;
 		this.transferKey = transferKey;
@@ -54,25 +56,33 @@ public class SimpleSocketFileTransfer extends FileTransfer implements Runnable {
 		try {
 			log.info("starting transfer from " + this.other);
 			byte[] b = new byte[BLOCKSIZE];
-
+			
+			if(this.status == Status.negotiated)
+				this.status = Status.in_progress;
+			
 			this.s = new Socket(this.other.getAddress(), this.other.getPort());
 
-			OutputStream out = this.s.getOutputStream();
-			FileOutputStream fileout = new FileOutputStream(this.localFile);
-			BufferedOutputStream bfos = new BufferedOutputStream(fileout);
+			OutputStream socketOut = this.s.getOutputStream();
+			BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(
+					this.localFile));
 
 			log.debug("sending request");
-			out.write(this.transferKey.toString().getBytes());
-			out.flush();
+			socketOut.write(this.transferKey.toString().getBytes());
+			socketOut.flush();
 			InputStream in = this.s.getInputStream();
 
 			while (this.status == Status.in_progress) {
 				log.debug("receiving content ... ");
 				int len = in.read(b);
+				log.debug("received " + len + " bytes ... ");
 				if (len == -1)
 					break;
-				bfos.write(b);
+				if (len > 0) {
+					this.amountWritten += len;
+					fileOut.write(b, 0, len);
+				}
 			}
+			fileOut.flush();
 
 			/**
 			 * before with Channels, didn't work
@@ -132,7 +142,7 @@ public class SimpleSocketFileTransfer extends FileTransfer implements Runnable {
 
 	@Override
 	public long getAmountWritten() {
-		return getAmountWritten();
+		return this.amountWritten;
 	}
 
 	@Override

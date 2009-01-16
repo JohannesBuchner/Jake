@@ -28,14 +28,14 @@ public class TransferWatcherThread implements Runnable {
 
 	private ITransferListener listener;
 
-	int update_frequency = UPDATE_FREQUENCY;
+	private int update_frequency = UPDATE_FREQUENCY;
 
-	TransferWatcherThread(IFileTransfer transfer, ITransferListener listener) {
+	public TransferWatcherThread(IFileTransfer transfer, ITransferListener listener) {
 		this.transfer = transfer;
 		this.listener = listener;
 	}
 
-	TransferWatcherThread(IFileTransfer transfer, ITransferListener listener,
+	public TransferWatcherThread(IFileTransfer transfer, ITransferListener listener,
 			int update_frequency) {
 		this(transfer, listener);
 		this.update_frequency = update_frequency;

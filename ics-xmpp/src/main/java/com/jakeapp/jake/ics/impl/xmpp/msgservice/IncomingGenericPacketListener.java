@@ -38,7 +38,7 @@ public class IncomingGenericPacketListener implements PacketListener,
 		GenericPacketExtension fre = (GenericPacketExtension) packet
 				.getExtension(this.namespace);
 
-		log.info("incoming (generice) packet from " + packet.getFrom());
+		log.info("incoming (generic) packet from " + packet.getFrom());
 
 		String content = new String(Base64.decode(fre.getContent()));
 		notifyOthersAboutNewPacket(new XmppUserId(packet.getFrom()), content);
