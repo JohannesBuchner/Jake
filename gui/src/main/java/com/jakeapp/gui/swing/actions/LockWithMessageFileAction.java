@@ -6,14 +6,15 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.List;
 
 import org.jdesktop.swingx.JXTreeTable;
 
 import javax.swing.*;
 
 public class LockWithMessageFileAction extends FileAction {
-	public LockWithMessageFileAction(JTable fileTable) {
-		super(fileTable);
+	public LockWithMessageFileAction(List<ProjectFilesTreeNode> nodes) {
+		super(nodes);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("lockWithMessageMenuItem.text");
@@ -21,8 +22,7 @@ public class LockWithMessageFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected AND that element is NOT a folder.
-		boolean enabled = (fileTable.getSelectedRowCount() == 1 &&
-			 ((ProjectFilesTreeNode) fileTable.getValueAt(fileTable.getSelectedRow(), 0)).isFile());
+		boolean enabled = (getSelectedRowCount() == 1 && getSingleNode().isFile());
 		setEnabled(enabled);
 	}
 

@@ -32,9 +32,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 			case 0:
-				return ProjectFilesTreeNode.class;
+				return ProjectFilesStatusCell.class;
 			case 1:
-				return String.class;
+				return ProjectFilesTreeNode.class;
 			case 2:
 				return String.class;
 			case 3:
@@ -55,13 +55,13 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 	public String getColumnName(int column) {
 		switch (column) {
 			case 0:
-				return "Name";
+				return "";
 			case 1:
-				return "Size";
+				return "Name";
 			case 2:
-				return "Last Modified";
+				return "Size";
 			case 3:
-				return "Status";
+				return "Last Modified";
 			case 4:
 				return "Tags";
 			default:
@@ -71,8 +71,8 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public int getHierarchicalColumn() {
-		// First column is the hierarchical one (filename)
-		return 0;
+		// Second column is the hierarchical one (filename)
+		return 1;
 	}
 
 	@Override
@@ -84,13 +84,14 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 		if (ournode.isFile()) {
 			switch (column) {
 				case 0:
-					return ournode;
+					// TODO: Change me to something useful
+					return new ProjectFilesStatusCell();
 				case 1:
-					return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+					return ournode;
 				case 2:
-					return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+					return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
 				case 3:
-					return "STATUS";
+					return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
 				case 4:
 					return TagHelper.tagsToString(JakeMainApp.getApp().getCore().getTagsForFileObject(ournode.getFileObject()));
 				default:

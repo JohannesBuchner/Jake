@@ -3,25 +3,25 @@ package com.jakeapp.gui.swing.actions.abstracts;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXTreeTable;
 
-import javax.swing.*;
+import java.util.List;
 
 public abstract class FileAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(FileAction.class);
 
-	private JTable fileTable;
+	private List<ProjectFilesTreeNode> nodes;
+	private int selectedRowCount;
 
 	/**
 	 * Creates the file action.
 	 * Depends on a JXTreeTable
 	 *
-	 * @param fileTable
+	 * @param nodes
 	 */
-	// TODO: abstract this! no depend on whole component!
-	public FileAction(JTable fileTable) {
+	public FileAction(List<ProjectFilesTreeNode> nodes) {
 		super();
-		this.fileTable = fileTable;
+		this.nodes = nodes;
+		this.selectedRowCount = nodes.size();
 	}
 
 	/**
@@ -30,31 +30,28 @@ public abstract class FileAction extends ProjectAction {
 	 * @return true if single file, no folder
 	 */
 	protected boolean isSingleFileSelected() {
-		boolean enabled = (fileTable.getSelectedRowCount() == 1 &&
-			 ((ProjectFilesTreeNode) fileTable.getValueAt(fileTable.getSelectedRow(), 0)).isFile());
-		return enabled;
+		return (selectedRowCount == 1 && nodes.get(0).isFile());
 	}
 
 	/**
 	 * Returns a FileObject from the File Table.
 	 *
-	 * @return file object or null of no/multiple selected.
+	 * @return file object or null if no/multiple selected.
 	 */
 	protected FileObject getSelectedFile() {
-		if (!isSingleFileSelected()) {
-			return null;
-		} else {
-			return ((ProjectFilesTreeNode) fileTable.getValueAt(
-				 fileTable.getSelectedRow(), 0)).getFileObject();
-		}
+		return !isSingleFileSelected() ? null : nodes.get(0).getFileObject();
 	}
 
 
-	public JTable getFileTable() {
-		return fileTable;
+	public ProjectFilesTreeNode getSingleNode() {
+		return nodes.size() > 0 ? nodes.get(0) : null;
 	}
 
-	protected void setFileTable(JTable fileTable) {
-		this.fileTable = fileTable;
+	public List<ProjectFilesTreeNode> getNodes() {
+		return nodes;
+	}
+
+	public int getSelectedRowCount() {
+		return this.selectedRowCount;
 	}
 }

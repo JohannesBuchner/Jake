@@ -13,15 +13,16 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.List;
 
 public class ImportFileAction extends FileAction {
 	private static final Logger log = Logger.getLogger(ImportFileAction.class);
 
-	public ImportFileAction(JTable fileTable) {
-		super(fileTable);
+	public ImportFileAction(List<ProjectFilesTreeNode> nodes) {
+		super(nodes);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-				  getString("importMenuItem.text");
+			 getString("importMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
@@ -55,9 +56,8 @@ public class ImportFileAction extends FileAction {
 		// get destination folder. root if nothing selected.
 		String destFolder = "/";
 
-		if (this.getFileTable().getSelectedRow() != -1) {
-			ProjectFilesTreeNode node = (ProjectFilesTreeNode) this.getFileTable().
-					  getValueAt(this.getFileTable().getSelectedRow(), 0);
+		if (getSelectedRowCount() > 0) {
+			ProjectFilesTreeNode node = getSingleNode();
 
 			if (node.isFile()) {
 				destFolder = FileObjectHelper.getPath(node.getFileObject().getAbsolutePath());

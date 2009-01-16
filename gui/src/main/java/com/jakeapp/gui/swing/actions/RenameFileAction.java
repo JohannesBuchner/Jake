@@ -6,6 +6,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import org.jdesktop.swingx.JXTreeTable;
 
@@ -13,8 +14,8 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 
 public class RenameFileAction extends FileAction {
-	public RenameFileAction(JTable fileTable) {
-		super(fileTable);
+	public RenameFileAction(List<ProjectFilesTreeNode> nodes) {
+		super(nodes);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("renameMenuItem.text");
@@ -22,13 +23,12 @@ public class RenameFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected.
-		setEnabled(fileTable.getSelectedRowCount() == 1);
+		setEnabled(getSelectedRowCount() == 1);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ProjectFilesTreeNode node = (ProjectFilesTreeNode) this.getFileTable().
-			 getValueAt(this.getFileTable().getSelectedRow(), 0);
+		ProjectFilesTreeNode node = getSingleNode();
 
 		String currentName = "";
 
@@ -49,7 +49,6 @@ public class RenameFileAction extends FileAction {
 			} else if (node.isFolder()) {
 				JakeMainApp.getApp().getCore().rename(node.getFolderObject(), newName);
 			}
-			this.getFileTable().tableChanged(new TableModelEvent(this.getFileTable().getModel()));
 		}
 	}
 }

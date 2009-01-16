@@ -3,8 +3,10 @@ package com.jakeapp.gui.swing.actions;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import org.jdesktop.swingx.JXTreeTable;
 
@@ -20,13 +22,13 @@ public class InspectorFileAction extends FileAction {
 			 );
 	}
 
-	public InspectorFileAction(JTable fileTable) {
-		super(fileTable);
+	public InspectorFileAction(List<ProjectFilesTreeNode> nodes) {
+		super(nodes);
 
 		putValue(Action.NAME, getName());
 
 		// only enable if exact one element is selected.
-		setEnabled(fileTable.getSelectedRowCount() == 1);
+		setEnabled(getSelectedRowCount() == 1);
 	}
 
 	@Override

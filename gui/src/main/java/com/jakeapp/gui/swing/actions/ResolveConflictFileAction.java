@@ -1,16 +1,18 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.dialogs.ResolveConflictDialog;
 import org.jdesktop.swingx.JXTreeTable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class ResolveConflictFileAction extends FileAction {
-	public ResolveConflictFileAction(JTable fileTable) {
-		super(fileTable);
+	public ResolveConflictFileAction(List<ProjectFilesTreeNode> nodes) {
+		super(nodes);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("resolveConflictMenuitem.text");
