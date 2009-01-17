@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 
 /**
@@ -34,26 +35,32 @@ public class SoftlockNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO: 
+		 ICoreAccess core = JakeMainApp.getCore();
+		 boolean newLockingState = !this.isLocked; //FIXME: davelish hack: this.isLocked is reset after every note change.
+		 log.debug("selection count: " + this.getSelectedNotes().size());
+		 for (NoteObject note : this.getSelectedNotes()) {
+			  log.debug("setting soft lock for note: " + note + "---------------------------------------------------");
+			  core.setSoftLock(note, newLockingState, null);
+		 }
 	}
 
 	@Override
 	public void updateAction() {
 		log.debug("update action");
-		List<NoteObject> selectedNotes = this.getSelectedNotes();
-		if (selectedNotes.size() > 0) {
+		 log.debug("getting " + this.getSelectedNotes().size() + " notes...");
+		if (this.getSelectedNotes().size() > 0) {
 			this.setEnabled(true);
 
-			this.isLocked = JakeMainApp.getCore().isSoftLocked(selectedNotes.get(0));
+			this.isLocked = JakeMainApp.getCore().isSoftLocked(this.getSelectedNotes().get(0));
 			
 			if(this.isLocked) {
-				if(selectedNotes.size() == 1) {
+				if(this.getSelectedNotes().size() == 1) {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNote"));
 				} else {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNotes"));
 				}
 			} else {
-				if(selectedNotes.size() == 1) {
+				if(this.getSelectedNotes().size() == 1) {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
 				} else {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNotes"));
@@ -63,6 +70,7 @@ public class SoftlockNoteAction extends NoteAction {
 			this.setEnabled(false);
 			this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
 		}
+		log.debug("where still having " + this.getSelectedNotes().size() + " notes!");
 		
 	}
 

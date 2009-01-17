@@ -357,6 +357,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			return selectedNotes;
 		}
 
+		 log.debug("selcted notes count: " + notesTable.getSelectedRowCount());
 		for (int row : this.notesTable.getSelectedRows()) {
 			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
 		}

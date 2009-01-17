@@ -58,7 +58,7 @@ public class DeleteNoteAction extends NoteAction {
 	@Override
 	public void updateAction() {
 		log.debug("update Action...");
-		log.debug("getSelectedNotes returns: " + this.getSelectedNotes());
+		log.debug("getSelectedNotes returns: " + this.getSelectedNotes().size() + " note");
 		this.setEnabled(this.getSelectedNotes().size() > 0);
 	}
 }

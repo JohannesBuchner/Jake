@@ -589,6 +589,16 @@ public interface ICoreAccess {
 	 */
 	public void removeSoftLock(JakeObject jakeObject);
 
+	 /**
+	  * Set the soft lock for a <code>JakeObject</code>.
+	  * @param jakeObject the <code>JakeObject</code> for which the lock is to be set.
+	  * @param isSet enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
+	  * enable the lock
+	  * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
+	  * <code>falso</code>
+	  */
+	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage);
+
 	/******************* People functions ********************/
 
 	/**
