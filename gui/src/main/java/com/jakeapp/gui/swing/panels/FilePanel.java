@@ -18,8 +18,10 @@ import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.*;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
+import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
@@ -387,9 +389,13 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			// TODO: lazy loading !!!
-			//treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+			try {
+				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+			} catch (ProjectFolderMissingException e) {
+				e.printStackTrace();
+			}
 			tableModel = new FileObjectsTableModel(new ArrayList<FileObject>());
-			//fileTreeTable.setTreeTableModel(treeTableModel);
+			fileTreeTable.setTreeTableModel(treeTableModel);
 			fileTable.setModel(tableModel);
 
 			// start get all files from project, async

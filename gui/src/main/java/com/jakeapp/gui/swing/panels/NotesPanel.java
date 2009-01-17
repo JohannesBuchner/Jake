@@ -12,36 +12,6 @@
 package com.jakeapp.gui.swing.panels;
 
 
-import java.awt.Color;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
@@ -53,11 +23,25 @@ import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.ETable;
-import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author studpete, simon
@@ -194,12 +178,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
 
 		this.noteReadPanel.add(noteReaderScrollPane);
-
-		// set the background painter
-		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
-		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-				  GlossPainter.GlossPosition.TOP);
-		this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 	}
 
 	@Override
@@ -293,7 +271,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		jSplitPane1 = new javax.swing.JSplitPane();
 		jScrollPane2 = new javax.swing.JScrollPane();
-		notesTable = new ETable();
+		notesTable = new ITunesTable();
 		noteReadPanel = new org.jdesktop.swingx.JXPanel();
 
 		setName("Form"); // NOI18N
@@ -384,12 +362,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 		return selectedNotes;
 	}
-	
+
 	public void resetFilter() {
 		log.debug("resetting filter...");
 		this.notesTable.setFilters(null);
 	}
-	
+
 	public void setFilter(FilterPipeline filterPipeline) {
 		this.notesTable.setFilters(filterPipeline);
 	}
