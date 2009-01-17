@@ -38,6 +38,11 @@ import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
@@ -120,6 +125,10 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		ApplicationContext context = this.getContext(project);
 		// TODO retrieve NoteObjectDao out of context
 		return null;
+	}
+	
+	private InternalFrontendService getFrontendService() {
+		return this.frontendService;
 	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
@@ -609,11 +618,65 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	@Override
 	public List<FileObject> getAllProjectFiles(Project project)
-		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
+			throws NoSuchProjectException, FileNotFoundException,
+			IllegalArgumentException {
 		IFileObjectDao dao;
-		
+
 		dao = this.getFileObjectDao(project);
-		
+
 		return dao.getAll();
+	}
+
+	@Override
+	public void joinProject(Project project, UserId inviter)
+			throws IllegalStateException, NoSuchProjectException {
+
+		// preconditions
+		if (project == null)
+			throw new NoSuchProjectException();
+		if (!project.isInvitation())
+			throw new IllegalStateException();
+
+		// update join state
+		project.setInvitationState(InvitationState.ACCEPTED);
+		this.getProjectDao().update(project); // may throw a
+												// NoSuchProjectException if
+												// project does not exist
+
+		// TODO notify the inviter
+	}
+
+	@Override
+	public void rejectProject(Project project, UserId inviter)
+			throws IllegalStateException, NoSuchProjectException {
+		//preconditions
+		if (project == null)
+			throw new NoSuchProjectException();
+		if (!project.isInvitation())
+			throw new IllegalStateException();
+		
+		// remove the project
+		try {
+			this.closeProject(project);
+		} catch (IllegalArgumentException e) {
+			throw new NoSuchProjectException();
+		} catch (FileNotFoundException e) {
+			// empty catch
+		}
+
+		// TODO notify the inviter
+	}
+
+	@Override
+	public void updateProjectName(Project project, String newName)
+			throws NoSuchProjectException {
+		
+		if (project==null)
+			throw new NoSuchProjectException();
+		
+		if (!project.getName().equals(newName)) {
+			project.setName(newName);
+			this.getProjectDao().update(project);
+		}
 	}
 }

@@ -542,10 +542,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public void setProjectName(Project project, String prName) {
-		project.setName(prName);
-
-		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+		try {
+			this.getFrontendService().getProjectsManagingService(this.getSessionId()).updateProjectName(project, prName);
+			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+		} catch (IllegalArgumentException e) {
+			//empty implementation
+		} catch (IllegalStateException e) {
+			//empty implementation
+		} catch (NoSuchProjectException e) {
+			//empty implementation
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
 	}
 
 	@Override

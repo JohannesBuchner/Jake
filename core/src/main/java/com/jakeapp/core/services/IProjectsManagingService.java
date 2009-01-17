@@ -20,13 +20,12 @@ import java.io.FileNotFoundException;
  * 
  */
 public interface IProjectsManagingService {
-
 	/**
 	 * Get a list of all Projects known to jake
 	 * 
 	 * @return a list of all known jake projects
 	 */
-	public List<Project> getProjectList();
+	List<Project> getProjectList();
 
 
 	/**
@@ -38,7 +37,7 @@ public interface IProjectsManagingService {
 	 * @return a list of all known jake projects matching the given
 	 *         InvitationState
 	 */
-	public List<Project> getProjectList(InvitationState state);
+	List<Project> getProjectList(InvitationState state);
 
 	/**
 	 * Creates a new <code>Project</code> given the supplied name and rootPath
@@ -57,7 +56,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException
 	 *             if the supplied <code>name</code> is invalid
 	 */
-	public Project createProject(String name, String rootPath,
+	Project createProject(String name, String rootPath,
 			MsgService msgService) throws FileNotFoundException,
 			IllegalArgumentException;
 
@@ -79,7 +78,7 @@ public interface IProjectsManagingService {
 	 *             couldn't start the project for another reason (algorithms
 	 *             missing, desktop not supported by java, etc.)
 	 */
-	public boolean startProject(Project project, ChangeListener cl)
+	boolean startProject(Project project, ChangeListener cl)
 			throws IllegalArgumentException, FileNotFoundException,
 			ProjectException;
 
@@ -97,7 +96,7 @@ public interface IProjectsManagingService {
 	 *             if the rootPath of the <code>Project</code> does not exist
 	 *             anymore
 	 */
-	public boolean stopProject(Project project)
+	boolean stopProject(Project project)
 			throws IllegalArgumentException, FileNotFoundException;
 
 	/**
@@ -131,7 +130,7 @@ public interface IProjectsManagingService {
 	 *             if the rootPath of the <code>Project</code> does not exist
 	 *             anymore
 	 */
-	public void closeProject(Project project) throws IllegalArgumentException,
+	void closeProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException;
 
 
@@ -150,7 +149,7 @@ public interface IProjectsManagingService {
 	 *             user should be informed that he should not manually delete
 	 *             projects.
 	 */
-	public boolean deleteProject(Project project)
+	boolean deleteProject(Project project)
 			throws IllegalArgumentException, SecurityException,
 			FileNotFoundException;
 
@@ -165,7 +164,7 @@ public interface IProjectsManagingService {
 	 *             if the supplied <code>Project</code> is null or does not
 	 *             exist.
 	 */
-	public List<LogEntry<? extends ILogable>> getLog(Project project)
+	List<LogEntry<? extends ILogable>> getLog(Project project)
 			throws IllegalArgumentException;
 
 	/**
@@ -177,7 +176,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException
 	 *             if the supplied JakeObject is null
 	 */
-	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
+	List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
 			throws IllegalArgumentException;
 
 
@@ -193,7 +192,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalAccessException
 	 *             if the project already has a userId set
 	 */
-	public void assignUserToProject(Project project, UserId userId)
+	void assignUserToProject(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalAccessException;
 
 	/**
@@ -211,7 +210,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalAccessException
 	 *             if the project has no userId set yet.
 	 */
-	public void setTrust(Project project, UserId userId, TrustState trust)
+	void setTrust(Project project, UserId userId, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException;
 
 
@@ -243,7 +242,7 @@ public interface IProjectsManagingService {
 	 * @throws ProjectNotLoadedException
 	 *             if the project is not open.
 	 */
-	public List<NoteObject> getNotes(Project project)
+	List<NoteObject> getNotes(Project project)
 			throws IllegalArgumentException, ProjectNotLoadedException;
 
 	/**
@@ -280,4 +279,36 @@ public interface IProjectsManagingService {
 	 */
 	List<FileObject> getAllProjectFiles(Project project)
 		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
+	
+	/**
+	 * Joins the Project and notifies the inviter.
+	 * @param project The project to join.
+	 * @param inviter The user that invited us to join the project.
+	 * 	She is notified that we accepted joining the project.
+	 * @throws IllegalStateException if <code>project</code> is not an invitation. 
+	 * @throws NoSuchProjectException if <code>project</code> does not exist.
+	 */
+	void joinProject(Project project,UserId inviter)
+		throws IllegalStateException,NoSuchProjectException;
+
+
+	/**
+	 * Rejects joining of a invited project and notifies the inviter.
+	 * @param project The project not to join.
+	 * @param inviter The user that invited us to join the project.
+	 * 	She is notified that we rejected joining the project.
+	 * @throws IllegalStateException if <code>project</code> is not an invitation. 
+	 * @throws NoSuchProjectException if <code>project</code> does not exist.
+	 */
+	void rejectProject(Project project, UserId inviter)
+		throws IllegalStateException,NoSuchProjectException;
+	
+	/**
+	 * Sets the project a new name and persists it.
+	 * @param project The {@link Project}t to rename.
+	 * @param newName the new name of the project.
+	 * @throws NoSuchProjectException if <code>project</code> does not exist.
+	 */
+	void updateProjectName(Project project, String newName)
+		throws NoSuchProjectException;
 }
