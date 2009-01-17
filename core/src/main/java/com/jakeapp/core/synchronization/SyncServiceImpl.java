@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
@@ -20,6 +21,7 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.InternalFrontendService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
@@ -61,15 +63,16 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private InternalFrontendService pk;
 
+	private ApplicationContextFactory scf;
+
 	private ICService getICS(Project p) {
 		return pk.getICSForProject(p);
 	}
 
 	/* DAO stuff */
-	
+
 	/**
-	 * returns true if NoteObject
-	 * returns false if FileObject 
+	 * returns true if NoteObject returns false if FileObject
 	 */
 	private Boolean isNoteObject(JakeObject jo) {
 		// TODO check if object is notes or file otherwise
@@ -120,12 +123,19 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 
-	public SyncServiceImpl(InternalFrontendService frontendService) {
+	private com.jakeapp.jake.ics.UserId getICSUseridFromDomainUserId(Project p) {
+		return p.getUserId().getBackendUserId();
+	}
+
+
+	public SyncServiceImpl(InternalFrontendService frontendService, ApplicationContextFactory scf) {
 		this.pk = frontendService;
+		this.scf = scf;
 	}
 
 	/**
-	 * returns JakeObjects that still exist
+	 * returns all JakeObjects that still exist
+	 * 
 	 * @return
 	 */
 	private Iterable<JakeObject> getJakeObjectsWhereLastActionIsNotDelete() {
@@ -140,7 +150,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		for (JakeObject jo : allJakeObjects) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
-				if(haveNewest(fo))
+				if (haveNewest(fo))
 					missing.add(jo);
 			}
 		}
@@ -206,6 +216,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	public void poke(Project project, UserId userId) {
 		// TODO Auto-generated method stub
 		// TODO: send userId a message to start a logsync
+		//getICS(project).getMsgService().sendMessage(userId, content)
 	}
 
 	@Override
@@ -276,8 +287,8 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX
 				// ME FIX ME
 				// This should contain the correct values
-				stat.add(new JakeObjectSyncStatus(f, fss.getLastModified(f), locallyModified,
-						false, false, false));
+				stat.add(new JakeObjectSyncStatus(f, fss.getLastModified(f),
+						locallyModified, false, false, false));
 			} catch (NotAFileException e) {
 				log.debug("should never happen", e);
 			} catch (InvalidFilenameException e) {
@@ -330,6 +341,16 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	public void stopServing(Project p) {
 		// TODO Auto-generated method stub
 		// TODO: remove ics hooks
+	}
+
+	
+	public ApplicationContextFactory getScf() {
+		return scf;
+	}
+
+	
+	public void setScf(ApplicationContextFactory scf) {
+		this.scf = scf;
 	}
 
 }

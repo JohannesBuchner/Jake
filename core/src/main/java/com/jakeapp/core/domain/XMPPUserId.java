@@ -2,6 +2,10 @@ package com.jakeapp.core.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Transient;
+
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+
 import java.util.UUID;
 
 /**
@@ -29,6 +33,13 @@ public class XMPPUserId extends UserId {
     {
         
     }
+
+
+	@Override
+	@Transient
+	public com.jakeapp.jake.ics.UserId getBackendUserId() {
+		return new XmppUserId(getUserId());
+	}
 
     
 

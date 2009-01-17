@@ -34,7 +34,7 @@ public class FrontendServiceImpl implements IFrontendService, InternalFrontendSe
 	private ICServicesManager icsManager = new ICServicesManager();
 	
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
-	private IFriendlySyncService sync = new SyncServiceImpl(this);
+	private IFriendlySyncService sync = new SyncServiceImpl(this, null);
 	
 	/**
 	 * Constructor
