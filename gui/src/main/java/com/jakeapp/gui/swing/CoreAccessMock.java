@@ -36,7 +36,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailibilityListener;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -468,9 +468,8 @@ public class CoreAccessMock implements ICoreAccess {
 		  return fo;
 	 }
 
-	 @Override
-	 public AvailableLaterObject<List<FileObject>> getAllProjectFiles(final Project project, final AvailibilityListener avl) {
-
+	@Override
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(final Project project, final AvailabilityListener avl) {
 		  log.info("Mock: getAllProjectFiles: " + project);
 
 		  return new AvailableLaterObject<List<FileObject>>(avl) {
@@ -738,12 +737,12 @@ public class CoreAccessMock implements ICoreAccess {
 	 @Override
 	 public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath) {
 		  log.info("Mock: import file: " + DebugHelper.arrayToString(files) + " to " + destFolderRelPath);
-
-		  final AvailibilityListener avl = new AvailibilityListener() {
-				@Override
-				public void statusUpdate(double progress, String status) {
-					 log.debug("statusUpdate" + progress + status);
-				}
+		  
+		final AvailabilityListener avl = new AvailabilityListener() {
+			@Override
+			public void statusUpdate(double progress, String status) {
+				log.debug("statusUpdate" + progress + status);
+			}
 
 				@Override
 				public void finished() {
