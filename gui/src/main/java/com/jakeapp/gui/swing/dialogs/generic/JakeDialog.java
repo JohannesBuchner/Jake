@@ -75,22 +75,29 @@ public abstract class JakeDialog extends EscapeDialog {
 		setTitle(commonResourceMap.getString("jakeDialogTitle"));
 
 		initCommonComponents();
+
+		// set default app icon (can be overridden)
+		setPicture("/icons/jakeapp-large.png");
 	}
 
 	private void initCommonComponents() {
 		this.setLayout(new MigLayout("wrap 1, insets dialog, fill"));
 
+		JPanel headerPanel = new JPanel(new MigLayout("wrap 1, filly, ins 0"));
+
 		dialogTitleLabel = new JLabel(getTitle());
 		dialogTitleLabel.setFont(Platform.getStyler().getSheetLargeFont());
-		this.add(dialogTitleLabel, "span 2, gapbottom 10");
+		headerPanel.add(dialogTitleLabel, "span 2, gapbottom 10");
 
 		pictureLabel = new JLabel();
-		this.add(pictureLabel, "dock west, gap 10 10");
+		headerPanel.add(pictureLabel, "dock west, gap 10 10");
 
 		explanationLabel = new JLabel();
-		this.add(explanationLabel, "growy, gapbottom 10");
+		headerPanel.add(explanationLabel, "growy, gapbottom 10");
 
-		buttonsPanel = new JPanel(new MigLayout("nogrid, fill, ins 0"));
+		this.add(headerPanel, "wrap, gapbottom 18, top");
+
+		buttonsPanel = new JPanel(new MigLayout("nogrid, fillx, ins 0"));
 
 		// call overloaded initComponents and add default button.
 		// There has to be at least one button!
@@ -98,7 +105,7 @@ public abstract class JakeDialog extends EscapeDialog {
 		getButtonsPanel().add(defaultBtn, "tag ok, aligny bottom");
 
 		// add button panel as last
-		this.add(buttonsPanel, "grow");
+		this.add(buttonsPanel, "growx, bottom");
 
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.getRootPane().setDefaultButton(defaultBtn);
@@ -148,7 +155,7 @@ public abstract class JakeDialog extends EscapeDialog {
 	 */
 	protected void setPicture(String path) {
 		pictureLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource(path))));
+				  getClass().getResource(path)).getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
 	}
 
 	/**

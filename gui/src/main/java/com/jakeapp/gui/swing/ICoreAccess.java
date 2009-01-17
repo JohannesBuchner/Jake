@@ -327,9 +327,10 @@ public interface ICoreAccess {
 	 * Deletes a project. Works asyn, fires the callback when finished. Throws
 	 * exceptions if path is null or invalid.
 	 *
-	 * @param project : project that should be deleted
+	 * @param project				: project that should be deleted
+	 * @param deleteProjectFiles
 	 */
-	public void deleteProject(Project project);
+	public void deleteProject(Project project, boolean deleteProjectFiles);
 
 	/**
 	 * Joins into a invited project

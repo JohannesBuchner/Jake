@@ -40,6 +40,6 @@ public class InvitePeopleAction extends ProjectAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.info("Invite People to: " + getProject());
 
-		InvitePeopleDialog.showDialog(getProject(), JakeMainView.getMainView().getFrame());
+		InvitePeopleDialog.showDialog(getProject());
 	}
 }

@@ -1,11 +1,8 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
-import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
+import com.jakeapp.gui.swing.dialogs.DeleteProjectDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -30,6 +27,9 @@ public class DeleteProjectAction extends ProjectAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.info("Delete Project: " + getProject());
 
+		DeleteProjectDialog.showDialog(getProject());
+
+		/*
 		Object[] options = {JakeMainView.getMainView().getResourceMap().getString("confirmDeleteProjectDelete"), JakeMainView.getMainView().getResourceMap().getString("GenericCancel")};
 
 		JSheet.showOptionSheet(JakeMainView.getMainView().getFrame(),
@@ -39,10 +39,11 @@ public class DeleteProjectAction extends ProjectAction {
 					  @Override
 					  public void optionSelected(SheetEvent evt) {
 						  if (evt.getOption() == 0) {
-							  JakeMainApp.getApp().getCore().deleteProject(getProject());
+							  JakeMainApp.getApp().getCore().deleteProject(getProject(), deleteFilesCheckBox.isSelected());
 						  }
 					  }
 				  });
+				  */
 	}
 
 

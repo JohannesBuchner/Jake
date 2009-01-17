@@ -311,7 +311,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 
-	public void deleteProject(final Project project) {
+	public void deleteProject(final Project project, boolean deleteProjectFiles) {
 		log.info("Mock: delete project: " + project);
 
 		if (project == null) {

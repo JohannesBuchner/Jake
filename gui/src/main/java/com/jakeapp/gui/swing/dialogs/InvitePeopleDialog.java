@@ -87,10 +87,9 @@ public class InvitePeopleDialog extends JakeDialog {
 	 * Shows the Dialog. Static, configures modality and size, shows dialog.
 	 *
 	 * @param project: project where people will be added.
-	 * @param frame:   parent frame
 	 */
-	public static void showDialog(Project project, JFrame frame) {
+	public static void showDialog(Project project) {
 		InvitePeopleDialog dlg = new InvitePeopleDialog(project);
-		dlg.showDialogSized(500, 190);
+		dlg.showDialogSized(400, 220);
 	}
 }

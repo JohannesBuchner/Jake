@@ -11,7 +11,6 @@
 
 package com.jakeapp.gui.swing.panels;
 
-
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
@@ -24,6 +23,7 @@ import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
@@ -31,6 +31,9 @@ import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -178,6 +181,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
 
 		this.noteReadPanel.add(noteReaderScrollPane);
+
+		// set the background painter
+		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
+		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
+				  GlossPainter.GlossPosition.TOP);
+		this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 	}
 
 	@Override
@@ -195,15 +204,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	public ResourceMap getResourceMap() {
 		return this.resourceMap;
-	}
-
-	/**
-	 * get The core.
-	 *
-	 * @return the core
-	 */
-	private ICoreAccess getCore() {
-		return this.core;
 	}
 
 
@@ -241,7 +241,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 * Create a new note both in the persistence and in the notes table.
 	 */
 	private void newNote() {
-		this.core.newNote(new NoteObject(new UUID(1, 4), this.getCurrentProject(), "new note"));
+		this.core.newNote(new NoteObject(UUID.randomUUID(), this.getCurrentProject(), "new note"));
 	}
 
 	/**

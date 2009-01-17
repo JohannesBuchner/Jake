@@ -38,7 +38,6 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.TimerTask;
 
 /**
  * @author studpete
@@ -125,7 +124,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -282,7 +281,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-				 .getY());
+					  .getY());
 		}
 	}
 
@@ -389,7 +388,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			TreeTableModel treeTableModel;
 			TableModel tableModel;
 
-
 			// TODO: lazy loading !!!
 			try {
 				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
@@ -403,8 +401,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 			// start get all files from project, async
 			JakeExecutor.exec(new GetAllProjectFilesWorker(JakeMainApp.getProject()));
-
-
 		}
 	}
 

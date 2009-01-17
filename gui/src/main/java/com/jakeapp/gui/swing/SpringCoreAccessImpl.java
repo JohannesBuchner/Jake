@@ -432,7 +432,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public void deleteProject(final Project project) {
+	public void deleteProject(final Project project, boolean deleteProjectFiles) {
 		log.info("Delete project: " + project);
 
 		if (project == null) {
