@@ -39,10 +39,8 @@ public class FSTestCase  {
 	protected boolean recursiveDelete(File f) {
 		clean(); /* windows needs this */
 		if(f.isFile()){
-			System.out.println("Deleting file: "+f.getAbsoluteFile());
 			return f.delete();
 		}else{
-			System.out.println("Deleting folder: "+f.getAbsoluteFile());
 			String[] l = f.list();
 			if(l!=null){
 				for (int i = 0; i < l.length; i++) {
