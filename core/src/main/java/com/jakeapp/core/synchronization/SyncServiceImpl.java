@@ -226,11 +226,11 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 			// TODO: should this really throw an exception if _one_ file doesnt work? I don't think so. -- dominik
             files = fss.recursiveListFiles();
 		}
-        catch(InvalidFilenameException ifne)
-        {
-            // TODO @ johannes: is this ok?
-            throw new IOException("InvalidFilenameException: " + ifne.getMessage());
-        }
+//        catch(InvalidFilenameException ifne)
+//        {
+//             TODO @ johannes: is this ok?
+//            throw new IOException("InvalidFilenameException: " + ifne.getMessage());
+//        }
         catch (IOException e) {
 			throw e;
 		}
