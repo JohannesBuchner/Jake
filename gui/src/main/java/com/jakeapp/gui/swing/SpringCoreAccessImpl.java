@@ -10,11 +10,11 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
@@ -97,7 +97,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void setFrontendService(IFrontendService frontendService) {
 		this.frontendService = frontendService;
 	}
-	
+
 	private void handleNotLoggedInException(NotLoggedInException e) {
 		log.debug("Tried access core without a session", e);
 	}
@@ -384,7 +384,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public int getProjectFileCount(Project project) {
 		int result = 0;
-		
+
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project);
 		} catch (FileNotFoundException e) {
@@ -402,13 +402,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
-		
+
 		return result;
 	}
 
 	public long getProjectSizeTotal(Project project) {
 		long result = 0;
-		
+
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project);
 		} catch (FileNotFoundException e) {
@@ -426,7 +426,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
-		
+
 		return result;
 	}
 
@@ -585,7 +585,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
-		
+
 		return null;
 	}
 
@@ -818,16 +818,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return new Date();
 	}
 
-
 	@Override
-	public void importExternalFileFolderIntoProject(String absPath, String destFolderRelPath) {
-
+	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath) {
+		return null;
 	}
 
-	@Override
-	public void importExternalFileFolderIntoProject(List<File> files, Object destFolderRelPath) {
-
-	}
 
 	@Override
 	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException {

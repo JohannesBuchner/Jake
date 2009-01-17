@@ -2,7 +2,9 @@ package com.jakeapp.gui.swing.helpers.dragdrop;
 
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
+import com.jakeapp.gui.swing.worker.ImportFileFolderWorker;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -131,7 +133,8 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath());
 			} else if (isAddToProject(dl, files)) {
 				log.info("add to project!");
-				JakeMainApp.getCore().importExternalFileFolderIntoProject(files, null);
+
+				JakeExecutor.exec(new ImportFileFolderWorker(files, ""));
 			}
 
 			/* loop through the files in the file list (debug) */

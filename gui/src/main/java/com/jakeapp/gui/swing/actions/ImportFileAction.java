@@ -7,12 +7,14 @@ import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
 import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.worker.ImportFileFolderWorker;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 public class ImportFileAction extends FileAction {
@@ -22,7 +24,7 @@ public class ImportFileAction extends FileAction {
 		super(nodes);
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-			 getString("importMenuItem.text");
+				  getString("importMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
@@ -54,7 +56,7 @@ public class ImportFileAction extends FileAction {
 		log.info("number files selected: " + dialog.getSelectedFiles().length);
 
 		// get destination folder. root if nothing selected.
-		String destFolder = "/";
+		String destFolder = "";
 
 		if (getSelectedRowCount() > 0) {
 			ProjectFilesTreeNode node = getSingleNode();
@@ -67,11 +69,9 @@ public class ImportFileAction extends FileAction {
 		}
 
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
+		JakeExecutor.exec(new ImportFileFolderWorker(
+				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
 
-		// TODO: progress bar? async!?
-		for (File file : dialog.getSelectedFiles()) {
-			log.debug("importing file/folder: " + file);
-			JakeMainApp.getCore().importExternalFileFolderIntoProject(file.getAbsolutePath(), destFolder);
-		}
+		// TODO: show updates
 	}
 }

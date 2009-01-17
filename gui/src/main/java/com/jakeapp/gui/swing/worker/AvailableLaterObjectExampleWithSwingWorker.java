@@ -1,9 +1,6 @@
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.gui.swing.worker;
 
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.SwingWorkerWithAvailableLaterObject;
-
-
+/*
 public class AvailableLaterObjectExampleWithSwingWorker {
 
 
@@ -28,5 +25,6 @@ public class AvailableLaterObjectExampleWithSwingWorker {
 		};
 
 	};
+	}
+*/
 
-}

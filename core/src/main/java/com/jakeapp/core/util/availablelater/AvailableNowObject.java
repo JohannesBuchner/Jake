@@ -3,9 +3,8 @@ package com.jakeapp.core.util.availablelater;
 /**
  * A AvailableLater Object that is not really async but available
  * instantaneously
- * 
+ *
  * @author johannes
- * 
  * @param <T>
  */
 public abstract class AvailableNowObject<T> extends AvailableLaterObject<T> {
@@ -14,5 +13,4 @@ public abstract class AvailableNowObject<T> extends AvailableLaterObject<T> {
 		super(listener);
 		this.set(content);
 	}
-
 }

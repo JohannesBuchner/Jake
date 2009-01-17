@@ -9,6 +9,7 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -424,21 +425,11 @@ public interface ICoreAccess {
 	 * Imports a file OR folder which is not currently in the project folder by
 	 * copying it into a folder inside the projects root folder.
 	 *
-	 * @param absPath:           absolut path of file.
+	 * @param files:             arbitrary list of files, folders to import.
 	 * @param destFolderRelPath: if null or "", copy to project root.
 	 * @return true on success, false on error
 	 */
-	public void importExternalFileFolderIntoProject(String absPath, String destFolderRelPath);
-
-
-	/**
-	 * Imports a file OR folder which is not currently in the project folder by
-	 * copying it into a folder inside the projects root folder.
-	 *
-	 * @param files:             arbitrary list of files, folders to import.
-	 * @param destFolderRelPath: if null or "", copy to project root.
-	 */
-	public void importExternalFileFolderIntoProject(List<File> files, Object destFolderRelPath);
+	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath);
 
 
 	/**

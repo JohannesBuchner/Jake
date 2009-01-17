@@ -10,12 +10,13 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailibilityListener;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
+import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
@@ -681,14 +682,53 @@ public class CoreAccessMock implements ICoreAccess {
 		return new Date(file.getAbsolutePath().lastModified());
 	}
 
-	@Override
-	public void importExternalFileFolderIntoProject(String absPath, String destFolderRelPath) {
-		log.info("Mock: import file: " + absPath + " to " + destFolderRelPath);
-	}
 
 	@Override
-	public void importExternalFileFolderIntoProject(List<File> files, Object destFolderRelPath) {
-		log.info("Mock: import files: " + DebugHelper.arrayToString(files) + " to " + destFolderRelPath);
+	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath) {
+		log.info("Mock: import file: " + DebugHelper.arrayToString(files) + " to " + destFolderRelPath);
+
+		final AvailibilityListener avl = new AvailibilityListener() {
+			@Override
+			public void statusUpdate(double progress, String status) {
+				log.debug("statusUpdate" + progress + status);
+			}
+
+			@Override
+			public void finished() {
+				log.debug("finished");
+			}
+
+			@Override
+			public void error(Exception t) {
+				log.debug("error: " + t);
+			}
+
+			@Override
+			public void error(String reason) {
+				log.debug("error: " + reason);
+			}
+		};
+
+
+		return new AvailableLaterObject<Void>(avl) {
+			@Override
+			public void run() {
+				// do magic (import folder)
+				try {
+					Thread.sleep(100);
+					avl.statusUpdate(0.5, "I am trying really hard!");
+					Thread.sleep(400);
+					avl.statusUpdate(0.8, "I am on it!!!");
+					Thread.sleep(1000);
+					avl.statusUpdate(0.9, "Stop annoying me, you bastard.");
+					Thread.sleep(400);
+					avl.statusUpdate(1, "Did it! Yeah... I'm the man!");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.set(null);
+			}
+		}.start();
 	}
 
 	@Override
