@@ -29,8 +29,7 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 		String root = mytempdir;
 
 		Assert.assertEquals("root", root, fss.getFullpath("/"));
-		Assert.assertEquals(fss.getFullpath("testfile.xml"), root + sep
-				+ "testfile.xml");
+		Assert.assertEquals(fss.getFullpath("testfile.xml"), root + sep + "testfile.xml");
 		Assert.assertEquals(fss.getFullpath("folder/to/testfile.xml"), root + sep
 				+ "folder" + sep + "to" + sep + "testfile.xml");
 
@@ -46,8 +45,7 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testReadFile() throws Exception {
 		wipeRoot();
-		Assert.assertFalse("got a tempdir", mytempdir == null
-				&& mytempdir.length() > 0);
+		Assert.assertFalse("got a tempdir", mytempdir == null && mytempdir.length() > 0);
 
 		try {
 			fss.readFile(":");
@@ -88,11 +86,11 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 			Assert.assertEquals("content read correctly", new String(r), content);
 		}
 		{
-			byte[] c = { 32, 12, 61, 72, 245 - 256, 11, 100, 0, 23, 1, 4, 21,
-					254 - 256, 21, 1, 2 };
+			byte[] c = { 32, 12, 61, 72, 245 - 256, 11, 100, 0, 23, 1, 4, 21, 254 - 256,
+					21, 1, 2 };
 
-			FileOutputStream bw = new FileOutputStream(mytempdir
-					+ File.separator + filename);
+			FileOutputStream bw = new FileOutputStream(mytempdir + File.separator
+					+ filename);
 			bw.write(c);
 			bw.close();
 
@@ -203,8 +201,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 			}
 			Assert.assertTrue(found);
 			if (j < 4) {
-				Assert.assertTrue("folder: " + content[j], fss.folderExists(folder
-						+ sep + content[j]));
+				Assert.assertTrue("folder: " + content[j], fss.folderExists(folder + sep
+						+ content[j]));
 			} else {
 				Assert.assertTrue("file: " + content[j], fss.fileExists(folder + sep
 						+ content[j]));
@@ -220,8 +218,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 		wipeRoot();
 		recursiveDelete(new File(fss.getRootPath()));
 
-		String[] content = { "B", "C", "B/foo", "D", "F", "G", "H", "J",
-				"B/foo/bar", "C/foo" };
+		String[] content = { "B", "C", "B/foo", "D", "F", "G", "H", "J", "B/foo/bar",
+				"C/foo" };
 		for (int i = 0; i < content.length; i++) {
 			File f = new File(fss.getRootPath() + File.separator + content[i]);
 			if (i < 4) {
@@ -337,7 +335,27 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 			Assert.assertTrue(fss.folderExists("bar/baz") && fss.folderExists("bar"));
 			Assert.assertTrue(fss.fileExists("bar/baz/random2"));
 		}
+	}
 
+	@Test
+	@Prerequisite(checker = DesktopSupportedChecker.class)
+	public void testDeleteFile_AutoDeleteDir() throws Exception {
+		wipeRoot();
+		String relpath = "myNewDir/random";
+		String dir = "myNewDir";
+
+		Assert.assertFalse(fss.fileExists(relpath));
+		Assert.assertFalse(fss.folderExists(dir));
+
+		fss.writeFile(relpath, "Foobar".getBytes());
+
+		Assert.assertTrue(fss.fileExists(relpath));
+		Assert.assertTrue(fss.folderExists(dir));
+
+		Assert.assertTrue(fss.deleteFile(relpath));
+
+		Assert.assertFalse(fss.fileExists(relpath));
+		Assert.assertFalse(fss.folderExists(dir));
 	}
 
 	@Test
@@ -345,9 +363,10 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 	public void testHashFile() throws Exception {
 		fss.writeFile("bar/baz/random", "Foobar".getBytes());
 
-		Assert.assertEquals(
-				fss.calculateHashOverFile("bar/baz/random"),
-				"cead1f59a9a0d22e46a28f943a662338dd758d6dce38f7ea6ab13b6615c312b69fffff049781c169b597577cb5566d5d1354364ac032a9d4d5bd8ef833340061");
+		Assert
+				.assertEquals(
+						fss.calculateHashOverFile("bar/baz/random"),
+						"cead1f59a9a0d22e46a28f943a662338dd758d6dce38f7ea6ab13b6615c312b69fffff049781c169b597577cb5566d5d1354364ac032a9d4d5bd8ef833340061");
 
 	}
 
@@ -359,8 +378,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 	@Prerequisite(checker = ThrowStuffInMyFaceChecker.class)
 	public void launchTest() throws Exception {
 		fss.writeFile("launch1.txt", "Foobar".getBytes());
-		fss.writeFile("launch2.html",
-				"<html><body><h1>Woot!</h1></body></html>".getBytes());
+		fss.writeFile("launch2.html", "<html><body><h1>Woot!</h1></body></html>"
+				.getBytes());
 		Thread.yield();
 		fss.launchFile("launch1.txt");
 		fss.launchFile("launch2.html");
@@ -370,12 +389,12 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testFileSize() throws Exception {
 		fss.writeFile("launch1.txt", "Foobar".getBytes());
-		fss.writeFile("launch2.html",
-				"<html><body><h1>Woot!</h1></body></html>".getBytes());
-		Assert.assertEquals(fss.getFileSize("launch2.html"), fss
-				.readFile("launch2.html").length);
-		Assert.assertEquals(fss.getFileSize("launch1.txt"), fss
-				.readFile("launch1.txt").length);
+		fss.writeFile("launch2.html", "<html><body><h1>Woot!</h1></body></html>"
+				.getBytes());
+		Assert.assertEquals(fss.getFileSize("launch2.html"),
+				fss.readFile("launch2.html").length);
+		Assert.assertEquals(fss.getFileSize("launch1.txt"),
+				fss.readFile("launch1.txt").length);
 		try {
 			fss.getFileSize("does/not/exist.txt");
 			Assert.fail();

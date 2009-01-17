@@ -118,48 +118,47 @@ public class FolderWatcher {
 		private void checkFolder(File folder) {
 			if (isCanceled)
 				return;
-			File[] fl = folder.listFiles();
-			if (fl != null)
-				for (File f : fl) {
-					if (f.isDirectory()) {
-						checkFolder(f);
-					}
-					if (f.isFile()) {
-						if (files.contains(f)) {
-							if (f.lastModified() != lastmodifieddates.get(f)) {
-								String newhash = null;
-								try {
-									newhash = calculateHash(f);
-								} catch (NotAReadableFileException e) {
-									e.printStackTrace();
-								}
-
-								lastmodifieddates.put(f, f.lastModified());
-								if (!newhash.equals(hashes.get(f))) {
-									hashes.put(f, newhash);
-									changeHappened(f, ModifyActions.MODIFIED);
-								} else {
-									/*
-									 * System.out.println("Got modification update, "
-									 * + "but hash stayed the same.");
-									 */
-								}
-							}
-						} else {
+			Iterable<File> fl = FileUtils.listFilesMinusA(folder);
+			for (File f : fl) {
+				if (f.isDirectory()) {
+					checkFolder(f);
+				}
+				if (f.isFile()) {
+					if (files.contains(f)) {
+						if (f.lastModified() != lastmodifieddates.get(f)) {
 							String newhash = null;
 							try {
 								newhash = calculateHash(f);
 							} catch (NotAReadableFileException e) {
+								e.printStackTrace();
 							}
 
 							lastmodifieddates.put(f, f.lastModified());
-							hashes.put(f, newhash);
-							files.add(f);
-
-							changeHappened(f, ModifyActions.CREATED);
+							if (!newhash.equals(hashes.get(f))) {
+								hashes.put(f, newhash);
+								changeHappened(f, ModifyActions.MODIFIED);
+							} else {
+								/*
+								 * System.out.println("Got modification update, "
+								 * + "but hash stayed the same.");
+								 */
+							}
 						}
+					} else {
+						String newhash = null;
+						try {
+							newhash = calculateHash(f);
+						} catch (NotAReadableFileException e) {
+						}
+
+						lastmodifieddates.put(f, f.lastModified());
+						hashes.put(f, newhash);
+						files.add(f);
+
+						changeHappened(f, ModifyActions.CREATED);
 					}
 				}
+			}
 		}
 	}
 
