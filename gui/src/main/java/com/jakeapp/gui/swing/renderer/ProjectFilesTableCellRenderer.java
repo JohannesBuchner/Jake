@@ -13,9 +13,8 @@ import java.io.File;
 /**
  * Renders file nodes in the ProjectFilesTable
  */
-public class ProjectFilesTableCellRenderer extends DefaultTableCellRenderer {
+public class ProjectFilesTableCellRenderer implements TableCellRenderer {
 	public ProjectFilesTableCellRenderer() {
-		this.setOpaque(false);
 	}
 
 	@Override
@@ -28,6 +27,12 @@ public class ProjectFilesTableCellRenderer extends DefaultTableCellRenderer {
 		File file;
 		file = node.getFileObject().getAbsolutePath();
 
-		return FileIconLabelHelper.getIconLabel(file, FileIconLabelHelper.State.NONE);
+		Component c = FileIconLabelHelper.getIconLabel(file, FileIconLabelHelper.State.NONE);
+
+		if (isSelected) {
+			c.setBackground(table.getSelectionBackground());
+		}
+
+		return c;
 	}
 }

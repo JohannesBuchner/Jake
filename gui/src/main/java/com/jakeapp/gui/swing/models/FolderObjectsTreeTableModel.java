@@ -9,37 +9,60 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.synchronization.FileStatus;
 
 import javax.swing.tree.TreePath;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.*;
 
 public class FolderObjectsTreeTableModel implements TreeTableModel {
 	private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
 
 	private ProjectFilesTreeNode root;
 
+	private List<TreeModelListener> listeners = new ArrayList<TreeModelListener>();
+
 	public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
+		Timer timer = new Timer(50, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fireRepaint();
+			}
+		});
+		timer.setRepeats(true);
+		timer.start();
+	}
+
+	public void fireRepaint() {
+		for (TreeModelListener l : listeners) {
+			TreeModelEvent e = new TreeModelEvent(root, new TreePath(root));
+			l.treeNodesChanged(e);
+		}
 	}
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 			case 0:
-				return ProjectFilesStatusCell.class;
+				return FileStatus.class;
 			case 1:
-				return ProjectFilesTreeNode.class;
+				return ProjectFilesLockCell.class;
 			case 2:
-				return String.class;
+				return ProjectFilesTreeNode.class;
 			case 3:
 				return String.class;
 			case 4:
+				return String.class;
+			case 5:
 				return String.class;
 			default:
 				return null;
@@ -48,7 +71,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 5;
+		return 6;
 	}
 
 	@Override
@@ -57,12 +80,14 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 			case 0:
 				return "";
 			case 1:
-				return "Name";
+				return "";
 			case 2:
-				return "Size";
+				return "Name";
 			case 3:
-				return "Last Modified";
+				return "Size";
 			case 4:
+				return "Last Modified";
+			case 5:
 				return "Tags";
 			default:
 				return null;
@@ -71,8 +96,8 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public int getHierarchicalColumn() {
-		// Second column is the hierarchical one (filename)
-		return 1;
+		// Third column is the hierarchical one (filename)
+		return 2;
 	}
 
 	@Override
@@ -85,14 +110,17 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 			switch (column) {
 				case 0:
 					// TODO: Change me to something useful
-					return new ProjectFilesStatusCell();
+					return new FileStatus("blubb", 0, false, false, false, false);
 				case 1:
-					return ournode;
+					// TODO: Change me to something useful
+					return new ProjectFilesLockCell();
 				case 2:
-					return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+					return ournode;
 				case 3:
-					return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+					return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
 				case 4:
+					return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+				case 5:
 					return TagHelper.tagsToString(JakeMainApp.getApp().getCore().getTagsForFileObject(ournode.getFileObject()));
 				default:
 					return "INVALIDCOLUMN";
@@ -100,14 +128,16 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 		} else {
 			switch (column) {
 				case 0:
-					return ournode;
+					return null;
 				case 1:
-					return "";
+					return null;
 				case 2:
-					return "";
+					return ournode;
 				case 3:
 					return "";
 				case 4:
+					return "";
+				case 5:
 					return "";
 				default:
 					return "INVALIDCOLUMN";
@@ -119,13 +149,13 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 	public boolean isCellEditable(Object node, int column) {
 		// Tags are editable, but only for files
 		ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
-		return column == 4 && ournode.isFile();
+		return column == 5 && ournode.isFile();
 	}
 
 	@Override
 	public void setValueAt(Object value, Object node, int column) {
 		ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
-		if (column == 4 && ournode.isFile()) {
+		if (column == 5 && ournode.isFile()) {
 			// Change tags
 			FileObject fileobj = ournode.getFileObject();
 
@@ -190,11 +220,12 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
-		// TODO: Do we need one?
+		listeners.add(l);
+		System.err.println("Listener added! " + l.toString());
 	}
 
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
-		// TODO: Do we need one?
+		listeners.remove(l);
 	}
 }

@@ -44,7 +44,8 @@ public class FileIconLabelHelper {
 	 */
 	public static Component getIconLabel(File file, State state) {
 		JLabel label = new JLabel();
-		label.setOpaque(false);
+		label.setOpaque(true);
+		label.setBackground(new Color(255, 255, 255, 0));
 
 		Icon nativeIcon;
 		try {

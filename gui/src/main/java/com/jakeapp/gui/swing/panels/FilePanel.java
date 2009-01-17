@@ -13,6 +13,7 @@ package com.jakeapp.gui.swing.panels;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.synchronization.FileStatus;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
@@ -25,6 +26,7 @@ import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
@@ -38,6 +40,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author studpete
@@ -46,8 +49,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 	private static FilePanel instance;
 
-	private static final int FILETREETABLE_NODECOLUMN = 2;
-	private static final int FILETABLE_NODECOLUMN = 0;
+	public static final int FILETREETABLE_NODECOLUMN = 2;
+	public static final int FILETABLE_NODECOLUMN = 0;
 
 	private Project project;
 
@@ -60,6 +63,16 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton conflictsBtn;
 
 	private boolean treeViewActive = true;
+
+	private HashMap<FileObject, Integer> downloadProgress;
+
+	public boolean isInTransfer(FileObject fo) {
+		return downloadProgress.containsKey(fo);
+	}
+
+	public int getFileProgress(FileObject fo) {
+		return downloadProgress.containsKey(fo) ? downloadProgress.get(fo) : -1;
+	}
 
 	/**
 	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
@@ -124,7 +137,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -150,13 +163,18 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
-		fileTreeTable.setDefaultRenderer(ProjectFilesStatusCell.class, new FileStatusTreeCellRenderer());
+		fileTreeTable.setDefaultRenderer(FileStatus.class, new FileStatusTreeCellRenderer());
+		fileTreeTable.setDefaultRenderer(ProjectFilesLockCell.class, new FileLockedTreeCellRenderer());
 		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class, new ProjectFilesTableCellRenderer());
 
 		fileTreeTable.addMouseListener(new FileContainerMouseListener(this, fileTreeTable, FILETREETABLE_NODECOLUMN));
 		fileTable.addMouseListener(new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
 
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
+
+		// FIXME: This still needs to be implemented!
+		// Whenever the core tells us a file is being downloaded, it should be added here
+		downloadProgress = new HashMap<FileObject, Integer>();
 	}
 
 	public static FilePanel getInstance() {
@@ -281,7 +299,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+				 .getY());
 		}
 	}
 

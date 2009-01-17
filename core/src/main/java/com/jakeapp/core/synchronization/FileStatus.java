@@ -82,4 +82,11 @@ public class FileStatus {
 		return this.remotelyModified;
 	}
 
+	public boolean isOnlyLocal() {
+		return onlyLocal;
+	}
+
+	public boolean isOnlyRemote() {
+		return onlyRemote;
+	}
 }

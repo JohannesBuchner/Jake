@@ -141,8 +141,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		// get resource map
 		this.resourceMap = org.jdesktop.application.Application.getInstance(
-				  com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-				  .getResourceMap(NotesPanel.class);
+			 com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+			 .getResourceMap(NotesPanel.class);
 
 		//get core
 		this.core = JakeMainApp.getCore();
@@ -185,7 +185,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		// set the background painter
 		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
 		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-				  GlossPainter.GlossPosition.TOP);
+			 GlossPainter.GlossPosition.TOP);
 		this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 	}
 
@@ -252,10 +252,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 	/**
-	 * Safe the currently selected note. If it is a local note, it is only saved, if it is a shared note
+	 * Save the currently selected note. If it is a local note, it is only saved, if it is a shared note
 	 * it is automatically commited.
 	 */
-	private void safeSelectedNote() {
+	private void saveSelectedNote() {
 		//TODO
 	}
 
@@ -285,18 +285,18 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		jScrollPane2.setName("jScrollPane2"); // NOI18N
 
 		notesTable.setModel(new javax.swing.table.DefaultTableModel(
-				  new Object[][]{
-							 {"Gui redesign nicht vergessen...", "8.12.2008 18:00", "Peter"},
-							 {"Blabla", "9.12.2008", "Simon"},
-							 {"xxx", "10.12", "a"},
-							 {"bbb", "11.12", "b"}
-				  },
-				  new String[]{
-							 "Note", "Date", "User"
-				  }
+			 new Object[][]{
+				  {"Gui redesign nicht vergessen...", "8.12.2008 18:00", "Peter"},
+				  {"Blabla", "9.12.2008", "Simon"},
+				  {"xxx", "10.12", "a"},
+				  {"bbb", "11.12", "b"}
+			 },
+			 new String[]{
+				  "Note", "Date", "User"
+			 }
 		) {
 			boolean[] canEdit = new boolean[]{
-					  false, false, false
+				 false, false, false
 			};
 
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
