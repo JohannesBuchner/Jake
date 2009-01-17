@@ -176,6 +176,8 @@ public class TestFailoverTransfers {
 			@Override
 			public void succeeded(IFileTransfer ft) {
 				ftclient = ft;
+				log.debug("client fail-over reported success: " + ft);
+				log.debug("receiving? " + ftclient.isReceiving());
 				Assert.assertTrue(ftclient.isReceiving());
 				t.step("negotiation succeeded");
 			}

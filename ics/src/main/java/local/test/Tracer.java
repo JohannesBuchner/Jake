@@ -18,12 +18,15 @@ public class Tracer {
 
 	private Semaphore s = new Semaphore(0);
 
-	public synchronized void step(String step) {
-		this.trace.add(step);
+	public void step(String step) {
+		log.debug("'" + step + "' reached.");
+		synchronized (trace) {
+			this.trace.add(step);
+		}
 		this.s.release();
 	}
 
-	public synchronized Iterable<String> getTrace() {
+	public Iterable<String> getTrace() {
 		return this.trace;
 	}
 
@@ -73,11 +76,15 @@ public class Tracer {
 				log.debug("Waiting for '" + value + "' ... ");
 				if (this.s.tryAcquire(time, unit)) {
 					if (this.trace.remove(value)) {
-						log.debug("'" + value + "' reached.");
+						log.debug("'" + value + "' awaited.");
 						return true;
 					}
 				} else {
 					log.debug("Waiting failed: Current " + toString());
+					if (this.trace.remove(value)) {
+						log.debug("But '" + value + "' is magically here.");
+						return true;
+					}
 					return false;
 				}
 			} catch (InterruptedException e) {

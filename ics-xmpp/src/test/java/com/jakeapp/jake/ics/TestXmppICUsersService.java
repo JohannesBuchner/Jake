@@ -129,6 +129,7 @@ public class TestXmppICUsersService {
 	@Prerequisite(checker = TestEnvironment.class)
 	public void testIsLoggedInAfterRequestingStatus() throws Exception {
 		testOnlineStatusListener();
+		Thread.sleep(10);
 		Assert.assertTrue(this.ics.getStatusService().isLoggedIn(testUser2));
 	}
 
