@@ -33,13 +33,6 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
-		Timer timer = new Timer(50, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				fireRepaint();
-			}
-		});
-		timer.setRepeats(true);
-		timer.start();
 	}
 
 	public void fireRepaint() {
@@ -53,9 +46,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 			case 0:
-				return FileStatus.class;
+				return FileObjectStatusCell.class;
 			case 1:
-				return ProjectFilesLockCell.class;
+				return FileObjectLockedCell.class;
 			case 2:
 				return ProjectFilesTreeNode.class;
 			case 3:
@@ -109,11 +102,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 		if (ournode.isFile()) {
 			switch (column) {
 				case 0:
-					// TODO: Change me to something useful
-					return new FileStatus("blubb", 0, false, false, false, false);
+					return new FileObjectStatusCell(ournode.getFileObject());
 				case 1:
-					// TODO: Change me to something useful
-					return new ProjectFilesLockCell();
+					return new FileObjectLockedCell(ournode.getFileObject());
 				case 2:
 					return ournode;
 				case 3:

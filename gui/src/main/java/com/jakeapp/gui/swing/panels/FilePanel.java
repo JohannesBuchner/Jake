@@ -50,6 +50,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private static FilePanel instance;
 
 	public static final int FILETREETABLE_NODECOLUMN = 2;
+
 	public static final int FILETABLE_NODECOLUMN = 0;
 
 	private Project project;
@@ -63,16 +64,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton conflictsBtn;
 
 	private boolean treeViewActive = true;
-
-	private HashMap<FileObject, Integer> downloadProgress;
-
-	public boolean isInTransfer(FileObject fo) {
-		return downloadProgress.containsKey(fo);
-	}
-
-	public int getFileProgress(FileObject fo) {
-		return downloadProgress.containsKey(fo) ? downloadProgress.get(fo) : -1;
-	}
 
 	/**
 	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
@@ -163,18 +154,15 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
-		fileTreeTable.setDefaultRenderer(FileStatus.class, new FileStatusTreeCellRenderer());
-		fileTreeTable.setDefaultRenderer(ProjectFilesLockCell.class, new FileLockedTreeCellRenderer());
 		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class, new ProjectFilesTableCellRenderer());
+
+		fileTreeTable.setDefaultRenderer(FileObjectStatusCell.class, new FileStatusTreeCellRenderer());
+		fileTreeTable.setDefaultRenderer(FileObjectLockedCell.class, new FileLockedTreeCellRenderer());
 
 		fileTreeTable.addMouseListener(new FileContainerMouseListener(this, fileTreeTable, FILETREETABLE_NODECOLUMN));
 		fileTable.addMouseListener(new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
 
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
-
-		// FIXME: This still needs to be implemented!
-		// Whenever the core tells us a file is being downloaded, it should be added here
-		downloadProgress = new HashMap<FileObject, Integer>();
 	}
 
 	public static FilePanel getInstance() {
@@ -413,6 +401,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			} catch (ProjectFolderMissingException e) {
 				e.printStackTrace();
 			}
+
 			tableModel = new FileObjectsTableModel(new ArrayList<FileObject>());
 
 			fileTable.setModel(tableModel);

@@ -2,6 +2,8 @@ package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.core.synchronization.FileStatus;
@@ -20,37 +22,6 @@ public class FileStatusTreeCellRenderer extends DefaultTableCellRenderer {
 		table.getColumnModel().getColumn(column).setMaxWidth(30);
 		table.getColumnModel().getColumn(column).setMinWidth(30);
 
-		if (value == null) {
-			JLabel thing = new JLabel("");
-			thing.setOpaque(true);
-			thing.setBackground(new Color(0, 0, 0, 0));
-			if (isSelected) {
-				thing.setBackground(table.getSelectionBackground());
-			}
-			return thing;
-		}
-
-		FileStatus status = (FileStatus) value;
-		FileObject fo = ((ProjectFilesTreeNode) table.getValueAt(row, FilePanel.FILETREETABLE_NODECOLUMN)).getFileObject();
-
-		int transferStatus = FilePanel.getInstance().getFileProgress(fo);
-		if (transferStatus != -1) {
-			// TODO: Make this less ugly and implement it
-			JLabel thing = new JLabel("50%");
-			thing.setOpaque(true);
-			thing.setBackground(new Color(0, 0, 0, 0));
-			if (isSelected) {
-				thing.setBackground(table.getSelectionBackground());
-			}
-			return thing;
-		}
-
-		JLabel progress = new JLabel("---");
-
-		if (isSelected) {
-			progress.setBackground(table.getSelectionBackground());
-		}
-
-		return progress;
+		return value == null ? new JLabel("FLDR") : FileObjectStatusProvider.getStatusRendererComponent(((FileObjectStatusCell) value).getFileObject());
 	}
 }

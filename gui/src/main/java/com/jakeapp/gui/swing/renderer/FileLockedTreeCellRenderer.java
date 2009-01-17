@@ -1,5 +1,8 @@
 package com.jakeapp.gui.swing.renderer;
 
+import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
+import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
+
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +29,6 @@ public class FileLockedTreeCellRenderer extends DefaultTableCellRenderer {
 			this.setBackground(table.getSelectionBackground());
 		}
 
-		return this;
+		return value == null ? new JLabel("FLDR") : FileObjectStatusProvider.getLockedRendererComponent(((FileObjectLockedCell) value).getFileObject());
 	}
 }
