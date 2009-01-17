@@ -11,6 +11,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailibilityListener;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -576,8 +577,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<FileObject> getAllProjectFiles(Project project) throws ProjectFolderMissingException {
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailibilityListener al) {
+
+		// TODO: make async!
+		/*
 		try {
+
 			return this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -594,8 +599,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
-
+*/
 		return null;
+
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package com.jakeapp.gui.swing.helpers.styler;
 
 import com.jakeapp.gui.swing.helpers.Colors;
-import org.jdesktop.swingx.painter.*;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+import org.jdesktop.swingx.painter.Painter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,13 +30,10 @@ public abstract class AbstractStyler implements Styler {
 	}
 
 	public Painter getContentPanelBackgroundPainter() {
-		if (true) {
-			// TODO: Debugging only, return to normal later
-			return new MattePainter(new Color(0xdddddd));
-		}
+
 		MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.6f));
 		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.5f),
-			 GlossPainter.GlossPosition.TOP);
+				  GlossPainter.GlossPosition.TOP);
 		return new CompoundPainter(mp, gp);
 	}
 

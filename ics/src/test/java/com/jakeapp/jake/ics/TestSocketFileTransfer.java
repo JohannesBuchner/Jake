@@ -1,27 +1,6 @@
 package com.jakeapp.jake.ics;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.channels.FileChannel;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-import local.test.Tracer;
-
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
@@ -34,6 +13,18 @@ import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import junit.framework.Assert;
+import local.test.Tracer;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 public class TestSocketFileTransfer {
 
@@ -88,27 +79,27 @@ public class TestSocketFileTransfer {
 	private IFileTransfer fileTransfer;
 
 	private void createFriendlyPeer(final Tracer t, UserId userid2)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		createPeer(t, userid2, true);
 	}
 
 	private void createMeanPeer(final Tracer t, UserId userid2)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		createPeer(t, userid2, false);
 	}
 
 	private void createPeer(final Tracer t, UserId userid2, final boolean acceptAction)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		createPeer(t, userid2, acceptAction, true);
 	}
 
 	private void createEmptyPeer(final Tracer t, UserId userid2)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		createPeer(t, userid2, true, false);
 	}
 
 	private void createPeer(final Tracer t, UserId userid2, final boolean acceptAction,
-			final boolean hasTestFile) throws NotLoggedInException {
+									final boolean hasTestFile) throws NotLoggedInException {
 		log.debug("createFriendlyPeer: creating MsgService");
 		IMsgService msg = msgX.addUser(userid2);
 		msg.registerReceiveMessageListener(new IMessageReceiveListener() {
@@ -182,7 +173,7 @@ public class TestSocketFileTransfer {
 		});
 
 		Assert.assertTrue(this.t.awaitStep("clientside negotiation succeeded", 1,
-				TimeUnit.SECONDS));
+				  TimeUnit.SECONDS));
 
 		this.log.debug("main: waiting for filetransfer to finish: " + this.fileTransfer);
 
@@ -196,7 +187,7 @@ public class TestSocketFileTransfer {
 			}
 		}
 		Assert.assertTrue(this.t.await("getting content from fs,started on server", 40,
-				TimeUnit.MILLISECONDS));
+				  TimeUnit.MILLISECONDS));
 		log.debug(this.t.toString());
 		Assert.assertTrue("timeout", this.t.isDone(40, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(testfile.length() > 0);
@@ -221,7 +212,7 @@ public class TestSocketFileTransfer {
 				this.log.debug("clientside negotiation failed: " + reason);
 				t.step("clientside negotiation failed");
 				Assert.assertEquals(reason.getClass(),
-						OtherUserDoesntHaveRequestedContentException.class);
+						  OtherUserDoesntHaveRequestedContentException.class);
 			}
 
 			@Override
@@ -233,7 +224,7 @@ public class TestSocketFileTransfer {
 		});
 
 		Assert.assertTrue(this.t.awaitStep("clientside negotiation failed", 1,
-				TimeUnit.SECONDS));
+				  TimeUnit.SECONDS));
 
 		Assert.assertTrue("timeout", this.t.isDone(1000, TimeUnit.MILLISECONDS));
 	}
@@ -256,7 +247,7 @@ public class TestSocketFileTransfer {
 				this.log.debug("clientside negotiation failed: " + reason);
 				t.step("clientside negotiation failed");
 				Assert.assertEquals(reason.getClass(),
-						OtherUserDoesntHaveRequestedContentException.class);
+						  OtherUserDoesntHaveRequestedContentException.class);
 			}
 
 			@Override
@@ -268,7 +259,7 @@ public class TestSocketFileTransfer {
 		});
 
 		Assert.assertTrue(this.t.awaitStep("clientside negotiation failed", 1,
-				TimeUnit.SECONDS));
+				  TimeUnit.SECONDS));
 
 		Assert.assertTrue("timeout", this.t.isDone(1000, TimeUnit.MILLISECONDS));
 	}

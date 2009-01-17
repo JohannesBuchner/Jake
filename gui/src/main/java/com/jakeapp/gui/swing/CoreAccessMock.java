@@ -439,18 +439,38 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public List<FileObject> getAllProjectFiles(Project project) throws ProjectFolderMissingException {
-		// This is all mocked from the actual file system
-		String rootPath = project.getRootPath();
-		log.debug("File mocking: Project root path is " + rootPath);
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(final Project project, final AvailibilityListener avl) {
 
-		File rootFolder = new File(rootPath);
-		if (!rootFolder.exists()) {
-			throw new ProjectFolderMissingException(rootPath);
-		}
+		log.info("Mock: getAllProjectFiles: " + project);
 
-		return recursiveFileObjectListHelper(project, new File(project.getRootPath()), "");
+		return new AvailableLaterObject<List<FileObject>>(avl) {
+			@Override
+			public void run() {
+
+				// This is all mocked from the actual file system
+				String rootPath = project.getRootPath();
+				log.debug("File mocking: Project root path is " + rootPath);
+
+				File rootFolder = new File(rootPath);
+				if (!rootFolder.exists()) {
+					this.listener.error(new ProjectFolderMissingException(rootPath));
+					return;
+				}
+
+				try {
+					Thread.sleep(800);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// query the data
+				ArrayList<FileObject> fo = recursiveFileObjectListHelper(project, new File(project.getRootPath()), "");
+				log.debug("File mocking done!");
+				this.set(fo);
+			}
+		}.start();
 	}
+
 
 	@Override
 	public int getFileStatus(Project project, FileObject file) {
@@ -458,6 +478,8 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	private ArrayList<FileObject> recursiveFileObjectListHelper(Project p, File f, String relPath) {
+		log.info("recursiveFileObjectListHelper: " + f + " " + relPath);
+
 		if (!f.isDirectory()) {
 			throw new IllegalArgumentException(f.getAbsolutePath() + " is not a directory");
 		}

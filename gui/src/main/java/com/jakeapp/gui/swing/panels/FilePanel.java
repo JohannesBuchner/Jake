@@ -18,24 +18,18 @@ import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.*;
-import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.helpers.ProjectFilesStatusCell;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
-import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
+import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
-import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
+import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
-import org.jdesktop.swingx.JXTreeTable;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -128,7 +122,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -284,7 +278,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-				 .getY());
+					  .getY());
 		}
 	}
 
@@ -391,14 +385,23 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			TreeTableModel treeTableModel = null;
 			TableModel tableModel = null;
 
-			try {
-				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
-				tableModel = new FileObjectsTableModel(JakeMainApp.getApp().getCore().getAllProjectFiles(JakeMainApp.getApp().getProject()));
-				fileTreeTable.setTreeTableModel(treeTableModel);
-				fileTable.setModel(tableModel);
-			} catch (ProjectFolderMissingException e) {
-				log.warn("Project folder missing!");
-			}
+
+			// TODO: lazy loading !!!
+			//treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+			tableModel = new FileObjectsTableModel(new ArrayList<FileObject>());
+			//fileTreeTable.setTreeTableModel(treeTableModel);
+			fileTable.setModel(tableModel);
+
+			// start get all files from project, async
+			JakeExecutor.exec(new GetAllProjectFilesWorker(JakeMainApp.getProject()));
+
+
 		}
+	}
+
+	public void setProjectFiles(java.util.List<FileObject> files) {
+		log.info("setting project files...");
+		fileTable.setModel(new FileObjectsTableModel(files));
+		fileTable.updateUI();
 	}
 }

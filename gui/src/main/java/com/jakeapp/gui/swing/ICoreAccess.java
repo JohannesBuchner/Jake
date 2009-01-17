@@ -10,6 +10,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailibilityListener;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -35,7 +36,7 @@ public interface ICoreAccess {
 	/**
 	 * is distributed
 	 */
-	public static final int SYNC_HAS_LOGENTRIES = 2;
+	public static final int SYNC_HAS_LgetAllOGENTRIES = 2;
 	/**
 	 * we have this file
 	 */
@@ -375,10 +376,8 @@ public interface ICoreAccess {
 	 *
 	 * @param project The project in question
 	 * @return A collection of all FileObjects in the project
-	 * @throws ProjectFolderMissingException if the project folder doesn't exist
 	 */
-	public List<FileObject> getAllProjectFiles(Project project)
-			  throws ProjectFolderMissingException;
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailibilityListener avl);
 
 	/**
 	 * Gets the sync status of a file

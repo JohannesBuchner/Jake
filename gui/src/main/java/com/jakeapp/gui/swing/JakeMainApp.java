@@ -216,8 +216,8 @@ public class JakeMainApp extends SingleFrameApplication implements
 		return JakeMainView.getMainView().getFrame();
 	}
 
-	public Project getProject() {
-		return project;
+	public static Project getProject() {
+		return getApp().project;
 	}
 
 

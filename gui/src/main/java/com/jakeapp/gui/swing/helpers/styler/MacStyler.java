@@ -16,7 +16,6 @@ import java.awt.*;
 public class MacStyler extends AbstractStyler {
 
 	public MacStyler() {
-
 		// Tweak Apple's "Aqua" Mac OS LAF.
 		// Apple's UI delegate has over-tight borders. (Apple 4417784.) Work-around by Werner Randelshofer.
 		UIManager.put("OptionPane.border", GuiUtilities.makeEmptyBorderResource(15 - 3, 24 - 3, 20 - 3, 24 - 3));
@@ -37,6 +36,7 @@ public class MacStyler extends AbstractStyler {
 		btn.setForeground(Color.WHITE);
 		btn.putClientProperty("JButton.buttonType", "recessed");
 	}
+
 
 	@Override
 	public void styleToolbarButton(JToggleButton btn) {

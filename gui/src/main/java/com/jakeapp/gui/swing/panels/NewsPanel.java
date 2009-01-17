@@ -19,8 +19,10 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
+import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
 import com.jakeapp.gui.swing.renderer.PeopleListCellRenderer;
@@ -226,7 +228,8 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		if (getProject() == null) {
 			return;
 		}
-
+/*
+//TODO: find better way !
 		try {
 			FolderObject rootPath = JakeMainApp.getApp().getCore().getProjectRootFolder(getProject());
 		} catch (ProjectFolderMissingException e) {
@@ -236,7 +239,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 			projectIconLabel.setIcon(invalidIcon);
 
 			return;
-		}
+		}*/
 
 		projectStatusLabel.setForeground(Color.BLACK);
 
