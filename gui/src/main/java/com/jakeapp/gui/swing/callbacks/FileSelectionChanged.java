@@ -47,5 +47,5 @@ public interface FileSelectionChanged {
 		}
 	}
 
-	void fileSelectionChanged(FileSelectedEvent event);
+	public void fileSelectionChanged(FileSelectedEvent event);
 }

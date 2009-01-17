@@ -20,11 +20,11 @@ import java.util.List;
 public class ImportFileAction extends FileAction {
 	private static final Logger log = Logger.getLogger(ImportFileAction.class);
 
-	public ImportFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public ImportFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-				  getString("importMenuItem.text");
+			 getString("importMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
@@ -67,6 +67,6 @@ public class ImportFileAction extends FileAction {
 
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
 		JakeExecutor.exec(new ImportFileFolderWorker(
-				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
+			 Arrays.asList(dialog.getSelectedFiles()), destFolder));
 	}
 }

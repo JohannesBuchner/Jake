@@ -8,12 +8,13 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Date;
 
 import javax.swing.*;
 
 public class OpenFileAction extends FileAction {
-	public OpenFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public OpenFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("openMenuItem.text");
@@ -21,6 +22,12 @@ public class OpenFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exactly one element is selected.
+		System.err.println("SELECTED ROW COUNT " + getSelectedRowCount() + " at " + new Date().toString());
+		setEnabled(getSelectedRowCount() == 1);
+	}
+
+	@Override
+	protected void refreshSelf() {
 		setEnabled(getSelectedRowCount() == 1);
 	}
 

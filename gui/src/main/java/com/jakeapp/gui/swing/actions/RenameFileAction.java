@@ -14,8 +14,8 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 
 public class RenameFileAction extends FileAction {
-	public RenameFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public RenameFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("renameMenuItem.text");
@@ -23,6 +23,11 @@ public class RenameFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected.
+		setEnabled(getSelectedRowCount() == 1);
+	}
+
+	@Override
+	protected void refreshSelf() {
 		setEnabled(getSelectedRowCount() == 1);
 	}
 

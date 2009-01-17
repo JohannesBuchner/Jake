@@ -12,8 +12,8 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class PullFileAction extends FileAction {
-	public PullFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public PullFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("pullMenuItem.text");

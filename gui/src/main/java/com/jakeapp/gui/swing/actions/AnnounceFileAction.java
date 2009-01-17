@@ -12,8 +12,8 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class AnnounceFileAction extends FileAction {
-	public AnnounceFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public AnnounceFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("announceMenuItem.text");

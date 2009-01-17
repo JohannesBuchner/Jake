@@ -13,8 +13,8 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class LockFileAction extends FileAction {
-	public LockFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public LockFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("lockMenuItem.text");
@@ -22,6 +22,13 @@ public class LockFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected AND that element is NOT a folder.
+		boolean enabled = (getSelectedRowCount() == 1 &&
+			 getSingleNode().isFile());
+		setEnabled(enabled);
+	}
+
+	@Override
+	protected void refreshSelf() {
 		boolean enabled = (getSelectedRowCount() == 1 &&
 			 getSingleNode().isFile());
 		setEnabled(enabled);

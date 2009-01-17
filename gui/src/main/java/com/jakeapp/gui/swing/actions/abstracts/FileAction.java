@@ -2,26 +2,40 @@ package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.ArrayList;
 
-public abstract class FileAction extends ProjectAction {
+public abstract class FileAction extends ProjectAction implements NodeSelectionChanged {
 	private static final Logger log = Logger.getLogger(FileAction.class);
 
 	private List<ProjectFilesTreeNode> nodes;
 	private int selectedRowCount;
 
-	/**
-	 * Creates the file action.
-	 * Depends on a JXTreeTable
-	 *
-	 * @param nodes
-	 */
-	public FileAction(List<ProjectFilesTreeNode> nodes) {
+	public FileAction() {
 		super();
-		this.nodes = nodes;
-		this.selectedRowCount = nodes != null ? nodes.size() : 0;
+		System.err.println("ADDING MYSELF TO LISTENER");
+		FilePanel.getInstance().addNodeSelectionListener(this);
+		selectedRowCount = 0;
+		nodes = new ArrayList<ProjectFilesTreeNode>();
+	}
+
+	@Override
+	public void nodeSelectionChanged(NodeSelectedEvent event) {
+		System.err.println("RECEIVED NODESELECTIONEVENT: " + event.size());
+		this.selectedRowCount = event.size();
+		this.nodes = event.getNodes();
+		this.refreshSelf();
+	}
+
+	/**
+	 * In case the subclasses need to do something when an event comes in
+	 */
+	protected void refreshSelf() {
 	}
 
 	/**

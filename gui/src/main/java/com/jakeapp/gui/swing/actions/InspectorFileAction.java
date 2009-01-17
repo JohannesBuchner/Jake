@@ -22,12 +22,17 @@ public class InspectorFileAction extends FileAction {
 			 );
 	}
 
-	public InspectorFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public InspectorFileAction() {
+		super();
 
 		putValue(Action.NAME, getName());
 
 		// only enable if exact one element is selected.
+		setEnabled(getSelectedRowCount() == 1);
+	}
+
+	@Override
+	protected void refreshSelf() {
 		setEnabled(getSelectedRowCount() == 1);
 	}
 

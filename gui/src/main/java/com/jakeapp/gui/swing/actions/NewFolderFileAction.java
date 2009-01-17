@@ -13,14 +13,21 @@ import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
 
 public class NewFolderFileAction extends FileAction {
-	public NewFolderFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public NewFolderFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("newFolderMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
+		// only enable if exact one element is selected AND that element is a folder.
+		boolean enabled = (getSelectedRowCount() == 1 && getSingleNode().isFolder());
+		setEnabled(enabled);
+	}
+
+	@Override
+	protected void refreshSelf() {
 		// only enable if exact one element is selected AND that element is a folder.
 		boolean enabled = (getSelectedRowCount() == 1 && getSingleNode().isFolder());
 		setEnabled(enabled);

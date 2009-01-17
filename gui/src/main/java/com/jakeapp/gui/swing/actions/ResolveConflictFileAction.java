@@ -11,8 +11,8 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class ResolveConflictFileAction extends FileAction {
-	public ResolveConflictFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public ResolveConflictFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("resolveConflictMenuitem.text");
@@ -20,6 +20,11 @@ public class ResolveConflictFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected AND that element is NOT a folder.
+		setEnabled(isSingleFileSelected());
+	}
+
+	@Override
+	protected void refreshSelf() {
 		setEnabled(isSingleFileSelected());
 	}
 

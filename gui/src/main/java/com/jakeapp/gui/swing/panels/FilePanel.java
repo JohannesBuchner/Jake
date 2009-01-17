@@ -18,6 +18,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.*;
@@ -56,6 +57,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private Project project;
 
 	private java.util.List<FileSelectionChanged> fileSelectionListeners = new ArrayList<FileSelectionChanged>();
+	private java.util.List<NodeSelectionChanged> nodeSelectionListeners = new ArrayList<NodeSelectionChanged>();
+
 	private ResourceMap resourceMap;
 	private JToggleButton treeBtn;
 	private JToggleButton flatBtn;
@@ -64,6 +67,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton conflictsBtn;
 
 	private boolean treeViewActive = true;
+
+	private JPopupMenu popupMenu = new JakePopupMenu();
 
 	/**
 	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
@@ -103,6 +108,26 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 	}
 
+	private void initPopupMenu(JPopupMenu pm) {
+		pm.add(new JMenuItem(new OpenFileAction()));
+		// TODO: show always? dynamically? (alwasy for now...while dev)
+		pm.add(new JMenuItem(new ResolveConflictFileAction()));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new AnnounceFileAction()));
+		pm.add(new JMenuItem(new PullFileAction()));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new DeleteFileAction()));
+		pm.add(new JMenuItem(new RenameFileAction()));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new InspectorFileAction()));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new ImportFileAction()));
+		pm.add(new JMenuItem(new NewFolderFileAction()));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new LockFileAction()));
+		pm.add(new JMenuItem(new LockWithMessageFileAction()));
+	}
+
 	public void addFileSelectionListener(FileSelectionChanged listener) {
 		fileSelectionListeners.add(listener);
 	}
@@ -111,10 +136,26 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		fileSelectionListeners.remove(listener);
 	}
 
+	public void addNodeSelectionListener(NodeSelectionChanged listener) {
+		log.debug("NodeSelectionListener added");
+		nodeSelectionListeners.add(listener);
+	}
+
+	public void removeNodeSelectionListener(NodeSelectionChanged listener) {
+		nodeSelectionListeners.remove(listener);
+	}
+
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
 		log.debug("notify selection listeners");
 		for (FileSelectionChanged c : fileSelectionListeners) {
 			c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
+		}
+	}
+
+	public void notifyNodeSelectionListeners(java.util.List<ProjectFilesTreeNode> objs) {
+		log.debug("notify selection listeners");
+		for (NodeSelectionChanged c : nodeSelectionListeners) {
+			c.nodeSelectionChanged(new NodeSelectionChanged.NodeSelectedEvent(objs));
 		}
 	}
 
@@ -163,6 +204,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		fileTable.addMouseListener(new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
 
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
+
+		// Initialize popup menu
+		initPopupMenu(popupMenu);
 	}
 
 	public static FilePanel getInstance() {
@@ -186,14 +230,18 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			java.util.List<FileObject> list = new ArrayList<FileObject>();
+			java.util.List<FileObject> fileObjs = new ArrayList<FileObject>();
+			java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
 			for (int row : fileTreeTable.getSelectedRows()) {
 				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
 				if (node.isFile()) {
-					list.add(node.getFileObject());
+					fileObjs.add(node.getFileObject());
 				}
+				nodeObjs.add(node);
 			}
-			panel.notifyFileSelectionListeners(list);
+
+			panel.notifyFileSelectionListeners(fileObjs);
+			panel.notifyNodeSelectionListeners(nodeObjs);
 		}
 	}
 
@@ -226,29 +274,45 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				// variable for the beginning and end selects only that one
 				// row.
 				// ONLY select new item if we didn't select multiple items.
+
+				java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
+				for (int currRow : container.getSelectedRows()) {
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(currRow, nodeColumn);
+					nodeObjs.add(node);
+				}
+
 				if (container.getSelectedRowCount() <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
 					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(rowNumber, nodeColumn);
+
 					if (node != null && node.isFile()) {
-						java.util.List<FileObject> list = new ArrayList<FileObject>();
-						list.add(node.getFileObject());
-						panel.notifyFileSelectionListeners(list);
+						java.util.List<FileObject> fileObjs = new ArrayList<FileObject>();
+
+						fileObjs.add(node.getFileObject());
+
+						panel.notifyFileSelectionListeners(fileObjs);
 					} else {
 						panel.notifyFileSelectionListeners(null);
 					}
+
 				}
+
+				panel.notifyNodeSelectionListeners(nodeObjs);
 
 				showMenu(me);
 			} else if (SwingUtilities.isLeftMouseButton(me)) {
-				java.util.List<FileObject> list = new ArrayList<FileObject>();
+				java.util.List<FileObject> fileObjs = new ArrayList<FileObject>();
+				java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
+
 				for (int row : container.getSelectedRows()) {
-					System.err.println("NODECOLUMN: " + nodeColumn);
 					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(row, nodeColumn);
 					if (node.isFile()) {
-						list.add(node.getFileObject());
+						fileObjs.add(node.getFileObject());
 					}
+					nodeObjs.add(node);
 				}
-				panel.notifyFileSelectionListeners(list);
+				panel.notifyFileSelectionListeners(fileObjs);
+				panel.notifyNodeSelectionListeners(nodeObjs);
 			}
 		}
 
@@ -259,34 +323,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		 * @param me
 		 */
 		private void showMenu(MouseEvent me) {
-			JPopupMenu pm = new JakePopupMenu();
-
-			ArrayList<ProjectFilesTreeNode> nodes = new ArrayList<ProjectFilesTreeNode>();
-
-			for (int i : container.getSelectedRows()) {
-				nodes.add((ProjectFilesTreeNode) container.getValueAt(i, nodeColumn));
-			}
-
-			pm.add(new JMenuItem(new OpenFileAction(nodes)));
-			// TODO: show always? dynamically? (alwasy for now...while dev)
-			pm.add(new JMenuItem(new ResolveConflictFileAction(nodes)));
-			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new AnnounceFileAction(nodes)));
-			pm.add(new JMenuItem(new PullFileAction(nodes)));
-			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new DeleteFileAction(nodes)));
-			pm.add(new JMenuItem(new RenameFileAction(nodes)));
-			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new InspectorFileAction(nodes)));
-			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new ImportFileAction(nodes)));
-			pm.add(new JMenuItem(new NewFolderFileAction(nodes)));
-			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new LockFileAction(nodes)));
-			pm.add(new JMenuItem(new LockWithMessageFileAction(nodes)));
-
-
-			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
+			popupMenu.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
 				 .getY());
 		}
 	}

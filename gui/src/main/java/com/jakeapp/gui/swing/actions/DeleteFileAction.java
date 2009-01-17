@@ -16,8 +16,8 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 
 public class DeleteFileAction extends FileAction {
-	public DeleteFileAction(List<ProjectFilesTreeNode> nodes) {
-		super(nodes);
+	public DeleteFileAction() {
+		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 			 getString("deleteMenuItem.text");
