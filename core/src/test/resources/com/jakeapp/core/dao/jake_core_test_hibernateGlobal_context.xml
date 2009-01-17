@@ -53,6 +53,7 @@
                 <!--<value>com.jakeapp.core.domain.UserId</value>-->
                 <value>com.jakeapp.core.domain.XMPPUserId</value>
                 <value>com.jakeapp.core.domain.Configuration</value>
+
             </list>
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>

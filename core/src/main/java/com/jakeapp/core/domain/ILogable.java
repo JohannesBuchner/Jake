@@ -1,6 +1,7 @@
 package com.jakeapp.core.domain;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * This interface is used within logEntrys.
@@ -9,5 +10,5 @@ import java.io.Serializable;
  * @see LogEntry#getBelongsTo()
  */
 public interface ILogable extends Serializable {
-
+    
 }

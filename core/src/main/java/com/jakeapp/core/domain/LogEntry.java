@@ -1,11 +1,12 @@
 package com.jakeapp.core.domain;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.ForeignKey;
+
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * A Log entry. It consists of an <code> action, timestamp </code>
@@ -20,7 +21,8 @@ import javax.persistence.Id;
  *  and marks a <code>LogEntry</code> as processed.
  * @author Dominik, Simon, christopher
  */
-@Entity
+
+@Entity(name = "logentries")
 public class LogEntry<T extends ILogable> {
 	private UUID uuid;
     private LogAction logAction;
@@ -28,7 +30,7 @@ public class LogEntry<T extends ILogable> {
     private Project project;
     private T belongsTo;
 
-    private ProjectMember member;
+//    private ProjectMember member;
     private String comment;
     private String checksum;
 	private boolean processed;
@@ -64,18 +66,34 @@ public class LogEntry<T extends ILogable> {
 		this.setProcessed(processed);
 	}
 
-	public void setUuid(UUID uuid) {
+    public LogEntry() {
+    }
+
+    public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
 
 	/**
 	 * @return the <code>uuid</code> for this <code>LogEntry</code>.
 	 */
-	@Id
-	@Column(name="ID", nullable=false)
-	public UUID getUuid() {
+//	@Id
+//	@Column(name="ID", nullable=false)
+	@Transient
+    public UUID getUuid() {
 		return this.uuid;
 	}
+
+    @Id
+    @Column(name = "id", nullable = false)
+    private String getUUIDString()
+    {
+        return this.uuid.toString();
+    }
+
+    private void setUUIDString(String uuid)
+    {
+        this.uuid = UUID.fromString(uuid);
+    }
 
 	/**
 	 * @param logAction The <code>LogAction</code> indicating what this
@@ -114,6 +132,7 @@ public class LogEntry<T extends ILogable> {
 	/**
 	 * @return the project this LogEntry was created for.
 	 */
+    @Column(name ="project", columnDefinition = "char(36)")
 	public Project getProject() {
 		return this.project;
 	}
@@ -128,22 +147,26 @@ public class LogEntry<T extends ILogable> {
 	 * Since not all LogEntries are caused by an object,
      * <code>null</code> can be returned as well.
 	 */
+    @Lob
+    @Column(name = "belongsto")
 	public T getBelongsTo() {
 		return this.belongsTo;
 	}
 
-	public void setMember(ProjectMember member) {
-		this.member = member;
-	}
+//	public void setMember(ProjectMember member) {
+//		this.member = member;
+//	}
 
 	/**
 	 * @return The <code>ProjectMember</code> that caused this
      * <code>LogEntry</code>.
 	 */
-	@Column(name="memberID", table = "projectmember", nullable = false)
-	public ProjectMember getMember() {
-		return this.member;
-	}
+//	@Column(name="memberID", table = "projectmember", nullable = false)
+
+//    @Column(name = "projectmember", nullable = false, columnDefinition = "char(36)")
+//	public ProjectMember getMember() {
+//		return this.member;
+//	}
 
 	public void setComment(String comment) {
 		this.comment = comment;
@@ -185,4 +208,29 @@ public class LogEntry<T extends ILogable> {
 	public boolean isProcessed() {
 		return this.processed;
 	}
+
+    private ProjectMember member;
+
+//    @ManyToOne(optional = false)
+//    @Column(name = "projectmember", table = "projectmember")
+//    @ForeignKey(name = "projectmember"   )
+//    @Column(name = "projectmember", columnDefinition = "char(36)")
+
+    //@ManyToOne
+
+    @ManyToOne
+    public ProjectMember getMember() {
+        return member;
+    }
+
+    public void setMember(ProjectMember member) {
+        this.member = member;
+    }
+
+
+
+    public String toString()
+    {
+        return this.getClass().getName() + ": " + "LogAction: " + logAction.toString(); 
+    }
 }

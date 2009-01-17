@@ -59,7 +59,9 @@
                 <value>com.jakeapp.core.domain.NoteObject</value>
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.Tag</value>
-
+                <!--<value>com.jakeapp.core.domain.LogEntry</value>-->
+                <value>com.jakeapp.core.domain.ProjectLogEntry</value>
+                
             </list>
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
@@ -103,5 +105,8 @@
     </bean>
 
 
+    <bean id="logentryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
 
 </beans>

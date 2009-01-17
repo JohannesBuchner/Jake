@@ -397,13 +397,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		dao = this.getLogEntryDao(project);
 
 		// get Log via LogentryDao
-		try {
-			result = dao.getAll(project);
-		} catch (NoSuchProjectException e) {
-			throw new IllegalArgumentException(e);
-		}
+        result = dao.getAll();
 
-		return result;
+        return result;
 	}
 
 	@Override

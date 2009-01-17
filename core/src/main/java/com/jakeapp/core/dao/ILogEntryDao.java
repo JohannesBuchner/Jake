@@ -28,8 +28,6 @@ public interface ILogEntryDao {
     /**
      * Loads a specific LogEntry from the Database
      *
-     * @param project       project in which 
-     *   the <code>LogEntry</code> is searched.
      * @param name          the name of the jakeObject
      * @param projectmember the ProjectMember of this logEntry
      * @param timestamp     the timestamp of this logEntry
@@ -38,10 +36,10 @@ public interface ILogEntryDao {
      * @throws NoSuchProjectException  if the <code>Project</code> referenced by
      *                                 <code>project</code> does not exist.
      */
-    public LogEntry<? extends ILogable> get(Project project,
-                                            String name,
-                                            String projectmember,
-                                            Date timestamp)
+    public LogEntry<? extends ILogable> get(
+            String name,
+            String projectmember,
+            Date timestamp)
             throws NoSuchLogEntryException, NoSuchProjectException;
 
     /**
@@ -49,11 +47,9 @@ public interface ILogEntryDao {
      * This includes
      * not only unprocessed, but also processed LogEntries.
      *
-     * @param project The <code>Project</code> to get all LogEntries for.
      * @return List of LogEntrys
      */
-    public List<LogEntry<? extends ILogable>> getAll(Project project)
-            throws NoSuchProjectException;
+    public List<LogEntry<? extends ILogable>> getAll() ;
 
     /**
      * Get all LogEntrys stored in the database concerning a specific
@@ -103,11 +99,9 @@ public interface ILogEntryDao {
     /**
      * @return A list of all LogEntries for a <code>Project</code> that have
      * not been processed yet.
-     * @throws NoSuchProjectException if the <code>Project</code> referenced by
-     * <code>project</code> does not exist.
      */
-    public List<LogEntry<? extends ILogable>> getAllUnprocessed(Project project)
-            throws NoSuchProjectException;
+    public List<LogEntry<? extends ILogable>> getAllUnprocessed()
+            ;
 
     /**
      * @param project The <code>Project</code> to get

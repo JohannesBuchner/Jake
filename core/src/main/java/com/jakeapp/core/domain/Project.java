@@ -373,4 +373,6 @@ public class Project implements ILogable {
                 + ((this.rootPath == null) ? 0 : this.rootPath.hashCode());
         return result;
     }
+
+ 
 }

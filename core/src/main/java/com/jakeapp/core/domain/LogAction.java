@@ -1,5 +1,6 @@
 package com.jakeapp.core.domain;
 
+
 /**
  * The logAction represents the status of a certain JakeObject/LogEntry.
  * 
@@ -20,6 +21,7 @@ public enum LogAction {
 	/**
 	 * The file has been added.
 	 */
+    @Deprecated
 	FILE_ADD,
 
 	/**
@@ -30,7 +32,8 @@ public enum LogAction {
 	/**
 	 * the FileObject in question was moved to another location.
 	 */
-	FILE_MOVEDTO,
+	@Deprecated
+    FILE_MOVEDTO,
 
 	/**
 	 * a new version of a NoteObject was created.

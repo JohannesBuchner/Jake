@@ -31,7 +31,7 @@
 
     </bean>
 	-->
-	
+
     <bean id="msgService" class="com.jakeapp.core.services.MsgService" abstract="true">
 
     </bean>
@@ -49,6 +49,15 @@
         <constructor-arg ref="msgServiceFactory" index="1"
                          type="com.jakeapp.core.services.MsgServiceFactory"/>
     </bean>
+
+
+    <!--<bean id="friendlySyncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">-->
+        <!--<constructor-arg>-->
+            <!--< -->
+                    <!---->
+        <!--</constructor-arg>-->
+        <!---->
+    <!--</bean>-->
 
 
 </beans>
