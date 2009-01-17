@@ -21,7 +21,7 @@ public abstract class FileAction extends ProjectAction {
 	public FileAction(List<ProjectFilesTreeNode> nodes) {
 		super();
 		this.nodes = nodes;
-		this.selectedRowCount = nodes.size();
+		this.selectedRowCount = nodes != null ? nodes.size() : 0;
 	}
 
 	/**

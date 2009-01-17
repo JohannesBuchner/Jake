@@ -1,33 +1,19 @@
 package com.jakeapp.gui.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
-
+import com.explodingpixels.macwidgets.*;
+import com.explodingpixels.widgets.WindowUtils;
+import com.jakeapp.core.domain.InvitationState;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.actions.CreateProjectAction;
+import com.jakeapp.gui.swing.actions.ImportFileAction;
+import com.jakeapp.gui.swing.actions.InvitePeopleAction;
+import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
+import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.controls.SearchField;
+import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
+import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
+import com.jakeapp.gui.swing.panels.*;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -36,39 +22,17 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.PatternFilter;
 
-import com.explodingpixels.macwidgets.LabeledComponentGroup;
-import com.explodingpixels.macwidgets.MacButtonFactory;
-import com.explodingpixels.macwidgets.MacUtils;
-import com.explodingpixels.macwidgets.MacWidgetFactory;
-import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.explodingpixels.widgets.WindowUtils;
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.actions.CreateProjectAction;
-import com.jakeapp.gui.swing.actions.InvitePeopleAction;
-import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.controls.SearchField;
-import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.FileObjectNameFilter;
-import com.jakeapp.gui.swing.helpers.GuiUtilities;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
-import com.jakeapp.gui.swing.helpers.JakeMenuBar;
-import com.jakeapp.gui.swing.helpers.JakeTrayIcon;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.SegmentButtonCreator;
-import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
-import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.gui.swing.panels.InspectorPanel;
-import com.jakeapp.gui.swing.panels.LoginPanel;
-import com.jakeapp.gui.swing.panels.NewsPanel;
-import com.jakeapp.gui.swing.panels.NotesPanel;
-import com.jakeapp.gui.swing.panels.ProjectInvitationPanel;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 
 /**
@@ -133,7 +97,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 	// toolbar
 	private AbstractButton createProjectButton;
-	private AbstractButton createNoteButton;
+	private AbstractButton addFilesButton;
 	private AbstractButton invitePeopleButton;
 	private AbstractButton inspectorButton;
 
@@ -360,22 +324,41 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		createProjectButton.setBorder(new LineBorder(Color.BLACK, 0));
 		toolBar.addComponentToLeft(createProjectButton, 10);
 
+		// Add Files
+		Icon addFilesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				  getClass().getResource("/icons/toolbar-addfiles.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		JButton jCreateAddFilesButton = new JButton(getResourceMap().getString("toolbarAddFiles"), addFilesIcon);
+
+		addFilesButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateAddFilesButton);
+		addFilesButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				new ImportFileAction(null).openImportDialog();
+			}
+		});
+		addFilesButton.setEnabled(true);
+		jCreateAddFilesButton.setBorder(new LineBorder(Color.BLACK, 0));
+		toolBar.addComponentToLeft(addFilesButton, 10);
+
+		/*
 		// Create Note
 		Icon noteIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 				  getClass().getResource("/icons/notes.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton jCreateNodeButton = new JButton(getResourceMap().getString("toolbarCreateNote"), noteIcon);
 
-		createNoteButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateNodeButton);
-		createNoteButton.addActionListener(new ActionListener() {
+		addFilesButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateNodeButton);
+		addFilesButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				createNoteAction();
+				addFilesAction();
 			}
 		});
-		createNoteButton.setEnabled(true);
+		addFilesButton.setEnabled(true);
 		jCreateNodeButton.setBorder(new LineBorder(Color.BLACK, 0));
-		toolBar.addComponentToLeft(createNoteButton, 10);
+		toolBar.addComponentToLeft(addFilesButton, 10);
+		*/
 
 		// Add People
 		JButton invitePeopleJButton = new JButton(new InvitePeopleAction(false));
@@ -470,12 +453,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 					try {
 						PatternFilter fileFilter = new FileObjectNameFilter(e.getActionCommand());
 						PatternFilter notesFilter = new PatternFilter(e.getActionCommand(), 0, 2);
-						
+
 						FilterPipeline filePipeline = new FilterPipeline(fileFilter);
 						FilterPipeline notesPipeline = new FilterPipeline(notesFilter);
-						
+
 						filePanelp.switchToFlatAndFilter(filePipeline);
-						
+
 						NotesPanel.getInstance().setFilter(notesPipeline);
 					}
 					catch (PatternSyntaxException ex) {
@@ -501,7 +484,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		boolean hasProject = getProject() != null;
 		boolean isInvite = getProject() != null && getProject().getInvitationState() == InvitationState.INVITED;
 
-		createNoteButton.setEnabled(hasProject && !isInvite);
+		addFilesButton.setEnabled(hasProject && !isInvite);
 		invitePeopleButton.setEnabled(hasProject && !isInvite);
 		for (JToggleButton btn : contextSwitcherButtons) {
 			btn.setEnabled(hasProject && !isInvite);
@@ -521,12 +504,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		return hasProject && (isFilePaneOpen || isNotePaneOpen);
 	}
-
-
-	private void createNoteAction() {
-		//AddEditNoteDialog.ShowAsDialog(null, getFrame());
-	}
-
 
 	/**
 	 * Called after pressing the toggle buttons for project view.

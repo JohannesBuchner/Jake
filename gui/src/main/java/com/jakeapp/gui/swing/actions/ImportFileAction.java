@@ -35,20 +35,17 @@ public class ImportFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO: Implement me!
+		openImportDialog();
+	}
 
-		//FileDialog dialog = new FileDialog(JakeMainView.getMainView().getFrame(), "Select one or more files to Import...", FileDialog.LOAD);
-		//dialog.setVisible(true);
-
+	public void openImportDialog() {
 		JFileChooser dialog = new JFileChooser();
 		dialog.setMultiSelectionEnabled(true);
 		dialog.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
 		JSheet.showOpenSheet(dialog, JakeMainApp.getFrame(), new SheetListener() {
-
 			@Override
 			public void optionSelected(SheetEvent evt) {
-
 			}
 		});
 
@@ -71,7 +68,5 @@ public class ImportFileAction extends FileAction {
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
 		JakeExecutor.exec(new ImportFileFolderWorker(
 				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
-
-		// TODO: show updates
 	}
 }
