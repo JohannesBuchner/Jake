@@ -1,6 +1,9 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.dao.exceptions.NoSuchConfigOptionException;
+import com.jakeapp.core.domain.Configuration;
+
+import java.util.List;
 
 /**
  * Serves as a frontend for database-independent Configuration management.
@@ -40,5 +43,20 @@ public interface IConfigurationDao {
 	 * @param name The name of the configuration option to check
 	 * @return if the configuration option is set
 	 */
-	public boolean existsConfigurationValue(String name);
+	public boolean configurationValueExists(String name);
+
+    /**
+     * Updates the given Configuration Object in the database. Create it
+     * if it doesn't exist.
+     * @param configuration the configuration object to be updated/created
+     * @return the configuration object
+     */
+    public Configuration update(final Configuration configuration);
+
+
+    /**
+     * Returns a List of all known configuration options 
+     * @return a list of Configuration options
+     */
+    public List<Configuration> getAll();
 }

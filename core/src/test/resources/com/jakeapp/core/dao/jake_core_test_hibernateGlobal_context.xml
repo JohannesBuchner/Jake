@@ -52,6 +52,7 @@
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
                 <!--<value>com.jakeapp.core.domain.UserId</value>-->
                 <value>com.jakeapp.core.domain.XMPPUserId</value>
+                <value>com.jakeapp.core.domain.Configuration</value>
             </list>
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
@@ -112,6 +113,11 @@
 
 
     <bean id="userIdDao" class="com.jakeapp.core.dao.HibernateUserIdDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+
+
+    <bean id="configurationDao" class="com.jakeapp.core.dao.HibernateConfigurationDao">
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 

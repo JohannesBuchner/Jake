@@ -23,8 +23,12 @@
 
 
     <bean id="userIdDao" class="com.jakeapp.core.dao.HibernateUserIdDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
+
+    <bean id="configurationDao" class="com.jakeapp.core.dao.HibernateConfigurationDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
 
 </beans>

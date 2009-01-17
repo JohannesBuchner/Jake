@@ -2,13 +2,14 @@ package com.jakeapp.core.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Column;
 
 /**
  * Simple key value representation of a config option.
  * @author Simon
  *
  */
-@Entity
+@Entity(name = "configuration")
 public class Configuration {
 
 	private String key;
@@ -20,8 +21,14 @@ public class Configuration {
 	public Configuration() {
 		//default ctor for hibernate
 	}
-	
-	@Id
+
+    public Configuration(String name, String value) {
+        this.key = name;
+        this.value = value;
+    }
+
+    @Id
+    @Column(name = "key")
 	public String getKey() {
 		return this.key;
 	}
@@ -30,6 +37,7 @@ public class Configuration {
 	 * Get the value.
 	 * @return the value of this config option.
 	 */
+    @Column(name = "value")
 	public String getValue() {
 		return this.value;
 	}

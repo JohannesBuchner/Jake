@@ -1,20 +1,37 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.dao.exceptions.NoSuchConfigOptionException;
+import com.jakeapp.core.domain.Configuration;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.dao.DataAccessException;
+import org.apache.log4j.Logger;
+
+import java.util.List;
+
 
 /**
  * Hibernate implementation of the IConfigurationInterface.
  *
  * @author Simon
  */
-public class HibernateConfigurationDao implements IConfigurationDao {
+public class HibernateConfigurationDao extends HibernateDaoSupport implements IConfigurationDao {
+    private Logger log = Logger.getLogger(HibernateConfigurationDao.class);
+
 
     /**
      * {@inheritDoc}
      */
     @Override
     public final void deleteConfigurationValue(final String name) {
-        // TODO Auto-generated method stub
+        try
+        {
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("DELETE FROM configuration WHERE key = ? ").setString(0, name).executeUpdate();
+        }
+        catch (DataAccessException e)
+        {
+            log.debug("cought dataAccessException");
+        }
 
     }
 
@@ -22,9 +39,25 @@ public class HibernateConfigurationDao implements IConfigurationDao {
      * {@inheritDoc}
      */
     @Override
-    public final boolean existsConfigurationValue(final String name) {
-        // TODO Auto-generated method stub
-        return false;
+    public final boolean configurationValueExists(final String name) {
+        List<String> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("SELECT TRUE FROM configuration WHERE key = ? ").setString(0, name).list();
+
+        return (result.size() > 0);
+    }
+
+    @Override
+    public Configuration update(final Configuration configuration) {
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(configuration);
+        return configuration;
+    }
+
+    @Override
+    public List<Configuration> getAll() {
+        List<Configuration> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM configuration").list();
+
+        return result;
     }
 
     /**
@@ -33,8 +66,19 @@ public class HibernateConfigurationDao implements IConfigurationDao {
     @Override
     public final String getConfigurationValue(final String name)
             throws NoSuchConfigOptionException {
-        // TODO Auto-generated method stub
-        return null;
+
+        List<Configuration> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM configuration WHERE key = ? ").setString(0, name).list();
+
+        if(result.size() > 0)
+        {
+            return result.get(0).getValue();
+        }
+        else
+        {
+            return "";
+        }
+
     }
 
     /**
@@ -43,8 +87,8 @@ public class HibernateConfigurationDao implements IConfigurationDao {
     @Override
     public final void setConfigurationValue(final String name,
                                             final String value) {
-        // TODO Auto-generated method stub
-
+        Configuration conf = new Configuration(name, value);
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(conf);
     }
 
 }
