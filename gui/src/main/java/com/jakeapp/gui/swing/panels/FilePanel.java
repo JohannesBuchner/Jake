@@ -312,12 +312,12 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}, controlPanel);
 
 		treeBtn = new JToggleButton(getResourceMap().getString("treeButton"));
-		treeBtn.setUI(new HudButtonUI());
+		treeBtn.setUI(new JakeHudButtonUI());
 		controlPanel.add(treeBtn, "split 2");
 		treeBtn.setSelected(true);
 
 		flatBtn = new JToggleButton(getResourceMap().getString("flatButton"));
-		flatBtn.setUI(new HudButtonUI());
+		flatBtn.setUI(new JakeHudButtonUI());
 		controlPanel.add(flatBtn);
 
 		ActionListener updateViewAction = new ActionListener() {
@@ -336,7 +336,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		showGrp.add(treeBtn);
 
 		allBtn = new JToggleButton(getResourceMap().getString("filterAllButton"));
-		allBtn.setUI(new HudButtonUI());
+		allBtn.setUI(new JakeHudButtonUI());
 		controlPanel.add(allBtn, "split 3, right");
 		allBtn.setSelected(true);
 

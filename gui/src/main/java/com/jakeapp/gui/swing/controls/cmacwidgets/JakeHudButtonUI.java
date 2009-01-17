@@ -6,7 +6,7 @@ import java.awt.*;
 
 
 // TODO: will be integrated into macwidgets
-public class HudButtonUI extends BasicButtonUI {
+public class JakeHudButtonUI extends BasicButtonUI {
 
 	/* Font constants. */
 	public static final float FONT_SIZE = 11.0f;
@@ -35,7 +35,7 @@ public class HudButtonUI extends BasicButtonUI {
 	/**
 	 * Creates a HUD style {@link javax.swing.plaf.ButtonUI} with full rounded edges.
 	 */
-	public HudButtonUI() {
+	public JakeHudButtonUI() {
 		fRoundedness = Roundedness.ROUNDED_BUTTON;
 	}
 
