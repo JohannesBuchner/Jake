@@ -92,7 +92,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-			  throws InvalidCredentialsException;
+		 throws InvalidCredentialsException;
 
 
 	/**
@@ -177,8 +177,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public boolean createAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -194,8 +194,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, Exception;
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, Exception;
 
 
 	/**
@@ -336,7 +336,7 @@ public interface ICoreAccess {
 	 * Deletes a project. Works asyn, fires the callback when finished. Throws
 	 * exceptions if path is null or invalid.
 	 *
-	 * @param project				: project that should be deleted
+	 * @param project            : project that should be deleted
 	 * @param deleteProjectFiles
 	 */
 	public void deleteProject(Project project, boolean deleteProjectFiles);
@@ -379,7 +379,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-			  throws ProjectFolderMissingException;
+		 throws ProjectFolderMissingException;
 
 	/**
 	 * Retrieves all files within a project
@@ -467,7 +467,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file	 The file to rename
+	 * @param file    The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -513,6 +513,14 @@ public interface ICoreAccess {
 	 */
 	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException;
 
+	/**
+	 * Checks whether a given JakeObject is currently soft locked.
+	 *
+	 * @param jo The JakeObject to check
+	 * @return whether or not it is locked
+	 */
+	public boolean isJakeObjectLocked(JakeObject jo);
+
 
 	/******************* Notes functions ********************/
 
@@ -523,7 +531,7 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-			  ProjectNotLoadedException;
+		 ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
@@ -589,14 +597,15 @@ public interface ICoreAccess {
 	 */
 	public void removeSoftLock(JakeObject jakeObject);
 
-	 /**
-	  * Set the soft lock for a <code>JakeObject</code>.
-	  * @param jakeObject the <code>JakeObject</code> for which the lock is to be set.
-	  * @param isSet enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
-	  * enable the lock
-	  * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
-	  * <code>falso</code>
-	  */
+	/**
+	 * Set the soft lock for a <code>JakeObject</code>.
+	 *
+	 * @param jakeObject     the <code>JakeObject</code> for which the lock is to be set.
+	 * @param isSet          enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
+	 *                       enable the lock
+	 * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
+	 *                       <code>falso</code>
+	 */
 	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage);
 
 	/******************* People functions ********************/
@@ -627,7 +636,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-											  TrustState trust);
+	                                TrustState trust);
 
 
 	/**
@@ -653,9 +662,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project	  : the project to query. can be null.
+	 * @param project     : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries	  : amount of entries. -1 for everything.
+	 * @param entries     : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);

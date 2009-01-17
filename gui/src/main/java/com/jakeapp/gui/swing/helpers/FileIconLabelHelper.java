@@ -13,13 +13,6 @@ import java.awt.*;
 public class FileIconLabelHelper {
 	private static final Logger log = Logger.getLogger(FileIconLabelHelper.class);
 
-	private static Color conflictColor = new Color(255, 0, 0);
-	private static Color haveLatestColor = new Color(51, 153, 0);
-	private static Color newerAvailableColor = new Color(255, 153, 0);
-	private static Color locallyChangedColor = new Color(0, 153, 255);
-	private static Color onlyExistsRemotelyColor = new Color(153, 153, 153);
-
-
 	private static JFileChooser fileChooser = new JFileChooser();
 
 	/**
