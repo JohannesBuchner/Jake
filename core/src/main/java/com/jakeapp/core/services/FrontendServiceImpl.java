@@ -21,7 +21,7 @@ import com.jakeapp.jake.ics.ICService;
 /**
  * Implementation of the FrontendServiceInterface
  */
-public class FrontendServiceImpl implements IFrontendService, InternalFrontendService {
+public class FrontendServiceImpl implements IFrontendService{
 
 	private static Logger log = Logger.getLogger(FrontendServiceImpl.class);
 
@@ -31,10 +31,10 @@ public class FrontendServiceImpl implements IFrontendService, InternalFrontendSe
 
 	private Map<String, FrontendSession> sessions;
 	
-	private ICServicesManager icsManager = new ICServicesManager();
+
 	
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
-	private IFriendlySyncService sync = new SyncServiceImpl(this, null);
+	private IFriendlySyncService sync;
 	
 	/**
 	 * Constructor
@@ -43,10 +43,11 @@ public class FrontendServiceImpl implements IFrontendService, InternalFrontendSe
 	 * @param msgServiceFactory
 	 */
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
-			MsgServiceFactory msgServiceFactory) {
+			MsgServiceFactory msgServiceFactory, IFriendlySyncService sync) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.setSessions(new HashMap<String, FrontendSession>());
 		this.msgServiceFactory = msgServiceFactory;
+        this.sync = sync;
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
@@ -237,29 +238,10 @@ public class FrontendServiceImpl implements IFrontendService, InternalFrontendSe
 		this.checkSession(sessionId);
 		return this.sync;
 	}
-	
-	/* InternalFrontendService implementation*/
-	
-	private void setIcsManager(ICServicesManager icsManager) {
-		this.icsManager = icsManager;
-	}
 
-	private ICServicesManager getIcsManager() {
-		return icsManager;
-	}
 
-	@Override
-	public ICService getICSForProject(Project p) {
-		ICService result = null;
-		try {
-			result = this.getIcsManager().getICService(p);
-		} catch (ProtocolNotSupportedException e) {
-			log.error("Retrieving an ICService for a Project failed: ",e);
-		}
-		return result;
-	}
 
-	@Override
+//	@Override
 	public IFriendlySyncService getSync() {
 		return this.sync;
 	}

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
@@ -19,7 +18,9 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-import com.jakeapp.core.services.InternalFrontendService;
+
+import com.jakeapp.core.services.ICServicesManager;
+import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
@@ -61,15 +62,31 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private RequestHandlePolicy rhp;
 
-	private InternalFrontendService pk;
 
-	private ApplicationContextFactory scf;
 
-	private ICService getICS(Project p) {
-		return pk.getICSForProject(p);
-	}
+	private ApplicationContextFactory applicationContextFactory;
+    private ICServicesManager icServicesManager;
 
-	/* DAO stuff */
+
+    private ICService getICS(Project p) {
+        try {
+            return icServicesManager.getICService(p);
+        } catch (ProtocolNotSupportedException e) {
+            e.printStackTrace(); // todo
+            return null;
+        }
+    }
+
+    public ICServicesManager getIcServicesManager() {
+        return icServicesManager;
+    }
+
+    public void setIcServicesManager(ICServicesManager icServicesManager) {
+        this.icServicesManager = icServicesManager;
+    }
+
+
+    /* DAO stuff */
 
 	/**
 	 * returns true if NoteObject returns false if FileObject
@@ -128,9 +145,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 
-	public SyncServiceImpl(InternalFrontendService frontendService, ApplicationContextFactory scf) {
-		this.pk = frontendService;
-		this.scf = scf;
+	public SyncServiceImpl() {
 	}
 
 	/**
@@ -344,13 +359,13 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 	
-	public ApplicationContextFactory getScf() {
-		return scf;
+	public ApplicationContextFactory getApplicationContextFactory() {
+		return applicationContextFactory;
 	}
 
 	
-	public void setScf(ApplicationContextFactory scf) {
-		this.scf = scf;
+	public void setApplicationContextFactory(ApplicationContextFactory applicationContextFactory) {
+		this.applicationContextFactory = applicationContextFactory;
 	}
 
 }

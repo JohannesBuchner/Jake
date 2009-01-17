@@ -39,6 +39,7 @@ import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -61,13 +62,27 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private IProjectDao projectDao;
 
-	private InternalFrontendService frontendService;
+    private IFriendlySyncService syncService;
+
 
 	public ProjectsManagingServiceImpl() {
 		this.setFileServices(new HashMap<Project, IFSService>());
 	}
 
-	/************** GETTERS & SETTERS *************/
+    
+    public IFriendlySyncService getSyncService() {
+        return syncService;
+    }
+
+    public void setSyncService(IFriendlySyncService syncService) {
+        this.syncService = syncService;
+    }
+
+    /************** GETTERS & SETTERS *************/
+
+
+
+
 
 	private void setFileServices(Map<Project, IFSService> fileServices) {
 		this.fileServices = fileServices;
@@ -131,9 +146,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		return null;
 	}
 	
-	private InternalFrontendService getFrontendService() {
-		return this.frontendService;
-	}
 
 	/******** STARTING IMPLEMENTATIONS **************/
 	@Transactional
@@ -243,7 +255,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throw new ProjectException(e);
 		}
 
-		frontendService.getSync().startServing(project,
+		this.syncService.startServing(project,
 				new TrustRequestHandlePolicy(project), cl);
 
 		project.setStarted(true);
@@ -261,7 +273,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			return false;
 
 		try {
-			frontendService.getSync().stopServing(project);
+			syncService.stopServing(project);
 			// stops monitoring the project
 			this.getFileServices(project).unsetRootPath();
 		} finally {
