@@ -33,7 +33,7 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 		try {
 			this.value = calculateFunction();
 		} catch (Exception e) {
-			this.error = e;
+			error(e);
 		}
 		s.acquire();
 		if (error != null)
@@ -46,6 +46,7 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	@Override
 	public void error(Exception t) {
 		this.error = t;
+		s.release();
 	}
 
 	@Override
