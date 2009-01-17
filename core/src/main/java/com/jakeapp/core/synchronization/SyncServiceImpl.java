@@ -35,13 +35,13 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
  * This class should be active whenever you want to use files
- * 
+ * <p/>
  * On Project->pause/start call
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
  * {@link #stopServing(Project)}
- * 
+ * <p/>
  * Even when you are offline, this is to be used.
- * 
+ *
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncServiceImpl {
@@ -81,8 +81,8 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		// TODO get from DAO
 		return null;
 	}
-	
-	
+
+
 	private boolean isReachable(Project p, String userid) {
 		// TODO Auto-generated method stub
 		ICService ics = getICS(p);
@@ -163,7 +163,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	@Override
 	public Iterable<JakeObject> getObjectsInConflict(Project project)
-			throws IllegalArgumentException {
+		 throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -200,13 +200,13 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	@Override
 	public void setObjectLocked(JakeObject object, String message)
-			throws IllegalArgumentException, ProjectNotLoadedException {
+		 throws IllegalArgumentException, ProjectNotLoadedException {
 		// TODO: free for taking: create & add logentry
 	}
 
 	@Override
 	public Iterable<LogEntry> startLogSync(Project project, UserId userId)
-			throws IllegalArgumentException, IllegalProtocolException {
+		 throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
@@ -224,14 +224,14 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		List<String> files;
 		try {
 			// TODO: should this really throw an exception if _one_ file doesnt work? I don't think so. -- dominik
-            files = fss.recursiveListFiles();
+			files = fss.recursiveListFiles();
 		}
 //        catch(InvalidFilenameException ifne)
 //        {
 //             TODO @ johannes: is this ok?
 //            throw new IOException("InvalidFilenameException: " + ifne.getMessage());
 //        }
-        catch (IOException e) {
+		catch (IOException e) {
 			throw e;
 		}
 		for (JakeObject jo : getMissingJakeObjects(p)) {
@@ -246,8 +246,10 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 			boolean inConflict = isObjectInConflict(fo); // TODO: get
 			boolean locallyModified = isLocallyModified(fo);
 			try {
-				stat.add(new FileStatus(f, inConflict, fss.getLastModified(f),
-						locallyModified));
+				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME
+				// This should contain the correct values
+				stat.add(new FileStatus(f, fss.getLastModified(f),
+					 locallyModified, false, false, false));
 			} catch (NotAFileException e) {
 				log.debug("should never happen", e);
 			} catch (InvalidFilenameException e) {
@@ -283,7 +285,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	@Override
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
-			throws ProjectException {
+		 throws ProjectException {
 		FSService fs;
 		try {
 			fs = new FSService();
