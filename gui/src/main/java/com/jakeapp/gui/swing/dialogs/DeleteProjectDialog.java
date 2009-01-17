@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.dialogs;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
+import com.jakeapp.gui.swing.helpers.Translator;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -26,7 +27,8 @@ public class DeleteProjectDialog extends JakeDialog {
 		initDialog();
 
 		// set custom properties
-		setDialogTitle(getResourceMap().getString("deleteTitle"));
+		setDialogTitle(Translator.get(getResourceMap(), "deleteTitle", getProject().getName()));
+
 		setMessage("deleteHeader");
 		// use default picture
 	}

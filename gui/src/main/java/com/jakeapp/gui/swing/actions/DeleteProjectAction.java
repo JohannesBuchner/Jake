@@ -21,6 +21,7 @@ public class DeleteProjectAction extends ProjectAction {
 
 		putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
 				  getString("deleteProjectMenuItem.text"));
+		updateAction();
 	}
 
 
@@ -49,5 +50,6 @@ public class DeleteProjectAction extends ProjectAction {
 
 	@Override
 	public void updateAction() {
+		this.setEnabled(getProject() != null);
 	}
 }

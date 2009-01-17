@@ -28,6 +28,8 @@ public class InvitePeopleAction extends ProjectAction {
 		}
 
 		putValue(Action.NAME, actionStr);
+		putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.META_MASK));
+
 
 		// add large icon (for toolbar only)
 		Icon invitePeopleIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(

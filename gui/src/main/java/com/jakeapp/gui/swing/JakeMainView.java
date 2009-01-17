@@ -316,7 +316,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		TriAreaComponent toolBar = MacWidgetFactory.createUnifiedToolBar();
 		// Create Project
 		ProjectAction createProjectAction;
-		createProjectAction = new CreateProjectAction();
+		createProjectAction = new CreateProjectAction(false);
 		JButton createProjectJButton = new JButton();
 		createProjectJButton.setAction(createProjectAction);
 		createProjectButton = MacButtonFactory.makeUnifiedToolBarButton(createProjectJButton);
@@ -361,6 +361,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		*/
 
 		// Add People
+
 		JButton invitePeopleJButton = new JButton(new InvitePeopleAction(false));
 		invitePeopleButton = MacButtonFactory.makeUnifiedToolBarButton(invitePeopleJButton);
 		invitePeopleButton.setBorder(new LineBorder(Color.BLACK, 0));

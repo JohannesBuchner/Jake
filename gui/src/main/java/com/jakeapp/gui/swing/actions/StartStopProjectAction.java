@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
@@ -15,46 +14,40 @@ import java.awt.event.ActionEvent;
  * Time: 12:20:54 AM
  */
 public class StartStopProjectAction extends ProjectAction {
-    private static final Logger log = Logger.getLogger(StartStopProjectAction.class);
+	private static final Logger log = Logger.getLogger(StartStopProjectAction.class);
 
-    public StartStopProjectAction(Project project) {
-        super(project);
-    }
+	public StartStopProjectAction() {
+		// need initial name
+		updateAction();
+	}
 
-    public StartStopProjectAction() {
-        super();
-    }
+	public void actionPerformed(ActionEvent actionEvent) {
+		log.info("Start/Stop Project: " + getProject());
 
+		// do nothing if we don't have a project
+		if (getProject() == null) {
+			return;
+		}
 
-    public void actionPerformed(ActionEvent actionEvent) {
-        log.info("Start/Stop Project: " + getProject());
-
-        // do nothing if we don't have a project
-        if (getProject() == null) {
-            return;
-        }
-
-        if (!getProject().isStarted()) {
-            // TODO: exception handling
-            JakeMainApp.getApp().getCore().startProject(getProject());
-        } else {
-            JakeMainApp.getApp().getCore().stopProject(getProject());
-        }
-    }
+		if (!getProject().isStarted()) {
+			// TODO: exception handling
+			JakeMainApp.getApp().getCore().startProject(getProject());
+		} else {
+			JakeMainApp.getApp().getCore().stopProject(getProject());
+		}
+	}
 
 
-    @Override
-    public void updateAction() {
+	@Override
+	public void updateAction() {
+		log.debug("update startstopprojectaction with " + getProject());
+		String oldName = (String) getValue(Action.NAME);
+		String newName = JakeMainHelper.getProjectStartStopString(getProject());
+		setEnabled(getProject() != null);
 
-        if (getProject() != null) {
-            String oldName = (String) getValue(Action.NAME);
-            String newName = JakeMainHelper.getProjectStartStopString(getProject());
+		log.debug("old: " + oldName + " new: " + newName);
 
-            putValue(Action.NAME, newName);
-
-            firePropertyChange(Action.NAME, oldName, newName);
-        }
-
-        setEnabled(getProject() != null);
-    }
+		putValue(Action.NAME, newName);
+		firePropertyChange(Action.NAME, oldName, newName);
+	}
 }

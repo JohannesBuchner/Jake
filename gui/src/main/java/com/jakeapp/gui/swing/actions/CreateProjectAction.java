@@ -19,11 +19,11 @@ import java.awt.event.ActionEvent;
 public class CreateProjectAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(CreateProjectAction.class);
 
-	public CreateProjectAction() {
+	public CreateProjectAction(boolean ellipsis) {
 		super();
 
 		putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
-				  getString("createProjectMenuItem.text"));
+				  getString("createProjectMenuItem.text") + (ellipsis ? "..." : ""));
 
 		Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 				  getClass().getResource("/icons/createproject.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));

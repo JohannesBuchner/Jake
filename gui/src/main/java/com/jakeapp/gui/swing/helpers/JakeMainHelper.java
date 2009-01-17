@@ -29,7 +29,7 @@ public class JakeMainHelper {
 	 */
 	public static void showMsg(String msgCode, int msgType) {
 		JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(),
-			 JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
+				  JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
 	}
 
 
@@ -50,7 +50,7 @@ public class JakeMainHelper {
 	 */
 	public static String getProjectStartStopString(Project project) {
 		String startStopString;
-		if (!project.isStarted()) {
+		if (project == null || !project.isStarted()) {
 			startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStartProject");
 		} else {
 			startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStopProject");

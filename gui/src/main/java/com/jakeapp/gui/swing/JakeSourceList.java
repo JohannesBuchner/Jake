@@ -182,7 +182,6 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 		// create the menu
 		JPopupMenu popupMenu = new JakePopupMenu();
-		// popupMenu.setLightWeightPopupEnabled(false);
 
 		JMenuItem startStopMenuItem = new JMenuItem();
 		startStopMenuItem.setAction(startStopProjectAction);
