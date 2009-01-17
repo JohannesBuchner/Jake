@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -48,6 +49,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.DeleteNoteAction;
 import com.jakeapp.gui.swing.actions.NewNoteAction;
+import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -81,9 +83,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		{
 			this.popupMenu = new JakePopupMenu();
 			this.popupMenu.add(new JMenuItem(new NewNoteAction()));
+			this.popupMenu.addSeparator();
 			this.popupMenu.add(new JMenuItem(new DeleteNoteAction()));
 			this.popupMenu.add(new JMenuItem(new CommitNoteAction()));
+			this.popupMenu.addSeparator();
 			// this.popupMenu.add(new JMenuItem(new SaveNoteAction()));
+			this.popupMenu.add(new JMenuItem(new SoftlockNoteAction()));
 		}
 
 		public NoteContainerMouseListener(NotesPanel panel, JTable table, NotesTableModel tableModel) {

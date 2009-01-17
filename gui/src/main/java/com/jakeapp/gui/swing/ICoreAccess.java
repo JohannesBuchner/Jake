@@ -425,7 +425,7 @@ public interface ICoreAccess {
 	 * Imports a file OR folder which is not currently in the project folder by
 	 * copying it into a folder inside the projects root folder.
 	 *
-	 * @param files:             arbitrary list of files, folders to import.
+	 * @param absPath:           absolut path of file.
 	 * @param destFolderRelPath: if null or "", copy to project root.
 	 * @return true on success, false on error
 	 */
@@ -560,28 +560,25 @@ public interface ICoreAccess {
 	 * Determine if the given jakeObject is soft locked.
 	 *
 	 * @param jakeObject the jakeObject in question.
-	 * @param project	 the <code>Project</code> the jakeObject is associated with.
 	 * @return <code>true</code> iff the given <code>JakeObject</code> is soft locked.
 	 */
-	public boolean isSoftLocked(JakeObject jakeObject, Project project);
+	public boolean isSoftLocked(JakeObject jakeObject);
 
 	/**
 	 * Get the locking message of a soft locked <code>JakeObject</code>
 	 *
 	 * @param jakeObject the JakeObject in question
-	 * @param project	 the <code>Project</code> the jakeObject is associated with.
 	 * @return the locking message of the given <code>JakeObject</code>. The method may return <code>
 	 *         null</code> iff the given <code>JakeObject</code> is not locked.
 	 */
-	public String getLockingMessage(JakeObject jakeObject, Project project);
+	public String getLockingMessage(JakeObject jakeObject);
 
 	/**
 	 * Remove the soft lock from a given <code>JakeObject</code>.
 	 *
 	 * @param jakeObject the <code>JakeObject</code> that should be unlocked.
-	 * @param project	 the <code>Project</code> the jakeObject is associated with.
 	 */
-	public void removeSoftLock(JakeObject jakeObject, Project project);
+	public void removeSoftLock(JakeObject jakeObject);
 
 	/******************* People functions ********************/
 

@@ -973,19 +973,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private List<ErrorCallback> errorCallback;
 
 	@Override
-	public String getLockingMessage(JakeObject jakeObject, Project project) {
+	public String getLockingMessage(JakeObject jakeObject) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean isSoftLocked(JakeObject jakeObject, Project project) {
+	public boolean isSoftLocked(JakeObject jakeObject) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void removeSoftLock(JakeObject jakeObject, Project project) {
+	public void removeSoftLock(JakeObject jakeObject) {
 		// TODO Auto-generated method stub
 
 	}

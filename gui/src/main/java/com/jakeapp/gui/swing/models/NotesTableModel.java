@@ -134,8 +134,8 @@ public class NotesTableModel extends DefaultTableModel {
 					  this.core.getLastEdit(n), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
 					  "first + last",
 					  core.isLocalNote(n),
-					  core.isSoftLocked(n, project),
-					  core.getLockingMessage(n, project)));
+					  core.isSoftLocked(n),
+					  core.getLockingMessage(n)));
 			// TODO: fix ProjectMember-changes
 			//id.getFirstName() + id.getSurName()));
 		}
