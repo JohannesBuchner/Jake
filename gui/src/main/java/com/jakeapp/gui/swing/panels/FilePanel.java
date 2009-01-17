@@ -38,6 +38,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.TimerTask;
 
 /**
  * @author studpete
@@ -46,7 +47,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 	private static FilePanel instance;
 
-	private static final int FILETREETABLE_NODECOLUMN = 1;
+	private static final int FILETREETABLE_NODECOLUMN = 2;
 	private static final int FILETABLE_NODECOLUMN = 0;
 
 	private Project project;
@@ -124,7 +125,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -182,7 +183,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		public void keyReleased(KeyEvent e) {
 			java.util.List<FileObject> list = new ArrayList<FileObject>();
 			for (int row : fileTreeTable.getSelectedRows()) {
-				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, 0);
+				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
 				if (node.isFile()) {
 					list.add(node.getFileObject());
 				}
@@ -222,7 +223,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				// ONLY select new item if we didn't select multiple items.
 				if (container.getSelectedRowCount() <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(rowNumber, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(rowNumber, nodeColumn);
 					if (node != null && node.isFile()) {
 						java.util.List<FileObject> list = new ArrayList<FileObject>();
 						list.add(node.getFileObject());
@@ -236,7 +237,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			} else if (SwingUtilities.isLeftMouseButton(me)) {
 				java.util.List<FileObject> list = new ArrayList<FileObject>();
 				for (int row : container.getSelectedRows()) {
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(row, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+					System.err.println("NODECOLUMN: " + nodeColumn);
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(row, nodeColumn);
 					if (node.isFile()) {
 						list.add(node.getFileObject());
 					}
@@ -280,7 +282,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 
 			pm.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+				 .getY());
 		}
 	}
 
@@ -384,18 +386,19 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// we have to cope with no project selected state.
 		if (project != null) {
-			TreeTableModel treeTableModel = null;
-			TableModel tableModel = null;
+			TreeTableModel treeTableModel;
+			TableModel tableModel;
 
 
 			// TODO: lazy loading !!!
 			try {
 				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+				fileTreeTable.setTreeTableModel(treeTableModel);
 			} catch (ProjectFolderMissingException e) {
 				e.printStackTrace();
 			}
 			tableModel = new FileObjectsTableModel(new ArrayList<FileObject>());
-			fileTreeTable.setTreeTableModel(treeTableModel);
+
 			fileTable.setModel(tableModel);
 
 			// start get all files from project, async
