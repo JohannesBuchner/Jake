@@ -49,29 +49,30 @@ public class XmppStatusService implements IStatusService {
 	@Override
 	public String getFirstname(UserId userid) throws NoSuchUseridException,
 			OtherUserOfflineException {
-		// TODO replace with real implementation
-		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
+		// TODO replace with real implementation (VCard)
+		XmppUserId xid = new XmppUserId(userid);
+		if (!xid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-
-		if (!userid.getUserId().contains(".")) {
+		
+		if (!xid.getUsername().contains(".")) {
 			return "";
 		}
-		return userid.getUserId().substring(0, userid.getUserId().indexOf("."));
+		return xid.getUsername().substring(0, xid.getUsername().indexOf("."));
 	}
 
 	@Override
 	public String getLastname(UserId userid) throws NoSuchUseridException,
 			OtherUserOfflineException {
-		// TODO replace with real implementation
-		if (!new MockUserId(userid).isOfCorrectUseridFormat())
+		// TODO replace with real implementation (VCard)
+		XmppUserId xid = new XmppUserId(userid);
+		if (!xid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-
-		if (!userid.getUserId().contains(".")) {
+		
+		if (!xid.getUsername().contains(".")) {
 			return "";
 		}
-		return userid.getUserId().substring(
-				userid.getUserId().indexOf(".") + 1,
-				userid.getUserId().indexOf("@"));
+		return xid.getUsername().substring(
+				xid.getUsername().indexOf(".") + 1);
 	}
 
 	@Override

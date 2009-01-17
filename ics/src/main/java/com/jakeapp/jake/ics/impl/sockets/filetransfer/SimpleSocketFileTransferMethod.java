@@ -241,7 +241,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 					 * fourth step, the client starts the out-of-band transfer
 					 */
 					SimpleSocketFileTransfer ft = new SimpleSocketFileTransfer(r, other,
-							transferKey);
+							transferKey, maximalRequestAgeSeconds);
 					new Thread(ft).start();
 					log.info("negotiation with " + from_userid + " succeeded");
 					nsl.succeeded(ft);

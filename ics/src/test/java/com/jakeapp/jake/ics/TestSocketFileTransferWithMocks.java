@@ -68,7 +68,7 @@ public class TestSocketFileTransferWithMocks {
 		FileRequest fr = new FileRequest("myfile.txt", true, new MockUserId("otherpeer"));
 		UUID key = UUID.randomUUID();
 		InetSocketAddress server = prepareServer(key);
-		SimpleSocketFileTransfer client = new SimpleSocketFileTransfer(fr, server, key);
+		SimpleSocketFileTransfer client = new SimpleSocketFileTransfer(fr, server, key, 10);
 		new Thread(client).start();
 		while (!client.isDone()) {
 			log.debug("client filetransfer status: " + client.getStatus() + " - "

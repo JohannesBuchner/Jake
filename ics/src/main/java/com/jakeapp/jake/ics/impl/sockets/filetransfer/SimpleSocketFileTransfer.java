@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
@@ -40,11 +41,13 @@ public class SimpleSocketFileTransfer extends FileTransfer implements Runnable {
 	private Socket s;
 
 	public SimpleSocketFileTransfer(FileRequest r, InetSocketAddress other,
-			UUID transferKey) throws IOException {
+			UUID transferKey, int maximalRequestAgeSeconds) throws IOException {
 		this.request = r;
 		this.other = other;
 		this.transferKey = transferKey;
 		this.localFile = File.createTempFile("socket", "output");
+		this.s = new Socket();
+		this.s.connect(this.other, maximalRequestAgeSeconds * 1000);
 		this.status = Status.negotiated;
 	}
 
@@ -53,14 +56,13 @@ public class SimpleSocketFileTransfer extends FileTransfer implements Runnable {
 	}
 
 	public void run() {
+
 		try {
 			log.info("starting transfer from " + this.other);
 			byte[] b = new byte[BLOCKSIZE];
-			
-			if(this.status == Status.negotiated)
+
+			if (this.status == Status.negotiated)
 				this.status = Status.in_progress;
-			
-			this.s = new Socket(this.other.getAddress(), this.other.getPort());
 
 			OutputStream socketOut = this.s.getOutputStream();
 			BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(

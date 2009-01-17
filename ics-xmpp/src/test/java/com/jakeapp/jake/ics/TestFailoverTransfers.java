@@ -184,7 +184,7 @@ public class TestFailoverTransfers {
 
 		Assert.assertTrue(this.user1.getStatusService().isLoggedIn());
 		Assert.assertTrue(this.user2.getStatusService().isLoggedIn());
-		int additionalTime = 0;
+		int additionalTime = 2000;
 		if (!enableServerSockets || !enableSockets)
 			additionalTime = SOCKET_TIMEOUT_SECONDS * 1000 * 2;
 
