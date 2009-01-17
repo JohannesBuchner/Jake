@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
  */
 public class SwitchFilesProjectContextAction extends SwitchProjectContextAction {
 	public SwitchFilesProjectContextAction() {
-		putValue(Action.NAME, JakeMainView.getResouceMap().getString("showFileMenuItem.text"));
+		putValue(Action.NAME, JakeMainView.getResouceMap().getString("showFilesMenuItem.text"));
 	}
 
 	@Override
