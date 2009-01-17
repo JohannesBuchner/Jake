@@ -163,6 +163,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 
 		File f = new File(fss.getRootPath() + File.separator + "foobar");
 		f.delete();
+		System.gc();
+		Thread.yield();
 		f.mkdirs();
 		Assert.assertFalse(fss.fileExists("foobar"));
 
@@ -351,7 +353,9 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 
 		Assert.assertTrue(fss.fileExists(relpath));
 		Assert.assertTrue(fss.folderExists(dir));
-
+		System.gc();
+		Thread.yield();
+		System.gc();
 		Assert.assertTrue(fss.deleteFile(relpath));
 
 		Assert.assertFalse(fss.fileExists(relpath));

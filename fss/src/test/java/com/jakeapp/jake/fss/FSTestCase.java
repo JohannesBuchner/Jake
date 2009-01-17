@@ -14,6 +14,7 @@ public class FSTestCase  {
 	
 	@Before
 	public void setUp() throws Exception {
+		clean();
 		String systmpdir = System.getProperty("java.io.tmpdir","");
 		if(!systmpdir.endsWith(File.separator))
 			systmpdir = systmpdir + File.separator;
@@ -32,15 +33,16 @@ public class FSTestCase  {
 		
 		mytempdir = f.getAbsolutePath();
 		//System.out.println("Using "+systmpdir+" for FSS tests");
+		clean();
 	}
 	
 	protected boolean recursiveDelete(File f) {
-		System.gc(); /* windows needs this */
+		clean(); /* windows needs this */
 		if(f.isFile()){
-			//System.out.println("Deleting file: "+f.getAbsoluteFile());
+			System.out.println("Deleting file: "+f.getAbsoluteFile());
 			return f.delete();
 		}else{
-			//System.out.println("Deleting folder: "+f.getAbsoluteFile());
+			System.out.println("Deleting folder: "+f.getAbsoluteFile());
 			String[] l = f.list();
 			if(l!=null){
 				for (int i = 0; i < l.length; i++) {
@@ -50,22 +52,38 @@ public class FSTestCase  {
 					}
 				}
 			}
+			clean();
 			return f.delete();
 		}
 	}
 	
 	@After
 	public void tearDown() throws Exception {
+		clean();
 		File f = new File(mytempdir);
 		if(f.exists()){
 			Assert.assertTrue("recursiveDelete",recursiveDelete(f));
 		}
 		Assert.assertFalse("Cleanup done",f.exists());
+		clean();
+	}
+
+	private void clean() {
+		System.gc();
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+		}
+		System.gc();
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+		}
+		System.gc();
 	}
 
 	@Test
-	@Ignore
 	public void notest() {
-		
+		Assert.assertNotNull(mytempdir);
 	}
 }

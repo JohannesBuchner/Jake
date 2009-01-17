@@ -70,7 +70,8 @@ public class FSServiceInnerTest extends FSTestCase {
 			}catch(NotADirectoryException e){
 			}
 		}
-		String[] dirnames = {mytempdir + "/..", 
+		new File(mytempdir, "bla").mkdirs();
+		String[] dirnames = {mytempdir + "/bla/..", 
 				mytempdir + "/!", mytempdir + "/#"};
 		for (int i = 0; i < dirnames.length; i++) {
 			File f = new File(dirnames[i]);

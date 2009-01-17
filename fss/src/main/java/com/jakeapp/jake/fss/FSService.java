@@ -65,7 +65,7 @@ public class FSService implements IFSService, IModificationListener {
 			throw new FileNotFoundException();
 		if (!f.isDirectory())
 			throw new NotADirectoryException();
-		rootPath = path;
+		rootPath = f.getAbsolutePath();
 
 		try {
 			fw = new FolderWatcher(new File(this.rootPath), 700);
@@ -234,10 +234,11 @@ public class FSService implements IFSService, IModificationListener {
 				throw new CreatingSubDirectoriesFailedException();
 		}
 
-		FileOutputStream fr = null;
-		fr = new FileOutputStream(filename);
+		FileOutputStream fr = new FileOutputStream(filename);
 		fr.write(content);
 		fr.close();
+		fr = null;
+		System.gc();
 	}
 
 	public void writeFileStream(String relpath, InputStream source)
@@ -321,7 +322,7 @@ public class FSService implements IFSService, IModificationListener {
 			f = f.getParentFile();
 		} while (f.isDirectory() && f.getAbsolutePath().startsWith(getRootPath())
 				&& f.getAbsolutePath().length() > getRootPath().length()
-				&& FileUtils.listFilesMinusA(f).iterator().hasNext() && f.delete());
+				&& !FileUtils.listFilesMinusA(f).iterator().hasNext() && f.delete());
 
 		return true;
 	}
