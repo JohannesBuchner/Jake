@@ -14,8 +14,6 @@ public abstract class FriendlySyncServiceImpl implements IFriendlySyncService {
 
 	abstract protected Iterable<UserId> getProjectMembers(Project project);
 
-	abstract protected Iterable<JakeObject> getMissingJakeObjects(Project project);
-
 	@Override
 	public void poke(Project project) {
 		for (UserId userid : getProjectMembers(project)) {
@@ -25,7 +23,7 @@ public abstract class FriendlySyncServiceImpl implements IFriendlySyncService {
 
 	@Override
 	public void pullObjects(Project project) throws IllegalArgumentException {
-		pullObjects(getMissingJakeObjects(project));
+		pullObjects(getPullableFileObjects(project));
 	}
 
 	@Override

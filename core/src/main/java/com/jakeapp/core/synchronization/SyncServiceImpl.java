@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -41,7 +40,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
  * {@link #stopServing(Project)}
  * <p/>
  * Even when you are offline, this is to be used.
- *
+ * 
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncServiceImpl {
@@ -67,9 +66,14 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 	/* DAO stuff */
+	
+	/**
+	 * returns true if NoteObject
+	 * returns false if FileObject 
+	 */
 	private Boolean isNoteObject(JakeObject jo) {
 		// TODO check if object is notes or file otherwise
-		return jo.getClass().equals(NoteObject.class);
+		return jo instanceof NoteObject;
 	}
 
 	private LogEntry getMostRecentForLogEntry(JakeObject jo) {
@@ -82,6 +86,16 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		return null;
 	}
 
+	@Override
+	protected Iterable<UserId> getProjectMembers(Project project) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private boolean haveNewest(FileObject fo) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	private boolean isReachable(Project p, String userid) {
 		// TODO Auto-generated method stub
@@ -110,16 +124,27 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		this.pk = frontendService;
 	}
 
-	@Override
-	protected Iterable<JakeObject> getMissingJakeObjects(Project project) {
+	/**
+	 * returns JakeObjects that still exist
+	 * @return
+	 */
+	private Iterable<JakeObject> getJakeObjectsWhereLastActionIsNotDelete() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected Iterable<UserId> getProjectMembers(Project project) {
-		// TODO Auto-generated method stub
-		return null;
+	public Iterable<JakeObject> getPullableFileObjects(Project project) {
+		List<JakeObject> missing = new LinkedList<JakeObject>();
+		Iterable<JakeObject> allJakeObjects = getJakeObjectsWhereLastActionIsNotDelete();
+		for (JakeObject jo : allJakeObjects) {
+			if (!isNoteObject(jo)) {
+				FileObject fo = (FileObject) jo;
+				if(haveNewest(fo))
+					missing.add(jo);
+			}
+		}
+		return missing;
 	}
 
 	@Override
@@ -163,7 +188,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	@Override
 	public Iterable<JakeObject> getObjectsInConflict(Project project)
-		 throws IllegalArgumentException {
+			throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -200,13 +225,13 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	@Override
 	public void setObjectLocked(JakeObject object, String message)
-		 throws IllegalArgumentException, ProjectNotLoadedException {
+			throws IllegalArgumentException, ProjectNotLoadedException {
 		// TODO: free for taking: create & add logentry
 	}
 
 	@Override
 	public Iterable<LogEntry> startLogSync(Project project, UserId userId)
-		 throws IllegalArgumentException, IllegalProtocolException {
+			throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
@@ -219,37 +244,40 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	 * start, and then use a listener
 	 */
 	@Override
-	public Iterable<FileStatus> getFiles(Project p) throws IOException {
+	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException {
 		IFSService fss = projectsFssMap.get(p.getProjectId());
 		List<String> files;
 		try {
-			// TODO: should this really throw an exception if _one_ file doesnt work? I don't think so. -- dominik
+			// TODO: should this really throw an exception if _one_ file doesnt
+			// work? I don't think so. -- dominik
 			files = fss.recursiveListFiles();
 		}
-//        catch(InvalidFilenameException ifne)
-//        {
-//             TODO @ johannes: is this ok?
-//            throw new IOException("InvalidFilenameException: " + ifne.getMessage());
-//        }
+		// catch(InvalidFilenameException ifne)
+		// {
+		// TODO @ johannes: is this ok?
+		// throw new IOException("InvalidFilenameException: " +
+		// ifne.getMessage());
+		// }
 		catch (IOException e) {
 			throw e;
 		}
-		for (JakeObject jo : getMissingJakeObjects(p)) {
+		for (JakeObject jo : getPullableFileObjects(p)) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
 				fo.getRelPath();
 			}
 		}
-		List<FileStatus> stat = new LinkedList<FileStatus>();
+		List<JakeObjectSyncStatus> stat = new LinkedList<JakeObjectSyncStatus>();
 		for (String f : files) {
 			FileObject fo = getFileObjectByRelpath(f);
 			boolean inConflict = isObjectInConflict(fo); // TODO: get
 			boolean locallyModified = isLocallyModified(fo);
 			try {
-				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME
+				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX
+				// ME FIX ME
 				// This should contain the correct values
-				stat.add(new FileStatus(f, fss.getLastModified(f),
-					 locallyModified, false, false, false));
+				stat.add(new JakeObjectSyncStatus(f, fss.getLastModified(f), locallyModified,
+						false, false, false));
 			} catch (NotAFileException e) {
 				log.debug("should never happen", e);
 			} catch (InvalidFilenameException e) {
@@ -285,7 +313,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	@Override
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
-		 throws ProjectException {
+			throws ProjectException {
 		FSService fs;
 		try {
 			fs = new FSService();

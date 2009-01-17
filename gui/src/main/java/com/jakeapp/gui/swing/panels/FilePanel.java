@@ -13,7 +13,7 @@ package com.jakeapp.gui.swing.panels;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.FileStatus;
+import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;

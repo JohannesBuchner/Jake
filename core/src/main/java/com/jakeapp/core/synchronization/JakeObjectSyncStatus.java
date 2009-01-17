@@ -5,7 +5,7 @@ package com.jakeapp.core.synchronization;
  *
  * @author johannes
  */
-public class FileStatus {
+public class JakeObjectSyncStatus {
 	private String filename;
 
 	private long lastModification;
@@ -30,7 +30,7 @@ public class FileStatus {
 	 */
 	private boolean onlyRemote;
 
-	public FileStatus(String filename, long lastModification,
+	public JakeObjectSyncStatus(String filename, long lastModification,
 	                  boolean locallyModified, boolean remotelyModified,
 	                  boolean onlyLocal, boolean onlyRemote) {
 		super();

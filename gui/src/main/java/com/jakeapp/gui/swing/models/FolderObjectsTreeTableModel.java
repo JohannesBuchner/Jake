@@ -17,7 +17,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.synchronization.FileStatus;
+import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 
 import javax.swing.tree.TreePath;
 import javax.swing.event.TreeModelListener;

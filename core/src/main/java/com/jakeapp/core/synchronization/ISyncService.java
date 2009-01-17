@@ -161,8 +161,10 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException 
 	 */
-	public Iterable<FileStatus> getFiles(Project p) throws IOException;
+	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException;
 
 	public boolean isObjectInConflict(JakeObject jo);
+
+	public Iterable<JakeObject> getPullableFileObjects(Project project);
 
 }

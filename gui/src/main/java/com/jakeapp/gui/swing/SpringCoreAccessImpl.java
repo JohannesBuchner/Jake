@@ -9,7 +9,7 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.synchronization.FileStatus;
+import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailibilityListener;
@@ -604,8 +604,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public FileStatus getFileStatus(Project project, FileObject file) {
-		return new FileStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);
+	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
+		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);
 	}
 
 	/**
