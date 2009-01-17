@@ -23,11 +23,11 @@ public class RenameFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected.
-		setEnabled(getSelectedRowCount() == 1);
+		updateAction();
 	}
 
 	@Override
-	protected void refreshSelf() {
+	public void updateAction() {
 		setEnabled(getSelectedRowCount() == 1);
 	}
 

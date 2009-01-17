@@ -21,13 +21,11 @@ public class OpenFileAction extends FileAction {
 
 		putValue(Action.NAME, actionStr);
 
-		// only enable if exactly one element is selected.
-		System.err.println("SELECTED ROW COUNT " + getSelectedRowCount() + " at " + new Date().toString());
-		setEnabled(getSelectedRowCount() == 1);
+		updateAction();
 	}
 
 	@Override
-	protected void refreshSelf() {
+	public void updateAction() {
 		setEnabled(getSelectedRowCount() == 1);
 	}
 

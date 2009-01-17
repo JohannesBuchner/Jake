@@ -28,11 +28,11 @@ public class InspectorFileAction extends FileAction {
 		putValue(Action.NAME, getName());
 
 		// only enable if exact one element is selected.
-		setEnabled(getSelectedRowCount() == 1);
+		updateAction();
 	}
 
 	@Override
-	protected void refreshSelf() {
+	public void updateAction() {
 		setEnabled(getSelectedRowCount() == 1);
 	}
 

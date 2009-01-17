@@ -28,7 +28,7 @@ public class LockFileAction extends FileAction {
 	}
 
 	@Override
-	protected void refreshSelf() {
+	public void updateAction() {
 		boolean enabled = (getSelectedRowCount() == 1 &&
 			 getSingleNode().isFile());
 		setEnabled(enabled);

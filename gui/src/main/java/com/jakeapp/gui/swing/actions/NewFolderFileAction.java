@@ -21,13 +21,11 @@ public class NewFolderFileAction extends FileAction {
 
 		putValue(Action.NAME, actionStr);
 
-		// only enable if exact one element is selected AND that element is a folder.
-		boolean enabled = (getSelectedRowCount() == 1 && getSingleNode().isFolder());
-		setEnabled(enabled);
+		updateAction();
 	}
 
 	@Override
-	protected void refreshSelf() {
+	public void updateAction() {
 		// only enable if exact one element is selected AND that element is a folder.
 		boolean enabled = (getSelectedRowCount() == 1 && getSingleNode().isFolder());
 		setEnabled(enabled);

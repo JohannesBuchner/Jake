@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.actions.abstracts;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import org.apache.log4j.Logger;
@@ -22,6 +23,9 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 		FilePanel.getInstance().addNodeSelectionListener(this);
 		selectedRowCount = 0;
 		nodes = new ArrayList<ProjectFilesTreeNode>();
+
+		this.nodes = FilePanel.getInstance().getSelectedNodes();
+		this.selectedRowCount = nodes.size();
 	}
 
 	@Override
@@ -29,13 +33,7 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 		System.err.println("RECEIVED NODESELECTIONEVENT: " + event.size());
 		this.selectedRowCount = event.size();
 		this.nodes = event.getNodes();
-		this.refreshSelf();
-	}
-
-	/**
-	 * In case the subclasses need to do something when an event comes in
-	 */
-	protected void refreshSelf() {
+		this.updateAction();
 	}
 
 	/**

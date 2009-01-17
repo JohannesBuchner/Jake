@@ -40,8 +40,8 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author studpete
@@ -221,6 +221,16 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.resourceMap = resourceMap;
 	}
 
+	public List<ProjectFilesTreeNode> getSelectedNodes() {
+		java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
+		for (int row : fileTreeTable.getSelectedRows()) {
+			ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+			nodeObjs.add(node);
+		}
+
+		return nodeObjs;
+	}
+
 	private class FileTreeTableKeyListener extends KeyAdapter {
 		private FilePanel panel;
 
@@ -275,11 +285,10 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				// row.
 				// ONLY select new item if we didn't select multiple items.
 
+
 				java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
-				for (int currRow : container.getSelectedRows()) {
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(currRow, nodeColumn);
-					nodeObjs.add(node);
-				}
+
+				log.debug("Selected rows: " + DebugHelper.arrayToString(container.getSelectedRows()));
 
 				if (container.getSelectedRowCount() <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
@@ -297,7 +306,20 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 				}
 
+				for (int currRow : container.getSelectedRows()) {
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(currRow, nodeColumn);
+					nodeObjs.add(node);
+				}
+
 				panel.notifyNodeSelectionListeners(nodeObjs);
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+				}
+
+				log.debug("UGA UGA " + DebugHelper.arrayToString(nodeObjs));
 
 				showMenu(me);
 			} else if (SwingUtilities.isLeftMouseButton(me)) {

@@ -19,12 +19,11 @@ public class ResolveConflictFileAction extends FileAction {
 
 		putValue(Action.NAME, actionStr);
 
-		// only enable if exact one element is selected AND that element is NOT a folder.
-		setEnabled(isSingleFileSelected());
+		updateAction();
 	}
 
 	@Override
-	protected void refreshSelf() {
+	public void updateAction() {
 		setEnabled(isSingleFileSelected());
 	}
 
