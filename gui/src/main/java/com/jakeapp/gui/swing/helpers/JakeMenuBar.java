@@ -3,10 +3,8 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
-import net.roydesign.app.PreferencesJMenuItem;
 import net.roydesign.app.QuitJMenuItem;
 import net.roydesign.mac.MRJAdapter;
 import net.roydesign.ui.StandardMacAboutFrame;
@@ -40,18 +38,19 @@ public class JakeMenuBar extends JMenuBar {
 		JMenuItem startStopJoinProjectMenuItem = new JMenuItem();
 		JMenuItem renameProjectMenuItem = new JMenuItem();
 		JMenuItem deleteOrRejectProjectMenuItem = new JMenuItem();
-		JMenuItem rejectProjectMenuItem = new JMenuItem();
 		JSeparator projectSeparator1 = new JSeparator();
 		JMenuItem invitePeopleMenuItem = new JMenuItem();
 		JMenuItem createNoteMenuItem = new JMenuItem();
 		JSeparator jSeparator13 = new JSeparator();
 		JMenuItem signInOutMenuItem = new JMenuItem();
 		JSeparator exitSeparator = new JSeparator();
+		/*
 		JMenu editMenu = new JMenu();
 		JMenuItem cutMenuItem = new JMenuItem();
 		JMenuItem copyMenuItem = new JMenuItem();
 		JMenuItem selectAllMenuItem = new JMenuItem();
 		JSeparator editMenuSeparator = new JSeparator();
+		*/
 		JMenu viewMenu = new JMenu();
 		JMenuItem showProjectMenuItem = new JMenuItem();
 		JMenuItem showFilesMenuItem = new JMenuItem();
@@ -117,6 +116,7 @@ public class JakeMenuBar extends JMenuBar {
 
 		this.add(projectMenu);
 
+		/*
 		editMenu.setText(resourceMap.getString("editMenu.text")); // NOI18N
 		editMenu.setName("editMenu"); // NOI18N
 
@@ -132,6 +132,7 @@ public class JakeMenuBar extends JMenuBar {
 		selectAllMenuItem.setName("selectAllMenuItem"); // NOI18N
 		editMenu.add(selectAllMenuItem);
 
+		
 		// Do the same thing for the Preferences and Quit items
 		PreferencesJMenuItem preferencesMenuItem = app.getPreferencesJMenuItem();
 		preferencesMenuItem.addActionListener(new ActionListener() {
@@ -145,20 +146,19 @@ public class JakeMenuBar extends JMenuBar {
 		}
 
 		this.add(editMenu);
+		*/
+
 
 		viewMenu.setText(resourceMap.getString("viewMenu.text")); // NOI18N
 		viewMenu.setName("viewMenu"); // NOI18N
 
-		showProjectMenuItem.setText(resourceMap.getString("showProjectMenuItem.text")); // NOI18N
-		showProjectMenuItem.setName("showProjectMenuItem"); // NOI18N
+		showProjectMenuItem.setAction(new SwitchNewsProjectContextAction());
 		viewMenu.add(showProjectMenuItem);
 
-		showFilesMenuItem.setText(resourceMap.getString("showFilesMenuItem.text")); // NOI18N
-		showFilesMenuItem.setName("showFilesMenuItem"); // NOI18N
+		showFilesMenuItem.setAction(new SwitchFilesProjectContextAction());
 		viewMenu.add(showFilesMenuItem);
 
-		showNotesMenuItem.setText(resourceMap.getString("showNotesMenuItem.text")); // NOI18N
-		showNotesMenuItem.setName("showNotesMenuItem"); // NOI18N
+		showNotesMenuItem.setAction(new SwitchNotesProjectContextAction());
 		viewMenu.add(showNotesMenuItem);
 
 		this.add(viewMenu);

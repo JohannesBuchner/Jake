@@ -69,6 +69,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private JPanel statusPanel;
 
 	private JakeMainApp app;
+	private JakeSourceList sourceList;
 
 	public boolean isInspectorEnabled() {
 		return inspectorEnabled;
@@ -484,11 +485,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private void updateToolBar() {
 		boolean hasProject = getProject() != null;
 		boolean isInvite = getProject() != null && getProject().getInvitationState() == InvitationState.INVITED;
-
+		boolean isProjectContext = getContextViewPanel() == ContextPanelEnum.Project;
 		addFilesButton.setEnabled(hasProject && !isInvite);
 		invitePeopleButton.setEnabled(hasProject && !isInvite);
 		for (JToggleButton btn : contextSwitcherButtons) {
-			btn.setEnabled(hasProject && !isInvite);
+			btn.setEnabled(isProjectContext && hasProject && !isInvite);
 		}
 		inspectorButton.setEnabled(isInspectorAllowed());
 	}
@@ -582,7 +583,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * @return the JSplitPane
 	 */
 	private JSplitPane createSourceListAndMainArea() {
-		JakeSourceList sourceList = new JakeSourceList(getCore());
+		sourceList = new JakeSourceList(getCore());
 
 		// creates the special SplitPlane
 		JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(
@@ -698,11 +699,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	private void updateProjectToggleButtons() {
 		boolean canBeSelected = getContextViewPanel() == ContextPanelEnum.Project;
+		log.debug("updateProjectToggleButtons. canBeSelected=" + canBeSelected);
+
 		contextSwitcherButtons.get(ProjectViewPanelEnum.News.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.News);
 		contextSwitcherButtons.get(ProjectViewPanelEnum.Files.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.Files);
 		contextSwitcherButtons.get(ProjectViewPanelEnum.Notes.ordinal()).setSelected(canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.Notes);
-
-		// problem:
 
 		// adapt button style
 		for (JToggleButton btn : contextSwitcherButtons) {
@@ -718,6 +719,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// only set if project panels are shown!
 		boolean show = getContextViewPanel() == ContextPanelEnum.Project;
+
+		// remote the selection from the sourcelist
+		if (!show) {
+			sourceList.selectProject(null);
+		}
 
 		showContentPanel(newsPanel, show && view == ProjectViewPanelEnum.News);
 		showContentPanel(filePanel, show && view == ProjectViewPanelEnum.Files);

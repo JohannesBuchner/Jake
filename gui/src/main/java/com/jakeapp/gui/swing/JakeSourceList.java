@@ -7,7 +7,6 @@ import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
@@ -321,6 +320,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 	 * @param project: the project that will be selected.
 	 */
 	public void selectProject(Project project) {
+		log.info("selectProject in SourceList: " + project);
 		boolean success = false;
 		for (Map.Entry<SourceListItem, Project> slip : sourceListProjectMap.entrySet()) {
 			if (slip.getValue() == project) {
@@ -331,7 +331,17 @@ public class JakeSourceList extends JakeGuiComponent implements
 		}
 
 		if (!success) {
-			throw new ProjectNotFoundException("The project was not found in the list");
+			removeSelection();
+		}
+	}
+
+	/**
+	 * Removes the current selection (if any)
+	 */
+	// TODO: this uses interal tree api. move into SourceList api?
+	private void removeSelection() {
+		if (sourceList.getTree().getSelectionPath() != null) {
+			sourceList.getTree().removeSelectionPath(sourceList.getTree().getSelectionPath());
 		}
 	}
 
