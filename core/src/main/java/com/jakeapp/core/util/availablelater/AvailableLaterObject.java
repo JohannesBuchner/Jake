@@ -8,7 +8,7 @@ package com.jakeapp.core.util.availablelater;
  * <p/>
  * In {@link #run()}, implement the method that takes time. call
  * {@link #set(Object)}() when your done or the methods of
- * {@link AvailibilityListener} to notify the progress.
+ * {@link AvailabilityListener} to notify the progress.
  *
  * @author johannes
  * @param <T>
@@ -18,14 +18,14 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 
 	private T innercontent;
 
-	protected AvailibilityListener listener;
+	protected AvailabilityListener listener;
 
 	public void set(T o) {
 		this.innercontent = o;
 		this.listener.finished();
 	}
 
-	public AvailableLaterObject(AvailibilityListener listener) {
+	public AvailableLaterObject(AvailabilityListener listener) {
 		this.listener = listener;
 	}
 

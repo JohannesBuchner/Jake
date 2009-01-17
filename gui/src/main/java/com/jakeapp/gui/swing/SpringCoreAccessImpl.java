@@ -12,7 +12,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailibilityListener;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -386,10 +386,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public int getProjectFileCount(Project project) {
-		int result = 0;
+		AvailableLaterObject<Integer> result = null;
 
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project, null);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -406,7 +406,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.handleNotLoggedInException(e);
 		}
 
-		return result;
+		//TODO
+		return 0;
 	}
 
 	public long getProjectSizeTotal(Project project) {
@@ -576,13 +577,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailibilityListener al) {
-
-		// TODO: make async!
-		/*
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener al) {
+		AvailableLaterObject<List<FileObject>> result = null;
+		
 		try {
-
-			return this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project);
+			result = this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project, al);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -598,11 +597,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
-*/
-		return null;
-
+		
+		return result;
 	}
-
+	
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
 		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);

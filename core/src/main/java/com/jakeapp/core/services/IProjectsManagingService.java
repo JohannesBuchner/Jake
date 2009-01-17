@@ -5,6 +5,8 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.jake.fss.IFSService;
 
 import java.util.List;
@@ -256,30 +258,32 @@ public interface IProjectsManagingService {
 
 	/**
 	 * @return The number of files in a Project
-	 * @see #getAllProjectFiles(Project)
+	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
 	 */
-	int getProjectFileCount(Project project) throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
+	AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener)
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
 
 	/**
 	 * @param project
 	 * @return The amount of bytes all files in a project take up.
-	 * @see #getAllProjectFiles(Project)
+	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
 	 */
 	long getProjectSizeTotal(Project project)
-	throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
 
 
 	/**
 	 * Retrieves all Files that exist in a <code>Project</code>
 	 * 
 	 * @param project
+	 * @param listener A listener for reporting status
 	 * @return A List of all files.
 	 * @throws NoSuchProjectException If the specified Project does not exist.
 	 * @throws FileNotFoundException If the root path of the specified Project is not found.
 	 * @throws IllegalArgumentException If project is null.
 	 */
-	List<FileObject> getAllProjectFiles(Project project)
-		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
+	AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener listener)
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;;
 	
 	/**
 	 * Joins the Project and notifies the inviter.

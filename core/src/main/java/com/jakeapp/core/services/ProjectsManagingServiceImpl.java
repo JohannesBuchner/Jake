@@ -35,9 +35,14 @@ import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.services.futures.AllProjectFilesFuture;
+import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
@@ -590,19 +595,28 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public int getProjectFileCount(Project project) 
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener) 
 		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
-		// FIXME not efficient?
-		return this.getAllProjectFiles(project).size();
+		
+		AvailableLaterWrapperObject<Integer,List<FileObject>> sizeFuture;
+		AvailableLaterObject<List<FileObject>> filesFuture;
+		
+		sizeFuture = new ProjectFileCountFuture(null);
+		filesFuture = this.getAllProjectFiles(project, sizeFuture);
+		sizeFuture.setSource(filesFuture);
+		
+		return sizeFuture;
 	}
 
 	@Override
 	public long getProjectSizeTotal(Project project)
 		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
+		//TODO implement with futures
+		/*
 		long result = 0;
 		List<FileObject> files;
 
-		files = this.getAllProjectFiles(project);
+		files = this.getAllProjectFiles(project, null);
 		for (FileObject file : files) {
 			try {
 				result += file.getAbsolutePath().length();
@@ -610,19 +624,19 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 				// empty catch
 			}
 		}
+		*/
 
-		return result;
+		return 0L;
 	}
 
 	@Override
-	public List<FileObject> getAllProjectFiles(Project project)
-			throws NoSuchProjectException, FileNotFoundException,
-			IllegalArgumentException {
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener listener) 
+		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
 		IFileObjectDao dao;
 
 		dao = this.getFileObjectDao(project);
-
-		return dao.getAll();
+		
+		return (new AllProjectFilesFuture(listener,dao));
 	}
 
 	@Override
@@ -720,6 +734,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		if (jo.getProject() == null) throw new NoSuchProjectException();
 		
 		//get the most recent logentry for the JakeObject
+		//TODO rather call getMostRecentProcessed
 		logentry = this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
 		
 		return logentry;

@@ -4,7 +4,7 @@
 package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailibilityListener;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.StatusUpdate;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ import java.util.concurrent.Semaphore;
  * @param <T>
  */
 public abstract class SwingWorkerWithAvailableLaterObject<T> extends
-		  SwingWorker<T, StatusUpdate> implements AvailibilityListener {
+		  SwingWorker<T, StatusUpdate> implements AvailabilityListener {
 
 	private Semaphore s = new Semaphore(0);
 

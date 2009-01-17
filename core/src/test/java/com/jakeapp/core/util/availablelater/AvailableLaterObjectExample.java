@@ -1,12 +1,12 @@
 package com.jakeapp.core.util.availablelater;
 
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailibilityListener;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
 
 public class AvailableLaterObjectExample {
 
 	public static AvailableLaterObject<String> calculateSomething(
-			AvailibilityListener l) {
+			AvailabilityListener l) {
 		AvailableLaterObject<String> result = new AvailableLaterObject<String>(
 				l) {
 
@@ -24,7 +24,7 @@ public class AvailableLaterObjectExample {
 	}
 
 	public void callingFunction() {
-		Object result = calculateSomething(new AvailibilityListener() {
+		Object result = calculateSomething(new AvailabilityListener() {
 
 			@Override
 			public void error(Exception t) {
