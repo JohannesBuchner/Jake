@@ -313,12 +313,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 				panel.notifyNodeSelectionListeners(nodeObjs);
 
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-				}
-
 				log.debug("UGA UGA " + DebugHelper.arrayToString(nodeObjs));
 
 				showMenu(me);
