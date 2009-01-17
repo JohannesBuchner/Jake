@@ -27,6 +27,6 @@ public class ProjectFilesTreeCellRenderer implements TreeCellRenderer {
 			file = new File(JakeMainApp.getApp().getProject().getRootPath() + node.getFolderObject().getRelPath());
 		}
 
-		return FileIconLabelHelper.getIconLabel(file, FileIconLabelHelper.State.NONE);
+		return FileIconLabelHelper.getIconLabel(file);
 	}
 }

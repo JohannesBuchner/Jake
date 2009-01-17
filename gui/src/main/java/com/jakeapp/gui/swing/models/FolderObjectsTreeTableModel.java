@@ -46,9 +46,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 			case 0:
-				return FileObjectStatusCell.class;
-			case 1:
 				return FileObjectLockedCell.class;
+			case 1:
+				return FileObjectStatusCell.class;
 			case 2:
 				return ProjectFilesTreeNode.class;
 			case 3:
@@ -102,9 +102,9 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 		if (ournode.isFile()) {
 			switch (column) {
 				case 0:
-					return new FileObjectStatusCell(ournode.getFileObject());
-				case 1:
 					return new FileObjectLockedCell(ournode.getFileObject());
+				case 1:
+					return new FileObjectStatusCell(ournode.getFileObject());
 				case 2:
 					return ournode;
 				case 3:

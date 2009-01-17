@@ -2,10 +2,8 @@ package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
-import com.jakeapp.gui.swing.JakeMainApp;
 
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -27,7 +25,7 @@ public class ProjectFilesTableCellRenderer implements TableCellRenderer {
 		File file;
 		file = node.getFileObject().getAbsolutePath();
 
-		Component c = FileIconLabelHelper.getIconLabel(file, FileIconLabelHelper.State.NONE);
+		Component c = FileIconLabelHelper.getIconLabel(file);
 
 		if (isSelected) {
 			c.setBackground(table.getSelectionBackground());

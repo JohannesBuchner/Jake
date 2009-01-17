@@ -19,9 +19,15 @@ import java.util.HashMap;
 public class FileStatusTreeCellRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		table.getColumnModel().getColumn(column).setMaxWidth(30);
-		table.getColumnModel().getColumn(column).setMinWidth(30);
+		table.getColumnModel().getColumn(column).setMaxWidth(25);
+		table.getColumnModel().getColumn(column).setMinWidth(25);
 
-		return value == null ? new JLabel("FLDR") : FileObjectStatusProvider.getStatusRendererComponent(((FileObjectStatusCell) value).getFileObject());
+		Component comp = (value == null) ? FileObjectStatusProvider.getEmptyComponent() : FileObjectStatusProvider.getStatusRendererComponent(((FileObjectStatusCell) value).getFileObject());
+
+		if (isSelected) {
+			comp.setBackground(table.getSelectionBackground());
+		}
+
+		return comp;
 	}
 }
