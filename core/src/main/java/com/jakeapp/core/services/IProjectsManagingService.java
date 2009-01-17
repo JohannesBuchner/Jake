@@ -9,6 +9,7 @@ import com.jakeapp.jake.fss.IFSService;
 
 import java.util.List;
 import java.io.File;
+import java.util.Date;
 import java.io.FileNotFoundException;
 
 /**
@@ -311,4 +312,23 @@ public interface IProjectsManagingService {
 	 */
 	void updateProjectName(Project project, String newName)
 		throws NoSuchProjectException;
+	
+	/**
+	 * @return The date and time when a {@link JakeObject} was last modified. If the JakeObject
+	 * has never been modified, the current Date is returned.
+	 * @throws NoSuchProjectException if the JakeObject's Project does not exist.
+	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
+	 */
+	Date getLastEdit(JakeObject jo)
+		throws NoSuchProjectException, IllegalArgumentException;
+
+
+	/**
+	 * @return The ProjectMember who last modified the JakeObject. If the JakeObject
+	 * has never been modified, null is returned.
+	 * @throws NoSuchProjectException if the JakeObject's Project does not exist.
+	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
+	 */
+	ProjectMember getLastEditor(JakeObject jo) throws NoSuchProjectException,
+			IllegalArgumentException;
 }

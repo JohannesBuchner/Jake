@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.synchronization.FileStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailibilityListener;
@@ -32,34 +33,42 @@ public interface ICoreAccess {
 	/**
 	 * file was imported into project, it is represented in the database
 	 */
+	@Deprecated
 	public static final int SYNC_IS_IN_PROJECT = 1;
 	/**
 	 * is distributed
 	 */
+	@Deprecated
 	public static final int SYNC_HAS_LgetAllOGENTRIES = 2;
 	/**
 	 * we have this file
 	 */
+	@Deprecated
 	public static final int SYNC_EXISTS_LOCALLY = 4;
 	/**
 	 * it is from the latest version
 	 */
+	@Deprecated
 	public static final int SYNC_LOCAL_IS_LATEST = 8;
 	/**
 	 * we modified it
 	 */
+	@Deprecated
 	public static final int SYNC_LOCALLY_CHANGED = 16;
 	/**
 	 * Did someone delete it?
 	 */
+	@Deprecated
 	public static final int SYNC_EXISTS_REMOTELY = 32;
 	/**
 	 * A newer remote version exists
 	 */
+	@Deprecated
 	public static final int SYNC_REMOTE_IS_NEWER = 64;
 	/**
 	 * A newer remote version exists, we have a modified old version.
 	 */
+	@Deprecated
 	public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER | SYNC_LOCALLY_CHANGED;
 
 
@@ -386,7 +395,7 @@ public interface ICoreAccess {
 	 * @param file The file for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
-	public int getFileStatus(Project project, FileObject file);
+	public FileStatus getFileStatus(Project project, FileObject file);
 
 	/**
 	 * Gets the size of a FileObject in the filesystem

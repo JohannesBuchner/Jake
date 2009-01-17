@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.synchronization.FileStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailibilityListener;
@@ -16,6 +17,7 @@ import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
@@ -561,10 +563,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public FolderObject getProjectRootFolder(Project project)
 			  throws ProjectFolderMissingException {
-		// This is all mocked from the actual file system
 		String rootPath = project.getRootPath();
-		log.debug("File mocking: Project root path is " + rootPath);
-
 		File rootFolder = new File(rootPath);
 		if (!rootFolder.exists()) {
 			throw new ProjectFolderMissingException(rootPath);
@@ -605,8 +604,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public int getFileStatus(Project project, FileObject file) {
-		return 0;
+	public FileStatus getFileStatus(Project project, FileObject file) {
+		return new FileStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);
 	}
 
 	/**
@@ -646,19 +645,28 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public Date getLastEdit(NoteObject note) {
-		return new Date();
+		Date result = null;
+		
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getLastEdit(note);
+		} catch (Exception e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
+		
+		return result;
 	}
 
 	@Override
 	public ProjectMember getLastEditor(NoteObject note) {
-		// TODO: fix
-		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
-
-		// return new ProjectMember(new XMPPUserId(new
-		// ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1),
-		// "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
+		ProjectMember member = null;
+		try {
+			member = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getLastEditor(note);
+		} catch (Exception e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
+		
+		return member;
 	}
-
 
 	@Override
 	public boolean isLocalNote(NoteObject note) {

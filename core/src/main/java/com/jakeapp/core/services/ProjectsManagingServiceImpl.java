@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
@@ -38,11 +41,6 @@ import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
@@ -678,5 +676,52 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			project.setName(newName);
 			this.getProjectDao().update(project);
 		}
+	}
+
+	@Override
+	public Date getLastEdit(JakeObject jo)
+	throws NoSuchProjectException, IllegalArgumentException {
+		LogEntry<? extends ILogable> logentry;
+		Date result;
+		
+		//get the most recent logentry for the Note
+		try {
+			logentry = this.getMostRecentFor(jo);
+			result = logentry.getTimestamp();
+		} catch (NoSuchLogEntryException e) {
+			result = Calendar.getInstance().getTime();
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public ProjectMember getLastEditor(JakeObject jo)
+		throws NoSuchProjectException, IllegalArgumentException {
+		LogEntry<? extends ILogable> logentry;
+		ProjectMember result;
+		
+		//get the most recent logentry for the Note
+		try {
+			logentry = this.getMostRecentFor(jo);
+			result = logentry.getMember();
+		} catch (NoSuchLogEntryException e) {
+			result = null;
+		}
+		
+		return result;
+	}
+	
+	private LogEntry<? extends ILogable> getMostRecentFor(JakeObject jo)
+		throws NoSuchProjectException, IllegalArgumentException, NoSuchLogEntryException {
+		LogEntry<? extends ILogable> logentry;
+		
+		if (jo==null) throw new IllegalArgumentException();
+		if (jo.getProject() == null) throw new NoSuchProjectException();
+		
+		//get the most recent logentry for the JakeObject
+		logentry = this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
+		
+		return logentry;
 	}
 }
