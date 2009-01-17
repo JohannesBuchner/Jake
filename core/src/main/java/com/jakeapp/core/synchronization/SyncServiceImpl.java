@@ -223,8 +223,15 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		IFSService fss = projectsFssMap.get(p.getProjectId());
 		List<String> files;
 		try {
-			files = fss.recursiveListFiles();
-		} catch (IOException e) {
+			// TODO: should this really throw an exception if _one_ file doesnt work? I don't think so. -- dominik
+            files = fss.recursiveListFiles();
+		}
+        catch(InvalidFilenameException ifne)
+        {
+            // TODO @ johannes: is this ok?
+            throw new IOException("InvalidFilenameException: " + ifne.getMessage());
+        }
+        catch (IOException e) {
 			throw e;
 		}
 		for (JakeObject jo : getMissingJakeObjects(p)) {
