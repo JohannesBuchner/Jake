@@ -5,8 +5,6 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.core.synchronization.FileStatus;
 import com.jakeapp.core.domain.FileObject;
 
 import javax.swing.*;
