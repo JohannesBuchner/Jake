@@ -37,6 +37,7 @@ import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
+import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
@@ -601,7 +602,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		AvailableLaterWrapperObject<Integer,List<FileObject>> sizeFuture;
 		AvailableLaterObject<List<FileObject>> filesFuture;
 		
-		sizeFuture = new ProjectFileCountFuture(null);
+		sizeFuture = new ProjectFileCountFuture(listener);
 		filesFuture = this.getAllProjectFiles(project, sizeFuture);
 		sizeFuture.setSource(filesFuture);
 		
@@ -609,24 +610,17 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public long getProjectSizeTotal(Project project)
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener)
 		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException {
-		//TODO implement with futures
-		/*
-		long result = 0;
-		List<FileObject> files;
-
-		files = this.getAllProjectFiles(project, null);
-		for (FileObject file : files) {
-			try {
-				result += file.getAbsolutePath().length();
-			} catch (SecurityException se) {
-				// empty catch
-			}
-		}
-		*/
-
-		return 0L;
+		
+		AvailableLaterWrapperObject<Long,List<FileObject>> sizeFuture;
+		AvailableLaterObject<List<FileObject>> filesFuture;
+		
+		sizeFuture = new ProjectSizeTotalFuture(null);
+		filesFuture = this.getAllProjectFiles(project, sizeFuture);
+		sizeFuture.setSource(filesFuture);
+		
+		return sizeFuture;
 	}
 
 	@Override

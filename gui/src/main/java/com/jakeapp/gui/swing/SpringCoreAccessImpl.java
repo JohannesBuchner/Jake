@@ -411,10 +411,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public long getProjectSizeTotal(Project project) {
-		long result = 0;
+		AvailableLaterObject<Long> result;
 
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project, null);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -431,7 +431,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.handleNotLoggedInException(e);
 		}
 
-		return result;
+		//TODO implement with futures
+		return 0L;
 	}
 
 

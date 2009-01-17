@@ -268,9 +268,8 @@ public interface IProjectsManagingService {
 	 * @return The amount of bytes all files in a project take up.
 	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
 	 */
-	long getProjectSizeTotal(Project project)
+	AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener)
 		throws NoSuchProjectException, FileNotFoundException,IllegalArgumentException;
-
 
 	/**
 	 * Retrieves all Files that exist in a <code>Project</code>
