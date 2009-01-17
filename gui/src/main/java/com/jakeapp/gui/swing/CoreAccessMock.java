@@ -332,12 +332,32 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 
-	public int getProjectFileCount(Project project) {
-		return 100;
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener) {
+		return new AvailableLaterObject<Integer>(listener) {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.set(100);
+			}
+		}.start();
 	}
 
-	public long getProjectSizeTotal(Project project) {
-		return 50000;
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener) {
+		return new AvailableLaterObject<Long>(listener) {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.set(50000L);
+			}
+		}.start();
 	}
 
 

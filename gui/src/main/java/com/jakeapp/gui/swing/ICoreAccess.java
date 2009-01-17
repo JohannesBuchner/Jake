@@ -311,7 +311,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return
 	 */
-	public int getProjectFileCount(Project project);
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener);
 
 	/**
 	 * Returns absolute Size of all files in the project.
@@ -319,7 +319,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return size in bytes.
 	 */
-	public long getProjectSizeTotal(Project project);
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener);
 
 
 	/**

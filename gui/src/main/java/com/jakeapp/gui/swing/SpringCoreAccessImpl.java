@@ -385,11 +385,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public int getProjectFileCount(Project project) {
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener) {
 		AvailableLaterObject<Integer> result = null;
 
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project, null);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project, listener);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -406,12 +406,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.handleNotLoggedInException(e);
 		}
 
-		//TODO
-		return 0;
+		return result.start();
 	}
 
-	public long getProjectSizeTotal(Project project) {
-		AvailableLaterObject<Long> result;
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener) {
+		AvailableLaterObject<Long> result = null;
 
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project, null);
@@ -431,8 +430,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.handleNotLoggedInException(e);
 		}
 
-		//TODO implement with futures
-		return 0L;
+		return result.start();
 	}
 
 

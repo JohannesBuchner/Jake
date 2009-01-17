@@ -3,18 +3,26 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
+import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * User: studpete
@@ -30,7 +38,58 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	private TriAreaComponent statusBar;
 	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
 	private JakeMainView.ContextPanelEnum contextViewPanel;
+	
+	private String projectFileCount = "";
+	private String projectTotalSize = "";
 
+	
+	protected class ProjectSizeTotalWorker extends SwingWorkerWithAvailableLaterObject<Long> {
+		@Override
+		protected AvailableLaterObject<Long> calculateFunction() {
+			return JakeMainApp.getCore().getProjectSizeTotal(getProject(), this);
+		}
+		
+		@Override
+		protected void done() {
+			long projectSizeTotal = 0;
+			try {
+				projectSizeTotal = this.get();
+			} catch (InterruptedException e) {
+				this.handleInterruption(e);
+			} catch (ExecutionException e) {
+				this.handleExecutionError(e);
+			}
+			String projectSize = FileUtilities.getSize(projectSizeTotal);
+
+			// update project statistics
+			setProjectTotalSize(projectSize);
+		}
+	}
+	
+	protected class ProjectFileCountWorker extends SwingWorkerWithAvailableLaterObject<Integer> {
+		@Override
+		protected AvailableLaterObject<Integer> calculateFunction() {
+			return JakeMainApp.getCore().getProjectFileCount(getProject(), this);
+		}
+		
+		@Override
+		protected void done() {
+			// update the status bar label
+			int projectFileCount = 0;
+			
+			try {
+				projectFileCount = this.get();
+			} catch (InterruptedException e) {
+				this.handleInterruption(e);
+			} catch (ExecutionException e) {
+				this.handleExecutionError(e);
+			}
+			String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
+
+			// update project statistics
+			setProjectFileCount(projectFileCount + " " + filesStr);
+		}
+	}
 
 	public JakeStatusBar(ICoreAccess core) {
 		super(core);
@@ -213,14 +272,8 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
 			if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Files) {
 				// update the status bar label
-				int projectFileCount = getCore().getProjectFileCount(getProject());
-				String filesStr = getResourceMap().getString(projectFileCount == 1 ? "projectFile" : "projectFiles");
-
-				long projectSizeTotal = getCore().getProjectSizeTotal(getProject());
-				String projectSize = FileUtilities.getSize(projectSizeTotal);
-
-				// update project statistics
-				statusLabel.setText(projectFileCount + " " + filesStr + ", " + projectSize);
+				JakeExecutor.exec(new ProjectFileCountWorker());
+				JakeExecutor.exec(new ProjectSizeTotalWorker());		
 			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
 				int notesCount = 0;
 				try {
@@ -264,6 +317,32 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			statusLabel.setText("");
 			// login
 		}
+	}
+	
+	private String getProjectFileCount() {
+		return this.projectFileCount;
+	}
+	
+	private String getProjectTotalSize() {
+		return this.projectTotalSize;
+	}
+	
+	private void setProjectFileCount(String filecount) {
+		this.projectFileCount = filecount;
+		this.setStatusLabelProjectStatistics();
+	}
+	
+	private void setProjectTotalSize(String totalSize) {
+		this.projectTotalSize = totalSize;
+		this.setStatusLabelProjectStatistics();
+	}
+	
+	private void setStatusLabelProjectStatistics() {
+		this.setStatusLabelText(this.getProjectFileCount() + ((this.getProjectFileCount().length()==0 || this.getProjectTotalSize().length()==0)?"":", ") + this.getProjectTotalSize());
+	}
+	
+	private void setStatusLabelText(String text) {
+		statusLabel.setText(text);
 	}
 
 

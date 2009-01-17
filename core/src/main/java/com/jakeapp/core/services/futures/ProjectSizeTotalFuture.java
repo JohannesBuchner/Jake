@@ -23,19 +23,25 @@ public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, Li
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		/*
+		final String STATUS = "";
 		long result = 0;
 		List<FileObject> files;
-
-		files = this.getAllProjectFiles(project, null);
+		double progress=0d;
+		double singlestep = 0;
+		listener.statusUpdate(progress, STATUS);
+		
+		files = this.getSource().get();
+		if (files.size() > 0) singlestep = 1d / files.size();
 		for (FileObject file : files) {
 			try {
 				result += file.getAbsolutePath().length();
 			} catch (SecurityException se) {
 				// empty catch
 			}
+			progress += singlestep;
+			listener.statusUpdate(progress, STATUS);
 		}
-		*/
+		
+		this.set(result);
 	}
 }
