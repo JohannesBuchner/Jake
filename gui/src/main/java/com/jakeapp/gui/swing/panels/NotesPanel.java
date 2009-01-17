@@ -86,34 +86,32 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 
 		@Override
-		public void mouseClicked(MouseEvent me) {
-			if (SwingUtilities.isRightMouseButton(me)) {
-				// get the coordinates of the mouse click
-				Point p = me.getPoint();
+		public void mouseClicked(MouseEvent mouseEvent) {
+			if (SwingUtilities.isRightMouseButton(mouseEvent)) {
 
-				// get the row index that contains that coordinate
+				Point p = mouseEvent.getPoint();
 				int rowNumber = this.table.rowAtPoint(p);
-
-				// Get the ListSelectionModel of the JTable
-				ListSelectionModel model = this.table.getSelectionModel();
-
-				// ONLY select new item if we didn't select multiple items.
-				if (this.table.getSelectedRowCount() <= 1 && rowNumber != -1) {
-					model.setSelectionInterval(rowNumber, rowNumber);
-					List<NoteObject> selectedRows = new ArrayList<NoteObject>();
-					selectedRows.add(this.tableModel.getNoteAtRow(rowNumber));
-					this.panel.notifyNoteSelectionListeners(selectedRows);
-				} else if (rowNumber == -1) {
+				
+				if (rowNumber == -1) { // click in empty area
 					this.panel.notifyNoteSelectionListeners(new ArrayList<NoteObject>());
+					this.table.clearSelection();
+				} else { //click hit something
+					boolean found = false;
+					for (int row : this.table.getSelectedRows()) {
+						if (row == rowNumber) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						this.table.changeSelection(rowNumber, 0, false, false);
+					}
 				}
-				showMenu(me);
-
-			} else if (SwingUtilities.isLeftMouseButton(me)) {
-				java.util.List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
-				for (int row : this.table.getSelectedRows()) {
-					selectedNotes.add(this.tableModel.getNoteAtRow(row));
+				showMenu(mouseEvent);
+			} else if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
+				if (this.table.rowAtPoint(mouseEvent.getPoint()) == -1) {
+					this.table.clearSelection();
 				}
-				this.panel.notifyNoteSelectionListeners(selectedNotes);
 			}
 		}
 
@@ -157,6 +155,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notesTable.getColumnModel().getColumn(1).setResizable(false); // shared note
 		this.notesTable.getColumnModel().getColumn(1).setMaxWidth(20);
 		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		
+		this.notesTable.getSelectionModel().addListSelectionListener(this);
 
 
 		// TODO: make this a styler property
@@ -193,11 +193,17 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public void valueChanged(ListSelectionEvent e) {
 		if (this.notesTable.getSelectedRow() == -1) {
 			this.noteReader.setText("");
-			//TODO: en/disable context menu entries for delete, commit, etc...
+			this.notifyNoteSelectionListeners(new ArrayList<NoteObject>());
 		} else {
 			String text;
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
 			this.noteReader.setText(text);
+			
+			List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
+			for (int row : this.notesTable.getSelectedRows()) {
+				selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
+			}
+			this.notifyNoteSelectionListeners(selectedNotes);
 		}
 	}
 

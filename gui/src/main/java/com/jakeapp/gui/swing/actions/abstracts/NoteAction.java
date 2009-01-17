@@ -35,14 +35,12 @@ public abstract class NoteAction extends ProjectAction
 	}
 
 	/**
-	 * Save the new notes, renew action
-	 *
+	 * Callback for the <code>NoteSelectionChanged</code> Listener. 
 	 * @param event
 	 */
 	public void noteSelectionChanged(NoteSelectedEvent event) {
+		
 		setSelectedNotes(event.getNotes());
-
-		// call the update action event
 		updateAction();
 	}
 

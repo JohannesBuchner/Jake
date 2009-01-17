@@ -36,18 +36,16 @@ public class SoftlockNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		 ICoreAccess core = JakeMainApp.getCore();
-		 boolean newLockingState = !this.isLocked; //FIXME: davelish hack: this.isLocked is reset after every note change.
-		 log.debug("selection count: " + this.getSelectedNotes().size());
+		 boolean cachedNewLockingState = !this.isLocked;
+		 
 		 for (NoteObject note : this.getSelectedNotes()) {
-			  log.debug("setting soft lock for note: " + note + "---------------------------------------------------");
-			  core.setSoftLock(note, newLockingState, null);
+			  core.setSoftLock(note, cachedNewLockingState, null);
 		 }
 	}
 
 	@Override
 	public void updateAction() {
-		log.debug("update action");
-		 log.debug("getting " + this.getSelectedNotes().size() + " notes...");
+		
 		if (this.getSelectedNotes().size() > 0) {
 			this.setEnabled(true);
 
@@ -69,11 +67,6 @@ public class SoftlockNoteAction extends NoteAction {
 		} else {
 			this.setEnabled(false);
 			this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
-		}
-		log.debug("where still having " + this.getSelectedNotes().size() + " notes!");
-		
+		}	
 	}
-
-
-
 }

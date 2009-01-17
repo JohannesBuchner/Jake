@@ -1,6 +1,8 @@
 package com.jakeapp.gui.swing.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JOptionPane;
@@ -44,10 +46,9 @@ public class DeleteNoteAction extends NoteAction {
 				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0], new SheetListener() {
 			@Override
 			public void optionSelected(SheetEvent evt) {
-				log.debug("button clicked... getOption: " + evt.getOption());
+				List<NoteObject> cache = new ArrayList<NoteObject>(getSelectedNotes());
 				if (evt.getOption() == 0) {
-					log.info("Deleting Notes...");
-					for (NoteObject note : getSelectedNotes()) {
+					for (NoteObject note : cache) {
 						JakeMainApp.getCore().deleteNote(note);
 					}
 				}
@@ -57,8 +58,6 @@ public class DeleteNoteAction extends NoteAction {
 
 	@Override
 	public void updateAction() {
-		log.debug("update Action...");
-		log.debug("getSelectedNotes returns: " + this.getSelectedNotes().size() + " note");
 		this.setEnabled(this.getSelectedNotes().size() > 0);
 	}
 }
