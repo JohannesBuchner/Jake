@@ -55,6 +55,9 @@
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 
+    <bean id="logEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
 
 
 </beans>

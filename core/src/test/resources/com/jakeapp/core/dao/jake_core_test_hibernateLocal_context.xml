@@ -105,7 +105,7 @@
     </bean>
 
 
-    <bean id="logentryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
+    <bean id="logEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 

@@ -31,8 +31,6 @@ public class FrontendServiceImpl implements IFrontendService{
 
 	private Map<String, FrontendSession> sessions;
 	
-
-	
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync;
 	
@@ -41,6 +39,7 @@ public class FrontendServiceImpl implements IFrontendService{
 	 * 
 	 * @param projectsManagingService
 	 * @param msgServiceFactory
+     * @param sync
 	 */
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
 			MsgServiceFactory msgServiceFactory, IFriendlySyncService sync) {
