@@ -41,6 +41,7 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
@@ -58,6 +59,8 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 public class SyncServiceImpl extends FriendlySyncService {
 
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
+
+	private static final String POKE_MESSAGE = "<poke/>";
 
 	/**
 	 * key is the UUID
@@ -278,7 +281,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Override
 	public Iterable<JakeObject> getObjectsInConflict(Project project)
 			throws IllegalArgumentException {
-		// TODO Auto-generated method stub
+		// find existing locally
+		// find existing&modified locally that have a unprocessed NEW_VERSION
+		Iterable<JakeObject> pullableFO = getPullableFileObjects(project);
+		
+		
 		return null;
 	}
 
@@ -296,7 +303,14 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void poke(Project project, UserId userId) {
 		// TODO Auto-generated method stub
 		// TODO: send userId a message to start a logsync
-		// getICS(project).getMsgService().sendMessage(userId, content)
+		try {
+			getICS(project).getMsgService().sendMessage(getBackendUserIdFromDomainUserId(userId) , POKE_MESSAGE);
+		} catch (NotLoggedInException e) {
+		} catch (TimeoutException e) {
+		} catch (NoSuchUseridException e) {
+		} catch (NetworkException e) {
+		} catch (OtherUserOfflineException e) {
+		}
 	}
 
 	@Override

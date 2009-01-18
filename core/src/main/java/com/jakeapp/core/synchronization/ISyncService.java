@@ -82,7 +82,7 @@ public interface ISyncService {
 
 	/**
 	 * Tells the user userId to do a logSync. It is the way of telling
-	 * "hey, we have something new".
+	 * "hey, we have something new". This makes no guarantees and fails silently
 	 * 
 	 * @param project
 	 * @param userId
