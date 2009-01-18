@@ -44,6 +44,9 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
+import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
+import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
@@ -82,12 +85,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	private UserTranslator userTranslator;
 
 	private ICService getICS(Project p) {
-		try {
-			return icServicesManager.getICService(p);
-		} catch (ProtocolNotSupportedException e) {
-			e.printStackTrace(); // todo
-			return null;
-		}
+		return icServicesManager.getICService(p);
 	}
 
 	private IFSService getFSS(Project p) {
@@ -204,6 +202,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return p.getUserId().getUserId();
 	}
 
+	private com.jakeapp.jake.ics.UserId getMyBackendUserid(Project p) {
+		return userTranslator.getBackendUserIdFromDomainUserId(p.getUserId());
+	}
 
 	@Transactional
 	private ProjectMember getMyProjectMember(Project p) {
@@ -292,8 +293,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// find existing locally
 		// find existing&modified locally that have a unprocessed NEW_VERSION
 		Iterable<JakeObject> pullableFO = getPullableFileObjects(project);
-		
-		
+
+
 		return null;
 	}
 
@@ -304,7 +305,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// TODO: iterate through logs backwards to find a lock
 		// if none found or last is unlocked -> unlocked
 		// otherwise -> locked
-		//db.getLogEntryDao(jo).getMostRecentFor(jakeObject)
+		// db.getLogEntryDao(jo).getMostRecentFor(jakeObject)
 		return false;
 	}
 
@@ -313,7 +314,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// TODO Auto-generated method stub
 		// TODO: send userId a message to start a logsync
 		try {
-			getICS(project).getMsgService().sendMessage(getBackendUserIdFromDomainUserId(userId) , POKE_MESSAGE);
+			getICS(project).getMsgService().sendMessage(
+					getBackendUserIdFromDomainUserId(userId), POKE_MESSAGE);
 		} catch (NotLoggedInException e) {
 		} catch (TimeoutException e) {
 		} catch (NoSuchUseridException e) {
@@ -324,11 +326,34 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	@Override
 	@Transactional
-	public void pullObject(JakeObject jo) throws NoSuchLogEntryException {
-		LogEntry le = db.getLogEntryDao(jo).getMostRecentFor(jo);
-		String userid = getMyUserid(jo.getProject());
+	public void pullObject(JakeObject jo) throws NoSuchLogEntryException,
+			NotLoggedInException, IllegalArgumentException {
+		LogEntry<JakeObject> le = (LogEntry<JakeObject>) db.getLogEntryDao(jo).getExists(
+				jo);
+		log.debug("got logentry: " + le);
 		rhp.getPotentialJakeObjectProviders(jo);
+		if (le == null) { // delete
+			log.debug("lets delete it");
+			try {
+				deleteBecauseRemoteSaidSo(jo);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchJakeObjectException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
+		if (le.getBelongsTo() instanceof NoteObject) {
 
+
+		}
+
+		FailoverCapableFileTransferService ts = getTransferService(jo.getProject());
+
+
+		// ts.request(jo.ge, nsl);
 		// TODO: getPotentialProviders
 		// if(le.getUserId().equals(userid))
 		// throw new com.jakeapp.core.dao.exceptions.NoSuchLogEntryException();
@@ -339,14 +364,44 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// TODO: fetch
 	}
 
+	private void deleteBecauseRemoteSaidSo(JakeObject jo)
+			throws IllegalArgumentException, NoSuchJakeObjectException,
+			FileNotFoundException {
+		if (jo instanceof NoteObject) {
+			db.getNoteObjectDao(jo.getProject()).delete((NoteObject) jo);
+		}
+		if (jo instanceof FileObject) {
+			db.getFileObjectDao(jo.getProject()).delete((FileObject) jo);
+			try {
+				getFSS(jo.getProject()).deleteFile(((FileObject) jo).getRelPath());
+			} catch (NotAFileException e) {
+				log.fatal("database corrupted: tried to delete a file that isn't a file",
+						e);
+			} catch (InvalidFilenameException e) {
+				log
+						.fatal(
+								"database corrupted: tried to delete a file that isn't a valid file",
+								e);
+			}
+		}
+	}
+
 	@Override
-	public Iterable<LogEntry> startLogSync(Project project, UserId userId)
+	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
 		// AvailableLaterObject)
+
+
 		return null;
+	}
+
+	private FailoverCapableFileTransferService getTransferService(Project p)
+			throws NotLoggedInException {
+		// TODO: Use FailoverCapableFileTransferService
+		return getIcServicesManager().getTransferService(p, getMyBackendUserid(p));
 	}
 
 	/**
@@ -524,6 +579,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void notifyInvitationRejected(Project project, UserId inviter) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void getTags(JakeObject jo) {
+		db.getLogEntryDao(jo).getCurrentTags(jo);
 	}
 
 }

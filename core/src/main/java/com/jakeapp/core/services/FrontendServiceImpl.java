@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.FriendlySyncService;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -230,7 +231,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 
 	//	@Override
-	public FriendlySyncService getSync() {
+	public IFriendlySyncService getSync() {
 		return this.sync;
 	}
 

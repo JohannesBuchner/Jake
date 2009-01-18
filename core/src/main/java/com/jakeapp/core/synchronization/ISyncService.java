@@ -17,6 +17,7 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -77,7 +78,7 @@ public interface ISyncService {
 	 * @throws IllegalProtocolException
 	 *             if the supplied UserId is of the wrong protocol-type
 	 */
-	public Iterable<LogEntry> startLogSync(Project project, UserId userId)
+	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId userId)
 			throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
@@ -97,8 +98,10 @@ public interface ISyncService {
 	 *            the objects to be pulled
 	 * @throws NoSuchLogEntryException
 	 *             the object does not exist (no one announced it)
+	 * @throws IllegalArgumentException 
+	 * @throws NotLoggedInException 
 	 */
-	public void pullObject(JakeObject jo) throws NoSuchLogEntryException;
+	public void pullObject(JakeObject jo) throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
 
 	/**
 	 * Adds a log entry that the object has been modified, created, deleted,
@@ -210,5 +213,11 @@ public interface ISyncService {
 	 * invitation.
 	 */
 	void notifyInvitationRejected(Project project, UserId inviter);
+
+	/**
+	 * 
+	 * @param jo
+	 */
+	void getTags(JakeObject jo);
 
 }

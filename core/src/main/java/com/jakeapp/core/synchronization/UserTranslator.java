@@ -26,13 +26,6 @@ public class UserTranslator {
 		this.userIdDao = userIdDao;
 	}
 
-	/**
-	 * TODO I _NEED_ the xmpp id!
-	 * 
-	 * @param project
-	 * @param member
-	 * @return
-	 */
 	public UserId getUserIdFromProjectMember(Project project, ProjectMember member) {
 		try {
 			return this.userIdDao.get(member.getUserId());
@@ -50,7 +43,7 @@ public class UserTranslator {
 	}
 
 
-	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainUserId(UserId userid) {
+	com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainUserId(UserId userid) {
 		if (userid.getProtocolType() == ProtocolType.XMPP) {
 			return new XmppUserId(userid.getUserId());
 		} else {
@@ -58,7 +51,7 @@ public class UserTranslator {
 		}
 	}
 
-	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
+	com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
 			ProjectMember member) {
 		return getBackendUserIdFromDomainUserId(getUserIdFromProjectMember(p, member));
 	}
