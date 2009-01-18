@@ -65,8 +65,39 @@ public class LogEntry<T extends ILogable> {
 		this.setChecksum(checksum);
 		this.setProcessed(processed);
 	}
+	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
+			T belongsTo, ProjectMember member, String comment, String checksum) {
+		this(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum,
+				null);
+	}
 
-    public LogEntry() {
+	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
+			T belongsTo, ProjectMember member, String comment) {
+		this(uuid, logAction, timestamp, project, belongsTo, member, comment, null);
+	}
+
+	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
+			T belongsTo, ProjectMember member) {
+		this(uuid, logAction, timestamp, project, belongsTo, member, null);
+	}
+
+	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
+			T belongsTo) {
+		this(uuid, logAction, timestamp, project, belongsTo, null);
+	}
+
+	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project) {
+		this(uuid, logAction, timestamp, project, null);
+	}
+
+	public LogEntry(UUID uuid, LogAction logAction, Date timestamp) {
+		this(uuid, logAction, timestamp, null);
+	}
+
+	public LogEntry(UUID uuid, LogAction logAction) {
+		this(uuid, logAction, null);
+	}
+	public LogEntry() {
     }
 
     public void setUuid(UUID uuid) {
