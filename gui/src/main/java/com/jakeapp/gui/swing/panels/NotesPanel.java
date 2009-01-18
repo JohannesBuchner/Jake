@@ -27,8 +27,10 @@ import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
+import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -49,6 +51,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * The NotesPanel
+ *
  * @author studpete, simon
  */
 public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged, ListSelectionListener {
@@ -58,10 +62,15 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private static Logger log = Logger.getLogger(NotesPanel.class);
 	private java.util.List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
 	private NotesTableModel notesTableModel;
+	private javax.swing.JScrollPane notesTableScrollPane;
+	private javax.swing.JSplitPane mainSplitPane;
+	private org.jdesktop.swingx.JXPanel noteReadPanel;
+	private org.jdesktop.swingx.JXTable notesTable;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
 	private ICoreAccess core;
 	private Project currentProject;
+	private JButton shareUpdateBtn;
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -93,7 +102,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 				Point p = mouseEvent.getPoint();
 				int rowNumber = this.table.rowAtPoint(p);
-				
+
 				if (rowNumber == -1) { // click in empty area
 					this.panel.notifyNoteSelectionListeners(new ArrayList<NoteObject>());
 					this.table.clearSelection();
@@ -127,48 +136,22 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 */
 	public NotesPanel() {
 		instance = this;
+
+		// get resource map
+		this.setResourceMap(org.jdesktop.application.Application.getInstance(
+				  JakeMainApp.class).getContext()
+				  .getResourceMap(NotesPanel.class));
+
+		//get core
+		this.core = JakeMainApp.getCore();
+
 		// init components
 		initComponents();
-
-		// set up table model
-		this.notesTableModel = new NotesTableModel();
-		this.notesTable.setModel(this.notesTableModel);
 
 		// register the callbacks
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
 		this.notesTable.getSelectionModel().addListSelectionListener(this);
-
-		// get resource map
-		this.resourceMap = org.jdesktop.application.Application.getInstance(
-			 com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-			 .getResourceMap(NotesPanel.class);
-
-		//get core
-		this.core = JakeMainApp.getCore();
-
-
-		this.notesTable.setSortable(true);
-		this.notesTable.setColumnControlVisible(true);
-
-		// FIXME: set column with for soft lock and shared note
-		this.notesTable.getColumnModel().getColumn(0).setResizable(false); // lock
-		this.notesTable.getColumnModel().getColumn(0).setMaxWidth(20);
-		this.notesTable.getColumnModel().getColumn(1).setResizable(false); // shared note
-		this.notesTable.getColumnModel().getColumn(1).setMaxWidth(20);
-		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		
-		this.notesTable.getSelectionModel().addListSelectionListener(this);
-		
-		this.notesTable.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-					new DeleteNoteAction().execute();
-				}
-			}
-		});
-
 
 		// TODO: make this a styler property
 		if (!Platform.isMac()) {
@@ -177,28 +160,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
 		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable, this.notesTableModel));
-
-		this.noteReader = new JTextArea();
-		this.noteReader.setLineWrap(true);
-		this.noteReader.setOpaque(false);
-		this.noteReader.setText("Enter your Note here.\nChanges will be saved automatically.");
-		this.noteReader.setMargin(new Insets(8, 8, 8, 8));
-
-		JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
-		noteReaderScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		noteReaderScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		noteReaderScrollPane.setOpaque(false);
-		noteReaderScrollPane.getViewport().setOpaque(false);
-		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
-
-		this.noteReadPanel.add(noteReaderScrollPane);
-
-		// set the background painter
-		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
-		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-			 GlossPainter.GlossPosition.TOP);
-		this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 	}
+
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
@@ -209,7 +172,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			String text;
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
 			this.noteReader.setText(text);
-			
+
 			List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
 			for (int row : this.notesTable.getSelectedRows()) {
 				selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
@@ -223,6 +186,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		return this.resourceMap;
 	}
 
+
+	public void setResourceMap(ResourceMap resourceMap) {
+		this.resourceMap = resourceMap;
+	}
 
 	public Project getCurrentProject() {
 		return this.currentProject;
@@ -276,71 +243,101 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		//TODO
 	}
 
-	/**
-	 * This method is called from within the constructor to
-	 * initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is
-	 * always regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
-	// <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+
 	private void initComponents() {
+		this.setLayout(new MigLayout("wrap 1, fill, ins 0"));
 
-		jSplitPane1 = new javax.swing.JSplitPane();
-		jScrollPane2 = new javax.swing.JScrollPane();
+		mainSplitPane = new JSplitPane();
+		notesTableScrollPane = new JScrollPane();
 		notesTable = new ITunesTable();
-		noteReadPanel = new org.jdesktop.swingx.JXPanel();
 
-		setName("Form"); // NOI18N
-		setLayout(new java.awt.BorderLayout());
+		mainSplitPane.setBorder(null);
+		mainSplitPane.setDividerSize(2);
+		mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+		notesTableScrollPane.setViewportView(notesTable);
+		mainSplitPane.setLeftComponent(notesTableScrollPane);
 
-		jSplitPane1.setBorder(null);
-		jSplitPane1.setDividerSize(2);
-		jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-		jSplitPane1.setName("jSplitPane1"); // NOI18N
+		this.add(mainSplitPane, "grow");
 
-		jScrollPane2.setName("jScrollPane2"); // NOI18N
+		// set up table model
+		this.notesTableModel = new NotesTableModel();
+		this.notesTable.setModel(this.notesTableModel);
+		this.notesTable.setSortable(true);
+		this.notesTable.setColumnControlVisible(true);
 
-		notesTable.setModel(new javax.swing.table.DefaultTableModel(
-			 new Object[][]{
-				  {"Gui redesign nicht vergessen...", "8.12.2008 18:00", "Peter"},
-				  {"Blabla", "9.12.2008", "Simon"},
-				  {"xxx", "10.12", "a"},
-				  {"bbb", "11.12", "b"}
-			 },
-			 new String[]{
-				  "Note", "Date", "User"
-			 }
-		) {
-			boolean[] canEdit = new boolean[]{
-				 false, false, false
-			};
+		// FIXME: set column with for soft lock and shared note
+		this.notesTable.getColumnModel().getColumn(0).setResizable(false); // lock
+		this.notesTable.getColumnModel().getColumn(0).setMaxWidth(20);
+		this.notesTable.getColumnModel().getColumn(1).setResizable(false); // shared note
+		this.notesTable.getColumnModel().getColumn(1).setMaxWidth(20);
+		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit[columnIndex];
+		this.notesTable.getSelectionModel().addListSelectionListener(this);
+
+		this.notesTable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					new DeleteNoteAction().execute();
+				}
 			}
 		});
-		notesTable.setName("notesTable"); // NOI18N
-		jScrollPane2.setViewportView(notesTable);
 
-		jSplitPane1.setLeftComponent(jScrollPane2);
+		noteReadPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
+		noteReadPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
 
-		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesPanel.class);
-		noteReadPanel.setBackground(resourceMap.getColor("noteReadPanel.background")); // NOI18N
-		noteReadPanel.setName("noteReadPanel"); // NOI18N
-		noteReadPanel.setLayout(new java.awt.BorderLayout());
-		jSplitPane1.setRightComponent(noteReadPanel);
+		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0, debug"));
+		JToolBar tbar = new JToolBar();
+		tbar.setFloatable(false);
+		shareUpdateBtn = new JButton();
+		tbar.add(shareUpdateBtn);
+		updateShareUpdateBtn();
 
-		add(jSplitPane1, java.awt.BorderLayout.CENTER);
-	}// </editor-fold>//GEN-END:initComponents
+		JButton lockBtn = new JButton("Lock");
+		tbar.add(lockBtn);
+
+		noteControlPanel.add(tbar);
+		this.noteReadPanel.add(noteControlPanel, "growx");
 
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JScrollPane jScrollPane2;
-	private javax.swing.JSplitPane jSplitPane1;
-	private org.jdesktop.swingx.JXPanel noteReadPanel;
-	private org.jdesktop.swingx.JXTable notesTable;
-	// End of variables declaration//GEN-END:variables
+		this.noteReader = new JTextArea();
+		this.noteReader.setLineWrap(true);
+		this.noteReader.setOpaque(false);
+		this.noteReader.setText("Enter your Note here.\nChanges will be saved automatically.");
+		this.noteReader.setMargin(new Insets(8, 8, 8, 8));
+
+		JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
+		noteReaderScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		noteReaderScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		noteReaderScrollPane.setOpaque(false);
+		noteReaderScrollPane.getViewport().setOpaque(false);
+		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
+
+		this.noteReadPanel.add(noteReaderScrollPane, "grow");
+
+		// set the background painter
+		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
+		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
+				  GlossPainter.GlossPosition.TOP);
+		this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
+
+		mainSplitPane.setRightComponent(noteReadPanel);
+
+	}
+
+	/**
+	 * update the button to set right label
+	 */
+	private void updateShareUpdateBtn() {
+		// TODO
+		boolean isSharedNote = true;
+
+		if (isSharedNote) {
+			shareUpdateBtn.setText(getResourceMap().getString("updateBtn"));
+		} else {
+			shareUpdateBtn.setText(getResourceMap().getString("shareBtn"));
+		}
+	}
 
 	public static NotesPanel getInstance() {
 		return instance;
@@ -374,7 +371,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			return selectedNotes;
 		}
 
-		 log.debug("selcted notes count: " + notesTable.getSelectedRowCount());
+		log.debug("selcted notes count: " + notesTable.getSelectedRowCount());
 		for (int row : this.notesTable.getSelectedRows()) {
 			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
 		}
