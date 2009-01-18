@@ -20,6 +20,8 @@ import com.jakeapp.jake.ics.exceptions.NetworkException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
+import org.jdesktop.jxlayer.JXLayer;
+import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.hyperlink.LinkAction;
@@ -177,7 +179,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			if (msgs != null) {
 				for (MsgService msg : msgs) {
 					UserControlPanel userPanel = new UserControlPanel(msg);
-					userListPanel.add(userPanel);
+					JXLayer userLayer = new JXLayer(userPanel);
+					//userLayer.setBackground(Color.WHITE);
+					//userLayer.set(new Color(0, 128, 0, 128));
+					//userLayer.setOpaque(true);
+					userListPanel.add(userLayer);
 				}
 			}
 		} catch (NotLoggedInException e) {
@@ -316,7 +322,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			cred.setUserId(loginUserDataPanel.getUserName());
 			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
 
-            
 
 		} else {
 			cred.setUserId(loginUserDataPanel.getUserName());
@@ -765,9 +770,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			this.setLayout(new MigLayout("wrap 2, fill"));
 
 			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(), 1));
-			this.setBackground(Color.WHITE);
-			this.setOpaque(true);
-			this.setAlpha(0.8F);
+			this.setOpaque(false);
+			//this.setAlpha(0.9F);
+			//this.setBackground(Color.WHITE);
+
+			JXLayer l = new JXLayer();
 
 			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msg.getUserId().getUserId() + "</b>"));
 			this.add(userLabel, "span 2, gapbottom 8");
@@ -871,6 +878,54 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		public String getPassword() {
 			return passField.getText();
+		}
+	}
+
+	/**
+	 * Here is our custom LayerUI implementation;
+	 * the generic type matches the type of the view component
+	 */
+	static class SimplePanelUI extends AbstractLayerUI<JPanel> {
+		// The mutable foreground color
+		private Color foreground = Color.GREEN;
+
+		public Color getForeground() {
+			return foreground;
+		}
+
+		public void setForeground(Color foreground) {
+			// save the old color
+			Color oldRolloverColor = getForeground();
+			this.foreground = foreground;
+			// if the new color is set we mark the UI as dirty
+			if (!oldRolloverColor.equals(foreground)) {
+				// it will eventually repaint the layer
+				setDirty(true);
+			}
+		}
+
+		// Note that we override AbstractLayerUI.paintLayer(), not LayerUI.paint()
+		protected void paintLayer(Graphics2D g2, JXLayer<JPanel> layer) {
+
+			// super implementation just paints the layer as is
+			super.paintLayer(g2, layer);
+
+			g2.setColor(Color.ORANGE);
+
+/*
+				// note that we can access the button via layer.getView() method
+				final PanelModel model = layer.getView().getModel();
+
+				// choose the color depending on the state of the button
+				if (model.isRollover()) {
+					 g2.setColor(Color.ORANGE);
+				} else {
+					 g2.setColor(foreground);
+				}*/
+
+			// paint the selected color translucently
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .3f));
+			g2.fillRect(0, 0, layer.getWidth(), layer.getHeight());
 		}
 	}
 }

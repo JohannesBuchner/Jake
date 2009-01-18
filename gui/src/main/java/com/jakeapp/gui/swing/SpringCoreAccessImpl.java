@@ -90,13 +90,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<Project> getMyProjects() throws NotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
-			 InvitationState.ACCEPTED);
+				  InvitationState.ACCEPTED);
 	}
 
 	@Override
 	public List<Project> getInvitedProjects() throws NotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
-			 InvitationState.INVITED);
+				  InvitationState.INVITED);
 	}
 
 
@@ -111,7 +111,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-		 throws InvalidCredentialsException {
+			  throws InvalidCredentialsException {
 		this.sessionId = this.frontendService.authenticate(authenticationData);
 	}
 
@@ -134,7 +134,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public ProjectMember getProjectMember(Project project, MsgService msg)
-		 throws NoSuchProjectMemberException {
+			  throws NoSuchProjectMemberException {
 		ProjectMember result = null;
 
 		try {
@@ -151,7 +151,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public String getProjectMemberID(Project project, ProjectMember pm)
-		 throws NoSuchProjectMemberException {
+			  throws NoSuchProjectMemberException {
 		String result = "";
 
 		try {
@@ -252,8 +252,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, NetworkException {
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.createAccount(this.sessionId, credentials, listener).start();
 
 
@@ -261,8 +261,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public MsgService addAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, NetworkException {
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 
@@ -357,7 +357,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 	public void startProject(Project project) {
@@ -376,7 +376,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 
@@ -448,8 +448,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					}
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-						 project,
-						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
+							  project,
+							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
 
 				} catch (NotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -480,8 +480,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					getFrontendService().getProjectsManagingService(getSessionId()).joinProject(project, project.getUserId());
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-						 project,
-						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
+							  project,
+							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
 				} catch (NotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -507,8 +507,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					getFrontendService().getProjectsManagingService(getSessionId()).rejectProject(project, project.getUserId());
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-						 project,
-						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
+							  project,
+							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
 
 				} catch (NotLoggedInException e) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -528,7 +528,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId()).updateProjectName(project, prName);
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
 		} catch (IllegalArgumentException e) {
 			//empty implementation
 		} catch (IllegalStateException e) {
@@ -542,7 +542,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public FolderObject getProjectRootFolder(Project project)
-		 throws ProjectFolderMissingException {
+			  throws ProjectFolderMissingException {
 		String rootPath = project.getRootPath();
 		File rootFolder = new File(rootPath);
 		if (!rootFolder.exists()) {
@@ -601,10 +601,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * Helper method: Works recursively through the file system to
 	 * build the FolderObject for getProjectRootFolder()
 	 *
-	 * @param prj     The project the created Folder Object is in.
+	 * @param prj	  The project the created Folder Object is in.
 	 * @param relPath a Project-relative path to the returned folder object.
-	 * @param name    the name of the current folder. It is the last part of relPath
-	 * @param fss     The FileSystemService used to access the Project-Folder
+	 * @param name	 the name of the current folder. It is the last part of relPath
+	 * @param fss	  The FileSystemService used to access the Project-Folder
 	 * @return
 	 * @throws NotLoggedInException
 	 * @throws IllegalStateException
@@ -622,7 +622,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 						//The UUid may still be null e.g. if the file only exists locally
 						//and has just been detected.
 						fo.addFile(
-							 pms.getFileObjectByRelPath(prj, f)
+								  pms.getFileObjectByRelPath(prj, f)
 						);
 					} else if (fss.folderExists(relPath)) {
 						FolderObject subfolder = recursiveFileSystemHelper(prj, f, fss.getFileName(f), fss, pms);
@@ -646,7 +646,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-		 ProjectNotLoadedException {
+			  ProjectNotLoadedException {
 		return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
 	}
 
@@ -681,8 +681,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			result = this.frontendService.getProjectsManagingService(
-				 this.sessionId).getNoteManagingService(note.getProject())
-				 .isLocalNote(note);
+					  this.sessionId).getNoteManagingService(note.getProject())
+					  .isLocalNote(note);
 		} catch (Exception e) {
 			// Every error allows only one interpretation: a Note that cannot
 			// be checked wether it is local is NOT local!
@@ -721,8 +721,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void newNote(NoteObject note) {
 		try {
 			this.frontendService
-				 .getProjectsManagingService(this.getSessionId())
-				 .getNoteManagingService(note.getProject()).addNote(note);
+					  .getProjectsManagingService(this.getSessionId())
+					  .getNoteManagingService(note.getProject()).addNote(note);
 		} catch (IllegalArgumentException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (IllegalStateException e) {
@@ -738,8 +738,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void saveNote(NoteObject note) {
 		try {
 			this.frontendService
-				 .getProjectsManagingService(this.getSessionId())
-				 .getNoteManagingService(note.getProject()).saveNote(note);
+					  .getProjectsManagingService(this.getSessionId())
+					  .getNoteManagingService(note.getProject()).saveNote(note);
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalArgumentException e) {
@@ -775,7 +775,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			// TODO: fix
 			people.add(new ProjectMember(new UUID(11, 22), "Nickname",
-				 TrustState.AUTO_ADD_REMOVE));
+					  TrustState.AUTO_ADD_REMOVE));
 
 
 			/*
@@ -810,7 +810,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			pm.setNickname(nick);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 
 			return true;
 		}
@@ -818,11 +818,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void peopleSetTrustState(Project project, ProjectMember member,
-	                                TrustState trust) {
+											  TrustState trust) {
 		member.setTrustState(trust);
 
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 	}
 
 
@@ -850,11 +850,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		if (project != null) {
 			// yeah... what a beautiful interface ;o)
 			log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
-				 project, null, getPeople(project).get(0), "comment 1", "checksum???",
-				 true));
+					  project, null, getPeople(project).get(0), "comment 1", "checksum???",
+					  true));
 
 			log.add(new LogEntry(new UUID(1, 2), LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project,
-				 null, getPeople(project).get(0), "comment 1", "checksum???", true));
+					  null, getPeople(project).get(0), "comment 1", "checksum???", true));
 		}
 
 		return log;
@@ -883,8 +883,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 																				 */
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-						 pr,
-						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
+							  pr,
+							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
 				} catch (NotLoggedInException e) {
 					log.debug("Tried to create a project while not authenticated to the core.", e);
@@ -931,9 +931,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// TODO: What do we do with folders?
 		try {
 			this.getFrontendService().
-				 getProjectsManagingService(this.getSessionId()).
-				 getFileServices(project).
-				 trashFile(relpath);
+					  getProjectsManagingService(this.getSessionId()).
+					  getFileServices(project).
+					  trashFile(relpath);
 		} catch (FileNotFoundException e) {
 			log.debug("Tried to delete nonexisting file", e);
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -993,8 +993,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			this.getFrontendService().
-				 getProjectsManagingService(this.getSessionId()).
-				 getFileServices(project).moveFile(fromPath, toFile.toString());
+					  getProjectsManagingService(this.getSessionId()).
+					  getFileServices(project).moveFile(fromPath, toFile.toString());
 		} catch (IllegalArgumentException e) {
 			log.warn("Cannot rename file");
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -1020,8 +1020,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
 		//TODO implement
+		return null;
 	}
 
 	@Override
@@ -1098,11 +1099,5 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public ProjectMember getLockOwner(JakeObject jakeObject) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void announce(JakeObject jakeObject) {
-		// TODO Auto-generated method stub
-
 	}
 }
