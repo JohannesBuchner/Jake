@@ -14,7 +14,9 @@ import java.awt.event.ActionEvent;
 
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
@@ -24,7 +26,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.*;
 
-public class FolderObjectsTreeTableModel implements TreeTableModel {
+public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged {
 	private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
 
 	private ProjectFilesTreeNode root;
@@ -33,12 +35,20 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
+		JakeMainApp.getCore().addFilesChangedListener(this);
 	}
 
-	public void fireRepaint() {
+	public void setRoot(ProjectFilesTreeNode node) {
+		this.root = node;
+		fireReload();
+	}
+
+	public void fireReload() {
 		for (TreeModelListener l : listeners) {
-			TreeModelEvent e = new TreeModelEvent(root, new TreePath(root));
-			l.treeNodesChanged(e);
+			// TODO: Modify only CHANGED nodes
+			// Right now, we are reloading all nodes (crappy performance & flickering)
+			TreeModelEvent e = new TreeModelEvent(this, new TreePath(root));
+			l.treeStructureChanged(e);
 		}
 	}
 
@@ -211,11 +221,23 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
+		log.debug("TreeModelListener added");
 		listeners.add(l);
 	}
 
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		listeners.remove(l);
+	}
+
+	@Override
+	public void filesChanged() {
+		try {
+			log.debug("Hooray, our files changed!");
+			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject()));
+			this.setRoot(node);
+		} catch (ProjectFolderMissingException e) {
+			log.error("Couldn't find project root folder");
+		}
 	}
 }

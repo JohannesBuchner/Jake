@@ -15,11 +15,8 @@ import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
@@ -441,7 +438,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex = e;
 		}
 
-		if (result==null) result = new AvailableErrorObject<Integer>(listener,ex);
+		if (result == null) result = new AvailableErrorObject<Integer>(listener, ex);
 		return result.start();
 	}
 
@@ -516,7 +513,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				try {
 					project.setRootPath(path);
 					getFrontendService().getProjectsManagingService(getSessionId()).joinProject(project, project.getUserId());
-				
+
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 						 project,
 						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
@@ -976,6 +973,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException {
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public void addFilesChangedListener(FilesChanged listener) {
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public void removeFilesChangedListener(FilesChanged listener) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
 

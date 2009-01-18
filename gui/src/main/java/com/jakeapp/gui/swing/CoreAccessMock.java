@@ -13,11 +13,8 @@ import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
@@ -45,6 +42,8 @@ public class CoreAccessMock implements ICoreAccess {
 	private List<Boolean> notesIsLocal;
 	private List<Boolean> notesIsLocked;
 
+	private List<FilesChanged> filesChangedListeners;
+
 	/**
 	 * SessionId returned by the authentication Method of FrontendService.authenticate.
 	 */
@@ -60,6 +59,7 @@ public class CoreAccessMock implements ICoreAccess {
 		registrationStatus = new ArrayList<RegistrationStatus>();
 		projectChanged = new ArrayList<ProjectChanged>();
 		errorCallback = new ArrayList<ErrorCallback>();
+		filesChangedListeners = new ArrayList<FilesChanged>();
 
 		// init the demo projects
 		Project pr1 = new Project("Desktop", new UUID(212, 383), null, new File(FileUtilities.getUserHomeDirectory() + FileUtilities.getPathSeparator() + "Desktop"));
@@ -112,6 +112,18 @@ public class CoreAccessMock implements ICoreAccess {
 			this.notesIsLocked.add(new Random().nextBoolean());
 		}
 
+		// Mocking of FSS updates
+		TimerTask t = new TimerTask() {
+			@Override
+			public void run() {
+				log.debug("Notifying " + filesChangedListeners.size() + " FilesChanged listeners...");
+				for (FilesChanged f : filesChangedListeners) {
+					f.filesChanged();
+				}
+			}
+		};
+
+		(new Timer()).scheduleAtFixedRate(t, 1000, 3000);
 	}
 
 
@@ -867,6 +879,16 @@ public class CoreAccessMock implements ICoreAccess {
 	@Override
 	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException {
 		log.info("MOCKED: Creating new folder '" + folderName + "' below '" + relpath + "'");
+	}
+
+	@Override
+	public void addFilesChangedListener(FilesChanged listener) {
+		filesChangedListeners.add(listener);
+	}
+
+	@Override
+	public void removeFilesChangedListener(FilesChanged listener) {
+		filesChangedListeners.remove(listener);
 	}
 
 

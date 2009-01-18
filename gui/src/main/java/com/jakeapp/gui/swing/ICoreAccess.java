@@ -13,10 +13,7 @@ import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
@@ -166,7 +163,7 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 * @throws ProtocolNotSupportedException
 	 */
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials,AvailabilityListener listener)
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
 		 throws NotLoggedInException, InvalidCredentialsException,
 		 ProtocolNotSupportedException, NetworkException;
 
@@ -502,6 +499,20 @@ public interface ICoreAccess {
 	 * @throws InvalidNewFolderException if the folder cannot be created (exists already, invalid name, ...)
 	 */
 	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException;
+
+	/**
+	 * Allows for listeners to register which are notified of changes to local or remote files
+	 *
+	 * @param listener
+	 */
+	public void addFilesChangedListener(FilesChanged listener);
+
+	/**
+	 * Unregister of FilesChanged listeners
+	 *
+	 * @param listener
+	 */
+	public void removeFilesChangedListener(FilesChanged listener);
 
 
 	/******************* Notes functions ********************/
