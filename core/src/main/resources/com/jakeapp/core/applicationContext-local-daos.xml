@@ -22,8 +22,8 @@
                 <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.current_session_context_class">thread</prop>
-                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
+                <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
+                <!--<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>-->
                 <prop key="hibernate.default_batch_fetch_size">0</prop>
                 <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
@@ -45,19 +45,19 @@
 
     <!-- local stuff -->
     <bean id="projectMemberDao" class="com.jakeapp.core.dao.HibernateProjectMemberDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
     <bean id="noteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
     <bean id="fileObjectDao" class="com.jakeapp.core.dao.HibernateFileObjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
     <bean id="logEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
 

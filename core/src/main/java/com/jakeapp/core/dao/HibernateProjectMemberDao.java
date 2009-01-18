@@ -1,92 +1,89 @@
 package com.jakeapp.core.dao;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.ArrayList;
-
-import org.springframework.dao.support.DaoSupport;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.hibernate.EntityMode;
-import org.hibernate.LockMode;
-import org.apache.log4j.Logger;
-
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * A hibernate <code>ProjectMember</code> DAO
  */
 public class HibernateProjectMemberDao extends HibernateDaoSupport
-        implements IProjectMemberDao {
-    private static Logger log = Logger.getLogger(HibernateProjectMemberDao.class);
+		  implements IProjectMemberDao {
+	private static Logger log = Logger.getLogger(HibernateProjectMemberDao.class);
 
-    /**
-     * {@inheritDoc}
-     */
-    public ProjectMember persist(Project project, ProjectMember projectMember) {
-        // TODO various checks
+	/**
+	 * {@inheritDoc}
+	 */
+	public ProjectMember persist(Project project, ProjectMember projectMember) {
+		// TODO various checks
 
-    log.debug("transaction: " + this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction());
+		log.debug("transaction: " + this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction());
 
-    	
-        this.getHibernateTemplate().getSessionFactory().getCurrentSession().save(projectMember);
 
-    	return projectMember;
-    }
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().save(projectMember);
 
-    @Override
-    @SuppressWarnings({"Unchecked"})
-    public ProjectMember get(UUID memberId) throws NoSuchProjectMemberException {
+		return projectMember;
+	}
 
-        List<ProjectMember> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM ProjectMember WHERE memberId = ?").setString(0, memberId.toString()).list();
+	@Override
+	@SuppressWarnings({"Unchecked"})
+	public ProjectMember get(UUID memberId) throws NoSuchProjectMemberException {
 
-        if(results == null)
-            throw new NoSuchProjectMemberException("Results are null");
+		List<ProjectMember> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+				  createQuery("FROM ProjectMember WHERE memberId = ?").setString(0, memberId.toString()).list();
 
-        if(results.isEmpty())
-            throw new NoSuchProjectMemberException("Results are empty");
+		if (results == null)
+			throw new NoSuchProjectMemberException("Results are null");
 
-        ProjectMember result = results.get(0);
-        if(result != null)
-            return result;
+		if (results.isEmpty())
+			throw new NoSuchProjectMemberException("Results are empty");
 
-        throw new NoSuchProjectMemberException("No ProjectMember found by this id");
-    }
+		ProjectMember result = results.get(0);
+		if (result != null)
+			return result;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings({"Unchecked"})
-    public List<ProjectMember> getAll(Project project) {
-        List<ProjectMember> results = new ArrayList<ProjectMember>();
+		throw new NoSuchProjectMemberException("No ProjectMember found by this id");
+	}
 
-        results.addAll(this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM ProjectMember").list());
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	@SuppressWarnings({"Unchecked"})
+	public List<ProjectMember> getAll(Project project) {
+		List<ProjectMember> results = new ArrayList<ProjectMember>();
 
-        return results;
-    }
+		results.addAll(this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+				  createQuery("FROM ProjectMember").list());
 
-    /**
-     * {@inheritDoc}
-     */
+		return results;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void delete(Project project, ProjectMember projectMember) throws NoSuchProjectMemberException {
 
-        ProjectMember member = this.get(projectMember.getUserId());
+		ProjectMember member = this.get(projectMember.getUserId());
 
-        try{
-            log.debug("Deleting ProejctMember with ID " + projectMember.getUserId().toString());
-            this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(member);
-        }
-        catch(DataAccessException e)
-        {
-            log.debug("catched DataAccessException meaning User does not exist");
-            throw new NoSuchProjectMemberException(e.getMessage());
-            // TODO throw exception
-        }
+		try {
+			log.debug("Deleting ProejctMember with ID " + projectMember.getUserId().toString());
+			this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(member);
+		}
+		catch (DataAccessException e) {
+			log.debug("catched DataAccessException meaning User does not exist");
+			throw new NoSuchProjectMemberException(e.getMessage());
+			// TODO throw exception
+		}
 		//TODO
 	}
 
