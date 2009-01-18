@@ -343,7 +343,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				try {
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
-
+					JakeMainApp.setMsgService(msg);
 					JakeExecutor.exec(new LoginAccountWorker(msg));
 
 				} catch (Exception e) {
@@ -354,6 +354,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				}
 			} else {
 				JakeExecutor.exec(new RegisterAccountWorker(getCredientals()));
+				// TODO
 			}
 		}
 	}
