@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
@@ -35,28 +34,6 @@ public class JakeMainHelper {
 
 	public static String getPluralModifer(int clickCount) {
 		return clickCount == 1 ? "" : "s";
-	}
-
-	public static String printProjectStatus(Project project) {
-		// TODO: determine status
-		return "Project is ...TODO!";
-	}
-
-	/**
-	 * Evaluates the Project and returns a Start/Stop-String depending on its state.
-	 *
-	 * @param project
-	 * @return String with either Start or Stop.
-	 */
-	public static String getProjectStartStopString(Project project) {
-		String startStopString;
-		if (project == null || !project.isStarted()) {
-			startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStartProject");
-		} else {
-			startStopString = JakeMainView.getMainView().getResourceMap().getString("projectTreeStopProject");
-		}
-
-		return startStopString;
 	}
 
 	public static void showJakeWebsite() {

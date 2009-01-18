@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -42,7 +42,7 @@ public class StartStopProjectAction extends ProjectAction {
 	public void updateAction() {
 		log.debug("update startstopprojectaction with " + getProject());
 		String oldName = (String) getValue(Action.NAME);
-		String newName = JakeMainHelper.getProjectStartStopString(getProject());
+		String newName = ProjectHelper.getProjectStartStopString(getProject());
 		setEnabled(getProject() != null);
 
 		log.debug("old: " + oldName + " new: " + newName);

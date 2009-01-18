@@ -43,7 +43,7 @@ public abstract class AbstractStyler implements Styler {
 	}
 
 	public Color getWindowBackground() {
-		return SystemColor.window;
+		return new Color(232, 232, 232);
 	}
 
 	public Color getFilterPaneColor(boolean windowFocus) {

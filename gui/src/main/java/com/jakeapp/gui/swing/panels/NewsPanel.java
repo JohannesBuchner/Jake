@@ -20,9 +20,9 @@ import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
 import com.jakeapp.gui.swing.renderer.PeopleListCellRenderer;
@@ -246,7 +246,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// update all text in panel
 		projectLabel.setText(getProject().getName());
 		projectFolderHyperlink.setText(getProject().getRootPath());
-		projectStatusLabel.setText(JakeMainHelper.printProjectStatus(getProject()));
+		projectStatusLabel.setText(ProjectHelper.printProjectStatus(getProject()));
 		autoDownloadCB.setSelected(getProject().isAutoPullEnabled());
 		autoUploadCB.setSelected(getProject().isAutoAnnounceEnabled());
 

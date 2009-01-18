@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * The Userpanel creates accouts for Jake.
@@ -134,16 +135,17 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, grow, h 80:300");
 
 		try {
-			for (MsgService msg : JakeMainApp.getCore().getMsgServics()) {
-				UserControlPanel userPanel = new UserControlPanel(msg);
-				this.add(userPanel);
+			List<MsgService> msgs = JakeMainApp.getCore().getMsgServics();
+
+			if (msgs != null) {
+				for (MsgService msg : msgs) {
+					UserControlPanel userPanel = new UserControlPanel(msg);
+					this.add(userPanel);
+				}
 			}
 		} catch (NotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
-
-		JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
-		loginUserPanel.add(signInBtn, "right, bottom");
 
 		return loginUserPanel;
 	}
@@ -671,11 +673,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * Create User Panel
 	 */
 	private class UserControlPanel extends JPanel {
-		private MsgService msg;
+		private final MsgService msg;
 		private JPasswordField passField;
 		private JCheckBox rememberPassCheckBox;
 
-		public UserControlPanel(MsgService msg) {
+		public UserControlPanel(final MsgService msg) {
 			this.msg = msg;
 
 			this.setLayout(new MigLayout("wrap 1"));
@@ -692,6 +694,19 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			rememberPassCheckBox.setSelected(true);
 			rememberPassCheckBox.setOpaque(false);
 			this.add(rememberPassCheckBox, "");
+
+			JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
+			signInBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						msg.login();
+					} catch (Exception e1) {
+						ExceptionUtilities.showError(e1);
+					}
+				}
+			});
+			this.add(signInBtn, "right, bottom");
 
 			updateUserPanel();
 		}
