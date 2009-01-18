@@ -14,6 +14,9 @@ public class NoteObjectLogEntry extends LogEntry<NoteObject> implements Serializ
 			String checksum, Boolean processed) {
 		super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum,
 				processed);
+
+        this.setObjectuuid(belongsTo.getUuid().toString());
+
 	}
 
 	public NoteObjectLogEntry() {
@@ -23,5 +26,6 @@ public class NoteObjectLogEntry extends LogEntry<NoteObject> implements Serializ
 		this(le.getUuid(), le.getLogAction(), le.getTimestamp(), le.getProject(), (NoteObject) le
 				.getBelongsTo(), le.getMember(), le.getComment(), le.getChecksum(), le
                 .isProcessed());
+        this.setObjectuuid(le.getUuid().toString());
 	}
 }

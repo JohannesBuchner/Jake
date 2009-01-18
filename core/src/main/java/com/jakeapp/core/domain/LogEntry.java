@@ -36,6 +36,9 @@ public class LogEntry<T extends ILogable> implements Serializable {
 //    private ProjectMember member;
     private String comment;
     private String checksum;
+
+    private String objectuuid;
+
 	private boolean processed;
     private static final long serialVersionUID = 8192394452617311262L;
 
@@ -263,5 +266,15 @@ public class LogEntry<T extends ILogable> implements Serializable {
     public String toString()
     {
         return this.getClass().getName() + ": " + "LogAction: " + logAction.toString(); 
+    }
+
+
+    @Column(name = "objectuuid", nullable = true)
+    protected String getObjectuuid() {
+        return objectuuid;
+    }
+
+    protected void setObjectuuid(String objectuuid) {
+        this.objectuuid = objectuuid;
     }
 }
