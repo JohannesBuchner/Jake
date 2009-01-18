@@ -1,8 +1,8 @@
 package com.jakeapp.core.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -11,6 +11,8 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.Tag;
 
 /**
  * The interface for the logEntryDAO.
@@ -113,7 +115,7 @@ public interface ILogEntryDao {
 	/**
 	 * @param project
 	 *            The <code>Project</code> to get unprocessed LogEntries for.
-	 * @return any LogEntry that has not been processed yet.
+	 * @return any LogEntry that has not been processed yet sorted by timestamp
 	 * @throws NoSuchProjectException
 	 *             if the <code>Project</code> referenced by
 	 *             <code>project</code> does not exist.
@@ -128,10 +130,10 @@ public interface ILogEntryDao {
 	 * uuid, any of logAction, timestamp, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable. must not return null but a empty iterable on no
-	 *         results
+	 * @return a iterable sorted by timestamp. must not return null but a empty
+	 *         iterable on no results
 	 */
-	public Iterable<LogEntry<? extends ILogable>> findMatching(
+	public Collection<LogEntry<? extends ILogable>> findMatching(
 			LogEntry<? extends ILogable> le);
 
 	/**
@@ -150,12 +152,12 @@ public interface ILogEntryDao {
 	 * uuid, any of logAction, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable. must not return null but a empty iterable on no
-	 *         results
+	 * @return a iterable sorted by timestamp. must not return null but a empty
+	 *         iterable on no results
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
-	public Iterable<LogEntry<? extends ILogable>> findMatchingBefore(
+	public Collection<LogEntry<? extends ILogable>> findMatchingBefore(
 			LogEntry<? extends ILogable> le) throws NullPointerException;
 
 	/**
@@ -164,36 +166,71 @@ public interface ILogEntryDao {
 	 * uuid, any of logAction, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable. must not return null but a empty iterable on no
-	 *         results
+	 * @return a iterable sorted by timestamp. must not return null but a empty
+	 *         iterable on no results
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
-	public Iterable<LogEntry<? extends ILogable>> findMatchingAfter(
+	public Collection<LogEntry<? extends ILogable>> findMatchingAfter(
 			LogEntry<? extends ILogable> le) throws NullPointerException;
 
 	/**
 	 * finds all Logentries that either have a
 	 * {@link LogAction#JAKE_OBJECT_DELETE} or
-	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}. 
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
 	 * 
 	 * @param belongsTo
-	 * @return true: if the last in time is a {@link LogAction#JAKE_OBJECT_DELETE} 
-	 * false: if the last in time is a {@link LogAction#JAKE_OBJECT_NEW_VERSION}
-	 * null: if no matching Logentries could be found 
+	 * @return true: if the last in time is a
+	 *         {@link LogAction#JAKE_OBJECT_DELETE} false: if the last in time
+	 *         is a {@link LogAction#JAKE_OBJECT_NEW_VERSION} null: if no
+	 *         matching Logentries could be found
 	 */
 	public Boolean getDeleteState(ILogable belongsTo);
-	
+
 
 	/**
 	 * finds all Logentries that either have a
 	 * {@link LogAction#JAKE_OBJECT_DELETE} or
-	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}. 
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
 	 * 
 	 * @param belongsTo
-	 * @return true: if the last in time is a {@link LogAction#JAKE_OBJECT_DELETE} 
-	 * false: otherwise
+	 * @return false: if the last in time is a
+	 *         {@link LogAction#JAKE_OBJECT_DELETE} or no Logentries were found
+	 *         true: otherwise
 	 */
-	public Boolean getExistsState(ILogable belongsTo);
-	
+	public boolean getExistsState(ILogable belongsTo);
+
+	/**
+	 * Iterates in time through all {@link LogAction#TAG_ADD} and
+	 * {@link LogAction#TAG_REMOVE}. <br>
+	 * on add, the tag is added to the collection, on remove, the tag is removed
+	 * from the collection. At the end, returns the collection.
+	 * 
+	 * @param belongsTo
+	 * @return an empty collection if no tags (not null) or the tags otherwise
+	 */
+	public Collection<Tag> getCurrentTags(ILogable belongsTo);
+
+	/**
+	 * Iterates in time through all
+	 * {@link LogAction#START_TRUSTING_PROJECTMEMBER} and
+	 * {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}. <br>
+	 * Keeps a map of who trusts a {@link ProjectMember}. returns all
+	 * {@link ProjectMember} that at the end of the time have people that trust
+	 * them. Also looks at the {@value LogAction#PROJECT_CREATED} at the
+	 * beginning.
+	 * 
+	 * @param belongsTo
+	 * @return an empty collection if no projectmembers (not null) or the tags
+	 *         otherwise
+	 */
+	public Collection<ProjectMember> getCurrentProjectMembers();
+
+	/**
+	 * Gets the first {@link LogEntry}. It has the
+	 * {@link LogAction#PROJECT_CREATED}.
+	 * 
+	 * @return
+	 */
+	public LogEntry<? extends ILogable> getProjectCreatedEntry();
 }
