@@ -27,7 +27,7 @@ import java.util.Map;
  * The main class of the application.
  */
 public class JakeMainApp extends SingleFrameApplication implements
-		  ProjectSelectionChanged {
+	 ProjectSelectionChanged {
 
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
 
@@ -43,60 +43,54 @@ public class JakeMainApp extends SingleFrameApplication implements
 		this.app = this;
 
 
-		// TODO: johannes, please fix
-		boolean johannesWorkaroundEnable = false;
-		if (johannesWorkaroundEnable) {
-			setCore(new CoreAccessMock());
-		} else {
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+			 new String[]{"/com/jakeapp/core/applicationContext.xml"
+				  /**
+				   * Uncomment the following line to use the real
+				   * implementation
+				   */
+				  // ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
 
-			ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-					  new String[]{"/com/jakeapp/core/applicationContext.xml"
-								 /**
-								  * Uncomment the following line to use the real
-								  * implementation
-								  */
-								 // ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
-
-								 /**
-								  * Uncomment the following line to use peter/chris
-								  * mock implementation
-								  */
-								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+				  /**
+				   * Uncomment the following line to use peter/chris
+				   * mock implementation
+				   */
+				  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
-					  });
-			setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
+			 });
+		setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
 
-			Map<String, String> backendCredentials = new HashMap<String, String>();
-			backendCredentials.put("frontendUsername", "swingGui");
-			backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
-			backendCredentials.put("backendHost", "127.0.0.1");
-			backendCredentials.put("backendPort", "5000");
-			backendCredentials.put("backendName", "defaultBackendServiceName");
+		Map<String, String> backendCredentials = new HashMap<String, String>();
+		backendCredentials.put("frontendUsername", "swingGui");
+		backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
+		backendCredentials.put("backendHost", "127.0.0.1");
+		backendCredentials.put("backendPort", "5000");
+		backendCredentials.put("backendName", "defaultBackendServiceName");
 
 
-			try {
-				core.authenticateOnBackend(backendCredentials);
-			} catch (InvalidCredentialsException e) {
-				/**
-				 * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich
-				 * sein, dass GUI und Core entkoppelt sind und uebers netzwerk
-				 * kommunizieren. Sofern das Gui sich nicht beim core
-				 * authentifizieren kann (weil die credentials falsch sind),
-				 * soll dem user eine box angezeigt werden, wo er dann spaeter
-				 * auch die core-daten (host, port, serviceName etc.) aendern
-				 * kann. Muss in dieser Phase des Projektes noch nicht gemacht
-				 * werden, nur damit du's weisst.
-				 *
-				 * TODO: @ anonymous author: in english, please ;)
-				 */
-				String msg = "Failed to login to backend";
-				JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(), msg);
-				log.warn(msg);
-				ExceptionUtilities.showError(msg);
-			}
+		try {
+			core.authenticateOnBackend(backendCredentials);
+		} catch (InvalidCredentialsException e) {
+			/**
+			 * TODO @ Peter: In Zukuenftigen versionen koennte es moeglich
+			 * sein, dass GUI und Core entkoppelt sind und uebers netzwerk
+			 * kommunizieren. Sofern das Gui sich nicht beim core
+			 * authentifizieren kann (weil die credentials falsch sind),
+			 * soll dem user eine box angezeigt werden, wo er dann spaeter
+			 * auch die core-daten (host, port, serviceName etc.) aendern
+			 * kann. Muss in dieser Phase des Projektes noch nicht gemacht
+			 * werden, nur damit du's weisst.
+			 *
+			 * TODO: @ anonymous author: in english, please ;)
+			 */
+			String msg = "Failed to login to backend";
+			JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(), msg);
+			log.warn(msg);
+			ExceptionUtilities.showError(msg);
 		}
+
 
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
 			saveQuit();

@@ -1,8 +1,6 @@
 package com.jakeapp.gui.swing.models;
 
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.core.domain.FileObject;
 
@@ -26,13 +24,19 @@ public class FileObjectsTableModel extends AbstractTableModel {
 	public String getColumnName(int column) {
 		switch (column) {
 			case 0:
-				return "Name";
+				return "";
 			case 1:
-				return "in";
+				return "";
 			case 2:
-				return "Size";
+				return "Name";
 			case 3:
+				return "in";
+			case 4:
+				return "Size";
+			case 5:
 				return "Last Modified";
+			case 6:
+				return "Tags";
 			default:
 				return null;
 		}
@@ -42,12 +46,18 @@ public class FileObjectsTableModel extends AbstractTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 			case 0:
-				return ProjectFilesTreeNode.class;
+				return FileObjectLockedCell.class;
 			case 1:
-				return String.class;
+				return FileObjectStatusCell.class;
 			case 2:
-				return String.class;
+				return ProjectFilesTreeNode.class;
 			case 3:
+				return String.class;
+			case 4:
+				return String.class;
+			case 5:
+				return String.class;
+			case 6:
 				return String.class;
 			default:
 				return null;
@@ -61,7 +71,7 @@ public class FileObjectsTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 4;
+		return 7;
 	}
 
 	@Override
@@ -69,17 +79,21 @@ public class FileObjectsTableModel extends AbstractTableModel {
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 		switch (columnIndex) {
 			case 0:
-				return ournode;
+				return new FileObjectLockedCell(ournode.getFileObject());
 			case 1:
+				return new FileObjectStatusCell(ournode.getFileObject());
+			case 2:
+				return ournode;
+			case 3:
 				String s = ournode.getFileObject().getRelPath();
 				if (s.contains(System.getProperty("file.separator"))) {
 					return System.getProperty("file.separator") + s.substring(0, s.lastIndexOf(System.getProperty("file.separator")));
 				} else {
 					return System.getProperty("file.separator");
 				}
-			case 2:
+			case 4:
 				return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
-			case 3:
+			case 5:
 				return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
 			default:
 				return "INVALIDCOLUMN";

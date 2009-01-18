@@ -40,7 +40,9 @@ public class FileObjectStatusProvider {
 
 		JakeObjectSyncStatus status = JakeMainApp.getCore().getJakeObjectSyncStatus(JakeMainApp.getProject(), obj);
 
-		if (status.isLocalLatest()) {
+		if (status.isOnlyLocal() || status.isOnlyRemote()) {
+			label.setText("");
+		} else if (status.isLocalLatest()) {
 			label.setIcon(local_is_up_to_date);
 		} else if (status.isInConflict()) {
 			label.setIcon(local_has_conflict);
@@ -48,8 +50,6 @@ public class FileObjectStatusProvider {
 			label.setIcon(local_is_modified);
 		} else if (status.isRemotelyModified()) {
 			label.setIcon(local_is_out_of_date);
-		} else if (status.isOnlyLocal() || status.isOnlyRemote()) {
-			label.setText("");
 		}
 
 		return label;

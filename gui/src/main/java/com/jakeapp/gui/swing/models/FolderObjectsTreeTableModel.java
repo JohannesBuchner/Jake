@@ -212,7 +212,6 @@ public class FolderObjectsTreeTableModel implements TreeTableModel {
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 		listeners.add(l);
-		System.err.println("Listener added! " + l.toString());
 	}
 
 	@Override

@@ -29,8 +29,6 @@ public class AnnounceFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
-
 		ArrayList<FileObject> files = new ArrayList<FileObject>();
 
 		for (ProjectFilesTreeNode pf : getNodes()) {
@@ -45,6 +43,7 @@ public class AnnounceFileAction extends FileAction {
 		for (FileObject fo : files) {
 			log.warn("Announcing file '" + fo.getRelPath() + "' (IMPLEMENT ME!)");
 		}
+		// ENDFIXME
 	}
 
 	private List<FileObject> recurseNodes(FolderObject folder) {

@@ -16,121 +16,121 @@ import java.awt.event.MouseListener;
  * Time: 12:33:18 PM
  */
 public class JakeTrayIcon {
-    private static final Logger log = Logger.getLogger(JakeTrayIcon.class);
-    private MenuItem showHideJakeTrayMenuItem;
+	private static final Logger log = Logger.getLogger(JakeTrayIcon.class);
+	private MenuItem showHideJakeTrayMenuItem;
 
-    public JakeTrayIcon() {
-        final TrayIcon trayIcon;
+	public JakeTrayIcon() {
+		final TrayIcon trayIcon;
 
-        if (SystemTray.isSupported()) {
+		if (SystemTray.isSupported()) {
 
-            SystemTray tray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/jakeapp.png"));
+			SystemTray tray = SystemTray.getSystemTray();
+			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/jakeapp.png"));
 
-            MouseListener mouseListener = new MouseListener() {
+			MouseListener mouseListener = new MouseListener() {
 
-                public void mouseClicked(MouseEvent e) {
-                    System.out.println("Tray Icon - Mouse clicked!");
+				public void mouseClicked(MouseEvent e) {
+					System.out.println("Tray Icon - Mouse clicked!");
 
-                    if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && !Platform.isMac()) {
-                        toggleShowHideMainWindow();
-                    }
-                }
+					if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && !Platform.isMac()) {
+						toggleShowHideMainWindow();
+					}
+				}
 
-                public void mouseEntered(MouseEvent e) {
-                    System.out.println("Tray Icon - Mouse entered!");
-                }
+				public void mouseEntered(MouseEvent e) {
+					System.out.println("Tray Icon - Mouse entered!");
+				}
 
-                public void mouseExited(MouseEvent e) {
-                    System.out.println("Tray Icon - Mouse exited!");
-                }
+				public void mouseExited(MouseEvent e) {
+					System.out.println("Tray Icon - Mouse exited!");
+				}
 
-                public void mousePressed(MouseEvent e) {
-                    System.out.println("Tray Icon - Mouse pressed!");
+				public void mousePressed(MouseEvent e) {
+					System.out.println("Tray Icon - Mouse pressed!");
 
-                    // update menu
-                    showHideJakeTrayMenuItem.setLabel(getShowHideWindowString());
+					// update menu
+					showHideJakeTrayMenuItem.setLabel(getShowHideWindowString());
 
-                }
+				}
 
-                public void mouseReleased(MouseEvent e) {
-                    System.out.println("Tray Icon - Mouse released!");
-                }
-            };
+				public void mouseReleased(MouseEvent e) {
+					System.out.println("Tray Icon - Mouse released!");
+				}
+			};
 
-            ActionListener exitListener = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    quit();
-                }
-            };
+			ActionListener exitListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					quit();
+				}
+			};
 
-            ActionListener showJakeListener = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    log.info("Showing main window");
-                    toggleShowHideMainWindow();
-                }
-            };
+			ActionListener showJakeListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					log.info("Showing main window");
+					toggleShowHideMainWindow();
+				}
+			};
 
-            PopupMenu popup = new PopupMenu();
-            showHideJakeTrayMenuItem = new MenuItem(getShowHideWindowString());
-            showHideJakeTrayMenuItem.addActionListener(showJakeListener);
-            MenuItem defaultItem = new MenuItem("Quit Jake");
-            defaultItem.addActionListener(exitListener);
-            popup.add(showHideJakeTrayMenuItem);
-            popup.add(defaultItem);
+			PopupMenu popup = new PopupMenu();
+			showHideJakeTrayMenuItem = new MenuItem(getShowHideWindowString());
+			showHideJakeTrayMenuItem.addActionListener(showJakeListener);
+			MenuItem defaultItem = new MenuItem("Quit Jake");
+			defaultItem.addActionListener(exitListener);
+			popup.add(showHideJakeTrayMenuItem);
+			popup.add(defaultItem);
 
-            trayIcon = new TrayIcon(image, "Jake", popup);
+			trayIcon = new TrayIcon(image, "Jake", popup);
 
 
-            /*  ActionListener actionListener = new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null,
-                                        "An Action Event Has Been Performed!");
-                            }
-                        };
-            */
+			/*  ActionListener actionListener = new ActionListener() {
+												 public void actionPerformed(ActionEvent e) {
+													  JOptionPane.showMessageDialog(null,
+																 "An Action Event Has Been Performed!");
+												 }
+											};
+							*/
 
-            trayIcon.setImageAutoSize(true);
-            // trayIcon.addActionListener(actionListener);
-            trayIcon.addMouseListener(mouseListener);
+			trayIcon.setImageAutoSize(true);
+			// trayIcon.addActionListener(actionListener);
+			trayIcon.addMouseListener(mouseListener);
 
-            try {
-                tray.add(trayIcon);
-            } catch (AWTException e) {
-                System.err.println("TrayIcon could not be added.");
-            }
+			try {
+				tray.add(trayIcon);
+			} catch (AWTException e) {
+				log.warn("TrayIcon could not be added.");
+			}
 
-        } else {
+		} else {
 
-            //  System Tray is not supported
+			//  System Tray is not supported
 
-        }
+		}
 
-    }
+	}
 
-    private void quit() {
+	private void quit() {
 //        // TODO: make save shutdown
 //        log.info("Exiting...");
 //        System.exit(0);
-        JakeMainView.getMainView().quit();
-    }
+		JakeMainView.getMainView().quit();
+	}
 
-    private String getShowHideWindowString() {
-        return JakeMainView.getResouceMap().getString(isMainWindowVisible() ? "windowHide" : "windowShow");
-    }
+	private String getShowHideWindowString() {
+		return JakeMainView.getResouceMap().getString(isMainWindowVisible() ? "windowHide" : "windowShow");
+	}
 
-    private void toggleShowHideMainWindow() {
-        if (!isMainWindowVisible()) {
-            //JakeMainView.getMainView().getFrame().setExtendedState(JFrame.ICONIFIED);
-        }
-        JakeMainView.getMainView().getFrame().setVisible(!isMainWindowVisible());
-        if (isMainWindowVisible()) {
-            JakeMainView.getMainView().getFrame().requestFocus();
-            //JakeMainView.getMainView().getFrame().setExtendedState(JFrame.NORMAL);
-        }
-    }
+	private void toggleShowHideMainWindow() {
+		if (!isMainWindowVisible()) {
+			//JakeMainView.getMainView().getFrame().setExtendedState(JFrame.ICONIFIED);
+		}
+		JakeMainView.getMainView().getFrame().setVisible(!isMainWindowVisible());
+		if (isMainWindowVisible()) {
+			JakeMainView.getMainView().getFrame().requestFocus();
+			//JakeMainView.getMainView().getFrame().setExtendedState(JFrame.NORMAL);
+		}
+	}
 
-    private boolean isMainWindowVisible() {
-        return JakeMainView.getMainView().getFrame().isVisible();
-    }
+	private boolean isMainWindowVisible() {
+		return JakeMainView.getMainView().getFrame().isVisible();
+	}
 }

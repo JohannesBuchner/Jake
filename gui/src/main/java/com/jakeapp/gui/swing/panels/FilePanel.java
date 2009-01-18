@@ -34,6 +34,8 @@ import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.PatternFilter;
+import org.jdesktop.swingx.decorator.Filter;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
@@ -52,7 +54,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 	public static final int FILETREETABLE_NODECOLUMN = 2;
 
-	public static final int FILETABLE_NODECOLUMN = 0;
+	public static final int FILETABLE_NODECOLUMN = 2;
 
 	private Project project;
 
@@ -82,6 +84,17 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			// We don't need this anymore because resetFilter() does it for us 
 			// fileTreeTableScrollPane.setViewportView(fileTreeTable);
 			treeViewActive = true;
+			resetFilter();
+		}
+	}
+
+	public void filterFileDisplay() {
+		if (conflictsBtn.isSelected()) {
+			Filter filter = new FileObjectConflictStatusFilter();
+			switchToFlatAndFilter(new FilterPipeline(filter));
+		} else if (newBtn.isSelected()) {
+
+		} else {
 			resetFilter();
 		}
 	}
@@ -188,7 +201,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		fileTreeTable.setColumnControlVisible(true);
 
 		// ETreeTable performs its own striping on the mac
-		// TODO: make this more beautiful...
 		if (!Platform.isMac()) {
 			fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 			fileTable.setHighlighters(HighlighterFactory.createSimpleStriping());
@@ -199,6 +211,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		fileTreeTable.setDefaultRenderer(FileObjectStatusCell.class, new FileStatusTreeCellRenderer());
 		fileTreeTable.setDefaultRenderer(FileObjectLockedCell.class, new FileLockedTreeCellRenderer());
+
+		fileTable.setDefaultRenderer(FileObjectStatusCell.class, new FileStatusTreeCellRenderer());
+		fileTable.setDefaultRenderer(FileObjectLockedCell.class, new FileLockedTreeCellRenderer());
 
 		fileTreeTable.addMouseListener(new FileContainerMouseListener(this, fileTreeTable, FILETREETABLE_NODECOLUMN));
 		fileTable.addMouseListener(new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
@@ -387,6 +402,14 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			}
 		};
 
+		ActionListener filterViewAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				filterFileDisplay();
+				log.debug("filtering view in filepanel...");
+			}
+		};
+
 		flatBtn.addActionListener(updateViewAction);
 		treeBtn.addActionListener(updateViewAction);
 
@@ -409,9 +432,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		this.add(controlPanel, "growx");
 
-		allBtn.addActionListener(updateViewAction);
-		newBtn.addActionListener(updateViewAction);
-		conflictsBtn.addActionListener(updateViewAction);
+		allBtn.addActionListener(filterViewAction);
+		newBtn.addActionListener(filterViewAction);
+		conflictsBtn.addActionListener(filterViewAction);
 
 		ButtonGroup filterGrp = new ButtonGroup();
 		filterGrp.add(allBtn);

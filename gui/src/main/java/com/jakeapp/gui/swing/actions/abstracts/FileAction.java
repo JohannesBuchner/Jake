@@ -19,7 +19,6 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 
 	public FileAction() {
 		super();
-		System.err.println("ADDING MYSELF TO LISTENER");
 		FilePanel.getInstance().addNodeSelectionListener(this);
 		selectedRowCount = 0;
 		nodes = new ArrayList<ProjectFilesTreeNode>();
@@ -30,7 +29,6 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 
 	@Override
 	public void nodeSelectionChanged(NodeSelectedEvent event) {
-		System.err.println("RECEIVED NODESELECTIONEVENT: " + event.size());
 		this.selectedRowCount = event.size();
 		this.nodes = event.getNodes();
 		this.updateAction();
