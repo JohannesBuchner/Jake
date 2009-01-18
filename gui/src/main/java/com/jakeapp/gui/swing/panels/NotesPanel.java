@@ -42,10 +42,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -60,6 +57,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private static final long serialVersionUID = -7703570005631651276L;
 	private static NotesPanel instance;
 	private static Logger log = Logger.getLogger(NotesPanel.class);
+	private final static int TableUpdateDelay = 20000; // 20 sec
+	private Timer tableUpdateTimer;
 	private java.util.List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
 	private NotesTableModel notesTableModel;
 	private javax.swing.JScrollPane notesTableScrollPane;
@@ -159,9 +158,19 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		if (!Platform.isMac()) {
 			this.notesTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
-		final JPopupMenu notesPopupMenu = new JakePopupMenu();
+		//final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
 		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable, this.notesTableModel));
+
+		// install event table update timer
+		tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				log.debug("Updating notesTable");
+				notesTable.updateUI();
+			}
+		});
+		tableUpdateTimer.start();
 	}
 
 
@@ -298,11 +307,11 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		softLockBtn = new JButton(new SoftlockNoteAction());
 		softLockBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(softLockBtn);
-		
+
 		deleteBtn = new JButton(new DeleteNoteAction());
 		deleteBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(deleteBtn);
-		
+
 
 		this.noteReadPanel.add(noteControlPanel, "growx");
 
