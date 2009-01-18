@@ -49,7 +49,20 @@
 			<artifactId>spring</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- all stuff needed for hibernate follows now: -->
+
+        <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aspects</artifactId>
+    <version>${spring.version}</version>
+</dependency>
+
+        <dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjrt</artifactId>
+    <version>1.6.2</version>
+</dependency>
+
+        <!-- all stuff needed for hibernate follows now: -->
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
@@ -62,6 +75,7 @@
 			<!--<version>3.3.1.GA</version>-->
 			<version>${hibernate-core.version}</version>
 		</dependency>
+
 		<!-- spring hibernate support -->
 		<dependency>
 			<groupId>org.springframework</groupId>

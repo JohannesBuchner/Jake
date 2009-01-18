@@ -30,14 +30,23 @@ public class MsgServiceFactory {
 	private boolean initialised = false;
 
 	private void ensureInitialised() {
+        log.debug("calling ensureInitialised");
 		if (!initialised) {
-			createTestdata();
+            log.debug("was not initialized");
 			initialised = true;
+            createTestdata();
+
 		}
 	}
 
+    public MsgServiceFactory()
+    {
+        log.debug("calling empty Constructor");
+    }
+
 	public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao) {
-		this.serviceCredentialsDao = serviceCredentialsDao;
+		log.debug("calling constructor with serviceCredentialsDao");
+        this.serviceCredentialsDao = serviceCredentialsDao;
 		// can not initialise here, this produces spring/hibernate errors!
 	}
 
@@ -45,9 +54,12 @@ public class MsgServiceFactory {
 		return serviceCredentialsDao;
 	}
 
+
+
 	private void createTestdata() {
-		List<ServiceCredentials> credentialsList;
-		credentialsList = this.serviceCredentialsDao.getAll();
+        log.debug("creating testData");
+		List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
+//		credentialsList = this.serviceCredentialsDao.getAll();
 
 		ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
 				  "somepass");
@@ -103,7 +115,10 @@ public class MsgServiceFactory {
 
 	public MsgService createMsgService(ServiceCredentials credentials)
 			  throws ProtocolNotSupportedException {
-		ensureInitialised();
+
+        log.debug("calling createMsgService ");
+
+        ensureInitialised();
 		MsgService result = null;
 		if (credentials.getProtocol().equals(ProtocolType.XMPP)) {
 			log.debug("Creating new XMPPMsgService for userId "
@@ -119,6 +134,7 @@ public class MsgServiceFactory {
 	}
 
 	public List<MsgService> getAll() {
+        log.debug("calling getAll");
 		ensureInitialised();
 		return msgServices;
 	}
@@ -136,7 +152,8 @@ public class MsgServiceFactory {
 	 */
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
 			  throws ProtocolNotSupportedException, NetworkException {
-		MsgService svc = createMsgService(credentials);
+		log.debug("calling AvailableLaterObject");
+        MsgService svc = createMsgService(credentials);
 
 		return new CreateAccountFuture(svc,listener);
 	}
@@ -152,7 +169,9 @@ public class MsgServiceFactory {
 	 */
 	public MsgService addMsgService(ServiceCredentials credentials)
 			  throws InvalidCredentialsException, ProtocolNotSupportedException {
-		MsgService svc = this.createMsgService(credentials);
+		log.debug("calling addMsgService");
+
+        MsgService svc = this.createMsgService(credentials);
 		msgServices.add(svc);
 
 		//add account in database

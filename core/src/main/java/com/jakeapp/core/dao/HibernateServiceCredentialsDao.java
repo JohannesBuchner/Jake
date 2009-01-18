@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 
@@ -63,6 +64,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
         return result;
     }
 
+    @Transactional
     @Override
     public List<ServiceCredentials> getAll() {
        
