@@ -99,10 +99,21 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	 * the rel
 	 * @param relPath
 	 * @return
+     * @throws com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException
 	 */
 	private FileObject getFileObjectByRelpath(String relPath) throws NoSuchJakeObjectException {
-		// TODO Auto-generated method stub
-		return null;
+
+        List<FileObject> result = this.
+                getHibernateTemplate().
+                getSessionFactory().getCurrentSession().createQuery("FROM fileobject WHERE relPath = ?").
+                setString(0, relPath).list();
+
+        if(result.size() > 0)
+        {
+            return result.get(0);
+        }
+        throw new NoSuchJakeObjectException("No fileObject by given relPath there");
+
 	}
 
 	@Override

@@ -28,7 +28,12 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 
     public XMPPMsgService() {
-        this.setUserId(new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(), "todo useridstring", "todo nickname", "todo firstname", "todo surname")); 
+
+
+        
+
+
+        this.setUserId(new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(), "todo useridstring", "todo nickname", "todo firstname", "todo surname"));
 
     }
 

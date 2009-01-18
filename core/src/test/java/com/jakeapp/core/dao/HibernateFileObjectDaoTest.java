@@ -194,4 +194,20 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
     public void testRemoveTagsFrom() {
         // Add your code here
     }
+
+
+    @Transactional
+    @Test
+    public void testGetByRelPath() throws NoSuchJakeObjectException {
+        FileObject fileObject, result;
+        fileObject = new FileObject(UUID.fromString("3d32858a-166f-4204-8074-d11a2d745b9d"), null, "/blabla");
+
+        fileObjecttDao.persist(fileObject);
+
+        result = fileObjecttDao.get("/blabla");
+
+        Assert.assertEquals(fileObject,  result);
+
+    }
+
 }

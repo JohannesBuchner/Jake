@@ -1,9 +1,14 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.IUserIdDao;
+import com.jakeapp.core.dao.exceptions.NoSuchUserIdException;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.XMPPUserId;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -16,6 +21,7 @@ import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Factory Class to create MsgServices by giving ServiceCredentials
@@ -26,6 +32,8 @@ public class MsgServiceFactory {
     private static Logger log = Logger.getLogger(MsgServiceFactory.class);
 
     private IServiceCredentialsDao serviceCredentialsDao;
+    private IUserIdDao userIdDao;
+
 
     private List<MsgService> msgServices = new ArrayList<MsgService>();
 
@@ -45,9 +53,10 @@ public class MsgServiceFactory {
         log.debug("calling empty Constructor");
     }
 
-    public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao) {
+    public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao, IUserIdDao userIdDao) {
         log.debug("calling constructor with serviceCredentialsDao");
         this.serviceCredentialsDao = serviceCredentialsDao;
+        this.userIdDao = userIdDao;
         // can not initialise here, this produces spring/hibernate errors!
     }
 
@@ -60,8 +69,6 @@ public class MsgServiceFactory {
     private void createTestdata() {
         log.debug("creating testData");
         List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
-
-        
 
         credentialsList = this.serviceCredentialsDao.getAll();
 
@@ -129,6 +136,40 @@ public class MsgServiceFactory {
                     + credentials.getUserId());
             result = new XMPPMsgService();
             result.setCredentials(credentials);
+
+
+            try {
+                if(!credentials.getUuid().isEmpty())
+                {
+                    log.debug("uuid is not empty");
+
+                    if(userIdDao == null)
+                        log.debug("userIdDao = null");
+
+                    UserId userId = userIdDao.get(
+                            UUID.fromString(
+                                    credentials.getUuid()
+                            )
+                    );
+                    
+                    log.debug("setting userid");
+                    result.setUserId(userId);
+
+                }
+                else
+                {
+                    log.debug("uuid is empty");
+
+
+
+                }
+
+            } catch (InvalidUserIdException e) {
+                e.printStackTrace();
+            } catch (NoSuchUserIdException e) {
+                e.printStackTrace();
+            }
+
         } else {
             log.warn("Currently unsupported protocol given");
             throw new ProtocolNotSupportedException();

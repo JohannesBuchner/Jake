@@ -14,7 +14,7 @@ import javax.persistence.Transient;
  *
  * @author Simon,christopher
  */
-@Entity
+@Entity(name = "fileobject")
 public class FileObject extends JakeObject {
 	private static final long serialVersionUID = 3865742844467013647L;
 
@@ -60,7 +60,7 @@ public class FileObject extends JakeObject {
      *
      * @return the <code>relPath</code> to the file
      */
-    @Column( name = "path", nullable = false )
+    @Column( name = "relPath", nullable = false )
     public String getRelPath() {
         return this.relPath;
     }
