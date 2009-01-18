@@ -145,7 +145,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		createAccountBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showPanel(UserPanels.ManageUsers);
+				showPanel(UserPanels.AddUser);
 			}
 		});
 		loginUserPanel.add(createAccountBtn, "wrap, center");
@@ -273,6 +273,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		buttonPanel.add(workingAnimation, "hidemode 1, left");
 
 		signInRegisterButton = new JButton();
+		signInRegisterButton.putClientProperty("JButton.buttonType", "textured");
 		signInRegisterButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
