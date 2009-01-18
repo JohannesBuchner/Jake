@@ -7,6 +7,7 @@ import javax.swing.Action;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
@@ -21,6 +22,8 @@ public class SaveNoteAction extends NoteAction {
 	
 	private static final long serialVersionUID = 196271937528474367L;
 	private static final Logger log = Logger.getLogger(SaveNoteAction.class);
+	
+	private ICoreAccess core = JakeMainApp.getCore();
 
 	public SaveNoteAction() {
 		super();
@@ -36,11 +39,25 @@ public class SaveNoteAction extends NoteAction {
 		cachedNote.setContent(newContent);
 		
 		log.debug("saving note with new content: " + newContent);
-		JakeMainApp.getCore().saveNote(cachedNote);
+		core.saveNote(cachedNote);
 	}
 	
 	@Override
 	public void updateAction() {
-		this.setEnabled(this.getSelectedNotes().size() > 0);
+		if (this.getSelectedNotes().size() > 0) { // files are selected
+			this.setEnabled(true);
+			
+			if(core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked
+				if (this.core.getLockOwner(getSelectedNotes().get(0)).getUserId().equals(JakeMainApp.getProject().getUserId())) {
+					// local user has lock
+					this.setEnabled(true);
+				} else {
+					//somone else has the lock
+					this.setEnabled(false);
+				}
+			}
+		} else {
+			this.setEnabled(false);
+		}
 	}
 }

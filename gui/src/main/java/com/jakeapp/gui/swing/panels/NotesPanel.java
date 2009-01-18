@@ -66,7 +66,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private NotesTableModel notesTableModel;
 	private javax.swing.JScrollPane notesTableScrollPane;
 	private javax.swing.JSplitPane mainSplitPane;
-	private org.jdesktop.swingx.JXPanel noteReadPanel;
+	private org.jdesktop.swingx.JXPanel noteReaderPanel;
 	private org.jdesktop.swingx.JXTable notesTable;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
@@ -187,13 +187,24 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			String text;
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
 			this.noteReader.setText(text);
-
-			List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
-			for (int row : this.notesTable.getSelectedRows()) {
-				selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
+			this.noteReader.setEditable(true);
+				
+			if(core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked
+				if (this.core.getLockOwner(getSelectedNotes().get(0)).getUserId().equals(JakeMainApp.getProject().getUserId())) {
+					// local user has lock
+					this.noteReader.setEditable(true);
+				} else {
+					//somone else has the lock
+					this.noteReader.setEditable(false);
+				}
 			}
-			this.notifyNoteSelectionListeners(selectedNotes);
 		}
+
+		List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
+		for (int row : this.notesTable.getSelectedRows()) {
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
+		}
+		this.notifyNoteSelectionListeners(selectedNotes);
 	}
 
 
@@ -298,8 +309,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			}
 		});
 
-		noteReadPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
-		noteReadPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
+		noteReaderPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
+		noteReaderPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
 
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
 		noteControlPanel.setBackground(Color.WHITE);
@@ -320,7 +331,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		saveBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(saveBtn);
 
-		this.noteReadPanel.add(noteControlPanel, "growx");
+		this.noteReaderPanel.add(noteControlPanel, "growx");
 
 		this.noteReader = new JTextArea();
 		this.noteReader.setLineWrap(true);
@@ -335,15 +346,15 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		noteReaderScrollPane.getViewport().setOpaque(false);
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
 
-		this.noteReadPanel.add(noteReaderScrollPane, "grow");
+		this.noteReaderPanel.add(noteReaderScrollPane, "grow");
 
 		// set the background painter
 		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
 		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
 				  GlossPainter.GlossPosition.TOP);
-		this.noteReadPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
+		this.noteReaderPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 
-		mainSplitPane.setRightComponent(noteReadPanel);
+		mainSplitPane.setRightComponent(noteReaderPanel);
 
 	}
 
