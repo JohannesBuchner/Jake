@@ -580,13 +580,16 @@ public interface ICoreAccess {
 	 *         null</code> iff the given <code>JakeObject</code> is not locked.
 	 */
 	public String getLockingMessage(JakeObject jakeObject);
-
+	
 	/**
-	 * Remove the soft lock from a given <code>JakeObject</code>.
-	 *
-	 * @param jakeObject the <code>JakeObject</code> that should be unlocked.
+	 * Get the owner of a soft lock. The owner of the lock is the project member who locked the file
+	 * (if someone changes a lock, he/she becomes the owner as well -> owner = last editor of the lock)
+	 * @param jakeObject the jake object that is locked
+	 * @return the owner of the lock of the given jake object. The method may return <code>
+	 *         null</code> iff the given <code>JakeObject</code> is not locked.
+
 	 */
-	public void removeSoftLock(JakeObject jakeObject);
+	public ProjectMember getLockOwner(JakeObject jakeObject);
 
 	/**
 	 * Set the soft lock for a <code>JakeObject</code>.

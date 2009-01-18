@@ -932,12 +932,6 @@ public class CoreAccessMock implements ICoreAccess {
 
 	}
 
-
-	@Override
-	public void removeSoftLock(JakeObject jakeObject) {
-		// TODO Auto-generated method stub
-	}
-
 	@Override
 	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage) {
 		if (jakeObject instanceof NoteObject) {
@@ -945,5 +939,11 @@ public class CoreAccessMock implements ICoreAccess {
 			this.notesIsLocked.set(this.notesList.indexOf(note), isSet);
 		}
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(), ProjectChangedReason.Deleted));
+	}
+
+
+	@Override
+	public ProjectMember getLockOwner(JakeObject jakeObject) {
+		return new ProjectMember(UUID.randomUUID(), "Chuck N.", TrustState.TRUST);
 	}
 }

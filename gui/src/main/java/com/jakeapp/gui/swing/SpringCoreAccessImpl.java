@@ -1004,13 +1004,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void removeSoftLock(JakeObject jakeObject) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage) {
 		//To change body of implemented methods use File | Settings | File Templates.
 	}
+
+	@Override
+	public ProjectMember getLockOwner(JakeObject jakeObject) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

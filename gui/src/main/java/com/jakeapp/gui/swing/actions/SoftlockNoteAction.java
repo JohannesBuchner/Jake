@@ -50,8 +50,10 @@ public class SoftlockNoteAction extends NoteAction {
 			this.setEnabled(true);
 
 			this.isLocked = JakeMainApp.getCore().isSoftLocked(this.getSelectedNotes().get(0));
-			
-			if(this.isLocked) {
+			boolean isLocal = JakeMainApp.getCore().isLocalNote(this.getSelectedNotes().get(0));
+			if (isLocal) {
+				this.setEnabled(false);
+			} else if(this.isLocked) {
 				if(this.getSelectedNotes().size() == 1) {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNote"));
 				} else {
