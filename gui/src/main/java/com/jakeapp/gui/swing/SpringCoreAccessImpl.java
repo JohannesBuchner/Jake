@@ -12,6 +12,8 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.services.futures.AnnounceFuture;
+import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -207,6 +209,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					isSignedIn = toLogin.login();
 
 					currentUser = credentials.getUserId();
+					currentMessageService = toLogin;
 
 					fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
 				} catch (NotLoggedInException e) {
@@ -296,6 +299,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			}
 
 			this.isSignedIn = false;
+			this.currentUser = null;
+			this.currentMessageService = null;
 		}
 
 		fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
@@ -754,7 +759,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	// TODO this might be removed in further versions...
 	// it depends on only having a SINGLE user.
 	private MsgService getLoggedInUser(String session) throws NotLoggedInException {
-		return this.getFrontendService().getMsgServices(session).get(0);
+		return this.currentMessageService;
 	}
 
 	/**
@@ -763,13 +768,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return
 	 */
-	public List<ProjectMember> getPeople(Project project) {
-		log.info("Mock: getPeople from project " + project);
+	public List<ProjectMember> getPeople(Project project) {	
+		//TODO implement!!
+		
+		log.info("getPeople from project " + project);
 
 		if (project == null) {
-			return null;
+			return new ArrayList<ProjectMember>();
 		}
+		return new ArrayList<ProjectMember>();
+		
+		//this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
 
+		/*
 		if (!peopleProjectMap.containsKey(project)) {
 			List<ProjectMember> people = new ArrayList<ProjectMember>();
 
@@ -778,7 +789,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					  TrustState.AUTO_ADD_REMOVE));
 
 
-			/*
+
 								 * people.add(new ProjectMember(new XMPPUserId(new
 								 * ServiceCredentials("User1", "pass2"), new UUID(22, 33),
 								 * "pstein@jabber.fsinf.at", "", "Peter", "Steinberger"),
@@ -794,11 +805,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 								 * ServiceCredentials("User3", "pass3"), new UUID(22, 33),
 								 * "max@jabber.org", "Max", "Max", "Mustermann"),
 								 * TrustState.NO_TRUST));
-								 */
+								 
 			peopleProjectMap.put(project, people);
 		}
 
 		return peopleProjectMap.get(project);
+		*/
 	}
 
 	@Override
@@ -1021,8 +1033,26 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
-		//TODO implement
-		return null;
+		ProjectMember member;
+		LogEntry<JakeObject> action;
+		ISyncService iss;
+		AvailableLaterObject<Void> result = null;
+		
+		member = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(jo.getProject(), this.getLoggedInUser(this.getSessionId()));
+		
+		action = new LogEntry<JakeObject>(
+				UUID.randomUUID(), LogAction.JAKE_OBJECT_NEW_VERSION,
+				Calendar.getInstance().getTime(), jo.getProject(), jo, member
+		);
+		
+		try {
+			iss = this.getFrontendService().getSyncService(this.getSessionId());
+			result = new AnnounceFuture(null,iss,jo,action);
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+		
+		return result.start();
 	}
 
 	@Override
@@ -1068,6 +1098,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	private String currentUser = null;
+	private MsgService currentMessageService = null;
 
 	// event spread
 	private List<ConnectionStatus> connectionStatus;
