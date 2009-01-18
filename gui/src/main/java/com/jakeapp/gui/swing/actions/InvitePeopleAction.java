@@ -17,13 +17,18 @@ import java.awt.event.ActionEvent;
 public class InvitePeopleAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(InvitePeopleAction.class);
 
-	public InvitePeopleAction(boolean addPoints) {
+	/**
+	 * Create a new <code>InvitePeopleAction</code>.
+	 * @param ellipsis if <code>true</code> the <code>Action.NAME</code> ends with an ellipsis (...), if
+	 * <code>false</code> the dots are omitted.
+	 */
+	public InvitePeopleAction(boolean ellipsis) {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
 				  getString("invitePeopleMenuItem.text");
 
-		if (addPoints) {
+		if (ellipsis) {
 			actionStr += "...";
 		}
 

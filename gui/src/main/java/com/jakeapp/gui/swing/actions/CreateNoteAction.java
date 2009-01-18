@@ -16,11 +16,11 @@ import com.jakeapp.gui.swing.panels.NotesPanel;
  * @author Simon
  *
  */
-public class NewNoteAction extends NoteAction {
+public class CreateNoteAction extends NoteAction {
 	
 	private static final long serialVersionUID = 8883731800177455307L;
 
-	public NewNoteAction() {
+	public CreateNoteAction() {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().getString("newNoteMenuItem");

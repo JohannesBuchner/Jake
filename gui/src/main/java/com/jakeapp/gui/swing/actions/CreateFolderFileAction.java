@@ -16,10 +16,10 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 
-public class NewFolderFileAction extends FileAction {
-	private static final Logger log = Logger.getLogger(NewFolderFileAction.class);
+public class CreateFolderFileAction extends FileAction {
+	private static final Logger log = Logger.getLogger(CreateFolderFileAction.class);
 
-	public NewFolderFileAction() {
+	public CreateFolderFileAction() {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().

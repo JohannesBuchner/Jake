@@ -12,13 +12,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
- * User: studpete
- * Date: Dec 29, 2008
- * Time: 12:20:54 AM
+ * Project Action for creating a new project.
  */
 public class CreateProjectAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(CreateProjectAction.class);
 
+	/**
+	 * Create new <code>CreateProjectAction</code>.
+	 * @param ellipsis if <code>true</code> the <code>Action.NAME</code> ends with an ellipsis (...), if
+	 * <code>false</code> the dots are omitted.
+	 */
 	public CreateProjectAction(boolean ellipsis) {
 		super();
 

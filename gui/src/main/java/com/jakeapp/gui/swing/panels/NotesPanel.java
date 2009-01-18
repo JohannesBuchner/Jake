@@ -17,7 +17,7 @@ import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.DeleteNoteAction;
-import com.jakeapp.gui.swing.actions.NewNoteAction;
+import com.jakeapp.gui.swing.actions.CreateNoteAction;
 import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -81,7 +81,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		{
 			this.popupMenu = new JakePopupMenu();
-			this.popupMenu.add(new JMenuItem(new NewNoteAction()));
+			this.popupMenu.add(new JMenuItem(new CreateNoteAction()));
 			this.popupMenu.addSeparator();
 			this.popupMenu.add(new JMenuItem(new DeleteNoteAction()));
 			this.popupMenu.add(new JMenuItem(new CommitNoteAction()));
