@@ -268,6 +268,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 
+	@Override
+	public void removeAccount(MsgService msg) throws NotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
+	}
+
 	public void addRegistrationStatusCallbackListener(RegistrationStatus cb) {
 		log.info("Registers registration status callback: " + cb);
 	}
@@ -1013,5 +1017,5 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

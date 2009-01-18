@@ -3,25 +3,18 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
-import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
-
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -38,17 +31,17 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	private TriAreaComponent statusBar;
 	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
 	private JakeMainView.ContextPanelEnum contextViewPanel;
-	
+
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
 
-	
+
 	protected class ProjectSizeTotalWorker extends SwingWorkerWithAvailableLaterObject<Long> {
 		@Override
 		protected AvailableLaterObject<Long> calculateFunction() {
 			return JakeMainApp.getCore().getProjectSizeTotal(getProject(), this);
 		}
-		
+
 		@Override
 		protected void done() {
 			long projectSizeTotal = 0;
@@ -65,18 +58,18 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			setProjectTotalSize(projectSize);
 		}
 	}
-	
+
 	protected class ProjectFileCountWorker extends SwingWorkerWithAvailableLaterObject<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
 			return JakeMainApp.getCore().getProjectFileCount(getProject(), this);
 		}
-		
+
 		@Override
 		protected void done() {
 			// update the status bar label
 			int projectFileCount = 0;
-			
+
 			try {
 				projectFileCount = this.get();
 			} catch (InterruptedException e) {
@@ -120,15 +113,13 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	}
 
 	/**
-	 * Updates the connection Button with new credentals informations
+	 * Updates the connection Button with new credentals informations.
 	 */
 	private void updateConnectionButton() {
 		String msg;
 
-		if (getCore().isSignedIn()) {
-			// TODO: fix asap!
-			msg = "breaked!!!!";
-			//msg = getCore().getCurrentProjectMember().getUserIdS();
+		if (MsgServiceHelper.isUserLoggedIn()) {
+			msg = MsgServiceHelper.getLoggedInMsgService().getUserId().toString();
 		} else {
 			msg = getResourceMap().getString("statusLoginNotSignedIn");
 		}
@@ -229,14 +220,19 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			public void actionPerformed(ActionEvent event) {
 				JPopupMenu menu = new JakePopupMenu();
 				JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
-						  getCore().isSignedIn() ? "menuSignOut" : "menuSignIn"));
+						  MsgServiceHelper.isUserLoggedIn() ? "menuSignOut" : "menuSignIn"));
 
 				signInOut.addActionListener(new ActionListener() {
 
 					public void actionPerformed(ActionEvent actionEvent) {
-						if (!JakeMainApp.getApp().getCore().isSignedIn()) {
+						if (!MsgServiceHelper.isUserLoggedIn()) {
 						} else {
-							JakeMainApp.getApp().getCore().signOut();
+							try {
+								MsgServiceHelper.getLoggedInMsgService().logout();
+							} catch (Exception e) {
+								log.warn(e);
+								ExceptionUtilities.showError(e);
+							}
 						}
 
 						JakeMainView.getMainView().setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
@@ -273,7 +269,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Files) {
 				// update the status bar label
 				JakeExecutor.exec(new ProjectFileCountWorker());
-				JakeExecutor.exec(new ProjectSizeTotalWorker());		
+				JakeExecutor.exec(new ProjectSizeTotalWorker());
 			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
 				int notesCount = 0;
 				try {
@@ -318,29 +314,29 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			// login
 		}
 	}
-	
+
 	private String getProjectFileCount() {
 		return this.projectFileCount;
 	}
-	
+
 	private String getProjectTotalSize() {
 		return this.projectTotalSize;
 	}
-	
+
 	private void setProjectFileCount(String filecount) {
 		this.projectFileCount = filecount;
 		this.setStatusLabelProjectStatistics();
 	}
-	
+
 	private void setProjectTotalSize(String totalSize) {
 		this.projectTotalSize = totalSize;
 		this.setStatusLabelProjectStatistics();
 	}
-	
+
 	private void setStatusLabelProjectStatistics() {
-		this.setStatusLabelText(this.getProjectFileCount() + ((this.getProjectFileCount().length()==0 || this.getProjectTotalSize().length()==0)?"":", ") + this.getProjectTotalSize());
+		this.setStatusLabelText(this.getProjectFileCount() + ((this.getProjectFileCount().length() == 0 || this.getProjectTotalSize().length() == 0) ? "" : ", ") + this.getProjectTotalSize());
 	}
-	
+
 	private void setStatusLabelText(String text) {
 		statusLabel.setText(text);
 	}

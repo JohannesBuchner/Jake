@@ -104,15 +104,6 @@ public interface ICoreAccess {
 	public void backendLogOff();
 
 
-	/**
-	 * This returns a list with MsgServices already registered in the core
-	 *
-	 * @return a list with MsgServices already registered in the core
-	 * @throws NotLoggedInException if the frontend has no session on the core
-	 */
-	public List<MsgService> getMsgServics() throws NotLoggedInException;
-
-
 	/******************* Generic functions ********************/
 
 	/**
@@ -133,16 +124,6 @@ public interface ICoreAccess {
 	/******************* User functions ********************/
 
 	/**
-	 * Sync Sercice Log In.
-	 *
-	 * @param user
-	 * @param pass
-	 * @Deprecated use (boolean) msgService.login() instead
-	 */
-	@Deprecated
-	public void signIn(final String user, final String pass);
-
-	/**
 	 * Registers the Connection Status Callback
 	 *
 	 * @param cb
@@ -155,6 +136,22 @@ public interface ICoreAccess {
 	 * @param cb
 	 */
 	public void removeConnectionStatusCallbackListener(ConnectionStatus cb);
+
+
+	/**
+	 * Registers the Registration Callback
+	 *
+	 * @param cb
+	 */
+	public void addRegistrationStatusCallbackListener(RegistrationStatus cb);
+
+
+	/**
+	 * Deregsters the Registration Status Callback
+	 *
+	 * @param cb
+	 */
+	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb);
 
 
 	/**
@@ -190,30 +187,27 @@ public interface ICoreAccess {
 
 
 	/**
-	 * Registers the Registration Callback
+	 * This removes a Account/MsgService in the core database.
 	 *
-	 * @param cb
+	 * @param msg
+	 * @throws NotLoggedInException
+	 * @throws InvalidCredentialsException
+	 * @throws ProtocolNotSupportedException
+	 * @throws NetworkException
 	 */
-	public void addRegistrationStatusCallbackListener(RegistrationStatus cb);
+	public void removeAccount(MsgService msg)
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException;
 
 
 	/**
-	 * Deregsters the Registration Status Callback
+	 * This returns a list with MsgServices already registered in the core
 	 *
-	 * @param cb
+	 * @return a list with MsgServices already registered in the core
+	 * @throws NotLoggedInException if the frontend has no session on the core
 	 */
-	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb);
+	public List<MsgService> getMsgServics() throws NotLoggedInException;
 
-	/**
-	 * Returns true if a user is signed in successfully.
-	 *
-	 * @return // TODO 4 Peter
-	 * @Deprecated Either redefine this to return true if the frontend is
-	 * successfully connected to the backend or get the
-	 * "sign-in-status" from the MsgService.getVisibilityStatus()
-	 */
-	@Deprecated
-	public boolean isSignedIn();
 
 	/**
 	 * Returns the current logged in project member.
@@ -224,23 +218,6 @@ public interface ICoreAccess {
 	 */
 	@Deprecated
 	public ProjectMember getCurrentProjectMember();
-
-
-	/**
-	 * Signs the current user out.
-	 *
-	 * @Deprecated please use MsgService.logout()
-	 */
-	@Deprecated
-	public void signOut();
-
-
-	/**
-	 * Returns an Array of the last users that signed in.
-	 *
-	 * @return
-	 */
-	public String[] getLastSignInNames();
 
 
 	/******************* Project functions ********************/
@@ -580,14 +557,14 @@ public interface ICoreAccess {
 	 *         null</code> iff the given <code>JakeObject</code> is not locked.
 	 */
 	public String getLockingMessage(JakeObject jakeObject);
-	
+
 	/**
 	 * Get the owner of a soft lock. The owner of the lock is the project member who locked the file
 	 * (if someone changes a lock, he/she becomes the owner as well -> owner = last editor of the lock)
+	 *
 	 * @param jakeObject the jake object that is locked
 	 * @return the owner of the lock of the given jake object. The method may return <code>
 	 *         null</code> iff the given <code>JakeObject</code> is not locked.
-
 	 */
 	public ProjectMember getLockOwner(JakeObject jakeObject);
 
