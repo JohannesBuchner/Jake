@@ -92,7 +92,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Transactional
     @Test
-    public void testGetAll() {
+    public void  testGetAll() {
                 MsgService msgService = new XMPPMsgService();
         File file = new File(System.getProperty("user.dir"));
 
@@ -162,28 +162,53 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
     public void testFindMatching() throws InvalidTagNameException {
 
 
-        Tag t1 = new Tag("test");
-
+//        Tag t1 = new Tag("test");
+//
                         MsgService msgService = new XMPPMsgService();
+//
+//        File file = new File(System.getProperty("user.dir"));
+//        Project project = new Project("testname", UUID.fromString("fa305bda-cccc-4064-8f0f-d30017239c65"), msgService, file);
+//        FileObject fileObject = new FileObject(UUID.fromString("fa305bda-aaa-4064-8f0f-d30017239c65"), project, "/tmp");
+//
+//        t1.setObject(fileObject);
+//
+//
+//        ProjectMember projectMember = new ProjectMember(UUID.fromString("fa305bda-bbbb-4064-8f0f-d30017239c65"), "nickname", TrustState.TRUST);
+//
+//
+//        TagLogEntry tagLogEntry = new TagLogEntry(UUID.fromString("fa305bda-de58-4064-8f0f-d30017239c65"), LogAction.TAG_ADD, new Date(), project, t1, projectMember, "comment", "dddd", false );
+//
+//
+                  File file = new File(System.getProperty("user.dir"));
 
-        File file = new File(System.getProperty("user.dir"));
-        Project project = new Project("testname", UUID.fromString("fa305bda-cccc-4064-8f0f-d30017239c65"), msgService, file);
-        FileObject fileObject = new FileObject(UUID.fromString("fa305bda-aaa-4064-8f0f-d30017239c65"), project, "/tmp");
 
-        t1.setObject(fileObject);
+        Project testProject =
+                new Project("test", UUID.fromString("e0cd2322-aaaa-40a0-82c5-bcc0fe7a67c2"), msgService, file);
 
 
-        ProjectMember projectMember = new ProjectMember(UUID.fromString("fa305bda-bbbb-4064-8f0f-d30017239c65"), "nickname", TrustState.TRUST);
+        ProjectMember projectMember = new ProjectMember(UUID.fromString("e144ad8a-aaaa-4d91-b9b9-73415866048f"),
+                "NICKNAME", TrustState.TRUST
+        );
 
+        LogEntry<Project> projectLogEntry = new ProjectLogEntry(
+                UUID.fromString("e144ad8a-ffff-4d91-b9b9-73415866048f"),
+                LogAction.PROJECT_CREATED, new Date(), testProject, testProject,
+                projectMember, "testGetAll", "testGetAll_hash", false
+        );
 
-        TagLogEntry tagLogEntry = new TagLogEntry(UUID.fromString("fa305bda-de58-4064-8f0f-d30017239c65"), LogAction.TAG_ADD, new Date(), project, t1, projectMember, "comment", "dddd", false );
-
-
-        logEntryDao.create(tagLogEntry);
+          logEntryDao.create(projectLogEntry);
+//        logEntryDao.create(tagLogEntry);
 
 
         List<LogEntry> results = logEntryDao.getAll();
 
-        Assert.assertTrue(results.contains(tagLogEntry));
+        Assert.assertNotNull(results);
+
+//        Assert.assertTrue(results.contains(tagLogEntry));
+
+        Assert.assertTrue(results.size() > 0);
+
+
+        Assert.assertTrue(results.contains(projectLogEntry));
     }
 }

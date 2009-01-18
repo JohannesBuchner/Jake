@@ -65,7 +65,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 
 //        List<LogEntry<? extends ILogable>> result;
-        List result = null;
+        List result = new ArrayList<LogEntry>();
         try
         {
         result = this.getHibernateTemplate()

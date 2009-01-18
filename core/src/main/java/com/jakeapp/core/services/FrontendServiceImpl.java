@@ -5,8 +5,8 @@ import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.synchronization.FriendlySyncService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -29,7 +29,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	private Map<String, FrontendSession> sessions;
 
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
-	private FriendlySyncService sync;
+	private IFriendlySyncService sync;
 
 	/**
 	 * Constructor
@@ -39,7 +39,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @param sync
 	 */
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
-										MsgServiceFactory msgServiceFactory, FriendlySyncService sync) {
+										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.setSessions(new HashMap<String, FrontendSession>());
 		this.msgServiceFactory = msgServiceFactory;
@@ -223,7 +223,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public FriendlySyncService getSyncService(String sessionId)
+	public ISyncService getSyncService(String sessionId)
 			  throws FrontendNotLoggedInException {
 		this.checkSession(sessionId);
 		return this.sync;

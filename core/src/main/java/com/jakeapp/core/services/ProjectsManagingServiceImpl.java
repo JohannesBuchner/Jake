@@ -13,6 +13,7 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.FriendlySyncService;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -44,7 +45,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private IProjectDao projectDao;
 
-	private FriendlySyncService syncService;
+	private IFriendlySyncService syncService;
 
 
 	public ProjectsManagingServiceImpl() {
@@ -52,11 +53,11 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 
-	public FriendlySyncService getSyncService() {
+	public IFriendlySyncService getSyncService() {
 		return syncService;
 	}
 
-	public void setSyncService(FriendlySyncService syncService) {
+	public void setSyncService(IFriendlySyncService syncService) {
 		this.syncService = syncService;
 	}
 

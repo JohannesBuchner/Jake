@@ -39,7 +39,7 @@
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
         <property name="projectDao" ref="projectDao"/>
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
-        <property name="syncService" ref="syncService"/>
+        <property name="syncService" ref="syncService" />
     </bean>
 
     <!-- this is per session and a very internal part of the core that can not
