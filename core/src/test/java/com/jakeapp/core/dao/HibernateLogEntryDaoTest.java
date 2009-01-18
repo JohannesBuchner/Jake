@@ -157,14 +157,18 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         // Add your code here
     }
 
-
+    @Transactional    
     @Test
     public void testFindMatching() throws InvalidTagNameException {
 
 
         Tag t1 = new Tag("test");
 
-        FileObject fileObject = new FileObject(UUID.fromString("fa305bda-aaa-4064-8f0f-d30017239c65"), null, "/tmp");
+                        MsgService msgService = new XMPPMsgService();
+
+        File file = new File(System.getProperty("user.dir"));
+        Project project = new Project("testname", UUID.fromString("fa305bda-cccc-4064-8f0f-d30017239c65"), msgService, file);
+        FileObject fileObject = new FileObject(UUID.fromString("fa305bda-aaa-4064-8f0f-d30017239c65"), project, "/tmp");
 
         t1.setObject(fileObject);
 
@@ -172,7 +176,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         ProjectMember projectMember = new ProjectMember(UUID.fromString("fa305bda-bbbb-4064-8f0f-d30017239c65"), "nickname", TrustState.TRUST);
 
 
-        TagLogEntry tagLogEntry = new TagLogEntry(UUID.fromString("fa305bda-de58-4064-8f0f-d30017239c65"), LogAction.TAG_ADD, new Date(), null, t1, projectMember, "comment", "dddd", false );
+        TagLogEntry tagLogEntry = new TagLogEntry(UUID.fromString("fa305bda-de58-4064-8f0f-d30017239c65"), LogAction.TAG_ADD, new Date(), project, t1, projectMember, "comment", "dddd", false );
 
 
         logEntryDao.create(tagLogEntry);

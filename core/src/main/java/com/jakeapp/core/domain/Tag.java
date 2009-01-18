@@ -33,6 +33,9 @@ public class Tag implements ILogable, Serializable {
         this.setName(name);
     }
 
+    public Tag() {
+    }
+
     /**
      * Get the name of the tag.
      *

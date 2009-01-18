@@ -65,11 +65,20 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 
 //        List<LogEntry<? extends ILogable>> result;
-        List<LogEntry> result;
+        List result = null;
+        try
+        {
         result = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
 						"FROM logentries WHERE 1=1").list();
- 
+        log.debug("got " + result.size() + " results ");
+        }
+        catch (Exception e)
+        {
+            log.warn("cought exception " + e.getMessage());
+            e.printStackTrace();
+        }
+
 
         return result;
 	}

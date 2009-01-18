@@ -1,5 +1,7 @@
 package com.jakeapp.core.domain;
 
+import java.io.Serializable;
+
 
 /**
  * States for Projects. When creating a new <code>Project</code>, initialize
@@ -7,7 +9,7 @@ package com.jakeapp.core.domain;
  * that is in INVITED-State.
  * @author Djinn
  */
-public enum InvitationState {
+public enum InvitationState implements Serializable {
 	/**
 	 * Invitation was accepted, the <code>Project</code> can be used.
 	 */

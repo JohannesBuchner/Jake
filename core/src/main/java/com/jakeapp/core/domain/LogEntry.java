@@ -5,8 +5,11 @@ import org.hibernate.annotations.ForeignKey;
 
 import java.util.Date;
 import java.util.UUID;
+import java.io.Serializable;
 
 import javax.persistence.*;
+
+import com.jakeapp.core.synchronization.LogEntrySerializer;
 
 /**
  * A Log entry. It consists of an <code> action, timestamp </code>
@@ -23,7 +26,7 @@ import javax.persistence.*;
  */
 
 @Entity(name = "logentries")
-public class LogEntry<T extends ILogable> {
+public class LogEntry<T extends ILogable> implements Serializable {
 	private UUID uuid;
     private LogAction logAction;
     private Date timestamp;
@@ -34,10 +37,7 @@ public class LogEntry<T extends ILogable> {
     private String comment;
     private String checksum;
 	private boolean processed;
-
-    {
-    	this.processed = false;
-    }
+    private static final long serialVersionUID = 8192394452617311262L;
 
     /**
      * Construct a <code>LogEntry</code>with the given params.

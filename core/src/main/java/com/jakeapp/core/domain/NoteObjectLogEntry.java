@@ -7,8 +7,9 @@ import java.io.Serializable;
 
 @Entity
 public class NoteObjectLogEntry extends LogEntry<NoteObject> implements Serializable {
+    private static final long serialVersionUID = 3507342231350901911L;
 
-	public NoteObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp,
+    public NoteObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp,
 			Project project, NoteObject belongsTo, ProjectMember member, String comment,
 			String checksum, Boolean processed) {
 		super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum,
@@ -20,7 +21,7 @@ public class NoteObjectLogEntry extends LogEntry<NoteObject> implements Serializ
 
 	public NoteObjectLogEntry(LogEntry<JakeObject> le) {
 		this(le.getUuid(), le.getLogAction(), le.getTimestamp(), le.getProject(), (NoteObject) le
-				.getBelongsTo(), le.getMember(), le.getComment(), le.getChecksum(), Boolean.valueOf(le
-				.isProcessed()));
+				.getBelongsTo(), le.getMember(), le.getComment(), le.getChecksum(), le
+                .isProcessed());
 	}
 }

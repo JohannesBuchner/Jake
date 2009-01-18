@@ -2,6 +2,8 @@ package com.jakeapp.core.domain;
 
 import org.jivesoftware.smackx.workgroup.packet.UserID;
 
+import java.io.Serializable;
+
 
 /**
  * The logAction represents the status of a certain JakeObject/LogEntry.
@@ -10,7 +12,7 @@ import org.jivesoftware.smackx.workgroup.packet.UserID;
  * 
  * @author Dominik, Christopher, johannes
  */
-public enum LogAction {
+public enum LogAction implements Serializable {
 
 	/**
 	 * the project was just created. first log entry only. <br/>

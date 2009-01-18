@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 @Entity
 public class FileObjectLogEntry extends LogEntry<FileObject> implements Serializable {
+    private static final long serialVersionUID = -7848929095284836158L;
+
     public FileObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project, FileObject belongsTo,
                               ProjectMember member, String comment, String checksum, Boolean processed) {
         super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum, processed);
