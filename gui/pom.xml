@@ -30,12 +30,13 @@
             <url>http://dev.jakeapp.com/build/maven-repository/</url>
             <layout>default</layout>
         </repository>
-        <repository>
+        <!--       <repository>
             <id>mvnrepository.com</id>
             <name>mvnrepository.com</name>
             <url>http://mvnrepository.com/</url>
             <layout>default</layout>
         </repository>
+-->
         <repository>
             <id>org.codehaus.mojo</id>
             <name>org.codehaus.mojo</name>
