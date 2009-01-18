@@ -30,8 +30,10 @@
     </bean>
 
     <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
-        <property name="applicationContextFactory" ref="applicationContextFactory"/>
-        <property name="useridDao" ref="useridDao"/>
+        <constructor-arg ref="applicationContextFactory" index="0"
+                         type="com.jakeapp.core.util.ApplicationContextFactory"/>
+        <constructor-arg ref="userIdDao" index="1"
+                         type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">

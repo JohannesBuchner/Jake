@@ -19,8 +19,7 @@ public class UserTranslator {
 	private final ApplicationContextFactory applicationContextFactory;
 
 	private final IUserIdDao userIdDao;
-
-
+	
 	public UserTranslator(ApplicationContextFactory applicationContextFactory,
 			IUserIdDao userIdDao) {
 		this.applicationContextFactory = applicationContextFactory;
