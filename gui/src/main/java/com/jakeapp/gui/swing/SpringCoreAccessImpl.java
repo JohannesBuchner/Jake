@@ -20,6 +20,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
+import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
@@ -87,13 +88,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<Project> getMyProjects() throws NotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
-				  InvitationState.ACCEPTED);
+			 InvitationState.ACCEPTED);
 	}
 
 	@Override
 	public List<Project> getInvitedProjects() throws NotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
-				  InvitationState.INVITED);
+			 InvitationState.INVITED);
 	}
 
 
@@ -108,7 +109,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-			  throws InvalidCredentialsException {
+		 throws InvalidCredentialsException {
 		this.sessionId = this.frontendService.authenticate(authenticationData);
 	}
 
@@ -232,7 +233,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 				// registering
 				fireRegistrationStatus(
-						  RegistrationStatus.RegisterStati.RegistrationActive, "");
+					 RegistrationStatus.RegisterStati.RegistrationActive, "");
 
 				try {
 					Thread.sleep(2000);
@@ -241,7 +242,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				}
 
 				fireRegistrationStatus(RegistrationStatus.RegisterStati.RegisterSuccess,
-						  "");
+					 "");
 
 				// logging in after registering
 				fireConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
@@ -264,8 +265,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException {
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, NetworkException {
 		//return this.frontendService.createAccount(this.sessionId, credentials);
 		return null;
 		//TODO
@@ -273,8 +274,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException {
+		 throws NotLoggedInException, InvalidCredentialsException,
+		 ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 
@@ -370,7 +371,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 	public void startProject(Project project) {
@@ -389,7 +390,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		// generate event
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 
@@ -464,8 +465,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					}
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-							  project,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
+						 project,
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -507,8 +508,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-							  project,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
+						 project,
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -539,8 +540,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					invitedProjects.remove(project);
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-							  project,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
+						 project,
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -556,7 +557,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId()).updateProjectName(project, prName);
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+				 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
 		} catch (IllegalArgumentException e) {
 			//empty implementation
 		} catch (IllegalStateException e) {
@@ -570,7 +571,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public FolderObject getProjectRootFolder(Project project)
-			  throws ProjectFolderMissingException {
+		 throws ProjectFolderMissingException {
 		String rootPath = project.getRootPath();
 		File rootFolder = new File(rootPath);
 		if (!rootFolder.exists()) {
@@ -578,7 +579,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		FolderObject fo = recursiveFileSystemHelper(project, rootFolder, System
-				  .getProperty("file.separator"), "");
+			 .getProperty("file.separator"), "");
 
 		return fo;
 	}
@@ -621,17 +622,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @return
 	 */
 	private FolderObject recursiveFileSystemHelper(Project prj, File file,
-																  String relPath, String name) {
+	                                               String relPath, String name) {
 		FolderObject fo = new FolderObject(relPath, name);
 		log.debug("File mocking: Started recursing through folder "
-				  + file.getAbsolutePath());
+			 + file.getAbsolutePath());
 
 		for (File f : file.listFiles()) {
 			if (f.isDirectory()) {
 				log.debug("File mocking: Recursing into subdirectory " + relPath
-						  + f.getName() + System.getProperty("file.separator"));
+					 + f.getName() + System.getProperty("file.separator"));
 				FolderObject subfolder = recursiveFileSystemHelper(prj, f, relPath
-						  + f.getName() + System.getProperty("file.separator"), f.getName());
+					 + f.getName() + System.getProperty("file.separator"), f.getName());
 				fo.addFolder(subfolder);
 			} else {
 				log.debug("File mocking: Adding file " + relPath + f.getName());
@@ -643,9 +644,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-			  ProjectNotLoadedException {
+		 ProjectNotLoadedException {
 		return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(
-				  project);
+			 project);
 	}
 
 	@Override
@@ -708,7 +709,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			// TODO: fix
 			people.add(new ProjectMember(new UUID(11, 22), "Nickname",
-					  TrustState.AUTO_ADD_REMOVE));
+				 TrustState.AUTO_ADD_REMOVE));
 
 
 			/*
@@ -743,7 +744,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			pm.setNickname(nick);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+				 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 
 			return true;
 		}
@@ -751,11 +752,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void peopleSetTrustState(Project project, ProjectMember member,
-											  TrustState trust) {
+	                                TrustState trust) {
 		member.setTrustState(trust);
 
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+			 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 	}
 
 
@@ -783,11 +784,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		if (project != null) {
 			// yeah... what a beautiful interface ;o)
 			log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
-					  project, null, getPeople(project).get(0), "comment 1", "checksum???",
-					  true));
+				 project, null, getPeople(project).get(0), "comment 1", "checksum???",
+				 true));
 
 			log.add(new LogEntry(new UUID(1, 2), LogAction.FILE_ADD, new Date(), project,
-					  null, getPeople(project).get(0), "comment 1", "checksum???", true));
+				 null, getPeople(project).get(0), "comment 1", "checksum???", true));
 		}
 
 		return log;
@@ -816,8 +817,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 																				 */
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-							  pr,
-							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
+						 pr,
+						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -861,9 +862,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void deleteToTrash(FileObject file) {
 		try {
 			this.getFrontendService().
-					  getProjectsManagingService(this.getSessionId()).
-					  getFileServices(file.getProject()).
-					  trashFile(file.getRelPath());
+				 getProjectsManagingService(this.getSessionId()).
+				 getFileServices(file.getProject()).
+				 trashFile(file.getRelPath());
 		} catch (FileNotFoundException e) {
 			log.debug("Tried to delete nonexisting file", e);
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -932,8 +933,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			this.getFrontendService().
-					  getProjectsManagingService(this.getSessionId()).
-					  getFileServices(project).moveFile(fromPath, toFile.toString());
+				 getProjectsManagingService(this.getSessionId()).
+				 getFileServices(project).moveFile(fromPath, toFile.toString());
 		} catch (IllegalArgumentException e) {
 			log.warn("Cannot rename file");
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -969,6 +970,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public boolean isJakeObjectLocked(JakeObject jo) {
 		return false;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException {
+		//To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	public long getFileSize(FileObject file) {

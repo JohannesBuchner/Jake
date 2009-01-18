@@ -2,7 +2,9 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.core.domain.FileObject;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -36,6 +38,7 @@ public class LockFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO: Implement me!
+		FileObject fo = getSingleNode().getFileObject();
+		JakeMainApp.getCore().setSoftLock(fo, !JakeMainApp.getCore().isSoftLocked(fo), "");
 	}
 }

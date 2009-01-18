@@ -15,11 +15,11 @@ import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 
 /**
  * Note Action to lock and unlock a note, on/off checkbox behaviour. Batch enabled.
- * @author Simon
  *
+ * @author Simon
  */
 public class SoftlockNoteAction extends NoteAction {
-	
+
 	private static final long serialVersionUID = -3793566528638754529L;
 	private static Logger log = Logger.getLogger(SoftlockNoteAction.class);
 
@@ -27,7 +27,7 @@ public class SoftlockNoteAction extends NoteAction {
 
 	public SoftlockNoteAction() {
 		super();
-		
+
 		this.isLocked = false;
 		String actionStr = JakeMainView.getMainView().getResourceMap().getString("softLockNote");
 		putValue(Action.NAME, actionStr);
@@ -35,17 +35,16 @@ public class SoftlockNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		 ICoreAccess core = JakeMainApp.getCore();
-		 boolean cachedNewLockingState = !this.isLocked;
-		 
-		 for (NoteObject note : this.getSelectedNotes()) {
-			  core.setSoftLock(note, cachedNewLockingState, null);
-		 }
+		ICoreAccess core = JakeMainApp.getCore();
+		boolean cachedNewLockingState = !this.isLocked;
+
+		for (NoteObject note : this.getSelectedNotes()) {
+			core.setSoftLock(note, cachedNewLockingState, null);
+		}
 	}
 
 	@Override
 	public void updateAction() {
-		
 		if (this.getSelectedNotes().size() > 0) {
 			this.setEnabled(true);
 
@@ -53,14 +52,14 @@ public class SoftlockNoteAction extends NoteAction {
 			boolean isLocal = JakeMainApp.getCore().isLocalNote(this.getSelectedNotes().get(0));
 			if (isLocal) {
 				this.setEnabled(false);
-			} else if(this.isLocked) {
-				if(this.getSelectedNotes().size() == 1) {
+			} else if (this.isLocked) {
+				if (this.getSelectedNotes().size() == 1) {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNote"));
 				} else {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNotes"));
 				}
 			} else {
-				if(this.getSelectedNotes().size() == 1) {
+				if (this.getSelectedNotes().size() == 1) {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
 				} else {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNotes"));
@@ -69,6 +68,6 @@ public class SoftlockNoteAction extends NoteAction {
 		} else {
 			this.setEnabled(false);
 			this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
-		}	
+		}
 	}
 }
