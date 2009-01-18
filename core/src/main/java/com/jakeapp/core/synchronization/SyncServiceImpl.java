@@ -58,7 +58,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
  */
 public class SyncServiceImpl extends FriendlySyncService {
 
-	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
+	static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	private static final String POKE_MESSAGE = "<poke/>";
 
@@ -84,7 +84,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return icServicesManager.getICService(p);
 	}
 
-	private IFSService getFSS(Project p) {
+	IFSService getFSS(Project p) {
 		return projectsFssMap.get(p.getProjectId());
 	}
 
@@ -102,7 +102,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 * returns true if NoteObject <br>
 	 * returns false if FileObject
 	 */
-	private Boolean isNoteObject(JakeObject jo) {
+	Boolean isNoteObject(JakeObject jo) {
 		return jo instanceof NoteObject;
 	}
 
@@ -435,6 +435,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Transactional
+	@Override
 	public Boolean isDeleted(JakeObject jo) {
 		// LogEntry<? extends ILogable> le = new LogEntry<ILogable>(null,
 		// LogAction.)
@@ -472,6 +473,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			return rhash.equals(lhash);
 	}
 	
+	@Override
 	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException, IOException {
 		if(isNoteObject(jo))
 			return isLocallyModified((NoteObject)jo);
@@ -480,6 +482,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 	
 	@Transactional
+	@Override
 	public Boolean isLocallyModified(NoteObject noin) {
 		NoteObject no = null;
 		try {
@@ -514,6 +517,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		else
 			return rhash.equals(lhash);*/
 	}
+	@Override
 	public Boolean existsLocally(FileObject fo) throws IOException {
 		IFSService fss = getFSS(fo.getProject());
 		try {
@@ -524,6 +528,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 	}
 
+	@Override
 	public boolean isObjectInConflict(JakeObject jo) {
 		if (!isPullable(jo))
 			return false;
@@ -540,7 +545,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return false;
 	}
 
-	private boolean isPullable(JakeObject jo) {
+	@Override
+	public boolean isPullable(JakeObject jo) {
 		LogEntry<JakeObject> newestLe;
 		try {
 			// TODO: trust

@@ -19,6 +19,7 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -226,5 +227,15 @@ public interface ISyncService {
 
 	@Transactional
 	public Boolean isLocallyModified(NoteObject noin);
+
+	@Transactional
+	public Boolean isDeleted(JakeObject jo);
+
+	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException,
+			IOException;
+
+	public Boolean existsLocally(FileObject fo) throws IOException;
+
+	public boolean isPullable(JakeObject jo);
 
 }
