@@ -44,7 +44,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Before
     public void setUp() {
-        this.setLogEntryDao((ILogEntryDao) this.applicationContext.getBean("logentryDao"));
+        this.setLogEntryDao((ILogEntryDao) this.applicationContext.getBean("logEntryDao"));
         this.setHibernateTemplate((HibernateTemplate) this.applicationContext.getBean("hibernateTemplate"));
         this.getHibernateTemplate().getSessionFactory().getCurrentSession().beginTransaction();
     }
