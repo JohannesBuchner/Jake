@@ -283,11 +283,12 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
-	public boolean isObjectLocked(JakeObject object) throws IllegalArgumentException {
+	public boolean isLocked(JakeObject jo) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		// TODO: iterate through logs backwards to find a lock
 		// if none found or last is unlocked -> unlocked
 		// otherwise -> locked
+		//db.getLogEntryDao(jo).getMostRecentFor(jakeObject)
 		return false;
 	}
 

@@ -204,6 +204,20 @@ public interface ILogEntryDao {
 	public boolean getExistsState(ILogable belongsTo);
 
 	/**
+	 * checks if jo is currently locked by looking at all
+	 * {@link LogAction#JAKE_OBJECT_LOCK} and
+	 * {@link LogAction#JAKE_OBJECT_UNLOCK} entries
+	 * 
+	 * NOTE: a object might be locked, but also not exist
+	 * 
+	 * @param belongsTo
+	 * @return the LogEntry doing the lock: if the last in time is a
+	 *         {@link LogAction#JAKE_OBJECT_LOCK}
+	 *         null: if no Logentries were found or last was {@link LogAction#JAKE_OBJECT_UNLOCK}
+	 */
+	public LogEntry<JakeObject> getLock(JakeObject belongsTo);
+
+	/**
 	 * Iterates in time through all {@link LogAction#TAG_ADD} and
 	 * {@link LogAction#TAG_REMOVE}. <br>
 	 * on add, the tag is added to the collection, on remove, the tag is removed

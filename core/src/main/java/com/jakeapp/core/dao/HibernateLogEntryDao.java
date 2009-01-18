@@ -202,20 +202,22 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	/**
 	 * finds all that match any of the two Logactions, sorted by timestamp
 	 */
-	private Collection<LogEntry<? extends ILogable>> findTwoMatching(LogAction a,
+	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatching(LogAction a,
 			LogAction b) {
 		// TODO
-		return new LinkedList<LogEntry<? extends ILogable>>();
+		return new LinkedList<LogEntry<T>>();
 	}
 
 	/**
 	 * finds all that match any of the two Logactions and belong to the given
 	 * element, sorted by timestamp
+	 * 
+	 * @param <T>
 	 */
-	private Collection<LogEntry<? extends ILogable>> findTwoMatchingFor(LogAction a,
-			LogAction b, ILogable belongsTo) {
+	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatchingFor(LogAction a,
+			LogAction b, T belongsTo) {
 		// TODO
-		return new LinkedList<LogEntry<? extends ILogable>>();
+		return new LinkedList<LogEntry<T>>();
 	}
 
 	Collection<LogEntry<ProjectMember>> getProjectMemberEntries() {
@@ -309,5 +311,21 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public Collection<ProjectMember> trusts(ProjectMember a) {
 		return getTrustGraph().get(a);
+	}
+
+	@Override
+	public LogEntry<JakeObject> getLock(JakeObject belongsTo) {
+		Collection<LogEntry<JakeObject>> entries = findTwoMatchingFor(
+				LogAction.JAKE_OBJECT_LOCK, LogAction.JAKE_OBJECT_UNLOCK, belongsTo);
+		LogEntry<JakeObject> lockLogEntry = null;
+		for (LogEntry<JakeObject> entry : entries) {
+			if(entry.getLogAction() == LogAction.JAKE_OBJECT_LOCK) {
+				lockLogEntry = entry;
+			}
+			if(entry.getLogAction() == LogAction.JAKE_OBJECT_UNLOCK) {
+				lockLogEntry = null;
+			}
+		}
+		return lockLogEntry;
 	}
 }
