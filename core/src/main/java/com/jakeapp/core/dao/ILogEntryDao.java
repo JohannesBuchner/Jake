@@ -172,4 +172,28 @@ public interface ILogEntryDao {
 	public Iterable<LogEntry<? extends ILogable>> findMatchingAfter(
 			LogEntry<? extends ILogable> le) throws NullPointerException;
 
+	/**
+	 * finds all Logentries that either have a
+	 * {@link LogAction#JAKE_OBJECT_DELETE} or
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}. 
+	 * 
+	 * @param belongsTo
+	 * @return true: if the last in time is a {@link LogAction#JAKE_OBJECT_DELETE} 
+	 * false: if the last in time is a {@link LogAction#JAKE_OBJECT_NEW_VERSION}
+	 * null: if no matching Logentries could be found 
+	 */
+	public Boolean getDeleteState(ILogable belongsTo);
+	
+
+	/**
+	 * finds all Logentries that either have a
+	 * {@link LogAction#JAKE_OBJECT_DELETE} or
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}. 
+	 * 
+	 * @param belongsTo
+	 * @return true: if the last in time is a {@link LogAction#JAKE_OBJECT_DELETE} 
+	 * false: otherwise
+	 */
+	public Boolean getExistsState(ILogable belongsTo);
+	
 }

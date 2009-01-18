@@ -118,4 +118,16 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Boolean getDeleteState(ILogable belongsTo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getExistsState(ILogable belongsTo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
