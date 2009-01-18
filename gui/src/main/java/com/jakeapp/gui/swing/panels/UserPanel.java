@@ -59,7 +59,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
 
-	private ImageIcon jakeWelcomeIcon = new ImageIcon(JakeMainView.getMainView().getLargeAppImage().getScaledInstance(92, 92, Image.SCALE_SMOOTH));
+	private ImageIcon jakeWelcomeIcon = new ImageIcon(JakeMainView.getMainView().getLargeAppImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH));
 	private JLabel userLabelLoginSuccess;
 	private JPanel userListPanel;
 
@@ -148,7 +148,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				showPanel(UserPanels.AddUser);
 			}
 		});
-		loginUserPanel.add(createAccountBtn, "wrap, center");
 
 		// TODO: show how many projects a user has
 		// create the user list
@@ -162,6 +161,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		updateChooseUserPanel();
 
 		loginUserPanel.add(usersScrollPanel, "grow");
+
+		loginUserPanel.add(createAccountBtn, "wrap, center");
 
 		return loginUserPanel;
 	}
@@ -498,7 +499,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			if (!addServer) {
 				// Advanced Settings
 				JButton loginAdvancedBtn = new JButton(getResourceMap().getString("advancedServerButton"));
-				loginAdvancedBtn.putClientProperty("JButton.buttonType", "roundRect");
+				loginAdvancedBtn.putClientProperty("JButton.buttonType", "textured");
 				loginAdvancedBtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
