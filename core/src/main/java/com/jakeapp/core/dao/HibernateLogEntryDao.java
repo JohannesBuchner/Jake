@@ -112,4 +112,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			throw new NullPointerException("timestamp not set");
 		return new LinkedList<LogEntry<? extends ILogable>>();
 	}
+
+	@Override
+	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -135,6 +135,16 @@ public interface ILogEntryDao {
 			LogEntry<? extends ILogable> le);
 
 	/**
+	 * finds the last Logentry over time that matches the supplied
+	 * characteristics <br>
+	 * uuid, any of logAction, project, belongsTo may be null
+	 * 
+	 * @param le
+	 * @return the LogEntry, or null if no such entry exists
+	 */
+	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le);
+
+	/**
 	 * finds the Logentries that match the supplied characteristics except for
 	 * timestamp and are &lt;= the supplied timestamp <br>
 	 * uuid, any of logAction, project, belongsTo may be null
