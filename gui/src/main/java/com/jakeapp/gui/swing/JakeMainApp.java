@@ -23,8 +23,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
 import java.util.*;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 
 /**
  * The main class of the application.
@@ -92,7 +90,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 //            } catch (UnknownHostException e) {
 //                e.printStackTrace();
 //            }
-            sc1.setServerAddressString("jabber.fsinf.at");
+            sc1.setServerAddress("jabber.fsinf.at");
             sc1.setServerPort(5222);
             sc1.setEncryptionUsed(false);
 
@@ -101,7 +99,7 @@ public class JakeMainApp extends SingleFrameApplication implements
                     "somepass");
             sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
             sc2.setProtocol(ProtocolType.XMPP);
-            sc2.setServerAddressString("jabber.fsinf.at");
+            sc2.setServerAddress("jabber.fsinf.at");
 
 //            try {
 //                sc2.setServerAddress(Inet4Address.getLocalHost());
@@ -116,7 +114,7 @@ public class JakeMainApp extends SingleFrameApplication implements
                     "somepass");
             sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
             sc3.setProtocol(ProtocolType.XMPP);
-            sc3.setServerAddressString("jabber.fsinf.at");
+            sc3.setServerAddress("jabber.fsinf.at");
 //            try {
 //                sc3.setServerAddress(Inet4Address.getLocalHost());
 //            } catch (UnknownHostException e) {

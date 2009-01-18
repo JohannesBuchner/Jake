@@ -2,8 +2,6 @@ package com.jakeapp.core.domain;
 
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.UUID;
 import java.io.Serializable;
 
@@ -44,7 +42,7 @@ public class ServiceCredentials implements Serializable {
 
     private boolean savePassword = false;
 
-	public ServiceCredentials() {
+    public ServiceCredentials() {
 		this.resourceName = "JakeApp";
         if(uuid == null)
             this.uuid = UUID.randomUUID();
@@ -127,13 +125,13 @@ public class ServiceCredentials implements Serializable {
 //	}
 
 	@Column(name = "server", nullable = false)
-	public String getServerAddressString() {
+	public String getServerAddress() {
 		if(this.serverAddress == null)
             return "";
         return this.serverAddress.toString();
 	}
 
-	public void setServerAddressString(String serverAddress)
+	public void setServerAddress(String serverAddress)
 			throws InvalidCredentialsException {
 		// TODO FIXME fix dirty unsafe code!
 		final int NAME_POS = 1;
@@ -216,7 +214,7 @@ public class ServiceCredentials implements Serializable {
 	}
 
 
-    @Transient
+    @Column(name = "savepassword")
     public boolean isSavePassword() {
         return savePassword;
     }

@@ -74,7 +74,7 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 	}
 
 	private void loadSettings() {
-		serverText.setText(getCreds().getServerAddressString());
+		serverText.setText(getCreds().getServerAddress());
 		portText.setText(getCreds().getServerPort() + "");
 	}
 
@@ -83,7 +83,7 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 		boolean success = false;
 
 		try {
-			getCreds().setServerAddressString(serverText.getText());
+			getCreds().setServerAddress(serverText.getText());
 			getCreds().setServerPort(Long.parseLong(portText.getText()));
 			success = true;
 		}

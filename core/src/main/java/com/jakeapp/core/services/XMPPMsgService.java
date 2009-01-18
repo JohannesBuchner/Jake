@@ -45,7 +45,7 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 			this.icsXmppUserId = null;
 			return false;
 		}
-		this.host = cred.getServerAddressString();
+		this.host = cred.getServerAddress();
 		if (this.host == "" || this.host == null) {
 			this.host = this.icsXmppUserId.getHost();
 		}

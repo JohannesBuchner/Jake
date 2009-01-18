@@ -14,7 +14,6 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
 import java.net.UnknownHostException;
-import java.net.InetAddress;
 import java.util.UUID;
 
 import static junit.framework.Assert.assertEquals;
@@ -44,7 +43,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         validCredentials.setEncryptionUsed(true);
 
 //        InetAddress addr = InetAddress.getLocalHost();
-        validCredentials.setServerAddressString("localhost");
+        validCredentials.setServerAddress("localhost");
 //        validCredentials.setServerAddress(addr);
         validCredentials.setServerPort(5222);
 
@@ -109,7 +108,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         credentials.setUserId("domdorn@jabber.fsinf.at");
         credentials.setPlainTextPassword("somePassword");
         credentials.setEncryptionUsed(true);
-        credentials.setServerAddressString("localhost");
+        credentials.setServerAddress("localhost");
 //        credentials.setServerAddress(InetAddress.getLocalHost());
         credentials.setServerPort(5222);
 
