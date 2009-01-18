@@ -40,6 +40,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -157,6 +159,15 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		
 		this.notesTable.getSelectionModel().addListSelectionListener(this);
+		
+		this.notesTable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					new DeleteNoteAction().execute();
+				}
+			}
+		});
 
 
 		// TODO: make this a styler property
