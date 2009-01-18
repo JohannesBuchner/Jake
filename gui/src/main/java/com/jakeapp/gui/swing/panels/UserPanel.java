@@ -10,6 +10,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
+import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
@@ -54,9 +55,10 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private UserDataPanel registerUserDataPanel;
 	private JComboBox loginServiceCheckBox;
 	private JAsynchronousProgressIndicator workingAnimation;
+	private ServiceCredentials cred;
 
 	private enum SupportedServices {
-		Google, Jabber
+		Google, Jabber, UnitedInternet
 	}
 
 	/**
@@ -66,6 +68,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		setResourceMap(org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(UserPanel.class));
+
+		cred = new ServiceCredentials();
 
 		initComponents();
 
@@ -126,13 +130,15 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginRegisterButtonGroup.add(loginRadioButton);
 
 		// login service
-		String[] loginServices = new String[]{"Google Talk", "Jabber"};
-		Integer[] indexes = new Integer[]{new Integer(0), new Integer(1)};
-		ImageIcon[] images = new ImageIcon[2];
+		String[] loginServices = new String[]{"Google Talk", "Jabber", "United Internet (GMX, Web.de)"};
+		Integer[] indexes = new Integer[]{0, 1, 2};
+		ImageIcon[] images = new ImageIcon[3];
 		images[0] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 				  getClass().getResource("/icons/service-google.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 		images[1] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 				  getClass().getResource("/icons/service-jabber.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+		images[2] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				  getClass().getResource("/icons/service-unitedinternet.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 		loginServiceCheckBox = new JComboBox();
 		loginServiceCheckBox.setModel(new DefaultComboBoxModel(indexes));
 		IconComboBoxRenderer renderer = new IconComboBoxRenderer(images, loginServices);
@@ -144,7 +150,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				updateLoginUsernameLabel();
 			}
 		});
-
 
 		// add to user panel
 		addUserPanel.add(loginRadioButton, "split");
@@ -176,7 +181,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		buttonPanel.add(signInRegisterButton, "right, bottom");
 
 
-		addUserPanel.add(buttonPanel, "width 320!");
+		addUserPanel.add(buttonPanel, "width 370!");
 
 		// add the add user panel
 		this.add(addUserPanel, "grow, center");
@@ -189,6 +194,23 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	}
 
 	/**
+	 * Updates internal saved ServiceCredentials and return object.
+	 *
+	 * @return
+	 */
+	private ServiceCredentials getCredientals() {
+		if (isModeSignIn()) {
+			cred.setUserId(loginUserDataPanel.getUserName());
+			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
+		} else {
+			cred.setUserId(loginUserDataPanel.getUserName());
+			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
+		}
+
+		return cred;
+	}
+
+	/**
 	 * Action that is called when Button Sign In / Register is pressed.
 	 */
 	public void signInRegisterButtonPressed() {
@@ -197,22 +219,16 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		if (isSignInRegisterButtonEnabled()) {
 
 			if (isModeSignIn()) {
-				ServiceCredentials cred = new ServiceCredentials(
-						  loginUserDataPanel.getUserName(), loginUserDataPanel.getPassword());
-
 				try {
 					// sync call
-					MsgService msg = JakeMainApp.getCore().addAccount(cred);
+					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
 					msg.login();
 				} catch (Exception e) {
 					log.warn(e);
 					ExceptionUtilities.showError(e);
 				}
 			} else {
-				ServiceCredentials cred = new ServiceCredentials(
-						  registerUserDataPanel.getUserName(), registerUserDataPanel.getPassword());
-
-				JakeExecutor.exec(new RegisterAccountWorker(cred));
+				JakeExecutor.exec(new RegisterAccountWorker(getCredientals()));
 			}
 		}
 	}
@@ -229,7 +245,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			workingAnimation.startAnimation();
 
 			try {
-				return JakeMainApp.getCore().createAccount(cred,this);
+				return JakeMainApp.getCore().createAccount(cred, this);
 			} catch (NotLoggedInException e) {
 				log.warn(e);
 				ExceptionUtilities.showError(e);
@@ -270,8 +286,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		if (loginServiceCheckBox.getSelectedIndex() ==
 				  SupportedServices.Google.ordinal()) {
 			loginUserDataPanel.setUserLabel("usernameGoogle");
-		} else {
+		} else if (loginServiceCheckBox.getSelectedIndex() ==
+				  SupportedServices.Jabber.ordinal()) {
 			loginUserDataPanel.setUserLabel("usernameJabber");
+		} else {
+			loginUserDataPanel.setUserLabel("usernameUInternet");
 		}
 	}
 
@@ -326,26 +345,26 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				serverComboBox.setEditable(true);
 
 				this.add(serverLabel, "");
-				this.add(serverComboBox, "width 300!");
+				this.add(serverComboBox, "width 350!");
 			}
 			userLabel = new JLabel(getResourceMap().getString("usernameLabel"));
 			userLabel.setForeground(Color.DARK_GRAY);
 			this.add(userLabel);
 
 			userName = new JTextField();
-			this.add(userName, "width 300!");
+			this.add(userName, "width 350!");
 
 			JLabel passLabel = new JLabel(getResourceMap().getString("passwordLabel"));
 			passLabel.setForeground(Color.DARK_GRAY);
 			this.add(passLabel);
 
 			passName = new JPasswordField();
-			this.add(passName, "width 300!");
+			this.add(passName, "width 350!");
 
 			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
 			rememberPassCheckBox.setSelected(true);
 			rememberPassCheckBox.setOpaque(false);
-			this.add(rememberPassCheckBox);
+			this.add(rememberPassCheckBox, addServer ? "" : "split");
 
 			DocumentListener dl = new DocumentListener() {
 				public void insertUpdate(DocumentEvent documentEvent) {
@@ -364,6 +383,19 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			// instlal event listener for password text field
 			userName.getDocument().addDocumentListener(dl);
 			passName.getDocument().addDocumentListener(dl);
+
+			if (!addServer) {
+				// Advanced Settings
+				JButton loginAdvancedBtn = new JButton(getResourceMap().getString("advancedServerButton"));
+				loginAdvancedBtn.putClientProperty("JButton.buttonType", "roundRect");
+				loginAdvancedBtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						AdvancedAccountSettingsDialog.showDialog(getCredientals());
+					}
+				});
+				this.add(loginAdvancedBtn, "wrap");
+			}
 		}
 
 		/**

@@ -166,7 +166,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				log.debug("Updating notesTable");
+				//log.debug("Updating notesTable");
 				notesTable.updateUI();
 			}
 		});

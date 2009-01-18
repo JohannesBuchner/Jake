@@ -1,5 +1,9 @@
 package com.jakeapp.gui.swing.helpers.dragdrop;
 
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.ImportFileFolderWorker;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -10,6 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * The File Drop Handler checks for Drag&Drop-Actions on a global basis.
+ * e.g. you can drag your file anywhere to be imported.
+ */
 public class FileDropHandler extends TransferHandler {
 	private static final Logger log = Logger.getLogger(FileDropHandler.class);
 
@@ -26,12 +34,9 @@ public class FileDropHandler extends TransferHandler {
 
 		boolean copySupported = (COPY & supp.getSourceDropActions()) == COPY;
 
-		// TODO: determine if file can be imported
-		// TODO: send event to core
+		Project pr = JakeMainApp.getProject();
 
-		/* if COPY is supported, choose COPY and accept the transfer */
-		if (copySupported) {
-			supp.setDropAction(COPY);
+		if (copySupported && pr != null && !pr.isInvitation()) {
 			return true;
 		}
 
@@ -53,21 +58,8 @@ public class FileDropHandler extends TransferHandler {
 			/* data of type javaFileListFlavor is a list of files */
 			List<File> fileList = (List<File>) data;
 
-			/* loop through the files in the file list */
-			for (File file : fileList) {
-				/* This is where you place your code for opening the
-									  * document represented by the "file" variable.
-									  * For example:
-									  * - create a new internal frame with a text area to
-									  *   represent the document
-									  * - use a BufferedReader to read lines of the document
-									  *   and append to the text area
-									  * - add the internal frame to the desktop pane,
-									  *   set its bounds and make it visible
-									  */
-				log.info("file: " + file.getAbsoluteFile());
+			JakeExecutor.exec(new ImportFileFolderWorker(fileList, ""));
 
-			}
 		} catch (UnsupportedFlavorException e) {
 			return false;
 		} catch (IOException e) {
