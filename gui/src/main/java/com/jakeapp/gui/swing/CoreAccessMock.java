@@ -606,6 +606,8 @@ public class CoreAccessMock implements ICoreAccess {
 	public void newNote(NoteObject note) {
 		log.debug("adding note: " + note);
 		this.notesList.add(note);
+		this.notesIsLocal.add(Boolean.TRUE);
+		this.notesIsLocked.add(Boolean.FALSE);
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.Deleted));
 	}
 
