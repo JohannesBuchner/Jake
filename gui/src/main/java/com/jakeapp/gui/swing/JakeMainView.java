@@ -5,6 +5,7 @@ import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ImportFileAction;
 import com.jakeapp.gui.swing.actions.InvitePeopleAction;
@@ -41,7 +42,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView implements ProjectSelectionChanged, ErrorCallback {
+public class JakeMainView extends FrameView implements ProjectSelectionChanged, ErrorCallback, MsgServiceChanged {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
 	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
@@ -89,6 +90,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		updateInspectorPanelVisibility();
 	}
 
+	/**
+	 * Returns the large application image.
+	 *
+	 * @return
+	 */
+	public Image getLargeAppImage() {
+		return IconAppLarge;
+	}
 
 	/**
 	 * Project View: set of toggle buttons. Alwasy one state setup.
@@ -285,6 +294,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		getCore().addProjectChangedCallbackListener(new ProjectChangedCallback());
 		getCore().addErrorListener(this);
+		JakeMainApp.getApp().addMsgServiceChangedListener(this);
 	}
 
 
@@ -757,8 +767,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		// show or hide the inspector
 		updateInspectorPanelVisibility();
 
-		// TODO HACK uncomment this!
-		//updateSourceListVisibility();
+		updateSourceListVisibility();
 
 		// toolbar changes with viewPort
 		updateToolBar();
@@ -767,7 +776,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private void updateSourceListVisibility() {
 		log.debug("update sourcelist visible state");
 
-		if (getContextViewPanel() == ContextPanelEnum.Login) {
+		if (JakeMainApp.getMsgService() == null) {
 			this.mainSplitPane.getLeftComponent().setVisible(false);
 		} else {
 			this.mainSplitPane.getLeftComponent().setVisible(true);
@@ -795,6 +804,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Called automatically on setProject()
 	 */
 	private void updateView() {
+		log.debug("updating view");
 		Project pr = getProject();
 
 		boolean needsInvite = pr != null && pr.getInvitationState() == InvitationState.INVITED;
@@ -806,6 +816,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		} else {
 			setContextViewPanel(ContextPanelEnum.Project);
 		}
+		updateProjectViewPanel();
 		contentPanel.updateUI();
 	}
 
@@ -919,4 +930,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		app.saveQuit();
 	}
 
+	@Override
+	public void msgServiceChanged(MsgService msg) {
+		updateAll();
+	}
 }

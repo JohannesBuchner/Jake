@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.panels;
 
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
@@ -7,6 +8,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
@@ -57,8 +59,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
 
-	private ImageIcon jakeWelcomeIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			  getClass().getResource("/icons/jakeapp-large.png")).getScaledInstance(92, 92, Image.SCALE_SMOOTH));
+	private ImageIcon jakeWelcomeIcon = new ImageIcon(JakeMainView.getMainView().getLargeAppImage().getScaledInstance(92, 92, Image.SCALE_SMOOTH));
+	private JLabel userLabelLoginSuccess;
+	private JPanel userListPanel;
 
 	/**
 	 * SupportedServices; we add some default support for common services.
@@ -82,7 +85,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		setResourceMap(org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(UserPanel.class));
 
+		// only support xmpp - for the moment
 		cred = new ServiceCredentials();
+		cred.setProtocol(ProtocolType.XMPP);
 
 		initComponents();
 
@@ -108,7 +113,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		// initialize various panels
 		addUserPanel = createAddUserPanel();
-		loginUserPanel = createLoginUserPanel();
+		loginUserPanel = createChooseUserPanel();
 		loginSuccessPanel = createSignInSuccessPanel();
 
 		// set the background painter
@@ -120,7 +125,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 *
 	 * @return
 	 */
-	private JPanel createLoginUserPanel() {
+	private JPanel createChooseUserPanel() {
 		// create the user login panel
 		JPanel loginUserPanel = new JPanel(new MigLayout("wrap 1, fill, center, ins 0"));
 		loginUserPanel.setOpaque(false);
@@ -134,12 +139,36 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		titlePanel.add(selectUserLabel, "top, center, h 80!");
 		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, growx, h 80!");
 
-		JPanel userListPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
+		// add link to create new user
+		JButton createAccountBtn = new JButton(getResourceMap().getString("addUserBtn"));
+		createAccountBtn.putClientProperty("JButton.buttonType", "textured");
+		createAccountBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showPanel(UserPanels.ManageUsers);
+			}
+		});
+		loginUserPanel.add(createAccountBtn, "wrap, center");
+
+		// TODO: show how many projects a user has
+		// create the user list
+		userListPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
 		userListPanel.setOpaque(false);
 		JScrollPane usersScrollPanel = new JScrollPane(userListPanel);
 		usersScrollPanel.setOpaque(false);
 		usersScrollPanel.getViewport().setOpaque(false);
 		usersScrollPanel.setBorder(null);
+
+		updateChooseUserPanel();
+
+		loginUserPanel.add(usersScrollPanel, "grow");
+
+		return loginUserPanel;
+	}
+
+
+	private void updateChooseUserPanel() {
+		userListPanel.removeAll();
 
 		try {
 			List<MsgService> msgs = JakeMainApp.getCore().getMsgServics();
@@ -153,11 +182,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		} catch (NotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
-
-		loginUserPanel.add(usersScrollPanel, "grow");
-
-		return loginUserPanel;
 	}
+
 
 	/**
 	 * Creates the Add User Panel
@@ -165,6 +191,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * @return
 	 */
 	private JPanel createAddUserPanel() {
+		log.debug("creting add user panel...");
+
 		// create the add user panel
 		JPanel addUserPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
 		addUserPanel.setOpaque(false);
@@ -252,9 +280,26 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			}
 		});
 		updateSignInRegisterMode();
-		buttonPanel.add(signInRegisterButton, "right, bottom");
 
+		// add back button if there are users
+		try {
+			if (JakeMainApp.getCore().getMsgServics().size() > 0) {
+				log.debug("adding back button: getMsgServics().size()=" + JakeMainApp.getCore().getMsgServics().size());
+				JButton backBtn = new JButton(getResourceMap().getString("backBtn"));
+				backBtn.putClientProperty("JButton.buttonType", "textured");
+				backBtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						showPanel(UserPanels.ManageUsers);
+					}
+				});
+				buttonPanel.add(backBtn, "left, bottom, split");
+			}
+		} catch (NotLoggedInException e) {
+			ExceptionUtilities.showError(e);
+		}
 
+		buttonPanel.add(signInRegisterButton, "right, bottom, wrap");
 		addUserPanel.add(buttonPanel, "width 370!");
 		return addUserPanel;
 	}
@@ -522,19 +567,27 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginSuccessPanel.setOpaque(false);
 		loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
 
+		userLabelLoginSuccess = new JLabel();
+		loginSuccessPanel.add(userLabelLoginSuccess, "wrap");
+
 		// the sign out button
 		JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
+		signOutButton.putClientProperty("JButton.buttonType", "textured");
 		signOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
+
+				// TODO: more control over login state
 				if (MsgServiceHelper.isUserLoggedIn()) {
 					try {
-						MsgServiceHelper.getLoggedInMsgService().logout();
+						JakeMainApp.getMsgService().logout();
+						JakeMainApp.setMsgService(null);
+						updateView();
 					} catch (Exception e) {
 						log.warn(e);
 						ExceptionUtilities.showError(e);
 					}
 				} else {
-					log.warn("No user is logged in!");
+					ExceptionUtilities.showError("No user is logged in!");
 				}
 			}
 		});
@@ -555,7 +608,16 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		messageSuccess2.setFont(Platform.getStyler().getH1Font());
 		messageSuccess2.setForeground(Color.DARK_GRAY);
 		loginSuccessPanel.add(messageSuccess2, "al center");
+
+		updateSignInSuccessPanel();
+
 		return loginSuccessPanel;
+	}
+
+	private void updateSignInSuccessPanel() {
+		if (JakeMainApp.getMsgService() != null) {
+			userLabelLoginSuccess.setText(JakeMainApp.getMsgService().getUserId().toString());
+		}
 	}
 
 	private boolean isModeSignIn() {
@@ -597,19 +659,22 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * If not, show the add user screen.
 	 */
 	private void updateView() {
-		log.info("updating login view. signedIn=" + MsgServiceHelper.isUserLoggedIn());
+		log.info("updating login view. selected user: " + JakeMainApp.getMsgService() +
+				  ", user count: " + JakeMainApp.getCore().getMsgServics().size());
+
+		// always update everything
+		updateSignInSuccessPanel();
+		updateChooseUserPanel();
 
 		// update the view (maybe already logged in)
-		if (MsgServiceHelper.isUserLoggedIn()) {
+		if (JakeMainApp.getMsgService() != null) {
 			showPanel(UserPanels.LoggedIn);
-		} else try {
+		} else {
 			if (JakeMainApp.getCore().getMsgServics().size() > 0) {
 				showPanel(UserPanels.ManageUsers);
 			} else {
 				showPanel(UserPanels.AddUser);
 			}
-		} catch (NotLoggedInException e) {
-			ExceptionUtilities.showError(e);
 		}
 	}
 
@@ -619,6 +684,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * @param panel
 	 */
 	private void showPanel(UserPanels panel) {
+		log.info("show panel: " + panel);
 		showContentPanel(addUserPanel, panel == UserPanels.AddUser);
 		showContentPanel(loginUserPanel, panel == UserPanels.ManageUsers);
 		showContentPanel(loginSuccessPanel, panel == UserPanels.LoggedIn);
@@ -681,7 +747,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	/**
 	 * Create User Panel
 	 */
-	private class UserControlPanel extends JPanel {
+	private class UserControlPanel extends JXPanel {
 		private final MsgService msg;
 		private JPasswordField passField;
 		private JCheckBox rememberPassCheckBox;
@@ -691,9 +757,12 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			log.info("creating UserControlPanel with " + msg);
 			this.msg = msg;
 
-			this.setLayout(new MigLayout("wrap 2"));
-			this.setBorder(BorderFactory.createLoweredBevelBorder());
-			this.setOpaque(false);
+			this.setLayout(new MigLayout("wrap 2, fill"));
+
+			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(), 1));
+			this.setBackground(Color.WHITE);
+			this.setOpaque(true);
+			this.setAlpha(0.8F);
 
 			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msg.getUserId().getUserId() + "</b>"));
 			this.add(userLabel, "span 2, gapbottom 8");
@@ -735,7 +804,14 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						msg.login();
+						JakeMainApp.setMsgService(msg);
+
+						if (isMagicToken()) {
+							msg.login();
+						} else {
+							msg.login(getPassword(), isRememberPassword());
+						}
+
 						updateView();
 					} catch (Exception e1) {
 						ExceptionUtilities.showError(e1);

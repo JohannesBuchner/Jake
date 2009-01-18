@@ -6,6 +6,8 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.services.MsgService;
+import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.GlassJFrame;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
@@ -18,10 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The main class of the application.
@@ -37,7 +36,12 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	private Project project = null;
 
+	// this is the message service the user chooses.
+	// only one per application.
+	private MsgService msgService = null;
+
 	private List<ProjectSelectionChanged> projectSelectionChanged = new LinkedList<ProjectSelectionChanged>();
+	private List<MsgServiceChanged> msgServiceChanged = new ArrayList<MsgServiceChanged>();
 
 	public JakeMainApp() {
 		this.app = this;
@@ -49,13 +53,13 @@ public class JakeMainApp extends SingleFrameApplication implements
 							  * Uncomment the following line to use the real
 							  * implementation
 							  */
-						//	 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
+							 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
 
 							 /**
 							  * Uncomment the following line to use peter/chris
 							  * mock implementation
 							  */
-							  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+							 //	  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
 				  });
@@ -235,6 +239,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 				psc.setProject(getProject());
 			} catch (RuntimeException ex) {
 				log.error("Catched an exception while setting the new project: ", ex);
+				ExceptionUtilities.showError(ex);
 			}
 		}
 	}
@@ -249,6 +254,29 @@ public class JakeMainApp extends SingleFrameApplication implements
 		}
 	}
 
+	/**
+	 * Fires when a new User is selected.
+	 */
+	private void fireMsgServiceChanged() {
+		log.info("Fire Message Service Changed");
+		for (MsgServiceChanged msc : msgServiceChanged) {
+			try {
+				msc.msgServiceChanged(getMsgService());
+			} catch (RuntimeException ex) {
+				log.error("Catched an exception while setting message service: ", ex);
+				ExceptionUtilities.showError(ex);
+			}
+		}
+	}
+
+	public void addMsgServiceChangedListener(MsgServiceChanged msc) {
+		msgServiceChanged.add(msc);
+	}
+
+	public void removeMsgServiceChangedListener(MsgServiceChanged msc) {
+		msgServiceChanged.remove(msc);
+	}
+
 
 	public void saveQuit() {
 		log.debug("Calling saveQuit");
@@ -256,5 +284,22 @@ public class JakeMainApp extends SingleFrameApplication implements
 		this.core = null;
 
 		System.exit(0);
+	}
+
+	/**
+	 * Set a new Msg Service.
+	 */
+	public static void setMsgService(MsgService msg) {
+		getApp().msgService = msg;
+		getApp().fireMsgServiceChanged();
+	}
+
+	/**
+	 * Returns the global Message Service (if a user was chosen)
+	 *
+	 * @return
+	 */
+	public static MsgService getMsgService() {
+		return getApp().msgService;
 	}
 }
