@@ -769,7 +769,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		}
 
 		//TODO cache
-		return new NoteManagingService(this.getNoteObjectDao(p), this.getLogEntryDao(p));
+		return new NoteManagingService(this,this.getNoteObjectDao(p), this.getLogEntryDao(p));
 	}
 
 
@@ -787,5 +787,23 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	public void updateProjectMember(Project project, ProjectMember member) {
 		this.getProjectMemberDao(project).persist(project, member);
 		
+	}
+	
+	@Override
+	@Transactional
+	public boolean isLocalJakeObject(JakeObject jo) {
+		boolean result = false;
+
+		try {
+			this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
+		} catch (NoSuchLogEntryException e) {
+			/*
+			 * There is not Logentry for this note. Therefore it has never been
+			 * announced and is only local.
+			 */
+			result = true;
+		}
+
+		return result;
 	}
 }

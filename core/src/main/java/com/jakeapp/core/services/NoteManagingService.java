@@ -21,6 +21,7 @@ public class NoteManagingService implements INoteManagingService {
 
 	private INoteObjectDao dao;
 	private ILogEntryDao ledao;
+	private IProjectsManagingService pms;
 	
 	private void setDao(INoteObjectDao dao) {
 		this.dao = dao;
@@ -35,28 +36,11 @@ public class NoteManagingService implements INoteManagingService {
 		return ledao;
 	}
 	
-	public NoteManagingService(INoteObjectDao dao, ILogEntryDao ledao) {
+	public NoteManagingService(IProjectsManagingService pms,INoteObjectDao dao, ILogEntryDao ledao) {
 		super();
+		this.pms = pms;
 		this.setDao(dao);
 		this.ledao = ledao;
-	}
-
-	@Override
-	@Transactional
-	public boolean isLocalNote(NoteObject note) {
-		boolean result = false;
-		
-		try {
-			this.getLogEntryDao().getMostRecentFor(note);
-		} catch (NoSuchLogEntryException e) {
-			/*
-			 * There is not Logentry for this note. Therefore
-			 * it has never been announced and is only local.
-			 */
-			result = true;
-		}
-		
-		return result;
 	}
 
 	@Override
@@ -77,7 +61,7 @@ public class NoteManagingService implements INoteManagingService {
 		LogEntry <? extends ILogable> logEntry = null;
 		
 		//If note is local - announce deletion
-		if (this.isLocalNote(note)) {
+		if (pms.isLocalJakeObject(note)) {
 			logEntry = new LogEntry<NoteObject>(
 				UUID.randomUUID(),
 				LogAction.JAKE_OBJECT_DELETE,

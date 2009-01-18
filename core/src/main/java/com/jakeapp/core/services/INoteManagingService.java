@@ -13,13 +13,6 @@ import com.jakeapp.core.domain.ProjectMember;
  */
 public interface INoteManagingService {
 	/**
-	 * Checks whether a NoteObject only exists locally
-	 * @param note The note to check.
-	 * @return <code>true</code> if the note only exists locally, <code>false</code> otherwise.
-	 */
-	boolean isLocalNote(NoteObject note);
-	
-	/**
 	 * Retrieves all Notes for a Project
 	 * 
 	 * @param project

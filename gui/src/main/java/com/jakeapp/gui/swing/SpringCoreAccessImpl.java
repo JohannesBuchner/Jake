@@ -54,20 +54,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	private IFrontendService frontendService;
 
-	private List<Project> projects = new ArrayList<Project>(); // TODO remove
-	// after
-	// completion of
-	// this
-	// implementation
-
-	private List<Project> invitedProjects = new ArrayList<Project>(); // TODO
-	// remove
-	// after
-	// completion
-	// of
-	// this
-	// implementation
-
 	/**
 	 * SessionId returned by the authentication Method of
 	 * FrontendService.authenticate.
@@ -467,8 +453,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
 				} catch (FileNotFoundException e) {
-					//TODO report to gui that the rootpath is invalid
+					//report to gui that the rootpath is invalid
 					log.warn("Project cannot be deleted: its folder does not exist.", e);
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 				}
 			}
 		};
@@ -604,8 +591,21 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
-		//TODO this is only a mock yet...
-		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);
+		try {
+			return this.getFrontendService().getJakeObjectSyncStatus(getSessionId(),project,file);
+		} catch (NotAFileException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (FileNotFoundException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (InvalidFilenameException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (NotAReadableFileException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+		
+		return null;
 	}
 
 	/**
@@ -695,8 +695,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			result = this.frontendService.getProjectsManagingService(
-					  this.sessionId).getNoteManagingService(note.getProject())
-					  .isLocalNote(note);
+					  this.sessionId).isLocalJakeObject(note);
 		} catch (Exception e) {
 			// Every error allows only one interpretation: a Note that cannot
 			// be checked wether it is local is NOT local!

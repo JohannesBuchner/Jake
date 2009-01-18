@@ -344,4 +344,11 @@ public interface IProjectsManagingService {
 	 * @param member a member that already exists
 	 */
 	void updateProjectMember(Project project, ProjectMember member);
+
+	/**
+	 * Checks whether a JakeObject only exists locally
+	 * @param note The note to check.
+	 * @return <code>true</code> if the object only exists locally, <code>false</code> otherwise.
+	 */
+	boolean isLocalJakeObject(JakeObject jo);
 }

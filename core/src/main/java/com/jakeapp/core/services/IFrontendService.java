@@ -1,14 +1,21 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.ISyncService;
+import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAFileException;
+import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -141,5 +148,15 @@ public interface IFrontendService {
 	 * @return All stored Service-credentials that were 'recently' used.
 	 *         A definition of recently is pending.
 	 */
-	public Collection<ServiceCredentials> getLastLogins();
+	Collection<ServiceCredentials> getLastLogins();
+
+	/**
+	 * @return the synchronisation Status of a FileObject
+	 * @throws InvalidFilenameException 
+	 * @throws NotAFileException 
+	 * @throws NotAReadableFileException 
+	 * @throws FileNotFoundException 
+	 */
+	JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId, Project project,
+			FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException;
 }
