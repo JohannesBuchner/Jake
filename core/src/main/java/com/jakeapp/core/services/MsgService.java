@@ -1,18 +1,19 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
 
 import java.util.List;
 
 /**
  * Abstract MessagingService declasring what the classes for the
  * instant-messaging protocols (XMPP, ICQ, etc.) need to implement.
- * 
+ *
  * @author dominik
  */
 
@@ -47,10 +48,9 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * This method gets called by clients to login on this message service.
-	 * 
+	 *
 	 * @return true on success, false on wrong password
-	 * @throws Exception
-	 *             the login failed for another reason
+	 * @throws Exception the login failed for another reason
 	 */
 	public final boolean login() throws Exception {
 		if (serviceCredentials == null)
@@ -65,11 +65,10 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
 	 * are valid.
-	 * 
+	 *
 	 * @return <code>true</code> iff the credentials are valid.
-	 * @throws InvalidCredentialsException
-	 *             if the credentials stored in this <code>MsgService</code> are
-	 *             insufficiently specified (e.g. they are null)
+	 * @throws InvalidCredentialsException if the credentials stored in this <code>MsgService</code> are
+	 *                                     insufficiently specified (e.g. they are null)
 	 */
 	protected boolean checkCredentails() throws InvalidCredentialsException {
 		if (this.getServiceCredentials() == null) {
@@ -80,12 +79,12 @@ public abstract class MsgService<T extends UserId> {
 
 		if (serviceCredentials.getPlainTextPassword() == null)
 			throw new InvalidCredentialsException(
-					"credentials.plainTextPassword must not be null");
+					  "credentials.plainTextPassword must not be null");
 
 
 		if (serviceCredentials.getServerAddress() == null)
 			throw new InvalidCredentialsException(
-					"credentials.serverAddress must not be null");
+					  "credentials.serverAddress must not be null");
 
 		return this.doCredentialsCheck();
 	}
@@ -96,7 +95,7 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * idempotent
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public final void logout() throws Exception {
@@ -105,7 +104,7 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * has to be idempotent
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	protected abstract void doLogout() throws Exception;
@@ -139,25 +138,21 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * Get a UserId Instance from this Messaging-Service
-	 * 
-	 * @param userId
-	 *            the String representation of the userId
+	 *
+	 * @param userId the String representation of the userId
 	 * @return a &lt;T extends UserId&gt; Object
-	 * @throws UserIdFormatException
-	 *             if the format of the input is not valid for this
-	 *             Messaging-Service
+	 * @throws UserIdFormatException if the format of the input is not valid for this
+	 *                               Messaging-Service
 	 */
 	public abstract T getUserId(String userId) throws UserIdFormatException;
 
 	/**
 	 * Find out if the supplied &lt;T extends UserId&gt; is a friend of the
 	 * current user of this MsgService
-	 * 
-	 * @param friend
-	 *            the <code>T extends UserId</code> to check friendship
+	 *
+	 * @param friend the <code>T extends UserId</code> to check friendship
 	 * @return true if friends, false if not
-	 * @throws IllegalArgumentException
-	 *             if the supplied friend is null
+	 * @throws IllegalArgumentException if the supplied friend is null
 	 */
 	public final boolean isFriend(T friend) throws IllegalArgumentException {
 		if (friend == null)
@@ -170,25 +165,24 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * Searches for Users matching a pattern, to add them as trusted users
 	 * later.
-	 * 
-	 * @param pattern
-	 *            The pattern that is searched for in Usernames. Implementations
-	 *            of <code>MsgService</code> may look for the pattern in other
-	 *            userdata as well.
+	 *
+	 * @param pattern The pattern that is searched for in Usernames. Implementations
+	 *                of <code>MsgService</code> may look for the pattern in other
+	 *                userdata as well.
 	 * @return A list of users matching the pattern.
 	 */
 	public abstract List<T> findUser(String pattern);
 
 	/**
 	 * Get the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
-	 * 
+	 *
 	 * @return the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
 	 */
 	public abstract String getServiceName();
 
 	/**
 	 * Get the type of this MsgService (e.g. to display fancy buttons)
-	 * 
+	 *
 	 * @return The <code>ProtocolType</code> of this MessageService
 	 */
 	public final ProtocolType getServiceType() {
@@ -198,9 +192,9 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * Creates an account for the Service, with the specified
 	 * ServiceCredentials. You have to have setCredentials first.
-	 * 
+	 *
 	 * @return success status
 	 * @throws Exception
 	 */
-	protected abstract boolean createAccount() throws Exception;
+	protected abstract void createAccount() throws NetworkException;
 }

@@ -14,18 +14,41 @@ import javax.swing.*;
 public class ExceptionUtilities {
 	/**
 	 * Displays an exception to the user.
+	 * Function is Thread-Safe.
 	 *
 	 * @param e: the exception to parse and show
 	 */
 	// TODO: provide a same way of logging, showing details.
 	// Custom Dialog would be great!
-	public static void showError(Exception e) {
-		JSheet.showMessageSheet(JakeMainApp.getFrame(), e.toString(),
+	public static void showError(final Exception e) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			internalShowError(e);
+		} else {
+			Runnable runner = new Runnable() {
+				public void run() {
+					internalShowError(e);
+				}
+			};
+
+			SwingUtilities.invokeLater(runner);
+		}
+	}
+
+	/**
+	 * Always will be invoked in thread awt-0
+	 *
+	 * @param e
+	 */
+	private static void internalShowError(Exception e) {
+		JSheet.showMessageSheet(JakeMainApp.getFrame(),
+				  "<html><b>" + e.getMessage() + "</b><br><br> + " +
+							 e.getStackTrace() + "</html>",
 				  JOptionPane.ERROR_MESSAGE, null);
 	}
 
 	/**
 	 * Convenience wrapper for JakeErrorEvent.
+	 * Function is Thread-Safe.
 	 *
 	 * @param ee
 	 */
@@ -35,11 +58,11 @@ public class ExceptionUtilities {
 
 	/**
 	 * Displays an error to the user
+	 * Function is Thread-Safe.
 	 *
 	 * @param msg: message as string
 	 */
 	public static void showError(String msg) {
-		JSheet.showMessageSheet(JakeMainApp.getFrame(), msg,
-				  JOptionPane.ERROR_MESSAGE, null);
+		showError(new RuntimeException(msg));
 	}
 }

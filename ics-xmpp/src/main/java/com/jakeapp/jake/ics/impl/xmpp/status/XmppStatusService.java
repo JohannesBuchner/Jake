@@ -1,28 +1,22 @@
 package com.jakeapp.jake.ics.impl.xmpp.status;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.jivesoftware.smack.Roster;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smackx.ServiceDiscoveryManager;
-
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
-import com.jakeapp.jake.ics.impl.mock.MockUserId;
+import com.jakeapp.jake.ics.exceptions.*;
 import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.impl.xmpp.helper.RosterPresenceChangeListener;
 import com.jakeapp.jake.ics.impl.xmpp.helper.XmppCommons;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IStatusService;
+import org.apache.log4j.Logger;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.ServiceDiscoveryManager;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class XmppStatusService implements IStatusService {
@@ -40,7 +34,7 @@ public class XmppStatusService implements IStatusService {
 	private void addDiscoveryFeature() {
 		// Obtain the ServiceDiscoveryManager associated with my XMPPConnection
 		ServiceDiscoveryManager discoManager = ServiceDiscoveryManager
-				.getInstanceFor(this.con.getConnection());
+				  .getInstanceFor(this.con.getConnection());
 
 		// Register that a new feature is supported by this XMPP entity
 		discoManager.addFeature(this.con.getNamespace());
@@ -48,12 +42,12 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public String getFirstname(UserId userid) throws NoSuchUseridException,
-			OtherUserOfflineException {
+			  OtherUserOfflineException {
 		// TODO replace with real implementation (VCard)
 		XmppUserId xid = new XmppUserId(userid);
 		if (!xid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-		
+
 		if (!xid.getUsername().contains(".")) {
 			return "";
 		}
@@ -62,17 +56,17 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public String getLastname(UserId userid) throws NoSuchUseridException,
-			OtherUserOfflineException {
+			  OtherUserOfflineException {
 		// TODO replace with real implementation (VCard)
 		XmppUserId xid = new XmppUserId(userid);
 		if (!xid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-		
+
 		if (!xid.getUsername().contains(".")) {
 			return "";
 		}
 		return xid.getUsername().substring(
-				xid.getUsername().indexOf(".") + 1);
+				  xid.getUsername().indexOf(".") + 1);
 	}
 
 	@Override
@@ -99,19 +93,19 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
-			NetworkException, NotLoggedInException, TimeoutException {
+			  NetworkException, NotLoggedInException, TimeoutException {
 		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
-		if (XmppUserId.isSameUser(getUserid(),userid))
+		if (XmppUserId.isSameUser(getUserid(), userid))
 			return isLoggedIn();
 		if (!isLoggedIn())
 			throw new NotLoggedInException();
-		
+
 		if (getRoster().getEntry(userid.toString()) != null) {
 			log.debug("Type for " + userid + ": "
-					+ getRoster().getEntry(userid.toString()).getType());
+					  + getRoster().getEntry(userid.toString()).getType());
 			log.debug("Status for " + userid + ": "
-					+ getRoster().getEntry(userid.toString()).getStatus());
+					  + getRoster().getEntry(userid.toString()).getStatus());
 		}
 		Presence p = getRoster().getPresence(userid.toString());
 		log.debug("Presence for " + userid + ": " + p);
@@ -129,7 +123,7 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public Boolean login(UserId userid, String pw) throws NetworkException,
-			TimeoutException {
+			  TimeoutException {
 		XmppUserId xuid = new XmppUserId(userid);
 		if (!xuid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
@@ -165,13 +159,13 @@ public class XmppStatusService implements IStatusService {
 			public void presenceChanged(Presence presence) {
 				final String xmppid = presence.getFrom();
 				XmppStatusService.log.debug("presenceChanged: " + xmppid
-						+ " - " + presence);
+						  + " - " + presence);
 
 				if (isLoggedIn()) {
 					try {
 						XmppStatusService.this.con.getService()
-								.getUsersService().requestOnlineNotification(
-										new XmppUserId(xmppid));
+								  .getUsersService().requestOnlineNotification(
+								  new XmppUserId(xmppid));
 					} catch (NotLoggedInException e) {
 						log.debug("Shouldn't happen", e);
 					}
@@ -194,8 +188,8 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public Boolean createAccount(UserId userid, String pw) throws NetworkException,
-			TimeoutException {
+	public void createAccount(UserId userid, String pw) throws NetworkException,
+			  TimeoutException {
 		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (isLoggedIn())
@@ -209,10 +203,10 @@ public class XmppStatusService implements IStatusService {
 			log.debug("create failed: " + e.getMessage());
 			throw new NetworkException(e);
 		}
-		if(connection == null)
-			return false;
+		if (connection == null) {
+			throw new RuntimeException("Connection is null!");
+		}
 		XmppCommons.logout(connection);
-		return true;
 	}
 
 	@Override

@@ -1,18 +1,17 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-
+import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.UUID;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Factory Class to create MsgServices by giving ServiceCredentials
@@ -38,7 +37,7 @@ public class MsgServiceFactory {
 		this.serviceCredentialsDao = serviceCredentialsDao;
 		// can not initialise here, this produces spring/hibernate errors!
 	}
-	
+
 	private IServiceCredentialsDao getServiceCredentialsDao() {
 		return serviceCredentialsDao;
 	}
@@ -48,7 +47,7 @@ public class MsgServiceFactory {
 		credentialsList = this.serviceCredentialsDao.getAll();
 
 		ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
-				"somepass");
+				  "somepass");
 		sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
 		sc1.setProtocol(ProtocolType.XMPP);
 		try {
@@ -61,7 +60,7 @@ public class MsgServiceFactory {
 
 
 		ServiceCredentials sc2 = new ServiceCredentials("pstein@jabber.fsinf.at",
-				"somepass");
+				  "somepass");
 		sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
 		sc2.setProtocol(ProtocolType.XMPP);
 		try {
@@ -74,7 +73,7 @@ public class MsgServiceFactory {
 
 
 		ServiceCredentials sc3 = new ServiceCredentials("pstein@jabber.fsinf.at",
-				"somepass");
+				  "somepass");
 		sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
 		sc3.setProtocol(ProtocolType.XMPP);
 		try {
@@ -100,12 +99,12 @@ public class MsgServiceFactory {
 	}
 
 	public MsgService createMsgService(ServiceCredentials credentials)
-			throws ProtocolNotSupportedException {
+			  throws ProtocolNotSupportedException {
 		ensureInitialised();
 		MsgService result = null;
 		if (credentials.getProtocol().equals(ProtocolType.XMPP)) {
 			log.debug("Creating new XMPPMsgService for userId "
-							+ credentials.getUserId());
+					  + credentials.getUserId());
 			result = new XMPPMsgService();
 			result.setCredentials(credentials);
 		} else {
@@ -124,46 +123,44 @@ public class MsgServiceFactory {
 	/**
 	 * create a account with the given credentials. You are not logged in
 	 * afterwards
-	 * 
+	 *
 	 * @param credentials
 	 * @return success state
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception
 	 */
-	public boolean createAccount(ServiceCredentials credentials)
-			throws ProtocolNotSupportedException, Exception {
+	public void createAccount(ServiceCredentials credentials)
+			  throws ProtocolNotSupportedException, NetworkException {
 		MsgService svc = createMsgService(credentials);
 
 		if (svc != null) {
-			boolean result = svc.createAccount();
-			if (result)
-				try {
-					svc.logout();
-				} catch (Exception e) {
-					log.debug("logout failed unexpectedly", e);
-				}
-			return result;
-		} else
-			return false;
+			svc.createAccount();
+
+			try {
+				svc.logout();
+			} catch (Exception e) {
+				log.debug("logout failed unexpectedly", e);
+			}
+		}
 	}
 
 
 	/**
 	 * creates and adds a msgservice for the right protocol
-	 * 
+	 *
 	 * @param credentials
 	 * @return the service
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 */
 	public MsgService addMsgService(ServiceCredentials credentials)
-			throws InvalidCredentialsException, ProtocolNotSupportedException {
+			  throws InvalidCredentialsException, ProtocolNotSupportedException {
 		MsgService svc = this.createMsgService(credentials);
 		msgServices.add(svc);
-		
+
 		//add account in database
 		this.getServiceCredentialsDao().create(credentials);
-		
+
 		return svc;
 	}
 }

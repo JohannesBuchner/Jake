@@ -1,27 +1,20 @@
 package com.jakeapp.core.services;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.dao.IServiceCredentialsDao;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.SyncServiceImpl;
-import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 /**
  * Implementation of the FrontendServiceInterface
  */
-public class FrontendServiceImpl implements IFrontendService{
+public class FrontendServiceImpl implements IFrontendService {
 
 	private static Logger log = Logger.getLogger(FrontendServiceImpl.class);
 
@@ -30,52 +23,51 @@ public class FrontendServiceImpl implements IFrontendService{
 	private MsgServiceFactory msgServiceFactory;
 
 	private Map<String, FrontendSession> sessions;
-	
+
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param projectsManagingService
 	 * @param msgServiceFactory
-     * @param sync
+	 * @param sync
 	 */
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
-			MsgServiceFactory msgServiceFactory, IFriendlySyncService sync) {
+										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.setSessions(new HashMap<String, FrontendSession>());
 		this.msgServiceFactory = msgServiceFactory;
-        this.sync = sync;
+		this.sync = sync;
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
 		return projectsManagingService;
 	}
-	
+
 	private IServiceCredentialsDao getServiceCredentialsDao() {
 		//TODO retrieve the dao
 		return null;
 	}
 
 	private void setProjectsManagingService(
-			IProjectsManagingService projectsManagingService) {
+			  IProjectsManagingService projectsManagingService) {
 		this.projectsManagingService = projectsManagingService;
 	}
 
 	/**
 	 * Checks frontend-credentials and throws exceptions if they are not
 	 * correct.
-	 * 
-	 * @param credentials
-	 *            The credentials to be checked
+	 *
+	 * @param credentials The credentials to be checked
 	 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
-	 * 
+	 *
 	 * @throws IllegalArgumentException
 	 * @see #authenticate(Map)
 	 */
 	private void checkCredentials(Map<String, String> credentials)
-			throws IllegalArgumentException, InvalidCredentialsException {
+			  throws IllegalArgumentException, InvalidCredentialsException {
 
 		if (credentials == null)
 			throw new IllegalArgumentException();
@@ -106,17 +98,14 @@ public class FrontendServiceImpl implements IFrontendService{
 	/**
 	 * /// TODO Do we really need this!? -- Dominik <p/> retrieves a session Yes
 	 * we do!
-	 * 
-	 * @param sessionId
-	 *            The id associated with the session after it was created
+	 *
+	 * @param sessionId The id associated with the session after it was created
 	 * @return // TODO
-	 * @throws IllegalArgumentException
-	 *             if <code>sessionId</code> was null
-	 * @throws NotLoggedInException
-	 *             if no Session associated with <code>sessionId</code> exists.
+	 * @throws IllegalArgumentException if <code>sessionId</code> was null
+	 * @throws NotLoggedInException	  if no Session associated with <code>sessionId</code> exists.
 	 */
 	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
-			NotLoggedInException {
+			  NotLoggedInException {
 		checkSession(sessionId);
 		return this.getSessions().get(sessionId);
 	}
@@ -131,7 +120,7 @@ public class FrontendServiceImpl implements IFrontendService{
 
 	@Override
 	public String authenticate(Map<String, String> credentials)
-			throws IllegalArgumentException, InvalidCredentialsException {
+			  throws IllegalArgumentException, InvalidCredentialsException {
 		String sessid;
 
 		this.checkCredentials(credentials);
@@ -145,7 +134,7 @@ public class FrontendServiceImpl implements IFrontendService{
 
 	@Override
 	public boolean logout(String sessionId) throws IllegalArgumentException,
-			NotLoggedInException {
+			  NotLoggedInException {
 		boolean successfullyRemoved;
 
 		if (sessionId == null)
@@ -160,7 +149,7 @@ public class FrontendServiceImpl implements IFrontendService{
 
 	@Override
 	public IProjectsManagingService getProjectsManagingService(String sessionId)
-			throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+			  throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
 		checkSession(sessionId);
 		// 3. return ProjectsManagingService
 		return this.getProjectsManagingService();
@@ -187,45 +176,45 @@ public class FrontendServiceImpl implements IFrontendService{
 
 	@Override
 	public List<MsgService> getMsgServices(String sessionId)
-			throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+			  throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
 		this.checkSession(sessionId);
 		return this.getMsgServices();
 	}
-	
-	private List<MsgService> getMsgServices() throws  IllegalStateException {
-        return this.msgServiceFactory.getAll();
-    }
+
+	private List<MsgService> getMsgServices() throws IllegalStateException {
+		return this.msgServiceFactory.getAll();
+	}
 
 	@Override
-	public boolean createAccount(String sessionId, ServiceCredentials credentials)
-			throws NotLoggedInException, InvalidCredentialsException,
-			ProtocolNotSupportedException, Exception {
+	public void createAccount(String sessionId, ServiceCredentials credentials)
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
-		return msgServiceFactory.createAccount(credentials);
+		msgServiceFactory.createAccount(credentials);
 	}
 
 	@Override
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
-			throws NotLoggedInException, InvalidCredentialsException,
-			ProtocolNotSupportedException {
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException {
 		checkSession(sessionId);
 		return msgServiceFactory.addMsgService(credentials);
 	}
-	
+
 	@Override
 	public void signOut(String sessionId) throws NotLoggedInException {
 		FrontendSession session;
 		Iterable<MsgService> msgServices;
-		
+
 		this.checkSession(sessionId);
 		this.getSessions().remove(sessionId);
-		
+
 		/* do not logout - other UIs may access the core */
 	}
 
 	@Override
 	public void ping(String sessionId) throws IllegalArgumentException,
-			NotLoggedInException {
+			  NotLoggedInException {
 		checkSession(sessionId);
 
 		// TODO
@@ -233,14 +222,13 @@ public class FrontendServiceImpl implements IFrontendService{
 
 	@Override
 	public IFriendlySyncService getSyncService(String sessionId)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		this.checkSession(sessionId);
 		return this.sync;
 	}
 
 
-
-//	@Override
+	//	@Override
 	public IFriendlySyncService getSync() {
 		return this.sync;
 	}

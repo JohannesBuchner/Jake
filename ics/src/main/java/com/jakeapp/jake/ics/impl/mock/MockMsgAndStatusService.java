@@ -1,19 +1,7 @@
 package com.jakeapp.jake.ics.impl.mock;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.exceptions.*;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
@@ -21,15 +9,22 @@ import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This implements both the IMsgService and the IStatusService, usually you will
  * want to share common data using the constructors
- * 
+ *
  * @author johannes
  */
 public class MockMsgAndStatusService implements IMsgService, IStatusService,
-		IUsersService {
+		  IUsersService {
 
 	static Logger log = Logger.getLogger(MockMsgAndStatusService.class);
 
@@ -71,7 +66,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 			return "";
 		}
 		return userid.getUserId().substring(userid.getUserId().indexOf(".") + 1,
-				userid.getUserId().indexOf("@"));
+				  userid.getUserId().indexOf("@"));
 	}
 
 	public UserId getUserId(String userid) {
@@ -97,7 +92,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	 * users having a s in the userid before the \@ are online
 	 */
 	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
-			NetworkException, NotLoggedInException, TimeoutException {
+			  NetworkException, NotLoggedInException, TimeoutException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (userid.equals(myuserid))
@@ -107,14 +102,14 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 
 		/* everyone else not having a s in the name is offline */
 		return userid.getUserId().substring(0, userid.getUserId().indexOf("@")).contains(
-				"s");
+				  "s");
 	}
 
 	/**
 	 * Login is successful, if userid == pw
 	 */
 	public Boolean login(UserId userid, String pw) throws NetworkException,
-			TimeoutException {
+			  TimeoutException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (loggedinstatus)
@@ -159,8 +154,8 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	 * If you send a message to someone, a reply is generated.
 	 */
 	public Boolean sendMessage(UserId to_userid, String content) throws NetworkException,
-			NotLoggedInException, TimeoutException, NoSuchUseridException,
-			OtherUserOfflineException {
+			  NotLoggedInException, TimeoutException, NoSuchUseridException,
+			  OtherUserOfflineException {
 		log.info("Sending message to " + to_userid + " with content \"" + content + "\"");
 		UserId to = new MockUserId(to_userid);
 		if (!to.isOfCorrectUseridFormat()) {
@@ -192,8 +187,8 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	 * objects sent to other online users are accepted, but ignored.
 	 */
 	public Boolean sendObject(UserId to, String objectidentifier, byte[] content)
-			throws NetworkException, NotLoggedInException, TimeoutException,
-			NoSuchUseridException, OtherUserOfflineException {
+			  throws NetworkException, NotLoggedInException, TimeoutException,
+			  NoSuchUseridException, OtherUserOfflineException {
 		if (!new MockUserId(to).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (!loggedinstatus)
@@ -217,7 +212,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 
 	@Override
 	public void addUser(UserId user, String name) throws NoSuchUseridException,
-			NotLoggedInException, IOException {
+			  NotLoggedInException, IOException {
 		this.friends.add(user);
 	}
 
@@ -228,19 +223,19 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 
 	@Override
 	public boolean isCapable(UserId userid) throws IOException, NotLoggedInException,
-			NoSuchUseridException {
+			  NoSuchUseridException {
 		return true;
 	}
 
 	@Override
 	public boolean isFriend(UserId xmppid) throws NotLoggedInException,
-			NoSuchUseridException {
+			  NoSuchUseridException {
 		return this.friends.contains(xmppid);
 	}
 
 	@Override
 	public void removeUser(UserId user) throws NotLoggedInException,
-			NoSuchUseridException, IOException {
+			  NoSuchUseridException, IOException {
 		this.friends.remove(user);
 	}
 
@@ -255,10 +250,9 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	}
 
 	@Override
-	public Boolean createAccount(UserId userid, String pw) throws NetworkException,
-			TimeoutException {
+	public void createAccount(UserId userid, String pw) throws NetworkException,
+			  TimeoutException {
 		// TODO can't really implement this ...
-		return null;
 	}
 
 	@Override

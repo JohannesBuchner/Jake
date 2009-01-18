@@ -1,15 +1,14 @@
 package com.jakeapp.core.services;
 
-import java.util.List;
-
 import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.XMPPUserId;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+
+import java.util.List;
 
 /**
  * Implementation of the MessageService for the XMPP Messaging Protocol
@@ -42,7 +41,7 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	@Override
 	protected boolean doLogin() throws Exception {
 		return this.ics.getStatusService().login(this.user,
-				this.getServiceCredentials().getPlainTextPassword());
+				  this.getServiceCredentials().getPlainTextPassword());
 	}
 
 	@Override
@@ -81,8 +80,8 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	}
 
 	@Override
-	public boolean createAccount() throws Exception {
-		return ics.getStatusService().createAccount(user,
-				this.getServiceCredentials().getPlainTextPassword());
+	public void createAccount() throws NetworkException {
+		ics.getStatusService().createAccount(user,
+				  this.getServiceCredentials().getPlainTextPassword());
 	}
 }

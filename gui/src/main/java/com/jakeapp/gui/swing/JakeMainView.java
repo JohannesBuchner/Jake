@@ -4,6 +4,7 @@ import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ImportFileAction;
 import com.jakeapp.gui.swing.actions.InvitePeopleAction;
@@ -50,7 +51,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private FilePanel filePanel;
 	private NotesPanel notesPanel;
 	private ProjectInvitationPanel invitationPanel;
-	private LoginPanel loginPanel;
+	private UserPanel loginPanel;
 	private List<JToggleButton> contextSwitcherButtons;
 	private JPanel contextSwitcherPane = createContextSwitcherPanel();
 	private JPanel inspectorPanel;
@@ -70,6 +71,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 	private JakeMainApp app;
 	private JakeSourceList sourceList;
+	private JSplitPane mainSplitPane;
+	private SearchField searchField;
 
 	public boolean isInspectorEnabled() {
 		return inspectorEnabled;
@@ -113,7 +116,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		tray = new JakeTrayIcon();
 
 		// init the panels
-		loginPanel = new LoginPanel();
+		loginPanel = new UserPanel();
 		newsPanel = new NewsPanel();
 		filePanel = new FilePanel();
 		notesPanel = new NotesPanel();
@@ -132,7 +135,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// set window icon
 		this.getFrame().setIconImage(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/jakeapp.png"))).getImage());
+				  getClass().getResource("/icons/jakeapp.png"))).getImage());
 
 		// set app size
 		this.getFrame().setMinimumSize(new Dimension(600, 600));
@@ -151,7 +154,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
 		contentPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-			 contentPanel, inspectorPanel);
+				  contentPanel, inspectorPanel);
 		contentPanelSplit.setOneTouchExpandable(false);
 		contentPanelSplit.setContinuousLayout(true);
 		contentPanelSplit.setBorder(null);
@@ -166,8 +169,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		this.getFrame().add(toolBar.getComponent(), BorderLayout.NORTH);
 
 		// create the panels split pane
-		JSplitPane splitPane = this.createSourceListAndMainArea();
-		this.getFrame().add(splitPane, BorderLayout.CENTER);
+		mainSplitPane = this.createSourceListAndMainArea();
+		this.getFrame().add(mainSplitPane, BorderLayout.CENTER);
 
 		// create status bar
 		jakeStatusBar = new JakeStatusBar(getCore());
@@ -327,7 +330,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// Add Files
 		Icon addFilesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/toolbar-addfiles.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+				  getClass().getResource("/icons/toolbar-addfiles.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton jCreateAddFilesButton = new JButton(getResourceMap().getString("toolbarAddFiles"), addFilesIcon);
 
 		addFilesButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateAddFilesButton);
@@ -409,7 +412,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 */
 
 		Icon inspectorIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+				  getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton inspectorJButton = new JButton("Inspector", inspectorIcon);
 		inspectorJButton.addActionListener(new ActionListener() {
 
@@ -436,7 +439,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		//toolBar.add(announceButton);
 
 
-		SearchField searchField = new SearchField();
+		searchField = new SearchField();
 		searchField.putClientProperty("JTextField.variant", "search");
 		searchField.setSendsNotificationForEachKeystroke(true);
 		toolBar.addComponentToRight(new LabeledComponentGroup("Search", searchField).getComponent());
@@ -486,12 +489,21 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		boolean hasProject = getProject() != null;
 		boolean isInvite = getProject() != null && getProject().getInvitationState() == InvitationState.INVITED;
 		boolean isProjectContext = getContextViewPanel() == ContextPanelEnum.Project;
+		boolean hasUser = false;
+		try {
+			hasUser = JakeMainApp.getCore().getMsgServics().size() > 0;
+		} catch (NotLoggedInException e) {
+			e.printStackTrace();
+		}
+
+		createProjectButton.setEnabled(hasUser);
 		addFilesButton.setEnabled(hasProject && !isInvite);
 		invitePeopleButton.setEnabled(hasProject && !isInvite);
 		for (JToggleButton btn : contextSwitcherButtons) {
 			btn.setEnabled(isProjectContext && hasProject && !isInvite);
 		}
 		inspectorButton.setEnabled(isInspectorAllowed());
+		searchField.setEditable(hasProject);
 	}
 
 	/**
@@ -587,7 +599,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// creates the special SplitPlane
 		JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(
-			 sourceList.getSourceList(), contentPanelSplit);
+				  sourceList.getSourceList(), contentPanelSplit);
 
 		// TODO: divider location should be a saved property
 		splitPane.setDividerLocation(180);
@@ -604,14 +616,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	private void updateInspectorPanelVisibility() {
 		log.debug("pre: isInspectorEnabled: " + isInspectorEnabled() +
-			 " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-			 " isInspectorAllowed: " + isInspectorAllowed());
+				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+				  " isInspectorAllowed: " + isInspectorAllowed());
 		if (isInspectorEnabled()) {
 			// add inspector IF allowed
 			if (isInspectorAllowed() && !isInspectorPanelVisible()) {
 				inspectorPanel.setVisible(true);
 				contentPanelSplit.setDividerLocation(contentPanelSplit.getWidth() -
-					 InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
+						  InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
 			} else if (!isInspectorAllowed()) {
 				inspectorPanel.setVisible(false);
 			}
@@ -632,8 +644,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanel.updateUI();
 
 		log.debug("now: isInspectorEnabled: " + isInspectorEnabled() +
-			 " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-			 " isInspectorAllowed: " + isInspectorAllowed());
+				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+				  " isInspectorAllowed: " + isInspectorAllowed());
 	}
 
 	private boolean isInspectorPanelVisible() {
@@ -734,8 +746,21 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		// show or hide the inspector
 		updateInspectorPanelVisibility();
 
+		// TODO HACK uncomment this!
+		//updateSourceListVisibility();
+
 		// toolbar changes with viewPort
 		updateToolBar();
+	}
+
+	private void updateSourceListVisibility() {
+		log.debug("update sourcelist visible state");
+
+		if (getContextViewPanel() == ContextPanelEnum.Login) {
+			this.mainSplitPane.getLeftComponent().setVisible(false);
+		} else {
+			this.mainSplitPane.getLeftComponent().setVisible(true);
+		}
 	}
 
 

@@ -1,52 +1,40 @@
 package com.jakeapp.jake.ics.status;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.exceptions.*;
 
 
 public interface IStatusService {
 
 	/**
 	 * Connects and authenticates on the used network service.
-	 * 
-	 * @param userid
-	 *            the network user id to be logged in
-	 * @param pw
-	 *            password
+	 *
+	 * @param userid the network user id to be logged in
+	 * @param pw	  password
 	 * @return whether the login was successful
-	 * @throws NetworkException
-	 *             if the network connection is down
-	 * @throws TimeoutException
-	 *             if a timeout is received
+	 * @throws NetworkException if the network connection is down
+	 * @throws TimeoutException if a timeout is received
 	 */
 	public Boolean login(UserId userid, String pw) throws NetworkException,
-			TimeoutException;
+			  TimeoutException;
 
 	/**
 	 * Logs out and disconnects from the used network service.
-	 * 
-	 * @throws NetworkException
-	 *             if the network connection is down and the logout couldn't be
-	 *             propagated
-	 * @throws TimeoutException
-	 *             if a timeout occurred
+	 *
+	 * @throws NetworkException if the network connection is down and the logout couldn't be
+	 *                          propagated
+	 * @throws TimeoutException if a timeout occurred
 	 */
 	public void logout() throws NetworkException, TimeoutException;
 
 	/**
 	 * Creates a new user account.
-	 * 
-	 * @throws NetworkException
-	 *             if the network connection is down and the logout couldn't be
-	 *             propagated
-	 * @throws TimeoutException
-	 *             if a timeout occurred
+	 *
+	 * @throws NetworkException if the network connection is down and the logout couldn't be
+	 *                          propagated
+	 * @throws TimeoutException if a timeout occurred
 	 */
-	public Boolean createAccount(UserId userid, String pw) throws NetworkException, TimeoutException;
+	public void createAccount(UserId userid, String pw) throws NetworkException, TimeoutException;
 
 	/**
 	 * Checks whether the user is logged in. The implementation has to assert
@@ -59,61 +47,52 @@ public interface IStatusService {
 	 * online status is not requested by this method. You may want to use
 	 * requestOnlineStatus first and use a OnlineStatusListener! (see
 	 * IUsersService)
-	 * 
-	 * @param userid
-	 *            the other client to talk to.
-	 * @throws NetworkException
-	 *             if the network connection is down
-	 * @throws NotLoggedInException
-	 *             if the user is not logged in
-	 * @throws TimeoutException
-	 *             if a timeout is received
+	 *
+	 * @param userid the other client to talk to.
+	 * @throws NetworkException	  if the network connection is down
+	 * @throws NotLoggedInException if the user is not logged in
+	 * @throws TimeoutException	  if a timeout is received
 	 */
 	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
-			NetworkException, NotLoggedInException, TimeoutException;
+			  NetworkException, NotLoggedInException, TimeoutException;
 
 	/**
+	 * @param userid the network user id in question
 	 * @return the firstname belonging to the userid
-	 * @param userid
-	 *            the network user id in question
-	 * @throws NoSuchUseridException
-	 *             if there is no such user
-	 * @throws {@link OtherUserOfflineException}
+	 * @throws NoSuchUseridException if there is no such user
+	 * @throws {@link					 OtherUserOfflineException}
 	 */
 	public String getFirstname(UserId userid) throws NoSuchUseridException,
-			OtherUserOfflineException;
+			  OtherUserOfflineException;
 
 	/**
+	 * @param userid the network user id in question
 	 * @return the lastname belonging to the userid
-	 * @param userid
-	 *            the network user id in question
-	 * @throws NoSuchUseridException
-	 *             if there is no such user
-	 * @throws {@link OtherUserOfflineException}
+	 * @throws NoSuchUseridException if there is no such user
+	 * @throws {@link					 OtherUserOfflineException}
 	 */
 	public String getLastname(UserId userid) throws NoSuchUseridException,
-			OtherUserOfflineException;
+			  OtherUserOfflineException;
 
 	/**
 	 * @return the userid we are logged in with
-	 * @throws NotLoggedInException
-	 *             if no user is logged in
+	 * @throws NotLoggedInException if no user is logged in
 	 */
 	public UserId getUserid() throws NotLoggedInException;
 
 	/**
 	 * Checks if a user id is of the correct format for this network
-	 * 
-	 * @param userid
-	 *            the user id
+	 *
+	 * @param userid the user id
 	 * @return the users id
 	 */
 	public UserId getUserId(String userid);
 
 	/**
 	 * on login/logout this method should be invoked
+	 *
 	 * @param lsl
 	 */
 	public void registerLoginStateListener(ILoginStateListener lsl);
-	
+
 }

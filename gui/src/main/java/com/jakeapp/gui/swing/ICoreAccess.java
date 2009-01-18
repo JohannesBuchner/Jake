@@ -10,14 +10,15 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 
 import java.io.File;
@@ -92,7 +93,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-		 throws InvalidCredentialsException;
+			  throws InvalidCredentialsException;
 
 
 	/**
@@ -155,30 +156,20 @@ public interface ICoreAccess {
 	 */
 	public void removeConnectionStatusCallbackListener(ConnectionStatus cb);
 
-	/**
-	 * Register on sync services.
-	 *
-	 * @param user
-	 * @param pass
-	 * @Deprecated use (boolean) registerAccount(ServiceCredentials)
-	 */
-	@Deprecated
-	public void register(String user, String pass);
-
 
 	/**
 	 * This tries to create a new Account with the given credentials (real
 	 * register on XMPP/ICQ/MSN/etc.)
 	 *
 	 * @param credentials
-	 * @return true on success, false otherwise
+	 * @return AvailableLaterObject
 	 * @throws NotLoggedInException
 	 * @throws Exception
 	 * @throws ProtocolNotSupportedException
 	 */
-	public boolean createAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, Exception;
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -194,8 +185,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, Exception;
+			  throws NotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -336,7 +327,7 @@ public interface ICoreAccess {
 	 * Deletes a project. Works asyn, fires the callback when finished. Throws
 	 * exceptions if path is null or invalid.
 	 *
-	 * @param project            : project that should be deleted
+	 * @param project				: project that should be deleted
 	 * @param deleteProjectFiles
 	 */
 	public void deleteProject(Project project, boolean deleteProjectFiles);
@@ -379,7 +370,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-		 throws ProjectFolderMissingException;
+			  throws ProjectFolderMissingException;
 
 	/**
 	 * Retrieves all files within a project
@@ -434,7 +425,7 @@ public interface ICoreAccess {
 	 * Imports a file OR folder which is not currently in the project folder by
 	 * copying it into a folder inside the projects root folder.
 	 *
-	 * @param absPath:           absolut path of file.
+	 * @param files:             list of files to import.
 	 * @param destFolderRelPath: if null or "", copy to project root.
 	 * @return true on success, false on error
 	 */
@@ -467,7 +458,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file    The file to rename
+	 * @param file	 The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -531,7 +522,7 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-		 ProjectNotLoadedException;
+			  ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
@@ -600,8 +591,8 @@ public interface ICoreAccess {
 	/**
 	 * Set the soft lock for a <code>JakeObject</code>.
 	 *
-	 * @param jakeObject     the <code>JakeObject</code> for which the lock is to be set.
-	 * @param isSet          enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
+	 * @param jakeObject	  the <code>JakeObject</code> for which the lock is to be set.
+	 * @param isSet			 enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
 	 *                       enable the lock
 	 * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
 	 *                       <code>falso</code>
@@ -636,7 +627,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-	                                TrustState trust);
+											  TrustState trust);
 
 
 	/**
@@ -662,9 +653,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project     : the project to query. can be null.
+	 * @param project	  : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries     : amount of entries. -1 for everything.
+	 * @param entries	  : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);
