@@ -511,14 +511,14 @@ public interface ICoreAccess {
 	 *
 	 * @param listener
 	 */
-	public void addFilesChangedListener(FilesChanged listener);
+	public void addFilesChangedListener(FilesChanged listener,Project project);
 
 	/**
 	 * Unregister of FilesChanged listeners
 	 *
 	 * @param listener
 	 */
-	public void removeFilesChangedListener(FilesChanged listener);
+	public void removeFilesChangedListener(FilesChanged listener, Project project);
 
 
 	/******************* Notes functions ********************/

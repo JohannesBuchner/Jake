@@ -145,7 +145,7 @@ public interface ISyncService {
 	 * @throws IllegalArgumentException
 	 *             if the supplied JakeObject is null or invalid
 	 */
-	public LogEntry<JakeObject> isLocked(JakeObject object) throws IllegalArgumentException;
+	public LogEntry<JakeObject> getLock(JakeObject object) throws IllegalArgumentException;
 
 
 	/**

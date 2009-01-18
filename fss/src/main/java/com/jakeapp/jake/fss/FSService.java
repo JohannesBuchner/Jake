@@ -431,4 +431,11 @@ public class FSService implements IFSService, IModificationListener {
 		File f = new File(this.getFullpath(relpath));
 		return f.getName();
 	}
+
+	@Override
+	public void createFolder(String relpath) throws InvalidFilenameException, IOException {
+		File f = new File(this.getFullpath(relpath));
+		if (f.exists()) throw new IOException();
+		if (!f.mkdirs()) throw new IOException();
+	}
 }

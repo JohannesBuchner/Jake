@@ -885,12 +885,12 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public void addFilesChangedListener(FilesChanged listener) {
+	public void addFilesChangedListener(FilesChanged listener,Project project) {
 		filesChangedListeners.add(listener);
 	}
 
 	@Override
-	public void removeFilesChangedListener(FilesChanged listener) {
+	public void removeFilesChangedListener(FilesChanged listener, Project project) {
 		filesChangedListeners.remove(listener);
 	}
 

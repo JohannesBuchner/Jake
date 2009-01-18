@@ -26,11 +26,15 @@ import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.IProjectModificationListener;
+import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import org.apache.log4j.Logger;
 
@@ -69,6 +73,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * FrontendService.authenticate.
 	 */
 	private String sessionId;
+	
+	private Map<FilesChanged,IProjectModificationListener> fileListeners = new HashMap<FilesChanged,IProjectModificationListener>();
 
 	/**
 	 * Core Access Mock initialisation code
@@ -1044,45 +1050,116 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
-		//TODO implement
+	public void pullJakeObject(JakeObject jo) throws OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
+		try {
+			this.getFrontendService().getSyncService(this.getSessionId()).pullObject(jo);
+		} catch (NotLoggedInException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
 	}
 
 	@Override
 	public boolean isJakeObjectLocked(JakeObject jo) {
-		return false;  //TODO change body of implemented methods use File | Settings | File Templates.
+		return this.getFrontendService().getSyncService(this.getSessionId()).getLock(jo) != null;
 	}
 
 	@Override
 	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException {
-		//TODO change body of implemented methods use File | Settings | File Templates.
+		try {
+			this.getFrontendService().getProjectsManagingService(getSessionId()).getFileServices(project).createFolder(relpath);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidNewFolderException(relpath);
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			throw new InvalidNewFolderException(relpath);
+		} catch (InvalidFilenameException e) {
+			throw new InvalidNewFolderException(relpath);
+		} catch (IOException e) {
+			throw new InvalidNewFolderException(relpath);
+		}
 	}
 
 	@Override
-	public void addFilesChangedListener(FilesChanged listener) {
-		//TODO change body of implemented methods use File | Settings | File Templates.
+	public void addFilesChangedListener(final FilesChanged listener,
+			Project project) {
+		IProjectModificationListener projectModificationListener = new IProjectModificationListener() {
+
+			@Override
+			public void fileModified(String relpath, ModifyActions action) {
+				listener.filesChanged();
+			}
+		};
+
+		this.fileListeners.put(listener, projectModificationListener);
+		this.getFrontendService().getProjectsManagingService(getSessionId())
+				.getFileServices(project).addModificationListener(
+						projectModificationListener);
 	}
 
 	@Override
-	public void removeFilesChangedListener(FilesChanged listener) {
-		//TODO change body of implemented methods use File | Settings | File Templates.
+	public void removeFilesChangedListener(FilesChanged listener,
+			Project project) {
+		IProjectModificationListener projectModificationListener;
+
+		projectModificationListener = this.fileListeners.get(listener);
+
+		if (projectModificationListener != null)
+			this.getFrontendService()
+					.getProjectsManagingService(getSessionId())
+					.getFileServices(project).removeModificationListener(
+							projectModificationListener);
 	}
 
 	public long getFileSize(FileObject file) {
-		//TODO
-		return 1234;
+		//TODO implement this differently - get the Size of the STORED FileObject...
+		return this.getFileSize(file);
 	}
 
 	@Override
 	public long getLocalFileSize(FileObject fo) {
-		//TODO
+		try {
+			return this.getFrontendService()
+			.getProjectsManagingService(getSessionId())
+			.getFileServices(fo.getProject()).getFileSize(fo.getRelPath());
+		} catch (FileNotFoundException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (NotAFileException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (InvalidFilenameException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
+		
 		return 0;
 	}
 
 	@Override
 	public Date getLocalFileLastModified(FileObject fo) {
-		//TODO
-		return null;
+		try {
+			return new Date(this.getFrontendService()
+			.getProjectsManagingService(getSessionId())
+			.getFileServices(fo.getProject()).getLastModified(fo.getRelPath()));
+		} catch (NotAFileException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (InvalidFilenameException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
+		
+		return new Date();
 	}
 
 	private String currentUser = null;

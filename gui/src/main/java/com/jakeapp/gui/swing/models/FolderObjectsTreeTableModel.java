@@ -35,7 +35,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 
 	public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
-		JakeMainApp.getCore().addFilesChangedListener(this);
+		JakeMainApp.getCore().addFilesChangedListener(this,JakeMainApp.getProject());
 	}
 
 	public void setRoot(ProjectFilesTreeNode node) {

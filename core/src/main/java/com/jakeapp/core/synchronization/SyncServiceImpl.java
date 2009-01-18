@@ -300,7 +300,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	@Override
 	@Transactional
-	public LogEntry<JakeObject> isLocked(JakeObject jo) throws IllegalArgumentException {
+	public LogEntry<JakeObject> getLock(JakeObject jo) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		// TODO: iterate through logs backwards to find a lock
 		// if none found or last is unlocked -> unlocked

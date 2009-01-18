@@ -435,4 +435,12 @@ public interface IFSService {
 	 */
 	String getFileName(String relpath) throws InvalidFilenameException;
 
+	/**
+	 * creates a folder
+	 * this is only a convenience-method  since folders are not managed by
+	 * the jake core.
+	 * @throws InvalidFilenameException if the relpath is not valid
+	 * @throws IOException if the folder cannot be created
+	 */
+	void createFolder(String relpath) throws InvalidFilenameException, IOException;
 }
