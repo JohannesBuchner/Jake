@@ -6,7 +6,7 @@ package com.jakeapp.gui.swing.helpers;
  * @author: studpete
  */
 public class AppUtilities {
-	private final static String appName = "Jake";
+	private static String appName = "Jake";
 	private final static String appVersion = "0.9 Beta";
 
 	/**
@@ -16,6 +16,11 @@ public class AppUtilities {
 	 */
 	public static String getAppName() {
 		return appName;
+	}
+
+	// DEBUG ONLY.
+	public static void setAppName(String app) {
+		appName = app;
 	}
 
 

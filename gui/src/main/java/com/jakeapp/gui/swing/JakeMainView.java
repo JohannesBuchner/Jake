@@ -309,7 +309,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Update the application title to show the project, once it's
 	 */
 	private void updateTitle() {
-		String jakeStr = getResourceMap().getString("windowTitle");
+		String jakeStr = AppUtilities.getAppName();
 
 		if (getProject() != null && getProject().getInvitationState() == InvitationState.ACCEPTED) {
 			String projectPath = getProject().getRootPath();

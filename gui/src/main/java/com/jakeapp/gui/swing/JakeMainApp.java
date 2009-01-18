@@ -13,6 +13,7 @@ import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.GlassJFrame;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
@@ -53,17 +54,19 @@ public class JakeMainApp extends SingleFrameApplication implements
 		String[] options = {"Mock", "Real Thing"};
 
 		String type = System.getProperty("com.jakeapp.gui.test.usemock");
-		if(type == null) {
-			if(JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
-				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.NO_OPTION)
-				type = "yes";
-			else
+		if (type == null) {
+			if (JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
+					  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.NO_OPTION)
 				type = "no";
+			else
+				type = "yes";
 		}
 		if ("yes".equals(type)) {
 			applicationContext = new ClassPathXmlApplicationContext(
 					  new String[]{"/com/jakeapp/core/applicationContext.xml"
 								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"});
+
+			AppUtilities.setAppName("Jake on steroids (mocked)");
 		} else {
 			applicationContext = new ClassPathXmlApplicationContext(
 					  new String[]{"/com/jakeapp/core/applicationContext.xml"
