@@ -12,4 +12,10 @@ public class FileObjectLogEntry extends LogEntry<FileObject> {
 
     public FileObjectLogEntry() {
     }
+
+	public FileObjectLogEntry(LogEntry<JakeObject> le) {
+		this(le.getUuid(), le.getLogAction(), le.getTimestamp(), le.getProject(), (FileObject) le
+				.getBelongsTo(), le.getMember(), le.getComment(), le.getChecksum(), Boolean.valueOf(le
+				.isProcessed()));
+	}
 }

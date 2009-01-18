@@ -16,11 +16,13 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.FileObjectLogEntry;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.NoteObjectLogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
@@ -28,7 +30,6 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
@@ -242,7 +243,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			NotAReadableFileException {
 		log.debug("announcing " + jo + " : " + inaction);
 		IFSService fss = getFSS(jo.getProject());
-		LogEntry<ILogable> le = new LogEntry<ILogable>(UUID.randomUUID(), inaction
+		LogEntry<JakeObject> le = new LogEntry<JakeObject>(UUID.randomUUID(), inaction
 				.getLogAction());
 		LogAction action = inaction.getLogAction();
 		// set those that shouldn't be set by caller
@@ -264,7 +265,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		if (isNoteObject(jo)) {
 			log.debug("is a note. storing.");
 			NoteObject note = (NoteObject) jo;
-			db.getLogEntryDao(jo).create(le);
+			db.getLogEntryDao(jo).create(new NoteObjectLogEntry(le));
 			log.debug("is a note. done.");
 		} else {
 			log.debug("is a file. getting hash.");
@@ -272,7 +273,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			if (action == LogAction.JAKE_OBJECT_NEW_VERSION)
 				le.setChecksum(fss.calculateHashOverFile(fo.getRelPath()));
 			log.debug("is a file. getting hash done.");
-			db.getLogEntryDao(jo).create(le);
+			db.getLogEntryDao(jo).create(new FileObjectLogEntry(le));
 			log.debug("is a file. log entry written.");
 		}
 	}
