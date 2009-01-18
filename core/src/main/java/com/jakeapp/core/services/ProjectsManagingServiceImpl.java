@@ -12,7 +12,6 @@ import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
-import com.jakeapp.core.synchronization.FriendlySyncService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
@@ -428,10 +427,10 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	@Override
 	@Transactional
-	public List<LogEntry> getLog(Project project)
+	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			  throws IllegalArgumentException {
 		ILogEntryDao dao;
-		List<LogEntry> result = null;
+		List<LogEntry<? extends com.jakeapp.core.domain.ILogable>> result = null;
 
 		if (project == null)
 			throw new IllegalArgumentException();

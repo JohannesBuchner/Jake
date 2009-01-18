@@ -27,8 +27,6 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
     private HibernateTemplate hibernateTemplate;
     private ILogEntryDao logEntryDao;
 
-
-
     public HibernateTemplate getHibernateTemplate() {
         return hibernateTemplate;
     }
@@ -54,9 +52,9 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
     @After
     public void tearDown() {
-        this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
+//        this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
         /* rollback for true unit testing */
-//        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
     }
 
 
@@ -81,7 +79,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
                 projectMember, "comment", "djskjslkj", false
         );
 
-        
+
         logEntryDao.create(projectLogEntry);
     }
 
@@ -92,8 +90,8 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Transactional
     @Test
-    public void  testGetAll() {
-                MsgService msgService = new XMPPMsgService();
+    public void testGetAll_xxx() {
+        MsgService msgService = new XMPPMsgService();
         File file = new File(System.getProperty("user.dir"));
 
 
@@ -114,17 +112,14 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         logEntryDao.create(projectLogEntry);
 
 
-
-
-
-        List<LogEntry> result = logEntryDao.getAll();
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
 
 
         log.debug("result.size() = " + result.size());
         Assert.assertTrue(result.size() > 0);
 
         Assert.assertTrue(result.contains(projectLogEntry));
-        
+
     }
 
     @Test
@@ -157,29 +152,12 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         // Add your code here
     }
 
-    @Transactional    
+    @Transactional
     @Test
-    public void testFindMatching() throws InvalidTagNameException {
 
-
-//        Tag t1 = new Tag("test");
-//
-                        MsgService msgService = new XMPPMsgService();
-//
-//        File file = new File(System.getProperty("user.dir"));
-//        Project project = new Project("testname", UUID.fromString("fa305bda-cccc-4064-8f0f-d30017239c65"), msgService, file);
-//        FileObject fileObject = new FileObject(UUID.fromString("fa305bda-aaa-4064-8f0f-d30017239c65"), project, "/tmp");
-//
-//        t1.setObject(fileObject);
-//
-//
-//        ProjectMember projectMember = new ProjectMember(UUID.fromString("fa305bda-bbbb-4064-8f0f-d30017239c65"), "nickname", TrustState.TRUST);
-//
-//
-//        TagLogEntry tagLogEntry = new TagLogEntry(UUID.fromString("fa305bda-de58-4064-8f0f-d30017239c65"), LogAction.TAG_ADD, new Date(), project, t1, projectMember, "comment", "dddd", false );
-//
-//
-                  File file = new File(System.getProperty("user.dir"));
+    public void testGetAll_TagLogEntry() throws InvalidTagNameException {
+        MsgService msgService = new XMPPMsgService();
+        File file = new File(System.getProperty("user.dir"));
 
 
         Project testProject =
@@ -190,25 +168,98 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
                 "NICKNAME", TrustState.TRUST
         );
 
-        LogEntry<Project> projectLogEntry = new ProjectLogEntry(
-                UUID.fromString("e144ad8a-ffff-4d91-b9b9-73415866048f"),
-                LogAction.PROJECT_CREATED, new Date(), testProject, testProject,
-                projectMember, "testGetAll", "testGetAll_hash", false
+        Tag t1 = new Tag("test");
+
+
+        LogEntry<Tag> tagLogEntry = new TagLogEntry(
+                UUID.fromString("e144ad8a-0001-1111-cccc-73415866048f"),
+                LogAction.TAG_ADD, new Date(), testProject, t1,
+                projectMember, "testGetAll_TagLogEntry", "testGetAll_TagLogEntry", false
         );
 
-          logEntryDao.create(projectLogEntry);
-//        logEntryDao.create(tagLogEntry);
+        logEntryDao.create(tagLogEntry);
+
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
 
 
-        List<LogEntry> results = logEntryDao.getAll();
+        log.debug("result.size() = " + result.size());
+        Assert.assertTrue(result.size() > 0);
 
-        Assert.assertNotNull(results);
+        Assert.assertTrue(result.contains(tagLogEntry));
 
-//        Assert.assertTrue(results.contains(tagLogEntry));
-
-        Assert.assertTrue(results.size() > 0);
-
-
-        Assert.assertTrue(results.contains(projectLogEntry));
     }
+
+    @Transactional
+    @Test
+    public void testGetAll_NoteObjectLogEntry() throws InvalidTagNameException {
+        MsgService msgService = new XMPPMsgService();
+        File file = new File(System.getProperty("user.dir"));
+
+
+        Project testProject =
+                new Project("test", UUID.fromString("e0cd2322-aaaa-40a0-cccc-bcc0fe7a67c2"), msgService, file);
+
+
+        ProjectMember projectMember = new ProjectMember(UUID.fromString("e144ad8a-aaaa-4d91-b9b9-73415866048f"),
+                "NICKNAME", TrustState.TRUST
+        );
+
+        NoteObject note = new NoteObject(UUID.fromString("509161b3-999e-4cb8-914b-31816c54c2ca"), testProject, "content");
+
+        LogEntry<NoteObject> noteObjectLogEntry = new NoteObjectLogEntry(
+                UUID.fromString("e144ad8a-0002-2222-cccc-73415866048f"),
+                LogAction.TAG_ADD, new Date(), testProject, note,
+                projectMember, "testGetAll_NoteObjectLogEntry", "testGetAll_NoteObjectLogEntry", false
+        );
+
+        logEntryDao.create(noteObjectLogEntry);
+
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+
+
+        log.debug("result.size() = " + result.size());
+        Assert.assertTrue(result.size() > 0);
+
+        Assert.assertTrue(result.contains(noteObjectLogEntry));
+
+    }
+
+
+    @Transactional
+    @Test
+    public void testGetAll_FileObjectLogEntry() throws InvalidTagNameException {
+        MsgService msgService = new XMPPMsgService();
+        File file = new File(System.getProperty("user.dir"));
+
+
+        Project testProject =
+                new Project("test", UUID.fromString("e0cd2322-aaaa-40a0-cccc-bcc0fe7a67c2"), msgService, file);
+
+
+        ProjectMember projectMember = new ProjectMember(UUID.fromString("e144ad8a-aaaa-4d91-b9b9-73415866048f"),
+                "NICKNAME", TrustState.TRUST
+        );
+
+
+        FileObject fileObject = new FileObject(UUID.fromString("35fd9e4d-7810-4110-a1d1-7db0c1c10068"), testProject, "/tmp");
+
+
+        LogEntry<FileObject> fileObjectLogEntry = new FileObjectLogEntry(
+                UUID.fromString("e144ad8a-0003-2222-cccc-73415866048f"),
+                LogAction.TAG_ADD, new Date(), testProject, fileObject,
+                projectMember, "testGetAll_FileObjectLogEntry", "testGetAll_FileObjectLogEntry", false
+        );
+
+        logEntryDao.create(fileObjectLogEntry);
+
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+
+
+        log.debug("result.size() = " + result.size());
+        Assert.assertTrue(result.size() > 0);
+
+        Assert.assertTrue(result.contains(fileObjectLogEntry));
+
+    }
+
 }

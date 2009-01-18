@@ -20,8 +20,9 @@ public class FileObject extends JakeObject {
 
     private String relPath;
     private String checksum;
-    private File absolutePath;
+    private transient File absolutePath;
     private transient boolean locallyModified = false;
+    private long filesize;
     
     /**
      * Default ctor.
@@ -118,4 +119,16 @@ public class FileObject extends JakeObject {
 	public boolean isLocallyModified() {
 		return locallyModified;
 	}
+
+    @Column(name = "filesize")
+    public long getFilesize() {
+        return filesize;
+    }
+
+    public void setFilesize(long filesize) {
+        this.filesize = filesize;
+    }
+
+
+    
 }
