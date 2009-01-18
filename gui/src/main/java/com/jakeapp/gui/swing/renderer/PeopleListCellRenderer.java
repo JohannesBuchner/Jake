@@ -1,7 +1,9 @@
 package com.jakeapp.gui.swing.renderer;
 
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
 
 import javax.swing.*;
@@ -41,7 +43,12 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";
-		String shortStatusStr = JakeMainApp.getCore().getProjectMemberID(member);
+		String shortStatusStr = null;
+		try {
+			shortStatusStr = JakeMainApp.getCore().getProjectMemberID(JakeMainApp.getProject(), member);
+		} catch (NoSuchProjectMemberException e) {
+			ExceptionUtilities.showError(e);
+		}
 		String valStr = "<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
 
 

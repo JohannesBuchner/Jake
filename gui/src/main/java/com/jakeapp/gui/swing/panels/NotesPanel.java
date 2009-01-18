@@ -71,6 +71,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private ICoreAccess core;
 	private Project currentProject;
 	private JButton shareUpdateBtn;
+	private JButton lockBtn;
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -286,19 +287,19 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		noteReadPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
 		noteReadPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
 
-		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0, debug"));
-		JToolBar tbar = new JToolBar();
-		tbar.setFloatable(false);
+		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
+
 		shareUpdateBtn = new JButton();
-		tbar.add(shareUpdateBtn);
+		shareUpdateBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(shareUpdateBtn);
 		updateShareUpdateBtn();
 
-		JButton lockBtn = new JButton("Lock");
-		tbar.add(lockBtn);
+		lockBtn = new JButton();
+		updateLockBtn();
+		lockBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(lockBtn);
 
-		noteControlPanel.add(tbar);
 		this.noteReadPanel.add(noteControlPanel, "growx");
-
 
 		this.noteReader = new JTextArea();
 		this.noteReader.setLineWrap(true);
@@ -323,6 +324,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		mainSplitPane.setRightComponent(noteReadPanel);
 
+	}
+
+	private void updateLockBtn() {
+		// TODO
+		boolean isLocked = true;
+		lockBtn.setText(getResourceMap().getString(isLocked ? "lockBtn" : "unLockBtn"));
 	}
 
 	/**
