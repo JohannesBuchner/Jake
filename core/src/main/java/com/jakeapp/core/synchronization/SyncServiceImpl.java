@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
@@ -39,13 +41,11 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
- * This class should be active whenever you want to use files
- * <p/>
- * On Project->pause/start call
+ * This class should be active whenever you want to use files <p/> On
+ * Project->pause/start call
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
- * {@link #stopServing(Project)}
- * <p/>
- * Even when you are offline, this is to be used.
+ * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
+ * used.
  * 
  * @author johannes
  */
@@ -66,7 +66,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	private RequestHandlePolicy rhp;
 
 
-	private ApplicationContextFactory applicationContextFactory;
+	private ApplicationContextFactory db;
 
 	private ICServicesManager icServicesManager;
 
@@ -87,14 +87,13 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		this.icServicesManager = icServicesManager;
 	}
 
-
 	/* DAO stuff */
 
 	/**
-	 * returns true if NoteObject returns false if FileObject
+	 * returns true if NoteObject <br>
+	 * returns false if FileObject
 	 */
 	private Boolean isNoteObject(JakeObject jo) {
-		// TODO check if object is notes or file otherwise
 		return jo instanceof NoteObject;
 	}
 
@@ -144,15 +143,14 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private ProjectMember getMyProjectMember(Project p) {
 		try {
-			return applicationContextFactory.getProjectMemberDao(p).get(
-					p.getUserId().getUuid());
+			return db.getProjectMemberDao(p).get(p.getUserId().getUuid());
 		} catch (NoSuchProjectMemberException e) {
 			log.fatal("can't find myself in project", e);
 			return null;
 		}
 	}
 
-	
+
 	private com.jakeapp.jake.ics.UserId getICSUseridFromDomainUserId(Project p) {
 		return null; // TODO
 	}
@@ -200,7 +198,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 			NoteObject note = (NoteObject) jo;
 			// hash = fss.calculateHash(note.getContent().getBytes());
 			// db.getJakeObjectDao().save(note);
-			applicationContextFactory.getLogEntryDao(jo.getProject()).create(action);
+			db.getLogEntryDao(jo.getProject()).create(action);
 			// TODO: save note entry
 		} else {
 			FileObject file = (FileObject) jo;
@@ -332,9 +330,21 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		return stat;
 	}
 
-	public Boolean isLocallyModified(FileObject fo) {
+	public Boolean isDeleted(JakeObject fo) {
+
+	}
+
+	public Boolean isLocallyModified(FileObject fo) throws InvalidFilenameException,
+			IOException {
+		if (!existsLocally(fo))
+			return false;
 		IFSService fss = projectsFssMap.get(fo.getProject());
-		String rhash = getMostRecentForLogEntry(fo).getChecksum();
+		String rhash;
+		try {
+			rhash = db.getLogEntryDao(fo).getMostRecentFor(fo).getChecksum();
+		} catch (NoSuchLogEntryException e1) {
+			rhash = null;
+		}
 		String lhash = null;
 		try {
 			lhash = fss.calculateHashOverFile(fo.getRelPath());
@@ -343,12 +353,18 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		} catch (NotAReadableFileException e) {
 		}
 		if (lhash == null) {
-			return false;
+			return false; // doesn't exist locally
 		}
 		if (rhash == null)
-			return true;
+			return true; // doesn't exist remote
 		else
 			return rhash.equals(lhash);
+	}
+
+	public Boolean existsLocally(FileObject fo) throws InvalidFilenameException,
+			IOException {
+		IFSService fss = projectsFssMap.get(fo.getProject());
+		return fss.fileExists(fo.getRelPath());
 	}
 
 	public boolean isObjectInConflict(JakeObject jo) {
@@ -378,14 +394,13 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 
-	public ApplicationContextFactory getApplicationContextFactory() {
-		return applicationContextFactory;
+	public ApplicationContextFactory getDb() {
+		return db;
 	}
 
 
-	public void setApplicationContextFactory(
-			ApplicationContextFactory applicationContextFactory) {
-		this.applicationContextFactory = applicationContextFactory;
+	public void setDb(ApplicationContextFactory applicationContextFactory) {
+		this.db = applicationContextFactory;
 	}
 
 }
