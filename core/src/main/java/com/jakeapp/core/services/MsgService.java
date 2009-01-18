@@ -196,5 +196,5 @@ public abstract class MsgService<T extends UserId> {
 	 * @return success status
 	 * @throws Exception
 	 */
-	protected abstract void createAccount() throws NetworkException;
+	public abstract void createAccount() throws NetworkException;
 }

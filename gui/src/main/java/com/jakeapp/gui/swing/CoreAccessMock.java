@@ -915,7 +915,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
 	@Override
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
 		 throws NotLoggedInException, InvalidCredentialsException,
 		 ProtocolNotSupportedException, NetworkException {
 		// TODO: mock!

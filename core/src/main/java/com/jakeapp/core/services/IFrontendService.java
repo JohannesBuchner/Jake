@@ -5,6 +5,8 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.ISyncService;
+import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
 import java.util.Collection;
@@ -82,13 +84,14 @@ public interface IFrontendService {
 	 *
 	 * @param sessionId
 	 * @param credentials
+	 * @return TODO
 	 * @return
 	 * @throws NotLoggedInException
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception							the creation failed for another reason
 	 */
-	public void createAccount(String sessionId, ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials,AvailabilityListener listener)
 			  throws NotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException;
 

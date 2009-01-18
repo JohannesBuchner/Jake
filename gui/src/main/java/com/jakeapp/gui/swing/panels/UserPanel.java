@@ -229,7 +229,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			workingAnimation.startAnimation();
 
 			try {
-				return JakeMainApp.getCore().createAccount(cred);
+				return JakeMainApp.getCore().createAccount(cred,this);
 			} catch (NotLoggedInException e) {
 				log.warn(e);
 				ExceptionUtilities.showError(e);

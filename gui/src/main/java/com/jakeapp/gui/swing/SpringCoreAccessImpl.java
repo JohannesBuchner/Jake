@@ -289,12 +289,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
 		 throws NotLoggedInException, InvalidCredentialsException,
 		 ProtocolNotSupportedException, NetworkException {
-		//return this.frontendService.createAccount(this.sessionId, credentials);
-		return null;
-		//TODO
+		return this.frontendService.createAccount(this.sessionId, credentials, listener).start();
 	}
 
 	@Override

@@ -166,7 +166,7 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 * @throws ProtocolNotSupportedException
 	 */
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials,AvailabilityListener listener)
 		 throws NotLoggedInException, InvalidCredentialsException,
 		 ProtocolNotSupportedException, NetworkException;
 
