@@ -1,10 +1,8 @@
 package com.jakeapp.core.dao;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +12,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
@@ -72,15 +71,14 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
 						"FROM logentries WHERE 1=1").list();
-
 		return result;
 	}
 
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject) {
-        List<LogEntry<?extends ILogable>> result = this.getHibernateTemplate().
-                getSessionFactory().getCurrentSession().createQuery("FROM logentries WHERE  1=1").list(); // TODO
-
+		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession().createQuery(
+						"FROM logentries WHERE  1=1").list(); // TODO
 
 
 		return null; // To change body of implemented methods use File |
@@ -88,7 +86,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public LogEntry<? extends ILogable> getMostRecentFor(JakeObject jakeObject)
+	public LogEntry<JakeObject> getMostRecentFor(JakeObject jakeObject)
 			throws NoSuchLogEntryException {
 		return null; // To change body of implemented methods use File |
 		// Settings | File Templates.
@@ -123,8 +121,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public Collection<LogEntry<? extends ILogable>> findMatching(
 			LogEntry<? extends ILogable> le) {
-		// TODO
-		return new LinkedList<LogEntry<? extends ILogable>>();
+		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
+				.findByExample(le);
+
+		return result;
 	}
 
 	@Override
@@ -324,13 +324,34 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				LogAction.JAKE_OBJECT_LOCK, LogAction.JAKE_OBJECT_UNLOCK, belongsTo);
 		LogEntry<JakeObject> lockLogEntry = null;
 		for (LogEntry<JakeObject> entry : entries) {
-			if(entry.getLogAction() == LogAction.JAKE_OBJECT_LOCK) {
+			if (entry.getLogAction() == LogAction.JAKE_OBJECT_LOCK) {
 				lockLogEntry = entry;
 			}
-			if(entry.getLogAction() == LogAction.JAKE_OBJECT_UNLOCK) {
+			if (entry.getLogAction() == LogAction.JAKE_OBJECT_UNLOCK) {
 				lockLogEntry = null;
 			}
 		}
 		return lockLogEntry;
+	}
+
+	@Override
+	public Iterable<FileObject> getExistingFileObjects(Project project) {
+		Collection<LogEntry<FileObject>> all = findTwoMatching(
+				LogAction.JAKE_OBJECT_NEW_VERSION, LogAction.JAKE_OBJECT_DELETE);
+		Map<FileObject, Boolean> existState = new HashMap<FileObject, Boolean>();
+		for (LogEntry<FileObject> entry : all) {
+			FileObject jo = entry.getBelongsTo();
+			if (entry.getLogAction() == LogAction.JAKE_OBJECT_NEW_VERSION) {
+				existState.put(jo, true);
+			}
+			if (entry.getLogAction() == LogAction.JAKE_OBJECT_DELETE) {
+				existState.put(jo, false);
+			}
+		}
+		for (FileObject k : existState.keySet()) {
+			if (!existState.get(k))
+				existState.remove(k);
+		}
+		return existState.keySet();
 	}
 }

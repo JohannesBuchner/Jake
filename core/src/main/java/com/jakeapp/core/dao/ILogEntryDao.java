@@ -2,13 +2,12 @@ package com.jakeapp.core.dao;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
@@ -82,7 +81,7 @@ public interface ILogEntryDao {
 	 * @throws NoSuchLogEntryException
 	 *             if there is no LogEntry for <code>jakeObject</code>.
 	 */
-	public LogEntry<? extends ILogable> getMostRecentFor(JakeObject jakeObject)
+	public LogEntry<JakeObject> getMostRecentFor(JakeObject jakeObject)
 			throws NoSuchLogEntryException;
 
 	/**
@@ -199,7 +198,8 @@ public interface ILogEntryDao {
 	 * @param belongsTo
 	 * @return null: if the last in time is a
 	 *         {@link LogAction#JAKE_OBJECT_DELETE} or no Logentries were found
-	 *         the logentry of the {@link LogAction#JAKE_OBJECT_NEW_VERSION} otherwise
+	 *         the logentry of the {@link LogAction#JAKE_OBJECT_NEW_VERSION}
+	 *         otherwise
 	 */
 	public LogEntry<JakeObject> getExists(JakeObject belongsTo);
 
@@ -212,8 +212,8 @@ public interface ILogEntryDao {
 	 * 
 	 * @param belongsTo
 	 * @return the LogEntry doing the lock: if the last in time is a
-	 *         {@link LogAction#JAKE_OBJECT_LOCK}
-	 *         null: if no Logentries were found or last was {@link LogAction#JAKE_OBJECT_UNLOCK}
+	 *         {@link LogAction#JAKE_OBJECT_LOCK} null: if no Logentries were
+	 *         found or last was {@link LogAction#JAKE_OBJECT_UNLOCK}
 	 */
 	public LogEntry<JakeObject> getLock(JakeObject belongsTo);
 
@@ -278,5 +278,13 @@ public interface ILogEntryDao {
 	 *         must not be null
 	 */
 	public Map<ProjectMember, List<ProjectMember>> getTrustGraph();
+
+	/**
+	 * @param project
+	 * @return all fileObject that <br>
+	 *         don't have a {@link LogAction#JAKE_OBJECT_DELETE} <b>or</b> <br>
+	 *         have a {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than
+	 */
+	public Iterable<FileObject> getExistingFileObjects(Project project);
 
 }

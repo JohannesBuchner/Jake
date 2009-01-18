@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
@@ -124,7 +128,7 @@ public interface ISyncService {
 	/* Project member changes: just do a poke */
 
 	/**
-	 * Gets a list of all objects that are currently in conflict
+	 * Gets a list of all {@link FileObject}s that are currently in conflict
 	 * 
 	 * @param project
 	 *            the Project from which the changed objects should be shown
@@ -132,7 +136,7 @@ public interface ISyncService {
 	 * @throws IllegalArgumentException
 	 *             if the supplied Project is null or invalid
 	 */
-	public Iterable<JakeObject> getObjectsInConflict(Project project)
+	public Iterable<FileObject> getFileObjectsInConflict(Project project)
 			throws IllegalArgumentException;
 
 
@@ -181,7 +185,7 @@ public interface ISyncService {
 	 * @param project
 	 * @return
 	 */
-	public Iterable<JakeObject> getPullableFileObjects(Project project);
+	public Iterable<FileObject> getPullableFileObjects(Project project);
 
 	/**
 	 * 
@@ -219,5 +223,8 @@ public interface ISyncService {
 	 * @param jo
 	 */
 	void getTags(JakeObject jo);
+
+	@Transactional
+	public Boolean isLocallyModified(NoteObject noin);
 
 }

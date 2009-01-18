@@ -28,9 +28,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.ICServicesManager;
-import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
@@ -45,8 +43,6 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
-import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
-import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
@@ -78,7 +74,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private RequestHandlePolicy rhp;
 
-	private ApplicationContextFactory db;
+	ApplicationContextFactory db;
 
 	private ICServicesManager icServicesManager;
 
@@ -169,7 +165,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		if (localLe == null) {
 			return false;
 		}
-		LogEntry<? extends ILogable> newestLe;
+		LogEntry<JakeObject> newestLe;
 		try {
 			newestLe = db.getLogEntryDao(jo).getMostRecentFor(jo);
 		} catch (NoSuchLogEntryException e) {
@@ -216,21 +212,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 	}
 
-
-	private com.jakeapp.jake.ics.UserId getICSUseridFromDomainUserId(Project p) {
-		return null; // TODO
-	}
-
-	/**
-	 * returns all JakeObjects that still exist
-	 * 
-	 * @return
-	 */
-	private Iterable<JakeObject> getJakeObjectsWhereLastActionIsNotDelete() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public SyncServiceImpl() {
 	}
 
@@ -274,45 +255,51 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
-	public Iterable<JakeObject> getPullableFileObjects(Project project) {
-		List<JakeObject> missing = new LinkedList<JakeObject>();
-		Iterable<JakeObject> allJakeObjects = getJakeObjectsWhereLastActionIsNotDelete();
+	public Iterable<FileObject> getPullableFileObjects(Project project) {
+		List<FileObject> missing = new LinkedList<FileObject>();
+		Iterable<FileObject> allJakeObjects = db.getLogEntryDao(project)
+				.getExistingFileObjects(project);
 		for (JakeObject jo : allJakeObjects) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
 				if (localIsNewest(fo))
-					missing.add(jo);
+					missing.add(fo);
 			}
 		}
 		return missing;
 	}
 
 	@Override
-	public Iterable<JakeObject> getObjectsInConflict(Project project)
+	public Iterable<FileObject> getFileObjectsInConflict(Project project)
 			throws IllegalArgumentException {
+		List<FileObject> conflicting = new LinkedList<FileObject>();
 		// find existing locally
 		// find existing&modified locally that have a unprocessed NEW_VERSION
-		Iterable<JakeObject> pullableFO = getPullableFileObjects(project);
-
-
-		return null;
+		Iterable<FileObject> pullableFO = getPullableFileObjects(project);
+		for (FileObject jo : pullableFO) {
+			if (!isNoteObject(jo)) {
+				FileObject fo = (FileObject) jo;
+				try {
+					if (isLocallyModified(fo))
+						conflicting.add(jo);
+				} catch (InvalidFilenameException e) {
+					log.fatal("Database corrupted", e);
+				} catch (IOException e) {
+					log.fatal("IO error", e);
+				}
+			}
+		}
+		return conflicting;
 	}
 
 	@Override
 	@Transactional
 	public LogEntry<JakeObject> getLock(JakeObject jo) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		// TODO: iterate through logs backwards to find a lock
-		// if none found or last is unlocked -> unlocked
-		// otherwise -> locked
-		// db.getLogEntryDao(jo).getMostRecentFor(jakeObject)
 		return db.getLogEntryDao(jo).getLock(jo);
 	}
 
 	@Override
 	public void poke(Project project, UserId userId) {
-		// TODO Auto-generated method stub
-		// TODO: send userId a message to start a logsync
 		try {
 			getICS(project).getMsgService().sendMessage(
 					getBackendUserIdFromDomainUserId(userId), POKE_MESSAGE);
@@ -484,7 +471,49 @@ public class SyncServiceImpl extends FriendlySyncService {
 		else
 			return rhash.equals(lhash);
 	}
-
+	
+	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException, IOException {
+		if(isNoteObject(jo))
+			return isLocallyModified((NoteObject)jo);
+		else
+			return isLocallyModified((FileObject)jo);
+	}
+	
+	@Transactional
+	public Boolean isLocallyModified(NoteObject noin) {
+		NoteObject no = null;
+		try {
+			no = db.getNoteObjectDao(no.getProject()).get(no.getUuid());
+		} catch (NoSuchJakeObjectException e) {
+			return false;
+		}
+		
+		return null;
+		
+		/*if (!existsLocally(fo))
+			return false;
+		IFSService fss = getFSS(fo.getProject());
+		String rhash;
+		try {
+			rhash = db.getLogEntryDao(fo).getMostRecentFor(fo).getChecksum();
+		} catch (NoSuchLogEntryException e1) {
+			rhash = null;
+		}
+		String lhash = null;
+		try {
+			lhash = fss.calculateHashOverFile(fo.getRelPath());
+		} catch (FileNotFoundException e) {
+		} catch (InvalidFilenameException e) {
+		} catch (NotAReadableFileException e) {
+		}
+		if (lhash == null) {
+			return false; // doesn't exist locally
+		}
+		if (rhash == null)
+			return true; // doesn't exist remote
+		else
+			return rhash.equals(lhash);*/
+	}
 	public Boolean existsLocally(FileObject fo) throws IOException {
 		IFSService fss = getFSS(fo.getProject());
 		try {
@@ -496,8 +525,39 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	public boolean isObjectInConflict(JakeObject jo) {
-		// TODO Auto-generated method stub
+		if (!isPullable(jo))
+			return false;
+		try {
+			if (isLocallyModified(jo))
+				return true;
+		} catch (InvalidFilenameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
+	}
+
+	private boolean isPullable(JakeObject jo) {
+		LogEntry<JakeObject> newestLe;
+		try {
+			// TODO: trust
+			newestLe = db.getLogEntryDao(jo).getMostRecentFor(jo);
+		} catch (NoSuchLogEntryException e) {
+			return false;
+		} 
+		LogEntry<JakeObject> myLe;
+		try {
+			myLe = db.getLogEntryDao(jo).getLastPulledFor(jo);
+		} catch (NoSuchLogEntryException e) {
+			return true;
+		}
+		if (newestLe.getUuid() == myLe.getUuid())
+			return false;
+		else
+			return true;
 	}
 
 	@Override

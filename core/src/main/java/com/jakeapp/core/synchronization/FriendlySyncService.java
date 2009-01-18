@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
@@ -60,10 +61,13 @@ public abstract class FriendlySyncService implements IFriendlySyncService {
 	 * .jakeapp.core.domain.Project)
 	 */
 	public void pullObjects(Project project) throws IllegalArgumentException, NotLoggedInException {
-		try {
-			pullObjects(getPullableFileObjects(project));
-		} catch (NoSuchLogEntryException e) {
+		for (FileObject fo : getPullableFileObjects(project)) {
+			try {
+				pullObject(fo);
+			} catch (NoSuchLogEntryException e) {
+			}
 		}
+		// TODO: pull notes
 	}
 
 	/*
@@ -78,5 +82,4 @@ public abstract class FriendlySyncService implements IFriendlySyncService {
 			pullObject(jo);
 		}
 	}
-
 }
