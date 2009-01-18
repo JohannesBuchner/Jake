@@ -122,17 +122,24 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 */
 	private JPanel createLoginUserPanel() {
 		// create the user login panel
-		JPanel loginUserPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
+		JPanel loginUserPanel = new JPanel(new MigLayout("wrap 1, fill, center, ins 0"));
 		loginUserPanel.setOpaque(false);
 
 		// the say hello heading
-		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fill, top, ins 0"));
+		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fillx, top, ins 0"));
 		titlePanel.setOpaque(false);
-		JLabel createAccountLabel = new JLabel(getResourceMap().getString("loginMessageLabel"));
-		createAccountLabel.setIcon(jakeWelcomeIcon);
-		createAccountLabel.setVerticalTextPosition(JLabel.TOP);
-		titlePanel.add(createAccountLabel, "top, center, h 80!");
-		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, grow, h 80:300");
+		JLabel selectUserLabel = new JLabel(getResourceMap().getString("selectUserLabel"));
+		selectUserLabel.setIcon(jakeWelcomeIcon);
+		selectUserLabel.setVerticalTextPosition(JLabel.TOP);
+		titlePanel.add(selectUserLabel, "top, center, h 80!");
+		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, growx, h 80!");
+
+		JPanel userListPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
+		userListPanel.setOpaque(false);
+		JScrollPane usersScrollPanel = new JScrollPane(userListPanel);
+		usersScrollPanel.setOpaque(false);
+		usersScrollPanel.getViewport().setOpaque(false);
+		usersScrollPanel.setBorder(null);
 
 		try {
 			List<MsgService> msgs = JakeMainApp.getCore().getMsgServics();
@@ -140,12 +147,14 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			if (msgs != null) {
 				for (MsgService msg : msgs) {
 					UserControlPanel userPanel = new UserControlPanel(msg);
-					this.add(userPanel);
+					userListPanel.add(userPanel);
 				}
 			}
 		} catch (NotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
+
+		loginUserPanel.add(usersScrollPanel, "grow");
 
 		return loginUserPanel;
 	}
@@ -676,32 +685,58 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		private final MsgService msg;
 		private JPasswordField passField;
 		private JCheckBox rememberPassCheckBox;
+		private final static String MagicPassToken = "%MAGIC%";
 
 		public UserControlPanel(final MsgService msg) {
 			log.info("creating UserControlPanel with " + msg);
 			this.msg = msg;
 
-			this.setLayout(new MigLayout("wrap 1"));
+			this.setLayout(new MigLayout("wrap 2"));
+			this.setBorder(BorderFactory.createLoweredBevelBorder());
+			this.setOpaque(false);
 
-			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msg.getUserId().toString() + "</b>"));
-			this.add(userLabel, "span 2");
+			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msg.getUserId().getUserId() + "</b>"));
+			this.add(userLabel, "span 2, gapbottom 8");
 
-			JLabel passLabel = new JLabel(getResourceMap().getString("passwordLabel"));
-			this.add(passLabel);
+			JLabel passLabel = new JLabel(getResourceMap().getString("passwordLabel") + ":");
+			this.add(passLabel, "left");
 			passField = new JPasswordField();
-			this.add(passField);
+			this.add(passField, "w 200!");
 
 			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
 			rememberPassCheckBox.setSelected(true);
 			rememberPassCheckBox.setOpaque(false);
-			this.add(rememberPassCheckBox, "");
+			rememberPassCheckBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					updateUserPanel();
+				}
+			});
+			this.add(rememberPassCheckBox, "span 2");
+
+			JButton deleteUserBtn = new JButton(getResourceMap().getString("deleteUser"));
+			deleteUserBtn.putClientProperty("JButton.buttonType", "textured");
+			deleteUserBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						JakeMainApp.getCore().removeAccount(msg);
+						updateView();
+					} catch (Exception e1) {
+						ExceptionUtilities.showError(e1);
+					}
+				}
+			});
+			this.add(deleteUserBtn, "left, bottom");
 
 			JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
+			signInBtn.putClientProperty("JButton.buttonType", "textured");
 			signInBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
 						msg.login();
+						updateView();
 					} catch (Exception e1) {
 						ExceptionUtilities.showError(e1);
 					}
@@ -709,14 +744,33 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			});
 			this.add(signInBtn, "right, bottom");
 
-			updateUserPanel();
+			// if a password is set, write a magic token into password field
+			// to represent the "not changed" state
+			if (msg.isPasswordSaved()) {
+				passField.setText(MagicPassToken);
+			}
+			rememberPassCheckBox.setSelected(msg.isPasswordSaved());
 		}
 
-		public void updateUserPanel() {
-			boolean isPasswordSaved = true;
 
-			rememberPassCheckBox.setSelected(isPasswordSaved);
+		/**
+		 * Disables the Password Field if Password is saved.
+		 */
+		private void updateUserPanel() {
+			if (isMagicToken() && isRememberPassword()) {
+				passField.setEditable(false);
+			} else {
+				passField.setEditable(true);
+			}
 
+			// remove magic token if checkbox is removed
+			if (isMagicToken() && !isRememberPassword()) {
+				passField.setText("");
+			}
+		}
+
+		private boolean isMagicToken() {
+			return getPassword().compareTo(MagicPassToken) == 0;
 		}
 
 		/**
@@ -732,6 +786,10 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		public boolean isRememberPassword() {
 			return rememberPassCheckBox.isSelected();
+		}
+
+		public String getPassword() {
+			return passField.getText();
 		}
 	}
 }

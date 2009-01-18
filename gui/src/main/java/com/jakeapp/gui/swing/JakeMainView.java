@@ -12,10 +12,10 @@ import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
+import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.*;
-import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -33,6 +33,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
@@ -75,6 +76,9 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private JSplitPane mainSplitPane;
 	private SearchField searchField;
 
+	private Image IconAppSmall;
+	private Image IconAppLarge;
+
 	public boolean isInspectorEnabled() {
 		return inspectorEnabled;
 	}
@@ -111,6 +115,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	public JakeMainView(JakeMainApp app) {
 		super(app);
 
+		IconAppSmall = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				  getClass().getResource("/icons/jakeapp.png"))).getImage();
+
+		IconAppLarge = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				  getClass().getResource("/icons/jakeapp-large.png"))).getImage();
+
 		setMainView(this);
 		this.app = app;
 
@@ -134,9 +144,10 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			setMacSystemProperties();
 		}
 
-		// set window icon
-		this.getFrame().setIconImage(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/jakeapp.png"))).getImage());
+		// set window icon (small, large)
+		// large icon may be shown e.g. on big icon tab switch on vista
+		this.getFrame().setIconImage(IconAppSmall);
+		this.getFrame().setIconImages(Arrays.asList(IconAppSmall, IconAppLarge));
 
 		// set app size
 		this.getFrame().setMinimumSize(new Dimension(600, 600));
@@ -155,7 +166,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
 		contentPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-			 contentPanel, inspectorPanel);
+				  contentPanel, inspectorPanel);
 		contentPanelSplit.setOneTouchExpandable(false);
 		contentPanelSplit.setContinuousLayout(true);
 		contentPanelSplit.setBorder(null);
@@ -331,7 +342,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// Add Files
 		Icon addFilesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/toolbar-addfiles.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+				  getClass().getResource("/icons/toolbar-addfiles.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton jCreateAddFilesButton = new JButton(getResourceMap().getString("toolbarAddFiles"), addFilesIcon);
 
 		addFilesButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateAddFilesButton);
@@ -413,7 +424,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 */
 
 		Icon inspectorIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			 getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+				  getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 		JButton inspectorJButton = new JButton("Inspector", inspectorIcon);
 		inspectorJButton.addActionListener(new ActionListener() {
 
@@ -599,7 +610,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		// creates the special SplitPlane
 		JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(
-			 sourceList.getSourceList(), contentPanelSplit);
+				  sourceList.getSourceList(), contentPanelSplit);
 
 		// TODO: divider location should be a saved property
 		splitPane.setDividerLocation(180);
@@ -616,14 +627,14 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	private void updateInspectorPanelVisibility() {
 		log.debug("pre: isInspectorEnabled: " + isInspectorEnabled() +
-			 " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-			 " isInspectorAllowed: " + isInspectorAllowed());
+				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+				  " isInspectorAllowed: " + isInspectorAllowed());
 		if (isInspectorEnabled()) {
 			// add inspector IF allowed
 			if (isInspectorAllowed() && !isInspectorPanelVisible()) {
 				inspectorPanel.setVisible(true);
 				contentPanelSplit.setDividerLocation(contentPanelSplit.getWidth() -
-					 InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
+						  InspectorPanel.INSPECTOR_SIZE - 1 - contentPanelSplit.getDividerSize());
 			} else if (!isInspectorAllowed()) {
 				inspectorPanel.setVisible(false);
 			}
@@ -644,8 +655,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		contentPanel.updateUI();
 
 		log.debug("now: isInspectorEnabled: " + isInspectorEnabled() +
-			 " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-			 " isInspectorAllowed: " + isInspectorAllowed());
+				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+				  " isInspectorAllowed: " + isInspectorAllowed());
 	}
 
 	private boolean isInspectorPanelVisible() {

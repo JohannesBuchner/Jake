@@ -27,7 +27,7 @@ import java.util.Map;
  * The main class of the application.
  */
 public class JakeMainApp extends SingleFrameApplication implements
-	 ProjectSelectionChanged {
+		  ProjectSelectionChanged {
 
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
 
@@ -44,21 +44,21 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-			 new String[]{"/com/jakeapp/core/applicationContext.xml"
-				  /**
-				   * Uncomment the following line to use the real
-				   * implementation
-				   */
-				  // ,"/com/jakeapp/gui/swing/applicationContext-gui.xml"
+				  new String[]{"/com/jakeapp/core/applicationContext.xml"
+							 /**
+							  * Uncomment the following line to use the real
+							  * implementation
+							  */
+							 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
 
-				  /**
-				   * Uncomment the following line to use peter/chris
-				   * mock implementation
-				   */
-				  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+							 /**
+							  * Uncomment the following line to use peter/chris
+							  * mock implementation
+							  */
+							 // , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
-			 });
+				  });
 		setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
 
