@@ -24,7 +24,7 @@
     </bean>
 
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
-        <property name="applicationContextFactory" ref="applicationContextFactory"/>
+        <property name="db" ref="applicationContextFactory"/>
         <property name="icServicesManager" ref="icServiceManager"/>
 
     </bean>
