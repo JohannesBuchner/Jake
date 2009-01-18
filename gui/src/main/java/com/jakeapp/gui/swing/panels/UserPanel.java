@@ -322,8 +322,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		if (isModeSignIn()) {
 			cred.setUserId(loginUserDataPanel.getUserName());
 			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
-
-
 		} else {
 			cred.setUserId(loginUserDataPanel.getUserName());
 			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
@@ -345,7 +343,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
 					JakeMainApp.setMsgService(msg);
-					JakeExecutor.exec(new LoginAccountWorker(msg));
+					JakeExecutor.exec(new LoginAccountWorker(msg,
+							  loginUserDataPanel.getPassword(),
+							  loginUserDataPanel.isSetRememberPassword()));
 
 				} catch (Exception e) {
 					log.warn(e);
@@ -355,6 +355,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				}
 			} else {
 				JakeExecutor.exec(new RegisterAccountWorker(getCredientals()));
+				updateView();
 				// TODO
 			}
 		}
@@ -555,7 +556,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		 *
 		 * @return
 		 */
-		public boolean isRememberPassword() {
+		public boolean isSetRememberPassword() {
 			return rememberPassCheckBox.isSelected();
 		}
 
@@ -654,7 +655,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	}
 
 	private void updateSignInRegisterMode() {
-		log.info("updating signin/register mode.");
+		//log.info("updating signin/register mode.");
 
 		loginUserDataPanel.setVisible(isModeSignIn());
 		registerUserDataPanel.setVisible(!isModeSignIn());
