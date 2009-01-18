@@ -664,6 +664,13 @@ public interface ICoreAccess {
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);
+
+	/**
+	 * Safe the given note. Jesus saves!
+	 * @param note the not that is to saved.
+	 */
+	public void saveNote(NoteObject note);
+	
 }
 
 

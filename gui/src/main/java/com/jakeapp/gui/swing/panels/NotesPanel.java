@@ -18,6 +18,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.DeleteNoteAction;
 import com.jakeapp.gui.swing.actions.CreateNoteAction;
+import com.jakeapp.gui.swing.actions.SaveNoteAction;
 import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -28,6 +29,8 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
 import net.miginfocom.swing.MigLayout;
+
+import org.apache.log.output.io.SafeFileTarget;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXPanel;
@@ -72,6 +75,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private JButton commitBtn;
 	private JButton softLockBtn;
 	private JButton deleteBtn;
+	private JButton saveBtn;
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -311,7 +315,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		deleteBtn = new JButton(new DeleteNoteAction());
 		deleteBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(deleteBtn);
-
+		
+		saveBtn = new JButton(new SaveNoteAction());
+		saveBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(saveBtn);
 
 		this.noteReadPanel.add(noteControlPanel, "growx");
 
@@ -386,5 +393,13 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	public void setFilter(FilterPipeline filterPipeline) {
 		this.notesTable.setFilters(filterPipeline);
+	}
+	
+	/**
+	 * Get The current text of the noteReader.
+	 * @return the text of the noteReader.
+	 */
+	public String getNoteReaderText() {
+		return this.noteReader.getText();
 	}
 }

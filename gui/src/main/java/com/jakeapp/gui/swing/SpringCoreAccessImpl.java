@@ -1034,4 +1034,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return null;
 	}
 
+	@Override
+	public void saveNote(NoteObject note) {
+		// TODO Auto-generated method stub
+		
+	}
 }

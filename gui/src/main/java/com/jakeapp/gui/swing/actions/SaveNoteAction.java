@@ -4,8 +4,13 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 
+import org.apache.log4j.Logger;
+
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
+import com.jakeapp.gui.swing.panels.NotesPanel;
 
 /**
  * Note action that saves the selected note.  
@@ -15,6 +20,7 @@ import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 public class SaveNoteAction extends NoteAction {
 	
 	private static final long serialVersionUID = 196271937528474367L;
+	private static final Logger log = Logger.getLogger(SaveNoteAction.class);
 
 	public SaveNoteAction() {
 		super();
@@ -25,11 +31,12 @@ public class SaveNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// get text from text area
-		String newContent;
+		String newContent = NotesPanel.getInstance().getNoteReaderText();
+		NoteObject cachedNote = this.getSelectedNotes().get(0);
+		cachedNote.setContent(newContent);
 		
-		// put text in note
-		// safe note
+		log.debug("saving note with new content: " + newContent);
+		JakeMainApp.getCore().saveNote(cachedNote);
 	}
 	
 	@Override
