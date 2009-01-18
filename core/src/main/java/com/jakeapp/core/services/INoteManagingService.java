@@ -5,7 +5,6 @@ import java.util.List;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.domain.UserId;
 
 
 /**
@@ -43,4 +42,10 @@ public interface INoteManagingService {
 	 * @param note
 	 */
 	void addNote(NoteObject note);
+
+	/**
+	 * Saves a new Version of a NoteObject
+	 * @param note The updated Version of a note. It must exist.
+	 */
+	void saveNote(NoteObject note);
 }

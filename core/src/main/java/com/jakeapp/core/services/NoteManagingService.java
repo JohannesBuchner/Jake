@@ -1,7 +1,6 @@
 package com.jakeapp.core.services;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +12,6 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 
 
@@ -87,5 +85,10 @@ public class NoteManagingService implements INoteManagingService {
 		}
 		//Delete note from db
 		this.getDao().delete(note);
+	}
+
+	@Override
+	public void saveNote(NoteObject note) {
+		this.getDao().persist(note);
 	}
 }

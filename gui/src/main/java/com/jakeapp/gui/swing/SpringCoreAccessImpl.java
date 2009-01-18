@@ -609,10 +609,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @throws IllegalArgumentException 
 	 */
 	private FolderObject recursiveFileSystemHelper(Project prj, String relPath,String name,IFSService fss,IProjectsManagingService pms) throws IllegalArgumentException, IllegalStateException, NotLoggedInException {
-		FolderObject fo = new FolderObject(relPath, name);
-		
-		//TODO check how FolderObjects should really be created
-		
+		FolderObject fo = new FolderObject(relPath, name);	
 		try {
 			for (String f : fss.listFolder(relPath)) {
 				// f is a valid relpath
@@ -732,6 +729,23 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+		}
+	}
+	
+	@Override
+	public void saveNote(NoteObject note) {
+		try {
+			this.frontendService
+					.getProjectsManagingService(this.getSessionId())
+					.getNoteManagingService(note.getProject()).saveNote(note);
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (ProjectNotLoadedException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
 		}
 	}
 	
@@ -899,12 +913,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath) {
+		//TODO
 		return null;
 	}
 
 
 	@Override
 	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException {
+		//TODO
 		return null;
 	}
 
@@ -1003,43 +1019,48 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
+		//TODO implement
 	}
 
 	@Override
 	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
+		//TODO implement
 	}
 
 	@Override
 	public boolean isJakeObjectLocked(JakeObject jo) {
-		return false;  //To change body of implemented methods use File | Settings | File Templates.
+		return false;  //TODO change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
 	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException {
-		//To change body of implemented methods use File | Settings | File Templates.
+		//TODO change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
 	public void addFilesChangedListener(FilesChanged listener) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		//TODO change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
 	public void removeFilesChangedListener(FilesChanged listener) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		//TODO change body of implemented methods use File | Settings | File Templates.
 	}
 
 	public long getFileSize(FileObject file) {
+		//TODO
 		return 1234;
 	}
 
 	@Override
 	public long getLocalFileSize(FileObject fo) {
+		//TODO
 		return 0;
 	}
 
 	@Override
 	public Date getLocalFileLastModified(FileObject fo) {
+		//TODO
 		return null;
 	}
 
@@ -1076,12 +1097,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
-	public void saveNote(NoteObject note) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void announce(JakeObject jakeObject) {
 		// TODO Auto-generated method stub
