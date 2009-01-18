@@ -132,12 +132,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public ProjectMember getProjectMember(Project project,MsgService msg)
-		throws NoSuchProjectMemberException {
+	public ProjectMember getProjectMember(Project project, MsgService msg)
+		 throws NoSuchProjectMemberException {
 		ProjectMember result = null;
-		
+
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(project,msg);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(project, msg);
 		} catch (IllegalArgumentException e) {
 			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
 		} catch (IllegalStateException e) {
@@ -149,12 +149,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public String getProjectMemberID(Project project,ProjectMember pm)
-	throws NoSuchProjectMemberException {
+	public String getProjectMemberID(Project project, ProjectMember pm)
+		 throws NoSuchProjectMemberException {
 		String result = "";
-		
+
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMemberID(project,pm);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMemberID(project, pm);
 		} catch (IllegalArgumentException e) {
 			throw new NoSuchProjectMemberException("");
 		} catch (IllegalStateException e) {
@@ -884,12 +884,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void deleteToTrash(FileObject file) {
+	public void deleteToTrash(Project project, String relpath) {
+		// TODO: What do we do with folders?
 		try {
 			this.getFrontendService().
 				 getProjectsManagingService(this.getSessionId()).
-				 getFileServices(file.getProject()).
-				 trashFile(file.getRelPath());
+				 getFileServices(project).
+				 trashFile(relpath);
 		} catch (FileNotFoundException e) {
 			log.debug("Tried to delete nonexisting file", e);
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -899,20 +900,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (IllegalStateException e) {
 			log.debug("Project service is not available.");
 		} catch (InvalidFilenameException e) {
-			log.debug("Filename of FileObject invalid: " + file.getRelPath());
+			log.debug("Filename of FileObject invalid: " + relpath);
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (NotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
 		}
-	}
-
-	@Override
-	public void deleteToTrash(FolderObject folder) {
-		/*
-					  * not implemented yet - the same as with FileObject,
-					  * but FolderObject has no Project (yet). Deleting
-					  * something without a Project is not supported, however.
-					  */
 	}
 
 	@Override

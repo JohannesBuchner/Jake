@@ -809,16 +809,11 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public void deleteToTrash(FileObject file) {
-		File f = file.getAbsolutePath();
-		log.info("Deleting file " + file.getRelPath());
-		f.delete();
-	}
-
-	@Override
-	public void deleteToTrash(FolderObject folder) {
-		// I don't feel like mocking this anymore
-		log.info("Deleting folder " + folder.getRelPath());
+	public void deleteToTrash(Project project, String relpath) {
+		// FIXME: Implement me
+		//File f = file.getAbsolutePath();
+		log.info("Deleting file " + relpath);
+		//f.delete();
 	}
 
 	@Override
@@ -905,12 +900,12 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public ProjectMember getProjectMember(Project project,MsgService msg) {
+	public ProjectMember getProjectMember(Project project, MsgService msg) {
 		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
 	}
 
 	@Override
-	public String getProjectMemberID(Project project,ProjectMember pm) {
+	public String getProjectMemberID(Project project, ProjectMember pm) {
 		if (pm != null) {
 			return pm.getNickname() + "@jabber.com";
 		} else {
@@ -955,6 +950,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public boolean isSoftLocked(JakeObject jakeObject) {
+		// FIXME: Merge two methods
 		if (jakeObject instanceof NoteObject) {
 			NoteObject note = (NoteObject) jakeObject;
 			return this.notesIsLocked.get(this.notesList.indexOf(note));

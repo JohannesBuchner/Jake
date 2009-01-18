@@ -216,9 +216,9 @@ public interface ICoreAccess {
 	 *
 	 * @param msg: MsgService
 	 * @return project member from msg service.
-	 * @throws NoSuchProjectMemberException 
+	 * @throws NoSuchProjectMemberException
 	 */
-	public ProjectMember getProjectMember(Project project,MsgService msg) throws NoSuchProjectMemberException;
+	public ProjectMember getProjectMember(Project project, MsgService msg) throws NoSuchProjectMemberException;
 
 	/**
 	 * Returns the corresponding ID to a ProjectMember.
@@ -226,9 +226,9 @@ public interface ICoreAccess {
 	 *
 	 * @param pm
 	 * @return
-	 * @throws NoSuchProjectMemberException 
+	 * @throws NoSuchProjectMemberException
 	 */
-	public String getProjectMemberID(Project project,ProjectMember pm) throws NoSuchProjectMemberException;
+	public String getProjectMemberID(Project project, ProjectMember pm) throws NoSuchProjectMemberException;
 
 
 	/******************* Project functions ********************/
@@ -430,18 +430,11 @@ public interface ICoreAccess {
 
 	// TODO: What happens to FileObjects and FolderObjects? Are we going to have a common superclass?
 	/**
-	 * Deletes a file (moves it to system trash)
+	 * Deletes a file or folder (moves it to system trash)
 	 *
-	 * @param file The file to be deleted
+	 * @param relpath The file or folder to be deleted
 	 */
-	public void deleteToTrash(FileObject file);
-
-	/**
-	 * Deletes a folder (moves it to system trash)
-	 *
-	 * @param folder The folder to be deleted
-	 */
-	public void deleteToTrash(FolderObject folder);
+	public void deleteToTrash(Project project, String relpath);
 
 	/**
 	 * Renames a file
