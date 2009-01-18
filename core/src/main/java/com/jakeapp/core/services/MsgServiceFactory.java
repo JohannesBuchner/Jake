@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * Factory Class to create MsgServices by giving ServiceCredentials
  */
+@Transactional
 public class MsgServiceFactory {
 
     private static Logger log = Logger.getLogger(MsgServiceFactory.class);
@@ -59,7 +60,10 @@ public class MsgServiceFactory {
     private void createTestdata() {
         log.debug("creating testData");
         List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
-		credentialsList = this.serviceCredentialsDao.getAll();
+
+        
+
+        credentialsList = this.serviceCredentialsDao.getAll();
 
         ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
                 "somepass");
@@ -133,6 +137,8 @@ public class MsgServiceFactory {
         return result;
     }
 
+
+    @Transactional
     public List<MsgService> getAll() {
         log.debug("calling getAll");
         ensureInitialised();

@@ -23,7 +23,7 @@ public abstract class MsgService<T extends UserId> {
 
 	private VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
 
-	private T userId;
+	protected T userId;
 
 	private ServiceCredentials serviceCredentials;
 
@@ -37,6 +37,10 @@ public abstract class MsgService<T extends UserId> {
 	protected void setName(String name) {
 		this.name = name;
 	}
+
+
+
+
 
 	/**
 	 * @return The name of the Service associated to this
@@ -157,7 +161,12 @@ public abstract class MsgService<T extends UserId> {
 	 */
 	public abstract T getUserId(String userId) throws UserIdFormatException;
 
-	/**
+
+    protected void setUserId(T userId) {
+        this.userId = userId;
+    }
+
+    /**
 	 * Find out if the supplied &lt;T extends UserId&gt; is a friend of the
 	 * current user of this MsgService
 	 *

@@ -9,38 +9,47 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.ArrayList;
 
 /**
  * Implementation of the MessageService for the XMPP Messaging Protocol
  */
 public class XMPPMsgService extends MsgService<XMPPUserId> {
 
+
 	public static final String namespace = "http://jakeapp.com/protocols/xmpp/versions/1";
 
 	private XmppICService ics = new XmppICService(namespace, "Jake");
 
-	private XmppUserId user;
+     private XmppUserId icsXmppUserId;
 
 	private String host;
 
-	@Override
+
+    public XMPPMsgService() {
+        this.setUserId(new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(), "todo useridstring", "todo nickname", "todo firstname", "todo surname")); 
+
+    }
+
+    @Override
 	protected boolean doCredentialsCheck() {
 		ServiceCredentials cred = this.getServiceCredentials();
-		this.user = new XmppUserId(cred.getUserId());
-		if (!this.user.isOfCorrectUseridFormat()) {
-			this.user = null;
+		this.icsXmppUserId = new XmppUserId(cred.getUserId());
+		if (!this.icsXmppUserId.isOfCorrectUseridFormat()) {
+			this.icsXmppUserId = null;
 			return false;
 		}
 		this.host = cred.getServerAddressString();
 		if (this.host == "" || this.host == null) {
-			this.host = this.user.getHost();
+			this.host = this.icsXmppUserId.getHost();
 		}
 		return true;
 	}
 
 	@Override
 	protected boolean doLogin() throws Exception {
-		return this.ics.getStatusService().login(this.user,
+		return this.ics.getStatusService().login(this.icsXmppUserId,
 				  this.getServiceCredentials().getPlainTextPassword());
 	}
 
@@ -56,12 +65,18 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 	@Override
 	public List<XMPPUserId> getUserList() {
-		return null; // TODO
+        List<XMPPUserId> result = new ArrayList<XMPPUserId>();
+                      // TODO
+
+        return result;
 	}
 
 	@Override
 	public XMPPUserId getUserId(String userId) throws UserIdFormatException {
-		return null; // TODO
+		XMPPUserId result = new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(), "todo test",
+                "todo nickname", "todo firstname", "todo surname");
+
+        return result;
 	}
 
 	@Override
@@ -71,17 +86,19 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 	@Override
 	public List<XMPPUserId> findUser(String pattern) {
-		return null; // TODO
+		List<XMPPUserId> result = new ArrayList<XMPPUserId>();
+                       // TODO
+        return result;
 	}
 
 	@Override
 	public String getServiceName() {
-		return null; // TODO
+		return "XMPP";
 	}
 
 	@Override
 	public void createAccount() throws NetworkException {
-		ics.getStatusService().createAccount(user,
+		ics.getStatusService().createAccount(icsXmppUserId,
 				  this.getServiceCredentials().getPlainTextPassword());
 	}
 }

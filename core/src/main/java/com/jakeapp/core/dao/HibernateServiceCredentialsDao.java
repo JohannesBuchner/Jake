@@ -72,7 +72,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     public List<ServiceCredentials> getAll() {
 
         List<ServiceCredentials> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM ServiceCredentials").list();
+                createQuery("FROM servicecredentials").list();
 
         return results;
     }

@@ -10,7 +10,7 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 
-    <tx:annotation-driven />
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
     <bean id="applicationContextFactory" class="com.jakeapp.core.util.ApplicationContextFactory">

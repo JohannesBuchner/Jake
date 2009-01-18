@@ -83,7 +83,7 @@ public class ServiceCredentials implements Serializable {
 	 * 
 	 * @return the userId
 	 */
-	@Column(name = "username", unique = true, nullable = false)
+	@Column(name = "username", nullable = false)
 	public String getUserId() {
 		return userId;
 	}

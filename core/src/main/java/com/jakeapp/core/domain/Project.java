@@ -38,7 +38,7 @@ import com.jakeapp.core.services.MsgService;
  * </ul>
  */
 @Entity
-@Table(name = "PROJECT")
+@Table(name = "project")
 //@UniqueConstraint(columnNames = {"projectId"} )
 public class Project implements ILogable {
     private static final long serialVersionUID = 4634971877310089896L;
