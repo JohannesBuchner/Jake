@@ -72,55 +72,16 @@ public class MsgServiceFactory {
 
         credentialsList = this.serviceCredentialsDao.getAll();
 
-        ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
-                "somepass");
-        sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
-        sc1.setProtocol(ProtocolType.XMPP);
-        try {
-            sc1.setServerAddress(Inet4Address.getLocalHost());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        sc1.setServerPort(9000);
-        sc1.setEncryptionUsed(false);
 
-
-        ServiceCredentials sc2 = new ServiceCredentials("pstein@jabber.fsinf.at",
-                "somepass");
-        sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
-        sc2.setProtocol(ProtocolType.XMPP);
-        try {
-            sc2.setServerAddress(Inet4Address.getLocalHost());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        sc2.setServerPort(9000);
-        sc2.setEncryptionUsed(false);
-
-
-        ServiceCredentials sc3 = new ServiceCredentials("pstein@jabber.fsinf.at",
-                "somepass");
-        sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
-        sc3.setProtocol(ProtocolType.XMPP);
-        try {
-            sc3.setServerAddress(Inet4Address.getLocalHost());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        sc3.setServerPort(9000);
-        sc3.setEncryptionUsed(false);
-
-        credentialsList.add(sc1);
-        credentialsList.add(sc2);
-        credentialsList.add(sc3);
 
         for (ServiceCredentials credentials : credentialsList) {
-            MsgService service = null;
             try {
+                MsgService service = null;
                 service = this.createMsgService(credentials);
+                msgServices.add(service);
             } catch (ProtocolNotSupportedException e) {
+
             }
-            msgServices.add(service);
         }
     }
 
@@ -131,44 +92,44 @@ public class MsgServiceFactory {
 
         ensureInitialised();
         MsgService result = null;
-        if (credentials.getProtocol().equals(ProtocolType.XMPP)) {
+        if (credentials.getProtocol() != null && credentials.getProtocol().equals(ProtocolType.XMPP)) {
             log.debug("Creating new XMPPMsgService for userId "
                     + credentials.getUserId());
             result = new XMPPMsgService();
             result.setCredentials(credentials);
 
 
-            try {
-                if(!credentials.getUuid().isEmpty())
-                {
-                    log.debug("uuid is not empty");
-
-                    if(userIdDao == null)
-                        log.debug("userIdDao = null");
-
-                    UserId userId = userIdDao.get(
-                            UUID.fromString(
-                                    credentials.getUuid()
-                            )
-                    );
-                    
-                    log.debug("setting userid");
-                    result.setUserId(userId);
-
-                }
-                else
-                {
-                    log.debug("uuid is empty");
-
-
-
-                }
-
-            } catch (InvalidUserIdException e) {
-                e.printStackTrace();
-            } catch (NoSuchUserIdException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                if(!credentials.getUuid().isEmpty())
+//                {
+//                    log.debug("uuid is not empty");
+//
+//                    if(userIdDao == null)
+//                        log.debug("userIdDao = null");
+//
+//                    UserId userId = userIdDao.get(
+//                            UUID.fromString(
+//                                    credentials.getUuid()
+//                            )
+//                    );
+//
+//                    log.debug("setting userid");
+//                    result.setUserId(userId);
+//
+//                }
+//                else
+//                {
+//                    log.debug("uuid is empty");
+//
+//
+//
+//                }
+//
+//            } catch (InvalidUserIdException e) {
+//                e.printStackTrace();
+//            } catch (NoSuchUserIdException e) {
+//                e.printStackTrace();
+//            }
 
         } else {
             log.warn("Currently unsupported protocol given");
@@ -218,11 +179,35 @@ public class MsgServiceFactory {
         log.debug("calling addMsgService");
 
         MsgService svc = this.createMsgService(credentials);
+        UserId user = null;
+        switch (credentials.getProtocol()) {
+
+            case ICQ:
+                throw new ProtocolNotSupportedException("ICQ not yet implemented");
+
+            case MSN:
+                throw new ProtocolNotSupportedException("MSN not yet implemented");
+
+            case XMPP:
+                user = new XMPPUserId(credentials, UUID.randomUUID(), credentials.getUserId(), "", "", "");
+                break;
+        }
+        if(user != null)
+            svc.setUserId(user);
+
         msgServices.add(svc);
 
-        //add account in database
-        this.getServiceCredentialsDao().create(credentials);
+        try {
 
-		return svc;
+            this.getServiceCredentialsDao().create(credentials);
+            this.userIdDao.create(user);
+            return svc;
+        } catch (InvalidUserIdException e) {
+            e.printStackTrace();
+        }
+        //add account in database
+
+        throw new InvalidCredentialsException("something went wrong");
+
 	}
 }

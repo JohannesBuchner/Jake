@@ -196,6 +196,7 @@ public class FrontendServiceImpl implements IFrontendService {
 			  throws NotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
 		checkSession(sessionId);
+
 		return msgServiceFactory.addMsgService(credentials);
 	}
 
