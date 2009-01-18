@@ -6,7 +6,11 @@ GUITYPE="swing"
 all: gui
 
 start: gui2
-	cd gui; ${MVN} exec:java
+	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
+mockstart: gui2
+	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=yes
+
+
 
 gui2: 
 	mvn -Dmaven.test.skip=true install

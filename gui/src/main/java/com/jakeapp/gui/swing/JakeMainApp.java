@@ -52,15 +52,22 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 		String[] options = {"Mock", "Real Thing"};
 
-		if (JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
-				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.NO_OPTION) {
-			applicationContext = new ClassPathXmlApplicationContext(
-					  new String[]{"/com/jakeapp/core/applicationContext.xml"
-								 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
-		} else {
+		String type = System.getProperty("com.jakeapp.gui.test.usemock");
+		if(type == null) {
+			if(JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
+				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.NO_OPTION)
+				type = "yes";
+			else
+				type = "no";
+		}
+		if ("yes".equals(type)) {
 			applicationContext = new ClassPathXmlApplicationContext(
 					  new String[]{"/com/jakeapp/core/applicationContext.xml"
 								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"});
+		} else {
+			applicationContext = new ClassPathXmlApplicationContext(
+					  new String[]{"/com/jakeapp/core/applicationContext.xml"
+								 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
 		}
 
 
