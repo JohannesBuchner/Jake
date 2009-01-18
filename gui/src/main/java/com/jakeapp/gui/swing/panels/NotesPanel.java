@@ -70,8 +70,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private JTextArea noteReader;
 	private ICoreAccess core;
 	private Project currentProject;
-	private JButton shareUpdateBtn;
-	private JButton lockBtn;
+	private JButton commitBtn;
+	private JButton softLockBtn;
+	private JButton deleteBtn;
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -290,15 +291,18 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
 		noteControlPanel.setBackground(Color.WHITE);
 
-		shareUpdateBtn = new JButton();
-		shareUpdateBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(shareUpdateBtn);
-		updateShareUpdateBtn();
+		commitBtn = new JButton(new CommitNoteAction());
+		commitBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(commitBtn);
 
-		lockBtn = new JButton();
-		updateLockBtn();
-		lockBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(lockBtn);
+		softLockBtn = new JButton(new SoftlockNoteAction());
+		softLockBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(softLockBtn);
+		
+		deleteBtn = new JButton(new DeleteNoteAction());
+		deleteBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(deleteBtn);
+		
 
 		this.noteReadPanel.add(noteControlPanel, "growx");
 
@@ -325,26 +329,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		mainSplitPane.setRightComponent(noteReadPanel);
 
-	}
-
-	private void updateLockBtn() {
-		// TODO
-		boolean isLocked = true;
-		lockBtn.setText(getResourceMap().getString(isLocked ? "lockBtn" : "unLockBtn"));
-	}
-
-	/**
-	 * update the button to set right label
-	 */
-	private void updateShareUpdateBtn() {
-		// TODO
-		boolean isSharedNote = true;
-
-		if (isSharedNote) {
-			shareUpdateBtn.setText(getResourceMap().getString("updateBtn"));
-		} else {
-			shareUpdateBtn.setText(getResourceMap().getString("shareBtn"));
-		}
 	}
 
 	public static NotesPanel getInstance() {

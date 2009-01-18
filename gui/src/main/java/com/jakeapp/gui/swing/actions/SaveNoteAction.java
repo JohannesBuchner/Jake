@@ -25,7 +25,11 @@ public class SaveNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		// get text from text area
+		String newContent;
+		
+		// put text in note
+		// safe note
 	}
 	
 	@Override
