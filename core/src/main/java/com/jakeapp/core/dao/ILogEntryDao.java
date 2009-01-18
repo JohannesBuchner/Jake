@@ -226,7 +226,7 @@ public interface ILogEntryDao {
 	 * @param belongsTo
 	 * @return an empty collection if no tags (not null) or the tags otherwise
 	 */
-	public Collection<Tag> getCurrentTags(ILogable belongsTo);
+	public Collection<Tag> getCurrentTags(JakeObject belongsTo);
 
 	/**
 	 * Iterates in time through all

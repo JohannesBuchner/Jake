@@ -77,12 +77,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject) {
 
-        List<LogEntry<?extends ILogable>> result = this.getHibernateTemplate().
-                getSessionFactory().getCurrentSession().createQuery("FROM logentries WHERE objectid = ? ").list(); // TODO
-
-
-
-
+		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession().createQuery(
+						"FROM logentries WHERE objectid = ? ").list(); // TODO
 
 
 		return null; // To change body of implemented methods use File |
@@ -175,15 +172,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			return true;
 		} else
 			return false;
-
-		// List<LogEntry<? extends ILogable>> le = new LinkedList<LogEntry<?
-		// extends ILogable>>();
-		/*
-		 * le.addAll(findMatching(len)); le.addAll(findMatching(led)); for(entry
-		 * : le) {
-		 *
-		 * }
-		 */
 	}
 
 	@Override
@@ -213,27 +201,57 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatching(LogAction a,
 			LogAction b) {
-          // TODO UNCHECKED!
-        List<LogEntry<T>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM logentries WHERE logAction = ? or logAction  = ? ORDER BY timestamp asc").
-                setInteger(0,a.ordinal()).setInteger(1,b.ordinal()).list();
+		// TODO UNCHECKED!
+		List<LogEntry<T>> result = this
+				.getHibernateTemplate()
+				.getSessionFactory()
+				.getCurrentSession()
+				.createQuery(
+						"FROM logentries WHERE logAction = ? or logAction  = ? ORDER BY timestamp asc")
+				.setInteger(0, a.ordinal()).setInteger(1, b.ordinal()).list();
 
 		return result;
 	}
 
 	/**
 	 * finds all that match any of the two Logactions and belong to the given
-	 * element, sorted by timestamp
-	 *
+	 * JakeObject, sorted by timestamp
+	 * 
 	 * @param <T>
 	 */
-	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatchingFor(LogAction a,
-			LogAction b, T belongsTo) {
+	private Collection<LogEntry<Tag>> findTagEntriesForJakeObject(
+			LogAction a, LogAction b, JakeObject belongsTo) {
 		// TODO
-		return new LinkedList<LogEntry<T>>();
+		return new LinkedList<LogEntry<Tag>>();
+	}
+	
+	/**
+	 * finds all that match any of the two Logactions and belong to the given
+	 * ProjectMember, sorted by timestamp
+	 * 
+	 * @param <T>
+	 */
+	private Collection<LogEntry<ProjectMember>> findTwoMatchingForProjectMember(
+			LogAction a, LogAction b, ProjectMember belongsTo) {
+		// TODO
+		//a=LogAction.START_TRUSTING_PROJECTMEMBER
+		//b=LogAction.STOP_TRUSTING_PROJECTMEMBER
+		return new LinkedList<LogEntry<ProjectMember>>();
 	}
 
-	Collection<LogEntry<ProjectMember>> getProjectMemberEntries() {
+	/**
+	 * finds all that match any of the two Logactions and belong to the given
+	 * JakeObject, sorted by timestamp
+	 * 
+	 * @param <T>
+	 */
+	private Collection<LogEntry<JakeObject>> findTwoMatchingForJakeObject(LogAction a,
+			LogAction b, JakeObject belongsTo) {
+		// TODO
+		return new LinkedList<LogEntry<JakeObject>>();
+	}
+
+	private Collection<LogEntry<ProjectMember>> getProjectMemberEntries() {
 		List<LogEntry<ProjectMember>> pme = new LinkedList<LogEntry<ProjectMember>>();
 		for (LogEntry<? extends ILogable> le : findTwoMatching(
 				LogAction.START_TRUSTING_PROJECTMEMBER,
@@ -246,7 +264,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	private Collection<LogEntry<ProjectMember>> getProjectMemberEntriesFor(
 			ProjectMember belongsTo) {
 		List<LogEntry<ProjectMember>> pme = new LinkedList<LogEntry<ProjectMember>>();
-		for (LogEntry<? extends ILogable> le : findTwoMatchingFor(
+		for (LogEntry<? extends ILogable> le : findTwoMatchingForProjectMember(
 				LogAction.START_TRUSTING_PROJECTMEMBER,
 				LogAction.STOP_TRUSTING_PROJECTMEMBER, belongsTo)) {
 			pme.add((LogEntry<ProjectMember>) le); // TODO?
@@ -254,13 +272,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return pme;
 	}
 
-	private Collection<LogEntry<Tag>> getTagEntries(ILogable belongsTo) {
-		List<LogEntry<Tag>> pme = new LinkedList<LogEntry<Tag>>();
-		for (LogEntry<? extends ILogable> le : findTwoMatchingFor(LogAction.TAG_ADD,
-				LogAction.TAG_REMOVE, belongsTo)) {
-			pme.add((LogEntry<Tag>) le); // TODO?
-		}
-		return pme;
+	private Collection<LogEntry<Tag>> getTagEntries(JakeObject belongsTo) {
+		return findTagEntriesForJakeObject(
+				LogAction.TAG_ADD, LogAction.TAG_REMOVE, belongsTo);
 	}
 
 	@Override
@@ -298,7 +312,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public Collection<Tag> getCurrentTags(ILogable belongsTo) {
+	public Collection<Tag> getCurrentTags(JakeObject belongsTo) {
 		List<Tag> tags = new LinkedList<Tag>();
 		for (LogEntry<Tag> le : getTagEntries(belongsTo)) {
 			if (le.getLogAction() == LogAction.TAG_ADD) {
@@ -328,7 +342,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public LogEntry<JakeObject> getLock(JakeObject belongsTo) {
-		Collection<LogEntry<JakeObject>> entries = findTwoMatchingFor(
+		Collection<LogEntry<JakeObject>> entries = findTwoMatchingForJakeObject(
 				LogAction.JAKE_OBJECT_LOCK, LogAction.JAKE_OBJECT_UNLOCK, belongsTo);
 		LogEntry<JakeObject> lockLogEntry = null;
 		for (LogEntry<JakeObject> entry : entries) {

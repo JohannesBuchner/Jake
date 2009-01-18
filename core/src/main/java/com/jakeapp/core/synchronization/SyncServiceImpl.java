@@ -338,9 +338,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 
 		FailoverCapableFileTransferService ts = getTransferService(jo.getProject());
-
-
-		// ts.request(jo.ge, nsl);
+		//ts.request(jo.ge, nsl);
 		// TODO: getPotentialProviders
 		// if(le.getUserId().equals(userid))
 		// throw new com.jakeapp.core.dao.exceptions.NoSuchLogEntryException();
