@@ -11,10 +11,7 @@ import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
-import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
-import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -56,9 +53,21 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private JComboBox loginServiceCheckBox;
 	private JAsynchronousProgressIndicator workingAnimation;
 	private ServiceCredentials cred;
+	private JPanel addUserPanel;
+	private JPanel loginUserPanel;
 
+	/**
+	 * SupportedServices; we add some default support for common services.
+	 */
 	private enum SupportedServices {
 		Google, Jabber, UnitedInternet
+	}
+
+	/**
+	 * The three user panels supported.
+	 */
+	private enum UserPanels {
+		AddUser, ManageUsers, LoggedIn
 	}
 
 	/**
@@ -76,6 +85,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		// register the connection & reg status callback!
 		JakeMainApp.getApp().getCore().addConnectionStatusCallbackListener(this);
 		JakeMainApp.getApp().getCore().addRegistrationStatusCallbackListener(this);
+
+		// device which panel to show!
+		updateView();
 	}
 
 	public ResourceMap getResourceMap() {
@@ -88,8 +100,58 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 
 	private void initComponents() {
-		this.setLayout(new MigLayout("wrap 2, fill, center, ins 15"));
+		this.setLayout(new MigLayout("wrap 1, fill, center, ins 15"));
 
+		// initialize various panels
+		addUserPanel = createAddUserPanel();
+		loginUserPanel = createLoginUserPanel();
+		loginSuccessPanel = createSignInSuccessPanel();
+
+		// set the background painter
+		this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+	}
+
+	/**
+	 * Creates the Login User Panel
+	 *
+	 * @return
+	 */
+	private JPanel createLoginUserPanel() {
+		// create the user login panel
+		JPanel loginUserPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
+		loginUserPanel.setOpaque(false);
+
+		// the say hello heading
+		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fill, top, ins 0"));
+		titlePanel.setOpaque(false);
+		JLabel createAccountLabel = new JLabel(getResourceMap().getString("loginMessageLabel"));
+		createAccountLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				  getClass().getResource("/icons/jakewelcome.png"))));
+		createAccountLabel.setVerticalTextPosition(JLabel.TOP);
+		titlePanel.add(createAccountLabel, "top, center, h 80!");
+		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, grow, h 80:300");
+
+		try {
+			for (MsgService msg : JakeMainApp.getCore().getMsgServics()) {
+				UserControlPanel userPanel = new UserControlPanel(msg);
+				this.add(userPanel);
+			}
+		} catch (NotLoggedInException e) {
+			ExceptionUtilities.showError(e);
+		}
+
+		JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
+		this.add(signInBtn, "right, bottom");
+
+		return loginUserPanel;
+	}
+
+	/**
+	 * Creates the Add User Panel
+	 *
+	 * @return
+	 */
+	private JPanel createAddUserPanel() {
 		// create the add user panel
 		JPanel addUserPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
 		addUserPanel.setOpaque(false);
@@ -182,15 +244,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 
 		addUserPanel.add(buttonPanel, "width 370!");
-
-		// add the add user panel
-		this.add(addUserPanel, "grow, center");
-
-		// set the background painter
-		this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
-
-		// TODO
-		loginSuccessPanel = createSignInSuccessPanel();
+		return addUserPanel;
 	}
 
 	/**
@@ -233,6 +287,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		}
 	}
 
+	/**
+	 * Private inner worker for account registration.
+	 */
 	private class RegisterAccountWorker extends SwingWorkerWithAvailableLaterObject<Void> {
 		private ServiceCredentials cred;
 
@@ -268,16 +325,12 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		protected void done() {
 			workingAnimation.stopAnimation();
 
-			showRegistrationSuccessPanel();
+			updateView();
 		}
 	}
 
+	// TODO: worker for log in?
 
-	private void showRegistrationSuccessPanel() {
-		log.debug("show register success");
-
-		// TODO
-	}
 
 	/**
 	 * Updates the login username in representation to selected service.
@@ -526,7 +579,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		signInRegisterButton.setEnabled(isSignInRegisterButtonEnabled());
 	}
 
-
 	/**
 	 * Updates the main view.
 	 * If there is a user registered, show dragdrop screen.
@@ -535,14 +587,42 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private void updateView() {
 		log.info("updating login view. signedIn=" + MsgServiceHelper.isUserLoggedIn());
 
-		/*
 		// update the view (maybe already logged in)
 		if (MsgServiceHelper.isUserLoggedIn()) {
-			showSignInSuccess();
-		} else {
-			showSignInForm();
+			showPanel(UserPanels.LoggedIn);
+		} else try {
+			if (JakeMainApp.getCore().getMsgServics().size() > 0) {
+				showPanel(UserPanels.ManageUsers);
+			} else {
+				showPanel(UserPanels.AddUser);
+			}
+		} catch (NotLoggedInException e) {
+			ExceptionUtilities.showError(e);
 		}
-		*/
+	}
+
+	/**
+	 * Set which panel will be shown
+	 *
+	 * @param panel
+	 */
+	private void showPanel(UserPanels panel) {
+		showContentPanel(addUserPanel, panel == UserPanels.AddUser);
+		showContentPanel(loginUserPanel, panel == UserPanels.ManageUsers);
+		showContentPanel(loginSuccessPanel, panel == UserPanels.LoggedIn);
+	}
+
+
+	/**
+	 * Helper for showPanel; add or remove certain panel at runtime.
+	 */
+	private void showContentPanel(JPanel panel, boolean show) {
+		if (show) {
+			this.add(panel, "grow");
+		} else {
+			this.remove(panel);
+		}
+		this.updateUI();
 	}
 
 
@@ -551,7 +631,10 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		Runnable runner = new Runnable() {
 			public void run() {
+
 				updateView();
+
+				// animation is controlled via swingworker
 
 				if (status == RegisterStati.RegistrationActive) {
 					signInRegisterButton.setText(getResourceMap().getString("loginRegisterProceed"));
@@ -563,15 +646,13 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		SwingUtilities.invokeLater(runner);
 	}
 
-	// TODO!
-	private void showRegistrationSuccess() {
-	}
 
 	public void setConnectionStatus(final ConnectionStati status, final String msg) {
 		log.info("got connection status update: " + status);
 
 		Runnable runner = new Runnable() {
 			public void run() {
+
 				// always update view
 				updateView();
 
@@ -583,5 +664,57 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		};
 
 		SwingUtilities.invokeLater(runner);
+	}
+
+	/**
+	 * Create User Panel
+	 */
+	private class UserControlPanel extends JPanel {
+		private MsgService msg;
+		private JPasswordField passField;
+		private JCheckBox rememberPassCheckBox;
+
+		public UserControlPanel(MsgService msg) {
+			this.msg = msg;
+
+			this.setLayout(new MigLayout("wrap 1"));
+
+			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msg.getUserId().toString() + "</b>"));
+			this.add(userLabel, "span 2");
+
+			JLabel passLabel = new JLabel(getResourceMap().getString("passwordLabel"));
+			this.add(passLabel);
+			passField = new JPasswordField();
+			this.add(passField);
+
+			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
+			rememberPassCheckBox.setSelected(true);
+			rememberPassCheckBox.setOpaque(false);
+			this.add(rememberPassCheckBox, "");
+
+			updateUserPanel();
+		}
+
+		public void updateUserPanel() {
+			boolean isPasswordSaved = true;
+
+			rememberPassCheckBox.setSelected(isPasswordSaved);
+
+		}
+
+		/**
+		 * En/Disables the controls.
+		 * (Should be disabled, when logging in)
+		 *
+		 * @param enable
+		 */
+		public void enableControls(boolean enable) {
+			passField.setEnabled(enable);
+			updateUserPanel();
+		}
+
+		public boolean isRememberPassword() {
+			return rememberPassCheckBox.isSelected();
+		}
 	}
 }

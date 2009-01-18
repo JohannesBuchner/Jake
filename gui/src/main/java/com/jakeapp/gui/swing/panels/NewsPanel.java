@@ -115,7 +115,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		eventsTableUpdateTimer = new Timer(EventTableUpdateDelay, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				log.debug("Updating eventsTable");
+				//log.debug("Updating eventsTable");
 				eventsTable.updateUI();
 			}
 		});
