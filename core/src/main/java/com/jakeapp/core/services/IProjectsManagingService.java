@@ -328,4 +328,20 @@ public interface IProjectsManagingService {
 	 */
 	FileObject getFileObjectByRelPath(Project project, String relpath)
 			throws NoSuchJakeObjectException;
+
+
+	/**
+	 * Returns all ProjectMembers that are stored for a project.
+	 * @param project
+	 * @throws NoSuchProjectException If <code>project</code> does
+	 * not exist or is null.
+	 */
+	List<ProjectMember> getProjectMembers(Project project) throws NoSuchProjectException;
+
+
+	/**
+	 * stores Project member information
+	 * @param member a member that already exists
+	 */
+	void updateProjectMember(Project project, ProjectMember member);
 }

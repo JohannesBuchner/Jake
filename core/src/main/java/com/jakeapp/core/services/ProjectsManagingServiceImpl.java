@@ -758,4 +758,19 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		//TODO cache
 		return new NoteManagingService(this.getNoteObjectDao(p), this.getLogEntryDao(p));
 	}
+
+
+	@Override
+	public List<ProjectMember> getProjectMembers(Project project) throws NoSuchProjectException {
+		if (project==null) throw new NoSuchProjectException();
+		
+		return this.getProjectMemberDao(project).getAll(project);
+	}
+
+
+	@Override
+	public void updateProjectMember(Project project, ProjectMember member) {
+		this.getProjectMemberDao(project).persist(project, member);
+		
+	}
 }

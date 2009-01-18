@@ -770,48 +770,27 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @return
 	 */
 	public List<ProjectMember> getPeople(Project project) {
-		//TODO implement!!
+		List<ProjectMember> result = null;
 
 		log.info("getPeople from project " + project);
 
 		if (project == null) {
 			return new ArrayList<ProjectMember>();
 		}
-		return new ArrayList<ProjectMember>();
 
-		//this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
-
-		/*
-		if (!peopleProjectMap.containsKey(project)) {
-			List<ProjectMember> people = new ArrayList<ProjectMember>();
-
-			// TODO: fix
-			people.add(new ProjectMember(new UUID(11, 22), "Nickname",
-					  TrustState.AUTO_ADD_REMOVE));
-
-
-
-								 * people.add(new ProjectMember(new XMPPUserId(new
-								 * ServiceCredentials("User1", "pass2"), new UUID(22, 33),
-								 * "pstein@jabber.fsinf.at", "", "Peter", "Steinberger"),
-								 * TrustState.TRUST));
-								 *
-								 * people.add(new ProjectMember(new XMPPUserId(new
-								 * ServiceCredentials("User2", "pass2"), new UUID(222, 333),
-								 * "test@jabber.org", "Pr-" + project.getName(), "ProjectTestUser",
-								 * project.getName()), TrustState.AUTO_ADD_REMOVE));
-								 *
-								 *
-								 * people.add(new ProjectMember(new XMPPUserId(new
-								 * ServiceCredentials("User3", "pass3"), new UUID(22, 33),
-								 * "max@jabber.org", "Max", "Max", "Mustermann"),
-								 * TrustState.NO_TRUST));
-								 
-			peopleProjectMap.put(project, people);
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (NoSuchProjectException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
 		}
-
-		return peopleProjectMap.get(project);
-		*/
+		
+		return result;
 	}
 
 	@Override
@@ -821,6 +800,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			return false;
 		} else {
 			pm.setNickname(nick);
+			this.getFrontendService().getProjectsManagingService(getSessionId()).updateProjectMember(project, pm);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
@@ -833,6 +813,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void peopleSetTrustState(Project project, ProjectMember member,
 											  TrustState trust) {
 		member.setTrustState(trust);
+		this.getFrontendService().getProjectsManagingService(getSessionId()).updateProjectMember(project, member);
 
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 				  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
@@ -853,6 +834,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		members.add(getPeople(project).get(0));
 		// members.add(getPeople(project).get(1));
 		return members;
+		//TODO
 	}
 
 
