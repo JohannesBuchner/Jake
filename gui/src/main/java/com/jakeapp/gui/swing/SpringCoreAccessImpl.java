@@ -255,6 +255,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			  throws NotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.createAccount(this.sessionId, credentials, listener).start();
+
+        
 	}
 
 	@Override
