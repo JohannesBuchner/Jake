@@ -691,7 +691,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 												// NoSuchProjectException if
 												// project does not exist
 
-		// TODO notify the inviter
+		// notify the inviter
+		this.getSyncService().notifyInvitationAccepted(project,inviter);
 	}
 
 	@Override
@@ -712,7 +713,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			// empty catch
 		}
 
-		// TODO notify the inviter
+		// notify the inviter
+		this.getSyncService().notifyInvitationRejected(project,inviter);
 	}
 
 	@Override
@@ -778,15 +780,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	
 	@Override
 	public ProjectMember getProjectMember(Project project,MsgService msg) {
-		msg.getUserId();
-		
-		//TODO
-		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
+		return this.getProjectMember(project, msg.getUserId(), this.getProjectMemberDao(project));
 	}
 
 	@Override
 	public String getProjectMemberID(Project project,ProjectMember pm) {
-		//TODO
+		//TODO it is completely unclear how to do that!! Dominik, please help us!
 		return "";
 	}
 }

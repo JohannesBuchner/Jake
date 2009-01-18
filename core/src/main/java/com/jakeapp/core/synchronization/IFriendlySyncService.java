@@ -42,6 +42,18 @@ public interface IFriendlySyncService extends ISyncService {
 	 * @param userId The userId of the User. There is already a corresponding
 	 * ProjectMember-Object stored in the project-local database. 
 	 */
-	public void invite(Project project, UserId userId);
+	void invite(Project project, UserId userId);
+
+	/**
+	 * Informs the person who invited us to a project that
+	 * we accept the invitation.
+	 */
+	void notifyInvitationAccepted(Project project, UserId inviter);
+
+	/**
+	 * Informs the person who invited us to a project that
+	 * we reject the invitation.
+	 */
+	void notifyInvitationRejected(Project project, UserId inviter);
 
 }

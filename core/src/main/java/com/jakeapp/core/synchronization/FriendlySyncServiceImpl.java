@@ -46,4 +46,15 @@ public abstract class FriendlySyncServiceImpl implements IFriendlySyncService {
 	public void invite(Project project, UserId userId) {
 		//TODO implement please, Johannes!!
 	}
+	
+	@Override
+	public void notifyInvitationAccepted(Project project, UserId inviter) {
+		//TODO implement please, Johannes!!
+	}
+
+	@Override
+	public void notifyInvitationRejected(Project project, UserId inviter) {
+		//TODO implement please, Johannes!!
+	}
+
 }
