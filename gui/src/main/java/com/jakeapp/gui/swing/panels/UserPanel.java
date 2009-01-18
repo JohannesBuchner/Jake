@@ -678,6 +678,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		private JCheckBox rememberPassCheckBox;
 
 		public UserControlPanel(final MsgService msg) {
+			log.info("creating UserControlPanel with " + msg);
 			this.msg = msg;
 
 			this.setLayout(new MigLayout("wrap 1"));

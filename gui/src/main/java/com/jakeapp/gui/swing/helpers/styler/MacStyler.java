@@ -46,9 +46,4 @@ public class MacStyler extends AbstractStyler {
 			btn.setForeground(Color.BLACK);
 		}
 	}
-
-	@Override
-	public Color getWindowBackground() {
-		return Color.LIGHT_GRAY;
-	}
 }
