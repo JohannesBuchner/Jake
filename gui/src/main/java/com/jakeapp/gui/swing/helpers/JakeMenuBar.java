@@ -27,6 +27,7 @@ import java.net.URI;
  * @author: studpete
  */
 public class JakeMenuBar extends JMenuBar {
+	// TODO: refactor that shit !!!
 	private static final Logger log = Logger.getLogger(JakeMenuBar.class);
 
 	public JakeMenuBar() {
@@ -115,19 +116,19 @@ public class JakeMenuBar extends JMenuBar {
 		//aboutMenuItem.setAction(actionMap.get("showAboutBox"));
 		aboutMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StandardMacAboutFrame f =
+				StandardMacAboutFrame aboutFrame =
 						  new StandardMacAboutFrame(AppUtilities.getAppName(), AppUtilities.getAppVersion());
-				f.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
-				f.setBuildVersion("001");
-				f.setCopyright("Copyright 2007-2009, Best ASE Team TU Vienna");
-				f.setCredits("<html><body>Jake<br>" +
+				aboutFrame.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
+				aboutFrame.setBuildVersion("001");
+				aboutFrame.setCopyright("Copyright 2007-2009, Best ASE Team TU Vienna");
+				aboutFrame.setCredits("<html><body>Jake<br>" +
 						  "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>" +
 						  "<br>We are proud to present you Jake." +
 						  "<b></b><br>" +
 						  "Send your Feedback to: " +
 						  "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>" +
 						  "</body></html>", "text/html");
-				f.setHyperlinkListener(new HyperlinkListener() {
+				aboutFrame.setHyperlinkListener(new HyperlinkListener() {
 					public void hyperlinkUpdate(HyperlinkEvent e) {
 						if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 							try {
@@ -139,7 +140,7 @@ public class JakeMenuBar extends JMenuBar {
 						}
 					}
 				});
-				f.setVisible(true);
+				aboutFrame.setVisible(true);
 			}
 		});
 		// If the menu is not already present because it's provided by
