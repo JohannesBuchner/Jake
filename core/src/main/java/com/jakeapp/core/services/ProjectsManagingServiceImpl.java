@@ -36,7 +36,6 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.TrustState;
@@ -611,29 +610,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		this.getSyncService().invite(project,userId);
 	}
 
-	@Override
-	public List<NoteObject> getNotes(Project project)
-			throws IllegalArgumentException, ProjectNotLoadedException {
-		List<NoteObject> result;
-		INoteObjectDao dao;
-
-		// preconditions
-		if (project == null)
-			throw new IllegalArgumentException();
-		if (!this.isProjectLoaded(project)) {
-			throw new ProjectNotLoadedException("Project with uuid "
-					+ project.getUserId() + " is not loaded");
-		}
-
-
-		// get Dao
-		dao = this.getNoteObjectDao(project);
-
-		result = dao.getAll();
-
-		return result;
-	}
-
 	private boolean isProjectLoaded(Project project) {
 		return this.getInternalProjectList().contains(project);
 	}
@@ -743,7 +719,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		LogEntry<? extends ILogable> logentry;
 		Date result;
 		
-		//get the most recent logentry for the Note
+		//get the most recent logentry for the JakeObject
 		try {
 			logentry = this.getMostRecentFor(jo);
 			result = logentry.getTimestamp();
@@ -760,7 +736,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		LogEntry<? extends ILogable> logentry;
 		ProjectMember result;
 		
-		//get the most recent logentry for the Note
+		//get the most recent logentry for the JakeObject
 		try {
 			logentry = this.getMostRecentFor(jo);
 			result = logentry.getMember();
@@ -794,5 +770,23 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	public String getProjectMemberID(Project project,ProjectMember pm) {
 		//TODO it is completely unclear how to do that!! Dominik, please help us!
 		return "";
+	}
+
+
+	@Override
+	public INoteManagingService getNoteManagingService(Project p)
+			throws ProjectNotLoadedException, IllegalArgumentException {
+		INoteObjectDao dao;
+
+		// preconditions
+		if (p == null)
+			throw new IllegalArgumentException();
+		if (!this.isProjectLoaded(p)) {
+			throw new ProjectNotLoadedException("Project with id "
+					+ p.getProjectId() + " is not loaded");
+		}
+		
+		//TODO cache
+		return new NoteManagingService(this.getNoteObjectDao(p),this.getLogEntryDao(p));
 	}
 }

@@ -611,6 +611,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private FolderObject recursiveFileSystemHelper(Project prj, String relPath,String name,IFSService fss,IProjectsManagingService pms) throws IllegalArgumentException, IllegalStateException, NotLoggedInException {
 		FolderObject fo = new FolderObject(relPath, name);
 		
+		//TODO check how FolderObjects should really be created
+		
 		try {
 			for (String f : fss.listFolder(relPath)) {
 				// f is a valid relpath
@@ -646,8 +648,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
 		 ProjectNotLoadedException {
-		return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(
-			 project);
+		return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
 	}
 
 	@Override
@@ -677,19 +678,67 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public boolean isLocalNote(NoteObject note) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result;
+
+		try {
+			result = this.frontendService.getProjectsManagingService(
+					this.sessionId).getNoteManagingService(note.getProject())
+					.isLocalNote(note);
+		} catch (Exception e) {
+			// Every error allows only one interpretation: a Note that cannot
+			// be checked wether it is local is NOT local!
+			result = false;
+		}
+
+		return result;
 	}
 
 	@Override
 	public void deleteNote(NoteObject note) {
-		// TODO Auto-generated method stub
-		log.info("mock delete note: " + note.toString());
+		IProjectsManagingService pms;
+		ProjectMember member;
+		
+		try {
+			pms = this.frontendService.getProjectsManagingService(this.getSessionId());
+			member = pms.getProjectMember(note.getProject(),this.getLoggedInUser(this.getSessionId()));
+			
+			pms.getNoteManagingService(note.getProject()).deleteNote(note,member);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (ProjectNotLoadedException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (NoSuchJakeObjectException e) {
+			// The corresponding JakeObject does not exist any more - there is
+			// no
+			// need deleting it therefore we simply discard this exception.
+		}
 	}
 
 	@Override
 	public void newNote(NoteObject note) {
-		// TODO Auto-generated method stub
+		try {
+			this.frontendService
+					.getProjectsManagingService(this.getSessionId())
+					.getNoteManagingService(note.getProject()).addNote(note);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (ProjectNotLoadedException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+	}
+	
+	// TODO this might be removed in further versions...
+	// it depends on only having a SINGLE user.
+	private MsgService getLoggedInUser(String session) throws NotLoggedInException {
+		return this.getFrontendService().getMsgServices(session).get(0);
 	}
 
 	/**

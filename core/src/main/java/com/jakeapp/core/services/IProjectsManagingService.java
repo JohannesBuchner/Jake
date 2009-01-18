@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.dao.IProjectMemberDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
@@ -216,46 +217,21 @@ public interface IProjectsManagingService {
 	 */
 	void setTrust(Project project, UserId userId, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException;
-
-
+	
 	/**
-	 * Retrieves all Files of a Project that are immediate children of the
-	 * specified relPath. If the relpath is empty all files in the Project's
-	 * root folder are returned.
-	 * 
-	 * @param project
-	 * @param relPath
-	 * @return The fileObjects that belong are found in the specified folder.
-	 * @throws IllegalArgumentException
-	 *             if project or relpath are null
-	 * @throws FileNotFoundException
-	 *             if relPath does not point to a directory
-	 */
-	// FIXME is never called - do we need this??
-	// public List<FileObject> getFiles(Project project, String relPath)
-	// throws IllegalArgumentException, FileNotFoundException;
-
-	/**
-	 * Retrieves all Notes for a Project
-	 * 
-	 * @param project
-	 *            The Project to retrieve all notes for
-	 * @return all Notes
-	 * @throws IllegalArgumentException
-	 *             if <code>project</code> is null.
-	 * @throws ProjectNotLoadedException
-	 *             if the project is not open.
-	 */
-	List<NoteObject> getNotes(Project project)
-			throws IllegalArgumentException, ProjectNotLoadedException;
-
-	/**
-	 * Returns a service for file-operations
-	 * 
-	 * @param p
-	 * @return
+	 * @return a service for file-operations
 	 */
 	IFSService getFileServices(Project p);
+	
+	/**
+	 * @return a service for note operations
+	 * @throws ProjectNotLoadedException
+	 *         if the project is not open.
+	 * @throws IllegalArgumentException
+	 *         if <code>project</code> is null.
+	 */
+	INoteManagingService getNoteManagingService(Project p)
+		throws ProjectNotLoadedException, IllegalArgumentException;
 
 	/**
 	 * @return The number of files in a Project
