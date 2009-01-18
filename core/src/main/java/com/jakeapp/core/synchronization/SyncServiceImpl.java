@@ -16,6 +16,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
@@ -283,8 +284,8 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 	/**
-	 * This is a expensive operation as it recalculates all hashes Do it once on
-	 * start, and then use a listener
+	 * This is a expensive operation as it recalculates all hashes <br>
+	 * Do it once on start, and then use a listener
 	 */
 	@Override
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException {
@@ -314,7 +315,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		for (String f : files) {
 			FileObject fo = getFileObjectByRelpath(f);
 			boolean inConflict = isObjectInConflict(fo); // TODO: get
-			boolean locallyModified = isLocallyModified(fo);
+			boolean locallyModified = false; // TODO: isLocallyModified(fo);
 			try {
 				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX
 				// ME FIX ME
@@ -330,8 +331,13 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		return stat;
 	}
 
-	public Boolean isDeleted(JakeObject fo) {
-
+	public Boolean isDeleted(JakeObject jo) {
+		// LogEntry<? extends ILogable> le = new LogEntry<ILogable>(null,
+		// LogAction.)
+		// LogEntry<? extends ILogable> le =
+		// db.getLogEntryDao(jo).getMostRecentFor(jo);
+		// if(le.getLogAction())
+		return null;
 	}
 
 	public Boolean isLocallyModified(FileObject fo) throws InvalidFilenameException,
