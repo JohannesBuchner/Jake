@@ -152,8 +152,8 @@ public interface ILogEntryDao {
 	 * uuid, any of logAction, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable sorted by timestamp. must not return null but a empty
-	 *         iterable on no results
+	 * @return a iterable sorted by timestamp in reverse order. must not return
+	 *         null but a empty iterable on no results
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
