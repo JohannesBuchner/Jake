@@ -135,7 +135,7 @@ public class XmppStatusService implements IStatusService {
 		try {
 			connection = XmppCommons.login(xuid.getUserId(), pw, xuid.getResource());
 		} catch (IOException e) {
-			log.debug("login failed (wrong pw)");
+			log.debug("connecting failed");
 			throw new NetworkException(e);
 		}
 		if (connection == null) {
