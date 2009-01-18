@@ -42,7 +42,7 @@ public class ProjectMemberHelpers {
 	 * @return nick/fullname or "you" localized
 	 */
 	public static String getLocalizedUserNick(ProjectMember member) {
-		ProjectMember curMember = JakeMainApp.getApp().getCore().getCurrentProjectMember();
+		ProjectMember curMember = JakeMainApp.getApp().getCore().getProjectMember(MsgServiceHelper.getLoggedInMsgService());
 
 		if (member == curMember) {
 			return newsResourceMap.getString("eventsYourself");

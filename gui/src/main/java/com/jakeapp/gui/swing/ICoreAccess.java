@@ -210,14 +210,12 @@ public interface ICoreAccess {
 
 
 	/**
-	 * Returns the current logged in project member.
+	 * Returns the project member from the msg service
 	 *
-	 * @return
-	 * @Deprecated What do you want? get all MsgServices and their status? Or
-	 * just those, that are online? tell dominik
+	 * @param msg: MsgService
+	 * @return project member from msg service.
 	 */
-	@Deprecated
-	public ProjectMember getCurrentProjectMember();
+	public ProjectMember getProjectMember(MsgService msg);
 
 
 	/******************* Project functions ********************/

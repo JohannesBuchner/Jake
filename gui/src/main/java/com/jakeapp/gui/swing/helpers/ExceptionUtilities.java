@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 
@@ -12,6 +13,8 @@ import javax.swing.*;
  * @author: studpete
  */
 public class ExceptionUtilities {
+	private static final Logger log = Logger.getLogger(ExceptionUtilities.class);
+
 	/**
 	 * Displays an exception to the user.
 	 * Function is Thread-Safe.
@@ -40,9 +43,13 @@ public class ExceptionUtilities {
 	 * @param e
 	 */
 	private static void internalShowError(Exception e) {
+		log.warn(e.getMessage());
+		// TODO - get into log?
+		e.printStackTrace();
+
 		JSheet.showMessageSheet(JakeMainApp.getFrame(),
 				  "<html><b>" + e.getMessage() + "</b><br><br> + " +
-							 e.getStackTrace() + "</html>",
+							 DebugHelper.arrayToString(e.getStackTrace(), true) + "</html>",
 				  JOptionPane.ERROR_MESSAGE, null);
 	}
 

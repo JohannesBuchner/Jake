@@ -129,6 +129,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return this.frontendService.getMsgServices(this.sessionId);
 	}
 
+	@Override
+	public ProjectMember getProjectMember(MsgService msg) {
+		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
+	}
+
 	public void addErrorListener(ErrorCallback ec) {
 		errorCallback.add(ec);
 	}
@@ -284,15 +289,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public boolean isSignedIn() {
 		return isSignedIn;
-	}
-
-	@Override
-	public ProjectMember getCurrentProjectMember() {
-		// TODO: fix
-		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
-		// return new ProjectMember(new XMPPUserId(new
-		// ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1),
-		// "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
 	}
 
 

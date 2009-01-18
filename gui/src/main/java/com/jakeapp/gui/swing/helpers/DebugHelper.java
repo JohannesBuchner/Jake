@@ -17,9 +17,10 @@ public class DebugHelper {
 	 * Converts a array/hashtable/collection to a string
 	 *
 	 * @param array
+	 * @param formatted
 	 * @return string representation of array
 	 */
-	public static String arrayToString(Object array) {
+	public static String arrayToString(Object array, boolean formatted) {
 		if (array == null) {
 			return "[NULL]";
 		} else {
@@ -33,11 +34,11 @@ public class DebugHelper {
 			}
 			int length = Array.getLength(array);
 			int lastItem = length - 1;
-			StringBuffer sb = new StringBuffer("[");
+			StringBuffer sb = new StringBuffer((formatted ? "<html>" : "") + "[");
 			for (int i = 0; i < length; i++) {
 				obj = Array.get(array, i);
 				if (obj != null) {
-					sb.append(obj);
+					sb.append(obj + (formatted ? "<br>" : ""));
 				} else {
 					sb.append("[NULL]");
 				}
@@ -46,7 +47,20 @@ public class DebugHelper {
 				}
 			}
 			sb.append("]");
+			if (formatted) sb.append("</html>");
 			return sb.toString();
 		}
 	}
+
+	/**
+	 * Debugging LIB
+	 * Converts a array/hashtable/collection to a string
+	 *
+	 * @param array
+	 * @return string representation of array
+	 */
+	public static String arrayToString(Object array) {
+		return arrayToString(array, false);
+	}
+
 }

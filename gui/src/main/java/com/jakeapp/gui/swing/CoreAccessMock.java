@@ -252,13 +252,6 @@ public class CoreAccessMock implements ICoreAccess {
 		return isSignedIn;
 	}
 
-	@Override
-	public ProjectMember getCurrentProjectMember() {
-		// TODO: fix
-		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
-		//return new ProjectMember(new XMPPUserId(new ServiceCredentials("Chuck Norris", "foo"), new UUID(1, 1), "chuck norris", "chuck", "Chuck", "Norris"), TrustState.TRUST);
-	}
-
 
 	public void signOut() {
 		isSignedIn = false;
@@ -889,6 +882,11 @@ public class CoreAccessMock implements ICoreAccess {
 	public List<MsgService> getMsgServics() throws NotLoggedInException {
 		return new ArrayList<MsgService>();
 //		return this.frontendService.getMsgServices(this.sessionId);
+	}
+
+	@Override
+	public ProjectMember getProjectMember(MsgService msg) {
+		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
 	}
 
 

@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -187,7 +188,12 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginSuccessPanel = createSignInSuccessPanel();
 	}
 
+	/**
+	 * Action that is called when Button Sign In / Register is pressed.
+	 */
 	public void signInRegisterButtonPressed() {
+		log.info("Sign In / Registering (isSignIn=" + isModeSignIn());
+
 		if (isSignInRegisterButtonEnabled()) {
 
 			if (isModeSignIn()) {
@@ -196,15 +202,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 				try {
 					// sync call
-					JakeMainApp.getCore().addAccount(cred);
-				} catch (NotLoggedInException e) {
-					e.printStackTrace();
-				} catch (InvalidCredentialsException e) {
-					e.printStackTrace();
-				} catch (ProtocolNotSupportedException e) {
-					e.printStackTrace();
-				} catch (NetworkException e) {
-					e.printStackTrace();
+					MsgService msg = JakeMainApp.getCore().addAccount(cred);
+					msg.login();
+				} catch (Exception e) {
+					log.warn(e);
+					ExceptionUtilities.showError(e);
 				}
 			} else {
 				ServiceCredentials cred = new ServiceCredentials(
@@ -417,6 +419,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * @return
 	 */
 	private JPanel createSignInSuccessPanel() {
+
 		// create the drag & drop hint
 		JPanel loginSuccessPanel = new JPanel();
 		loginSuccessPanel.setOpaque(false);
@@ -424,15 +427,21 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		// the sign out button
 		JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
-		// TODO: reimplement as action
-		/*signOutButton.addActionListener(new ActionListener() {
-
+		signOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				JakeMainApp.getApp().getCore().signOut();
+				if (MsgServiceHelper.isUserLoggedIn()) {
+					try {
+						MsgServiceHelper.getLoggedInMsgService().logout();
+					} catch (Exception e) {
+						log.warn(e);
+						ExceptionUtilities.showError(e);
+					}
+				} else {
+					log.warn("No user is logged in!");
+				}
 			}
 		});
-		*/
-		loginSuccessPanel.add(signOutButton, "wrap, al center, growx");
+		loginSuccessPanel.add(signOutButton, "wrap, al center");
 
 		JLabel iconSuccess = new JLabel();
 		iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
