@@ -34,11 +34,11 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
 	private static final Logger log = Logger.getLogger(TrustAllRequestHandlePolicy.class);
 
-	private ApplicationContextFactory db;
+	protected ApplicationContextFactory db;
 
-	private UserTranslator userTranslator;
+	protected UserTranslator userTranslator;
 
-	private Map<String, IFSService> projectsFssMap;
+	protected Map<String, IFSService> projectsFssMap;
 
 	@Override
 	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {

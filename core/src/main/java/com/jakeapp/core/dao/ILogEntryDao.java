@@ -2,7 +2,10 @@ package com.jakeapp.core.dao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -233,4 +236,33 @@ public interface ILogEntryDao {
 	 * @return
 	 */
 	public LogEntry<? extends ILogable> getProjectCreatedEntry();
+
+	/**
+	 * Does a trust b?
+	 * 
+	 * @param a
+	 * @param b
+	 * @return false if no logentries found or last was
+	 *         {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}
+	 */
+	public Boolean trusts(ProjectMember a, ProjectMember b);
+
+	/**
+	 * Whom does a trust?
+	 * 
+	 * @param a
+	 * @return an empty Collection if no logentries found (not null) or the
+	 *         {@link ProjectMember}s that have
+	 *         {@link LogAction#START_TRUSTING_PROJECTMEMBER} as last action
+	 */
+	@Deprecated
+	// don't know if needed
+	public Collection<ProjectMember> trusts(ProjectMember a);
+
+	/**
+	 * @return a mapping of the trusted users for each user (A trusts [B, C, D])
+	 *         must not be null
+	 */
+	public Map<ProjectMember, List<ProjectMember>> getTrustGraph();
+
 }

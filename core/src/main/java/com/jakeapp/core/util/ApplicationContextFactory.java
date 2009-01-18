@@ -1,6 +1,8 @@
 package com.jakeapp.core.util;
 
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -13,8 +15,11 @@ import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.TrustState;
 
 /**
  * A factory that creates and configures spring application contexts.
@@ -93,9 +98,10 @@ public class ApplicationContextFactory {
 	public ILogEntryDao getLogEntryDao(Project p) {
 		return (ILogEntryDao) getApplicationContext(p).getBean("logEntryDao");
 	}
-	
+
 	public ILogEntryDao getLogEntryDao(JakeObject jo) {
-		return (ILogEntryDao) getApplicationContext(jo.getProject()).getBean("logEntryDao");
+		return (ILogEntryDao) getApplicationContext(jo.getProject()).getBean(
+				"logEntryDao");
 	}
 
 	public IProjectMemberDao getProjectMemberDao(Project p) {
@@ -108,5 +114,20 @@ public class ApplicationContextFactory {
 
 	public IFileObjectDao getFileObjectDao(Project p) {
 		return (IFileObjectDao) getApplicationContext(p).getBean("fileObjectDao");
+	}
+
+	public Collection<ProjectMember> getProjectMembers(Project p)
+			throws NoSuchProjectException {
+		return getProjectMemberDao(p).getAll(p);
+	}
+
+	public List<ProjectMember> getTrustedProjectMembers(Project p)
+			throws NoSuchProjectException {
+		List<ProjectMember> allmembers = getProjectMemberDao(p).getAll(p);
+		for (ProjectMember member : allmembers) {
+			if (member.getTrustState() != TrustState.NO_TRUST)
+				allmembers.remove(member);
+		}
+		return allmembers;
 	}
 }
