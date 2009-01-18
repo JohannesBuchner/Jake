@@ -15,6 +15,7 @@ import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.*;
+import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;

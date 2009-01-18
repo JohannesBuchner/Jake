@@ -13,8 +13,9 @@ package com.jakeapp.gui.swing.panels;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
+import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -34,7 +35,6 @@ import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.PatternFilter;
 import org.jdesktop.swingx.decorator.Filter;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -93,7 +93,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			Filter filter = new FileObjectConflictStatusFilter();
 			switchToFlatAndFilter(new FilterPipeline(filter));
 		} else if (newBtn.isSelected()) {
-
+			Filter filter = new FileObjectDateFilter();
+			switchToFlatAndFilter(new FilterPipeline(filter));
 		} else {
 			resetFilter();
 		}

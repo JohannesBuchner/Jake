@@ -506,16 +506,17 @@ public class CoreAccessMock implements ICoreAccess {
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
 		String filename = file.getRelPath();
+		long moddate = file.getAbsolutePath().lastModified();
 
 		if (filename.contains("c")) {
-			return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, true, true, false, false);
+			return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), moddate, true, true, false, false);
 		}
 
 		if (filename.contains("e")) {
-			return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);
+			return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), moddate, false, false, false, false);
 		}
 
-		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, false, false, true, false);
+		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), moddate, false, false, true, false);
 	}
 
 	private ArrayList<FileObject> recursiveFileObjectListHelper(Project p, File f, String relPath) {
