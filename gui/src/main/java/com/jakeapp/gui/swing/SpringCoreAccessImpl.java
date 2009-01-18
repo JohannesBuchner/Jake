@@ -610,6 +610,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param relPath a Project-relative path to the returned folder object.
 	 * @param name	 the name of the current folder. It is the last part of relPath
 	 * @param fss	  The FileSystemService used to access the Project-Folder
+	 * @param pms
 	 * @return
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
@@ -618,6 +619,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 */
 	private FolderObject recursiveFileSystemHelper(Project prj, String relPath, String name, IFSService fss, IProjectsManagingService pms) throws IllegalArgumentException, IllegalStateException, FrontendNotLoggedInException {
 		FolderObject fo = new FolderObject(relPath, name);
+		log.info("recursiveFileSystemHelper: " + prj + " relPath: " + relPath + " name: " + name + " ifss: " + fss + "iprojectManagingService: " + pms);
 		try {
 			for (String f : fss.listFolder(relPath)) {
 				// f is a valid relpath
@@ -789,7 +791,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NoSuchProjectException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		}
-		
+
 		return result;
 	}
 
@@ -831,7 +833,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<ProjectMember> getSuggestedPeople(Project project) {
 		List<ProjectMember> members = new ArrayList<ProjectMember>();
-		members.add(getPeople(project).get(0));
+		//members.add(getPeople(project).get(0));
 		// members.add(getPeople(project).get(1));
 		return members;
 		//TODO
