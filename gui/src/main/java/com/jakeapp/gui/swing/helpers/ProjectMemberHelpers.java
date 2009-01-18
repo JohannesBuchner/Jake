@@ -43,14 +43,12 @@ public class ProjectMemberHelpers {
 	 * @return nick/fullname or "you" localized
 	 */
 	public static String getLocalizedUserNick(ProjectMember member) {
-		//TODO peter pass on project!
 		ProjectMember curMember;
 		try {
 			JakeMainApp.getApp();
-			curMember = JakeMainApp.getCore().getProjectMember(null,MsgServiceHelper.getLoggedInMsgService());
+			curMember = JakeMainApp.getCore().getProjectMember(JakeMainApp.getProject(),MsgServiceHelper.getLoggedInMsgService());
 		} catch (NoSuchProjectMemberException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			curMember = null;
 		}
 
 		if (member == curMember) {

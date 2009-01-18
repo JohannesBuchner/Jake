@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.models;
 
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -40,8 +41,11 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 
 		@Override
 		public String toString() {
-			//TODO Peter pass project
-			return JakeMainApp.getCore().getProjectMemberID(null,getPm()) + " (" + ProjectMemberHelpers.getNickOrFullName(getPm(), 30) + ")";
+			try {
+				return JakeMainApp.getCore().getProjectMemberID(JakeMainApp.getProject(),getPm()) + " (" + ProjectMemberHelpers.getNickOrFullName(getPm(), 30) + ")";
+			} catch (NoSuchProjectMemberException e) {
+			}
+			return "";
 		}
 
 		public ProjectMember getPm() {
