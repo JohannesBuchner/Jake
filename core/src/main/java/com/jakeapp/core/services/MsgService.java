@@ -62,6 +62,17 @@ public abstract class MsgService<T extends UserId> {
 		return this.doLogin();
 	}
 
+
+    public final boolean login(String newPassword, boolean shouldSavePassword) throws Exception {
+        if(serviceCredentials == null)
+            throw new InvalidCredentialsException("serviceCredentials are null");
+
+        serviceCredentials.setPlainTextPassword(newPassword);
+
+        return this.login();
+
+    }
+
 	/**
 	 * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
 	 * are valid.
@@ -197,4 +208,10 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws Exception
 	 */
 	public abstract void createAccount() throws NetworkException;
+
+
+    public final boolean isPasswordSaved()
+    {
+        return (this.getServiceCredentials() != null && this.getServiceCredentials().getPlainTextPassword().isEmpty());
+    }
 }

@@ -15,7 +15,6 @@ import org.hibernate.LockMode;
 
 /**
  * Hibernate implementation of the ServiceCredentialsDao.
- *
  */
 public class HibernateServiceCredentialsDao extends HibernateDaoSupport
         implements IServiceCredentialsDao {
@@ -26,27 +25,31 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     /**
      * {@inheritDoc}
      */
-    public ServiceCredentials create(ServiceCredentials credentials)  throws InvalidCredentialsException {
-        if(credentials == null)
+    public ServiceCredentials create(ServiceCredentials credentials) throws InvalidCredentialsException {
+        if (credentials == null)
             throw new InvalidCredentialsException();
 
-        if(credentials.getUuid() == null)
+        if (credentials.getUuid() == null)
             throw new InvalidCredentialsException();
 
-        if(credentials.getUserId() == null)
+        if (credentials.getUserId() == null)
             throw new InvalidCredentialsException();
 
-        if(credentials.getServerAddress() == null)
+        if (credentials.getServerAddress() == null)
             throw new InvalidCredentialsException();
+
+
+        if (!credentials.isSavePassword()) {
+            credentials.setPlainTextPassword("");
+        }
+
 
         log.debug("persisting ServiceCredentials with uuid " + credentials.getUuid());
 
-        try
-        {
-          getHibernateTemplate().save(credentials);
+        try {
+            getHibernateTemplate().save(credentials);
         }
-        catch(DataAccessException e)
-        {
+        catch (DataAccessException e) {
             throw new InvalidCredentialsException(e);
         }
         return credentials;
@@ -58,7 +61,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
      */
     public ServiceCredentials read(UUID uuid) throws NoSuchServiceCredentialsException {
         ServiceCredentials result = (ServiceCredentials) getHibernateTemplate().get(ServiceCredentials.class, uuid.toString());
-        if(result == null)
+        if (result == null)
             throw new NoSuchServiceCredentialsException();
 
         return result;
@@ -67,7 +70,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     @Transactional
     @Override
     public List<ServiceCredentials> getAll() {
-       
+
         List<ServiceCredentials> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("FROM ServiceCredentials").list();
 
@@ -80,12 +83,15 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
      */
     public ServiceCredentials update(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
 
-        try
-        {
+        if (!credentials.isSavePassword()) {
+            credentials.setPlainTextPassword("");
+        }
+
+
+        try {
             getHibernateTemplate().update(credentials, LockMode.WRITE);
         }
-        catch(DataAccessException e)
-        {
+        catch (DataAccessException e) {
             throw new NoSuchServiceCredentialsException(e);
         }
 
@@ -97,12 +103,10 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
      * {@inheritDoc}
      */
     public void delete(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
-        try
-        {
+        try {
             getHibernateTemplate().delete(credentials, LockMode.WRITE);
         }
-        catch (DataAccessException e)
-        {
+        catch (DataAccessException e) {
             throw new NoSuchServiceCredentialsException(e);
         }
 

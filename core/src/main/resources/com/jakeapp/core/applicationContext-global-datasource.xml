@@ -15,6 +15,30 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
     <tx:annotation-driven/>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+
+    </tx:advice>
+
+
+    <aop:config>
+        <!--<aop:pointcut id="msgServiceFactoryOperation"-->
+                      <!--expression="execution(* com.jakeapp.core.services.MsgServiceFactory.*(..) )"/>-->
+        <!--<aop:pointcut id="frontendServiceOperation"-->
+                      <!--expression="execution(* com.jakeapp.core.services.IFrontendService.*(..))"/>-->
+
+
+        <aop:pointcut id="test" expression="execution(* com.jakeapp.core.dao.Hibernate*Dao.*(..))" />
+        <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="msgServiceFactoryOperation"/>-->
+        <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="frontendServiceOperation"/>-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="test" />
+    </aop:config>
+
+
     <!-- ========================= GENERAL DEFINITIONS ========================= -->
 
     <!-- Configurer that replaces ${...} placeholders with values from properties files -->

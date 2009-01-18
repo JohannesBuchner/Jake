@@ -42,6 +42,8 @@ public class ServiceCredentials implements Serializable {
 	private ProtocolType protocol;
 
 
+    private boolean savePassword = false;
+
 	public ServiceCredentials() {
 		this.resourceName = "JakeApp";
 	}
@@ -206,7 +208,17 @@ public class ServiceCredentials implements Serializable {
 		this.protocol = protocol;
 	}
 
-	@Override
+
+    @Transient
+    public boolean isSavePassword() {
+        return savePassword;
+    }
+
+    public void setSavePassword(boolean savePassword) {
+        this.savePassword = savePassword;
+    }
+
+    @Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
