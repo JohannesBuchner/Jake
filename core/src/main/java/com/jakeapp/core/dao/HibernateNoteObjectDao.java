@@ -57,4 +57,14 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
     public NoteObject removeTagFrom(NoteObject jakeObject, Tag tag) {
         return super.removeTagFrom(jakeObject, tag);
     }
+
+	@Override
+	public boolean isNote(NoteObject jakeObject) {
+		return true;
+	}
+
+	@Override
+	public NoteObject complete(NoteObject jakeObject) throws NoSuchJakeObjectException {
+		return get(jakeObject.getUuid());
+	}
 }

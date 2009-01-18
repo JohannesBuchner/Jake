@@ -65,4 +65,5 @@ public interface IProjectMemberDao {
     public void delete(final Project project,
                               final ProjectMember projectMember)
             throws NoSuchProjectMemberException;
+    
 }

@@ -8,6 +8,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -89,4 +90,26 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
     public LogEntry<? extends ILogable> getUnprocessed(Project project) throws NoSuchProjectException, NoSuchLogEntryException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+	@Override
+	public Iterable<LogEntry<? extends ILogable>> findMatching(
+			LogEntry<? extends ILogable> le) {
+		return new LinkedList<LogEntry<? extends ILogable>>();
+	}
+
+	@Override
+	public Iterable<LogEntry<? extends ILogable>> findMatchingAfter(
+			LogEntry<? extends ILogable> le) throws NullPointerException {
+		if(le.getTimestamp() == null)
+			throw new NullPointerException("timestamp not set");
+		return new LinkedList<LogEntry<? extends ILogable>>();
+	}
+
+	@Override
+	public Iterable<LogEntry<? extends ILogable>> findMatchingBefore(
+			LogEntry<? extends ILogable> le) throws NullPointerException {
+		if(le.getTimestamp() == null)
+			throw new NullPointerException("timestamp not set");
+		return new LinkedList<LogEntry<? extends ILogable>>();
+	}
 }

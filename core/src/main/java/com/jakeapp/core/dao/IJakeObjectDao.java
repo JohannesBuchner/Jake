@@ -35,7 +35,16 @@ public interface IJakeObjectDao<T extends JakeObject> {
      */
     public T get(final UUID objectId) throws NoSuchJakeObjectException ;
 
-
+    /**
+     * UUID or identifier (relpath) can be null
+     * this method returns the completed object
+     * 
+     * @param jakeObject
+     * @return
+     * @throws NoSuchJakeObjectException
+     */
+    public T complete(final T jakeObject) throws NoSuchJakeObjectException;
+    
     /**
      * Get all <code>JakeObject</code>s that are associated with the
      * given project.
@@ -103,4 +112,9 @@ public interface IJakeObjectDao<T extends JakeObject> {
      */
     public List<Tag> getTagsFor(final T jakeObject) throws NoSuchJakeObjectException ;
 
+    /**
+     * returns true if JakeObject is a 
+     */
+    public boolean isNote(final T jakeObject);
+    
 }
