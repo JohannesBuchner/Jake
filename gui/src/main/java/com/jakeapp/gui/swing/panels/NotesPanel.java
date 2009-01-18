@@ -288,6 +288,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		noteReadPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
 
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
+		noteControlPanel.setBackground(Color.WHITE);
 
 		shareUpdateBtn = new JButton();
 		shareUpdateBtn.putClientProperty("JButton.buttonType", "textured");
