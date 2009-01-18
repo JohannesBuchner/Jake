@@ -21,6 +21,7 @@ import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.TagHelper;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -1006,5 +1007,15 @@ public class CoreAccessMock implements ICoreAccess {
 		// assurance that my work will be back to normal. I've still got the greatest enthusiasm and
 		// confidence in the mission. And I want to help you.
 	}
-	
+
+
+	@Override
+	public void announce(JakeObject jakeObject) {
+		if (jakeObject instanceof NoteObject) {
+			NoteObject note = (NoteObject) jakeObject;
+			this.notesIsLocal.set(this.notesList.indexOf(note), false);
+		}
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(), ProjectChangedReason.State));
+
+	}	
 }

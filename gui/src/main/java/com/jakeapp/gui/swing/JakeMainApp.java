@@ -49,13 +49,13 @@ public class JakeMainApp extends SingleFrameApplication implements
 							  * Uncomment the following line to use the real
 							  * implementation
 							  */
-							 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
+						//	 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
 
 							 /**
 							  * Uncomment the following line to use peter/chris
 							  * mock implementation
 							  */
-							 // , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+							  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
 
 
 				  });

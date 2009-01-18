@@ -671,6 +671,12 @@ public interface ICoreAccess {
 	 */
 	public void saveNote(NoteObject note);
 	
+	/**
+	 * Announce a <code>JakeObject</code>. 
+	 * @param jakeObject the jake object that is to be announced
+	 */
+	public void announce(JakeObject jakeObject);
+	
 }
 
 

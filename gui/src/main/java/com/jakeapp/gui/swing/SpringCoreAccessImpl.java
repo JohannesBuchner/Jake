@@ -1032,4 +1032,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void announce(JakeObject jakeObject) {
+		// TODO Auto-generated method stub
+		
+	}
 }

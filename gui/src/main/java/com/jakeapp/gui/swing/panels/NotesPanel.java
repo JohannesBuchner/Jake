@@ -72,10 +72,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private JTextArea noteReader;
 	private ICoreAccess core;
 	private Project currentProject;
-	private JButton commitBtn;
+	private JButton announceBtn;
 	private JButton softLockBtn;
 	private JButton deleteBtn;
-	private JButton saveBtn;
+	private JButton saveBtn;	
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -90,7 +90,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.popupMenu.add(new JMenuItem(new DeleteNoteAction()));
 			this.popupMenu.add(new JMenuItem(new CommitNoteAction()));
 			this.popupMenu.addSeparator();
-			// this.popupMenu.add(new JMenuItem(new SaveNoteAction()));
 			this.popupMenu.add(new JMenuItem(new SoftlockNoteAction()));
 		}
 
@@ -315,9 +314,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
 		noteControlPanel.setBackground(Color.WHITE);
 
-		commitBtn = new JButton(new CommitNoteAction());
-		commitBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(commitBtn);
+		announceBtn = new JButton(new CommitNoteAction());
+		announceBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(announceBtn);
 
 		softLockBtn = new JButton(new SoftlockNoteAction());
 		softLockBtn.putClientProperty("JButton.buttonType", "textured");
