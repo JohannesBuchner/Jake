@@ -33,7 +33,7 @@ public class StringUtilities {
 	 */
 	public static String boldIf(String str, boolean bold) {
 		if (bold) {
-			return "<b>" + str + "</b>";
+			return bold(str);
 		} else {
 			return str;
 		}
@@ -52,5 +52,15 @@ public class StringUtilities {
 	 */
 	public static String htmlize(String str) {
 		return "<html>" + str + "</html>";
+	}
+
+	/**
+	 * Make String bold.
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static String bold(String str) {
+		return "<b>" + str + "</b>";
 	}
 }

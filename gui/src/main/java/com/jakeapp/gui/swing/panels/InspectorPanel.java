@@ -5,10 +5,7 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.ETable;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.EventsTableModel;
@@ -31,7 +28,7 @@ import java.io.File;
  * @author: studpete
  */
 public class InspectorPanel extends JXPanel implements
-		  ProjectChanged, ProjectSelectionChanged, FileSelectionChanged, ProjectViewChanged {
+		  ProjectChanged, ProjectSelectionChanged, FileSelectionChanged, ProjectViewChanged, NoteSelectionChanged {
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
 	public static final int INSPECTOR_SIZE = 250;
 	private Project project;
@@ -60,14 +57,14 @@ public class InspectorPanel extends JXPanel implements
 		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		FilePanel.getInstance().addFileSelectionListener(this);
+		NotesPanel.getInstance().addNoteSelectionListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
-
-		this.setLayout(new MigLayout("wrap 2, fill"));
 
 		initComponents();
 	}
 
 	private void initComponents() {
+		this.setLayout(new MigLayout("wrap 2, fill"));
 
 		// not resizeable, fixed width
 		Dimension absSize = new Dimension(INSPECTOR_SIZE, INSPECTOR_SIZE);
@@ -85,21 +82,24 @@ public class InspectorPanel extends JXPanel implements
 		eventsTable.updateUI();
 		this.add(eventsTable, "dock south, grow 150 150, gpy 150");
 
-		// TODO: make this a proper layout!
+		JPanel headerPanel = new JPanel(new MigLayout("wrap 1, fill"));
+		headerPanel.setOpaque(false);
 
 		// add icon
 		icoLabel = new JLabel();
-		this.add(icoLabel, "span 2, wrap, growx");
+		headerPanel.add(icoLabel, "dock west, hidemode 1, w 64!, h 64!");
 
 		// add name
 		nameLabel = new JLabel();
-		this.add(nameLabel, "span 2, wrap");
+		headerPanel.add(nameLabel, "wrap, grow");
 
 		// add size
 		sizeLabel = new JLabel();
-		this.add(sizeLabel, "span 2, wrap");
+		headerPanel.add(sizeLabel, "wrap, grow");
 
-		Font smallFont = UIManager.getFont("Label.font").deriveFont(Font.PLAIN, 10);
+		this.add(headerPanel, "wrap, grow");
+
+		Font smallFont = UIManager.getFont("Label.font").deriveFont(Font.PLAIN, 11);
 
 		// last time+user modified
 		JLabel lastAccessTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
@@ -137,7 +137,9 @@ public class InspectorPanel extends JXPanel implements
 			File file = getFileObject().getAbsolutePath();
 			icoLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
 
-			nameLabel.setText(FileObjectHelper.getName(getFileObject().getAbsolutePath()));
+			nameLabel.setText(StringUtilities.htmlize(StringUtilities.bold(
+					  FileObjectHelper.getName(getFileObject().getAbsolutePath()))));
+
 			sizeLabel.setText(FileObjectHelper.getSizeHR(getFileObject()));
 
 			// TODO: @Chris: update tags
@@ -244,6 +246,11 @@ public class InspectorPanel extends JXPanel implements
 
 	private JakeMainView.ProjectViewPanelEnum getProjectViewPanel() {
 		return projectViewPanel;
+	}
+
+	@Override
+	public void noteSelectionChanged(NoteSelectedEvent event) {
+		updatePanel();
 	}
 }
 
