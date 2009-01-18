@@ -13,6 +13,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -304,6 +305,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void removeAccount(MsgService msg) throws NotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
+		//TODO
 	}
 
 	public void addRegistrationStatusCallbackListener(RegistrationStatus cb) {
@@ -312,7 +314,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb) {
 		log.info("Deregisters registration status callback: " + cb);
-
 	}
 
 
@@ -419,49 +420,46 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener) {
 		AvailableLaterObject<Integer> result = null;
+		Exception ex = null;
 
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project, listener);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.fireErrorListener(new JakeErrorEvent(e));
+			ex = e;
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.fireErrorListener(new JakeErrorEvent(e));
+			ex = e;
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.fireErrorListener(new JakeErrorEvent(e));
+			ex = e;
 		} catch (NoSuchProjectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.fireErrorListener(new JakeErrorEvent(e));
+			ex = e;
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+			ex = e;
 		}
 
+		if (result==null) result = new AvailableErrorObject<Integer>(listener,ex);
 		return result.start();
 	}
 
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener) {
 		AvailableLaterObject<Long> result = null;
+		Exception ex = null;
 
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project, null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchProjectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+			ex = e;
+		}
+		catch (Exception e) {
+			ex = e;
 		}
 
+		if (result == null) result = new AvailableErrorObject<Long>(listener, ex);
 		return result.start();
 	}
 
@@ -507,35 +505,28 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public void joinProject(final String path, final Project project) {
-		log.info("Mock: join project: " + project + " path: " + path);
+		log.info("Join project: " + project + " path: " + path);
 
-		if (path == null) {
-			// throw new
-		}
+		if (path == null)
+			throw new IllegalArgumentException();
 
 		Runnable runner = new Runnable() {
 
 			public void run() {
-
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
 				try {
 					project.setRootPath(path);
-					projects.add(project);
-					invitedProjects.remove(project);
-					project.setInvitationState(InvitationState.ACCEPTED);
-
-
+					getFrontendService().getProjectsManagingService(getSessionId()).joinProject(project, project.getUserId());
+				
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 						 project,
 						 ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+				} catch (NoSuchProjectException e) {
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+				} catch (NotLoggedInException e) {
+					handleNotLoggedInException(e);
 				}
 			}
 		};
@@ -546,21 +537,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void rejectProject(final Project project) {
-		log.info("Mock: reject project: " + project);
+		log.info("Reject project: " + project);
 
 
 		Runnable runner = new Runnable() {
-
 			public void run() {
-
 				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					invitedProjects.remove(project);
+					getFrontendService().getProjectsManagingService(getSessionId()).rejectProject(project, project.getUserId());
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 						 project,
@@ -568,6 +551,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+				} catch (NoSuchProjectException e) {
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+				} catch (NotLoggedInException e) {
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 				}
 			}
 		};

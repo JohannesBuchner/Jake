@@ -98,11 +98,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	/**
-	 * /// TODO Do we really need this!? -- Dominik <p/> retrieves a session Yes
-	 * we do!
-	 *
 	 * @param sessionId The id associated with the session after it was created
-	 * @return // TODO
 	 * @throws IllegalArgumentException if <code>sessionId</code> was null
 	 * @throws NotLoggedInException	  if no Session associated with <code>sessionId</code> exists.
 	 */
