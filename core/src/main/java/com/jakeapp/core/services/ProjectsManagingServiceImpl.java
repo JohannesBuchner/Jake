@@ -29,6 +29,7 @@ import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.InvitationState;
@@ -219,6 +220,24 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private void initializeProjectFolder(Project p) throws IOException {
 		this.createProjectDatabase(p);
 	}
+	
+	private boolean checkProjectDatabaseExists(Project p) {
+		//TODO not beautiful at all - may be completely wrong
+		boolean result = false;
+		
+		jdbcDataSource dataSource = new jdbcDataSource();
+		dataSource.setDatabase("jdbc:hsqldb:file:"+ new File(p.getRootPath(),"bla") +";ifexists=true;shutdown=false;create=false");
+		dataSource.setUser("sa");
+        dataSource.setPassword("");
+        
+        try {
+			dataSource.getConnection();
+			result = true;
+		} catch (SQLException e) {
+		}
+		
+		return result;
+	}
 
 	/**
 	 * creates a file for the Project-local database
@@ -226,6 +245,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * database in.
 	 */
 	private void createProjectDatabase(Project p) {
+		//TODO not beautiful at all - may be completely wrong
 		jdbcDataSource dataSource = new jdbcDataSource();
 		ClassPathResource importScript;
 		Statement stmt;
@@ -360,12 +380,16 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throw new FileNotFoundException();
 		}
 
-		// TODO Check if the Project-internal Database can be read (and read
-		// it!)
+		
 
 		// create Project
 		result = new Project(name, UUID.randomUUID(), null, // msgService
 				rootPath);
+		
+		// Check if the Project-internal Database can be read (and read
+		// it!)
+		if (!this.checkProjectDatabaseExists(result))
+			throw new FileNotFoundException();
 
 		// add Project to the global database
 		try {
@@ -380,7 +404,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			this.getFileServices().put(result, new FSService());
 		} catch (NoSuchAlgorithmException e) {
 			log.error("Fileservices are not supported.");
-			// TODO rethrow something?
+			// throw a FileNotFoundException since working with Files will not
+			// be possible.
+			throw new FileNotFoundException();
 		}
 
 		// add project to internal list
@@ -534,9 +560,15 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 */
 	private ProjectMember getProjectMember(Project project, UserId userId,
 			IProjectMemberDao dao) {
-		// TODO
-
-		return null;
+		/*
+		 * verlaesst sich auf userid.getUUid == projectMember.getUUid!!
+		 */
+		
+		try {
+			return dao.get(userId.getUuid());
+		} catch (NoSuchProjectMemberException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -560,7 +592,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		if (member == null) {
 			this.addProjectMember(project, userId);
 			// invite ProjectMember to Project
-			this.inviteMember(member);
+			this.inviteMember(project, userId);
 		}
 
 		// set the new trustlevel
@@ -570,9 +602,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		dao.persist(project, member);
 	}
 
-	private void inviteMember(ProjectMember member) {
-		// TODO Auto-generated method stub
-
+	/** 
+	 * sends an Invitation to another ProjectMember
+	 * @param project
+	 */
+	private void inviteMember(Project project, UserId userId) {
+		this.getSyncService().invite(project,userId);
 	}
 
 	@Override
@@ -594,35 +629,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		dao = this.getNoteObjectDao(project);
 
 		result = dao.getAll();
-
-
-		/*
-		 * if (false) // TODO check if project is loaded throw new
-		 * ProjectNotLoadedException("Project with uuid " + project.getUserId()
-		 * + " is not loaded");
-		 * 
-		 * // todo replace with dao access List<NoteObject> list = new
-		 * ArrayList<NoteObject>(); list .add(new NoteObject(new UUID(1, 1),
-		 * project, "Project: " + project.getName())); list .add(new NoteObject(
-		 * new UUID(1, 1), project,
-		 * "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"
-		 * )); list.add(new NoteObject(new UUID(2, 1), project,
-		 * "Apple pays Chuck Norris 99 cents every time he listens to a song."
-		 * )); list .add(new NoteObject( new UUID(3, 1), project,
-		 * "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."
-		 * )); list .add(new NoteObject( new UUID(4, 1), project,
-		 * "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."
-		 * )); list.add(new NoteObject(new UUID(4, 1), project,
-		 * "Chuck Norris can kill two stones with one bird.")); list .add(new
-		 * NoteObject( new UUID(5, 1), project,
-		 * "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."
-		 * )); list.add(new NoteObject(new UUID(6, 1), project,
-		 * "Chuck Norris does not sleep. He waits.")); list .add(new
-		 * NoteObject(new UUID(7, 1), project,
-		 * "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "
-		 * )); list.add(new NoteObject(new UUID(8, 1), project,
-		 * "Guns don't kill people, Chuck Norris does.")); return list;
-		 */
 
 		return result;
 	}

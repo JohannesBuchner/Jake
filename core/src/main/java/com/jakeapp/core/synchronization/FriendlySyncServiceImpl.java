@@ -42,4 +42,8 @@ public abstract class FriendlySyncServiceImpl implements IFriendlySyncService {
 		}
 		return lm;
 	}
+	
+	public void invite(Project project, UserId userId) {
+		//TODO implement please, Johannes!!
+	}
 }

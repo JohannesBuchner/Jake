@@ -36,4 +36,12 @@ public interface IFriendlySyncService extends ISyncService {
 	 */
 	public void pullObjects(Iterable<JakeObject> objects);
 
+	/**
+	 * Invites a User to a project.
+	 * @param project The project to invite the user to.
+	 * @param userId The userId of the User. There is already a corresponding
+	 * ProjectMember-Object stored in the project-local database. 
+	 */
+	public void invite(Project project, UserId userId);
+
 }
