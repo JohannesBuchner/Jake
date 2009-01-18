@@ -3,6 +3,7 @@ package com.jakeapp.core.synchronization;
 import java.io.File;
 import java.io.IOException;
 
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
@@ -90,8 +91,9 @@ public interface ISyncService {
 	 * 
 	 * @param objects
 	 *            the objects to be pulled
+	 * @throws NoSuchLogEntryException the object does not exist (no one announced it)
 	 */
-	public void pullObject(JakeObject jo);
+	public void pullObject(JakeObject jo) throws NoSuchLogEntryException;
 
 	/**
 	 * Adds a log entry that the object has been modified/created/... Unless you
@@ -168,4 +170,30 @@ public interface ISyncService {
 
 	public Iterable<JakeObject> getPullableFileObjects(Project project);
 
+	boolean localIsNewest(JakeObject fo);
+
+
+	/**
+	 * Invites a User to a project.
+	 * 
+	 * @param project
+	 *            The project to invite the user to.
+	 * @param userId
+	 *            The userId of the User. There is already a corresponding
+	 *            ProjectMember-Object stored in the project-local database.
+	 */
+	void invite(Project project, UserId userId);
+
+	/**
+	 * Informs the person who invited us to a project that we accept the
+	 * invitation.
+	 */
+	void notifyInvitationAccepted(Project project, UserId inviter);
+
+	/**
+	 * Informs the person who invited us to a project that we reject the
+	 * invitation.
+	 */
+	void notifyInvitationRejected(Project project, UserId inviter);
+	
 }

@@ -59,11 +59,6 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
     }
 
 	@Override
-	public boolean isNote(NoteObject jakeObject) {
-		return true;
-	}
-
-	@Override
 	public NoteObject complete(NoteObject jakeObject) throws NoSuchJakeObjectException {
 		return get(jakeObject.getUuid());
 	}

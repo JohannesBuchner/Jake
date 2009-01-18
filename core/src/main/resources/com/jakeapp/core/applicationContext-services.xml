@@ -26,7 +26,12 @@
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
         <property name="db" ref="applicationContextFactory"/>
         <property name="icServicesManager" ref="icServiceManager"/>
+        <property name="userTranslator" ref="userTranslator"/>
+    </bean>
 
+    <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
+        <property name="applicationContextFactory" ref="applicationContextFactory"/>
+        <property name="useridDao" ref="useridDao"/>
     </bean>
 
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
@@ -58,7 +63,7 @@
                          type="com.jakeapp.core.services.IProjectsManagingService"/>
         <constructor-arg ref="msgServiceFactory" index="1"
                          type="com.jakeapp.core.services.MsgServiceFactory"/>
-        <constructor-arg ref="syncService" index="2" type="com.jakeapp.core.synchronization.IFriendlySyncService" />
+        <constructor-arg ref="syncService" index="2" type="com.jakeapp.core.synchronization.FriendlySyncService" />
     </bean>
 
 

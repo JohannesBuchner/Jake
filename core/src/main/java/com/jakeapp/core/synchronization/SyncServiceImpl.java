@@ -3,6 +3,7 @@ package com.jakeapp.core.synchronization;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.FileObject;
@@ -24,7 +25,6 @@ import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
-
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -50,14 +50,14 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
  * 
  * @author johannes
  */
-public class SyncServiceImpl extends FriendlySyncServiceImpl {
+public class SyncServiceImpl extends FriendlySyncService {
 
-	private static Logger log = Logger.getLogger(SyncServiceImpl.class);
+	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	/**
 	 * key is the UUID
 	 */
-	private Map<String, IFSService> projectsFssMap;
+	Map<String, IFSService> projectsFssMap;
 
 	/**
 	 * key is the UUID
@@ -66,10 +66,11 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 
 	private RequestHandlePolicy rhp;
 
-
-	private ApplicationContextFactory db;
+	ApplicationContextFactory db;
 
 	private ICServicesManager icServicesManager;
+
+	private UserTranslator userTranslator;
 
 	private ICService getICS(Project p) {
 		try {
@@ -98,29 +99,73 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		return jo instanceof NoteObject;
 	}
 
-	private LogEntry getMostRecentForLogEntry(JakeObject jo) {
-		// TODO get from DAO
-		return null;
+	private LogEntry<JakeObject> getMostRecentForLogEntry(JakeObject jo)
+			throws NoSuchLogEntryException {
+		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).getMostRecentFor(jo);
 	}
 
-	private FileObject getFileObjectByRelpath(String f) {
-		// TODO get from DAO
-		return null;
+	private FileObject getFileObjectByRelpath(Project p, String relpath)
+			throws NoSuchJakeObjectException {
+		return db.getFileObjectDao(p).complete(new FileObject(null, p, relpath));
 	}
 
 	@Override
 	protected Iterable<UserId> getProjectMembers(Project project) {
-		// TODO Auto-generated method stub
+		syncProjectMembers(project);
 		return null;
 	}
 
-	private boolean haveNewest(FileObject fo) {
-		// TODO Auto-generated method stub
-		return false;
+	/**
+	 * We keep track of the Project members
+	 * <ul>
+	 * <li>in the DB</li>
+	 * <li>in log</li>
+	 * <li>in the ics</li>
+	 * </ul>
+	 * We should only trust the logentries and fix everything else by that.
+	 * 
+	 * @param project
+	 */
+	private void syncProjectMembers(Project project) {
+		Collection<ProjectMember> members = db.getLogEntryDao(project)
+				.getCurrentProjectMembers();
+		for (ProjectMember member : members) {
+			com.jakeapp.jake.ics.UserId userid = getBackendUserIdFromDomainProjectMember(
+					project, member);
+			try {
+				getICS(project).getUsersService().addUser(userid, member.getNickname());
+			} catch (NoSuchUseridException e) { // shit happens
+			} catch (NotLoggedInException e) {
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	private LogEntry<JakeObject> getLogEntryOfLocal(JakeObject jo) {
+		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).findLastMatching(
+				new LogEntry<ILogable>(null, LogAction.JAKE_OBJECT_NEW_VERSION, null,
+						null, null, null, null, null, true));
+	}
+
+	@Override
+	public boolean localIsNewest(JakeObject jo) {
+		LogEntry<JakeObject> localLe = getLogEntryOfLocal(jo);
+		if (localLe == null) {
+			return false;
+		}
+		LogEntry<? extends ILogable> newestLe;
+		try {
+			newestLe = db.getLogEntryDao(jo).getMostRecentFor(jo);
+		} catch (NoSuchLogEntryException e) {
+			return true; // not announced yet
+		}
+		if (localLe.getUuid().equals(newestLe.getUuid()))
+			return true;
+		else
+			return false;
 	}
 
 	private boolean isReachable(Project p, String userid) {
-		// TODO Auto-generated method stub
 		ICService ics = getICS(p);
 		if (ics == null)
 			return false;
@@ -156,9 +201,6 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		return null; // TODO
 	}
 
-	public SyncServiceImpl() {
-	}
-
 	/**
 	 * returns all JakeObjects that still exist
 	 * 
@@ -169,6 +211,9 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		return null;
 	}
 
+	public SyncServiceImpl() {
+	}
+
 	@Override
 	public Iterable<JakeObject> getPullableFileObjects(Project project) {
 		List<JakeObject> missing = new LinkedList<JakeObject>();
@@ -176,7 +221,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		for (JakeObject jo : allJakeObjects) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
-				if (haveNewest(fo))
+				if (localIsNewest(fo))
 					missing.add(jo);
 			}
 		}
@@ -253,10 +298,11 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 	@Override
-	public void pullObject(JakeObject jo) {
-		LogEntry le = getMostRecentForLogEntry(jo);
-
+	public void pullObject(JakeObject jo) throws NoSuchLogEntryException {
+		LogEntry le = db.getLogEntryDao(jo).getMostRecentFor(jo);
 		String userid = getMyUserid(jo.getProject());
+		rhp.getPotentialJakeObjectProviders(jo);
+
 		// TODO: getPotentialProviders
 		// if(le.getUserId().equals(userid))
 		// throw new com.jakeapp.core.dao.exceptions.NoSuchLogEntryException();
@@ -290,21 +336,9 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	@Override
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException {
 		IFSService fss = projectsFssMap.get(p.getProjectId());
-		List<String> files;
-		try {
-			// TODO: should this really throw an exception if _one_ file doesnt
-			// work? I don't think so. -- dominik
-			files = fss.recursiveListFiles();
-		}
-		// catch(InvalidFilenameException ifne)
-		// {
-		// TODO @ johannes: is this ok?
-		// throw new IOException("InvalidFilenameException: " +
-		// ifne.getMessage());
-		// }
-		catch (IOException e) {
-			throw e;
-		}
+
+		List<String> files = fss.recursiveListFiles();
+
 		for (JakeObject jo : getPullableFileObjects(p)) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
@@ -313,8 +347,17 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		}
 		List<JakeObjectSyncStatus> stat = new LinkedList<JakeObjectSyncStatus>();
 		for (String f : files) {
-			FileObject fo = getFileObjectByRelpath(f);
-			boolean inConflict = isObjectInConflict(fo); // TODO: get
+			boolean existsLocal;
+			FileObject fo;
+			try {
+				fo = getFileObjectByRelpath(p, f);
+				existsLocal = existsLocally(fo);
+			} catch (NoSuchJakeObjectException e1) {
+				// local file, not in project
+				existsLocal = true;
+			}
+			boolean existsRemote = false;
+			boolean inConflict = false;
 			boolean locallyModified = false; // TODO: isLocallyModified(fo);
 			try {
 				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX
@@ -367,10 +410,14 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 			return rhash.equals(lhash);
 	}
 
-	public Boolean existsLocally(FileObject fo) throws InvalidFilenameException,
-			IOException {
+	public Boolean existsLocally(FileObject fo) throws IOException {
 		IFSService fss = projectsFssMap.get(fo.getProject());
-		return fss.fileExists(fo.getRelPath());
+		try {
+			return fss.fileExists(fo.getRelPath());
+		} catch (InvalidFilenameException e) {
+			log.fatal("db corrupted: contains invalid filenames");
+			return false;
+		}
 	}
 
 	public boolean isObjectInConflict(JakeObject jo) {
@@ -387,10 +434,14 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		} catch (NoSuchAlgorithmException e) {
 			throw new ProjectException(e);
 		}
+		if (rhp == null) {
+			rhp = new TrustAllRequestHandlePolicy(db, projectsFssMap, userTranslator);
+		}
 
 		projectsFssMap.put(p.getProjectId(), fs);
 		projectChangeListeners.put(p.getProjectId(), cl);
 		// TODO: add ics hooks
+
 	}
 
 	@Override
@@ -408,5 +459,50 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	public void setDb(ApplicationContextFactory applicationContextFactory) {
 		this.db = applicationContextFactory;
 	}
+
+	public void setUserTranslator(UserTranslator userTranslator) {
+		this.userTranslator = userTranslator;
+	}
+
+	public UserTranslator getUserTranslator() {
+		return userTranslator;
+	}
+
+	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
+			ProjectMember member) {
+		return userTranslator.getBackendUserIdFromDomainProjectMember(p, member);
+	}
+
+	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainUserId(UserId userid) {
+		return userTranslator.getBackendUserIdFromDomainUserId(userid);
+	}
+
+	public ProjectMember getProjectMemberFromUserId(Project project, UserId userid)
+			throws NoSuchProjectMemberException {
+		return userTranslator.getProjectMemberFromUserId(project, userid);
+	}
+
+	public UserId getUserIdFromProjectMember(Project project, ProjectMember member) {
+		return userTranslator.getUserIdFromProjectMember(project, member);
+	}
+
+	@Override
+	public void invite(Project project, UserId userId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyInvitationAccepted(Project project, UserId inviter) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyInvitationRejected(Project project, UserId inviter) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

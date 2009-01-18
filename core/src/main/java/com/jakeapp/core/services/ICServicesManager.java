@@ -18,7 +18,7 @@ public class ICServicesManager {
 
 	private static Logger log = Logger.getLogger(ICServicesManager.class);
 
-	private Map<Project, ICService> services;
+	private Map<String, ICService> services;
 
 	public ICService getICService(Project p) throws ProtocolNotSupportedException {
 		ICService ics = null;
@@ -27,7 +27,7 @@ public class ICServicesManager {
 			ics = this.services.get(p);
 		else {
 			ics = this.createICService(p);
-			this.services.put(p, ics);
+			this.services.put(p.getProjectId(), ics);
 		}
 
 		return ics;

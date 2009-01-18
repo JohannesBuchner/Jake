@@ -112,9 +112,4 @@ public interface IJakeObjectDao<T extends JakeObject> {
      */
     public List<Tag> getTagsFor(final T jakeObject) throws NoSuchJakeObjectException ;
 
-    /**
-     * returns true if JakeObject is a 
-     */
-    public boolean isNote(final T jakeObject);
-    
 }

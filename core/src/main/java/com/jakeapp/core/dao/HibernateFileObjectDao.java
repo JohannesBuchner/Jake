@@ -85,11 +85,6 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	}
 
 	@Override
-	public boolean isNote(FileObject jakeObject) {
-		return true;
-	}
-
-	@Override
 	public FileObject complete(FileObject jakeObject) throws NoSuchJakeObjectException {
 		if(jakeObject.getUuid() != null) {
 			return get(jakeObject.getUuid());

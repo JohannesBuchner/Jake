@@ -174,5 +174,4 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 
         return jakeObject;
     }
-
 }
