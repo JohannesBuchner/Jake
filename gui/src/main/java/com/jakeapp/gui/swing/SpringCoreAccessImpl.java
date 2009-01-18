@@ -604,6 +604,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+		} catch (IOException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		}
 		
 		return null;

@@ -16,6 +16,7 @@ import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -156,7 +157,8 @@ public interface IFrontendService {
 	 * @throws NotAFileException 
 	 * @throws NotAReadableFileException 
 	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
 	JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId, Project project,
-			FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException;
+			FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException, IOException;
 }

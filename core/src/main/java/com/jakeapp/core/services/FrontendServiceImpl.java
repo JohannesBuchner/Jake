@@ -14,13 +14,13 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -251,7 +251,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId,
-			Project project, FileObject file) throws InvalidFilenameException, FileNotFoundException, NotAReadableFileException {
+			Project project, FileObject file) throws InvalidFilenameException, NotAReadableFileException, IOException {
 		ISyncService iss = this.getSyncService(sessionId);
 		IProjectsManagingService pms = this.getProjectsManagingService(sessionId);
 		IFSService fss = pms.getFileServices(project);
@@ -260,9 +260,8 @@ public class FrontendServiceImpl implements IFrontendService {
 		boolean locallyModified = !file.getChecksum().equals(fss.calculateHashOverFile(file.getRelPath())),
 			remotelyModified = !iss.localIsNewest(file),
 			onlyLocal = pms.isLocalJakeObject(file),
-			onlyRemote = false;
-		
-		//TODO implement onlyRemote - how?
+			onlyRemote = !iss.existsLocally(file);
+
 		return new JakeObjectSyncStatus(
 			file.getAbsolutePath().toString(),fss.getLastModified(file.getRelPath()),
 			locallyModified,remotelyModified,onlyLocal,onlyRemote

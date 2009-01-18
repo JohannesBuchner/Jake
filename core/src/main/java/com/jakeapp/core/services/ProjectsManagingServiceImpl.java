@@ -211,53 +211,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 		// this should to all the magic
 		this.applicationContextFactory.getApplicationContext(p);
-
-		// TODO: cleanup
-		/*
-				//TODO not beautiful at all - may be completely wrong
-		jdbcDataSource dataSource = new jdbcDataSource();
-		ClassPathResource importScript;
-		Statement stmt;
-		Scanner sc;
-
-		dataSource.setDatabase("jdbc:hsqldb:file:"+ new File(p.getRootPath(),"bla") +";ifexists=true;shutdown=false;create=true");
-		dataSource.setUser("sa");
-        dataSource.setPassword("");
-
-        importScript = new ClassPathResource("/com/jakeapp/core/services/hsql-db-setup.sql");
-
-        try {
-			stmt = dataSource.getConnection("sa", "").createStatement();
-			try {
-				try {
-					sc = new Scanner(new BufferedInputStream(importScript.getInputStream()));
-					try {
-						while (sc.hasNextLine()) {
-		        			stmt.addBatch(sc.nextLine());
-		        		}
-					}
-					finally {
-						sc.close();
-					}
-				} catch (IOException e) {
-				}
-	        	stmt.executeUpdate("SHUTDOWN COMPACT");
-	        }
-	        finally {
-	        	try {
-	        		stmt.close();
-	        	}
-	        	catch (SQLException sqlex) {
-	        		log.warn(sqlex);
-					throw sqlex;
-	        	}
-	        }
-		} catch (SQLException e) {
-			  log.warn(e);
-			  throw new RuntimeException(e);
-		}
-	}
-		 */
 	}
 
 
