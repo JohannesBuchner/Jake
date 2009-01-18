@@ -141,7 +141,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		}
 
 		JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
-		this.add(signInBtn, "right, bottom");
+		loginUserPanel.add(signInBtn, "right, bottom");
 
 		return loginUserPanel;
 	}
