@@ -772,7 +772,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			this.mainSplitPane.getLeftComponent().setVisible(false);
 		} else {
 			this.mainSplitPane.getLeftComponent().setVisible(true);
+			// TODO: save original value
+			this.mainSplitPane.setDividerLocation(180);
 		}
+
+		this.mainSplitPane.updateUI();
 	}
 
 
