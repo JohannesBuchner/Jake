@@ -9,6 +9,8 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 
 /**
@@ -28,9 +30,13 @@ public class CreateNoteAction extends NoteAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		JakeMainApp.getCore().newNote(new NoteObject(UUID.randomUUID(),
-				NotesPanel.getInstance().getCurrentProject(),
-				JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent")));
+	public void actionPerformed(ActionEvent event) {
+		try {
+			JakeMainApp.getCore().newNote(new NoteObject(UUID.randomUUID(),
+					NotesPanel.getInstance().getCurrentProject(),
+					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent")));
+		} catch (NoteOperationFailedException e) {
+			ExceptionUtilities.showError(e);
+		}
 	}
 }

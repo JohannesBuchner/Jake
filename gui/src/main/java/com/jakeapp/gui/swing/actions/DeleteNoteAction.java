@@ -20,6 +20,8 @@ import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
 import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 
@@ -89,7 +91,11 @@ public class DeleteNoteAction extends NoteAction {
 			public void optionSelected(SheetEvent evt) {
 				if (evt.getOption() == 0) {
 					for (NoteObject note : cache) {
-						JakeMainApp.getCore().deleteNote(note);
+						try {
+							JakeMainApp.getCore().deleteNote(note);
+						} catch (NoteOperationFailedException e) {
+							ExceptionUtilities.showError(e);
+						}
 					}
 				}
 			}

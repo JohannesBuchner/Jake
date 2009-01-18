@@ -246,29 +246,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		return this.notesTable.getSelectedRow() >= 0;
 	}
 
-	/**
-	 * Create a new note both in the persistence and in the notes table.
-	 */
-	private void newNote() {
-		this.core.newNote(new NoteObject(UUID.randomUUID(), this.getCurrentProject(), "new note"));
-	}
-
-	/**
-	 * Commit the currently selected note.
-	 */
-	private void shareSelectedNote() {
-		//TODO
-	}
-
-	/**
-	 * Save the currently selected note. If it is a local note, it is only saved, if it is a shared note
-	 * it is automatically commited.
-	 */
-	private void saveSelectedNote() {
-		//TODO
-	}
-
-
 	private void initComponents() {
 		this.setLayout(new MigLayout("wrap 1, fill, ins 0"));
 

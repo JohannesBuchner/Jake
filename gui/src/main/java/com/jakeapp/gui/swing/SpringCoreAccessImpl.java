@@ -21,6 +21,7 @@ import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
@@ -706,7 +707,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void deleteNote(NoteObject note) {
+	public void deleteNote(NoteObject note) throws NoteOperationFailedException {
 		IProjectsManagingService pms;
 		ProjectMember member;
 
@@ -715,53 +716,41 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			member = pms.getProjectMember(note.getProject(), this.getLoggedInUser(this.getSessionId()));
 
 			pms.getNoteManagingService(note.getProject()).deleteNote(note, member);
-		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (ProjectNotLoadedException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		} catch (NoSuchJakeObjectException e) {
+		} catch (Exception e) {
+			NoteOperationFailedException ex = new NoteOperationFailedException();
+			ex.append(e);
+			throw ex;
+		}
 			// The corresponding JakeObject does not exist any more - there is
 			// no
 			// need deleting it therefore we simply discard this exception.
-		}
 	}
 
 	@Override
-	public void newNote(NoteObject note) {
+	public void newNote(NoteObject note) throws NoteOperationFailedException {
 		try {
 			this.frontendService
 					  .getProjectsManagingService(this.getSessionId())
 					  .getNoteManagingService(note.getProject()).addNote(note);
-		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (ProjectNotLoadedException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
+		} catch (Exception e) {
+			NoteOperationFailedException ex = new NoteOperationFailedException();
+			ex.append(e);
+			throw ex;
 		}
 	}
 
 	@Override
-	public void saveNote(NoteObject note) {
+	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 		try {
 			this.frontendService
 					  .getProjectsManagingService(this.getSessionId())
 					  .getNoteManagingService(note.getProject()).saveNote(note);
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (ProjectNotLoadedException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (Exception e) {
+			NoteOperationFailedException ex = new NoteOperationFailedException();
+			ex.append(e);
+			throw ex;
 		}
+			
 	}
 
 	// TODO this might be removed in further versions...

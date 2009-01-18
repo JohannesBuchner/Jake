@@ -14,6 +14,7 @@ import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
@@ -558,17 +559,19 @@ public interface ICoreAccess {
 
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.
-	 *
+	 * 
 	 * @param note the note to be deleted.
+	 * @throws NoteOperationFailedException raised if an the given note could not be deleted.
 	 */
-	public void deleteNote(NoteObject note);
+	public void deleteNote(NoteObject note) throws NoteOperationFailedException;
 
 	/**
 	 * Add a new note.
 	 *
 	 * @param note the note to be added
+	 * @throws NoteOperationFailedException exception is raised whenever a note could not be created.
 	 */
-	public void newNote(NoteObject note);
+	public void newNote(NoteObject note) throws NoteOperationFailedException;
 
 	/******************* Soft Lock ***************************/
 
@@ -672,11 +675,13 @@ public interface ICoreAccess {
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);
 
 	/**
-	 * Safe the given note. Jesus saves!
+	 * Save the given note. Jesus saves!
 	 *
 	 * @param note the not that is to saved.
+	 * @throws NoteOperationFailedException raised if the operation can not be completed, i.e. if the
+	 * note couldn not be saved.
 	 */
-	public void saveNote(NoteObject note);
+	public void saveNote(NoteObject note) throws NoteOperationFailedException;
 }
 
 

@@ -11,6 +11,8 @@ import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 
 /**
@@ -33,13 +35,17 @@ public class SaveNoteAction extends NoteAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent event) {
 		String newContent = NotesPanel.getInstance().getNoteReaderText();
 		NoteObject cachedNote = this.getSelectedNotes().get(0);
 		cachedNote.setContent(newContent);
 		
 		log.debug("saving note with new content: " + newContent);
-		core.saveNote(cachedNote);
+		try {
+			this.core.saveNote(cachedNote);
+		} catch (NoteOperationFailedException e) {
+			ExceptionUtilities.showError(e);
+		}
 	}
 	
 	@Override

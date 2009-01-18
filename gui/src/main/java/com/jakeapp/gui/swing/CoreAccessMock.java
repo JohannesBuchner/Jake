@@ -16,6 +16,7 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
@@ -597,14 +598,14 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public void deleteNote(NoteObject note) {
+	public void deleteNote(NoteObject note) throws NoteOperationFailedException {
 		log.debug("removing note: " + note + "from notes");
 		log.debug("success: " + Boolean.toString(this.notesList.remove(note)));
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.Deleted));
 	}
 
 	@Override
-	public void newNote(NoteObject note) {
+	public void newNote(NoteObject note) throws NoteOperationFailedException {
 		log.debug("adding note: " + note);
 		this.notesList.add(note);
 		this.notesIsLocal.add(Boolean.TRUE);
@@ -1016,7 +1017,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
 	@Override
-	public void saveNote(NoteObject note) {
+	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 		// [After HAL has killed the rest of the crew] Look Dave, I can see you're really upset about
 		// this. I honestly think you ought to sit down calmly, take a stress pill, and think things
 		// over. I know I've made some very poor decisions recently, but I can give you my complete
