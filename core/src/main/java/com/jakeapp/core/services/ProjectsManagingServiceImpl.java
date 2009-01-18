@@ -306,6 +306,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public void closeProject(Project project) throws IllegalArgumentException,
 			  FileNotFoundException {
 		// Check preconditions
@@ -334,6 +335,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public Project openProject(File rootPath, String name)
 			  throws IllegalArgumentException, FileNotFoundException {
 		Project result;
@@ -424,6 +426,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public List<LogEntry> getLog(Project project)
 			  throws IllegalArgumentException {
 		ILogEntryDao dao;
@@ -441,6 +444,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
 			  throws IllegalArgumentException {
 		Project project;
@@ -501,6 +505,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * @param project Project to add a member to. May not be null.
 	 * @param userId  Member to add. May not be null.
 	 */
+	@Transactional
 	private ProjectMember addProjectMember(Project project, UserId userId) {
 		IProjectMemberDao dao;
 		ProjectMember member;
@@ -526,6 +531,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * @return null if the User with the ID userId is not found in the Project.
 	 *         The corresponding ProjectMember if it exisits.
 	 */
+	@Transactional
 	private ProjectMember getProjectMember(Project project, UserId userId,
 														IProjectMemberDao dao) {
 		/*
@@ -540,6 +546,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public void setTrust(Project project, UserId userId, TrustState trust)
 			  throws IllegalArgumentException, IllegalAccessException {
 		IProjectMemberDao dao;
@@ -612,6 +619,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener listener)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
 		IFileObjectDao dao;
@@ -622,12 +630,14 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public FileObject getFileObjectByRelPath(Project project, String relpath) throws NoSuchJakeObjectException {
 		IFileObjectDao dao = this.getFileObjectDao(project);
 		return dao.get(relpath);
 	}
 
 	@Override
+	@Transactional
 	public void joinProject(Project project, UserId inviter)
 			  throws IllegalStateException, NoSuchProjectException {
 
@@ -670,6 +680,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public void updateProjectName(Project project, String newName)
 			  throws NoSuchProjectException {
 
@@ -716,6 +727,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		return result;
 	}
 
+	@Transactional
 	private LogEntry<? extends ILogable> getMostRecentFor(JakeObject jo)
 			  throws NoSuchProjectException, IllegalArgumentException, NoSuchLogEntryException {
 		LogEntry<? extends ILogable> logentry;
@@ -731,6 +743,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public ProjectMember getProjectMember(Project project, MsgService msg) {
 		return this.getProjectMember(project, msg.getUserId(), this.getProjectMemberDao(project));
 	}
@@ -761,6 +774,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 
 	@Override
+	@Transactional
 	public List<ProjectMember> getProjectMembers(Project project) throws NoSuchProjectException {
 		if (project==null) throw new NoSuchProjectException();
 		
@@ -769,6 +783,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 
 	@Override
+	@Transactional
 	public void updateProjectMember(Project project, ProjectMember member) {
 		this.getProjectMemberDao(project).persist(project, member);
 		

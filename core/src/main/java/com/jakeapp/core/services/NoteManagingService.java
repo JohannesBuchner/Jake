@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -40,6 +42,7 @@ public class NoteManagingService implements INoteManagingService {
 	}
 
 	@Override
+	@Transactional
 	public boolean isLocalNote(NoteObject note) {
 		boolean result = false;
 		
@@ -57,16 +60,19 @@ public class NoteManagingService implements INoteManagingService {
 	}
 
 	@Override
+	@Transactional
 	public List<NoteObject> getNotes() {
 		return this.getDao().getAll();
 	}
 
 	@Override
+	@Transactional
 	public void addNote(NoteObject note) {
 		this.getDao().persist(note);
 	}
 
 	@Override
+	@Transactional
 	public void deleteNote(NoteObject note,ProjectMember member) throws NoSuchJakeObjectException {
 		LogEntry <? extends ILogable> logEntry = null;
 		
@@ -88,6 +94,7 @@ public class NoteManagingService implements INoteManagingService {
 	}
 
 	@Override
+	@Transactional
 	public void saveNote(NoteObject note) {
 		this.getDao().persist(note);
 	}

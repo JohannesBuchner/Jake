@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
@@ -111,11 +112,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return jo instanceof NoteObject;
 	}
 
+	@Transactional
 	private LogEntry<JakeObject> getMostRecentForLogEntry(JakeObject jo)
 			throws NoSuchLogEntryException {
 		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).getMostRecentFor(jo);
 	}
 
+	@Transactional
 	private FileObject getFileObjectByRelpath(Project p, String relpath)
 			throws NoSuchJakeObjectException {
 		return db.getFileObjectDao(p).complete(new FileObject(null, p, relpath));
@@ -138,6 +141,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 * 
 	 * @param project
 	 */
+	@Transactional
 	private void syncProjectMembers(Project project) {
 		Collection<ProjectMember> members = db.getLogEntryDao(project)
 				.getCurrentProjectMembers();
@@ -153,6 +157,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 	}
 
+	@Transactional
 	private LogEntry<JakeObject> getLogEntryOfLocal(JakeObject jo) {
 		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).findLastMatching(
 				new LogEntry<ILogable>(null, LogAction.JAKE_OBJECT_NEW_VERSION, null,
@@ -160,6 +165,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
+	@Transactional
 	public boolean localIsNewest(JakeObject jo) {
 		LogEntry<JakeObject> localLe = getLogEntryOfLocal(jo);
 		if (localLe == null) {
@@ -199,6 +205,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 
+	@Transactional
 	private ProjectMember getMyProjectMember(Project p) {
 		try {
 			return db.getProjectMemberDao(p).get(p.getUserId().getUuid());
@@ -227,6 +234,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
+	@Transactional
 	public void announce(JakeObject jo, LogEntry<JakeObject> inaction, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
@@ -290,6 +298,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
+	@Transactional
 	public boolean isLocked(JakeObject jo) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		// TODO: iterate through logs backwards to find a lock
@@ -314,6 +323,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
+	@Transactional
 	public void pullObject(JakeObject jo) throws NoSuchLogEntryException {
 		LogEntry le = db.getLogEntryDao(jo).getMostRecentFor(jo);
 		String userid = getMyUserid(jo.getProject());
@@ -384,6 +394,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return stat;
 	}
 
+	@Transactional
 	public Boolean isDeleted(JakeObject jo) {
 		// LogEntry<? extends ILogable> le = new LogEntry<ILogable>(null,
 		// LogAction.)
@@ -393,6 +404,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return null;
 	}
 
+	@Transactional
 	public Boolean isLocallyModified(FileObject fo) throws InvalidFilenameException,
 			IOException {
 		if (!existsLocally(fo))

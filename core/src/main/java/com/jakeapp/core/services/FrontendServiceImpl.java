@@ -10,6 +10,7 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -234,6 +235,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
+	@Transactional
 	public Collection<ServiceCredentials> getLastLogins() {
 		return this.getServiceCredentialsDao().getAll();
 	}

@@ -822,7 +822,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void invitePeople(Project project, String userid) {
-		log.info("Mock: invite pm: " + userid + " to project: " + project);
+		log.info("invite pm: " + userid + " to project: " + project);
 
 		// TODO: implement the invite
 
