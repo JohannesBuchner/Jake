@@ -8,4 +8,18 @@ package com.jakeapp.core.services.exceptions;
 @SuppressWarnings("serial")
 public class ProtocolNotSupportedException extends Exception {
 
+    public ProtocolNotSupportedException() {
+    }
+
+    public ProtocolNotSupportedException(String message) {
+        super(message);
+    }
+
+    public ProtocolNotSupportedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ProtocolNotSupportedException(Throwable cause) {
+        super(cause);
+    }
 }
