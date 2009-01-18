@@ -178,25 +178,25 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public boolean getExistsState(ILogable belongsTo) {
-		LogEntry<? extends ILogable> leNew = findLastMatching(new LogEntry<ILogable>(
+	public LogEntry<JakeObject> getExists(JakeObject belongsTo) {
+		LogEntry<JakeObject> leNew = (LogEntry<JakeObject>) findLastMatching(new LogEntry<JakeObject>(
 				null, LogAction.JAKE_OBJECT_NEW_VERSION, null, null, belongsTo));
-		LogEntry<? extends ILogable> leDel = findLastMatching(new LogEntry<ILogable>(
+		LogEntry<JakeObject> leDel = (LogEntry<JakeObject>) findLastMatching(new LogEntry<JakeObject>(
 				null, LogAction.JAKE_OBJECT_DELETE, null, null, belongsTo));
 		if (leNew == null && leDel == null) {
-			return false;
+			return null;
 		}
 		if (leNew == null) { // weird, but we support it
-			return false;
+			return null;
 		}
 		if (leDel == null) {
-			return true;
+			return leNew;
 		}
 		// both exist
 		if (leDel.getTimestamp().getTime() > leNew.getTimestamp().getTime()) {
-			return false;
+			return null;
 		} else
-			return true;
+			return leNew;
 	}
 
 	/**

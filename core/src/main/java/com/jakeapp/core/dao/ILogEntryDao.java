@@ -178,7 +178,7 @@ public interface ILogEntryDao {
 			LogEntry<? extends ILogable> le) throws NullPointerException;
 
 	/**
-	 * finds all Logentries that either have a
+	 * looks at all Logentries that either have a
 	 * {@link LogAction#JAKE_OBJECT_DELETE} or
 	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
 	 * 
@@ -192,16 +192,16 @@ public interface ILogEntryDao {
 
 
 	/**
-	 * finds all Logentries that either have a
+	 * looks at all Logentries that either have a
 	 * {@link LogAction#JAKE_OBJECT_DELETE} or
 	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
 	 * 
 	 * @param belongsTo
-	 * @return false: if the last in time is a
+	 * @return null: if the last in time is a
 	 *         {@link LogAction#JAKE_OBJECT_DELETE} or no Logentries were found
-	 *         true: otherwise
+	 *         the logentry of the {@link LogAction#JAKE_OBJECT_NEW_VERSION} otherwise
 	 */
-	public boolean getExistsState(ILogable belongsTo);
+	public LogEntry<JakeObject> getExists(JakeObject belongsTo);
 
 	/**
 	 * checks if jo is currently locked by looking at all
