@@ -29,6 +29,7 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.rmi.NoSuchObjectException;
 import java.util.*;
 
@@ -695,6 +696,9 @@ public class CoreAccessMock implements ICoreAccess {
 
 	public void createProject(final String name, final String path) {
 		log.info("Mock: create project: " + name + " path: " + path);
+		
+		
+		
 		if (path == null) {
 			//throw new
 		}
@@ -709,7 +713,19 @@ public class CoreAccessMock implements ICoreAccess {
 				}
 
 				try {
-					Project pr1 = new Project(name, new UUID(22, 33), null, new File(path));
+					Project pr1 = null;
+					/*
+					try {
+						pr1 = frontendService.getProjectsManagingService(sessionId).createProject(name, path, null);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NotLoggedInException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					*/
+					pr1 = new Project(name, new UUID(22, 33), null, new File(path));
 					pr1.setStarted(true);
 					projects.add(pr1);
 
