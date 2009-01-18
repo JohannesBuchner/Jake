@@ -330,7 +330,13 @@ public class FSService implements IFSService, IModificationListener {
 	@Override
 	public boolean trashFile(String relativePath) throws InvalidFilenameException,
 			FileNotFoundException {
-		// TODO Auto-generated method stub
+		try {
+			//TODO implement via a REAL trash...
+			return deleteFile(relativePath);
+		} catch (NotAFileException e) {
+			//silently discarded - the file is not there so it is already deleted
+		}
+		
 		return false;
 	}
 
@@ -428,5 +434,11 @@ public class FSService implements IFSService, IModificationListener {
 				l.fileModified(relpath, action);
 			}
 		}
+	}
+
+	@Override
+	public String getFileName(String relpath) throws InvalidFilenameException {
+		File f = new File(this.getFullpath(relpath));
+		return f.getName();
 	}
 }

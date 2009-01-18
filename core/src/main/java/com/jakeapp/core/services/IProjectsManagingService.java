@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
@@ -340,4 +341,15 @@ public interface IProjectsManagingService {
 
 
 	String getProjectMemberID(Project project,ProjectMember pm);
+
+
+	/**
+	 * 
+	 * @param project The Project that Fileobject should be located in.
+	 * @param relpath The path where to look for a FileObject
+	 * @return A FileObject at the given relative path
+	 * @throws NoSuchJakeObjectException If no such FileObject exists.
+	 */
+	FileObject getFileObjectByRelPath(Project project, String relpath)
+			throws NoSuchJakeObjectException;
 }

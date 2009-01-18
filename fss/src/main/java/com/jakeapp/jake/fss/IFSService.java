@@ -425,5 +425,14 @@ public interface IFSService {
 	 */
 	public long getLastModified(String relativePath)
 			throws InvalidFilenameException, NotAFileException;
+	
+	/**
+	 * Extracts the file/foldername from a relpath.
+	 * 
+	 * @param relpath A valid relpath to a file or folder
+	 * @return the name of a file
+	 * @throws InvalidFilenameException 
+	 */
+	String getFileName(String relpath) throws InvalidFilenameException;
 
 }

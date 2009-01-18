@@ -104,4 +104,9 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public FileObject get(String relpath) throws NoSuchJakeObjectException {
+		return this.getFileObjectByRelpath(relpath);
+	}
 }

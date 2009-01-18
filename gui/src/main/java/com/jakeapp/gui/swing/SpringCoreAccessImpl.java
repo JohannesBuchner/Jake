@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing;
 
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
@@ -8,6 +9,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
+import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
@@ -21,6 +23,7 @@ import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
@@ -247,45 +250,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 	}
 
-	public void register(String user, String pass) {
-		log.info("Registering user: " + user + " pass: " + pass);
-
-		Runnable runner = new Runnable() {
-
-			public void run() {
-
-				// registering
-				fireRegistrationStatus(
-					 RegistrationStatus.RegisterStati.RegistrationActive, "");
-
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				fireRegistrationStatus(RegistrationStatus.RegisterStati.RegisterSuccess,
-					 "");
-
-				// logging in after registering
-				fireConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
-
-				try {
-					Thread.sleep(1500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				isSignedIn = true;
-
-				fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
-			}
-		};
-
-		// start our runner thread, that makes callbacks to connection status
-		new Thread(runner).start();
-	}
-
 	@Override
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
 		 throws NotLoggedInException, InvalidCredentialsException,
@@ -372,7 +336,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			callback.projectChanged(ev);
 		}
 	}
-
 
 	public void stopProject(Project project) {
 		log.info("stop project: " + project);
@@ -536,7 +499,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void rejectProject(final Project project) {
 		log.info("Reject project: " + project);
 
-
 		Runnable runner = new Runnable() {
 			public void run() {
 				try {
@@ -584,9 +546,21 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		if (!rootFolder.exists()) {
 			throw new ProjectFolderMissingException(rootPath);
 		}
-
-		FolderObject fo = recursiveFileSystemHelper(project, rootFolder, System
-			 .getProperty("file.separator"), "");
+		
+		/*
+		 * Construct a folder from the entire project
+		 */
+		FolderObject fo = null;
+		try {
+			IProjectsManagingService pms = this.getFrontendService().getProjectsManagingService(getSessionId());
+			fo = recursiveFileSystemHelper(project,"","",pms.getFileServices(project),pms);
+		} catch (IllegalArgumentException e) {
+			//empty implementation
+		} catch (IllegalStateException e) {
+			//empty implementation
+		} catch (NotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
 
 		return fo;
 	}
@@ -594,57 +568,77 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener al) {
 		AvailableLaterObject<List<FileObject>> result = null;
+		Exception ex = null;
 
 		try {
 			result = this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project, al);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ex = e;
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ex = e;
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ex = e;
 		} catch (NoSuchProjectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ex = e;
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+			ex = e;
 		}
-
-		return result;
+		
+		if (result == null) result = new AvailableErrorObject<List<FileObject>>(al,ex);
+		return result.start();
 	}
 
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
+		//TODO this is only a mock yet...
 		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), 0, false, false, false, false);
 	}
 
 	/**
-	 * Helper method for this mock: Works recursively through the file system to
+	 * Helper method: Works recursively through the file system to
 	 * build the FolderObject for getProjectRootFolder()
 	 *
-	 * @param file
+	 * @param prj The project the created Folder Object is in.
+	 * @param relPath a Project-relative path to the returned folder object.
+	 * @param name the name of the current folder. It is the last part of relPath
+	 * @param fss The FileSystemService used to access the Project-Folder
 	 * @return
+	 * @throws NotLoggedInException 
+	 * @throws IllegalStateException 
+	 * @throws IllegalArgumentException 
 	 */
-	private FolderObject recursiveFileSystemHelper(Project prj, File file,
-	                                               String relPath, String name) {
+	private FolderObject recursiveFileSystemHelper(Project prj, String relPath,String name,IFSService fss,IProjectsManagingService pms) throws IllegalArgumentException, IllegalStateException, NotLoggedInException {
 		FolderObject fo = new FolderObject(relPath, name);
-		log.debug("File mocking: Started recursing through folder "
-			 + file.getAbsolutePath());
-
-		for (File f : file.listFiles()) {
-			if (f.isDirectory()) {
-				log.debug("File mocking: Recursing into subdirectory " + relPath
-					 + f.getName() + System.getProperty("file.separator"));
-				FolderObject subfolder = recursiveFileSystemHelper(prj, f, relPath
-					 + f.getName() + System.getProperty("file.separator"), f.getName());
-				fo.addFolder(subfolder);
-			} else {
-				log.debug("File mocking: Adding file " + relPath + f.getName());
-				fo.addFile(new FileObject(new UUID(5, 3), prj, relPath + f.getName()));
+		
+		try {
+			for (String f : fss.listFolder(relPath)) {
+				// f is a valid relpath
+				try {
+					if (fss.fileExists(f)) {
+						//is an ordinary file
+						//get an appropriate FileObject - with the real UUID
+						//The UUid may still be null e.g. if the file only exists locally
+						//and has just been detected.
+						fo.addFile(
+							pms.getFileObjectByRelPath(prj, f)
+						);
+					} else if (fss.folderExists(relPath)) {
+						FolderObject subfolder = recursiveFileSystemHelper(prj, f, fss.getFileName(f) ,fss,pms);
+						fo.addFolder(subfolder);
+					}
+				} catch (InvalidFilenameException e) {
+					//silently discarded  - files/folders we cannot open or read are not processed
+				} catch (IOException e) {
+					//silently discarded  - files/folders we cannot open or read are not processed
+				} catch (NoSuchJakeObjectException e) {
+					//silently discarded  - files/folders we cannot open or read are not processed
+				}
 			}
+		} catch (InvalidFilenameException e) {
+			//silently discarded  - files/folders we cannot open or read are not processed
+		} catch (IOException e) {
+			//silently discarded  - files/folders we cannot open or read are not processed
 		}
 
 		return fo;
@@ -1033,7 +1027,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public void saveNote(NoteObject note) {
 		// TODO Auto-generated method stub

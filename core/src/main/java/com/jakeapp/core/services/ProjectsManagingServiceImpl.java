@@ -27,6 +27,7 @@ import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
@@ -673,6 +674,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		dao = this.getFileObjectDao(project);
 		
 		return (new AllProjectFilesFuture(listener,dao));
+	}
+	
+	@Override
+	public FileObject getFileObjectByRelPath(Project project,String relpath) throws NoSuchJakeObjectException {
+		IFileObjectDao dao = this.getFileObjectDao(project);
+		return dao.get(relpath);
 	}
 
 	@Override
