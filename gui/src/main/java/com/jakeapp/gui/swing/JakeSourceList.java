@@ -7,7 +7,7 @@ import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
@@ -97,7 +97,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 			public void sourceListItemClicked(SourceListItem item, Button button,
 														 int clickCount) {
-				log.info(item.getText() + " clicked " + clickCount + " time" + JakeMainHelper.getPluralModifer(clickCount) + ".");
+				log.info(item.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
 				if (button == button.RIGHT) {
 					// select the clicked project
@@ -107,7 +107,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 			public void sourceListCategoryClicked(SourceListCategory category,
 															  Button button, int clickCount) {
-				log.info(category.getText() + " clicked " + clickCount + " time" + JakeMainHelper.getPluralModifer(clickCount) + ".");
+				log.info(category.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
 				// we don't need that event
 			}

@@ -69,7 +69,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 		// insert = new project
 		if (isNewProject(dl, files)) {
 
-			support.setDropAction(TransferHandler.COPY);
+			support.setDropAction(TransferHandler.LINK);
 
 			/*if (fileList != null && fileList.size() == 1 && fileList.get(0).isDirectory()) {
 				log.info("Conditions for new project are met!");
@@ -78,7 +78,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			}*/
 		} else {
 
-			support.setDropAction(TransferHandler.LINK);
+			support.setDropAction(TransferHandler.COPY);
 
 			/*if (fileList != null && fileList.size() > 0) {
 				support.setDropAction(TransferHandler.COPY);

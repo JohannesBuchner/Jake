@@ -6,7 +6,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.MutableListModel;
-import com.jakeapp.gui.swing.helpers.JakeMainHelper;
+import com.jakeapp.gui.swing.helpers.JakeHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -72,7 +72,7 @@ public class PeopleListModel extends AbstractListModel
 	public void setValueAt(Object value, int index) {
 		if (!JakeMainApp.getApp().getCore().setPeopleNickname(getProject(), people.get(index), (String) value)) {
 
-			JakeMainHelper.showMsg("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
+			JakeHelper.showMsgTranslated("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
 
 			// redraw
 			fireContentsChanged(this, index, index);

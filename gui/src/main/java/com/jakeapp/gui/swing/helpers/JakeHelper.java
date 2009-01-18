@@ -4,6 +4,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -15,8 +16,8 @@ import java.net.URISyntaxException;
  * Date: Dec 21, 2008
  * Time: 5:41:44 PM
  */
-public class JakeMainHelper {
-	private static final Logger log = Logger.getLogger(JakeMainHelper.class);
+public class JakeHelper {
+	private static final Logger log = Logger.getLogger(JakeHelper.class);
 
 	public static void initializeJakeMainHelper() {
 	}
@@ -26,9 +27,17 @@ public class JakeMainHelper {
 	 *
 	 * @param msgCode: string, queried from JakeMainView-properties file.
 	 */
-	public static void showMsg(String msgCode, int msgType) {
+	public static void showMsgTranslated(String msgCode, int msgType) {
+		showMsg(JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
+	}
+
+	/**
+	 * Shows a message to the user.
+	 */
+	public static void showMsg(String msg, int msgType) {
+		log.info("Show Msg: " + msg + "(Type: " + msgType + ")");
 		JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(),
-				  JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
+				  msg, msgType);
 	}
 
 
@@ -44,5 +53,9 @@ public class JakeMainHelper {
 		} catch (URISyntaxException e) {
 			log.warn("Unable to open Website, invalid syntax", e);
 		}
+	}
+
+	public static void showInfoMsg(String s) {
+		showMsg(s, JOptionPane.INFORMATION_MESSAGE);
 	}
 }

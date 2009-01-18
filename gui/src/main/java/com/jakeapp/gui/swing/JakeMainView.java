@@ -144,7 +144,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 
 		// initialize helper code
-		JakeMainHelper.initializeJakeMainHelper();
+		JakeHelper.initializeJakeMainHelper();
 
 		// macify-window
 		if (Platform.isMac()) {
@@ -851,7 +851,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 	@Action
 	public static void showJakeWebsite() {
-		JakeMainHelper.showJakeWebsite();
+		JakeHelper.showJakeWebsite();
 	}
 
 

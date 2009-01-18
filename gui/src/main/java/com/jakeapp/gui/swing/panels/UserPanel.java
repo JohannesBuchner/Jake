@@ -14,6 +14,7 @@ import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
 import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
 import com.jakeapp.gui.swing.worker.LoginAccountWorker;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
@@ -571,6 +572,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 	/**
 	 * Create the success panel for correct user adding.
+	 * This Panel has Drag&Drop-Abilities.
 	 *
 	 * @return
 	 */
@@ -578,6 +580,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		// create the drag & drop hint
 		JPanel loginSuccessPanel = new JPanel();
+		loginSuccessPanel.setTransferHandler(new ProjectDropHandler());
 		loginSuccessPanel.setOpaque(false);
 		loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
 
