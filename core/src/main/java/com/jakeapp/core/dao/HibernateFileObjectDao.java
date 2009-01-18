@@ -95,11 +95,10 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	}
 
 	/**
-	 * TODO
-	 * the rel
-	 * @param relPath
-	 * @return
-     * @throws com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException
+	 * This method returns a FileObject with the given relPath.
+	 * @param relPath the relativ Path of this file
+	 * @return the FileObject requested
+     * @throws NoSuchJakeObjectException if no object with that path was found in the database
 	 */
 	private FileObject getFileObjectByRelpath(String relPath) throws NoSuchJakeObjectException {
 
