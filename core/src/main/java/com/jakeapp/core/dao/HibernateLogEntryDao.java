@@ -76,9 +76,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject) {
-		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
-				.getSessionFactory().getCurrentSession().createQuery(
-						"FROM logentries WHERE  1=1").list(); // TODO
+
+        List<LogEntry<?extends ILogable>> result = this.getHibernateTemplate().
+                getSessionFactory().getCurrentSession().createQuery("FROM logentries WHERE objectid = ? ").list(); // TODO
+
+
+
+
 
 
 		return null; // To change body of implemented methods use File |
@@ -177,7 +181,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		/*
 		 * le.addAll(findMatching(len)); le.addAll(findMatching(led)); for(entry
 		 * : le) {
-		 * 
+		 *
 		 * }
 		 */
 	}
@@ -209,14 +213,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatching(LogAction a,
 			LogAction b) {
-		// TODO
-		return new LinkedList<LogEntry<T>>();
+          // TODO UNCHECKED!
+        List<LogEntry<T>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE logAction = ? or logAction  = ? ORDER BY timestamp asc").
+                setInteger(0,a.ordinal()).setInteger(1,b.ordinal()).list();
+
+		return result;
 	}
 
 	/**
 	 * finds all that match any of the two Logactions and belong to the given
 	 * element, sorted by timestamp
-	 * 
+	 *
 	 * @param <T>
 	 */
 	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatchingFor(LogAction a,
