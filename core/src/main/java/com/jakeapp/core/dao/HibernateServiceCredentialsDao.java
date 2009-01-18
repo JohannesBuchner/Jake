@@ -35,7 +35,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
         if (credentials.getUserId() == null)
             throw new InvalidCredentialsException();
 
-        if (credentials.getServerAddress() == null)
+        if (credentials.getServerAddressString() == null)
             throw new InvalidCredentialsException();
 
 

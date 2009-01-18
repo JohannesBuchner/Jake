@@ -28,7 +28,7 @@ public class ServiceCredentials implements Serializable {
 
 	private String plainTextPassword;
 
-	private InetAddress serverAddress;
+	private String serverAddress;
 
 	private long serverPort;
 
@@ -46,6 +46,8 @@ public class ServiceCredentials implements Serializable {
 
 	public ServiceCredentials() {
 		this.resourceName = "JakeApp";
+        if(uuid == null)
+            this.uuid = UUID.randomUUID();
 	}
 
 	/**
@@ -114,19 +116,21 @@ public class ServiceCredentials implements Serializable {
 	 * @return the ip address/hostname set.
 	 */
 
-	@Transient
-	public InetAddress getServerAddress() {
-		return this.serverAddress;
-	}
+//	@Transient
+//	public InetAddress getServerAddress() {
+//		return this.serverAddress;
+//	}
 
-	@Transient
-	public void setServerAddress(InetAddress serverAddress) {
-		this.serverAddress = serverAddress;
-	}
+//	@Transient
+//	public void setServerAddress(InetAddress serverAddress) {
+//		this.serverAddress = serverAddress;
+//	}
 
 	@Column(name = "server", nullable = false)
 	public String getServerAddressString() {
-		return this.serverAddress.toString();
+		if(this.serverAddress == null)
+            return "";
+        return this.serverAddress.toString();
 	}
 
 	public void setServerAddressString(String serverAddress)
@@ -134,14 +138,17 @@ public class ServiceCredentials implements Serializable {
 		// TODO FIXME fix dirty unsafe code!
 		final int NAME_POS = 1;
 
-		String[] parts = serverAddress.split("/");
-		if (parts.length > NAME_POS) {
-			try {
-				this.serverAddress = InetAddress.getByName(parts[NAME_POS]);
-			} catch (UnknownHostException e) {
-				throw new InvalidCredentialsException(e);
-			}
-		}
+//		String[] parts = serverAddress.split("/");
+//		if (parts.length > NAME_POS) {
+//			try {
+//				this.serverAddress = InetAddress.getByName(parts[NAME_POS]);
+//			} catch (UnknownHostException e) {
+//				throw new InvalidCredentialsException(e);
+//			}
+//		}
+
+        this.serverAddress = serverAddress;
+
 	}
 
 	/**

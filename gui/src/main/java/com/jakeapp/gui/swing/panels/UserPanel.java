@@ -315,6 +315,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		if (isModeSignIn()) {
 			cred.setUserId(loginUserDataPanel.getUserName());
 			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
+
+            
+
 		} else {
 			cred.setUserId(loginUserDataPanel.getUserName());
 			cred.setPlainTextPassword(loginUserDataPanel.getPassword());

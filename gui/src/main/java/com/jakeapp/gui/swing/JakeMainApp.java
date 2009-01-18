@@ -87,12 +87,13 @@ public class JakeMainApp extends SingleFrameApplication implements
                     "somepass");
             sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
             sc1.setProtocol(ProtocolType.XMPP);
-            try {
-                sc1.setServerAddress(Inet4Address.getLocalHost());
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            sc1.setServerPort(9000);
+//            try {
+//                sc1.setServerAddress(Inet4Address.getLocalHost());
+//            } catch (UnknownHostException e) {
+//                e.printStackTrace();
+//            }
+            sc1.setServerAddressString("jabber.fsinf.at");
+            sc1.setServerPort(5222);
             sc1.setEncryptionUsed(false);
 
 
@@ -100,12 +101,14 @@ public class JakeMainApp extends SingleFrameApplication implements
                     "somepass");
             sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
             sc2.setProtocol(ProtocolType.XMPP);
-            try {
-                sc2.setServerAddress(Inet4Address.getLocalHost());
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            sc2.setServerPort(9000);
+            sc2.setServerAddressString("jabber.fsinf.at");
+
+//            try {
+//                sc2.setServerAddress(Inet4Address.getLocalHost());
+//            } catch (UnknownHostException e) {
+//                e.printStackTrace();
+//            }
+            sc2.setServerPort(5222);
             sc2.setEncryptionUsed(false);
 
 
@@ -113,12 +116,13 @@ public class JakeMainApp extends SingleFrameApplication implements
                     "somepass");
             sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
             sc3.setProtocol(ProtocolType.XMPP);
-            try {
-                sc3.setServerAddress(Inet4Address.getLocalHost());
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            sc3.setServerPort(9000);
+            sc3.setServerAddressString("jabber.fsinf.at");
+//            try {
+//                sc3.setServerAddress(Inet4Address.getLocalHost());
+//            } catch (UnknownHostException e) {
+//                e.printStackTrace();
+//            }
+            sc3.setServerPort(5222);
             sc3.setEncryptionUsed(false);
 
 

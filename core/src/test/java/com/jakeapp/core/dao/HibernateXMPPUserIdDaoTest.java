@@ -98,7 +98,8 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("0c7e2ef4-9422-4140-b1ff-426c10684357"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("michael@mayers.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("mayers.com");
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         serviceCredentialsDao.create(credentials);
@@ -119,7 +120,8 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("a4515dd9-8208-412a-943e-5059cc6ce0f5"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("stefan@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("jabber.mueller.com");
+        //credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         serviceCredentialsDao.create(credentials);
@@ -161,7 +163,8 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("e0540238-93a2-48b1-8f6e-7ac04cec8efb"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("lisl@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("jabber.mueller.com");
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         serviceCredentialsDao.create(credentials);
@@ -184,7 +187,8 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("493d336a-8b85-447c-af31-daa688f8a07c"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("christine@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("jabber.mueller.com");
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         serviceCredentialsDao.create(credentials);
@@ -213,7 +217,9 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("4935666a-8b85-447c-af31-daa688f8a07c"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("johanna@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("jabber.mueller.com");
+
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         serviceCredentialsDao.create(credentials);
@@ -241,7 +247,9 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("3335666a-8b85-447c-af31-daa688f8a07c"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("kristina@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("jabber.mueller.com");
+
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         serviceCredentialsDao.create(credentials);
@@ -277,7 +285,9 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("33354444-8b85-447c-af31-daa688f8a07c"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("michael@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+        credentials.setServerAddressString("jabber.mueller.com");
+
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         try {
@@ -322,7 +332,9 @@ public class HibernateXMPPUserIdDaoTest extends AbstractJUnit4SpringContextTests
         credentials.setUuid(UUID.fromString("33354444-8b85-aaaa-af31-daa688f8a07c"));
         credentials.setProtocol(ProtocolType.XMPP);
         credentials.setUserId("michael@jabber.mueller.com");
-        credentials.setServerAddress(Inet4Address.getLocalHost());
+
+        credentials.setServerAddressString("jabber.mueller.com");
+//        credentials.setServerAddress(Inet4Address.getLocalHost());
         credentials.setServerPort(5000);
 
         try {

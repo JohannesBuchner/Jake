@@ -97,7 +97,7 @@ public abstract class MsgService<T extends UserId> {
 					  "credentials.plainTextPassword must not be null");
 
 
-		if (serviceCredentials.getServerAddress() == null)
+		if (serviceCredentials.getServerAddressString() == null)
 			throw new InvalidCredentialsException(
 					  "credentials.serverAddress must not be null");
 

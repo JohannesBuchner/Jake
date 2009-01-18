@@ -33,7 +33,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
 
 
     @Before
-    public void setUp() throws UnknownHostException {
+    public void setUp() throws UnknownHostException, InvalidCredentialsException {
         setServiceCredentialsDao((IServiceCredentialsDao) applicationContext.getBean("serviceCredentialsDao"));
 
 
@@ -43,9 +43,9 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         validCredentials.setPlainTextPassword("somePassword");
         validCredentials.setEncryptionUsed(true);
 
-        InetAddress addr = InetAddress.getLocalHost();
-
-        validCredentials.setServerAddress(addr);
+//        InetAddress addr = InetAddress.getLocalHost();
+        validCredentials.setServerAddressString("localhost");
+//        validCredentials.setServerAddress(addr);
         validCredentials.setServerPort(5222);
 
         validCredentials.setProtocol(ProtocolType.XMPP);
@@ -109,7 +109,8 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         credentials.setUserId("domdorn@jabber.fsinf.at");
         credentials.setPlainTextPassword("somePassword");
         credentials.setEncryptionUsed(true);
-        credentials.setServerAddress(InetAddress.getLocalHost());
+        credentials.setServerAddressString("localhost");
+//        credentials.setServerAddress(InetAddress.getLocalHost());
         credentials.setServerPort(5222);
 
         log.info("basicSetCredentialsTest succeeded.");
