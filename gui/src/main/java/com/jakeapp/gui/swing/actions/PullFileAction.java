@@ -19,6 +19,13 @@ public class PullFileAction extends FileAction {
 			 getString("pullMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
+
+		updateAction();
+	}
+
+	@Override
+	public void updateAction() {
+		setEnabled(getSelectedRowCount() > 0);
 	}
 
 	@Override

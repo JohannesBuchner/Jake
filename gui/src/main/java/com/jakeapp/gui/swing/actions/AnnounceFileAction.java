@@ -25,6 +25,12 @@ public class AnnounceFileAction extends FileAction {
 			 getString("announceMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
+		updateAction();
+	}
+
+	@Override
+	public void updateAction() {
+		setEnabled(getSelectedRowCount() > 0);
 	}
 
 	@Override

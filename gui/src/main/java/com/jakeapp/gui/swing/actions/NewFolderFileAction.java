@@ -27,14 +27,11 @@ public class NewFolderFileAction extends FileAction {
 
 		putValue(Action.NAME, actionStr);
 
-		updateAction();
+		setEnabled(true);
 	}
 
 	@Override
 	public void updateAction() {
-		// only enable if exact one element is selected AND that element is a folder.
-		boolean enabled = (getSelectedRowCount() == 1);
-		setEnabled(enabled);
 	}
 
 	@Override

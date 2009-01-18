@@ -23,6 +23,13 @@ public class DeleteFileAction extends FileAction {
 			 getString("deleteMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
+
+		updateAction();
+	}
+
+	@Override
+	public void updateAction() {
+		setEnabled(getSelectedRowCount() > 0);
 	}
 
 	@Override
