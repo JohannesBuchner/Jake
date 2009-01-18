@@ -37,8 +37,8 @@ public enum LogAction {
 	JAKE_OBJECT_NEW_VERSION,
 
 	/**
-	 * the FileObject was deleted. <br/>
-	 * belongsTo: {@link FileObject}<br />
+	 * the JakeObject was deleted. <br/>
+	 * belongsTo: {@link JakeObject}<br />
 	 * additional storing: whether {@link FileObject} or {@link NoteObject},
 	 * relpath/UUID<br/>
 	 * important LogEntry attributes: comment
