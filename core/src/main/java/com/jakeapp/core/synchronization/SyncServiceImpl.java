@@ -224,21 +224,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
-	public Iterable<JakeObject> getPullableFileObjects(Project project) {
-		List<JakeObject> missing = new LinkedList<JakeObject>();
-		Iterable<JakeObject> allJakeObjects = getJakeObjectsWhereLastActionIsNotDelete();
-		for (JakeObject jo : allJakeObjects) {
-			if (!isNoteObject(jo)) {
-				FileObject fo = (FileObject) jo;
-				if (localIsNewest(fo))
-					missing.add(jo);
-			}
-		}
-		return missing;
-	}
-
-	@Override
-	public void announce(JakeObject jo, LogEntry<ILogable> inaction, String commitMsg)
+	public void announce(JakeObject jo, LogEntry<JakeObject> inaction, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
 		log.debug("announcing " + jo + " : " + inaction);
@@ -259,9 +245,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 			throw new IllegalArgumentException(
 					"announce can not be used with this action");
 		}
-		// TODO: fetch hash
-		// TODO: create logentry
-
 		if (isNoteObject(jo)) {
 			log.debug("is a note. storing.");
 			NoteObject note = (NoteObject) jo;
@@ -276,6 +259,20 @@ public class SyncServiceImpl extends FriendlySyncService {
 			db.getLogEntryDao(jo).create(new FileObjectLogEntry(le));
 			log.debug("is a file. log entry written.");
 		}
+	}
+
+	@Override
+	public Iterable<JakeObject> getPullableFileObjects(Project project) {
+		List<JakeObject> missing = new LinkedList<JakeObject>();
+		Iterable<JakeObject> allJakeObjects = getJakeObjectsWhereLastActionIsNotDelete();
+		for (JakeObject jo : allJakeObjects) {
+			if (!isNoteObject(jo)) {
+				FileObject fo = (FileObject) jo;
+				if (localIsNewest(fo))
+					missing.add(jo);
+			}
+		}
+		return missing;
 	}
 
 	@Override
@@ -315,12 +312,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// throw new
 		// com.jakeapp.jake.ics.exceptions.OtherUserOfflineException();
 		// TODO: fetch
-	}
-
-	@Override
-	public void setObjectLocked(JakeObject object, String message)
-			throws IllegalArgumentException, ProjectNotLoadedException {
-		// TODO: free for taking: create & add logentry
 	}
 
 	@Override
@@ -507,6 +498,5 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// TODO Auto-generated method stub
 
 	}
-
 
 }

@@ -116,7 +116,7 @@ public interface ISyncService {
 	 *             if you are doing it wrong
 	 * @see LogAction for what to set
 	 */
-	public void announce(JakeObject jo, LogEntry<ILogable> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
+	public void announce(JakeObject jo, LogEntry<JakeObject> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
 
 	/* Project member changes: just do a poke */
 
@@ -146,22 +146,6 @@ public interface ISyncService {
 
 
 	/**
-	 * Tries to set the (soft-)lock of the supplied JakeObject
-	 * 
-	 * @param object
-	 *            the JakeObject the lock should be set
-	 * @param message
-	 *            the lock-message
-	 * @throws IllegalArgumentException
-	 *             if the supplied JakeObject is null or invalid
-	 * @throws ProjectNotLoadedException
-	 *             if the project corresponding to this object is not loaded
-	 *             currently
-	 */
-	public void setObjectLocked(JakeObject object, String message)
-			throws IllegalArgumentException, ProjectNotLoadedException;
-
-	/**
 	 * start offering files to others, etc. TODO
 	 * 
 	 * @throws ProjectException
@@ -182,11 +166,26 @@ public interface ISyncService {
 	 */
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException;
 
+	/**
+	 * 
+	 * @param jo
+	 * @return
+	 */
 	public boolean isObjectInConflict(JakeObject jo);
 
+	/**
+	 * 
+	 * @param project
+	 * @return
+	 */
 	public Iterable<JakeObject> getPullableFileObjects(Project project);
 
-	boolean localIsNewest(JakeObject fo);
+	/**
+	 * 
+	 * @param fo
+	 * @return
+	 */
+	public boolean localIsNewest(JakeObject fo);
 
 
 	/**
