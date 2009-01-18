@@ -816,6 +816,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 						JakeMainApp.setMsgService(msg);
 
 						if (isMagicToken()) {
+
 							msg.login();
 						} else {
 							msg.login(getPassword(), isRememberPassword());

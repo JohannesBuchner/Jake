@@ -1049,7 +1049,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			iss = this.getFrontendService().getSyncService(this.getSessionId());
 			result = new AnnounceFuture(null, iss, jo, action);
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 
