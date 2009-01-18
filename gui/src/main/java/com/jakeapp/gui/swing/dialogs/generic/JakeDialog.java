@@ -95,7 +95,7 @@ public abstract class JakeDialog extends EscapeDialog {
 		explanationLabel = new JLabel();
 		headerPanel.add(explanationLabel, "growy, gapbottom 10");
 
-		this.add(headerPanel, "wrap, gapbottom 18, top");
+		this.add(headerPanel, "wrap, gapbottom 13, top");
 
 		buttonsPanel = new JPanel(new MigLayout("nogrid, fillx, ins 0"));
 

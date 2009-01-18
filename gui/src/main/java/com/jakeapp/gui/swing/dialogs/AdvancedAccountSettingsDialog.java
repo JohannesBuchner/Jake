@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.dialogs;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
@@ -18,10 +19,12 @@ import java.awt.event.ActionListener;
 public class AdvancedAccountSettingsDialog extends JakeDialog {
 	private static final Logger log = Logger.getLogger(AdvancedAccountSettingsDialog.class);
 	private static ServiceCredentials creds;
+	private JTextField serverText;
+	private JTextField portText;
 
 	public AdvancedAccountSettingsDialog(ServiceCredentials creds) {
 		super(JakeMainApp.getProject());
-		this.creds = creds;
+		this.setCreds(creds);
 
 		setResourceMap(org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext()
@@ -33,6 +36,9 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 		setDialogTitle(getResourceMap().getString("advTitle"));
 		setMessage("advHeader");
 		// use default picture
+
+		// load settings from credientals
+		loadSettings();
 	}
 
 	@Override
@@ -41,16 +47,16 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 		JPanel settingsPanel = new JPanel(new MigLayout("wrap 2, fill"));
 		settingsPanel.setOpaque(true);
 
-		JLabel serverLabel = new JLabel("Connect Server:");
-		settingsPanel.add(serverLabel);
+		JLabel serverLabel = new JLabel(getResourceMap().getString("connectServer"));
+		settingsPanel.add(serverLabel, "right");
 
-		JTextField serverText = new JTextField();
+		serverText = new JTextField();
 		settingsPanel.add(serverText, "w 200!");
 
-		JLabel portLabel = new JLabel("Port:");
-		settingsPanel.add(portLabel);
+		JLabel portLabel = new JLabel(getResourceMap().getString("port"));
+		settingsPanel.add(portLabel, "right");
 
-		JTextField portText = new JTextField();
+		portText = new JTextField();
 		settingsPanel.add(portText, "w 200!");
 
 		this.add(settingsPanel, "grow");
@@ -67,8 +73,28 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 		return deleteBtn;
 	}
 
+	private void loadSettings() {
+		serverText.setText(getCreds().getServerAddressString());
+		portText.setText(getCreds().getServerPort() + "");
+	}
+
 	private void saveSettingsAction() {
-		log.info("save advanded settings");
+		log.info("saving advanded settings");
+		boolean success = false;
+
+		try {
+			getCreds().setServerAddressString(serverText.getText());
+			getCreds().setServerPort(Long.parseLong(portText.getText()));
+			success = true;
+		}
+		// catch all (conversion errors for port, for example)
+		catch (Exception e) {
+			ExceptionUtilities.showError(e);
+		} finally {
+			if (success) {
+				this.setVisible(false);
+			}
+		}
 	}
 
 	/**
@@ -78,6 +104,14 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 	 */
 	public static void showDialog(ServiceCredentials creds) {
 		AdvancedAccountSettingsDialog dlg = new AdvancedAccountSettingsDialog(creds);
-		dlg.showDialogSized(400, 270);
+		dlg.showDialogSized(400, 255);
+	}
+
+	public static ServiceCredentials getCreds() {
+		return creds;
+	}
+
+	public static void setCreds(ServiceCredentials creds) {
+		AdvancedAccountSettingsDialog.creds = creds;
 	}
 }

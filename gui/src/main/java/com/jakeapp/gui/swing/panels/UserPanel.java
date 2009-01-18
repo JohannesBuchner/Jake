@@ -56,6 +56,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
 
+	private ImageIcon jakeWelcomeIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+			  getClass().getResource("/icons/jakeapp-large.png")).getScaledInstance(92, 92, Image.SCALE_SMOOTH));
+
 	/**
 	 * SupportedServices; we add some default support for common services.
 	 */
@@ -125,8 +128,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fill, top, ins 0"));
 		titlePanel.setOpaque(false);
 		JLabel createAccountLabel = new JLabel(getResourceMap().getString("loginMessageLabel"));
-		createAccountLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/jakewelcome.png"))));
+		createAccountLabel.setIcon(jakeWelcomeIcon);
 		createAccountLabel.setVerticalTextPosition(JLabel.TOP);
 		titlePanel.add(createAccountLabel, "top, center, h 80!");
 		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, grow, h 80:300");
@@ -160,8 +162,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fill, top, ins 0"));
 		titlePanel.setOpaque(false);
 		JLabel createAccountLabel = new JLabel(getResourceMap().getString("loginMessageLabel"));
-		createAccountLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/jakewelcome.png"))));
+		createAccountLabel.setIcon(jakeWelcomeIcon);
 		createAccountLabel.setVerticalTextPosition(JLabel.TOP);
 		titlePanel.add(createAccountLabel, "top, center, h 80!");
 		addUserPanel.add(titlePanel, "wrap, gapbottom 20, top, grow, h 80:300");
