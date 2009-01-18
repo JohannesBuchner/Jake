@@ -21,7 +21,6 @@ import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.TagHelper;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -860,8 +859,8 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
-		log.info("Mock: pushJakeObject: " + jo + " with msg: " + commitmsg);
+	public void announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
+		log.info("Mock: announceJakeObject: " + jo + " with msg: " + commitmsg);
 	}
 
 	@Override
@@ -1017,5 +1016,5 @@ public class CoreAccessMock implements ICoreAccess {
 		}
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(), ProjectChangedReason.State));
 
-	}	
+	}
 }

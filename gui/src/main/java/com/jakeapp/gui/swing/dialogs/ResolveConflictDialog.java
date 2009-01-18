@@ -48,8 +48,8 @@ public class ResolveConflictDialog extends JakeDialog {
 
 		// load the resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext()
-				  .getResourceMap(ResolveConflictDialog.class));
+			 JakeMainApp.class).getContext()
+			 .getResourceMap(ResolveConflictDialog.class));
 
 		initDialog();
 
@@ -96,15 +96,15 @@ public class ResolveConflictDialog extends JakeDialog {
 		boolean localNewer = core.getLocalFileLastModified(fo).after(core.getFileLastModified(fo));
 
 		JLabel localLabel = new JLabel("<html>" + getResourceMap().getString("localLabelBegin") + " " +
-				  StringUtilities.boldIf(FileObjectHelper.getLocalSizeHR(fo), localLarger) + ", " +
-				  StringUtilities.boldIf(FileObjectHelper.getLocalTime(fo) + " ("
-							 + FileObjectHelper.getLocalTimeRel(fo) + ")", localNewer) + "</html>");
+			 StringUtilities.boldIf(FileObjectHelper.getLocalSizeHR(fo), localLarger) + ", " +
+			 StringUtilities.boldIf(FileObjectHelper.getLocalTime(fo) + " ("
+				  + FileObjectHelper.getLocalTimeRel(fo) + ")", localNewer) + "</html>");
 		JButton viewLocal = new JButton(getResourceMap().getString("openFileButton"));
 
 		JLabel remoteLabel = new JLabel("<html><font color=red>" + FileObjectHelper.getLastModifier(fo) + "</font>" + getResourceMap().getString("remoteLabelBegin") + " " +
-				  StringUtilities.boldIf(FileObjectHelper.getSizeHR(fo), !localLarger) + ", " +
-				  StringUtilities.boldIf(FileObjectHelper.getTime(fo) + " ("
-							 + FileObjectHelper.getTimeRel(fo) + ")", !localNewer) + "</html>");
+			 StringUtilities.boldIf(FileObjectHelper.getSizeHR(fo), !localLarger) + ", " +
+			 StringUtilities.boldIf(FileObjectHelper.getTime(fo) + " ("
+				  + FileObjectHelper.getTimeRel(fo) + ")", !localNewer) + "</html>");
 		JButton viewRemote = new JButton(getResourceMap().getString("openFileButton"));
 
 		ActionListener updateResolveAction = new ActionListener() {
@@ -172,7 +172,7 @@ public class ResolveConflictDialog extends JakeDialog {
 	private String getUseRemoteFileString() {
 		try {
 			return Translator.get(getResourceMap(), "resolveThemButton",
-					  ProjectMemberHelpers.getNickOrFullName(JakeMainApp.getCore().getLastModifier(fo)));
+				 ProjectMemberHelpers.getNickOrFullName(JakeMainApp.getCore().getLastModifier(fo)));
 		} catch (NoSuchLogEntryException e) {
 			log.error(e);
 			ExceptionUtilities.showError(e);
@@ -206,7 +206,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		// if local file is selected, we have to announce that.
 		if (isLocalSelected()) {
 			try {
-				JakeMainApp.getApp().getCore().pushJakeObject(fo, null);
+				JakeMainApp.getApp().getCore().announceJakeObject(fo, null);
 			} catch (SyncException e) {
 				log.error(e);
 				ExceptionUtilities.showError(e);

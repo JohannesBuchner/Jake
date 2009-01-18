@@ -471,7 +471,7 @@ public interface ICoreAccess {
 	 * @throws SyncException
 	 * @throws NotLoggedInException
 	 */
-	public void pushJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
 
 	/**
 	 * @param jo
@@ -667,16 +667,10 @@ public interface ICoreAccess {
 
 	/**
 	 * Safe the given note. Jesus saves!
+	 *
 	 * @param note the not that is to saved.
 	 */
 	public void saveNote(NoteObject note);
-	
-	/**
-	 * Announce a <code>JakeObject</code>. 
-	 * @param jakeObject the jake object that is to be announced
-	 */
-	public void announce(JakeObject jakeObject);
-	
 }
 
 

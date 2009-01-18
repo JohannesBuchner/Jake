@@ -25,8 +25,8 @@ import java.util.concurrent.Semaphore;
  * @param <T>
  */
 public abstract class SwingWorkerWithAvailableLaterObject<T> extends
-		  SwingWorker<T, StatusUpdate> implements AvailabilityListener {
-	
+	 SwingWorker<T, StatusUpdate> implements AvailabilityListener {
+
 	private static final Logger log = Logger.getLogger(SwingWorkerWithAvailableLaterObject.class);
 
 	private Semaphore s = new Semaphore(0);
@@ -48,7 +48,7 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 		return this.value.get();
 	}
 
-	abstract protected AvailableLaterObject<T> calculateFunction();
+	abstract protected AvailableLaterObject<T> calculateFunction() throws RuntimeException;
 
 	@Override
 	public void error(Exception t) {
@@ -71,11 +71,11 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	public void statusUpdate(double progress, String status) {
 		publish(new StatusUpdate(progress, status));
 	}
-	
+
 	protected void handleInterruption(InterruptedException e) {
 		log.warn("Swingworker has been interrupted: " + e.getMessage());
 	}
-	
+
 	protected void handleExecutionError(ExecutionException e) {
 		log.warn("Swingworker execution failed: " + e.getMessage());
 	}
