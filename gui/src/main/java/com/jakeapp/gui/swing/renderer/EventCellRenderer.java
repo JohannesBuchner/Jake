@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -104,28 +105,26 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 
 		/* Build the String and set the operation Icon.
 					*/
+		boolean isNote = loge.getBelongsTo() instanceof NoteObject;
+		String type = (isNote ? "Note" : "File");
+
+		
 		switch (loge.getLogAction()) {
-			case FILE_ADD: {
+			/*case JAKE_OBJECT_NEW_VERSION: {
 				setIcon(fileAddIcon);
 				msg += Translator.get(newsResourceMap, "eventsAddedFile", loge.getBelongsTo().toString());
 			}
-			break;
+			break;*/
 
-			case FILE_DELETE: {
-				setIcon(fileRemoveIcon);
-				msg += Translator.get(newsResourceMap, "eventsRemovedFile", loge.getBelongsTo().toString());
+			case JAKE_OBJECT_DELETE: {
+				setIcon( (isNote?noteRemoveIcon: fileRemoveIcon) );
+				msg += Translator.get(newsResourceMap, "eventsRemoved" +type, loge.getBelongsTo().toString());
 			}
 			break;
 
-			case FILE_MOVEDTO: {
-				setIcon(fileMoveIcon);
-				msg += Translator.get(newsResourceMap, "eventsMovedFile", loge.getBelongsTo().toString());
-			}
-			break;
-
-			case FILE_NEW_VERSION: {
-				setIcon(fileUpdateIcon);
-				msg += Translator.get(newsResourceMap, "eventsUpdatedFile", loge.getBelongsTo().toString());
+			case JAKE_OBJECT_NEW_VERSION: {
+				setIcon((isNote ? noteUpdateIcon : fileUpdateIcon));
+				msg += Translator.get(newsResourceMap, "eventsUpdated"+ type, loge.getBelongsTo().toString());
 			}
 			break;
 
@@ -134,64 +133,33 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 				msg += Translator.get(newsResourceMap, "eventsProjectCreated", loge.getBelongsTo().toString());
 			}
 			break;
-
-			case NOTE_ADD: {
-				setIcon(noteAddIcon);
-				msg += Translator.get(newsResourceMap, "eventsNoteAdded", loge.getBelongsTo().toString());
-			}
-			break;
-
-			case NOTE_DELETE: {
-				setIcon(noteRemoveIcon);
-				msg += Translator.get(newsResourceMap, "eventsNoteRemoved", loge.getBelongsTo().toString());
-			}
-			break;
-
-			case NOTE_NEW_VERSION: {
-				setIcon(noteUpdateIcon);
-				msg += Translator.get(newsResourceMap, "eventNoteUpdated", loge.getBelongsTo().toString());
-			}
-			break;
-
-			case OBJECT_LOCK: {
+			
+			case JAKE_OBJECT_LOCK: {
 				setIcon(fileLockIcon);
 				msg += Translator.get(newsResourceMap, "eventsObjectLock", loge.getBelongsTo().toString());
 			}
 			break;
 
-			case OBJECT_UNLOCK: {
+			case JAKE_OBJECT_UNLOCK: {
 				setIcon(fileUnlockIcon);
 				msg += Translator.get(newsResourceMap, "eventsObjectUnlock", loge.getBelongsTo().toString());
 			}
 			break;
 
-			case PROJECTMEMBER_ADDED: {
+			case START_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleAddIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberAdded", loge.getBelongsTo().toString());
 			}
 			break;
 
-			case PROJECTMEMBER_INVITED: {
-				setIcon(peopleInviteIcon);
-				msg += Translator.get(newsResourceMap, "eventsProjectMemberInvited", loge.getBelongsTo().toString());
-			}
-			break;
-
-			case PROJECTMEMBER_INVITATION_ACCEPTED: {
+			case NOOP: {
 				setIcon(peopleAcceptInvitationIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberInvitationAccepted");
 			}
 			break;
 
-			case PROJECTMEMBER_TRUSTCHANGE: {
-				setIcon(peopleChangeTrustIcon);
-				// TODO: how to get that info???
-				msg += Translator.get(newsResourceMap, "eventsProjectMemberTrustChanged", loge.getBelongsTo().toString(), "");
-			}
-			break;
-
 			// TODO: POSSIBLE???
-			case PROJECTMEMBER_REMOVED: {
+			case STOP_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleRemoveIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberRemoved", loge.getBelongsTo().toString());
 			}

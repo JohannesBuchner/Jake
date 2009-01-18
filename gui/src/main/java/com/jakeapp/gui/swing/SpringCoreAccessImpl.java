@@ -812,7 +812,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				 project, null, getPeople(project).get(0), "comment 1", "checksum???",
 				 true));
 
-			log.add(new LogEntry(new UUID(1, 2), LogAction.FILE_ADD, new Date(), project,
+			log.add(new LogEntry(new UUID(1, 2), LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project,
 				 null, getPeople(project).get(0), "comment 1", "checksum???", true));
 		}
 

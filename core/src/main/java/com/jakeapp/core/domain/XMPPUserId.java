@@ -33,14 +33,6 @@ public class XMPPUserId extends UserId {
     {
         
     }
-
-
-	@Override
-	@Transient
-	public com.jakeapp.jake.ics.UserId getBackendUserId() {
-		return new XmppUserId(getUserId());
-	}
-
     
 
 }

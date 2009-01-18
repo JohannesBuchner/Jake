@@ -139,9 +139,6 @@ public abstract class UserId implements ILogable {
 		return this.surName;
 	}
 
-	@Transient
-	abstract public com.jakeapp.jake.ics.UserId getBackendUserId();
-
 	// @Column(name = "sc_uuid")
 	// @JoinColumn(name = "sc_uuid")
 	// @JoinTable(name = "servicecredentials")

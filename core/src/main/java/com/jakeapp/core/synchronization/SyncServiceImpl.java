@@ -3,18 +3,21 @@ package com.jakeapp.core.synchronization;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
@@ -63,30 +66,29 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	private RequestHandlePolicy rhp;
 
 
-
 	private ApplicationContextFactory applicationContextFactory;
-    private ICServicesManager icServicesManager;
+
+	private ICServicesManager icServicesManager;
+
+	private ICService getICS(Project p) {
+		try {
+			return icServicesManager.getICService(p);
+		} catch (ProtocolNotSupportedException e) {
+			e.printStackTrace(); // todo
+			return null;
+		}
+	}
+
+	public ICServicesManager getIcServicesManager() {
+		return icServicesManager;
+	}
+
+	public void setIcServicesManager(ICServicesManager icServicesManager) {
+		this.icServicesManager = icServicesManager;
+	}
 
 
-    private ICService getICS(Project p) {
-        try {
-            return icServicesManager.getICService(p);
-        } catch (ProtocolNotSupportedException e) {
-            e.printStackTrace(); // todo
-            return null;
-        }
-    }
-
-    public ICServicesManager getIcServicesManager() {
-        return icServicesManager;
-    }
-
-    public void setIcServicesManager(ICServicesManager icServicesManager) {
-        this.icServicesManager = icServicesManager;
-    }
-
-
-    /* DAO stuff */
+	/* DAO stuff */
 
 	/**
 	 * returns true if NoteObject returns false if FileObject
@@ -140,10 +142,20 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 
-	private com.jakeapp.jake.ics.UserId getICSUseridFromDomainUserId(Project p) {
-		return p.getUserId().getBackendUserId();
+	private ProjectMember getMyProjectMember(Project p) {
+		try {
+			return applicationContextFactory.getProjectMemberDao(p).get(
+					p.getUserId().getUuid());
+		} catch (NoSuchProjectMemberException e) {
+			log.fatal("can't find myself in project", e);
+			return null;
+		}
 	}
 
+	
+	private com.jakeapp.jake.ics.UserId getICSUseridFromDomainUserId(Project p) {
+		return null; // TODO
+	}
 
 	public SyncServiceImpl() {
 	}
@@ -173,15 +185,22 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	}
 
 	@Override
-	public void announce(JakeObject jo, LogEntry<ILogable> action) {
+	public void announce(JakeObject jo, LogEntry<ILogable> action, String commitMsg) {
 		// TODO Auto-generated method stub
 		// TODO: fetch hash
 		// TODO: create logentry
 		String hash;
+		action.setBelongsTo(jo);
+		// TODO: set others that shouldn't be set by caller
+		action.setTimestamp(new Date());
+		action.setComment(commitMsg);
+		action.setMember(getMyProjectMember(jo.getProject()));
+
 		if (isNoteObject(jo)) {
 			NoteObject note = (NoteObject) jo;
 			// hash = fss.calculateHash(note.getContent().getBytes());
 			// db.getJakeObjectDao().save(note);
+			applicationContextFactory.getLogEntryDao(jo.getProject()).create(action);
 			// TODO: save note entry
 		} else {
 			FileObject file = (FileObject) jo;
@@ -231,7 +250,7 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 	public void poke(Project project, UserId userId) {
 		// TODO Auto-generated method stub
 		// TODO: send userId a message to start a logsync
-		//getICS(project).getMsgService().sendMessage(userId, content)
+		// getICS(project).getMsgService().sendMessage(userId, content)
 	}
 
 	@Override
@@ -358,13 +377,14 @@ public class SyncServiceImpl extends FriendlySyncServiceImpl {
 		// TODO: remove ics hooks
 	}
 
-	
+
 	public ApplicationContextFactory getApplicationContextFactory() {
 		return applicationContextFactory;
 	}
 
-	
-	public void setApplicationContextFactory(ApplicationContextFactory applicationContextFactory) {
+
+	public void setApplicationContextFactory(
+			ApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
 	}
 

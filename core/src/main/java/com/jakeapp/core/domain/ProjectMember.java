@@ -77,10 +77,9 @@ public class ProjectMember implements ILogable {
 
 
     /**
-     * @return the <code>userId</code> of this <code>ProjectMember</code>.
+     * @return the UUID of the <code>userId</code> of this <code>ProjectMember</code>.
+     * look the userId up using the 
      */
-
-
     @Transient
     public UUID getUserId() {
         return this.userId;
@@ -119,7 +118,6 @@ public class ProjectMember implements ILogable {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-
 
     @Override
     public boolean equals(Object o) {

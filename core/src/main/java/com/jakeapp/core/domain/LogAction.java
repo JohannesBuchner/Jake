@@ -1,102 +1,91 @@
 package com.jakeapp.core.domain;
 
+import org.jivesoftware.smackx.workgroup.packet.UserID;
+
 
 /**
  * The logAction represents the status of a certain JakeObject/LogEntry.
  * 
- * @author Dominik, Christopher
+ * always important {@link LogEntry} attributes: who, when
+ * 
+ * @author Dominik, Christopher, johannes
  */
 public enum LogAction {
 
 	/**
-	 * the project was just created, first log entry ever.
+	 * the project was just created. first log entry only. <br/>
+	 * belongsTo: null<br />
+	 * additional storing: UUID, Name <br/>
+	 * can only be the first {@link LogEntry}
 	 */
 	PROJECT_CREATED,
 
 	/**
-	 * a new version of a FileObject was created.
+	 * A user starts to use this project and wants to tell others (invitation
+	 * accepted)<br />
+	 * belongsTo: null<br />
 	 */
-	FILE_NEW_VERSION,
+	NOOP,
 
 	/**
-	 * The file has been added.
+	 * a new version of a JakeObject was created. <br/>
+	 * actions: announce belongsTo: {@link JakeObject}<br />
+	 * additional storing: whether {@link FileObject} or {@link NoteObject},
+	 * relpath/UUID<br/>
+	 * important LogEntry attributes: comment, checksum
 	 */
-    @Deprecated
-	FILE_ADD,
+	JAKE_OBJECT_NEW_VERSION,
 
 	/**
-	 * the FileObject in question was deleted.
+	 * the FileObject was deleted. <br/>
+	 * belongsTo: {@link FileObject}<br />
+	 * additional storing: whether {@link FileObject} or {@link NoteObject},
+	 * relpath/UUID<br/>
+	 * important LogEntry attributes: comment
 	 */
-	FILE_DELETE,
+	JAKE_OBJECT_DELETE,
 
 	/**
-	 * the FileObject in question was moved to another location.
-	 */
-	@Deprecated
-    FILE_MOVEDTO,
-
-	/**
-	 * a new version of a NoteObject was created.
-	 */
-	NOTE_NEW_VERSION,
-
-	/**
-	 * A note has been added.
-	 */
-	NOTE_ADD,
-
-	/**
-	 * the NoteObject in question was deleted.
-	 */
-	NOTE_DELETE,
-
-	/**
-	 * the tag in the comment field of the log entry was added to the.
-	 * JakeObject in question
+	 * A tag was added to the {@link JakeObject} <br/>
+	 * belongsTo: {@link JakeObject}<br/>
+	 * important LogEntry attributes: none
 	 */
 	TAG_ADD,
 
 	/**
-	 * the tag in the comment field of the LogEntry was removed from the.
-	 * JakeObject in question
+	 * A tag was removed from the {@link JakeObject} <br/>
+	 * belongsTo: {@link JakeObject} <br/>
+	 * important LogEntry attributes: none
 	 */
 	TAG_REMOVE,
 
 	/**
-	 * This logEntry indicates, that the given userId got invited by this user.
+	 * The user adding this {@link LogEntry} states that the user adding it
+	 * trusts incoming changes from the user in belongsTo <br/>
+	 * belongsTo: {@link UserID} <br/>
+	 * important LogEntry attributes: none
 	 */
-	PROJECTMEMBER_INVITED,
+	START_TRUSTING_PROJECTMEMBER,
 
 	/**
-	 * This logEntry indicates, that the given userId was removed by this user.
+	 * The user adding this {@link LogEntry} states that the user adding it does
+	 * not trust incoming changes from the user in belongsTo anymore<br/>
+	 * belongsTo: {@link UserID} <br/>
+	 * important LogEntry attributes: none
 	 */
-	PROJECTMEMBER_REMOVED,
+	STOP_TRUSTING_PROJECTMEMBER,
 
 	/**
-	 * This logEntry indicates, that the given userId accepted the invitation.
-	 * and therefore is now a projectmember
+	 * the object has been soft locked. <br/>
+	 * belongsTo: {@link JakeObject} <br/>
+	 * important LogEntry attributes: commitmsg
 	 */
-	PROJECTMEMBER_INVITATION_ACCEPTED,
+	JAKE_OBJECT_LOCK,
 
 	/**
-	 * This logEntry indicates, that the given userId was (also) added by this
-	 * user.
+	 * the object has been soft locked. <br/>
+	 * belongsTo: {@link JakeObject} <br/>
+	 * important LogEntry attributes: commitmsg
 	 */
-	PROJECTMEMBER_ADDED,
-
-	/**
-	 * This logEntry indicates, that the trustlevel between this user and the
-	 * supplied. userId is changed
-	 */
-	PROJECTMEMBER_TRUSTCHANGE,
-
-	/**
-	 * the object has been soft locked.
-	 */
-	OBJECT_LOCK,
-
-	/**
-	 * the object has been unlocked.
-	 */
-	OBJECT_UNLOCK
+	JAKE_OBJECT_UNLOCK,
 }

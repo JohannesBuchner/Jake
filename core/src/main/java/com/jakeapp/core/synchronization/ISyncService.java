@@ -96,8 +96,9 @@ public interface ISyncService {
 	/**
 	 * Adds a log entry that the object has been modified/created/... Unless you
 	 * are in a loop, you probably want to do a poke afterwards.
+	 * @param commitMsg TODO
 	 */
-	public void announce(JakeObject jo, LogEntry<ILogable> action);
+	public void announce(JakeObject jo, LogEntry<ILogable> action, String commitMsg);
 
 	/* Project member changes: just do a poke */
 
