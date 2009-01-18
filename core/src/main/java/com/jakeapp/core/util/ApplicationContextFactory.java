@@ -13,6 +13,7 @@ import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectMemberDao;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 
 /**
@@ -91,6 +92,10 @@ public class ApplicationContextFactory {
 
 	public ILogEntryDao getLogEntryDao(Project p) {
 		return (ILogEntryDao) getApplicationContext(p).getBean("logEntryDao");
+	}
+	
+	public ILogEntryDao getLogEntryDao(JakeObject jo) {
+		return (ILogEntryDao) getApplicationContext(jo.getProject()).getBean("logEntryDao");
 	}
 
 	public IProjectMemberDao getProjectMemberDao(Project p) {
