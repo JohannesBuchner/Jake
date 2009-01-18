@@ -775,4 +775,18 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		
 		return logentry;
 	}
+	
+	@Override
+	public ProjectMember getProjectMember(Project project,MsgService msg) {
+		msg.getUserId();
+		
+		//TODO
+		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
+	}
+
+	@Override
+	public String getProjectMemberID(Project project,ProjectMember pm) {
+		//TODO
+		return "";
+	}
 }

@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
@@ -215,8 +216,9 @@ public interface ICoreAccess {
 	 *
 	 * @param msg: MsgService
 	 * @return project member from msg service.
+	 * @throws NoSuchProjectMemberException 
 	 */
-	public ProjectMember getProjectMember(MsgService msg);
+	public ProjectMember getProjectMember(Project project,MsgService msg) throws NoSuchProjectMemberException;
 
 	/**
 	 * Returns the corresponding ID to a ProjectMember.
@@ -224,8 +226,9 @@ public interface ICoreAccess {
 	 *
 	 * @param pm
 	 * @return
+	 * @throws NoSuchProjectMemberException 
 	 */
-	public String getProjectMemberID(ProjectMember pm);
+	public String getProjectMemberID(Project project,ProjectMember pm) throws NoSuchProjectMemberException;
 
 
 	/******************* Project functions ********************/

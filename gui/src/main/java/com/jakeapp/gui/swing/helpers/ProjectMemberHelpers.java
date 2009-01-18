@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.panels.NewsPanel;
@@ -42,7 +43,15 @@ public class ProjectMemberHelpers {
 	 * @return nick/fullname or "you" localized
 	 */
 	public static String getLocalizedUserNick(ProjectMember member) {
-		ProjectMember curMember = JakeMainApp.getApp().getCore().getProjectMember(MsgServiceHelper.getLoggedInMsgService());
+		//TODO peter pass on project!
+		ProjectMember curMember;
+		try {
+			JakeMainApp.getApp();
+			curMember = JakeMainApp.getCore().getProjectMember(null,MsgServiceHelper.getLoggedInMsgService());
+		} catch (NoSuchProjectMemberException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		if (member == curMember) {
 			return newsResourceMap.getString("eventsYourself");

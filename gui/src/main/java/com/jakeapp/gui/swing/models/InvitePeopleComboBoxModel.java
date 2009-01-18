@@ -40,7 +40,8 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 
 		@Override
 		public String toString() {
-			return JakeMainApp.getCore().getProjectMemberID(getPm()) + " (" + ProjectMemberHelpers.getNickOrFullName(getPm(), 30) + ")";
+			//TODO Peter pass project
+			return JakeMainApp.getCore().getProjectMemberID(null,getPm()) + " (" + ProjectMemberHelpers.getNickOrFullName(getPm(), 30) + ")";
 		}
 
 		public ProjectMember getPm() {

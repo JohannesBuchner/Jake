@@ -905,12 +905,12 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public ProjectMember getProjectMember(MsgService msg) {
+	public ProjectMember getProjectMember(Project project,MsgService msg) {
 		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
 	}
 
 	@Override
-	public String getProjectMemberID(ProjectMember pm) {
+	public String getProjectMemberID(Project project,ProjectMember pm) {
 		if (pm != null) {
 			return pm.getNickname() + "@jabber.com";
 		} else {

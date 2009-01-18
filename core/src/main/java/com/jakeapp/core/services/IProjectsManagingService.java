@@ -334,4 +334,10 @@ public interface IProjectsManagingService {
 	 */
 	ProjectMember getLastEditor(JakeObject jo) throws NoSuchProjectException,
 			IllegalArgumentException;
+
+
+	ProjectMember getProjectMember(Project project,MsgService msg);
+
+
+	String getProjectMemberID(Project project,ProjectMember pm);
 }

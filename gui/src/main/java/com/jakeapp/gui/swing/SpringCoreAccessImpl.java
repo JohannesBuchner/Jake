@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NotLoggedInException;
@@ -131,13 +132,37 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public ProjectMember getProjectMember(MsgService msg) {
-		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
+	public ProjectMember getProjectMember(Project project,MsgService msg)
+		throws NoSuchProjectMemberException {
+		ProjectMember result = null;
+		
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(project,msg);
+		} catch (IllegalArgumentException e) {
+			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
+		} catch (IllegalStateException e) {
+			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
+		} catch (NotLoggedInException e) {
+			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
+		}
+		return result;
 	}
 
 	@Override
-	public String getProjectMemberID(ProjectMember pm) {
-		return "";
+	public String getProjectMemberID(Project project,ProjectMember pm)
+	throws NoSuchProjectMemberException {
+		String result = "";
+		
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMemberID(project,pm);
+		} catch (IllegalArgumentException e) {
+			throw new NoSuchProjectMemberException("");
+		} catch (IllegalStateException e) {
+			throw new NoSuchProjectMemberException("");
+		} catch (NotLoggedInException e) {
+			throw new NoSuchProjectMemberException("");
+		}
+		return result;
 	}
 
 	public void addErrorListener(ErrorCallback ec) {
