@@ -921,7 +921,18 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public List<MsgService> getMsgServics() throws FrontendNotLoggedInException {
-		return new ArrayList<MsgService>();
+		ArrayList<MsgService> msgs = new ArrayList<MsgService>();
+
+		MsgService m = null;
+		try {
+			m = addAccount(new ServiceCredentials("User", "Pass"));
+		} catch (InvalidCredentialsException e) {
+			e.printStackTrace();
+		} catch (ProtocolNotSupportedException e) {
+			e.printStackTrace();
+		}
+		msgs.add(m);
+		return msgs;
 //		return this.frontendService.getMsgServices(this.sessionId);
 	}
 
@@ -960,7 +971,7 @@ public class CoreAccessMock implements ICoreAccess {
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
 		XMPPMsgService m = new XMPPMsgService();
-		m.setCredentials(new ServiceCredentials());
+		m.setCredentials(new ServiceCredentials("user", "pass"));
 		return m;
 		//return this.frontendService.addAccount(this.sessionId, credentials);
 	}
