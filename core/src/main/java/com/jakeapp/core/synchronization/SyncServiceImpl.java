@@ -300,13 +300,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	@Override
 	@Transactional
-	public boolean isLocked(JakeObject jo) throws IllegalArgumentException {
+	public LogEntry<JakeObject> isLocked(JakeObject jo) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		// TODO: iterate through logs backwards to find a lock
 		// if none found or last is unlocked -> unlocked
 		// otherwise -> locked
 		// db.getLogEntryDao(jo).getMostRecentFor(jakeObject)
-		return false;
+		return db.getLogEntryDao(jo).getLock(jo);
 	}
 
 	@Override
@@ -378,10 +378,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 				log.fatal("database corrupted: tried to delete a file that isn't a file",
 						e);
 			} catch (InvalidFilenameException e) {
-				log
-						.fatal(
-								"database corrupted: tried to delete a file that isn't a valid file",
-								e);
+				log.fatal("database corrupted: tried to delete a file that isn't "
+						+ "a valid file", e);
 			}
 		}
 	}

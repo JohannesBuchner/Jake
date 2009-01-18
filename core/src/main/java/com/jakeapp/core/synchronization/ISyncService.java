@@ -140,12 +140,12 @@ public interface ISyncService {
 	 * Tries to find out if the supplied object is softlocked or not
 	 * 
 	 * @param object
-	 *            the JakeObject to query
-	 * @return true if locked, false if not or unknown
+	 *            the {@link JakeObject} to query
+	 * @return null if not locked, the {@link LogEntry} otherwise
 	 * @throws IllegalArgumentException
 	 *             if the supplied JakeObject is null or invalid
 	 */
-	public boolean isLocked(JakeObject object) throws IllegalArgumentException;
+	public LogEntry<JakeObject> isLocked(JakeObject object) throws IllegalArgumentException;
 
 
 	/**
