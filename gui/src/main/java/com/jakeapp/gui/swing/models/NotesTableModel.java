@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -10,11 +10,9 @@ import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import java.awt.Toolkit;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,11 +64,11 @@ public class NotesTableModel extends DefaultTableModel {
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderNote"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
-		
+
 		this.padlock = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(JakeMainApp.class.getResource("/icons/file-lock.png")));
+				  .getImage(JakeMainApp.class.getResource("/icons/file-lock.png")));
 		this.shared_note = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(JakeMainApp.class.getResource("/icons/shared_note.png")));
+				  .getImage(JakeMainApp.class.getResource("/icons/shared_note.png")));
 
 	}
 
@@ -118,17 +116,17 @@ public class NotesTableModel extends DefaultTableModel {
 		List<NoteObject> incommingNotes = new ArrayList<NoteObject>();
 
 
-        try {
-            incommingNotes = this.core.getNotes(project);
-        } catch (NotLoggedInException e) {
-            // TODO 4 Peter/Chris
-            e.printStackTrace();
-        } catch (ProjectNotLoadedException e) {
-            // TODO 4 Peter/Chris
-            e.printStackTrace();
-        }
-        
-        for (NoteObject n : incommingNotes) {
+		try {
+			incommingNotes = this.core.getNotes(project);
+		} catch (FrontendNotLoggedInException e) {
+			// TODO 4 Peter/Chris
+			e.printStackTrace();
+		} catch (ProjectNotLoadedException e) {
+			// TODO 4 Peter/Chris
+			e.printStackTrace();
+		}
+
+		for (NoteObject n : incommingNotes) {
 			//UserId id = this.core.getLastEditor(n, project).getUserId();
 			this.notes.add(new NoteMetaDataWrapper(n,
 					  this.core.getLastEdit(n), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
@@ -187,12 +185,12 @@ public class NotesTableModel extends DefaultTableModel {
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		
+
 		if (columnIndex <= 1) {
 			return Icon.class;
 		}
 		return Object.class;
 	}
-	
-	
+
+
 }

@@ -5,8 +5,8 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
@@ -90,13 +90,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<Project> getMyProjects() throws NotLoggedInException {
+	public List<Project> getMyProjects() throws FrontendNotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
 				  InvitationState.ACCEPTED);
 	}
 
 	@Override
-	public List<Project> getInvitedProjects() throws NotLoggedInException {
+	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException {
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
 				  InvitationState.INVITED);
 	}
@@ -107,7 +107,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		this.frontendService = frontendService;
 	}
 
-	private void handleNotLoggedInException(NotLoggedInException e) {
+	private void handleNotLoggedInException(FrontendNotLoggedInException e) {
 		log.debug("Tried access core without a session", e);
 	}
 
@@ -121,7 +121,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void backendLogOff() {
 		try {
 			this.frontendService.logout(this.sessionId);
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			// silently ignore this exception. may be removed from
 			// frontendservice in the future
 
@@ -130,7 +130,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<MsgService> getMsgServics() throws NotLoggedInException {
+	public List<MsgService> getMsgServics() throws FrontendNotLoggedInException {
 		return this.frontendService.getMsgServices(this.sessionId);
 	}
 
@@ -145,7 +145,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
 		} catch (IllegalStateException e) {
 			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			throw new NoSuchProjectMemberException(msg.getUserId().getUserId());
 		}
 		return result;
@@ -162,7 +162,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new NoSuchProjectMemberException("");
 		} catch (IllegalStateException e) {
 			throw new NoSuchProjectMemberException("");
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			throw new NoSuchProjectMemberException("");
 		}
 		return result;
@@ -212,7 +212,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					currentMessageService = toLogin;
 
 					fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
-				} catch (NotLoggedInException e) {
+				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (ProtocolNotSupportedException e) {
 					// this should never happen...
@@ -255,7 +255,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
-			  throws NotLoggedInException, InvalidCredentialsException,
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.createAccount(this.sessionId, credentials, listener).start();
 
@@ -264,13 +264,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 
 	@Override
-	public void removeAccount(MsgService msg) throws NotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
+	public void removeAccount(MsgService msg) throws FrontendNotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
 		//TODO
 	}
 
@@ -294,7 +294,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			try {
 				this.frontendService.signOut(this.sessionId);
-			} catch (NotLoggedInException e) {
+			} catch (FrontendNotLoggedInException e) {
 				//silently discard invalid session
 			}
 
@@ -356,7 +356,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (IllegalStateException e) {
 			log.debug("Cannot access ProjectManagingService.", e);
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 
@@ -375,7 +375,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (IllegalStateException e) {
 			log.debug("Cannot access ProjectManagingService.", e);
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 
@@ -403,7 +403,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NoSuchProjectException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 			ex = e;
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			ex = e;
 		}
@@ -418,7 +418,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project, null);
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			ex = e;
 		}
@@ -456,7 +456,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							  project,
 							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
 
-				} catch (NotLoggedInException e) {
+				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -488,7 +488,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							  project,
 							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
-				} catch (NotLoggedInException e) {
+				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -515,7 +515,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							  project,
 							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
 
-				} catch (NotLoggedInException e) {
+				} catch (FrontendNotLoggedInException e) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -540,7 +540,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			//empty implementation
 		} catch (NoSuchProjectException e) {
 			//empty implementation
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 	}
@@ -565,7 +565,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			//empty implementation
 		} catch (IllegalStateException e) {
 			//empty implementation
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 
@@ -587,7 +587,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex = e;
 		} catch (NoSuchProjectException e) {
 			ex = e;
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			ex = e;
 		}
@@ -611,11 +611,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param name	 the name of the current folder. It is the last part of relPath
 	 * @param fss	  The FileSystemService used to access the Project-Folder
 	 * @return
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws IllegalStateException
 	 * @throws IllegalArgumentException
 	 */
-	private FolderObject recursiveFileSystemHelper(Project prj, String relPath, String name, IFSService fss, IProjectsManagingService pms) throws IllegalArgumentException, IllegalStateException, NotLoggedInException {
+	private FolderObject recursiveFileSystemHelper(Project prj, String relPath, String name, IFSService fss, IProjectsManagingService pms) throws IllegalArgumentException, IllegalStateException, FrontendNotLoggedInException {
 		FolderObject fo = new FolderObject(relPath, name);
 		try {
 			for (String f : fss.listFolder(relPath)) {
@@ -650,7 +651,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return fo;
 	}
 
-	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
+	public List<NoteObject> getNotes(Project project) throws FrontendNotLoggedInException,
 			  ProjectNotLoadedException {
 		return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
 	}
@@ -713,7 +714,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (ProjectNotLoadedException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (NoSuchJakeObjectException e) {
 			// The corresponding JakeObject does not exist any more - there is
@@ -734,7 +735,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (ProjectNotLoadedException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 	}
@@ -745,7 +746,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.frontendService
 					  .getProjectsManagingService(this.getSessionId())
 					  .getNoteManagingService(note.getProject()).saveNote(note);
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalArgumentException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
@@ -758,7 +759,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	// TODO this might be removed in further versions...
 	// it depends on only having a SINGLE user.
-	private MsgService getLoggedInUser(String session) throws NotLoggedInException {
+	private MsgService getLoggedInUser(String session) throws FrontendNotLoggedInException {
 		return this.currentMessageService;
 	}
 
@@ -768,16 +769,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return
 	 */
-	public List<ProjectMember> getPeople(Project project) {	
+	public List<ProjectMember> getPeople(Project project) {
 		//TODO implement!!
-		
+
 		log.info("getPeople from project " + project);
 
 		if (project == null) {
 			return new ArrayList<ProjectMember>();
 		}
 		return new ArrayList<ProjectMember>();
-		
+
 		//this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
 
 		/*
@@ -898,7 +899,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							  pr,
 							  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
-				} catch (NotLoggedInException e) {
+				} catch (FrontendNotLoggedInException e) {
 					log.debug("Tried to create a project while not authenticated to the core.", e);
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
@@ -957,7 +958,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (InvalidFilenameException e) {
 			log.debug("Filename of FileObject invalid: " + relpath);
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
 		}
 	}
@@ -1026,37 +1027,37 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (CreatingSubDirectoriesFailedException e) {
 			log.error("Creating a subdirectory that should not be created failed...");
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 	}
 
 	@Override
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException {
 		ProjectMember member;
 		LogEntry<JakeObject> action;
 		ISyncService iss;
 		AvailableLaterObject<Void> result = null;
-		
+
 		member = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(jo.getProject(), this.getLoggedInUser(this.getSessionId()));
-		
+
 		action = new LogEntry<JakeObject>(
-				UUID.randomUUID(), LogAction.JAKE_OBJECT_NEW_VERSION,
-				Calendar.getInstance().getTime(), jo.getProject(), jo, member
+				  UUID.randomUUID(), LogAction.JAKE_OBJECT_NEW_VERSION,
+				  Calendar.getInstance().getTime(), jo.getProject(), jo, member
 		);
-		
+
 		try {
 			iss = this.getFrontendService().getSyncService(this.getSessionId());
-			result = new AnnounceFuture(null,iss,jo,action);
+			result = new AnnounceFuture(null, iss, jo, action);
 		} catch (NotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
-		
+
 		return result.start();
 	}
 
 	@Override
-	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
+	public void pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
 		//TODO implement
 	}
 

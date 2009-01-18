@@ -2,9 +2,9 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
@@ -572,7 +572,7 @@ public class CoreAccessMock implements ICoreAccess {
 		return fo;
 	}
 
-	public List<NoteObject> getNotes(Project project) throws NotLoggedInException, ProjectNotLoadedException {
+	public List<NoteObject> getNotes(Project project) throws FrontendNotLoggedInException, ProjectNotLoadedException {
 		//return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(project);
 		return this.notesList;
 	}
@@ -733,7 +733,7 @@ public class CoreAccessMock implements ICoreAccess {
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (NotLoggedInException e) {
+					} catch (FrontendNotLoggedInException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -861,13 +861,13 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException {
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException {
 		log.info("Mock: announceJakeObject: " + jo + " with msg: " + commitmsg);
 		return null;
 	}
 
 	@Override
-	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
+	public void pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
 		log.info("Mock: pullJakeObject: " + jo);
 	}
 
@@ -919,7 +919,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
 	@Override
-	public List<MsgService> getMsgServics() throws NotLoggedInException {
+	public List<MsgService> getMsgServics() throws FrontendNotLoggedInException {
 		return new ArrayList<MsgService>();
 //		return this.frontendService.getMsgServices(this.sessionId);
 	}
@@ -941,7 +941,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
-			  throws NotLoggedInException, InvalidCredentialsException,
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		// TODO: mock!
 
@@ -956,14 +956,14 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
 		return null;
 		//return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 
 	@Override
-	public void removeAccount(MsgService msg) throws NotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
+	public void removeAccount(MsgService msg) throws FrontendNotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
 	}
 
 

@@ -5,8 +5,8 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
@@ -80,48 +80,48 @@ public class JakeMainApp extends SingleFrameApplication implements
 			core.authenticateOnBackend(backendCredentials);
 
 
-            /** DEBUG ***/
-            ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
-                    "somepass");
-            sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
-            sc1.setProtocol(ProtocolType.XMPP);
+			/** DEBUG ***/
+			ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
+					  "somepass");
+			sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
+			sc1.setProtocol(ProtocolType.XMPP);
 //            try {
 //                sc1.setServerAddress(Inet4Address.getLocalHost());
 //            } catch (UnknownHostException e) {
 //                e.printStackTrace();
 //            }
-            sc1.setServerAddress("jabber.fsinf.at");
-            sc1.setServerPort(5222);
-            sc1.setEncryptionUsed(false);
+			sc1.setServerAddress("jabber.fsinf.at");
+			sc1.setServerPort(5222);
+			sc1.setEncryptionUsed(false);
 
 
-            ServiceCredentials sc2 = new ServiceCredentials("pstein@jabber.fsinf.at",
-                    "somepass");
-            sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
-            sc2.setProtocol(ProtocolType.XMPP);
-            sc2.setServerAddress("jabber.fsinf.at");
+			ServiceCredentials sc2 = new ServiceCredentials("pstein@jabber.fsinf.at",
+					  "somepass");
+			sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
+			sc2.setProtocol(ProtocolType.XMPP);
+			sc2.setServerAddress("jabber.fsinf.at");
 
 //            try {
 //                sc2.setServerAddress(Inet4Address.getLocalHost());
 //            } catch (UnknownHostException e) {
 //                e.printStackTrace();
 //            }
-            sc2.setServerPort(5222);
-            sc2.setEncryptionUsed(false);
+			sc2.setServerPort(5222);
+			sc2.setEncryptionUsed(false);
 
 
-            ServiceCredentials sc3 = new ServiceCredentials("pstein@jabber.fsinf.at",
-                    "somepass");
-            sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
-            sc3.setProtocol(ProtocolType.XMPP);
-            sc3.setServerAddress("jabber.fsinf.at");
+			ServiceCredentials sc3 = new ServiceCredentials("pstein@jabber.fsinf.at",
+					  "somepass");
+			sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
+			sc3.setProtocol(ProtocolType.XMPP);
+			sc3.setServerAddress("jabber.fsinf.at");
 //            try {
 //                sc3.setServerAddress(Inet4Address.getLocalHost());
 //            } catch (UnknownHostException e) {
 //                e.printStackTrace();
 //            }
-            sc3.setServerPort(5222);
-            sc3.setEncryptionUsed(false);
+			sc3.setServerPort(5222);
+			sc3.setEncryptionUsed(false);
 
 
 //            try {
@@ -133,7 +133,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 //            }
 //            catch (ProtocolNotSupportedException e) {
 //                e.printStackTrace();
-//            } catch (NotLoggedInException e) {
+//            } catch (FrontendNotLoggedInException e) {
 //                e.printStackTrace();
 //            } catch (NetworkException e) {
 //                e.printStackTrace();

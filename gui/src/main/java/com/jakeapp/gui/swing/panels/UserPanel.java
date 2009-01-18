@@ -2,8 +2,8 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -185,7 +185,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 					userListPanel.add(userLayer);
 				}
 			}
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
 	}
@@ -302,7 +302,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				});
 				buttonPanel.add(backBtn, "left, bottom, split");
 			}
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
 
@@ -342,7 +342,10 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				try {
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
+
 					msg.login();
+
+					updateView();
 				} catch (Exception e) {
 					log.warn(e);
 					ExceptionUtilities.showError(e);
@@ -352,6 +355,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			}
 		}
 	}
+
 
 	/**
 	 * Private inner worker for account registration.
@@ -369,7 +373,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 			try {
 				return JakeMainApp.getCore().createAccount(cred, this);
-			} catch (NotLoggedInException e) {
+			} catch (FrontendNotLoggedInException e) {
 				log.warn(e);
 				ExceptionUtilities.showError(e);
 			} catch (InvalidCredentialsException e) {
@@ -394,8 +398,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			updateView();
 		}
 	}
-
-	// TODO: worker for log in?
 
 
 	/**

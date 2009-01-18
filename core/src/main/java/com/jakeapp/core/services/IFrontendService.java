@@ -1,8 +1,8 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -38,10 +38,11 @@ public interface IFrontendService {
 	 * @param sessionId the session to be terminated
 	 * @return true on success, false on failure
 	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws NotLoggedInException	  if no such session existed
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no such session existed
 	 */
 	public boolean logout(String sessionId) throws IllegalArgumentException,
-			  NotLoggedInException;
+			  FrontendNotLoggedInException;
 
 	/**
 	 * Gets an instance of a {@link IProjectsManagingService}
@@ -49,11 +50,12 @@ public interface IFrontendService {
 	 * @param sessionId a Session-Identifier
 	 * @return a ProjectService on success
 	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws NotLoggedInException	  if no such session existed
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no such session existed
 	 * @throws IllegalStateException	 if no ProjectService is available
 	 */
 	public IProjectsManagingService getProjectsManagingService(String sessionId)
-			  throws IllegalArgumentException, NotLoggedInException, IllegalStateException;
+			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException;
 
 
 	/**
@@ -62,10 +64,11 @@ public interface IFrontendService {
 	 * @param sessionId a Session-Identifier
 	 * @return a List of MessageServices
 	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws NotLoggedInException	  if no such session existed
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no such session existed
 	 * @throws IllegalStateException	 if no MessageServices are configured for this component
 	 */
-	public List<MsgService> getMsgServices(String sessionId) throws NotLoggedInException;
+	public List<MsgService> getMsgServices(String sessionId) throws FrontendNotLoggedInException;
 
 	/**
 	 * Gets the SyncService
@@ -73,10 +76,11 @@ public interface IFrontendService {
 	 * @param sessionId a Session-Identifier
 	 * @return
 	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws NotLoggedInException	  if no such session existed
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no such session existed
 	 * @throws IllegalStateException	 if no MessageServices are configured for this component
 	 */
-	public ISyncService getSyncService(String sessionId) throws NotLoggedInException;
+	public ISyncService getSyncService(String sessionId) throws FrontendNotLoggedInException;
 
 
 	/**
@@ -84,15 +88,15 @@ public interface IFrontendService {
 	 *
 	 * @param sessionId
 	 * @param credentials
-	 * @return TODO
 	 * @return
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception							the creation failed for another reason
 	 */
-	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials,AvailabilityListener listener)
-			  throws NotLoggedInException, InvalidCredentialsException,
+	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials, AvailabilityListener listener)
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException;
 
 
@@ -102,12 +106,13 @@ public interface IFrontendService {
 	 * @param sessionId
 	 * @param credentials
 	 * @return
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 */
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException;
 
 	/**
@@ -116,19 +121,21 @@ public interface IFrontendService {
 	 * Session are logged out.
 	 *
 	 * @param sessionId
-	 * @throws NotLoggedInException If <code>sessionId</code> is invalid.
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *          If <code>sessionId</code> is invalid.
 	 */
-	void signOut(String sessionId) throws NotLoggedInException;
+	void signOut(String sessionId) throws FrontendNotLoggedInException;
 
 	/**
 	 * Pings the core to prevent session expiry
 	 *
 	 * @param sessionId a Session-Identifier
 	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws NotLoggedInException	  if no such session existed
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no such session existed
 	 */
 	public void ping(String sessionId) throws IllegalArgumentException,
-			  NotLoggedInException;
+			  FrontendNotLoggedInException;
 
 	/**
 	 * @return All stored Service-credentials that were 'recently' used.

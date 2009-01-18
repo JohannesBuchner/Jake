@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing;
 
 import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -241,7 +241,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		java.util.List<Project> myprojects = null;
 		try {
 			myprojects = getCore().getMyProjects();
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			//TODO @ Peter: Show error message
 			e.printStackTrace();
 		}
@@ -277,7 +277,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		java.util.List<Project> iprojects = null;
 		try {
 			iprojects = getCore().getInvitedProjects();
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			// TODO @ Peter: reauthenticate, retry action, if it still fails show error message
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}

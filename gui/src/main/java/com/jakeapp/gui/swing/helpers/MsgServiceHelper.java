@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.VisibilityStatus;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -30,7 +30,7 @@ public class MsgServiceHelper {
 					return ms;
 				}
 			}
-		} catch (NotLoggedInException e) {
+		} catch (FrontendNotLoggedInException e) {
 			log.warn(e);
 			ExceptionUtilities.showError(e);
 		}

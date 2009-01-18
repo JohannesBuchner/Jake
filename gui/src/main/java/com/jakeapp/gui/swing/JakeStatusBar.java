@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
@@ -279,7 +279,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 					 * die ganzen Notes aus der Datenbank... bitte irgendwo zwischenspeichern.
 					 */
 					notesCount = getCore().getNotes(getProject()).size();
-				} catch (NotLoggedInException e) {
+				} catch (FrontendNotLoggedInException e) {
 					// TODO 4 peter
 					e.printStackTrace();
 				} catch (ProjectNotLoadedException e) {

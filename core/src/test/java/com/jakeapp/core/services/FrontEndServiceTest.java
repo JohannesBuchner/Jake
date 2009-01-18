@@ -1,24 +1,23 @@
 package com.jakeapp.core.services;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.jakeapp.TestingConstants;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.jakeapp.TestingConstants;
-import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class FrontEndServiceTest {
 	private static final String SESSIONID1 = "paula";
 	private static final String SESSIONID2 = "brillant";
-	
-	private static Map<String,String> VALID_CREDENTIALS;
-	
+
+	private static Map<String, String> VALID_CREDENTIALS;
+
 	private IFrontendService service;
 
 	/**
@@ -37,19 +36,19 @@ public class FrontEndServiceTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		VALID_CREDENTIALS = new HashMap<String,String>();
+		VALID_CREDENTIALS = new HashMap<String, String>();
 		//TODO find out valid credentials
 		VALID_CREDENTIALS.put("to", "do");
 	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 
 		this.setService(new FrontendServiceImpl(
-                 null // IProjectsManagingService
-                ,null, null
-                )
-        );
+				  null // IProjectsManagingService
+				  , null, null
+		)
+		);
 	}
 
 	@After
@@ -58,35 +57,35 @@ public class FrontEndServiceTest {
 
 	@Test(timeout = TestingConstants.UNITTESTTIME)
 	public void authenticate_shouldNOTFailWithEmptyCredentials() throws IllegalArgumentException, InvalidCredentialsException {
-		this.getService().authenticate(new HashMap<String,String>());
+		this.getService().authenticate(new HashMap<String, String>());
 	}
 
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NotLoggedInException.class)
-	public void logout_shouldFailForIllegalSession() throws IllegalArgumentException, NotLoggedInException {
+	@Test(timeout = TestingConstants.UNITTESTTIME, expected = FrontendNotLoggedInException.class)
+	public void logout_shouldFailForIllegalSession() throws IllegalArgumentException, FrontendNotLoggedInException {
 		this.getService().logout(SESSIONID2);
 	}
-	
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NotLoggedInException.class)
-	public void logout_shouldNotFailSecondTime() throws IllegalArgumentException, NotLoggedInException, InvalidCredentialsException {
+
+	@Test(timeout = TestingConstants.UNITTESTTIME, expected = FrontendNotLoggedInException.class)
+	public void logout_shouldNotFailSecondTime() throws IllegalArgumentException, FrontendNotLoggedInException, InvalidCredentialsException {
 		String sessionid = this.getService().authenticate(VALID_CREDENTIALS);
 		this.getService().logout(sessionid);
-		
-		//CALL
-		this.getService().logout(sessionid);
-		//CALL
-	}
-	
-	@Test(timeout = TestingConstants.UNITTESTTIME)
-	public void logout_shouldSucceed() throws IllegalArgumentException, NotLoggedInException, InvalidCredentialsException {
-		String sessionid = this.getService().authenticate(VALID_CREDENTIALS);
-		
+
 		//CALL
 		this.getService().logout(sessionid);
 		//CALL
 	}
 
-/*	@Test(timeout = TestingConstants.UNITTESTTIME,expected = NotLoggedInException.class)
-	public void ping_shouldFailWithNoLogin() throws IllegalArgumentException, NotLoggedInException {
+	@Test(timeout = TestingConstants.UNITTESTTIME)
+	public void logout_shouldSucceed() throws IllegalArgumentException, FrontendNotLoggedInException, InvalidCredentialsException {
+		String sessionid = this.getService().authenticate(VALID_CREDENTIALS);
+
+		//CALL
+		this.getService().logout(sessionid);
+		//CALL
+	}
+
+/*	@Test(timeout = TestingConstants.UNITTESTTIME,expected = FrontendNotLoggedInException.class)
+	public void ping_shouldFailWithNoLogin() throws IllegalArgumentException, FrontendNotLoggedInException {
 		this.getService().ping(SESSIONID1);
 	}*/
 }

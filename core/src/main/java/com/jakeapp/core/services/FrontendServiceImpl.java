@@ -2,8 +2,8 @@ package com.jakeapp.core.services;
 
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.FriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -100,10 +100,11 @@ public class FrontendServiceImpl implements IFrontendService {
 	/**
 	 * @param sessionId The id associated with the session after it was created
 	 * @throws IllegalArgumentException if <code>sessionId</code> was null
-	 * @throws NotLoggedInException	  if no Session associated with <code>sessionId</code> exists.
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no Session associated with <code>sessionId</code> exists.
 	 */
 	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
-			  NotLoggedInException {
+			  FrontendNotLoggedInException {
 		checkSession(sessionId);
 		return this.getSessions().get(sessionId);
 	}
@@ -132,7 +133,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	public boolean logout(String sessionId) throws IllegalArgumentException,
-			  NotLoggedInException {
+			  FrontendNotLoggedInException {
 		boolean successfullyRemoved;
 
 		if (sessionId == null)
@@ -140,20 +141,20 @@ public class FrontendServiceImpl implements IFrontendService {
 
 		successfullyRemoved = this.removeSession(sessionId);
 		if (!successfullyRemoved)
-			throw new NotLoggedInException();
+			throw new FrontendNotLoggedInException();
 
 		return true;
 	}
 
 	@Override
 	public IProjectsManagingService getProjectsManagingService(String sessionId)
-			  throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
 		checkSession(sessionId);
 		// 3. return ProjectsManagingService
 		return this.getProjectsManagingService();
 	}
 
-	private void checkSession(String sessionId) throws NotLoggedInException {
+	private void checkSession(String sessionId) throws FrontendNotLoggedInException {
 
 
 		// 1. check if session is null, if so throw IllegalArgumentException
@@ -167,14 +168,14 @@ public class FrontendServiceImpl implements IFrontendService {
 			for (String entry : sessions.keySet()) {
 				log.debug(entry);
 			}
-			throw new NotLoggedInException("Invalid Session; Not logged in");
+			throw new FrontendNotLoggedInException("Invalid Session; Not logged in");
 		}
 
 	}
 
 	@Override
 	public List<MsgService> getMsgServices(String sessionId)
-			  throws IllegalArgumentException, NotLoggedInException, IllegalStateException {
+			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
 		this.checkSession(sessionId);
 		return this.getMsgServices();
 	}
@@ -184,16 +185,16 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials,AvailabilityListener listener)
-			  throws NotLoggedInException, InvalidCredentialsException,
+	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials, AvailabilityListener listener)
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
-		return msgServiceFactory.createAccount(credentials,listener);
+		return msgServiceFactory.createAccount(credentials, listener);
 	}
 
 	@Override
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
-			  throws NotLoggedInException, InvalidCredentialsException,
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
 		checkSession(sessionId);
 
@@ -201,7 +202,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public void signOut(String sessionId) throws NotLoggedInException {
+	public void signOut(String sessionId) throws FrontendNotLoggedInException {
 		FrontendSession session;
 		Iterable<MsgService> msgServices;
 
@@ -213,7 +214,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	public void ping(String sessionId) throws IllegalArgumentException,
-			  NotLoggedInException {
+			  FrontendNotLoggedInException {
 		checkSession(sessionId);
 
 		// TODO
@@ -221,7 +222,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	public FriendlySyncService getSyncService(String sessionId)
-			  throws NotLoggedInException {
+			  throws FrontendNotLoggedInException {
 		this.checkSession(sessionId);
 		return this.sync;
 	}

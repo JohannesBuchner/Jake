@@ -3,8 +3,8 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
@@ -14,8 +14,8 @@ import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -92,7 +92,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-		 throws InvalidCredentialsException;
+			  throws InvalidCredentialsException;
 
 
 	/**
@@ -159,13 +159,14 @@ public interface ICoreAccess {
 	 *
 	 * @param credentials
 	 * @return AvailableLaterObject
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws Exception
 	 * @throws ProtocolNotSupportedException
 	 */
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, NetworkException;
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -174,38 +175,41 @@ public interface ICoreAccess {
 	 *
 	 * @param credentials
 	 * @return a MsgService instance of the concrete Protocol
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
 	 *                                       If the given Credentials are not valid
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, NetworkException;
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException;
 
 
 	/**
 	 * This removes a Account/MsgService in the core database.
 	 *
 	 * @param msg
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 * @throws NetworkException
 	 */
 	public void removeAccount(MsgService msg)
-		 throws NotLoggedInException, InvalidCredentialsException,
-		 ProtocolNotSupportedException, NetworkException;
+			  throws FrontendNotLoggedInException, InvalidCredentialsException,
+			  ProtocolNotSupportedException, NetworkException;
 
 
 	/**
 	 * This returns a list with MsgServices already registered in the core
 	 *
 	 * @return a list with MsgServices already registered in the core
-	 * @throws NotLoggedInException if the frontend has no session on the core
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *          if the frontend has no session on the core
 	 */
-	public List<MsgService> getMsgServics() throws NotLoggedInException;
+	public List<MsgService> getMsgServics() throws FrontendNotLoggedInException;
 
 
 	/**
@@ -236,19 +240,19 @@ public interface ICoreAccess {
 	 * alphabetically sorted.
 	 *
 	 * @return list of projects.
-	 * @throws com.jakeapp.core.domain.exceptions.NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 */
-	public List<Project> getMyProjects() throws NotLoggedInException;
+	public List<Project> getMyProjects() throws FrontendNotLoggedInException;
 
 	/**
 	 * Get projects where i am invited to. List is alphabetically sorted.
 	 *
 	 * @return list of invited projects.
-	 * @throws com.jakeapp.core.domain.exceptions.NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 */
-	public List<Project> getInvitedProjects() throws NotLoggedInException;
+	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException;
 
 
 	/**
@@ -312,7 +316,7 @@ public interface ICoreAccess {
 	 * Deletes a project. Works asyn, fires the callback when finished. Throws
 	 * exceptions if path is null or invalid.
 	 *
-	 * @param project            : project that should be deleted
+	 * @param project				: project that should be deleted
 	 * @param deleteProjectFiles
 	 */
 	public void deleteProject(Project project, boolean deleteProjectFiles);
@@ -355,7 +359,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-		 throws ProjectFolderMissingException;
+			  throws ProjectFolderMissingException;
 
 	/**
 	 * Retrieves all files within a project
@@ -436,7 +440,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file    The file to rename
+	 * @param file	 The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -469,18 +473,20 @@ public interface ICoreAccess {
 	 * @param jo
 	 * @param commitmsg
 	 * @throws SyncException
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 */
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, NotLoggedInException;
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException;
 
 	/**
 	 * @param jo
-	 * @throws NotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *
 	 * @throws OtherUserOfflineException
 	 * @throws java.rmi.NoSuchObjectException
 	 * @throws NoSuchLogEntryException
 	 */
-	public void pullJakeObject(JakeObject jo) throws NotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException;
+	public void pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException;
 
 	/**
 	 * Checks whether a given JakeObject is currently soft locked.
@@ -493,8 +499,8 @@ public interface ICoreAccess {
 	/**
 	 * Creates a folder at a given point in the relative path hierarchy of a project
 	 *
-	 * @param project    The project where the folder should be created
-	 * @param relpath    The relpath under which the folder should be created
+	 * @param project	 The project where the folder should be created
+	 * @param relpath	 The relpath under which the folder should be created
 	 * @param folderName The name of the new folder
 	 * @throws InvalidNewFolderException if the folder cannot be created (exists already, invalid name, ...)
 	 */
@@ -523,8 +529,8 @@ public interface ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return
 	 */
-	public List<NoteObject> getNotes(Project project) throws NotLoggedInException,
-		 ProjectNotLoadedException;
+	public List<NoteObject> getNotes(Project project) throws FrontendNotLoggedInException,
+			  ProjectNotLoadedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
@@ -596,8 +602,8 @@ public interface ICoreAccess {
 	/**
 	 * Set the soft lock for a <code>JakeObject</code>.
 	 *
-	 * @param jakeObject     the <code>JakeObject</code> for which the lock is to be set.
-	 * @param isSet          enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
+	 * @param jakeObject	  the <code>JakeObject</code> for which the lock is to be set.
+	 * @param isSet			 enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
 	 *                       enable the lock
 	 * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
 	 *                       <code>falso</code>
@@ -632,7 +638,7 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-	                                TrustState trust);
+											  TrustState trust);
 
 
 	/**
@@ -658,9 +664,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project     : the project to query. can be null.
+	 * @param project	  : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries     : amount of entries. -1 for everything.
+	 * @param entries	  : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);

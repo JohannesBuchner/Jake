@@ -4,7 +4,6 @@ import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.exceptions.NotLoggedInException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ImportFileAction;
@@ -209,8 +208,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		setContextViewPanel(ContextPanelEnum.Login);
 
 		updateTitle();
-
-		Platform.setEventCounter(5);
 	}
 
 
@@ -510,12 +507,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		boolean hasProject = getProject() != null;
 		boolean isInvite = getProject() != null && getProject().getInvitationState() == InvitationState.INVITED;
 		boolean isProjectContext = getContextViewPanel() == ContextPanelEnum.Project;
-		boolean hasUser = false;
-		try {
-			hasUser = JakeMainApp.getCore().getMsgServics().size() > 0;
-		} catch (NotLoggedInException e) {
-			e.printStackTrace();
-		}
+		boolean hasUser = JakeMainApp.getMsgService() != null;
 
 		createProjectButton.setEnabled(hasUser);
 		addFilesButton.setEnabled(hasProject && !isInvite);

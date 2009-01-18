@@ -5,22 +5,22 @@ package com.jakeapp.core.domain.exceptions;
  * is not logged
  * in and therefor nor authorized to do so.
  */
-public class NotLoggedInException extends RuntimeException {
+public class FrontendNotLoggedInException extends RuntimeException {
 	private static final long serialVersionUID = 7900725036326667321L;
 
-	public NotLoggedInException() {
+	public FrontendNotLoggedInException() {
 		super();
 	}
 
-	public NotLoggedInException(final String message) {
+	public FrontendNotLoggedInException(final String message) {
 		super(message);
 	}
 
-	public NotLoggedInException(final String message, final Throwable cause) {
+	public FrontendNotLoggedInException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
-	public NotLoggedInException(final Throwable cause) {
+	public FrontendNotLoggedInException(final Throwable cause) {
 		super(cause);
 	}
 }
