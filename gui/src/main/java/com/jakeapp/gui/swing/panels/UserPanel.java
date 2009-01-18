@@ -344,12 +344,13 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
 
-					msg.login();
+					JakeExecutor.exec(new LoginAccountWorker(msg));
 
-					updateView();
 				} catch (Exception e) {
 					log.warn(e);
 					ExceptionUtilities.showError(e);
+				} finally {
+					updateView();
 				}
 			} else {
 				JakeExecutor.exec(new RegisterAccountWorker(getCredientals()));

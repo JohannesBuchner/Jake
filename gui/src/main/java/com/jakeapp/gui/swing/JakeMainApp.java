@@ -48,23 +48,39 @@ public class JakeMainApp extends SingleFrameApplication implements
 	public JakeMainApp() {
 		this.app = this;
 
+		ApplicationContext applicationContext;
 
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-				  new String[]{"/com/jakeapp/core/applicationContext.xml"
-							 /**
-							  * Uncomment the following line to use the real
-							  * implementation
-							  */
-							 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
+		String[] options = {"Mock", "Real Thing"};
 
-							 /**
-							  * Uncomment the following line to use peter/chris
-							  * mock implementation
-							  */
-							 //	  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+		if (JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
+				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.NO_OPTION) {
+			applicationContext = new ClassPathXmlApplicationContext(
+					  new String[]{"/com/jakeapp/core/applicationContext.xml"
+								 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
+		} else {
+			applicationContext = new ClassPathXmlApplicationContext(
+					  new String[]{"/com/jakeapp/core/applicationContext.xml"
+								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"});
+		}
 
 
-				  });
+//		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+//				  new String[]{"/com/jakeapp/core/applicationContext.xml"
+//							 /**
+//							  * Uncomment the following line to use the real
+//							  * implementation
+//							  */
+//							 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
+//
+//							 /**
+//							  * Uncomment the following line to use peter/chris
+//							  * mock implementation
+//							  */
+//							 //	  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
+//
+//
+//				  });
+
 		setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
 

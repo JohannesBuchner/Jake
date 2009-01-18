@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
@@ -885,7 +886,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public void addFilesChangedListener(FilesChanged listener,Project project) {
+	public void addFilesChangedListener(FilesChanged listener, Project project) {
 		filesChangedListeners.add(listener);
 	}
 
@@ -958,7 +959,9 @@ public class CoreAccessMock implements ICoreAccess {
 	public MsgService addAccount(ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
-		return null;
+		XMPPMsgService m = new XMPPMsgService();
+		m.setCredentials(new ServiceCredentials());
+		return m;
 		//return this.frontendService.addAccount(this.sessionId, credentials);
 	}
 
