@@ -766,7 +766,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	}
 
 	private void updateSourceListVisibility() {
-		log.debug("update sourcelist visible state");
+		log.debug("update sourcelist visible state: visible=" + JakeMainApp.getMsgService() != null);
 
 		if (JakeMainApp.getMsgService() == null) {
 			this.mainSplitPane.getLeftComponent().setVisible(false);

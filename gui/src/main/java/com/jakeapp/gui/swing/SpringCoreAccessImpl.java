@@ -858,9 +858,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries) {
+		// TODO: implement!
 		List<LogEntry> log = new ArrayList<LogEntry>();
 
 		if (project != null) {
+			/*
 			// yeah... what a beautiful interface ;o)
 			log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
 					  project, null, getPeople(project).get(0), "comment 1", "checksum???",
@@ -868,6 +870,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			log.add(new LogEntry(new UUID(1, 2), LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project,
 					  null, getPeople(project).get(0), "comment 1", "checksum???", true));
+					  */
 		}
 
 		return log;
