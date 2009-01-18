@@ -9,10 +9,13 @@ import net.roydesign.app.QuitJMenuItem;
 import net.roydesign.mac.MRJAdapter;
 import net.roydesign.ui.StandardMacAboutFrame;
 import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.plaf.SeparatorUI;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +34,25 @@ public class JakeMenuBar extends JMenuBar {
 
 		// Get the application instance
 		Application app = Application.getInstance();
+		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(JakeMainView.class);
+
+		
+		/****************************** Notes *******************************/
+		final JMenu notesMenu = new JMenu();
+		notesMenu.setText(resourceMap.getString("notesMenu.text"));
+		notesMenu.setName(resourceMap.getString("notesMenu.name"));
+		
+		notesMenu.add(new JMenuItem(new NewNoteAction()));
+		notesMenu.addSeparator();
+		notesMenu.add(new JMenuItem(new DeleteNoteAction()));
+		notesMenu.add(new JMenuItem(new CommitNoteAction()));
+		notesMenu.addSeparator();
+		notesMenu.add(new JMenuItem(new SoftlockNoteAction()));
+		
+		this.add(notesMenu);
+		
+		/****************************** foo *********************************/
+		
 
 		final JMenu projectMenu = new JMenu();
 
@@ -75,7 +97,6 @@ public class JakeMenuBar extends JMenuBar {
 		JMenu helpMenu = new JMenu();
 		JMenuItem visitWebsiteMenuItem = new JMenuItem();
 
-		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(JakeMainView.class);
 		projectMenu.setText(resourceMap.getString("projectMenu.text")); // NOI18N
 		projectMenu.setName("projectMenu"); // NOI18N
 
