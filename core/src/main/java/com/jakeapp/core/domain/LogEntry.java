@@ -179,7 +179,7 @@ public class LogEntry<T extends ILogable> {
      * <code>null</code> can be returned as well.
 	 */
     @Lob
-    @Column(name = "belongsto")
+    @Column(name = "belongsto", nullable = true)
 	public T getBelongsTo() {
 		return this.belongsTo;
 	}
@@ -221,7 +221,7 @@ public class LogEntry<T extends ILogable> {
 	 * @return The hash the modified object had when causing this
      * <code>LogEntry</code>.
 	 */
-	@Column(name = "hash", nullable = false)
+	@Column(name = "hash", nullable = true)
 	public String getChecksum() {
 		return this.checksum;
 	}

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -27,6 +28,7 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
@@ -42,11 +44,13 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
- * This class should be active whenever you want to use files <p/> On
- * Project->pause/start call
+ * This class should be active whenever you want to use files
+ * <p/>
+ * On Project->pause/start call
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
- * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
- * used.
+ * {@link #stopServing(Project)}
+ * <p/>
+ * Even when you are offline, this is to be used.
  * 
  * @author johannes
  */
@@ -57,7 +61,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	/**
 	 * key is the UUID
 	 */
-	Map<String, IFSService> projectsFssMap;
+	private Map<String, IFSService> projectsFssMap;
 
 	/**
 	 * key is the UUID
@@ -66,7 +70,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private RequestHandlePolicy rhp;
 
-	ApplicationContextFactory db;
+	private ApplicationContextFactory db;
 
 	private ICServicesManager icServicesManager;
 
@@ -79,6 +83,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 			e.printStackTrace(); // todo
 			return null;
 		}
+	}
+
+	private IFSService getFSS(Project p) {
+		return projectsFssMap.get(p.getProjectId());
 	}
 
 	public ICServicesManager getIcServicesManager() {
@@ -229,49 +237,44 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
-	public void announce(JakeObject jo, LogEntry<ILogable> action, String commitMsg) {
-		// TODO Auto-generated method stub
+	public void announce(JakeObject jo, LogEntry<ILogable> inaction, String commitMsg)
+			throws FileNotFoundException, InvalidFilenameException,
+			NotAReadableFileException {
+		log.debug("announcing " + jo + " : " + inaction);
+		IFSService fss = getFSS(jo.getProject());
+		LogEntry<ILogable> le = new LogEntry<ILogable>(UUID.randomUUID(), inaction
+				.getLogAction());
+		LogAction action = inaction.getLogAction();
+		// set those that shouldn't be set by caller
+		le.setBelongsTo(jo);
+		le.setTimestamp(new Date());
+		le.setComment(commitMsg);
+		le.setMember(getMyProjectMember(jo.getProject()));
+		log.debug("prepared logentry");
+
+		if (!(action == LogAction.JAKE_OBJECT_NEW_VERSION
+				|| action == LogAction.JAKE_OBJECT_DELETE || action == LogAction.TAG_ADD
+				|| action == LogAction.TAG_REMOVE || action == LogAction.JAKE_OBJECT_LOCK || action == LogAction.JAKE_OBJECT_UNLOCK)) {
+			throw new IllegalArgumentException(
+					"announce can not be used with this action");
+		}
 		// TODO: fetch hash
 		// TODO: create logentry
-		String hash;
-		action.setBelongsTo(jo);
-		// TODO: set others that shouldn't be set by caller
-		action.setTimestamp(new Date());
-		action.setComment(commitMsg);
-		action.setMember(getMyProjectMember(jo.getProject()));
 
 		if (isNoteObject(jo)) {
+			log.debug("is a note. storing.");
 			NoteObject note = (NoteObject) jo;
-			// hash = fss.calculateHash(note.getContent().getBytes());
-			// db.getJakeObjectDao().save(note);
-			db.getLogEntryDao(jo.getProject()).create(action);
-			// TODO: save note entry
+			db.getLogEntryDao(jo).create(le);
+			log.debug("is a note. done.");
 		} else {
-			FileObject file = (FileObject) jo;
-			// log.debug("File: " + file.getName());
-			// db.getJakeObjectDao().save(file);
-			// TODO: save file entry
-			// try {
-			// hash = fss.calculateHashOverFile(jo.getName());
-			// TODO: get Hash
-			/*
-			 * } catch (FileNotFoundException e) { throw new SyncException(e); }
-			 * catch (InvalidFilenameException e) { throw new SyncException(e);
-			 * } catch (NotAReadableFileException e) { throw new
-			 * SyncException(e); }
-			 */
+			log.debug("is a file. getting hash.");
+			FileObject fo = (FileObject) jo;
+			if (action == LogAction.JAKE_OBJECT_NEW_VERSION)
+				le.setChecksum(fss.calculateHashOverFile(fo.getRelPath()));
+			log.debug("is a file. getting hash done.");
+			db.getLogEntryDao(jo).create(le);
+			log.debug("is a file. log entry written.");
 		}
-
-		// LogEntry le = new LogEntry(UUID.randomUUID(),
-		// LogAction.FILE_NEW_VERSION, new Date(),
-		// jo.getName(), hash, userid, commitmsg);
-		// TODO: create logentry & save it & set that this version is has been
-		// pulled in DB
-
-		// db.getLogEntryDao().create(le);
-		// db.getLogEntryDao().setIsLastPulled(le);
-		// return new ArrayList<ProjectMember>();
-
 	}
 
 	@Override
@@ -335,7 +338,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 */
 	@Override
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException {
-		IFSService fss = projectsFssMap.get(p.getProjectId());
+		IFSService fss = getFSS(p);
 
 		List<String> files = fss.recursiveListFiles();
 
@@ -387,7 +390,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			IOException {
 		if (!existsLocally(fo))
 			return false;
-		IFSService fss = projectsFssMap.get(fo.getProject());
+		IFSService fss = getFSS(fo.getProject());
 		String rhash;
 		try {
 			rhash = db.getLogEntryDao(fo).getMostRecentFor(fo).getChecksum();
@@ -411,7 +414,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	public Boolean existsLocally(FileObject fo) throws IOException {
-		IFSService fss = projectsFssMap.get(fo.getProject());
+		IFSService fss = getFSS(fo.getProject());
 		try {
 			return fss.fileExists(fo.getRelPath());
 		} catch (InvalidFilenameException e) {
@@ -489,19 +492,19 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Override
 	public void invite(Project project, UserId userId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void notifyInvitationAccepted(Project project, UserId inviter) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void notifyInvitationRejected(Project project, UserId inviter) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

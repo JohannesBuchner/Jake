@@ -1,18 +1,22 @@
 package com.jakeapp.core.synchronization;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
@@ -91,16 +95,28 @@ public interface ISyncService {
 	 * 
 	 * @param objects
 	 *            the objects to be pulled
-	 * @throws NoSuchLogEntryException the object does not exist (no one announced it)
+	 * @throws NoSuchLogEntryException
+	 *             the object does not exist (no one announced it)
 	 */
 	public void pullObject(JakeObject jo) throws NoSuchLogEntryException;
 
 	/**
-	 * Adds a log entry that the object has been modified/created/... Unless you
-	 * are in a loop, you probably want to do a poke afterwards.
-	 * @param commitMsg TODO
+	 * Adds a log entry that the object has been modified, created, deleted,
+	 * tagged, untagged <br>
+	 * Unless you are in a loop, you probably want to do a poke afterwards.
+	 * 
+	 * @param jo
+	 * @param action
+	 *            a prepared logentry
+	 * @param commitMsg
+	 * @throws NotAReadableFileException 
+	 * @throws InvalidFilenameException 
+	 * @throws FileNotFoundException 
+	 * @throws IllegalArgumentException
+	 *             if you are doing it wrong
+	 * @see LogAction for what to set
 	 */
-	public void announce(JakeObject jo, LogEntry<ILogable> action, String commitMsg);
+	public void announce(JakeObject jo, LogEntry<ILogable> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
 
 	/* Project member changes: just do a poke */
 
@@ -162,7 +178,7 @@ public interface ISyncService {
 	 * gets the files and their information
 	 * 
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException;
 
@@ -195,5 +211,5 @@ public interface ISyncService {
 	 * invitation.
 	 */
 	void notifyInvitationRejected(Project project, UserId inviter);
-	
+
 }
