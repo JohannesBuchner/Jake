@@ -24,6 +24,8 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.ics.status.IStatusService;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 /**
  * The task of the synchronisation service (SyncService) is to implement a
@@ -237,5 +239,11 @@ public interface ISyncService {
 	public Boolean existsLocally(FileObject fo) throws IOException;
 
 	public boolean isPullable(JakeObject jo);
+
+	public IMsgService getBackendMsgService(Project p);
+
+	public IStatusService getBackendStatusService(Project p);
+
+	public IUsersService getBackendUsersService(Project p);
 
 }

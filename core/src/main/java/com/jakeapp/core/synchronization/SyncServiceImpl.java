@@ -44,6 +44,9 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.ics.status.IStatusService;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 /**
  * This class should be active whenever you want to use files
@@ -80,7 +83,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private UserTranslator userTranslator;
 
-	private ICService getICS(Project p) {
+	ICService getICS(Project p) {
 		return icServicesManager.getICService(p);
 	}
 
@@ -624,7 +627,20 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public UserId getUserIdFromProjectMember(Project project, ProjectMember member) {
 		return userTranslator.getUserIdFromProjectMember(project, member);
 	}
-
+	
+	@Override
+	public IMsgService getBackendMsgService(Project p) {
+		return getICS(p).getMsgService().getFriendMsgService();
+	}
+	@Override
+	public IStatusService getBackendStatusService(Project p) {
+		return getICS(p).getStatusService();
+	}
+	@Override
+	public IUsersService getBackendUsersService(Project p) {
+		return getICS(p).getUsersService();
+	}
+	
 	@Override
 	public void invite(Project project, UserId userId) {
 		// TODO Auto-generated method stub
