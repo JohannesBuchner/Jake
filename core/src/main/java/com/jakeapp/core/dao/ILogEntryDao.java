@@ -59,7 +59,7 @@ public interface ILogEntryDao {
 	 * 
 	 * @return List of LogEntrys
 	 */
-	public List<LogEntry<? extends ILogable>> getAll();
+	public List<LogEntry> getAll();
 
 	/**
 	 * Get all LogEntrys stored in the database concerning a specific

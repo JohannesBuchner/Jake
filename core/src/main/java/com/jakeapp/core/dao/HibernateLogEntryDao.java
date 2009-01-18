@@ -1,13 +1,6 @@
 package com.jakeapp.core.dao;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -67,13 +60,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public List<LogEntry<? extends ILogable>> getAll() {
+	public List<LogEntry> getAll() {
 		log.debug("\n\n\n\n\ngetAll() \n\n\n\n");
-		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
+
+
+//        List<LogEntry<? extends ILogable>> result;
+        List<LogEntry> result;
+        result = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
 						"FROM logentries WHERE 1=1").list();
+ 
 
-		return result;
+        return result;
 	}
 
 	@Override
@@ -118,8 +116,15 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public Collection<LogEntry<? extends ILogable>> findMatching(
 			LogEntry<? extends ILogable> le) {
-		// TODO
-		return new LinkedList<LogEntry<? extends ILogable>>();
+
+
+        List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate().findByExample(le);
+
+        return result;
+
+//
+//         TODO
+//        return new LinkedList<LogEntry<? extends ILogable>>();
 	}
 
 	@Override

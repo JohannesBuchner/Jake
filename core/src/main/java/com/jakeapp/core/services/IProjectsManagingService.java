@@ -169,7 +169,7 @@ public interface IProjectsManagingService {
 	 *             if the supplied <code>Project</code> is null or does not
 	 *             exist.
 	 */
-	List<LogEntry<? extends ILogable>> getLog(Project project)
+	List<LogEntry> getLog(Project project)
 			throws IllegalArgumentException;
 
 	/**

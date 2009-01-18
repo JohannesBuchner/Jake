@@ -1,9 +1,12 @@
 package com.jakeapp.core.domain;
 
+import javax.persistence.Entity;
 import java.util.UUID;
 import java.util.Date;
+import java.io.Serializable;
 
-public class NoteObjectLogEntry extends LogEntry<NoteObject> {
+@Entity
+public class NoteObjectLogEntry extends LogEntry<NoteObject> implements Serializable {
 
 	public NoteObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp,
 			Project project, NoteObject belongsTo, ProjectMember member, String comment,

@@ -424,10 +424,10 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public List<LogEntry<? extends ILogable>> getLog(Project project)
+	public List<LogEntry> getLog(Project project)
 			  throws IllegalArgumentException {
 		ILogEntryDao dao;
-		List<LogEntry<? extends ILogable>> result = null;
+		List<LogEntry> result = null;
 
 		if (project == null)
 			throw new IllegalArgumentException();

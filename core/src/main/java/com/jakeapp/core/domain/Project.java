@@ -287,7 +287,8 @@ public class Project implements ILogable {
     /**
      * @return the invitationState
      */
-    @Transient // TODO change here to save invitation state
+//    @Transient // TODO change here to save invitation state
+    @Column(name = "invitationstate")
     public InvitationState getInvitationState() {
         return invitationState;
     }

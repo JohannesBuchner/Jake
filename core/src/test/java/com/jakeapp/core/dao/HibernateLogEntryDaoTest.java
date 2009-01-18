@@ -10,6 +10,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.services.MsgService;
 
@@ -25,6 +26,8 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
     private HibernateTemplate hibernateTemplate;
     private ILogEntryDao logEntryDao;
+
+
 
     public HibernateTemplate getHibernateTemplate() {
         return hibernateTemplate;
@@ -114,7 +117,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
 
 
-        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+        List<LogEntry> result = logEntryDao.getAll();
 
 
         log.debug("result.size() = " + result.size());
@@ -152,5 +155,31 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void testGetUnprocessed() {
         // Add your code here
+    }
+
+
+    @Test
+    public void testFindMatching() throws InvalidTagNameException {
+
+
+        Tag t1 = new Tag("test");
+
+        FileObject fileObject = new FileObject(UUID.fromString("fa305bda-aaa-4064-8f0f-d30017239c65"), null, "/tmp");
+
+        t1.setObject(fileObject);
+
+
+        ProjectMember projectMember = new ProjectMember(UUID.fromString("fa305bda-bbbb-4064-8f0f-d30017239c65"), "nickname", TrustState.TRUST);
+
+
+        TagLogEntry tagLogEntry = new TagLogEntry(UUID.fromString("fa305bda-de58-4064-8f0f-d30017239c65"), LogAction.TAG_ADD, new Date(), null, t1, projectMember, "comment", "dddd", false );
+
+
+        logEntryDao.create(tagLogEntry);
+
+
+        List<LogEntry> results = logEntryDao.getAll();
+
+        Assert.assertTrue(results.contains(tagLogEntry));
     }
 }

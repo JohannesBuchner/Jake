@@ -1,10 +1,12 @@
 package com.jakeapp.core.domain;
 
+import javax.persistence.Entity;
 import java.util.UUID;
 import java.util.Date;
+import java.io.Serializable;
 
-
-public class FileObjectLogEntry extends LogEntry<FileObject> {
+@Entity
+public class FileObjectLogEntry extends LogEntry<FileObject> implements Serializable {
     public FileObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project, FileObject belongsTo,
                               ProjectMember member, String comment, String checksum, Boolean processed) {
         super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum, processed);

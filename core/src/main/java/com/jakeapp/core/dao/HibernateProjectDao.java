@@ -193,14 +193,19 @@ public class HibernateProjectDao extends HibernateDaoSupport
 
 	@Override
 	public List<Project> getAll(InvitationState state) {
-		// TODO 4 domdorn implement WHERE clause via DB-Select
-		List<Project> all = this.getAll();
-		List<Project> result = new ArrayList<Project>();
+		List<Project> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM Project WHERE invitationstate = ?").setInteger(0, state.ordinal()).list();
+        return result;
 
-		for (Project p : all)
-			if (p.getInvitationState().equals(state))
-				result.add(p);
-		
-		return result;
+
+//         TODO 4 domdorn implement WHERE clause via DB-Select
+//		List<Project> all = this.getAll();
+//		List<Project> result = new ArrayList<Project>();
+//
+//		for (Project p : all)
+//			if (p.getInvitationState().equals(state))
+//				result.add(p);
+//
+//		return result;
 	}
 }
