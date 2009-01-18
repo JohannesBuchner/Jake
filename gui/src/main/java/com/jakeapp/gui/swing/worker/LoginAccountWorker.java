@@ -16,19 +16,32 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 	private static final Logger log = Logger.getLogger(LoginAccountWorker.class);
 
 	private MsgService msg;
+	private String password;
+	private boolean rememberPassword;
 
 	public LoginAccountWorker(MsgService msg) {
-		this.msg = msg;
+		this(msg, null, false);
+	}
 
-		log.info("Login Account Worker: " + msg);
+	public LoginAccountWorker(MsgService msg, String password, boolean rememberPassword) {
+		this.msg = msg;
+		this.password = password;
+		this.rememberPassword = rememberPassword;
+
+		log.info("Login Account Worker: " + msg + " pw: " + password + " remember: " + rememberPassword);
 	}
 
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
 		try {
 			// TODO: return object!
-			msg.login();
+			if (password == null) {
+				msg.login();
+			} else {
+				msg.login(password, rememberPassword);
+			}
 		} catch (Exception e) {
+			log.warn("Login failed: " + e);
 			ExceptionUtilities.showError(e);
 		}
 		return null;

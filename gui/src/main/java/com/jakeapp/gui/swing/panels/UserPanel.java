@@ -15,6 +15,7 @@ import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
+import com.jakeapp.gui.swing.worker.LoginAccountWorker;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import net.miginfocom.swing.MigLayout;
@@ -588,20 +589,21 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			public void actionPerformed(ActionEvent actionEvent) {
 
 				// TODO: more control over login state
-				if (MsgServiceHelper.isUserLoggedIn()) {
-					try {
-						JakeMainApp.getMsgService().logout();
-						JakeMainApp.setMsgService(null);
-						updateView();
-					} catch (Exception e) {
-						log.warn(e);
-						ExceptionUtilities.showError(e);
-					}
-				} else {
-					ExceptionUtilities.showError("No user is logged in!");
+				//if (MsgServiceHelper.isUserLoggedIn()) {
+				try {
+					JakeMainApp.getMsgService().logout();
+					JakeMainApp.setMsgService(null);
+					updateView();
+				} catch (Exception e) {
+					log.warn(e);
+					ExceptionUtilities.showError(e);
 				}
 			}
+			//else {
+			//ExceptionUtilities.showError("No user is logged in!");
+			//}
 		});
+
 		loginSuccessPanel.add(signOutButton, "wrap, al center");
 
 		JLabel iconSuccess = new JLabel();
@@ -816,10 +818,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 						JakeMainApp.setMsgService(msg);
 
 						if (isMagicToken()) {
-
-							msg.login();
+							JakeExecutor.exec(new LoginAccountWorker(msg));
 						} else {
-							msg.login(getPassword(), isRememberPassword());
+							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(), isRememberPassword()));
 						}
 
 						updateView();
