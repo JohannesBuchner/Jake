@@ -41,7 +41,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";
-		String shortStatusStr = member.getUserId().toString();
+		String shortStatusStr = JakeMainApp.getCore().getProjectMemberID(member);
 		String valStr = "<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
 
 

@@ -217,6 +217,15 @@ public interface ICoreAccess {
 	 */
 	public ProjectMember getProjectMember(MsgService msg);
 
+	/**
+	 * Returns the corresponding ID to a ProjectMember.
+	 * (Jabber, msn, whatever)
+	 *
+	 * @param pm
+	 * @return
+	 */
+	public String getProjectMemberID(ProjectMember pm);
+
 
 	/******************* Project functions ********************/
 

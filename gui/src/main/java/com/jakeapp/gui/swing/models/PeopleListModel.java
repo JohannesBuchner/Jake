@@ -19,63 +19,63 @@ import java.util.List;
  * Time: 9:06:39 AM
  */
 public class PeopleListModel extends AbstractListModel
-        implements MutableListModel, ProjectSelectionChanged, ProjectChanged {
-    private static final Logger log = Logger.getLogger(PeopleListModel.class);
+		  implements MutableListModel, ProjectSelectionChanged, ProjectChanged {
+	private static final Logger log = Logger.getLogger(PeopleListModel.class);
 
-    private List<ProjectMember> people;
-    private Project project;
+	private List<ProjectMember> people;
+	private Project project;
 
-    public PeopleListModel() {
+	public PeopleListModel() {
 
-        // register for events
-        JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
-        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+		// register for events
+		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
-        updateModel();
-    }
+		updateModel();
+	}
 
-    public int getSize() {
-        return people != null ? people.size() : 0;
-    }
+	public int getSize() {
+		return people != null ? people.size() : 0;
+	}
 
-    public Object getElementAt(int i) {
-        return people.get(i);
-    }
+	public Object getElementAt(int i) {
+		return people.get(i);
+	}
 
 
-    public void projectChanged(ProjectChangedEvent ev) {
-        updateModel();
-    }
+	public void projectChanged(ProjectChangedEvent ev) {
+		updateModel();
+	}
 
-    private void updateModel() {
-        people = JakeMainApp.getApp().getCore().getPeople(getProject());
+	private void updateModel() {
+		people = JakeMainApp.getApp().getCore().getPeople(getProject());
 
-        this.fireContentsChanged(this, 0, getSize());
-    }
+		this.fireContentsChanged(this, 0, getSize());
+	}
 
-    public Project getProject() {
-        return project;
-    }
+	public Project getProject() {
+		return project;
+	}
 
-    public void setProject(Project pr) {
-        this.project = pr;
+	public void setProject(Project pr) {
+		this.project = pr;
 
-        updateModel();
-    }
+		updateModel();
+	}
 
-    @Override
-    public boolean isCellEditable(int index) {
-        return true;
-    }
+	@Override
+	public boolean isCellEditable(int index) {
+		return true;
+	}
 
-    @Override
-    public void setValueAt(Object value, int index) {
-        if (!JakeMainApp.getApp().getCore().setPeopleNickname(getProject(), people.get(index), (String) value)) {
+	@Override
+	public void setValueAt(Object value, int index) {
+		if (!JakeMainApp.getApp().getCore().setPeopleNickname(getProject(), people.get(index), (String) value)) {
 
-            JakeMainHelper.showMsg("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
+			JakeMainHelper.showMsg("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
 
-            // redraw
-            fireContentsChanged(this, index, index);
-        }
-    }
+			// redraw
+			fireContentsChanged(this, index, index);
+		}
+	}
 }

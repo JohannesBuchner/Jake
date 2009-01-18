@@ -134,6 +134,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return new ProjectMember(UUID.randomUUID(), "Nickname", TrustState.AUTO_ADD_REMOVE);
 	}
 
+	@Override
+	public String getProjectMemberID(ProjectMember pm) {
+		return "";
+	}
+
 	public void addErrorListener(ErrorCallback ec) {
 		errorCallback.add(ec);
 	}
