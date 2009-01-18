@@ -1,19 +1,25 @@
 package com.jakeapp.core.services;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hsqldb.jdbc.jdbcDataSource;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.IFileObjectDao;
@@ -42,8 +48,8 @@ import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
@@ -80,10 +86,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
     /************** GETTERS & SETTERS *************/
 
-
-
-
-
 	private void setFileServices(Map<Project, IFSService> fileServices) {
 		this.fileServices = fileServices;
 	}
@@ -118,32 +120,25 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		return this.projectList;
 	}
 
+	@SuppressWarnings("unused")
 	private ApplicationContext getContext(Project p) {
 		return this.getApplicationContextFactory().getApplicationContext(p);
 	}
 
-	private ILogEntryDao getLogEntryDao(Project p) {
-		ApplicationContext context = this.getContext(p);
-		// TODO retrieve Logentrydao out of context
-		return null;
+	private ILogEntryDao getLogEntryDao(Project project) {
+		return this.getApplicationContextFactory().getLogEntryDao(project);
 	}
 
-	private IProjectMemberDao getProjectMemberDao(Project p) {
-		ApplicationContext context = this.getContext(p);
-		// TODO retrieve ProjectMemberDao out of context
-		return null;
+	private IProjectMemberDao getProjectMemberDao(Project project) {
+		return this.getApplicationContextFactory().getProjectMemberDao(project);
 	}
 
 	private INoteObjectDao getNoteObjectDao(Project project) {
-		ApplicationContext context = this.getContext(project);
-		// TODO retrieve NoteObjectDao out of context
-		return null;
+		return this.getApplicationContextFactory().getNoteObjectDao(project);
 	}
 	
 	private IFileObjectDao getFileObjectDao(Project project) {
-		ApplicationContext context = this.getContext(project);
-		// TODO retrieve NoteObjectDao out of context
-		return null;
+		return this.getApplicationContextFactory().getFileObjectDao(project);
 	}
 	
 
@@ -166,19 +161,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Transactional
 	@Override
 	public List<Project> getProjectList(InvitationState state) {
-
-		// FIXME not very elegant: can't we do that via DB-Select?
-		// Yes we can. -- domdorn
-
-		// return this.getProjectList(); // TODO TMP by domdorn // FIXME
-		List<Project> all = this.getProjectList();
-		List<Project> result = new ArrayList<Project>();
-
-		for (Project p : all)
-			if (p.getInvitationState().equals(state))
-				result.add(p);
-
-		return result;
+		return this.getProjectDao().getAll(state);
 	}
 
 
@@ -207,11 +190,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			throw new FileNotFoundException();
 		}
 
-		// TODO create a new Project-local database
-
 		try {
 			log.debug("initializing project folder");
-			this.initializeProjectFolder();
+			this.initializeProjectFolder(project);
 		} catch (IOException e) {
 			log.debug("initializing project folder didn't work");
 			throw new FileNotFoundException();
@@ -235,9 +216,56 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * Initializes a project folder by putting special files (self-implemented
 	 * trash, ...) in it.
 	 */
-	private void initializeProjectFolder() throws IOException {
-		// empty implementation
+	private void initializeProjectFolder(Project p) throws IOException {
+		this.createProjectDatabase(p);
 	}
+
+	/**
+	 * creates a file for the Project-local database
+	 * @param p The project, in whos root folder to create a
+	 * database in.
+	 */
+	private void createProjectDatabase(Project p) {
+		jdbcDataSource dataSource = new jdbcDataSource();
+		ClassPathResource importScript;
+		Statement stmt;
+		Scanner sc;
+		
+		dataSource.setDatabase("jdbc:hsqldb:file:"+ new File(p.getRootPath(),"bla") +";ifexists=true;shutdown=false;create=true");
+		dataSource.setUser("sa");
+        dataSource.setPassword("");
+        
+        importScript = new ClassPathResource("/com/jakeapp/core/services/hsql-db-setup.sql");
+        
+        try {
+			stmt = dataSource.getConnection("sa", "").createStatement();
+			try {
+				try {
+					sc = new Scanner(new BufferedInputStream(importScript.getInputStream()));
+					try {
+						while (sc.hasNextLine()) {
+		        			stmt.addBatch(sc.nextLine());
+		        		}
+					}
+					finally {
+						sc.close();
+					}
+				} catch (IOException e) {
+				}
+	        	stmt.executeUpdate("SHUTDOWN COMPACT");
+	        }
+	        finally {
+	        	try {
+	        		stmt.close();
+	        	}
+	        	catch (SQLException sqlex) {
+	        		
+	        	}
+	        }
+		} catch (SQLException e) {
+		}
+	}
+
 
 	@Override
 	public boolean startProject(Project project, ChangeListener cl)

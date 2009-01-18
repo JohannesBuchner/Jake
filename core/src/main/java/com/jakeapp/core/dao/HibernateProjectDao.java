@@ -11,6 +11,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
@@ -189,4 +190,17 @@ public class HibernateProjectDao extends HibernateDaoSupport
             throw new NoSuchProjectException(dae);
         }
     }
+
+	@Override
+	public List<Project> getAll(InvitationState state) {
+		// TODO 4 domdorn implement WHERE clause via DB-Select
+		List<Project> all = this.getAll();
+		List<Project> result = new ArrayList<Project>();
+
+		for (Project p : all)
+			if (p.getInvitationState().equals(state))
+				result.add(p);
+		
+		return result;
+	}
 }

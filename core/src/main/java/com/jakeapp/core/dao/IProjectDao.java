@@ -1,6 +1,7 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
@@ -44,6 +45,11 @@ public interface IProjectDao {
      * @return all projects.
      */
     List<Project> getAll();
+    
+    /**
+     * Get all projects with a certain invitation state
+     */
+    List<Project> getAll(InvitationState state);
 
     /**
      * Delete a project from Jake's global database.
