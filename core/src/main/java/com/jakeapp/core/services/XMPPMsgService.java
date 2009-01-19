@@ -22,25 +22,25 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 	private XmppICService ics = new XmppICService(namespace, "Jake");
 
-     private XmppUserId icsXmppUserId;
+	private XmppUserId icsXmppUserId;
 
 	private String host;
 
 
-    public XMPPMsgService() {
+	public XMPPMsgService() {
 
 
-        
+		this.setUserId(new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(),
+				"todo useridstring", "todo nickname", "todo firstname", "todo surname"));
 
+	}
 
-        this.setUserId(new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(), "todo useridstring", "todo nickname", "todo firstname", "todo surname"));
-
-    }
-
-    @Override
+	@Override
 	protected boolean doCredentialsCheck() {
 		ServiceCredentials cred = this.getServiceCredentials();
-		this.icsXmppUserId = new XmppUserId(cred.getUserId());
+		this.icsXmppUserId = new XmppUserId(new XmppUserId(cred.getUserId())
+				.getUserIdWithOutResource()
+				+"/Jake");
 		if (!this.icsXmppUserId.isOfCorrectUseridFormat()) {
 			this.icsXmppUserId = null;
 			return false;
@@ -55,7 +55,7 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	@Override
 	protected boolean doLogin() throws Exception {
 		return this.ics.getStatusService().login(this.icsXmppUserId,
-				  this.getServiceCredentials().getPlainTextPassword());
+				this.getServiceCredentials().getPlainTextPassword());
 	}
 
 	@Override
@@ -70,18 +70,19 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 	@Override
 	public List<XMPPUserId> getUserList() {
-        List<XMPPUserId> result = new ArrayList<XMPPUserId>();
-                      // TODO
+		List<XMPPUserId> result = new ArrayList<XMPPUserId>();
+		// TODO
 
-        return result;
+		return result;
 	}
 
 	@Override
 	public XMPPUserId getUserId(String userId) throws UserIdFormatException {
-		XMPPUserId result = new XMPPUserId(this.getServiceCredentials(), UUID.randomUUID(), "todo test",
-                "todo nickname", "todo firstname", "todo surname");
+		XMPPUserId result = new XMPPUserId(this.getServiceCredentials(), UUID
+				.randomUUID(), "todo test", "todo nickname", "todo firstname",
+				"todo surname");
 
-        return result;
+		return result;
 	}
 
 	@Override
@@ -92,8 +93,8 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	@Override
 	public List<XMPPUserId> findUser(String pattern) {
 		List<XMPPUserId> result = new ArrayList<XMPPUserId>();
-                       // TODO
-        return result;
+		// TODO
+		return result;
 	}
 
 	@Override
@@ -104,6 +105,6 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	@Override
 	public void createAccount() throws NetworkException {
 		ics.getStatusService().createAccount(icsXmppUserId,
-				  this.getServiceCredentials().getPlainTextPassword());
+				this.getServiceCredentials().getPlainTextPassword());
 	}
 }
