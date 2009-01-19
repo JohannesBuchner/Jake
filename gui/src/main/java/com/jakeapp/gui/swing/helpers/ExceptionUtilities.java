@@ -43,9 +43,9 @@ public class ExceptionUtilities {
 	 * @param e
 	 */
 	private static void internalShowError(Exception e) {
-		log.warn(e.getMessage());
-		// TODO - get into log?
-		e.printStackTrace();
+
+		// /log.warn(e.getMessage());
+		//e.printStackTrace();
 
 		JSheet.showMessageSheet(JakeMainApp.getFrame(),
 				  "<html><h2>" + e.getClass().getName() + "</h2><br><b>" + e.getMessage() + "</b><br><br> + " +

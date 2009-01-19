@@ -1,11 +1,12 @@
 package com.jakeapp.gui.swing.renderer;
 
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.JakeMainApp;
+import org.apache.log4j.Logger;
 
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.*;
+import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 import java.io.File;
 
@@ -13,6 +14,8 @@ import java.io.File;
  * Renders file and folder nodes in the ProjectFilesTree
  */
 public class ProjectFilesTreeCellRenderer implements TreeCellRenderer {
+	private static final Logger log = Logger.getLogger(ProjectFilesTreeCellRenderer.class);
+
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		if (!(value instanceof ProjectFilesTreeNode)) return null;
@@ -24,7 +27,13 @@ public class ProjectFilesTreeCellRenderer implements TreeCellRenderer {
 		if (node.isFile()) {
 			file = node.getFileObject().getAbsolutePath();
 		} else {
-			file = new File(JakeMainApp.getApp().getProject().getRootPath() + node.getFolderObject().getRelPath());
+			// TODO: make this not happen!
+			if (node == null || node.getFolderObject() == null || node.getFolderObject().getRelPath() == null) {
+				log.warn("Some data in note is null: " + node);
+				file = null;
+			} else {
+				file = new File(JakeMainApp.getApp().getProject().getRootPath() + node.getFolderObject().getRelPath());
+			}
 		}
 
 		return FileIconLabelHelper.getIconLabel(file);

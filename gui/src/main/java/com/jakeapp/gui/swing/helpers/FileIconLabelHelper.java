@@ -3,9 +3,8 @@ package com.jakeapp.gui.swing.helpers;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.io.File;
-import java.util.Random;
 import java.awt.*;
+import java.io.File;
 
 /**
  * Creates a fancy label for file and folder nodes in the FileTreeTable
@@ -23,6 +22,13 @@ public class FileIconLabelHelper {
 		JLabel label = new JLabel();
 		label.setOpaque(true);
 		label.setBackground(new Color(255, 255, 255, 0));
+
+		// TODO: resolve this error!
+		if (file == null) {
+			log.warn("Error: called getIconLabel with file NULL!");
+			label.setText("<NULL>");
+			return label;
+		}
 
 		Icon nativeIcon;
 		try {

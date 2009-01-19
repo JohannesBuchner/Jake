@@ -7,8 +7,8 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
@@ -50,6 +50,25 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
 	private IFrontendService frontendService;
+
+	// HACK INIT MOCK CORE
+	private ICoreAccess coreMock = new CoreAccessMock();
+
+	/**
+	 * Checks if MOCK should be used instead of the real thing
+	 *
+	 * @param f
+	 * @return
+	 */
+	// HACK
+	private boolean useMock(String f) {
+
+		if ("getNotes".compareTo(f) == 0) return true;
+		else if ("getNotes".compareTo(f) == 0) return true;
+
+
+		return true;
+	}
 
 	/**
 	 * SessionId returned by the authentication Method of
@@ -208,6 +227,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void removeAccount(MsgService msg) throws FrontendNotLoggedInException, InvalidCredentialsException, ProtocolNotSupportedException, NetworkException {
+		log.warn("removeAccount: " + msg + " NOT IMPLEMENTED YET");
 		//TODO
 	}
 
@@ -491,10 +511,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (ProjectNotLoadedException e) {
-            this.handleProjectNotLoaded(e);
-        }
+			this.handleProjectNotLoaded(e);
+		}
 
-        return fo;
+		return fo;
 	}
 
 	@Override
@@ -594,12 +614,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException {
-		try {
-			return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
-		} catch (Exception e) {
-			NoteOperationFailedException ex = new NoteOperationFailedException();
-			ex.append(e);
-			throw ex;
+
+		if (useMock("getNotes")) {
+			return coreMock.getNotes(project);
+		} else {
+			try {
+				return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
+			} catch (Exception e) {
+				NoteOperationFailedException ex = new NoteOperationFailedException();
+				ex.append(e);
+				throw ex;
+			}
 		}
 	}
 
@@ -897,11 +922,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (FrontendNotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
 		} catch (ProjectNotLoadedException e) {
-            log.debug("Tried to delete file of project not loaded");
-            this.handleProjectNotLoaded(e);
+			log.debug("Tried to delete file of project not loaded");
+			this.handleProjectNotLoaded(e);
 
-        }
-    }
+		}
+	}
 
 	@Override
 	public void rename(FileObject file, String newName) {
@@ -991,10 +1016,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (ProjectNotLoadedException e) {
-            log.error("tried to rename a file of a project thats not loaded");
-            this.handleProjectNotLoaded(e);
-        }
-    }
+			log.error("tried to rename a file of a project thats not loaded");
+			this.handleProjectNotLoaded(e);
+		}
+	}
 
 	@Override
 	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException {
@@ -1051,9 +1076,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (IOException e) {
 			throw new InvalidNewFolderException(relpath);
 		} catch (ProjectNotLoadedException e) {
-            this.handleProjectNotLoaded(e);
-        }
-    }
+			this.handleProjectNotLoaded(e);
+		}
+	}
 
 	@Override
 	public void addFilesChangedListener(final FilesChanged listener,
@@ -1067,14 +1092,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		};
 
 		this.fileListeners.put(listener, projectModificationListener);
-        try {
-            this.getFrontendService().getProjectsManagingService(getSessionId())
-				  .getFileServices(project).addModificationListener(
-				  projectModificationListener);
-        } catch (ProjectNotLoadedException e) {
-            this.handleProjectNotLoaded(e);
-        }
-    }
+		try {
+			this.getFrontendService().getProjectsManagingService(getSessionId())
+					  .getFileServices(project).addModificationListener(
+					  projectModificationListener);
+		} catch (ProjectNotLoadedException e) {
+			this.handleProjectNotLoaded(e);
+		}
+	}
 
 	@Override
 	public void removeFilesChangedListener(FilesChanged listener,
@@ -1084,22 +1109,22 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		projectModificationListener = this.fileListeners.get(listener);
 
 		if (projectModificationListener != null)
-            try {
-                this.getFrontendService()
-					  .getProjectsManagingService(getSessionId())
-					  .getFileServices(project).removeModificationListener(
-					  projectModificationListener);
-            } catch (ProjectNotLoadedException e) {
-                this.handleProjectNotLoaded(e);
-            }
-    }
+			try {
+				this.getFrontendService()
+						  .getProjectsManagingService(getSessionId())
+						  .getFileServices(project).removeModificationListener(
+						  projectModificationListener);
+			} catch (ProjectNotLoadedException e) {
+				this.handleProjectNotLoaded(e);
+			}
+	}
 
-    private void handleProjectNotLoaded(ProjectNotLoadedException e) {
-        log.error("got ProjectNotLoadedException with message " + e.getMessage());
-        e.printStackTrace();
-    }
+	private void handleProjectNotLoaded(ProjectNotLoadedException e) {
+		log.error("got ProjectNotLoadedException with message " + e.getMessage());
+		e.printStackTrace();
+	}
 
-    public long getFileSize(FileObject file) {
+	public long getFileSize(FileObject file) {
 		//TODO implement this differently - get the Size of the STORED FileObject...
 		return this.getFileSize(file);
 	}
@@ -1123,10 +1148,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (ProjectNotLoadedException e) {
-            this.handleProjectNotLoaded(e);
-        }
+			this.handleProjectNotLoaded(e);
+		}
 
-        return 0;
+		return 0;
 	}
 
 	@Override
@@ -1146,10 +1171,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (ProjectNotLoadedException e) {
-            this.handleProjectNotLoaded(e);
-        }
+			this.handleProjectNotLoaded(e);
+		}
 
-        return new Date();
+		return new Date();
 	}
 
 	private String currentUser = null;

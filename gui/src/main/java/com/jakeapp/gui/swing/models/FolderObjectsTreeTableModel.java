@@ -1,30 +1,21 @@
 package com.jakeapp.gui.swing.models;
 
-import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
-import org.jdesktop.swingx.treetable.TreeTableModel;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Tag;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
+import com.jakeapp.gui.swing.helpers.*;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 
-import javax.swing.tree.TreePath;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
-import javax.swing.*;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreePath;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged {
 	private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
@@ -35,7 +26,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 
 	public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
-		JakeMainApp.getCore().addFilesChangedListener(this,JakeMainApp.getProject());
+		JakeMainApp.getCore().addFilesChangedListener(this, JakeMainApp.getProject());
 	}
 
 	public void setRoot(ProjectFilesTreeNode node) {
@@ -196,8 +187,12 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 		if (ournode.isFile()) return 0;
 
 		FolderObject fo = ournode.getFolderObject();
-
-		return fo.getAllChildren().size();
+		if (fo != null) {
+			return fo.getAllChildren().size();
+		} else {
+			log.warn("ournode.getFolderObject() returned NULL with ournode: " + ournode);
+			return 0;
+		}
 	}
 
 	@Override

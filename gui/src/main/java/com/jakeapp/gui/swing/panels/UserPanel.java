@@ -860,6 +860,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			// to represent the "not changed" state
 			if (msg.isPasswordSaved()) {
 				passField.setText(MagicPassToken);
+			} else {
+				// else clear field
+				passField.setText("");
 			}
 			rememberPassCheckBox.setSelected(msg.isPasswordSaved());
 		}
