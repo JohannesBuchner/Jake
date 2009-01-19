@@ -60,11 +60,12 @@
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.Tag</value>
                 <!--<value>com.jakeapp.core.domain.LogEntry</value>-->
-                <value>com.jakeapp.core.domain.ProjectLogEntry</value>
-                <value>com.jakeapp.core.domain.TagLogEntry</value>
                 <value>com.jakeapp.core.domain.FileObjectLogEntry</value>
                 <value>com.jakeapp.core.domain.NoteObjectLogEntry</value>
-                
+                <value>com.jakeapp.core.domain.ProjectLogEntry</value>
+                <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
+                <value>com.jakeapp.core.domain.TagLogEntry</value>
+
             </list>
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>

@@ -6,12 +6,23 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="annotatedClasses">
             <list>
+                <value>com.jakeapp.core.domain.Project</value>
+                <value>com.jakeapp.core.domain.ServiceCredentials</value>
+                <value>com.jakeapp.core.domain.UserId</value>
+                <value>com.jakeapp.core.domain.XMPPUserId</value>
+                <!--<value>com.jakeapp.core.domain.UserId</value>-->
                 <value>com.jakeapp.core.domain.ProjectMember</value>
+
                 <value>com.jakeapp.core.domain.JakeObject</value>
                 <value>com.jakeapp.core.domain.NoteObject</value>
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.Tag</value>
                 <!--<value>com.jakeapp.core.domain.LogEntry</value>-->
+                <value>com.jakeapp.core.domain.FileObjectLogEntry</value>
+                <value>com.jakeapp.core.domain.NoteObjectLogEntry</value>
+                <value>com.jakeapp.core.domain.ProjectLogEntry</value>
+                <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
+                <value>com.jakeapp.core.domain.TagLogEntry</value>
 
             </list>
         </property>
