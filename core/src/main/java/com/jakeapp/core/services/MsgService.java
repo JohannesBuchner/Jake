@@ -123,7 +123,8 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws Exception
 	 */
 	public final void logout() throws Exception {
-		this.doLogout();
+		log.debug("MsgService -> logout");
+        this.doLogout();
 	}
 
 	/**
@@ -231,7 +232,10 @@ public abstract class MsgService<T extends UserId> {
 
 
 	public final boolean isPasswordSaved() {
-		return (this.getServiceCredentials() != null && this.getServiceCredentials().getPlainTextPassword().isEmpty());
+//        log.debug("isPasswordSaved: " +
+//                (this.getServiceCredentials() != null &&
+//                        !this.getServiceCredentials().getPlainTextPassword().isEmpty() ) );
+		return (this.getServiceCredentials() != null && !this.getServiceCredentials().getPlainTextPassword().isEmpty());
 	}
 
     protected static IUserIdDao getUserIdDao() {

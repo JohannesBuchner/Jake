@@ -100,6 +100,8 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
     @Override
     protected void doLogout() throws Exception {
+        log.debug("XMPPMsgService -> logout");
+
         this.ics.getStatusService().logout();
     }
 
