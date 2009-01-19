@@ -117,6 +117,17 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	private IFileObjectDao getFileObjectDao(Project project) {
 		return this.getApplicationContextFactory().getFileObjectDao(project);
 	}
+	
+	private IJakeObjectDao getJakeObjectDao(final Project project,final JakeObject jo) {
+		IJakeObjectDao result = null;
+		
+		if (jo!=null) {
+			if (jo instanceof FileObject) result = (IJakeObjectDao) this.getFileObjectDao(project);
+			else if (jo instanceof NoteObject) result = (IJakeObjectDao) this.getNoteObjectDao(project);
+		}
+		
+		return result;
+	}
 
 
 	/**
@@ -760,6 +771,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public ProjectMember getLastModifier(JakeObject jakeObject) {
 		List <LogEntry<JakeObject>> entries;
 		ArrayList<LogAction> actions = new ArrayList<LogAction>();
@@ -774,23 +786,23 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
+	@Transactional
 	public ProjectMember invite(Project project, String userid) throws UserIdFormatException {
-		// TODO implement me, but how?
-		
-		/*
-		 * Invitation is implemented via setting the trust to a standard level
-		 * and sending a message to the invited person.
-		 */
-		//invite
-		
-		//add member
-		return this.addProjectMember(project, project.getMessageService().getUserId(userid));
+		ProjectMember member;
+		UserId id;
+
+		id = project.getMessageService().getUserId(userid);
+		member = this.addProjectMember(project, id);
+		this.getSyncService().invite(project, id);
+
+		return member;
 	}
 
 	@Override
+	@Transactional
 	public List<ProjectMember> getUninvitedPeople(Project project)
 			throws IllegalArgumentException, NoSuchProjectException {
-		List others;
+		List<UserId> others;
 		List<UserId> othersUserIds = new ArrayList<UserId>();
 		List<ProjectMember> otherMembers;
 		List<ProjectMember> result = new ArrayList<ProjectMember>();
@@ -847,5 +859,67 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@SuppressWarnings("unchecked")
 	private boolean isFriend(Project project, UserId uid) {
 		return project.getMessageService().checkFriends(uid);
+	}
+
+	@Override
+	@Transactional
+	public Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException, NoSuchJakeObjectException {
+		try {
+			return new TreeSet<Tag> (getTagsListFor(jo));
+		}
+		catch (NullPointerException npex) {
+			throw new NoSuchJakeObjectException(npex);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Tag> getTagsListFor(JakeObject jo) throws NoSuchJakeObjectException {
+		return this.getJakeObjectDao(jo.getProject(), jo).getTagsFor(jo);
+	}
+
+	@Override
+	@Transactional
+	public void setTagsForJakeObject(JakeObject jo, Set<Tag> tags) throws NoSuchJakeObjectException {
+		//TODO calc the real checksum?
+		final String CHECKSUM = "";
+		
+		List<Tag> toAdd = new ArrayList<Tag>();
+		List<Tag> toRemove = new ArrayList<Tag>();
+		List<Tag> current = this.getTagsListFor(jo);
+		List<Tag> passedTags = new ArrayList<Tag>(tags);
+		TagLogEntry logEntry;
+		IJakeObjectDao dao = this.getJakeObjectDao(jo.getProject(), jo);
+	
+		//calculate which tags to add and remove
+		for (Tag t : tags)
+			if (!current.contains(t))
+				toAdd.add(t);
+		
+		for (Tag t : current)
+			if (!tags.contains(t))
+				toRemove.add(t);
+		
+		//remove and add tags
+		for (Tag t : toRemove)
+			removeTag(jo, CHECKSUM, dao, t);
+		
+		for (Tag t : toAdd)
+			addTag(jo, CHECKSUM, dao, t);
+	}
+
+	private void addTag(JakeObject jo, final String CHECKSUM,
+			IJakeObjectDao dao, Tag t) throws NoSuchJakeObjectException {
+		TagLogEntry logEntry;
+		dao.addTagTo(jo, t);
+		logEntry = new TagLogEntry(UUID.randomUUID(), LogAction.TAG_ADD, Calendar.getInstance().getTime(), jo.getProject(),
+				t, this.getProjectMember(jo.getProject(), jo.getProject().getMessageService()), "", CHECKSUM, true);
+	}
+
+	private void removeTag(JakeObject jo, final String CHECKSUM,
+			IJakeObjectDao dao, Tag t) throws NoSuchJakeObjectException {
+		TagLogEntry logEntry;
+		dao.removeTagFrom(jo, t);
+		logEntry = new TagLogEntry(UUID.randomUUID(), LogAction.TAG_REMOVE, Calendar.getInstance().getTime(), jo.getProject(),
+				t, this.getProjectMember(jo.getProject(), jo.getProject().getMessageService()), "", CHECKSUM, true);
 	}
 }

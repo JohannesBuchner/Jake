@@ -14,7 +14,7 @@ public class TagLogEntry extends LogEntry<Tag> implements Serializable {
         super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum, processed);
 
         if(belongsTo.getObject() != null && belongsTo.getObject().getUuid() != null)
-        this.setObjectuuid(belongsTo.getObject().getUuid().toString());
+        	this.setObjectuuid(belongsTo.getObject().getUuid().toString());
     }
 
     public TagLogEntry() {

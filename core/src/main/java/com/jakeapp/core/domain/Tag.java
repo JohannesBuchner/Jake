@@ -5,8 +5,6 @@ import javax.persistence.*;
 
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.dao.HibernateTagPK;
-import org.hibernate.annotations.ForeignKey;
-
 import java.io.Serializable;
 
 /**
@@ -15,7 +13,7 @@ import java.io.Serializable;
 @Entity(name = "tag")
 @UniqueConstraint(columnNames = {"objectid", "text"})
 @IdClass(HibernateTagPK.class)
-public class Tag implements ILogable, Serializable {
+public class Tag implements ILogable, Serializable, Comparable<Tag> {
     private static final long serialVersionUID = -2201488676480921149L;
     private JakeObject jakeObject;
     private String name;
@@ -106,5 +104,11 @@ public class Tag implements ILogable, Serializable {
     @Override
     public String toString() {
         return this.name;
+	}
+
+	@Override
+	public int compareTo(Tag arg0) {
+		if (arg0==null) return 1;
+		else return this.getName().compareTo(arg0.getName());
 	}
 }

@@ -880,13 +880,34 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public Set<Tag> getTagsForFileObject(FileObject fo) {
-		// TODO: Implement me
-		return null;
+		try {
+			return this.getFrontendService().getProjectsManagingService(this.getSessionId()).getTagsForJakeObject(fo);
+		} catch (IllegalArgumentException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (NoSuchJakeObjectException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		}
+		
+		return new TreeSet<Tag>();
 	}
 
 	@Override
 	public void setTagsForFileObject(FileObject fo, Set<Tag> tags) {
-		// TODO: Implement me
+		try {
+			this.getFrontendService().getProjectsManagingService(this.getSessionId()).setTagsForJakeObject(fo,tags);
+		} catch (IllegalArgumentException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch (NoSuchJakeObjectException e) {
+			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		}
 	}
 
 	/**

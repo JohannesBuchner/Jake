@@ -13,6 +13,7 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.jake.fss.IFSService;
 
 import java.util.List;
+import java.util.Set;
 import java.io.File;
 import java.util.Date;
 import java.io.FileNotFoundException;
@@ -383,4 +384,24 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException 
 	 */
 	List<ProjectMember> getUninvitedPeople(Project project) throws IllegalArgumentException, NoSuchProjectException;
+
+
+	/**
+	 * Retrieves all {@link Tag}s for a JakeObject
+	 * @param jo The {@link JakeObject} to get {@link Tag}s for.
+	 * @return The empty set if there are not {@link Tag}s for the specified {@link JakeObject}, or a {@link Set} of {@link Tag}s otherwise.
+	 * @throws NoSuchJakeObjectException 
+	 * @throws IllegalArgumentException 
+	 */
+	Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException, NoSuchJakeObjectException;
+
+
+	/**
+	 * Sets the {@link Tag}s for a {@link JakeObject}.
+	 * @param jo The {@link JakeObject} to set {@link Tag}s for.
+	 * @param tags A {@link Set} of tags, may be empty. After this operation, the {@link JakeObject}
+	 * will have only the {@link Tag}s specified in <code>tags</code> as {@link Tag}s.
+	 * @throws NoSuchJakeObjectException 
+	 */
+	void setTagsForJakeObject(JakeObject jo,Set<Tag> tags) throws NoSuchJakeObjectException;
 }
