@@ -16,8 +16,8 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
@@ -261,23 +261,6 @@ public class CoreAccessMock implements ICoreAccess {
 		log.info("Deregisters registration status callback: " + cb);
 
 	}
-
-
-	public boolean isSignedIn() {
-		return isSignedIn;
-	}
-
-
-	public void signOut() {
-		isSignedIn = false;
-
-		fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
-	}
-
-	public String[] getLastSignInNames() {
-		return new String[]{"pstein", "csutter"};
-	}
-
 
 	public void addProjectChangedCallbackListener(ProjectChanged cb) {
 		// log.debug("Mock: register project changed callback: " + cb);

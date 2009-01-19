@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  */
 
 public abstract class MsgService<T extends UserId> {
+	private static final Logger log = Logger.getLogger(MsgService.class);
 
 	private String name = "notInitialized";
 
@@ -39,9 +41,6 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 
-
-
-
 	/**
 	 * @return The name of the Service associated to this
 	 *         <code>MsgService</code>.
@@ -57,6 +56,8 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws Exception the login failed for another reason
 	 */
 	public final boolean login() throws Exception {
+		log.debug("calling plain login");
+
 		if (serviceCredentials == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
 
@@ -67,15 +68,18 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 
-    public final boolean login(String newPassword, boolean shouldSavePassword) throws Exception {
-        if(serviceCredentials == null)
-            throw new InvalidCredentialsException("serviceCredentials are null");
+	public final boolean login(String newPassword, boolean shouldSavePassword) throws Exception {
+		log.debug("calling login with newPwd-Size: " + newPassword.length() +
+				  ", shouldSave: " + shouldSavePassword);
 
-        serviceCredentials.setPlainTextPassword(newPassword);
+		if (serviceCredentials == null)
+			throw new InvalidCredentialsException("serviceCredentials are null");
 
-        return this.login();
+		serviceCredentials.setPlainTextPassword(newPassword);
 
-    }
+		return this.login();
+
+	}
 
 	/**
 	 * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
@@ -162,11 +166,11 @@ public abstract class MsgService<T extends UserId> {
 	public abstract T getUserId(String userId) throws UserIdFormatException;
 
 
-    protected void setUserId(T userId) {
-        this.userId = userId;
-    }
+	protected void setUserId(T userId) {
+		this.userId = userId;
+	}
 
-    /**
+	/**
 	 * Find out if the supplied &lt;T extends UserId&gt; is a friend of the
 	 * current user of this MsgService
 	 *
@@ -219,8 +223,7 @@ public abstract class MsgService<T extends UserId> {
 	public abstract void createAccount() throws NetworkException;
 
 
-    public final boolean isPasswordSaved()
-    {
-        return (this.getServiceCredentials() != null && this.getServiceCredentials().getPlainTextPassword().isEmpty());
-    }
+	public final boolean isPasswordSaved() {
+		return (this.getServiceCredentials() != null && this.getServiceCredentials().getPlainTextPassword().isEmpty());
+	}
 }

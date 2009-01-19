@@ -39,6 +39,8 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 				if (msg.login() == false) {
 					log.warn("Wrong User/Password");
 					//throw new RuntimeException("Wrong User/Password");
+				} else {
+
 				}
 			} else {
 				if (msg.login(password, rememberPassword) == false) {
