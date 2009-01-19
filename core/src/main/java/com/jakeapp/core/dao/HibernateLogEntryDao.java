@@ -376,4 +376,11 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		}
 		return existState.keySet();
 	}
+
+	@Override
+	public List<LogEntry<JakeObject>> getAllOfJakeObject(JakeObject jakeObject,
+			Collection<LogAction> actions) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

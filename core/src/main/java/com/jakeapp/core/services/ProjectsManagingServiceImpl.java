@@ -46,11 +46,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private IFriendlySyncService syncService;
 
-
 	public ProjectsManagingServiceImpl() {
 		this.setFileServices(new HashMap<Project, IFSService>());
 	}
-
 
 	public IFriendlySyncService getSyncService() {
 		return syncService;
@@ -758,5 +756,19 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		}
 
 		return result;
+	}
+
+	@Override
+	public ProjectMember getLastModifier(JakeObject jakeObject) {
+		List <LogEntry<JakeObject>> entries;
+		ArrayList<LogAction> actions = new ArrayList<LogAction>();
+		
+		actions.add(LogAction.JAKE_OBJECT_DELETE);
+		actions.add(LogAction.JAKE_OBJECT_NEW_VERSION);
+		
+		entries = this.getLogEntryDao(jakeObject.getProject()).getAllOfJakeObject(jakeObject,actions);
+		if (entries.size()>0)
+			return entries.get(0).getMember();
+		else return null;
 	}
 }

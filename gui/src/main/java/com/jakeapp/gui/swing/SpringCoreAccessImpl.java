@@ -905,8 +905,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public Date getFileLastModified(FileObject file) {
-		// TODO: Make this useful
-		return new Date();
+		// TODO: Make this useful - should return the last modification - remote or local
+		return this.getLocalFileLastModified(file);
 	}
 
 	@Override
@@ -918,8 +918,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException {
-		//TODO
-		return null;
+		return this.getFrontendService().getProjectsManagingService(getSessionId()).getLastModifier(jakeObject);
 	}
 
 	@Override

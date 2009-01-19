@@ -351,4 +351,9 @@ public interface IProjectsManagingService {
 	 * @return <code>true</code> if the object only exists locally, <code>false</code> otherwise.
 	 */
 	boolean isLocalJakeObject(JakeObject jo);
+
+	/**
+	 * @return The ProjectMember who last modified the JakeObject (according to the log)
+	 */
+	ProjectMember getLastModifier(JakeObject jakeObject);
 }

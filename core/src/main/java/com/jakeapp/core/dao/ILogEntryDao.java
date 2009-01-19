@@ -1,5 +1,6 @@
 package com.jakeapp.core.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -286,5 +287,16 @@ public interface ILogEntryDao {
 	 *         have a {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than
 	 */
 	public Iterable<FileObject> getExistingFileObjects(Project project);
+
+
+	/**
+	 * Retrieves all LogEntries for a JakeObject, but only those
+	 * who have one of the specified LogActions.
+	 * The Entries are sorted by creation date, desc.
+	 * @param jakeObject The JakeObject to retrieve LogEntries for.
+	 * @param actions A Collection of actions for which Logentries should be retrieved.
+	 * if this is left blank, no LogEntries will be returned.
+	 */
+	public List<LogEntry<JakeObject>> getAllOfJakeObject(JakeObject jakeObject, Collection<LogAction> actions);
 
 }
