@@ -635,7 +635,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getLastEdit(note);
 		} catch (Exception e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			log.error("Tried to getLastEdit on NoteObject: " + note + "got Exception: " + e.getMessage());
+			// TODO: i did not print out the exception, because there were just so many of them ;)
+			//this.fireErrorListener(new JakeErrorEvent(e));
 		}
 
 		return result;

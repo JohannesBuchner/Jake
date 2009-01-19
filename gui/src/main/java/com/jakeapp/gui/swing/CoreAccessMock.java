@@ -113,6 +113,7 @@ public class CoreAccessMock implements ICoreAccess {
 			this.notesIsLocked.add(new Random().nextBoolean());
 		}
 
+		/*
 		// Mocking of FSS updates
 		TimerTask t = new TimerTask() {
 			@Override
@@ -125,6 +126,7 @@ public class CoreAccessMock implements ICoreAccess {
 		};
 
 		(new Timer()).scheduleAtFixedRate(t, 1000, 3000);
+		*/
 	}
 
 
