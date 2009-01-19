@@ -223,7 +223,7 @@ public interface IProjectsManagingService {
 	/**
 	 * @return a service for file-operations
 	 */
-	IFSService getFileServices(Project p);
+	IFSService getFileServices(Project p) throws ProjectNotLoadedException;
 	
 	/**
 	 * @return a service for note operations

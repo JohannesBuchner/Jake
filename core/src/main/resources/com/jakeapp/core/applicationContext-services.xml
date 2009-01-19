@@ -36,10 +36,14 @@
                          type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
+    <bean id="projectsFileServices" class="com.jakeapp.core.services.ProjectsFileServicesImpl"/>
+
+
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
         <property name="projectDao" ref="projectDao"/>
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
         <property name="syncService" ref="syncService" />
+        <property name="projectsFileServices" ref="projectsFileServices" />
     </bean>
 
     <!-- this is per session and a very internal part of the core that can not
