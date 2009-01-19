@@ -232,8 +232,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException
 	 *         if <code>project</code> is null.
 	 */
-	INoteManagingService getNoteManagingService(Project p)
-		throws ProjectNotLoadedException, IllegalArgumentException;
+	INoteManagingService getNoteManagingService()            ;
 
 	/**
 	 * @return The number of files in a Project

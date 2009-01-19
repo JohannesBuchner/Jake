@@ -19,7 +19,6 @@ import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
-import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import org.apache.log4j.Logger;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
@@ -46,6 +44,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     private IFriendlySyncService syncService;
 
     private IProjectsFileServices projectsFileServices;
+
+
+    private INoteManagingService noteManagingService;
 
     public ProjectsManagingServiceImpl() {
 
@@ -712,24 +713,23 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     }
 
 
-    @Override
-    public INoteManagingService getNoteManagingService(Project p)
-            throws ProjectNotLoadedException, IllegalArgumentException {
-
-
-        INoteObjectDao dao;
-
-        // preconditions
-        if (p == null)
-            throw new IllegalArgumentException();
-        if (!this.isProjectLoaded(p)) {
-            throw new ProjectNotLoadedException("Project with id "
-                    + p.getProjectId() + " is not loaded");
-        }
-
-        //TODO cache
-        return new NoteManagingService(this, this.getNoteObjectDao(p), this.getLogEntryDao(p));
-    }
+//    @Override
+//    public INoteManagingService getNoteManagingService() {
+//
+//
+//        INoteObjectDao dao;
+//
+//        // preconditions
+//        if (p == null)
+//            throw new IllegalArgumentException();
+//        if (!this.isProjectLoaded(p)) {
+//            throw new ProjectNotLoadedException("Project with id "
+//                    + p.getProjectId() + " is not loaded");
+//        }
+//
+//        //TODO cache
+//        return new NoteManagingService(this, this.getNoteObjectDao(p), this.getLogEntryDao(p));
+//    }
 
 
     @Override
@@ -754,10 +754,13 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         boolean result = false;
 
         try {
+            log.debug("Checking isLocalJakeObject for jo " + jo + " with project " + jo.getProject());
+
+                                                                                                      
             this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
         } catch (NoSuchLogEntryException e) {
             /*
-                * There is not Logentry for this note. Therefore it has never been
+                * There is no Logentry for this note. Therefore it has never been
                 * announced and is only local.
                 */
             result = true;
@@ -925,5 +928,13 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
     public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
         this.projectsFileServices = projectsFileServices;
+    }
+
+    public INoteManagingService getNoteManagingService() {
+        return noteManagingService;
+    }
+
+    public void setNoteManagingService(INoteManagingService noteManagingService) {
+        this.noteManagingService = noteManagingService;
     }
 }

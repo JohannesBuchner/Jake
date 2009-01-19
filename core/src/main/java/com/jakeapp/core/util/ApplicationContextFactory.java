@@ -61,16 +61,16 @@ public class ApplicationContextFactory {
 		log.debug("acquiring context for project: " + project.getProjectId());
 		if (this.contextTable.containsKey(project.getProjectId())) {
 			log.debug("context for project: " + project.getProjectId()
-					+ " already created, returning existin...");
+					+ " already created, returning existing...");
 			applicationContext = this.contextTable.get(project.getProjectId());
 		} else {
 			applicationContext = new ClassPathXmlApplicationContext(this.configLocation);
 			Properties props = new Properties();
-			props.put("db_path", project.getRootPath());
+			props.put("db_path", project.getProjectId());
 			PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
 			cfg.setProperties(props);
 
-			log.debug("configuring context with path: " + project.getRootPath());
+			log.debug("configuring context with path: " + project.getProjectId());
 			applicationContext.addBeanFactoryPostProcessor(cfg);
 			applicationContext.refresh();
 

@@ -5,6 +5,7 @@ import java.util.List;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.Project;
 
 
 /**
@@ -19,7 +20,7 @@ public interface INoteManagingService {
 	 *            The Project to retrieve all notes for
 	 * @return all Notes
 	 */
-	List<NoteObject> getNotes();
+	List<NoteObject> getNotes(Project project);
 
 	/**
 	 * Deletes a Note from the Database. Creates a Logentry indicating

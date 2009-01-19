@@ -39,6 +39,10 @@
                          type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
+    <bean id="noteManagingService" class="com.jakeapp.core.services.NoteManagingService">
+      <constructor-arg ref="applicationContextFactory" index="0"
+                       type="com.jakeapp.core.util.ApplicationContextFactory"/>
+    </bean>
 
 
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
@@ -46,6 +50,7 @@
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
         <property name="syncService" ref="syncService" />
         <property name="projectsFileServices" ref="projectsFileServices" />
+        <property name="noteManagingService" ref="noteManagingService" />
     </bean>
 
     <!-- this is per session and a very internal part of the core that can not

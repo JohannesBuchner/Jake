@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.dao.IUserIdDao;
+import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
 
@@ -31,6 +32,7 @@ public abstract class MsgService<T extends UserId> {
 	private ServiceCredentials serviceCredentials;
 
     private static IUserIdDao userIdDao;
+    private static IServiceCredentialsDao serviceCredentialsDao;
 
 
 	/**
@@ -244,6 +246,14 @@ public abstract class MsgService<T extends UserId> {
 
     protected static void setUserIdDao(IUserIdDao userIdDao) {
         MsgService.userIdDao = userIdDao;
+    }
+
+    protected static IServiceCredentialsDao getServiceCredentialsDao() {
+        return serviceCredentialsDao;
+    }
+
+    protected static void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
+        MsgService.serviceCredentialsDao = serviceCredentialsDao;
     }
 }
 

@@ -614,12 +614,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException {
-
 		if (useMock("getNotes")) {
 			return coreMock.getNotes(project);
 		} else {
 			try {
-				return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
+                return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService().getNotes(project);
 			} catch (Exception e) {
 				NoteOperationFailedException ex = new NoteOperationFailedException();
 				ex.append(e);
@@ -680,7 +679,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			pms = this.frontendService.getProjectsManagingService(this.getSessionId());
 			member = pms.getProjectMember(note.getProject(), this.getLoggedInUser(note.getProject()));
 
-			pms.getNoteManagingService(note.getProject()).deleteNote(note, member);
+			pms.getNoteManagingService().deleteNote(note, member);
 		} catch (Exception e) {
 			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);
@@ -696,7 +695,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			this.frontendService
 					  .getProjectsManagingService(this.getSessionId())
-					  .getNoteManagingService(note.getProject()).addNote(note);
+					  .getNoteManagingService().addNote(note);
 		} catch (Exception e) {
 			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);
@@ -709,7 +708,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			this.frontendService
 					  .getProjectsManagingService(this.getSessionId())
-					  .getNoteManagingService(note.getProject()).saveNote(note);
+					  .getNoteManagingService().saveNote(note);
 		} catch (Exception e) {
 			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);

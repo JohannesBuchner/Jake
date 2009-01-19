@@ -73,6 +73,8 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 
         if (success) {
+            
+
 //            log.debug("login success");
 //            try {
 //                com.jakeapp.core.domain.UserId result = getUserIdDao().get(this.getUserId());
