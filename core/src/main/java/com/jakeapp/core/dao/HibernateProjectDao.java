@@ -27,37 +27,40 @@ public class HibernateProjectDao extends HibernateDaoSupport
     @Override
     //@Transactional
     public Project create(Project project) throws InvalidProjectException {
-    	if (project == null ||
-    			project.getName() == null ||
-    			project.getName().length() == 0
-    	) {
-    		throw new InvalidProjectException();
-    	}
+        if (project == null ||
+                project.getName() == null ||
+                project.getName().length() == 0
+                ) {
+            throw new InvalidProjectException();
+        }
 
-        if(project.getProjectId() == null)
+        if (project.getProjectId() == null)
             throw new InvalidProjectException("projectId must not be null");
 
         log.debug("persisting project with uuid " + ((project != null) ? project.getProjectId() : "null"));
         try {
-        	//TODO: create ID if it is still null
-        	this.getHibernateTemplate().persist(project);	
+            if(project.getProjectId().isEmpty())
+                project.setProjectId(UUID.randomUUID());
+            
+
+            this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(project);
         } catch (DataAccessException dae) {
-        	throw new InvalidProjectException(dae);
+            throw new InvalidProjectException(dae);
         }
 
 
 //        Project result = (Project) getHibernateTemplate().get(Project.class, project.getProjectId());
 
         //getHibernateTemplate().flush();
-  //      System.out.println("result = " + result);
+        //      System.out.println("result = " + result);
 
 //        getHibernateTemplate().initialize(project);
 //        this.getHibernateTemplate().persist(project);
 
 
         //getSessionFactory().getCurrentSession().persist(project);
-    //    log.debug("persisted");
-       // getSessionFactory().getCurrentSession().flush();
+        //    log.debug("persisted");
+        // getSessionFactory().getCurrentSession().flush();
 //        log.debug("flushed");
 //        getSessionFactory().getCurrentSession().getTransaction().commit();
 
@@ -66,33 +69,40 @@ public class HibernateProjectDao extends HibernateDaoSupport
         //      this.getHibernateTemplate().save(project);
         //this.getHibernateTemplate().persist(project);
 
-      //    return null;
+        //    return null;
         return project;
     }
 
     @Override
-    @Transactional
-    public Project read(UUID uuid) throws NoSuchProjectException {
-    	Project result = null;
+//    @Transactional
+public Project read(UUID uuid) throws NoSuchProjectException {
+        List<Project> results;
 
-    	if (uuid==null) {
-    		throw new NoSuchProjectException();
-    	}
+        Project result = null;
+
+        if (uuid == null) {
+            throw new NoSuchProjectException();
+        }
 
         log.debug("calling get on uuid  " + uuid.toString());
 
         try {
-        	result = (Project) this.getHibernateTemplate().get(Project.class, uuid.toString());
-        } catch (DataAccessException dae) {
-        	log.warn(dae);
-        }
+//        	result = (Project) this.getHibernateTemplate().get(Project.class, uuid.toString());
+            results = this.getHibernateTemplate().getSessionFactory().getCurrentSession()
+                    .createQuery("FROM Project WHERE uuid = ?").setString(0, uuid.toString()).list();
+            if (results.size() < 1) {
+                log.debug("Didn't find a project belonging to uuid " + uuid.toString());
+                throw new NoSuchProjectException();
+            }
 
-        if (result == null) {
-            log.debug("Didn't find a project belonging to uuid " + uuid.toString());
+            return results.get(0);
+
+        } catch (DataAccessException dae) {
+            log.warn(dae);
             throw new NoSuchProjectException();
         }
 
-        return result;
+        
 /*
 
 
@@ -135,17 +145,18 @@ public class HibernateProjectDao extends HibernateDaoSupport
     /**
      * {@inheritDoc}
      */
-    @Transactional
+//    @Transactional
     public Project update(Project project) throws NoSuchProjectException {
-    	if (project == null || project.getProjectId() == null) {
-    		throw new NoSuchProjectException();
-    	}
-    	
-    	try {
-    		this.getHibernateTemplate().update(project, LockMode.WRITE);
-    	} catch (DataAccessException dae) {
-    		throw new NoSuchProjectException();
-    	}
+        if (project == null || project.getProjectId() == null) {
+            throw new NoSuchProjectException();
+        }
+
+        try {
+            this.getHibernateTemplate().getSessionFactory().getCurrentSession().update(project);
+//            this.getHibernateTemplate().update(project, LockMode.WRITE);
+        } catch (DataAccessException dae) {
+            throw new NoSuchProjectException();
+        }
 
         return project;
     }
@@ -153,47 +164,58 @@ public class HibernateProjectDao extends HibernateDaoSupport
     /**
      * {@inheritDoc}
      */
-	@SuppressWarnings("unchecked")
-	@Transactional
+    @SuppressWarnings("unchecked")
+//    @Transactional
     public List<Project> getAll() {
-    	List projects;
-    	List<Project> result = new ArrayList<Project>();
+//        List projects;
+//        List<Project> result = new ArrayList<Project>();
 
-    	log.debug("Retrieving a list of all projects.");
+        log.debug("Retrieving a list of all projects.");
 
-    	projects = this.getHibernateTemplate().loadAll(Project.class);
-		for (Object o : projects) {
-			if (o instanceof Project) {
-				result.add((Project) o);
-			}
-		}
-
-		return result;
+        return this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery("FROM Project").list();
+        
+//        projects = this.getHibernateTemplate().loadAll(Project.class);
+//        for (Object o : projects) {
+//            if (o instanceof Project) {
+//                result.add((Project) o);
+//            }
+//        }
+//
+//        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     public void delete(Project project) throws NoSuchProjectException {
-    	if (project == null || project.getProjectId() == null) {
-    		throw new NoSuchProjectException();
-    	}
+        if (project == null || project.getProjectId() == null) {
+            throw new NoSuchProjectException();
+        }
 
-    	log.info("deleting project: " + project.getProjectId());
+        log.info("deleting project: " + project.getProjectId());
 
-    	try
-        {
-    		//FIXME LockMode.WRITE causes an Exception
-         //   this.getHibernateTemplate().delete(project/*, LockMode.WRITE*/);
-            this.getHibernateTemplate().delete(project, LockMode.NONE);
+        try {
+            //FIXME LockMode.WRITE causes an Exception
+            //   this.getHibernateTemplate().delete(project/*, LockMode.WRITE*/);
+//            this.getHibernateTemplate().delete(project, LockMode.NONE);
+//            this.getHibernateTemplate().getSessionFactory().getCurrentSession().lock(project, LockMode.NONE);
+//            this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(project);
+
+            int row = this.getHibernateTemplate().getSessionFactory().getCurrentSession()
+                    .createQuery("DELETE FROM Project WHERE uuid = ?")
+                    .setString(0, project.getProjectId()).executeUpdate();
+            if(row < 1)
+                throw new NoSuchProjectException("affected rows count < 1");
+
+
         } catch (DataAccessException dae) {
             throw new NoSuchProjectException(dae);
         }
     }
 
-	@Override
-	public List<Project> getAll(InvitationState state) {
-		List<Project> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+    @Override
+    public List<Project> getAll(InvitationState state) {
+        List<Project> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("FROM Project WHERE invitationstate = ?").setInteger(0, state.ordinal()).list();
         return result;
 
