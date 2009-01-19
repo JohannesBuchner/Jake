@@ -14,35 +14,34 @@ import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
-import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
+import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
+import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
+import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
-import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.Filter;
+import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,7 +52,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private static FilePanel instance;
 
 	public static final int FILETREETABLE_NODECOLUMN = 2;
-
 	public static final int FILETABLE_NODECOLUMN = 2;
 
 	private Project project;
@@ -183,7 +181,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// init resource map
 		setResourceMap(org.jdesktop.application.Application.getInstance(
-			 JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -192,20 +190,16 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		//infoPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
-		// make the buttons more fancy
-		//Platform.getStyler().MakeWhiteRecessedButton(newFilesButton);
-		//Platform.getStyler().MakeWhiteRecessedButton(resolveButton);
-		//Platform.getStyler().MakeWhiteRecessedButton(illegalFilenamesButton);
-
 		fileTreeTable.setScrollsOnExpand(true);
 		fileTreeTable.setSortable(true);
 		fileTreeTable.setColumnControlVisible(true);
 
-		// ETreeTable performs its own striping on the mac
+/*		// ETreeTable performs its own striping on the mac
 		if (!Platform.isMac()) {
 			fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 			fileTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
+*/
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
 		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class, new ProjectFilesTableCellRenderer());
@@ -356,7 +350,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		 */
 		private void showMenu(MouseEvent me) {
 			popupMenu.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-				 .getY());
+					  .getY());
 		}
 	}
 

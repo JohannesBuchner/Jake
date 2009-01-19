@@ -7,15 +7,16 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
+import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
@@ -34,6 +35,8 @@ import com.jakeapp.jake.fss.exceptions.*;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -258,8 +261,32 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public void startProject(Project project) {
+
+		// HACK: create ChangeListener and add to 
+
 		try {
-			this.getFrontendService().getProjectsManagingService(this.getSessionId()).stopProject(project);
+
+			ChangeListener syncChangeListener = new ChangeListener() {
+
+				@Override
+				public INegotiationSuccessListener beganRequest(JakeObject jo) {
+					return null;
+				}
+
+				@Override
+				public void pullNegotiationDone(JakeObject jo) {
+				}
+
+				@Override
+				public void pullDone(JakeObject jo) {
+				}
+
+				@Override
+				public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
+				}
+			};
+
+			this.getFrontendService().getProjectsManagingService(this.getSessionId()).startProject(project, syncChangeListener);
 		} catch (IllegalArgumentException e) {
 			log.debug("Illegal project for starting specified.", e);
 		} catch (FileNotFoundException e) {
@@ -269,6 +296,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			log.debug("Cannot access ProjectManagingService.", e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+		} catch (ProjectException e) {
+			log.warn("Generic Project Exception", e);
 		}
 
 		// generate event
@@ -565,7 +594,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
 		} catch (Exception e) {
-			NoteOperationFailedException ex = new  NoteOperationFailedException();
+			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);
 			throw ex;
 		}
@@ -725,7 +754,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void invitePeople(Project project, String userid) {
 		try {
-			this.getFrontendService().getProjectsManagingService(getSessionId()).invite(project,userid);
+			this.getFrontendService().getProjectsManagingService(getSessionId()).invite(project, userid);
 		} catch (IllegalArgumentException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (FrontendNotLoggedInException e) {
@@ -740,7 +769,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<ProjectMember> getSuggestedPeople(Project project) {
 		List<ProjectMember> members = null;
-		
+
 		try {
 			members = this.getFrontendService().getProjectsManagingService(getSessionId()).getUninvitedPeople(project);
 		} catch (IllegalArgumentException e) {
@@ -752,9 +781,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NoSuchProjectException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		}
-		
+
 		//never return null
-		return (members==null)?new ArrayList<ProjectMember>():members;
+		return (members == null) ? new ArrayList<ProjectMember>() : members;
 	}
 
 
@@ -891,14 +920,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NoSuchJakeObjectException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		}
-		
+
 		return new TreeSet<Tag>();
 	}
 
 	@Override
 	public void setTagsForFileObject(FileObject fo, Set<Tag> tags) {
 		try {
-			this.getFrontendService().getProjectsManagingService(this.getSessionId()).setTagsForJakeObject(fo,tags);
+			this.getFrontendService().getProjectsManagingService(this.getSessionId()).setTagsForJakeObject(fo, tags);
 		} catch (IllegalArgumentException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FrontendNotLoggedInException e) {

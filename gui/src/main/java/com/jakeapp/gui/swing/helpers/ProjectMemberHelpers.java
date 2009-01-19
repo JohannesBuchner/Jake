@@ -4,6 +4,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.panels.NewsPanel;
+import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
 /**
@@ -12,6 +13,7 @@ import org.jdesktop.application.ResourceMap;
  * @author: studpete
  */
 public class ProjectMemberHelpers {
+	private static final Logger log = Logger.getLogger(ProjectMemberHelpers.class);
 
 	// get notes resource map
 	// TODO: move to own
@@ -43,18 +45,28 @@ public class ProjectMemberHelpers {
 	 * @return nick/fullname or "you" localized
 	 */
 	public static String getLocalizedUserNick(ProjectMember member) {
-		ProjectMember curMember;
-		try {
-			JakeMainApp.getApp();
-			curMember = JakeMainApp.getCore().getProjectMember(JakeMainApp.getProject(),MsgServiceHelper.getLoggedInMsgService());
-		} catch (NoSuchProjectMemberException e) {
-			curMember = null;
-		}
-
-		if (member == curMember) {
+		if (isCurrentProjectMember(member)) {
 			return newsResourceMap.getString("eventsYourself");
 		} else {
 			return getNickOrFullName(member);
+		}
+	}
+
+	public static boolean isCurrentProjectMember(ProjectMember member) {
+		return member == getCurrentSignedInProjectMember();
+	}
+
+	/**
+	 * Returns the current signed in project member (there can be only one)
+	 *
+	 * @return
+	 */
+	public static ProjectMember getCurrentSignedInProjectMember() {
+		try {
+			return JakeMainApp.getCore().getProjectMember(JakeMainApp.getProject(), JakeMainApp.getMsgService());
+		} catch (NoSuchProjectMemberException e) {
+			log.warn("Cannot get current signed in project member", e);
+			return null;
 		}
 	}
 

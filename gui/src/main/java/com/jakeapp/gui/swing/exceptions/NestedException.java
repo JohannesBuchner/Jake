@@ -6,23 +6,31 @@ import java.util.List;
 
 /**
  * Generic exception that may nest additional exceptions.
- * @author Simon
  *
+ * @author Simon
  */
 public class NestedException extends Exception {
 	private static final long serialVersionUID = 5050234839403267541L;
 
 	private List<Exception> nestedExceptions;
+
 	{
 		this.nestedExceptions = new ArrayList<Exception>();
 	}
-	
+
 	public void append(Exception e) {
+
+		// HACK: added direct printout for easier resolving of bugs
+//		if (DebugHelper.isEnabled()) {
+//			e.printStackTrace();
+//		}
+
 		this.nestedExceptions.add(e);
 	}
 
 	/**
 	 * Get a list of nested <code>Exception</code>s.
+	 *
 	 * @return list of nested <code>Exception</code>s
 	 */
 	protected List<Exception> getNestedExceptions() {
@@ -33,23 +41,24 @@ public class NestedException extends Exception {
 	public String getMessage() {
 		String str = new String();
 		str = super.getMessage() + ", " + nestedExceptions.size() + " nested exception(s); \n";
-		
+
 		return str;
 	}
-	
+
 	/**
 	 * Get the array of <code>StackTraceElements</code>. It is a hacked bunch of all nested exceptions.
+	 *
 	 * @return the array
 	 */
 	@Override
 	public StackTraceElement[] getStackTrace() {
 		//FIXME: delete that hack!
 		List<StackTraceElement> stack = new ArrayList<StackTraceElement>();
-		
+
 		for (StackTraceElement s : super.getStackTrace()) {
 			stack.add(s);
 		}
-		
+
 		for (Exception e : this.getNestedExceptions()) {
 			stack.add(new StackTraceElement("nested Exception - " + e.getMessage() + "\n", "", "", 0));
 			for (StackTraceElement s : super.getStackTrace()) {

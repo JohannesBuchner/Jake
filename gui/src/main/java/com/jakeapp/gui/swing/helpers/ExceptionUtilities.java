@@ -49,7 +49,7 @@ public class ExceptionUtilities {
 
 		JSheet.showMessageSheet(JakeMainApp.getFrame(),
 				  "<html><h2>" + e.getClass().getName() + "</h2><br><b>" + e.getMessage() + "</b><br><br> + " +
-							 DebugHelper.arrayToString(e.getStackTrace(), true) + "</html>",
+							 DebugHelper.arrayToString(e.getStackTrace(), true, 12) + "</html>",
 				  JOptionPane.ERROR_MESSAGE, null);
 	}
 

@@ -10,6 +10,7 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
@@ -43,7 +44,7 @@ import java.util.List;
  *
  * @author: studpete
  */
-public class UserPanel extends JXPanel implements RegistrationStatus, ConnectionStatus {
+public class UserPanel extends JXPanel implements RegistrationStatus, ConnectionStatus, MsgServiceChanged {
 	private ResourceMap resourceMap;
 	private static final Logger log = Logger.getLogger(UserPanel.class);
 
@@ -65,6 +66,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private ImageIcon jakeWelcomeIcon = new ImageIcon(JakeMainView.getMainView().getLargeAppImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH));
 	private JLabel userLabelLoginSuccess;
 	private JPanel userListPanel;
+
+	@Override
+	public void msgServiceChanged(MsgService msg) {
+		updateView();
+	}
 
 	/**
 	 * SupportedServices; we add some default support for common services.
@@ -121,6 +127,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		// set the background painter
 		this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+		JakeMainApp.getApp().addMsgServiceChangedListener(this);
 	}
 
 	/**
@@ -586,7 +593,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
 
 		userLabelLoginSuccess = new JLabel();
-		loginSuccessPanel.add(userLabelLoginSuccess, "wrap");
+		userLabelLoginSuccess.setFont(Platform.getStyler().getH1Font());
+		loginSuccessPanel.add(userLabelLoginSuccess, "center, wrap");
 
 		// the sign out button
 		JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
@@ -595,10 +603,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			public void actionPerformed(ActionEvent actionEvent) {
 
 				// TODO: more control over login state
-				//if (MsgServiceHelper.isUserLoggedIn()) {
+				//if (MsgServiceHelper.isCurrentUserLoggedIn()) {
 				try {
-					JakeMainApp.getMsgService().logout();
-					JakeMainApp.setMsgService(null);
+					JakeMainApp.logoutUser();
 					updateView();
 				} catch (Exception e) {
 					log.warn(e);
@@ -635,7 +642,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 	private void updateSignInSuccessPanel() {
 		if (JakeMainApp.getMsgService() != null) {
-			userLabelLoginSuccess.setText(JakeMainApp.getMsgService().getUserId().toString());
+			userLabelLoginSuccess.setText(JakeMainApp.getMsgService().getUserId().getUserId());
 		}
 	}
 
@@ -776,17 +783,46 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			log.info("creating UserControlPanel with " + msg);
 			this.msg = msg;
 
+			ActionListener loginAction = new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						log.info("Sign In with " + msg.getUserId() + " useSavedPassword: " + isMagicToken());
+						JakeMainApp.setMsgService(msg);
+
+						if (isMagicToken()) {
+							JakeExecutor.exec(new LoginAccountWorker(msg));
+						} else {
+							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(), isRememberPassword()));
+						}
+
+						updateView();
+					} catch (Exception e1) {
+						ExceptionUtilities.showError(e1);
+					}
+				}
+			};
+
+
 			this.setLayout(new MigLayout("wrap 2, fill"));
 
 			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(), 1));
 			this.setOpaque(false);
 
-			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msg.getUserId().getUserId() + "</b>"));
+			// HACK for mock
+			String msgUserId = "";
+			try {
+				msgUserId = msg.getUserId().getUserId();
+			} catch (NullPointerException e) {
+				log.warn(e);
+			}
+			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msgUserId + "</b>"));
 			this.add(userLabel, "span 2, gapbottom 8");
 
 			JLabel passLabel = new JLabel(getResourceMap().getString("passwordLabel") + ":");
 			this.add(passLabel, "left");
 			passField = new JPasswordField();
+			passField.addActionListener(loginAction);
 			this.add(passField, "w 200!");
 
 			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
@@ -817,24 +853,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 			JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
 			signInBtn.putClientProperty("JButton.buttonType", "textured");
-			signInBtn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						JakeMainApp.setMsgService(msg);
-
-						if (isMagicToken()) {
-							JakeExecutor.exec(new LoginAccountWorker(msg));
-						} else {
-							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(), isRememberPassword()));
-						}
-
-						updateView();
-					} catch (Exception e1) {
-						ExceptionUtilities.showError(e1);
-					}
-				}
-			});
+			signInBtn.addActionListener(loginAction);
 			this.add(signInBtn, "right, bottom");
 
 			// if a password is set, write a magic token into password field

@@ -3,8 +3,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -24,7 +23,7 @@ import java.util.concurrent.ExecutionException;
  * Time: 10:59:04 AM
  */
 public class JakeStatusBar extends JakeGuiComponent implements
-		  ConnectionStatus, ProjectSelectionChanged, ProjectChanged, ProjectViewChanged, ContextViewChanged {
+		  ConnectionStatus, ProjectSelectionChanged, ProjectChanged, ProjectViewChanged, ContextViewChanged, MsgServiceChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
 	private JLabel statusLabel;
@@ -92,6 +91,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 		JakeMainView.getMainView().addContextViewChangedListener(this);
+		JakeMainApp.getApp().addMsgServiceChangedListener(this);
 
 		// registering the connection status callback
 		getCore().addConnectionStatusCallbackListener(this);
@@ -119,8 +119,9 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	private void updateConnectionButton() {
 		String msg;
 
-		if (MsgServiceHelper.isUserLoggedIn()) {
-			msg = MsgServiceHelper.getLoggedInMsgService().getUserId().toString();
+		// TODO: neet online/offline info!
+		if (JakeMainApp.getMsgService() != null) {
+			msg = JakeMainApp.getMsgService().getUserId().getUserId();
 		} else {
 			msg = getResourceMap().getString("statusLoginNotSignedIn");
 		}
@@ -221,15 +222,15 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			public void actionPerformed(ActionEvent event) {
 				JPopupMenu menu = new JakePopupMenu();
 				JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
-						  MsgServiceHelper.isUserLoggedIn() ? "menuSignOut" : "menuSignIn"));
+						  (JakeMainApp.getMsgService() != null) ? "menuSignOut" : "menuSignIn"));
 
 				signInOut.addActionListener(new ActionListener() {
 
 					public void actionPerformed(ActionEvent actionEvent) {
-						if (!MsgServiceHelper.isUserLoggedIn()) {
+						if (JakeMainApp.getMsgService() == null) {
 						} else {
 							try {
-								MsgServiceHelper.getLoggedInMsgService().logout();
+								JakeMainApp.logoutUser();
 							} catch (Exception e) {
 								log.warn(e);
 								ExceptionUtilities.showError(e);
@@ -355,5 +356,10 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 	public JakeMainView.ContextPanelEnum getContextViewPanel() {
 		return contextViewPanel;
+	}
+
+	@Override
+	public void msgServiceChanged(MsgService msg) {
+		updateConnectionButton();
 	}
 }

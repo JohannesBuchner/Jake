@@ -62,6 +62,9 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 		String[] options = {"Real Thing", "Mock", "Quit"};
 
+		// HACK: always use real!
+		System.setProperty("com.jakeapp.gui.test.usemock", "no");
+
 		String type = System.getProperty("com.jakeapp.gui.test.usemock");
 		if (type == null) {
 			int res = JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
@@ -345,7 +348,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 	 * Fires when a new User is selected.
 	 */
 	private void fireMsgServiceChanged() {
-		log.info("Fire Message Service Changed");
+		log.info("Fire Message Service Changed: " + getMsgService());
 		for (MsgServiceChanged msc : msgServiceChanged) {
 			try {
 				msc.msgServiceChanged(getMsgService());
@@ -395,5 +398,25 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	public SplashWindow getSplashFrame() {
 		return splashFrame;
+	}
+
+	/**
+	 * Logs the current user out of the system, deselects current user.
+	 */
+	public static void logoutUser() {
+		log.info("Logging out: " + JakeMainApp.getMsgService());
+
+		if (getMsgService() == null) {
+			log.warn("tried to sign out with no user active!");
+		}
+
+		try {
+			getMsgService().logout();
+
+		} catch (Exception e) {
+			log.warn(e);
+			ExceptionUtilities.showError(e);
+		}
+		setMsgService(null);
 	}
 }
