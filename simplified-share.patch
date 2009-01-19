@@ -1,0 +1,23 @@
+Index: core/src/main/java/com/jakeapp/core/synchronization/SyncServiceImpl.java
+===================================================================
+--- core/src/main/java/com/jakeapp/core/synchronization/SyncServiceImpl.java	(Revision 1267)
++++ core/src/main/java/com/jakeapp/core/synchronization/SyncServiceImpl.java	(Arbeitskopie)
+@@ -254,6 +254,9 @@
+ 			log.debug("is a file. getting hash done.");
+ 			db.getLogEntryDao(jo).create(new FileObjectLogEntry(le));
+ 			log.debug("is a file. log entry written.");
++			// TODO simplified algorithm
++			getICS(project).getMsgService().sendMessage(
++					getBackendUserIdFromDomainUserId(userId), NEW_FILE + jo.getRelPath());
+ 		}
+ 	}
+ 
+@@ -583,7 +586,7 @@
+ 		projectsFssMap.put(p.getProjectId(), fs);
+ 		projectChangeListeners.put(p.getProjectId(), cl);
+ 		// TODO: add ics hooks
+-
++		getICS(p).
+ 	}
+ 
+ 	@Override
