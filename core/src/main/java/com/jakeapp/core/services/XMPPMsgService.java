@@ -26,6 +26,8 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 
 	private String host;
 
+    
+
 
 	public XMPPMsgService() {
 
@@ -39,8 +41,10 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	protected boolean doCredentialsCheck() {
 		ServiceCredentials cred = this.getServiceCredentials();
 		this.icsXmppUserId = new XmppUserId(new XmppUserId(cred.getUserId())
-				.getUserIdWithOutResource()
-				+"/Jake");
+                // TODO 4 Johannes: This doesn't work!
+//				.getUserIdWithOutResource()
+//				+"/Jake"
+        );
 		if (!this.icsXmppUserId.isOfCorrectUseridFormat()) {
 			this.icsXmppUserId = null;
 			return false;

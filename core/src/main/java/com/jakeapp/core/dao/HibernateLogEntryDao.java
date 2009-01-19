@@ -77,13 +77,11 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject) {
 
-		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
+		List<LogEntry<T>> result = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
 						"FROM logentries WHERE objectid = ? ").list(); // TODO
 
-
-		return null; // To change body of implemented methods use File |
-		// Settings | File Templates.
+        return result;
 	}
 
 	@Override

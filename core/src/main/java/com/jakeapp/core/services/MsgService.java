@@ -76,6 +76,7 @@ public abstract class MsgService<T extends UserId> {
 			throw new InvalidCredentialsException("serviceCredentials are null");
 
 		serviceCredentials.setPlainTextPassword(newPassword);
+        serviceCredentials.setSavePassword(shouldSavePassword);
 
 		return this.login();
 
