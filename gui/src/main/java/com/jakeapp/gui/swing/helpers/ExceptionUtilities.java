@@ -48,8 +48,9 @@ public class ExceptionUtilities {
 		e.printStackTrace();
 
 		JSheet.showMessageSheet(JakeMainApp.getFrame(),
-				  "<html><b>" + e.getMessage() + "</b><br><br> + " +
-							 DebugHelper.arrayToString(e.getStackTrace(), true) + "</html>",
+//				  "<html><b>" + e.getMessage() + "</b><br><br> + " +
+//							 DebugHelper.arrayToString(e.getStackTrace(), true) + "</html>",
+				e.getClass().getName() + ":\n" + e.getMessage(),
 				  JOptionPane.ERROR_MESSAGE, null);
 	}
 
