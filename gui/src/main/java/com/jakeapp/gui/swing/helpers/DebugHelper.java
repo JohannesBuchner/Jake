@@ -11,6 +11,7 @@ import java.util.Hashtable;
  * @author: studpete
  */
 public class DebugHelper {
+	private static boolean enabled = true;
 
 	/**
 	 * Debugging LIB
@@ -20,7 +21,7 @@ public class DebugHelper {
 	 * @param formatted
 	 * @return string representation of array
 	 */
-	public static String arrayToString(Object array, boolean formatted) {
+	public static String arrayToString(Object array, boolean formatted, int maxLen) {
 		if (array == null) {
 			return "[NULL]";
 		} else {
@@ -35,7 +36,7 @@ public class DebugHelper {
 			int length = Array.getLength(array);
 			int lastItem = length - 1;
 			StringBuffer sb = new StringBuffer((formatted ? "<html>" : "") + "[");
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < length && (i < maxLen || maxLen < 0); i++) {
 				obj = Array.get(array, i);
 				if (obj != null) {
 					sb.append(obj + (formatted ? "<br>" : ""));
@@ -52,6 +53,10 @@ public class DebugHelper {
 		}
 	}
 
+	public static String arrayToString(Object array, boolean formatted) {
+		return arrayToString(array, formatted, -1);
+	}
+
 	/**
 	 * Debugging LIB
 	 * Converts a array/hashtable/collection to a string
@@ -63,4 +68,7 @@ public class DebugHelper {
 		return arrayToString(array, false);
 	}
 
+	public static boolean isEnabled() {
+		return enabled;
+	}
 }
