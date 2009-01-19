@@ -5,6 +5,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -356,4 +357,30 @@ public interface IProjectsManagingService {
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
 	 */
 	ProjectMember getLastModifier(JakeObject jakeObject);
+
+
+	/**
+	 * Adds a person as a ProjectMember for <code>project</code> and sends an
+	 * invitation request to that person.
+	 * 
+	 * @return The new {@link ProjectMember}
+	 * @param project
+	 *            Project to add the ProjectMember for
+	 * @param userid
+	 *            The UserId (nick+protocol) of the other user.
+	 * @throws UserIdFormatException
+	 *             if the userid did not have the correct format
+	 */
+	ProjectMember invite(Project project, String userid)
+			throws UserIdFormatException;
+
+	/**
+	 * @param project
+	 * @return A list of people who are 'friends' irt. the Project's
+	 *         {@link MsgService}, are online and capable of running Projects
+	 *         but are currently not attached to <code>project</code>.
+	 * @throws NoSuchProjectException 
+	 * @throws IllegalArgumentException 
+	 */
+	List<ProjectMember> getUninvitedPeople(Project project) throws IllegalArgumentException, NoSuchProjectException;
 }

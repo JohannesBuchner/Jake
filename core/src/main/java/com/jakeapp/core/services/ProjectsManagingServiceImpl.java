@@ -8,6 +8,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
@@ -770,5 +771,81 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		if (entries.size()>0)
 			return entries.get(0).getMember();
 		else return null;
+	}
+
+	@Override
+	public ProjectMember invite(Project project, String userid) throws UserIdFormatException {
+		// TODO implement me, but how?
+		
+		/*
+		 * Invitation is implemented via setting the trust to a standard level
+		 * and sending a message to the invited person.
+		 */
+		//invite
+		
+		//add member
+		return this.addProjectMember(project, project.getMessageService().getUserId(userid));
+	}
+
+	@Override
+	public List<ProjectMember> getUninvitedPeople(Project project)
+			throws IllegalArgumentException, NoSuchProjectException {
+		List others;
+		List<UserId> othersUserIds = new ArrayList<UserId>();
+		List<ProjectMember> otherMembers;
+		List<ProjectMember> result = new ArrayList<ProjectMember>();
+		ProjectMember pm;
+		// Set with ProjectMembers with unique Nicknames
+		SortedSet<ProjectMember> otherMembersSet = new TreeSet<ProjectMember>(
+				new Comparator<ProjectMember>() {
+
+					@Override
+					public int compare(ProjectMember o1, ProjectMember o2) {
+						int result;
+
+						if (o1 == null)
+							result = (o2 == null) ? 0 : -1;
+						else if (o2 == null)
+							result = 1;
+						else
+							result = o1.getNickname().compareTo(
+									o2.getNickname());
+
+						return result;
+					}
+				});
+
+		// preconditions
+		if (!this.isProjectLoaded(project))
+			throw new NoSuchProjectException();
+		if (project.getMessageService() == null)
+			throw new IllegalArgumentException();
+
+		// get all other users
+		others = project.getMessageService().getUserList();
+		for (Object o : others)
+			if (o instanceof UserId)
+				othersUserIds.add((UserId) o);
+
+		otherMembers = this.getProjectMemberDao(project).getAll(project);
+		// get unique nicknames
+		otherMembersSet.addAll(otherMembers);
+
+		for (UserId uid : othersUserIds) {
+			// only people who are currently not in the project are returned
+			pm = new ProjectMember(null, uid.getNickname(), TrustState.NO_TRUST);
+			if (this.isFriend(project, uid) // only friends are returned
+					&& !otherMembersSet.contains(pm)) // only people who are
+														// currently not in the
+														// project are returned
+				result.add(pm);
+		}
+
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean isFriend(Project project, UserId uid) {
+		return project.getMessageService().checkFriends(uid);
 	}
 }

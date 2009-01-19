@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
@@ -613,7 +614,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			pms = this.frontendService.getProjectsManagingService(this.getSessionId());
-			member = pms.getProjectMember(note.getProject(), this.getLoggedInUser(this.getSessionId()));
+			member = pms.getProjectMember(note.getProject(), this.getLoggedInUser(note.getProject()));
 
 			pms.getNoteManagingService(note.getProject()).deleteNote(note, member);
 		} catch (Exception e) {
@@ -654,9 +655,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	// TODO this might be removed in further versions...
-	// it depends on only having a SINGLE user.
-	private MsgService getLoggedInUser(String session) throws FrontendNotLoggedInException {
-		return this.currentMessageService;
+	// it depends on only having a SINGLE user per project.
+	private MsgService getLoggedInUser(Project p) throws FrontendNotLoggedInException {
+		return p.getMessageService();
 	}
 
 	/**
@@ -718,19 +719,37 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void invitePeople(Project project, String userid) {
-		log.info("invite pm: " + userid + " to project: " + project);
-
-		// TODO: implement the invite
-
+		try {
+			this.getFrontendService().getProjectsManagingService(getSessionId()).invite(project,userid);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (UserIdFormatException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
 	}
 
 	@Override
 	public List<ProjectMember> getSuggestedPeople(Project project) {
-		List<ProjectMember> members = new ArrayList<ProjectMember>();
-		//members.add(getPeople(project).get(0));
-		// members.add(getPeople(project).get(1));
-		return members;
-		//TODO
+		List<ProjectMember> members = null;
+		
+		try {
+			members = this.getFrontendService().getProjectsManagingService(getSessionId()).getUninvitedPeople(project);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (IllegalStateException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (NoSuchProjectException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
+		
+		//never return null
+		return (members==null)?new ArrayList<ProjectMember>():members;
 	}
 
 
@@ -919,7 +938,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		ISyncService iss;
 		AvailableLaterObject<Void> result = null;
 
-		member = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(jo.getProject(), this.getLoggedInUser(this.getSessionId()));
+		member = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMember(jo.getProject(), this.getLoggedInUser(jo.getProject()));
 
 		action = new LogEntry<JakeObject>(
 				  UUID.randomUUID(), LogAction.JAKE_OBJECT_NEW_VERSION,
@@ -1050,7 +1069,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	private String currentUser = null;
-	private MsgService currentMessageService = null;
 
 	// event spread
 	private List<ConnectionStatus> connectionStatus;

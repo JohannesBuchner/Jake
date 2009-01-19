@@ -658,7 +658,7 @@ public interface ICoreAccess {
 	 * that are not in current project.
 	 *
 	 * @param project : current project
-	 * @return list of strings (people-xmpp-ids)
+	 * @return list of Projectmembers which have only their usernames set (people-xmpp-ids)
 	 */
 	List<ProjectMember> getSuggestedPeople(Project project);
 
