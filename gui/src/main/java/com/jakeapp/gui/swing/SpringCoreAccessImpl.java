@@ -731,11 +731,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @return
 	 */
 	public List<ProjectMember> getPeople(Project project) {
-		List<ProjectMember> result = null;
-
 		log.info("getPeople from project " + project);
 
+		List<ProjectMember> result = null;
+
 		if (project == null) {
+			log.warn("getPeople from project NULL");
 			return new ArrayList<ProjectMember>();
 		}
 
@@ -756,6 +757,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public boolean setPeopleNickname(Project project, ProjectMember pm, String nick) {
+		log.info("setPeopleNickname: project: " + project + " ProjectMember: " + pm + " Nick: " + nick);
+
 		// TODO: ignore this and create a regex for checking!
 		if (nick.indexOf("<") != -1) {
 			return false;
