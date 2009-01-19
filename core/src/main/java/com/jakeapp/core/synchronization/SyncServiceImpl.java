@@ -38,6 +38,7 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.IProjectsManagingService;
+import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
@@ -87,10 +88,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private static final String NEW_NOTE = "<newnote/>";
 
-	/**
-	 * key is the UUID
-	 */
-	private Map<String, IFSService> projectsFssMap;
+    private IProjectsFileServices projectsFileServices;
+
 
 	/**
 	 * key is the UUID
@@ -115,7 +114,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	IFSService getFSS(Project p) {
-		return projectsFssMap.get(p.getProjectId());
+        return this.getProjectsFileServices().startProject(p);
 	}
 
 	public ICServicesManager getIcServicesManager() {
@@ -126,7 +125,16 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		this.icServicesManager = icServicesManager;
 	}
 
-	/* DAO stuff */
+    public IProjectsFileServices getProjectsFileServices() {
+        return projectsFileServices;
+    }
+
+    public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
+        this.projectsFileServices = projectsFileServices;
+    }
+
+
+    /* DAO stuff */
 
 	/**
 	 * returns true if NoteObject <br>
@@ -597,17 +605,20 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Override
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
 			throws ProjectException {
-		FSService fs;
-		try {
-			fs = new FSService();
-		} catch (NoSuchAlgorithmException e) {
-			throw new ProjectException(e);
-		}
-		if (rhp == null) {
-			rhp = new TrustAllRequestHandlePolicy(db, projectsFssMap, userTranslator);
-		}
+
+        this.projectsFileServices.startProject(p);
+
+//        FSService fs;
+//		try {
+//			fs = new FSService();
+//		} catch (NoSuchAlgorithmException e) {
+//			throw new ProjectException(e);
+//		}
+        if (rhp == null) {
+            rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices, userTranslator);
+        }
 		runningProjects.put(p.getProjectId(), p);
-		projectsFssMap.put(p.getProjectId(), fs);
+//		projectsFssMap.put(p.getProjectId(), fs);
 		projectChangeListeners.put(p.getProjectId(), cl);
 		// this creates the ics
 		getICS(p);

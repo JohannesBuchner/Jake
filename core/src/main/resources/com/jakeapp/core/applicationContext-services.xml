@@ -23,10 +23,13 @@
         </property>
     </bean>
 
+    <bean id="projectsFileServices" class="com.jakeapp.core.services.ProjectsFileServicesImpl"/>
+
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
         <property name="db" ref="applicationContextFactory"/>
         <property name="icServicesManager" ref="icServiceManager"/>
         <property name="userTranslator" ref="userTranslator"/>
+        <property name="projectsFileServices" ref="projectsFileServices" />
     </bean>
 
     <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
@@ -36,7 +39,6 @@
                          type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
-    <bean id="projectsFileServices" class="com.jakeapp.core.services.ProjectsFileServicesImpl"/>
 
 
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">

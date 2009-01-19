@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -254,10 +255,15 @@ public class FrontendServiceImpl implements IFrontendService {
 			Project project, FileObject file) throws InvalidFilenameException, NotAReadableFileException, IOException {
 		ISyncService iss = this.getSyncService(sessionId);
 		IProjectsManagingService pms = this.getProjectsManagingService(sessionId);
-		IFSService fss = pms.getFileServices(project);
-		
-		
-		boolean locallyModified = !file.getChecksum().equals(fss.calculateHashOverFile(file.getRelPath())),
+        IFSService fss = null;
+        try {
+            fss = pms.getFileServices(project);
+        } catch (ProjectNotLoadedException e) {
+            throw new IOException(); // todo tmp
+        }
+
+
+        boolean locallyModified = !file.getChecksum().equals(fss.calculateHashOverFile(file.getRelPath())),
 			remotelyModified = !iss.localIsNewest(file),
 			onlyLocal = pms.isLocalJakeObject(file),
 			onlyRemote = !iss.existsLocally(file);

@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
@@ -489,9 +490,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			//empty implementation
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
-		}
+		} catch (ProjectNotLoadedException e) {
+            this.handleProjectNotLoaded(e);
+        }
 
-		return fo;
+        return fo;
 	}
 
 	@Override
@@ -893,8 +896,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FrontendNotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
-		}
-	}
+		} catch (ProjectNotLoadedException e) {
+            log.debug("Tried to delete file of project not loaded");
+            this.handleProjectNotLoaded(e);
+
+        }
+    }
 
 	@Override
 	public void rename(FileObject file, String newName) {
@@ -983,8 +990,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			log.error("Creating a subdirectory that should not be created failed...");
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
-		}
-	}
+		} catch (ProjectNotLoadedException e) {
+            log.error("tried to rename a file of a project thats not loaded");
+            this.handleProjectNotLoaded(e);
+        }
+    }
 
 	@Override
 	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException {
@@ -1040,8 +1050,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new InvalidNewFolderException(relpath);
 		} catch (IOException e) {
 			throw new InvalidNewFolderException(relpath);
-		}
-	}
+		} catch (ProjectNotLoadedException e) {
+            this.handleProjectNotLoaded(e);
+        }
+    }
 
 	@Override
 	public void addFilesChangedListener(final FilesChanged listener,
@@ -1055,10 +1067,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		};
 
 		this.fileListeners.put(listener, projectModificationListener);
-		this.getFrontendService().getProjectsManagingService(getSessionId())
+        try {
+            this.getFrontendService().getProjectsManagingService(getSessionId())
 				  .getFileServices(project).addModificationListener(
 				  projectModificationListener);
-	}
+        } catch (ProjectNotLoadedException e) {
+            this.handleProjectNotLoaded(e);
+        }
+    }
 
 	@Override
 	public void removeFilesChangedListener(FilesChanged listener,
@@ -1068,13 +1084,22 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		projectModificationListener = this.fileListeners.get(listener);
 
 		if (projectModificationListener != null)
-			this.getFrontendService()
+            try {
+                this.getFrontendService()
 					  .getProjectsManagingService(getSessionId())
 					  .getFileServices(project).removeModificationListener(
 					  projectModificationListener);
-	}
+            } catch (ProjectNotLoadedException e) {
+                this.handleProjectNotLoaded(e);
+            }
+    }
 
-	public long getFileSize(FileObject file) {
+    private void handleProjectNotLoaded(ProjectNotLoadedException e) {
+        log.error("got ProjectNotLoadedException with message " + e.getMessage());
+        e.printStackTrace();
+    }
+
+    public long getFileSize(FileObject file) {
 		//TODO implement this differently - get the Size of the STORED FileObject...
 		return this.getFileSize(file);
 	}
@@ -1097,9 +1122,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
-		}
+		} catch (ProjectNotLoadedException e) {
+            this.handleProjectNotLoaded(e);
+        }
 
-		return 0;
+        return 0;
 	}
 
 	@Override
@@ -1118,9 +1145,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
-		}
+		} catch (ProjectNotLoadedException e) {
+            this.handleProjectNotLoaded(e);
+        }
 
-		return new Date();
+        return new Date();
 	}
 
 	private String currentUser = null;

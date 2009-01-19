@@ -18,23 +18,23 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
    private static Logger log = Logger.getLogger(ProjectsFileServicesImpl.class);
 
 
-    private Map<Project, IFSService> fileServices;
+    private Map<UUID, IFSService> fileServices;
 
 
     public ProjectsFileServicesImpl()
     {
-        fileServices = new HashMap<Project, IFSService>();
+        fileServices = new HashMap<UUID, IFSService>();
     }
 
 	@Override
     public IFSService startProject(Project project) {
-        if(this.fileServices.containsKey(project))
-            return this.fileServices.get(project);
+        if(this.fileServices.containsKey(UUID.fromString(project.getProjectId())))
+            return this.fileServices.get(UUID.fromString(project.getProjectId()));
 
         try {
             IFSService fss = new FSService();
             fss.setRootPath(project.getRootPath());
-            fileServices.put(project, fss);
+            fileServices.put(UUID.fromString(project.getProjectId()), fss);
 
             return fss;
         } catch (NoSuchAlgorithmException e) {
@@ -52,12 +52,22 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
     @Override
     public IFSService getProjectFSService(Project project) throws ProjectNotLoadedException {
-        if(fileServices.containsKey(project))
+        if(fileServices.containsKey(UUID.fromString(project.getProjectId())))
         {
-            return fileServices.get(project);
+            return fileServices.get(UUID.fromString(project.getProjectId()));
         }
         throw new ProjectNotLoadedException("Project with uuid " + project.getProjectId() + " not loaded");
     }
+
+    public IFSService getProjectFSServiceByUUID(String uuid) throws ProjectNotLoadedException {
+        UUID projectUuid = UUID.fromString(uuid);
+        if(fileServices.containsKey(projectUuid))
+        {
+            return fileServices.get(projectUuid);
+        }
+        throw new ProjectNotLoadedException("Project with uuid " + uuid + " not loaded");
+    }
+
 
     @Override
     public void stopProject(Project project) {

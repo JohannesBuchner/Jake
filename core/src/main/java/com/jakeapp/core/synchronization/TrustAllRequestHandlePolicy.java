@@ -20,15 +20,16 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.jake.fss.IFSService;
 
 public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
 	public TrustAllRequestHandlePolicy(ApplicationContextFactory db,
-			Map<String, IFSService> projectsFssMap, UserTranslator userTranslator) {
+			IProjectsFileServices projectsFileServices, UserTranslator userTranslator) {
 		super();
 		this.db = db;
-		this.projectsFssMap = projectsFssMap;
+		this.projectsFileServices = projectsFileServices;
 		this.userTranslator = userTranslator;
 	}
 
@@ -38,7 +39,10 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
 	protected UserTranslator userTranslator;
 
-	protected Map<String, IFSService> projectsFssMap;
+
+    private IProjectsFileServices projectsFileServices;
+
+
 
 	@Override
 	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
@@ -62,7 +66,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 			} else {
 				FileObject fo = db.getFileObjectDao(jo.getProject()).complete(
 						(FileObject) jo);
-				IFSService fss = projectsFssMap.get(jo.getProject().getProjectId());
+				IFSService fss = this.projectsFileServices.getProjectFSService(jo.getProject());
 				return new FileInputStream(fss.getFullpath(fo.getRelPath()));
 			}
 		} catch (Exception e) {

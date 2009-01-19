@@ -6,7 +6,6 @@ package com.jakeapp.core.synchronization;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -19,13 +18,13 @@ import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.util.ApplicationContextFactory;
-import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.core.services.IProjectsFileServices;
 
 public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 
 	public TrustAwareRequestHandlePolicy(ApplicationContextFactory db,
-			Map<String, IFSService> projectsFssMap, UserTranslator userTranslator) {
-		super(db, projectsFssMap, userTranslator);
+			IProjectsFileServices projectsFileServices, UserTranslator userTranslator) {
+		super(db, projectsFileServices, userTranslator);
 	}
 
 	private static final Logger log = Logger

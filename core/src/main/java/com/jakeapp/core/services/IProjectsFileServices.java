@@ -11,5 +11,9 @@ public interface IProjectsFileServices {
 
     public IFSService getProjectFSService(Project project) throws ProjectNotLoadedException;
 
+    public IFSService getProjectFSServiceByUUID(String uuid) throws ProjectNotLoadedException;
+
+        
+
     public void stopProject(Project project);
 }
