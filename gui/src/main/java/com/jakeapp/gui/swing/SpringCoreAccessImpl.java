@@ -64,7 +64,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private boolean useMock(String f) {
 
 		if ("getNotes".compareTo(f) == 0) return true;
-		else if ("getNotes".compareTo(f) == 0) return true;
+		else if ("getLog".compareTo(f) == 0) return true;
 
 
 		return true;
@@ -793,6 +793,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (UserIdFormatException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (Exception e) {
+			// TODO: generic fetcher?
+			this.fireErrorListener(new JakeErrorEvent(e));
 		}
 	}
 
@@ -819,22 +822,22 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries) {
-		// TODO: implement!
-		List<LogEntry> log = new ArrayList<LogEntry>();
+		log.info("getLog pr:" + project + " jakeObject: " + jakeObject + " entries: " + entries);
 
-		if (project != null) {
-			/*
-			// yeah... what a beautiful interface ;o)
-			log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
-					  project, null, getPeople(project).get(0), "comment 1", "checksum???",
-					  true));
+		if (useMock("getLog")) {
+			List<LogEntry> log = new ArrayList<LogEntry>();
+			if (project != null) {
+				log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
+						  project, null, new ProjectMember(UUID.randomUUID(), "You", TrustState.AUTO_ADD_REMOVE), "comment 1", "checksum???",
+						  true));
 
-			log.add(new LogEntry(new UUID(1, 2), LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project,
-					  null, getPeople(project).get(0), "comment 1", "checksum???", true));
-					  */
+				log.add(new LogEntry(new UUID(1, 2), LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project,
+						  null, new ProjectMember(UUID.randomUUID(), "You", TrustState.AUTO_ADD_REMOVE), "comment 1", "checksum???", true));
+			}
+			return log;
+		} else {
+			return new ArrayList<LogEntry>();
 		}
-
-		return log;
 	}
 
 
