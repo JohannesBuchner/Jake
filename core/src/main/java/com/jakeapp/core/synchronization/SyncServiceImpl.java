@@ -851,7 +851,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// for(i : getProjectsManagingService().getProjectList()
 		// return new Project(null, projectid, null, null);
 		// TODO: mocked for the demo
-		return getProjectsManagingService().getProjectList().get(0);
+		return runningProjects.get(projectid);
 	}
 
 	@Override
