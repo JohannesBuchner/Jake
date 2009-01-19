@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.Query;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -79,15 +80,16 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 		List<LogEntry<T>> result = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
-						"FROM logentries WHERE objectid = ? ").list(); // TODO
-
+						"FROM logentries WHERE objectid = ? ").setString(0, jakeObject.getUuid().toString()).list();
         return result;
 	}
 
 	@Override
 	public LogEntry<JakeObject> getMostRecentFor(JakeObject jakeObject)
 			throws NoSuchLogEntryException {
-		return null; // To change body of implemented methods use File |
+
+
+        return null; // To change body of implemented methods use File |
 		// Settings | File Templates.
 	}
 
@@ -100,21 +102,27 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public void setProcessed(LogEntry<? extends ILogable> logEntry) {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+        logEntry.setProcessed(true);
+        this.getHibernateTemplate().getSessionFactory().getCurrentSession().update(logEntry);
+
+        // TODO UNTESTED
 	}
 
 	@Override
 	public List<LogEntry<? extends ILogable>> getAllUnprocessed() {
-		return null; // To change body of implemented methods use File |
-		// Settings | File Templates.
+		List<LogEntry<? extends ILogable>> results = this.getHibernateTemplate().getSessionFactory()
+                .getCurrentSession().createQuery("FROM logentries WHERE processed = false").list();
+
+        return results;
+
+        // TODO UNTESTED
 	}
 
 	@Override
 	public LogEntry<? extends ILogable> getUnprocessed(Project project)
 			throws NoSuchProjectException, NoSuchLogEntryException {
-		return null; // To change body of implemented methods use File |
-		// Settings | File Templates.
+		return getAllUnprocessed().get(0); // we don't have other projects in this context
+        // TODO UNTESTED
 	}
 
 	@Override
@@ -122,8 +130,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			LogEntry<? extends ILogable> le) {
 		List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate()
 				.findByExample(le);
-
-		return result;
+		// TODO UNTESTED
+        return result;
 	}
 
 	@Override
@@ -131,8 +139,20 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			LogEntry<? extends ILogable> le) throws NullPointerException {
 		if (le.getTimestamp() == null)
 			throw new NullPointerException("timestamp not set");
-		// TODO
-		return new LinkedList<LogEntry<? extends ILogable>>();
+
+//        	 * finds the Logentries that match the supplied characteristics except for
+//	 * timestamp and are &gt;= the supplied timestamp <br>
+//	 * uuid, any of logAction, project, belongsTo may be null
+//  TODO @ Johannes: except for timestamp AND are &gt;= the supplied timestamp doesn't make sense
+// please take a look at the query if it looks ok for you
+
+
+        List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE logAction = ? AND timestamp >= ?")
+                .setInteger(0, le.getLogAction().ordinal()).setDate(1, le.getTimestamp()).list();
+
+        return result;
+        // TODO UNTESTED
 	}
 
 	@Override
@@ -140,14 +160,25 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			LogEntry<? extends ILogable> le) throws NullPointerException {
 		if (le.getTimestamp() == null)
 			throw new NullPointerException("timestamp not set");
-		// TODO
-		return new LinkedList<LogEntry<? extends ILogable>>();
+        List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE logAction = ? AND timestamp < ?")
+                .setInteger(0, le.getLogAction().ordinal()).setDate(1, le.getTimestamp()).list();
+
+        return result;
+
+
 	}
 
 	@Override
 	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le) {
-		// TODO
-		return null;
+       List<LogEntry<? extends ILogable>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+               createQuery("FROM logentries WHERE objectuuid = ? ").setString(0, le.getObjectuuid() ).list();
+
+        if(results.size() > 0)
+                return results.get(0);
+
+        return null; // nothing found
+		// TODO UNTESTED
 	}
 
 	@Override
@@ -199,7 +230,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	private <T extends ILogable> Collection<LogEntry<T>> findTwoMatching(LogAction a,
 			LogAction b) {
-		// TODO UNCHECKED!
 		List<LogEntry<T>> result = this
 				.getHibernateTemplate()
 				.getSessionFactory()
@@ -208,8 +238,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 						"FROM logentries WHERE logAction = ? or logAction  = ? ORDER BY timestamp asc")
 				.setInteger(0, a.ordinal()).setInteger(1, b.ordinal()).list();
 
-		return result;
-	}
+        return result;
+        // TODO UNCHECKED!
+    }
 
 	/**
 	 * finds all that match any of the two Logactions and belong to the given
@@ -219,8 +250,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	private Collection<LogEntry<Tag>> findTagEntriesForJakeObject(
 			LogAction a, LogAction b, JakeObject belongsTo) {
-		// TODO
-		return new LinkedList<LogEntry<Tag>>();
+		List<LogEntry<Tag>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession()
+                .createQuery("FROM logentries WHERE objectuuid = ? AND (logAction = ? OR logAction = ?)")
+                .setString(0, belongsTo.getUuid().toString()).setInteger(1,a.ordinal()).setInteger(2,b.ordinal())
+                .list();
+
+        return results;
+        // TODO UNCHECKED!
 	}
 	
 	/**
@@ -231,10 +267,16 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	private Collection<LogEntry<ProjectMember>> findTwoMatchingForProjectMember(
 			LogAction a, LogAction b, ProjectMember belongsTo) {
-		// TODO
-		//a=LogAction.START_TRUSTING_PROJECTMEMBER
-		//b=LogAction.STOP_TRUSTING_PROJECTMEMBER
-		return new LinkedList<LogEntry<ProjectMember>>();
+        // TODO UNCHECKED
+        //a=LogAction.START_TRUSTING_PROJECTMEMBER
+        //b=LogAction.STOP_TRUSTING_PROJECTMEMBER
+
+        List<LogEntry<ProjectMember>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE objectuuid = ? AND (logAction = ? OR logAction = ?)")
+                .setString(0, belongsTo.getUserId().toString()).setInteger(1, a.ordinal()).setInteger(2, b.ordinal())
+                .list();
+
+        return results;
 	}
 
 	/**
@@ -245,29 +287,37 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	private Collection<LogEntry<JakeObject>> findTwoMatchingForJakeObject(LogAction a,
 			LogAction b, JakeObject belongsTo) {
-		// TODO
-		return new LinkedList<LogEntry<JakeObject>>();
+        List<LogEntry<JakeObject>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE objectuuid = ? AND (logAction = ? OR logAction = ?)")
+                .setString(0, belongsTo.getUuid().toString()).setInteger(1, a.ordinal()).setInteger(2, b.ordinal())
+                .list();
+
+        return results;
+        // TODO UNCHECKED
 	}
 
 	private Collection<LogEntry<ProjectMember>> getProjectMemberEntries() {
-		List<LogEntry<ProjectMember>> pme = new LinkedList<LogEntry<ProjectMember>>();
-		for (LogEntry<? extends ILogable> le : findTwoMatching(
-				LogAction.START_TRUSTING_PROJECTMEMBER,
-				LogAction.STOP_TRUSTING_PROJECTMEMBER)) {
-			pme.add((LogEntry<ProjectMember>) le); // TODO?
-		}
-		return pme;
+		List<LogEntry<ProjectMember>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE (logAction = ? OR logAction = ?)")
+                .setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
+                .setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
+
+
+        return results;
+
+        // TODO UNCHECKED
 	}
 
 	private Collection<LogEntry<ProjectMember>> getProjectMemberEntriesFor(
 			ProjectMember belongsTo) {
-		List<LogEntry<ProjectMember>> pme = new LinkedList<LogEntry<ProjectMember>>();
-		for (LogEntry<? extends ILogable> le : findTwoMatchingForProjectMember(
-				LogAction.START_TRUSTING_PROJECTMEMBER,
-				LogAction.STOP_TRUSTING_PROJECTMEMBER, belongsTo)) {
-			pme.add((LogEntry<ProjectMember>) le); // TODO?
-		}
-		return pme;
+        List<LogEntry<ProjectMember>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+                createQuery("FROM logentries WHERE objectuuid = ? AND (logAction = ? OR logAction = ?)")
+                .setString(0, belongsTo.getUserId().toString())
+                .setInteger(1, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
+                .setInteger(2, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
+
+        return results;
+        // TODO UNCHECKED
 	}
 
 	private Collection<LogEntry<Tag>> getTagEntries(JakeObject belongsTo) {
@@ -378,7 +428,37 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public List<LogEntry<JakeObject>> getAllOfJakeObject(JakeObject jakeObject,
 			Collection<LogAction> actions) {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "FROM logentries WHERE objectuuid = ? AND (";
+        int current = 1;
+        Query q;
+        StringBuilder sb;
+
+        sb = new StringBuilder(300);
+        boolean begin = true;
+
+        for(int i = 0; i < actions.size(); i++)
+        {
+            if(!begin)
+                sb.append(" AND ");
+
+            sb.append(" logAction = ? "); begin = false;
+        }
+
+
+
+        q = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(query + sb.toString() + ")");
+        q.setString(0, jakeObject.getUuid().toString());
+
+
+        for(LogAction logAction : actions)
+        {
+            q.setInteger(current, logAction.ordinal());
+            current++;
+        }
+
+        List<LogEntry<JakeObject>> results = q.list();
+        return results;
+
+        // TODO UNCHECKED
 	}
 }

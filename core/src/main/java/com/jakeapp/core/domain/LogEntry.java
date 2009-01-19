@@ -270,7 +270,7 @@ public class LogEntry<T extends ILogable> implements Serializable {
 
 
     @Column(name = "objectuuid", nullable = true)
-    protected String getObjectuuid() {
+    public String getObjectuuid() {
         return objectuuid;
     }
 
