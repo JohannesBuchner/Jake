@@ -4,6 +4,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -217,5 +218,7 @@ public interface ISyncService {
 	public IStatusService getBackendStatusService(Project p);
 
 	public IUsersService getBackendUsersService(Project p);
+
+	public IFSService getBackendFSService(Project p);
 
 }

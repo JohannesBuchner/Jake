@@ -1,16 +1,24 @@
 package com.jakeapp.core.synchronization;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hsqldb.lib.StringInputStream;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -29,10 +37,13 @@ import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICServicesManager;
+import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
+import com.jakeapp.jake.fss.exceptions.FileTooLargeException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
@@ -42,28 +53,39 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
+import com.jakeapp.jake.ics.filetransfer.ITransferListener;
+import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
+import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 
 /**
- * This class should be active whenever you want to use files
- * <p/>
- * On Project->pause/start call
+ * This class should be active whenever you want to use files <p/> On
+ * Project->pause/start call
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
- * {@link #stopServing(Project)}
- * <p/>
- * Even when you are offline, this is to be used.
+ * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
+ * used.
  * 
  * @author johannes
  */
-public class SyncServiceImpl extends FriendlySyncService {
+public class SyncServiceImpl extends FriendlySyncService implements
+		IMessageReceiveListener {
 
 	static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	private static final String POKE_MESSAGE = "<poke/>";
+
+	private static final String NEW_FILE = "<newfile/>";
+
+	private static final String NEW_NOTE = "<newnote/>";
 
 	/**
 	 * key is the UUID
@@ -82,6 +104,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 	private ICServicesManager icServicesManager;
 
 	private UserTranslator userTranslator;
+
+	private Map<String, Project> runningProjects = new HashMap<String, Project>();
+
+	/* for the demo, to be removed and replaced by delegate methods */
+	private List<JakeObject> news = new LinkedList<JakeObject>();
 
 	ICService getICS(Project p) {
 		return icServicesManager.getICService(p);
@@ -255,6 +282,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			db.getLogEntryDao(jo).create(new FileObjectLogEntry(le));
 			log.debug("is a file. log entry written.");
 		}
+		news.add(jo);
 	}
 
 	@Override
@@ -304,8 +332,17 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Override
 	public void poke(Project project, UserId userId) {
 		try {
-			getICS(project).getMsgService().sendMessage(
-					getBackendUserIdFromDomainUserId(userId), POKE_MESSAGE);
+			for (JakeObject jo : this.news) {
+				if (isNoteObject(jo)) {
+					getICS(project).getMsgService().sendMessage(
+							getBackendUserIdFromDomainUserId(userId),
+							NEW_NOTE + jo.getUuid().toString());
+				} else {
+					getICS(project).getMsgService().sendMessage(
+							getBackendUserIdFromDomainUserId(userId),
+							NEW_FILE + ((FileObject) jo).getRelPath());
+				}
+			}
 		} catch (NotLoggedInException e) {
 		} catch (TimeoutException e) {
 		} catch (NoSuchUseridException e) {
@@ -341,7 +378,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 
 		FailoverCapableFileTransferService ts = getTransferService(jo.getProject());
-		//ts.request(jo.ge, nsl);
+		// ts.request(jo.ge, nsl);
 		// TODO: getPotentialProviders
 		// if(le.getUserId().equals(userid))
 		// throw new com.jakeapp.core.dao.exceptions.NoSuchLogEntryException();
@@ -473,15 +510,16 @@ public class SyncServiceImpl extends FriendlySyncService {
 		else
 			return rhash.equals(lhash);
 	}
-	
+
 	@Override
-	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException, IOException {
-		if(isNoteObject(jo))
-			return isLocallyModified((NoteObject)jo);
+	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException,
+			IOException {
+		if (isNoteObject(jo))
+			return isLocallyModified((NoteObject) jo);
 		else
-			return isLocallyModified((FileObject)jo);
+			return isLocallyModified((FileObject) jo);
 	}
-	
+
 	@Transactional
 	@Override
 	public Boolean isLocallyModified(NoteObject noin) {
@@ -491,33 +529,22 @@ public class SyncServiceImpl extends FriendlySyncService {
 		} catch (NoSuchJakeObjectException e) {
 			return false;
 		}
-		
+
 		return null;
-		
-		/*if (!existsLocally(fo))
-			return false;
-		IFSService fss = getFSS(fo.getProject());
-		String rhash;
-		try {
-			rhash = db.getLogEntryDao(fo).getMostRecentFor(fo).getChecksum();
-		} catch (NoSuchLogEntryException e1) {
-			rhash = null;
-		}
-		String lhash = null;
-		try {
-			lhash = fss.calculateHashOverFile(fo.getRelPath());
-		} catch (FileNotFoundException e) {
-		} catch (InvalidFilenameException e) {
-		} catch (NotAReadableFileException e) {
-		}
-		if (lhash == null) {
-			return false; // doesn't exist locally
-		}
-		if (rhash == null)
-			return true; // doesn't exist remote
-		else
-			return rhash.equals(lhash);*/
+
+		/*
+		 * if (!existsLocally(fo)) return false; IFSService fss =
+		 * getFSS(fo.getProject()); String rhash; try { rhash =
+		 * db.getLogEntryDao(fo).getMostRecentFor(fo).getChecksum(); } catch
+		 * (NoSuchLogEntryException e1) { rhash = null; } String lhash = null;
+		 * try { lhash = fss.calculateHashOverFile(fo.getRelPath()); } catch
+		 * (FileNotFoundException e) { } catch (InvalidFilenameException e) { }
+		 * catch (NotAReadableFileException e) { } if (lhash == null) { return
+		 * false; // doesn't exist locally } if (rhash == null) return true; //
+		 * doesn't exist remote else return rhash.equals(lhash);
+		 */
 	}
+
 	@Override
 	public Boolean existsLocally(FileObject fo) throws IOException {
 		IFSService fss = getFSS(fo.getProject());
@@ -554,7 +581,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			newestLe = db.getLogEntryDao(jo).getMostRecentFor(jo);
 		} catch (NoSuchLogEntryException e) {
 			return false;
-		} 
+		}
 		LogEntry<JakeObject> myLe;
 		try {
 			myLe = db.getLogEntryDao(jo).getLastPulledFor(jo);
@@ -579,17 +606,130 @@ public class SyncServiceImpl extends FriendlySyncService {
 		if (rhp == null) {
 			rhp = new TrustAllRequestHandlePolicy(db, projectsFssMap, userTranslator);
 		}
-
+		runningProjects.put(p.getProjectId(), p);
 		projectsFssMap.put(p.getProjectId(), fs);
 		projectChangeListeners.put(p.getProjectId(), cl);
-		// TODO: add ics hooks
+		// this creates the ics
+		getICS(p);
+		log.debug("adding receive hooks");
+		try {
+			getICS(p).getStatusService().login(
+					getMyBackendUserid(p),
+					p.getCredentials().getPlainTextPassword());
+		} catch (TimeoutException e) {
+			log.error("logging in for starting project failed", e);
+		} catch (NetworkException e) {
+			log.error("logging in for starting project failed", e);
+		}
+		getICS(p).getMsgService().registerReceiveMessageListener(this);
+	}
+
+	private class PullListener implements INegotiationSuccessListener {
+
+		private ChangeListener cl;
+
+		private JakeObject jo;
+
+		private PullListener(JakeObject jo, ChangeListener cl) {
+			this.cl = cl;
+			this.jo = jo;
+		}
+
+		@Override
+		public void failed(Throwable reason) {
+			log.error("pulling failed.");
+		}
+
+		@Override
+		public void succeeded(IFileTransfer ft) {
+			log.info("pulling negotiation succeeded");
+			cl.pullNegotiationDone(jo);
+			new TransferWatcherThread(ft, new PullWatcher(jo, cl, ft));
+		}
+
+	}
+
+	private class PullWatcher implements ITransferListener {
+
+		private ChangeListener cl;
+
+		private IFileTransfer ft;
+
+		private JakeObject jo;
+
+		public PullWatcher(JakeObject jo, ChangeListener cl, IFileTransfer ft) {
+			this.cl = cl;
+			this.ft = ft;
+			this.jo = jo;
+		}
+
+		@Override
+		public void onFailure(AdditionalFileTransferData transfer, String error) {
+			log.error("transfer for " + jo + " failed: " + error);
+		}
+
+		@Override
+		public void onSuccess(AdditionalFileTransferData transfer) {
+			log.info("transfer for " + jo + " succeeded");
+			FileInputStream data;
+			try {
+				data = new FileInputStream(transfer.getDataFile());
+			} catch (FileNotFoundException e2) {
+				log.error("opening file failed:", e2);
+				return;
+			}
+			if (jo instanceof NoteObject) {
+				NoteObject no;
+				try {
+					no = db.getNoteObjectDao(jo.getProject()).get(jo.getUuid());
+				} catch (Exception e1) {
+					log.error("404", e1);
+					return;
+				}
+
+				BufferedReader bis = new BufferedReader(new InputStreamReader(data));
+				String content;
+				try {
+					content = bis.readLine();
+				} catch (IOException e) {
+					content = "foo";
+				}
+				no.setContent(content);
+				cl.pullDone(jo);
+			}
+			if (jo instanceof FileObject) {
+				String target = ((FileObject) jo).getRelPath();
+				try {
+					getFSS(jo.getProject()).writeFileStream(target, data);
+				} catch (Exception e) {
+					log.error("writing file failed:", e);
+					return;
+				}
+				cl.pullDone(jo);
+			}
+		}
+
+		@Override
+		public void onUpdate(AdditionalFileTransferData transfer, Status status,
+				double progress) {
+			log.info("progress for " + jo + " : " + status + " - " + progress);
+			cl.pullProgressUpdate(jo, status, progress);
+		}
 
 	}
 
 	@Override
 	public void stopServing(Project p) {
+		runningProjects.remove(p.getProjectId());
 		// TODO Auto-generated method stub
 		// TODO: remove ics hooks
+		try {
+			getICS(p).getStatusService().logout();
+		} catch (TimeoutException e) {
+			log.debug("logout failed", e);
+		} catch (NetworkException e) {
+			log.debug("logout failed", e);
+		}
 	}
 
 
@@ -627,20 +767,29 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public UserId getUserIdFromProjectMember(Project project, ProjectMember member) {
 		return userTranslator.getUserIdFromProjectMember(project, member);
 	}
-	
+
+	/* for the demo, to be removed and replaced by delegate methods */
 	@Override
 	public IMsgService getBackendMsgService(Project p) {
 		return getICS(p).getMsgService().getFriendMsgService();
 	}
+
 	@Override
 	public IStatusService getBackendStatusService(Project p) {
 		return getICS(p).getStatusService();
 	}
+
 	@Override
 	public IUsersService getBackendUsersService(Project p) {
 		return getICS(p).getUsersService();
 	}
-	
+
+	@Override
+	public IFSService getBackendFSService(Project p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public void invite(Project project, UserId userId) {
 		// TODO Auto-generated method stub
@@ -657,6 +806,52 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void notifyInvitationRejected(Project project, UserId inviter) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+		int uuidlen = UUID.randomUUID().toString().length();
+		UUID projectid = UUID.fromString(content.substring(0, uuidlen));
+		content = content.substring(uuidlen);
+		Project p = getProjectByUserId(projectid);
+		ChangeListener cl = projectChangeListeners.get(projectid);
+		if (content.startsWith(NEW_NOTE)) {
+			log.debug("requesting note");
+			UUID uuid = UUID.fromString(content.substring(NEW_NOTE.length()));
+			log.debug("persisting object");
+			NoteObject no = new NoteObject(uuid, p, "loading ...");
+			db.getNoteObjectDao(p).persist(no);
+			log.debug("calling other user: " + from_userid);
+			try {
+				getTransferService(p).request(
+						new FileRequest("N" + uuid, false, from_userid),
+						cl.beganRequest(no));
+			} catch (NotLoggedInException e) {
+				log.error("Not logged in");
+			}
+		}
+		if (content.startsWith(NEW_FILE)) {
+			log.debug("requesting file");
+			String relpath = content.substring(NEW_FILE.length());
+			FileObject fo = new FileObject(UUID.randomUUID(), p, relpath);
+			log.debug("persisting object");
+			db.getFileObjectDao(p).persist(fo);
+			log.debug("calling other user: " + from_userid);
+			try {
+				getTransferService(p).request(
+						new FileRequest("F" + relpath, false, from_userid),
+						cl.beganRequest(fo));
+			} catch (NotLoggedInException e) {
+				log.error("Not logged in");
+			}
+		}
+	}
+
+	private Project getProjectByUserId(UUID projectid) {
+		// for(i : getProjectsManagingService().getProjectList()
+		// return new Project(null, projectid, null, null);
+		// TODO: mocked for the demo
+		return getProjectsManagingService().getProjectList().get(0);
 	}
 
 	@Override
