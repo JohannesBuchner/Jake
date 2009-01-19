@@ -58,6 +58,8 @@ public class MsgServiceFactory {
         this.serviceCredentialsDao = serviceCredentialsDao;
         this.userIdDao = userIdDao;
         // can not initialise here, this produces spring/hibernate errors!
+
+        MsgService.setUserIdDao(userIdDao);
     }
 
     private IServiceCredentialsDao getServiceCredentialsDao() {
@@ -68,21 +70,6 @@ public class MsgServiceFactory {
     @Transactional
     private void createTestdata() {
         log.debug("creating testData");
-        List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
-
-        credentialsList = this.serviceCredentialsDao.getAll();
-
-
-
-        for (ServiceCredentials credentials : credentialsList) {
-            try {
-                MsgService service = null;
-                service = this.createMsgService(credentials);
-                msgServices.add(service);
-            } catch (ProtocolNotSupportedException e) {
-
-            }
-        }
     }
 
     public MsgService createMsgService(ServiceCredentials credentials)
@@ -143,7 +130,27 @@ public class MsgServiceFactory {
     @Transactional
     public List<MsgService> getAll() {
         log.debug("calling getAll");
-        ensureInitialised();
+//        ensureInitialised();
+
+
+        List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
+
+        credentialsList = this.serviceCredentialsDao.getAll();
+
+        List<MsgService> msgServices = new ArrayList<MsgService>();
+
+
+        for (ServiceCredentials credentials : credentialsList) {
+            try {
+                MsgService service = null;
+                service = this.createMsgService(credentials);
+                msgServices.add(service);
+            } catch (ProtocolNotSupportedException e) {
+
+            }
+        }
+
+        
         return msgServices;
     }
 
@@ -189,7 +196,16 @@ public class MsgServiceFactory {
                 throw new ProtocolNotSupportedException("MSN not yet implemented");
 
             case XMPP:
-                user = new XMPPUserId(credentials, UUID.randomUUID(), credentials.getUserId(), "", "", "");
+
+                UUID res = UUID.fromString(credentials.getUuid());
+
+                if(res == null) res = UUID.randomUUID();
+
+                credentials.setUuid(res);
+
+                user = new XMPPUserId(credentials,
+                        res,
+                        credentials.getUserId(), credentials.getUserId(), "", "");
                 break;
         }
         if(user != null)

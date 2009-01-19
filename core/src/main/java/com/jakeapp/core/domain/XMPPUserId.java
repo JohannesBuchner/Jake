@@ -28,6 +28,15 @@ public class XMPPUserId extends UserId {
         super(credentials, uuid, userId, nickname, firstName, surName);
     }
 
+    public static XMPPUserId createFromUserId(UserId user)
+    {
+        return new XMPPUserId(user.getCredentials(),
+                user.getUuid(),
+                user.getUserId(),
+                user.getNickname(),
+                user.getFirstName(), user.getSurName());
+    }
+
 
     private XMPPUserId()
     {

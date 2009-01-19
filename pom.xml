@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jakeapp.jake</groupId>
 	<artifactId>parent</artifactId>
-	<packaging>pom</packaging>
+	<packaging>pom</packaging>                                            
 	<version>1.0-SNAPSHOT</version>
 	<name>Jake</name>
 	<description>Jake is a collaboration tool for sharing a project folder between project members.</description>

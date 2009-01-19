@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.dao.IUserIdDao;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
 
@@ -28,6 +29,9 @@ public abstract class MsgService<T extends UserId> {
 	protected T userId;
 
 	private ServiceCredentials serviceCredentials;
+
+    private static IUserIdDao userIdDao;
+
 
 	/**
 	 * @return Servicecredentials if they are already set.
@@ -151,6 +155,8 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	public T getUserId() {
+
+
 		return this.userId;
 	}
 
@@ -227,4 +233,13 @@ public abstract class MsgService<T extends UserId> {
 	public final boolean isPasswordSaved() {
 		return (this.getServiceCredentials() != null && this.getServiceCredentials().getPlainTextPassword().isEmpty());
 	}
+
+    protected static IUserIdDao getUserIdDao() {
+        return userIdDao;
+    }
+
+    protected static void setUserIdDao(IUserIdDao userIdDao) {
+        MsgService.userIdDao = userIdDao;
+    }
 }
+

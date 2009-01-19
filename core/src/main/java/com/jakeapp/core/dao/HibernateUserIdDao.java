@@ -73,7 +73,8 @@ public class HibernateUserIdDao extends HibernateDaoSupport implements IUserIdDa
 
     @Override
     public List<UserId> getAll(ServiceCredentials credentials) {
-        List result = this.getHibernateTemplate().find("FROM UserId WHERE ServiceCredentials = ? ", credentials);
+        List<UserId> result = this.
+                getHibernateTemplate().find("FROM UserId WHERE ServiceCredentials = ? ", credentials);
         if (result.size() > 0) {
             List<UserId> realResult = new LinkedList<UserId>();
 
@@ -82,7 +83,8 @@ public class HibernateUserIdDao extends HibernateDaoSupport implements IUserIdDa
             return realResult;
         } else {
             log.debug("found nothing");
-            return null;
+//            return null;
+            return result;
         }
     }
 
