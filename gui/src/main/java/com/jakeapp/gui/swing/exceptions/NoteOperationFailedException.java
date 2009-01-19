@@ -30,8 +30,8 @@ public class NoteOperationFailedException extends Exception {
 	@Override
 	public String getMessage() {
 		String str = new String();
-		str = "CouldNotCreateNoteException: " + this.nestedExceptions.size() + " appended Exceptions. Error message of this Exception: ";
-		str += super.getMessage();
+		str = "CouldNotCreateNoteException: " + super.getMessage();
+		
 		return str;
 	}
 	

@@ -6,6 +6,8 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -43,13 +45,12 @@ public class NotesTableModel extends DefaultTableModel {
 		public boolean isSoftLocked;
 		public String lockingMessage;
 
-		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor, boolean isLocal, boolean isSoftLocked, String lockingMessage) {
+		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor, boolean isLocal, boolean isSoftLocked) {
 			this.note = note;
 			this.lastEdit = lastEdit;
 			this.lastEditor = lastEditor;
 			this.isLocal = isLocal;
 			this.isSoftLocked = isSoftLocked;
-			this.lockingMessage = lockingMessage;
 		}
 	}
 
@@ -118,25 +119,22 @@ public class NotesTableModel extends DefaultTableModel {
 
 		try {
 			incommingNotes = this.core.getNotes(project);
-		} catch (FrontendNotLoggedInException e) {
-			// TODO 4 Peter/Chris
-			e.printStackTrace();
-		} catch (ProjectNotLoadedException e) {
-			// TODO 4 Peter/Chris
-			e.printStackTrace();
+		
+			for (NoteObject n : incommingNotes) {
+				try {
+					this.notes.add(new NoteMetaDataWrapper(n,
+							  this.core.getLastEdit(n),
+							  "first + last",
+							  this.core.isLocalNote(n),
+							  this.core.isSoftLocked(n)));
+				} catch (NoteOperationFailedException e) {
+					ExceptionUtilities.showError(e);
+				}
+			}
+		} catch (NoteOperationFailedException e) {
+			ExceptionUtilities.showError(e);
 		}
 
-		for (NoteObject n : incommingNotes) {
-			//UserId id = this.core.getLastEditor(n, project).getUserId();
-			this.notes.add(new NoteMetaDataWrapper(n,
-					  this.core.getLastEdit(n), // TODO: Achtung: berechnung wird jedesmal durchgefuehrt.
-					  "first + last",
-					  core.isLocalNote(n),
-					  core.isSoftLocked(n),
-					  core.getLockingMessage(n)));
-			// TODO: fix ProjectMember-changes
-			//id.getFirstName() + id.getSurName()));
-		}
 	}
 
 	@Override

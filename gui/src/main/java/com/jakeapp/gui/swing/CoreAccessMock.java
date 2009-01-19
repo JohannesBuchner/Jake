@@ -5,7 +5,6 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;
@@ -557,18 +556,18 @@ public class CoreAccessMock implements ICoreAccess {
 		return fo;
 	}
 
-	public List<NoteObject> getNotes(Project project) throws FrontendNotLoggedInException, ProjectNotLoadedException {
+	public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException {
 		//return this.frontendService.getProjectsManagingService(this.sessionId).getNotes(project);
 		return this.notesList;
 	}
 
 	@Override
-	public Date getLastEdit(NoteObject note) {
+	public Date getLastEdit(NoteObject note) throws NoteOperationFailedException {
 		return new Date();
 	}
 
 	@Override
-	public ProjectMember getLastEditor(NoteObject note) {
+	public ProjectMember getLastEditor(NoteObject note) throws NoteOperationFailedException {
 		// TODO: fix
 		return new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE);
 
@@ -576,7 +575,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public boolean isLocalNote(NoteObject note) {
+	public boolean isLocalNote(NoteObject note) throws NoteOperationFailedException {
 		return this.notesIsLocal.get(this.notesList.indexOf(note));
 	}
 

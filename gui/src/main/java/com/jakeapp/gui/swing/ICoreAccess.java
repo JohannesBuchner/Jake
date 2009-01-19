@@ -5,7 +5,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -530,33 +529,36 @@ public interface ICoreAccess {
 	 *
 	 * @param project : project that should be evaluated
 	 * @return
+	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public List<NoteObject> getNotes(Project project) throws FrontendNotLoggedInException,
-			  ProjectNotLoadedException;
+	public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
 	 *
 	 * @param note the note in question
 	 * @return the date of the last edit
+	 * @throws NoteOperationFailedException raised if fetching the last edit failed.
 	 */
-	public Date getLastEdit(NoteObject note);
+	public Date getLastEdit(NoteObject note) throws NoteOperationFailedException;
 
 	/**
 	 * Get the <code>ProjectMemeber<code> who last edited the given note.
 	 *
 	 * @param note the note in question
 	 * @return the <code>ProjectMember</code> who last edited this note.
+	 * @throws NoteOperationFailedException raised if fetching the last editor failed.
 	 */
-	public ProjectMember getLastEditor(NoteObject note);
+	public ProjectMember getLastEditor(NoteObject note) throws NoteOperationFailedException;
 
 	/**
 	 * Determine if a note is only local or if it is a shared note.
 	 *
 	 * @param note the note in question
 	 * @return <code>true</code> iff this note is a local note.
+	 * @throws NoteOperationFailedException raised if fetching isLocal failed.
 	 */
-	public boolean isLocalNote(NoteObject note);
+	public boolean isLocalNote(NoteObject note) throws NoteOperationFailedException;
 
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.

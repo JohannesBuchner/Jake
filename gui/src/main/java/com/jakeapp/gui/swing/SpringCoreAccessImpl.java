@@ -561,13 +561,18 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return fo;
 	}
 
-	public List<NoteObject> getNotes(Project project) throws FrontendNotLoggedInException,
-			  ProjectNotLoadedException {
-		return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
+	public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException {
+		try {
+			return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService(project).getNotes();
+		} catch (Exception e) {
+			NoteOperationFailedException ex = new  NoteOperationFailedException();
+			ex.append(e);
+			throw ex;
+		}
 	}
 
 	@Override
-	public Date getLastEdit(NoteObject note) {
+	public Date getLastEdit(NoteObject note) throws NoteOperationFailedException {
 		Date result = null;
 
 		try {
@@ -580,7 +585,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public ProjectMember getLastEditor(NoteObject note) {
+	public ProjectMember getLastEditor(NoteObject note) throws NoteOperationFailedException {
 		ProjectMember member = null;
 		try {
 			member = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getLastEditor(note);
@@ -592,7 +597,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public boolean isLocalNote(NoteObject note) {
+	public boolean isLocalNote(NoteObject note) throws NoteOperationFailedException {
 		boolean result;
 
 		try {

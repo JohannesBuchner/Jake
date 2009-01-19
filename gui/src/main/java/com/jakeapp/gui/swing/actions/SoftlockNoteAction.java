@@ -12,6 +12,8 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
 /**
  * Note Action to lock and unlock a note, on/off checkbox behaviour. Batch enabled.
@@ -49,7 +51,12 @@ public class SoftlockNoteAction extends NoteAction {
 			this.setEnabled(true);
 
 			this.isLocked = JakeMainApp.getCore().isSoftLocked(this.getSelectedNotes().get(0));
-			boolean isLocal = JakeMainApp.getCore().isLocalNote(this.getSelectedNotes().get(0));
+			boolean isLocal = true;
+			try {
+				isLocal = JakeMainApp.getCore().isLocalNote(this.getSelectedNotes().get(0));
+			} catch (NoteOperationFailedException e) {
+				ExceptionUtilities.showError(e);
+			}
 			if (isLocal) {
 				this.setEnabled(false);
 			} else if (this.isLocked) {

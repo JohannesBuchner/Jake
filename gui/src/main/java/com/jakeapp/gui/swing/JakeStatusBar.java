@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
 import org.apache.log4j.Logger;
@@ -273,18 +274,9 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
 				int notesCount = 0;
 				try {
-					/**
-					 * TODO 4 Peter:
-					 * achtung.. das hollt jedes mal
-					 * die ganzen Notes aus der Datenbank... bitte irgendwo zwischenspeichern.
-					 */
 					notesCount = getCore().getNotes(getProject()).size();
-				} catch (FrontendNotLoggedInException e) {
-					// TODO 4 peter
-					e.printStackTrace();
-				} catch (ProjectNotLoadedException e) {
-					// TODO 4 Peter
-					e.printStackTrace();
+				} catch (NoteOperationFailedException e) {
+					ExceptionUtilities.showError(e);
 				}
 				String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
 

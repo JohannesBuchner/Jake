@@ -6,6 +6,7 @@ import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
 import javax.swing.*;
@@ -43,9 +44,13 @@ public class CommitNoteAction extends NoteAction {
 		if (this.getSelectedNotes().size() > 0) {
 			boolean isLocal = false;
 			for (NoteObject note : getSelectedNotes()) {
-				if (core.isLocalNote(note)) {
-					isLocal = true;
-					break;
+				try {
+					if (core.isLocalNote(note)) {
+						isLocal = true;
+						break;
+					}
+				} catch (NoteOperationFailedException e) {
+					ExceptionUtilities.showError(e);
 				}
 			}
 			if (isLocal) {
