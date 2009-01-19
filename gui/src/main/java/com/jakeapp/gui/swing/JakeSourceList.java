@@ -4,7 +4,6 @@ import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.gui.swing.actions.*;
-import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
@@ -28,7 +27,6 @@ public class JakeSourceList extends JakeGuiComponent implements
 		  ProjectSelectionChanged, ProjectChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
-	// source list management
 	private Map<SourceListItem, Project> sourceListProjectMap;
 	private Icon projectStartedIcon;
 	private Icon projectStoppedIcon;
@@ -40,7 +38,6 @@ public class JakeSourceList extends JakeGuiComponent implements
 	private JPopupMenu sourceListContextMenu;
 	private JPopupMenu sourceListInvitiationContextMenu;
 
-	ProjectAction startStopProjectAction = new StartStopProjectAction();
 	private SourceListSelectionListener projectSelectionListener;
 
 	public JakeSourceList(ICoreAccess core) {
@@ -53,16 +50,13 @@ public class JakeSourceList extends JakeGuiComponent implements
 		sourceListInvitiationContextMenu = createSourceListInvitationContextMenu();
 		sourceList = createSourceList();
 
-		// TODO: enable when joh updates macwidgets
-
-
 		// get internal tree
+		// TODO: this is a MODIFICATION of MacWidgets, need to fork+publish sources!
 		JTree tree = sourceList.getTree();
 
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(new JakeSourceListTransferHandler());
-
 
 		// run the inital update, later updated by events
 		updateSourceList();
@@ -182,8 +176,14 @@ public class JakeSourceList extends JakeGuiComponent implements
 		// create the menu
 		JPopupMenu popupMenu = new JakePopupMenu();
 
+		JMenuItem syncMenuItem = new JMenuItem();
+		syncMenuItem.setAction(new SyncProjectAction());
+		popupMenu.add(syncMenuItem);
+
+		popupMenu.add(new JSeparator());
+
 		JMenuItem startStopMenuItem = new JMenuItem();
-		startStopMenuItem.setAction(startStopProjectAction);
+		startStopMenuItem.setAction(new StartStopProjectAction());
 		popupMenu.add(startStopMenuItem);
 
 		JMenuItem renameMenuItem = new JMenuItem();

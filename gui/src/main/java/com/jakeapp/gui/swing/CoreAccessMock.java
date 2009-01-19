@@ -439,6 +439,11 @@ public class CoreAccessMock implements ICoreAccess {
 		new Thread(runner).start();
 	}
 
+	@Override
+	public void syncProject(Project project) {
+		// do nothing
+	}
+
 	public void setProjectName(Project project, String prName) {
 		project.setName(prName);
 

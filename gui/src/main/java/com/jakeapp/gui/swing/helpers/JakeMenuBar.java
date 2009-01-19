@@ -2,20 +2,16 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
-import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
 import net.roydesign.app.QuitJMenuItem;
 import net.roydesign.mac.MRJAdapter;
 import net.roydesign.ui.StandardMacAboutFrame;
 import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.plaf.SeparatorUI;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,13 +33,14 @@ public class JakeMenuBar extends JMenuBar {
 		Application app = Application.getInstance();
 		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(JakeMainView.class);
 
-		
-		
+
 		/****************************** Project *********************************/
 		final JMenu projectMenu = new JMenu();
 		projectMenu.setText(resourceMap.getString("projectMenu.text"));
 
 		projectMenu.add(new JMenuItem(new CreateProjectAction(false)));
+		projectMenu.add(new JMenuItem(new SyncProjectAction()));
+		projectMenu.addSeparator();
 		projectMenu.add(new JMenuItem(new StartStopProjectAction()));
 		projectMenu.add(new JMenuItem(new RenameFileAction()));
 		projectMenu.add(new JMenuItem(new DeleteFileAction()));
@@ -52,23 +49,23 @@ public class JakeMenuBar extends JMenuBar {
 		projectMenu.add(new JMenuItem(new CreateNoteAction()));
 		projectMenu.addSeparator();
 		//TODO: sign in action
-		
+
 		this.add(projectMenu);
-		
+
 		/****************************** View **********************************/
 		final JMenu viewMenu = new JMenu();
 		viewMenu.setText(resourceMap.getString("viewMenu.text"));
-		
+
 		viewMenu.add(new JMenuItem(new SwitchNewsProjectContextAction()));
 		viewMenu.add(new JMenuItem(new SwitchFilesProjectContextAction()));
 		viewMenu.add(new JMenuItem(new SwitchNotesProjectContextAction()));
-		
+
 		this.add(viewMenu);
-		
+
 		/******************************* File *****************************/
 		final JMenu fileMenu = new JMenu();
 		fileMenu.setText(resourceMap.getString("fileMenu.text"));
-		
+
 		fileMenu.add(new JMenuItem(new OpenFileAction()));
 		fileMenu.add(new JMenuItem(new ResolveConflictFileAction()));
 		fileMenu.addSeparator();
@@ -82,23 +79,23 @@ public class JakeMenuBar extends JMenuBar {
 		fileMenu.add(new JMenuItem(new CreateFolderFileAction()));
 		fileMenu.addSeparator();
 		fileMenu.add(new JMenuItem(new LockFileAction()));
-		
+
 		this.add(fileMenu);
-		
+
 		/****************************** Notes *******************************/
 		final JMenu notesMenu = new JMenu();
 		notesMenu.setText(resourceMap.getString("notesMenu.text"));
-		
+
 		notesMenu.add(new JMenuItem(new CreateNoteAction()));
 		notesMenu.addSeparator();
 		notesMenu.add(new JMenuItem(new DeleteNoteAction()));
 		notesMenu.add(new JMenuItem(new CommitNoteAction()));
 		notesMenu.addSeparator();
 		notesMenu.add(new JMenuItem(new SoftlockNoteAction()));
-		
+
 		this.add(notesMenu);
-		
-		
+
+
 		/******************************** Help **************************/
 		JMenu helpMenu = new JMenu();
 		helpMenu.setText(resourceMap.getString("helpMenu.text"));
@@ -159,7 +156,7 @@ public class JakeMenuBar extends JMenuBar {
 		});
 		if (!QuitJMenuItem.isAutomaticallyPresent())
 			projectMenu.addSeparator();
-			projectMenu.add(quitMenuItem);
+		projectMenu.add(quitMenuItem);
 
 		// add special mac os event listener
 		if (Platform.isMac()) {

@@ -21,6 +21,7 @@ import java.util.List;
  *
  * @author: studpete
  */
+// TODO: stuff needs to be cleaned up very badly
 public class JakeSourceListTransferHandler extends TransferHandler {
 	private static final Logger log = Logger.getLogger(JakeSourceListTransferHandler.class);
 
@@ -59,7 +60,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			//Object data2 = t.getTransferData(DataFlavor.);
 			//log.info("data2= " + data2);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.warn("Error on drag&drop-action: ", e);
 		}
 
 		/* data of type javaFileListFlavor is a list of files */

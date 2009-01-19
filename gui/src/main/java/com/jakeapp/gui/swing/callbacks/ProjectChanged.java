@@ -31,7 +31,7 @@ public interface ProjectChanged {
 		}
 
 		public enum ProjectChangedReason {
-			Created, State, Name, Deleted, Joined, Rejected, People, Invited;
+			Created, State, Name, Deleted, Joined, Rejected, People, Invited, Sync;
 		}
 	}
 

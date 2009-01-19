@@ -15,6 +15,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -472,6 +473,26 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		new Thread(runner).start();
 	}
 
+	@Override
+	// TODO: should be a running later ?
+	public void syncProject(Project project) {
+		try {
+			// TODO: HACK: Why do i have to cast here? poke should always work just fine with parameter project.
+			((IFriendlySyncService) getFrontendService().getSyncService(getSessionId())).poke(project);
+
+			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Sync));
+
+		} catch (IllegalArgumentException e) {
+			//empty implementation
+		} catch (IllegalStateException e) {
+			//empty implementation
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		}
+	}
+
+
 	public void setProjectName(Project project, String prName) {
 		try {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId()).updateProjectName(project, prName);
@@ -618,7 +639,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			return coreMock.getNotes(project);
 		} else {
 			try {
-                return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService().getNotes(project);
+				return this.frontendService.getProjectsManagingService(this.sessionId).getNoteManagingService().getNotes(project);
 			} catch (Exception e) {
 				NoteOperationFailedException ex = new NoteOperationFailedException();
 				ex.append(e);

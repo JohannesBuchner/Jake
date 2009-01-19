@@ -340,6 +340,15 @@ public interface ICoreAccess {
 
 
 	/**
+	 * Manually starts a project syncronize.
+	 * Get/Sends all log entries, etc
+	 *
+	 * @param project
+	 */
+	void syncProject(Project project);
+
+
+	/**
 	 * Changes the project name. Needed in the interface, because we need change
 	 * events.
 	 *

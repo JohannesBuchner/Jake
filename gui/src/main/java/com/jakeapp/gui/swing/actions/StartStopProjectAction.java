@@ -17,7 +17,8 @@ public class StartStopProjectAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(StartStopProjectAction.class);
 
 	public StartStopProjectAction() {
-		// need initial name
+		putValue(Action.NAME, ProjectHelper.getProjectStartStopString(getProject()));
+
 		updateAction();
 	}
 
