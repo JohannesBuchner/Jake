@@ -124,7 +124,7 @@ public class GuiUtilities {
 			try {
 				setWindowOpacityMethod.invoke(null, (Window) frame, (float) alpha);
 			} catch (Throwable th) {
-				log.warn("com.sun.awt.AWTUtilities.setWindowOpacity failed.", th);
+				//log.warn("com.sun.awt.AWTUtilities.setWindowOpacity failed.", th);
 			}
 			return;
 		}
