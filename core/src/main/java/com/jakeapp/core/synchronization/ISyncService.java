@@ -1,72 +1,60 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * The task of the synchronisation service (SyncService) is to implement a
  * sharing logic for objects based on the ICService
- * 
+ * <p/>
  * <p>
  * Each client has a log (see <code>LogEntry</code>). It has the keys
  * (timestamp, relpath, userid), a action and possibly more.
  * </p>
- * 
+ * <p/>
  * <p>
  * syncLogAndGetChanges() synchronises the local index with another user using
  * the <code>ICService</code>
  * </p>
- * 
+ * <p/>
  * <p>
  * Then, a pull operation can be issued for a file. This downloads (fetches) the
  * file and puts it in the file system.
  * </p>
- * 
+ * <p/>
  * <p>
  * If the local client receives such a download operation, the registered fetch
  * callback can still decide wether the download is allowed or not.
  * </p>
- * 
+ * <p/>
  * <p>
  * A announce operation is adding a log entry and requesting a synclog from each
  * project member one after another.
  * </p>
- * 
+ * <p/>
  * <p>
  * All methods are best-effort and might fail (in a safe way). Communication is
  * performed with project members only.
  * </p>
- * 
+ * <p/>
  * Also see the sequential diagrams and technical description.
- * 
+ *
+ * @author johannes
  * @see LogEntry
  * @see IMsgService
- * @author johannes
- **/
+ */
 /*
  * Warning: The Exceptions will likely change (new ones will be added, like
  * NetworkExceptions
@@ -76,22 +64,20 @@ public interface ISyncService {
 	/**
 	 * retrieves and integrates the log from the specified user of the supplied
 	 * <code>Project</code>.
-	 * 
+	 *
 	 * @param project
 	 * @param userId
 	 * @return the new LogEntries
-	 * @throws IllegalArgumentException
-	 *             if the supplied project or userId is null
-	 * @throws IllegalProtocolException
-	 *             if the supplied UserId is of the wrong protocol-type
+	 * @throws IllegalArgumentException if the supplied project or userId is null
+	 * @throws IllegalProtocolException if the supplied UserId is of the wrong protocol-type
 	 */
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId userId)
-			throws IllegalArgumentException, IllegalProtocolException;
+			  throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
 	 * Tells the user userId to do a logSync. It is the way of telling
 	 * "hey, we have something new". This makes no guarantees and fails silently
-	 * 
+	 *
 	 * @param project
 	 * @param userId
 	 */
@@ -100,13 +86,11 @@ public interface ISyncService {
 	/**
 	 * The object is requested (found in the log) and its content stored. The
 	 * RequestHandlePolicy is asked for users having the object.
-	 * 
-	 * @param objects
-	 *            the objects to be pulled
-	 * @throws NoSuchLogEntryException
-	 *             the object does not exist (no one announced it)
-	 * @throws IllegalArgumentException 
-	 * @throws NotLoggedInException 
+	 *
+	 * @param jo the object to be pulled
+	 * @throws NoSuchLogEntryException  the object does not exist (no one announced it)
+	 * @throws IllegalArgumentException
+	 * @throws NotLoggedInException
 	 */
 	public void pullObject(JakeObject jo) throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
 
@@ -114,16 +98,14 @@ public interface ISyncService {
 	 * Adds a log entry that the object has been modified, created, deleted,
 	 * tagged, untagged <br>
 	 * Unless you are in a loop, you probably want to do a poke afterwards.
-	 * 
+	 *
 	 * @param jo
-	 * @param action
-	 *            a prepared logentry
+	 * @param action	 a prepared logentry
 	 * @param commitMsg
-	 * @throws NotAReadableFileException 
-	 * @throws InvalidFilenameException 
-	 * @throws FileNotFoundException 
-	 * @throws IllegalArgumentException
-	 *             if you are doing it wrong
+	 * @throws NotAReadableFileException
+	 * @throws InvalidFilenameException
+	 * @throws FileNotFoundException
+	 * @throws IllegalArgumentException  if you are doing it wrong
 	 * @see LogAction for what to set
 	 */
 	public void announce(JakeObject jo, LogEntry<JakeObject> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
@@ -132,36 +114,32 @@ public interface ISyncService {
 
 	/**
 	 * Gets a list of all {@link FileObject}s that are currently in conflict
-	 * 
-	 * @param project
-	 *            the Project from which the changed objects should be shown
+	 *
+	 * @param project the Project from which the changed objects should be shown
 	 * @return a list of all out-of-sync JakeObjects
-	 * @throws IllegalArgumentException
-	 *             if the supplied Project is null or invalid
+	 * @throws IllegalArgumentException if the supplied Project is null or invalid
 	 */
 	public Iterable<FileObject> getFileObjectsInConflict(Project project)
-			throws IllegalArgumentException;
+			  throws IllegalArgumentException;
 
 
 	/**
 	 * Tries to find out if the supplied object is softlocked or not
-	 * 
-	 * @param object
-	 *            the {@link JakeObject} to query
+	 *
+	 * @param object the {@link JakeObject} to query
 	 * @return null if not locked, the {@link LogEntry} otherwise
-	 * @throws IllegalArgumentException
-	 *             if the supplied JakeObject is null or invalid
+	 * @throws IllegalArgumentException if the supplied JakeObject is null or invalid
 	 */
 	public LogEntry<JakeObject> getLock(JakeObject object) throws IllegalArgumentException;
 
 
 	/**
 	 * start offering files to others, etc. TODO
-	 * 
+	 *
 	 * @throws ProjectException
 	 */
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
-			throws ProjectException;
+			  throws ProjectException;
 
 	/**
 	 * start offering files to others, etc. TODO
@@ -170,28 +148,25 @@ public interface ISyncService {
 
 	/**
 	 * gets the files and their information
-	 * 
+	 *
 	 * @return
 	 * @throws IOException
 	 */
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException;
 
 	/**
-	 * 
 	 * @param jo
 	 * @return
 	 */
 	public boolean isObjectInConflict(JakeObject jo);
 
 	/**
-	 * 
 	 * @param project
 	 * @return
 	 */
 	public Iterable<FileObject> getPullableFileObjects(Project project);
 
 	/**
-	 * 
 	 * @param fo
 	 * @return
 	 */
@@ -200,12 +175,10 @@ public interface ISyncService {
 
 	/**
 	 * Invites a User to a project.
-	 * 
-	 * @param project
-	 *            The project to invite the user to.
-	 * @param userId
-	 *            The userId of the User. There is already a corresponding
-	 *            ProjectMember-Object stored in the project-local database.
+	 *
+	 * @param project The project to invite the user to.
+	 * @param userId  The userId of the User. There is already a corresponding
+	 *                ProjectMember-Object stored in the project-local database.
 	 */
 	void invite(Project project, UserId userId);
 
@@ -222,7 +195,6 @@ public interface ISyncService {
 	void notifyInvitationRejected(Project project, UserId inviter);
 
 	/**
-	 * 
 	 * @param jo
 	 */
 	void getTags(JakeObject jo);
@@ -234,7 +206,7 @@ public interface ISyncService {
 	public Boolean isDeleted(JakeObject jo);
 
 	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException,
-			IOException;
+			  IOException;
 
 	public Boolean existsLocally(FileObject fo) throws IOException;
 

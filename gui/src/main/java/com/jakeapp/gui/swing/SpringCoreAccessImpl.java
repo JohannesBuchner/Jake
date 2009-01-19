@@ -21,19 +21,15 @@ import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.IProjectModificationListener;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
-import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
-import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAFileException;
-import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
+import com.jakeapp.jake.fss.IProjectModificationListener;
+import com.jakeapp.jake.fss.exceptions.*;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -48,11 +44,6 @@ import java.util.*;
 public class SpringCoreAccessImpl implements ICoreAccess {
 
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
-
-	private boolean isSignedIn;
-
-	private Map<Project, List<ProjectMember>> peopleProjectMap = new HashMap<Project, List<ProjectMember>>();
-
 	private IFrontendService frontendService;
 
 	/**
@@ -60,14 +51,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * FrontendService.authenticate.
 	 */
 	private String sessionId;
-	
-	private Map<FilesChanged,IProjectModificationListener> fileListeners = new HashMap<FilesChanged,IProjectModificationListener>();
+
+	private Map<FilesChanged, IProjectModificationListener> fileListeners = new HashMap<FilesChanged, IProjectModificationListener>();
 
 	/**
 	 * Core Access Mock initialisation code
 	 */
 	public SpringCoreAccessImpl() {
-		isSignedIn = false;
 		connectionStatus = new ArrayList<ConnectionStatus>();
 		registrationStatus = new ArrayList<RegistrationStatus>();
 		projectChanged = new ArrayList<ProjectChanged>();
@@ -175,57 +165,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 	}
 
-
-	public void signIn(final String user, final String pass) {
-		log.info("Signs in: " + user + "pass: " + pass);
-
-		ServiceCredentials credentials;
-
-		credentials = new ServiceCredentials(user, pass);
-		//TODO
-		//This is the only protocoltype used right now. In the future
-		//there may be more...
-		credentials.setProtocol(ProtocolType.XMPP);
-
-		this.signIn(credentials);
-	}
-
-	public void signIn(final ServiceCredentials credentials) {
-		Runnable runner = new Runnable() {
-
-			public void run() {
-				fireConnectionStatus(ConnectionStatus.ConnectionStati.SigningIn, "");
-
-
-				try {
-					MsgService toLogin = frontendService.addAccount(sessionId, credentials);
-					isSignedIn = toLogin.login();
-
-					currentUser = credentials.getUserId();
-					currentMessageService = toLogin;
-
-					fireConnectionStatus(ConnectionStatus.ConnectionStati.Online, "");
-				} catch (FrontendNotLoggedInException e) {
-					handleNotLoggedInException(e);
-				} catch (ProtocolNotSupportedException e) {
-					// this should never happen...
-					log.error("Login with this protocol is not supported.", e);
-				} catch (InvalidCredentialsException e) {
-				} catch (Exception e) {
-				}
-				finally {
-					if (!isSignedIn) {
-						// XXX NOTIFY GUI ABOUT THIS!!
-						fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
-					}
-				}
-			}
-		};
-
-		// start our runner thread, that makes callbacks to connection status
-		new Thread(runner).start();
-	}
-
 	public void addConnectionStatusCallbackListener(ConnectionStatus cb) {
 		log.info("Registers connection status callback: " + cb);
 
@@ -273,47 +212,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb) {
 		log.info("Deregisters registration status callback: " + cb);
-	}
-
-
-	public boolean isSignedIn() {
-		return isSignedIn;
-	}
-
-
-	public void signOut() {
-		if (!this.isSignedIn()) {
-
-
-			try {
-				this.frontendService.signOut(this.sessionId);
-			} catch (FrontendNotLoggedInException e) {
-				//silently discard invalid session
-			}
-
-			this.isSignedIn = false;
-			this.currentUser = null;
-			this.currentMessageService = null;
-		}
-
-		fireConnectionStatus(ConnectionStatus.ConnectionStati.Offline, "");
-	}
-
-	public String[] getLastSignInNames() {
-		Collection<ServiceCredentials> credentials;
-		String[] result;
-		int i = 0;
-
-		credentials = this.getFrontendService().getLastLogins();
-		result = new String[credentials.size()];
-
-		for (ServiceCredentials credential : credentials) {
-			result[i] = credential.getUserId();
-
-			i++;
-		}
-
-		return result;
 	}
 
 
@@ -593,7 +491,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
 		try {
-			return this.getFrontendService().getJakeObjectSyncStatus(getSessionId(),project,file);
+			return this.getFrontendService().getJakeObjectSyncStatus(getSessionId(), project, file);
 		} catch (NotAFileException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FileNotFoundException e) {
@@ -607,7 +505,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (IOException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		}
-		
+
 		return null;
 	}
 
@@ -723,9 +621,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex.append(e);
 			throw ex;
 		}
-			// The corresponding JakeObject does not exist any more - there is
-			// no
-			// need deleting it therefore we simply discard this exception.
+		// The corresponding JakeObject does not exist any more - there is
+		// no
+		// need deleting it therefore we simply discard this exception.
 	}
 
 	@Override
@@ -752,7 +650,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex.append(e);
 			throw ex;
 		}
-			
+
 	}
 
 	// TODO this might be removed in further versions...
@@ -1073,7 +971,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void addFilesChangedListener(final FilesChanged listener,
-			Project project) {
+													Project project) {
 		IProjectModificationListener projectModificationListener = new IProjectModificationListener() {
 
 			@Override
@@ -1084,22 +982,22 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		this.fileListeners.put(listener, projectModificationListener);
 		this.getFrontendService().getProjectsManagingService(getSessionId())
-				.getFileServices(project).addModificationListener(
-						projectModificationListener);
+				  .getFileServices(project).addModificationListener(
+				  projectModificationListener);
 	}
 
 	@Override
 	public void removeFilesChangedListener(FilesChanged listener,
-			Project project) {
+														Project project) {
 		IProjectModificationListener projectModificationListener;
 
 		projectModificationListener = this.fileListeners.get(listener);
 
 		if (projectModificationListener != null)
 			this.getFrontendService()
-					.getProjectsManagingService(getSessionId())
-					.getFileServices(project).removeModificationListener(
-							projectModificationListener);
+					  .getProjectsManagingService(getSessionId())
+					  .getFileServices(project).removeModificationListener(
+					  projectModificationListener);
 	}
 
 	public long getFileSize(FileObject file) {
@@ -1111,8 +1009,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public long getLocalFileSize(FileObject fo) {
 		try {
 			return this.getFrontendService()
-			.getProjectsManagingService(getSessionId())
-			.getFileServices(fo.getProject()).getFileSize(fo.getRelPath());
+					  .getProjectsManagingService(getSessionId())
+					  .getFileServices(fo.getProject()).getFileSize(fo.getRelPath());
 		} catch (FileNotFoundException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (NotAFileException e) {
@@ -1126,7 +1024,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		}
-		
+
 		return 0;
 	}
 
@@ -1134,8 +1032,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public Date getLocalFileLastModified(FileObject fo) {
 		try {
 			return new Date(this.getFrontendService()
-			.getProjectsManagingService(getSessionId())
-			.getFileServices(fo.getProject()).getLastModified(fo.getRelPath()));
+					  .getProjectsManagingService(getSessionId())
+					  .getFileServices(fo.getProject()).getLastModified(fo.getRelPath()));
 		} catch (NotAFileException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (IllegalArgumentException e) {
@@ -1147,7 +1045,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		}
-		
+
 		return new Date();
 	}
 

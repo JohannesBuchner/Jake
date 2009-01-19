@@ -123,6 +123,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	public JakeMainView(JakeMainApp app) {
 		super(app);
 
+		// show "progress"
+		if (JakeMainApp.getApp().getSplashFrame() != null) {
+			JakeMainApp.getApp().getSplashFrame().setTransparency(1F);
+		}
+
+
 		IconAppSmall = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 				  getClass().getResource("/icons/jakeapp.png"))).getImage();
 
@@ -208,6 +214,15 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		setContextViewPanel(ContextPanelEnum.Login);
 
 		updateTitle();
+
+		if (JakeMainApp.getApp().getSplashFrame() != null) {
+			JakeMainApp.getApp().getSplashFrame().setVisible(false);
+		}
+
+		// debug property
+		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
+			JakeMainApp.getApp().saveQuit();
+		}
 	}
 
 

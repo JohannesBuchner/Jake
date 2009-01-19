@@ -605,9 +605,6 @@ public class CoreAccessMock implements ICoreAccess {
 	public List<ProjectMember> getPeople(Project project) {
 		log.info("Mock: getPeople from project " + project);
 
-		if (project == null) {
-			return null;
-		}
 
 		if (!peopleProjectMap.containsKey(project)) {
 			List<ProjectMember> people = new ArrayList<ProjectMember>();

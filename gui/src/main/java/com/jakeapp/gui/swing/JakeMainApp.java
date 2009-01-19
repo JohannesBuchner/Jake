@@ -12,6 +12,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.GlassJFrame;
+import com.jakeapp.gui.swing.dialogs.SplashWindow;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -23,7 +24,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * The main class of the application.
@@ -45,21 +48,31 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	private List<ProjectSelectionChanged> projectSelectionChanged = new LinkedList<ProjectSelectionChanged>();
 	private List<MsgServiceChanged> msgServiceChanged = new ArrayList<MsgServiceChanged>();
+	private SplashWindow splashFrame;
 
 	public JakeMainApp() {
 		this.app = this;
 
+		// show splash
+		splashFrame = SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				  getClass().getResource("/icons/jakeapp-large.png"))).getImage());
+
+
 		ApplicationContext applicationContext;
 
-		String[] options = {"Mock", "Real Thing"};
+		String[] options = {"Real Thing", "Mock", "Quit"};
 
 		String type = System.getProperty("com.jakeapp.gui.test.usemock");
 		if (type == null) {
-			if (JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
-					  JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.NO_OPTION)
+			int res = JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
+					  JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			if (res == JOptionPane.YES_OPTION) {
 				type = "no";
-			else
+			} else if (res == JOptionPane.CANCEL_OPTION) {
+				saveQuit();
+			} else {
 				type = "yes";
+			}
 		}
 		if ("yes".equals(type)) {
 			log.debug("************* Using MOCK **************");
@@ -76,22 +89,10 @@ public class JakeMainApp extends SingleFrameApplication implements
 		}
 
 
-//		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-//				  new String[]{"/com/jakeapp/core/applicationContext.xml"
-//							 /**
-//							  * Uncomment the following line to use the real
-//							  * implementation
-//							  */
-//							 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"
-//
-//							 /**
-//							  * Uncomment the following line to use peter/chris
-//							  * mock implementation
-//							  */
-//							 //	  , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"
-//
-//
-//				  });
+		// show "progress"
+		if (JakeMainApp.getApp().getSplashFrame() != null) {
+			JakeMainApp.getApp().getSplashFrame().setTransparency(0.5F);
+		}
 
 		setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
@@ -186,12 +187,6 @@ public class JakeMainApp extends SingleFrameApplication implements
 			log.warn(msg);
 			ExceptionUtilities.showError(msg);
 		}
-
-
-		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
-			saveQuit();
-		}
-
 	}
 
 	/**
@@ -372,8 +367,11 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	public void saveQuit() {
 		log.debug("Calling saveQuit");
-		this.core.backendLogOff();
-		this.core = null;
+
+		if (this.core != null) {
+			this.core.backendLogOff();
+			this.core = null;
+		}
 
 		System.exit(0);
 	}
@@ -393,5 +391,9 @@ public class JakeMainApp extends SingleFrameApplication implements
 	 */
 	public static MsgService getMsgService() {
 		return getApp().msgService;
+	}
+
+	public SplashWindow getSplashFrame() {
+		return splashFrame;
 	}
 }
