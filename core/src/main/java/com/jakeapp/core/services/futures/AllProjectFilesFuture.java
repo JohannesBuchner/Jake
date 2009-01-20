@@ -6,6 +6,8 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 
 public class AllProjectFilesFuture extends
 	AvailableLaterObject<List<FileObject>> {
@@ -26,8 +28,11 @@ public class AllProjectFilesFuture extends
 	}
 
 	@Override
+	@Transactional
 	public void run() {
 		//FIXME simplicistic implementation
-		this.set(this.getFileObjectDao().getAll());
+		this.set(
+				this.getFileObjectDao().getAll()
+		);
 	}
 }

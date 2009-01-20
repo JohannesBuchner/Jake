@@ -30,7 +30,7 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 
 	private AvailableLaterObject<T> value;
 
-	private Exception error;
+	private Exception exception;
 
 	@Override
 	protected T doInBackground() throws Exception {
@@ -40,8 +40,8 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 			error(e);
 		}
 		s.acquire();
-		if (error != null)
-			throw error;
+		if (exception != null)
+			throw exception;
 		return this.value.get();
 	}
 
@@ -49,13 +49,13 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 
 	@Override
 	public void error(Exception t) {
-		this.error = t;
+		this.exception = t;
 		s.release();
 	}
 
 	@Override
 	public void error(String reason) {
-		this.error = new Exception(reason);
+		this.exception = new Exception(reason);
 		s.release();
 	}
 

@@ -23,12 +23,12 @@ public abstract class AvailableLaterWrapperObject<T,S> extends AvailableLaterObj
 	 * @param source the source to set. Must been created with this Object as AvailabilityListener.
 	 */
 	public void setSource(AvailableLaterObject<S> source) {
-		if (this.getSource() == null && source.listener == this)
+		if (source != null && source.listener == this)
 			this.source = source;
 	}
 
 	protected AvailableLaterObject<S> getSource() {
-		return source;
+		return this.source;
 	}
 
 	public AvailableLaterWrapperObject(AvailabilityListener listener) {
