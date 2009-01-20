@@ -202,7 +202,8 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 
 		// set the tooltip text
 		setToolTipText("<html><font size=4>" + this.getText() + "</font><br>" +
-				  comment + TimeUtilities.getRelativeTime(loge.getTimestamp()) + " (" + loge.getTimestamp().toGMTString() + ")</html>");
+				  TimeUtilities.getRelativeTime(loge.getTimestamp()) + " (" +
+				  loge.getTimestamp().toGMTString() + ")" + comment + "</html>");
 
 		return this;
 	}

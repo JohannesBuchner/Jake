@@ -48,7 +48,7 @@ public class InspectorPanel extends JXPanel implements
 	private EventsTableModel eventsTableModel;
 
 	private Icon notesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-			  getClass().getResource("/icons/notes.png")));
+			  getClass().getResource("/icons/notes.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH));
 
 	public InspectorPanel() {
 
@@ -83,6 +83,7 @@ public class InspectorPanel extends JXPanel implements
 		eventsTable.setModel(eventsTableModel);
 		eventsTable.setMinimumSize(new Dimension(50, INSPECTOR_SIZE));
 		ConfigControlsHelper.configEventsTable(eventsTable);
+		eventsTable.updateUI();
 		this.add(eventsTable, "dock south, grow 150 150, gpy 150");
 
 		JPanel headerPanel = new JPanel(new MigLayout("wrap 1, fill"));
@@ -102,7 +103,7 @@ public class InspectorPanel extends JXPanel implements
 
 		this.add(headerPanel, "wrap, grow");
 
-		Font smallFont = UIManager.getFont("Label.font").deriveFont(Font.PLAIN, 11);
+		Font smallFont = UIManager.getFont("Label.font").deriveFont(12);
 
 		// last time+user modified
 		JLabel lastAccessTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
@@ -113,8 +114,9 @@ public class InspectorPanel extends JXPanel implements
 		this.add(lastAccessTimeAndUser, "growy, wrap");
 
 		// add tags
-		this.add(new JLabel(getResourceMap().getString("tagsLabel")));
-		tagsLabel = new JLabel("TODO");
+		JLabel tagsHeaderLabel = new JLabel(getResourceMap().getString("tagsLabel"));
+		this.add(tagsHeaderLabel, "right");
+		tagsLabel = new JLabel("");
 		this.add(tagsLabel, "growy, wrap");
 
 		// add full path
@@ -137,7 +139,8 @@ public class InspectorPanel extends JXPanel implements
 	public void updatePanel() {
 
 		// always update the table
-		eventsTableModel.setProject(getProject());
+		// HACK: disable for DEMO
+		eventsTableModel.setProject(null);
 
 		if (getFileObject() != null && isFileContext()) {
 			File file = getFileObject().getAbsolutePath();
@@ -160,7 +163,7 @@ public class InspectorPanel extends JXPanel implements
 			eventsTableModel.setJakeObject(getFileObject());
 		} else if (getNoteObject() != null && isNoteContext()) {
 			icoLabel.setIcon(notesIcon);
-			nameLabel.setText("Note");
+			nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject())));
 			sizeLabel.setText("");
 			fullPathLabel.setText("");
 			try {

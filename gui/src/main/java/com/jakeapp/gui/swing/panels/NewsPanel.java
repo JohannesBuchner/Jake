@@ -107,7 +107,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		eventsTable.setModel(eventTableModel);
 		ConfigControlsHelper.configEventsTable(eventsTable);
 
-		this.eventsTable.getColumnModel().getColumn(1).setMaxWidth(70);
+		this.eventsTable.getColumnModel().getColumn(1).setMaxWidth(100);
 
 		//eventsTable.setBorder(BorderFactory.createEtchedBorder());
 		eventsTable.addMouseListener(new EventsTableMouseListener());
@@ -403,27 +403,6 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		eventsLabel.setName("eventsLabel"); // NOI18N
 
 		eventsScrollPanel.setName("eventsScrollPanel"); // NOI18N
-
-		eventsTable.setModel(new javax.swing.table.DefaultTableModel(
-				  new Object[][]{
-							 {"Uebersicht.odt was created", "Simon", "Yesterday"},
-							 {null, null, null},
-							 {null, null, null},
-							 {null, null, null}
-				  },
-				  new String[]{
-							 "Event", "Person", "Date"
-				  }
-		) {
-			boolean[] canEdit = new boolean[]{
-					  false, false, false
-			};
-
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit[columnIndex];
-			}
-		});
-		eventsTable.setName("eventsTable"); // NOI18N
 		eventsScrollPanel.setViewportView(eventsTable);
 
 		peopleScrollPanel.setName("peopleScrollPanel"); // NOI18N

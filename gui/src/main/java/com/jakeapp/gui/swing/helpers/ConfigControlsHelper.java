@@ -20,10 +20,10 @@ public class ConfigControlsHelper {
 		table.getColumn(0).setCellRenderer(new EventCellRenderer());
 		table.setSortable(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.setColumnControlVisible(true);
+		table.setColumnControlVisible(false);
 		table.setEditable(false);
 		table.setDoubleBuffered(true);
-		//table.setRolloverEnabled(true);
+		table.setRolloverEnabled(false);
 	}
 
 
