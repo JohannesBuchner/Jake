@@ -620,17 +620,9 @@ public class CoreAccessMock implements ICoreAccess {
 			people.add(new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE));
 
 
-			/*
-									people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User1", "pass2"),
-												 new UUID(22, 33), "pstein@jabber.fsinf.at", "", "Peter", "Steinberger"), TrustState.TRUST));
-
-									people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User2", "pass2"),
-												 new UUID(222, 333), "test@jabber.org", "Pr-" + project.getName(), "ProjectTestUser", project.getName()), TrustState.AUTO_ADD_REMOVE));
-
-
-									people.add(new ProjectMember(new XMPPUserId(new ServiceCredentials("User3", "pass3"),
-												 new UUID(22, 33), "max@jabber.org", "Max", "Max", "Mustermann"), TrustState.NO_TRUST));
-					*/
+			people.add(new ProjectMember(UUID.randomUUID(), "Pr1", TrustState.TRUST));
+			people.add(new ProjectMember(UUID.randomUUID(), "Pr2", TrustState.AUTO_ADD_REMOVE));
+			people.add(new ProjectMember(UUID.randomUUID(), "Pr3", TrustState.NO_TRUST));
 			peopleProjectMap.put(project, people);
 		}
 
@@ -1015,13 +1007,13 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> login(MsgService service,
-			String password, boolean rememberPassword,AvailabilityListener listener) {
-		return new AvailableNowObject<Void>(listener,null) {
+														 String password, boolean rememberPassword, AvailabilityListener listener) {
+		return new AvailableNowObject<Void>(listener, null) {
 
 			@Override
 			public void run() {
 			}
-			
+
 		};
 	}
 

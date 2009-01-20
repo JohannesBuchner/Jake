@@ -67,10 +67,19 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		}
 	}
 
+	/**
+	 * Worker to count all project files
+	 */
 	protected class ProjectFileCountWorker extends SwingWorkerWithAvailableLaterObject<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
-			return JakeMainApp.getCore().getProjectFileCount(getProject(), this);
+			log.info("calculating total file count...");
+			try {
+				return JakeMainApp.getCore().getProjectFileCount(getProject(), this);
+			} catch (Exception ex) {
+				log.warn("error while calculating total file size: ", ex);
+				return null;
+			}
 		}
 
 		@Override

@@ -394,6 +394,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 	 */
 	public static void setMsgService(MsgService msg) {
 		getApp().msgService = msg;
+
 		getApp().fireMsgServiceChanged();
 	}
 

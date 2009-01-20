@@ -74,9 +74,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		if ("getNotes".compareTo(f) == 0) return false;
 		else if ("getProjectRootFolder".compareTo(f) == 0
-				  || "getAllProjectFiles".compareTo(f) == 0) return true;
+				  || "getAllProjectFiles".compareTo(f) == 0) return false;
 		else if ("getLog".compareTo(f) == 0) return true;
 		else if ("getSuggestedPeople".compareTo(f) == 0) return true;
+		else if ("getPeople".compareTo(f) == 0) return false;
 
 
 		return true;
@@ -110,6 +111,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<Project> getMyProjects() throws FrontendNotLoggedInException {
+
+		// HACK: refactor, should be implicit!
+		for (Project p : frontendService.getProjectsManagingService(sessionId).getProjectList(
+				  InvitationState.ACCEPTED)) {
+			log.info("Opening project: " + p);
+			if (!p.isOpen()) {
+				p.setOpen(true);
+			}
+		}
+
 		return frontendService.getProjectsManagingService(sessionId).getProjectList(
 				  InvitationState.ACCEPTED);
 	}
@@ -783,26 +794,31 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public List<ProjectMember> getPeople(Project project) {
 		log.info("getPeople from project " + project);
 
-		List<ProjectMember> result = null;
+		if (useMock("getPeople")) {
+			return coreMock.getPeople(project);
+		} else {
 
-		if (project == null) {
-			log.warn("getPeople from project NULL");
-			return new ArrayList<ProjectMember>();
+			List<ProjectMember> result = null;
+
+			if (project == null) {
+				log.warn("getPeople from project NULL");
+				return new ArrayList<ProjectMember>();
+			}
+
+			try {
+				result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
+			} catch (IllegalArgumentException e) {
+				this.fireErrorListener(new JakeErrorEvent(e));
+			} catch (FrontendNotLoggedInException e) {
+				this.handleNotLoggedInException(e);
+			} catch (IllegalStateException e) {
+				this.fireErrorListener(new JakeErrorEvent(e));
+			} catch (NoSuchProjectException e) {
+				this.fireErrorListener(new JakeErrorEvent(e));
+			}
+
+			return result;
 		}
-
-		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
-		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (NoSuchProjectException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		}
-
-		return result;
 	}
 
 	@Override
@@ -1288,17 +1304,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> login(MsgService service,
-			String password, boolean rememberPassword,
-			AvailabilityListener listener) {
-		
+														 String password, boolean rememberPassword,
+														 AvailabilityListener listener) {
+
 		//TODO implement multithreaded via AvailableLater
-		
-		try {			
+
+		try {
 			boolean ret;
 			JakeStatusBar.showMessage("Logging in...", 1);
 
-			ret = this.getFrontendService().login(getSessionId(),service,password,rememberPassword,listener);
-			
+			ret = this.getFrontendService().login(getSessionId(), service, password, rememberPassword, listener);
+
 			/*
 			if (password == null) {
 				ret = service.login();
@@ -1317,9 +1333,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (Exception e) {
 			log.warn("Login failed: " + e);
 			ExceptionUtilities.showError(e);
-			return new AvailableErrorObject<Void>(listener,e);
+			return new AvailableErrorObject<Void>(listener, e);
 		}
-		
-		return new AvailableNowObject<Void>(listener,null);
+
+		return new AvailableNowObject<Void>(listener, null);
 	}
 }
