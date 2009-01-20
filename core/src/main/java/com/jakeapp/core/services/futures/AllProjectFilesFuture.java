@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 import java.util.List;
@@ -18,7 +19,8 @@ import org.hibernate.SessionFactory;
 
 
 public class AllProjectFilesFuture extends
-	AvailableLaterObject<List<FileObject>> {
+	/*AvailableLaterObject<List<FileObject>>*/
+	AvailableNowObject<List<FileObject>> {
 
     private static Logger log = Logger.getLogger(AllProjectFilesFuture.class);
 
@@ -37,14 +39,15 @@ public class AllProjectFilesFuture extends
 	}
 	
 	public AllProjectFilesFuture(AvailabilityListener listener, IFileObjectDao dao) {
-		super(listener);
+		super(listener,new ArrayList<FileObject>());
 		this.setFileObjectDao(dao);
 	}
 
 
     public AllProjectFilesFuture(AvailabilityListener listener, ProjectApplicationContextFactory
             applicationContextFactory, Project project) {
-		super(listener);
+		super(listener,new ArrayList<FileObject>());
+		
 		this.applicationContextFactory = applicationContextFactory;
         this.project = project;
 	}
@@ -93,10 +96,6 @@ public class AllProjectFilesFuture extends
 //        sf.close();
 //        sf = null;
 //        log.debug("\n\n\n\n\n\n\n\n\n\n\nend thread... \n\n\n\n\n\n\n\n\n\n\n");
-
-
-
-
 
 	}
 }

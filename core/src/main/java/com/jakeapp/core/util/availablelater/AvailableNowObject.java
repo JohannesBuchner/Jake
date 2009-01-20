@@ -9,9 +9,12 @@ package com.jakeapp.core.util.availablelater;
  */
 public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 
+	private T tempcontent;
+	
 	public AvailableNowObject(AvailabilityListener listener, T content) {
 		super(listener);
-		this.set(content);
+		this.tempcontent = content;
+		//this.set(content);
 	}
 
 	@Override
@@ -19,4 +22,10 @@ public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 		//empty implementation
 	}
 	
+	@Override
+	public AvailableLaterObject<T> start() {
+		this.run();
+		if (this.get()==null) this.set(tempcontent);
+		return this;
+	}
 }

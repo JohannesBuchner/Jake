@@ -83,7 +83,23 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
     @Override
     public IFSService getFileServices(Project p) throws ProjectNotLoadedException {
-        return this.getProjectsFileServices().getProjectFSService(p);
+        IFSService result = null;
+        ProjectNotLoadedException ex = null;
+        
+        try {
+        	result = this.getProjectsFileServices().getProjectFSService(p);
+        }
+        catch (ProjectNotLoadedException pnle) {
+        	ex = pnle;
+        }
+        
+    	//FIXME prevents some ugly Exceptions - remove after release 
+    	if (result == null) {
+    		if (p.isOpen()) result = this.getProjectsFileServices().startProject(p);
+    		else throw ex;
+    	}
+    	
+    	return result;
     }
 
     private List<Project> getInternalProjectList() {

@@ -20,7 +20,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 
 	protected AvailabilityListener listener;
 
-	public void set(T o) {
+	protected void set(T o) {
 		this.innercontent = o;
 		this.listener.finished();
 	}
