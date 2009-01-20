@@ -317,6 +317,46 @@ public class FSService implements IFSService, IModificationListener {
 		return true;
 	}
 
+	public boolean deleteFolder(String relpath) throws InvalidFilenameException,
+			  FileNotFoundException, NotADirectoryException {
+		File f = new File(getFullpath(relpath));
+		log.info("Delete Folder: " + f);
+		if (!f.exists())
+			throw new FileNotFoundException();
+		if (!f.isDirectory())
+			throw new NotADirectoryException();
+
+		for (String children : f.list()) {
+			File childFile = new File(f.getAbsolutePath(), children);
+			boolean success = false;
+			if (childFile.isDirectory()) {
+				success = deleteFolder(children);
+			} else {
+				try {
+					success = deleteFile(children);
+				} catch (NotAFileException e) {
+					log.warn("Error deleting file: " + childFile.getAbsoluteFile(), e);
+				}
+			}
+			if (!success) {
+				return false;
+			}
+		}
+
+		// finally, delete folder
+		if (!f.delete())
+			return false;
+
+		/* TODO: Check if this is a infinite loop on a empty drive on windows */
+		do {
+			f = f.getParentFile();
+		} while (f.isDirectory() && f.getAbsolutePath().startsWith(getRootPath())
+				  && f.getAbsolutePath().length() > getRootPath().length()
+				  && !FileUtils.listFilesMinusA(f).iterator().hasNext() && f.delete());
+
+		return true;
+	}
+
 	@Override
 	public boolean trashFile(String relativePath) throws InvalidFilenameException,
 			  FileNotFoundException {
@@ -324,7 +364,20 @@ public class FSService implements IFSService, IModificationListener {
 			//TODO implement via a REAL trash...
 			return deleteFile(relativePath);
 		} catch (NotAFileException e) {
+			log.warn("trash failed for " + relativePath, e);
 			//silently discarded - the file is not there so it is already deleted
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean trashFolder(String relativePath) throws InvalidFilenameException, FileNotFoundException {
+		try {
+			//TODO implement via a REAL trash...
+			return deleteFolder(relativePath);
+		} catch (NotADirectoryException e) {
+			log.warn("trash failed for " + relativePath, e);
 		}
 
 		return false;

@@ -2,8 +2,6 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -33,7 +31,6 @@ public class NotesTableModel extends DefaultTableModel {
 	private List<String> columnNames;
 	private List<NoteMetaDataWrapper> notes;
 	private ResourceMap resourceMap;
-	private Project currentProject;
 	private ICoreAccess core;
 	private Icon padlock, shared_note;
 
@@ -100,7 +97,7 @@ public class NotesTableModel extends DefaultTableModel {
 	 * Update the contents of the table model. It tries to update with the current project.
 	 */
 	public void update() {
-		this.update(this.currentProject);
+		this.update(JakeMainApp.getProject());
 	}
 
 	/**
@@ -112,16 +109,15 @@ public class NotesTableModel extends DefaultTableModel {
 		if (project == null) {
 			return;
 		}
-		this.currentProject = project;
 		this.notes.clear();
-		List<NoteObject> incommingNotes = new ArrayList<NoteObject>();
+		List<NoteObject> incommingNotes;
 
 
 		try {
 			incommingNotes = this.core.getNotes(project);
-		
+
 			for (NoteObject n : incommingNotes) {
-                n.setProject(project);
+				n.setProject(project);
 				try {
 					this.notes.add(new NoteMetaDataWrapper(n,
 							  this.core.getLastEdit(n),
@@ -190,6 +186,4 @@ public class NotesTableModel extends DefaultTableModel {
 		}
 		return Object.class;
 	}
-
-
 }

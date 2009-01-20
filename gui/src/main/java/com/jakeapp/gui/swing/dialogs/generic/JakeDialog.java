@@ -143,7 +143,7 @@ public abstract class JakeDialog extends EscapeDialog {
 	 * @param str: string of title
 	 */
 	protected void setDialogTitle(String str) {
-		log.debug("Dialog Title: " + str);
+		//log.debug("Dialog Title: " + str);
 		dialogTitleLabel.setText(str);
 	}
 

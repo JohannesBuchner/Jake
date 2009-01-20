@@ -24,7 +24,6 @@ import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
@@ -46,8 +45,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.util.*;
-
-import javax.swing.JOptionPane;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
 
@@ -377,8 +374,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public void deleteProject(final Project project, boolean deleteProjectFiles) {
-		log.info("Delete project: " + project);
+	public void deleteProject(final Project project, final boolean deleteProjectFiles) {
+		log.info("Delete project: " + project + " deleteProjectFiles: " + deleteProjectFiles);
 
 		if (project == null) {
 			throw new IllegalArgumentException("Cannot delete empty project!");
@@ -392,7 +389,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 				try {
 					// search project in list
-					ret = getFrontendService().getProjectsManagingService(getSessionId()).deleteProject(project);
+					ret = getFrontendService().getProjectsManagingService(getSessionId()).deleteProject(project, deleteProjectFiles);
 
 					if (!ret) {
 						throw new ProjectNotFoundException("Project not found in list!");
@@ -732,9 +729,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 //		try {
-			this.frontendService
-					  .getProjectsManagingService(this.getSessionId())
-					  .getNoteManagingService().saveNote(note);
+		this.frontendService
+				  .getProjectsManagingService(this.getSessionId())
+				  .getNoteManagingService().saveNote(note);
 //		} catch (Exception e) {
 //			NoteOperationFailedException ex = new NoteOperationFailedException();
 //			ex.append(e);
@@ -889,9 +886,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					/*
 																				 * The project is created, but not started and no user is assigned to it.
 																				 */
-					
+
 					/* FIXME since there is only one user in the current implementation, it is added to the project! */
-					if (pr.getUserId()==null)
+					if (pr.getUserId() == null)
 						try {
 							frontendService.getProjectsManagingService(sessionId).assignUserToProject(pr, pr.getMessageService().getUserId());
 							log.debug("After creation, the project's userid is: " + pr.getUserId());
