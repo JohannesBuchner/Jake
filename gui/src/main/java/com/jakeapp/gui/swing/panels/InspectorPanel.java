@@ -95,13 +95,13 @@ public class InspectorPanel extends JXPanel implements
 
 		// add name
 		nameLabel = new JLabel();
-		headerPanel.add(nameLabel, "span 2, wrap, grow");
+		headerPanel.add(nameLabel, "wrap, grow");
 
 		// add size
 		sizeLabel = new JLabel();
 		headerPanel.add(sizeLabel, "wrap, grow");
 
-		this.add(headerPanel, "wrap, grow");
+		this.add(headerPanel, "span 2, wrap, grow");
 
 		Font smallFont = UIManager.getFont("Label.font").deriveFont(12);
 

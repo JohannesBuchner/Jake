@@ -266,8 +266,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 		log.debug("Userid of Project that is about to be started is: " + project.getUserId());
 
-		this.syncService.startServing(project,
-				  new TrustRequestHandlePolicy(project), cl);
+		// TODO: enable sync! (DEMO HACK)
+		//	this.syncService.startServing(project,
+		//			  new TrustRequestHandlePolicy(project), cl);
 
 		project.setStarted(true);
 
