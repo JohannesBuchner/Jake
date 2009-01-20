@@ -15,11 +15,7 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.actions.CommitNoteAction;
-import com.jakeapp.gui.swing.actions.DeleteNoteAction;
-import com.jakeapp.gui.swing.actions.CreateNoteAction;
-import com.jakeapp.gui.swing.actions.SaveNoteAction;
-import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
+import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -29,8 +25,6 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
 import net.miginfocom.swing.MigLayout;
-
-import org.apache.log.output.io.SafeFileTarget;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXPanel;
@@ -48,7 +42,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * The NotesPanel
@@ -72,10 +65,11 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private JTextArea noteReader;
 	private ICoreAccess core;
 	private Project currentProject;
+	private JButton createBtn;
 	private JButton announceBtn;
 	private JButton softLockBtn;
 	private JButton deleteBtn;
-	private JButton saveBtn;	
+	private JButton saveBtn;
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -187,8 +181,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
 			this.noteReader.setText(text);
 			this.noteReader.setEditable(true);
-				
-			if(core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked
+
+			if (core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked
 				if (this.core.getLockOwner(getSelectedNotes().get(0)).getUserId().equals(JakeMainApp.getProject().getUserId())) {
 					// local user has lock
 					this.noteReader.setEditable(true);
@@ -234,6 +228,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public void projectChanged(ProjectChangedEvent ignored) {
 		log.info("received projectChangedEvent: " + ignored.toString());
 		this.notesTableModel.update();
+		this.notesTable.updateUI();
 	}
 
 	@Override
@@ -291,6 +286,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
 		noteControlPanel.setBackground(Color.WHITE);
 
+		createBtn = new JButton(new CreateNoteAction());
+		createBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(createBtn);
+
 		announceBtn = new JButton(new CommitNoteAction());
 		announceBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(announceBtn);
@@ -302,7 +301,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		deleteBtn = new JButton(new DeleteNoteAction());
 		deleteBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(deleteBtn);
-		
+
 		saveBtn = new JButton(new SaveNoteAction());
 		saveBtn.putClientProperty("JButton.buttonType", "textured");
 		noteControlPanel.add(saveBtn);
@@ -381,9 +380,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public void setFilter(FilterPipeline filterPipeline) {
 		this.notesTable.setFilters(filterPipeline);
 	}
-	
+
 	/**
 	 * Get The current text of the noteReader.
+	 *
 	 * @return the text of the noteReader.
 	 */
 	public String getNoteReaderText() {
