@@ -35,6 +35,8 @@ public class FrontendServiceImpl implements IFrontendService {
 	private MsgServiceFactory msgServiceFactory;
 
 	private Map<String, FrontendSession> sessions;
+	
+	private IServiceCredentialsDao serviceCredentialsDao;
 
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync;
@@ -47,11 +49,13 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @param sync
 	 */
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
-										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync) {
+										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync,
+										IServiceCredentialsDao serviceCredentialsDao) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.setSessions(new HashMap<String, FrontendSession>());
 		this.msgServiceFactory = msgServiceFactory;
 		this.sync = sync;
+		this.serviceCredentialsDao = serviceCredentialsDao;
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
@@ -59,8 +63,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	private IServiceCredentialsDao getServiceCredentialsDao() {
-		//TODO retrieve the dao
-		return null;
+		return this.serviceCredentialsDao;
 	}
 
 	private void setProjectsManagingService(
@@ -273,5 +276,34 @@ public class FrontendServiceImpl implements IFrontendService {
 				  file.getAbsolutePath().toString(), fss.getLastModified(file.getRelPath()),
 				  locallyModified, remotelyModified, onlyLocal, onlyRemote
 		);
+	}
+
+	@Override
+	@Transactional
+	public boolean login(String session, MsgService service, String password,
+			boolean rememberPassword, AvailabilityListener listener) throws Exception {
+		boolean ret;
+		ServiceCredentials credentials;
+		
+		this.checkSession(session);
+		
+		/* login */
+		if (password == null) {
+			ret = service.login();
+		} else {
+			ret = service.login(password, rememberPassword);
+		}
+		
+		/* store */
+		//get Service credentials
+		credentials = msgServiceFactory.get(service);
+		if (credentials!=null) {
+			credentials.setPlainTextPassword(password);
+			credentials.setSavePassword(rememberPassword);
+			//update and store the credentials
+			this.getServiceCredentialsDao().update(credentials);
+		}
+		
+		return ret;
 	}
 }

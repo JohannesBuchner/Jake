@@ -707,6 +707,17 @@ public interface ICoreAccess {
 	 *                                      note couldn not be saved.
 	 */
 	public void saveNote(NoteObject note) throws NoteOperationFailedException;
+	
+	/**
+	 * Logs a user in
+	 * @param service The message service to log in
+	 * @param password password needed to authenticate.
+	 * If password is null it is tried to authenticate without password.
+	 * @param rememberPassword Indicates if the password should be stored with the
+	 * service credentials that will be generated.
+	 * @return An object reporting the progress of the login
+	 */
+	AvailableLaterObject<Void> login(MsgService service,String password,boolean rememberPassword, AvailabilityListener listener);
 }
 
 

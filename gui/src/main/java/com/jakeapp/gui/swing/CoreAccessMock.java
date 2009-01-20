@@ -13,6 +13,7 @@ import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
@@ -1009,6 +1010,19 @@ public class CoreAccessMock implements ICoreAccess {
 		// over. I know I've made some very poor decisions recently, but I can give you my complete
 		// assurance that my work will be back to normal. I've still got the greatest enthusiasm and
 		// confidence in the mission. And I want to help you.
+	}
+
+
+	@Override
+	public AvailableLaterObject<Void> login(MsgService service,
+			String password, boolean rememberPassword,AvailabilityListener listener) {
+		return new AvailableNowObject<Void>(listener,null) {
+
+			@Override
+			public void run() {
+			}
+			
+		};
 	}
 
 /*

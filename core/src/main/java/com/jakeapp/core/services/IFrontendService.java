@@ -161,4 +161,16 @@ public interface IFrontendService {
 	 */
 	JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId, Project project,
 																FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException, IOException;
+	
+	/**
+	 * Logs a Messageservice in
+	 * @param service
+	 * @param password
+	 * @param rememberPassword
+	 * @param listener
+	 * @return
+	 * @throws Exception 
+	 */
+	boolean login(String session,MsgService service, String password,
+			boolean rememberPassword, AvailabilityListener listener) throws Exception;
 }

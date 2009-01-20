@@ -10,6 +10,7 @@ import com.jakeapp.core.dao.IUserIdDao;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -74,6 +75,7 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 
+	@Transactional
 	public final boolean login(String newPassword, boolean shouldSavePassword) throws Exception {
 		log.debug("calling login with newPwd-Size: " + newPassword.length() +
 				  ", shouldSave: " + shouldSavePassword);

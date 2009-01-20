@@ -7,10 +7,16 @@ package com.jakeapp.core.util.availablelater;
  * @author johannes
  * @param <T>
  */
-public abstract class AvailableNowObject<T> extends AvailableLaterObject<T> {
+public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 
 	public AvailableNowObject(AvailabilityListener listener, T content) {
 		super(listener);
 		this.set(content);
 	}
+
+	@Override
+	public void run() {
+		//empty implementation
+	}
+	
 }

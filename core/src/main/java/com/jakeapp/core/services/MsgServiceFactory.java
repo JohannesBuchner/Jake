@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -36,6 +38,7 @@ public class MsgServiceFactory {
 
 
     private List<MsgService> msgServices = new ArrayList<MsgService>();
+    private Map<MsgService,ServiceCredentials> map = new HashMap<MsgService,ServiceCredentials>();
 
     private boolean initialised = false;
 
@@ -144,7 +147,10 @@ public class MsgServiceFactory {
             try {
                 MsgService service = null;
                 service = this.createMsgService(credentials);
-                msgServices.add(service);
+                if (!msgServices.contains(service)) {
+                	msgServices.add(service);
+                	this.map.put(service, credentials);
+                }
             } catch (ProtocolNotSupportedException e) {
 
             }
@@ -225,5 +231,9 @@ public class MsgServiceFactory {
 
         throw new InvalidCredentialsException("something went wrong");
 
+	}
+
+	public ServiceCredentials get(MsgService service) {
+		return this.map.get(service);
 	}
 }

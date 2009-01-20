@@ -89,7 +89,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
 
 
         try {
-            getHibernateTemplate().update(credentials, LockMode.WRITE);
+            getHibernateTemplate().update(credentials/*, LockMode.WRITE*/);
         }
         catch (DataAccessException e) {
             throw new NoSuchServiceCredentialsException(e);
@@ -104,7 +104,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
      */
     public void delete(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
         try {
-            getHibernateTemplate().delete(credentials, LockMode.WRITE);
+            getHibernateTemplate().delete(credentials/*, LockMode.WRITE*/);
         }
         catch (DataAccessException e) {
             throw new NoSuchServiceCredentialsException(e);

@@ -22,6 +22,7 @@ import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
@@ -29,6 +30,7 @@ import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
@@ -1280,5 +1282,42 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public ProjectMember getLockOwner(JakeObject jakeObject) {
 		return new ProjectMember(UUID.randomUUID(), "Chuck Norris", TrustState.AUTO_ADD_REMOVE);
+	}
+
+	@Override
+	public AvailableLaterObject<Void> login(MsgService service,
+			String password, boolean rememberPassword,
+			AvailabilityListener listener) {
+		
+		//TODO implement multithreaded via AvailableLater
+		
+		try {			
+			boolean ret;
+			JakeStatusBar.showMessage("Logging in...", 1);
+
+			ret = this.getFrontendService().login(getSessionId(),service,password,rememberPassword,listener);
+			
+			/*
+			if (password == null) {
+				ret = service.login();
+			} else {
+				ret = service.login(password, rememberPassword);
+			}*/
+
+			if (!ret) {
+				log.warn("Wrong User/Password");
+				JakeStatusBar.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
+			} else {
+				JakeStatusBar.showProgressAnimation(false);
+				JakeStatusBar.showMessage("Successfully logged in");
+				//JakeStatusBar.updateMessage();
+			}
+		} catch (Exception e) {
+			log.warn("Login failed: " + e);
+			ExceptionUtilities.showError(e);
+			return new AvailableErrorObject<Void>(listener,e);
+		}
+		
+		return new AvailableNowObject<Void>(listener,null);
 	}
 }

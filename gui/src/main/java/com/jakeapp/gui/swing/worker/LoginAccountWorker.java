@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
@@ -34,7 +35,8 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
-		try {
+		/*
+		try {			
 			boolean ret;
 			JakeStatusBar.showMessage("Logging in...", 1);
 
@@ -57,7 +59,9 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 			log.warn("Login failed: " + e);
 			ExceptionUtilities.showError(e);
 		}
-		return null;
+		return null;*/
+		
+		return JakeMainApp.getCore().login(msg, password, rememberPassword, this);
 	}
 
 	@Override
