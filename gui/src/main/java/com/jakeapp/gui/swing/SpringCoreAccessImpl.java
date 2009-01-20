@@ -15,7 +15,6 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
-import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -305,6 +304,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 				@Override
 				public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
+					log.info("pullProgressUpdate: " + jo + "status: " + status + " progress: " + progress);
 				}
 			};
 
@@ -478,7 +478,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void syncProject(Project project) {
 		try {
 			// TODO: HACK: Why do i have to cast here? poke should always work just fine with parameter project.
-			((IFriendlySyncService) getFrontendService().getSyncService(getSessionId())).poke(project);
+			getFrontendService().getSyncService(getSessionId()).poke(project);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Sync));

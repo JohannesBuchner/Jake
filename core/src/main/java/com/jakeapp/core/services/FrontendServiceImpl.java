@@ -20,7 +20,6 @@ import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -232,7 +231,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public ISyncService getSyncService(String sessionId)
+	public IFriendlySyncService getSyncService(String sessionId)
 			  throws FrontendNotLoggedInException {
 		this.checkSession(sessionId);
 		return this.sync;
@@ -252,25 +251,25 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId,
-			Project project, FileObject file) throws InvalidFilenameException, NotAReadableFileException, IOException {
+																		 Project project, FileObject file) throws InvalidFilenameException, NotAReadableFileException, IOException {
 		ISyncService iss = this.getSyncService(sessionId);
 		IProjectsManagingService pms = this.getProjectsManagingService(sessionId);
-        IFSService fss = null;
-        try {
-            fss = pms.getFileServices(project);
-        } catch (ProjectNotLoadedException e) {
-            throw new IOException(); // todo tmp
-        }
+		IFSService fss = null;
+		try {
+			fss = pms.getFileServices(project);
+		} catch (ProjectNotLoadedException e) {
+			throw new IOException(); // todo tmp
+		}
 
 
-        boolean locallyModified = !file.getChecksum().equals(fss.calculateHashOverFile(file.getRelPath())),
-			remotelyModified = !iss.localIsNewest(file),
-			onlyLocal = pms.isLocalJakeObject(file),
-			onlyRemote = !iss.existsLocally(file);
+		boolean locallyModified = !file.getChecksum().equals(fss.calculateHashOverFile(file.getRelPath())),
+				  remotelyModified = !iss.localIsNewest(file),
+				  onlyLocal = pms.isLocalJakeObject(file),
+				  onlyRemote = !iss.existsLocally(file);
 
 		return new JakeObjectSyncStatus(
-			file.getAbsolutePath().toString(),fss.getLastModified(file.getRelPath()),
-			locallyModified,remotelyModified,onlyLocal,onlyRemote
+				  file.getAbsolutePath().toString(), fss.getLastModified(file.getRelPath()),
+				  locallyModified, remotelyModified, onlyLocal, onlyRemote
 		);
 	}
 }

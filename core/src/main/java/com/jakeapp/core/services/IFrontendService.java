@@ -6,7 +6,7 @@ import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.synchronization.ISyncService;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -88,7 +88,7 @@ public interface IFrontendService {
 	 *                                  if no such session existed
 	 * @throws IllegalStateException	 if no MessageServices are configured for this component
 	 */
-	public ISyncService getSyncService(String sessionId) throws FrontendNotLoggedInException;
+	public IFriendlySyncService getSyncService(String sessionId) throws FrontendNotLoggedInException;
 
 
 	/**
@@ -153,12 +153,12 @@ public interface IFrontendService {
 
 	/**
 	 * @return the synchronisation Status of a FileObject
-	 * @throws InvalidFilenameException 
-	 * @throws NotAFileException 
-	 * @throws NotAReadableFileException 
-	 * @throws FileNotFoundException 
-	 * @throws IOException 
+	 * @throws InvalidFilenameException
+	 * @throws NotAFileException
+	 * @throws NotAReadableFileException
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
 	JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId, Project project,
-			FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException, IOException;
+																FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException, IOException;
 }
