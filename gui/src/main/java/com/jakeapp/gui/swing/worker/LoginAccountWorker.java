@@ -50,7 +50,8 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 				JakeStatusBar.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
 			} else {
 				JakeStatusBar.showProgressAnimation(false);
-				JakeStatusBar.updateMessage();
+				JakeStatusBar.showMessage("Successfully logged in");
+				//JakeStatusBar.updateMessage();
 			}
 		} catch (Exception e) {
 			log.warn("Login failed: " + e);

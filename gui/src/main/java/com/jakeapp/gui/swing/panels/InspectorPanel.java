@@ -6,7 +6,8 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.*;
-import com.jakeapp.gui.swing.controls.ETable;
+import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import net.miginfocom.swing.MigLayout;
@@ -46,6 +47,9 @@ public class InspectorPanel extends JXPanel implements
 	private JLabel fullPathLabel;
 	private EventsTableModel eventsTableModel;
 
+	private Icon notesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+			  getClass().getResource("/icons/notes.png")));
+
 	public InspectorPanel() {
 
 		// load the resource map
@@ -74,12 +78,11 @@ public class InspectorPanel extends JXPanel implements
 
 		this.setBackground(Platform.getStyler().getWindowBackground());
 
-		eventsTableModel = new EventsTableModel();
-		eventsTable = new ETable();
+		eventsTableModel = new EventsTableModel(getProject());
+		eventsTable = new ITunesTable();
 		eventsTable.setModel(eventsTableModel);
 		eventsTable.setMinimumSize(new Dimension(50, INSPECTOR_SIZE));
 		ConfigControlsHelper.configEventsTable(eventsTable);
-		eventsTable.updateUI();
 		this.add(eventsTable, "dock south, grow 150 150, gpy 150");
 
 		JPanel headerPanel = new JPanel(new MigLayout("wrap 1, fill"));
@@ -133,6 +136,9 @@ public class InspectorPanel extends JXPanel implements
 	 */
 	public void updatePanel() {
 
+		// always update the table
+		eventsTableModel.setProject(getProject());
+
 		if (getFileObject() != null && isFileContext()) {
 			File file = getFileObject().getAbsolutePath();
 			icoLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
@@ -151,9 +157,17 @@ public class InspectorPanel extends JXPanel implements
 					  FileObjectHelper.getTimeRel(getFileObject()),
 					  FileObjectHelper.getLastModifier(getFileObject()))));
 
-			eventsTableModel.setProject(getProject());
 			eventsTableModel.setJakeObject(getFileObject());
 		} else if (getNoteObject() != null && isNoteContext()) {
+			icoLabel.setIcon(notesIcon);
+			nameLabel.setText("Note");
+			sizeLabel.setText("");
+			fullPathLabel.setText("");
+			try {
+				lastAccessTimeAndUser.setText(TimeUtilities.getRelativeTime(JakeMainApp.getCore().getLastEdit(getNoteObject())));
+			} catch (NoteOperationFailedException e) {
+				log.warn("error getting time for noteobject", e);
+			}
 
 			// TODO: inspector for notes
 			eventsTableModel.setJakeObject(getFileObject());
@@ -169,6 +183,7 @@ public class InspectorPanel extends JXPanel implements
 		}
 
 		eventsTable.updateUI();
+		;
 	}
 
 	protected ResourceMap getResourceMap() {
@@ -250,6 +265,9 @@ public class InspectorPanel extends JXPanel implements
 
 	@Override
 	public void noteSelectionChanged(NoteSelectedEvent event) {
+		log.info("Inspector: Note Selection Changed: " + event);
+
+		setNoteObject(event.getSingleNote());
 		updatePanel();
 	}
 }

@@ -60,7 +60,7 @@ public class NestedException extends Exception {
 		}
 
 		for (Exception e : this.getNestedExceptions()) {
-			stack.add(new StackTraceElement("nested Exception - " + e.getMessage() + "\n", "", "", 0));
+			stack.add(new StackTraceElement("nested Exception - " + e.getMessage(), "", "", 0));
 			for (StackTraceElement s : super.getStackTrace()) {
 				stack.add(s);
 			}

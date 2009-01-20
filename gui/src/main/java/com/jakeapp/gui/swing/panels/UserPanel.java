@@ -604,11 +604,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		JLabel headerLoginSuccess = new JLabel(getResourceMap().getString("signInSuccessHeader"));
 		headerLoginSuccess.setFont(Platform.getStyler().getH1Font());
 		headerLoginSuccess.setForeground(Color.DARK_GRAY);
-		loginSuccessPanel.add(headerLoginSuccess, "center, wrap");
+		loginSuccessPanel.add(headerLoginSuccess, "top, center, wrap");
 
 		userLabelLoginSuccess = new JLabel();
 		userLabelLoginSuccess.setFont(Platform.getStyler().getH1Font());
-		loginSuccessPanel.add(userLabelLoginSuccess, "center, wrap");
+		loginSuccessPanel.add(userLabelLoginSuccess, "top, center, wrap");
 
 		// the sign out button
 		JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
@@ -631,7 +631,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			//}
 		});
 
-		loginSuccessPanel.add(signOutButton, "wrap, al center");
+		loginSuccessPanel.add(signOutButton, "wrap, top, center, gapbottom 25");
 
 		JLabel iconSuccess = new JLabel();
 		iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -792,6 +792,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		private JPasswordField passField;
 		private JCheckBox rememberPassCheckBox;
 		private final static String MagicPassToken = "%MAGIC%";
+		private JButton signInBtn;
 
 		public UserControlPanel(final MsgService msg) {
 			log.info("creating UserControlPanel with " + msg);
@@ -802,6 +803,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				public void actionPerformed(ActionEvent e) {
 					try {
 						log.info("Sign In with " + msg.getUserId() + " useSavedPassword: " + isMagicToken());
+						signInBtn.setEnabled(false);
 						JakeMainApp.setMsgService(msg);
 
 						if (isMagicToken()) {
@@ -809,6 +811,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 						} else {
 							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(), isRememberPassword()));
 						}
+
 
 						updateView();
 					} catch (Exception e1) {
@@ -865,7 +868,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			});
 			this.add(deleteUserBtn, "left, bottom");
 
-			JButton signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
+			signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
 			signInBtn.putClientProperty("JButton.buttonType", "textured");
 			signInBtn.addActionListener(loginAction);
 			this.add(signInBtn, "right, bottom");
