@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
 
@@ -34,19 +35,22 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
 		try {
+			boolean ret;
+			JakeStatusBar.showMessage("Logging in...", 1);
+
 			// TODO: return object!
 			if (password == null) {
-				if (msg.login() == false) {
-					log.warn("Wrong User/Password");
-					//throw new RuntimeException("Wrong User/Password");
-				} else {
-
-				}
+				ret = msg.login();
 			} else {
-				if (msg.login(password, rememberPassword) == false) {
-					log.warn("Wrong User/Password");
-					//throw new RuntimeException("Wrong User/Password");
-				}
+				ret = msg.login(password, rememberPassword);
+			}
+
+			if (!ret) {
+				log.warn("Wrong User/Password");
+				JakeStatusBar.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
+			} else {
+				JakeStatusBar.showProgressAnimation(false);
+				JakeStatusBar.updateMessage();
 			}
 		} catch (Exception e) {
 			log.warn("Login failed: " + e);

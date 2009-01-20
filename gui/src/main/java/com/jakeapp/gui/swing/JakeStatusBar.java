@@ -6,6 +6,7 @@ import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
@@ -26,6 +27,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		  ConnectionStatus, ProjectSelectionChanged, ProjectChanged, ProjectViewChanged, ContextViewChanged, MsgServiceChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
+	private static JakeStatusBar instance;
 	private JLabel statusLabel;
 	private JButton connectionButton;
 	private TriAreaComponent statusBar;
@@ -34,6 +36,12 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
+	private JAsynchronousProgressIndicator progressDrawer;
+	private JLabel progressMessage;
+
+	private static JakeStatusBar getInstance() {
+		return instance;
+	}
 
 
 	protected class ProjectSizeTotalWorker extends SwingWorkerWithAvailableLaterObject<Long> {
@@ -86,6 +94,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 	public JakeStatusBar(ICoreAccess core) {
 		super(core);
+		instance = this;
 
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
@@ -147,6 +156,15 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 		bottomBar.addComponentToCenter(statusLabel);
 		bottomBar.installWindowDraggerOnWindow(JakeMainView.getMainView().getFrame());
+
+		progressDrawer = new JAsynchronousProgressIndicator();
+		progressDrawer.setVisible(false);
+		bottomBar.addComponentToLeft(progressDrawer, 3);
+
+		//progressMessage = new JLabel();
+		//progressMessage.setText("");
+		//bottomBar.addComponentToLeft(progressMessage);
+
 
 		//Font statusButtonFont = statusLabel.getFont().deriveFont(statusLabel.getFont().getSize()-2f)
 
@@ -257,15 +275,21 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 	@Override
 	protected void projectUpdated() {
-		updateProjectLabel();
+		updateMessageInt();
 	}
 
+	/**
+	 * Updates the status bar message
+	 */
+	public static void updateMessage() {
+		getInstance().updateMessageInt();
+	}
 
 	/**
 	 * Updates the project label.
 	 * This is context specific.
 	 */
-	public void updateProjectLabel() {
+	public void updateMessageInt() {
 
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
 			if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Files) {
@@ -302,9 +326,22 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			}
 		} else if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Invitation) {
 			statusLabel.setText("");
-		} else {
-			statusLabel.setText("");
+		} else if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Login) {
+
+			if (JakeMainApp.getMsgService() != null) {
+				// user chosen
+
+				if (MsgServiceHelper.isCurrentUserLoggedIn()) {
+					statusLabel.setText(getResourceMap().getString("showLoggedInSuccess"));
+				} else {
+					statusLabel.setText(getResourceMap().getString("showLoggedInFailed"));
+				}
+			} else {
+				statusLabel.setText("");
+			}
 			// login
+		} else {
+			log.warn("Unknown Context: " + getContextViewPanel());
 		}
 	}
 
@@ -361,5 +398,57 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	@Override
 	public void msgServiceChanged(MsgService msg) {
 		updateConnectionButton();
+	}
+
+	// HACK: should be called via listener, implicit only...
+	public static void showProgressAnimation(final boolean show) {
+
+		Runnable runner = new Runnable() {
+			@Override
+			public void run() {
+				if (show) {
+					getInstance().progressDrawer.setVisible(true);
+					getInstance().progressDrawer.startAnimation();
+				} else {
+					getInstance().progressDrawer.setVisible(false);
+					getInstance().progressDrawer.stopAnimation();
+				}
+			}
+		};
+
+		// allow thread save calls
+		invokeIfNeeded(runner);
+	}
+
+	public static void showMessage(final String msg, int progress) {
+		showMessage(msg);
+		// TODO: pie!
+		showProgressAnimation(progress > 0 && progress < 100);
+	}
+
+	// TODO: should use tasks framework
+	public static void showMessage(final String msg) {
+		Runnable runner = new Runnable() {
+			@Override
+			public void run() {
+				JakeStatusBar.getInstance().statusLabel.setText(msg);
+			}
+		};
+
+		// allow thread save calls
+		invokeIfNeeded(runner);
+	}
+
+	/**
+	 * Invoke if not called from evnet dispatch thread
+	 *
+	 * @param runner
+	 */
+	private static void invokeIfNeeded(Runnable runner) {
+		if (!EventQueue.isDispatchThread()) {
+			SwingUtilities.invokeLater(runner);
+		} else {
+			runner.run();
+		}
 	}
 }

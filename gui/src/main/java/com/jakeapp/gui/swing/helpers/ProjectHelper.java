@@ -26,9 +26,9 @@ public class ProjectHelper {
 	 */
 	public static String printProjectStatus(Project project) {
 
-		// TODO. just todo.
-		StringBuilder str = new StringBuilder("Project is ");
-		str.append(getProjectStartStopString(project));
+		// TODO. just todo. DISABLED FOR DEMO
+		StringBuilder str = new StringBuilder("");
+		//str.append(getProjectStartStopString(project));
 
 		return str.toString();
 	}

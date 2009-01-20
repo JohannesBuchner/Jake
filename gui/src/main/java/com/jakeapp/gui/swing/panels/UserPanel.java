@@ -346,6 +346,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		if (isSignInRegisterButtonEnabled()) {
 
 			if (isModeSignIn()) {
+				signInRegisterButton.setEnabled(false);
 				try {
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
@@ -599,6 +600,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginSuccessPanel.setTransferHandler(new ProjectDropHandler());
 		loginSuccessPanel.setOpaque(false);
 		loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
+
+		JLabel headerLoginSuccess = new JLabel(getResourceMap().getString("signInSuccessHeader"));
+		headerLoginSuccess.setFont(Platform.getStyler().getH1Font());
+		headerLoginSuccess.setForeground(Color.DARK_GRAY);
+		loginSuccessPanel.add(headerLoginSuccess, "center, wrap");
 
 		userLabelLoginSuccess = new JLabel();
 		userLabelLoginSuccess.setFont(Platform.getStyler().getH1Font());
