@@ -19,8 +19,9 @@ public class CreateProjectAction extends ProjectAction {
 
 	/**
 	 * Create new <code>CreateProjectAction</code>.
+	 *
 	 * @param ellipsis if <code>true</code> the <code>Action.NAME</code> ends with an ellipsis (...), if
-	 * <code>false</code> the dots are omitted.
+	 *                 <code>false</code> the dots are omitted.
 	 */
 	public CreateProjectAction(boolean ellipsis) {
 		super();
@@ -43,7 +44,7 @@ public class CreateProjectAction extends ProjectAction {
 		// create the directory if path was not null
 		if (path != null) {
 			JakeMainApp.getApp().getCore().createProject(
-					  ProjectHelper.createDefaultPath(path), path);
+					  ProjectHelper.createDefaultPath(path), path, JakeMainApp.getMsgService());
 		}
 	}
 

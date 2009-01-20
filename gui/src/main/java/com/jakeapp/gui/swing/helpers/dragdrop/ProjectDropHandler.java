@@ -58,7 +58,7 @@ public class ProjectDropHandler extends TransferHandler {
 				File newProjectFile = files.get(0);
 				JakeMainApp.getCore().createProject(
 						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()),
-						  newProjectFile.getAbsolutePath());
+						  newProjectFile.getAbsolutePath(), JakeMainApp.getMsgService());
 			} else {
 				JakeHelper.showInfoMsg("Cannot create project. Drop in one folder.");
 			}

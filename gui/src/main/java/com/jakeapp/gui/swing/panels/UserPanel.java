@@ -365,6 +365,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				updateView();
 				// TODO
 			}
+		} else {
+			log.warn("Sign In tried while button was not enabled!");
 		}
 	}
 
@@ -492,6 +494,12 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			this.add(passLabel);
 
 			passName = new JPasswordField();
+			passName.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					signInRegisterButtonPressed();
+				}
+			});
 			this.add(passName, "width 350!");
 
 			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));

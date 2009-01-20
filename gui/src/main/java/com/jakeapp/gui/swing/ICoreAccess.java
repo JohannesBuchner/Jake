@@ -308,9 +308,10 @@ public interface ICoreAccess {
 	 *
 	 * @param name : name of the project
 	 * @param path : path of the project
+	 * @param msg
 	 */
 	// TODO: return AvailableLater?
-	public void createProject(String name, String path);
+	public void createProject(String name, String path, MsgService msg);
 
 
 	/**

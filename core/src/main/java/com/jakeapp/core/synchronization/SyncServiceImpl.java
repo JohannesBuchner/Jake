@@ -1,51 +1,20 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.FileObjectLogEntry;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.NoteObjectLogEntry;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.exceptions.*;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
@@ -59,6 +28,11 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -66,11 +40,11 @@ import com.jakeapp.jake.ics.users.IUsersService;
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
  * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
  * used.
- * 
+ *
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncService implements
-		IMessageReceiveListener {
+		  IMessageReceiveListener {
 
 	static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
@@ -80,13 +54,13 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private static final String NEW_NOTE = "<newnote/>";
 
-    private IProjectsFileServices projectsFileServices;
+	private IProjectsFileServices projectsFileServices;
 
 
 	/**
 	 * key is the UUID
 	 */
-	private Map<String, ChangeListener> projectChangeListeners;
+	private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
 
 	private RequestHandlePolicy rhp;
 
@@ -106,7 +80,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	IFSService getFSS(Project p) {
-        return this.getProjectsFileServices().startProject(p);
+		return this.getProjectsFileServices().startProject(p);
 	}
 
 	public ICServicesManager getIcServicesManager() {
@@ -117,16 +91,16 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		this.icServicesManager = icServicesManager;
 	}
 
-    public IProjectsFileServices getProjectsFileServices() {
-        return projectsFileServices;
-    }
+	public IProjectsFileServices getProjectsFileServices() {
+		return projectsFileServices;
+	}
 
-    public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
-        this.projectsFileServices = projectsFileServices;
-    }
+	public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
+		this.projectsFileServices = projectsFileServices;
+	}
 
 
-    /* DAO stuff */
+	/* DAO stuff */
 
 	/**
 	 * returns true if NoteObject <br>
@@ -138,13 +112,13 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Transactional
 	private LogEntry<JakeObject> getMostRecentForLogEntry(JakeObject jo)
-			throws NoSuchLogEntryException {
+			  throws NoSuchLogEntryException {
 		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).getMostRecentFor(jo);
 	}
 
 	@Transactional
 	private FileObject getFileObjectByRelpath(Project p, String relpath)
-			throws NoSuchJakeObjectException {
+			  throws NoSuchJakeObjectException {
 		return db.getFileObjectDao(p).complete(new FileObject(null, p, relpath));
 	}
 
@@ -162,16 +136,16 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * <li>in the ics</li>
 	 * </ul>
 	 * We should only trust the logentries and fix everything else by that.
-	 * 
+	 *
 	 * @param project
 	 */
 	@Transactional
 	private void syncProjectMembers(Project project) {
 		Collection<ProjectMember> members = db.getLogEntryDao(project)
-				.getCurrentProjectMembers();
+				  .getCurrentProjectMembers();
 		for (ProjectMember member : members) {
 			com.jakeapp.jake.ics.UserId userid = getBackendUserIdFromDomainProjectMember(
-					project, member);
+					  project, member);
 			try {
 				getICS(project).getUsersService().addUser(userid, member.getNickname());
 			} catch (NoSuchUseridException e) { // shit happens
@@ -184,8 +158,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Transactional
 	private LogEntry<JakeObject> getLogEntryOfLocal(JakeObject jo) {
 		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).findLastMatching(
-				new LogEntry<ILogable>(null, LogAction.JAKE_OBJECT_NEW_VERSION, null,
-						null, null, null, null, null, true));
+				  new LogEntry<ILogable>(null, LogAction.JAKE_OBJECT_NEW_VERSION, null,
+							 null, null, null, null, null, true));
 	}
 
 	@Override
@@ -248,12 +222,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Override
 	@Transactional
 	public void announce(JakeObject jo, LogEntry<JakeObject> inaction, String commitMsg)
-			throws FileNotFoundException, InvalidFilenameException,
-			NotAReadableFileException {
+			  throws FileNotFoundException, InvalidFilenameException,
+			  NotAReadableFileException {
 		log.debug("announcing " + jo + " : " + inaction);
 		IFSService fss = getFSS(jo.getProject());
 		LogEntry<JakeObject> le = new LogEntry<JakeObject>(UUID.randomUUID(), inaction
-				.getLogAction());
+				  .getLogAction());
 		LogAction action = inaction.getLogAction();
 		// set those that shouldn't be set by caller
 		le.setBelongsTo(jo);
@@ -263,10 +237,10 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		log.debug("prepared logentry");
 
 		if (!(action == LogAction.JAKE_OBJECT_NEW_VERSION
-				|| action == LogAction.JAKE_OBJECT_DELETE || action == LogAction.TAG_ADD
-				|| action == LogAction.TAG_REMOVE || action == LogAction.JAKE_OBJECT_LOCK || action == LogAction.JAKE_OBJECT_UNLOCK)) {
+				  || action == LogAction.JAKE_OBJECT_DELETE || action == LogAction.TAG_ADD
+				  || action == LogAction.TAG_REMOVE || action == LogAction.JAKE_OBJECT_LOCK || action == LogAction.JAKE_OBJECT_UNLOCK)) {
 			throw new IllegalArgumentException(
-					"announce can not be used with this action");
+					  "announce can not be used with this action");
 		}
 		if (isNoteObject(jo)) {
 			log.debug("is a note. storing.");
@@ -289,7 +263,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	public Iterable<FileObject> getPullableFileObjects(Project project) {
 		List<FileObject> missing = new LinkedList<FileObject>();
 		Iterable<FileObject> allJakeObjects = db.getLogEntryDao(project)
-				.getExistingFileObjects(project);
+				  .getExistingFileObjects(project);
 		for (JakeObject jo : allJakeObjects) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
@@ -302,7 +276,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Override
 	public Iterable<FileObject> getFileObjectsInConflict(Project project)
-			throws IllegalArgumentException {
+			  throws IllegalArgumentException {
 		List<FileObject> conflicting = new LinkedList<FileObject>();
 		// find existing locally
 		// find existing&modified locally that have a unprocessed NEW_VERSION
@@ -335,12 +309,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			for (JakeObject jo : this.news) {
 				if (isNoteObject(jo)) {
 					getICS(project).getMsgService().sendMessage(
-							getBackendUserIdFromDomainUserId(userId),
-							NEW_NOTE + jo.getUuid().toString());
+							  getBackendUserIdFromDomainUserId(userId),
+							  NEW_NOTE + jo.getUuid().toString());
 				} else {
 					getICS(project).getMsgService().sendMessage(
-							getBackendUserIdFromDomainUserId(userId),
-							NEW_FILE + ((FileObject) jo).getRelPath());
+							  getBackendUserIdFromDomainUserId(userId),
+							  NEW_FILE + ((FileObject) jo).getRelPath());
 				}
 			}
 		} catch (NotLoggedInException e) {
@@ -354,9 +328,9 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Override
 	@Transactional
 	public void pullObject(JakeObject jo) throws NoSuchLogEntryException,
-			NotLoggedInException, IllegalArgumentException {
+			  NotLoggedInException, IllegalArgumentException {
 		LogEntry<JakeObject> le = (LogEntry<JakeObject>) db.getLogEntryDao(jo).getExists(
-				jo);
+				  jo);
 		log.debug("got logentry: " + le);
 		rhp.getPotentialJakeObjectProviders(jo);
 		if (le == null) { // delete
@@ -390,8 +364,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	private void deleteBecauseRemoteSaidSo(JakeObject jo)
-			throws IllegalArgumentException, NoSuchJakeObjectException,
-			FileNotFoundException {
+			  throws IllegalArgumentException, NoSuchJakeObjectException,
+			  FileNotFoundException {
 		if (jo instanceof NoteObject) {
 			db.getNoteObjectDao(jo.getProject()).delete((NoteObject) jo);
 		}
@@ -401,17 +375,17 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				getFSS(jo.getProject()).deleteFile(((FileObject) jo).getRelPath());
 			} catch (NotAFileException e) {
 				log.fatal("database corrupted: tried to delete a file that isn't a file",
-						e);
+						  e);
 			} catch (InvalidFilenameException e) {
 				log.fatal("database corrupted: tried to delete a file that isn't "
-						+ "a valid file", e);
+						  + "a valid file", e);
 			}
 		}
 	}
 
 	@Override
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId userId)
-			throws IllegalArgumentException, IllegalProtocolException {
+			  throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
@@ -422,7 +396,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	private FailoverCapableFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		// TODO: Use FailoverCapableFileTransferService
 		return getIcServicesManager().getTransferService(p, getMyBackendUserid(p));
 	}
@@ -462,7 +436,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				// ME FIX ME
 				// This should contain the correct values
 				stat.add(new JakeObjectSyncStatus(f, fss.getLastModified(f),
-						locallyModified, false, false, false));
+						  locallyModified, false, false, false));
 			} catch (NotAFileException e) {
 				log.debug("should never happen", e);
 			} catch (InvalidFilenameException e) {
@@ -485,7 +459,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Transactional
 	public Boolean isLocallyModified(FileObject fo) throws InvalidFilenameException,
-			IOException {
+			  IOException {
 		if (!existsLocally(fo))
 			return false;
 		IFSService fss = getFSS(fo.getProject());
@@ -513,7 +487,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Override
 	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException,
-			IOException {
+			  IOException {
 		if (isNoteObject(jo))
 			return isLocallyModified((NoteObject) jo);
 		else
@@ -596,9 +570,9 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Override
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
-			throws ProjectException {
+			  throws ProjectException {
 
-        this.projectsFileServices.startProject(p);
+		this.projectsFileServices.startProject(p);
 
 //        FSService fs;
 //		try {
@@ -606,9 +580,9 @@ public class SyncServiceImpl extends FriendlySyncService implements
 //		} catch (NoSuchAlgorithmException e) {
 //			throw new ProjectException(e);
 //		}
-        if (rhp == null) {
-            rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices, userTranslator);
-        }
+		if (rhp == null) {
+			rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices, userTranslator);
+		}
 		runningProjects.put(p.getProjectId(), p);
 //		projectsFssMap.put(p.getProjectId(), fs);
 		projectChangeListeners.put(p.getProjectId(), cl);
@@ -617,8 +591,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		log.debug("adding receive hooks");
 		try {
 			getICS(p).getStatusService().login(
-					getMyBackendUserid(p),
-					p.getCredentials().getPlainTextPassword());
+					  getMyBackendUserid(p),
+					  p.getCredentials().getPlainTextPassword());
 		} catch (TimeoutException e) {
 			log.error("logging in for starting project failed", e);
 		} catch (NetworkException e) {
@@ -714,7 +688,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		@Override
 		public void onUpdate(AdditionalFileTransferData transfer, Status status,
-				double progress) {
+									double progress) {
 			log.info("progress for " + jo + " : " + status + " - " + progress);
 			cl.pullProgressUpdate(jo, status, progress);
 		}
@@ -754,7 +728,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
-			ProjectMember member) {
+																										ProjectMember member) {
 		return userTranslator.getBackendUserIdFromDomainProjectMember(p, member);
 	}
 
@@ -763,7 +737,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	public ProjectMember getProjectMemberFromUserId(Project project, UserId userid)
-			throws NoSuchProjectMemberException {
+			  throws NoSuchProjectMemberException {
 		return userTranslator.getProjectMemberFromUserId(project, userid);
 	}
 
@@ -827,8 +801,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			log.debug("calling other user: " + from_userid);
 			try {
 				getTransferService(p).request(
-						new FileRequest("N" + uuid, false, from_userid),
-						cl.beganRequest(no));
+						  new FileRequest("N" + uuid, false, from_userid),
+						  cl.beganRequest(no));
 			} catch (NotLoggedInException e) {
 				log.error("Not logged in");
 			}
@@ -842,8 +816,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			log.debug("calling other user: " + from_userid);
 			try {
 				getTransferService(p).request(
-						new FileRequest("F" + relpath, false, from_userid),
-						cl.beganRequest(fo));
+						  new FileRequest("F" + relpath, false, from_userid),
+						  cl.beganRequest(fo));
 			} catch (NotLoggedInException e) {
 				log.error("Not logged in");
 			}

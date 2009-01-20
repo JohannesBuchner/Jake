@@ -131,7 +131,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 				log.info("generate new project!");
 				File newProjectFile = files.get(0);
 				JakeMainApp.getCore().createProject(
-						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath());
+						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath(), JakeMainApp.getMsgService());
 			} else if (isAddToProject(dl, files)) {
 				log.info("add to project!");
 

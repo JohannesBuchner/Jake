@@ -696,7 +696,7 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 
-	public void createProject(final String name, final String path) {
+	public void createProject(final String name, final String path, MsgService msg) {
 		log.info("Mock: create project: " + name + " path: " + path);
 
 
