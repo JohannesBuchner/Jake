@@ -32,11 +32,16 @@ public class CreateNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		try {
-			JakeMainApp.getCore().newNote(new NoteObject(UUID.randomUUID(),
+			NoteObject newNote = new NoteObject(UUID.randomUUID(),
 					NotesPanel.getInstance().getCurrentProject(),
-					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent")));
-			//update notes view
-			this.refreshNotesPanel();
+					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent"));
+			
+			JakeMainApp.getCore().newNote(newNote);
+			//this.refreshNotesPanel();
+			int row = NotesPanel.getInstance().getNotesTableModel().getRow(newNote);
+			if (row > -1) {
+				NotesPanel.getInstance().getNotesTable().changeSelection(row, 0, false, false);	
+			}
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);
 		}

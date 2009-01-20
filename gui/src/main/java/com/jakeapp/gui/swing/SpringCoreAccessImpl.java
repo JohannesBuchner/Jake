@@ -24,6 +24,7 @@ import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
@@ -50,9 +51,15 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
 	private IFrontendService frontendService;
+	
+	private Set<JakeObject> MockIsSoftLockedSet;
 
 	// HACK INIT MOCK CORE
 	private ICoreAccess coreMock = new CoreAccessMock();
+	
+	{
+		this.MockIsSoftLockedSet = new HashSet<JakeObject>();
+	}
 
 	/**
 	 * Checks if MOCK should be used instead of the real thing
@@ -724,6 +731,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex.append(e);
 			throw ex;
 		}
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.State));
 	}
 
 	@Override
@@ -732,6 +740,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		this.frontendService
 				  .getProjectsManagingService(this.getSessionId())
 				  .getNoteManagingService().saveNote(note);
+
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.State));
+
+		
 //		} catch (Exception e) {
 //			NoteOperationFailedException ex = new NoteOperationFailedException();
 //			ex.append(e);
@@ -1235,18 +1247,21 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public boolean isSoftLocked(JakeObject jakeObject) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.MockIsSoftLockedSet.contains(jakeObject);
 	}
 
 	@Override
 	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		if (isSet) {
+			this.MockIsSoftLockedSet.add(jakeObject);
+		} else {
+			this.MockIsSoftLockedSet.remove(jakeObject);
+		}
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(), ProjectChangedReason.Deleted));
 	}
 
 	@Override
 	public ProjectMember getLockOwner(JakeObject jakeObject) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ProjectMember(UUID.randomUUID(), "Chuck Norris",TrustState.AUTO_ADD_REMOVE);
 	}
 }

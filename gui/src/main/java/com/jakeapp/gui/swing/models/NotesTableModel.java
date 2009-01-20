@@ -186,4 +186,21 @@ public class NotesTableModel extends DefaultTableModel {
 		}
 		return Object.class;
 	}
+	
+	/**
+	 * Returns the row of a given note.
+	 * @param note
+	 * @return the number of the row of the goven row if it exists in the model, or -1 if it does not
+	 * exist.
+	 */
+	public int getRow(NoteObject note) {
+		int row = -1;
+		for (int i = 0; i < this.notes.size(); i++) {
+			if (this.notes.get(i).note.equals(note)) {
+				row = i;
+				break;
+			}
+		}
+		return row;
+	}
 }

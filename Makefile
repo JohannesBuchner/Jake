@@ -9,7 +9,8 @@ start: gui
 	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
 mockstart: gui2
 	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=yes
-
+noteststart: gui
+	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
 
 
 gui2: 

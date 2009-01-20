@@ -160,14 +160,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable, this.notesTableModel));
 
 		// install event table update timer
-		tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
+		this.tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				//log.debug("Updating notesTable");
 				notesTable.updateUI();
 			}
 		});
-		tableUpdateTimer.start();
+		this.tableUpdateTimer.start();
 	}
 
 
@@ -237,24 +237,20 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notesTableModel.update(this.getCurrentProject());
 	}
 
-	private boolean isNoteSelected() {
-		return this.notesTable.getSelectedRow() >= 0;
-	}
-
 	private void initComponents() {
 		this.setLayout(new MigLayout("wrap 1, fill, ins 0"));
 
-		mainSplitPane = new JSplitPane();
-		notesTableScrollPane = new JScrollPane();
-		notesTable = new ITunesTable();
+		this.mainSplitPane = new JSplitPane();
+		this.notesTableScrollPane = new JScrollPane();
+		this.notesTable = new ITunesTable();
 
-		mainSplitPane.setBorder(null);
-		mainSplitPane.setDividerSize(2);
-		mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-		notesTableScrollPane.setViewportView(notesTable);
-		mainSplitPane.setLeftComponent(notesTableScrollPane);
+		this.mainSplitPane.setBorder(null);
+		this.mainSplitPane.setDividerSize(2);
+		this.mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+		this.notesTableScrollPane.setViewportView(this.notesTable);
+		this.mainSplitPane.setLeftComponent(this.notesTableScrollPane);
 
-		this.add(mainSplitPane, "grow");
+		this.add(this.mainSplitPane, "grow");
 
 		// set up table model
 		this.notesTableModel = new NotesTableModel();
@@ -280,38 +276,39 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			}
 		});
 
-		noteReaderPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
-		noteReaderPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
+		this.noteReaderPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
+		this.noteReaderPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
 
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
 		noteControlPanel.setBackground(Color.WHITE);
 
-		createBtn = new JButton(new CreateNoteAction());
-		createBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(createBtn);
+		this.createBtn = new JButton(new CreateNoteAction());
+		this.createBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(this.createBtn);
 
-		announceBtn = new JButton(new CommitNoteAction());
-		announceBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(announceBtn);
+		this.announceBtn = new JButton(new CommitNoteAction());
+		this.announceBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(this.announceBtn);
 
-		softLockBtn = new JButton(new SoftlockNoteAction());
-		softLockBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(softLockBtn);
+		this.softLockBtn = new JButton(new SoftlockNoteAction());
+		this.softLockBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(this.softLockBtn);
 
-		deleteBtn = new JButton(new DeleteNoteAction());
-		deleteBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(deleteBtn);
+		this.deleteBtn = new JButton(new DeleteNoteAction());
+		this.deleteBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(this.deleteBtn);
 
-		saveBtn = new JButton(new SaveNoteAction());
-		saveBtn.putClientProperty("JButton.buttonType", "textured");
-		noteControlPanel.add(saveBtn);
+		this.saveBtn = new JButton(new SaveNoteAction());
+		this.saveBtn.putClientProperty("JButton.buttonType", "textured");
+		noteControlPanel.add(this.saveBtn);
 
 		this.noteReaderPanel.add(noteControlPanel, "growx");
 
 		this.noteReader = new JTextArea();
 		this.noteReader.setLineWrap(true);
 		this.noteReader.setOpaque(false);
-		this.noteReader.setText("Enter your Note here.\nChanges will be saved automatically.");
+		this.noteReader.setText("");
+		this.noteReader.setEditable(false);
 		this.noteReader.setMargin(new Insets(8, 8, 8, 8));
 
 		JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
@@ -329,7 +326,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 				  GlossPainter.GlossPosition.TOP);
 		this.noteReaderPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 
-		mainSplitPane.setRightComponent(noteReaderPanel);
+		this.mainSplitPane.setRightComponent(this.noteReaderPanel);
 
 	}
 
@@ -388,5 +385,13 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 */
 	public String getNoteReaderText() {
 		return this.noteReader.getText();
+	}
+
+	public NotesTableModel getNotesTableModel() {
+		return this.notesTableModel;
+	}
+	
+	public JTable getNotesTable() {
+		return this.notesTable;
 	}
 }
