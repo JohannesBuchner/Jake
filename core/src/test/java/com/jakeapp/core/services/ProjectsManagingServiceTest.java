@@ -1,14 +1,10 @@
 package com.jakeapp.core.services;
 
 
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jakeapp.TestingConstants;
 import com.jakeapp.core.util.ApplicationContextFactory;
 
 public class ProjectsManagingServiceTest {

@@ -18,11 +18,12 @@ import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.services.IProjectsFileServices;
 
 public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 
-	public TrustAwareRequestHandlePolicy(ApplicationContextFactory db,
+	public TrustAwareRequestHandlePolicy(ProjectApplicationContextFactory db,
 			IProjectsFileServices projectsFileServices, UserTranslator userTranslator) {
 		super(db, projectsFileServices, userTranslator);
 	}

@@ -5,6 +5,6 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.FriendlySyncService;
 import com.jakeapp.jake.ics.ICService;
 
-
+@Deprecated
 public interface IFrontendSession {
 }

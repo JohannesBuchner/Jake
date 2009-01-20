@@ -13,7 +13,7 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
-    <bean id="applicationContextFactory" class="com.jakeapp.core.util.ApplicationContextFactory">
+    <bean id="applicationContextFactory" class="com.jakeapp.core.util.ProjectApplicationContextFactory">
         <description>The factory to create and configure application contexts</description>
         <property name="configLocation">
             <list>
@@ -34,14 +34,14 @@
 
     <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
         <constructor-arg ref="applicationContextFactory" index="0"
-                         type="com.jakeapp.core.util.ApplicationContextFactory"/>
+                         type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
         <constructor-arg ref="userIdDao" index="1"
                          type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
     <bean id="noteManagingService" class="com.jakeapp.core.services.NoteManagingService">
       <constructor-arg ref="applicationContextFactory" index="0"
-                       type="com.jakeapp.core.util.ApplicationContextFactory"/>
+                       type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
     </bean>
 
 

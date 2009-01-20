@@ -16,6 +16,7 @@ import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
@@ -37,7 +38,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
     private List<Project> projectList = new ArrayList<Project>();
 
-    private ApplicationContextFactory applicationContextFactory;
+    private ProjectApplicationContextFactory applicationContextFactory;
 
     private IProjectDao projectDao;
 
@@ -72,12 +73,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         this.projectDao = projectDao;
     }
 
-    public ApplicationContextFactory getApplicationContextFactory() {
+    public ProjectApplicationContextFactory getApplicationContextFactory() {
         return applicationContextFactory;
     }
 
     public void setApplicationContextFactory(
-            ApplicationContextFactory applicationContextFactory) {
+            ProjectApplicationContextFactory applicationContextFactory) {
         this.applicationContextFactory = applicationContextFactory;
     }
 

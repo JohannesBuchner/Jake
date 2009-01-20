@@ -13,16 +13,17 @@ import com.jakeapp.core.domain.XMPPUserId;
 import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 
 public class UserTranslator {
 
-	private final ApplicationContextFactory applicationContextFactory;
+	private final ProjectApplicationContextFactory applicationContextFactory;
 
 	private final IUserIdDao userIdDao;
 
-	public UserTranslator(ApplicationContextFactory applicationContextFactory,
+	public UserTranslator(ProjectApplicationContextFactory applicationContextFactory,
 			IUserIdDao userIdDao) {
 		this.applicationContextFactory = applicationContextFactory;
 		this.userIdDao = userIdDao;

@@ -6,19 +6,17 @@ import java.util.UUID;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
-import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 
 public class NoteManagingService implements INoteManagingService {
 
-    private ApplicationContextFactory applicationContextFactory;
+    private ProjectApplicationContextFactory applicationContextFactory;
 
-    public NoteManagingService(ApplicationContextFactory applicationContextFactory)
+    public NoteManagingService(ProjectApplicationContextFactory applicationContextFactory)
     {
         this.applicationContextFactory = applicationContextFactory;
     }

@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hsqldb.lib.StringInputStream;
@@ -20,12 +19,13 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.util.ApplicationContextFactory;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.jake.fss.IFSService;
 
 public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
-	public TrustAllRequestHandlePolicy(ApplicationContextFactory db,
+	public TrustAllRequestHandlePolicy(ProjectApplicationContextFactory db,
 			IProjectsFileServices projectsFileServices, UserTranslator userTranslator) {
 		super();
 		this.db = db;
@@ -35,7 +35,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
 	private static final Logger log = Logger.getLogger(TrustAllRequestHandlePolicy.class);
 
-	protected ApplicationContextFactory db;
+	protected ProjectApplicationContextFactory db;
 
 	protected UserTranslator userTranslator;
 

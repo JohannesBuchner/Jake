@@ -1,14 +1,10 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.LineNumberInputStream;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hsqldb.lib.StringInputStream;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -37,14 +32,11 @@ import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICServicesManager;
-import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ApplicationContextFactory;
-import com.jakeapp.jake.fss.FSService;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
-import com.jakeapp.jake.fss.exceptions.FileTooLargeException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
@@ -98,7 +90,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private RequestHandlePolicy rhp;
 
-	ApplicationContextFactory db;
+	private ProjectApplicationContextFactory db;
 
 	private ICServicesManager icServicesManager;
 
@@ -744,13 +736,13 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 
-	public ApplicationContextFactory getDb() {
+	public ProjectApplicationContextFactory getDb() {
 		return db;
 	}
 
 
-	public void setDb(ApplicationContextFactory applicationContextFactory) {
-		this.db = applicationContextFactory;
+	public void setDb(ProjectApplicationContextFactory projectApplicationContextFactory) {
+		this.db = projectApplicationContextFactory;
 	}
 
 	public void setUserTranslator(UserTranslator userTranslator) {
