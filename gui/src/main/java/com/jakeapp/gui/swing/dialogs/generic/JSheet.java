@@ -404,7 +404,7 @@ public class JSheet extends JDialog {
 	}
 
 	public void show() {
-		log.debug("Called show from JSheet: isShowAsSheet:" + isShowAsSheet() + " native: " + isNativeSheetSupported());
+		//log.debug("Called show from JSheet: isShowAsSheet:" + isShowAsSheet() + " native: " + isNativeSheetSupported());
 		if (isAnimated() && isShowAsSheet() && !isNativeSheetSupported()) {
 			installSheet();
 			getContentPane().setVisible(false);

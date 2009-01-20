@@ -38,15 +38,14 @@ public class JakeMenuBar extends JMenuBar {
 		final JMenu projectMenu = new JMenu();
 		projectMenu.setText(resourceMap.getString("projectMenu.text"));
 
-		projectMenu.add(new JMenuItem(new CreateProjectAction(false)));
+		projectMenu.add(new JMenuItem(new CreateProjectAction(true)));
 		projectMenu.add(new JMenuItem(new SyncProjectAction()));
 		projectMenu.addSeparator();
 		projectMenu.add(new JMenuItem(new StartStopProjectAction()));
 		projectMenu.add(new JMenuItem(new RenameFileAction()));
 		projectMenu.add(new JMenuItem(new DeleteFileAction()));
 		projectMenu.addSeparator();
-		projectMenu.add(new JMenuItem(new InvitePeopleAction(false)));
-		projectMenu.add(new JMenuItem(new CreateNoteAction()));
+		projectMenu.add(new JMenuItem(new InvitePeopleAction(true)));
 		projectMenu.addSeparator();
 		//TODO: sign in action
 
@@ -59,6 +58,8 @@ public class JakeMenuBar extends JMenuBar {
 		viewMenu.add(new JMenuItem(new SwitchNewsProjectContextAction()));
 		viewMenu.add(new JMenuItem(new SwitchFilesProjectContextAction()));
 		viewMenu.add(new JMenuItem(new SwitchNotesProjectContextAction()));
+		viewMenu.addSeparator();
+		viewMenu.add(new JMenuItem(new SwitchLoginProjectContextAction()));
 
 		this.add(viewMenu);
 

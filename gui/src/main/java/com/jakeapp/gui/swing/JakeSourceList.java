@@ -6,7 +6,6 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
@@ -91,7 +90,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 			public void sourceListItemClicked(SourceListItem item, Button button,
 														 int clickCount) {
-				log.info(item.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
+				//log.info(item.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
 				if (button == button.RIGHT) {
 					// select the clicked project
@@ -101,7 +100,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 			public void sourceListCategoryClicked(SourceListCategory category,
 															  Button button, int clickCount) {
-				log.info(category.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
+				//log.info(category.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
 				// we don't need that event
 			}
@@ -111,7 +110,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		projectSelectionListener = new SourceListSelectionListener() {
 
 			public void sourceListItemSelected(SourceListItem item) {
-				log.info("Source List Selection: " + item);
+				//log.info("Source List Selection: " + item);
 
 				if (item != null) {
 					// get the project from the hashmap
@@ -141,7 +140,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 			public JPopupMenu createContextMenu() {
 				JPopupMenu popupMenu = new JakePopupMenu();
-				// popupMenu.add(new JMenuItem("Generic Menu for SourceList"));
+				popupMenu.add(new JMenuItem(new CreateProjectAction(true)));
 				return popupMenu;
 			}
 
@@ -220,7 +219,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 	 * Updates the SourceList (project list)
 	 */
 	private void updateSourceList() {
-		log.info("updating source list. current selection: " + sourceList.getSelectedItem());
+		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
 

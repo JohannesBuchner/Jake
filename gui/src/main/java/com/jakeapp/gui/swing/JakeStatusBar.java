@@ -134,7 +134,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	 * @return TriAreaComponent of status bar.
 	 */
 	private TriAreaComponent createStatusBar() {
-		log.info("creating status bar...");
+		//log.info("creating status bar...");
 
 		// only draw the 'fat' statusbar if we are in a mac. does not look good on win/linux
 		BottomBarSize bottombarSize = Platform.isMac() ? BottomBarSize.LARGE : BottomBarSize.SMALL;

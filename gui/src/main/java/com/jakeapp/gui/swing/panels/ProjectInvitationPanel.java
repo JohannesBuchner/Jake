@@ -25,109 +25,109 @@ import java.awt.event.ActionListener;
  * Time: 5:35:46 PM
  */
 public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionChanged, ProjectChanged {
-    private Project project;
-    private JTextField folderTextField;
-    private JLabel projectNameLabel;
-    private JLabel userNameLabel;
-    private JoinProjectAction joinProjectAction;
+	private Project project;
+	private JTextField folderTextField;
+	private JLabel projectNameLabel;
+	private JLabel userNameLabel;
+	private JoinProjectAction joinProjectAction;
 
-    public ProjectInvitationPanel() {
-        JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-        JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+	public ProjectInvitationPanel() {
+		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
 
-        initComponents();
-    }
+		initComponents();
+	}
 
 
-    private void initComponents() {
-        // set the background painter
-        this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+	private void initComponents() {
+		// set the background painter
+		this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
 
-        MigLayout layout = new MigLayout("wrap 1, fillx");
-        this.setLayout(layout);
+		MigLayout layout = new MigLayout("wrap 1, fillx");
+		this.setLayout(layout);
 
-        JLabel title = new JLabel("You have been invited to a new project.");
-        Font font = new Font("Lucida Grande", Font.BOLD, 18);
-        title.setFont(font);
+		JLabel title = new JLabel("You have been invited to a new project.");
+		Font font = new Font("Lucida Grande", Font.BOLD, 18);
+		title.setFont(font);
 
-        this.add(title, "span 1, al center, wrap");
+		this.add(title, "span 1, al center, wrap");
 
-        projectNameLabel = new JLabel();
-        projectNameLabel.setFont(projectNameLabel.getFont().deriveFont(Font.BOLD));
-        this.add(projectNameLabel, "span 1 ,al center, wrap");
+		projectNameLabel = new JLabel();
+		projectNameLabel.setFont(projectNameLabel.getFont().deriveFont(Font.BOLD));
+		this.add(projectNameLabel, "span 1 ,al center, wrap");
 
-        JLabel icon = new JLabel();
-        icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-new-large.png"))));
+		JLabel icon = new JLabel();
+		icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-new-large.png"))));
 
-        this.add(icon, "span 1, al center, wrap");
+		this.add(icon, "span 1, al center, wrap");
 
-        userNameLabel = new JLabel();
-        userNameLabel.setFont(userNameLabel.getFont().deriveFont(Font.BOLD));
-        this.add(userNameLabel, "span 1 ,al center, wrap");
+		userNameLabel = new JLabel();
+		userNameLabel.setFont(userNameLabel.getFont().deriveFont(Font.BOLD));
+		this.add(userNameLabel, "span 1 ,al center, wrap");
 
-        JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
-        folderSelectPanel.setOpaque(false);
+		JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
+		folderSelectPanel.setOpaque(false);
 
-        folderTextField = new JTextField(FileUtilities.getDefaultProjectLocation(getProject()));
-        folderTextField.setEditable(false);
-        folderSelectPanel.add(folderTextField);
+		folderTextField = new JTextField(FileUtilities.getDefaultProjectLocation(getProject()));
+		folderTextField.setEditable(false);
+		folderSelectPanel.add(folderTextField);
 
-        JButton folderChooserButton = new JButton("...");
-        folderChooserButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                String folder = FileUtilities.openDirectoryChooser(null);
-                if (folder != null) {
-                    folderTextField.setText(folder);
-                    joinProjectAction.setProjectLocation(folder);
-                }
-            }
-        });
-        folderSelectPanel.add(folderChooserButton, "");
+		JButton folderChooserButton = new JButton("...");
+		folderChooserButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				String folder = FileUtilities.openDirectoryChooser(null, null);
+				if (folder != null) {
+					folderTextField.setText(folder);
+					joinProjectAction.setProjectLocation(folder);
+				}
+			}
+		});
+		folderSelectPanel.add(folderChooserButton, "");
 
-        this.add(folderSelectPanel, "span 2, al center, wrap");
+		this.add(folderSelectPanel, "span 2, al center, wrap");
 
-        JPanel btnPanel = new JPanel(new MigLayout("nogrid"));
-        btnPanel.setOpaque(false);
+		JPanel btnPanel = new JPanel(new MigLayout("nogrid"));
+		btnPanel.setOpaque(false);
 
-        JButton joinButton = new JButton("Join");
-        joinProjectAction = new JoinProjectAction();
-        joinButton.setAction(joinProjectAction);
+		JButton joinButton = new JButton("Join");
+		joinProjectAction = new JoinProjectAction();
+		joinButton.setAction(joinProjectAction);
 
-        JButton rejectButton = new JButton("Reject");
-        rejectButton.setAction(new RejectProjectAction());
+		JButton rejectButton = new JButton("Reject");
+		rejectButton.setAction(new RejectProjectAction());
 
-        btnPanel.add(joinButton, "tag ok");
-        btnPanel.add(rejectButton, "tag cancel");
+		btnPanel.add(joinButton, "tag ok");
+		btnPanel.add(rejectButton, "tag cancel");
 
-        this.add(btnPanel, "al center");
-    }
+		this.add(btnPanel, "al center");
+	}
 
-    public Project getProject() {
-        return project;
-    }
+	public Project getProject() {
+		return project;
+	}
 
-    public void setProject(Project pr) {
-        this.project = pr;
-        updatePanel();
-        setProjectDefaultLocation();
-    }
+	public void setProject(Project pr) {
+		this.project = pr;
+		updatePanel();
+		setProjectDefaultLocation();
+	}
 
-    private void setProjectDefaultLocation() {
-        folderTextField.setText(FileUtilities.getDefaultProjectLocation(getProject()));
-    }
+	private void setProjectDefaultLocation() {
+		folderTextField.setText(FileUtilities.getDefaultProjectLocation(getProject()));
+	}
 
-    public void projectChanged(ProjectChangedEvent ev) {
-        updatePanel();
-    }
+	public void projectChanged(ProjectChangedEvent ev) {
+		updatePanel();
+	}
 
-    private void updatePanel() {
-        if (getProject() != null) {
-            projectNameLabel.setText(getProject().getName());
+	private void updatePanel() {
+		if (getProject() != null) {
+			projectNameLabel.setText(getProject().getName());
 
-            // TODO: is this user id the id from the inviter?
-            // TODO: enable when this works without mock!
-            String userId = "<needs real impl>"; //getProject().getUserId().toString();
-            userNameLabel.setText(JakeMainView.getMainView().getResourceMap().getString("projectInvitedFrom") + " " + userId);
-        }
-    }
+			// TODO: is this user id the id from the inviter?
+			// TODO: enable when this works without mock!
+			String userId = "<needs real impl>"; //getProject().getUserId().toString();
+			userNameLabel.setText(JakeMainView.getMainView().getResourceMap().getString("projectInvitedFrom") + " " + userId);
+		}
+	}
 }

@@ -38,7 +38,8 @@ public class CreateProjectAction extends ProjectAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.info("Create Project: " + getProject());
 
-		String path = FileUtilities.openDirectoryChooser(null);
+		String path = FileUtilities.openDirectoryChooser(null,
+				  JakeMainView.getMainView().getResourceMap().getString("createProjectDialogTitle"));
 		log.info("Directory was: " + path);
 
 		// create the directory if path was not null

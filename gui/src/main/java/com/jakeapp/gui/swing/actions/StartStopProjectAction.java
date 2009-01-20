@@ -23,7 +23,7 @@ public class StartStopProjectAction extends ProjectAction {
 	}
 
 	public void actionPerformed(ActionEvent actionEvent) {
-		log.info("Start/Stop Project: " + getProject());
+		//log.info("Start/Stop Project: " + getProject());
 
 		// do nothing if we don't have a project
 		if (getProject() == null) {
@@ -42,12 +42,12 @@ public class StartStopProjectAction extends ProjectAction {
 
 	@Override
 	public void updateAction() {
-		log.debug("update startstopprojectaction with " + getProject());
+		//log.debug("update startstopprojectaction with " + getProject());
 		String oldName = (String) getValue(Action.NAME);
 		String newName = ProjectHelper.getProjectStartStopString(getProject());
 		setEnabled(getProject() != null);
 
-		log.debug("old: " + oldName + " new: " + newName);
+		//log.debug("old: " + oldName + " new: " + newName);
 
 		putValue(Action.NAME, newName);
 		firePropertyChange(Action.NAME, oldName, newName);

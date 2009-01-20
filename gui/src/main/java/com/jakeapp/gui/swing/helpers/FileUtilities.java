@@ -32,7 +32,14 @@ public class FileUtilities {
 		}
 	}
 
-	public static String openDirectoryChooser(String defaultFolder) {
+	/**
+	 * Opens the Directory Chooser.
+	 *
+	 * @param defaultFolder
+	 * @param title:        beware! No title is shown when sheets are enabled.
+	 * @return
+	 */
+	public static String openDirectoryChooser(String defaultFolder, String title) {
 		log.info("user is choosing a directory");
 		// uses the awt native folder dialog on mac
 		if (Platform.isMac()) {
@@ -41,6 +48,10 @@ public class FileUtilities {
 			if (defaultFolder != null) {
 				fod.setFile(defaultFolder);
 			}
+			if (title != null) {
+				fod.setTitle(title);
+			}
+
 			fod.setVisible(true);
 			return fod.getDirectory();
 		} else {
@@ -54,6 +65,7 @@ public class FileUtilities {
 			}
 			fileChooser.setMultiSelectionEnabled(false);
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fileChooser.setDialogTitle(title);
 
 			int returnCode = fileChooser.showOpenDialog(null);
 			if (returnCode == JFileChooser.APPROVE_OPTION) {

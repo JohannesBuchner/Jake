@@ -643,9 +643,9 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Checks isInspectorEnabled property.
 	 */
 	private void updateInspectorPanelVisibility() {
-		log.debug("pre: isInspectorEnabled: " + isInspectorEnabled() +
-				  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
-				  " isInspectorAllowed: " + isInspectorAllowed());
+		//log.debug("pre: isInspectorEnabled: " + isInspectorEnabled() +
+		//		  " isInspectorPanelVisible: " + isInspectorPanelVisible() +
+		//		  " isInspectorAllowed: " + isInspectorAllowed());
 		if (isInspectorEnabled()) {
 			// add inspector IF allowed
 			if (isInspectorAllowed() && !isInspectorPanelVisible()) {

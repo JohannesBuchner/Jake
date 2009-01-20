@@ -226,7 +226,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ignored) {
-		log.info("received projectChangedEvent: " + ignored.toString());
+		//log.info("received projectChangedEvent: " + ignored.toString());
 		this.notesTableModel.update();
 		this.notesTable.updateUI();
 	}
