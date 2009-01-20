@@ -723,8 +723,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			pms = this.frontendService.getProjectsManagingService(this.getSessionId());
 			member = pms.getProjectMember(note.getProject(), this.getLoggedInUser(note.getProject()));
 
-			pms.getNoteManagingService().deleteNote(note, member);
+			pms.getNoteManagingService().deleteNote(note);
 		} catch (Exception e) {
+			//FIXME: 
+			e.printStackTrace();
 			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);
 			throw ex;

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.Project;
 
 
@@ -26,10 +25,9 @@ public interface INoteManagingService {
 	 * Deletes a Note from the Database. Creates a Logentry indicating
 	 * the Note has been deleted.
 	 * @param note
-	 * @param userId 
 	 * @throws NoSuchJakeObjectException 
 	 */
-	void deleteNote(NoteObject note, ProjectMember userId) throws NoSuchJakeObjectException;
+	void deleteNote(NoteObject note) throws NoSuchJakeObjectException;
 
 	/**
 	 * Adds a Note to the Database, but does not announce it yet.

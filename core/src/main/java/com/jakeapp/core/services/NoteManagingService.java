@@ -78,7 +78,7 @@ public class NoteManagingService implements INoteManagingService {
 
 	@Override
 	@Transactional
-	public void deleteNote(NoteObject note,ProjectMember member) throws NoSuchJakeObjectException {
+	public void deleteNote(NoteObject note) throws NoSuchJakeObjectException {
 		Project project = note.getProject();
 
 
@@ -87,6 +87,10 @@ public class NoteManagingService implements INoteManagingService {
 		
 		//If note is local - announce deletion
 		if (this.isLocalJakeObject(note)) {
+
+			//FIXME: fetch real member
+			ProjectMember member = null;
+			
 			logEntry = new LogEntry<NoteObject>(
 				UUID.randomUUID(),
 				LogAction.JAKE_OBJECT_DELETE,

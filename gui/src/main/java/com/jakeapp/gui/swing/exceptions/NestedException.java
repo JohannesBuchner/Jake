@@ -20,10 +20,9 @@ public class NestedException extends Exception {
 
 	public void append(Exception e) {
 
-		// HACK: added direct printout for easier resolving of bugs
-//		if (DebugHelper.isEnabled()) {
-//			e.printStackTrace();
-//		}
+		// FIXME: DANGER, HACK AHEAD: added direct printout for easier resolving of bugs
+		e.printStackTrace();
+
 
 		this.nestedExceptions.add(e);
 	}
@@ -65,8 +64,7 @@ public class NestedException extends Exception {
 				stack.add(s);
 			}
 		}
-		StackTraceElement[] array = new StackTraceElement[1];
-		return stack.toArray(array);
+		return stack.toArray(new StackTraceElement[0]);
 	}
 
 }
