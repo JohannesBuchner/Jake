@@ -2,10 +2,12 @@ package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
+import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NewsPanel;
 import org.apache.log4j.Logger;
@@ -94,7 +96,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 		// HACK: do not crash!
 		if (loge.getBelongsTo() == null) {
 			try {
-				loge.setBelongsTo(new Tag("BelongsToStub"));
+				loge.setBelongsTo(new Tag("<BelongsToClass>"));
 			} catch (InvalidTagNameException e) {
 				e.printStackTrace();
 			}
@@ -108,7 +110,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 		boolean isNote = loge.getBelongsTo() instanceof NoteObject;
 		String type = (isNote ? "Note" : "File");
 
-		
+
 		switch (loge.getLogAction()) {
 			/*case JAKE_OBJECT_NEW_VERSION: {
 				setIcon(fileAddIcon);
@@ -117,23 +119,23 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 			break;*/
 
 			case JAKE_OBJECT_DELETE: {
-				setIcon( (isNote?noteRemoveIcon: fileRemoveIcon) );
-				msg += Translator.get(newsResourceMap, "eventsRemoved" +type, loge.getBelongsTo().toString());
+				setIcon((isNote ? noteRemoveIcon : fileRemoveIcon));
+				msg += Translator.get(newsResourceMap, "eventsRemoved" + type, loge.getBelongsTo().toString());
 			}
 			break;
 
 			case JAKE_OBJECT_NEW_VERSION: {
 				setIcon((isNote ? noteUpdateIcon : fileUpdateIcon));
-				msg += Translator.get(newsResourceMap, "eventsUpdated"+ type, loge.getBelongsTo().toString());
+				msg += Translator.get(newsResourceMap, "eventsUpdated" + type, loge.getBelongsTo().toString());
 			}
 			break;
 
 			case PROJECT_CREATED: {
 				setIcon(projectCreatedIcon);
-				msg += Translator.get(newsResourceMap, "eventsProjectCreated", loge.getBelongsTo().toString());
+				msg += Translator.get(newsResourceMap, "eventsProjectCreated", ((Project) loge.getBelongsTo()).getName());
 			}
 			break;
-			
+
 			case JAKE_OBJECT_LOCK: {
 				setIcon(fileLockIcon);
 				msg += Translator.get(newsResourceMap, "eventsObjectLock", loge.getBelongsTo().toString());
@@ -193,10 +195,14 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 				  */
 		super.getTableCellRendererComponent(table, valStr, isSelected, hasFocus, row, column);
 
+		String comment = "";
+		if (loge.getComment() != null && loge.getComment().length() > 0) {
+			comment = "<b>Comment: " + loge.getComment() + "</b><br>";
+		}
 
 		// set the tooltip text
-		setToolTipText("<html><font size=5>" + loge.getLogAction() + "</font><br><b>" +
-				  loge.getComment() + "</b><br>" + loge.getTimestamp().toGMTString() + "</html>");
+		setToolTipText("<html><font size=4>" + this.getText() + "</font><br>" +
+				  comment + TimeUtilities.getRelativeTime(loge.getTimestamp()) + " (" + loge.getTimestamp().toGMTString() + ")</html>");
 
 		return this;
 	}

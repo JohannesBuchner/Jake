@@ -107,6 +107,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		eventsTable.setModel(eventTableModel);
 		ConfigControlsHelper.configEventsTable(eventsTable);
 
+		this.eventsTable.getColumnModel().getColumn(1).setMaxWidth(70);
 
 		//eventsTable.setBorder(BorderFactory.createEtchedBorder());
 		eventsTable.addMouseListener(new EventsTableMouseListener());
