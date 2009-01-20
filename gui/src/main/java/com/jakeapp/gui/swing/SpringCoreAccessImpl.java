@@ -635,20 +635,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
     }
 
     public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException {
-
-        if (useMock("getNotes")) {
-            return coreMock.getNotes(project);
-        } else {
-            try {
-                return this.frontendService.getProjectsManagingService(this.sessionId).
-                        getNoteManagingService().getNotes(project);
-            } catch (Exception e) {
-                NoteOperationFailedException ex = new NoteOperationFailedException();
-                ex.append(e);
-                throw ex;
-            }
-        }
-
+        return this.frontendService.getProjectsManagingService(this.sessionId).
+                getNoteManagingService().getNotes(project);
     }
 
     @Override
@@ -1243,6 +1231,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
     @Override
     public ProjectMember getLockOwner(JakeObject jakeObject) {
         // TODO Auto-generated method stub
-		return null;
-	}
+        return null;
+    }
 }
