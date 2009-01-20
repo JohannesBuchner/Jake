@@ -218,6 +218,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
             notesList.add(new NoteObject(new UUID(8, 1), project, "Guns don't kill people, Chuck Norris does."));
             notesList.add(new NoteObject(new UUID(9, 1), project, "Chuck Norris does not need an undo function"));
             notesList.add(new NoteObject(new UUID(10, 1), project, "Chuck Norris can kill two stones with one bird."));
+            notesList.add(new NoteObject(new UUID(11,1), project,  "Chuck Norris knows: Jake is the best file-sharing app ever."));
 
 
             for (NoteObject note : notesList) {

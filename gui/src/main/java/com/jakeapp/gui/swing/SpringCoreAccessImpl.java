@@ -63,7 +63,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	// HACK
 	private boolean useMock(String f) {
 
-		if ("getNotes".compareTo(f) == 0) return true;
+		if ("getNotes".compareTo(f) == 0) return false;
 		else if ("getLog".compareTo(f) == 0) return true;
 
 
