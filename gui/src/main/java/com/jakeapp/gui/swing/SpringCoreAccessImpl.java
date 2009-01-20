@@ -71,7 +71,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private boolean useMock(String f) {
 
 		if ("getNotes".compareTo(f) == 0) return false;
-		else if ("getProjectRootFolder".compareTo(f) == 0) return true;
+		else if ("getProjectRootFolder".compareTo(f) == 0
+				  || "getAllProjectFiles".compareTo(f) == 0) return true;
 		else if ("getLog".compareTo(f) == 0) return true;
 		else if ("getSuggestedPeople".compareTo(f) == 0) return true;
 
@@ -557,6 +558,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener al) {
 		AvailableLaterObject<List<FileObject>> result = null;
 		Exception ex = null;
+
+		if (useMock("getAllProjectFiles")) {
+			return coreMock.getAllProjectFiles(project, al);
+		}
 
 		try {
 			result = this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project, al);
@@ -1183,7 +1188,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	private void handleProjectNotLoaded(ProjectNotLoadedException e) {
 		log.error("got ProjectNotLoadedException with message " + e.getMessage());
-		e.printStackTrace();
+		// TODO: enable (disabled, caused too much noise)
+		//e.printStackTrace();
 	}
 
 	public long getFileSize(FileObject file) {
