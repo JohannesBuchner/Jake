@@ -13,6 +13,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -127,16 +128,22 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			/* data of type javaFileListFlavor is a list of files */
 			List<File> files = (List<File>) data;
 
-			if (isNewProject(dl, files)) {
-				log.info("generate new project!");
-				File newProjectFile = files.get(0);
-				JakeMainApp.getCore().createProject(
-						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath(), JakeMainApp.getMsgService());
+			if (isNewProject(dl, null)) {
+				for (final File file : files) {
+
+					if (isNewProject(dl, Arrays.asList(file))) {
+						log.info("generate new project!");
+						File newProjectFile = file;
+						JakeMainApp.getCore().createProject(
+								  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()), newProjectFile.getAbsolutePath(), JakeMainApp.getMsgService());
+					}
+				}
 			} else if (isAddToProject(dl, files)) {
 				log.info("add to project!");
 
 				JakeExecutor.exec(new ImportFileFolderWorker(files, ""));
 			}
+
 
 			/* loop through the files in the file list (debug) */
 			for (File file : files) {

@@ -48,15 +48,13 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 	private List<ProjectSelectionChanged> projectSelectionChanged = new LinkedList<ProjectSelectionChanged>();
 	private List<MsgServiceChanged> msgServiceChanged = new ArrayList<MsgServiceChanged>();
-	private SplashWindow splashFrame;
 
 	public JakeMainApp() {
 		this.app = this;
 
 		// show splash
-		splashFrame = SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+		SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 				  getClass().getResource("/icons/jakeapp-large.png"))).getImage());
-
 
 		ApplicationContext applicationContext;
 
@@ -397,7 +395,7 @@ public class JakeMainApp extends SingleFrameApplication implements
 	}
 
 	public SplashWindow getSplashFrame() {
-		return splashFrame;
+		return SplashWindow.getInstance();
 	}
 
 	/**

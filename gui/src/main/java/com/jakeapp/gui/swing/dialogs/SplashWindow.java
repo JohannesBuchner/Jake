@@ -9,6 +9,7 @@ public class SplashWindow extends JFrame {
 	private Image splashImage;
 	private boolean paintCalled = false;
 	private double transparency = 0.0F;
+	private static SplashWindow instance = null;
 
 	public SplashWindow(Image splashImage) {
 		super();
@@ -69,23 +70,36 @@ public class SplashWindow extends JFrame {
 		new Thread(runn).start();
 	}
 
-	public static SplashWindow splash(Image splashImage) {
-		SplashWindow w = new SplashWindow(splashImage);
-		w.toFront();
-		w.setUndecorated(true);
-		w.setTransparency(0.3F);
-		w.setVisible(true);
+	public static void splash(final Image splashImage) {
 
-		if (!EventQueue.isDispatchThread()) {
-			synchronized (w) {
-				while (!w.paintCalled) {
-					try {
-						w.wait();
-					} catch (InterruptedException e) {
+		instance = new SplashWindow(splashImage);
+		Runnable runner = new Runnable() {
+
+			@Override
+			public void run() {
+				instance.toFront();
+				instance.setUndecorated(true);
+				instance.setTransparency(0.3F);
+				instance.setVisible(true);
+
+
+				if (!EventQueue.isDispatchThread()) {
+					synchronized (instance) {
+						while (!instance.paintCalled) {
+							try {
+								instance.wait();
+							} catch (InterruptedException e) {
+							}
+						}
 					}
 				}
 			}
-		}
-		return w;
+		};
+
+		new Thread(runner).start();
+	}
+
+	public static SplashWindow getInstance() {
+		return instance;
 	}
 }
