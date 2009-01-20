@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.panels.NotesPanel;
@@ -54,5 +55,15 @@ public abstract class NoteAction extends ProjectAction
 
 	public void setSelectedNotes(List<NoteObject> notes) {
 		this.selectedNotes = notes;
+	}
+	
+	@Override
+	public void updateAction() {
+		this.setEnabled((JakeMainApp.getProject()!=null));
+	}
+	
+	protected void refreshNotesPanel() {
+		//XXX very cheap implementation
+		NotesPanel.getInstance().projectChanged(new ProjectChangedEvent(JakeMainApp.getProject(),ProjectChangedEvent.ProjectChangedReason.Sync) );
 	}
 }

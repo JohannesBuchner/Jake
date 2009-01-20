@@ -50,7 +50,7 @@ public class SaveNoteAction extends NoteAction {
 	
 	@Override
 	public void updateAction() {
-		if (this.getSelectedNotes().size() > 0) { // files are selected
+		if (this.getSelectedNotes().size() > 0) { // notes are selected
 			this.setEnabled(true);
 			
 			if(core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked

@@ -97,6 +97,8 @@ public class DeleteNoteAction extends NoteAction {
 							ExceptionUtilities.showError(e);
 						}
 					}
+					//XXX update view
+					refreshNotesPanel();
 				}
 			}
 		});

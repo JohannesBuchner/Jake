@@ -30,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
     private static final Logger log = Logger
@@ -264,7 +266,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         if (!project.isOpen() || project.isStarted())
             return false;
 
-
+        log.debug("Userid of Project that is about to be started is: " + project.getUserId());
+        
         this.syncService.startServing(project,
                 new TrustRequestHandlePolicy(project), cl);
 
@@ -465,7 +468,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     @Override
     public void assignUserToProject(Project project, UserId userId)
             throws IllegalArgumentException, IllegalAccessException {
-
+    	
         // Check preconditions
         if (project == null)
             throw new IllegalArgumentException();

@@ -35,6 +35,8 @@ public class CreateNoteAction extends NoteAction {
 			JakeMainApp.getCore().newNote(new NoteObject(UUID.randomUUID(),
 					NotesPanel.getInstance().getCurrentProject(),
 					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent")));
+			//update notes view
+			this.refreshNotesPanel();
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);
 		}

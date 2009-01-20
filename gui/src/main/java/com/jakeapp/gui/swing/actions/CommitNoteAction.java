@@ -34,6 +34,8 @@ public class CommitNoteAction extends NoteAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			core.announceJakeObject(this.getSelectedNotes().get(0), null);
+			//XXX update view
+			this.refreshNotesPanel();
 		} catch (SyncException e1) {
 			ExceptionUtilities.showError(e1);
 		}

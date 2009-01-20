@@ -24,6 +24,7 @@ import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
@@ -45,6 +46,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.util.*;
+
+import javax.swing.JOptionPane;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
 
@@ -659,6 +662,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			log.error("Tried to getLastEdit on NoteObject: " + note + "got Exception: " + e.getMessage());
 			// TODO: i did not print out the exception, because there were just so many of them ;)
 			//this.fireErrorListener(new JakeErrorEvent(e));
+			result = Calendar.getInstance().getTime();
 		}
 
 		return result;
@@ -885,6 +889,15 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					/*
 																				 * The project is created, but not started and no user is assigned to it.
 																				 */
+					
+					/* FIXME since there is only one user in the current implementation, it is added to the project! */
+					if (pr.getUserId()==null)
+						try {
+							frontendService.getProjectsManagingService(sessionId).assignUserToProject(pr, pr.getMessageService().getUserId());
+							log.debug("After creation, the project's userid is: " + pr.getUserId());
+						} catch (IllegalAccessException e) {
+							//empty implementation
+						}
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 							  pr,
@@ -1155,7 +1168,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	public long getFileSize(FileObject file) {
 		//TODO implement this differently - get the Size of the STORED FileObject...
-		return this.getFileSize(file);
+		return this.getLocalFileSize(file);
 	}
 
 	@Override
