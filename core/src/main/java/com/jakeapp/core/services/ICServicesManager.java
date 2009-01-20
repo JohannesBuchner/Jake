@@ -95,7 +95,7 @@ public class ICServicesManager {
 		ICService ics = null;
 
 //		if (cred.getProtocol().equals(ProtocolType.XMPP)) {
-		log.debug("Creating new XMPPICService for userId " + cred.getUserId());
+		log.debug("Creating new XMPPICService for cred:  " + cred);
 		ics = new XmppICService(XMPPMsgService.namespace, p.getName());
 //		} else {
 //			log.fatal("Currently unsupported protocol given");
