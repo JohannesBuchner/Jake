@@ -8,7 +8,7 @@
                                 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
                                 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-	<bean id="applicationContextFactory" class="com.jakeapp.core.util.ProjectApplicationContextFactory">
+	<bean id="applicationContextFactory" class="com.jakeapp.core.util.ApplicationContextFactory">
 		<description>The factory to create and configure application contexts</description>
 		<property name="configLocation">
 			<value>applicationContextFactory_test_context.xml</value>

@@ -19,5 +19,7 @@
     <import resource="applicationContext-global-datasource.xml" />
     <import resource="applicationContext-global-daos.xml"/>
 
+    <import resource="applicationContext-components.xml" />
+    
     <import resource="applicationContext-services.xml" />
 </beans>

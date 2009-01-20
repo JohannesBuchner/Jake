@@ -1,15 +1,11 @@
 package com.jakeapp.core.util;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ApplicationContext;
 
-import com.jakeapp.core.dao.IFileObjectDao;
-import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.dao.INoteObjectDao;
-import com.jakeapp.core.dao.IProjectMemberDao;
+import com.jakeapp.core.dao.*;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
@@ -25,12 +21,28 @@ import com.jakeapp.core.domain.TrustState;
  */
 public class ProjectApplicationContextFactory extends ApplicationContextFactory {
 
+    private IProjectDao projectDao;
 
-    public ProjectApplicationContextFactory() {
+    private List<UUID> project_uuids = new ArrayList<UUID>();
+
+
+    public ProjectApplicationContextFactory(IProjectDao projectDao) {
+        super();
 		log.debug("Creating the ProjectApplicationContextFactory");
+        this.projectDao = projectDao;
 
-		this.contextTable = new Hashtable<String, ConfigurableApplicationContext>();
+        loadProjectUUIDs();
+
 	}
+
+    private void loadProjectUUIDs() {
+        List<Project> projects = this.projectDao.getAll();
+        project_uuids.clear();
+        for(Project proj : projects)
+        {
+            project_uuids.add(UUID.fromString(proj.getProjectId()));
+        }
+    }
 
     public ILogEntryDao getLogEntryDao(Project p) {
         return (ILogEntryDao) getApplicationContext(p).getBean("logEntryDao");
@@ -67,4 +79,35 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		}
 		return allmembers;
 	}
+
+    /**
+     * Get the <code>ApplicationContext</code> for a given <code>
+     * Project</code>. If an
+     * <code>ApplicationContext</code> for the given <code>Project</code>
+     * already exists, the existing context is returned, otherwise a new context
+     * will be created. This method is <code>synchronized</code>
+     *
+     * @param project the project for which the application context is used
+     * @return the <code>ApplicationContext</code>
+     */
+    public synchronized ApplicationContext getApplicationContext(Project project) {
+
+        UUID identifier = UUID.fromString(project.getProjectId());
+        if(project_uuids.contains(identifier))
+        {
+            return getApplicationContext(identifier);
+        }
+        else
+        {
+            loadProjectUUIDs();
+            if(!project_uuids.contains(identifier))
+            {
+                log.warn("opening invalid context!!!!!!!");
+                new Exception().printStackTrace();
+                System.err.print("FIX ME!");
+                System.exit(1);
+            }
+            return getApplicationContext(identifier);
+        }
+    }
 }

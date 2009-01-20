@@ -42,21 +42,21 @@ public class ApplicationContextFactoryTest {
 	
 	@Test (timeout = 1000)
 	public void getApplicationContext_getAnyContext() {
-		ApplicationContext context = factory.getApplicationContext(PROJECT_1);
+		ApplicationContext context = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
 		Assert.assertNotNull(context);
 	}
 	
 	@Test (timeout = 1000)
 	public void getApplicationContext_getTwoDifferentContexts() {
-		ApplicationContext context1 = factory.getApplicationContext(PROJECT_1);
-		ApplicationContext context2 = factory.getApplicationContext(PROJECT_2);
+		ApplicationContext context1 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
+		ApplicationContext context2 = factory.getApplicationContext(UUID.fromString(PROJECT_2.getProjectId()));
 		Assert.assertNotSame("factory returned same context", context1, context2);
 	}
 
 	@Test (timeout = 1000)
 	public void getApplicationContext_FactoryReturnsSameContext() {
-		ApplicationContext context1 = factory.getApplicationContext(PROJECT_1);
-		ApplicationContext context2 = factory.getApplicationContext(PROJECT_1);
+		ApplicationContext context1 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
+		ApplicationContext context2 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
 		Assert.assertSame("factory did not return the same context", context1, context2);
 	}
 

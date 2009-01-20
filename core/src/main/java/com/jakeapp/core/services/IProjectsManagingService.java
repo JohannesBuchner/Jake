@@ -109,12 +109,8 @@ public interface IProjectsManagingService {
 	/**
 	 * Loads the given project (load database)
 	 * 
-	 * @param rootPath
-	 *            The location where the project is. It must be a folder and it
-	 *            must contain a database file describing the Jake-Project.
-	 * @param name
-	 *            Name of the Project
-	 * @throws IllegalArgumentException
+	 * @param project
+     * @throws IllegalArgumentException
 	 *             if the supplied name is null
 	 * @throws FileNotFoundException
 	 *             if the rootPath of the loaded <code>Project</code> does not
@@ -122,7 +118,7 @@ public interface IProjectsManagingService {
 	 *             database- file cannot be opened.
 	 * @return the opened, but not yet started, <code>Project</code>
 	 */
-	Project openProject(File rootPath, String name)
+	Project openProject(Project project)
 			throws IllegalArgumentException, FileNotFoundException;
 
 

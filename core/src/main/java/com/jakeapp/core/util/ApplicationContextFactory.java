@@ -15,49 +15,52 @@ import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 
-import java.util.Properties;
-import java.util.Collection;
-import java.util.List;
-import java.util.Hashtable;
+import java.util.*;
 
 public class ApplicationContextFactory {
     protected static Logger log = Logger.getLogger(ProjectApplicationContextFactory.class);
-    protected Hashtable<String, ConfigurableApplicationContext> contextTable;
+    protected Hashtable<UUID, ConfigurableApplicationContext> contextTable;
     private String[] configLocation;
+
+    public ApplicationContextFactory() {
+        this.contextTable = new Hashtable<UUID, ConfigurableApplicationContext>();
+    }
+
 
     /**
      * Get the <code>ApplicationContext</code> for a given <code>
-     * Project</code>. If an
-     * <code>ApplicationContext</code> for the given <code>Project</code>
+     * UUID</code>. If an
+     * <code>ApplicationContext</code> for the given <code>UUID</code>
      * already exists, the existing context is returned, otherwise a new context
      * will be created. This method is <code>synchronized</code>
      *
-     * @param project the project for which the application context is used
+     * @param identifier the UUID for which the application context is used
      * @return the <code>ApplicationContext</code>
      */
-    public synchronized ApplicationContext getApplicationContext(Project project) {
+    public synchronized ApplicationContext getApplicationContext(UUID identifier) {
+        if (identifier == null)
+            return null;
 
         ConfigurableApplicationContext applicationContext = null;
 
-        log.debug("acquiring context for project: " + project.getProjectId());
-        if (this.contextTable.containsKey(project.getProjectId())) {
-            log.debug("context for project: " + project.getProjectId()
+        log.debug("acquiring context for identifier: " + identifier.toString());
+        if (this.contextTable.containsKey(identifier)) {
+            log.debug("context for UUID: " + identifier.toString()
                     + " already created, returning existing...");
-            applicationContext = this.contextTable.get(project.getProjectId());
+            applicationContext = this.contextTable.get(identifier);
         } else {
-
-
-            applicationContext = new ClassPathXmlApplicationContext(this.configLocation);
             Properties props = new Properties();
-            props.put("db_path", project.getProjectId());
+            props.put("db_path", identifier.toString());
             PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
             cfg.setProperties(props);
 
-            log.debug("configuring context with path: " + project.getProjectId());
+            applicationContext = new ClassPathXmlApplicationContext(this.configLocation);
+
+            log.debug("configuring context with UUID: " + identifier.toString());
             applicationContext.addBeanFactoryPostProcessor(cfg);
             applicationContext.refresh();
 
-            this.contextTable.put(project.getProjectId(), applicationContext);
+            this.contextTable.put(identifier, applicationContext);
         }
         return applicationContext;
     }

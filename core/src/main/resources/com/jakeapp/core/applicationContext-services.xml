@@ -13,15 +13,7 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
-    <bean id="applicationContextFactory" class="com.jakeapp.core.util.ProjectApplicationContextFactory">
-        <description>The factory to create and configure application contexts</description>
-        <property name="configLocation">
-            <list>
-                <value>/com/jakeapp/core/applicationContext-local-datasource.xml</value>
-                <value>/com/jakeapp/core/applicationContext-local-daos.xml</value>
-            </list>
-        </property>
-    </bean>
+
 
     <bean id="projectsFileServices" class="com.jakeapp.core.services.ProjectsFileServicesImpl"/>
 
@@ -32,12 +24,6 @@
         <property name="projectsFileServices" ref="projectsFileServices" />
     </bean>
 
-    <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
-        <constructor-arg ref="applicationContextFactory" index="0"
-                         type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
-        <constructor-arg ref="userIdDao" index="1"
-                         type="com.jakeapp.core.dao.IUserIdDao"/>
-    </bean>
 
     <bean id="noteManagingService" class="com.jakeapp.core.services.NoteManagingService">
       <constructor-arg ref="applicationContextFactory" index="0"
@@ -52,13 +38,6 @@
         <property name="projectsFileServices" ref="projectsFileServices" />
         <property name="noteManagingService" ref="noteManagingService" />
     </bean>
-
-    <!-- this is per session and a very internal part of the core that can not
-      be replaced and does not have to be injected, so I'll will hardwire it
-     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
-
-     </bean>
-     -->
 
     <bean id="msgService" class="com.jakeapp.core.services.MsgService" abstract="true">
 

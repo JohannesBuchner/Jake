@@ -727,15 +727,15 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
-		try {
+//		try {
 			this.frontendService
 					  .getProjectsManagingService(this.getSessionId())
 					  .getNoteManagingService().saveNote(note);
-		} catch (Exception e) {
-			NoteOperationFailedException ex = new NoteOperationFailedException();
-			ex.append(e);
-			throw ex;
-		}
+//		} catch (Exception e) {
+//			NoteOperationFailedException ex = new NoteOperationFailedException();
+//			ex.append(e);
+//			throw ex;
+//		}
 
 	}
 

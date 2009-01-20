@@ -60,7 +60,7 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
             return false;
         }
         this.host = cred.getServerAddress();
-        if (this.host == "" || this.host == null) {
+        if (this.host == null || this.host.isEmpty()) {
             this.host = this.icsXmppUserId.getHost();
         }
         return true;

@@ -29,7 +29,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	 */
 	public T persist(final T jakeObject) {
 
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().save(jakeObject);
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(jakeObject);
 
 		return jakeObject;
 	}

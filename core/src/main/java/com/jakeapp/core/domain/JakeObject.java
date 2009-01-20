@@ -90,7 +90,7 @@ public abstract class JakeObject implements ILogable, Serializable {
         this.uuid = uuid;
     }
 
-    protected void setProject(Project project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 

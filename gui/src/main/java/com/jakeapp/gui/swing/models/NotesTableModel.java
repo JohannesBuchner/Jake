@@ -121,6 +121,7 @@ public class NotesTableModel extends DefaultTableModel {
 			incommingNotes = this.core.getNotes(project);
 		
 			for (NoteObject n : incommingNotes) {
+                n.setProject(project);
 				try {
 					this.notes.add(new NoteMetaDataWrapper(n,
 							  this.core.getLastEdit(n),
