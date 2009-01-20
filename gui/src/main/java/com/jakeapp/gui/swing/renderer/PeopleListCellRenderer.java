@@ -113,7 +113,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		// TODO: add first/surname!
 		setToolTipText("<html><b>" + member.getNickname() +
-				  "'</b><br>" + statusStr + "</html>");
+				  "</b><br>" + statusStr + "</html>");
 		// set the tooltip text
 		/*
 		MsgService msg = JakeMainApp.getCore().getMsgService(member);
