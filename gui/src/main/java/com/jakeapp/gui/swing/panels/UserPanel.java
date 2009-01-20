@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.panels;
 
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -594,6 +595,12 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * @return
 	 */
 	private JPanel createSignInSuccessPanel() {
+
+		// TODO remove HACK: set msgservice of projects!!
+		log.warn("HACK: setting msg services...");
+		for (Project p : JakeMainApp.getCore().getMyProjects()) {
+			p.setMessageService(JakeMainApp.getMsgService());
+		}
 
 		// create the drag & drop hint
 		JPanel loginSuccessPanel = new JPanel();

@@ -639,7 +639,9 @@ public interface ICoreAccess {
 	/******************* People functions ********************/
 
 	/**
-	 * Get all project members for the current project
+	 * Get all project members for the current project.
+	 * There is always at least ONE member of the project.
+	 * The first person is always the current user!
 	 *
 	 * @param project : project that should be evaluated
 	 * @return

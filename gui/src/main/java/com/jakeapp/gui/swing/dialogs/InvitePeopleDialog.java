@@ -59,7 +59,7 @@ public class InvitePeopleDialog extends JakeDialog {
 			}
 		});
 		peopleComboBox.setEditable(true);
-		peopleComboBox.setModel(new InvitePeopleComboBoxModel(getProject()));
+		peopleComboBox.setModel(new InvitePeopleComboBoxModel(JakeMainApp.getProject()));
 		AutoCompleteDecorator.decorate(peopleComboBox);
 		this.add(peopleComboBox, "growx");
 

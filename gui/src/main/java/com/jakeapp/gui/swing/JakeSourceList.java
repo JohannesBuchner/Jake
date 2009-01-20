@@ -245,11 +245,6 @@ public class JakeSourceList extends JakeGuiComponent implements
 			e.printStackTrace();
 		}
 		for (Project project : myprojects) {
-
-			// TODO WHAT A BLODDY HACK: set Msgservice!!
-			project.setMessageService(JakeMainApp.getMsgService());
-
-
 			Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
 			SourceListItem sli = new SourceListItem(project.getName(), prIcon);
 

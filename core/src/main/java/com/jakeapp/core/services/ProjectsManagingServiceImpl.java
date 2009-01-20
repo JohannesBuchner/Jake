@@ -829,6 +829,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		ProjectMember member;
 		UserId id;
 
+		log.info("invite project: " + project + " userid: " +
+				  userid + " msgservice: " + project.getMessageService());
+
 		id = project.getMessageService().getUserId(userid);
 		member = this.addProjectMember(project, id);
 		this.getSyncService().invite(project, id);
@@ -867,7 +870,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 		// preconditions
 		if (!this.isProjectLoaded(project))
-			throw new NoSuchProjectException();
+			throw new NoSuchProjectException("Project not loaded!");
 		if (project.getMessageService() == null)
 			throw new IllegalArgumentException();
 

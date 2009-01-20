@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
@@ -15,6 +16,8 @@ import java.awt.*;
  */
 // TODO: localize
 public class PeopleListCellRenderer extends DefaultListCellRenderer {
+	final static ImageIcon projectMemberIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-projectmember.png")));
+	// TODO: offline projectmember!
 	final static ImageIcon onlineFullTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-fulltrust.png")));
 	final static ImageIcon onlineTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-trust.png")));
 	final static ImageIcon onlineNoTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
@@ -34,6 +37,8 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			  boolean chf)	 // the list and the cell have the focus
 	{
 
+		boolean isProjectMember = index == 0;
+
 		/*
 					* Pre-format the data we wanna show for ProjectMember
 					*/
@@ -49,8 +54,15 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		} catch (NoSuchProjectMemberException e) {
 			ExceptionUtilities.showError(e);
 		}
-		String valStr = "<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
 
+		String valStr;
+
+		if (!isProjectMember) {
+			valStr = "<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+		} else {
+			// TODO: localize!
+			valStr = "<html><b>" + "You (" + nickOrFullName + ")</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+		}
 
 		/* The DefaultListCellRenderer class will take care of
 				  * the JLabels text property, it's foreground and background
@@ -61,9 +73,11 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		/* We additionally set the JLabels icon property here.
 					*/
 
+		TrustState memberTrust = member.getTrustState();
+
 		// TODO: substitute with online/offline check!
 		if (member.getNickname().length() > 4) {
-			switch (member.getTrustState()) {
+			switch (memberTrust) {
 				case AUTO_ADD_REMOVE: {
 					setIcon(onlineFullTrustIcon);
 				}
@@ -92,12 +106,17 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			}
 		}
 
+		// override icon for own project member
+		if (isProjectMember) {
+			setIcon(projectMemberIcon);
+		}
+
 		// TODO: replace check
 		String statusStr = (true) ? "Online" : "Offline";
 		statusStr += ", ";
 
 		// TODO: localize + change labels
-		switch (member.getTrustState()) {
+		switch (memberTrust) {
 			case AUTO_ADD_REMOVE: {
 				statusStr += "Trusted + Trusting new people";
 			}

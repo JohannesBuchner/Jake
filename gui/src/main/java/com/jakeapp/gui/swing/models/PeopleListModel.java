@@ -13,10 +13,7 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * Capsulates the People into a ListModel
- * User: studpete
- * Date: Jan 4, 2009
- * Time: 9:06:39 AM
+ * Capsulates ProjectMember into a ListModel.
  */
 public class PeopleListModel extends AbstractListModel
 		  implements MutableListModel, ProjectSelectionChanged, ProjectChanged {
@@ -39,7 +36,13 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	public Object getElementAt(int i) {
+//		if (i == 0) {
+		// modify first projectMember(WE)
+//			ProjectMember member = people.get(0);
+//			return member;
+//		} else {
 		return people.get(i);
+//		}
 	}
 
 
@@ -65,7 +68,12 @@ public class PeopleListModel extends AbstractListModel
 
 	@Override
 	public boolean isCellEditable(int index) {
-		return true;
+
+		// we are not editable!
+		if (index > 0)
+			return true;
+		else
+			return false;
 	}
 
 	@Override

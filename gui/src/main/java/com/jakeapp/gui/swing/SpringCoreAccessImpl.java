@@ -73,6 +73,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		if ("getNotes".compareTo(f) == 0) return false;
 		else if ("getProjectRootFolder".compareTo(f) == 0) return true;
 		else if ("getLog".compareTo(f) == 0) return true;
+		else if ("getSuggestedPeople".compareTo(f) == 0) return true;
 
 
 		return true;
@@ -845,6 +846,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<ProjectMember> getSuggestedPeople(Project project) {
 		List<ProjectMember> members = null;
+
+		if (useMock("getSuggestedPeople")) {
+			return this.coreMock.getSuggestedPeople(project);
+		}
 
 		try {
 			members = this.getFrontendService().getProjectsManagingService(getSessionId()).getUninvitedPeople(project);
