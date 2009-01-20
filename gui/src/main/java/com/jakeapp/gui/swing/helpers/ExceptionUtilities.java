@@ -44,7 +44,7 @@ public class ExceptionUtilities {
 	 */
 	private static void internalShowError(Exception e) {
 
-		// /log.warn(e.getMessage());
+		log.warn("showing error", e);
 		//e.printStackTrace();
 
 		JSheet.showMessageSheet(JakeMainApp.getFrame(),

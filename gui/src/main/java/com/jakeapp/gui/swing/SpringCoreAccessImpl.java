@@ -51,12 +51,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
 	private IFrontendService frontendService;
-	
+
 	private Set<JakeObject> MockIsSoftLockedSet;
 
 	// HACK INIT MOCK CORE
 	private ICoreAccess coreMock = new CoreAccessMock();
-	
+
 	{
 		this.MockIsSoftLockedSet = new HashSet<JakeObject>();
 	}
@@ -71,6 +71,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private boolean useMock(String f) {
 
 		if ("getNotes".compareTo(f) == 0) return false;
+		else if ("getProjectRootFolder".compareTo(f) == 0) return true;
 		else if ("getLog".compareTo(f) == 0) return true;
 
 
@@ -520,30 +521,35 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public FolderObject getProjectRootFolder(Project project)
 			  throws ProjectFolderMissingException {
 		log.info("get root folder for " + project);
-		String rootPath = project.getRootPath();
-		File rootFolder = new File(rootPath);
-		if (!rootFolder.exists()) {
-			throw new ProjectFolderMissingException(rootPath);
-		}
 
-		/*
-				 * Construct a folder from the entire project
-				 */
-		FolderObject fo = null;
-		try {
-			IProjectsManagingService pms = this.getFrontendService().getProjectsManagingService(getSessionId());
-			fo = recursiveFileSystemHelper(project, "", "", pms.getFileServices(project), pms);
-		} catch (IllegalArgumentException e) {
-			//empty implementation
-		} catch (IllegalStateException e) {
-			//empty implementation
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
-		}
+		if (useMock("getProjectRootFolder")) {
+			return this.coreMock.getProjectRootFolder(project);
+		} else {
+			String rootPath = project.getRootPath();
+			File rootFolder = new File(rootPath);
+			if (!rootFolder.exists()) {
+				throw new ProjectFolderMissingException(rootPath);
+			}
 
-		return fo;
+			/*
+							 * Construct a folder from the entire project
+							 */
+			FolderObject fo = null;
+			try {
+				IProjectsManagingService pms = this.getFrontendService().getProjectsManagingService(getSessionId());
+				fo = recursiveFileSystemHelper(project, "", "", pms.getFileServices(project), pms);
+			} catch (IllegalArgumentException e) {
+				//empty implementation
+			} catch (IllegalStateException e) {
+				//empty implementation
+			} catch (FrontendNotLoggedInException e) {
+				this.handleNotLoggedInException(e);
+			} catch (ProjectNotLoadedException e) {
+				this.handleProjectNotLoaded(e);
+			}
+
+			return fo;
+		}
 	}
 
 	@Override
@@ -743,7 +749,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(), ProjectChangedReason.State));
 
-		
+
 //		} catch (Exception e) {
 //			NoteOperationFailedException ex = new NoteOperationFailedException();
 //			ex.append(e);
@@ -1262,6 +1268,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public ProjectMember getLockOwner(JakeObject jakeObject) {
-		return new ProjectMember(UUID.randomUUID(), "Chuck Norris",TrustState.AUTO_ADD_REMOVE);
+		return new ProjectMember(UUID.randomUUID(), "Chuck Norris", TrustState.AUTO_ADD_REMOVE);
 	}
 }

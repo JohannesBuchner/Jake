@@ -258,7 +258,9 @@ public class FrontendServiceImpl implements IFrontendService {
 		try {
 			fss = pms.getFileServices(project);
 		} catch (ProjectNotLoadedException e) {
-			throw new IOException(); // todo tmp
+			log.warn("error trying to get sync status for object " + file, e);
+			return null;
+//			throw new IOException(); // todo tmp
 		}
 
 
