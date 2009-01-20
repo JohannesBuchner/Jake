@@ -47,8 +47,7 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 		this.setLayout(layout);
 
 		JLabel title = new JLabel("You have been invited to a new project.");
-		Font font = new Font("Lucida Grande", Font.BOLD, 18);
-		title.setFont(font);
+		title.setFont(Platform.getStyler().getH1Font());
 
 		this.add(title, "span 1, al center, wrap");
 

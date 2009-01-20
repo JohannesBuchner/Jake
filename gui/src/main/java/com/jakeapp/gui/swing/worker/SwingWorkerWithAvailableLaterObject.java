@@ -3,15 +3,12 @@
  */
 package com.jakeapp.gui.swing.worker;
 
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.StatusUpdate;
-import com.jakeapp.gui.swing.JakeStatusBar;
-
-import javax.swing.*;
-
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
@@ -25,7 +22,7 @@ import java.util.concurrent.Semaphore;
  * @param <T>
  */
 public abstract class SwingWorkerWithAvailableLaterObject<T> extends
-	 SwingWorker<T, StatusUpdate> implements AvailabilityListener {
+		  SwingWorker<T, StatusUpdate> implements AvailabilityListener {
 
 	private static final Logger log = Logger.getLogger(SwingWorkerWithAvailableLaterObject.class);
 
@@ -73,10 +70,10 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	}
 
 	protected void handleInterruption(InterruptedException e) {
-		log.warn("Swingworker has been interrupted: " + e.getMessage());
+		log.warn("Swingworker has been interrupted: " + e.getMessage(), e);
 	}
 
 	protected void handleExecutionError(ExecutionException e) {
-		log.warn("Swingworker execution failed: " + e.getMessage());
+		log.warn("Swingworker execution failed: " + e.getMessage(), e);
 	}
 }

@@ -33,7 +33,7 @@ public class JakeTrayIcon {
 					System.out.println("Tray Icon - Mouse clicked!");
 
 					if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && !Platform.isMac()) {
-						toggleShowHideMainWindow();
+						JakeMainView.toggleShowHideMainWindow();
 					}
 				}
 
@@ -67,7 +67,7 @@ public class JakeTrayIcon {
 			ActionListener showJakeListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					log.info("Showing main window");
-					toggleShowHideMainWindow();
+					JakeMainView.toggleShowHideMainWindow();
 				}
 			};
 
@@ -116,21 +116,6 @@ public class JakeTrayIcon {
 	}
 
 	private String getShowHideWindowString() {
-		return JakeMainView.getResouceMap().getString(isMainWindowVisible() ? "windowHide" : "windowShow");
-	}
-
-	private void toggleShowHideMainWindow() {
-		if (!isMainWindowVisible()) {
-			//JakeMainView.getMainView().getFrame().setExtendedState(JFrame.ICONIFIED);
-		}
-		JakeMainView.getMainView().getFrame().setVisible(!isMainWindowVisible());
-		if (isMainWindowVisible()) {
-			JakeMainView.getMainView().getFrame().requestFocus();
-			//JakeMainView.getMainView().getFrame().setExtendedState(JFrame.NORMAL);
-		}
-	}
-
-	private boolean isMainWindowVisible() {
-		return JakeMainView.getMainView().getFrame().isVisible();
+		return JakeMainView.getResouceMap().getString(JakeMainView.isMainWindowVisible() ? "windowHide" : "windowShow");
 	}
 }

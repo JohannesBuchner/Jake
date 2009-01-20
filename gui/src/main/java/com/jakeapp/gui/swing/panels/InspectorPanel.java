@@ -95,7 +95,7 @@ public class InspectorPanel extends JXPanel implements
 
 		// add name
 		nameLabel = new JLabel();
-		headerPanel.add(nameLabel, "wrap, grow");
+		headerPanel.add(nameLabel, "span 2, wrap, grow");
 
 		// add size
 		sizeLabel = new JLabel();

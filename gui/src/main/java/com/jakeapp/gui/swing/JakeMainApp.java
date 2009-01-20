@@ -14,9 +14,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.GlassJFrame;
 import com.jakeapp.gui.swing.dialogs.SplashWindow;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.helpers.AppUtilities;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.*;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -24,9 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * The main class of the application.
@@ -52,9 +48,25 @@ public class JakeMainApp extends SingleFrameApplication implements
 	public JakeMainApp() {
 		this.app = this;
 
+		if (!ApplicationInstanceManager.registerInstance()) {
+			// instance already running.
+			log.error("Another instance of Jake is already running.  Exiting.");
+			System.exit(0);
+		}
+
+		ApplicationInstanceManager.setApplicationInstanceListener(new ApplicationInstanceListener() {
+			public void newInstanceCreated() {
+				log.info("New Jake instance detected, showing current!");
+
+				// User tried to load jake a second time.
+				// so open first instane!
+				JakeMainView.setMainWindowVisible(true);
+			}
+		});
+
 		// show splash
-		SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/jakeapp-large.png"))).getImage());
+		//SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+		//		  getClass().getResource("/icons/jakeapp-large.png"))).getImage());
 
 		ApplicationContext applicationContext;
 

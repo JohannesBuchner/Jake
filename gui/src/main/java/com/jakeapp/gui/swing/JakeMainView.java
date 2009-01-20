@@ -945,4 +945,25 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	public void msgServiceChanged(MsgService msg) {
 		updateAll();
 	}
+
+	public static boolean isMainWindowVisible() {
+		return JakeMainView.getMainView().getFrame().isVisible();
+	}
+
+	public static void setMainWindowVisible(boolean visible) {
+		JakeMainView.getMainView().getFrame().setVisible(visible);
+		JakeMainView.getMainView().getFrame().toFront();
+		//JakeMainView.getMainView().getFrame().requestFocus();
+	}
+
+	public static void toggleShowHideMainWindow() {
+		if (!isMainWindowVisible()) {
+			//JakeMainView.getMainView().getFrame().setExtendedState(JFrame.ICONIFIED);
+		}
+		JakeMainView.getMainView().getFrame().setVisible(!isMainWindowVisible());
+		if (isMainWindowVisible()) {
+			//JakeMainView.getMainView().getFrame().requestFocus();
+			//JakeMainView.getMainView().getFrame().setExtendedState(JFrame.NORMAL);
+		}
+	}
 }
