@@ -111,14 +111,19 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			}
 		}
 
+		// TODO: add first/surname!
+		setToolTipText("<html><b>" + member.getNickname() +
+				  "'</b><br>" + statusStr + "</html>");
 		// set the tooltip text
-		// TODO: fix
 		/*
-			 setToolTipText("<html><font size=5>" + member.getUserId().getFirstName() + " "
+		MsgService msg = JakeMainApp.getCore().getMsgService(member);
+		member.
+
+			 setToolTipText("<html><font size=5>" + member..getFirstName() + " "
 						+ member.getUserId().getSurName() + "</font><br><b>'" +
 						member.getUserId().getNickname() +
 						"'</b><br>" + statusStr + "</html>");
-  */
+		*/
 		return this;
 	}
 }

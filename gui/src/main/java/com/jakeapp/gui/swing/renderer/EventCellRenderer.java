@@ -197,7 +197,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 
 		String comment = "";
 		if (loge.getComment() != null && loge.getComment().length() > 0) {
-			comment = "<b>Comment: " + loge.getComment() + "</b><br>";
+			comment = "<br><b>Comment: " + loge.getComment() + "</b>";
 		}
 
 		// set the tooltip text

@@ -875,6 +875,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 			// if a password is set, write a magic token into password field
 			// to represent the "not changed" state
+			log.info("msg.isPasswordSaved: " + msg.isPasswordSaved() + " for " + msg.getUserId());
 			if (msg.isPasswordSaved()) {
 				passField.setText(MagicPassToken);
 			} else {

@@ -27,15 +27,15 @@
 
     <aop:config>
         <!--<aop:pointcut id="msgServiceFactoryOperation"-->
-                      <!--expression="execution(* com.jakeapp.core.services.MsgServiceFactory.*(..) )"/>-->
+        <!--expression="execution(* com.jakeapp.core.services.MsgServiceFactory.*(..) )"/>-->
         <!--<aop:pointcut id="frontendServiceOperation"-->
-                      <!--expression="execution(* com.jakeapp.core.services.IFrontendService.*(..))"/>-->
+        <!--expression="execution(* com.jakeapp.core.services.IFrontendService.*(..))"/>-->
 
 
-        <aop:pointcut id="test" expression="execution(* com.jakeapp.core.dao.Hibernate*Dao.*(..))" />
+        <aop:pointcut id="test" expression="execution(* com.jakeapp.core.dao.Hibernate*Dao.*(..))"/>
         <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="msgServiceFactoryOperation"/>-->
         <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="frontendServiceOperation"/>-->
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="test" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="test"/>
     </aop:config>
 
 
@@ -56,8 +56,8 @@
 
     <bean id="mainDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
-        <!--<property name="url" value="jdbc:hsqldb:mem:db;shutdown=true;create=true"/>-->
-        <property name="url" value="jdbc:hsqldb:file:.jake/jakeDB;shutdown=true;create=true"/>
+        <!--<property name="url" value="jdbc:hsqldb:mem:db;shutdown=false;create=true"/>-->
+        <property name="url" value="jdbc:hsqldb:file:.jake/jakeDB;shutdown=false;create=true"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
         <property name="connectionProperties">

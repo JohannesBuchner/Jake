@@ -232,6 +232,16 @@ public interface ICoreAccess {
 	public String getProjectMemberID(Project project, ProjectMember pm) throws NoSuchProjectMemberException;
 
 
+	/**
+	 * Returns the MsgService for a ProiectMember.
+	 * @param member
+	 * @return
+	 */
+	// TODO: does this work?
+	// TODO: how can i get the first/surname from a projectmember?
+	//public MsgService getMsgService(ProjectMember member);
+
+
 	/******************* Project functions ********************/
 
 
