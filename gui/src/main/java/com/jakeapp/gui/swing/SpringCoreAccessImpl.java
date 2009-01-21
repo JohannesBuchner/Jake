@@ -33,7 +33,6 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.IProjectModificationListener;
 import com.jakeapp.jake.fss.exceptions.*;
-import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -78,6 +77,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		else if ("getLog".compareTo(f) == 0) return true;
 		else if ("getSuggestedPeople".compareTo(f) == 0) return true;
 		else if ("getPeople".compareTo(f) == 0) return false;
+		else if ("getJakeObjectSyncStatus".compareTo(f) == 0) return true;
 
 			// default
 		else return false;
@@ -596,6 +596,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
+
+		if (useMock("getJakeObjectSyncStatus")) {
+			return coreMock.getJakeObjectSyncStatus(project, file);
+		}
+
 		try {
 			return this.getFrontendService().getJakeObjectSyncStatus(getSessionId(), project, file);
 		} catch (NotAFileException e) {
@@ -802,7 +807,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			// FIXME: hack, hack, hack - not really - looks perfect to me! - christopher
 			List<ProjectMember> result = new ArrayList<ProjectMember>();
-			try {
+			/*try {
 				for (UserId mem : this.getFrontendService().getSyncService(
 						  getSessionId()).getBackendUsersService(project)
 						  .getUsers()) {
@@ -812,21 +817,26 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				}
 				return result;
 			} catch (Exception e) {
-				ExceptionUtilities.showError(e);
+				log.warn("getPeople failed: " + e.getMessage());
+				//ExceptionUtilities.showError(e);
 				return result;
 			}
+			*/
 
-			/*
 			try {
 				result = this.getFrontendService().getProjectsManagingService(
-						this.getSessionId()).getProjectMembers(project);
+						  this.getSessionId()).getProjectMembers(project);
 			} catch (Exception e) {
 				PeopleOperationFailedException ex = new PeopleOperationFailedException();
 				ex.append(e);
 				throw ex;
 			}
+
+			// HACK DEMO
+			//result.addAll(coreMock.getPeople(project));
+
 			return result;
-			*/
+
 		}
 	}
 
