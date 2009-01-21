@@ -37,6 +37,7 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.IProjectModificationListener;
 import com.jakeapp.jake.fss.exceptions.*;
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -797,21 +798,36 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public List<ProjectMember> getPeople(Project project) throws PeopleOperationFailedException {
 		log.info("getPeople from project " + project);
 
-		if (useMock("getPeople")) {
+//		if (useMock("getPeople")) 
 			return coreMock.getPeople(project);
-		} else {
 
-			List<ProjectMember> result = null;
 
-		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
-		} catch (Exception e) {
-			PeopleOperationFailedException ex = new PeopleOperationFailedException();
-			ex.append(e);
-			throw ex;
-		}
-			return result;
-		}
+//		//FIXME: hack, hack, hack
+//		List<ProjectMember> result = new ArrayList<ProjectMember>();
+//		try {
+//			for (UserId mem : this.getFrontendService().getSyncService(getSessionId()).getBackendUsersService(project).getUsers()) {
+//				
+//				result.add(new ProjectMember(UUID.randomUUID(), mem.getUserId(), TrustState.TRUST));
+//			}
+//			return result;
+//		} catch (Exception e) {
+//			ExceptionUtilities.showError(e);
+//			return result;
+//		}
+//
+//
+////			
+////		try {
+//			
+//			
+//			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
+//		} catch (Exception e) {
+//			PeopleOperationFailedException ex = new PeopleOperationFailedException();
+//			ex.append(e);
+//			throw ex;
+//		}
+//			return result;
+//		}
 	}
 
 	@Override
