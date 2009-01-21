@@ -89,7 +89,7 @@ public class NoteManagingService implements INoteManagingService {
 		if (this.isLocalJakeObject(note)) {
 
 			//FIXME: fetch real member
-			ProjectMember member = null;
+			ProjectMember member = new ProjectMember(UUID.randomUUID(), "Chuck Norris", TrustState.TRUST);
 			
 			logEntry = new LogEntry<NoteObject>(
 				UUID.randomUUID(),
