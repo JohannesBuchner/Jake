@@ -21,6 +21,6 @@ public class ImportFileFolderWorker extends SwingWorkerWithAvailableLaterObject<
 
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
-		return JakeMainApp.getCore().importExternalFileFolderIntoProject(files, destFolderRelPath);
+		return JakeMainApp.getCore().importExternalFileFolderIntoProject(JakeMainApp.getProject(), files, destFolderRelPath);
 	}
 }

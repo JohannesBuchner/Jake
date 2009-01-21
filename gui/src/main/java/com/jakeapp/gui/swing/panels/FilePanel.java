@@ -17,6 +17,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.*;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
@@ -47,7 +48,7 @@ import java.util.List;
 /**
  * @author studpete
  */
-public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged {
+public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged {
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 	private static FilePanel instance;
 
@@ -239,6 +240,11 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 
 		return nodeObjs;
+	}
+
+	@Override
+	public void projectChanged(ProjectChangedEvent ev) {
+
 	}
 
 	private class FileTreeTableKeyListener extends KeyAdapter {

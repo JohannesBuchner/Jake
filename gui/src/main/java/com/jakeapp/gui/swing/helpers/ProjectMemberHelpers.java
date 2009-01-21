@@ -28,13 +28,19 @@ public class ProjectMemberHelpers {
 	 * @return nickname or full name, if nn not set.
 	 */
 	public static String getNickOrFullName(ProjectMember member) {
-		String nickOrFullName = "";
-		if (member.getNickname().length() == 0) {
-			// TODO: where did those properties go???
-			//nickOrFullName = member.getFirstName() + " " + member.getSurName();
-		} else {
-			nickOrFullName = member.getNickname();
+
+		// HACK
+		if (member == null) {
+			return "";
 		}
+
+		String nickOrFullName = "";
+//		if (member.getNickname().length() == 0) {
+		// TODO: where did those properties go???
+		//nickOrFullName = member.getFirstName() + " " + member.getSurName();
+//		} else {
+		nickOrFullName = member.getNickname();
+//		}
 		return nickOrFullName;
 	}
 

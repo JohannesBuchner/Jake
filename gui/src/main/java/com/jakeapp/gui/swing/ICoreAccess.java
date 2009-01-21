@@ -436,11 +436,11 @@ public interface ICoreAccess {
 	 * Imports a file OR folder which is not currently in the project folder by
 	 * copying it into a folder inside the projects root folder.
 	 *
+	 * @param project
 	 * @param files:             list of files to import.
-	 * @param destFolderRelPath: if null or "", copy to project root.
-	 * @return true on success, false on error
+	 * @param destFolderRelPath: if null or "", copy to project root. @return true on success, false on error
 	 */
-	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath);
+	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(Project project, List<File> files, String destFolderRelPath);
 
 
 	/**
@@ -687,13 +687,14 @@ public interface ICoreAccess {
 	 * @return list of Projectmembers which have only their usernames set (people-xmpp-ids)
 	 */
 	public List<ProjectMember> getSuggestedPeople(Project project);
-	
+
 	/**
 	 * Determine if a <code>ProjectMember</code> is online
+	 *
 	 * @param member
 	 * @return <code>true</code> iff the member is online.
 	 */
-	public boolean isOnline(ProjectMember member); 
+	public boolean isOnline(ProjectMember member);
 
 	/******************* Log functions ********************/
 
@@ -716,17 +717,18 @@ public interface ICoreAccess {
 	 *                                      note couldn not be saved.
 	 */
 	public void saveNote(NoteObject note) throws NoteOperationFailedException;
-	
+
 	/**
 	 * Logs a user in
-	 * @param service The message service to log in
-	 * @param password password needed to authenticate.
-	 * If password is null it is tried to authenticate without password.
+	 *
+	 * @param service			 The message service to log in
+	 * @param password			password needed to authenticate.
+	 *                         If password is null it is tried to authenticate without password.
 	 * @param rememberPassword Indicates if the password should be stored with the
-	 * service credentials that will be generated.
+	 *                         service credentials that will be generated.
 	 * @return An object reporting the progress of the login
 	 */
-	AvailableLaterObject<Void> login(MsgService service,String password,boolean rememberPassword, AvailabilityListener listener);
+	AvailableLaterObject<Void> login(MsgService service, String password, boolean rememberPassword, AvailabilityListener listener);
 }
 
 

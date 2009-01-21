@@ -16,16 +16,8 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
-import com.jakeapp.gui.swing.helpers.DebugHelper;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.FolderObject;
-import com.jakeapp.gui.swing.helpers.TagHelper;
+import com.jakeapp.gui.swing.exceptions.*;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import org.apache.log4j.Logger;
@@ -46,7 +38,7 @@ public class CoreAccessMock implements ICoreAccess {
 	private List<Boolean> notesIsLocal;
 	private List<Boolean> notesIsLocked;
 
-	private List<FilesChanged> filesChangedListeners;
+	public List<FilesChanged> filesChangedListeners;
 
 	/**
 	 * SessionId returned by the authentication Method of FrontendService.authenticate.
@@ -744,7 +736,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 
 	@Override
-	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(List<File> files, String destFolderRelPath) {
+	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(Project project, List<File> files, String destFolderRelPath) {
 		log.info("Mock: import file: " + DebugHelper.arrayToString(files) + " to " + destFolderRelPath);
 
 		final AvailabilityListener avl = new AvailabilityListener() {
@@ -1010,7 +1002,7 @@ public class CoreAccessMock implements ICoreAccess {
 		};
 	}
 
-/*
+	/*
 	@Override
 	public void announce(JakeObject jakeObject) {
 		if (jakeObject instanceof NoteObject) {
