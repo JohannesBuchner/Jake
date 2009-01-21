@@ -28,6 +28,7 @@ import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -55,12 +56,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private IFrontendService frontendService;
 
 	private Set<JakeObject> MockIsSoftLockedSet;
+	private Set<ProjectMember> isOnlineList;
 
 	// HACK INIT MOCK CORE
 	private ICoreAccess coreMock = new CoreAccessMock();
 
 	{
 		this.MockIsSoftLockedSet = new HashSet<JakeObject>();
+		this.isOnlineList = new HashSet<ProjectMember>();
 	}
 
 	/**
@@ -791,7 +794,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return
 	 */
-	public List<ProjectMember> getPeople(Project project) {
+	public List<ProjectMember> getPeople(Project project) throws PeopleOperationFailedException {
 		log.info("getPeople from project " + project);
 
 		if (useMock("getPeople")) {
@@ -800,23 +803,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			List<ProjectMember> result = null;
 
-			if (project == null) {
-				log.warn("getPeople from project NULL");
-				return new ArrayList<ProjectMember>();
-			}
-
-			try {
-				result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
-			} catch (IllegalArgumentException e) {
-				this.fireErrorListener(new JakeErrorEvent(e));
-			} catch (FrontendNotLoggedInException e) {
-				this.handleNotLoggedInException(e);
-			} catch (IllegalStateException e) {
-				this.fireErrorListener(new JakeErrorEvent(e));
-			} catch (NoSuchProjectException e) {
-				this.fireErrorListener(new JakeErrorEvent(e));
-			}
-
+		try {
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
+		} catch (Exception e) {
+			PeopleOperationFailedException ex = new PeopleOperationFailedException();
+			ex.append(e);
+			throw ex;
+		}
 			return result;
 		}
 	}
@@ -1337,5 +1330,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		return new AvailableNowObject<Void>(listener, null);
+	}
+	
+	/**
+	 * Determine if a project member is currently online.
+	 * @param member
+	 * @return <code>true</code> iff the member is online.
+	 */
+	public boolean isOnline(ProjectMember member) {
+		return false;
 	}
 }

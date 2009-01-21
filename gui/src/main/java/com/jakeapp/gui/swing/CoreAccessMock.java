@@ -18,9 +18,11 @@ import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.TagHelper;
@@ -609,7 +611,7 @@ public class CoreAccessMock implements ICoreAccess {
 	 * @param project: project that should be evaluated
 	 * @return
 	 */
-	public List<ProjectMember> getPeople(Project project) {
+	public List<ProjectMember> getPeople(Project project) throws PeopleOperationFailedException {
 		log.info("Mock: getPeople from project " + project);
 
 
@@ -664,7 +666,11 @@ public class CoreAccessMock implements ICoreAccess {
 	@Override
 	public List<ProjectMember> getSuggestedPeople(Project project) {
 		List<ProjectMember> members = new ArrayList<ProjectMember>();
-		members.add(getPeople(project).get(0));
+		try {
+			members.add(getPeople(project).get(0));
+		} catch (PeopleOperationFailedException e) {
+			ExceptionUtilities.showError(e);
+		}
 //		members.add(getPeople(project).get(1));
 		return members;
 	}
@@ -672,20 +678,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries) {
-		List<LogEntry> log = new ArrayList<LogEntry>();
-
-		if (project != null) {
-			// yeah... what a beautiful interface ;o)
-			log.add(new LogEntry(new UUID(1, 2), LogAction.PROJECT_CREATED, new Date(),
-					  project, null, getPeople(project).get(0),
-					  "comment 1", "checksum???", true));
-
-			log.add(new LogEntry(new UUID(1, 2), LogAction.JAKE_OBJECT_NEW_VERSION, new Date(),
-					  project, null, getPeople(project).get(0),
-					  "comment 1", "checksum???", true));
-		}
-
-		return log;
+		return null;
 	}
 
 
@@ -1029,4 +1022,9 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	*/
+	@Override
+	public boolean isOnline(ProjectMember member) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

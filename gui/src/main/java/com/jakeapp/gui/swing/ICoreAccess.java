@@ -15,6 +15,7 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -645,8 +646,9 @@ public interface ICoreAccess {
 	 *
 	 * @param project : project that should be evaluated
 	 * @return
+	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<ProjectMember> getPeople(Project project);
+	public List<ProjectMember> getPeople(Project project) throws PeopleOperationFailedException;
 
 	/**
 	 * Sets the nickname of people. Checks for error
@@ -684,7 +686,14 @@ public interface ICoreAccess {
 	 * @param project : current project
 	 * @return list of Projectmembers which have only their usernames set (people-xmpp-ids)
 	 */
-	List<ProjectMember> getSuggestedPeople(Project project);
+	public List<ProjectMember> getSuggestedPeople(Project project);
+	
+	/**
+	 * Determine if a <code>ProjectMember</code> is online
+	 * @param member
+	 * @return <code>true</code> iff the member is online.
+	 */
+	public boolean isOnline(ProjectMember member); 
 
 	/******************* Log functions ********************/
 

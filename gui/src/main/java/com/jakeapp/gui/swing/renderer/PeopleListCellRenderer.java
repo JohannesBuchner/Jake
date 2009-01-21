@@ -29,6 +29,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 	/* This is the only method defined by ListCellRenderer.  We just
 		 * reconfigure the Jlabel each time we're called.
 		 */
+	@Override
 	public Component getListCellRendererComponent(
 			  JList list,
 			  Object value,	// value to display
@@ -42,6 +43,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		/*
 					* Pre-format the data we wanna show for ProjectMember
 					*/
+		//FIXME: unsafe type cast
 		ProjectMember member = (ProjectMember) value;
 
 		String nickOrFullName = ProjectMemberHelpers.getNickOrFullName(member);
@@ -70,13 +72,15 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 				  */
 		super.getListCellRendererComponent(list, valStr, index, iss, chf);
 
-		/* We additionally set the JLabels icon property here.
-					*/
-
+		// We additionally set the JLabels icon property here.
+		
 		TrustState memberTrust = member.getTrustState();
 
 		// TODO: substitute with online/offline check!
-		if (member.getNickname().length() > 4) {
+		// FIXME: Hack, Hack, Hack
+		boolean online = JakeMainApp.getCore().isOnline(member);
+		
+		if (online) {
 			switch (memberTrust) {
 				case AUTO_ADD_REMOVE: {
 					setIcon(onlineFullTrustIcon);

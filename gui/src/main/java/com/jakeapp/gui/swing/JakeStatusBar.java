@@ -8,6 +8,7 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
 import org.apache.log4j.Logger;
@@ -319,7 +320,13 @@ public class JakeStatusBar extends JakeGuiComponent implements
 			} else {
 				// project view
 				if (getProject() != null) {
-					int peopleCount = getCore().getPeople(getProject()).size();
+					int peopleCount;
+					try {
+						peopleCount = getCore().getPeople(getProject()).size();
+					} catch (PeopleOperationFailedException e) {
+						peopleCount = 0;
+						ExceptionUtilities.showError(e);
+					}
 
 					// nobody there...
 					if (peopleCount == 0) {

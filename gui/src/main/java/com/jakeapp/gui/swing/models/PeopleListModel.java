@@ -6,10 +6,14 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.MutableListModel;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +28,8 @@ public class PeopleListModel extends AbstractListModel
 
 	public PeopleListModel() {
 
+		this.people = new ArrayList<ProjectMember>();
+		
 		// register for events
 		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
@@ -32,7 +38,7 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	public int getSize() {
-		return people != null ? people.size() : 0;
+		return this.people != null ? this.people.size() : 0;
 	}
 
 	public Object getElementAt(int i) {
@@ -41,7 +47,7 @@ public class PeopleListModel extends AbstractListModel
 //			ProjectMember member = people.get(0);
 //			return member;
 //		} else {
-		return people.get(i);
+		return this.people.get(i);
 //		}
 	}
 
@@ -51,13 +57,18 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	private void updateModel() {
-		people = JakeMainApp.getApp().getCore().getPeople(getProject());
+		try {
+			this.people = JakeMainApp.getApp().getCore().getPeople(getProject());
+		} catch (PeopleOperationFailedException e) {
+			this.people = new ArrayList<ProjectMember>();
+			ExceptionUtilities.showError(e);
+		}
 
 		this.fireContentsChanged(this, 0, getSize());
 	}
 
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 	public void setProject(Project pr) {
