@@ -597,7 +597,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private JPanel createSignInSuccessPanel() {
 
 		// TODO remove HACK: set msgservice of projects!!
-		log.warn("HACK: setting msg services...");
+		log.warn("HACK: setting msg services..." + JakeMainApp.getMsgService());
 		for (Project p : JakeMainApp.getCore().getMyProjects()) {
 			p.setMessageService(JakeMainApp.getMsgService());
 		}

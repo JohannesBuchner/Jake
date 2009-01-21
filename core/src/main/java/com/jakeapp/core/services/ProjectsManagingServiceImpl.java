@@ -35,7 +35,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     private static final Logger log = Logger
             .getLogger(ProjectsManagingServiceImpl.class);
 
-    private List<Project> projectList = new ArrayList<Project>();
+    //private List<Project> projectList = new ArrayList<Project>();
 
     private ProjectApplicationContextFactory applicationContextFactory;
 
@@ -47,6 +47,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 
     private INoteManagingService noteManagingService;
+
+	private MsgService messageService;
 
     public ProjectsManagingServiceImpl() {
 
@@ -93,7 +95,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         	ex = pnle;
         }
         
-    	//FIXME prevents some ugly Exceptions - remove after release 
+    	//FIXMgetProjectE prevents some ugly Exceptions - remove after release 
     	if (result == null) {
     		if (p.isOpen()) result = this.getProjectsFileServices().startProject(p);
     		else throw ex;
@@ -102,9 +104,11 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     	return result;
     }
 
+    /*
     private List<Project> getInternalProjectList() {
         return this.projectList;
     }
+    */
 
     @SuppressWarnings("unused")
     private ApplicationContext getContext(Project p) {
@@ -137,6 +141,15 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
         return result;
     }
+    
+	@Override
+	public void setMsgService(MsgService service) {
+		this.messageService = service;
+	}
+	
+	private MsgService getMsgService() {
+		return this.messageService;
+	}
 
 
     /**
@@ -145,14 +158,19 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     @Transactional
     @Override
     public List<Project> getProjectList() {
+    	List<Project> result;
         log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
 
-        List<Project> results = this.getProjectDao().getAll();
-        if (results != null) {
-            log.debug("found " + results.size() + " projects to return");
-            return results;
+        result = this.getProjectDao().getAll();
+        if (result != null) {
+        	
+        	for (Project p : result)
+        		initProject(p);
+        	
+            log.debug("found " + result.size() + " projects to return");
+            return result;
         }
-        log.warn("didn't got any results!!!!!");
+        log.warn("didn't get any results!!!!!");
         throw new RuntimeException(" this should return an empty list");
         // return Collections.unmodifiableList(this.getInternalProjectList());
     }
@@ -160,7 +178,16 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
     @Transactional
     @Override
     public List<Project> getProjectList(InvitationState state) {
-        return this.getProjectDao().getAll(state);
+    	List<Project> result = this.getProjectDao().getAll(state);
+    	
+    	for (Project p : result)
+    		initProject(p);
+    	
+        return result;
+    }
+    
+    private void initProject(Project p) {
+    	p.setMessageService(this.getMsgService());
     }
 
 
@@ -337,9 +364,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         project.setOpen(false);
 
         // remove project from internal list
-        this.getInternalProjectList().remove(project);
+        //this.getInternalProjectList().remove(project);
         // remove the project's file services
-
 
         this.getProjectsFileServices().stopProject(project);
 
@@ -391,7 +417,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         this.getProjectsFileServices().startProject(project);
 
         // add project to internal list
-        this.getInternalProjectList().add(project);
+        //this.getInternalProjectList().add(project);
 
         project.setOpen(true);
 
@@ -520,6 +546,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
      */
     @Transactional
     private ProjectMember addProjectMember(Project project, UserId userId) {
+    	log.debug("Adding ProjectMember to Project: " + project + ';' + userId);
+    	
         IProjectMemberDao dao;
         ProjectMember member;
 
@@ -599,8 +627,14 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
         this.getSyncService().invite(project, userId);
     }
 
+    @Transactional
     private boolean isProjectLoaded(Project project) {
-        return this.getInternalProjectList().contains(project);
+    	try {
+    		this.getProjectDao().read(UUID.fromString(project.getProjectId()));
+    		return true;
+    	} catch (Exception ex) {
+    		return false;
+    	}
     }
 
     @Override
@@ -844,7 +878,13 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		log.info("invite project: " + project + " userid: " +
 				  userid + " msgservice: " + project.getMessageService());
 
+	
+		/* FIXME Hack. There is not reason why the MsgService is not set already. */
+		if (project.getMessageService() == null) project.setMessageService(this.getMsgService());
+		
 		id = project.getMessageService().getUserId(userid);
+		log.debug("extracted the userid to invite: " + userid + userid!=null);
+		
 		member = this.addProjectMember(project, id);
 		this.getSyncService().invite(project, id);
 

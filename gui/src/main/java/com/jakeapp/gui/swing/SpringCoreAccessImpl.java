@@ -81,7 +81,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				  || "getAllProjectFiles".compareTo(f) == 0) return false;
 		else if ("getLog".compareTo(f) == 0) return true;
 		else if ("getSuggestedPeople".compareTo(f) == 0) return true;
-		else if ("getPeople".compareTo(f) == 0) return false;
+		else if ("getPeople".compareTo(f) == 0) return true;
 
 
 		return true;
@@ -795,39 +795,44 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return
 	 */
-	public List<ProjectMember> getPeople(Project project) throws PeopleOperationFailedException {
+	public List<ProjectMember> getPeople(Project project)
+			throws PeopleOperationFailedException {
 		log.info("getPeople from project " + project);
 
-//		if (useMock("getPeople")) 
+		if (useMock("getPeople"))
 			return coreMock.getPeople(project);
+		else {
+			
+			if (project == null) return new ArrayList<ProjectMember>();
 
+			// FIXME: hack, hack, hack - not really - looks perfect to me! - christopher
+			List<ProjectMember> result = new ArrayList<ProjectMember>();
+			try {
+				for (UserId mem : this.getFrontendService().getSyncService(
+						getSessionId()).getBackendUsersService(project)
+						.getUsers()) {
 
-//		//FIXME: hack, hack, hack
-//		List<ProjectMember> result = new ArrayList<ProjectMember>();
-//		try {
-//			for (UserId mem : this.getFrontendService().getSyncService(getSessionId()).getBackendUsersService(project).getUsers()) {
-//				
-//				result.add(new ProjectMember(UUID.randomUUID(), mem.getUserId(), TrustState.TRUST));
-//			}
-//			return result;
-//		} catch (Exception e) {
-//			ExceptionUtilities.showError(e);
-//			return result;
-//		}
-//
-//
-////			
-////		try {
-//			
-//			
-//			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectMembers(project);
-//		} catch (Exception e) {
-//			PeopleOperationFailedException ex = new PeopleOperationFailedException();
-//			ex.append(e);
-//			throw ex;
-//		}
-//			return result;
-//		}
+					result.add(new ProjectMember(UUID.randomUUID(), mem
+							.getUserId(), TrustState.TRUST));
+				}
+				return result;
+			} catch (Exception e) {
+				ExceptionUtilities.showError(e);
+				return result;
+			}
+
+			/*
+			try {
+				result = this.getFrontendService().getProjectsManagingService(
+						this.getSessionId()).getProjectMembers(project);
+			} catch (Exception e) {
+				PeopleOperationFailedException ex = new PeopleOperationFailedException();
+				ex.append(e);
+				throw ex;
+			}
+			return result;
+			*/
+		}
 	}
 
 	@Override
@@ -863,6 +868,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void invitePeople(Project project, String userid) {
 		try {
 			this.getFrontendService().getProjectsManagingService(getSessionId()).invite(project, userid);
+			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
+					  ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 		} catch (IllegalArgumentException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (FrontendNotLoggedInException e) {

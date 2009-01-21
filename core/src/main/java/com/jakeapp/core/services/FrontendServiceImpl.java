@@ -40,6 +40,20 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync;
+	
+	/* begin 
+	 * last login is preserved to set it all projects.... 
+	 */
+	private MsgService lastLogin;
+	
+	private MsgService getLastLogin() {
+		return this.lastLogin;
+	}
+	
+	private void setLastLogin(MsgService lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+	/* end */
 
 	/**
 	 * Constructor
@@ -59,6 +73,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
+		projectsManagingService.setMsgService(this.getLastLogin());
 		return projectsManagingService;
 	}
 
@@ -303,6 +318,8 @@ public class FrontendServiceImpl implements IFrontendService {
 			//update and store the credentials
 			this.getServiceCredentialsDao().update(credentials);
 		}
+		
+		if (ret) this.setLastLogin(service);
 		
 		return ret;
 	}
