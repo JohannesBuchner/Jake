@@ -1,9 +1,12 @@
 package com.jakeapp.jake.ics.impl.xmpp.users;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import com.jakeapp.jake.ics.users.IUsersService;
 import org.apache.log4j.Logger;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -14,13 +17,9 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 
-import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
-import com.jakeapp.jake.ics.users.IUsersService;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class XmppUsersService implements IUsersService {
@@ -41,11 +40,11 @@ public class XmppUsersService implements IUsersService {
 	}
 
 	public void addUser(UserId user, String name) throws NoSuchUseridException,
-			NotLoggedInException, IOException {
+			  NotLoggedInException, IOException {
 		assertLoggedIn();
 		RosterEntry re = getGroup().getEntry(getXmppId(user));
 		if (re == null) {
-			String[] groups = { this.con.getGroupname() };
+			String[] groups = {this.con.getGroupname()};
 			try {
 				getRoster().createEntry(getXmppId(user), name, groups);
 			} catch (XMPPException e) {
@@ -62,12 +61,14 @@ public class XmppUsersService implements IUsersService {
 	}
 
 	private void assertLoggedIn() throws NotLoggedInException {
-		if (!this.con.getService().getStatusService().isLoggedIn())
+		if (!this.con.getService().getStatusService().isLoggedIn()) {
+			log.warn("user not logged in: " + this.con.getService().getStatusService().getUserid());
 			throw new NotLoggedInException();
+		}
 	}
 
 	public void removeUser(UserId user) throws NotLoggedInException,
-			NoSuchUseridException, IOException {
+			  NoSuchUseridException, IOException {
 		assertLoggedIn();
 		RosterEntry re = getGroup().getEntry(getXmppId(user));
 
@@ -133,8 +134,8 @@ public class XmppUsersService implements IUsersService {
 			this.log.info("trying to discover capabilities for user ...");
 			int tries = 2;
 			while (tries > 0
-					&& XmppUsersService.this.con.getService()
-							.getStatusService().isLoggedIn())
+					  && XmppUsersService.this.con.getService()
+					  .getStatusService().isLoggedIn())
 				try {
 					if (isCapable(this.xmppid)) {
 						if (isFriend(this.xmppid)) {
@@ -166,7 +167,7 @@ public class XmppUsersService implements IUsersService {
 
 	private boolean isCapable(String xmppid) throws IOException {
 		ServiceDiscoveryManager discoManager = ServiceDiscoveryManager
-				.getInstanceFor(this.con.getConnection());
+				  .getInstanceFor(this.con.getConnection());
 		log.debug("discovering user " + xmppid);
 		DiscoverInfo discoInfo;
 		try {
@@ -176,7 +177,7 @@ public class XmppUsersService implements IUsersService {
 			throw new IOException(e);
 		}
 		log.debug("discovery returned: " + discoInfo.getExtensions().size()
-				+ " features");
+				  + " features");
 		for (PacketExtension i : discoInfo.getExtensions()) {
 			log.debug("discovery returned: namespace: " + i.getNamespace());
 		}
@@ -191,13 +192,13 @@ public class XmppUsersService implements IUsersService {
 	}
 
 	public boolean isCapable(UserId userid) throws IOException,
-			NotLoggedInException, NoSuchUseridException {
+			  NotLoggedInException, NoSuchUseridException {
 		assertLoggedIn();
 		return isCapable(getXmppId(userid));
 	}
 
 	public void requestOnlineNotification(UserId userid)
-			throws NotLoggedInException {
+			  throws NotLoggedInException {
 		Presence presence = getRoster().getPresence(userid.getUserId());
 		String xmppid = userid.getUserId();
 		log.debug("presenceChanged: " + xmppid + " - " + presence);
@@ -211,7 +212,7 @@ public class XmppUsersService implements IUsersService {
 
 	@Override
 	public boolean isFriend(UserId userid) throws NotLoggedInException,
-			NoSuchUseridException {
+			  NoSuchUseridException {
 		assertLoggedIn();
 		return getGroup().contains(getXmppId(userid));
 	}

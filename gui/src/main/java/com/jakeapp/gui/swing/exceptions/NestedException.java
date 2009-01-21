@@ -39,7 +39,7 @@ public class NestedException extends Exception {
 	@Override
 	public String getMessage() {
 		String str = new String();
-		str = super.getMessage() + ", " + nestedExceptions.size() + " nested exception(s); \n";
+		str = super.getMessage() + ", " + nestedExceptions.size() + " nested exception(s); <br>";
 
 		return str;
 	}

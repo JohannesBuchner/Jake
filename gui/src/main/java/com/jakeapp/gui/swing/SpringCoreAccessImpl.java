@@ -26,11 +26,7 @@ import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
+import com.jakeapp.gui.swing.exceptions.*;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFSService;
@@ -78,13 +74,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		if ("getNotes".compareTo(f) == 0) return false;
 		else if ("getProjectRootFolder".compareTo(f) == 0
-				  || "getAllProjectFiles".compareTo(f) == 0) return false;
+				  || "getAllProjectFiles".compareTo(f) == 0) return true;
 		else if ("getLog".compareTo(f) == 0) return true;
 		else if ("getSuggestedPeople".compareTo(f) == 0) return true;
-		else if ("getPeople".compareTo(f) == 0) return true;
+		else if ("getPeople".compareTo(f) == 0) return false;
 
-
-		return true;
+			// default
+		else return false;
 	}
 
 	/**
@@ -504,7 +500,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	// TODO: should be a running later ?
 	public void syncProject(Project project) {
 		try {
-			// TODO: HACK: Why do i have to cast here? poke should always work just fine with parameter project.
 			getFrontendService().getSyncService(getSessionId()).poke(project);
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
@@ -796,24 +791,24 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @return
 	 */
 	public List<ProjectMember> getPeople(Project project)
-			throws PeopleOperationFailedException {
+			  throws PeopleOperationFailedException {
 		log.info("getPeople from project " + project);
 
 		if (useMock("getPeople"))
 			return coreMock.getPeople(project);
 		else {
-			
+
 			if (project == null) return new ArrayList<ProjectMember>();
 
 			// FIXME: hack, hack, hack - not really - looks perfect to me! - christopher
 			List<ProjectMember> result = new ArrayList<ProjectMember>();
 			try {
 				for (UserId mem : this.getFrontendService().getSyncService(
-						getSessionId()).getBackendUsersService(project)
-						.getUsers()) {
+						  getSessionId()).getBackendUsersService(project)
+						  .getUsers()) {
 
 					result.add(new ProjectMember(UUID.randomUUID(), mem
-							.getUserId(), TrustState.TRUST));
+							  .getUserId(), TrustState.TRUST));
 				}
 				return result;
 			} catch (Exception e) {
@@ -1354,9 +1349,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		return new AvailableNowObject<Void>(listener, null);
 	}
-	
+
 	/**
 	 * Determine if a project member is currently online.
+	 *
 	 * @param member
 	 * @return <code>true</code> iff the member is online.
 	 */

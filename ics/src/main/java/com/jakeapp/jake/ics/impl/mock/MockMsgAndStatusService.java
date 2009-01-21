@@ -117,6 +117,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 		if (userid.equals(pw)) {
 			myuserid = userid;
 			loggedinstatus = true;
+			log.info("login was successful!!! set loggedinstatus: " + loggedinstatus);
 			for (ILoginStateListener lsl : lsll) {
 				lsl.loginHappened();
 			}
