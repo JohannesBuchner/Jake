@@ -30,204 +30,202 @@ import java.util.UUID;
 @Transactional
 public class MsgServiceFactory {
 
-    private static Logger log = Logger.getLogger(MsgServiceFactory.class);
+	private static Logger log = Logger.getLogger(MsgServiceFactory.class);
 
-    private IServiceCredentialsDao serviceCredentialsDao;
-    private IUserIdDao userIdDao;
+	private IServiceCredentialsDao serviceCredentialsDao;
+	private IUserIdDao userIdDao;
 
+	private List<MsgService> msgServices = new ArrayList<MsgService>();
+	private Map<MsgService, ServiceCredentials> map = new HashMap<MsgService, ServiceCredentials>();
 
-    private List<MsgService> msgServices = new ArrayList<MsgService>();
-    private Map<MsgService,ServiceCredentials> map = new HashMap<MsgService,ServiceCredentials>();
+	private boolean initialised = false;
 
-    private boolean initialised = false;
+	private void ensureInitialised() {
+		log.debug("calling ensureInitialised");
+		if (!initialised) {
+			log.debug("was not initialized");
+			initialised = true;
+			createTestdata();
 
-    private void ensureInitialised() {
-        log.debug("calling ensureInitialised");
-        if (!initialised) {
-            log.debug("was not initialized");
-            initialised = true;
-            createTestdata();
+		}
+	}
 
-        }
-    }
+	public MsgServiceFactory() {
+		log.debug("calling empty Constructor");
+	}
 
-    public MsgServiceFactory() {
-        log.debug("calling empty Constructor");
-    }
+	public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao,
+			IUserIdDao userIdDao) {
+		log.debug("calling constructor with serviceCredentialsDao");
+		this.serviceCredentialsDao = serviceCredentialsDao;
+		this.userIdDao = userIdDao;
+		// can not initialise here, this produces spring/hibernate errors!
 
-    public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao, IUserIdDao userIdDao) {
-        log.debug("calling constructor with serviceCredentialsDao");
-        this.serviceCredentialsDao = serviceCredentialsDao;
-        this.userIdDao = userIdDao;
-        // can not initialise here, this produces spring/hibernate errors!
+		MsgService.setUserIdDao(userIdDao);
+	}
 
-        MsgService.setUserIdDao(userIdDao);
-    }
+	private IServiceCredentialsDao getServiceCredentialsDao() {
+		return serviceCredentialsDao;
+	}
 
-    private IServiceCredentialsDao getServiceCredentialsDao() {
-        return serviceCredentialsDao;
-    }
+	@Transactional
+	private void createTestdata() {
+		log.debug("creating testData");
+	}
 
+	public MsgService createMsgService(ServiceCredentials credentials)
+			throws ProtocolNotSupportedException {
 
-    @Transactional
-    private void createTestdata() {
-        log.debug("creating testData");
-    }
+		log.debug("calling createMsgService ");
 
-    public MsgService createMsgService(ServiceCredentials credentials)
-            throws ProtocolNotSupportedException {
+		ensureInitialised();
+		MsgService result = null;
+		if (credentials.getProtocol() != null
+				&& credentials.getProtocol().equals(ProtocolType.XMPP)) {
+			log.debug("Creating new XMPPMsgService for userId "
+					+ credentials.getUserId());
+			result = new XMPPMsgService();
+			result.setCredentials(credentials);
 
-        log.debug("calling createMsgService ");
+			// try {
+			// if(!credentials.getUuid().isEmpty())
+			// {
+			// log.debug("uuid is not empty");
+			//
+			// if(userIdDao == null)
+			// log.debug("userIdDao = null");
+			//
+			// UserId userId = userIdDao.get(
+			// UUID.fromString(
+			// credentials.getUuid()
+			// )
+			// );
+			//
+			// log.debug("setting userid");
+			// result.setUserId(userId);
+			//
+			// }
+			// else
+			// {
+			// log.debug("uuid is empty");
+			//
+			//
+			//
+			// }
+			//
+			// } catch (InvalidUserIdException e) {
+			// e.printStackTrace();
+			// } catch (NoSuchUserIdException e) {
+			// e.printStackTrace();
+			// }
 
-        ensureInitialised();
-        MsgService result = null;
-        if (credentials.getProtocol() != null && credentials.getProtocol().equals(ProtocolType.XMPP)) {
-            log.debug("Creating new XMPPMsgService for userId "
-                    + credentials.getUserId());
-            result = new XMPPMsgService();
-            result.setCredentials(credentials);
+		} else {
+			log.warn("Currently unsupported protocol given");
+			throw new ProtocolNotSupportedException();
+		}
 
+		return result;
+	}
 
-//            try {
-//                if(!credentials.getUuid().isEmpty())
-//                {
-//                    log.debug("uuid is not empty");
-//
-//                    if(userIdDao == null)
-//                        log.debug("userIdDao = null");
-//
-//                    UserId userId = userIdDao.get(
-//                            UUID.fromString(
-//                                    credentials.getUuid()
-//                            )
-//                    );
-//
-//                    log.debug("setting userid");
-//                    result.setUserId(userId);
-//
-//                }
-//                else
-//                {
-//                    log.debug("uuid is empty");
-//
-//
-//
-//                }
-//
-//            } catch (InvalidUserIdException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchUserIdException e) {
-//                e.printStackTrace();
-//            }
+	@Transactional
+	public List<MsgService> getAll() {
+		log.debug("calling getAll");
+		// ensureInitialised();
 
-        } else {
-            log.warn("Currently unsupported protocol given");
-            throw new ProtocolNotSupportedException();
-        }
+		List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
 
-        return result;
-    }
+		credentialsList = this.serviceCredentialsDao.getAll();
 
+		List<MsgService> msgServices = new ArrayList<MsgService>();
 
-    @Transactional
-    public List<MsgService> getAll() {
-        log.debug("calling getAll");
-//        ensureInitialised();
+		for (ServiceCredentials credentials : credentialsList) {
+			try {
+				MsgService service = null;
+				service = this.createMsgService(credentials);
+				if (!msgServices.contains(service)) {
+					msgServices.add(service);
+					this.map.put(service, credentials);
+				}
+			} catch (ProtocolNotSupportedException e) {
 
+			}
+		}
 
-        List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
+		return msgServices;
+	}
 
-        credentialsList = this.serviceCredentialsDao.getAll();
+	/**
+	 * create a account with the given credentials. You are not logged in
+	 * afterwards
+	 * 
+	 * @param credentials
+	 * @return success state
+	 * @throws ProtocolNotSupportedException
+	 * @throws Exception
+	 */
+	public AvailableLaterObject<Void> createAccount(
+			ServiceCredentials credentials)
+			throws ProtocolNotSupportedException, NetworkException {
+		log.debug("calling AvailableLaterObject");
+		MsgService svc = createMsgService(credentials);
 
-        List<MsgService> msgServices = new ArrayList<MsgService>();
+		return new CreateAccountFuture(svc);
+	}
 
+	/**
+	 * creates and adds a msgservice for the right protocol
+	 * 
+	 * @param credentials
+	 * @return the service
+	 * @throws InvalidCredentialsException
+	 * @throws ProtocolNotSupportedException
+	 */
+	public MsgService addMsgService(ServiceCredentials credentials)
+			throws InvalidCredentialsException, ProtocolNotSupportedException {
+		log.debug("calling addMsgService");
 
-        for (ServiceCredentials credentials : credentialsList) {
-            try {
-                MsgService service = null;
-                service = this.createMsgService(credentials);
-                if (!msgServices.contains(service)) {
-                	msgServices.add(service);
-                	this.map.put(service, credentials);
-                }
-            } catch (ProtocolNotSupportedException e) {
+		MsgService svc = this.createMsgService(credentials);
+		UserId user = null;
+		switch (credentials.getProtocol()) {
 
-            }
-        }
+		case ICQ:
+			throw new ProtocolNotSupportedException("ICQ not yet implemented");
 
-        
-        return msgServices;
-    }
+		case MSN:
+			throw new ProtocolNotSupportedException("MSN not yet implemented");
 
-    /**
-     * create a account with the given credentials. You are not logged in
-     * afterwards
-     *
-     * @param credentials
-     * @return success state
-     * @throws ProtocolNotSupportedException
-     * @throws Exception
-     */
-    public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
-            throws ProtocolNotSupportedException, NetworkException {
-        log.debug("calling AvailableLaterObject");
-        MsgService svc = createMsgService(credentials);
+		case XMPP:
 
-        return new CreateAccountFuture(svc);
-    }
+			UUID res = null;
 
+			if (credentials.getUuid() != null)
+				res = UUID.fromString(credentials.getUuid());
 
-    /**
-     * creates and adds a msgservice for the right protocol
-     *
-     * @param credentials
-     * @return the service
-     * @throws InvalidCredentialsException
-     * @throws ProtocolNotSupportedException
-     */
-    public MsgService addMsgService(ServiceCredentials credentials)
-            throws InvalidCredentialsException, ProtocolNotSupportedException {
-        log.debug("calling addMsgService");
+			if (res == null)
+				res = UUID.randomUUID();
 
-        MsgService svc = this.createMsgService(credentials);
-        UserId user = null;
-        switch (credentials.getProtocol()) {
+			credentials.setUuid(res);
 
-            case ICQ:
-                throw new ProtocolNotSupportedException("ICQ not yet implemented");
+			user = new XMPPUserId(credentials, res, credentials.getUserId(),
+					credentials.getUserId(), "", "");
+			break;
+		}
+		if (user != null)
+			svc.setUserId(user);
 
-            case MSN:
-                throw new ProtocolNotSupportedException("MSN not yet implemented");
+		msgServices.add(svc);
 
-            case XMPP:
+		try {
 
-                UUID res = UUID.fromString(credentials.getUuid());
+			this.getServiceCredentialsDao().create(credentials);
+			this.userIdDao.create(user);
+			return svc;
+		} catch (InvalidUserIdException e) {
+			e.printStackTrace();
+		}
+		// add account in database
 
-                if(res == null) res = UUID.randomUUID();
-
-                credentials.setUuid(res);
-
-                user = new XMPPUserId(credentials,
-                        res,
-                        credentials.getUserId(), credentials.getUserId(), "", "");
-                break;
-        }
-        if(user != null)
-            svc.setUserId(user);
-
-        msgServices.add(svc);
-
-        try {
-
-            this.getServiceCredentialsDao().create(credentials);
-            this.userIdDao.create(user);
-            return svc;
-        } catch (InvalidUserIdException e) {
-            e.printStackTrace();
-        }
-        //add account in database
-
-        throw new InvalidCredentialsException("something went wrong");
+		throw new InvalidCredentialsException("something went wrong");
 
 	}
 
