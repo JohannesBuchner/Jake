@@ -8,7 +8,6 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
@@ -103,7 +102,7 @@ public interface IFrontendService {
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception							the creation failed for another reason
 	 */
-	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials, AvailabilityListener listener)
+	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException;
 
@@ -169,8 +168,8 @@ public interface IFrontendService {
 	 * @param rememberPassword
 	 * @param listener
 	 * @return
-	 * @throws Exception 
+	 * @internally throws Exception 
 	 */
-	boolean login(String session,MsgService service, String password,
-			boolean rememberPassword, AvailabilityListener listener) throws Exception;
+	AvailableLaterObject<Boolean> login(String session,MsgService service, String password,
+			boolean rememberPassword);
 }

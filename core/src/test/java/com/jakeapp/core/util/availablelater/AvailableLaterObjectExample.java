@@ -5,18 +5,16 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 
 public class AvailableLaterObjectExample {
 
-	public static AvailableLaterObject<String> calculateSomething(
-			AvailabilityListener l) {
-		AvailableLaterObject<String> result = new AvailableLaterObject<String>(
-				l) {
+	public static AvailableLaterObject<String> calculateSomething() {
+		AvailableLaterObject<String> result = new AvailableLaterObject<String>() {
 
 			@Override
-			public void run() {
+			public String calculate() throws Exception {
 				if (false)
-					this.listener.error("foo");
+					throw new Exception("foo");
 				this.set("Hello");
-				this.listener.statusUpdate(0.5, "bla");
-				this.listener.finished();
+				getListener().statusUpdate(0.5, "bla");
+				return "World";
 			}
 		};
 		new Thread(result).start();
@@ -24,32 +22,27 @@ public class AvailableLaterObjectExample {
 	}
 
 	public void callingFunction() {
-		Object result = calculateSomething(new AvailabilityListener() {
+		AvailableLaterObject<String> result = calculateSomething();
+		result.setListener(new AvailabilityListener<String>() {
 
 			@Override
 			public void error(Exception t) {
 				// TODO Auto-generated method stub
-
+				
 			}
 
 			@Override
-			public void error(String reason) {
+			public void finished(String o) {
 				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void finished() {
-				// TODO Auto-generated method stub
-
+				
 			}
 
 			@Override
 			public void statusUpdate(double progress, String status) {
 				// TODO Auto-generated method stub
-
+				
 			}
-
+			
 		});
 	}
 }

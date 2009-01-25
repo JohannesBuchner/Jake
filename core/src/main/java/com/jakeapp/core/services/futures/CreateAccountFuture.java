@@ -1,7 +1,6 @@
 package com.jakeapp.core.services.futures;
 
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
@@ -9,27 +8,27 @@ public class CreateAccountFuture extends AvailableLaterObject<Void> {
 
 	private MsgService svc;
 	
-	public CreateAccountFuture(MsgService svc, AvailabilityListener listener) {
-		super(listener);
+	public CreateAccountFuture(MsgService svc) {
 		this.svc = svc;
 	}
 
 	@Override
-	public void run() {
+	public Void calculate() {
 		if (svc != null) {
 			try {
 				svc.createAccount();
 			} catch (NetworkException e1) {
-				listener.error(e1);
+				getListener().error(e1);
 			}
-			listener.statusUpdate(0.7D, "");
+			getListener().statusUpdate(0.7D, "");
 			
 			try {
 				svc.logout();
-				listener.statusUpdate(1.0D, "");
+				getListener().statusUpdate(1.0D, "");
 			} catch (Exception e) {
-				listener.error(e);
+				getListener().error(e);
 			}
 		}
+		return null;
 	}
 }

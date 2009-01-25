@@ -1,23 +1,44 @@
 package com.jakeapp.gui.swing;
 
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import org.apache.log4j.Logger;
+
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
+import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
+import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
-import org.apache.log4j.Logger;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutionException;
 
 /**
  * User: studpete
@@ -48,7 +69,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	protected class ProjectSizeTotalWorker extends SwingWorkerWithAvailableLaterObject<Long> {
 		@Override
 		protected AvailableLaterObject<Long> calculateFunction() {
-			return JakeMainApp.getCore().getProjectSizeTotal(getProject(), this);
+			return JakeMainApp.getCore().getProjectSizeTotal(getProject());
 		}
 
 		@Override
@@ -75,12 +96,9 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
 			log.info("calculating total file count...");
-			try {
-				return JakeMainApp.getCore().getProjectFileCount(getProject(), this);
-			} catch (Exception ex) {
-				log.warn("error while calculating total file size: ", ex);
-				return null;
-			}
+			AvailableLaterObject<Integer> alo = JakeMainApp.getCore().getProjectFileCount(getProject());
+			alo.setListener(this);
+			return alo;
 		}
 
 		@Override

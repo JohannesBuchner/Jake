@@ -1,6 +1,7 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -213,11 +214,11 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials, AvailabilityListener listener)
+	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
-		return msgServiceFactory.createAccount(credentials, listener);
+		return msgServiceFactory.createAccount(credentials);
 	}
 
 	@Override
@@ -295,31 +296,40 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	@Transactional
-	public boolean login(String session, MsgService service, String password,
-			boolean rememberPassword, AvailabilityListener listener) throws Exception {
-		boolean ret;
-		ServiceCredentials credentials;
+	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
+			final boolean rememberPassword) {
 		
-		this.checkSession(session);
-		
-		/* login */
-		if (password == null) {
-			ret = service.login();
-		} else {
-			ret = service.login(password, rememberPassword);
-		}
-		
-		/* store */
-		//get Service credentials
-		credentials = msgServiceFactory.get(service);
-		if (credentials!=null) {
-			credentials.setPlainTextPassword(password);
-			credentials.setSavePassword(rememberPassword);
-			//update and store the credentials
-			this.getServiceCredentialsDao().update(credentials);
-		}
-		
-		if (ret) this.setLastLogin(service);
+		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
+
+			@Override
+			public Boolean calculate() throws Exception {
+				ServiceCredentials credentials;
+				boolean result;
+				checkSession(session);
+				
+				/* login */
+				if (password == null) {
+					result = service.login();
+				} else {
+					result = service.login(password, rememberPassword);
+				}
+				
+				/* store */
+				//get Service credentials
+				credentials = msgServiceFactory.get(service);
+				if (credentials!=null) {
+					credentials.setPlainTextPassword(password);
+					credentials.setSavePassword(rememberPassword);
+					//update and store the credentials
+						getServiceCredentialsDao().update(credentials);
+				}
+				
+				if (result) 
+					setLastLogin(service);
+				return result;
+			}
+			
+		};
 		
 		return ret;
 	}

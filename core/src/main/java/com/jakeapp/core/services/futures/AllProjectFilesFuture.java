@@ -1,21 +1,16 @@
 package com.jakeapp.core.services.futures;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
-import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-
-import java.util.List;
-import java.util.ArrayList;
-
-
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
+import com.jakeapp.core.util.availablelater.AvailableNowObject;
 
 
 public class AllProjectFilesFuture extends
@@ -38,15 +33,15 @@ public class AllProjectFilesFuture extends
 		return fileObjectDao;
 	}
 	
-	public AllProjectFilesFuture(AvailabilityListener listener, IFileObjectDao dao) {
-		super(listener,new ArrayList<FileObject>());
+	public AllProjectFilesFuture(IFileObjectDao dao) {
+		super(new ArrayList<FileObject>());
 		this.setFileObjectDao(dao);
 	}
 
 
-    public AllProjectFilesFuture(AvailabilityListener listener, ProjectApplicationContextFactory
+    public AllProjectFilesFuture(ProjectApplicationContextFactory
             applicationContextFactory, Project project) {
-		super(listener,new ArrayList<FileObject>());
+		super(new ArrayList<FileObject>());
 		
 		this.applicationContextFactory = applicationContextFactory;
         this.project = project;
@@ -54,7 +49,7 @@ public class AllProjectFilesFuture extends
 
 	@Override
 	@Transactional
-	public void run() {
+	public List<FileObject> calculate() {
 		//FIXME simplicistic implementation
 
 //        log.debug("\n\n\n\n\n\n\n\n\n\n\nstarting thread & running it... \n\n\n\n\n\n\n\n\n\n\n");
@@ -88,7 +83,7 @@ public class AllProjectFilesFuture extends
 //            System.out.println("file = " + file);
 //        }
 
-        this.set(result);
+        return result;
 
 
 

@@ -22,7 +22,7 @@ import java.util.concurrent.Semaphore;
  * @param <T>
  */
 public abstract class SwingWorkerWithAvailableLaterObject<T> extends
-		  SwingWorker<T, StatusUpdate> implements AvailabilityListener {
+		  SwingWorker<T, StatusUpdate> implements AvailabilityListener<T> {
 
 	private static final Logger log = Logger.getLogger(SwingWorkerWithAvailableLaterObject.class);
 
@@ -39,6 +39,7 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 		} catch (Exception e) {
 			error(e);
 		}
+		this.value.setListener(this);
 		s.acquire();
 		if (exception != null)
 			throw exception;
@@ -54,13 +55,7 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	}
 
 	@Override
-	public void error(String reason) {
-		this.exception = new Exception(reason);
-		s.release();
-	}
-
-	@Override
-	public void finished() {
+	public void finished(T o) {
 		s.release();
 	}
 

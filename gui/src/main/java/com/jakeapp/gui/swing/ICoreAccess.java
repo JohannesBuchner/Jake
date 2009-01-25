@@ -10,7 +10,6 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
@@ -165,7 +164,7 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 * @throws ProtocolNotSupportedException
 	 */
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException;
 
@@ -302,7 +301,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return
 	 */
-	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener);
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project);
 
 	/**
 	 * Returns absolute Size of all files in the project.
@@ -310,7 +309,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return size in bytes.
 	 */
-	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener);
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project);
 
 
 	/**
@@ -389,7 +388,7 @@ public interface ICoreAccess {
 	 * @param project The project in question
 	 * @return A collection of all FileObjects in the project
 	 */
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener avl);
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project);
 
 	/**
 	 * Gets the sync status of a file
@@ -728,7 +727,7 @@ public interface ICoreAccess {
 	 *                         service credentials that will be generated.
 	 * @return An object reporting the progress of the login
 	 */
-	AvailableLaterObject<Void> login(MsgService service, String password, boolean rememberPassword, AvailabilityListener listener);
+	AvailableLaterObject<Boolean> login(MsgService service, String password, boolean rememberPassword);
 }
 
 

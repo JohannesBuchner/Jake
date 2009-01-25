@@ -13,7 +13,7 @@ package com.jakeapp.core.util.availablelater;
  * @param <S>
  */
 public abstract class AvailableLaterWrapperObject<T,S> extends AvailableLaterObject<T> implements
-		AvailabilityListener {
+		AvailabilityListener<S> {
 
 	private AvailableLaterObject<S> source = null;
 
@@ -23,32 +23,22 @@ public abstract class AvailableLaterWrapperObject<T,S> extends AvailableLaterObj
 	 * @param source the source to set. Must been created with this Object as AvailabilityListener.
 	 */
 	public void setSource(AvailableLaterObject<S> source) {
-		if (source != null && source.listener == this)
-			this.source = source;
+		source.setListener(this);
+		this.source = source;
 	}
 
 	protected AvailableLaterObject<S> getSource() {
 		return this.source;
 	}
 
-	public AvailableLaterWrapperObject(AvailabilityListener listener) {
-		super(listener);
-		this.setSource(source);
-	}
-
 	@Override
 	public void error(Exception t) {
-		this.listener.error(t);
+		getListener().error(t);
 	}
 
-	@Override
-	public void error(String reason) {
-		this.listener.error(reason);
-
-	}
 
 	@Override
-	public void finished() {
+	public void finished(S o) {
 		/*
 		 * The run method of the source has returned by reporting finished.
 		 * We can not perform our calculation based on the intermediate results
@@ -66,7 +56,7 @@ public abstract class AvailableLaterWrapperObject<T,S> extends AvailableLaterObj
 
 	@Override
 	public void statusUpdate(double progress, String status) {
-		this.listener.statusUpdate(progress, status);
+		getListener().statusUpdate(progress, status);
 	}
 	
 	@Override

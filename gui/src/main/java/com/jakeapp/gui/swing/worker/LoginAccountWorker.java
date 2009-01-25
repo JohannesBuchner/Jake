@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 /**
  * Private inner worker for account registration.
  */
-public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void> {
+public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Boolean> {
 	private static final Logger log = Logger.getLogger(LoginAccountWorker.class);
 
 	private MsgService msg;
@@ -34,20 +34,15 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 	}
 
 	@Override
-	protected AvailableLaterObject<Void> calculateFunction() {
-		/*
+	protected AvailableLaterObject<Boolean> calculateFunction() {
+		JakeStatusBar.showMessage("Logging in...", 1);
+		return JakeMainApp.getCore().login(msg, password, rememberPassword);
+	}
+
+	@Override
+	protected void done() {
 		try {			
-			boolean ret;
-			JakeStatusBar.showMessage("Logging in...", 1);
-
-			// TODO: return object!
-			if (password == null) {
-				ret = msg.login();
-			} else {
-				ret = msg.login(password, rememberPassword);
-			}
-
-			if (!ret) {
+			if (!this.get()) {
 				log.warn("Wrong User/Password");
 				JakeStatusBar.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
 			} else {
@@ -59,12 +54,5 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Void
 			log.warn("Login failed: " + e);
 			ExceptionUtilities.showError(e);
 		}
-		return null;*/
-		
-		return JakeMainApp.getCore().login(msg, password, rememberPassword, this);
-	}
-
-	@Override
-	protected void done() {
 	}
 }

@@ -23,7 +23,7 @@ public class GetAllProjectFilesWorker extends SwingWorkerWithAvailableLaterObjec
 
 	@Override
 	protected AvailableLaterObject<List<FileObject>> calculateFunction() {
-		return JakeMainApp.getCore().getAllProjectFiles(project, this);
+		return JakeMainApp.getCore().getAllProjectFiles(project);
 	}
 
 	@Override

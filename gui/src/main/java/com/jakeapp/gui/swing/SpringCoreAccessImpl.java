@@ -231,10 +231,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
+	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
-		return this.frontendService.createAccount(this.sessionId, credentials, listener).start();
+		return this.frontendService.createAccount(this.sessionId, credentials).start();
 
 
 	}
@@ -349,12 +349,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener) {
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project) {
 		AvailableLaterObject<Integer> result = null;
 		Exception ex = null;
 
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project, listener);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectFileCount(project);
 		} catch (FileNotFoundException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
 			ex = e;
@@ -372,16 +372,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex = e;
 		}
 
-		if (result == null) result = new AvailableErrorObject<Integer>(listener, ex);
+		if (result == null) result = new AvailableErrorObject<Integer>(ex);
 		return result.start();
 	}
 
-	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener) {
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project) {
 		AvailableLaterObject<Long> result = null;
 		Exception ex = null;
 
 		try {
-			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project, null);
+			result = this.getFrontendService().getProjectsManagingService(this.getSessionId()).getProjectSizeTotal(project);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			ex = e;
@@ -390,7 +390,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex = e;
 		}
 
-		if (result == null) result = new AvailableErrorObject<Long>(listener, ex);
+		if (result == null) result = new AvailableErrorObject<Long>(ex);
 		return result.start();
 	}
 
@@ -565,16 +565,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener al) {
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project) {
 		AvailableLaterObject<List<FileObject>> result = null;
 		Exception ex = null;
 
 		if (useMock("getAllProjectFiles")) {
-			return coreMock.getAllProjectFiles(project, al);
+			return coreMock.getAllProjectFiles(project);
 		}
 
 		try {
-			result = this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project, al);
+			result = this.getFrontendService().getProjectsManagingService(sessionId).getAllProjectFiles(project);
 		} catch (FileNotFoundException e) {
 			ex = e;
 		} catch (IllegalArgumentException e) {
@@ -588,7 +588,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex = e;
 		}
 
-		if (result == null) result = new AvailableErrorObject<List<FileObject>>(al, ex);
+		if (result == null) result = new AvailableErrorObject<List<FileObject>>(ex);
 		return result.start();
 	}
 
@@ -1234,7 +1234,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			iss = this.getFrontendService().getSyncService(this.getSessionId());
-			result = new AnnounceFuture(null, iss, jo, action);
+			result = new AnnounceFuture(iss, jo, action);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
@@ -1417,25 +1417,15 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> login(MsgService service,
-														 String password, boolean rememberPassword,
-														 AvailabilityListener listener) {
+	public AvailableLaterObject<Boolean> login(MsgService service,
+														 String password, boolean rememberPassword) {
 
-		//TODO implement multithreaded via AvailableLater
+		/*
+		 TODO: move this clutter to caller
 
-		try {
-			boolean ret;
+		 try {
+			AvailableLaterObject<Boolean> ret;
 			JakeStatusBar.showMessage("Logging in...", 1);
-
-			ret = this.getFrontendService().login(getSessionId(), service, password, rememberPassword, listener);
-
-			/*
-			if (password == null) {
-				ret = service.login();
-			} else {
-				ret = service.login(password, rememberPassword);
-			}*/
-
 			if (!ret) {
 				log.warn("Wrong User/Password");
 				JakeStatusBar.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
@@ -1444,13 +1434,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				JakeStatusBar.showMessage("Successfully logged in");
 				//JakeStatusBar.updateMessage();
 			}
+
 		} catch (Exception e) {
 			log.warn("Login failed: " + e);
 			ExceptionUtilities.showError(e);
-			return new AvailableErrorObject<Void>(listener, e);
+			return new AvailableErrorObject<Boolean>(e);
 		}
-
-		return new AvailableNowObject<Void>(listener, null);
+		 */
+			return  this.getFrontendService().login(getSessionId(), service, password, rememberPassword);
 	}
 
 	/**

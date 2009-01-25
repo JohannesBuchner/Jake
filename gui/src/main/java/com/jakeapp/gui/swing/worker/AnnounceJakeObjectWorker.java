@@ -20,7 +20,7 @@ public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObjec
 		try {
 			return JakeMainApp.getCore().announceJakeObject(jo, "");
 		} catch (SyncException e) {
-			return new AvailableErrorObject<Void>(this, e);
+			return new AvailableErrorObject<Void>(e);
 		}
 	}
 

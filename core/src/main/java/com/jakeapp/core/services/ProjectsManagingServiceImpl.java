@@ -638,37 +638,37 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	}
 
 	@Override
-	public AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener)
+	public AvailableLaterObject<Integer> getProjectFileCount(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
 
 		AvailableLaterWrapperObject<Integer, List<FileObject>> sizeFuture;
 		AvailableLaterObject<List<FileObject>> filesFuture;
 
-		sizeFuture = new ProjectFileCountFuture(listener);
-		filesFuture = this.getAllProjectFiles(project, sizeFuture);
+		filesFuture = this.getAllProjectFiles(project);
+		sizeFuture = new ProjectFileCountFuture();
 		sizeFuture.setSource(filesFuture);
 
 		return sizeFuture;
 	}
 
 	@Override
-	public AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener)
+	public AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
 
 		AvailableLaterWrapperObject<Long, List<FileObject>> sizeFuture;
 		AvailableLaterObject<List<FileObject>> filesFuture;
 
-		sizeFuture = new ProjectSizeTotalFuture(null);
-		filesFuture = this.getAllProjectFiles(project, sizeFuture);
+		filesFuture = this.getAllProjectFiles(project);
+		sizeFuture = new ProjectSizeTotalFuture();
 		sizeFuture.setSource(filesFuture);
 
 		return sizeFuture;
 	}
 
 	@Override
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener listener)
+	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
-		return new AllProjectFilesFuture(listener, applicationContextFactory, project);
+		return new AllProjectFilesFuture(applicationContextFactory, project);
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
@@ -165,17 +164,16 @@ public class MsgServiceFactory {
      * afterwards
      *
      * @param credentials
-     * @param listener
      * @return success state
      * @throws ProtocolNotSupportedException
      * @throws Exception
      */
-    public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials, AvailabilityListener listener)
+    public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
             throws ProtocolNotSupportedException, NetworkException {
         log.debug("calling AvailableLaterObject");
         MsgService svc = createMsgService(credentials);
 
-        return new CreateAccountFuture(svc, listener);
+        return new CreateAccountFuture(svc);
     }
 
 

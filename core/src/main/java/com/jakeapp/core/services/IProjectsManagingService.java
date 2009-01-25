@@ -7,7 +7,6 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 
@@ -200,7 +199,7 @@ public interface IProjectsManagingService {
 	 * @return The number of files in a Project
 	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
 	 */
-	AvailableLaterObject<Integer> getProjectFileCount(Project project, AvailabilityListener listener)
+	AvailableLaterObject<Integer> getProjectFileCount(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
 
 	/**
@@ -208,7 +207,7 @@ public interface IProjectsManagingService {
 	 * @return The amount of bytes all files in a project take up.
 	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
 	 */
-	AvailableLaterObject<Long> getProjectSizeTotal(Project project, AvailabilityListener listener)
+	AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
 
 	/**
@@ -221,10 +220,8 @@ public interface IProjectsManagingService {
 	 * @throws FileNotFoundException	 If the root path of the specified Project is not found.
 	 * @throws IllegalArgumentException If project is null.
 	 */
-	AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project, AvailabilityListener listener)
+	AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
-
-	;
 
 	/**
 	 * Joins the Project and notifies the inviter.
