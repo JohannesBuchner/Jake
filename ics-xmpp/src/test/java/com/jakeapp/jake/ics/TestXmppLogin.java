@@ -14,6 +14,7 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.test.XmppTestEnvironment;
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppLogin {
@@ -25,13 +26,13 @@ public class TestXmppLogin {
 	private static XmppUserId wrongUserid1 = new XmppUserId("foo.bar");
 
 	private static XmppUserId offlineUserId = new XmppUserId("foo.bar@"
-			+ TestEnvironment.getHost());
+			+ XmppTestEnvironment.getHost());
 
 	private static XmppUserId onlineUserId = new XmppUserId("IhasSses@"
-			+ TestEnvironment.getHost());
+			+ XmppTestEnvironment.getHost());
 
 	private static XmppUserId shortUserid1 = new XmppUserId("foobar@"
-			+ TestEnvironment.getHost());
+			+ XmppTestEnvironment.getHost());
 
 	private static String somePassword = "bar";
 
@@ -42,54 +43,54 @@ public class TestXmppLogin {
 	private static String testgroupname = "mygroupname";
 
 	@Before
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void setUp() throws Exception {
-		TestEnvironment.assureUserIdExistsAndConnect(shortUserid1,
+		XmppTestEnvironment.assureUserIdExistsAndConnect(shortUserid1,
 				testUser1Passwd);
-		TestEnvironment.assureUserIdExistsAndConnect(onlineUserId,
+		XmppTestEnvironment.assureUserIdExistsAndConnect(onlineUserId,
 				testUser1Passwd);
-		TestEnvironment.assureUserIdExistsAndConnect(offlineUserId,
+		XmppTestEnvironment.assureUserIdExistsAndConnect(offlineUserId,
 				testUser1Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
 	}
 
 	@After
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.ics != null)
 			this.ics.getStatusService().logout();
-		TestEnvironment.assureUserDeleted(shortUserid1, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(onlineUserId, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(offlineUserId, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(shortUserid1, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(onlineUserId, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(offlineUserId, testUser1Passwd);
 	}
 
 	/* we use firstname.lastname@host or nick@host notation for the Mock */
 	@Test(expected = NoSuchUseridException.class)
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetFirstNameThrowsNoSuchUseridException() throws Exception {
 		ics.getStatusService().getFirstname(wrongUserid1);
 	}
 	@Test(expected = NoSuchUseridException.class)
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetLastNameThrowsNoSuchUseridException() throws Exception {
 		ics.getStatusService().getLastname(wrongUserid1);
 	}
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetFirstName() throws Exception {
 		Assert.assertEquals("foo", ics.getStatusService().getFirstname(
 				offlineUserId));
 	}
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetLastName() throws Exception {
 		Assert.assertEquals("bar", ics.getStatusService().getLastname(
 				offlineUserId));
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetNames() throws Exception {
 		Assert.assertEquals("", ics.getStatusService().getFirstname(
 				shortUserid1));
@@ -98,7 +99,7 @@ public class TestXmppLogin {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testLoginAndIsLoggedIn() throws Exception {
 		Assert.assertFalse(ics.getStatusService().isLoggedIn());
 		try {

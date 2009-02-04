@@ -33,6 +33,7 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.test.XmppTestEnvironment;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
@@ -48,12 +49,12 @@ public class TestFiletransfers {
 
 	private ITransferMethod transfers2;
 
-	private static XmppUserId testUser1 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
 
-	private static XmppUserId testUser2 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser2 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser2"));
 
 	private static String testUser2Passwd = "testpasswd2";
@@ -67,10 +68,10 @@ public class TestFiletransfers {
 	private IFileTransfer ftserver;
 
 	@Before
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void setUp() throws Exception {
-		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.user1 = new XmppICService(testnamespace, testgroupname);
 		Assert
@@ -99,18 +100,18 @@ public class TestFiletransfers {
 	}
 
 	@After
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.user1 != null)
 			this.user1.getStatusService().logout();
 		if (this.user2 != null)
 			this.user2.getStatusService().logout();
-		TestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend() throws Exception {
 		final String filename = "foo.txt";
 		final Tracer t = new Tracer();

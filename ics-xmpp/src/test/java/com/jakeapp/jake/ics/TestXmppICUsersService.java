@@ -23,6 +23,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.users.IUsersService;
+import com.jakeapp.jake.test.XmppTestEnvironment;
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppICUsersService {
@@ -34,12 +35,12 @@ public class TestXmppICUsersService {
 
 	private ICService ics2;
 
-	private static XmppUserId testUser1 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
 
-	private static XmppUserId testUser2 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser2 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser2"));
 
 	private static String testUser2Passwd = "testpasswd2";
@@ -49,10 +50,10 @@ public class TestXmppICUsersService {
 	private static String testgroupname = "mygroupname";
 
 	@Before
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void setUp() throws Exception {
-		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
 		Assert.assertTrue(this.ics.getStatusService().login(testUser1,
@@ -60,14 +61,14 @@ public class TestXmppICUsersService {
 	}
 
 	@After
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.ics != null)
 			this.ics.getStatusService().logout();
 		if (this.ics2 != null)
 			this.ics2.getStatusService().logout();
-		TestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
 	}
 
 	private void assertContainsExactlyUsers(Iterable<UserId> users,
@@ -90,7 +91,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testOnlineStatusListener() throws Exception {
 		final Semaphore s = new Semaphore(0);
 
@@ -126,7 +127,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testIsLoggedInAfterRequestingStatus() throws Exception {
 		testOnlineStatusListener();
 		Thread.sleep(10);
@@ -134,7 +135,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetUserList_ContainsOtherUser() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
@@ -145,7 +146,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testGetUserList_ContainsOtherUsers() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
@@ -158,7 +159,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testRemoveUserList() throws Exception {
 
 		this.ics.getUsersService().addUser(testUser2, "other");
@@ -173,7 +174,7 @@ public class TestXmppICUsersService {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testRemoveAddUserDoubles() throws Exception {
 		XmppUserId randomGuy = new XmppUserId("justmademe@up.to/proveapoint");
 		XmppUserId randomGuyOtherRessource = new XmppUserId(

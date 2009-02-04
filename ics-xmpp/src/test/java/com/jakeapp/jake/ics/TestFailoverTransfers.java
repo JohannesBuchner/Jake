@@ -35,6 +35,7 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.test.XmppTestEnvironment;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
@@ -48,12 +49,12 @@ public class TestFailoverTransfers {
 
 	private ICService user2;
 
-	private static XmppUserId testUser1 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
 
-	private static XmppUserId testUser2 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser2 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser2"));
 
 	private static String testUser2Passwd = "testpasswd2";
@@ -75,10 +76,10 @@ public class TestFailoverTransfers {
 	private ITransferMethodFactory xmppTransfer1;
 
 	@Before
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void setUp() throws Exception {
-		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.user1 = new XmppICService(testnamespace, testgroupname);
 		Assert
@@ -107,7 +108,7 @@ public class TestFailoverTransfers {
 	}
 
 	@After
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void teardown() throws Exception {
 		this.failover1.stopServing();
 		this.failover2.stopServing();
@@ -115,36 +116,36 @@ public class TestFailoverTransfers {
 			this.user1.getStatusService().logout();
 		if (this.user2 != null)
 			this.user2.getStatusService().logout();
-		TestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testNothing() throws Exception {
 
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend_BothSocketsOk() throws Exception {
 		testReceiveSend(true, true);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend_ServerSocketsOk() throws Exception {
 		testReceiveSend(false, true);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend_ClientSocketsOk() throws Exception {
 		testReceiveSend(true, false);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend_NoSocketsOk() throws Exception {
 		testReceiveSend(false, false);
 	}

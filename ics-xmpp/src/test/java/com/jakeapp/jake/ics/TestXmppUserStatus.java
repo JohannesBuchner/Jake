@@ -12,6 +12,7 @@ import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.test.XmppTestEnvironment;
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppUserStatus {
@@ -21,13 +22,13 @@ public class TestXmppUserStatus {
 	private ICService ics = null;
 
 	private static XmppUserId offlineUserId = new XmppUserId("foo.bar@"
-			+ TestEnvironment.getHost());
+			+ XmppTestEnvironment.getHost());
 
 	private static XmppUserId onlineUserId = new XmppUserId("IhasSses@"
-			+ TestEnvironment.getHost());
+			+ XmppTestEnvironment.getHost());
 
 	private static XmppUserId shortUserid1 = new XmppUserId("foobar@"
-			+ TestEnvironment.getHost());
+			+ XmppTestEnvironment.getHost());
 
 	private static String testUser1Passwd = "testpasswd1";
 
@@ -36,12 +37,12 @@ public class TestXmppUserStatus {
 	private static String testgroupname = "mygroupname";
 
 	@Before
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void setUp() throws Exception {
 		// if (TestEnvironment.serverIsAvailable()) {
-		TestEnvironment.assureUserIdExistsAndConnect(shortUserid1, testUser1Passwd);
-		TestEnvironment.assureUserIdExistsAndConnect(onlineUserId, testUser1Passwd);
-		TestEnvironment.assureUserIdExistsAndConnect(offlineUserId, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExistsAndConnect(shortUserid1, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExistsAndConnect(onlineUserId, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExistsAndConnect(offlineUserId, testUser1Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
 		Assert.assertTrue(ics.getStatusService().login(shortUserid1, testUser1Passwd));
@@ -49,17 +50,17 @@ public class TestXmppUserStatus {
 	}
 
 	@After
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.ics != null)
 			this.ics.getStatusService().logout();
-		TestEnvironment.assureUserDeleted(shortUserid1, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(onlineUserId, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(offlineUserId, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(shortUserid1, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(onlineUserId, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(offlineUserId, testUser1Passwd);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testIsLoggedInOnOurSelves() throws Exception {
 		Assert.assertTrue(ics.getStatusService().isLoggedIn(shortUserid1));
 	}

@@ -16,6 +16,7 @@ import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import com.jakeapp.jake.test.XmppTestEnvironment;
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppICMsgSending {
@@ -27,12 +28,12 @@ public class TestXmppICMsgSending {
 
 	private ICService ics2;
 
-	private static XmppUserId testUser1 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
 
-	private static XmppUserId testUser2 = new XmppUserId(TestEnvironment
+	private static XmppUserId testUser2 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser2"));
 
 	private static String testUser2Passwd = "testpasswd2";
@@ -42,10 +43,10 @@ public class TestXmppICMsgSending {
 	private static String testgroupname = "mygroupname";
 
 	@Before
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void setUp() throws Exception {
-		TestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
 		Assert.assertTrue(this.ics.getStatusService().login(testUser1,
@@ -54,18 +55,18 @@ public class TestXmppICMsgSending {
 	}
 
 	@After
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void teardown() throws Exception {
 		if (this.ics != null)
 			this.ics.getStatusService().logout();
 		if (this.ics2 != null)
 			this.ics2.getStatusService().logout();
-		TestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
-		TestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser1, testUser1Passwd);
+		XmppTestEnvironment.assureUserDeleted(testUser2, testUser2Passwd);
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend() throws Exception {
 		final String testmsgcontent1 = "Testmessagecontent1";
 		final String testmsgcontent2 = "Testmessagecontent2";
@@ -101,7 +102,7 @@ public class TestXmppICMsgSending {
 	}
 
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend_MultipleInteractions() throws Exception {
 		final String testmsgcontent1 = "Testmessagecontent1";
 		final String testmsgcontent2 = testmsgcontent1 + " >> really?";
@@ -162,7 +163,7 @@ public class TestXmppICMsgSending {
 		Assert.assertTrue(c.await(2, 5, TimeUnit.SECONDS));
 	}
 	@Test
-	@Prerequisite(checker = TestEnvironment.class)
+	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void testReceiveSend_XML() throws Exception {
 		final String testmsgcontent = "<msg>hello</msg>";
 		final Counter c = new Counter();

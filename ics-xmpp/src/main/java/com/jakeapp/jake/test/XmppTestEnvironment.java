@@ -1,4 +1,4 @@
-package com.jakeapp.jake.ics;
+package com.jakeapp.jake.test;
 
 import junit.framework.Assert;
 
@@ -12,9 +12,9 @@ import com.googlecode.junit.ext.Checker;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 @Ignore
-public class TestEnvironment implements Checker {
+public class XmppTestEnvironment implements Checker {
 
-	private static final Logger log = Logger.getLogger(TestEnvironment.class);
+	private static final Logger log = Logger.getLogger(XmppTestEnvironment.class);
 
 	private static final String TESTSERVER_PROPERTY = "com.jakeapp.jake.ics.impl.xmpp.test.serverHostname";
 
