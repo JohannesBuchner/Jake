@@ -57,6 +57,11 @@ public abstract class FSTestCommons {
 	 * @return whether deletion was successful
 	 */
 	public static boolean recursiveDelete(File folder) {
+		boolean ret = _recursiveDelete(folder);
+		clean();
+		return ret;
+	}
+	private static boolean _recursiveDelete(File folder) {
 		clean(); /* windows needs this */
 		if (folder.isFile()) {
 			return folder.delete();
