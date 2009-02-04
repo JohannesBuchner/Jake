@@ -5,8 +5,6 @@ import java.io.File;
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.googlecode.junit.ext.Prerequisite;
