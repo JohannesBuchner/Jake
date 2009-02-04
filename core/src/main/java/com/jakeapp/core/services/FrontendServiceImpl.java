@@ -103,6 +103,9 @@ public class FrontendServiceImpl implements IFrontendService {
 		if (credentials == null)
 			throw new IllegalArgumentException();
 
+		if (!credentials.isEmpty())
+			throw new InvalidCredentialsException(
+					"You are doing it wrong (don't set any credentials for core login)");
 		// TODO do further checking for later versions
 	}
 
