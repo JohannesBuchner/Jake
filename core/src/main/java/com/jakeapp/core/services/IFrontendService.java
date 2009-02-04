@@ -30,7 +30,8 @@ public interface IFrontendService {
 	 * This method is used to authenticate a client accessing the jake-core. On
 	 * a successful authentication a Session-Identifier (sessionId) is returned
 	 *
-	 * @param credentials a Map of credentials // TODO to be specified
+	 * @param credentials a Map of credentials // TODO to be specified. Has to be empty for 
+	 * 		current implementation 
 	 * @return a Session-Identifier
 	 * @throws IllegalArgumentException	 if the supplied credentials are null or one of the entries is
 	 *                                     null
