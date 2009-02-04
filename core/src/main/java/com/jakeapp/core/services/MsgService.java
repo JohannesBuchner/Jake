@@ -65,10 +65,10 @@ public abstract class MsgService<T extends UserId> {
 	public final boolean login() throws Exception {
 		log.debug("calling plain login");
 
-		if (serviceCredentials == null)
+		if (this.getServiceCredentials() == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
 
-		if (!checkCredentails())
+		if (!checkCredentials())
 			return false;
 
 		return this.doLogin();
@@ -80,11 +80,11 @@ public abstract class MsgService<T extends UserId> {
 		log.debug("calling login with newPwd-Size: " + newPassword.length() +
 				  ", shouldSave: " + shouldSavePassword);
 
-		if (serviceCredentials == null)
+		if (this.getServiceCredentials() == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
 
-		serviceCredentials.setPlainTextPassword(newPassword);
-        serviceCredentials.setSavePassword(shouldSavePassword);
+		this.getServiceCredentials().setPlainTextPassword(newPassword);
+		this.getServiceCredentials().setSavePassword(shouldSavePassword);
 
 		return this.login();
 
@@ -98,8 +98,9 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws InvalidCredentialsException if the credentials stored in this <code>MsgService</code> are
 	 *                                     insufficiently specified (e.g. they are null)
 	 */
-	protected boolean checkCredentails() throws InvalidCredentialsException {
-		if (this.getServiceCredentials() == null) {
+	protected boolean checkCredentials() throws InvalidCredentialsException {
+		ServiceCredentials serviceCredentials = this.getServiceCredentials();
+		if (serviceCredentials == null) {
 			throw new InvalidCredentialsException("credentials must not be null");
 		}
 		if (serviceCredentials.getUserId() == null)
@@ -138,7 +139,9 @@ public abstract class MsgService<T extends UserId> {
 	 */
 	protected abstract void doLogout() throws Exception;
 
-	public void setCredentials(ServiceCredentials credentials) {
+	public void setServiceCredentials(ServiceCredentials credentials) {
+		log.debug("setting service credentials to " + credentials.getUserId()
+				+ " pwl: " + credentials.getPlainTextPassword().length());
 		this.serviceCredentials = credentials;
 	}
 
