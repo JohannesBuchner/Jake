@@ -1,7 +1,10 @@
 package com.jakeapp.core.commander;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -22,25 +25,42 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
  */
 public class JakeCommander {
 
+	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(JakeCommander.class);
 
-	private final static CmdManager cmd = StoppableCmdManager.getInstance();
+	private final CmdManager cmd = StoppableCmdManager.getInstance();
 
-	private static String sessionid;
-	private static IFrontendService frontend;
-	private static MsgService msg;
+	private String sessionid;
+	private IFrontendService frontend;
+	@SuppressWarnings("unchecked")
+	private MsgService msg;
 
 	public static void main(String[] args) {
+		InputStream instream;
+		if(args.length == 1){
+			try {
+				instream = new FileInputStream(args[0]);
+			} catch (FileNotFoundException e) {
+				System.err.println(e.getMessage());
+				return;
+			}
+		}else{
+			instream = System.in;
+		}
+		new JakeCommander(instream);
+	}
+
+	public JakeCommander(InputStream instream) {
 		startupCore();
 		addCommands();
 		try {
 			cmd.help();
-			cmd.handle(System.in);
+			cmd.handle(instream);
 		} catch (IOException e) {
 		}
 	}
 
-	private static void startupCore() {
+	private void startupCore() {
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 				new String[] { "/com/jakeapp/core/applicationContext.xml" });
 		 frontend = (IFrontendService) applicationContext
@@ -53,7 +73,7 @@ public class JakeCommander {
 		}
 	}
 
-	private static abstract class LazyAvailabilityCommand<T> extends
+	private abstract class LazyAvailabilityCommand<T> extends
 			LazyCommand implements AvailabilityListener<T> {
 
 		public LazyAvailabilityCommand(String command, String syntax,
@@ -71,7 +91,7 @@ public class JakeCommander {
 
 	}
 
-	private static void addCommands() {
+	private void addCommands() {
 		cmd.registerCommand(new LazyAvailabilityCommand<Void>("createAccount",
 				"createAccount <xmppid> <password>") {
 			@Override
