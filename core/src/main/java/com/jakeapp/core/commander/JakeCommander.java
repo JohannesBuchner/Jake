@@ -31,30 +31,40 @@ public class JakeCommander {
 	private final CmdManager cmd = StoppableCmdManager.getInstance();
 
 	private String sessionid;
+
 	private IFrontendService frontend;
+
 	@SuppressWarnings("unchecked")
 	private MsgService msg;
 
 	public static void main(String[] args) {
+		boolean help = false;
 		InputStream instream;
-		if(args.length == 1){
+		if (args.length == 1) {
 			try {
 				instream = new FileInputStream(args[0]);
 			} catch (FileNotFoundException e) {
 				System.err.println(e.getMessage());
 				return;
 			}
-		}else{
+		} else {
 			instream = System.in;
+			help = true;
 		}
-		new JakeCommander(instream);
+		new JakeCommander(instream, help);
 	}
 
 	public JakeCommander(InputStream instream) {
+		this(instream, false);
+	}
+
+	public JakeCommander(InputStream instream, boolean startwithhelp) {
 		startupCore();
 		addCommands();
 		try {
-			cmd.help();
+			if (startwithhelp)
+				cmd.help();
+
 			cmd.handle(instream);
 		} catch (IOException e) {
 		}
@@ -63,7 +73,7 @@ public class JakeCommander {
 	private void startupCore() {
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 				new String[] { "/com/jakeapp/core/applicationContext.xml" });
-		 frontend = (IFrontendService) applicationContext
+		frontend = (IFrontendService) applicationContext
 				.getBean("frontendService");
 
 		try {
@@ -73,8 +83,8 @@ public class JakeCommander {
 		}
 	}
 
-	private abstract class LazyAvailabilityCommand<T> extends
-			LazyCommand implements AvailabilityListener<T> {
+	private abstract class LazyAvailabilityCommand<T> extends LazyCommand
+			implements AvailabilityListener<T> {
 
 		public LazyAvailabilityCommand(String command, String syntax,
 				String help) {
@@ -94,6 +104,7 @@ public class JakeCommander {
 	private void addCommands() {
 		cmd.registerCommand(new LazyAvailabilityCommand<Void>("createAccount",
 				"createAccount <xmppid> <password>") {
+
 			@Override
 			public boolean handleArguments(String[] args) {
 				if (args.length != 3)
@@ -130,6 +141,7 @@ public class JakeCommander {
 		cmd
 				.registerCommand(new LazyCommand("newProject",
 						"newProject <Folder>") {
+
 					@Override
 					public boolean handleArguments(String[] args) {
 						if (args.length != 2)
@@ -146,6 +158,7 @@ public class JakeCommander {
 				});
 		cmd.registerCommand(new LazyCommand("coreLogin",
 				"coreLogin <xmppid> <password>") {
+
 			@Override
 			public boolean handleArguments(String[] args) {
 				if (args.length != 3)
@@ -165,6 +178,7 @@ public class JakeCommander {
 			}
 		});
 		cmd.registerCommand(new LazyCommand("coreLogout") {
+
 			@Override
 			public boolean handleArguments(String[] args) {
 				try {
@@ -178,6 +192,7 @@ public class JakeCommander {
 			}
 		});
 		cmd.registerCommand(new LazyCommand("login") {
+
 			@Override
 			public boolean handleArguments(String[] args) {
 				if (msg == null) {
@@ -196,6 +211,7 @@ public class JakeCommander {
 			}
 		});
 		cmd.registerCommand(new LazyCommand("logout") {
+
 			@Override
 			public boolean handleArguments(String[] args) {
 				if (msg == null) {
