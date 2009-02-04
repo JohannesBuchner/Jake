@@ -38,7 +38,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
         if (credentials.getServerAddress() == null)
             throw new InvalidCredentialsException();
 
-
+    	String origpw = credentials.getPlainTextPassword();
         if (!credentials.isSavePassword()) {
             credentials.setPlainTextPassword("");
         }
@@ -52,6 +52,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
         catch (DataAccessException e) {
             throw new InvalidCredentialsException(e);
         }
+    	credentials.setPlainTextPassword(origpw);
         return credentials;
     }
 
