@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
+import com.jakeapp.jake.ics.impl.xmpp.helper.XmppCommons;
+
 
 public class XmppUserTool {
 
@@ -13,6 +15,8 @@ public class XmppUserTool {
 
 	static private XMPPConnection connection = null;
 
+	static private String resourcename = "usertool";
+	
 	public static void usage() {
 		System.out.println("SYNAPSIS: XmppUserTool <xmppid> <xmpppw> <action>");
 		System.out.println("\txmppid, xmpppw\tcredentials for login");
@@ -43,7 +47,7 @@ public class XmppUserTool {
 
 		if (action.equals("login") || action.equals("delete")) {
 			try {
-				connection = XmppCommons.login(xmppid, xmpppw);
+				connection = XmppCommons.login(xmppid, xmpppw, resourcename);
 				if (connection == null) {
 					log.error("login wasn't successful.");
 					return;

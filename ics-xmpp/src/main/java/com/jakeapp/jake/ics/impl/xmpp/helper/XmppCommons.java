@@ -34,13 +34,15 @@ public class XmppCommons {
 	public static XMPPConnection login(String xmppid, String pw, String resource)
 			throws IOException {
 
-		String hostname = xmppid.replaceAll(".*@", "");
-		String username = xmppid.replaceAll("@.*", "");
+		String hostname = xmppid.replaceAll("^.*@", "").replaceAll("/.*$", "");
+		String username = xmppid.replaceAll("@.*$", "");
 
-		log.debug("connecting/logging in with full xmppid (gmail et al)");
-		XMPPConnection connection = XmppCommons.login(xmppid, pw, hostname, resource);
+		log.debug("connecting/logging in with full xmppid (gmail et al) [may fail]");
+		XMPPConnection connection = XmppCommons.login(xmppid, pw, hostname,
+				resource);
 
 		if (connection == null) {
+			log.info("ignore the exception above, it was expected");
 			log.debug("connecting/logging in normally");
 			connection = XmppCommons.login(username, pw, hostname, resource);
 		}
@@ -68,7 +70,8 @@ public class XmppCommons {
 		String username = xmppid.replaceAll("@.*", "");
 
 		log.debug("connecting/logging in with full xmppid (gmail et al)");
-		XMPPConnection connection = XmppCommons.createAccount(xmppid, pw, hostname);
+		XMPPConnection connection = XmppCommons.createAccount(xmppid, pw,
+				hostname);
 
 		if (connection == null) {
 			log.debug("connecting/logging in normally");
@@ -87,10 +90,10 @@ public class XmppCommons {
 	 * @throws IOException
 	 *             on connect failure
 	 */
-	public static XMPPConnection login(String username, String pw, String hostname,
-			String resource) throws IOException {
+	public static XMPPConnection login(String username, String pw,
+			String hostname, String resource) throws IOException {
 
-		log.debug("host: " + hostname);
+		log.debug("connecting to host: '" + hostname + "'");
 		XMPPConnection connection = new XMPPConnection(hostname);
 
 		try {
@@ -99,7 +102,9 @@ public class XmppCommons {
 			throw new IOException(e.getMessage());
 		}
 		setupEncryption();
-		log.debug("user: " + username + " passwd: " + pw);
+		log.debug("user: '" + username + "' passwd-length: " + pw.length()
+				+ " characters");
+		// log.debug("user: '" + username + "' passwd: '" + pw + "'");
 		try {
 			log.debug("login ... ");
 			if (resource == null)
@@ -109,8 +114,7 @@ public class XmppCommons {
 			log.debug("login ok: " + connection.getUser());
 			return connection;
 		} catch (XMPPException e) {
-			log.debug("login not ok ");
-			log.debug(e);
+			log.debug("login not ok ", e);
 			connection.disconnect();
 			connection = null;
 			return null;
@@ -127,8 +131,8 @@ public class XmppCommons {
 	 * @throws IOException
 	 *             on connect failure
 	 */
-	public static XMPPConnection createAccount(String username, String pw, String hostname)
-			throws IOException {
+	public static XMPPConnection createAccount(String username, String pw,
+			String hostname) throws IOException {
 
 		log.debug("host: " + hostname);
 		XMPPConnection connection = new XMPPConnection(hostname);
@@ -146,8 +150,7 @@ public class XmppCommons {
 			log.debug("login ok: " + connection.getUser());
 			return connection;
 		} catch (XMPPException e) {
-			log.debug("login not ok ");
-			log.debug(e);
+			log.debug("login not ok ", e);
 			connection.disconnect();
 			connection = null;
 			return null;
@@ -175,7 +178,9 @@ public class XmppCommons {
 	public static boolean isLoggedIn(XMPPConnection connection) {
 		if (connection == null)
 			return false;
-		log.debug(connection.getUser() + " - auth: " + connection.isAuthenticated());
+		log.debug(connection.getUser() + " - auth: "
+				+ connection.isAuthenticated());
 		return connection.isAuthenticated();
 	}
+
 }

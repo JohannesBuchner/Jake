@@ -14,7 +14,8 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 @Ignore
 public class XmppTestEnvironment implements Checker {
 
-	private static final Logger log = Logger.getLogger(XmppTestEnvironment.class);
+	private static final Logger log = Logger
+			.getLogger(XmppTestEnvironment.class);
 
 	private static final String TESTSERVER_PROPERTY = "com.jakeapp.jake.ics.impl.xmpp.test.serverHostname";
 
@@ -47,8 +48,8 @@ public class XmppTestEnvironment implements Checker {
 		}
 	}
 
-	public static void assureUserExists(String hostname, String username, String password)
-			throws XMPPException {
+	public static void assureUserExists(String hostname, String username,
+			String password) throws XMPPException {
 		assureUserExistsAndConnect(hostname, username, password).disconnect();
 	}
 
@@ -66,8 +67,11 @@ public class XmppTestEnvironment implements Checker {
 		try {
 			connection.login(username, password);
 		} catch (XMPPException e) {
-			System.err.println(e.getMessage());
-			Assert.assertTrue(connection.getAccountManager().supportsAccountCreation());
+			log
+					.debug("login failed, user probably doesn't exist, creating the user now. ["
+							+ e.getMessage() + "]");
+			Assert.assertTrue(connection.getAccountManager()
+					.supportsAccountCreation());
 			connection.getAccountManager().createAccount(username, password);
 			connection.disconnect();
 			connection.connect();
@@ -77,8 +81,8 @@ public class XmppTestEnvironment implements Checker {
 		return connection;
 	}
 
-	public static XMPPConnection assureUserIdExistsAndConnect(XmppUserId userid,
-			String password) throws XMPPException {
+	public static XMPPConnection assureUserIdExistsAndConnect(
+			XmppUserId userid, String password) throws XMPPException {
 		String hostname = userid.getHost();
 		String username = userid.getUsername();
 		return assureUserExistsAndConnect(hostname, username, password);
@@ -91,10 +95,10 @@ public class XmppTestEnvironment implements Checker {
 		assureUserDeleted(hostname, username, password);
 	}
 
-	public static void assureUserDeleted(String host, String username, String password)
-			throws XMPPException {
-		assureUserExistsAndConnect(host, username, password).getAccountManager()
-				.deleteAccount();
+	public static void assureUserDeleted(String host, String username,
+			String password) throws XMPPException {
+		assureUserExistsAndConnect(host, username, password)
+				.getAccountManager().deleteAccount();
 	}
 
 	public static String getXmppId(String username) {
