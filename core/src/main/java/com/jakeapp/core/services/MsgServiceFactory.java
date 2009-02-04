@@ -77,7 +77,8 @@ public class MsgServiceFactory {
 			throws ProtocolNotSupportedException {
 
 		log.debug("calling createMsgService ");
-
+		log.debug("creating MsgService for " + credentials.getUserId()
+				+ " pwl: " + credentials.getPlainTextPassword().length());
 		ensureInitialised();
 		MsgService result = null;
 		if (credentials.getProtocol() != null
@@ -85,7 +86,7 @@ public class MsgServiceFactory {
 			log.debug("Creating new XMPPMsgService for userId "
 					+ credentials.getUserId());
 			result = new XMPPMsgService();
-			result.setCredentials(credentials);
+			result.setServiceCredentials(credentials);
 
 			// try {
 			// if(!credentials.getUuid().isEmpty())
@@ -123,6 +124,10 @@ public class MsgServiceFactory {
 			log.warn("Currently unsupported protocol given");
 			throw new ProtocolNotSupportedException();
 		}
+		log.debug("resulting MsgService is "
+				+ result.getServiceCredentials().getProtocol() + " for "
+				+ result.getServiceCredentials().getUserId() + " pwl: "
+				+ result.getServiceCredentials().getPlainTextPassword().length());
 
 		return result;
 	}
@@ -188,27 +193,27 @@ public class MsgServiceFactory {
 		UserId user = null;
 		switch (credentials.getProtocol()) {
 
-		case ICQ:
-			throw new ProtocolNotSupportedException("ICQ not yet implemented");
+			case XMPP:
 
-		case MSN:
-			throw new ProtocolNotSupportedException("MSN not yet implemented");
+				UUID res = null;
 
-		case XMPP:
+				if (credentials.getUuid() != null)
+					res = UUID.fromString(credentials.getUuid());
 
-			UUID res = null;
+				if (res == null)
+					res = UUID.randomUUID();
 
-			if (credentials.getUuid() != null)
-				res = UUID.fromString(credentials.getUuid());
+				credentials.setUuid(res);
 
-			if (res == null)
-				res = UUID.randomUUID();
+				user = new XMPPUserId(credentials, res,
+						credentials.getUserId(), credentials.getUserId(), "",
+						"");
+				break;
 
-			credentials.setUuid(res);
+			default:
+				throw new ProtocolNotSupportedException(
+						"Backend not yet implemented");
 
-			user = new XMPPUserId(credentials, res, credentials.getUserId(),
-					credentials.getUserId(), "", "");
-			break;
 		}
 		if (user != null)
 			svc.setUserId(user);

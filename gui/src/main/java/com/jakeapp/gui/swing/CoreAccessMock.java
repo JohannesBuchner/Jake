@@ -942,7 +942,7 @@ public class CoreAccessMock implements ICoreAccess {
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
 		XMPPMsgService m = new XMPPMsgService();
-		m.setCredentials(new ServiceCredentials("user", "pass"));
+		m.setServiceCredentials(new ServiceCredentials("user", "pass"));
 		return m;
 		//return this.frontendService.addAccount(this.sessionId, credentials);
 	}

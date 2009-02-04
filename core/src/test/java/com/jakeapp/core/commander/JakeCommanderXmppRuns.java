@@ -15,7 +15,7 @@ import com.jakeapp.jake.test.XmppTestEnvironment;
 public class JakeCommanderXmppRuns extends JakeCommanderRuns {
 
 	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
-			.getXmppId("foobar"));
+			.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
 
@@ -42,17 +42,17 @@ public class JakeCommanderXmppRuns extends JakeCommanderRuns {
 		new JakeCommander(fifo);
 	}
 
+	@Test
+	@Prerequisite(checker = XmppTestEnvironment.class)
+	public void testMinimalRun() {
+		go();
+	}
+
 	@Prerequisite(checker = XmppTestEnvironment.class)
 	@Test
 	public void testMinimalOnlineRun() {
 		// fifo.addLine("newProject " + tmpdir.getAbsolutePath());
 		fifo.addLine("login");
-		go();
-	}
-
-	@Test
-	@Prerequisite(checker = XmppTestEnvironment.class)
-	public void testMinimalRun() {
 		go();
 	}
 }

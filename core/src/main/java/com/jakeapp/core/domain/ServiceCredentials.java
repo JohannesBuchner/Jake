@@ -49,7 +49,9 @@ public class ServiceCredentials implements Serializable {
 	}
 
 	/**
-	 * Construct new user credentials with the given params.
+	 * Construct new user credentials with the given params. <br/>
+	 * Note: the password will not be persisted unless you call
+	 * {@link #setSavePassword(boolean)}
 	 * 
 	 * @param userId
 	 *            the userid to be used
