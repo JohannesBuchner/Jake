@@ -107,6 +107,10 @@
             <version>3.0.3</version>
         </dependency>
     </dependencies>
+    <scm>
+    	<connection>scm:svn://svn.jakeapp.com/trunk/gui</connection>
+    	<developerConnection>scm:svn://svn.jakeapp.com/trunk/gui</developerConnection>
+    </scm>
     <build>
         <resources>
             <resource>

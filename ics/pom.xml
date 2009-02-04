@@ -12,6 +12,10 @@
 	<description>The Interclient Communication Service provides low-level clients communication methods.</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
+	<scm>
+		<connection>scm:svn://svn.jakeapp.com/trunk/ics/</connection>
+		<developerConnection>scm:svn://svn.jakeapp.com/trunk/ics/</developerConnection>
+	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

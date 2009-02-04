@@ -80,6 +80,10 @@
 			<url>http://dstovall.org/maven2/</url>
 		</pluginRepository>
 	</pluginRepositories>
+	<scm>
+		<connection>scm:svn://svn.jakeapp.com/trunk/</connection>
+		<developerConnection>scm:svn://svn.jakeapp.com/trunk/</developerConnection>
+	</scm>
 	<build>
 		<pluginManagement>
 			<plugins>
