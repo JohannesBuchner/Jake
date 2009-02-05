@@ -2,7 +2,7 @@ package com.jakeapp.core.commander.commandline;
 
 public abstract class Command {
 	/**
-	 * @param args parameters
+	 * @param line full input line
 	 * @return is this the right command? false if you are not the right command. true if the 
 	 * 		command got handled (independent of success)   
 	 */

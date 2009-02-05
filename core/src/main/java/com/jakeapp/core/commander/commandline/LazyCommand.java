@@ -37,7 +37,9 @@ public abstract class LazyCommand extends Command {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param args parameters. first element is the command name (has been verified already)
+	 * @return is this the right command? false if you are not the right command. true if the 
+	 * 		command got handled (independent of success)   
 	 */
 	public abstract boolean handleArguments(String[] args);
 }
