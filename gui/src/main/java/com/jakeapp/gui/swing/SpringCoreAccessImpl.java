@@ -961,7 +961,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							frontendService.getProjectsManagingService(sessionId).assignUserToProject(pr, pr.getMessageService().getUserId());
 							log.debug("After creation, the project's userid is: " + pr.getUserId());
 						} catch (IllegalAccessException e) {
-							//empty implementation
+							// FIXME: is this expected? Why?
+							log.error("assigning to project failed",e);
 						}
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
