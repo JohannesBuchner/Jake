@@ -14,11 +14,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.jakeapp.core.commander.commandline.CmdManager;
 import com.jakeapp.core.commander.commandline.LazyCommand;
 import com.jakeapp.core.commander.commandline.StoppableCmdManager;
+import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
+import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 
@@ -35,6 +36,8 @@ public class JakeCommander {
 	private String sessionId;
 
 	private IFrontendService frontend;
+
+	private IProjectsManagingService pms;
 
 	@SuppressWarnings("unchecked")
 	private MsgService msg;
@@ -82,6 +85,7 @@ public class JakeCommander {
 
 		try {
 			sessionId = frontend.authenticate(new HashMap<String, String>());
+			pms = frontend.getProjectsManagingService(sessionId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,11 +109,63 @@ public class JakeCommander {
 
 	}
 
+	private abstract class LazyProjectDirectoryCommand extends LazyCommand {
+
+		public LazyProjectDirectoryCommand(String command, String help) {
+			super(command, command + " <Folder>", help);
+		}
+
+		public LazyProjectDirectoryCommand(String command) {
+			super(command, command + " <Folder>");
+		}
+
+		@Override
+		final public boolean handleArguments(String[] args) {
+			if (args.length != 2)
+				return false;
+			if (project != null)
+				return false;
+			File projectFolder = new File(args[1]);
+			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
+				System.out.println("not a directory");
+				return true;
+			}
+			handleArguments(projectFolder);
+			return true;
+		}
+
+		protected abstract void handleArguments(File folder);
+
+	}
+
+	private abstract class LazyNoParamsCommand extends LazyCommand {
+
+		public LazyNoParamsCommand(String command, String help) {
+			super(command, command, help);
+		}
+
+		public LazyNoParamsCommand(String command) {
+			super(command, command);
+		}
+
+		@Override
+		final public boolean handleArguments(String[] args) {
+			if (args.length != 1)
+				return false;
+			handleArguments();
+			return true;
+		}
+
+		protected abstract void handleArguments();
+
+	}
+
 	private void addCommands() {
 		class CreateAccountCommand extends LazyAvailabilityCommand<Void> {
 
 			public CreateAccountCommand() {
-				super("createAccount", "createAccount <xmppid> <password>", "provides a MsgService");
+				super("createAccount", "createAccount <xmppid> <password>",
+						"provides a MsgService");
 			}
 
 			@Override
@@ -149,7 +205,8 @@ public class JakeCommander {
 		class CoreLoginCommand extends LazyCommand {
 
 			public CoreLoginCommand() {
-				super("coreLogin", "coreLogin <xmppid> <password>", "provides a MsgService");
+				super("coreLogin", "coreLogin <xmppid> <password>",
+						"provides a MsgService");
 			}
 
 			@Override
@@ -172,14 +229,14 @@ public class JakeCommander {
 		};
 		cmd.registerCommand(new CoreLoginCommand());
 
-		class CoreLogoutCommand extends LazyCommand {
+		class CoreLogoutCommand extends LazyNoParamsCommand {
 
 			public CoreLogoutCommand() {
-				super("coreLogout", "coreLogout", "removes the MsgService");
+				super("coreLogout", "removes the MsgService");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
+			public void handleArguments() {
 				try {
 					frontend.logout(sessionId);
 					msg = null;
@@ -187,19 +244,18 @@ public class JakeCommander {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new CoreLogoutCommand());
 
-		class LoginCommand extends LazyCommand {
+		class LoginCommand extends LazyNoParamsCommand {
 
 			public LoginCommand() {
-				super("login", "login", "needs a MsgService");
+				super("login", "needs a MsgService");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
+			public void handleArguments() {
 				if (msg == null) {
 					System.out.println("do a coreLogin first");
 				}
@@ -212,66 +268,61 @@ public class JakeCommander {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new LoginCommand());
-		class LogoutCommand extends LazyCommand {
+		class LogoutCommand extends LazyNoParamsCommand {
 
 			public LogoutCommand() {
-				super("LogoutCommand", "LogoutCommand", "needs a MsgService");
+				super("LogoutCommand", "needs a MsgService");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
-				if (msg == null) {
-					System.out.println("do a coreLogin first");
-				}
+			public void handleArguments() {
 				try {
+					System.out.println("logging out ...");
 					msg.logout();
-					System.out.println("logged out");
+					System.out.println("logging out done");
 				} catch (Exception e) {
+					System.out.println("logging out failed");
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new LogoutCommand());
-		
-		class CreateProjectCommand extends LazyCommand {
+
+		class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
 			public CreateProjectCommand() {
-				super("createProject", "createProject <Folder>",
+				super("createProject", 
 						"needs a MsgService; provides a open project");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
-				if (args.length != 2)
-					return false;
-				File projectFolder = new File(args[1]);
-				if (!(projectFolder.exists() && projectFolder.isDirectory())) {
-					System.out.println("not a directory");
-					return true;
+			public void handleArguments(File projectFolder) {
+				if (msg == null) {
+					System.out.println("needs a MsgService!");
+					return;
 				}
 				try {
 					System.out.println("creating project ...");
-					project = frontend.getProjectsManagingService(sessionId).createProject(projectFolder.getName(), 
+					project = pms.createProject(projectFolder.getName(),
 							projectFolder.getAbsolutePath(), msg);
+					pms.assignUserToProject(project, msg.getUserId());
+
 					System.out.println("creating project done");
 				} catch (Exception e) {
 					System.out.println("creating project failed");
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new CreateProjectCommand());
-		
+
 		class DeleteProjectCommand extends LazyCommand {
 
 			public DeleteProjectCommand() {
-				super("deleteProject", "deleteProject [andFiles]", 
+				super("deleteProject", "deleteProject [andFiles]",
 						"needs a open project; optionally deletes files in folder");
 			}
 
@@ -286,7 +337,7 @@ public class JakeCommander {
 					return false;
 				try {
 					System.out.println("deleting project ...");
-					frontend.getProjectsManagingService(sessionId).deleteProject(project, deleteFiles);
+					pms.deleteProject(project, deleteFiles);
 					System.out.println("deleting project done");
 				} catch (Exception e) {
 					System.out.println("deleting project failed");
@@ -296,93 +347,164 @@ public class JakeCommander {
 			}
 		};
 		cmd.registerCommand(new DeleteProjectCommand());
-		class CloseProjectCommand extends LazyCommand {
+		class CloseProjectCommand extends LazyNoParamsCommand {
 
 			public CloseProjectCommand() {
-				super("closeProject", "closeProject", "needs a open project");
+				super("closeProject", "needs a open project");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
+			public void handleArguments() {
 				try {
 					System.out.println("closing project ...");
-					frontend.getProjectsManagingService(sessionId).closeProject(project);
+					pms.closeProject(project);
 					System.out.println("closing project done");
 				} catch (Exception e) {
 					System.out.println("listing projects failed");
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new CloseProjectCommand());
-		class ListProjectsCommand extends LazyCommand {
+		class ListProjectsCommand extends LazyNoParamsCommand {
 
 			public ListProjectsCommand() {
 				super("listProjects");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
+			public void handleArguments() {
 				try {
 					System.out.println("listing projects:");
-					for(Project p : frontend.getProjectsManagingService(sessionId).getProjectList()){
-						System.out.println(p.getName() + " - " + p.getRootPath());
+					for (Project p : pms.getProjectList()) {
+						System.out.println(p);
 					}
 					System.out.println("listing projects done");
 				} catch (Exception e) {
 					System.out.println("listing projects failed");
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new ListProjectsCommand());
-		class OpenProjectCommand extends LazyCommand {
+		class OpenProjectCommand extends LazyProjectDirectoryCommand {
 
 			public OpenProjectCommand() {
-				super("openProject", "openProject", "provides a open project");
+				super("openProject", "provides a open project");
 			}
 
 			@Override
-			public boolean handleArguments(String[] args) {
-				if (args.length != 2)
-					return false;
-				File projectFolder = new File(args[1]);
-				if (!(projectFolder.exists() && projectFolder.isDirectory())) {
-					System.out.println("not a directory");
-					return true;
-				}
+			public void handleArguments(File projectFolder) {
 				try {
 					System.out.println("opening project ...");
-					for(Project p : frontend.getProjectsManagingService(sessionId).getProjectList()){
-						if(p.getRootPath().equals(projectFolder))
+					for (Project p : pms.getProjectList()) {
+						if (p.getRootPath().equals(projectFolder))
 							project = p;
 					}
-					frontend.getProjectsManagingService(sessionId).openProject(project);
+					pms.openProject(project);
 					System.out.println("opening project done");
 				} catch (Exception e) {
 					System.out.println("opening project failed");
 					project = null;
 					e.printStackTrace();
 				}
-				return true;
 			}
 		};
 		cmd.registerCommand(new OpenProjectCommand());
-		class StatusCommand extends LazyCommand {
+		class StatusCommand extends LazyNoParamsCommand {
 
 			public StatusCommand() {
-				super("status", "status", "shows wether a msgservice/project/etc. is opened");
+				super("status",
+						"shows whether a msgservice/project/etc. is opened");
+			}
+
+			@Override
+			public void handleArguments() {
+				System.out.println("Project available: " + (project != null));
+				System.out.println("MsgService available: " + (msg != null));
+			}
+		};
+		cmd.registerCommand(new StatusCommand());
+		class InviteCommand extends LazyCommand {
+
+			public InviteCommand() {
+				super("invite", "invite <xmppid>",
+						"needs MsgService; needs Project");
 			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
-				System.out.println("Project available: " + (project != null));
-				System.out.println("MsgService available: " + (msg != null));
+				if (args.length != 2)
+					return false;
+				try {
+					System.out.println("inviting ...");
+					pms.invite(project, args[1]);
+					System.out.println("inviting done");
+				} catch (Exception e) {
+					System.out.println("inviting failed");
+					e.printStackTrace();
+				}
 				return true;
 			}
 		};
-		cmd.registerCommand(new StatusCommand());
+		cmd.registerCommand(new InviteCommand());
+		class AcceptInviteCommand extends LazyProjectDirectoryCommand {
+
+			public AcceptInviteCommand() {
+				super("acceptInvite", 
+						"needs MsgService; accepts first invited project");
+			}
+
+			@Override
+			public void handleArguments(File projectFolder) {
+				for (Project p : pms.getProjectList(InvitationState.INVITED)) {
+					project = p;
+					break;
+				}
+				if (project == null) {
+					System.out
+							.println("no projects where we are invited found.");
+					return;
+				}
+				try {
+					System.out.println("joining ...");
+					pms.joinProject(project, null);
+					System.out.println("joining done");
+				} catch (Exception e) {
+					System.out.println("joining failed");
+					e.printStackTrace();
+				}
+			}
+		};
+		cmd.registerCommand(new AcceptInviteCommand());
+		class RejectInviteCommand extends LazyNoParamsCommand {
+
+			public RejectInviteCommand() {
+				super("rejectInvite",
+						"needs MsgService; reject first invited project");
+			}
+
+			@Override
+			public void handleArguments() {
+				for (Project p : pms.getProjectList(InvitationState.INVITED)) {
+					project = p;
+					break;
+				}
+				if (project == null) {
+					System.out
+							.println("no projects where we are invited found.");
+					return;
+				}
+				try {
+					System.out.println("joining ...");
+					pms.joinProject(project, null);
+					System.out.println("joining done");
+				} catch (Exception e) {
+					System.out.println("joining failed");
+					e.printStackTrace();
+				}
+			}
+		};
+		cmd.registerCommand(new RejectInviteCommand());
 	}
 }
