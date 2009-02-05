@@ -217,9 +217,9 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 		// create and initialize the Project's root folder
 		/*
-																* Since the FSService would start to watch the directory immediately,
-																* it is not created yet.
-																*/
+		 * Since the FSService would start to watch the directory immediately,
+		 * it is not created yet.
+		 */
 		projectRoot.mkdirs();
 		if (!projectRoot.isDirectory() || !projectRoot.canWrite()) {
 			log.warn("Creating a Project's root path failed.");
@@ -243,34 +243,40 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 
 		project.setMessageService(msgService);
+		//if (msgService != null)
+		//	project.setUserId(msgService.getUserId());
 
-
-		// TODO maybe move this to a extra method or remove it completly
-		{
-			INoteObjectDao noteObjectDao = this.applicationContextFactory.getNoteObjectDao(project);
-			List<NoteObject> notesList = new ArrayList<NoteObject>();
-
-
-			notesList.add(new NoteObject(new UUID(1, 1), project, "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
-			notesList.add(new NoteObject(new UUID(2, 1), project, "Apple pays Chuck Norris 99 cents every time he listens to a song."));
-			notesList.add(new NoteObject(new UUID(3, 1), project, "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
-			notesList.add(new NoteObject(new UUID(4, 1), project, "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
-			notesList.add(new NoteObject(new UUID(5, 1), project, "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
-			notesList.add(new NoteObject(new UUID(6, 1), project, "Chuck Norris does not sleep. He waits."));
-			notesList.add(new NoteObject(new UUID(7, 1), project, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
-			notesList.add(new NoteObject(new UUID(8, 1), project, "Guns don't kill people, Chuck Norris does."));
-			notesList.add(new NoteObject(new UUID(9, 1), project, "Chuck Norris does not need an undo function"));
-			notesList.add(new NoteObject(new UUID(10, 1), project, "Chuck Norris can kill two stones with one bird."));
-			notesList.add(new NoteObject(new UUID(11, 1), project, "Chuck Norris knows: Jake is the best file-sharing app ever."));
-
-
-			for (NoteObject note : notesList) {
-				noteObjectDao.persist(note);
-			}
-		}
+		attachTestNotes(project);
 
 
 		return project;
+	}
+
+	/**
+	 * adds example notes. May be removed in the future.
+	 * @param project
+	 */
+	private void attachTestNotes(Project project) {
+		INoteObjectDao noteObjectDao = this.applicationContextFactory.getNoteObjectDao(project);
+		List<NoteObject> notesList = new ArrayList<NoteObject>();
+
+
+		notesList.add(new NoteObject(new UUID(1, 1), project, "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
+		notesList.add(new NoteObject(new UUID(2, 1), project, "Apple pays Chuck Norris 99 cents every time he listens to a song."));
+		notesList.add(new NoteObject(new UUID(3, 1), project, "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
+		notesList.add(new NoteObject(new UUID(4, 1), project, "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
+		notesList.add(new NoteObject(new UUID(5, 1), project, "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
+		notesList.add(new NoteObject(new UUID(6, 1), project, "Chuck Norris does not sleep. He waits."));
+		notesList.add(new NoteObject(new UUID(7, 1), project, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
+		notesList.add(new NoteObject(new UUID(8, 1), project, "Guns don't kill people, Chuck Norris does."));
+		notesList.add(new NoteObject(new UUID(9, 1), project, "Chuck Norris does not need an undo function"));
+		notesList.add(new NoteObject(new UUID(10, 1), project, "Chuck Norris can kill two stones with one bird."));
+		notesList.add(new NoteObject(new UUID(11, 1), project, "Chuck Norris knows: Jake is the best file-sharing app ever."));
+
+
+		for (NoteObject note : notesList) {
+			noteObjectDao.persist(note);
+		}
 	}
 
 	/**
@@ -570,14 +576,14 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * @param project may not be null
 	 * @param userId  may not be null
 	 * @return null if the User with the ID userId is not found in the Project.
-	 *         The corresponding ProjectMember if it exisits.
+	 *         The corresponding ProjectMember if it exists.
 	 */
 	@Transactional
 	private ProjectMember getProjectMember(Project project, UserId userId,
 														IProjectMemberDao dao) {
 		/*
-																* verlaesst sich auf userid.getUUid == projectMember.getUUid!!
-																*/
+		 * verlaesst sich auf userid.getUUid == projectMember.getUUid!!
+		 */
 
 		try {
 			return dao.get(userId.getUuid());
@@ -593,7 +599,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		IProjectMemberDao dao;
 		ProjectMember member;
 
-		// /Check preconditions
+		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException();
 		if (userId == null)
@@ -606,6 +612,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		// get (or add) the Project member belonging to userId
 		member = this.getProjectMember(project, userId, dao);
 		if (member == null) {
+			log.debug("projectmember to set trust for doesn't exist. creating it now!");
 			this.addProjectMember(project, userId);
 			// invite ProjectMember to Project
 			this.inviteMember(project, userId);
