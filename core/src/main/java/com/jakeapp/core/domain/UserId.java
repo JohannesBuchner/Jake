@@ -263,8 +263,9 @@ public abstract class UserId implements ILogable {
 	 * @return string of UserID.
 	 */
 	public String toString() {
-		return getUserId() + ": " + getFirstName() + " " + getSurName() + " '"
-				+ getNickname() + "' ";
+		return getProtocolTypeString() + ":" + getUserId() + ": "
+				+ getFirstName() + " " + getSurName() + " '" + getNickname()
+				+ "' ";
 	}
 
 
@@ -279,7 +280,7 @@ public abstract class UserId implements ILogable {
 
 
 		if (!credentials.getUuid().equals(userId1.credentials.getUuid()))
-			return false; // MODDED!
+			return false; // manually modified to include this!
 		if (!firstName.equals(userId1.firstName))
 			return false;
 		if (!nickname.equals(userId1.nickname))
