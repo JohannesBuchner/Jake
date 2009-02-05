@@ -36,5 +36,8 @@ public abstract class LazyCommand extends Command {
 		return handleArguments(arguments);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public abstract boolean handleArguments(String[] args);
 }
