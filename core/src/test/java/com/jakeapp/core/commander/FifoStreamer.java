@@ -9,9 +9,9 @@ import java.io.InputStream;
  */
 class FifoStreamer extends InputStream {
 
-	String content = new String();
+	private String content = new String();
 
-	int pointer = 0;
+	private int pointer = 0;
 
 	public void addLine(String line) {
 		content = content + line + "\n";

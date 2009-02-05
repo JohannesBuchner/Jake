@@ -14,8 +14,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.jakeapp.core.commander.commandline.CmdManager;
 import com.jakeapp.core.commander.commandline.LazyCommand;
 import com.jakeapp.core.commander.commandline.StoppableCmdManager;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -30,12 +32,14 @@ public class JakeCommander {
 
 	private final CmdManager cmd = StoppableCmdManager.getInstance();
 
-	private String sessionid;
+	private String sessionId;
 
 	private IFrontendService frontend;
 
 	@SuppressWarnings("unchecked")
 	private MsgService msg;
+
+	public Project project;
 
 	public static void main(String[] args) {
 		boolean help = false;
@@ -77,7 +81,7 @@ public class JakeCommander {
 				.getBean("frontendService");
 
 		try {
-			sessionid = frontend.authenticate(new HashMap<String, String>());
+			sessionId = frontend.authenticate(new HashMap<String, String>());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,7 +109,7 @@ public class JakeCommander {
 		class CreateAccountCommand extends LazyAvailabilityCommand<Void> {
 
 			public CreateAccountCommand() {
-				super("createAccount", "createAccount <xmppid> <password>");
+				super("createAccount", "createAccount <xmppid> <password>", "provides a MsgService");
 			}
 
 			@Override
@@ -117,7 +121,7 @@ public class JakeCommander {
 				ServiceCredentials cred = new ServiceCredentials(id, password);
 				cred.setProtocol(ProtocolType.XMPP);
 				try {
-					frontend.createAccount(sessionid, cred).setListener(this);
+					frontend.createAccount(sessionId, cred).setListener(this);
 					System.out.println("got the MsgService");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -142,31 +146,10 @@ public class JakeCommander {
 
 		};
 		cmd.registerCommand(new CreateAccountCommand());
-		class NewProjectCommand extends LazyCommand {
-
-			public NewProjectCommand() {
-				super("newProject", "newProject <Folder>");
-			}
-
-			@Override
-			public boolean handleArguments(String[] args) {
-				if (args.length != 2)
-					return false;
-				File projectFolder = new File(args[1]);
-				if (!(projectFolder.exists() && projectFolder.isDirectory())) {
-					System.out.println("not a directory");
-					return true;
-				}
-
-				return true;
-			}
-		};
-		cmd.registerCommand(new NewProjectCommand());
-
 		class CoreLoginCommand extends LazyCommand {
 
 			public CoreLoginCommand() {
-				super("coreLogin", "coreLogin <xmppid> <password>");
+				super("coreLogin", "coreLogin <xmppid> <password>", "provides a MsgService");
 			}
 
 			@Override
@@ -179,7 +162,7 @@ public class JakeCommander {
 				ServiceCredentials cred = new ServiceCredentials(id, password);
 				cred.setProtocol(ProtocolType.XMPP);
 				try {
-					msg = frontend.addAccount(sessionid, cred);
+					msg = frontend.addAccount(sessionId, cred);
 					System.out.println("got the MsgService");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -192,13 +175,13 @@ public class JakeCommander {
 		class CoreLogoutCommand extends LazyCommand {
 
 			public CoreLogoutCommand() {
-				super("coreLogout");
+				super("coreLogout", "coreLogout", "removes the MsgService");
 			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
 				try {
-					frontend.logout(sessionid);
+					frontend.logout(sessionId);
 					msg = null;
 					System.out.println("MsgService deleted");
 				} catch (Exception e) {
@@ -208,10 +191,11 @@ public class JakeCommander {
 			}
 		};
 		cmd.registerCommand(new CoreLogoutCommand());
+
 		class LoginCommand extends LazyCommand {
 
 			public LoginCommand() {
-				super("login");
+				super("login", "login", "needs a MsgService");
 			}
 
 			@Override
@@ -235,7 +219,7 @@ public class JakeCommander {
 		class LogoutCommand extends LazyCommand {
 
 			public LogoutCommand() {
-				super("LogoutCommand");
+				super("LogoutCommand", "LogoutCommand", "needs a MsgService");
 			}
 
 			@Override
@@ -253,5 +237,152 @@ public class JakeCommander {
 			}
 		};
 		cmd.registerCommand(new LogoutCommand());
+		
+		class CreateProjectCommand extends LazyCommand {
+
+			public CreateProjectCommand() {
+				super("createProject", "createProject <Folder>",
+						"needs a MsgService; provides a open project");
+			}
+
+			@Override
+			public boolean handleArguments(String[] args) {
+				if (args.length != 2)
+					return false;
+				File projectFolder = new File(args[1]);
+				if (!(projectFolder.exists() && projectFolder.isDirectory())) {
+					System.out.println("not a directory");
+					return true;
+				}
+				try {
+					System.out.println("creating project ...");
+					project = frontend.getProjectsManagingService(sessionId).createProject(projectFolder.getName(), 
+							projectFolder.getAbsolutePath(), msg);
+					System.out.println("creating project done");
+				} catch (Exception e) {
+					System.out.println("creating project failed");
+					e.printStackTrace();
+				}
+				return true;
+			}
+		};
+		cmd.registerCommand(new CreateProjectCommand());
+		
+		class DeleteProjectCommand extends LazyCommand {
+
+			public DeleteProjectCommand() {
+				super("deleteProject", "deleteProject [andFiles]", 
+						"needs a open project; optionally deletes files in folder");
+			}
+
+			@Override
+			public boolean handleArguments(String[] args) {
+				boolean deleteFiles;
+				if (args.length == 1)
+					deleteFiles = false;
+				else if (args.length == 2 && "andFiles".equals(args[1]))
+					deleteFiles = true;
+				else
+					return false;
+				try {
+					System.out.println("deleting project ...");
+					frontend.getProjectsManagingService(sessionId).deleteProject(project, deleteFiles);
+					System.out.println("deleting project done");
+				} catch (Exception e) {
+					System.out.println("deleting project failed");
+					e.printStackTrace();
+				}
+				return true;
+			}
+		};
+		cmd.registerCommand(new DeleteProjectCommand());
+		class CloseProjectCommand extends LazyCommand {
+
+			public CloseProjectCommand() {
+				super("closeProject", "closeProject", "needs a open project");
+			}
+
+			@Override
+			public boolean handleArguments(String[] args) {
+				try {
+					System.out.println("closing project ...");
+					frontend.getProjectsManagingService(sessionId).closeProject(project);
+					System.out.println("closing project done");
+				} catch (Exception e) {
+					System.out.println("listing projects failed");
+					e.printStackTrace();
+				}
+				return true;
+			}
+		};
+		cmd.registerCommand(new CloseProjectCommand());
+		class ListProjectsCommand extends LazyCommand {
+
+			public ListProjectsCommand() {
+				super("listProjects");
+			}
+
+			@Override
+			public boolean handleArguments(String[] args) {
+				try {
+					System.out.println("listing projects:");
+					for(Project p : frontend.getProjectsManagingService(sessionId).getProjectList()){
+						System.out.println(p.getName() + " - " + p.getRootPath());
+					}
+					System.out.println("listing projects done");
+				} catch (Exception e) {
+					System.out.println("listing projects failed");
+					e.printStackTrace();
+				}
+				return true;
+			}
+		};
+		cmd.registerCommand(new ListProjectsCommand());
+		class OpenProjectCommand extends LazyCommand {
+
+			public OpenProjectCommand() {
+				super("openProject", "openProject", "provides a open project");
+			}
+
+			@Override
+			public boolean handleArguments(String[] args) {
+				if (args.length != 2)
+					return false;
+				File projectFolder = new File(args[1]);
+				if (!(projectFolder.exists() && projectFolder.isDirectory())) {
+					System.out.println("not a directory");
+					return true;
+				}
+				try {
+					System.out.println("opening project ...");
+					for(Project p : frontend.getProjectsManagingService(sessionId).getProjectList()){
+						if(p.getRootPath().equals(projectFolder))
+							project = p;
+					}
+					frontend.getProjectsManagingService(sessionId).openProject(project);
+					System.out.println("opening project done");
+				} catch (Exception e) {
+					System.out.println("opening project failed");
+					project = null;
+					e.printStackTrace();
+				}
+				return true;
+			}
+		};
+		cmd.registerCommand(new OpenProjectCommand());
+		class StatusCommand extends LazyCommand {
+
+			public StatusCommand() {
+				super("status", "status", "shows wether a msgservice/project/etc. is opened");
+			}
+
+			@Override
+			public boolean handleArguments(String[] args) {
+				System.out.println("Project available: " + (project != null));
+				System.out.println("MsgService available: " + (msg != null));
+				return true;
+			}
+		};
+		cmd.registerCommand(new StatusCommand());
 	}
 }
