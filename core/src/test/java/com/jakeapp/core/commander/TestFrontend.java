@@ -45,7 +45,6 @@ public class TestFrontend extends TmpdirEnabledTestCase {
 	}
 
 	@Test
-	@Ignore // this fails. Why? What is the right usage?
 	public void testCreateAndAssign() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password);
 		cred.setProtocol(ProtocolType.XMPP);
@@ -55,11 +54,15 @@ public class TestFrontend extends TmpdirEnabledTestCase {
 		Assert.assertNull(project.getUserId());
 
 		Assert.assertEquals(0, pms.getProjectMembers(project).size());
-		pms.assignUserToProject(project, msg.getUserId()); // what is the expected behaviour?
+		try {
+			pms.assignUserToProject(project, msg.getUserId());
+		} catch (IllegalAccessException e) {
+			// is this the way it should be?
+		}
+		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
 
 	@Test
-	@Ignore // this fails. Why? What is the right usage?
 	public void testCreateAndAssignAfterwards() throws Exception {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(), null);
 		Assert.assertNull(project.getMessageService());
@@ -69,6 +72,11 @@ public class TestFrontend extends TmpdirEnabledTestCase {
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
-		pms.assignUserToProject(project, msg.getUserId());
+		try {
+			pms.assignUserToProject(project, msg.getUserId());
+		} catch (IllegalAccessException e) {
+			// is this the way it should be?
+		}
+		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
 }
