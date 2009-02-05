@@ -102,8 +102,11 @@ public class JakeCommander {
 	}
 
 	private void addCommands() {
-		cmd.registerCommand(new LazyAvailabilityCommand<Void>("createAccount",
-				"createAccount <xmppid> <password>") {
+		class CreateAccountCommand extends LazyAvailabilityCommand<Void> {
+
+			public CreateAccountCommand() {
+				super("createAccount", "createAccount <xmppid> <password>");
+			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
@@ -137,27 +140,34 @@ public class JakeCommander {
 				System.out.println("status: " + status + " - " + progress);
 			}
 
-		});
-		cmd
-				.registerCommand(new LazyCommand("newProject",
-						"newProject <Folder>") {
+		};
+		cmd.registerCommand(new CreateAccountCommand());
+		class NewProjectCommand extends LazyCommand {
 
-					@Override
-					public boolean handleArguments(String[] args) {
-						if (args.length != 2)
-							return false;
-						File projectFolder = new File(args[1]);
-						if (!(projectFolder.exists() && projectFolder
-								.isDirectory())) {
-							System.out.println("not a directory");
-							return true;
-						}
+			public NewProjectCommand() {
+				super("newProject", "newProject <Folder>");
+			}
 
-						return true;
-					}
-				});
-		cmd.registerCommand(new LazyCommand("coreLogin",
-				"coreLogin <xmppid> <password>") {
+			@Override
+			public boolean handleArguments(String[] args) {
+				if (args.length != 2)
+					return false;
+				File projectFolder = new File(args[1]);
+				if (!(projectFolder.exists() && projectFolder.isDirectory())) {
+					System.out.println("not a directory");
+					return true;
+				}
+
+				return true;
+			}
+		};
+		cmd.registerCommand(new NewProjectCommand());
+
+		class CoreLoginCommand extends LazyCommand {
+
+			public CoreLoginCommand() {
+				super("coreLogin", "coreLogin <xmppid> <password>");
+			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
@@ -176,8 +186,14 @@ public class JakeCommander {
 				}
 				return true;
 			}
-		});
-		cmd.registerCommand(new LazyCommand("coreLogout") {
+		};
+		cmd.registerCommand(new CoreLoginCommand());
+
+		class CoreLogoutCommand extends LazyCommand {
+
+			public CoreLogoutCommand() {
+				super("coreLogout");
+			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
@@ -190,8 +206,13 @@ public class JakeCommander {
 				}
 				return true;
 			}
-		});
-		cmd.registerCommand(new LazyCommand("login") {
+		};
+		cmd.registerCommand(new CoreLogoutCommand());
+		class LoginCommand extends LazyCommand {
+
+			public LoginCommand() {
+				super("login");
+			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
@@ -209,8 +230,13 @@ public class JakeCommander {
 				}
 				return true;
 			}
-		});
-		cmd.registerCommand(new LazyCommand("logout") {
+		};
+		cmd.registerCommand(new LoginCommand());
+		class LogoutCommand extends LazyCommand {
+
+			public LogoutCommand() {
+				super("LogoutCommand");
+			}
 
 			@Override
 			public boolean handleArguments(String[] args) {
@@ -225,6 +251,7 @@ public class JakeCommander {
 				}
 				return true;
 			}
-		});
+		};
+		cmd.registerCommand(new LogoutCommand());
 	}
 }
