@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.jakeapp.jake.test.FSTestCommons;
 
 @Ignore
-public class TmpdirEnabledTestCase {
+public abstract class TmpdirEnabledTestCase {
 
 	protected File tmpdir;
 
@@ -26,10 +26,6 @@ public class TmpdirEnabledTestCase {
 		if (tmpdir.exists())
 			Assert.assertTrue(FSTestCommons.recursiveDelete(tmpdir));
 		Assert.assertFalse("Cleanup done", tmpdir.exists());
-	}
-	
-	@Test
-	public void notest() throws Exception {
 	}
 
 }

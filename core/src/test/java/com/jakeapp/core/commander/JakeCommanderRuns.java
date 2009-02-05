@@ -1,7 +1,12 @@
 package com.jakeapp.core.commander;
 
 
+import java.io.File;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import com.jakeapp.jake.test.FSTestCommons;
 
 
 /**
@@ -12,8 +17,14 @@ import org.junit.Test;
  */
 public class JakeCommanderRuns extends TmpdirEnabledTestCase {
 
+	@Before
+	public void setup() throws Exception {
+		FSTestCommons.recursiveDelete(new File(".jake"));
+		super.setup();
+	}
+
 	@Test
-	public void testMinimalRun() {
+	public void minimalRun() {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin offline@project.creator mypw");
 		fifo.addLine("coreLogout");
@@ -22,7 +33,7 @@ public class JakeCommanderRuns extends TmpdirEnabledTestCase {
 	}
 
 	@Test
-	public void testMinimalProjectRun() {
+	public void minimalProjectRun() {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin offline@project.creator mypw");
 		fifo.addLine("createProject " + tmpdir.getAbsolutePath());
@@ -32,7 +43,7 @@ public class JakeCommanderRuns extends TmpdirEnabledTestCase {
 	}
 
 	@Test
-	public void testProjectRoundtrip() {
+	public void projectRoundtrip() {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin offline@project.creator mypw");
 		fifo.addLine("createProject " + tmpdir.getAbsolutePath());
@@ -46,7 +57,7 @@ public class JakeCommanderRuns extends TmpdirEnabledTestCase {
 	}
 
 	@Test
-	public void testListProjects() {
+	public void listProjects() {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin offline@project.creator mypw");
 		fifo.addLine("listProjects");

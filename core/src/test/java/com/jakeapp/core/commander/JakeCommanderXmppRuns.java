@@ -1,5 +1,7 @@
 package com.jakeapp.core.commander;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,14 +10,14 @@ import org.junit.runner.RunWith;
 import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.XmppTestEnvironment;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class JakeCommanderXmppRuns extends TmpdirEnabledTestCase {
 
-	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
-			.getXmppId("testuser1"));
+	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment.getXmppId("testuser1"));
 
 	private static String testUser1Passwd = "testpasswd1";
 
@@ -24,6 +26,7 @@ public class JakeCommanderXmppRuns extends TmpdirEnabledTestCase {
 	@Before
 	public void setup() throws Exception {
 		super.setup();
+		FSTestCommons.recursiveDelete(new File(".jake"));
 		fifo = new FifoStreamer();
 		fifo.addLine("coreLogin " + testUser1 + " " + testUser1Passwd);
 
