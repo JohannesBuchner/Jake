@@ -37,8 +37,7 @@ public class FrontEndServiceTest {
 	@BeforeClass
 	public static void setUpClass() {
 		VALID_CREDENTIALS = new HashMap<String, String>();
-		//TODO find out valid credentials
-		VALID_CREDENTIALS.put("to", "do");
+		//valid credentials == empty hashmap
 	}
 
 	@Before

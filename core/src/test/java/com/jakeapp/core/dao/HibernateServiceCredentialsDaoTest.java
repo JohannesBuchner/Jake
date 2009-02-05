@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 
 
 @ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
@@ -129,17 +130,31 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         serviceCredentialsDao.create(validCredentials);
     }
 
-
     @Test
     @Transactional
-    public final void createRead_test() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
+    public final void createRead_testWithPasswordSaving() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
         ServiceCredentials result;
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b3");
+        validCredentials.setSavePassword(true);
         serviceCredentialsDao.create(validCredentials);
-
         result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
 
         assertEquals(validCredentials, result);
+
+
+    }
+
+    @Test
+    @Transactional
+    public final void createRead_testNoPasswordSaving() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
+        ServiceCredentials result;
+        validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b4");
+        serviceCredentialsDao.create(validCredentials);
+        validCredentials.setSavePassword(false);
+        result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
+        assertFalse("not the same with password in",validCredentials.equals(result));
+        validCredentials.setPlainTextPassword("");
+        assertEquals("the same with no password", validCredentials, result);
 
 
     }

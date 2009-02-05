@@ -31,8 +31,6 @@ public class XMPPUserId extends UserId {
     public XMPPUserId(ServiceCredentials credentials, UUID uuid, String userId, String nickname,
                       String firstName, String surName) {
         super(credentials, uuid, userId, nickname, firstName, surName);
-    	log.debug("created XMPPUserId for " + credentials.getUserId() + " pwl: "
-				+ credentials.getPlainTextPassword().length());
     }
 
     public static XMPPUserId createFromUserId(UserId user)

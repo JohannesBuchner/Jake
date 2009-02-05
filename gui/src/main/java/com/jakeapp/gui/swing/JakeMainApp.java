@@ -111,11 +111,11 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 
 		Map<String, String> backendCredentials = new HashMap<String, String>();
-		backendCredentials.put("frontendUsername", "swingGui");
-		backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
-		backendCredentials.put("backendHost", "127.0.0.1");
-		backendCredentials.put("backendPort", "5000");
-		backendCredentials.put("backendName", "defaultBackendServiceName");
+//		backendCredentials.put("frontendUsername", "swingGui");
+//		backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
+//		backendCredentials.put("backendHost", "127.0.0.1");
+//		backendCredentials.put("backendPort", "5000");
+//		backendCredentials.put("backendName", "defaultBackendServiceName");
 
 
 		try {
