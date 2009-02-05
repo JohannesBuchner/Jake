@@ -12,7 +12,7 @@ import com.jakeapp.jake.test.XmppTestEnvironment;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
-public class JakeCommanderXmppRuns extends JakeCommanderRuns {
+public class JakeCommanderXmppRuns extends TmpdirEnabledTestCase {
 
 	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
 			.getXmppId("testuser1"));
