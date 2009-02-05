@@ -3,9 +3,11 @@ SHELL="bash"
 MVN=mvn ${MVNEXTRAARGS}
 GUITYPE="swing"
 
-all: gui
+all: gui2
 
-start: gui
+start: gui2
+	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
+depstart: gui
 	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
 mockstart: gui2
 	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=yes
