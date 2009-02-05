@@ -90,10 +90,6 @@ public class HibernateProjectMemberDaoTest extends AbstractJUnit4SpringContextTe
         this.projectMemberDao = projectMemberDao;
     }
 
-
-    {
-    }
-
     @Before
     public void setUp() {
         log.debug("setup");
@@ -129,11 +125,6 @@ public class HibernateProjectMemberDaoTest extends AbstractJUnit4SpringContextTe
      */
     private void setTemplate(HibernateTemplate template) {
         this.template = template;
-    }
-
-    @Test
-    public void bla() {
-        // just to prevent InitializationError
     }
 
     @Transactional
@@ -209,5 +200,13 @@ public class HibernateProjectMemberDaoTest extends AbstractJUnit4SpringContextTe
         projectMemberDao.delete(project, member2);
     }
 
+
+    @Transactional
+    @Test
+    public void test_persistAndGet() throws NoSuchProjectMemberException {
+        projectMemberDao.persist(project, member1);
+        ProjectMember member = projectMemberDao.get(member1.getUserId());
+        assertEquals("storage works", member1, member);
+    }
 
 }
