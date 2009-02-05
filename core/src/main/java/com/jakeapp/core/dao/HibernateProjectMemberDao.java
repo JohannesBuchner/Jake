@@ -4,6 +4,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import org.apache.log4j.Logger;
+import org.hibernate.classic.Session;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,20 +25,30 @@ public class HibernateProjectMemberDao extends HibernateDaoSupport
 	 */
 	public ProjectMember persist(Project project, ProjectMember projectMember) {
 		// TODO various checks
+		log.debug("trying to persist " + projectMember.getUserId() + " in session "
+				+ getCurrentSession());
 
-		log.debug("transaction: " + this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction());
+		log.debug("transaction: " + getCurrentSession().getTransaction());
 
 
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().save(projectMember);
-
+		getCurrentSession().save(projectMember);
+		
 		return projectMember;
 	}
 
-	@Override
-	@SuppressWarnings({"Unchecked"})
-	public ProjectMember get(UUID memberId) throws NoSuchProjectMemberException {
+	private Session getCurrentSession() {
+		return this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+	}
 
-		List<ProjectMember> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public ProjectMember get(UUID memberId) throws NoSuchProjectMemberException {
+		log.debug("trying to fetch " + memberId + " in session "
+				+ getCurrentSession());
+		log.debug("query: "
+				+ getCurrentSession().createQuery(
+						"FROM ProjectMember WHERE memberId = ?").setString(0, memberId.toString()).getQueryString());
+		List<ProjectMember> results = getCurrentSession().
 				  createQuery("FROM ProjectMember WHERE memberId = ?").setString(0, memberId.toString()).list();
 
 		if (results == null)
@@ -62,7 +73,7 @@ public class HibernateProjectMemberDao extends HibernateDaoSupport
 	public List<ProjectMember> getAll(Project project) {
 		List<ProjectMember> results = new ArrayList<ProjectMember>();
 
-		results.addAll(this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+		results.addAll(getCurrentSession().
 				  createQuery("FROM ProjectMember").list());
 
 		return results;
@@ -77,7 +88,7 @@ public class HibernateProjectMemberDao extends HibernateDaoSupport
 
 		try {
 			log.debug("Deleting ProejctMember with ID " + projectMember.getUserId().toString());
-			this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(member);
+			getCurrentSession().delete(member);
 		}
 		catch (DataAccessException e) {
 			log.debug("catched DataAccessException meaning User does not exist");
