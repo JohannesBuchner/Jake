@@ -18,14 +18,14 @@ import java.util.concurrent.Semaphore;
  */
 public abstract class AvailableLaterObject<T> implements Runnable {
 
-	private T innercontent;
+	protected T innercontent;
 
-	private AvailabilityListener<T> listener;
+	protected AvailabilityListener<T> listener;
 
-	private Semaphore s = new Semaphore(0);
+	protected Semaphore s = new Semaphore(0);
 
 	/* server functions */
-	final protected void set(T o) {
+	protected void set(T o) {
 		this.innercontent = o;
 		getListener().finished(o);
 	}
@@ -40,7 +40,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 
 	public abstract T calculate() throws Exception;
 	
-	final public void run() {
+	public void run() {
 		try {
 			this.set(this.calculate());
 		} catch (Exception e) {
@@ -51,7 +51,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	/**
 	 * client function: get the result when done.
 	 */
-	final public T get() {
+	public T get() {
 		return innercontent;
 	}
 	
@@ -59,7 +59,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	 * client function: What should be called when done?
 	 * @param listener
 	 */
-	final public void setListener(AvailabilityListener<T> listener) {
+	public void setListener(AvailabilityListener<T> listener) {
 		this.listener = listener;
 		s.release();
 	}
@@ -81,7 +81,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	 * server function: access to the listener
 	 * @return
 	 */
-	final protected AvailabilityListener<T> getListener() {
+	protected AvailabilityListener<T> getListener() {
 		blockForListener();
 		return listener;
 	}

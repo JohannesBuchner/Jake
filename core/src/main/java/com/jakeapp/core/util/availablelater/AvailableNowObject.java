@@ -9,20 +9,33 @@ package com.jakeapp.core.util.availablelater;
  */
 public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 
-	private T tempcontent;
+	/* server functions */
+	protected void set(T o) {
+		this.innercontent = o;
+	}
+
+	public void run() {
+	}
 	
+	protected AvailabilityListener<T> getListener() {
+		return listener;
+	}
+
 	public AvailableNowObject(T content) {
-		this.tempcontent = content;
+		this.set(content);
 	}
 
 	@Override
 	public T calculate() {
-		return tempcontent;
+		return this.get();
 	}
 	
+	public void setListener(AvailabilityListener<T> listener) {
+		listener.finished(this.get());
+	}
+
 	@Override
 	public AvailableLaterObject<T> start() {
-		this.run();
 		return this;
 	}
 }
