@@ -146,7 +146,7 @@ public class AvailableLaterObjectTest {
 
 		AvailableLaterObject<Boolean> avl = AvailablesProvider.provideNow();
 		avl.setListener(new TracingListener<Boolean>(tracer));
-		Assert.assertTrue(tracer.await("done: true", 10, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("done: true", 100, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 
@@ -156,7 +156,7 @@ public class AvailableLaterObjectTest {
 
 		AvailableLaterObject<Boolean> avl = AvailablesProvider.provideLater();
 		avl.setListener(new TracingListener<Boolean>(tracer));
-		Assert.assertTrue(tracer.await("done: true", 10, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("done: true", 100, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 
@@ -166,7 +166,7 @@ public class AvailableLaterObjectTest {
 
 		AvailableLaterObject<Boolean> avl = AvailablesProvider.provideError();
 		avl.setListener(new TracingListener<Boolean>(tracer));
-		Assert.assertTrue(tracer.await("error: myerror", 10, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("error: myerror", 100, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 
@@ -176,7 +176,7 @@ public class AvailableLaterObjectTest {
 
 		AvailableLaterObject<Boolean> avl = AvailablesProvider.provideLaterError();
 		avl.setListener(new TracingListener<Boolean>(tracer));
-		Assert.assertTrue(tracer.await("error: null", 10, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("error: null", 100, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 
@@ -219,7 +219,7 @@ public class AvailableLaterObjectTest {
 		final Tracer tracer = new Tracer();
 		AvailableLaterObject<String> avl = AvailablesProvider.provideLaterWrap();
 		avl.setListener(new TracingListener<String>(tracer));
-		Assert.assertTrue(tracer.await("done: foobar", 10, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("done: foobar", 100, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 
@@ -244,7 +244,7 @@ public class AvailableLaterObjectTest {
 			}
 
 		});
-		Assert.assertTrue(tracer.await("Das ist das Haus vom Nikolaus", 10, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("Das ist das Haus vom Nikolaus", 100, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 }
