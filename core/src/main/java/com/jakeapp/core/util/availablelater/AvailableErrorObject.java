@@ -6,7 +6,7 @@ package com.jakeapp.core.util.availablelater;
  * fails with an exception before it can create an AvailableLaterObject.
  * @author christopher
  */
-public class AvailableErrorObject<T> extends AvailableLaterObject<T> {
+public class AvailableErrorObject<T> extends AvailableNowObject<T> {
 
 	private Exception exception;
 	
@@ -14,6 +14,7 @@ public class AvailableErrorObject<T> extends AvailableLaterObject<T> {
 	 * @param ex The error to report.
 	 */
 	public AvailableErrorObject(Exception ex) {
+		super(null);
 		this.setException(ex);
 	}
 
@@ -31,5 +32,9 @@ public class AvailableErrorObject<T> extends AvailableLaterObject<T> {
 
 	private Exception getException() {
 		return exception;
+	}
+	
+	public void setListener(AvailabilityListener<T> listener) {
+		listener.error(this.getException());
 	}
 }
