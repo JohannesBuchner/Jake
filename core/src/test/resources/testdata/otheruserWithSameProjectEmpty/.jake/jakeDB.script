@@ -9,6 +9,6 @@ GRANT DBA TO SA
 SET WRITE_DELAY 20
 SET SCHEMA PUBLIC
 -- note: edit next line to your path
-INSERT INTO PROJECT VALUES('06f048d6-d701-4dc2-9f84-13b7cae54c02',TRUE,TRUE,FALSE,0,'testproject1',TRUE,'testproject1',FALSE,NULL)
-INSERT INTO SERVICECREDENTIALS VALUES('3cb395f5-6399-421b-88b1-3eaebb7e4b6f',FALSE,FALSE,'testpasswd','XMPP','JakeApp',FALSE,'',0,'testuser1@localhost')
-INSERT INTO USERS VALUES('XMPP','3cb395f5-6399-421b-88b1-3eaebb7e4b6f','3cb395f5-6399-421b-88b1-3eaebb7e4b6f','','testuser1@localhost','','testuser1@localhost')
+INSERT INTO PROJECT VALUES('06f048d6-d701-4dc2-9f84-13b7cae54c02',TRUE,TRUE,FALSE,0,'testproject2',TRUE,'testproject2',FALSE,NULL)
+INSERT INTO SERVICECREDENTIALS VALUES('3cb395f5-6399-421b-88b1-3eaebb7e4b6f',FALSE,FALSE,'testpasswd','XMPP','JakeApp',FALSE,'',0,'testuser2@localhost')
+INSERT INTO USERS VALUES('XMPP','3cb395f5-6399-421b-88b1-3eaebb7e4b6f','3cb395f5-6399-421b-88b1-3eaebb7e4b6f','','testuser2@localhost','','testuser2@localhost')
