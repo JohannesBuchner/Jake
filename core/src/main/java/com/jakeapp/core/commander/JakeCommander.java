@@ -377,7 +377,7 @@ public class JakeCommander {
 				try {
 					System.out.println("listing projects:");
 					for (Project p : pms.getProjectList()) {
-						System.out.println(p);
+						System.out.println("\t" + p);
 					}
 					System.out.println("listing projects done");
 				} catch (Exception e) {
@@ -398,8 +398,12 @@ public class JakeCommander {
 				try {
 					System.out.println("opening project ...");
 					for (Project p : pms.getProjectList()) {
-						if (p.getRootPath().equals(projectFolder))
+						if (new File(p.getRootPath()).equals(projectFolder))
 							project = p;
+					}
+					if(project == null){
+						System.out.println("no such project");
+						return;
 					}
 					pms.openProject(project);
 					System.out.println("opening project done");
