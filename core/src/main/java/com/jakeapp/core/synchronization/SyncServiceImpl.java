@@ -106,7 +106,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * returns true if NoteObject <br>
 	 * returns false if FileObject
 	 */
-	Boolean isNoteObject(JakeObject jo) {
+	public Boolean isNoteObject(JakeObject jo) {
 		return jo instanceof NoteObject;
 	}
 
@@ -260,6 +260,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
+	@Transactional
 	public Iterable<FileObject> getPullableFileObjects(Project project) {
 		List<FileObject> missing = new LinkedList<FileObject>();
 		Iterable<FileObject> allJakeObjects = db.getLogEntryDao(project)
@@ -363,6 +364,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// TODO: fetch
 	}
 
+	@Transactional
 	private void deleteBecauseRemoteSaidSo(JakeObject jo)
 			  throws IllegalArgumentException, NoSuchJakeObjectException,
 			  FileNotFoundException {
@@ -406,6 +408,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * Do it once on start, and then use a listener
 	 */
 	@Override
+	@Transactional
 	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException {
 		IFSService fss = getFSS(p);
 
@@ -646,6 +649,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		}
 
 		@Override
+		@Transactional
 		public void onSuccess(AdditionalFileTransferData transfer) {
 			log.info("transfer for " + jo + " succeeded");
 			FileInputStream data;
@@ -786,6 +790,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
+	@Transactional
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
 		int uuidlen = UUID.randomUUID().toString().length();
 		UUID projectid = UUID.fromString(content.substring(0, uuidlen));
@@ -832,6 +837,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
+	@Transactional
 	public void getTags(JakeObject jo) {
 		db.getLogEntryDao(jo).getCurrentTags(jo);
 	}
