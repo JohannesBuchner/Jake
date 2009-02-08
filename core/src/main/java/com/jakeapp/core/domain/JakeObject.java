@@ -135,4 +135,8 @@ public abstract class JakeObject implements ILogable, Serializable {
         result = 31 * result + (modified ? 1 : 0);
         return result;
     }
+
+	public String toString() {
+		return "JakeObject:" + this.getUuid();
+	}
 }

@@ -70,8 +70,10 @@ public class FileObject extends JakeObject {
      * Get the absolute path.
      *
      * @return the absolute path to the file
+     * @deprecated the Sync interface should be used instead
      */
     @Transient
+    @Deprecated
     public File getAbsolutePath() {
         return this.absolutePath;
     }
@@ -79,6 +81,10 @@ public class FileObject extends JakeObject {
     // TODO: are there any constraints on the path, like forward- or backslash?
     // Yes there are and you shouldn't provide getAbsolutePath. That always has to flow
     // over the fss. 
+    /**
+     * @deprecated the Sync interface should be used instead
+     */
+    @Deprecated
     private void setRelPath(String relPath) {
         this.relPath = relPath;
         if(this.getProject() != null)
@@ -86,12 +92,16 @@ public class FileObject extends JakeObject {
                 relPath));
     }
 
+    /**
+     * @deprecated the Sync interface should be used instead
+     */
+    @Deprecated
     private void setAbsolutePath(File absolutePath) {
         this.absolutePath = absolutePath;
     }
 
     /**
-     * Returns the stored CheckSum of this file.
+     * Returns the stored Checksum of this file.
      *
      * @return the stored checksum, null if not calculated
      */
@@ -129,6 +139,8 @@ public class FileObject extends JakeObject {
         this.filesize = filesize;
     }
 
-
-    
+	public String toString() {
+		return "File [" + super.toString() + "]:" + getRelPath() + " size: " + getFilesize()
+				+ " checksum: " + getChecksum();
+	}
 }

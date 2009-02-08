@@ -6,38 +6,47 @@ import java.util.UUID;
 
 /**
  * A Representation of a Note. The note consists of a <code>uuid</code>, <code>
- * content</code> and is associated with one <code>Project</code>.
+ * content</code>
+ * and is associated with one <code>Project</code>.
  */
 @Entity(name = "note")
 public class NoteObject extends JakeObject {
+
 	private static final long serialVersionUID = -8838089386183264658L;
-    private String content;
 
-    private NoteObject(){}
+	private String content;
 
-    /**
-     * Construct a new <code>NoteObject</code> with the given params.
-     * @param uuid the <code>uuid</code> of the note
-     * @param project the associated <code>Project</code>
-     * @param content the content of the note
-     */
-    public NoteObject(UUID uuid, Project project, String content) {
-        super(uuid, project);
-        this.setContent(content);
-    }
+	private NoteObject() {
+	}
 
-    /**
-     * Get the content (text) of the note.
-     * @return the content of the note
-     */
-    @Column(name = "text", nullable = false)
-    public String getContent() {
-        return this.content;
-    }
+	/**
+	 * Construct a new <code>NoteObject</code> with the given params.
+	 * 
+	 * @param uuid
+	 *            the <code>uuid</code> of the note
+	 * @param project
+	 *            the associated <code>Project</code>
+	 * @param content
+	 *            the content of the note
+	 */
+	public NoteObject(UUID uuid, Project project, String content) {
+		super(uuid, project);
+		this.setContent(content);
+	}
 
-    public void setContent(String content) {
-	    this.content = content;
-    }
+	/**
+	 * Get the content (text) of the note.
+	 * 
+	 * @return the content of the note
+	 */
+	@Column(name = "text", nullable = false)
+	public String getContent() {
+		return this.content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	@Override
 	public int hashCode() {
@@ -63,6 +72,11 @@ public class NoteObject extends JakeObject {
 			return false;
 		return true;
 	}
-    
 
+	public String toString() {
+		String shortContent = content;
+		if (content.length() > 13)
+			shortContent = content.substring(0, 10) + "...";
+		return "Note [" + super.toString() + "]:" + shortContent;
+	}
 }
