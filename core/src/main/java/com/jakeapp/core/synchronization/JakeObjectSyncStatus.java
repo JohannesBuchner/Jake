@@ -1,5 +1,7 @@
 package com.jakeapp.core.synchronization;
 
+import com.jakeapp.core.domain.JakeObject;
+
 /**
  * struct for giving over to the gui
  * 
@@ -7,7 +9,7 @@ package com.jakeapp.core.synchronization;
  */
 public class JakeObjectSyncStatus {
 
-	private String filename;
+	private JakeObject jo;
 
 	private long lastModification;
 
@@ -31,10 +33,10 @@ public class JakeObjectSyncStatus {
 	 */
 	private boolean onlyRemote;
 
-	public JakeObjectSyncStatus(String filename, long lastModification, boolean locallyModified,
+	public JakeObjectSyncStatus(JakeObject jo, long lastModification, boolean locallyModified,
 			boolean remotelyModified, boolean onlyLocal, boolean onlyRemote) {
 		super();
-		this.filename = filename;
+		this.jo = jo;
 		this.lastModification = lastModification;
 		this.locallyModified = locallyModified;
 		this.remotelyModified = remotelyModified;
@@ -43,8 +45,8 @@ public class JakeObjectSyncStatus {
 	}
 
 
-	public String getFilename() {
-		return this.filename;
+	public JakeObject getJakeObject() {
+		return this.jo;
 	}
 
 
@@ -92,7 +94,7 @@ public class JakeObjectSyncStatus {
 
 
 	public String toString() {
-		return filename + " (modified:" + lastModification + ") locallyModified:" + locallyModified
+		return jo.toString() + " (modified:" + lastModification + ") locallyModified:" + locallyModified
 				+ " onlyLocal:" + onlyLocal + " onlyRemote:" + onlyRemote + " remotelyModified:"
 				+ remotelyModified;
 	}

@@ -272,32 +272,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId,
-																		 Project project, FileObject file) throws InvalidFilenameException, NotAReadableFileException, IOException {
-		ISyncService iss = this.getSyncService(sessionId);
-		IProjectsManagingService pms = this.getProjectsManagingService(sessionId);
-		IFSService fss = null;
-		try {
-			fss = pms.getFileServices(project);
-		} catch (ProjectNotLoadedException e) {
-			log.warn("error trying to get sync status for object " + file, e);
-			return null;
-//			throw new IOException(); // todo tmp
-		}
-
-
-		boolean locallyModified = !file.getChecksum().equals(fss.calculateHashOverFile(file.getRelPath())),
-				  remotelyModified = !iss.localIsNewest(file),
-				  onlyLocal = pms.isLocalJakeObject(file),
-				  onlyRemote = !iss.existsLocally(file);
-
-		return new JakeObjectSyncStatus(
-				  file.getAbsolutePath().toString(), fss.getLastModified(file.getRelPath()),
-				  locallyModified, remotelyModified, onlyLocal, onlyRemote
-		);
-	}
-
-	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
 			final boolean rememberPassword) {

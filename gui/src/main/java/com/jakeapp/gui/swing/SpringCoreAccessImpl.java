@@ -600,7 +600,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		try {
-			return this.getFrontendService().getJakeObjectSyncStatus(getSessionId(), project, file);
+			return this.getFrontendService().getSyncService(getSessionId()).getJakeObjectSyncStatus(project, file);
 		} catch (NotAFileException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FileNotFoundException e) {

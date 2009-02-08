@@ -152,17 +152,6 @@ public interface IFrontendService {
 	Collection<ServiceCredentials> getLastLogins();
 
 	/**
-	 * @return the synchronisation Status of a FileObject
-	 * @throws InvalidFilenameException
-	 * @throws NotAFileException
-	 * @throws NotAReadableFileException
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	JakeObjectSyncStatus getJakeObjectSyncStatus(String sessionId, Project project,
-																FileObject file) throws NotAFileException, InvalidFilenameException, FileNotFoundException, NotAReadableFileException, IOException;
-	
-	/**
 	 * Logs a Messageservice in
 	 * @param service
 	 * @param password

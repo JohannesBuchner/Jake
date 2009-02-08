@@ -196,29 +196,73 @@ public interface ISyncService {
 	void notifyInvitationRejected(Project project, UserId inviter);
 
 	/**
+	 * Gets the Tags for the object
 	 * @param jo
 	 */
 	void getTags(JakeObject jo);
 
+	/**
+	 * gets if the NoteObject was modified locally
+	 * @param noin
+	 * @return
+	 */
 	@Transactional
-	public Boolean isLocallyModified(NoteObject noin);
+	public Boolean isLocallyModified(NoteObject no);
 
+	/**
+	 * Finds out if the JakeObject exists or if it just happened to be alive at
+	 * some point in history
+	 * 
+	 * @param jo
+	 * @return
+	 */
 	@Transactional
 	public Boolean isDeleted(JakeObject jo);
 
+	/**
+	 * 
+	 * @param jo
+	 * @return
+	 * @throws InvalidFilenameException
+	 * @throws IOException
+	 */
 	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException,
 			  IOException;
 
+	/**
+	 * 
+	 * @param fo
+	 * @return
+	 * @throws IOException
+	 */
 	public Boolean existsLocally(FileObject fo) throws IOException;
 
+	/**
+	 * 
+	 * @param jo
+	 * @return
+	 */
 	public boolean isPullable(JakeObject jo);
 
-	public IMsgService getBackendMsgService(Project p);
+	/**
+	 * gets all Notes and their state
+	 * @param p
+	 * @return
+	 * @throws IOException
+	 */
+	Iterable<JakeObjectSyncStatus> getNotes(Project p) throws IOException;
 
-	public IStatusService getBackendStatusService(Project p);
-
-	public IUsersService getBackendUsersService(Project p);
-
-	public IFSService getBackendFSService(Project p);
+	/**
+	 * gets the SyncStatus for a specific FileObject
+	 * @param sessionId
+	 * @param p
+	 * @param fo
+	 * @return
+	 * @throws InvalidFilenameException
+	 * @throws NotAReadableFileException
+	 * @throws IOException
+	 */
+	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, FileObject fo)
+			throws InvalidFilenameException, NotAReadableFileException, IOException;
 
 }

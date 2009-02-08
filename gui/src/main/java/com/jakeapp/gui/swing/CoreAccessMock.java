@@ -530,14 +530,14 @@ public class CoreAccessMock implements ICoreAccess {
 		long moddate = file.getAbsolutePath().lastModified();
 
 		if (filename.contains("c")) {
-			return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), moddate, true, true, false, false);
+			return new JakeObjectSyncStatus(file, moddate, true, true, false, false);
 		}
 
 		if (filename.contains("e")) {
-			return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), moddate, false, false, false, false);
+			return new JakeObjectSyncStatus(file, moddate, false, false, false, false);
 		}
 
-		return new JakeObjectSyncStatus(file.getAbsolutePath().toString(), moddate, false, false, true, false);
+		return new JakeObjectSyncStatus(file, moddate, false, false, true, false);
 	}
 
 	private ArrayList<FileObject> recursiveFileObjectListHelper(Project p, File f, String relPath) {
