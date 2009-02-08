@@ -513,11 +513,11 @@ public class JakeCommander {
 			}
 			//frontend.getSyncService(sessionId).
 			for(NoteObject n : pms.getNoteManagingService().getNotes(project)){
-				System.out.println("Note: " + n);
+				System.out.println("\t" + n);
 			}
 			try {
-				for(JakeObjectSyncStatus n : frontend.getSyncService(sessionId).getFiles(project)){
-					System.out.println("File: " + n);
+				for(JakeObjectSyncStatus f : frontend.getSyncService(sessionId).getFiles(project)){
+					System.out.println("\t" + f);
 				}
 			} catch (FrontendNotLoggedInException e) {
 				e.printStackTrace();
