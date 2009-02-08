@@ -10,6 +10,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
+import com.jakeapp.jake.test.FSTestCommons;
+
 
 abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 
@@ -108,12 +110,12 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 		Assert.assertTrue("template " + templatedir.getAbsolutePath() + " doesn't exist.",
 				folderExists(templatedir));
 
-		File workdir = new File(tmpdir, "workdir");
-		Assert.assertTrue(workdir.mkdir());
-		copyFiles(templatedir, workdir, ".svn");
+		//File workdir = new File(tmpdir, "workdir");
+		//Assert.assertTrue(workdir.mkdir());
+		//copyFiles(templatedir, workdir, ".svn");
 
 		//String cwd = System.getProperty("user.dir");
-		System.setProperty("user.dir", workdir.getAbsolutePath());
+		//System.setProperty("user.dir", workdir.getAbsolutePath());
 		/*
 		// unfortunately, this doesn't work
 		//System.setProperty("user.dir", workdir.getAbsolutePath());
@@ -121,8 +123,15 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 		FSTestCommons.recursiveDelete(new File(".jake"));
 		File workdir = new File(".");
 		copyFiles(templatedir, workdir, ".svn");
-
 		 */
+		
+		// The brutal way
+		FSTestCommons.recursiveDelete(new File(".jake"));
+		File workdir = new File(".");
+		copyFiles(templatedir, workdir, ".svn");
+		
+		File dbdir = new File(".jake");
+		dbdir.mkdir();		
 		Assert.assertTrue(folderExists(".jake"));
 		log.info("Directory prepared with database template. ");
 	}

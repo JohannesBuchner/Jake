@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +19,9 @@ import com.jakeapp.core.commander.commandline.Command;
 import com.jakeapp.core.commander.commandline.LazyCommand;
 import com.jakeapp.core.commander.commandline.StoppableCmdManager;
 import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -25,8 +29,11 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
 /**
  * Test client accepting cli input
@@ -43,6 +50,8 @@ public class JakeCommander {
 	private IFrontendService frontend;
 
 	private IProjectsManagingService pms;
+
+	private IFriendlySyncService sync;
 
 	@SuppressWarnings("unchecked")
 	private MsgService msg;
@@ -90,6 +99,7 @@ public class JakeCommander {
 		try {
 			sessionId = frontend.authenticate(new HashMap<String, String>());
 			pms = frontend.getProjectsManagingService(sessionId);
+			sync = frontend.getSyncService(sessionId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -511,12 +521,11 @@ public class JakeCommander {
 				System.out.println("no project");
 				return;
 			}
-			//frontend.getSyncService(sessionId).
-			for(NoteObject n : pms.getNoteManagingService().getNotes(project)){
-				System.out.println("\t" + n);
-			}
 			try {
-				for(JakeObjectSyncStatus f : frontend.getSyncService(sessionId).getFiles(project)){
+				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
+					System.out.println("\t" + f);
+				}
+				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
 					System.out.println("\t" + f);
 				}
 			} catch (FrontendNotLoggedInException e) {
@@ -524,6 +533,63 @@ public class JakeCommander {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	};
+
+	class AnnounceCommand extends LazyCommand {
+
+		public AnnounceCommand() {
+			super("announce", "announce <UUID>", "needs Project");
+		}
+
+		@Override
+		public boolean handleArguments(String[] args) {
+			if (args.length != 1)
+				return false;
+			UUID uuid;
+			try {
+				uuid = UUID.fromString(args[1]);
+			} catch (IllegalArgumentException e) {
+				return false;
+			}
+			if (project == null) {
+				System.out.println("no project");
+				return true;
+			}
+			JakeObject jo = null;
+			try {
+				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
+					System.out.println("\t" + f);
+					if (uuid.equals(f.getJakeObject().getUuid()))
+						jo = f.getJakeObject();
+				}
+				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
+					System.out.println("\t" + f);
+					if (uuid.equals(f.getJakeObject().getUuid()))
+						jo = f.getJakeObject();
+				}
+			} catch (FrontendNotLoggedInException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (jo == null) {
+				System.out.println("JakeObject not found");
+				return true;
+			}
+
+			try {
+				System.out.println("announcing ... ");
+				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
+						new Date(), project, jo), "something new, something blue");
+				System.out.println("announcing done");
+			} catch (Exception e) {
+				System.out.println("announcing failed");
+				e.printStackTrace();
+				return true;
+			}
+
+			return true;
 		}
 	};
 

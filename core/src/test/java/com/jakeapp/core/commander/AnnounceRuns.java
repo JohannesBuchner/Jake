@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class AnnounceRuns extends TestDBEnabledTestCase {
 
-	private static final String project = "testproject1";;
+	private static final String project = "testproject1";
 
 	@Override
 	protected String getDbTemplateName() {
@@ -53,7 +53,7 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin testuser1@localhost mypw");
 		fifo.addLine("openProject " + project);
-		fifo.addLine("listObjects");
+		fifo.addLine("announce 00000000-0000-000b-0000-000000000001");
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");
 		new JakeCommander(fifo);
