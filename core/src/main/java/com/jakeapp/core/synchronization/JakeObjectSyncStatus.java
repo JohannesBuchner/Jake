@@ -2,10 +2,11 @@ package com.jakeapp.core.synchronization;
 
 /**
  * struct for giving over to the gui
- *
+ * 
  * @author johannes
  */
 public class JakeObjectSyncStatus {
+
 	private String filename;
 
 	private long lastModification;
@@ -30,9 +31,8 @@ public class JakeObjectSyncStatus {
 	 */
 	private boolean onlyRemote;
 
-	public JakeObjectSyncStatus(String filename, long lastModification,
-	                  boolean locallyModified, boolean remotelyModified,
-	                  boolean onlyLocal, boolean onlyRemote) {
+	public JakeObjectSyncStatus(String filename, long lastModification, boolean locallyModified,
+			boolean remotelyModified, boolean onlyLocal, boolean onlyRemote) {
 		super();
 		this.filename = filename;
 		this.lastModification = lastModification;
@@ -49,8 +49,8 @@ public class JakeObjectSyncStatus {
 
 
 	/**
-	 * Whether or not this file is in conflict (i.e. there is a local file and a remote file
-	 * that have both been modified)
+	 * Whether or not this file is in conflict (i.e. there is a local file and a
+	 * remote file that have both been modified)
 	 */
 	public boolean isInConflict() {
 		return this.locallyModified && this.remotelyModified;
@@ -89,4 +89,12 @@ public class JakeObjectSyncStatus {
 	public boolean isOnlyRemote() {
 		return onlyRemote;
 	}
+
+
+	public String toString() {
+		return filename + " (modified:" + lastModification + ") locallyModified:" + locallyModified
+				+ " onlyLocal:" + onlyLocal + " onlyRemote:" + onlyRemote + " remotelyModified:"
+				+ remotelyModified;
+	}
+
 }
