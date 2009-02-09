@@ -244,7 +244,7 @@ public class AvailableLaterObjectTest {
 			}
 
 		});
-		Assert.assertTrue(tracer.await("Das ist das Haus vom Nikolaus", 100, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(tracer.await("Das ist das Haus vom Nikolaus", 500, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 	}
 }
