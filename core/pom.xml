@@ -150,7 +150,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.jakeapp.core.Jake</mainClass>
+                    <mainClass>com.jakeapp.core.commander.JakeCommander</mainClass>
                     <arguments>
                     </arguments>
                     <systemProperties>

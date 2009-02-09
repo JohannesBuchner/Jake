@@ -22,5 +22,7 @@
                          type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
+    <bean id="xmppServiceHolder" class="com.jakeapp.core.integration.XMPPICServiceHolder" />
+
 
 </beans>
