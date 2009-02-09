@@ -46,7 +46,7 @@ public class ApplicationContextFactoryTest {
 		Assert.assertNotNull(context);
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 2000)
 	public void getApplicationContext_getTwoDifferentContexts() {
 		ApplicationContext context1 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
 		ApplicationContext context2 = factory.getApplicationContext(UUID.fromString(PROJECT_2.getProjectId()));
