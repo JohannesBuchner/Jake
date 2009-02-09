@@ -13,6 +13,9 @@ mockstart: gui2
 	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=yes
 
 
+console: 
+	cd commander; ${MVN} exec:java
+
 gui2: 
 	mvn -Dmaven.test.skip=true install
 
