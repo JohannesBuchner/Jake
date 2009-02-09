@@ -1,4 +1,4 @@
-package com.jakeapp.core.commander;
+package com.jakeapp.gui.console;
 
 
 import java.io.File;
@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jakeapp.jake.test.FSTestCommons;
+import com.jakeapp.gui.console.JakeCommander;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.jakeapp.core.commander;
+package com.jakeapp.gui.console;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,10 +15,10 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.jakeapp.core.commander.commandline.CmdManager;
-import com.jakeapp.core.commander.commandline.Command;
-import com.jakeapp.core.commander.commandline.LazyCommand;
-import com.jakeapp.core.commander.commandline.StoppableCmdManager;
+import com.jakeapp.gui.console.commandline.CmdManager;
+import com.jakeapp.gui.console.commandline.Command;
+import com.jakeapp.gui.console.commandline.LazyCommand;
+import com.jakeapp.gui.console.commandline.StoppableCmdManager;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
@@ -33,8 +33,6 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
 /**
  * Test client accepting cli input

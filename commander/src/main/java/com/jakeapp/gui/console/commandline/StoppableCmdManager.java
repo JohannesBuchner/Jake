@@ -1,4 +1,4 @@
-package com.jakeapp.core.commander.commandline;
+package com.jakeapp.gui.console.commandline;
 
 
 public class StoppableCmdManager {

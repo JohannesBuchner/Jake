@@ -1,11 +1,10 @@
-package com.jakeapp.core.commander;
+package com.jakeapp.gui.console;
 
 import java.io.File;
 import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

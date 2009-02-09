@@ -1,4 +1,4 @@
-package com.jakeapp.core.commander;
+package com.jakeapp.gui.console;
 
 import java.io.File;
 
@@ -12,6 +12,7 @@ import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.XmppTestEnvironment;
+import com.jakeapp.gui.console.JakeCommander;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)

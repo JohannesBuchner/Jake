@@ -1,4 +1,4 @@
-package com.jakeapp.core.commander;
+package com.jakeapp.gui.console;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -15,7 +15,8 @@
 		<module>ics-xmpp</module>
 		<module>gui</module>
 		<module>fss</module>
-	</modules>
+        <module>commander</module>
+    </modules>
 	<developers>
 		<developer>
 			<id>chris</id>
@@ -85,6 +86,9 @@
 		<developerConnection>scm:svn://svn.jakeapp.com/trunk/</developerConnection>
 	</scm>
 	<build>
+
+
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -190,4 +194,7 @@
 		<jmock.version>2.5.1</jmock.version>
 		<hsqldb.version>1.8.0.1</hsqldb.version>
 	</properties>
+
+
+
 </project>

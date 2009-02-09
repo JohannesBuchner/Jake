@@ -156,10 +156,9 @@ public interface IFrontendService {
 	 * @param service
 	 * @param password
 	 * @param rememberPassword
-	 * @param listener
 	 * @return
 	 * @internally throws Exception 
 	 */
-	AvailableLaterObject<Boolean> login(String session,MsgService service, String password,
+	AvailableLaterObject<Boolean> login(String session, MsgService service, String password,
 			boolean rememberPassword);
 }

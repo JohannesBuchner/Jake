@@ -1,10 +1,11 @@
-package com.jakeapp.core.commander;
+package com.jakeapp.gui.console;
 
 import java.io.File;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import com.jakeapp.gui.console.JakeCommander;
 
 
 public class AnnounceRuns extends TestDBEnabledTestCase {
