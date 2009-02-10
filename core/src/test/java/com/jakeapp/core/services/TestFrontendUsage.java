@@ -1,4 +1,4 @@
-package com.jakeapp.gui.console;
+package com.jakeapp.core.services;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,9 +16,10 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.jake.test.FSTestCommons;
+import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 
 
-public class TestFrontend extends TmpdirEnabledTestCase {
+public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	private IFrontendService frontend;
 

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jakeapp.jake.test.FSTestCommons;
+import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 import com.jakeapp.gui.console.JakeCommander;
 
 

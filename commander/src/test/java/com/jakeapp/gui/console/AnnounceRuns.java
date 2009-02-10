@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.jakeapp.gui.console.JakeCommander;
+import com.jakeapp.jake.test.TestDBEnabledTestCase;
 
 
 public class AnnounceRuns extends TestDBEnabledTestCase {

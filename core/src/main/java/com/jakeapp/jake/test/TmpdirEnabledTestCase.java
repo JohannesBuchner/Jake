@@ -1,4 +1,4 @@
-package com.jakeapp.gui.console;
+package com.jakeapp.jake.test;
 
 import java.io.File;
 
