@@ -9,7 +9,6 @@ import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -175,7 +174,7 @@ public class JakeCommander {
 	class CreateAccountCommand extends LazyAvailabilityCommand<Void> {
 
 		public CreateAccountCommand() {
-			super("createAccount", "createAccount <xmppid> <password>", "Creates a new Account on a Jabber Server and stores it in the DB.");
+			super("createAccount", "createAccount <xmppid> <password>", "provides a MsgService");
 		}
 
 		@Override
@@ -188,7 +187,7 @@ public class JakeCommander {
 			cred.setProtocol(ProtocolType.XMPP);
 			try {
 				frontend.createAccount(sessionId, cred).setListener(this);
-//				System.out.println("got the MsgService");
+				System.out.println("got the MsgService");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -212,10 +211,10 @@ public class JakeCommander {
 
 	};
 
-	class AddAccountCommand extends LazyCommand {
+	class CoreLoginCommand extends LazyCommand {
 
-		public AddAccountCommand() {
-			super("addAccount", "addAccount <xmppid> <password>", "Adds an _existing_ jabber Account to Jakes database.");
+		public CoreLoginCommand() {
+			super("coreLogin", "coreLogin <xmppid> <password>", "provides a MsgService");
 		}
 
 		@Override
@@ -228,9 +227,8 @@ public class JakeCommander {
 			ServiceCredentials cred = new ServiceCredentials(id, password);
 			cred.setProtocol(ProtocolType.XMPP);
 			try {
-				frontend.addAccount(sessionId, cred);
-                System.out.println("Adding succeeded. Please login with: ");
-                System.out.println("login "+ cred.getUserId() );
+				msg = frontend.addAccount(sessionId, cred);
+				System.out.println("got the MsgService");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -238,245 +236,65 @@ public class JakeCommander {
 		}
 	};
 
+	class CoreLogoutCommand extends LazyNoParamsCommand {
 
-
-
-    class ListAccountsCommand extends LazyCommand
-    {
-         public ListAccountsCommand()
-         {
-             super("listAccounts", "listAccounts", "returns a list of available accounts to work with.");
-         }
-
-
-        @Override
-        public boolean handleArguments(String[] args) {
-
-            List<MsgService> services = frontend.getMsgServices(sessionId);
-            if(services.size() > 0)
-            {
-                System.out.println("The following accounts currently exist: ");
-                int x = 0;
-                String userid;
-                boolean saved;
-                for(MsgService service : services)
-                {
-                    userid = service.getUserId().toString();
-                    saved = service.isPasswordSaved();
-
-                    System.out.printf("%d. %s [%s] \n",
-                            x, userid,  ((saved)?"[Password SAVED]" : "[Password NOT SAVED]" )
-                    );
-
-                    x++;
-                }                            
-            }
-
-            return true;
-        }
-
-    }
-
-    class LoginCommand extends LazyCommand {
-
-		public LoginCommand() {
-			super("login", "login <xmppid> [<password> [savePassword 0/1] ", "Logs in to an account & provides a MsgService");
+		public CoreLogoutCommand() {
+			super("coreLogout", "removes the MsgService");
 		}
 
 		@Override
-		public boolean handleArguments(String[] args) {
-			if (args.length < 2)
-				return false;
-
-			String id;
-            String password = "";
-            boolean savePass = false;
-            MsgService matching = null;
-
-            id = args[1];
-            if(args.length >= 3) {
-                password = args[2];
-            }
-
-            if(args.length >= 4) {
-                savePass = args[3].equals("1");
-            }
-            List<MsgService> services = frontend.getMsgServices(sessionId);
-
-            for(MsgService service : services)
-            {
-                System.out.println("checking " + service.getUserId().getUserId());
-                if(service.getUserId().getUserId().equals(id))
-                {
-                    matching = service;
-                    break;
-                }
-            }
-
-            if(matching == null)
-            {
-                System.out.println("No Account with that name found");
-                return false;
-            }
-
-            ServiceCredentials cred;
-            boolean success;
-            if(!password.isEmpty())
-            {
-                cred = new ServiceCredentials(id, password);
-                cred.setSavePassword(savePass);
-                matching.setServiceCredentials(cred);
-                matching.setServiceCredentials(cred);
-
-                try {
-                    System.out.println("Found an account and try to login with provided credentials");
-                    success = matching.login();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-            else
-            {
-                try
-                {
-                    if(!matching.isPasswordSaved())
-                    {
-                        System.out.println("No password saved for that account an none given");
-                        return false;
-                    }
-                    System.out.println("Found an account and try to login with saved credentials. ");
-                    success = matching.login();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-
-
-            msg = matching;
-            if(success)
-            {
-                System.out.println("Successfully logged in on the message service. " +
-                        "You can now use all activities available when being online");
-            }
-            else
-            {
-                System.out.println("Failed to login on the message service. " +
-                        "We stored the MsgService so you can create projects, but you will not be able to " +
-                        "use online features");
-            }
-            return true;
-
-
+		public void handleArguments() {
+			try {
+				frontend.logout(sessionId);
+				msg = null;
+				System.out.println("MsgService deleted");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	};
-    
 
+	class LoginCommand extends LazyNoParamsCommand {
+
+		public LoginCommand() {
+			super("login", "needs a MsgService");
+		}
+
+		@Override
+		public void handleArguments() {
+			if (msg == null) {
+				System.out.println("do a coreLogin first");
+			}
+			try {
+				if (msg.login()) {
+					System.out.println("logged in");
+				} else {
+					System.out.println("login returned false");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
 
 	class LogoutCommand extends LazyNoParamsCommand {
 
 		public LogoutCommand() {
-			super("logout", "Logout from the MsgService & removes it.");
+			super("logout", "needs a MsgService");
 		}
 
 		@Override
 		public void handleArguments() {
 			try {
-                if(msg != null)
-                    msg.logout();
-
-                msg = null;
-
-				frontend.logout(sessionId);
-
-				System.out.println("MsgService logged out and deleted;");
+				System.out.println("logging out ...");
+				msg.logout();
+				System.out.println("logging out done");
 			} catch (Exception e) {
+				System.out.println("logging out failed");
 				e.printStackTrace();
 			}
 		}
 	};
-
-
-    class CoreAttachCommand extends LazyNoParamsCommand {
-
-		public CoreAttachCommand() {
-			super("coreAttach", "Attaches to the core. (Instantiate and authenticate)");
-		}
-
-		@Override
-		public void handleArguments() {
-			try {
-                startupCore();
-				System.out.println("Core started up.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	};
-
-
-    class CoreDetachCommand extends LazyNoParamsCommand {
-
-		public CoreDetachCommand() {
-			super("coreDetach", "Remvoes the MsgService and detaches from the core (destroy session).");
-		}
-
-		@Override
-		public void handleArguments() {
-			try {
-                msg = null;
-				frontend.logout(sessionId);
-				System.out.println("MsgService deleted; Detached from core.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	};
-
-
-// please don't do it that way   
-//	class LoginCommand extends LazyNoParamsCommand {
-//
-//		public LoginCommand() {
-//			super("login", "needs a MsgService");
-//		}
-//
-//		@Override
-//		public void handleArguments() {
-//			if (msg == null) {
-//				System.out.println("do a coreLogin first");
-//			}
-//			try {
-//				if (msg.login()) {
-//					System.out.println("logged in");
-//				} else {
-//					System.out.println("login returned false");
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	};
-
-//	class LogoutCommand extends LazyNoParamsCommand {
-//
-//		public LogoutCommand() {
-//			super("LogoutCommand", "needs a MsgService");
-//		}
-//
-//		@Override
-//		public void handleArguments() {
-//			try {
-//				System.out.println("logging out ...");
-//				msg.logout();
-//				System.out.println("logging out done");
-//			} catch (Exception e) {
-//				System.out.println("logging out failed");
-//				e.printStackTrace();
-//			}
-//		}
-//	};
 
 	class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
@@ -494,13 +312,7 @@ public class JakeCommander {
 				System.out.println("creating project ...");
 				project = pms.createProject(projectFolder.getName(), projectFolder
 						.getAbsolutePath(), msg);
-
-// this is not required, when creating a project with
-// an assigned msgService. The method "assignUserToProject 
-// should only be used when the project is created without a msgService!
-
-//				pms.assignUserToProject(project, msg.getUserId());
-
+				pms.assignUserToProject(project, msg.getUserId());
 
 				System.out.println("creating project done");
 			} catch (Exception e) {
