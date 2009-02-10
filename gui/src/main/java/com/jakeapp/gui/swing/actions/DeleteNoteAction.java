@@ -80,7 +80,7 @@ public class DeleteNoteAction extends NoteAction {
 				text = map.getString("confirmDeleteLockedNotes.text");
 			} else {
 				log.debug("no file is locked or locked by the local user");
-				text = map.getString("conformDeleteNotes.text");
+				text = map.getString("confirmDeleteNotes.text");
 			}
 		}
 		
