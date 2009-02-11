@@ -12,7 +12,6 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.XMPPUserId;
 import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.util.ApplicationContextFactory;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 

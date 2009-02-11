@@ -14,6 +14,7 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.UserTranslator;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
@@ -30,14 +31,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-public class ProjectsManagingServiceImpl implements IProjectsManagingService {
+public class ProjectsManagingServiceImpl extends JakeService implements IProjectsManagingService {
 
 	private static final Logger log = Logger
 			  .getLogger(ProjectsManagingServiceImpl.class);
 
 	//private List<Project> projectList = new ArrayList<Project>();
-
-	private ProjectApplicationContextFactory applicationContextFactory;
 
 	private IProjectDao projectDao;
 
@@ -45,13 +44,12 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	private IProjectsFileServices projectsFileServices;
 
-
 	private INoteManagingService noteManagingService;
 
 	private MsgService messageService;
 
-	public ProjectsManagingServiceImpl() {
-
+	public ProjectsManagingServiceImpl(ProjectApplicationContextFactory applicationContextFactory, IUserIdDao userIdDao) {
+		super(applicationContextFactory,userIdDao);
 	}
 
 	public IFriendlySyncService getSyncService() {
@@ -74,15 +72,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		this.projectDao = projectDao;
 	}
 
-	public ProjectApplicationContextFactory getApplicationContextFactory() {
-		return applicationContextFactory;
-	}
-
-	public void setApplicationContextFactory(
-			  ProjectApplicationContextFactory applicationContextFactory) {
-		this.applicationContextFactory = applicationContextFactory;
-	}
-
 	@Override
 	public IFSService getFileServices(Project p) throws ProjectNotLoadedException {
 		IFSService result = null;
@@ -95,7 +84,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 			ex = pnle;
 		}
 
-		//FIXMgetProjectE prevents some ugly Exceptions - remove after release
+		//FIXME getProject prevents some ugly Exceptions - remove after release
 		if (result == null) {
 			if (p.isOpen()) result = this.getProjectsFileServices().startProject(p);
 			else throw ex;
@@ -257,7 +246,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * @param project
 	 */
 	private void attachTestNotes(Project project) {
-		INoteObjectDao noteObjectDao = this.applicationContextFactory.getNoteObjectDao(project);
+		INoteObjectDao noteObjectDao = this.getApplicationContextFactory().getNoteObjectDao(project);
 		List<NoteObject> notesList = new ArrayList<NoteObject>();
 
 
@@ -297,7 +286,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 		log.info("Create project database: " + p);
 
 		// this should to all the magic
-		this.applicationContextFactory.getApplicationContext(p);
+		this.getApplicationContextFactory().getApplicationContext(p);
 	}
 
 
@@ -547,8 +536,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	 * Adds a new Projectmember to a Project. It may not exist in the Project
 	 * yet.
 	 *
-	 * @param project Project to add a member to. May not be null.
-	 * @param userId  Member to add. May not be null.
+	 * @param project Project to add a member to. Must not be null.
+	 * @param userId  Member to add. Must not be null.
 	 */
 	@Transactional
 	private ProjectMember addProjectMember(Project project, UserId userId) {
@@ -675,7 +664,7 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	@Override
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
-		return new AllProjectFilesFuture(applicationContextFactory, project);
+		return new AllProjectFilesFuture(getApplicationContextFactory(), project);
 	}
 
 	@Override
@@ -800,8 +789,8 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 
 	@Override
 	public String getProjectMemberID(Project project, ProjectMember pm) {
-		//TODO it is completely unclear how to do that!! Dominik, please help us!
-		return "";
+		//FIXME toString is possibly too simple
+		return new UserTranslator(this.getApplicationContextFactory(), this.getUserIdDao()).getUserIdFromProjectMember(project,pm).toString();
 	}
 
 
@@ -838,27 +827,6 @@ public class ProjectsManagingServiceImpl implements IProjectsManagingService {
 	public void updateProjectMember(Project project, ProjectMember member) {
 		this.getProjectMemberDao(project).persist(project, member);
 
-	}
-
-	@Override
-	@Transactional
-	public boolean isLocalJakeObject(JakeObject jo) {
-		boolean result = false;
-
-		try {
-			// log.debug("Checking isLocalJakeObject for jo " + jo + " with project " + jo.getProject());
-
-
-			this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
-		} catch (NoSuchLogEntryException e) {
-			/*
-																								* There is no Logentry for this note. Therefore it has never been
-																								* announced and is only local.
-																								*/
-			result = true;
-		}
-
-		return result;
 	}
 
 	@Override

@@ -3,23 +3,29 @@ package com.jakeapp.core.services;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
-import java.util.ArrayList;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.core.dao.IUserIdDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.synchronization.UserTranslator;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 
-public class NoteManagingService implements INoteManagingService {
+public class NoteManagingService extends JakeService implements INoteManagingService {
 
-    private ProjectApplicationContextFactory applicationContextFactory;
-
-    public NoteManagingService(ProjectApplicationContextFactory applicationContextFactory)
+    public NoteManagingService(ProjectApplicationContextFactory applicationContextFactory, IUserIdDao userIdDao)
     {
-        this.applicationContextFactory = applicationContextFactory;
+    	super(applicationContextFactory,userIdDao);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class NoteManagingService implements INoteManagingService {
 //        return notesList;
 //        try
 //        {
-            return this.applicationContextFactory.getNoteObjectDao(project).getAll();
+            return this.getApplicationContextFactory().getNoteObjectDao(project).getAll();
 //        }
 //		return this.getDao().getAll();
 	}
@@ -52,29 +58,8 @@ public class NoteManagingService implements INoteManagingService {
 	@Transactional
 	public void addNote(NoteObject note) {
         Project project = note.getProject();
-        this.applicationContextFactory.getNoteObjectDao(project).persist(note);
-//		this.getDao().persist(note);
+        this.getApplicationContextFactory().getNoteObjectDao(project).persist(note);
 	}
-
-
-    @Transactional
-    public boolean isLocalJakeObject(JakeObject jo) {
-        // TODO THIS IS DUPLICATED CODE FROM ProjectsManagingServiceImpl. remove/refactor when possible!
-        boolean result = false;
-
-        try {
-            this.applicationContextFactory.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
-//            this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
-        } catch (NoSuchLogEntryException e) {
-            /*
-                * There is not Logentry for this note. Therefore it has never been
-                * announced and is only local.
-                */
-            result = true;
-        }
-
-        return result;
-    }
 
 	@Override
 	@Transactional
@@ -82,14 +67,20 @@ public class NoteManagingService implements INoteManagingService {
 		Project project = note.getProject();
 
 
-
         LogEntry <? extends ILogable> logEntry = null;
 		
 		//If note is local - announce deletion
 		if (this.isLocalJakeObject(note)) {
-
-			//FIXME: fetch real member
-			ProjectMember member = new ProjectMember(UUID.randomUUID(), "Chuck Norris", TrustState.TRUST);
+			//fetch real member
+			ProjectMember member = null;
+			try {
+				member = new UserTranslator(this.getApplicationContextFactory(), getUserIdDao()).getProjectMemberFromUserId(project,project.getUserId());
+			} catch (IllegalArgumentException e) {
+				throw new NoSuchJakeObjectException(e);
+			} catch (NoSuchProjectMemberException e) {
+				throw new NoSuchJakeObjectException(e);
+			}
+				
 			
 			logEntry = new LogEntry<NoteObject>(
 				UUID.randomUUID(),
@@ -99,10 +90,10 @@ public class NoteManagingService implements INoteManagingService {
 				note,
 				member
 			);
-			this.applicationContextFactory.getLogEntryDao(project).create(logEntry);
+			this.getApplicationContextFactory().getLogEntryDao(project).create(logEntry);
 //			this.getLogEntryDao().create(logEntry);
 		}
-        this.applicationContextFactory.getNoteObjectDao(project).delete(note);
+        this.getApplicationContextFactory().getNoteObjectDao(project).delete(note);
 		//Delete note from db
 //		this.getDao().delete(note);
 	}
@@ -111,7 +102,7 @@ public class NoteManagingService implements INoteManagingService {
 	@Transactional
 	public void saveNote(NoteObject note) {
         Project project = note.getProject();
-        this.applicationContextFactory.getNoteObjectDao(project).persist(note);
+        this.getApplicationContextFactory().getNoteObjectDao(project).persist(note);
 //		this.getDao().persist(note);
 	}
 }
