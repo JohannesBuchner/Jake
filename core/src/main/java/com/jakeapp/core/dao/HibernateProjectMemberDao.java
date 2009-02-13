@@ -93,9 +93,7 @@ public class HibernateProjectMemberDao extends HibernateDaoSupport
 		catch (DataAccessException e) {
 			log.debug("catched DataAccessException meaning User does not exist");
 			throw new NoSuchProjectMemberException(e.getMessage());
-			// TODO throw exception
 		}
-		//TODO
 	}
 
 

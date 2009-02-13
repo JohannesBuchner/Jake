@@ -9,16 +9,17 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
 public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObject<Void> {
 	private JakeObject jo;
+	private String commitMessage;
 
-	public AnnounceJakeObjectWorker(JakeObject jo) {
+	public AnnounceJakeObjectWorker(JakeObject jo, String commitMessage) {
 		this.jo = jo;
+		this.commitMessage = commitMessage;
 	}
 
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
-		// TODO: Commit Messages?
 		try {
-			return JakeMainApp.getCore().announceJakeObject(jo, "");
+			return JakeMainApp.getCore().announceJakeObject(jo, commitMessage);
 		} catch (SyncException e) {
 			return new AvailableErrorObject<Void>(e);
 		}

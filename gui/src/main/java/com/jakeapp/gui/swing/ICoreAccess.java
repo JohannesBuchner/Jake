@@ -237,9 +237,7 @@ public interface ICoreAccess {
 	 * @param member
 	 * @return
 	 */
-	// TODO: does this work?
-	// TODO: how can i get the first/surname from a projectmember?
-	//public MsgService getMsgService(ProjectMember member);
+	public MsgService getMsgService(ProjectMember member);
 
 
 	/******************* Project functions ********************/

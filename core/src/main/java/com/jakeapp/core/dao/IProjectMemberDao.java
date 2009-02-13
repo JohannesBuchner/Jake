@@ -30,9 +30,9 @@ public interface IProjectMemberDao {
 
 
     /**
-     * Gets a <code>ProjectMember</code> be specifing his <code>memberId</code>.
-     * @param memberId // TODO
-     * @return // TODO
+     * Gets a <code>ProjectMember</code> by specifing his <code>memberId</code>.
+     * @param memberId the key to look up in the database
+     * @return A ProjectMember to the corresponding UUID.
      * @throws NoSuchProjectMemberException if no <code>ProjectMember</code> is found
      */
     public ProjectMember get(final UUID memberId) throws NoSuchProjectMemberException;

@@ -1452,6 +1452,20 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @return <code>true</code> iff the member is online.
 	 */
 	public boolean isOnline(ProjectMember member) {
+		//TODO implement
 		return false;
+	}
+
+	@Override
+	public MsgService getMsgService(ProjectMember member) {
+		List<MsgService> services;
+		
+		services = this.frontendService.getMsgServices(this.sessionId);
+		
+		for (MsgService s : services)
+		    if (member.getUserId().equals(s.getUserId().getUuid()))
+			    return s;
+		
+		return null;
 	}
 }

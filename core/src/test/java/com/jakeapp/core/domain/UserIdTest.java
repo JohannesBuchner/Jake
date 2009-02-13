@@ -3,7 +3,6 @@ package com.jakeapp.core.domain;
 import org.junit.Test;
 
 /**
- * TODO: Fill in purpose of this file
  * User: Dominik
  * Date: Dec 10, 2008
  * Time: 6:46:28 PM

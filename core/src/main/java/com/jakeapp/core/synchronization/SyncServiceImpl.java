@@ -338,11 +338,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 			try {
 				deleteBecauseRemoteSaidSo(jo);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new IllegalArgumentException(e);
 			} catch (NoSuchJakeObjectException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new IllegalArgumentException(e);
 			}
 			return;
 		}
@@ -455,10 +453,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 				existsLocal = true;
 				fo = new FileObject(null, p, f);
 			}
-			boolean existsRemote = false; // TODO: is in log?
-			boolean inConflict = false;
-			boolean locallyModified = false; // TODO: isLocallyModified(fo);
 			try {
+				boolean existsRemote = false; // TODO: is in log?
+				boolean inConflict = false;
+				boolean locallyModified = this.isLocallyModified(fo);
+			
 				// FIXME: FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX ME FIX
 				// ME FIX ME
 				// This should contain the correct values
@@ -485,7 +484,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 			boolean existsLocal = true; // always the case
 			boolean existsRemote = false; // TODO
 			boolean inConflict = false;
-			boolean locallyModified = false; // TODO: isLocallyModified(fo);
+			boolean locallyModified = isLocallyModified(no);
 			// TODO
 			// This should contain the correct values
 			stat.add(new JakeObjectSyncStatus(no, 0, locallyModified, false, false, false));

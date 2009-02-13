@@ -639,7 +639,6 @@ public class CoreAccessMock implements ICoreAccess {
 		if (!peopleProjectMap.containsKey(project)) {
 			List<ProjectMember> people = new ArrayList<ProjectMember>();
 
-			// TODO: fix
 			people.add(new ProjectMember(new UUID(11, 22), "Nickname", TrustState.AUTO_ADD_REMOVE));
 
 
@@ -654,7 +653,6 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public boolean setPeopleNickname(Project project, ProjectMember pm, String nick) {
-		// TODO: ignore this and create a regex for checking!
 		if (nick.indexOf("<") != -1) {
 			return false;
 		} else {
@@ -1018,5 +1016,21 @@ public class CoreAccessMock implements ICoreAccess {
 	public boolean isOnline(ProjectMember member) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public MsgService getMsgService(ProjectMember member) {
+		
+		MsgService m = null;
+		try {
+			m = addAccount(new ServiceCredentials("User", "Pass"));
+		} catch (InvalidCredentialsException e) {
+			e.printStackTrace();
+		} catch (ProtocolNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		return m;
 	}
 }

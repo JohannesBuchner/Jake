@@ -78,7 +78,7 @@ public class FileObject extends JakeObject {
         return this.absolutePath;
     }
 
-    // TODO: are there any constraints on the path, like forward- or backslash?
+    // are there any constraints on the path, like forward- or backslash?
     // Yes there are and you shouldn't provide getAbsolutePath. That always has to flow
     // over the fss. 
     /**

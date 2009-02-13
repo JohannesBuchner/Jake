@@ -793,26 +793,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return new UserTranslator(this.getApplicationContextFactory(), this.getUserIdDao()).getUserIdFromProjectMember(project,pm).toString();
 	}
 
-
-//    @Override
-//    public INoteManagingService getNoteManagingService() {
-//
-//
-//        INoteObjectDao dao;
-//
-//        // preconditions
-//        if (p == null)
-//            throw new IllegalArgumentException();
-//        if (!this.isProjectLoaded(p)) {
-//            throw new ProjectNotLoadedException("Project with id "
-//                    + p.getProjectId() + " is not loaded");
-//        }
-//
-//        //TODO cache
-//        return new NoteManagingService(this, this.getNoteObjectDao(p), this.getLogEntryDao(p));
-//    }
-
-
 	@Override
 	@Transactional
 	public List<ProjectMember> getProjectMembers(Project project) throws NoSuchProjectException {

@@ -18,14 +18,6 @@ import java.io.BufferedInputStream;
 import java.util.Scanner;
 import java.net.URL;
 
-/**
- * TODO: Fill in purpose of this file
- * User: Dominik
- * Date: Dec 11, 2008
- * Time: 3:02:42 AM
- * Module: ${MAVEN-MODULE-NAME}
- * Version: ${MAVEN-VERSION}
- */
 public class MultipleDatabaseTest {
     private static Logger log = Logger.getLogger(MultipleDatabaseTest.class);
 

@@ -13,7 +13,7 @@ public class ProjectsManagingServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		ApplicationContextFactory appc;
-		service = new ProjectsManagingServiceImpl(null);
+		service = new ProjectsManagingServiceImpl(null, null);
 		//TODO add dao
 		//((ProjectsManagingServiceImpl) service).setProjectDao(null); 
 	}

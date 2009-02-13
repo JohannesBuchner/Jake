@@ -18,12 +18,10 @@ import java.io.BufferedInputStream;
 import com.jakeapp.core.domain.Project;
 
 /**
- * TODO: Fill in purpose of this file
- * User: Dominik
- * Date: Dec 11, 2008
- * Time: 3:05:44 AM
- * Module: ${MAVEN-MODULE-NAME}
- * Version: ${MAVEN-VERSION}
+ * Datasource specific to a Project.
+ * @author dominik
+ *
+ * @param <UUID>
  */
 public class JakeRoutingDatasource<UUID> /* extends AbstractRoutingDataSource
 */
