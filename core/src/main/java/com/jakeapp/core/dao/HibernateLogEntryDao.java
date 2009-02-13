@@ -88,7 +88,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	public LogEntry<JakeObject> getMostRecentFor(JakeObject jakeObject)
 			throws NoSuchLogEntryException {
 
-
+		//TODO: implement
         return null; // To change body of implemented methods use File |
 		// Settings | File Templates.
 	}

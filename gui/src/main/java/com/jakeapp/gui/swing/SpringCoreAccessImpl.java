@@ -734,6 +734,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			pms = this.frontendService.getProjectsManagingService(this.getSessionId());
+			log.debug("getLoggedInUser: " + this.getLoggedInUser(note.getProject()));
 			member = pms.getProjectMember(note.getProject(), this.getLoggedInUser(note.getProject()));
 
 			pms.getNoteManagingService().deleteNote(note);
@@ -781,6 +782,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	}
 
+	//FIXME: holy crap! The method name does  not match the return type!
 	// TODO this might be removed in further versions...
 	// it depends on only having a SINGLE user per project.
 	private MsgService getLoggedInUser(Project p) throws FrontendNotLoggedInException {

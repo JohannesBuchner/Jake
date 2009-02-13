@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.IUserIdDao;
@@ -15,6 +16,8 @@ import com.jakeapp.core.util.ProjectApplicationContextFactory;
  *
  */
 public abstract class JakeService {
+	private static final Logger log = Logger.getLogger(JakeService.class);
+	
 	private ProjectApplicationContextFactory applicationContextFactory;
 	private IUserIdDao userIdDao;
 	
@@ -34,11 +37,11 @@ public abstract class JakeService {
 	}
 
 	public IUserIdDao getUserIdDao() {
-		return userIdDao;
+		return this.userIdDao;
 	}
 	
 	public ProjectApplicationContextFactory getApplicationContextFactory() {
-		return applicationContextFactory;
+		return this.applicationContextFactory;
 	}
 
 	public void setApplicationContextFactory(
@@ -50,19 +53,18 @@ public abstract class JakeService {
 	public boolean isLocalJakeObject(JakeObject jo) {
 		boolean result = false;
 	
+		//FIXME: make prettier!!! 
 		try {
-			// log.debug("Checking isLocalJakeObject for jo " + jo + " with project " + jo.getProject());
-	
-	
+			log.debug("Checking isLocalJakeObject for jo " + jo + " with project " + jo.getProject());
 			this.getApplicationContextFactory().getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
+			
 		} catch (NoSuchLogEntryException e) {
 			/*
-																								* There is no Logentry for this note. Therefore it has never been
-																								* announced and is only local.
-																								*/
+			* There is no Logentry for this note. Therefore it has never been
+			* announced and is only local.
+			*/
 			result = true;
 		}
-	
 		return result;
 	}
 

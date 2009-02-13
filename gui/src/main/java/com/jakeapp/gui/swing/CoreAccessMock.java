@@ -30,6 +30,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.services.MsgServiceFactory;
 import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
@@ -88,7 +89,7 @@ public class CoreAccessMock implements ICoreAccess {
 		filesChangedListeners = new ArrayList<FilesChanged>();
 
 		// init the demo projects
-		Project pr1 = new Project("Desktop", new UUID(212, 383), null, new File(FileUtilities.getUserHomeDirectory() + FileUtilities.getPathSeparator() + "Desktop"));
+		Project pr1 = new Project("Desktop", new UUID(212, 383), new XMPPMsgService(), new File(FileUtilities.getUserHomeDirectory() + FileUtilities.getPathSeparator() + "Desktop"));
 		pr1.setStarted(true);
 		pr1.setInvitationState(InvitationState.ACCEPTED);
 		projects.add(pr1);
@@ -130,6 +131,8 @@ public class CoreAccessMock implements ICoreAccess {
 		this.notesList.add(new NoteObject(new UUID(6, 1), pr1, "Chuck Norris does not sleep. He waits."));
 		this.notesList.add(new NoteObject(new UUID(7, 1), pr1, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
 		this.notesList.add(new NoteObject(new UUID(8, 1), pr1, "Guns don't kill people, Chuck Norris does."));
+		this.notesList.add(new NoteObject(new UUID(9, 1), pr1, "============ MOCK NOTES ==========="));
+		
 
 		this.notesIsLocal = new ArrayList<Boolean>();
 		this.notesIsLocked = new ArrayList<Boolean>();
