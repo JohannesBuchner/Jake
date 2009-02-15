@@ -25,6 +25,7 @@ public class JakeCommanderXmppRuns extends TmpdirEnabledTestCase {
 
 	protected FifoStreamer fifo;
 
+	@Override
 	@Before
 	public void setup() throws Exception {
 		super.setup();
@@ -36,6 +37,7 @@ public class JakeCommanderXmppRuns extends TmpdirEnabledTestCase {
 				testUser1.getUsername(), testUser1Passwd);
 	}
 
+	@Override
 	@After
 	public void teardown() throws Exception {
 		super.teardown();

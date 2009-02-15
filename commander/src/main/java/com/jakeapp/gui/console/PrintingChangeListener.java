@@ -1,0 +1,37 @@
+/**
+ * 
+ */
+package com.jakeapp.gui.console;
+
+import org.apache.log4j.Logger;
+
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
+
+public class PrintingChangeListener implements ChangeListener {
+	private final static Logger log = Logger.getLogger(PrintingChangeListener.class);
+
+	@Override
+	public INegotiationSuccessListener beganRequest(JakeObject jo) {
+		log.debug(jo.toString());
+		return new PrintingNegotiationSuccessListener(jo);
+	}
+
+	@Override
+	public void pullDone(JakeObject jo) {
+		log.info(jo);
+	}
+
+	@Override
+	public void pullNegotiationDone(JakeObject jo) {
+		log.info(jo);
+	}
+
+	@Override
+	public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
+		log.info(jo + " - " + progress + " - " + status);
+	}
+
+}

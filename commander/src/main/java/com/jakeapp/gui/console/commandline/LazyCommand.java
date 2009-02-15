@@ -17,6 +17,7 @@ public abstract class LazyCommand extends Command {
 		this.help = help;
 	}
 
+	@Override
 	public String getHelpString() {
 		return help;
 	}

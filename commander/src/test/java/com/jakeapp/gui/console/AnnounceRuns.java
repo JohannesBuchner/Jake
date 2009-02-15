@@ -18,6 +18,7 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		return "oneuserWithOneProjectContainingNotes";
 	}
 	
+	@Override
 	@Before
 	public void setup() throws Exception {
 		super.setup();

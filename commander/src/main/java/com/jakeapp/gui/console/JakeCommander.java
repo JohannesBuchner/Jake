@@ -38,6 +38,8 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
  */
 public class JakeCommander {
 
+	
+	
 	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(JakeCommander.class);
 
@@ -408,7 +410,9 @@ public class JakeCommander {
 					System.out.println("no such project");
 					return;
 				}
+				System.out.println("\t" + project);
 				pms.openProject(project);
+				pms.startProject(project, new PrintingChangeListener());
 				System.out.println("opening project done");
 			} catch (Exception e) {
 				System.out.println("opening project failed");
@@ -542,7 +546,7 @@ public class JakeCommander {
 
 		@Override
 		public boolean handleArguments(String[] args) {
-			if (args.length != 1)
+			if (args.length != 2)
 				return false;
 			UUID uuid;
 			try {

@@ -19,6 +19,7 @@ import com.jakeapp.gui.console.JakeCommander;
  */
 public class JakeCommanderRuns extends TmpdirEnabledTestCase {
 
+	@Override
 	@Before
 	public void setup() throws Exception {
 		FSTestCommons.recursiveDelete(new File(".jake"));
