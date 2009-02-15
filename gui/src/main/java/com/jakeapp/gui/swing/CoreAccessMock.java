@@ -1,61 +1,27 @@
 package com.jakeapp.gui.swing;
 
-import java.io.File;
-import java.rmi.NoSuchObjectException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.services.MsgServiceFactory;
 import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableNowObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
-import com.jakeapp.gui.swing.callbacks.FilesChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
-import com.jakeapp.gui.swing.helpers.DebugHelper;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.FolderObject;
-import com.jakeapp.gui.swing.helpers.TagHelper;
+import com.jakeapp.gui.swing.exceptions.*;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.*;
+
 
 public class CoreAccessMock implements ICoreAccess {
 	private static final Logger log = Logger.getLogger(CoreAccessMock.class);
@@ -132,7 +98,7 @@ public class CoreAccessMock implements ICoreAccess {
 		this.notesList.add(new NoteObject(new UUID(7, 1), pr1, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
 		this.notesList.add(new NoteObject(new UUID(8, 1), pr1, "Guns don't kill people, Chuck Norris does."));
 		this.notesList.add(new NoteObject(new UUID(9, 1), pr1, "============ MOCK NOTES ==========="));
-		
+
 
 		this.notesIsLocal = new ArrayList<Boolean>();
 		this.notesIsLocked = new ArrayList<Boolean>();
@@ -834,14 +800,19 @@ public class CoreAccessMock implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException {
-		log.info("Mock: announceJakeObject: " + jo + " with msg: " + commitmsg);
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws FrontendNotLoggedInException {
+		log.info("Mock: announceFileObjects: " + jo + " with msg: " + commitmsg);
 		return null;
 	}
 
 	@Override
-	public void pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
+	public void announceFileObjects(ArrayList<FileObject> jos) throws FileOperationFailedException {
+	}
+
+	@Override
+	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException {
 		log.info("Mock: pullJakeObject: " + jo);
+		return null;
 	}
 
 	@Override
@@ -999,7 +970,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Boolean> login(MsgService service,
-														 String password, boolean rememberPassword) {
+															 String password, boolean rememberPassword) {
 		return new AvailableNowObject<Boolean>(true);
 	}
 
@@ -1024,7 +995,7 @@ public class CoreAccessMock implements ICoreAccess {
 
 	@Override
 	public MsgService getMsgService(ProjectMember member) {
-		
+
 		MsgService m = null;
 		try {
 			m = addAccount(new ServiceCredentials("User", "Pass"));
@@ -1033,7 +1004,7 @@ public class CoreAccessMock implements ICoreAccess {
 		} catch (ProtocolNotSupportedException e) {
 			e.printStackTrace();
 		}
-		
+
 		return m;
 	}
 }

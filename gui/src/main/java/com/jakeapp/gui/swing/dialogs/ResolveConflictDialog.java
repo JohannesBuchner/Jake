@@ -4,13 +4,12 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.JakeAction;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
@@ -19,7 +18,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.NoSuchObjectException;
 
 /**
  * People Invitation Dialog. Opens modal dialog to add ProjectMembers
@@ -206,12 +204,14 @@ public class ResolveConflictDialog extends JakeDialog {
 		// if local file is selected, we have to announce that.
 		if (isLocalSelected()) {
 			try {
-				JakeMainApp.getApp().getCore().announceJakeObject(fo, null);
-			} catch (SyncException e) {
-				log.error(e);
-				ExceptionUtilities.showError(e);
+				JakeMainApp.getCore().announceJakeObject(fo, null);
+				//}// catch (SyncException e) {
+				//log.error(e);
+				//ExceptionUtilities.showError(e);
 			} catch (FrontendNotLoggedInException e) {
 				log.error(e);
+				ExceptionUtilities.showError(e);
+			} catch (FileOperationFailedException e) {
 				ExceptionUtilities.showError(e);
 			}
 		} else {
@@ -219,19 +219,12 @@ public class ResolveConflictDialog extends JakeDialog {
 			// remote file must have been selected.
 			// so pull the file from remote (overwrites our file)
 			try {
-				JakeMainApp.getApp().getCore().pullJakeObject(fo);
+				JakeMainApp.getCore().pullJakeObject(fo);
 			} catch (FrontendNotLoggedInException e) {
 				log.error(e);
 				ExceptionUtilities.showError(e);
-			} catch (OtherUserOfflineException e) {
-				log.error(e);
-				ExceptionUtilities.showError(e);
-			} catch (NoSuchObjectException e) {
-				log.error(e);
-				ExceptionUtilities.showError(e);
-			} catch (NoSuchLogEntryException e) {
-				log.error(e);
-				ExceptionUtilities.showError(e);
+			} catch (FileOperationFailedException e) {
+				e.printStackTrace();
 			}
 		}
 

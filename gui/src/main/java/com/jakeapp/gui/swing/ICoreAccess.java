@@ -12,20 +12,13 @@ import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
-import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
+import com.jakeapp.gui.swing.exceptions.*;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 
 import java.io.File;
-import java.rmi.NoSuchObjectException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public interface ICoreAccess {
@@ -234,6 +227,7 @@ public interface ICoreAccess {
 
 	/**
 	 * Returns the MsgService for a ProiectMember.
+	 *
 	 * @param member
 	 * @return
 	 */
@@ -489,13 +483,21 @@ public interface ICoreAccess {
 	public void setTagsForFileObject(FileObject fo, Set<Tag> tags);
 
 	/**
-	 * @param jo
+	 * @param jo		  object to be announced
 	 * @param commitmsg
 	 * @throws SyncException
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 */
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException;
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws FileOperationFailedException;
+
+
+	/**
+	 * @param jos JakeObjects to be announced
+	 * @throws FileOperationFailedException nested exception for file based errors.
+	 */
+	public void announceFileObjects(ArrayList<FileObject> jos) throws FileOperationFailedException;
+
 
 	/**
 	 * @param jo
@@ -505,7 +507,7 @@ public interface ICoreAccess {
 	 * @throws java.rmi.NoSuchObjectException
 	 * @throws NoSuchLogEntryException
 	 */
-	public void pullJakeObject(JakeObject jo) throws FrontendNotLoggedInException, OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException;
+	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo) throws FileOperationFailedException;
 
 	/**
 	 * Checks whether a given JakeObject is currently soft locked.

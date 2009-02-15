@@ -14,34 +14,28 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
+import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
 import com.jakeapp.gui.swing.exceptions.*;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.IProjectModificationListener;
 import com.jakeapp.jake.fss.exceptions.*;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.rmi.NoSuchObjectException;
 import java.util.*;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
@@ -964,7 +958,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							log.debug("After creation, the project's userid is: " + pr.getUserId());
 						} catch (IllegalAccessException e) {
 							// FIXME: is this expected? Why?
-							log.error("assigning to project failed",e);
+							log.error("assigning to project failed", e);
 						}
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
@@ -1222,7 +1216,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws SyncException, FrontendNotLoggedInException {
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws FileOperationFailedException {
 		ProjectMember member;
 		LogEntry<JakeObject> action;
 		ISyncService iss;
@@ -1240,20 +1234,32 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			result = new AnnounceFuture(iss, jo, action);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+			throw new FileOperationFailedException(e);
 		}
 
 		return result.start();
 	}
 
+
 	@Override
-	public void pullJakeObject(JakeObject jo) throws OtherUserOfflineException, NoSuchObjectException, NoSuchLogEntryException {
+	public void announceFileObjects(ArrayList<FileObject> jos) throws FileOperationFailedException {
+
+	}
+
+	@Override
+	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo) throws FileOperationFailedException {
+		ISyncService iss;
+		AvailableLaterObject<Void> result;
+
 		try {
-			this.getFrontendService().getSyncService(this.getSessionId()).pullObject(jo);
-		} catch (NotLoggedInException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			iss = this.getFrontendService().getSyncService(this.getSessionId());
+			result = new PullFuture(iss, jo);
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+			throw new FileOperationFailedException(e);
 		}
+
+		return result.start();
 	}
 
 	@Override
@@ -1421,7 +1427,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Boolean> login(MsgService service,
-														 String password, boolean rememberPassword) {
+															 String password, boolean rememberPassword) {
 
 		/*
 		 TODO: move this clutter to caller
@@ -1444,7 +1450,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			return new AvailableErrorObject<Boolean>(e);
 		}
 		 */
-			return  this.getFrontendService().login(getSessionId(), service, password, rememberPassword);
+		return this.getFrontendService().login(getSessionId(), service, password, rememberPassword);
 	}
 
 	/**
@@ -1461,13 +1467,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public MsgService getMsgService(ProjectMember member) {
 		List<MsgService> services;
-		
+
 		services = this.frontendService.getMsgServices(this.sessionId);
-		
+
 		for (MsgService s : services)
-		    if (member.getUserId().equals(s.getUserId().getUuid()))
-			    return s;
-		
+			if (member.getUserId().equals(s.getUserId().getUuid()))
+				return s;
+
 		return null;
 	}
 }

@@ -1,19 +1,16 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.core.domain.FileObject;
-
-import java.awt.event.ActionEvent;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.jdesktop.swingx.JXTreeTable;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.actions.abstracts.FileAction;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class AnnounceFileAction extends FileAction {
 	private static final Logger log = Logger.getLogger(AnnounceFileAction.class);
@@ -22,7 +19,7 @@ public class AnnounceFileAction extends FileAction {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-			 getString("announceMenuItem.text");
+				  getString("announceMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 		updateAction();
@@ -35,34 +32,12 @@ public class AnnounceFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ArrayList<FileObject> files = new ArrayList<FileObject>();
+		ArrayList<FileObject> files = getSelectedFiles();
 
-		for (ProjectFilesTreeNode pf : getNodes()) {
-			if (pf.isFile()) {
-				files.add(pf.getFileObject());
-			} else if (pf.isFolder()) {
-				files.addAll(recurseNodes(pf.getFolderObject()));
-			}
+		try {
+			JakeMainApp.getCore().announceFileObjects(files);
+		} catch (FileOperationFailedException ex) {
+			ExceptionUtilities.showError(ex);
 		}
-
-		// FIXME: This should a) do something and b) use workers!
-		for (FileObject fo : files) {
-			log.warn("Announcing file '" + fo.getRelPath() + "' (IMPLEMENT ME!)");
-		}
-		// ENDFIXME
-	}
-
-	private List<FileObject> recurseNodes(FolderObject folder) {
-		ArrayList<FileObject> files = new ArrayList<FileObject>();
-
-		for (FileObject f : folder.getFileChildren()) {
-			files.add(f);
-		}
-
-		for (FolderObject f : folder.getFolderChildren()) {
-			files.addAll(recurseNodes(f));
-		}
-
-		return files;
 	}
 }

@@ -1,10 +1,10 @@
 package com.jakeapp.gui.swing.worker;
 
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
+import com.jakeapp.core.util.availablelater.AvailableErrorObject;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
 public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObject<Void> {
@@ -20,7 +20,7 @@ public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObjec
 	protected AvailableLaterObject<Void> calculateFunction() {
 		try {
 			return JakeMainApp.getCore().announceJakeObject(jo, commitMessage);
-		} catch (SyncException e) {
+		} catch (FileOperationFailedException e) {
 			return new AvailableErrorObject<Void>(e);
 		}
 	}

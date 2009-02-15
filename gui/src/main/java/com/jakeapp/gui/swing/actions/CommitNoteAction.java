@@ -1,11 +1,11 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
@@ -36,7 +36,7 @@ public class CommitNoteAction extends NoteAction {
 			core.announceJakeObject(this.getSelectedNotes().get(0), null);
 			//XXX update view
 			this.refreshNotesPanel();
-		} catch (SyncException e1) {
+		} catch (FileOperationFailedException e1) {
 			ExceptionUtilities.showError(e1);
 		}
 	}
