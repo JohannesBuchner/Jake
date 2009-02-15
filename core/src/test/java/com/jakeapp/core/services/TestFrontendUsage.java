@@ -45,27 +45,41 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		pms = frontend.getProjectsManagingService(sessionId);
 	}
 
+
 	@Test
-	public void testCreateAndAssign() throws Exception {
+	public void testCreateProject() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password);
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
-		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(), msg);
-		Assert.assertNull(project.getUserId());
+		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
+				msg);
+		Assert.assertNotNull(project.getMessageService());
+		Assert.assertNotNull(project.getUserId());
 
-		Assert.assertEquals(0, pms.getProjectMembers(project).size());
-		try {
-			pms.assignUserToProject(project, msg.getUserId());
-		} catch (IllegalAccessException e) {
-			// is this the way it should be?
-		}
+		Assert.assertEquals(1, pms.getProjectMembers(project).size());
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectMembers(
+				project).get(0).getUserId());
+
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
+	}
+
+	@Test(expected = IllegalAccessException.class)
+	public void testCreateProjectAndUnnecessaryAssign() throws Exception {
+		ServiceCredentials cred = new ServiceCredentials(id, password);
+		cred.setProtocol(ProtocolType.XMPP);
+		MsgService msg = frontend.addAccount(sessionId, cred);
+
+		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
+				msg);
+
+		pms.assignUserToProject(project, msg.getUserId());
 	}
 
 	@Test
 	public void testCreateAndAssignAfterwards() throws Exception {
-		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(), null);
+		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
+				null);
 		Assert.assertNull(project.getMessageService());
 		// Assert.assertNull(project.getUserId().getUuid());
 
@@ -73,11 +87,16 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
-		try {
-			pms.assignUserToProject(project, msg.getUserId());
-		} catch (IllegalAccessException e) {
-			// is this the way it should be?
-		}
+		pms.assignUserToProject(project, msg.getUserId());
+		
+		Assert.assertNotNull(project.getMessageService());
+		
+		Assert.assertNotNull(project.getUserId());
+
+		Assert.assertEquals(1, pms.getProjectMembers(project).size());
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectMembers(
+				project).get(0).getUserId());
+
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
 }
