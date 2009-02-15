@@ -330,6 +330,7 @@ public class FolderWatchTest extends FSTestCase {
 		}
 	}
 
+	@Override
 	@After
 	public void tearDown() throws Exception {
 		System.gc();

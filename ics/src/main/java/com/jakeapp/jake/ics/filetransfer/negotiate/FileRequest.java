@@ -58,6 +58,7 @@ public class FileRequest {
 		this.fileSize = fileSize;
 	}
 
+	@Override
 	public String toString() {
 		return getFileName() + " " + (isIncoming() ? "from" : "to") + " "
 				+ getPeer();

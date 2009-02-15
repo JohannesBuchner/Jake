@@ -10,6 +10,7 @@ public class ThrowStuffInMyFaceChecker extends DesktopSupportedChecker {
 
 	private static final String ALLOWLAUNCHTESTS_PROPERTY = "com.jakeapp.jake.fss.tests.allowlauchtests";
 
+	@Override
 	public boolean satisfy() {
 		if(!super.satisfy())
 			return false;
