@@ -98,6 +98,7 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 		}
 	}
 
+	@Override
 	@Before
 	public void setup() throws Exception {
 		super.setup();
@@ -146,6 +147,7 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 
 	abstract protected String getDbTemplateName();
 
+	@Override
 	@After
 	public void teardown() throws Exception {
 		super.teardown();
