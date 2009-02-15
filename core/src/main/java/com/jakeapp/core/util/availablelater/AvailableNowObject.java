@@ -10,13 +10,16 @@ package com.jakeapp.core.util.availablelater;
 public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 
 	/* server functions */
+	@Override
 	protected void set(T o) {
 		this.innercontent = o;
 	}
 
+	@Override
 	public void run() {
 	}
 	
+	@Override
 	protected AvailabilityListener<T> getListener() {
 		return listener;
 	}
@@ -30,6 +33,7 @@ public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 		return this.get();
 	}
 	
+	@Override
 	public void setListener(AvailabilityListener<T> listener) {
 		listener.finished(this.get());
 	}

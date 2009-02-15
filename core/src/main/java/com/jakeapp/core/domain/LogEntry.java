@@ -263,7 +263,8 @@ public class LogEntry<T extends ILogable> implements Serializable {
 
 
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return this.getClass().getName() + ": " + "LogAction: " + logAction.toString(); 
     }

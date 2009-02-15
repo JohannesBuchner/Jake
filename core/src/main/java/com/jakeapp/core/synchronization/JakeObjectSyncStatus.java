@@ -93,6 +93,7 @@ public class JakeObjectSyncStatus {
 	}
 
 
+	@Override
 	public String toString() {
 		return jo.toString() + " (modified:" + lastModification + ") locallyModified:" + locallyModified
 				+ " onlyLocal:" + onlyLocal + " onlyRemote:" + onlyRemote + " remotelyModified:"

@@ -34,6 +34,7 @@ public class AvailableErrorObject<T> extends AvailableNowObject<T> {
 		return exception;
 	}
 	
+	@Override
 	public void setListener(AvailabilityListener<T> listener) {
 		listener.error(this.getException());
 	}

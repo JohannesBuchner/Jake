@@ -73,6 +73,7 @@ public class NoteObject extends JakeObject {
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		String shortContent = content;
 		if (content.length() > 13)

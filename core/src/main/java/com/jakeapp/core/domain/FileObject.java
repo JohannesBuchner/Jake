@@ -139,6 +139,7 @@ public class FileObject extends JakeObject {
         this.filesize = filesize;
     }
 
+	@Override
 	public String toString() {
 		return "File [" + super.toString() + "]:" + getRelPath() + " size: " + getFilesize()
 				+ " checksum: " + getChecksum();

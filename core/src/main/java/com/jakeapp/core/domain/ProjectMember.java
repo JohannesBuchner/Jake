@@ -95,7 +95,8 @@ public class ProjectMember implements ILogable {
      *
      * @return string of ProjectMember
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return getUserId() + " trust: " + getTrustState();
     }
 

@@ -262,6 +262,7 @@ public abstract class UserId implements ILogable {
 	 * 
 	 * @return string of UserID.
 	 */
+	@Override
 	public String toString() {
 		return getProtocolTypeString() + ":" + getUserId() + ": "
 				+ getFirstName() + " " + getSurName() + " '" + getNickname()

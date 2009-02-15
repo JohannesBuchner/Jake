@@ -35,6 +35,7 @@ public class AvailableLaterObjectTest {
 		public static AvailableLaterObject<Boolean> provideLaterError() {
 			return new AvailableLaterObject<Boolean>() {
 
+				@SuppressWarnings("null")
 				@Override
 				public Boolean calculate() throws Exception {
 					Thread.sleep(20);

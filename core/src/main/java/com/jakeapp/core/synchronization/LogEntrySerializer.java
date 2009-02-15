@@ -46,6 +46,7 @@ public class LogEntrySerializer {
 			return this;
 		}
 
+		@Override
 		public String toString() {
 			return content;
 		}

@@ -31,6 +31,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	private static final String password = "mypasswd";
 
+	@Override
 	@Before
 	public void setup() throws Exception {
 		super.setup();
