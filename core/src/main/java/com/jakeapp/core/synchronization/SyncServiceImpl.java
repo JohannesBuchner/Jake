@@ -542,7 +542,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	public Boolean isLocallyModified(NoteObject noin) {
 		NoteObject no = null;
 		try {
-			no = db.getNoteObjectDao(no.getProject()).get(no.getUuid());
+			no = db.getNoteObjectDao(noin.getProject()).get(noin.getUuid());
 		} catch (NoSuchJakeObjectException e) {
 			return false;
 		}
