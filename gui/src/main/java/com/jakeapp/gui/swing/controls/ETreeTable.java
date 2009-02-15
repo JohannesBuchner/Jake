@@ -64,7 +64,8 @@ public class ETreeTable extends JXTreeTable {
      * Paints empty rows too, after letting the UI delegate do
      * its painting.
      */
-    public void paint(Graphics g) {
+    @Override
+	public void paint(Graphics g) {
         super.paint(g);
         paintEmptyRows(g);
     }
@@ -105,7 +106,8 @@ public class ETreeTable extends JXTreeTable {
      * JTable normally restricts its size to just what's needed by its
      * model.
      */
-    public boolean getScrollableTracksViewportHeight() {
+    @Override
+	public boolean getScrollableTracksViewportHeight() {
         if (getParent() instanceof JViewport) {
             JViewport parent = (JViewport) getParent();
             return (parent.getHeight() > getPreferredSize().height);
@@ -113,11 +115,13 @@ public class ETreeTable extends JXTreeTable {
         return false;
     }
 
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+    @Override
+	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
         return prepareComponent(super.prepareRenderer(renderer, row, column), row, column);
     }
 
-    public Component prepareEditor(TableCellEditor editor, int row, int column) {
+    @Override
+	public Component prepareEditor(TableCellEditor editor, int row, int column) {
         return prepareComponent(super.prepareEditor(editor, row, column), row, column);
     }
 

@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 /**
  * @author: studpete
  */
+@SuppressWarnings("serial")
 public class GuiUtilities {
 	private static final Logger log = Logger.getLogger(GuiUtilities.class);
 

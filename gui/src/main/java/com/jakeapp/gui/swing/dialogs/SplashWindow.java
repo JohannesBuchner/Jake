@@ -28,11 +28,13 @@ public class SplashWindow extends JFrame {
 		setLocation((screenDim.width - imgWidth) / 2, (screenDim.height - imgHeight) / 2);
 	}
 
+	@Override
 	public void update(Graphics g) {
 		g.setColor(getForeground());
 		paint(g);
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		g.drawImage(splashImage, 0, 0, this);
 		if (!paintCalled) {

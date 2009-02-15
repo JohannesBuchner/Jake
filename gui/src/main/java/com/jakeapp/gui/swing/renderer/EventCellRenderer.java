@@ -84,6 +84,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 	/* This is the only method defined by DefaultTableCellRenderer.  We just
 		 * reconfigure the Jlabel each time we're called.
 		 */
+	@Override
 	public Component getTableCellRendererComponent(
 			  JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 

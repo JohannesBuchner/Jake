@@ -43,6 +43,7 @@ public class InvitePeopleDialog extends JakeDialog {
 
 		// generate a auto-completion combobox
 		peopleComboBox = new JComboBox() {
+			@Override
 			public void processKeyEvent(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					invitePeopleAction();

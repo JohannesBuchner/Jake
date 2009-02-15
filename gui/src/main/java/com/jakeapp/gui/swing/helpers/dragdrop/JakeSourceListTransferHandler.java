@@ -26,6 +26,7 @@ import java.util.List;
 public class JakeSourceListTransferHandler extends TransferHandler {
 	private static final Logger log = Logger.getLogger(JakeSourceListTransferHandler.class);
 
+	@Override
 	public boolean canImport(TransferHandler.TransferSupport support) {
 		log.debug("support.isDrop: " + support.isDrop() + "support.stringdata?:" + support.isDataFlavorSupported(DataFlavor.stringFlavor));
 
@@ -106,6 +107,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 		*/
 	}
 
+	@Override
 	public boolean importData(TransferHandler.TransferSupport support) {
 		log.info("Import Data.");
 

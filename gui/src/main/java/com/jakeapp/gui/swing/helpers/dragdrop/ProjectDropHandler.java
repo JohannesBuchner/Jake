@@ -20,6 +20,7 @@ import java.util.List;
 public class ProjectDropHandler extends TransferHandler {
 	private static final Logger log = Logger.getLogger(ProjectDropHandler.class);
 
+	@Override
 	public boolean canImport(TransferSupport support) {
 		/* for the demo, we'll only support drops (not clipboard paste) */
 		if (!support.isDrop()) {
@@ -38,6 +39,7 @@ public class ProjectDropHandler extends TransferHandler {
 		return copySupported;
 	}
 
+	@Override
 	public boolean importData(TransferSupport supp) {
 		if (!canImport(supp)) {
 			return false;

@@ -58,6 +58,7 @@ public class SearchField extends JTextField {
 
 	private void initKeyListener() {
 		addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					cancel();
@@ -129,6 +130,7 @@ public class SearchField extends JTextField {
 			setActivateOnPress(true);
 		}
 
+		@Override
 		public void paintBorder(Component c, Graphics oldGraphics, int x, int y, int width, int height) {
 			Graphics2D g = (Graphics2D) oldGraphics;
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -139,6 +141,7 @@ public class SearchField extends JTextField {
 			g.fillPolygon(xs, ys, 3);
 		}
 
+		@Override
 		public void buttonActivated(MouseEvent e) {
 			selectAll();
 			showMenu(e.getX(), e.getY());
@@ -154,6 +157,7 @@ public class SearchField extends JTextField {
 			setActivateOnPress(false);
 		}
 
+		@Override
 		public void paintBorder(Component c, Graphics oldGraphics, int x, int y, int width, int height) {
 			SearchField field = (SearchField) c;
 			if (field.showingPlaceholderText || field.getText().length() == 0) {
@@ -181,6 +185,7 @@ public class SearchField extends JTextField {
 		 * Handles a click on the cancel button by clearing the text and
 		 * notifying any ActionListeners.
 		 */
+		@Override
 		public void buttonActivated(MouseEvent e) {
 			cancel();
 		}

@@ -144,7 +144,8 @@ public class JListMutable extends JXList implements CellEditorListener {
         return false;
     }
 
-    public void removeNotify() {
+    @Override
+	public void removeNotify() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().
                 removePropertyChangeListener("permanentFocusOwner", editorRemover);   //NOI18N
         super.removeNotify();
@@ -240,7 +241,8 @@ public class JListMutable extends JXList implements CellEditorListener {
             list.removeEditor();
         }
 
-        public boolean isEnabled() {
+        @Override
+		public boolean isEnabled() {
             return isEditing();
         }
     }
@@ -274,7 +276,8 @@ public class JListMutable extends JXList implements CellEditorListener {
             return e.isConsumed() || (!(SwingUtilities.isLeftMouseButton(e) && isEnabled()));
         }
 
-        public void mousePressed(MouseEvent e) {
+        @Override
+		public void mousePressed(MouseEvent e) {
             if (e.isConsumed()) {
                 selectedOnPress = false;
                 return;

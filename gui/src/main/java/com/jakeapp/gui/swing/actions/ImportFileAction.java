@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class ImportFileAction extends FileAction {
 	private static final Logger log = Logger.getLogger(ImportFileAction.class);
 

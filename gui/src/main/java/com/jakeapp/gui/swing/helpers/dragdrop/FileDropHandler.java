@@ -21,6 +21,7 @@ import java.util.List;
 public class FileDropHandler extends TransferHandler {
 	private static final Logger log = Logger.getLogger(FileDropHandler.class);
 
+	@Override
 	public boolean canImport(TransferSupport supp) {
 		/* for the demo, we'll only support drops (not clipboard paste) */
 		if (!supp.isDrop()) {
@@ -43,6 +44,7 @@ public class FileDropHandler extends TransferHandler {
 		return false;
 	}
 
+	@Override
 	public boolean importData(TransferHandler.TransferSupport supp) {
 		if (!canImport(supp)) {
 			return false;

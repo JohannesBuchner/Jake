@@ -161,6 +161,7 @@ public class JSheet extends JDialog {
 		// the sheet.
 		ownerMovementHandler = new ComponentAdapter() {
 
+			@Override
 			public void componentMoved(ComponentEvent evt) {
 				Window owner = getOwner();
 				Point newLocation = owner.getLocation();
@@ -272,6 +273,7 @@ public class JSheet extends JDialog {
 		}
 	}
 
+	@Override
 	public void addNotify() {
 		super.addNotify();
 		if (Platform.isSetShowAsSheet()) {
@@ -315,6 +317,7 @@ public class JSheet extends JDialog {
 		return isDocumentModalitySupported;
 	}
 
+	@Override
 	public void dispose() {
 		super.dispose();
 		uninstallSheet();
@@ -355,6 +358,7 @@ public class JSheet extends JDialog {
 		super.show();
 	}
 
+	@Override
 	public void hide() {
 		if (isAnimated() && isShowAsSheet() && !isNativeSheetSupported()) {
 			getContentPane().setVisible(false);
@@ -403,6 +407,7 @@ public class JSheet extends JDialog {
 		}
 	}
 
+	@Override
 	public void show() {
 		//log.debug("Called show from JSheet: isShowAsSheet:" + isShowAsSheet() + " native: " + isNativeSheetSupported());
 		if (isAnimated() && isShowAsSheet() && !isNativeSheetSupported()) {
@@ -1004,16 +1009,19 @@ public class JSheet extends JDialog {
 			private boolean gotFocus = false;
 			int count;
 
+			@Override
 			public void windowClosing(WindowEvent we) {
 				pane.setValue(null);
 			}
 
+			@Override
 			public void windowClosed(WindowEvent we) {
 				if (pane.getValue() == JOptionPane.UNINITIALIZED_VALUE) {
 					sheet.fireOptionSelected(pane);
 				}
 			}
 
+			@Override
 			public void windowGainedFocus(WindowEvent we) {
 				// Once window gets focus, set initial focus
 				if (!gotFocus) {
@@ -1031,6 +1039,7 @@ public class JSheet extends JDialog {
 		});
 		sheet.addComponentListener(new ComponentAdapter() {
 
+			@Override
 			public void componentShown(ComponentEvent ce) {
 				// reset value to ensure closing works properly
 				pane.setValue(JOptionPane.UNINITIALIZED_VALUE);
@@ -1150,6 +1159,7 @@ public class JSheet extends JDialog {
 		};
 		chooser.addActionListener(actionListener);
 		sheet.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				sheet.fireOptionSelected(chooser, JFileChooser.CANCEL_OPTION);
 				chooser.removeActionListener(actionListener);

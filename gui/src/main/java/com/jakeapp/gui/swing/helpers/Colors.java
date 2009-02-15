@@ -77,7 +77,8 @@ public enum Colors {
         return alpha(f);
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("r=")
                 .append(_myColor.getRed())

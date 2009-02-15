@@ -54,6 +54,7 @@ public class ProcessUtilities {
 		try {
 			final Process p = Runtime.getRuntime().exec(command, null, directory);
 			new Thread("Process Spawn: " + quotedCommand) {
+				@Override
 				public void run() {
 					try {
 						p.getOutputStream().close();

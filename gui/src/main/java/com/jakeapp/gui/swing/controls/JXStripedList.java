@@ -29,6 +29,7 @@ public class JXStripedList
 	/**
 	 * Add zebra stripes to the background.
 	 */
+	@Override
 	public void paintComponent(java.awt.Graphics g) {
 		drawStripes = (getLayoutOrientation() == VERTICAL) && isOpaque();
 		if (!drawStripes) {
@@ -100,6 +101,7 @@ public class JXStripedList
 	/**
 	 * Return the wrapped cell renderer.
 	 */
+	@Override
 	public javax.swing.ListCellRenderer getCellRenderer() {
 		final javax.swing.ListCellRenderer ren = super.getCellRenderer();
 		if (ren == null)

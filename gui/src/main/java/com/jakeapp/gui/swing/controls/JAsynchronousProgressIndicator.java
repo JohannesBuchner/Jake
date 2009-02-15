@@ -45,6 +45,7 @@ public class JAsynchronousProgressIndicator extends JComponent {
 		return true;
 	}
 
+	@Override
 	public void paintComponent(Graphics oldGraphics) {
 		Graphics2D g = (Graphics2D) oldGraphics;
 		if (painted && (isDisplayedWhenStopped || timer.isRunning())) {
@@ -200,6 +201,7 @@ public class JAsynchronousProgressIndicator extends JComponent {
 		return tick;
 	}
 
+	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(DIAMETER + 2, DIAMETER + 2);
 	}
