@@ -123,6 +123,16 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void testGetAllOfJakeObject_NonExistant() {
+    	NoteObject no = new NoteObject(UUID.randomUUID(), null, "hello");
+        List<LogEntry<NoteObject>> result = logEntryDao.getAllOfJakeObject(no);
+
+
+        log.debug("result.size() = " + result.size());
+        Assert.assertEquals(0, result.size());
+    }
+
+    @Test
     public void testGetAllOfJakeObject() {
         // Add your code here
     }

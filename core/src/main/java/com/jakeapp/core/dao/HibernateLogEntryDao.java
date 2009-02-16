@@ -35,7 +35,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		//
 		// this.getHibernateTemplate().getSessionFactory().getCurrentSession().
 		//
-		// createSQLQuery("INSERT INTO logEntry (id, memberid, objectid, hash, time, processed, action) "
+		// createSQLQuery("INSERT INTO logEntry (id, memberid, objectuuid, hash, time, processed, action) "
 		// +
 		// "VALUES (?,?,?,?,?,?,?)")
 		// .setString(0, logEntry.getUuid().toString())
@@ -80,7 +80,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 		List<LogEntry<T>> result = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
-						"FROM logentries WHERE objectid = ? ").setString(0, jakeObject.getUuid().toString()).list();
+						"FROM logentries WHERE objectuuid = ? ").setString(0, jakeObject.getUuid().toString()).list();
         return result;
 	}
 
