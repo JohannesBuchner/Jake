@@ -467,7 +467,14 @@ public class JakeCommander {
 				}
 				System.out.println("\t" + project);
 				pms.openProject(project);
-				pms.startProject(project, new PrintingChangeListener());
+				// workaround for bug 32 + bug 33
+				// TODO: remove after it these are fixed
+				try {
+					pms.assignUserToProject(project, msg.getUserId());
+				} catch (IllegalAccessException e) {
+					// we ignore that, just like the gui does
+				}
+				
 				System.out.println("opening project done");
 			} catch (Exception e) {
 				System.out.println("opening project failed");
@@ -485,8 +492,8 @@ public class JakeCommander {
 
 		@Override
 		public void handleArguments() {
-			System.out.println("Project available: " + (project != null));
-			System.out.println("MsgService available: " + (msg != null));
+			System.out.println("Project available: " + project);
+			System.out.println("MsgService available: " + msg);
 		}
 	};
 
@@ -603,8 +610,9 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("announcing ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
-						new Date(), project, jo), "something new, something blue");
+				sync.announce(jo, new LogEntry<JakeObject>(null,
+						LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project, jo),
+						"something new, something blue");
 				System.out.println("announcing done");
 			} catch (Exception e) {
 				System.out.println("announcing failed");
@@ -622,15 +630,13 @@ public class JakeCommander {
 		@Override
 		public void handleArguments(JakeObject jo) {
 			try {
-				System.out.println("looking up ... ");
+				System.out.println("listing log ... ");
 				for (LogEntry<?> le : pms.getLog(jo)) {
 					System.out.println("\t" + le);
 				}
-				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
-						new Date(), project, jo), "something new, something blue");
-				System.out.println("announcing done");
+				System.out.println("listing log done");
 			} catch (Exception e) {
-				System.out.println("announcing failed");
+				System.out.println("listing log failed");
 				e.printStackTrace();
 			}
 		}

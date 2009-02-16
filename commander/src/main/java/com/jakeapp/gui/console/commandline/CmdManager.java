@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CmdManager {
-	List<Command> commands = new LinkedList<Command>();
+	private List<Command> commands = new LinkedList<Command>();
 
-	boolean status_ok = true;
+	private boolean status_ok = true;
 	
 	public CmdManager(){
 		commands.add(new Command(){
@@ -44,10 +44,18 @@ public class CmdManager {
 		LineNumberReader lnr = new LineNumberReader(new InputStreamReader(in));
 		status_ok = true;
 		while (status_ok) {
+			System.out.print("> ");
 			String line = lnr.readLine();
 			if(line == null)
 				break;
+			echo(in, line);
 			handleLine(line.trim());
+		}
+	}
+
+	private void echo(InputStream in, String line) {
+		if(in != System.in){
+			System.out.println(line.trim());
 		}
 	}
 

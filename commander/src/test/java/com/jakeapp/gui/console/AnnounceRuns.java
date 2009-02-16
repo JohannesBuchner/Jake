@@ -35,6 +35,7 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		fifo.addLine("coreLogin testuser1@localhost mypw");
 		fifo.addLine("listProjects");
 		fifo.addLine("openProject " + project);
+		fifo.addLine("status");
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");
 		new JakeCommander(fifo);
@@ -57,7 +58,18 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		fifo.addLine("coreLogin testuser1@localhost mypw");
 		fifo.addLine("openProject " + project);
 		fifo.addLine("announce 00000000-0000-000b-0000-000000000001");
-		fifo.addLine("log 00000000-0000-000b-0000-000000000001");
+		fifo.addLine("log      00000000-0000-000b-0000-000000000001");
+		fifo.addLine("coreLogout");
+		fifo.addLine("stop");
+		new JakeCommander(fifo);
+	}
+
+	@Test
+	public void log() {
+		FifoStreamer fifo = new FifoStreamer();
+		fifo.addLine("coreLogin testuser1@localhost mypw");
+		fifo.addLine("openProject " + project);
+		fifo.addLine("log      00000000-0000-000b-0000-000000000001");
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");
 		new JakeCommander(fifo);
