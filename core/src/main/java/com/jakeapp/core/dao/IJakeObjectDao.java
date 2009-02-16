@@ -39,6 +39,9 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * UUID or identifier (relpath) can be null
      * this method returns the completed object
      * 
+     * NOTE: the project is set to null in the JakeObjects. The caller of this method 
+     * has to set it.
+     * 
      * @param jakeObject
      * @return
      * @throws NoSuchJakeObjectException
@@ -49,6 +52,9 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * Get all <code>JakeObject</code>s that are associated with the
      * given project.
      *
+     * NOTE: the project is set to null in the JakeObjects. The caller of this method 
+     * has to set it.
+     *   
      * @return all <code>JakeObject</code>s that are associated with the
      *         given project
      */
