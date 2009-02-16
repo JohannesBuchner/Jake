@@ -99,6 +99,7 @@ public class AvailableLaterObjectTest {
 					int nsteps = 10;
 					for (int j = 1; j <= nsteps; j++) {
 						while (i < j * max / nsteps) {
+							Thread.sleep(1);
 							v[i] = v[i - 1].add(v[i - 2]);
 							i++;
 						}
@@ -106,6 +107,7 @@ public class AvailableLaterObjectTest {
 								.statusUpdate(j * 1.0 / nsteps, "looks good: " + v[i - 1]);
 					}
 					while (i < max) {
+						Thread.sleep(1);
 						v[i] = v[i - 1].add(v[i - 2]);
 						i++;
 					}
@@ -181,7 +183,7 @@ public class AvailableLaterObjectTest {
 		Assert.assertTrue(tracer.isDone());
 	}
 
-	private static final int FIB_MAX = 10000;
+	private static final int FIB_MAX = 1000;
 
 	@Test
 	public void testAvailableFib() {
