@@ -89,15 +89,14 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			throws NoSuchLogEntryException {
 
 		//TODO: implement
-        return null; // To change body of implemented methods use File |
-		// Settings | File Templates.
+		throw new NoSuchLogEntryException(); 
 	}
 
 	@Override
 	public <T extends JakeObject> LogEntry<T> getLastPulledFor(T jakeObject)
 			throws NoSuchLogEntryException {
-		return null; // To change body of implemented methods use File |
-		// Settings | File Templates.
+		// TODO: implement!
+		throw new NoSuchLogEntryException(); 
 	}
 
 	@Override
@@ -114,7 +113,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
                 .getCurrentSession().createQuery("FROM logentries WHERE processed = false").list();
 
         return results;
-
         // TODO UNTESTED
 	}
 
