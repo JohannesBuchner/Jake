@@ -12,4 +12,8 @@
 	<description>Technical documentation for Jake</description>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
+	<scm>
+		<connection>scm:svn:svn://svn.jakeapp.com/trunk/</connection>
+		<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/</developerConnection>
+	</scm>
 </project>

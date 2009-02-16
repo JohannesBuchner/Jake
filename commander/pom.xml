@@ -17,6 +17,10 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+    <scm>
+    	<connection>scm:svn:svn://svn.jakeapp.com/trunk/</connection>
+    	<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/</developerConnection>
+    </scm>
 
     <build>
         <plugins>

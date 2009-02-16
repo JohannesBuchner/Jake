@@ -13,8 +13,8 @@
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<scm>
-		<connection>scm:svn://svn.jakeapp.com/trunk/fss</connection>
-		<developerConnection>scm:svn://svn.jakeapp.com/trunk/fss</developerConnection>
+		<connection>scm:svn:svn://svn.jakeapp.com/trunk/fss</connection>
+		<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/fss</developerConnection>
 	</scm>
 	<repositories>
 		<repository>

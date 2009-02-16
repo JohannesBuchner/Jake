@@ -129,8 +129,8 @@
 		</dependency>
     </dependencies>
     <scm>
-    	<connection>scm:svn://svn.jakeapp.com/trunk/core</connection>
-    	<developerConnection>scm:svn://svn.jakeapp.com/trunk/core</developerConnection>
+    	<connection>scm:svn:svn://svn.jakeapp.com/trunk/core</connection>
+    	<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/core</developerConnection>
     </scm>
     <build>
         <plugins>

@@ -108,8 +108,8 @@
         </dependency>
     </dependencies>
     <scm>
-    	<connection>scm:svn://svn.jakeapp.com/trunk/gui</connection>
-    	<developerConnection>scm:svn://svn.jakeapp.com/trunk/gui</developerConnection>
+    	<connection>scm:svn:svn://svn.jakeapp.com/trunk/gui</connection>
+    	<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/gui</developerConnection>
     </scm>
     <build>
         <resources>

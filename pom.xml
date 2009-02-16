@@ -82,8 +82,8 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<scm>
-		<connection>scm:svn://svn.jakeapp.com/trunk/</connection>
-		<developerConnection>scm:svn://svn.jakeapp.com/trunk/</developerConnection>
+		<connection>scm:svn:svn://svn.jakeapp.com/trunk/</connection>
+		<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/</developerConnection>
 	</scm>
 	<build>
 
