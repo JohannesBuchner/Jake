@@ -4,11 +4,14 @@
 package com.jakeapp.core.services.futures;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
+import com.jakeapp.jake.fss.IFSService;
 
 
 /**
@@ -16,6 +19,12 @@ import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
  * @author djinn
  */
 public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, List<FileObject>> {
+
+	private IFriendlySyncService sync;
+
+	public ProjectSizeTotalFuture(IFriendlySyncService sync) {
+		this.sync = sync;
+	}
 
 	@Override
 	public Long calculate() {
@@ -30,7 +39,9 @@ public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, Li
 		if (files.size() > 0) singlestep = 1d / files.size();
 		for (FileObject file : files) {
 			try {
-				result += file.getAbsolutePath().length();
+				result += sync.getFile(file).length();
+			} catch (IOException e) {
+				// doesn't have to be accurate
 			} catch (SecurityException se) {
 				// empty catch
 			}

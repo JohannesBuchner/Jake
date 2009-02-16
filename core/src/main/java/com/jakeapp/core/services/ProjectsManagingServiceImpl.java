@@ -655,7 +655,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		AvailableLaterObject<List<FileObject>> filesFuture;
 
 		filesFuture = this.getAllProjectFiles(project);
-		sizeFuture = new ProjectSizeTotalFuture();
+		sizeFuture = new ProjectSizeTotalFuture(getSyncService());
 		sizeFuture.setSource(filesFuture);
 
 		return sizeFuture;

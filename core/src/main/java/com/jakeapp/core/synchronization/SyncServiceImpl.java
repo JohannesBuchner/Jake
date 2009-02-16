@@ -35,14 +35,12 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This class should be active whenever you want to use files
- * <p/>
- * On Project->pause/start call
+ * This class should be active whenever you want to use files <p/> On
+ * Project->pause/start call
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
- * {@link #stopServing(Project)}
- * <p/>
- * Even when you are offline, this is to be used.
- *
+ * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
+ * used.
+ * 
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncService implements IMessageReceiveListener {
@@ -113,13 +111,13 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 
 	@Transactional
 	private LogEntry<JakeObject> getMostRecentForLogEntry(JakeObject jo)
-			  throws NoSuchLogEntryException {
+			throws NoSuchLogEntryException {
 		return db.getLogEntryDao(jo).getMostRecentFor(jo);
 	}
 
 	@Transactional
 	private FileObject getFileObjectByRelpath(Project p, String relpath)
-			  throws NoSuchJakeObjectException {
+			throws NoSuchJakeObjectException {
 		return db.getFileObjectDao(p).complete(new FileObject(null, p, relpath));
 	}
 
@@ -137,7 +135,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	 * <li>in the ics</li>
 	 * </ul>
 	 * We should only trust the logentries and fix everything else by that.
-	 *
+	 * 
 	 * @param project
 	 */
 	@Transactional
@@ -145,7 +143,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		Collection<ProjectMember> members = db.getLogEntryDao(project).getCurrentProjectMembers();
 		for (ProjectMember member : members) {
 			com.jakeapp.jake.ics.UserId userid = getBackendUserIdFromDomainProjectMember(project,
-					  member);
+					member);
 			try {
 				getICS(project).getUsersService().addUser(userid, member.getNickname());
 			} catch (NoSuchUseridException e) { // shit happens
@@ -158,8 +156,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	@Transactional
 	private LogEntry<JakeObject> getLogEntryOfLocal(JakeObject jo) {
 		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).findLastMatching(
-				  new LogEntry<ILogable>(null, LogAction.JAKE_OBJECT_NEW_VERSION, null, null, null,
-							 null, null, null, true));
+				new LogEntry<ILogable>(null, LogAction.JAKE_OBJECT_NEW_VERSION, null, null, null,
+						null, null, null, true));
 	}
 
 	@Override
@@ -222,22 +220,23 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	@Override
 	@Transactional
 	public void announce(JakeObject jo, LogEntry<JakeObject> inaction, String commitMsg)
-			  throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException {
+			throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException {
 		log.debug("announcing " + jo + " : " + inaction);
 		IFSService fss = getFSS(jo.getProject());
 		LogEntry<JakeObject> le = new LogEntry<JakeObject>(UUID.randomUUID(), inaction
-				  .getLogAction());
+				.getLogAction());
 		LogAction action = inaction.getLogAction();
 		// set those that shouldn't be set by caller
 		le.setBelongsTo(jo);
 		le.setTimestamp(new Date());
 		le.setComment(commitMsg);
 		le.setMember(getMyProjectMember(jo.getProject()));
+		le.setProcessed(true); // what we do is always processed
 		log.debug("prepared logentry");
 
 		if (!(action == LogAction.JAKE_OBJECT_NEW_VERSION || action == LogAction.JAKE_OBJECT_DELETE
-				  || action == LogAction.TAG_ADD || action == LogAction.TAG_REMOVE
-				  || action == LogAction.JAKE_OBJECT_LOCK || action == LogAction.JAKE_OBJECT_UNLOCK)) {
+				|| action == LogAction.TAG_ADD || action == LogAction.TAG_REMOVE
+				|| action == LogAction.JAKE_OBJECT_LOCK || action == LogAction.JAKE_OBJECT_UNLOCK)) {
 			throw new IllegalArgumentException("announce can not be used with this action");
 		}
 		if (isNoteObject(jo)) {
@@ -262,7 +261,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	public Iterable<FileObject> getPullableFileObjects(Project project) {
 		List<FileObject> missing = new LinkedList<FileObject>();
 		Iterable<FileObject> allJakeObjects = db.getLogEntryDao(project).getExistingFileObjects(
-				  project);
+				project);
 		for (JakeObject jo : allJakeObjects) {
 			if (!isNoteObject(jo)) {
 				FileObject fo = (FileObject) jo;
@@ -275,7 +274,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 
 	@Override
 	public Iterable<FileObject> getFileObjectsInConflict(Project project)
-			  throws IllegalArgumentException {
+			throws IllegalArgumentException {
 		List<FileObject> conflicting = new LinkedList<FileObject>();
 		// find existing locally
 		// find existing&modified locally that have a unprocessed NEW_VERSION
@@ -308,12 +307,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 			for (JakeObject jo : this.news) {
 				if (isNoteObject(jo)) {
 					getICS(project).getMsgService().sendMessage(
-							  getBackendUserIdFromDomainUserId(userId),
-							  NEW_NOTE + jo.getUuid().toString());
+							getBackendUserIdFromDomainUserId(userId),
+							NEW_NOTE + jo.getUuid().toString());
 				} else {
 					getICS(project).getMsgService().sendMessage(
-							  getBackendUserIdFromDomainUserId(userId),
-							  NEW_FILE + ((FileObject) jo).getRelPath());
+							getBackendUserIdFromDomainUserId(userId),
+							NEW_FILE + ((FileObject) jo).getRelPath());
 				}
 			}
 		} catch (NotLoggedInException e) {
@@ -327,7 +326,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	@Override
 	@Transactional
 	public void pullObject(JakeObject jo) throws NoSuchLogEntryException, NotLoggedInException,
-			  IllegalArgumentException {
+			IllegalArgumentException {
 		LogEntry<JakeObject> le = (LogEntry<JakeObject>) db.getLogEntryDao(jo).getExists(jo);
 		log.debug("got logentry: " + le);
 		rhp.getPotentialJakeObjectProviders(jo);
@@ -361,7 +360,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 
 	@Transactional
 	private void deleteBecauseRemoteSaidSo(JakeObject jo) throws IllegalArgumentException,
-			  NoSuchJakeObjectException, FileNotFoundException {
+			NoSuchJakeObjectException, FileNotFoundException {
 		if (jo instanceof NoteObject) {
 			db.getNoteObjectDao(jo.getProject()).delete((NoteObject) jo);
 		}
@@ -373,15 +372,15 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 				log.fatal("database corrupted: tried to delete a file that isn't a file", e);
 			} catch (InvalidFilenameException e) {
 				log.fatal(
-						  "database corrupted: tried to delete a file that isn't " + "a valid file",
-						  e);
+						"database corrupted: tried to delete a file that isn't " + "a valid file",
+						e);
 			}
 		}
 	}
 
 	@Override
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId userId)
-			  throws IllegalArgumentException, IllegalProtocolException {
+			throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
@@ -392,14 +391,14 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	}
 
 	private FailoverCapableFileTransferService getTransferService(Project p)
-			  throws NotLoggedInException {
+			throws NotLoggedInException {
 		// TODO: Use FailoverCapableFileTransferService
 		return getIcServicesManager().getTransferService(p, getMyBackendUserid(p));
 	}
 
-	@Override
+	@Transactional
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, FileObject fo)
-			  throws InvalidFilenameException, NotAReadableFileException, IOException {
+			throws InvalidFilenameException, NotAReadableFileException, IOException {
 		IFSService fss = getFSS(p);
 
 		String f = fo.getRelPath();
@@ -415,12 +414,38 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		}
 
 		boolean locallyModified = !fo.getChecksum().equals(
-				  fss.calculateHashOverFile(fo.getRelPath()));
+				fss.calculateHashOverFile(fo.getRelPath()));
 		boolean remotelyModified = !localIsNewest(fo);
 		boolean onlyRemote = false; // TODO: check log
 
 		return new JakeObjectSyncStatus(fo, fss.getLastModified(fo.getRelPath()), locallyModified,
-				  remotelyModified, onlyLocal, onlyRemote);
+				remotelyModified, onlyLocal, onlyRemote);
+	}
+
+	@Transactional
+	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, NoteObject no)
+			throws InvalidFilenameException, NotAReadableFileException, IOException {
+		IFSService fss = getFSS(p);
+
+		String content = no.getContent();
+
+		boolean existsLocal = true; // always the case for notes
+		boolean existsRemote = false; // TODO
+		boolean inConflict = false;
+		boolean locallyModified = isLocallyModified(no);
+		// TODO
+		// This should contain the correct values
+		return new JakeObjectSyncStatus(no, 0, locallyModified, false, false, false);
+	}
+
+	@Transactional
+	@Override
+	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, JakeObject jo)
+			throws InvalidFilenameException, NotAReadableFileException, IOException {
+		if (isNoteObject(jo))
+			return getJakeObjectSyncStatus(p, (NoteObject) jo);
+		else
+			return getJakeObjectSyncStatus(p, (FileObject) jo);
 	}
 
 	/**
@@ -461,7 +486,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 				// ME FIX ME
 				// This should contain the correct values
 				stat.add(new JakeObjectSyncStatus(fo, fss.getLastModified(f), locallyModified,
-						  false, false, false));
+						false, false, false));
 			} catch (NotAFileException e) {
 				log.debug("should never happen", e);
 			} catch (InvalidFilenameException e) {
@@ -552,7 +577,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		} catch (NoSuchLogEntryException e) {
 			return true;
 		}
-		if(orig.getContent().equals(no.getContent()))
+		if (orig.getContent().equals(no.getContent()))
 			return false;
 		else
 			return true;
@@ -566,6 +591,17 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		} catch (InvalidFilenameException e) {
 			log.fatal("db corrupted: contains invalid filenames");
 			return false;
+		}
+	}
+
+	@Override
+	public File getFile(FileObject fo) throws IOException {
+		IFSService fss = getFSS(fo.getProject());
+		try {
+			return new File(fss.getFullpath(fo.getRelPath()));
+		} catch (InvalidFilenameException e) {
+			log.fatal("db corrupted: contains invalid filenames");
+			return null;
 		}
 	}
 
@@ -609,7 +645,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 
 	@Override
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
-			  throws ProjectException {
+			throws ProjectException {
 
 		this.projectsFileServices.startProject(p);
 
@@ -630,7 +666,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		log.debug("adding receive hooks");
 		try {
 			getICS(p).getStatusService().login(getMyBackendUserid(p),
-					  p.getCredentials().getPlainTextPassword());
+					p.getCredentials().getPlainTextPassword());
 		} catch (TimeoutException e) {
 			log.error("logging in for starting project failed", e);
 		} catch (NetworkException e) {
@@ -766,7 +802,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	}
 
 	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
-																										ProjectMember member) {
+			ProjectMember member) {
 		return userTranslator.getBackendUserIdFromDomainProjectMember(p, member);
 	}
 
@@ -775,7 +811,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	}
 
 	public ProjectMember getProjectMemberFromUserId(Project project, UserId userid)
-			  throws NoSuchProjectMemberException {
+			throws NoSuchProjectMemberException {
 		return userTranslator.getProjectMemberFromUserId(project, userid);
 	}
 
@@ -836,7 +872,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 			log.debug("calling other user: " + from_userid);
 			try {
 				getTransferService(p).request(new FileRequest("N" + uuid, false, from_userid),
-						  cl.beganRequest(no));
+						cl.beganRequest(no));
 			} catch (NotLoggedInException e) {
 				log.error("Not logged in");
 			}
@@ -850,7 +886,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 			log.debug("calling other user: " + from_userid);
 			try {
 				getTransferService(p).request(new FileRequest("F" + relpath, false, from_userid),
-						  cl.beganRequest(fo));
+						cl.beganRequest(fo));
 			} catch (NotLoggedInException e) {
 				log.error("Not logged in");
 			}

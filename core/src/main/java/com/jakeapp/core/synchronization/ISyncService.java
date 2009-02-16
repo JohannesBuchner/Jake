@@ -13,6 +13,7 @@ import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -253,7 +254,7 @@ public interface ISyncService {
 	Iterable<JakeObjectSyncStatus> getNotes(Project p) throws IOException;
 
 	/**
-	 * gets the SyncStatus for a specific FileObject
+	 * gets the SyncStatus for a specific JakeObject
 	 * @param sessionId
 	 * @param p
 	 * @param fo
@@ -262,7 +263,17 @@ public interface ISyncService {
 	 * @throws NotAReadableFileException
 	 * @throws IOException
 	 */
-	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, FileObject fo)
+	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, JakeObject fo)
 			throws InvalidFilenameException, NotAReadableFileException, IOException;
+
+	/**
+	 * returns the local file represented by the given FileObject
+	 * 
+	 * @param fo
+	 * @return
+	 * @throws IOException
+	 */
+	public File getFile(FileObject fo) throws IOException;
+
 
 }
