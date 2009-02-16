@@ -70,7 +70,6 @@ public abstract class JakeObject implements ILogable, Serializable {
     /**
      * Get the associated <code>project</code>.
      * @return the project that is associated with the <code>JakeObject</code>
-     * @throws IllegalArgumentException if null is supplied
      */
     @Transient
     public Project getProject() throws IllegalArgumentException {
