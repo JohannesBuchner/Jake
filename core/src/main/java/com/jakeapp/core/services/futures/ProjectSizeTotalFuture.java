@@ -4,14 +4,16 @@
 package com.jakeapp.core.services.futures;
 
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAFileException;
 
 
 /**
@@ -20,10 +22,12 @@ import com.jakeapp.jake.fss.IFSService;
  */
 public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, List<FileObject>> {
 
-	private IFriendlySyncService sync;
+	private static final Logger log = Logger.getLogger(ProjectSizeTotalFuture.class);
 
-	public ProjectSizeTotalFuture(IFriendlySyncService sync) {
-		this.sync = sync;
+	private IFSService fss;
+
+	public ProjectSizeTotalFuture(IFSService fss) {
+		this.fss = fss;
 	}
 
 	@Override
@@ -39,9 +43,15 @@ public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, Li
 		if (files.size() > 0) singlestep = 1d / files.size();
 		for (FileObject file : files) {
 			try {
-				result += sync.getFile(file).length();
-			} catch (IOException e) {
-				// doesn't have to be accurate
+				try {
+					result += fss.getFileSize(file.getRelPath());
+				} catch (FileNotFoundException e) {
+					log.error("unexpected exception", e);
+				} catch (NotAFileException e) {
+					log.error("unexpected exception", e);
+				} catch (InvalidFilenameException e) {
+					log.error("database is corrupt", e);
+				}
 			} catch (SecurityException se) {
 				// empty catch
 			}

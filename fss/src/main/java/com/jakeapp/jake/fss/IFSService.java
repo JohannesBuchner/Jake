@@ -51,8 +51,7 @@ public interface IFSService {
 	public Boolean folderExists(String relativePath)
 			  throws InvalidFilenameException, IOException;
 
-	@Deprecated
-	/*
+	/**
 	 * Joins the rootpath with the relativePath. The absolute filename is
 	 * converted to the right path seperator.
 	 * 

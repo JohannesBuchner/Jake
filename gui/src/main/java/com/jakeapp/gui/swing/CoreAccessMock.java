@@ -496,7 +496,8 @@ public class CoreAccessMock implements ICoreAccess {
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
 		String filename = file.getRelPath();
-		long moddate = file.getAbsolutePath().lastModified();
+		
+		long moddate = new File(project.getRootPath(), file.getRelPath()).lastModified();
 
 		if (filename.contains("c")) {
 			return new JakeObjectSyncStatus(file, moddate, true, true, false, false);
@@ -727,7 +728,7 @@ public class CoreAccessMock implements ICoreAccess {
 	@Override
 	public Date getFileLastModified(FileObject file) {
 		// TODO: Make this useful
-		return new Date(file.getAbsolutePath().lastModified());
+		return new Date(new File(file.getProject().getRootPath(), file.getRelPath()).lastModified());
 	}
 
 
