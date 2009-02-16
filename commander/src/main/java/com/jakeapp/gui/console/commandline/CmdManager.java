@@ -44,6 +44,8 @@ public class CmdManager {
 		LineNumberReader lnr = new LineNumberReader(new InputStreamReader(in));
 		status_ok = true;
 		while (status_ok) {
+			System.out.flush();
+			System.err.flush();
 			System.out.print("> ");
 			String line = lnr.readLine();
 			if(line == null)

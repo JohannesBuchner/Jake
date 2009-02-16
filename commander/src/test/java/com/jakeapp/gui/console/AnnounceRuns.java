@@ -58,6 +58,8 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		fifo.addLine("coreLogin testuser1@localhost mypw");
 		fifo.addLine("openProject " + project);
 		fifo.addLine("announce 00000000-0000-000b-0000-000000000001");
+		fifo.addLine("listObjects");
+		fifo.addLine("projectLog");
 		fifo.addLine("log      00000000-0000-000b-0000-000000000001");
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");

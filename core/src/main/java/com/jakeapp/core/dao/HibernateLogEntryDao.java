@@ -404,19 +404,19 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public Iterable<FileObject> getExistingFileObjects(Project project) {
-		Collection<LogEntry<FileObject>> all = findTwoMatching(
+		Collection<LogEntry<JakeObject>> all = findTwoMatching(
 				LogAction.JAKE_OBJECT_NEW_VERSION, LogAction.JAKE_OBJECT_DELETE);
 		Map<FileObject, Boolean> existState = new HashMap<FileObject, Boolean>();
-		for (LogEntry<FileObject> entry : all) {
-			FileObject jo = entry.getBelongsTo();
-			if (entry.getLogAction() == LogAction.JAKE_OBJECT_NEW_VERSION) {
-				existState.put(jo, true);
+		for (LogEntry<JakeObject> entry : all) {
+			JakeObject jo = entry.getBelongsTo();
+			if (jo instanceof FileObject && entry.getLogAction() == LogAction.JAKE_OBJECT_NEW_VERSION) {
+				existState.put((FileObject) jo, true);
 			}
-			if (entry.getLogAction() == LogAction.JAKE_OBJECT_DELETE) {
-				existState.put(jo, false);
+			if (jo instanceof FileObject && entry.getLogAction() == LogAction.JAKE_OBJECT_DELETE) {
+				existState.put((FileObject) jo, false);
 			}
 		}
-		for (FileObject k : existState.keySet()) {
+		for (JakeObject k : existState.keySet()) {
 			if (!existState.get(k))
 				existState.remove(k);
 		}

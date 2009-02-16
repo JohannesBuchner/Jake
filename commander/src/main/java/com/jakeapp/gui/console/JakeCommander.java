@@ -178,12 +178,10 @@ public class JakeCommander {
 			JakeObject jo = null;
 			try {
 				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
-					System.out.println("\t" + f);
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
 				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
-					System.out.println("\t" + f);
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
@@ -624,7 +622,7 @@ public class JakeCommander {
 	class LogCommand extends LazyJakeObjectCommand {
 
 		public LogCommand() {
-			super("log", "show all logentries");
+			super("log", "show all logentries for this JakeObject");
 		}
 
 		@Override
@@ -641,6 +639,28 @@ public class JakeCommander {
 			}
 		}
 	};
+	
+	class ProjectLogCommand extends LazyNoParamsCommand {
+
+		public ProjectLogCommand() {
+			super("projectLog", "show all logentries for the Projetc");
+		}
+
+		@Override
+		public void handleArguments() {
+			try {
+				System.out.println("listing project log ... ");
+				for (LogEntry<?> le : pms.getLog(project)) {
+					System.out.println("\t" + le);
+				}
+				System.out.println("listing project log done");
+			} catch (Exception e) {
+				System.out.println("listing project log failed");
+				e.printStackTrace();
+			}
+		}
+	};
+
 
 	private void addCommands() {
 		// we are so cool, we use reflection

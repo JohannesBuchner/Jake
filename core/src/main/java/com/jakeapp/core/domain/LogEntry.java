@@ -71,7 +71,7 @@ public class LogEntry<T extends ILogable> implements Serializable {
 	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
 			T belongsTo, ProjectMember member, String comment, String checksum) {
 		this(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum,
-				null);
+				false);
 	}
 
 	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
@@ -266,7 +266,8 @@ public class LogEntry<T extends ILogable> implements Serializable {
     @Override
 	public String toString()
     {
-        return this.getClass().getName() + ": " + "LogAction: " + logAction.toString(); 
+        return this.getClass().getSimpleName() + ": " + getLogAction().toString()
+				+ " for " + getObjectuuid() + "[" + getBelongsTo() + "]"; 
     }
 
 
