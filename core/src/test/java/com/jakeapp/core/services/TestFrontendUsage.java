@@ -88,13 +88,37 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		pms.assignUserToProject(project, msg.getUserId());
-		
+
 		Assert.assertNotNull(project.getMessageService());
-		
+
 		Assert.assertNotNull(project.getUserId());
 
 		Assert.assertEquals(1, pms.getProjectMembers(project).size());
 		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectMembers(
+				project).get(0).getUserId());
+
+		Assert.assertEquals(msg.getUserId(), project.getUserId());
+	}
+
+	@Test
+	public void testCreateProjectWorkaround() throws Exception {
+		ServiceCredentials cred = new ServiceCredentials(id, password);
+		cred.setProtocol(ProtocolType.XMPP);
+		MsgService msg = frontend.addAccount(sessionId, cred);
+
+		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
+				msg);
+		try {
+			pms.assignUserToProject(project, msg.getUserId());
+		} catch (IllegalAccessException e) {
+			// we ignore that, just like the gui does
+		}
+
+		Assert.assertNotNull(project.getMessageService());
+		Assert.assertNotNull(project.getUserId());
+
+		Assert.assertEquals(1, pms.getProjectMembers(project).size());
+		Assert.assertEquals(project.getUserId().getUuid(), pms.getProjectMembers(
 				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
