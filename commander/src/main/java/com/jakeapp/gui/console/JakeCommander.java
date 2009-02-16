@@ -151,6 +151,61 @@ public class JakeCommander {
 
 	}
 
+	private abstract class LazyJakeObjectCommand extends LazyCommand {
+
+		public LazyJakeObjectCommand(String command, String help) {
+			super(command, command + " <UUID>", "needs Project;" + help);
+		}
+
+		public LazyJakeObjectCommand(String command) {
+			super(command, command + " <UUID>");
+		}
+
+		@Override
+		final public boolean handleArguments(String[] args) {
+			if (args.length != 2)
+				return false;
+			UUID uuid;
+			try {
+				uuid = UUID.fromString(args[1]);
+			} catch (IllegalArgumentException e) {
+				return false;
+			}
+			if (project == null) {
+				System.out.println("no project");
+				return true;
+			}
+			JakeObject jo = null;
+			try {
+				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
+					System.out.println("\t" + f);
+					if (uuid.equals(f.getJakeObject().getUuid()))
+						jo = f.getJakeObject();
+				}
+				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
+					System.out.println("\t" + f);
+					if (uuid.equals(f.getJakeObject().getUuid()))
+						jo = f.getJakeObject();
+				}
+			} catch (FrontendNotLoggedInException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (jo == null) {
+				System.out.println("JakeObject not found");
+				return true;
+			}
+			if (jo.getProject() == null)
+				jo.setProject(project);
+			handleArguments(jo);
+			return true;
+		}
+
+		protected abstract void handleArguments(JakeObject jo);
+
+	}
+
 	private abstract class LazyNoParamsCommand extends LazyCommand {
 
 		public LazyNoParamsCommand(String command, String help) {
@@ -538,48 +593,14 @@ public class JakeCommander {
 		}
 	};
 
-	class AnnounceCommand extends LazyCommand {
+	class AnnounceCommand extends LazyJakeObjectCommand {
 
 		public AnnounceCommand() {
-			super("announce", "announce <UUID>", "needs Project");
+			super("announce");
 		}
 
 		@Override
-		public boolean handleArguments(String[] args) {
-			if (args.length != 2)
-				return false;
-			UUID uuid;
-			try {
-				uuid = UUID.fromString(args[1]);
-			} catch (IllegalArgumentException e) {
-				return false;
-			}
-			if (project == null) {
-				System.out.println("no project");
-				return true;
-			}
-			JakeObject jo = null;
-			try {
-				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
-					System.out.println("\t" + f);
-					if (uuid.equals(f.getJakeObject().getUuid()))
-						jo = f.getJakeObject();
-				}
-				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
-					System.out.println("\t" + f);
-					if (uuid.equals(f.getJakeObject().getUuid()))
-						jo = f.getJakeObject();
-				}
-			} catch (FrontendNotLoggedInException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (jo == null) {
-				System.out.println("JakeObject not found");
-				return true;
-			}
-
+		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("announcing ... ");
 				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
@@ -588,10 +609,30 @@ public class JakeCommander {
 			} catch (Exception e) {
 				System.out.println("announcing failed");
 				e.printStackTrace();
-				return true;
 			}
+		}
+	};
 
-			return true;
+	class LogCommand extends LazyJakeObjectCommand {
+
+		public LogCommand() {
+			super("log", "show all logentries");
+		}
+
+		@Override
+		public void handleArguments(JakeObject jo) {
+			try {
+				System.out.println("looking up ... ");
+				for (LogEntry<?> le : pms.getLog(jo)) {
+					System.out.println("\t" + le);
+				}
+				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
+						new Date(), project, jo), "something new, something blue");
+				System.out.println("announcing done");
+			} catch (Exception e) {
+				System.out.println("announcing failed");
+				e.printStackTrace();
+			}
 		}
 	};
 
