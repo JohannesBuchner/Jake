@@ -13,11 +13,13 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 
 	private static final String project = "testproject1";
 
+	private static final String obj = "00000000-0000-000b-0000-000000000001";
+
 	@Override
 	protected String getDbTemplateName() {
 		return "oneuserWithOneProjectContainingNotes";
 	}
-	
+
 	@Override
 	@Before
 	public void setup() throws Exception {
@@ -28,7 +30,7 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		projectdir.mkdir();
 		Assert.assertTrue(folderExists(projectdir));
 	}
-	
+
 	@Test
 	public void testSetup() {
 		FifoStreamer fifo = new FifoStreamer();
@@ -57,10 +59,30 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin testuser1@localhost mypw");
 		fifo.addLine("openProject " + project);
-		fifo.addLine("announce 00000000-0000-000b-0000-000000000001");
-		fifo.addLine("listObjects");
-		fifo.addLine("projectLog");
-		fifo.addLine("log      00000000-0000-000b-0000-000000000001");
+		fifo.addLine("announce " + obj);
+		fifo.addLine("announce " + obj);
+		fifo.addLine("log      " + obj);
+		fifo.addLine("objectStatus " + obj);
+		fifo.addLine("coreLogout");
+		fifo.addLine("stop");
+		new JakeCommander(fifo);
+	}
+
+	@Test
+	public void objectCycle() {
+		FifoStreamer fifo = new FifoStreamer();
+		fifo.addLine("coreLogin testuser1@localhost mypw");
+		fifo.addLine("openProject " + project);
+		fifo.addLine("announce     " + obj);
+		fifo.addLine("lock         " + obj);
+		fifo.addLine("objectStatus " + obj);
+		fifo.addLine("unlock       " + obj);
+		fifo.addLine("objectStatus " + obj);
+		fifo.addLine("announce     " + obj);
+		fifo.addLine("objectStatus " + obj);
+		fifo.addLine("delete       " + obj);
+		fifo.addLine("objectStatus " + obj);
+		fifo.addLine("log          " + obj);
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");
 		new JakeCommander(fifo);
@@ -76,7 +98,7 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		fifo.addLine("stop");
 		new JakeCommander(fifo);
 	}
-	
+
 	@Test
 	public void interactiveRun() {
 		System.out.println("You are now in " + new File(".").getAbsolutePath());

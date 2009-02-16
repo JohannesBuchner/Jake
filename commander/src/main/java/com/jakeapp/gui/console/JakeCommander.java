@@ -14,14 +14,12 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.jakeapp.gui.console.commandline.CmdManager;
-import com.jakeapp.gui.console.commandline.Command;
-import com.jakeapp.gui.console.commandline.LazyCommand;
-import com.jakeapp.gui.console.commandline.StoppableCmdManager;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -32,6 +30,10 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.gui.console.commandline.CmdManager;
+import com.jakeapp.gui.console.commandline.Command;
+import com.jakeapp.gui.console.commandline.LazyCommand;
+import com.jakeapp.gui.console.commandline.StoppableCmdManager;
 
 /**
  * Test client accepting cli input
@@ -618,6 +620,66 @@ public class JakeCommander {
 			}
 		}
 	};
+	class DeleteCommand extends LazyJakeObjectCommand {
+
+		public DeleteCommand() {
+			super("delete");
+		}
+
+		@Override
+		public void handleArguments(JakeObject jo) {
+			try {
+				System.out.println("deleting ... ");
+				sync.announce(jo, new LogEntry<JakeObject>(null,
+						LogAction.JAKE_OBJECT_DELETE, new Date(), project, jo),
+						"something new, something red");
+				System.out.println("deleting done");
+			} catch (Exception e) {
+				System.out.println("deleting failed");
+				e.printStackTrace();
+			}
+		}
+	};
+	class LockCommand extends LazyJakeObjectCommand {
+
+		public LockCommand() {
+			super("lock");
+		}
+
+		@Override
+		public void handleArguments(JakeObject jo) {
+			try {
+				System.out.println("locking ... ");
+				sync.announce(jo, new LogEntry<JakeObject>(null,
+						LogAction.JAKE_OBJECT_LOCK, new Date(), project, jo),
+						"I'm working on this. Please wait for me to finish or contact me");
+				System.out.println("locking done");
+			} catch (Exception e) {
+				System.out.println("locking failed");
+				e.printStackTrace();
+			}
+		}
+	};
+	class UnLockCommand extends LazyJakeObjectCommand {
+
+		public UnLockCommand() {
+			super("unlock");
+		}
+
+		@Override
+		public void handleArguments(JakeObject jo) {
+			try {
+				System.out.println("unlocking ... ");
+				sync.announce(jo, new LogEntry<JakeObject>(null,
+						LogAction.JAKE_OBJECT_LOCK, new Date(), project, jo),
+						"I'm done working on this.");
+				System.out.println("unlocking done");
+			} catch (Exception e) {
+				System.out.println("unlocking failed");
+				e.printStackTrace();
+			}
+		}
+	};
 
 	class LogCommand extends LazyJakeObjectCommand {
 
@@ -639,7 +701,53 @@ public class JakeCommander {
 			}
 		}
 	};
-	
+	class JakeObjectStatusCommand extends LazyJakeObjectCommand {
+
+		public JakeObjectStatusCommand() {
+			super("objectStatus", "prints the synchronisation status of a JakeObject");
+		}
+
+		@Override
+		public void handleArguments(JakeObject jo) {
+			try {
+				System.out.println("getting JakeObject status ... ");
+				JakeObjectSyncStatus status = sync.getJakeObjectSyncStatus(project, jo);
+				System.out.println("\t" + status);
+				System.out.println("getting JakeObject status done");
+			} catch (Exception e) {
+				System.out.println("getting JakeObject status failed");
+				e.printStackTrace();
+			}
+		}
+	};
+	class ModifyCommand extends LazyJakeObjectCommand {
+
+		public ModifyCommand() {
+			super("modify", "changes the content of the JakeObject");
+		}
+
+		@Override
+		public void handleArguments(JakeObject jo) {
+			try {
+				if(jo instanceof NoteObject) {
+					NoteObject no = (NoteObject) jo;
+					no.setContent(no.getContent() + "\n" + "more content ...");
+					pms.getNoteManagingService().saveNote(no);
+				}else{
+					String relpath = ((FileObject)jo).getRelPath();
+					pms.getFileServices(project).getFullpath(relpath);
+				}
+				System.out.println("getting JakeObject status ... ");
+				JakeObjectSyncStatus status = sync.getJakeObjectSyncStatus(project, jo);
+				System.out.println("\t" + status);
+				System.out.println("getting JakeObject status done");
+			} catch (Exception e) {
+				System.out.println("getting JakeObject status failed");
+				e.printStackTrace();
+			}
+		}
+	};
+
 	class ProjectLogCommand extends LazyNoParamsCommand {
 
 		public ProjectLogCommand() {
