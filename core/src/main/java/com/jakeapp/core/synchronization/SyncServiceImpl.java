@@ -114,7 +114,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	@Transactional
 	private LogEntry<JakeObject> getMostRecentForLogEntry(JakeObject jo)
 			  throws NoSuchLogEntryException {
-		return (LogEntry<JakeObject>) db.getLogEntryDao(jo).getMostRecentFor(jo);
+		return db.getLogEntryDao(jo).getMostRecentFor(jo);
 	}
 
 	@Transactional
@@ -480,7 +480,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	public Iterable<JakeObjectSyncStatus> getNotes(Project p) {
 		List<JakeObjectSyncStatus> stat = new LinkedList<JakeObjectSyncStatus>();
 		for (NoteObject no : this.db.getNoteObjectDao(p).getAll()) {
-			boolean existsLocal = true; // always the case
+			boolean existsLocal = true; // always the case for notes
 			boolean existsRemote = false; // TODO
 			boolean inConflict = false;
 			boolean locallyModified = isLocallyModified(no);
@@ -546,20 +546,16 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		} catch (NoSuchJakeObjectException e) {
 			return false;
 		}
-
-		return null;
-
-		/*
-		 * if (!existsLocally(fo)) return false; IFSService fss =
-		 * getFSS(fo.getProject()); String rhash; try { rhash =
-		 * db.getLogEntryDao(fo).getMostRecentFor(fo).getChecksum(); } catch
-		 * (NoSuchLogEntryException e1) { rhash = null; } String lhash = null;
-		 * try { lhash = fss.calculateHashOverFile(fo.getRelPath()); } catch
-		 * (FileNotFoundException e) { } catch (InvalidFilenameException e) { }
-		 * catch (NotAReadableFileException e) { } if (lhash == null) { return
-		 * false; // doesn't exist locally } if (rhash == null) return true; //
-		 * doesn't exist remote else return rhash.equals(lhash);
-		 */
+		NoteObject orig;
+		try {
+			orig = db.getLogEntryDao(no).getLastPulledFor(no).getBelongsTo();
+		} catch (NoSuchLogEntryException e) {
+			return true;
+		}
+		if(orig.getContent().equals(no.getContent()))
+			return false;
+		else
+			return true;
 	}
 
 	@Override
