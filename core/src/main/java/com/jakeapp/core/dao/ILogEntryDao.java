@@ -116,6 +116,17 @@ public interface ILogEntryDao {
 	public List<LogEntry<? extends ILogable>> getAllUnprocessed();
 
 	/**
+	 * @return the unprocessed LogEntries of the JakeObject 
+	 */
+	boolean getUnprocessed(JakeObject jakeObject);
+
+	/**
+	 * @return Whether the JakeObject has unprocessed LogEntries
+	 */
+	public boolean hasUnprocessed(JakeObject jakeObject);
+
+
+	/**
 	 * @param project
 	 *            The <code>Project</code> to get unprocessed LogEntries for.
 	 * @return any LogEntry that has not been processed yet sorted by timestamp
@@ -213,8 +224,9 @@ public interface ILogEntryDao {
 	 * 
 	 * @param belongsTo
 	 * @return the LogEntry doing the lock: if the last in time is a
-	 *         {@link LogAction#JAKE_OBJECT_LOCK} null: if no Logentries were
-	 *         found or last was {@link LogAction#JAKE_OBJECT_UNLOCK}
+	 *         {@link LogAction#JAKE_OBJECT_LOCK} <br>
+	 *         null: if no Logentries were found or last was
+	 *         {@link LogAction#JAKE_OBJECT_UNLOCK}
 	 */
 	public LogEntry<JakeObject> getLock(JakeObject belongsTo);
 
@@ -291,12 +303,35 @@ public interface ILogEntryDao {
 
 	/**
 	 * Retrieves all LogEntries for a JakeObject, but only those
-	 * who have one of the specified LogActions.
+	 * that have one of the specified LogActions.
 	 * The Entries are sorted by creation date, desc.
 	 * @param jakeObject The JakeObject to retrieve LogEntries for.
 	 * @param actions A Collection of actions for which Logentries should be retrieved.
 	 * if this is left blank, no LogEntries will be returned.
 	 */
 	public List<LogEntry<JakeObject>> getAllOfJakeObject(JakeObject jakeObject, Collection<LogAction> actions);
+
+	/**
+	 * Retrieves all LogEntries for a JakeObject that have
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION} or
+	 * {@link LogAction#JAKE_OBJECT_DELETE} LogActions. The Entries are sorted by creation
+	 * date, desc.
+	 * 
+	 * @param jakeObject
+	 *            The JakeObject to retrieve LogEntries for.
+	 */
+	public Collection<LogEntry<JakeObject>> getVersionsOfJakeObject(JakeObject jakeObject);
+
+	/**
+	 * Retrieves the LogEntry for a JakeObject with 
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION} or
+	 * {@link LogAction#JAKE_OBJECT_DELETE} LogActions that was last processed. 
+	 * If none match, null is returned
+	 * 
+	 * @param jakeObject
+	 *            The JakeObject to retrieve LogEntries for.
+	 */
+	public LogEntry<JakeObject> getLastProcessedFor(JakeObject jakeObject);
+
 
 }

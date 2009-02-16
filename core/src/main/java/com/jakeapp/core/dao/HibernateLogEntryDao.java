@@ -115,6 +115,28 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
         return results;
         // TODO UNTESTED
 	}
+	
+	@Override
+	public boolean hasUnprocessed(JakeObject jakeObject) {
+		List<LogEntry<? extends ILogable>> results = this.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession().createQuery(
+						"FROM logentries WHERE processed = false AND objectuuid = ? ").setString(0,
+						jakeObject.getUuid().toString()).list();
+
+		return results.size() > 0;
+		// TODO UNTESTED
+	}
+	
+	@Override
+	public boolean getUnprocessed(JakeObject jakeObject) {
+		List<LogEntry<? extends ILogable>> results = this.getHibernateTemplate()
+				.getSessionFactory().getCurrentSession().createQuery(
+						"FROM logentries WHERE processed = false AND objectuuid = ? ").setString(0,
+						jakeObject.getUuid().toString()).list();
+
+		return results.size() > 0;
+		// TODO UNTESTED
+	}
 
 	@Override
 	public LogEntry<? extends ILogable> getUnprocessed(Project project)
@@ -143,12 +165,25 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 //	 * uuid, any of logAction, project, belongsTo may be null
 //  TODO @ Johannes: except for timestamp AND are &gt;= the supplied timestamp doesn't make sense
 // please take a look at the query if it looks ok for you
+// 
+// what I meant is findByExample, ignoring the timestamp. Of these results, 
+// only those newer than the given timestamp.
 
-
-        List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM logentries WHERE logAction = ? AND timestamp >= ?")
-                .setInteger(0, le.getLogAction().ordinal()).setDate(1, le.getTimestamp()).list();
-
+//        List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+//                createQuery("FROM logentries WHERE logAction = ? AND timestamp >= ?")
+//                .setInteger(0, le.getLogAction().ordinal()).setDate(1, le.getTimestamp()).list();
+		Date origTimestamp = le.getTimestamp();
+		le.setTimestamp(null);
+		List<LogEntry<? extends ILogable>> all = this.getHibernateTemplate()
+		.findByExample(le);
+		le.setTimestamp(origTimestamp);
+		List<LogEntry<? extends ILogable>> result = new LinkedList<LogEntry<? extends ILogable>>();
+		
+		for(LogEntry<? extends ILogable> r : all){
+			if(!r.getTimestamp().before(origTimestamp))
+				result.add(r);
+		}
+		
         return result;
         // TODO UNTESTED
 	}
@@ -158,12 +193,21 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			LogEntry<? extends ILogable> le) throws NullPointerException {
 		if (le.getTimestamp() == null)
 			throw new NullPointerException("timestamp not set");
-        List<LogEntry<? extends ILogable>> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery("FROM logentries WHERE logAction = ? AND timestamp < ?")
-                .setInteger(0, le.getLogAction().ordinal()).setDate(1, le.getTimestamp()).list();
 
+		Date origTimestamp = le.getTimestamp();
+		le.setTimestamp(null);
+		List<LogEntry<? extends ILogable>> all = this.getHibernateTemplate()
+		.findByExample(le);
+		le.setTimestamp(origTimestamp);
+		List<LogEntry<? extends ILogable>> result = new LinkedList<LogEntry<? extends ILogable>>();
+		
+		for(LogEntry<? extends ILogable> r : all){
+			if(!r.getTimestamp().after(origTimestamp))
+				result.add(r);
+		}
+		
         return result;
-
+        // TODO UNTESTED
 
 	}
 
@@ -263,11 +307,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * 
 	 * @param <T>
 	 */
-	private Collection<LogEntry<ProjectMember>> findTwoMatchingForProjectMember(
-			LogAction a, LogAction b, ProjectMember belongsTo) {
-        // TODO UNCHECKED
-        //a=LogAction.START_TRUSTING_PROJECTMEMBER
-        //b=LogAction.STOP_TRUSTING_PROJECTMEMBER
+	private Collection<LogEntry<ProjectMember>> findProjectMemberLogEntries(ProjectMember belongsTo) {
+		// TODO UNCHECKED
+		LogAction a = LogAction.START_TRUSTING_PROJECTMEMBER;
+		LogAction b = LogAction.STOP_TRUSTING_PROJECTMEMBER;
 
         List<LogEntry<ProjectMember>> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("FROM logentries WHERE objectuuid = ? AND (logAction = ? OR logAction = ?)")
@@ -278,7 +321,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	/**
-	 * finds all that match any of the two Logactions and belong to the given
+	 * finds all that match any of the two LogActions and belong to the given
 	 * JakeObject, sorted by timestamp
 	 * 
 	 * @param <T>
@@ -458,5 +501,27 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
         return results;
 
         // TODO UNCHECKED
+	}
+
+	@Override
+	public Collection<LogEntry<JakeObject>> getVersionsOfJakeObject(JakeObject jakeObject) {
+		return findTwoMatchingForJakeObject(LogAction.JAKE_OBJECT_NEW_VERSION,
+				LogAction.JAKE_OBJECT_DELETE, jakeObject);
+	}
+	
+	@Override
+	public LogEntry<JakeObject> getLastProcessedFor(JakeObject jakeObject) {
+		Collection<LogEntry<JakeObject>> results = findTwoMatchingForJakeObject(LogAction.JAKE_OBJECT_NEW_VERSION,
+				LogAction.JAKE_OBJECT_DELETE, jakeObject);
+		
+		// TODO: replace with efficient query.
+		
+		LogEntry<JakeObject> lastlog = null;
+		for(LogEntry<JakeObject> le : results) {
+			if(le.isProcessed())
+				lastlog = le;
+		}
+		
+		return lastlog;
 	}
 }
