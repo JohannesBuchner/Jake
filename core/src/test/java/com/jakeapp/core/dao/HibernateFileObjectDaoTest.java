@@ -21,15 +21,15 @@ import java.util.List;
 public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests {
     private static Logger log = Logger.getLogger(HibernateFileObjectDaoTest.class);
 
-    private IFileObjectDao fileObjecttDao;
+    private IFileObjectDao fileObjectDao;
     private HibernateTemplate template;
 
-    public IJakeObjectDao getFileObjecttDao() {
-        return fileObjecttDao;
+    public IJakeObjectDao getFileObjectDao() {
+        return fileObjectDao;
     }
 
-    public void setFileObjecttDao(IFileObjectDao fileObjecttDao) {
-        this.fileObjecttDao = fileObjecttDao;
+    public void setFileObjectDao(IFileObjectDao fileObjectDao) {
+        this.fileObjectDao = fileObjectDao;
     }
 
     public HibernateTemplate getTemplate() {
@@ -43,7 +43,7 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
     @Before
     public void setUp() {
         // Add your code here
-        this.setFileObjecttDao((IFileObjectDao) this.applicationContext.getBean("fileObjectDao"));
+        this.setFileObjectDao((IFileObjectDao) this.applicationContext.getBean("fileObjectDao"));
         this.setTemplate((HibernateTemplate) applicationContext.getBean("hibernateTemplate"));
         this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().begin();
     }
@@ -65,7 +65,7 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
                 null, // project
                 "/testPersist_test.txt");
 
-        fileObjecttDao.persist(obj1);
+        fileObjectDao.persist(obj1);
 
     }
 
@@ -77,10 +77,10 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
                 null, // project
                 "/testGet_test.txt");
 
-        fileObjecttDao.persist(obj1);
+        fileObjectDao.persist(obj1);
         FileObject result;
 
-        result = (FileObject) fileObjecttDao.get(obj1.getUuid());
+        result = (FileObject) fileObjectDao.get(obj1.getUuid());
         Assert.assertEquals(obj1, result);
     }
 
@@ -109,13 +109,13 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
                 "/testGetAll_test5.txt");
 
 
-        fileObjecttDao.persist(obj1);
-        fileObjecttDao.persist(obj2);
-        fileObjecttDao.persist(obj3);
-        fileObjecttDao.persist(obj4);
-        fileObjecttDao.persist(obj5);
+        fileObjectDao.persist(obj1);
+        fileObjectDao.persist(obj2);
+        fileObjectDao.persist(obj3);
+        fileObjectDao.persist(obj4);
+        fileObjectDao.persist(obj5);
 
-        List<FileObject> results = fileObjecttDao.getAll();
+        List<FileObject> results = fileObjectDao.getAll();
 
         Assert.assertTrue(results.contains(obj1));
         Assert.assertTrue(results.contains(obj2));
@@ -133,17 +133,17 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
                 null, // project
                 "/testDelete_test1.txt");
 
-                fileObjecttDao.persist(obj1);
+                fileObjectDao.persist(obj1);
         List<FileObject> results;
-        results = fileObjecttDao.getAll();
+        results = fileObjectDao.getAll();
 
         Assert.assertTrue(results.contains(obj1));
 
-        fileObjecttDao.delete(obj1);
+        fileObjectDao.delete(obj1);
 
         results.clear();
 
-        results = fileObjecttDao.getAll();
+        results = fileObjectDao.getAll();
 
         Assert.assertFalse(results.contains(obj1));
 
@@ -159,14 +159,14 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
                 null, // project
                 "/testAddTagTo_test1.txt");
 
-                fileObjecttDao.persist(obj1);
+                fileObjectDao.persist(obj1);
 
         Tag t1 = new Tag("testAddTagTo_tag1");
 
-        fileObjecttDao.addTagTo(obj1, t1);
+        fileObjectDao.addTagTo(obj1, t1);
 
 
-        List<Tag> tagResults = fileObjecttDao.getTagsFor(obj1);
+        List<Tag> tagResults = fileObjectDao.getTagsFor(obj1);
 
         Assert.assertTrue(tagResults.contains(t1));
     }
@@ -202,9 +202,9 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
         FileObject fileObject, result;
         fileObject = new FileObject(UUID.fromString("3d32858a-166f-4204-8074-d11a2d745b9d"), null, "/blabla");
 
-        fileObjecttDao.persist(fileObject);
+        fileObjectDao.persist(fileObject);
 
-        result = fileObjecttDao.get("/blabla");
+        result = fileObjectDao.get("/blabla");
 
         Assert.assertEquals(fileObject,  result);
 
