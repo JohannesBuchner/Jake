@@ -26,6 +26,5 @@ public class NoteObjectLogEntry extends LogEntry<NoteObject> implements Serializ
 		this(le.getUuid(), le.getLogAction(), le.getTimestamp(), le.getProject(), (NoteObject) le
 				.getBelongsTo(), le.getMember(), le.getComment(), le.getChecksum(), le
                 .isProcessed());
-        this.setObjectuuid(le.getUuid().toString());
 	}
 }
