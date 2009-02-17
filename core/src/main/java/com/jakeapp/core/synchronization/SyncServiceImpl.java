@@ -335,34 +335,47 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		return getIcServicesManager().getTransferService(p, getMyBackendUserid(p));
 	}
 
+	/**
+	 * Avoiding stub objects (without ID)
+	 * 
+	 * @param <T>
+	 * @param join
+	 * @return the FileObject or NoteObject from the Database
+	 * @throws NoSuchJakeObjectException
+	 * @throws IllegalArgumentException
+	 */
+	@Transactional
+	private <T extends JakeObject> T completeIncomingObject(T join)
+			throws IllegalArgumentException, NoSuchJakeObjectException {
+		if (isNoteObject(join)) {
+			return (T) db.getNoteObjectDao(join.getProject()).get(join.getUuid());
+		} else {
+			return (T) getFileObjectByRelpath(join.getProject(), ((FileObject) join).getRelPath());
+		}
+	}
+
 	@Transactional
 	public AttributedJakeObject getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
 		Project p = foin.getProject();
 		IFSService fss = getFSS(p);
+		ILogEntryDao led = db.getLogEntryDao(p);
 
-		String relpath = foin.getRelPath();
-
-		FileObject fo = foin;
-		boolean objectExistsLocally = fss.fileExists(relpath);
-		long lastModificationDate = 0;
-		if (objectExistsLocally) {
-			try {
-				lastModificationDate = fss.getLastModified(fo.getRelPath());
-			} catch (NotAFileException e) {
-			}
-		}
+		// 0 complete
+		FileObject fo;
 		try {
-			fo = getFileObjectByRelpath(p, fo.getRelPath());
+			fo = completeIncomingObject(foin);
 		} catch (NoSuchJakeObjectException e) {
-			fo = new FileObject(null, p, relpath);
+			fo = new FileObject(null, p, foin.getRelPath());
 		}
-		ILogEntryDao led = db.getLogEntryDao(fo);
+		// 1 exists?
+		boolean objectExistsLocally = fss.fileExists(fo.getRelPath());
+
+		// 2 last logAction
 		LogEntry<JakeObject> lastle = led.getExists(fo);
-		LogAction lastVersionLogAction = lastle.getLogAction();
-		if(lastle.getTimestamp().getTime() > lastModificationDate)
-			lastModificationDate = lastle.getTimestamp().getTime();
-		
+		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
+
+		// 3 locally modified?
 		boolean checksumDifferentFromLastNewVersionLogEntry;
 		try {
 			checksumDifferentFromLastNewVersionLogEntry = led.getLastPulledFor(fo).getChecksum()
@@ -372,72 +385,93 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 		} catch (NotAReadableFileException e) {
 			checksumDifferentFromLastNewVersionLogEntry = true;
 		}
+
+		// 4 timestamp
+		long lastModificationDate = 0;
+
+		if (lastVersionLogAction == null) {
+			if (objectExistsLocally) {
+				try {
+					lastModificationDate = fss.getLastModified(fo.getRelPath());
+				} catch (NotAFileException e) {
+				}
+			}
+		} else {
+			// do we have a newer file?
+			// TODO: remember to set the modification time on pull, otherwise
+			// this is always true
+			if (lastle.getTimestamp().getTime() > lastModificationDate)
+				lastModificationDate = lastle.getTimestamp().getTime();
+		}
+
+		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(fo);
+		// 6 lastprocessed
 		LogAction lastProcessedLogAction = led.getLastProcessedFor(fo).getLogAction();
-		LogEntry<JakeObject> lock = led.getLock(fo);
-		LogAction lastLockLogAction = null;
-		if (lock != null)
-			lastLockLogAction = lock.getLogAction();
+		// 7 lock
+		LogAction lastLockLogAction = getLogActionNullSafe(led.getLock(fo));
 
 		return new AttributedJakeObject(fo, lastVersionLogAction, lastLockLogAction,
 				objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate);
 	}
 
+	private LogAction getLogActionNullSafe(LogEntry<JakeObject> lock) {
+		if (lock == null)
+			return null;
+		else
+			return lock.getLogAction();
+	}
+
 	@Transactional
 	public AttributedJakeObject getJakeObjectSyncStatus(NoteObject noin) {
 		Project p = noin.getProject();
 		IFSService fss = getFSS(p);
-		
-		boolean objectExistsLocally = true;
-		NoteObject no = noin;
+		ILogEntryDao led = db.getLogEntryDao(p);
+
+		// 0 complete
+		NoteObject no;
+		// 1 exists?
+		boolean objectExistsLocally;
 		try {
-			no = db.getNoteObjectDao(p).get(noin.getUuid());
+			no = completeIncomingObject(noin);
+			objectExistsLocally = true;
 		} catch (NoSuchJakeObjectException e) {
+			no = noin;
 			objectExistsLocally = false;
 		}
 		String content = noin.getContent();
-		ILogEntryDao led = db.getLogEntryDao(no);
-		LogAction lastVersionLogAction = led.getExists(no).getLogAction();
-		
-		/*
-		boolean existsRemote = db.getLogEntryDao(no).getExists(no) != null;
-		boolean exists = existsLocal; // notes always exist if they exist
-										// locally
-		boolean inConflict = false;
-		boolean remotelyModified = db.getLogEntryDao(no).hasUnprocessed(no);
-		boolean locallyModified = isLocallyModified(no);
-		// notes always exist locally too, if they are known to exist remotely
-		boolean onlyRemote = false;
-		boolean onlyLocal;
-		try {
-			db.getLogEntryDao(no).getMostRecentFor(no);
-			onlyLocal = false;
-		} catch (NoSuchLogEntryException e) {
-			onlyLocal = true;
-		}
-		*/
-		
+
+		// 2 last logAction
+		LogEntry<JakeObject> lastle = led.getExists(no);
+		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
+
+		// 3 locally modified?
 		boolean checksumDifferentFromLastNewVersionLogEntry;
 		try {
-			checksumDifferentFromLastNewVersionLogEntry = led.getLastPulledFor(no).getBelongsTo().getContent().equals(content);
+			checksumDifferentFromLastNewVersionLogEntry = led.getLastPulledFor(no).getBelongsTo()
+					.getContent().equals(content);
 		} catch (NoSuchLogEntryException e) {
-			checksumDifferentFromLastNewVersionLogEntry = false; 
+			checksumDifferentFromLastNewVersionLogEntry = false;
 		}
-		boolean hasUnprocessedLogEntries = led.hasUnprocessed(no);
-		LogAction lastProcessedLogAction = led.getLastProcessedFor(no).getLogAction();
-		LogEntry<JakeObject> lock = led.getLock(no);
-		LogAction lastLockLogAction = null;
-		if(lock!=null)
-			lastLockLogAction = lock.getLogAction();
+
+		// 4 timestamp
 		long lastModificationDate = 0;
-		// TODO
-		// This should contain the correct values
+		if (lastle != null)
+			lastModificationDate = lastle.getTimestamp().getTime();
+
+		// 5 unprocessed
+		boolean hasUnprocessedLogEntries = led.hasUnprocessed(no);
+		// 6 lastprocessed
+		LogAction lastProcessedLogAction = getLogActionNullSafe(led.getLastProcessedFor(no));
+		// 7 lock
+		LogAction lastLockLogAction = getLogActionNullSafe(led.getLock(no));
+
 		return new AttributedJakeObject(no, lastVersionLogAction, lastLockLogAction,
 				objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate);
-		//return new AttributedJakeObject(no, 0, locallyModified, remotelyModified, onlyLocal,
-		//		onlyRemote, exists);
+
+
 	}
 
 	@Transactional
@@ -458,7 +492,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	@Transactional
 	public Iterable<AttributedJakeObject> getNotes(Project p) {
 		List<AttributedJakeObject> stat = new LinkedList<AttributedJakeObject>();
-		
+
 		// TODO: add deleted
 		for (NoteObject no : this.db.getNoteObjectDao(p).getAll()) {
 			stat.add(getJakeObjectSyncStatus(no));
@@ -755,16 +789,16 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 	@Transactional
 	public Iterable<AttributedJakeObject> getFiles(Project p) throws IOException {
 		IFSService fss = getFSS(p);
-	
+
 		List<String> files = fss.recursiveListFiles();
-	
+
 		List<FileObject> fileObjects = new LinkedList<FileObject>();
-		
+
 		// TODO: add deleted (from logEntries)
 		for (FileObject fo : db.getFileObjectDao(p).getAll()) {
 			fileObjects.add(fo);
 		}
-	
+
 		for (String relpath : files) {
 			FileObject fo = new FileObject(null, p, relpath);
 			fileObjects.add(fo);
@@ -774,7 +808,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IMessageRece
 			try {
 				stat.add(getJakeObjectSyncStatus(fo));
 			} catch (InvalidFilenameException e) {
-				log.info("we found a invalid filename. silently ignoring.",e);
+				log.info("we found a invalid filename. silently ignoring.", e);
 			}
 		}
 		return stat;
