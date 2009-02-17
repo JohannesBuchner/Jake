@@ -14,24 +14,29 @@ public class JakeObjectStatus {
 	private SyncStatus syncStatus;
 
 	/**
-	 * @see {@link LockStatus#getLockStatus(LogAction)},
-	 *      {@link Existance#getExistance(boolean, LogAction)}
-	 *      {@link SyncStatus#getSyncStatus(boolean, boolean, LogAction, boolean)}
-	 * 
 	 * @param lastVersionLogAction
 	 * @param lastLockLogAction
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
+	 *
 	 * @param hasUnprocessedLogEntries
 	 * @param lastProcessedLogAction
+	 * @see {@link LockStatus#getLockStatus(LogAction)},
+	 *      {@link Existance#getExistance(boolean, LogAction)}
+	 *      {@link SyncStatus#getSyncStatus(boolean, boolean, LogAction, boolean)}
 	 */
-	public JakeObjectStatus(LogAction lastVersionLogAction, LogAction lastLockLogAction,
-			boolean objectExistsLocally, boolean checksumDifferentFromLastNewVersionLogEntry,
-			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
+	public JakeObjectStatus(LogAction lastVersionLogAction,
+													LogAction lastLockLogAction, boolean objectExistsLocally,
+													boolean checksumDifferentFromLastNewVersionLogEntry,
+													boolean hasUnprocessedLogEntries,
+													LogAction lastProcessedLogAction) {
 		this.lockStatus = LockStatus.getLockStatus(lastLockLogAction);
-		this.existance = Existance.getExistance(objectExistsLocally, lastVersionLogAction);
-		this.syncStatus = SyncStatus.getSyncStatus(checksumDifferentFromLastNewVersionLogEntry,
-				hasUnprocessedLogEntries, lastProcessedLogAction, objectExistsLocally);
+		this.existance = Existance
+						.getExistance(objectExistsLocally, lastVersionLogAction);
+		this.syncStatus = SyncStatus
+						.getSyncStatus(checksumDifferentFromLastNewVersionLogEntry,
+										hasUnprocessedLogEntries, lastProcessedLogAction,
+										objectExistsLocally);
 	}
 
 
@@ -60,8 +65,7 @@ public class JakeObjectStatus {
 	 * @return does releasing a new version make any sense?
 	 */
 	public boolean isNewVersionable() {
-		return (getExistance() == Existance.EXISTS_LOCAL || getExistance() == Existance.EXISTS_ON_BOTH)
-				&& getSyncStatus() != SyncStatus.SYNC;
+		return (getExistance() == Existance.EXISTS_LOCAL || getExistance() == Existance.EXISTS_ON_BOTH) && getSyncStatus() != SyncStatus.SYNC;
 	}
 
 	/**
@@ -114,10 +118,6 @@ public class JakeObjectStatus {
 		return getExistance() == Existance.EXISTS_ON_BOTH;
 	}
 
-	public boolean isLocalModified() {
-		return isLocalAndRemote() && isModifiedLocally();
-	}
-
 	public boolean isModifiedLocally() {
 		return getSyncStatus() == SyncStatus.MODIFIED_LOCALLY;
 	}
@@ -129,7 +129,7 @@ public class JakeObjectStatus {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ":" + getExistance() + ":" + getSyncStatus() + ":"
-				+ getLockStatus();
+		return getClass()
+						.getSimpleName() + ":" + getExistance() + ":" + getSyncStatus() + ":" + getLockStatus();
 	}
 }

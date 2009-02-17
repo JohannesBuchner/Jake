@@ -67,9 +67,10 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton newBtn;
 	private JToggleButton conflictsBtn;
 
+	// use tree (true) or flat (false)
 	private boolean treeViewActive = true;
 
-	private JPopupMenu popupMenu = new JakePopupMenu();
+	private final JPopupMenu popupMenu = new JakePopupMenu();
 
 	/**
 	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
@@ -165,7 +166,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 	}
 
-	public void notifyNodeSelectionListeners(java.util.List<ProjectFilesTreeNode> objs) {
+	public void notifyNodeSelectionListeners(
+					java.util.List<ProjectFilesTreeNode> objs) {
 		log.debug("notify selection listeners");
 		for (NodeSelectionChanged c : nodeSelectionListeners) {
 			c.nodeSelectionChanged(new NodeSelectionChanged.NodeSelectedEvent(objs));
@@ -181,8 +183,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		instance = this;
 
 		// init resource map
-		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext().getResourceMap(FilePanel.class));
+		setResourceMap(
+						org.jdesktop.application.Application.getInstance(JakeMainApp.class)
+										.getContext().getResourceMap(FilePanel.class));
 
 
 		initComponents();
@@ -203,16 +206,24 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 */
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
-		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class, new ProjectFilesTableCellRenderer());
+		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class,
+						new ProjectFilesTableCellRenderer());
 
-		fileTreeTable.setDefaultRenderer(FileObjectStatusCell.class, new FileStatusTreeCellRenderer());
-		fileTreeTable.setDefaultRenderer(FileObjectLockedCell.class, new FileLockedTreeCellRenderer());
+		fileTreeTable.setDefaultRenderer(FileObjectStatusCell.class,
+						new FileStatusTreeCellRenderer());
+		fileTreeTable.setDefaultRenderer(FileObjectLockedCell.class,
+						new FileLockedTreeCellRenderer());
 
-		fileTable.setDefaultRenderer(FileObjectStatusCell.class, new FileStatusTreeCellRenderer());
-		fileTable.setDefaultRenderer(FileObjectLockedCell.class, new FileLockedTreeCellRenderer());
+		fileTable.setDefaultRenderer(FileObjectStatusCell.class,
+						new FileStatusTreeCellRenderer());
+		fileTable.setDefaultRenderer(FileObjectLockedCell.class,
+						new FileLockedTreeCellRenderer());
 
-		fileTreeTable.addMouseListener(new FileContainerMouseListener(this, fileTreeTable, FILETREETABLE_NODECOLUMN));
-		fileTable.addMouseListener(new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
+		fileTreeTable.addMouseListener(
+						new FileContainerMouseListener(this, fileTreeTable,
+										FILETREETABLE_NODECOLUMN));
+		fileTable.addMouseListener(
+						new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
 
 		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
 
@@ -235,7 +246,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	public List<ProjectFilesTreeNode> getSelectedNodes() {
 		java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
 		for (int row : fileTreeTable.getSelectedRows()) {
-			ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+			ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable
+							.getValueAt(row,
+											(treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
 			nodeObjs.add(node);
 		}
 
@@ -259,7 +272,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			java.util.List<FileObject> fileObjs = new ArrayList<FileObject>();
 			java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
 			for (int row : fileTreeTable.getSelectedRows()) {
-				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(row, (treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable
+								.getValueAt(row,
+												(treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
 				if (node.isFile()) {
 					fileObjs.add(node.getFileObject());
 				}
@@ -276,7 +291,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		private JTable container;
 		private int nodeColumn;
 
-		public FileContainerMouseListener(FilePanel p, JTable fileContainer, int nodeColumn) {
+		public FileContainerMouseListener(FilePanel p, JTable fileContainer,
+																			int nodeColumn) {
 			super();
 			this.panel = p;
 			this.container = fileContainer;
@@ -304,11 +320,13 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 				java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
 
-				log.debug("Selected rows: " + DebugHelper.arrayToString(container.getSelectedRows()));
+				log.debug("Selected rows: " + DebugHelper
+								.arrayToString(container.getSelectedRows()));
 
 				if (container.getSelectedRowCount() <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(rowNumber, nodeColumn);
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container
+									.getValueAt(rowNumber, nodeColumn);
 
 					if (node != null && node.isFile()) {
 						java.util.List<FileObject> fileObjs = new ArrayList<FileObject>();
@@ -323,7 +341,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				}
 
 				for (int currRow : container.getSelectedRows()) {
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(currRow, nodeColumn);
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container
+									.getValueAt(currRow, nodeColumn);
 					nodeObjs.add(node);
 				}
 
@@ -337,7 +356,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
 
 				for (int row : container.getSelectedRows()) {
-					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container.getValueAt(row, nodeColumn);
+					ProjectFilesTreeNode node = (ProjectFilesTreeNode) container
+									.getValueAt(row, nodeColumn);
 					if (node.isFile()) {
 						fileObjs.add(node.getFileObject());
 					}
@@ -355,8 +375,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		 * @param me
 		 */
 		private void showMenu(MouseEvent me) {
-			popupMenu.show(container, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+			popupMenu.show(container, (int) me.getPoint().getX(),
+							(int) me.getPoint().getY());
 		}
 	}
 
@@ -370,7 +390,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.setBackground(Color.WHITE);
 
 		// add control bar
-		final JPanel controlPanel = new JPanel(new MigLayout("wrap 2, ins 2, fill, gap 0! 0!"));
+		final JPanel controlPanel = new JPanel(
+						new MigLayout("wrap 2, ins 2, fill, gap 0! 0!"));
 		controlPanel.setBackground(Platform.getStyler().getFilterPaneColor(true));
 
 		// change color on window loose/gain focus
@@ -427,7 +448,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		newBtn.setUI(new GreenHudButtonUI());
 		controlPanel.add(newBtn, "right");
 
-		conflictsBtn = new JToggleButton(getResourceMap().getString("filterConflictsButton"));
+		conflictsBtn = new JToggleButton(
+						getResourceMap().getString("filterConflictsButton"));
 		conflictsBtn.setUI(new RedHudButtonUI());
 		controlPanel.add(conflictsBtn, "right, wrap");
 
@@ -473,7 +495,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 			// TODO: lazy loading !!!
 			try {
-				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject())));
+				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(
+								JakeMainApp.getCore().getProjectRootFolder(
+												JakeMainApp.getProject())));
 				fileTreeTable.setTreeTableModel(treeTableModel);
 			} catch (ProjectFolderMissingException e) {
 				e.printStackTrace();

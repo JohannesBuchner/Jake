@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.panels.FilePanel;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
 import net.roydesign.app.QuitJMenuItem;
@@ -31,7 +32,9 @@ public class JakeMenuBar extends JMenuBar {
 
 		// Get the application instance
 		Application app = Application.getInstance();
-		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(JakeMainView.class);
+		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application
+						.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
+						.getContext().getResourceMap(JakeMainView.class);
 
 
 		/****************************** Project *********************************/
@@ -102,9 +105,12 @@ public class JakeMenuBar extends JMenuBar {
 		helpMenu.setText(resourceMap.getString("helpMenu.text"));
 
 		JMenuItem visitWebsiteMenuItem = new JMenuItem();
-		javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getActionMap(JakeMainView.class, JakeMainView.getMainView());
+		javax.swing.ActionMap actionMap = org.jdesktop.application.Application
+						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+						.getActionMap(JakeMainView.class, JakeMainView.getMainView());
 		visitWebsiteMenuItem.setAction(actionMap.get("showJakeWebsite")); // NOI18N
-		visitWebsiteMenuItem.setText(resourceMap.getString("visitWebsiteMenuItem.text")); // NOI18N
+		visitWebsiteMenuItem
+						.setText(resourceMap.getString("visitWebsiteMenuItem.text")); // NOI18N
 		visitWebsiteMenuItem.setName("visitWebsiteMenuItem"); // NOI18N
 		helpMenu.add(visitWebsiteMenuItem);
 
@@ -114,25 +120,21 @@ public class JakeMenuBar extends JMenuBar {
 		//aboutMenuItem.setAction(actionMap.get("showAboutBox"));
 		aboutMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StandardMacAboutFrame aboutFrame =
-						  new StandardMacAboutFrame(AppUtilities.getAppName(), AppUtilities.getAppVersion());
-				aboutFrame.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
+				StandardMacAboutFrame aboutFrame = new StandardMacAboutFrame(
+								AppUtilities.getAppName(), AppUtilities.getAppVersion());
+				aboutFrame
+								.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
 				aboutFrame.setBuildVersion("001");
 				aboutFrame.setCopyright("Copyright 2007-2009, Best ASE Team TU Vienna");
-				aboutFrame.setCredits("<html><body>Jake<br>" +
-						  "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>" +
-						  "<br>We are proud to present you Jake." +
-						  "<b></b><br>" +
-						  "Send your Feedback to: " +
-						  "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>" +
-						  "</body></html>", "text/html");
+				aboutFrame.setCredits(
+								"<html><body>Jake<br>" + "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>" + "<br>We are proud to present you Jake." + "<b></b><br>" + "Send your Feedback to: " + "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>" + "</body></html>",
+								"text/html");
 				aboutFrame.setHyperlinkListener(new HyperlinkListener() {
 					public void hyperlinkUpdate(HyperlinkEvent e) {
 						if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 							try {
 								Desktop.getDesktop().browse(new URI(e.getURL().toString()));
-							}
-							catch (Exception ex) {
+							} catch (Exception ex) {
 								ex.printStackTrace();
 							}
 						}
@@ -143,11 +145,27 @@ public class JakeMenuBar extends JMenuBar {
 		});
 		// If the menu is not already present because it's provided by
 		// the OS (like on Mac OS X), then append it to our menu
-		if (!AboutJMenuItem.isAutomaticallyPresent())
-			helpMenu.add(aboutMenuItem);
+		if (!AboutJMenuItem.isAutomaticallyPresent()) helpMenu.add(aboutMenuItem);
 
 		this.add(helpMenu);
 
+
+		/***************************** Debug *****************************/
+		JMenu debugMenu = new JMenu();
+		debugMenu.setText("Debug");
+
+		JMenuItem reloadFileViewItem = new JMenuItem("Reload File View");
+		reloadFileViewItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				log.info("called: reload file view");
+				FilePanel.getInstance().resetFilter();
+			}
+		});
+		debugMenu.add(reloadFileViewItem);
+
+		this.add(debugMenu);
 
 		QuitJMenuItem quitMenuItem = app.getQuitJMenuItem();
 		quitMenuItem.addActionListener(new ActionListener() {
@@ -155,8 +173,7 @@ public class JakeMenuBar extends JMenuBar {
 				quit();
 			}
 		});
-		if (!QuitJMenuItem.isAutomaticallyPresent())
-			projectMenu.addSeparator();
+		if (!QuitJMenuItem.isAutomaticallyPresent()) projectMenu.addSeparator();
 		projectMenu.add(quitMenuItem);
 
 		// add special mac os event listener
