@@ -57,23 +57,6 @@ public abstract class FriendlySyncService implements IFriendlySyncService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.jakeapp.core.synchronization.IFriendlySyncService#pullObjects(com
-	 * .jakeapp.core.domain.Project)
-	 */
-	public void pullObjects(Project project) throws IllegalArgumentException, NotLoggedInException {
-		for (FileObject fo : getPullableFileObjects(project)) {
-			try {
-				pullObject(fo);
-			} catch (NoSuchLogEntryException e) {
-			}
-		}
-		// TODO: pull notes
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * com.jakeapp.core.synchronization.IFriendlySyncService#pullObjects(java
 	 * .lang.Iterable)
 	 */

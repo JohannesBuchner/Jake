@@ -15,6 +15,8 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 
 	private static final String obj = "00000000-0000-000b-0000-000000000001";
 
+	private static final String nonexistantobj = "FFFFFFFF-0000-000b-0000-000000000001";
+	
 	@Override
 	protected String getDbTemplateName() {
 		return "oneuserWithOneProjectContainingNotes";
@@ -73,7 +75,11 @@ public class AnnounceRuns extends TestDBEnabledTestCase {
 		FifoStreamer fifo = new FifoStreamer();
 		fifo.addLine("coreLogin testuser1@localhost mypw");
 		fifo.addLine("openProject " + project);
+		fifo.addLine("objectStatus " + obj);
 		fifo.addLine("announce     " + obj);
+		fifo.addLine("objectStatus " + obj);
+		fifo.addLine("modify       " + obj);
+		fifo.addLine("objectStatus " + obj);
 		fifo.addLine("lock         " + obj);
 		fifo.addLine("objectStatus " + obj);
 		fifo.addLine("unlock       " + obj);

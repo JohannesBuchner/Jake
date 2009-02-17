@@ -139,7 +139,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public LogEntry<? extends ILogable> getUnprocessed(Project project)
+	public LogEntry<? extends ILogable> getNextUnprocessed(Project project)
 			throws NoSuchProjectException, NoSuchLogEntryException {
 		return getAllUnprocessed().get(0); // we don't have other projects in this context
         // TODO UNTESTED
@@ -524,4 +524,15 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		
 		return lastlog;
 	}
+	/*
+	@Override
+	public List<JakeObject> getDeleted(Project p) {
+		List<LogEntry<? extends ILogable>> results = this.getHibernateTemplate()
+		.getSessionFactory().getCurrentSession().createQuery(
+				"FROM logentries WHERE objectuuid = ? ").setString(0,
+				jakeObject.getUuid().toString()).list();
+
+		
+		return results;
+	}*/
 }

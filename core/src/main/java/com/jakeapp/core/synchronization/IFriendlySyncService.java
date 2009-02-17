@@ -27,12 +27,6 @@ public interface IFriendlySyncService extends ISyncService {
 	public void poke(Project project);
 
 	/**
-	 * @throws NotLoggedInException 
-	 * @see ISyncService#pullObject(JakeObject)
-	 */
-	public void pullObjects(Project project) throws IllegalArgumentException, NotLoggedInException;
-
-	/**
 	 * @throws NoSuchLogEntryException
 	 * @throws IllegalArgumentException 
 	 * @throws NotLoggedInException 

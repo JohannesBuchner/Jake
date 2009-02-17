@@ -45,7 +45,8 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		pms = frontend.getProjectsManagingService(sessionId);
 	}
 
-
+	
+	// this fails == bug 32
 	@Test
 	public void testCreateProject() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password);
@@ -76,6 +77,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		pms.assignUserToProject(project, msg.getUserId());
 	}
 
+	// this fails == bug 33
 	@Test
 	public void testCreateAndAssignAfterwards() throws Exception {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),

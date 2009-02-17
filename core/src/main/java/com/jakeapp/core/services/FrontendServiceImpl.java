@@ -11,7 +11,6 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
-import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
@@ -39,7 +38,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	
 	private IServiceCredentialsDao serviceCredentialsDao;
 
-	/* this is hardwired because there will always be only one sync. EVVAAR!! */
 	private IFriendlySyncService sync;
 	
 	/* begin 

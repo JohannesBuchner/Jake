@@ -3,6 +3,7 @@ package com.jakeapp.gui.console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -27,8 +28,8 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.gui.console.commandline.CmdManager;
 import com.jakeapp.gui.console.commandline.Command;
@@ -40,8 +41,7 @@ import com.jakeapp.gui.console.commandline.StoppableCmdManager;
  */
 public class JakeCommander {
 
-	
-	
+
 	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(JakeCommander.class);
 
@@ -179,11 +179,11 @@ public class JakeCommander {
 			}
 			JakeObject jo = null;
 			try {
-				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
+				for (AttributedJakeObject f : sync.getNotes(project)) {
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
-				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
+				for (AttributedJakeObject f : sync.getFiles(project)) {
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
@@ -474,7 +474,7 @@ public class JakeCommander {
 				} catch (IllegalAccessException e) {
 					// we ignore that, just like the gui does
 				}
-				
+
 				System.out.println("opening project done");
 			} catch (Exception e) {
 				System.out.println("opening project failed");
@@ -586,10 +586,10 @@ public class JakeCommander {
 				return;
 			}
 			try {
-				for (JakeObjectSyncStatus f : sync.getNotes(project)) {
+				for (AttributedJakeObject f : sync.getNotes(project)) {
 					System.out.println("\t" + f);
 				}
-				for (JakeObjectSyncStatus f : sync.getFiles(project)) {
+				for (AttributedJakeObject f : sync.getFiles(project)) {
 					System.out.println("\t" + f);
 				}
 			} catch (FrontendNotLoggedInException e) {
@@ -610,9 +610,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("announcing ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null,
-						LogAction.JAKE_OBJECT_NEW_VERSION, new Date(), project, jo),
-						"something new, something blue");
+				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
+						new Date(), project, jo), "something new, something blue");
 				System.out.println("announcing done");
 			} catch (Exception e) {
 				System.out.println("announcing failed");
@@ -620,6 +619,7 @@ public class JakeCommander {
 			}
 		}
 	};
+
 	class DeleteCommand extends LazyJakeObjectCommand {
 
 		public DeleteCommand() {
@@ -630,9 +630,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("deleting ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null,
-						LogAction.JAKE_OBJECT_DELETE, new Date(), project, jo),
-						"something new, something red");
+				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_DELETE,
+						new Date(), project, jo), "something new, something red");
 				System.out.println("deleting done");
 			} catch (Exception e) {
 				System.out.println("deleting failed");
@@ -640,6 +639,7 @@ public class JakeCommander {
 			}
 		}
 	};
+
 	class LockCommand extends LazyJakeObjectCommand {
 
 		public LockCommand() {
@@ -650,8 +650,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("locking ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null,
-						LogAction.JAKE_OBJECT_LOCK, new Date(), project, jo),
+				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_LOCK,
+						new Date(), project, jo),
 						"I'm working on this. Please wait for me to finish or contact me");
 				System.out.println("locking done");
 			} catch (Exception e) {
@@ -660,6 +660,7 @@ public class JakeCommander {
 			}
 		}
 	};
+
 	class UnLockCommand extends LazyJakeObjectCommand {
 
 		public UnLockCommand() {
@@ -670,9 +671,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("unlocking ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null,
-						LogAction.JAKE_OBJECT_LOCK, new Date(), project, jo),
-						"I'm done working on this.");
+				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_UNLOCK,
+						new Date(), project, jo), "I'm done working on this.");
 				System.out.println("unlocking done");
 			} catch (Exception e) {
 				System.out.println("unlocking failed");
@@ -701,18 +701,21 @@ public class JakeCommander {
 			}
 		}
 	};
+
 	class JakeObjectStatusCommand extends LazyJakeObjectCommand {
 
 		public JakeObjectStatusCommand() {
-			super("objectStatus", "prints the synchronisation status of a JakeObject");
+			super("objectStatus", "prints the synchronisation+lock status of a JakeObject");
 		}
 
 		@Override
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("getting JakeObject status ... ");
-				JakeObjectSyncStatus status = sync.getJakeObjectSyncStatus(project, jo);
-				System.out.println("\t" + status);
+				AttributedJakeObject status = sync.getJakeObjectSyncStatus(jo);
+				System.out.println("\t" + jo);
+				System.out.println("\t\t" + status);
+				System.out.println("\t\t" + sync.getLock(jo));
 				System.out.println("getting JakeObject status done");
 			} catch (Exception e) {
 				System.out.println("getting JakeObject status failed");
@@ -720,6 +723,7 @@ public class JakeCommander {
 			}
 		}
 	};
+
 	class ModifyCommand extends LazyJakeObjectCommand {
 
 		public ModifyCommand() {
@@ -729,20 +733,19 @@ public class JakeCommander {
 		@Override
 		public void handleArguments(JakeObject jo) {
 			try {
-				if(jo instanceof NoteObject) {
+				System.out.println("modifying the JakeObject ... ");
+				if (jo instanceof NoteObject) {
 					NoteObject no = (NoteObject) jo;
 					no.setContent(no.getContent() + "\n" + "more content ...");
 					pms.getNoteManagingService().saveNote(no);
-				}else{
-					String relpath = ((FileObject)jo).getRelPath();
-					pms.getFileServices(project).getFullpath(relpath);
+				} else {
+					FileWriter fw = new FileWriter(sync.getFile((FileObject) jo), true);
+					fw.append('.');
+					fw.close();
 				}
-				System.out.println("getting JakeObject status ... ");
-				JakeObjectSyncStatus status = sync.getJakeObjectSyncStatus(project, jo);
-				System.out.println("\t" + status);
-				System.out.println("getting JakeObject status done");
+				System.out.println("modifying the JakeObject done");
 			} catch (Exception e) {
-				System.out.println("getting JakeObject status failed");
+				System.out.println("modifying the JakeObject failed");
 				e.printStackTrace();
 			}
 		}

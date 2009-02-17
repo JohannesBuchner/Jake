@@ -136,7 +136,7 @@ public interface ILogEntryDao {
 	 * @throws NoSuchLogEntryException
 	 *             if there is no unprocessed <code>LogEntry</code>.
 	 */
-	public LogEntry<? extends ILogable> getUnprocessed(Project project)
+	public LogEntry<? extends ILogable> getNextUnprocessed(Project project)
 			throws NoSuchProjectException, NoSuchLogEntryException;
 
 	/**

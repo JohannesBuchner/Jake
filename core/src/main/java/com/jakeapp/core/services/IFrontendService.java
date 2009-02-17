@@ -1,24 +1,16 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Project;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAFileException;
-import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This is the only visible interface to other components accessing the jake

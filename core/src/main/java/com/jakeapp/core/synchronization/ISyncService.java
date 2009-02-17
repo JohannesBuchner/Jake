@@ -112,17 +112,6 @@ public interface ISyncService {
 	/* Project member changes: just do a poke */
 
 	/**
-	 * Gets a list of all {@link FileObject}s that are currently in conflict
-	 *
-	 * @param project the Project from which the changed objects should be shown
-	 * @return a list of all out-of-sync JakeObjects
-	 * @throws IllegalArgumentException if the supplied Project is null or invalid
-	 */
-	public Iterable<FileObject> getFileObjectsInConflict(Project project)
-			  throws IllegalArgumentException;
-
-
-	/**
 	 * Tries to find out if the supplied object is softlocked or not
 	 *
 	 * @param object the {@link JakeObject} to query
@@ -151,26 +140,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public Iterable<JakeObjectSyncStatus> getFiles(Project p) throws IOException;
-
-	/**
-	 * @param jo
-	 * @return
-	 */
-	public boolean isObjectInConflict(JakeObject jo);
-
-	/**
-	 * @param project
-	 * @return
-	 */
-	public Iterable<FileObject> getPullableFileObjects(Project project);
-
-	/**
-	 * @param fo
-	 * @return
-	 */
-	public boolean localIsNewest(JakeObject fo);
-
+	public Iterable<AttributedJakeObject> getFiles(Project p) throws IOException;
 
 	/**
 	 * Invites a User to a project.
@@ -201,66 +171,24 @@ public interface ISyncService {
 	void getTags(JakeObject jo);
 
 	/**
-	 * gets if the NoteObject was modified locally
-	 *
-	 * @param noin
-	 * @return
-	 */
-	@Transactional
-	public Boolean isLocallyModified(NoteObject no);
-
-	/**
-	 * Finds out if the JakeObject exists or if it just happened to be alive at
-	 * some point in history
-	 *
-	 * @param jo
-	 * @return
-	 */
-	@Transactional
-	public Boolean isDeleted(JakeObject jo);
-
-	/**
-	 * @param jo
-	 * @return
-	 * @throws InvalidFilenameException
-	 * @throws IOException
-	 */
-	public Boolean isLocallyModified(JakeObject jo) throws InvalidFilenameException,
-			  IOException;
-
-	/**
-	 * @param fo
-	 * @return
-	 * @throws IOException
-	 */
-	public Boolean existsLocally(FileObject fo) throws IOException;
-
-	/**
-	 * @param jo
-	 * @return
-	 */
-	public boolean isPullable(JakeObject jo);
-
-	/**
 	 * gets all Notes and their state
 	 *
 	 * @param p
 	 * @return
 	 * @throws IOException
 	 */
-	Iterable<JakeObjectSyncStatus> getNotes(Project p) throws IOException;
+	public Iterable<AttributedJakeObject> getNotes(Project p) throws IOException;
 
 	/**
 	 * gets the SyncStatus for a specific JakeObject
 	 *
-	 * @param p
 	 * @param fo
 	 * @return
 	 * @throws InvalidFilenameException
 	 * @throws NotAReadableFileException
 	 * @throws IOException
 	 */
-	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, JakeObject fo)
+	public AttributedJakeObject getJakeObjectSyncStatus(JakeObject fo)
 			  throws InvalidFilenameException, NotAReadableFileException, IOException;
 
 	/**
