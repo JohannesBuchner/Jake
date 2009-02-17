@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.EventsTableModel;
@@ -143,18 +144,23 @@ public class InspectorPanel extends JXPanel implements
 		eventsTableModel.setProject(null);
 
 		if (getFileObject() != null && isFileContext()) {
-			File file = getFileObject().getAbsolutePath();
+			File file = null;
+			try {
+				file = JakeMainApp.getCore().getFile(getFileObject());
+			} catch (FileOperationFailedException e) {
+				ExceptionUtilities.showError(e);
+			}
 			icoLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
 
 			nameLabel.setText(StringUtilities.htmlize(StringUtilities.bold(
-					  FileObjectHelper.getName(getFileObject().getAbsolutePath()))));
+					  FileObjectHelper.getName(getFileObject().getRelPath()))));
 
 			sizeLabel.setText(FileObjectHelper.getSizeHR(getFileObject()));
 
 			// TODO: @Chris: update tags
 
 			fullPathLabel.setText(
-					  FileObjectHelper.getPath(getFileObject().getAbsolutePath()));
+					  FileObjectHelper.getPath(getFileObject().getRelPath()));
 			log.debug(fullPathLabel.getText());
 			lastAccessTimeAndUser.setText(StringUtilities.htmlize(Translator.get(getResourceMap(), "byLabel",
 					  FileObjectHelper.getTimeRel(getFileObject()),

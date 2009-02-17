@@ -1,7 +1,5 @@
 package com.jakeapp.gui.swing.exceptions;
 
-import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class NestedException extends Exception {
 
 	}
 
-	public NestedException(FrontendNotLoggedInException e) {
+	public NestedException(Exception e) {
 		append(e);
 	}
 

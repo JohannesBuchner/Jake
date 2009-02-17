@@ -1,7 +1,10 @@
 package com.jakeapp.gui.swing.actions;
 
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -33,9 +36,11 @@ public class OpenFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			Desktop.getDesktop().open(getSingleNode().getFileObject().getAbsolutePath());
+			Desktop.getDesktop().open(JakeMainApp.getCore().getFile(getSingleNode().getFileObject()));
 		} catch (IOException e1) {
-			log.warn("failed opening", e1);
+			ExceptionUtilities.showError(e1);
+		} catch (FileOperationFailedException e1) {
+			ExceptionUtilities.showError(e1);
 		}
 		/*
 		if (getSingleNode().isFile()) {

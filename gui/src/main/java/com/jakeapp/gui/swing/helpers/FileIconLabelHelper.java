@@ -1,5 +1,8 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -15,13 +18,20 @@ public class FileIconLabelHelper {
 	private static JFileChooser fileChooser = new JFileChooser();
 
 	/**
-	 * @param file
-	 * @return
+	 * @param fo
+	 * @return Icon Component
 	 */
-	public static Component getIconLabel(File file) {
+	public static Component getIconLabel(FileObject fo) {
 		JLabel label = new JLabel();
 		label.setOpaque(true);
 		label.setBackground(new Color(255, 255, 255, 0));
+
+		File file = null;
+		try {
+			file = JakeMainApp.getCore().getFile(fo);
+		} catch (FileOperationFailedException e) {
+			ExceptionUtilities.showError(e);
+		}
 
 		// TODO: resolve this error!
 		if (file == null) {

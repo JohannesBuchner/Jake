@@ -1,12 +1,11 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
-import javax.swing.table.TableCellRenderer;
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.io.File;
 
 /**
  * Renders file nodes in the ProjectFilesTable
@@ -21,11 +20,7 @@ public class ProjectFilesTableCellRenderer implements TableCellRenderer {
 
 		ProjectFilesTreeNode node = (ProjectFilesTreeNode) value;
 
-		// TODO: This should be refactored (DRY, we have the same stuff in the TreeCellRenderer)
-		File file;
-		file = node.getFileObject().getAbsolutePath();
-
-		Component c = FileIconLabelHelper.getIconLabel(file);
+		Component c = FileIconLabelHelper.getIconLabel(node.getFileObject());
 
 		if (isSelected) {
 			c.setBackground(table.getSelectionBackground());

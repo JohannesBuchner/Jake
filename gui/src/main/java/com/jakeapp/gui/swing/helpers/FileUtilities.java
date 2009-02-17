@@ -1,7 +1,10 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import net.roydesign.ui.FolderDialog;
 import org.apache.log4j.Logger;
 
@@ -382,5 +385,21 @@ public class FileUtilities {
 
 		log.debug("out: " + path.substring(0, sepPosLast));
 		return path.substring(0, sepPosLast);
+	}
+
+	/**
+	 * Get the absolute Path for a FileObject
+	 * Does error handling, may return "" for the file.
+	 *
+	 * @param fo : The File Object
+	 * @return		: FileString or "". File may not exist on harddisk.
+	 */
+	public static String getAbsPath(FileObject fo) {
+		try {
+			return JakeMainApp.getCore().getFile(fo).getAbsolutePath();
+		} catch (FileOperationFailedException e) {
+			ExceptionUtilities.showError(e);
+			return "";
+		}
 	}
 }

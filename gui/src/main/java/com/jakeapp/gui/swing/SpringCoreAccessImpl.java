@@ -16,6 +16,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -1451,6 +1452,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 		 */
 		return this.getFrontendService().login(getSessionId(), service, password, rememberPassword);
+	}
+
+
+	@Override
+	public File getFile(FileObject fo) throws FileOperationFailedException {
+		IFriendlySyncService sync = this.frontendService.getSyncService(this.sessionId);
+		try {
+			return sync.getFile(fo);
+		} catch (IOException e) {
+			throw new FileOperationFailedException(e);
+		}
 	}
 
 	/**

@@ -496,7 +496,7 @@ public class CoreAccessMock implements ICoreAccess {
 	@Override
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file) {
 		String filename = file.getRelPath();
-		
+
 		long moddate = new File(project.getRootPath(), file.getRelPath()).lastModified();
 
 		if (filename.contains("c")) {
@@ -973,6 +973,12 @@ public class CoreAccessMock implements ICoreAccess {
 	public AvailableLaterObject<Boolean> login(MsgService service,
 															 String password, boolean rememberPassword) {
 		return new AvailableNowObject<Boolean>(true);
+	}
+
+	@Override
+	public File getFile(FileObject fo) throws FileOperationFailedException {
+
+		return null;
 	}
 
 	/*

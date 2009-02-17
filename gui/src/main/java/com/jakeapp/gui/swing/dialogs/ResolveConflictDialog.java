@@ -52,7 +52,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		initDialog();
 
 		// set custom properties
-		setDialogTitle(getResourceMap().getString("resolveTitle") + " " + FileObjectHelper.getName(fo.getAbsolutePath()));
+		setDialogTitle(getResourceMap().getString("resolveTitle") + " " + FileObjectHelper.getName(fo.getRelPath()));
 		setMessage("resolveHeader");
 		setPicture("/icons/file-conflict-large.png");
 	}
@@ -70,11 +70,15 @@ public class ResolveConflictDialog extends JakeDialog {
 		JXHyperlink path = new JXHyperlink(new JakeAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GuiUtilities.selectFileInFileViewer(FileObjectHelper.getPath(fo.getAbsolutePath()));
+				try {
+					GuiUtilities.selectFileInFileViewer(FileObjectHelper.getPath(JakeMainApp.getCore().getFile(fo)));
+				} catch (FileOperationFailedException ex) {
+					ExceptionUtilities.showError(ex);
+				}
 			}
 		});
 		// surround with html to wrap text
-		path.setText(fo.getAbsolutePath().toString());
+		path.setText(FileUtilities.getAbsPath(fo));
 
 		//TODO: works on windows only?
 		path.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -83,7 +87,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		hyp.add(path, "growy");
 		this.add(hyp, "gapbottom 12");
 
-		ICoreAccess core = JakeMainApp.getApp().getCore();
+		ICoreAccess core = JakeMainApp.getCore();
 
 		// what are the differences?
 		// editor, size, time

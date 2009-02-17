@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -26,13 +27,42 @@ public class FileObjectHelper {
 	}
 
 	/**
+	 * Returns the name of a file.
+	 *
+	 * @param file
+	 * @return
+	 */
+	public static String getName(String file) {
+		return getName(new File(file));
+	}
+
+	/**
 	 * Returns the path of a file (without name)
 	 *
 	 * @param file
 	 * @return
 	 */
 	public static String getPath(File file) {
-		return FileUtilities.getPathFromPathWithFile(file.getPath());
+		return getPath(file.getPath());
+	}
+
+	/**
+	 * Returns the Path of a file (without name)
+	 *
+	 * @param fo: The jake fileobject
+	 * @return string of file path (without name) OR ""
+	 */
+	public static String getPath(FileObject fo) {
+		try {
+			return getPath(JakeMainApp.getCore().getFile(fo));
+		} catch (FileOperationFailedException e) {
+			ExceptionUtilities.showError(e);
+			return "";
+		}
+	}
+
+	public static String getPath(String path) {
+		return FileUtilities.getPathFromPathWithFile(path);
 	}
 
 	/**
@@ -43,7 +73,7 @@ public class FileObjectHelper {
 	 * @return human readable file size.
 	 */
 	public static String getSizeHR(FileObject fo) {
-		return FileUtilities.getSize(JakeMainApp.getApp().getCore().getLocalFileSize(fo), 1, false);
+		return FileUtilities.getSize(JakeMainApp.getCore().getLocalFileSize(fo), 1, false);
 	}
 
 	/**
@@ -115,6 +145,4 @@ public class FileObjectHelper {
 			return "<no log found>";
 		}
 	}
-
-
 }

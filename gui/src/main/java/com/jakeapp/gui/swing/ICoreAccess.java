@@ -728,6 +728,14 @@ public interface ICoreAccess {
 	 * @return An object reporting the progress of the login
 	 */
 	AvailableLaterObject<Boolean> login(MsgService service, String password, boolean rememberPassword);
+
+	/**
+	 * Returns a java file class for the FileObject
+	 *
+	 * @param fo The wrapped File Object
+	 * @return java file class
+	 */
+	File getFile(FileObject fo) throws FileOperationFailedException;
 }
 
 

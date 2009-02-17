@@ -4,13 +4,10 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
-import com.jakeapp.jake.ics.status.IStatusService;
-import com.jakeapp.jake.ics.users.IUsersService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
@@ -198,12 +195,14 @@ public interface ISyncService {
 
 	/**
 	 * Gets the Tags for the object
+	 *
 	 * @param jo
 	 */
 	void getTags(JakeObject jo);
 
 	/**
 	 * gets if the NoteObject was modified locally
+	 *
 	 * @param noin
 	 * @return
 	 */
@@ -213,7 +212,7 @@ public interface ISyncService {
 	/**
 	 * Finds out if the JakeObject exists or if it just happened to be alive at
 	 * some point in history
-	 * 
+	 *
 	 * @param jo
 	 * @return
 	 */
@@ -221,7 +220,6 @@ public interface ISyncService {
 	public Boolean isDeleted(JakeObject jo);
 
 	/**
-	 * 
 	 * @param jo
 	 * @return
 	 * @throws InvalidFilenameException
@@ -231,7 +229,6 @@ public interface ISyncService {
 			  IOException;
 
 	/**
-	 * 
 	 * @param fo
 	 * @return
 	 * @throws IOException
@@ -239,7 +236,6 @@ public interface ISyncService {
 	public Boolean existsLocally(FileObject fo) throws IOException;
 
 	/**
-	 * 
 	 * @param jo
 	 * @return
 	 */
@@ -247,6 +243,7 @@ public interface ISyncService {
 
 	/**
 	 * gets all Notes and their state
+	 *
 	 * @param p
 	 * @return
 	 * @throws IOException
@@ -255,7 +252,7 @@ public interface ISyncService {
 
 	/**
 	 * gets the SyncStatus for a specific JakeObject
-	 * @param sessionId
+	 *
 	 * @param p
 	 * @param fo
 	 * @return
@@ -264,11 +261,11 @@ public interface ISyncService {
 	 * @throws IOException
 	 */
 	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project p, JakeObject fo)
-			throws InvalidFilenameException, NotAReadableFileException, IOException;
+			  throws InvalidFilenameException, NotAReadableFileException, IOException;
 
 	/**
 	 * returns the local file represented by the given FileObject
-	 * 
+	 *
 	 * @param fo
 	 * @return
 	 * @throws IOException

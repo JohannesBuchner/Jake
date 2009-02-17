@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public class ImportFileAction extends FileAction {
@@ -25,7 +24,7 @@ public class ImportFileAction extends FileAction {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-			 getString("importMenuItem.text");
+				  getString("importMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
@@ -60,7 +59,7 @@ public class ImportFileAction extends FileAction {
 			ProjectFilesTreeNode node = getSingleNode();
 
 			if (node.isFile()) {
-				destFolder = FileObjectHelper.getPath(node.getFileObject().getAbsolutePath());
+				destFolder = FileObjectHelper.getPath(node.getFileObject());
 			} else if (node.isFolder()) {
 				destFolder = node.getFolderObject().getRelPath();
 			}
@@ -68,6 +67,6 @@ public class ImportFileAction extends FileAction {
 
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
 		JakeExecutor.exec(new ImportFileFolderWorker(
-			 Arrays.asList(dialog.getSelectedFiles()), destFolder));
+				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
 	}
 }
