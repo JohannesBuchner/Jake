@@ -1,10 +1,10 @@
 package com.jakeapp.gui.swing.filters;
 
-import org.jdesktop.swingx.decorator.PatternFilter;
-import org.apache.log4j.Logger;
-import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.panels.FilePanel;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.decorator.PatternFilter;
 
 import java.util.Date;
 
@@ -21,11 +21,14 @@ public class FileObjectDateFilter extends PatternFilter {
 
 	@Override
 	public boolean test(int row) {
-		ProjectFilesTreeNode node = (ProjectFilesTreeNode) adapter.getValueAt(row, FilePanel.FILETREETABLE_NODECOLUMN);
+		ProjectFilesTreeNode node = (ProjectFilesTreeNode) adapter
+						.getValueAt(row, FilePanel.FILETREETABLE_NODECOLUMN);
 
 		if (!node.isFile()) return false;
 
-		long modified = JakeMainApp.getCore().getJakeObjectSyncStatus(JakeMainApp.getProject(), node.getFileObject()).getLastModification();
+		long modified = JakeMainApp.getCore()
+						.getJakeObjectSyncStatus(JakeMainApp.getProject(), node.getFileObject())
+						.getLastModificationDate();
 		long now = new Date().getTime();
 
 		long diff = now - modified;

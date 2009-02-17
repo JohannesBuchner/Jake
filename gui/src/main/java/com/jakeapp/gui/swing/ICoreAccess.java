@@ -8,7 +8,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.synchronization.JakeObjectSyncStatus;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.*;
@@ -85,7 +85,7 @@ public interface ICoreAccess {
 	 *          if the credentials supplied to the backend are invalid
 	 */
 	public void authenticateOnBackend(Map<String, String> authenticationData)
-			  throws InvalidCredentialsException;
+					throws InvalidCredentialsException;
 
 
 	/**
@@ -158,8 +158,8 @@ public interface ICoreAccess {
 	 * @throws ProtocolNotSupportedException
 	 */
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException;
+					throws FrontendNotLoggedInException, InvalidCredentialsException,
+								 ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -176,8 +176,8 @@ public interface ICoreAccess {
 	 * @throws Exception
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException;
+					throws FrontendNotLoggedInException, InvalidCredentialsException,
+								 ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -191,8 +191,8 @@ public interface ICoreAccess {
 	 * @throws NetworkException
 	 */
 	public void removeAccount(MsgService msg)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException;
+					throws FrontendNotLoggedInException, InvalidCredentialsException,
+								 ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -212,7 +212,8 @@ public interface ICoreAccess {
 	 * @return project member from msg service.
 	 * @throws NoSuchProjectMemberException
 	 */
-	public ProjectMember getProjectMember(Project project, MsgService msg) throws NoSuchProjectMemberException;
+	public ProjectMember getProjectMember(Project project, MsgService msg)
+					throws NoSuchProjectMemberException;
 
 	/**
 	 * Returns the corresponding ID to a ProjectMember.
@@ -222,7 +223,8 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws NoSuchProjectMemberException
 	 */
-	public String getProjectMemberID(Project project, ProjectMember pm) throws NoSuchProjectMemberException;
+	public String getProjectMemberID(Project project, ProjectMember pm)
+					throws NoSuchProjectMemberException;
 
 
 	/**
@@ -320,7 +322,7 @@ public interface ICoreAccess {
 	 * Deletes a project. Works asyn, fires the callback when finished. Throws
 	 * exceptions if path is null or invalid.
 	 *
-	 * @param project				: project that should be deleted
+	 * @param project						: project that should be deleted
 	 * @param deleteProjectFiles
 	 */
 	public void deleteProject(Project project, boolean deleteProjectFiles);
@@ -372,7 +374,7 @@ public interface ICoreAccess {
 	 * @return A FolderObject that represents the root of the tree
 	 */
 	public FolderObject getProjectRootFolder(Project project)
-			  throws ProjectFolderMissingException;
+					throws ProjectFolderMissingException;
 
 	/**
 	 * Retrieves all files within a project
@@ -388,7 +390,8 @@ public interface ICoreAccess {
 	 * @param file The file for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
-	public JakeObjectSyncStatus getJakeObjectSyncStatus(Project project, FileObject file);
+	public AttributedJakeObject getJakeObjectSyncStatus(Project project,
+																											FileObject file);
 
 	/**
 	 * Gets the size of a FileObject in the filesystem
@@ -431,7 +434,8 @@ public interface ICoreAccess {
 	 * @param files:             list of files to import.
 	 * @param destFolderRelPath: if null or "", copy to project root. @return true on success, false on error
 	 */
-	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(Project project, List<File> files, String destFolderRelPath);
+	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(
+					Project project, List<File> files, String destFolderRelPath);
 
 
 	/**
@@ -440,7 +444,8 @@ public interface ICoreAccess {
 	 * @param jakeObject
 	 * @return the projectMember
 	 */
-	public ProjectMember getLastModifier(JakeObject jakeObject) throws NoSuchLogEntryException;
+	public ProjectMember getLastModifier(JakeObject jakeObject)
+					throws NoSuchLogEntryException;
 
 	// TODO: What happens to FileObjects and FolderObjects? Are we going to have a common superclass?
 	/**
@@ -453,7 +458,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a file
 	 *
-	 * @param file	 The file to rename
+	 * @param file		The file to rename
 	 * @param newName The new name for the file
 	 */
 	public void rename(FileObject file, String newName);
@@ -461,7 +466,7 @@ public interface ICoreAccess {
 	/**
 	 * Renames a folder
 	 *
-	 * @param folder  The folder to rename
+	 * @param folder	The folder to rename
 	 * @param newName The new name for the folder
 	 */
 	public void rename(FolderObject folder, String newName);
@@ -483,20 +488,23 @@ public interface ICoreAccess {
 	public void setTagsForFileObject(FileObject fo, Set<Tag> tags);
 
 	/**
-	 * @param jo		  object to be announced
+	 * @param jo				object to be announced
 	 * @param commitmsg
 	 * @throws SyncException
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 */
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo, String commitmsg) throws FileOperationFailedException;
+	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo,
+																											 String commitmsg)
+					throws FileOperationFailedException;
 
 
 	/**
 	 * @param jos JakeObjects to be announced
 	 * @throws FileOperationFailedException nested exception for file based errors.
 	 */
-	public void announceFileObjects(ArrayList<FileObject> jos) throws FileOperationFailedException;
+	public void announceFileObjects(ArrayList<FileObject> jos)
+					throws FileOperationFailedException;
 
 
 	/**
@@ -507,7 +515,8 @@ public interface ICoreAccess {
 	 * @throws java.rmi.NoSuchObjectException
 	 * @throws NoSuchLogEntryException
 	 */
-	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo) throws FileOperationFailedException;
+	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo)
+					throws FileOperationFailedException;
 
 	/**
 	 * Checks whether a given JakeObject is currently soft locked.
@@ -520,12 +529,13 @@ public interface ICoreAccess {
 	/**
 	 * Creates a folder at a given point in the relative path hierarchy of a project
 	 *
-	 * @param project	 The project where the folder should be created
-	 * @param relpath	 The relpath under which the folder should be created
+	 * @param project		The project where the folder should be created
+	 * @param relpath		The relpath under which the folder should be created
 	 * @param folderName The name of the new folder
 	 * @throws InvalidNewFolderException if the folder cannot be created (exists already, invalid name, ...)
 	 */
-	public void createNewFolderAt(Project project, String relpath, String folderName) throws InvalidNewFolderException;
+	public void createNewFolderAt(Project project, String relpath, String folderName)
+					throws InvalidNewFolderException;
 
 	/**
 	 * Allows for listeners to register which are notified of changes to local or remote files
@@ -551,7 +561,8 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public List<NoteObject> getNotes(Project project) throws NoteOperationFailedException;
+	public List<NoteObject> getNotes(Project project)
+					throws NoteOperationFailedException;
 
 	/**
 	 * Get the <code>Date</code> of the last edit of the note.
@@ -569,7 +580,8 @@ public interface ICoreAccess {
 	 * @return the <code>ProjectMember</code> who last edited this note.
 	 * @throws NoteOperationFailedException raised if fetching the last editor failed.
 	 */
-	public ProjectMember getLastEditor(NoteObject note) throws NoteOperationFailedException;
+	public ProjectMember getLastEditor(NoteObject note)
+					throws NoteOperationFailedException;
 
 	/**
 	 * Determine if a note is only local or if it is a shared note.
@@ -628,13 +640,14 @@ public interface ICoreAccess {
 	/**
 	 * Set the soft lock for a <code>JakeObject</code>.
 	 *
-	 * @param jakeObject	  the <code>JakeObject</code> for which the lock is to be set.
-	 * @param isSet			 enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
+	 * @param jakeObject		 the <code>JakeObject</code> for which the lock is to be set.
+	 * @param isSet					enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
 	 *                       enable the lock
 	 * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
 	 *                       <code>falso</code>
 	 */
-	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage);
+	public void setSoftLock(JakeObject jakeObject, boolean isSet,
+													String lockingMessage);
 
 	/******************* People functions ********************/
 
@@ -647,7 +660,8 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<ProjectMember> getPeople(Project project) throws PeopleOperationFailedException;
+	public List<ProjectMember> getPeople(Project project)
+					throws PeopleOperationFailedException;
 
 	/**
 	 * Sets the nickname of people. Checks for error
@@ -667,14 +681,14 @@ public interface ICoreAccess {
 	 * @param trust
 	 */
 	public void peopleSetTrustState(Project project, ProjectMember member,
-											  TrustState trust);
+																	TrustState trust);
 
 
 	/**
 	 * Invites a ProjectMember to the project
 	 *
 	 * @param project : the project to invite the pm
-	 * @param userid  : the user id as string (xmpp, ...)
+	 * @param userid	: the user id as string (xmpp, ...)
 	 */
 	void invitePeople(Project project, String userid);
 
@@ -701,9 +715,9 @@ public interface ICoreAccess {
 	/**
 	 * Returns the last log entries for a project
 	 *
-	 * @param project	  : the project to query. can be null.
+	 * @param project		 : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
-	 * @param entries	  : amount of entries. -1 for everything.
+	 * @param entries		 : amount of entries. -1 for everything.
 	 * @return: list of log entries or empty list.
 	 */
 	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);
@@ -720,14 +734,15 @@ public interface ICoreAccess {
 	/**
 	 * Logs a user in
 	 *
-	 * @param service			 The message service to log in
-	 * @param password			password needed to authenticate.
+	 * @param service					The message service to log in
+	 * @param password				 password needed to authenticate.
 	 *                         If password is null it is tried to authenticate without password.
 	 * @param rememberPassword Indicates if the password should be stored with the
 	 *                         service credentials that will be generated.
 	 * @return An object reporting the progress of the login
 	 */
-	AvailableLaterObject<Boolean> login(MsgService service, String password, boolean rememberPassword);
+	AvailableLaterObject<Boolean> login(MsgService service, String password,
+																			boolean rememberPassword);
 
 	/**
 	 * Returns a java file class for the FileObject

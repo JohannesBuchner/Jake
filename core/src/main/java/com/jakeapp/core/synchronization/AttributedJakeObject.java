@@ -9,12 +9,15 @@ import com.jakeapp.core.domain.LogAction;
 public class AttributedJakeObject extends JakeObjectStatus {
 
 	public AttributedJakeObject(JakeObject jakeObject, LogAction lastVersionLogAction,
-			LogAction lastLockLogAction, boolean objectExistsLocally,
-			boolean checksumDifferentFromLastNewVersionLogEntry, boolean hasUnprocessedLogEntries,
-			LogAction lastProcessedLogAction, long lastModificationDate) {
+															LogAction lastLockLogAction,
+															boolean objectExistsLocally,
+															boolean checksumDifferentFromLastNewVersionLogEntry,
+															boolean hasUnprocessedLogEntries,
+															LogAction lastProcessedLogAction,
+															long lastModificationDate) {
 		super(lastVersionLogAction, lastLockLogAction, objectExistsLocally,
-				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
-				lastProcessedLogAction);
+						checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
+						lastProcessedLogAction);
 		this.jakeObject = jakeObject;
 		this.lastModificationDate = lastModificationDate;
 	}
@@ -33,7 +36,7 @@ public class AttributedJakeObject extends JakeObjectStatus {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + getJakeObject() + "] " + super.toString();
+		return getClass().getSimpleName() + "[" + getJakeObject() + "] " + super
+						.toString();
 	}
-
 }
