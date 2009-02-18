@@ -1223,18 +1223,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		ISyncService iss;
 		AvailableLaterObject<Void> result = null;
 
-		member = this.getFrontendService()
-						.getProjectsManagingService(this.getSessionId())
-						.getProjectMember(jo.getProject(),
-										this.getLoggedInUser(jo.getProject()));
-
-		action = new LogEntry<JakeObject>(UUID.randomUUID(),
-						LogAction.JAKE_OBJECT_NEW_VERSION, Calendar.getInstance().getTime(),
-						jo.getProject(), jo, member);
-
 		try {
 			iss = this.getFrontendService().getSyncService(this.getSessionId());
-			result = new AnnounceFuture(iss, jo, action);
+			result = new AnnounceFuture(iss, jo, LogAction.JAKE_OBJECT_NEW_VERSION);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			throw new FileOperationFailedException(e);

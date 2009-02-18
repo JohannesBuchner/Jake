@@ -100,7 +100,9 @@ public interface ISyncService {
 	 * Unless you are in a loop, you probably want to do a poke afterwards.
 	 *
 	 * @param jo
-	 * @param action	 a prepared logentry
+	 * @param action	 one of LogAction.JAKE_OBJECT_NEW_VERSION
+				LogAction.JAKE_OBJECT_DELETE LogAction.TAG_ADD
+				LogAction.TAG_REMOVE action LogAction.JAKE_OBJECT_LOCK LogAction.JAKE_OBJECT_UNLOCK
 	 * @param commitMsg
 	 * @throws NotAReadableFileException
 	 * @throws InvalidFilenameException
@@ -108,7 +110,7 @@ public interface ISyncService {
 	 * @throws IllegalArgumentException  if you are doing it wrong
 	 * @see LogAction for what to set
 	 */
-	public void announce(JakeObject jo, LogEntry<? extends JakeObject> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
+	public void announce(JakeObject jo, LogAction action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
 
 	/* Project member changes: just do a poke */
 

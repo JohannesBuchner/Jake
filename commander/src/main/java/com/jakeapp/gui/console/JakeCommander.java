@@ -610,8 +610,7 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("announcing ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_NEW_VERSION,
-						new Date(), project, jo), "something new, something blue");
+				sync.announce(jo, LogAction.JAKE_OBJECT_NEW_VERSION, "something new, something blue");
 				System.out.println("announcing done");
 			} catch (Exception e) {
 				System.out.println("announcing failed");
@@ -630,8 +629,7 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("deleting ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_DELETE,
-						new Date(), project, jo), "something new, something red");
+				sync.announce(jo, LogAction.JAKE_OBJECT_DELETE, "something new, something red");
 				System.out.println("deleting done");
 			} catch (Exception e) {
 				System.out.println("deleting failed");
@@ -650,8 +648,7 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("locking ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_LOCK,
-						new Date(), project, jo),
+				sync.announce(jo, LogAction.JAKE_OBJECT_LOCK,
 						"I'm working on this. Please wait for me to finish or contact me");
 				System.out.println("locking done");
 			} catch (Exception e) {
@@ -671,8 +668,7 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("unlocking ... ");
-				sync.announce(jo, new LogEntry<JakeObject>(null, LogAction.JAKE_OBJECT_UNLOCK,
-						new Date(), project, jo), "I'm done working on this.");
+				sync.announce(jo, LogAction.JAKE_OBJECT_UNLOCK, "I'm done working on this.");
 				System.out.println("unlocking done");
 			} catch (Exception e) {
 				System.out.println("unlocking failed");

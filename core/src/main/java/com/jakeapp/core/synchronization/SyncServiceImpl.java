@@ -199,14 +199,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Override
 	@Transactional
-	public void announce(JakeObject jo, LogEntry<? extends JakeObject> inaction,
+	public void announce(JakeObject jo, LogAction action,
 			String commitMsg) throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
-		log.debug("announcing " + jo + " : " + inaction);
 		IFSService fss = getFSS(jo.getProject());
-		LogEntry<JakeObject> le = new LogEntry<JakeObject>(UUID.randomUUID(), inaction
-				.getLogAction());
-		LogAction action = inaction.getLogAction();
+		LogEntry<JakeObject> le = new LogEntry<JakeObject>(UUID.randomUUID(), action);
+		log.debug("announcing " + jo + " : " + action);
 		// set those that shouldn't be set by caller
 		le.setBelongsTo(jo);
 		le.setTimestamp(new Date());
