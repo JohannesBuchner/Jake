@@ -678,6 +678,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public List<NoteObject> getNotes(Project project)
 					throws NoteOperationFailedException {
 		try {
+			// FIXME: do this over the SyncService. You also get AttributedJakeObjects
 			return this.frontendService.getProjectsManagingService(this.sessionId)
 							.getNoteManagingService().getNotes(project);
 		} catch (Exception e) {
@@ -724,6 +725,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		boolean result;
 
 		try {
+			// FIXME: do this over getJakeObjectStatus in Sync
 			result = this.frontendService.getProjectsManagingService(this.sessionId)
 							.isLocalJakeObject(note);
 		} catch (Exception e) {
@@ -745,7 +747,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			log.debug("getLoggedInUser: " + this.getLoggedInUser(note.getProject()));
 			member = pms.getProjectMember(note.getProject(),
 							this.getLoggedInUser(note.getProject()));
-
+			// FIXME: announce deletion
 			pms.getNoteManagingService().deleteNote(note);
 		} catch (Exception e) {
 			//FIXME: 
@@ -763,7 +765,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void newNote(NoteObject note) throws NoteOperationFailedException {
 		try {
 			this.frontendService.getProjectsManagingService(this.getSessionId())
-							.getNoteManagingService().addNote(note);
+							.saveNote(note);
 		} catch (Exception e) {
 			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);
@@ -777,7 +779,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 //		try {
 		this.frontendService.getProjectsManagingService(this.getSessionId())
-						.getNoteManagingService().saveNote(note);
+						.saveNote(note);
 
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(),
 						ProjectChangedReason.State));
@@ -1091,6 +1093,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void deleteToTrash(Project project, String relpath) {
 		// TODO: What do we do with folders?
 		try {
+			// TODO: announce deletion
 			this.getFrontendService().
 							getProjectsManagingService(this.getSessionId()).
 							getFileServices(project).
