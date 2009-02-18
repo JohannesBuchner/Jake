@@ -26,17 +26,24 @@ public class AttributedJakeObject extends JakeObjectStatus {
 			LogAction lastLockLogAction, boolean objectExistsLocally,
 			boolean checksumDifferentFromLastNewVersionLogEntry,
 			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
-			long lastModificationDate) {
+			long lastModificationDate, long size) {
 		super(lastVersionLogAction, lastLockLogAction, objectExistsLocally,
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction);
 		this.jakeObject = jakeObject;
 		this.lastModificationDate = lastModificationDate;
+		this.size = size;
 	}
 
 	private JakeObject jakeObject;
 
 	private long lastModificationDate;
+	
+	private long size;
+
+	public long getSize() {
+		return this.size;
+	}
 
 	public JakeObject getJakeObject() {
 		return this.jakeObject;
