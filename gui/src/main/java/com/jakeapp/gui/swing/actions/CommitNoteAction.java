@@ -1,12 +1,12 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
 import javax.swing.*;
@@ -26,14 +26,15 @@ public class CommitNoteAction extends NoteAction {
 	public CommitNoteAction() {
 		super();
 
-		String actionStr = JakeMainView.getMainView().getResourceMap().getString("commitNoteMenuItem");
+		String actionStr = JakeMainView.getMainView().getResourceMap()
+						.getString("commitNoteMenuItem");
 		putValue(Action.NAME, actionStr);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			core.announceJakeObject(this.getSelectedNotes().get(0), null);
+			core.announceJakeObject(this.getSelectedNotes().get(0).getJakeObject(), null);
 			//XXX update view
 			this.refreshNotesPanel();
 		} catch (FileOperationFailedException e1) {
@@ -43,16 +44,12 @@ public class CommitNoteAction extends NoteAction {
 
 	@Override
 	public void updateAction() {
-		if (this.getSelectedNotes().size() > 0) {
+		if (this.hasSelectedNotes()) {
 			boolean isLocal = false;
-			for (NoteObject note : getSelectedNotes()) {
-				try {
-					if (core.isLocalNote(note)) {
-						isLocal = true;
-						break;
-					}
-				} catch (NoteOperationFailedException e) {
-					ExceptionUtilities.showError(e);
+			for (AttributedJakeObject<NoteObject> note : getSelectedNotes()) {
+				if (note.isLocal()) {
+					isLocal = true;
+					break;
 				}
 			}
 			if (isLocal) {
@@ -60,7 +57,6 @@ public class CommitNoteAction extends NoteAction {
 			} else {
 				this.setEnabled(false);
 			}
-
 		} else {
 			this.setEnabled(false);
 		}

@@ -3,12 +3,12 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import net.miginfocom.swing.MigLayout;
@@ -37,7 +37,7 @@ public class InspectorPanel extends JXPanel implements
 	private ResourceMap resourceMap;
 	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
 	private FileObject fileObject;
-	private NoteObject noteObject;
+	private AttributedJakeObject<NoteObject> noteObject;
 
 	private JXTable eventsTable;
 	private JLabel icoLabel;
@@ -169,14 +169,12 @@ public class InspectorPanel extends JXPanel implements
 			eventsTableModel.setJakeObject(getFileObject());
 		} else if (getNoteObject() != null && isNoteContext()) {
 			icoLabel.setIcon(notesIcon);
-			nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject())));
+			nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject().getJakeObject())));
 			sizeLabel.setText("");
 			fullPathLabel.setText("");
-			try {
-				lastAccessTimeAndUser.setText(TimeUtilities.getRelativeTime(JakeMainApp.getCore().getLastEdit(getNoteObject())));
-			} catch (NoteOperationFailedException e) {
-				log.warn("error getting time for noteobject", e);
-			}
+
+		  lastAccessTimeAndUser.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
+
 
 			// TODO: inspector for notes
 			eventsTableModel.setJakeObject(getFileObject());
@@ -235,11 +233,11 @@ public class InspectorPanel extends JXPanel implements
 		setFileObject(event.getSingleFile());
 	}
 
-	public NoteObject getNoteObject() {
+	public AttributedJakeObject<NoteObject> getNoteObject() {
 		return noteObject;
 	}
 
-	public void setNoteObject(NoteObject noteObject) {
+	public void setNoteObject(AttributedJakeObject<NoteObject> noteObject) {
 		this.noteObject = noteObject;
 	}
 

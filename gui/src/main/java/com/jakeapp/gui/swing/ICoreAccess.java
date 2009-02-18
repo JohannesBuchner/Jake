@@ -558,10 +558,10 @@ public interface ICoreAccess {
 	 * Returns the list of all notes
 	 *
 	 * @param project : project that should be evaluated
-	 * @return
+	 * @return list of attibuted note objects
 	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public List<NoteObject> getNotes(Project project)
+	public List<AttributedJakeObject<NoteObject>> getNotes(Project project)
 					throws NoteOperationFailedException;
 
 	/**
@@ -582,15 +582,6 @@ public interface ICoreAccess {
 	 */
 	public ProjectMember getLastEditor(NoteObject note)
 					throws NoteOperationFailedException;
-
-	/**
-	 * Determine if a note is only local or if it is a shared note.
-	 *
-	 * @param note the note in question
-	 * @return <code>true</code> iff this note is a local note.
-	 * @throws NoteOperationFailedException raised if fetching isLocal failed.
-	 */
-	public boolean isLocalNote(NoteObject note) throws NoteOperationFailedException;
 
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.

@@ -65,4 +65,8 @@ public class TimeUtilities {
 			return years <= 1 ? "one year ago" : years + " years ago";
 		}
 	}
+
+	public static String getRelativeTime(long date) {
+		return getRelativeTime(new Date(date));
+	}
 }

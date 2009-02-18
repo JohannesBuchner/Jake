@@ -222,7 +222,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	private void fireConnectionStatus(ConnectionStatus.ConnectionStati state,
-																		String str) {
+					String str) {
 		log.info("spead callback event...");
 		for (ConnectionStatus callback : connectionStatus) {
 			callback.setConnectionStatus(state, str);
@@ -327,7 +327,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 				@Override
 				public void pullProgressUpdate(JakeObject jo, Status status,
-																			 double progress) {
+								double progress) {
 					log.info(
 									"pullProgressUpdate: " + jo + "status: " + status + " progress: " + progress);
 				}
@@ -404,7 +404,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void deleteProject(final Project project,
-														final boolean deleteProjectFiles) {
+					final boolean deleteProjectFiles) {
 		log.info(
 						"Delete project: " + project + " deleteProjectFiles: " + deleteProjectFiles);
 
@@ -518,6 +518,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			//empty implementation
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
+		} catch (NoSuchProjectException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -599,7 +601,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AttributedJakeObject getJakeObjectSyncStatus(Project project,
-																											FileObject file) {
+					FileObject file) {
 		try {
 			return this.getFrontendService().getSyncService(getSessionId())
 							.getJakeObjectSyncStatus(file);
@@ -636,8 +638,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @throws IllegalArgumentException
 	 */
 	private FolderObject recursiveFileSystemHelper(Project prj, String relPath,
-																								 String name, IFSService fss,
-																								 IProjectsManagingService pms)
+					String name, IFSService fss, IProjectsManagingService pms)
 					throws IllegalArgumentException, IllegalStateException,
 								 FrontendNotLoggedInException {
 		FolderObject fo = new FolderObject(relPath, name);
@@ -675,16 +676,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return fo;
 	}
 
-	public List<NoteObject> getNotes(Project project)
+	public List<AttributedJakeObject<NoteObject>> getNotes(Project project)
 					throws NoteOperationFailedException {
 		try {
 			// FIXME: do this over the SyncService. You also get AttributedJakeObjects
-			return this.frontendService.getProjectsManagingService(this.sessionId)
-							.getNoteManagingService().getNotes(project);
+			return this.frontendService.getSyncService(this.sessionId).getNotes(project);
 		} catch (Exception e) {
-			NoteOperationFailedException ex = new NoteOperationFailedException();
-			ex.append(e);
-			throw ex;
+			throw new NoteOperationFailedException(e);
 		}
 	}
 
@@ -721,44 +719,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public boolean isLocalNote(NoteObject note) throws NoteOperationFailedException {
-		boolean result;
-
-		try {
-			// FIXME: do this over getJakeObjectStatus in Sync
-			result = this.frontendService.getProjectsManagingService(this.sessionId)
-							.isLocalJakeObject(note);
-		} catch (Exception e) {
-			// Every error allows only one interpretation: a Note that cannot
-			// be checked wether it is local is NOT local!
-			result = false;
-		}
-
-		return result;
-	}
-
-	@Override
 	public void deleteNote(NoteObject note) throws NoteOperationFailedException {
-		IProjectsManagingService pms;
-		ProjectMember member;
-
 		try {
-			pms = this.frontendService.getProjectsManagingService(this.getSessionId());
-			log.debug("getLoggedInUser: " + this.getLoggedInUser(note.getProject()));
-			member = pms.getProjectMember(note.getProject(),
-							this.getLoggedInUser(note.getProject()));
-			// FIXME: announce deletion
-			pms.getNoteManagingService().deleteNote(note);
+			this.frontendService.getSyncService(this.sessionId)
+							.announce(note, LogAction.JAKE_OBJECT_DELETE, "");
 		} catch (Exception e) {
-			//FIXME: 
-			e.printStackTrace();
-			NoteOperationFailedException ex = new NoteOperationFailedException();
-			ex.append(e);
-			throw ex;
+			throw new NoteOperationFailedException(e);
 		}
-		// The corresponding JakeObject does not exist any more - there is
-		// no
-		// need deleting it therefore we simply discard this exception.
 	}
 
 	@Override
@@ -868,7 +835,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void peopleSetTrustState(Project project, ProjectMember member,
-																	TrustState trust) {
+					TrustState trust) {
 		member.setTrustState(trust);
 		this.getFrontendService().getProjectsManagingService(getSessionId())
 						.updateProjectMember(project, member);
@@ -934,7 +901,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void createProject(final String name, final String path,
-														final MsgService msg) {
+					final MsgService msg) {
 		log.info("Create project: " + name + " path: " + path + " msg: " + msg);
 
 		//preconditions
@@ -986,7 +953,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	private void fireRegistrationStatus(RegistrationStatus.RegisterStati state,
-																			String str) {
+					String str) {
 		for (RegistrationStatus callback : registrationStatus) {
 			callback.setRegistrationStatus(state, str);
 		}
@@ -1216,8 +1183,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo,
-																											 String commitmsg)
-					throws FileOperationFailedException {
+					String commitmsg) throws FileOperationFailedException {
 		ProjectMember member;
 		LogEntry<JakeObject> action;
 		ISyncService iss;
@@ -2404,7 +2370,7 @@ public void fileModified(String relpath, ModifyActions action) {
 
 	@Override
 	public void setSoftLock(JakeObject jakeObject, boolean isSet,
-													String lockingMessage) {
+					String lockingMessage) {
 		if (isSet) {
 			this.MockIsSoftLockedSet.add(jakeObject);
 		} else {
@@ -2423,7 +2389,7 @@ public void fileModified(String relpath, ModifyActions action) {
 
 	@Override
 	public AvailableLaterObject<Boolean> login(MsgService service, String password,
-																						 boolean rememberPassword) {
+					boolean rememberPassword) {
 
 		/*
 		 TODO: move this clutter to caller

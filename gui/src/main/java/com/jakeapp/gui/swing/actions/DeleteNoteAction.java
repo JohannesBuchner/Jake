@@ -1,18 +1,8 @@
 package com.jakeapp.gui.swing.actions;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Action;
-import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
@@ -24,6 +14,13 @@ import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NotesPanel;
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DeleteNote Action, that deletes the selected Note from the given <code>notesTable.
@@ -45,9 +42,8 @@ public class DeleteNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		
-		final List<NoteObject> cache = new ArrayList<NoteObject>(getSelectedNotes());
+		final List<AttributedJakeObject<NoteObject>> cache = new ArrayList<AttributedJakeObject<NoteObject>>(getSelectedNotes());
 		ICoreAccess core = JakeMainApp.getCore();
-		UserId currentUser = JakeMainApp.getProject().getUserId();
 		
 		ResourceMap map = NotesPanel.getInstance().getResourceMap();
 		String[] options = {map.getString("confirmDeleteNote.ok"), map.getString("genericCancel")};
@@ -55,10 +51,10 @@ public class DeleteNoteAction extends NoteAction {
 
 		
 		if (cache.size() == 1) { //single delete
-			if (JakeMainApp.getCore().isSoftLocked(cache.get(0))) { //is locked
-				ProjectMember lockOwner = core.getLockOwner(cache.get(0));
+			if (cache.get(0).isLocked()) { //is locked
+				ProjectMember lockOwner = cache.get(0).getLockOwner();
 
-				if (lockOwner.getUserId().equals(currentUser)) { //local member is owner
+				if (lockOwner.equals(JakeMainApp.getProjectMember())) { //local member is owner
 					text = map.getString("confirmDeleteNote.text");
 				} else {
 					text = Translator.get(map, "confirmDeleteLockedNote.text", lockOwner.getNickname());
@@ -69,8 +65,8 @@ public class DeleteNoteAction extends NoteAction {
 		} else { //batch delete
 			log.debug("batch delete -------------------------------------------------------------");
 			boolean locked = false;
-			for (NoteObject note : cache) {
-				if (core.isSoftLocked(note) && !core.getLockOwner(note).getUserId().equals(currentUser)) {
+			for (AttributedJakeObject<NoteObject> note : cache) {
+				if (note.isLocked() && !isMyLock(note)) {
 					locked = true;
 					break;
 				}
@@ -90,9 +86,9 @@ public class DeleteNoteAction extends NoteAction {
 			@Override
 			public void optionSelected(SheetEvent evt) {
 				if (evt.getOption() == 0) {
-					for (NoteObject note : cache) {
+					for (AttributedJakeObject<NoteObject> note : cache) {
 						try {
-							JakeMainApp.getCore().deleteNote(note);
+							JakeMainApp.getCore().deleteNote(note.getJakeObject());
 						} catch (NoteOperationFailedException e) {
 							ExceptionUtilities.showError(e);
 						}
@@ -104,8 +100,12 @@ public class DeleteNoteAction extends NoteAction {
 		});
 	}
 
+	private boolean isMyLock(AttributedJakeObject<NoteObject> note) {
+		return note.getLockOwner().equals(JakeMainApp.getProjectMember());
+	}
+
 	@Override
 	public void updateAction() {
-		this.setEnabled(this.getSelectedNotes().size() > 0);
+		this.setEnabled(this.hasSelectedNotes());
 	}
 }

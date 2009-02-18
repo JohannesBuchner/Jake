@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.callbacks;
 
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ public interface NoteSelectionChanged {
 	 * Inner class that saves notes and provides convenience methods
 	 */
 	public class NoteSelectedEvent {
-		private List<NoteObject> notes;
+		private List<AttributedJakeObject<NoteObject>> notes;
 
-		public NoteSelectedEvent(List<NoteObject> notes) {
+		public NoteSelectedEvent(List<AttributedJakeObject<NoteObject>> notes) {
 			this.notes = notes;
 		}
 
@@ -36,11 +37,11 @@ public interface NoteSelectionChanged {
 			return (notes != null) && notes.size() > 1;
 		}
 
-		public NoteObject getSingleNote() {
+		public AttributedJakeObject<NoteObject> getSingleNote() {
 			return (notes != null && notes.size() == 1) ? notes.get(0) : null;
 		}
 
-		public List<NoteObject> getNotes() {
+		public List<AttributedJakeObject<NoteObject>> getNotes() {
 			return notes;
 		}
 	}

@@ -7,8 +7,10 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.GlassJFrame;
@@ -429,5 +431,18 @@ public class JakeMainApp extends SingleFrameApplication implements
 			ExceptionUtilities.showError(e);
 		}
 		setMsgService(null);
+	}
+
+	/**
+	 * Returns the one and only project member that is within app (and project) context.
+	 * @return
+	 */
+	public static ProjectMember getProjectMember() {
+		try {
+			return getCore().getProjectMember(getProject(), getProject().getMessageService());
+		} catch (NoSuchProjectMemberException e) {
+			log.warn("Error getting project member", e);
+			return null;
+		}
 	}
 }

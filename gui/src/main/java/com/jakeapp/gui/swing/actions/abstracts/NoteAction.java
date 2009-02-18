@@ -1,29 +1,26 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.panels.NotesPanel;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * Abstract superclass for actions on notes.
  *
  * @author Simon
  */
-public abstract class NoteAction extends ProjectAction
-		  implements NoteSelectionChanged {
+public abstract class NoteAction extends ProjectAction implements NoteSelectionChanged {
 
 	private static final long serialVersionUID = 8541763489137302803L;
 	private static Logger log = Logger.getLogger(NoteAction.class);
 
-	private List<NoteObject> selectedNotes;
+	private List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
 
 	/**
 	 * Constructs a new NoteAction that works with the given notesTable.
@@ -36,34 +33,57 @@ public abstract class NoteAction extends ProjectAction
 	}
 
 	/**
-	 * Callback for the <code>NoteSelectionChanged</code> Listener. 
+	 * Callback for the <code>NoteSelectionChanged</code> Listener.
+	 *
 	 * @param event
 	 */
 	public void noteSelectionChanged(NoteSelectedEvent event) {
-		
+
 		setSelectedNotes(event.getNotes());
 		updateAction();
 	}
 
-	public List<NoteObject> getSelectedNotes() {
-		//FIXME: hack, hack, hack, don't know why it returns null ???
-		if (this.selectedNotes == null) {
-			return new ArrayList<NoteObject>();
-		}
+	public List<AttributedJakeObject<NoteObject>> getSelectedNotes() {
 		return this.selectedNotes;
 	}
 
-	public void setSelectedNotes(List<NoteObject> notes) {
+	public void setSelectedNotes(List<AttributedJakeObject<NoteObject>> notes) {
 		this.selectedNotes = notes;
 	}
-	
+
 	@Override
 	public void updateAction() {
-		this.setEnabled((JakeMainApp.getProject()!=null));
+		this.setEnabled((JakeMainApp.getProject() != null));
 	}
-	
+
 	protected void refreshNotesPanel() {
 		//XXX very cheap implementation
-		NotesPanel.getInstance().projectChanged(new ProjectChangedEvent(JakeMainApp.getProject(),ProjectChangedEvent.ProjectChangedReason.Sync) );
+		NotesPanel.getInstance().projectChanged(
+						new ProjectChangedEvent(JakeMainApp.getProject(),
+										ProjectChangedEvent.ProjectChangedReason.Sync));
+	}
+
+	protected AttributedJakeObject<NoteObject> getSelectedNote() {
+		if (getSelectedNotes().size() > 0) {
+			return getSelectedNotes().get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Checks if there are selected notes.
+	 * @return true if at least one note is selected.
+	 */
+	public boolean hasSelectedNotes() {
+		return getSelectedNotes() != null && getSelectedNotes().size() > 0;
+	}
+
+	/**
+	 * Checks if there is a single note selected.
+	 * @return
+	 */
+	public boolean hasSingleSelectedNote() {
+		return getSelectedNotes() != null && getSelectedNotes().size() == 1;
 	}
 }

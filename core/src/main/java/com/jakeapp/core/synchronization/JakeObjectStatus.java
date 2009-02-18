@@ -1,6 +1,7 @@
 package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.ProjectMember;
 
 /**
  * @author johannes
@@ -13,30 +14,37 @@ public class JakeObjectStatus {
 
 	private SyncStatus syncStatus;
 
+	private ProjectMember lastVersionProjectMember;
+	private ProjectMember lockOwner;
+
 	/**
-	 * @param lastVersionLogAction
+	 * * @param lastVersionLogAction
+	 * @param lastVersionProjectMember
+	 * @param lockOwner
 	 * @param lastLockLogAction
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
-	 * 
 	 * @param hasUnprocessedLogEntries
-	 * @param lastProcessedLogAction
-	 * @see {@link LockStatus#getLockStatus(LogAction)},
-	 *      {@link Existance#getExistance(boolean, LogAction)}
-	 *      {@link SyncStatus#getSyncStatus(boolean, boolean, LogAction, boolean)}
+	 * @param lastProcessedLogAction			@see {@link com.jakeapp.core.synchronization.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)},
+ *      {@link com.jakeapp.core.synchronization.Existance#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
+ *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
 	 */
-	public JakeObjectStatus(LogAction lastVersionLogAction, LogAction lastLockLogAction,
-			boolean objectExistsLocally,
-			boolean checksumDifferentFromLastNewVersionLogEntry,
-			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
+	public JakeObjectStatus(LogAction lastVersionLogAction, ProjectMember lastVersionProjectMember,
+					ProjectMember lockOwner, LogAction lastLockLogAction, boolean objectExistsLocally,
+					boolean checksumDifferentFromLastNewVersionLogEntry, boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
 		this.lockStatus = LockStatus.getLockStatus(lastLockLogAction);
 		this.existance = Existance
 				.getExistance(objectExistsLocally, lastVersionLogAction);
 		this.syncStatus = SyncStatus.getSyncStatus(
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction, objectExistsLocally);
+		this.lastVersionProjectMember = lastVersionProjectMember;
+		this.lockOwner = lockOwner;
 	}
 
+	public ProjectMember getLastVersionProjectMember() {
+		return lastVersionProjectMember;
+	}
 
 	public LockStatus getLockStatus() {
 		return this.lockStatus;
@@ -77,15 +85,23 @@ public class JakeObjectStatus {
 	/**
 	 * @return does locking make any sense?
 	 */
-	public boolean isLockable() {
+	public boolean isUnlocked() {
 		return getLockStatus() == LockStatus.OPEN;
 	}
 
 	/**
 	 * @return does unlocking make any sense?
 	 */
-	public boolean isUnLockable() {
+	public boolean isLocked() {
 		return getLockStatus() == LockStatus.CLOSED;
+	}
+
+	/**
+	 * If locked, this returns the lock owner.
+	 * @return ProjectMember aka lock owner, or null
+	 */
+	public ProjectMember getLockOwner() {
+		return lockOwner;
 	}
 
 	/**
@@ -109,12 +125,16 @@ public class JakeObjectStatus {
 		return isLocalAndRemote() && isInSync();
 	}
 
-	private boolean isInSync() {
+	public boolean isInSync() {
 		return getSyncStatus() == SyncStatus.SYNC;
 	}
 
-	private boolean isLocalAndRemote() {
+	public boolean isLocalAndRemote() {
 		return getExistance() == Existance.EXISTS_ON_BOTH;
+	}
+
+	public boolean isLocal() {
+		return isOnlyLocal() || isLocalAndRemote();
 	}
 
 	public boolean isModifiedLocally() {

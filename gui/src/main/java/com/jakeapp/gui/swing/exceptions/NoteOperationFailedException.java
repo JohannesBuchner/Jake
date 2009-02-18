@@ -9,4 +9,11 @@ public class NoteOperationFailedException extends NestedException {
 
 	private static final long serialVersionUID = 2357473842835860486L;
 
+	public NoteOperationFailedException(Exception e) {
+		super(e);
+	}
+
+	public NoteOperationFailedException() {
+
+	}
 }

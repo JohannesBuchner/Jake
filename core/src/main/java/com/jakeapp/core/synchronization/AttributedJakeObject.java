@@ -2,50 +2,50 @@ package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.ProjectMember;
 
 /**
  * @author johannes
  */
-public class AttributedJakeObject extends JakeObjectStatus {
-
+public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus {
+	
 	/**
-	 * 
-	 * @see JakeObjectStatus#JakeObjectStatus(LogAction, LogAction, boolean,
-	 *      boolean, boolean, LogAction)
-	 * 
 	 * @param jakeObject
 	 * @param lastVersionLogAction
-	 * @param lastLockLogAction
+	 * @param lastVersionProjectMember
+	 * @param lockOwner
+	 *@param lastLockLogAction
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
-	 * @param hasUnprocessedLogEntries
+*@param hasUnprocessedLogEntries
 	 * @param lastProcessedLogAction
-	 * @param lastModificationDate
+	 * @param lastModificationDate			 @see JakeObjectStatus#JakeObjectStatus(com.jakeapp.core.domain.LogAction,com.jakeapp.core.domain.ProjectMember,com.jakeapp.core.domain.LogAction,boolean,boolean,boolean,com.jakeapp.core.domain.LogAction)
 	 */
-	public AttributedJakeObject(JakeObject jakeObject, LogAction lastVersionLogAction,
-			LogAction lastLockLogAction, boolean objectExistsLocally,
-			boolean checksumDifferentFromLastNewVersionLogEntry,
-			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
-			long lastModificationDate, long size) {
-		super(lastVersionLogAction, lastLockLogAction, objectExistsLocally,
-				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
-				lastProcessedLogAction);
+	public AttributedJakeObject(T jakeObject, LogAction lastVersionLogAction,
+					ProjectMember lastVersionProjectMember, ProjectMember lockOwner, LogAction lastLockLogAction,
+					boolean objectExistsLocally,
+					boolean checksumDifferentFromLastNewVersionLogEntry,
+					boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
+					long lastModificationDate, long size) {
+		super(lastVersionLogAction, lastVersionProjectMember, lockOwner, lastLockLogAction,
+						objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
+						hasUnprocessedLogEntries, lastProcessedLogAction);
 		this.jakeObject = jakeObject;
 		this.lastModificationDate = lastModificationDate;
 		this.size = size;
 	}
 
-	private JakeObject jakeObject;
+	private T jakeObject;
 
 	private long lastModificationDate;
-	
+
 	private long size;
 
 	public long getSize() {
 		return this.size;
 	}
 
-	public JakeObject getJakeObject() {
+	public T getJakeObject() {
 		return this.jakeObject;
 	}
 
@@ -55,8 +55,7 @@ public class AttributedJakeObject extends JakeObjectStatus {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + getJakeObject() + "] "
-				+ super.toString();
+		return getClass().getSimpleName() + "[" + getJakeObject() + "] " + super
+						.toString();
 	}
-
 }

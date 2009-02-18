@@ -35,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.*;
-import java.util.zip.Checksum;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -43,7 +42,7 @@ import java.util.zip.Checksum;
  * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
  * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
  * used.
- * 
+ *
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncService implements
@@ -137,7 +136,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * <li>in the ics</li>
 	 * </ul>
 	 * We should only trust the logentries and fix everything else by that.
-	 * 
+	 *
 	 * @param project
 	 */
 	@Transactional
@@ -348,7 +347,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	/**
 	 * Avoiding stub objects (without ID)
-	 * 
+	 *
 	 * @param <T>
 	 * @param join
 	 * @return the FileObject or NoteObject from the Database
@@ -374,7 +373,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Transactional
-	public AttributedJakeObject getJakeObjectSyncStatus(FileObject foin)
+	public AttributedJakeObject<FileObject> getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
 		Project p = foin.getProject();
 		IFSService fss = getFSS(p);
@@ -398,6 +397,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			lastle = null;
 		}
 		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
+
+		ProjectMember lastVersionProjectMember = getProjectMemberNullSave(lastle);
 
 		// 3 locally modified?
 		boolean checksumDifferentFromLastNewVersionLogEntry;
@@ -446,24 +447,41 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				lastModificationDate = lastle.getTimestamp().getTime();
 		}
 
+		LogEntry<JakeObject> locklog = led.getLock(fo);
+		ProjectMember lockOwner = getProjectMemberNullSave(locklog);
+
 		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(fo);
 		// 6 lastprocessed
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
 		// 7 lock
-		LogAction lastLockLogAction = getLogActionNullSafe(led.getLock(fo));
+		LogAction lastLockLogAction = getLogActionNullSafe(locklog);
 
-		return new AttributedJakeObject(fo, lastVersionLogAction, lastLockLogAction,
+		return new AttributedJakeObject<FileObject>(fo, lastVersionLogAction, lastVersionProjectMember, lockOwner, lastLockLogAction,
 				objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
 				size);
 	}
 
+	/**
+	 * NullSave getter for LogEntry::getMember
+	 * @param lastle
+	 * @return ProjectMember or null, if LogEntry is null.
+	 */
+	private ProjectMember getProjectMemberNullSave(LogEntry lastle) {
+		if(lastle != null)
+			return lastle.getMember();
+		else
+			return null;
+	}
+
+
 	@Transactional
-	public AttributedJakeObject getJakeObjectSyncStatus(NoteObject noin) {
+	public AttributedJakeObject<NoteObject> getJakeObjectSyncStatus(NoteObject noin) {
 		Project p = noin.getProject();
-		IFSService fss = getFSS(p);
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
+
+		// TODO: DRY! move this stuff (and that for FileObject) into AttributedJakeObject-contructor
 
 		// 0 complete + 1 exists?
 		NoteObject no;
@@ -491,6 +509,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			lastle = null;
 		}
 		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
+		ProjectMember lastVersionProjectMember = getProjectMemberNullSave(lastle);
 
 		// 3 locally modified?
 		boolean checksumDifferentFromLastNewVersionLogEntry;
@@ -509,6 +528,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		if (lastle != null)
 			lastModificationDate = lastle.getTimestamp().getTime();
 
+		ProjectMember lockOwner = getProjectMemberNullSave(led.getLock(no));
+
 		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(no);
 		// 6 lastprocessed
@@ -516,7 +537,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// 7 lock
 		LogAction lastLockLogAction = getLogActionNullSafe(led.getLock(no));
 
-		return new AttributedJakeObject(no, lastVersionLogAction, lastLockLogAction,
+		return new AttributedJakeObject<NoteObject>(no, lastVersionLogAction,
+						lastVersionProjectMember, lockOwner, lastLockLogAction,
 				objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
 				size);
@@ -540,8 +562,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	@Override
 	@Transactional
-	public Iterable<AttributedJakeObject> getNotes(Project p) {
-		List<AttributedJakeObject> stat = new LinkedList<AttributedJakeObject>();
+	public List<AttributedJakeObject<NoteObject>> getNotes(Project p) {
+		List<AttributedJakeObject<NoteObject>> stat = new LinkedList<AttributedJakeObject<NoteObject>>();
 
 		// TODO: add deleted
 		for (NoteObject no : this.db.getNoteObjectDao(p).getAll()) {
@@ -841,7 +863,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	@Override
 	@Transactional
-	public Iterable<AttributedJakeObject> getFiles(Project p) throws IOException {
+	public List<AttributedJakeObject<FileObject>> getFiles(Project p) throws IOException {
 		IFSService fss = getFSS(p);
 
 		List<String> files = fss.recursiveListFiles();
@@ -857,7 +879,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			FileObject fo = new FileObject(null, p, relpath);
 			fileObjects.add(fo);
 		}
-		List<AttributedJakeObject> stat = new LinkedList<AttributedJakeObject>();
+		List<AttributedJakeObject<FileObject>> stat = new LinkedList<AttributedJakeObject<FileObject>>();
 		for (FileObject fo : fileObjects) {
 			try {
 				stat.add(getJakeObjectSyncStatus(fo));

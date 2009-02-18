@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -14,7 +15,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,13 +29,14 @@ public class NotesTableModel extends DefaultTableModel {
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
 	private List<String> columnNames;
-	private List<NoteMetaDataWrapper> notes;
+	private List<AttributedJakeObject<NoteObject>> notes;
 	private ResourceMap resourceMap;
 	private ICoreAccess core;
 	private Icon padlock, shared_note;
 
+	/*
 	private class NoteMetaDataWrapper {
-		public NoteObject note;
+		public NoteObject note; OK
 		public Date lastEdit;
 		public String lastEditor;
 		public boolean isLocal;
@@ -50,12 +51,13 @@ public class NotesTableModel extends DefaultTableModel {
 			this.isSoftLocked = isSoftLocked;
 		}
 	}
+	*/
 
 	public NotesTableModel() {
 		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
-		this.notes = new ArrayList<NoteMetaDataWrapper>();
-		this.core = JakeMainApp.getApp().getCore();
+		this.notes = new ArrayList<AttributedJakeObject<NoteObject>>();
+		this.core = JakeMainApp.getCore();
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
@@ -74,8 +76,8 @@ public class NotesTableModel extends DefaultTableModel {
 		return this.resourceMap;
 	}
 
-	public NoteObject getNoteAtRow(int row) {
-		return this.notes.get(row).note;
+	public AttributedJakeObject<NoteObject> getNoteAtRow(int row) {
+		return this.notes.get(row);
 	}
 
 	@Override
@@ -110,14 +112,14 @@ public class NotesTableModel extends DefaultTableModel {
 			return;
 		}
 		this.notes.clear();
-		List<NoteObject> incommingNotes;
-
 
 		try {
-			incommingNotes = this.core.getNotes(project);
+			this.notes = this.core.getNotes(project);
 
-			for (NoteObject n : incommingNotes) {
-				n.setProject(project);
+			// TODO: clean after fixing
+			/*
+			for (AttributedJakeObject n : incomingNotes) {
+				//n.setProject(project);
 				try {
 					this.notes.add(new NoteMetaDataWrapper(n,
 							  this.core.getLastEdit(n),
@@ -128,38 +130,39 @@ public class NotesTableModel extends DefaultTableModel {
 					ExceptionUtilities.showError(e);
 				}
 			}
+			*/
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);
 		}
-
 	}
 
-	@Override
+
+		@Override
 	public Object getValueAt(int row, int column) {
 		Object value;
-		NoteMetaDataWrapper note = this.getNotes().get(row);
+		AttributedJakeObject note = this.getNotes().get(row);
 		switch (column) {
 			case 0: // soft lock
-				if (note.isSoftLocked) {
+				if (note.isLocked()) {
 					value = this.padlock;
 				} else {
 					value = "";
 				}
 				break;
 			case 1: //is local
-				if (!note.isLocal) {
+				if (!note.isOnlyLocal()) {
 					value = this.shared_note;
 				} else
 					value = "";
 				break;
 			case 2: //content
-				value = note.note.getContent();
+				value = ((NoteObject)note.getJakeObject()).getContent();
 				break;
 			case 3: //last edit
-				value = TimeUtilities.getRelativeTime(note.lastEdit);
+				value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
 				break;
 			case 4: //last editor
-				value = note.lastEditor;
+				value = note.getLastVersionProjectMember();
 				break;
 
 			default:
@@ -169,7 +172,7 @@ public class NotesTableModel extends DefaultTableModel {
 		return value;
 	}
 
-	private List<NoteMetaDataWrapper> getNotes() {
+	private List<AttributedJakeObject<NoteObject>> getNotes() {
 		return this.notes;
 	}
 
@@ -196,7 +199,7 @@ public class NotesTableModel extends DefaultTableModel {
 	public int getRow(NoteObject note) {
 		int row = -1;
 		for (int i = 0; i < this.notes.size(); i++) {
-			if (this.notes.get(i).note.equals(note)) {
+			if (this.notes.get(i).getJakeObject().equals(note)) {
 				row = i;
 				break;
 			}

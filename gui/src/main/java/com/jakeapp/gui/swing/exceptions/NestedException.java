@@ -29,7 +29,7 @@ public class NestedException extends Exception {
 	public void append(Exception e) {
 
 		// FIXME: DANGER, HACK AHEAD: added direct printout for easier resolving of bugs
-		// e.printStackTrace();
+		e.printStackTrace();
 
 		this.nestedExceptions.add(e);
 	}

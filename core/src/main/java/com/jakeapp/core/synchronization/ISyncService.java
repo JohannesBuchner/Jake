@@ -8,7 +8,6 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -143,7 +142,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public Iterable<AttributedJakeObject> getFiles(Project p) throws IOException;
+	public List<AttributedJakeObject<FileObject>> getFiles(Project p) throws IOException;
 
 	/**
 	 * Invites a User to a project.
@@ -180,7 +179,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public Iterable<AttributedJakeObject> getNotes(Project p) throws IOException;
+	public List<AttributedJakeObject<NoteObject>> getNotes(Project p) throws IOException;
 
 	/**
 	 * gets the SyncStatus for a specific JakeObject

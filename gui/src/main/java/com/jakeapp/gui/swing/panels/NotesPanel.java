@@ -13,6 +13,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
@@ -87,7 +88,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.popupMenu.add(new JMenuItem(new SoftlockNoteAction()));
 		}
 
-		public NoteContainerMouseListener(NotesPanel panel, JTable table, NotesTableModel tableModel) {
+		public NoteContainerMouseListener(NotesPanel panel, JTable table,
+																			NotesTableModel tableModel) {
 			super();
 			this.panel = panel;
 			this.table = table;
@@ -102,7 +104,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 				int rowNumber = this.table.rowAtPoint(p);
 
 				if (rowNumber == -1) { // click in empty area
-					this.panel.notifyNoteSelectionListeners(new ArrayList<NoteObject>());
+					this.panel.notifyNoteSelectionListeners();
 					this.table.clearSelection();
 				} else { //click hit something
 					boolean found = false;
@@ -125,8 +127,13 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 
 		private void showMenu(MouseEvent me) {
-			this.popupMenu.show(this.table, (int) me.getPoint().getX(), (int) me.getPoint().getY());
+			this.popupMenu.show(this.table, (int) me.getPoint().getX(),
+							(int) me.getPoint().getY());
 		}
+	}
+
+	private void notifyNoteSelectionListeners() {
+		notifyNoteSelectionListeners(new ArrayList<AttributedJakeObject<NoteObject>>());
 	}
 
 	/**
@@ -136,9 +143,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		instance = this;
 
 		// get resource map
-		this.setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext()
-				  .getResourceMap(NotesPanel.class));
+		this.setResourceMap(
+						org.jdesktop.application.Application.getInstance(JakeMainApp.class)
+										.getContext().getResourceMap(NotesPanel.class));
 
 		//get core
 		this.core = JakeMainApp.getCore();
@@ -148,7 +155,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		// register the callbacks
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 		this.notesTable.getSelectionModel().addListSelectionListener(this);
 
 		// TODO: make this a styler property
@@ -157,7 +164,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 		//final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
-		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable, this.notesTableModel));
+		this.notesTable.addMouseListener(
+						new NoteContainerMouseListener(this, this.notesTable,
+										this.notesTableModel));
 
 		// install event table update timer
 		this.tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
@@ -175,15 +184,18 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public void valueChanged(ListSelectionEvent e) {
 		if (this.notesTable.getSelectedRow() == -1) {
 			this.noteReader.setText("");
-			this.notifyNoteSelectionListeners(new ArrayList<NoteObject>());
+			this.notifyNoteSelectionListeners(new ArrayList<AttributedJakeObject<NoteObject>>());
 		} else {
 			String text;
-			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow()).getContent();
+			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow())
+							.getJakeObject().getContent();
 			this.noteReader.setText(text);
 			this.noteReader.setEditable(true);
 
-			if (core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked
-				if (this.core.getLockOwner(getSelectedNotes().get(0)).getUserId().equals(JakeMainApp.getProject().getUserId())) {
+			// TODO: this is wrong, fix!!! (equals, etc)
+			if (this.getSelectedNote().isLocked()){ // the file is locked
+				if (this.core.getLockOwner(getSelectedNote().getJakeObject()).getUserId()
+								.equals(JakeMainApp.getProject().getUserId())) {
 					// local user has lock
 					this.noteReader.setEditable(true);
 				} else {
@@ -193,11 +205,16 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			}
 		}
 
-		List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
+		List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
 		for (int row : this.notesTable.getSelectedRows()) {
 			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
 		}
 		this.notifyNoteSelectionListeners(selectedNotes);
+	}
+
+	private AttributedJakeObject<NoteObject> getSelectedNote() {
+		if (getSelectedNotes().size() > 0) return getSelectedNotes().get(0);
+		else return null;
 	}
 
 
@@ -277,7 +294,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		});
 
 		this.noteReaderPanel = new JXPanel(new MigLayout("wrap 1, ins 0, fill"));
-		this.noteReaderPanel.setBackground(getResourceMap().getColor("noteReadPanel.background"));
+		this.noteReaderPanel
+						.setBackground(getResourceMap().getColor("noteReadPanel.background"));
 
 		JPanel noteControlPanel = new JPanel(new MigLayout("nogrid, ins 0"));
 		noteControlPanel.setBackground(Color.WHITE);
@@ -312,8 +330,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteReader.setMargin(new Insets(8, 8, 8, 8));
 
 		JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
-		noteReaderScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		noteReaderScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		noteReaderScrollPane.setHorizontalScrollBarPolicy(
+						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		noteReaderScrollPane.setVerticalScrollBarPolicy(
+						ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		noteReaderScrollPane.setOpaque(false);
 		noteReaderScrollPane.getViewport().setOpaque(false);
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
@@ -323,7 +343,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		// set the background painter
 		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));
 		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
-				  GlossPainter.GlossPosition.TOP);
+						GlossPainter.GlossPosition.TOP);
 		this.noteReaderPanel.setBackgroundPainter(new CompoundPainter(mp, gp));
 
 		this.mainSplitPane.setRightComponent(this.noteReaderPanel);
@@ -342,10 +362,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteSelectionListeners.remove(listener);
 	}
 
-	public void notifyNoteSelectionListeners(java.util.List<NoteObject> selectedNotes) {
-		log.debug("notify selection listeners: " + selectedNotes.toArray());
+	public void notifyNoteSelectionListeners(
+					List<AttributedJakeObject<NoteObject>> selectedNotes) {
+
+		log.debug("notify note selection listeners");
+
 		for (NoteSelectionChanged listener : this.noteSelectionListeners) {
-			listener.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(selectedNotes));
+			listener.noteSelectionChanged(
+							new NoteSelectionChanged.NoteSelectedEvent(selectedNotes));
 		}
 	}
 
@@ -354,9 +378,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 *
 	 * @return the list of currently selected notes. If nothing is selected, an empty list is returned.
 	 */
-	public List<NoteObject> getSelectedNotes() {
+	public List<AttributedJakeObject<NoteObject>> getSelectedNotes() {
 		log.debug("get selected notes...");
-		List<NoteObject> selectedNotes = new ArrayList<NoteObject>();
+		List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
 
 		if (this.notesTable.getSelectedRow() == -1) {
 			return selectedNotes;
@@ -390,7 +414,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public NotesTableModel getNotesTableModel() {
 		return this.notesTableModel;
 	}
-	
+
 	public JTable getNotesTable() {
 		return this.notesTable;
 	}

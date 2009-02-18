@@ -1,19 +1,15 @@
 package com.jakeapp.gui.swing.actions;
 
-import java.awt.event.ActionEvent;
-import java.util.List;
-
-import javax.swing.Action;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 /**
  * Note Action to lock and unlock a note, on/off checkbox behaviour. Batch enabled.
@@ -40,27 +36,20 @@ public class SoftlockNoteAction extends NoteAction {
 		ICoreAccess core = JakeMainApp.getCore();
 		boolean cachedNewLockingState = !this.isLocked;
 
-		for (NoteObject note : this.getSelectedNotes()) {
-			core.setSoftLock(note, cachedNewLockingState, null);
+		for (AttributedJakeObject<NoteObject> note : this.getSelectedNotes()) {
+			core.setSoftLock(note.getJakeObject(), cachedNewLockingState, null);
 		}
 	}
 
 	@Override
 	public void updateAction() {
-		if (this.getSelectedNotes().size() > 0) {
+		if (this.hasSelectedNotes()) {
 			this.setEnabled(true);
 
-			this.isLocked = JakeMainApp.getCore().isSoftLocked(this.getSelectedNotes().get(0));
-			boolean isLocal = true;
-			try {
-				isLocal = JakeMainApp.getCore().isLocalNote(this.getSelectedNotes().get(0));
-			} catch (NoteOperationFailedException e) {
-				ExceptionUtilities.showError(e);
-			}
-			if (isLocal) {
+			if (this.getSelectedNote().isLocal()) {
 				this.setEnabled(false);
 			} else if (this.isLocked) {
-				if (this.getSelectedNotes().size() == 1) {
+				if (this.hasSingleSelectedNote()) {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNote"));
 				} else {
 					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNotes"));

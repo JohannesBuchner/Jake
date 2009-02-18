@@ -1,11 +1,5 @@
 package com.jakeapp.gui.swing.actions;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.Action;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -14,6 +8,10 @@ import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 /**
  * Note action that saves the selected note.  
@@ -37,7 +35,7 @@ public class SaveNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		String newContent = NotesPanel.getInstance().getNoteReaderText();
-		NoteObject cachedNote = this.getSelectedNotes().get(0);
+		NoteObject cachedNote = this.getSelectedNote().getJakeObject();
 		cachedNote.setContent(newContent);
 		
 		log.debug("saving note with new content: " + newContent);
@@ -50,11 +48,11 @@ public class SaveNoteAction extends NoteAction {
 	
 	@Override
 	public void updateAction() {
-		if (this.getSelectedNotes().size() > 0) { // notes are selected
+		if (this.hasSelectedNotes()) { // notes are selected
 			this.setEnabled(true);
 			
-			if(core.isSoftLocked(this.getSelectedNotes().get(0))) { // the file is locked
-				if (this.core.getLockOwner(getSelectedNotes().get(0)).getUserId().equals(JakeMainApp.getProject().getUserId())) {
+			if(this.getSelectedNote().isLocked()) { // the file is locked
+				if (getSelectedNote().getLockOwner().equals(JakeMainApp.getProjectMember())) {
 					// local user has lock
 					this.setEnabled(true);
 				} else {
