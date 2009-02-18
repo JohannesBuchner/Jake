@@ -18,12 +18,10 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
    private static Logger log = Logger.getLogger(ProjectsFileServicesImpl.class);
 
 
-    private Map<UUID, IFSService> fileServices;
-
+    private Map<UUID, IFSService> fileServices = new HashMap<UUID, IFSService>();
 
     public ProjectsFileServicesImpl()
     {
-        fileServices = new HashMap<UUID, IFSService>();
     }
 
 	@Override
@@ -43,7 +41,6 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
         } catch (NotADirectoryException e) {
             log.warn("Got a NotADirectoryException");
             return null;
-
         } catch (IOException e) {
             log.warn("Got a IOException");
             return null;
