@@ -737,7 +737,7 @@ public class JakeCommander {
 				if (jo instanceof NoteObject) {
 					NoteObject no = (NoteObject) jo;
 					no.setContent(no.getContent() + "\n" + "more content ...");
-					pms.getNoteManagingService().saveNote(no);
+					pms.saveNote(no);
 				} else {
 					FileWriter fw = new FileWriter(sync.getFile((FileObject) jo), true);
 					fw.append('.');
