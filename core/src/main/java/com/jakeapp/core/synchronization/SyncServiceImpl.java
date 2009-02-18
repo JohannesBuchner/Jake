@@ -75,9 +75,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
-	/* for the demo, to be removed and replaced by delegate methods */
-	private List<JakeObject> news = new LinkedList<JakeObject>();
-
 	ICService getICS(Project p) {
 		return this.icServicesManager.getICService(p);
 	}
@@ -202,8 +199,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Override
 	@Transactional
-	public void announce(JakeObject jo, LogEntry<JakeObject> inaction, String commitMsg)
-			throws FileNotFoundException, InvalidFilenameException,
+	public void announce(JakeObject jo, LogEntry<? extends JakeObject> inaction,
+			String commitMsg) throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
 		log.debug("announcing " + jo + " : " + inaction);
 		IFSService fss = getFSS(jo.getProject());
@@ -225,20 +222,39 @@ public class SyncServiceImpl extends FriendlySyncService implements
 					"announce can not be used with this action");
 		}
 		if (isNoteObject(jo)) {
-			log.debug("is a note. storing.");
-			NoteObject note = (NoteObject) jo;
+			log.debug("storing note ...");
+			NoteObject note;
+			note = completeIncomingObjectOrNew((NoteObject) jo);
+			db.getNoteObjectDao(jo.getProject()).persist(note);
 			db.getLogEntryDao(jo).create(new NoteObjectLogEntry(le));
-			log.debug("is a note. done.");
+			log.debug("storing note done.");
 		} else {
-			log.debug("is a file. getting hash.");
-			FileObject fo = (FileObject) jo;
+			log.debug("getting file hash ....");
+			FileObject fo;
+			fo = completeIncomingObjectOrNew((FileObject) jo);
 			if (action == LogAction.JAKE_OBJECT_NEW_VERSION)
 				le.setChecksum(fss.calculateHashOverFile(fo.getRelPath()));
-			log.debug("is a file. getting hash done.");
+			log.debug("getting file hash done. storing ...");
+			db.getFileObjectDao(fo.getProject()).persist(fo);
 			db.getLogEntryDao(jo).create(new FileObjectLogEntry(le));
-			log.debug("is a file. log entry written.");
+			log.debug("getting file hash done. storing done.");
 		}
-		news.add(jo);
+	}
+
+	private NoteObject completeIncomingObjectOrNew(NoteObject no) {
+		try {
+			return completeIncomingObject(no);
+		} catch (NoSuchJakeObjectException e) {
+			return (NoteObject) no; // we accept the UUID
+		}
+	}
+
+	private FileObject completeIncomingObjectOrNew(FileObject jo) {
+		try {
+			return completeIncomingObject((FileObject) jo);
+		} catch (NoSuchJakeObjectException e) {
+			return new FileObject(null, jo.getProject(), ((FileObject) jo).getRelPath());
+		}
 	}
 
 	@Override
@@ -250,22 +266,10 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Override
 	public void poke(Project project, ProjectMember pm) {
 		try {
-			for (JakeObject jo : this.news) {
-				if (isNoteObject(jo)) {
-					getICS(project).getMsgService().sendMessage(
-							getBackendUserIdFromDomainProjectMember(project, pm),
-							NEW_NOTE + jo.getUuid().toString());
-				} else {
-					getICS(project).getMsgService().sendMessage(
-							getBackendUserIdFromDomainProjectMember(project, pm),
-							NEW_FILE + ((FileObject) jo).getRelPath());
-				}
-			}
-		} catch (NotLoggedInException e) {
-		} catch (TimeoutException e) {
-		} catch (NoSuchUseridException e) {
-		} catch (NetworkException e) {
-		} catch (OtherUserOfflineException e) {
+			getICS(project).getMsgService().sendMessage(
+					getBackendUserIdFromDomainProjectMember(project, pm), POKE_MESSAGE);
+		} catch (Exception e) {
+			log.info("during poke, a exception occured. ignoring. ", e);
 		}
 	}
 

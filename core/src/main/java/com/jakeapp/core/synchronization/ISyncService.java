@@ -108,7 +108,7 @@ public interface ISyncService {
 	 * @throws IllegalArgumentException  if you are doing it wrong
 	 * @see LogAction for what to set
 	 */
-	public void announce(JakeObject jo, LogEntry<JakeObject> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
+	public void announce(JakeObject jo, LogEntry<? extends JakeObject> action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
 
 	/* Project member changes: just do a poke */
 
