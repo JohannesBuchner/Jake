@@ -25,14 +25,6 @@
     </bean>
 
 
-    <bean id="noteManagingService" class="com.jakeapp.core.services.NoteManagingService">
-      <constructor-arg ref="applicationContextFactory" index="0"
-                       type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
-      <constructor-arg ref="userIdDao" index="1"
-                       type="com.jakeapp.core.dao.IUserIdDao"/>
-    </bean>
-
-
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
     	<constructor-arg ref="applicationContextFactory" index="0"
                        type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
@@ -44,7 +36,6 @@
         <property name="userIdDao" ref="userIdDao" />
         <property name="syncService" ref="syncService" />
         <property name="projectsFileServices" ref="projectsFileServices" />
-        <property name="noteManagingService" ref="noteManagingService" />
     </bean>
 
     <bean id="msgService" class="com.jakeapp.core.services.MsgService" abstract="true">

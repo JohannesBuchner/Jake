@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * The task of the synchronisation service (SyncService) is to implement a
@@ -65,12 +66,12 @@ public interface ISyncService {
 	 * <code>Project</code>.
 	 *
 	 * @param project
-	 * @param userId
+	 * @param pm
 	 * @return the new LogEntries
 	 * @throws IllegalArgumentException if the supplied project or userId is null
 	 * @throws IllegalProtocolException if the supplied UserId is of the wrong protocol-type
 	 */
-	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId userId)
+	public Iterable<LogEntry<ILogable>> startLogSync(Project project, ProjectMember pm)
 			  throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
@@ -78,9 +79,9 @@ public interface ISyncService {
 	 * "hey, we have something new". This makes no guarantees and fails silently
 	 *
 	 * @param project
-	 * @param userId
+	 * @param pm
 	 */
-	public void poke(Project project, UserId userId);
+	public void poke(Project project, ProjectMember pm);
 
 	/**
 	 * The object is requested (found in the log) and its content stored. The
@@ -94,8 +95,8 @@ public interface ISyncService {
 	public void pullObject(JakeObject jo) throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
 
 	/**
-	 * Adds a log entry that the object has been modified, created, deleted,
-	 * tagged, untagged <br>
+	 * Adds a log entry that the object has been modified, created, deleted, ...<br>
+	 * Performs the action on the DomainObject too. <br>
 	 * Unless you are in a loop, you probably want to do a poke afterwards.
 	 *
 	 * @param jo
@@ -199,6 +200,5 @@ public interface ISyncService {
 	 * @throws IOException
 	 */
 	public File getFile(FileObject fo) throws IOException;
-
 
 }

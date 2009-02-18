@@ -112,7 +112,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         logEntryDao.create(projectLogEntry);
 
 
-        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll(true);
 
 
         log.debug("result.size() = " + result.size());
@@ -125,7 +125,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void testGetAllOfJakeObject_NonExistant() {
     	NoteObject no = new NoteObject(UUID.randomUUID(), null, "hello");
-        List<LogEntry<NoteObject>> result = logEntryDao.getAllOfJakeObject(no);
+        List<LogEntry<NoteObject>> result = logEntryDao.getAllOfJakeObject(no, true);
 
 
         log.debug("result.size() = " + result.size());
@@ -189,7 +189,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
         logEntryDao.create(tagLogEntry);
 
-        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll(true);
 
 
         log.debug("result.size() = " + result.size());
@@ -224,7 +224,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
         logEntryDao.create(noteObjectLogEntry);
 
-        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll(true);
 
 
         log.debug("result.size() = " + result.size());
@@ -262,7 +262,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
         logEntryDao.create(fileObjectLogEntry);
 
-        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll();
+        List<LogEntry<? extends ILogable>> result = logEntryDao.getAll(true);
 
 
         log.debug("result.size() = " + result.size());

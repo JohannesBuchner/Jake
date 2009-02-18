@@ -32,34 +32,49 @@ public interface ILogEntryDao {
 	void create(LogEntry<? extends ILogable> logEntry);
 
 
-	// FIXME hier sind einige Parameter unnoetig - beim Suchen nach LogEntries
-	// wird man wohl kaum so viel Information haben.
 	/**
-	 * Loads a specific LogEntry from the Database
+	 * change the &quot;processed&quot; field of a logEntry
 	 * 
-	 * @param name
-	 *            the name of the jakeObject
-	 * @param projectmember
-	 *            the ProjectMember of this logEntry
-	 * @param timestamp
-	 *            the timestamp of this logEntry
-	 * @return the LogEntry requested
-	 * @throws NoSuchLogEntryException
-	 *             if no such LogEntry exists.
-	 * @throws NoSuchProjectException
-	 *             if the <code>Project</code> referenced by
-	 *             <code>project</code> does not exist.
+	 * @param logEntry
 	 */
-	public LogEntry<? extends ILogable> get(String name, String projectmember,
-			Date timestamp) throws NoSuchLogEntryException, NoSuchProjectException;
+	public void setProcessed(LogEntry<JakeObject> logEntry);
+
+
+	/**
+	 * @return all unprocessed LogEntries of the Project
+	 */
+	public Collection<LogEntry<JakeObject>> getUnprocessed();
+
+
+	/**
+	 * @return the unprocessed LogEntries of the JakeObject
+	 */
+	public Collection<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject);
+
+
+	/**
+	 * @return Whether unprocessed LogEntries of the JakeObject exist
+	 */
+	public boolean hasUnprocessed(JakeObject jakeObject);
+
+
+	/**
+	 * @return first LogEntry by timestamp that has not been processed yet
+	 * @throws NoSuchLogEntryException
+	 *             if there is no unprocessed <code>LogEntry</code>.
+	 */
+	public LogEntry<? extends ILogable> getNextUnprocessed()
+			throws NoSuchLogEntryException;
+
 
 	/**
 	 * Get all LogEntrys stored in the database for one <code>Project</code>.
-	 * This includes not only unprocessed, but also processed LogEntries.
 	 * 
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
 	 * @return List of LogEntrys
 	 */
-	public List<LogEntry<? extends ILogable>> getAll();
+	public List<LogEntry<? extends ILogable>> getAll(boolean includeUnprocessed);
 
 	/**
 	 * Get all LogEntrys stored in the database concerning a specific
@@ -67,98 +82,138 @@ public interface ILogEntryDao {
 	 * 
 	 * @param jakeObject
 	 *            the <code>JakeObject</code> in question.
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
 	 * @return List of LogEntries
 	 */
-	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject);
+	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject,
+			boolean includeUnprocessed);
 
 	/**
-	 * Retrieves the most recent <code>LogEntry</code> for a given
-	 * <code>JakeObject</code>
+	 * Retrieves the most recent <code>LogEntry</code> of any LogAction for a
+	 * given <code>JakeObject</code>.
 	 * 
 	 * @param jakeObject
 	 *            the <code>JakeObject</code> in question.
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
 	 * @return the most recent <code>LogEntry</code> for this
 	 *         <code>JakeObject</code>
 	 * @throws NoSuchLogEntryException
 	 *             if there is no LogEntry for <code>jakeObject</code>.
 	 */
-	public LogEntry<JakeObject> getMostRecentFor(JakeObject jakeObject)
-			throws NoSuchLogEntryException;
+	public LogEntry<JakeObject> getLastOfJakeObject(JakeObject jakeObject,
+			boolean includeUnprocessed) throws NoSuchLogEntryException;
 
 	/**
-	 * Retrieves the log entry representing the last pulled version for the
-	 * given <code>JakeObject</code>. The last pulled version denotes the newest
-	 * version that was downloaded from another peer, without local
-	 * modifications.
+	 * Get all LogEntrys with {@value LogAction#JAKE_OBJECT_NEW_VERSION} as
+	 * LogAction stored in the database.
 	 * 
 	 * @param jakeObject
 	 *            the <code>JakeObject</code> in question.
-	 * @return the <code>LogEntry</code> representing the last pulled version.
-	 * @throws NoSuchLogEntryException
-	 *             If there is not <code>LogEntry</code> for
-	 *             <code>jakeObject</code>
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
+	 * @return List of LogEntries
 	 */
-	public <T extends JakeObject> LogEntry<T> getLastPulledFor(T jakeObject)
-			throws NoSuchLogEntryException;
+	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(
+			boolean includeUnprocessed);
 
 	/**
-	 * change the &quot;processed&quot; field of a logEntry
+	 * Get all LogEntrys with {@value LogAction#JAKE_OBJECT_NEW_VERSION} as
+	 * LogAction stored in the database concerning a specific
+	 * <code>JakeObject</code>.
 	 * 
-	 * @param logEntry
-	 *            the <T extends JakeObject> in question
+	 * @param jakeObject
+	 *            the <code>JakeObject</code> in question.
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
+	 * @return List of LogEntries
 	 */
-	public void setProcessed(LogEntry<? extends ILogable> logEntry);
+	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(
+			T jakeObject, boolean includeUnprocessed);
 
 	/**
-	 * @return A list of all LogEntries for a <code>Project</code> that have not
-	 *         been processed yet.
-	 */
-	public List<LogEntry<? extends ILogable>> getAllUnprocessed();
-
-	/**
-	 * @return the unprocessed LogEntries of the JakeObject 
-	 */
-	boolean getUnprocessed(JakeObject jakeObject);
-
-	/**
-	 * @return Whether the JakeObject has unprocessed LogEntries
-	 */
-	public boolean hasUnprocessed(JakeObject jakeObject);
-
-
-	/**
-	 * @param project
-	 *            The <code>Project</code> to get unprocessed LogEntries for.
-	 * @return any LogEntry that has not been processed yet sorted by timestamp
-	 * @throws NoSuchProjectException
-	 *             if the <code>Project</code> referenced by
-	 *             <code>project</code> does not exist.
+	 * Retrieves the most recent <code>LogEntry</code> of
+	 * {@value LogAction#JAKE_OBJECT_NEW_VERSION} for a given
+	 * <code>JakeObject</code>.
+	 * 
+	 * @param jakeObject
+	 *            the <code>JakeObject</code> in question.
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
+	 * @return the most recent <code>LogEntry</code> for this
+	 *         <code>JakeObject</code>
 	 * @throws NoSuchLogEntryException
-	 *             if there is no unprocessed <code>LogEntry</code>.
+	 *             if there is no LogEntry for <code>jakeObject</code>.
 	 */
-	public LogEntry<? extends ILogable> getNextUnprocessed(Project project)
-			throws NoSuchProjectException, NoSuchLogEntryException;
+	public <T extends JakeObject> LogEntry<T> getLastVersionOfJakeObject(T jakeObject,
+			boolean includeUnprocessed) throws NoSuchLogEntryException;
 
 	/**
-	 * finds the Logentries that match the supplied characteristics <br>
-	 * uuid, any of logAction, timestamp, project, belongsTo may be null
+	 * looks at all LogEntries that either have a
+	 * {@link LogAction#JAKE_OBJECT_DELETE} or
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
+	 * 
+	 * <p>
+	 * Note the subtle difference to {@link #getLastVersion(JakeObject)}
+	 * </p>
+	 * 
+	 * @param jakeObject
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
+	 * @return true: if the last in time is a
+	 *         {@link LogAction#JAKE_OBJECT_DELETE} <br>
+	 *         false: if the last in time is a
+	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} <br>
+	 *         null: if no matching LogEntries could be found
+	 */
+	public Boolean getDeleteState(JakeObject jakeObject, boolean includeUnprocessed);
+
+
+	/**
+	 * looks at all LogEntries that either have a
+	 * {@link LogAction#JAKE_OBJECT_DELETE} or
+	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
+	 * 
+	 * <p>
+	 * Note the subtle difference to {@link #getDeleteState(JakeObject)}
+	 * </p>
+	 * 
+	 * @param jakeObject
+	 * @param includeUnprocessed
+	 *            Whether to look at unprocessed LogEntries as well
+	 * @return null: if the last in time is a
+	 *         {@link LogAction#JAKE_OBJECT_DELETE} or no LogEntries were found<br>
+	 *         the LogEntry of the {@link LogAction#JAKE_OBJECT_NEW_VERSION}
+	 *         otherwise
+	 */
+	public LogEntry<JakeObject> getLastVersion(JakeObject jakeObject,
+			boolean includeUnprocessed);
+
+
+	/**
+	 * @param
+	 * @return all fileObject that either don't have a
+	 *         {@link LogAction#JAKE_OBJECT_DELETE} <b>or</b> have a
+	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than that.
+	 */
+	public Iterable<FileObject> getExistingFileObjects(boolean includeUnprocessed);
+
+
+	/**
+	 * finds the LogEntries that match the supplied characteristics <br>
+	 * UUID, any of logAction, timestamp, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable sorted by timestamp. must not return null but a empty
-	 *         iterable on no results
+	 * @param processedState
+	 *            true: only processed<br>
+	 *            false: only unprocessed<br>
+	 *            null: all
+	 * @return a Collection sorted ascending by timestamp. on no results returns
+	 *         a empty Collection
 	 */
-	public Collection<LogEntry<? extends ILogable>> findMatching(
-			LogEntry<? extends ILogable> le);
-
-	/**
-	 * finds the last Logentry over time that matches the supplied
-	 * characteristics <br>
-	 * uuid, any of logAction, project, belongsTo may be null
-	 * 
-	 * @param le
-	 * @return the LogEntry, or null if no such entry exists
-	 */
-	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le);
+	public List<LogEntry<? extends ILogable>> findMatching(
+			LogEntry<? extends ILogable> le, Boolean processedState);
 
 	/**
 	 * finds the Logentries that match the supplied characteristics except for
@@ -166,13 +221,18 @@ public interface ILogEntryDao {
 	 * uuid, any of logAction, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable sorted by timestamp in reverse order. must not return
-	 *         null but a empty iterable on no results
+	 * @param processedState
+	 *            true: only processed<br>
+	 *            false: only unprocessed<br>
+	 *            null: all
+	 * @return a Collection sorted ascending by timestamp. on no results returns
+	 *         a empty Collection
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
-	public Collection<LogEntry<? extends ILogable>> findMatchingBefore(
-			LogEntry<? extends ILogable> le) throws NullPointerException;
+	public List<LogEntry<? extends ILogable>> findMatchingBefore(
+			LogEntry<? extends ILogable> le, Boolean processedState)
+			throws NullPointerException;
 
 	/**
 	 * finds the Logentries that match the supplied characteristics except for
@@ -180,40 +240,34 @@ public interface ILogEntryDao {
 	 * uuid, any of logAction, project, belongsTo may be null
 	 * 
 	 * @param le
-	 * @return a iterable sorted by timestamp. must not return null but a empty
-	 *         iterable on no results
+	 * @param processedState
+	 *            true: only processed<br>
+	 *            false: only unprocessed<br>
+	 *            null: all
+	 * @return a Collection sorted ascending by timestamp. on no results returns
+	 *         a empty Collection
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
-	public Collection<LogEntry<? extends ILogable>> findMatchingAfter(
-			LogEntry<? extends ILogable> le) throws NullPointerException;
+	public List<LogEntry<? extends ILogable>> findMatchingAfter(
+			LogEntry<? extends ILogable> le, Boolean processedState)
+			throws NullPointerException;
 
 	/**
-	 * looks at all Logentries that either have a
-	 * {@link LogAction#JAKE_OBJECT_DELETE} or
-	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
+	 * finds the last LogEntry over time that matches the supplied
+	 * characteristics <br>
+	 * uuid, any of logAction, project, belongsTo may be null
 	 * 
-	 * @param belongsTo
-	 * @return true: if the last in time is a
-	 *         {@link LogAction#JAKE_OBJECT_DELETE} false: if the last in time
-	 *         is a {@link LogAction#JAKE_OBJECT_NEW_VERSION} null: if no
-	 *         matching Logentries could be found
+	 * @param le
+	 * @param processedState
+	 *            true: only processed<br>
+	 *            false: only unprocessed<br>
+	 *            null: all
+	 * @return the LogEntry, or null if no such entry exists
 	 */
-	public Boolean getDeleteState(ILogable belongsTo);
+	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le,
+			Boolean processedState);
 
-
-	/**
-	 * looks at all Logentries that either have a
-	 * {@link LogAction#JAKE_OBJECT_DELETE} or
-	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION}.
-	 * 
-	 * @param belongsTo
-	 * @return null: if the last in time is a
-	 *         {@link LogAction#JAKE_OBJECT_DELETE} or no Logentries were found
-	 *         the logentry of the {@link LogAction#JAKE_OBJECT_NEW_VERSION}
-	 *         otherwise
-	 */
-	public LogEntry<JakeObject> getExists(JakeObject belongsTo);
 
 	/**
 	 * checks if jo is currently locked by looking at all
@@ -242,6 +296,15 @@ public interface ILogEntryDao {
 	public Collection<Tag> getCurrentTags(JakeObject belongsTo);
 
 	/**
+	 * Gets the first {@link LogEntry}. It has the
+	 * {@link LogAction#PROJECT_CREATED}.
+	 * 
+	 * @return
+	 */
+	public LogEntry<? extends ILogable> getProjectCreatedEntry();
+
+
+	/**
 	 * Iterates in time through all
 	 * {@link LogAction#START_TRUSTING_PROJECTMEMBER} and
 	 * {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}. <br>
@@ -257,14 +320,6 @@ public interface ILogEntryDao {
 	public Collection<ProjectMember> getCurrentProjectMembers();
 
 	/**
-	 * Gets the first {@link LogEntry}. It has the
-	 * {@link LogAction#PROJECT_CREATED}.
-	 * 
-	 * @return
-	 */
-	public LogEntry<? extends ILogable> getProjectCreatedEntry();
-
-	/**
 	 * Does a trust b?
 	 * 
 	 * @param a
@@ -278,12 +333,12 @@ public interface ILogEntryDao {
 	 * Whom does a trust?
 	 * 
 	 * @param a
+	 * @deprecated don't know if needed
 	 * @return an empty Collection if no logentries found (not null) or the
 	 *         {@link ProjectMember}s that have
 	 *         {@link LogAction#START_TRUSTING_PROJECTMEMBER} as last action
 	 */
 	@Deprecated
-	// don't know if needed
 	public Collection<ProjectMember> trusts(ProjectMember a);
 
 	/**
@@ -291,47 +346,6 @@ public interface ILogEntryDao {
 	 *         must not be null
 	 */
 	public Map<ProjectMember, List<ProjectMember>> getTrustGraph();
-
-	/**
-	 * @param project
-	 * @return all fileObject that <br>
-	 *         don't have a {@link LogAction#JAKE_OBJECT_DELETE} <b>or</b> <br>
-	 *         have a {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than
-	 */
-	public Iterable<FileObject> getExistingFileObjects(Project project);
-
-
-	/**
-	 * Retrieves all LogEntries for a JakeObject, but only those
-	 * that have one of the specified LogActions.
-	 * The Entries are sorted by creation date, desc.
-	 * @param jakeObject The JakeObject to retrieve LogEntries for.
-	 * @param actions A Collection of actions for which Logentries should be retrieved.
-	 * if this is left blank, no LogEntries will be returned.
-	 */
-	public List<LogEntry<JakeObject>> getAllOfJakeObject(JakeObject jakeObject, Collection<LogAction> actions);
-
-	/**
-	 * Retrieves all LogEntries for a JakeObject that have
-	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION} or
-	 * {@link LogAction#JAKE_OBJECT_DELETE} LogActions. The Entries are sorted by creation
-	 * date, desc.
-	 * 
-	 * @param jakeObject
-	 *            The JakeObject to retrieve LogEntries for.
-	 */
-	public Collection<LogEntry<JakeObject>> getVersionsOfJakeObject(JakeObject jakeObject);
-
-	/**
-	 * Retrieves the LogEntry for a JakeObject with 
-	 * {@link LogAction#JAKE_OBJECT_NEW_VERSION} or
-	 * {@link LogAction#JAKE_OBJECT_DELETE} LogActions that was last processed. 
-	 * If none match, null is returned
-	 * 
-	 * @param jakeObject
-	 *            The JakeObject to retrieve LogEntries for.
-	 */
-	public LogEntry<JakeObject> getLastProcessedFor(JakeObject jakeObject);
 
 
 }

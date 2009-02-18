@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * This handles the list of projects and their states
  * <p/>
@@ -189,13 +191,6 @@ public interface IProjectsManagingService {
 	IFSService getFileServices(Project p) throws ProjectNotLoadedException;
 
 	/**
-	 * @return a service for note operations
-	 * @throws ProjectNotLoadedException if the project is not open.
-	 * @throws IllegalArgumentException  if <code>project</code> is null.
-	 */
-	INoteManagingService getNoteManagingService();
-
-	/**
 	 * @return The number of files in a Project
 	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
 	 */
@@ -312,14 +307,6 @@ public interface IProjectsManagingService {
 	void updateProjectMember(Project project, ProjectMember member);
 
 	/**
-	 * Checks whether a JakeObject only exists locally
-	 *
-	 * @param note The note to check.
-	 * @return <code>true</code> if the object only exists locally, <code>false</code> otherwise.
-	 */
-	boolean isLocalJakeObject(JakeObject jo);
-
-	/**
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
 	 */
 	ProjectMember getLastModifier(JakeObject jakeObject);
@@ -368,4 +355,12 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchJakeObjectException
 	 */
 	void setTagsForJakeObject(JakeObject jo, Set<Tag> tags) throws NoSuchJakeObjectException;
+
+
+	/**
+	 * Saves a new version of a NoteObject to the database, but does not announce it
+	 * @param note
+	 */
+	void saveNote(NoteObject note);
+	
 }

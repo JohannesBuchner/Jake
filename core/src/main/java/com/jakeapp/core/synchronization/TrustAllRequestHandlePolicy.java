@@ -48,7 +48,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
 		List<UserId> providers = new LinkedList<UserId>();
 		try {
-			ProjectMember member = db.getLogEntryDao(jo).getMostRecentFor(jo).getMember();
+			ProjectMember member = db.getLogEntryDao(jo).getLastOfJakeObject(jo).getMember();
 			providers.add(userTranslator.getUserIdFromProjectMember(jo.getProject(),
 					member));
 		} catch (NoSuchLogEntryException e) {

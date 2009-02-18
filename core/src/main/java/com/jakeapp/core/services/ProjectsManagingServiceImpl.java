@@ -1,11 +1,45 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.dao.IFileObjectDao;
+import com.jakeapp.core.dao.IJakeObjectDao;
+import com.jakeapp.core.dao.INoteObjectDao;
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.IProjectMemberDao;
+import com.jakeapp.core.dao.IUserIdDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.InvitationState;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TagLogEntry;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
@@ -17,19 +51,11 @@ import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserTranslator;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements IProjectsManagingService {
 
@@ -44,8 +70,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	private IProjectsFileServices projectsFileServices;
 
-	private INoteManagingService noteManagingService;
-
 	private MsgService messageService;
 
 	public ProjectsManagingServiceImpl(ProjectApplicationContextFactory applicationContextFactory, IUserIdDao userIdDao) {
@@ -53,7 +77,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	public IFriendlySyncService getSyncService() {
-		return syncService;
+		return this.syncService;
 	}
 
 	public void setSyncService(IFriendlySyncService syncService) {
@@ -65,7 +89,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	 */
 
 	public IProjectDao getProjectDao() {
-		return projectDao;
+		return this.projectDao;
 	}
 
 	public void setProjectDao(IProjectDao projectDao) {
@@ -104,7 +128,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return this.getApplicationContextFactory().getApplicationContext(p);
 	}
 
-	private ILogEntryDao getLogEntryDao(Project project) {
+	private UnprocessedBlindLogEntryDaoProxy getLogEntryDao(Project project) {
 		return this.getApplicationContextFactory().getLogEntryDao(project);
 	}
 
@@ -120,7 +144,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return this.getApplicationContextFactory().getFileObjectDao(project);
 	}
 
-	private IJakeObjectDao getJakeObjectDao(final Project project, final JakeObject jo) {
+	private IJakeObjectDao<JakeObject> getJakeObjectDao(final Project project, final JakeObject jo) {
 		IJakeObjectDao result = null;
 
 		if (jo != null) {
@@ -463,7 +487,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			  throws IllegalArgumentException {
-		ILogEntryDao dao;
+		UnprocessedBlindLogEntryDaoProxy dao;
 		List<LogEntry<? extends com.jakeapp.core.domain.ILogable>> result = null;
 
 		if (project == null)
@@ -482,7 +506,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
 			  throws IllegalArgumentException {
 		Project project;
-		ILogEntryDao dao;
+		UnprocessedBlindLogEntryDaoProxy dao;
 		List<LogEntry<JakeObject>> entries = null;
 		List<LogEntry<? extends ILogable>> result = null;
 
@@ -746,7 +770,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 			logentry = this.getMostRecentFor(jo);
 			result = logentry.getTimestamp();
 		} catch (NoSuchLogEntryException e) {
-			result = Calendar.getInstance().getTime();
+			result = now();
 		}
 
 		return result;
@@ -779,7 +803,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 		//get the most recent logentry for the JakeObject
 		//TODO rather call getMostRecentProcessed
-		logentry = this.getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
+		logentry = this.getLogEntryDao(jo.getProject()).getLastVersionOfJakeObject(jo);
 
 		return logentry;
 	}
@@ -816,16 +840,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public ProjectMember getLastModifier(JakeObject jakeObject) {
-		List<LogEntry<JakeObject>> entries;
-		ArrayList<LogAction> actions = new ArrayList<LogAction>();
-
-		actions.add(LogAction.JAKE_OBJECT_DELETE);
-		actions.add(LogAction.JAKE_OBJECT_NEW_VERSION);
-
-		entries = this.getLogEntryDao(jakeObject.getProject()).getAllOfJakeObject(jakeObject, actions);
-		if (entries.size() > 0)
-			return entries.get(0).getMember();
-		else return null;
+		try {
+			return this.getLogEntryDao(jakeObject.getProject()).getLastVersionOfJakeObject(jakeObject).getMember();
+		} catch (NoSuchLogEntryException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -935,9 +954,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public void setTagsForJakeObject(JakeObject jo, Set<Tag> tags) throws NoSuchJakeObjectException {
-		//TODO calc the real checksum?
-		final String CHECKSUM = "";
-
 		List<Tag> toAdd = new ArrayList<Tag>();
 		List<Tag> toRemove = new ArrayList<Tag>();
 		List<Tag> current = this.getTagsListFor(jo);
@@ -956,41 +972,44 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 		//remove and add tags
 		for (Tag t : toRemove)
-			removeTag(jo, CHECKSUM, dao, t);
+			removeTag(jo, t);
 
 		for (Tag t : toAdd)
-			addTag(jo, CHECKSUM, dao, t);
+			addTag(jo, t);
 	}
 
-	private void addTag(JakeObject jo, final String CHECKSUM,
-							  IJakeObjectDao dao, Tag t) throws NoSuchJakeObjectException {
-		TagLogEntry logEntry;
-		dao.addTagTo(jo, t);
-		logEntry = new TagLogEntry(UUID.randomUUID(), LogAction.TAG_ADD, Calendar.getInstance().getTime(), jo.getProject(),
-				  t, this.getProjectMember(jo.getProject(), jo.getProject().getMessageService()), "", CHECKSUM, true);
+	private Date now() {
+		return Calendar.getInstance().getTime();
 	}
 
-	private void removeTag(JakeObject jo, final String CHECKSUM,
-								  IJakeObjectDao dao, Tag t) throws NoSuchJakeObjectException {
+	private void addTag(JakeObject jo, Tag t) throws NoSuchJakeObjectException {
+		LogEntry<Tag> logEntry;
+		this.getJakeObjectDao(jo.getProject(), jo).addTagTo(jo, t);
+		logEntry = new TagLogEntry(UUID.randomUUID(), LogAction.TAG_ADD, now(), jo.getProject(),
+				  t, this.getProjectMember(jo.getProject(), jo.getProject().getMessageService()), null, null, true);
+		this.getLogEntryDao(jo.getProject()).create(logEntry);
+	}
+
+	private void removeTag(JakeObject jo, Tag t) throws NoSuchJakeObjectException {
 		TagLogEntry logEntry;
-		dao.removeTagFrom(jo, t);
-		logEntry = new TagLogEntry(UUID.randomUUID(), LogAction.TAG_REMOVE, Calendar.getInstance().getTime(), jo.getProject(),
-				  t, this.getProjectMember(jo.getProject(), jo.getProject().getMessageService()), "", CHECKSUM, true);
+		this.getJakeObjectDao(jo.getProject(), jo).removeTagFrom(jo, t);
+		logEntry = new TagLogEntry(UUID.randomUUID(), LogAction.TAG_REMOVE, now(), jo.getProject(),
+				  t, this.getProjectMember(jo.getProject(), jo.getProject().getMessageService()), null, null, true);
+		this.getLogEntryDao(jo.getProject()).create(logEntry);
 	}
 
 	public IProjectsFileServices getProjectsFileServices() {
-		return projectsFileServices;
+		return this.projectsFileServices;
 	}
 
 	public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
 		this.projectsFileServices = projectsFileServices;
 	}
 
-	public INoteManagingService getNoteManagingService() {
-		return noteManagingService;
+	@Override
+	@Transactional
+	public void saveNote(NoteObject no) {
+        this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).persist(no);
 	}
 
-	public void setNoteManagingService(INoteManagingService noteManagingService) {
-		this.noteManagingService = noteManagingService;
-	}
 }

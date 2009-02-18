@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -21,21 +22,13 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
  */
 public abstract class FriendlySyncService implements IFriendlySyncService {
 
-	abstract protected Iterable<UserId> getProjectMembers(Project project);
+	abstract protected Iterable<ProjectMember> getProjectMembers(Project project) throws NoSuchProjectException;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.jakeapp.core.synchronization.IFriendlySyncService#startLogSync(com
-	 * .jakeapp.core.domain.Project)
-	 */
-	@SuppressWarnings("unchecked")
-	public Map<UserId, Iterable<LogEntry<ILogable>>> startLogSync(Project project)
-			throws IllegalArgumentException, IllegalProtocolException {
-		Map<UserId, Iterable<LogEntry<ILogable>>> lm = new HashMap<UserId, Iterable<LogEntry<ILogable>>>();
-		for (UserId userId : getProjectMembers(project)) {
-			lm.put(userId, this.startLogSync(project, userId));
+	public Map<ProjectMember, Iterable<LogEntry<ILogable>>> startLogSync(Project project)
+			throws IllegalArgumentException, IllegalProtocolException, NoSuchProjectException {
+		Map<ProjectMember, Iterable<LogEntry<ILogable>>> lm = new HashMap<ProjectMember, Iterable<LogEntry<ILogable>>>();
+		for (ProjectMember pm : getProjectMembers(project)) {
+			lm.put(pm, this.startLogSync(project, pm));
 		}
 		return lm;
 	}
@@ -47,9 +40,9 @@ public abstract class FriendlySyncService implements IFriendlySyncService {
 	 * com.jakeapp.core.synchronization.IFriendlySyncService#poke(com.jakeapp
 	 * .core.domain.Project)
 	 */
-	public void poke(Project project) {
-		for (UserId userid : getProjectMembers(project)) {
-			this.poke(project, userid);
+	public void poke(Project project) throws NoSuchProjectException {
+		for (ProjectMember pm : getProjectMembers(project)) {
+			this.poke(project, pm);
 		}
 	}
 

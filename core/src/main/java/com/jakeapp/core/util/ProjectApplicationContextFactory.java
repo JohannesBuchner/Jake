@@ -72,13 +72,21 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		}
 	}
 
-	public ILogEntryDao getLogEntryDao(Project p) {
+	public ILogEntryDao getUnprocessedAwareLogEntryDao(Project p) {
 		return (ILogEntryDao) getApplicationContext(p).getBean("logEntryDao");
 	}
 
-	public ILogEntryDao getLogEntryDao(JakeObject jo) {
+	public ILogEntryDao getUnprocessedAwareLogEntryDao(JakeObject jo) {
 		return (ILogEntryDao) getApplicationContext(jo.getProject()).getBean(
 				"logEntryDao");
+	}
+	
+	public UnprocessedBlindLogEntryDaoProxy getLogEntryDao(Project p) {
+		return new UnprocessedBlindLogEntryDaoProxy(getUnprocessedAwareLogEntryDao(p));
+	}
+
+	public UnprocessedBlindLogEntryDaoProxy getLogEntryDao(JakeObject jo) {
+		return new UnprocessedBlindLogEntryDaoProxy(getUnprocessedAwareLogEntryDao(jo));
 	}
 
 	public IProjectMemberDao getProjectMemberDao(Project p) {

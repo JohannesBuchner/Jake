@@ -10,9 +10,10 @@ public class AttributedJakeObject extends JakeObjectStatus {
 
 	/**
 	 * 
-	 * @see JakeObjectStatus#JakeObjectStatus(LogAction, LogAction, boolean, boolean, boolean, LogAction)
+	 * @see JakeObjectStatus#JakeObjectStatus(LogAction, LogAction, boolean,
+	 *      boolean, boolean, LogAction)
 	 * 
-	 * @param jakeObject 
+	 * @param jakeObject
 	 * @param lastVersionLogAction
 	 * @param lastLockLogAction
 	 * @param objectExistsLocally
@@ -23,8 +24,9 @@ public class AttributedJakeObject extends JakeObjectStatus {
 	 */
 	public AttributedJakeObject(JakeObject jakeObject, LogAction lastVersionLogAction,
 			LogAction lastLockLogAction, boolean objectExistsLocally,
-			boolean checksumDifferentFromLastNewVersionLogEntry, boolean hasUnprocessedLogEntries,
-			LogAction lastProcessedLogAction, long lastModificationDate) {
+			boolean checksumDifferentFromLastNewVersionLogEntry,
+			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
+			long lastModificationDate) {
 		super(lastVersionLogAction, lastLockLogAction, objectExistsLocally,
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction);
@@ -46,7 +48,8 @@ public class AttributedJakeObject extends JakeObjectStatus {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + getJakeObject() + "] " + super.toString();
+		return getClass().getSimpleName() + "[" + getJakeObject() + "] "
+				+ super.toString();
 	}
 
 }

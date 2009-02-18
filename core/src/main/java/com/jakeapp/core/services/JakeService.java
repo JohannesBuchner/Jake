@@ -49,23 +49,4 @@ public abstract class JakeService {
 		this.applicationContextFactory = applicationContextFactory;
 	}
 
-	@Transactional
-	public boolean isLocalJakeObject(JakeObject jo) {
-		boolean result = false;
-	
-		//FIXME: make prettier!!! 
-		try {
-			log.debug("Checking isLocalJakeObject for jo " + jo + " with project " + jo.getProject());
-			this.getApplicationContextFactory().getLogEntryDao(jo.getProject()).getMostRecentFor(jo);
-			
-		} catch (NoSuchLogEntryException e) {
-			/*
-			* There is no Logentry for this note. Therefore it has never been
-			* announced and is only local.
-			*/
-			result = true;
-		}
-		return result;
-	}
-
 }

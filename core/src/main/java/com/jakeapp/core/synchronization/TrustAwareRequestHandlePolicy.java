@@ -39,7 +39,7 @@ public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 		 */
 		List<UserId> providers = new LinkedList<UserId>();
 		try {
-			LogEntry<? extends ILogable> newest = db.getLogEntryDao(jo).getMostRecentFor(
+			LogEntry<? extends ILogable> newest = db.getLogEntryDao(jo).getLastOfJakeObject(
 					jo);
 			LogEntry<ILogable> le = new LogEntry<ILogable>(null,
 					LogAction.JAKE_OBJECT_NEW_VERSION, newest.getTimestamp());
