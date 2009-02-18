@@ -4,6 +4,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Tag;
 import org.apache.log4j.Logger;
+import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +29,13 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	 * {@inheritDoc}
 	 */
 	public T persist(final T jakeObject) {
-
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(jakeObject);
+		sess().saveOrUpdate(jakeObject);
 
 		return jakeObject;
+	}
+
+	private Session sess() {
+		return this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 	}
 
 	/**
@@ -48,7 +52,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 
 		String queryString = "FROM " + parameterName + " WHERE objectId = ? ";
 
-		List<T> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+		List<T> results = sess().
 				  createQuery(queryString).setString(0, objectId.toString()).list();
 
 		if (results.size() > 0)
@@ -72,7 +76,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 
 		String queryString = "FROM " + parameterName + " ";
 
-		List<T> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+		List<T> results = sess().
 				  createQuery(queryString).list();
 
 		return results;
@@ -82,7 +86,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	 * {@inheritDoc}
 	 */
 	public void delete(final T jakeObject) {
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(jakeObject);
+		sess().delete(jakeObject);
 	}
 /*
     *//**
@@ -108,7 +112,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 		tag.setObject(jakeObject);
 
 		log.debug("persisting tag");
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(tag);
+		sess().persist(tag);
 
 		return jakeObject;
 	}
@@ -121,7 +125,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	public void addTagsTo(final T jakeObject, final Tag... tags) {
 		for (Tag t : tags) {
 			t.setObject(jakeObject);
-			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(t);
+			sess().persist(t);
 		}
 	}
 
@@ -131,7 +135,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	@Override
 	public List<Tag> getTagsFor(final T jakeObject) {
 
-		List<Tag> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+		List<Tag> results = sess().
 				  createQuery("FROM tag WHERE objectid = ? ").setString(0, jakeObject.getUuid().toString()).list();
 
 
@@ -151,7 +155,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 		for (Tag t : tags) {
 			t.setObject(jakeObject);
 
-			int result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+			int result = sess().
 //                     createQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
 		  createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
 					  setString(0, t.getName()).setString(1, jakeObject.getUuid().toString()).executeUpdate();
@@ -167,7 +171,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 
 		tag.setObject(jakeObject);
 
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+		sess().
 				  createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
 				  setString(0, tag.getName()).setString(1, jakeObject.getUuid().toString()).executeUpdate();
 

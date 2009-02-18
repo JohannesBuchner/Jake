@@ -18,8 +18,13 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final FileObject persist(final FileObject jakeObject) {
-		return super.persist(jakeObject);
+	public final FileObject persist(final FileObject foin) {
+		FileObject fo;
+		if (foin.getUuid() == null)
+			fo = new FileObject(UUID.randomUUID(), foin.getProject(), foin.getRelPath());
+		else
+			fo = foin;
+		return super.persist(fo);
 	}
 
 	@Override

@@ -1,11 +1,11 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
-
 import java.util.List;
 import java.util.UUID;
+
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Tag;
 
 /**
  * A hibernate noteObject DAO.
@@ -16,8 +16,13 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
      * {@inheritDoc}
      */
     @Override
-    public NoteObject persist(NoteObject jakeObject) {
-        return super.persist(jakeObject);
+    public NoteObject persist(NoteObject noin) {
+    	NoteObject no;
+		if (noin.getUuid() == null)
+			no = new NoteObject(UUID.randomUUID(), noin.getProject(), noin.getContent());
+		else
+			no = noin;
+        return super.persist(no);
     }
 
     @Override
