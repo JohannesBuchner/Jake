@@ -11,7 +11,6 @@ public class ProjectLogEntry extends LogEntry<Project> implements Serializable {
 
     public ProjectLogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project, Project belongsTo, ProjectMember member, String comment, String checksum, Boolean processed) {
         super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum, processed);
-        this.setObjectuuid(belongsTo.getProjectId());
     }
 
     public ProjectLogEntry() {

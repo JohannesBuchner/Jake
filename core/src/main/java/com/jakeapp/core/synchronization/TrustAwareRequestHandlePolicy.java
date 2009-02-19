@@ -13,6 +13,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.JakeObjectLogEntry;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.ProjectMember;
@@ -41,9 +42,8 @@ public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 		try {
 			LogEntry<? extends ILogable> newest = db.getLogEntryDao(jo).getLastOfJakeObject(
 					jo);
-			LogEntry<ILogable> le = new LogEntry<ILogable>(null,
-					LogAction.JAKE_OBJECT_NEW_VERSION, newest.getTimestamp());
-			Collection<LogEntry<? extends ILogable>> allVersions = db.getLogEntryDao(jo).findMatchingBefore(le);
+			List<LogEntry<JakeObject>> allVersions = db.getLogEntryDao(jo).getAllVersionsOfJakeObject(jo);
+			
 			List<ProjectMember> members = db.getTrustedProjectMembers(jo.getProject());
 			
 			for(LogEntry<? extends ILogable> entry : allVersions) {

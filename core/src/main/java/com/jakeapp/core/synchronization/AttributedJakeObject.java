@@ -1,5 +1,7 @@
 package com.jakeapp.core.synchronization;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ProjectMember;
@@ -8,7 +10,9 @@ import com.jakeapp.core.domain.ProjectMember;
  * @author johannes
  */
 public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus {
-	
+
+	static final Logger log = Logger.getLogger(AttributedJakeObject.class);
+
 	/**
 	 * @param jakeObject
 	 * @param lastVersionLogAction
@@ -17,19 +21,24 @@ public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus
 	 *@param lastLockLogAction
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
-*@param hasUnprocessedLogEntries
+	 *@param hasUnprocessedLogEntries
 	 * @param lastProcessedLogAction
-	 * @param lastModificationDate			 @see JakeObjectStatus#JakeObjectStatus(com.jakeapp.core.domain.LogAction,com.jakeapp.core.domain.ProjectMember,com.jakeapp.core.domain.LogAction,boolean,boolean,boolean,com.jakeapp.core.domain.LogAction)
+	 * @param lastModificationDate
+	 * @see JakeObjectStatus#JakeObjectStatus(com.jakeapp.core.domain. LogAction
+	 *      ,com.jakeapp.core.domain.ProjectMember,com.jakeapp.core .domain.
+	 *      LogAction,boolean,boolean,boolean,com.jakeapp.core.domain
+	 *      .LogAction)
 	 */
 	public AttributedJakeObject(T jakeObject, LogAction lastVersionLogAction,
-					ProjectMember lastVersionProjectMember, ProjectMember lockOwner, LogAction lastLockLogAction,
-					boolean objectExistsLocally,
-					boolean checksumDifferentFromLastNewVersionLogEntry,
-					boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
-					long lastModificationDate, long size) {
-		super(lastVersionLogAction, lastVersionProjectMember, lockOwner, lastLockLogAction,
-						objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
-						hasUnprocessedLogEntries, lastProcessedLogAction);
+			ProjectMember lastVersionProjectMember, ProjectMember lockOwner,
+			LogAction lastLockLogAction, boolean objectExistsLocally,
+			boolean checksumDifferentFromLastNewVersionLogEntry,
+			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
+			long lastModificationDate, long size) {
+		super(lastVersionLogAction, lastVersionProjectMember, lockOwner,
+				lastLockLogAction, objectExistsLocally,
+				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
+				lastProcessedLogAction);
 		this.jakeObject = jakeObject;
 		this.lastModificationDate = lastModificationDate;
 		this.size = size;
@@ -55,7 +64,7 @@ public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + getJakeObject() + "] " + super
-						.toString();
+		return getClass().getSimpleName() + "[" + getJakeObject() + "] "
+				+ super.toString();
 	}
 }

@@ -32,7 +32,7 @@ public class CreateNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		try {
-			NoteObject newNote = new NoteObject(UUID.randomUUID(),
+			NoteObject newNote = new NoteObject(
 					NotesPanel.getInstance().getCurrentProject(),
 					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent"));
 			

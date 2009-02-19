@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import com.jakeapp.core.synchronization.LogEntrySerializer;
 
 /**
  * A Log entry. It consists of an <code> action, timestamp </code>
@@ -55,7 +54,7 @@ public class LogEntry<T extends ILogable> implements Serializable {
      * @param checksum
      * @param processed
      */
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp,
+	LogEntry(UUID uuid, LogAction logAction, Date timestamp,
 			Project project, T belongsTo, ProjectMember member,
 			String comment, String checksum, Boolean processed) {
 		this.setUuid(uuid);
@@ -68,38 +67,7 @@ public class LogEntry<T extends ILogable> implements Serializable {
 		this.setChecksum(checksum);
 		this.setProcessed(processed);
 	}
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
-			T belongsTo, ProjectMember member, String comment, String checksum) {
-		this(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum,
-				false);
-	}
 
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
-			T belongsTo, ProjectMember member, String comment) {
-		this(uuid, logAction, timestamp, project, belongsTo, member, comment, null);
-	}
-
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
-			T belongsTo, ProjectMember member) {
-		this(uuid, logAction, timestamp, project, belongsTo, member, null);
-	}
-
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
-			T belongsTo) {
-		this(uuid, logAction, timestamp, project, belongsTo, null);
-	}
-
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project) {
-		this(uuid, logAction, timestamp, project, null);
-	}
-
-	public LogEntry(UUID uuid, LogAction logAction, Date timestamp) {
-		this(uuid, logAction, timestamp, null);
-	}
-
-	public LogEntry(UUID uuid, LogAction logAction) {
-		this(uuid, logAction, null);
-	}
 	public LogEntry() {
     }
 

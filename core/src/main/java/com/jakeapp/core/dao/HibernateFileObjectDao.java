@@ -19,12 +19,20 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	 */
 	@Override
 	public final FileObject persist(final FileObject foin) {
-		FileObject fo;
-		if (foin.getUuid() == null)
-			fo = new FileObject(UUID.randomUUID(), foin.getProject(), foin.getRelPath());
-		else
-			fo = foin;
-		return super.persist(fo);
+		// we do not trust the UUID, because we don't want 2 FileObjects with
+		// the same
+		// relpath.
+		try {
+			return complete(foin);
+		} catch (NoSuchJakeObjectException e) {
+			FileObject fo;
+			if (foin.getUuid() == null)
+				fo = new FileObject(foin.getProject(), foin
+						.getRelPath());
+			else
+				fo = foin;
+			return super.persist(fo);
+		}
 	}
 
 	@Override
@@ -91,32 +99,37 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 
 	@Override
 	public FileObject complete(FileObject jakeObject) throws NoSuchJakeObjectException {
-		if(jakeObject.getUuid() != null) {
-			return get(jakeObject.getUuid());
-		} else if (jakeObject.getRelPath() != null ){
+		// we do not mainly trust the UUID, because we don't want 2 FileObjects
+		// with the same relpath.
+		if (jakeObject.getRelPath() != null) {
 			return getFileObjectByRelpath(jakeObject.getRelPath());
-		} else
+		} else if (jakeObject.getUuid() != null) {
+			return get(jakeObject.getUuid());
+		} else {
 			throw new NoSuchJakeObjectException("neither uuid nor relpath given");
+		}
 	}
 
 	/**
 	 * This method returns a FileObject with the given relPath.
-	 * @param relPath the relativ Path of this file
+	 * 
+	 * @param relPath
+	 *            the relativ Path of this file
 	 * @return the FileObject requested
-     * @throws NoSuchJakeObjectException if no object with that path was found in the database
+	 * @throws NoSuchJakeObjectException
+	 *             if no object with that path was found in the database
 	 */
-	private FileObject getFileObjectByRelpath(String relPath) throws NoSuchJakeObjectException {
+	private FileObject getFileObjectByRelpath(String relPath)
+			throws NoSuchJakeObjectException {
 
-        List<FileObject> result = this.
-                getHibernateTemplate().
-                getSessionFactory().getCurrentSession().createQuery("FROM fileobject WHERE relPath = ?").
-                setString(0, relPath).list();
+		List<FileObject> result = this.getHibernateTemplate().getSessionFactory()
+				.getCurrentSession().createQuery("FROM fileobject WHERE relPath = ?")
+				.setString(0, relPath).list();
 
-        if(result.size() > 0)
-        {
-            return result.get(0);
-        }
-        throw new NoSuchJakeObjectException("No fileObject by given relPath there");
+		if (result.size() > 0) {
+			return result.get(0);
+		}
+		throw new NoSuchJakeObjectException("No fileObject by given relPath there");
 
 	}
 

@@ -1,5 +1,7 @@
 package com.jakeapp.core.synchronization;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ProjectMember;
 
@@ -8,42 +10,59 @@ import com.jakeapp.core.domain.ProjectMember;
  */
 public class JakeObjectStatus {
 
+	static final Logger log = Logger.getLogger(JakeObjectStatus.class);
+
 	private LockStatus lockStatus;
 
-	private Existance existance;
+	private Existence existence;
 
 	private SyncStatus syncStatus;
 
 	private ProjectMember lastVersionProjectMember;
+
 	private ProjectMember lockOwner;
 
 	/**
 	 * * @param lastVersionLogAction
+	 * 
 	 * @param lastVersionProjectMember
 	 * @param lockOwner
 	 * @param lastLockLogAction
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
 	 * @param hasUnprocessedLogEntries
-	 * @param lastProcessedLogAction			@see {@link com.jakeapp.core.synchronization.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)},
- *      {@link com.jakeapp.core.synchronization.Existance#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
- *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
+	 * @param lastProcessedLogAction
+	 * @see {@link com.jakeapp.core.synchronization.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
+	 *      ,
+	 *      {@link com.jakeapp.core.synchronization.Existence#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
+	 *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
 	 */
-	public JakeObjectStatus(LogAction lastVersionLogAction, ProjectMember lastVersionProjectMember,
-					ProjectMember lockOwner, LogAction lastLockLogAction, boolean objectExistsLocally,
-					boolean checksumDifferentFromLastNewVersionLogEntry, boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
+	public JakeObjectStatus(LogAction lastVersionLogAction,
+			ProjectMember lastVersionProjectMember, ProjectMember lockOwner,
+			LogAction lastLockLogAction, boolean objectExistsLocally,
+			boolean checksumDifferentFromLastNewVersionLogEntry,
+			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
+		log.debug("generating JakeObjectStatus: " + ": lastVersionLogAction:"
+				+ lastVersionLogAction + " lastVersionProjectMember:"
+				+ lastVersionProjectMember + " lockOwner:" + lockOwner
+				+ " lastLockLogAction:" + lastLockLogAction + " objectExistsLocally:"
+				+ objectExistsLocally + " checksumDifferentFromLastNewVersionLogEntry:"
+				+ checksumDifferentFromLastNewVersionLogEntry
+				+ " hasUnprocessedLogEntries:" + hasUnprocessedLogEntries
+				+ " lastProcessedLogAction:" + lastProcessedLogAction);
 		this.lockStatus = LockStatus.getLockStatus(lastLockLogAction);
-		this.existance = Existance
+		this.existence = Existence
 				.getExistance(objectExistsLocally, lastVersionLogAction);
 		this.syncStatus = SyncStatus.getSyncStatus(
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction, objectExistsLocally);
 		this.lastVersionProjectMember = lastVersionProjectMember;
 		this.lockOwner = lockOwner;
+		log.debug("result:" + this.toString());
 	}
 
 	public ProjectMember getLastVersionProjectMember() {
-		return lastVersionProjectMember;
+		return this.lastVersionProjectMember;
 	}
 
 	public LockStatus getLockStatus() {
@@ -51,8 +70,8 @@ public class JakeObjectStatus {
 	}
 
 
-	public Existance getExistance() {
-		return this.existance;
+	public Existence getExistence() {
+		return this.existence;
 	}
 
 
@@ -71,7 +90,7 @@ public class JakeObjectStatus {
 	 * @return does releasing a new version make any sense?
 	 */
 	public boolean isNewVersionable() {
-		return (getExistance() == Existance.EXISTS_LOCAL || getExistance() == Existance.EXISTS_ON_BOTH)
+		return (getExistence() == Existence.EXISTS_LOCAL || getExistence() == Existence.EXISTS_ON_BOTH)
 				&& getSyncStatus() != SyncStatus.SYNC;
 	}
 
@@ -98,6 +117,7 @@ public class JakeObjectStatus {
 
 	/**
 	 * If locked, this returns the lock owner.
+	 * 
 	 * @return ProjectMember aka lock owner, or null
 	 */
 	public ProjectMember getLockOwner() {
@@ -114,11 +134,11 @@ public class JakeObjectStatus {
 	}
 
 	public boolean isOnlyLocal() {
-		return getExistance() == Existance.EXISTS_LOCAL;
+		return getExistence() == Existence.EXISTS_LOCAL;
 	}
 
 	public boolean isOnlyRemote() {
-		return getExistance() == Existance.EXISTS_REMOTE;
+		return getExistence() == Existence.EXISTS_REMOTE;
 	}
 
 	public boolean isLocalLatest() {
@@ -130,7 +150,7 @@ public class JakeObjectStatus {
 	}
 
 	public boolean isLocalAndRemote() {
-		return getExistance() == Existance.EXISTS_ON_BOTH;
+		return getExistence() == Existence.EXISTS_ON_BOTH;
 	}
 
 	public boolean isLocal() {
@@ -148,7 +168,7 @@ public class JakeObjectStatus {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ":" + getExistance() + ":" + getSyncStatus()
+		return getClass().getSimpleName() + ":" + getExistence() + ":" + getSyncStatus()
 				+ ":" + getLockStatus();
 	}
 }

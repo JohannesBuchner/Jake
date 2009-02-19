@@ -113,30 +113,39 @@ public abstract class JakeObject implements ILogable, Serializable {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof JakeObject)) return false;
-
-        JakeObject that = (JakeObject) o;
-
-        if (deleted != that.deleted) return false;
-        if (modified != that.modified) return false;
-        if (!uuid.equals(that.uuid)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + (deleted ? 1 : 0);
-        result = 31 * result + (modified ? 1 : 0);
-        return result;
-    }
-
 	@Override
 	public String toString() {
 		return "JakeObject:" + this.getUuid();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (deleted ? 1231 : 1237);
+		result = prime * result + (modified ? 1231 : 1237);
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JakeObject other = (JakeObject) obj;
+		if (deleted != other.deleted)
+			return false;
+		if (modified != other.modified)
+			return false;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
 	}
 }

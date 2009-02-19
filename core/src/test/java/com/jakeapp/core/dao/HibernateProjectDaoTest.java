@@ -223,11 +223,11 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     @Transactional
     @Test(expected = NoSuchProjectException.class)
     public final void deleteNonExistingProject_shouldThrowException() throws NoSuchProjectException {
-    	UUID random_non_exisitng = null;
+    	UUID random_non_existing = null;
     	Project example = null;
-        random_non_exisitng = UUID.randomUUID();
+        random_non_existing = UUID.randomUUID();
         example = new Project();
-        example.setProjectId(random_non_exisitng);
+        example.setProjectId(random_non_existing);
 
 
 

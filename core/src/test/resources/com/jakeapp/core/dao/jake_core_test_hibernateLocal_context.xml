@@ -60,8 +60,7 @@
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.Tag</value>
                 <!--<value>com.jakeapp.core.domain.LogEntry</value>-->
-                <value>com.jakeapp.core.domain.FileObjectLogEntry</value>
-                <value>com.jakeapp.core.domain.NoteObjectLogEntry</value>
+                <value>com.jakeapp.core.domain.JakeObjectLogEntry</value>
                 <value>com.jakeapp.core.domain.ProjectLogEntry</value>
                 <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
                 <value>com.jakeapp.core.domain.TagLogEntry</value>

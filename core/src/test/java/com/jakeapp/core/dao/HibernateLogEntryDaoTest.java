@@ -1,23 +1,35 @@
 package com.jakeapp.core.dao;
 
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.Assert;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.transaction.annotation.Transactional;
-import org.apache.log4j.Logger;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.services.XMPPMsgService;
-import com.jakeapp.core.services.MsgService;
-
-import java.util.UUID;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.io.File;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObjectLogEntry;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectLogEntry;
+import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TagLogEntry;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.services.XMPPMsgService;
 
 @ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml"})
 public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
@@ -83,11 +95,6 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         logEntryDao.create(projectLogEntry);
     }
 
-    @Test
-    public void testGet() {
-        // Add your code here
-    }
-
     @Transactional
     @Test
     public void testGetAll_xxx() {
@@ -124,7 +131,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testGetAllOfJakeObject_NonExistant() {
-    	NoteObject no = new NoteObject(UUID.randomUUID(), null, "hello");
+    	NoteObject no = new NoteObject(null, "hello");
         List<LogEntry<NoteObject>> result = logEntryDao.getAllOfJakeObject(no, true);
 
 
@@ -132,39 +139,8 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         Assert.assertEquals(0, result.size());
     }
 
-    @Test
-    public void testGetAllOfJakeObject() {
-        // Add your code here
-    }
-
-    @Test
-    public void testGetMostRecentFor() {
-        // Add your code here
-    }
-
-    @Test
-    public void testGetLastPulledFor() {
-        // Add your code here
-    }
-
-    @Test
-    public void testSetProcessed() {
-        // Add your code here
-    }
-
-    @Test
-    public void testGetAllUnprocessed() {
-        // Add your code here
-    }
-
-    @Test
-    public void testGetUnprocessed() {
-        // Add your code here
-    }
-
     @Transactional
     @Test
-
     public void testGetAll_TagLogEntry() throws InvalidTagNameException {
         MsgService msgService = new XMPPMsgService();
         File file = new File(System.getProperty("user.dir"));
@@ -216,7 +192,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
         NoteObject note = new NoteObject(UUID.fromString("509161b3-999e-4cb8-914b-31816c54c2ca"), testProject, "content");
 
-        LogEntry<NoteObject> noteObjectLogEntry = new NoteObjectLogEntry(
+        JakeObjectLogEntry noteObjectLogEntry = new JakeObjectLogEntry(
                 UUID.fromString("e144ad8a-0002-2222-cccc-73415866048f"),
                 LogAction.TAG_ADD, new Date(), testProject, note,
                 projectMember, "testGetAll_NoteObjectLogEntry", "testGetAll_NoteObjectLogEntry", false
@@ -254,7 +230,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
         FileObject fileObject = new FileObject(UUID.fromString("35fd9e4d-7810-4110-a1d1-7db0c1c10068"), testProject, "/tmp");
 
 
-        LogEntry<FileObject> fileObjectLogEntry = new FileObjectLogEntry(
+        JakeObjectLogEntry fileObjectLogEntry = new JakeObjectLogEntry(
                 UUID.fromString("e144ad8a-0003-2222-cccc-73415866048f"),
                 LogAction.TAG_ADD, new Date(), testProject, fileObject,
                 projectMember, "testGetAll_FileObjectLogEntry", "testGetAll_FileObjectLogEntry", false

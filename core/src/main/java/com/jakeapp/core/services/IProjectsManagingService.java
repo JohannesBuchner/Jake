@@ -362,5 +362,13 @@ public interface IProjectsManagingService {
 	 * @param note
 	 */
 	void saveNote(NoteObject note);
+
+	/**
+	 * Deletes a NoteObject to the database, but does not announce the deletion
+	 * @param note
+	 * @throws NoSuchJakeObjectException 
+	 * @throws IllegalArgumentException 
+	 */
+	void deleteNote(NoteObject note) throws IllegalArgumentException, NoSuchJakeObjectException;
 	
 }

@@ -63,7 +63,7 @@ public interface ILogEntryDao {
 	 * @throws NoSuchLogEntryException
 	 *             if there is no unprocessed <code>LogEntry</code>.
 	 */
-	public LogEntry<? extends ILogable> getNextUnprocessed()
+	public LogEntry<JakeObject> getNextUnprocessed()
 			throws NoSuchLogEntryException;
 
 
@@ -197,7 +197,7 @@ public interface ILogEntryDao {
 	 *         {@link LogAction#JAKE_OBJECT_DELETE} <b>or</b> have a
 	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than that.
 	 */
-	public Iterable<FileObject> getExistingFileObjects(boolean includeUnprocessed);
+	public List<FileObject> getExistingFileObjects(boolean includeUnprocessed);
 
 
 	/**
@@ -208,12 +208,11 @@ public interface ILogEntryDao {
 	 * @param processedState
 	 *            true: only processed<br>
 	 *            false: only unprocessed<br>
-	 *            null: all
 	 * @return a Collection sorted ascending by timestamp. on no results returns
 	 *         a empty Collection
 	 */
 	public List<LogEntry<? extends ILogable>> findMatching(
-			LogEntry<? extends ILogable> le, Boolean processedState);
+			LogEntry<? extends ILogable> le, boolean processedState);
 
 	/**
 	 * finds the Logentries that match the supplied characteristics except for
@@ -224,14 +223,13 @@ public interface ILogEntryDao {
 	 * @param processedState
 	 *            true: only processed<br>
 	 *            false: only unprocessed<br>
-	 *            null: all
 	 * @return a Collection sorted ascending by timestamp. on no results returns
 	 *         a empty Collection
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
 	public List<LogEntry<? extends ILogable>> findMatchingBefore(
-			LogEntry<? extends ILogable> le, Boolean processedState)
+			LogEntry<? extends ILogable> le, boolean processedState)
 			throws NullPointerException;
 
 	/**
@@ -243,14 +241,13 @@ public interface ILogEntryDao {
 	 * @param processedState
 	 *            true: only processed<br>
 	 *            false: only unprocessed<br>
-	 *            null: all
 	 * @return a Collection sorted ascending by timestamp. on no results returns
 	 *         a empty Collection
 	 * @throws NullPointerException
 	 *             if timestamp is null
 	 */
 	public List<LogEntry<? extends ILogable>> findMatchingAfter(
-			LogEntry<? extends ILogable> le, Boolean processedState)
+			LogEntry<? extends ILogable> le, boolean processedState)
 			throws NullPointerException;
 
 	/**
@@ -262,11 +259,10 @@ public interface ILogEntryDao {
 	 * @param processedState
 	 *            true: only processed<br>
 	 *            false: only unprocessed<br>
-	 *            null: all
 	 * @return the LogEntry, or null if no such entry exists
 	 */
 	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le,
-			Boolean processedState);
+			boolean processedState);
 
 
 	/**

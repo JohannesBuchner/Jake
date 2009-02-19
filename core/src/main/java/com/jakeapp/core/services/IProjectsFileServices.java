@@ -4,7 +4,11 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 
-
+/**
+ * holds all FSS
+ * 
+ * @author johannes
+ */
 public interface IProjectsFileServices {
 
 	/**

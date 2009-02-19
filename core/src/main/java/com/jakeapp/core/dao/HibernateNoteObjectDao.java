@@ -19,7 +19,7 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
     public NoteObject persist(NoteObject noin) {
     	NoteObject no;
 		if (noin.getUuid() == null)
-			no = new NoteObject(UUID.randomUUID(), noin.getProject(), noin.getContent());
+			no = new NoteObject(noin.getProject(), noin.getContent());
 		else
 			no = noin;
         return super.persist(no);

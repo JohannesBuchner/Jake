@@ -1,18 +1,11 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.domain;
 
 import java.util.Date;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.synchronization.UserTranslator;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
 import com.jakeapp.core.synchronization.exceptions.InvalidSerializerCallException;
 
@@ -180,7 +173,7 @@ public class LogEntrySerializer {
 			DeserializedObject input) {
 		String type = input.next();
 		if ("F".equals(type)) {
-			le.setBelongsTo(new FileObject(null, null, input.next()));
+			le.setBelongsTo(new FileObject(null, input.next()));
 		} else if ("N".equals(type)) {
 			UUID uuid = UUID.fromString(input.next());
 			String content = input.next();

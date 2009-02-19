@@ -1012,4 +1012,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
         this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).persist(no);
 	}
 
+	@Override
+	@Transactional
+	public void deleteNote(NoteObject no) throws IllegalArgumentException, NoSuchJakeObjectException {
+        this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).delete(no);
+	}
+
 }

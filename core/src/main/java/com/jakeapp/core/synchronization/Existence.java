@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.LogAction;
 /**
  * @author johannes
  */
-public enum Existance {
+public enum Existence {
 	NON_EXISTANT,
 
 	EXISTS_LOCAL,
@@ -20,7 +20,7 @@ public enum Existance {
 	 *                            {@link LogAction#JAKE_OBJECT_DELETE} or null.
 	 * @returnExistance
 	 */
-	static Existance getExistance(boolean objectExistsLocally,
+	static Existence getExistance(boolean objectExistsLocally,
 																LogAction lastLogAction) {
 
 		if (objectExistsLocally) {

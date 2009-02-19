@@ -15,13 +15,14 @@ import java.util.UUID;
 
 /**
  * A generic hibernate DAO for <code>JakeObject</code>s.
- *
- * @param <T> The type of the persisted Entity, subtype of
- * <code>JakeObject</code>
+ * 
+ * @param <T>
+ *            The type of the persisted Entity, subtype of
+ *            <code>JakeObject</code>
  */
 @Repository
-public abstract class HibernateJakeObjectDao<T extends JakeObject>
-		  extends HibernateDaoSupport implements IJakeObjectDao<T> {
+public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
+		HibernateDaoSupport implements IJakeObjectDao<T> {
 
 	private static Logger log = Logger.getLogger(HibernateJakeObjectDao.class);
 
@@ -43,22 +44,23 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	 */
 	@Transactional
 	public T get(final UUID objectId) throws NoSuchJakeObjectException {
-		log.debug("getAll(Project) Test ========================================");
-
-		ParameterizedType parameterizedType = (ParameterizedType) this.getClass().getGenericSuperclass();
-		String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0]).getName();
-		log.debug("xxx: " + parameterName);
-
-
+		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
+				.getGenericSuperclass();
+		String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0])
+				.getName();
+		log.debug("getting JakeObject by id from table " + parameterName);
+		if (objectId == null)
+			throw new NoSuchJakeObjectException();
 		String queryString = "FROM " + parameterName + " WHERE objectId = ? ";
 
-		List<T> results = sess().
-				  createQuery(queryString).setString(0, objectId.toString()).list();
+		List<T> results = sess().createQuery(queryString).setString(0,
+				objectId.toString()).list();
 
 		if (results.size() > 0)
 			return (T) results.get(0);
 
-		throw new NoSuchJakeObjectException("jakeobject with uuid " + objectId.toString() + "not found");
+		throw new NoSuchJakeObjectException("jakeobject with uuid " + objectId.toString()
+				+ "not found");
 	}
 
 
@@ -69,15 +71,16 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	public List<T> getAll() {
 		log.debug("getAll(Project) Test ========================================");
 
-		ParameterizedType parameterizedType = (ParameterizedType) this.getClass().getGenericSuperclass();
-		String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0]).getName();
+		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
+				.getGenericSuperclass();
+		String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0])
+				.getName();
 		log.debug("xxx: " + parameterName);
 
 
 		String queryString = "FROM " + parameterName + " ";
 
-		List<T> results = sess().
-				  createQuery(queryString).list();
+		List<T> results = sess().createQuery(queryString).list();
 
 		return results;
 	}
@@ -88,20 +91,23 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	public void delete(final T jakeObject) {
 		sess().delete(jakeObject);
 	}
-/*
+
+	/*
     *//**
 	 * {@inheritDoc}
-	 *//*
-    public List<Tag> getTags(T jakeObject) {
-
-
-        String query = "FROM Tag WHERE object = ?";
-
-        List<Tag> results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
-                createQuery(query).setString(0, jakeObject.getUuid().toString()).list();
-
-        return results;
-    }*/
+	 */
+	/*
+	 * public List<Tag> getTags(T jakeObject) {
+	 * 
+	 * 
+	 * String query = "FROM Tag WHERE object = ?";
+	 * 
+	 * List<Tag> results =
+	 * this.getHibernateTemplate().getSessionFactory().getCurrentSession().
+	 * createQuery(query).setString(0, jakeObject.getUuid().toString()).list();
+	 * 
+	 * return results; }
+	 */
 
 	/**
 	 * {@inheritDoc}
@@ -135,13 +141,15 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 	@Override
 	public List<Tag> getTagsFor(final T jakeObject) {
 
-		List<Tag> results = sess().
-				  createQuery("FROM tag WHERE objectid = ? ").setString(0, jakeObject.getUuid().toString()).list();
+		List<Tag> results = sess().createQuery("FROM tag WHERE objectid = ? ").setString(
+				0, jakeObject.getUuid().toString()).list();
 
 
-		//createCriteria(Tag.class).createCriteria("object", jakeObject.getUuid().toString()).list();
+		// createCriteria(Tag.class).createCriteria("object",
+		// jakeObject.getUuid().toString()).list();
 
-		//createQuery("FROM Tag WHERE jakeObject = ? ").setEntity(0, jakeObject).list();
+		// createQuery("FROM Tag WHERE jakeObject = ? ").setEntity(0,
+		// jakeObject).list();
 
 		return results;
 	}
@@ -155,10 +163,13 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 		for (Tag t : tags) {
 			t.setObject(jakeObject);
 
-			int result = sess().
-//                     createQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
-		  createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
-					  setString(0, t.getName()).setString(1, jakeObject.getUuid().toString()).executeUpdate();
+			int result = sess()
+					.
+					// createQuery(
+					// "DELETE FROM tag WHERE text = ? AND objectid = ? ").
+					createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ")
+					.setString(0, t.getName()).setString(1,
+							jakeObject.getUuid().toString()).executeUpdate();
 			log.debug("result: " + result);
 		}
 	}
@@ -171,9 +182,9 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject>
 
 		tag.setObject(jakeObject);
 
-		sess().
-				  createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ").
-				  setString(0, tag.getName()).setString(1, jakeObject.getUuid().toString()).executeUpdate();
+		sess().createSQLQuery("DELETE FROM tag WHERE text = ? AND objectid = ? ")
+				.setString(0, tag.getName())
+				.setString(1, jakeObject.getUuid().toString()).executeUpdate();
 
 		return jakeObject;
 	}

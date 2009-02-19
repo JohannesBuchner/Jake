@@ -26,6 +26,20 @@ public class FileObject extends JakeObject {
 
 	/**
 	 * Construct a new <code>FileObject</code> with the given parameters.
+	 * No UUID is set. It is completed on persisting.
+	 * 
+	 * @param project
+	 *            the associated <code>project</code>
+	 * @param relPath
+	 *            the relative path that leads to the <code>FileObject</code>
+	 */
+	public FileObject(Project project, String relPath) {
+		this.setProject(project);
+		this.setRelPath(relPath);
+	}
+	
+	/**
+	 * Construct a new <code>FileObject</code> with the given parameters.
 	 * 
 	 * @param uuid
 	 * @param project

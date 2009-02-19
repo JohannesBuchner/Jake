@@ -102,7 +102,7 @@ public interface ISyncService {
 	 * @param action	 one of LogAction.JAKE_OBJECT_NEW_VERSION
 				LogAction.JAKE_OBJECT_DELETE LogAction.TAG_ADD
 				LogAction.TAG_REMOVE action LogAction.JAKE_OBJECT_LOCK LogAction.JAKE_OBJECT_UNLOCK
-	 * @param commitMsg
+	 * @param commitMsg or tag content
 	 * @throws NotAReadableFileException
 	 * @throws InvalidFilenameException
 	 * @throws FileNotFoundException
@@ -190,7 +190,7 @@ public interface ISyncService {
 	 * @throws NotAReadableFileException
 	 * @throws IOException
 	 */
-	public AttributedJakeObject getJakeObjectSyncStatus(JakeObject fo)
+	public <T extends JakeObject> AttributedJakeObject<T> getJakeObjectSyncStatus(T fo)
 			  throws InvalidFilenameException, NotAReadableFileException, IOException;
 
 	/**

@@ -18,6 +18,20 @@ public class NoteObject extends JakeObject {
 
 	private NoteObject() {
 	}
+	
+	/**
+	 * Construct a new <code>NoteObject</code> with the given params.
+	 * A new UUID is generated for you.
+	 * 
+	 * @param project
+	 *            the associated <code>Project</code>
+	 * @param content
+	 *            the content of the note
+	 */
+	public NoteObject(Project project, String content) {
+		super(UUID.randomUUID(), project);
+		this.setContent(content);
+	}
 
 	/**
 	 * Construct a new <code>NoteObject</code> with the given params.
