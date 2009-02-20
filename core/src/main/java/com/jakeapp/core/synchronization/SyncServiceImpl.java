@@ -234,6 +234,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		try {
 			return completeIncomingObject(no);
 		} catch (NoSuchJakeObjectException e) {
+			log.debug("completing object failed, not in database yet.");
 			return (NoteObject) no; // we accept the UUID
 		}
 	}
@@ -262,14 +263,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		}
 	}
 
-	@Override
+
+	@SuppressWarnings("unchecked")
 	@Transactional
-	public void pullObject(JakeObject jo) throws NoSuchLogEntryException,
+	@Override
+	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException,
 			NotLoggedInException, IllegalArgumentException {
-		LogEntry<JakeObject> le = (LogEntry<JakeObject>) db.getLogEntryDao(jo)
-				.getLastVersion(jo);
+		LogEntry<JakeObject> le = db.getLogEntryDao(jo).getLastVersion(jo);
 		log.debug("got logentry: " + le);
-		rhp.getPotentialJakeObjectProviders(jo);
+		this.getRequestHandelPolicy().getPotentialJakeObjectProviders(jo);
 		if (le == null) { // delete
 			log.debug("lets delete it");
 			try {
@@ -279,14 +281,23 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			} catch (NoSuchJakeObjectException e) {
 				throw new IllegalArgumentException(e);
 			}
-			return;
+			return jo;
 		}
-		if (le.getBelongsTo() instanceof NoteObject) {
+		if (isNoteObject(le.getBelongsTo()))
+			return (T) pullNoteObject(jo.getProject(), le);
+		else
+			return (T) pullFileObject(jo.getProject(), le);
+	}
 
-
-		}
-
-		FailoverCapableFileTransferService ts = getTransferService(jo.getProject());
+	@Transactional
+	public FileObject pullFileObject(Project p, LogEntry<JakeObject> le)
+			throws NotLoggedInException {
+		FileObject fo = (FileObject) le.getBelongsTo();
+		String relpath = fo.getRelPath();
+		//
+		FailoverCapableFileTransferService ts = getTransferService(p);
+		log.debug("pulling file from $randomguy");
+		throw new IllegalStateException("pulling files not implemented yet");
 		// ts.request(jo.ge, nsl);
 		// TODO: getPotentialProviders
 		// if(le.getUserId().equals(userid))
@@ -296,6 +307,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// throw new
 		// com.jakeapp.jake.ics.exceptions.OtherUserOfflineException();
 		// TODO: fetch
+		// return fo;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public NoteObject pullNoteObject(Project p, LogEntry<JakeObject> le) {
+		log.debug("pulling note out of log");
+		NoteObject no = (NoteObject) le.getBelongsTo();
+		return db.getNoteObjectDao(no.getProject()).persist(no);
 	}
 
 	@Transactional
@@ -346,6 +366,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * @throws NoSuchJakeObjectException
 	 * @throws IllegalArgumentException
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional
 	private <T extends JakeObject> T completeIncomingObject(T join)
 			throws IllegalArgumentException, NoSuchJakeObjectException {
@@ -385,6 +406,9 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		IFSService fss = getFSS(p);
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
 
+		// this is very similar, but slightly different to the NoteObject code
+		// compare and edit them side-by-side
+
 		// 0 complete
 		FileObject fo;
 		try {
@@ -407,7 +431,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		ProjectMember lastVersionProjectMember = getProjectMemberNullSafe(lastle);
 
 		// 3 locally modified?
-		boolean checksumDifferentFromLastNewVersionLogEntry;
+		boolean checksumEqualToLastNewVersionLogEntry;
 		// 3.5 size
 		long size;
 		LogEntry<FileObject> pulledle;
@@ -416,23 +440,23 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			if (objectExistsLocally) {
 				try {
 					size = fss.getFileSize(fo.getRelPath());
-					checksumDifferentFromLastNewVersionLogEntry = pulledle.getChecksum()
+					checksumEqualToLastNewVersionLogEntry = pulledle.getChecksum()
 							.equals(fss.calculateHashOverFile(fo.getRelPath()));
 				} catch (NotAReadableFileException e) {
 					size = 0;
-					checksumDifferentFromLastNewVersionLogEntry = false;
+					checksumEqualToLastNewVersionLogEntry = false;
 				} catch (FileNotFoundException e) {
 					// we checked above.
 					throw new IllegalStateException("should not occur", e);
 				}
 			} else {
-				checksumDifferentFromLastNewVersionLogEntry = false;
+				checksumEqualToLastNewVersionLogEntry = false;
 				size = 0;
 			}
 		} catch (NoSuchLogEntryException e1) {
 			size = 0;
 			pulledle = null;
-			checksumDifferentFromLastNewVersionLogEntry = false;
+			checksumEqualToLastNewVersionLogEntry = false;
 		}
 
 		// 4 timestamp
@@ -466,7 +490,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		return new AttributedJakeObject<FileObject>(fo, lastVersionLogAction,
 				lastVersionProjectMember, lockOwner, lastLockLogAction,
-				objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
+				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
 				size);
 	}
@@ -476,8 +500,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		Project p = noin.getProject();
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
 
-		// TODO: DRY! move this stuff (and that for FileObject) into
-		// AttributedJakeObject-contructor
+		// this is very similar, but slightly different to the FileObject code
+		// compare and edit them side-by-side
 
 		// 0 complete + 1 exists?
 		NoteObject no;
@@ -489,7 +513,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			no = noin;
 			objectExistsLocally = false;
 		}
-		String content = noin.getContent();
+		String content = no.getContent();
 
 		long size;
 		if (content == null)
@@ -497,6 +521,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		else
 			size = content.length();
 
+		List<LogEntry<? extends ILogable>> all = led.getAll(true);
 		// 2 last logAction
 		LogEntry<NoteObject> lastle;
 		try {
@@ -508,15 +533,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		ProjectMember lastVersionProjectMember = getProjectMemberNullSafe(lastle);
 
 		// 3 locally modified?
-		boolean checksumDifferentFromLastNewVersionLogEntry;
+		boolean checksumEqualToLastNewVersionLogEntry;
 		LogEntry<NoteObject> pulledle;
 		try {
 			pulledle = led.getLastVersionOfJakeObject(no, false);
-			checksumDifferentFromLastNewVersionLogEntry = pulledle.getBelongsTo()
-					.getContent().equals(content);
+			checksumEqualToLastNewVersionLogEntry = pulledle.getBelongsTo().getContent()
+					.equals(content);
 		} catch (NoSuchLogEntryException e1) {
 			pulledle = null;
-			checksumDifferentFromLastNewVersionLogEntry = false;
+			checksumEqualToLastNewVersionLogEntry = false;
 		}
 
 		// 4 timestamp
@@ -536,11 +561,9 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		return new AttributedJakeObject<NoteObject>(no, lastVersionLogAction,
 				lastVersionProjectMember, lockOwner, lastLockLogAction,
-				objectExistsLocally, checksumDifferentFromLastNewVersionLogEntry,
+				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
 				size);
-
-
 	}
 
 	@Transactional
@@ -592,10 +615,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// } catch (NoSuchAlgorithmException e) {
 		// throw new ProjectException(e);
 		// }
-		if (rhp == null) {
-			rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices,
-					userTranslator);
-		}
+		setRequestHandelPolicy(rhp);
 		runningProjects.put(p.getProjectId(), p);
 		// projectsFssMap.put(p.getProjectId(), fs);
 		projectChangeListeners.put(p.getProjectId(), cl);
@@ -730,6 +750,20 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	public void setDb(ProjectApplicationContextFactory projectApplicationContextFactory) {
 		this.db = projectApplicationContextFactory;
+	}
+
+
+	public RequestHandlePolicy getRequestHandelPolicy() {
+		if (this.rhp == null) {
+			this.rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices,
+					userTranslator);
+		}
+		return this.rhp;
+	}
+
+
+	public void setRequestHandelPolicy(RequestHandlePolicy rhp) {
+		this.rhp = rhp;
 	}
 
 	public void setUserTranslator(UserTranslator userTranslator) {

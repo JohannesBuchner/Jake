@@ -33,6 +33,7 @@ import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.LogEntryGenerator;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
@@ -592,14 +593,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	 *         The corresponding ProjectMember if it exists.
 	 */
 	@Transactional
-	private ProjectMember getProjectMember(Project project, UserId userId,
-														IProjectMemberDao dao) {
+	private ProjectMember getProjectMember(Project project, UserId userId) {
 		/*
-		 * verlaesst sich auf userid.getUUid == projectMember.getUUid!!
+		 * verlaesst sich auf userid.getUUid == projectMember.getUUid
 		 */
 
 		try {
-			return dao.get(userId.getUuid());
+			return this.getProjectMemberDao(project).get(userId.getUuid());
 		} catch (NoSuchProjectMemberException e) {
 			return null;
 		}
@@ -623,7 +623,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		dao = this.getProjectMemberDao(project);
 
 		// get (or add) the Project member belonging to userId
-		member = this.getProjectMember(project, userId, dao);
+		member = this.getProjectMember(project, userId);
 		if (member == null) {
 			log.debug("projectmember to set trust for doesn't exist. creating it now!");
 			this.addProjectMember(project, userId);
@@ -812,7 +812,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Transactional
 	public ProjectMember getProjectMember(Project project, MsgService msg) {
 		log.info("getprojectmember: project: " + project + "msgservice: " + msg);
-		return this.getProjectMember(project, msg.getUserId(), this.getProjectMemberDao(project));
+		return this.getProjectMember(project, msg.getUserId());
 	}
 
 	@Override
@@ -1016,6 +1016,29 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Transactional
 	public void deleteNote(NoteObject no) throws IllegalArgumentException, NoSuchJakeObjectException {
         this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).delete(no);
+	}
+
+	@Override
+	@Transactional
+	public void lock(JakeObject jo, String comment) {
+		this.locking(jo, comment, LogAction.JAKE_OBJECT_LOCK);
+	}
+
+	@Override
+	@Transactional
+	public void unlock(JakeObject jo, String comment) {
+		this.locking(jo, comment, LogAction.JAKE_OBJECT_UNLOCK);
+	}
+
+	@Transactional
+	private void locking(JakeObject jo, String comment, LogAction which) {
+		Project p = jo.getProject();
+		ProjectMember me = getProjectMember(p, p.getUserId());
+        this.getApplicationContextFactory().getLogEntryDao(p).create(
+        		LogEntryGenerator.newLogEntry(jo, which, p, me, 
+        				comment, null, false)
+        );
+        
 	}
 
 }

@@ -370,5 +370,19 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException 
 	 */
 	void deleteNote(NoteObject note) throws IllegalArgumentException, NoSuchJakeObjectException;
+
+	/**
+	 * 
+	 * @param jo
+	 * @param comment can be null
+	 */
+	void lock(JakeObject jo, String comment);
+
+	/**
+	 * 
+	 * @param jo
+	 * @param comment can be null
+	 */
+	void unlock(JakeObject jo, String comment);
 	
 }

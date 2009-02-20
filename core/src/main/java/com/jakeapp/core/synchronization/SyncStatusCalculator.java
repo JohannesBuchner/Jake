@@ -66,11 +66,20 @@ public class SyncStatusCalculator {
 
 	private boolean locallyModified() {
 		if (lastProcessedLogEntryType == LogAction.JAKE_OBJECT_NEW_VERSION)
-			return isChecksumDifferentFromLastNewVersionLogEntry;
+			if (objectExistsLocally)
+				return isChecksumDifferentFromLastNewVersionLogEntry;
+			else
+				return true;
 		else if (lastProcessedLogEntryType == LogAction.JAKE_OBJECT_DELETE)
-			return objectExistsLocally;
+			if (objectExistsLocally)
+				return true;
+			else
+				return false;
 		else if (lastProcessedLogEntryType == null)
-			return objectExistsLocally;
+			if (objectExistsLocally)
+				return true;
+			else
+				return false;
 		throw new IllegalStateException();
 	}
 }

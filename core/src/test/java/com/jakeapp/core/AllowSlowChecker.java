@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jakeapp.jake.fss;
+package com.jakeapp.core;
 
 import org.apache.log4j.Logger;
 
@@ -11,7 +11,7 @@ public class AllowSlowChecker implements Checker {
 
 	private static final Logger log = Logger.getLogger(AllowSlowChecker.class);
 
-	private static final String ALLOWSLOWTESTS_PROPERTY = "com.jakeapp.jake.fss.tests.allowslowtests";
+	private static final String ALLOWSLOWTESTS_PROPERTY = "com.jakeapp.jake.core.tests.allowslowtests";
 
 	public boolean satisfy() {
 		String prop = System.getProperty(ALLOWSLOWTESTS_PROPERTY);

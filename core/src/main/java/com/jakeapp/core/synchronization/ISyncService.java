@@ -90,8 +90,9 @@ public interface ISyncService {
 	 * @throws NoSuchLogEntryException  the object does not exist (no one announced it)
 	 * @throws IllegalArgumentException
 	 * @throws NotLoggedInException
+	 * @return the requested JakeObject
 	 */
-	public void pullObject(JakeObject jo) throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
+	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
 
 	/**
 	 * Adds a log entry that the object has been modified, created, deleted, ...<br>
