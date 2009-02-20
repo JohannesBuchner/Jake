@@ -3,6 +3,10 @@ package com.jakeapp.core;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.remoting.rmi.RmiServiceExporter;
+
+import java.util.Scanner;
+import java.rmi.RemoteException;
 
 
 /**
@@ -15,68 +19,37 @@ public class Jake {
 
     public static void main(String[] args) {
 
-        boolean console = false;
-        boolean gui = true;
+        System.out.println("Welcome to Jake-Core daemon.");
+        System.out.println("This daemon does not provide any user-interface (neither GUI nor console-ui).");
+        System.out.println("If you want to have a user-interface use the swing-gui component or JakeCommander.");
 
 
-        if (args.length > 0) {
-            for (String argument : args) {
-                if (argument.startsWith("--nogui")) {
-                    log.debug("set the dedicated nogui option");
-                    console = true;
-                }
+
+        Scanner in = new Scanner(System.in);
 
 
-                if (argument.startsWith("--help")) {
-                    console = false;
-                    gui = false;
 
 
-                    log.debug("printing help screen");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+                new String[]
+                        {
+                                "/com/jakeapp/core/applicationContext-rmi.xml"
+                        });
 
-                    System.out.println("Welcome to jake. Here are your options:");
-                    System.out.println("\n\n");
 
-                }
-            }
+        System.out.println("RMI Server up. Hit enter to close");
+        if(in.hasNextLine());
+            in.nextLine();
+      
+
+        System.out.println("Server is shuting down.");
+
+        RmiServiceExporter exporter = (RmiServiceExporter) applicationContext.getBean("rmiExporter");
+        try {
+            exporter.destroy();
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
-
-
-        if (console || gui) {
-            log.debug("either gui or console mode selected");
-
-            if (console) {
-                log.debug("Load main application context");
-                log.debug("selected console");
-                
-                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-                        new String[]{"/com/jakeapp/core/applicationContext.xml"});
-
-
-
-
-            }
-
-            if(gui)
-            {
-                log.debug("Load main application context");
-                log.debug("selected gui");
-
-//                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-//                        new String[]{"/com/jakeapp/core/applicationContext.xml"});
-
-//                JakeGuiStartHelper.launch((ICoreAccess) applicationContext.getBean("coreAccess"));
-                
-                //JakeMainApp app = (JakeMainApp) applicationContext.getBean("swingGui");
-               // JakeMainApp.main(null);
-                //app.setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
-
-                //app.startGui();
-
-            }
-
-        }
-
-
+        
     }
 }

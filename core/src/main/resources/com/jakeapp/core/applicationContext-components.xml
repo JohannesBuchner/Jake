@@ -8,6 +8,7 @@
     <bean id="applicationContextFactory" class="com.jakeapp.core.util.ProjectApplicationContextFactory">
         <description>The factory to create and configure application contexts</description>
         <constructor-arg index="0" ref="projectDao" type="com.jakeapp.core.dao.IProjectDao"/>
+        <constructor-arg ref="sessionFactory"/>
 
         <property name="configLocation">
             <list>
@@ -15,6 +16,7 @@
                 <value>/com/jakeapp/core/applicationContext-local-daos.xml</value>
             </list>
         </property>
+        
     </bean>
 
     <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">

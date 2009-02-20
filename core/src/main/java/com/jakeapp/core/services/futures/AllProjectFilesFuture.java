@@ -42,10 +42,14 @@ public class AllProjectFilesFuture extends
     public AllProjectFilesFuture(ProjectApplicationContextFactory
             applicationContextFactory, Project project) {
 		super(new ArrayList<FileObject>());
-		
+
+        log.debug("Creating a AllProjectFilesFuture");
+
 		this.applicationContextFactory = applicationContextFactory;
         this.project = project;
 	}
+
+
 
 	@Override
 	@Transactional
@@ -74,14 +78,19 @@ public class AllProjectFilesFuture extends
 //
 //        log.debug("open session");
 //        sf.openSession();
+        log.debug("Calculating the  AllProjectFilesFuture");
 
         List<FileObject> result = new ArrayList<FileObject>();
         result = this.applicationContextFactory.getFileObjectDao(project).getAll();
 
-//        for(FileObject file : result)
-//        {
-//            System.out.println("file = " + file);
-//        }
+        log.debug("found " + result.size() + " files in the DB ");
+        for(FileObject file : result)
+        {
+            System.out.println("file = " + file);
+        }
+
+
+        result.add(new FileObject(project, "blabla"));
 
         return result;
 

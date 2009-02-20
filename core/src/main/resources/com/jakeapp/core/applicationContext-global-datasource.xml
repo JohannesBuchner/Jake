@@ -89,7 +89,8 @@
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
-                <!--<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>-->
+                <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate3.SpringSessionContext</prop>
+                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
                 <prop key="hibernate.default_batch_fetch_size">0</prop>
                 <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>

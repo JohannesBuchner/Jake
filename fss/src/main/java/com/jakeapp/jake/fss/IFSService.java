@@ -5,6 +5,7 @@ import com.jakeapp.jake.fss.exceptions.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ import java.util.List;
  * @author johannes
  */
 
-public interface IFSService {
+public interface IFSService extends Serializable {
 	/**
 	 * Checks that the file exists and that it is a regular file (no link,
 	 * device, pipe, ...)

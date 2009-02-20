@@ -192,6 +192,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Transactional
 	@Override
 	public List<Project> getProjectList(InvitationState state) {
+        log.debug("calling getProjectList");
 		List<Project> result = this.getProjectDao().getAll(state);
 
 		for (Project p : result)
@@ -661,6 +662,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	public AvailableLaterObject<Integer> getProjectFileCount(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
 
+        log.debug("\t\tCalling getProjectFileCount");
+
+
 		AvailableLaterWrapperObject<Integer, List<FileObject>> sizeFuture;
 		AvailableLaterObject<List<FileObject>> filesFuture;
 
@@ -674,6 +678,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
+
+        log.debug("\t\tCalling getProjectSizeTotal");
+
 
 		AvailableLaterWrapperObject<Long, List<FileObject>> sizeFuture;
 		AvailableLaterObject<List<FileObject>> filesFuture;
@@ -692,12 +699,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
+        log.debug("\t\tCalling getAllProjectFiles");
 		return new AllProjectFilesFuture(getApplicationContextFactory(), project);
 	}
 
 	@Override
 	@Transactional
 	public FileObject getFileObjectByRelPath(Project project, String relpath) throws NoSuchJakeObjectException {
+        log.debug("calling getFileObjectByRelPath for relpath: " + relpath);
 		IFileObjectDao dao = this.getFileObjectDao(project);
 		return dao.get(relpath);
 	}

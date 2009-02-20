@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.SessionFactory;
 
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
@@ -28,6 +32,14 @@ import com.jakeapp.core.domain.TrustState;
  * @author Simon
  */
 public class ProjectApplicationContextFactory extends ApplicationContextFactory {
+
+
+     private SessionFactory sessionFactory;
+
+
+
+
+
 
 	private IProjectDao projectDao;
 
@@ -55,15 +67,22 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		return this.noteObjectDaoProxies.get(p);
 	}
 
-	public ProjectApplicationContextFactory(IProjectDao projectDao) {
+	public ProjectApplicationContextFactory(IProjectDao projectDao, SessionFactory sessionFactory) {
 		super();
 		log.debug("Creating the ProjectApplicationContextFactory");
 		this.projectDao = projectDao;
+        this.sessionFactory = sessionFactory;
 
+
+
+//        sessionFactory.getCurrentSession().beginTransaction();
 		loadProjectUUIDs();
 
+
+//        sessionFactory.getCurrentSession().getTransaction().commit();
 	}
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	private void loadProjectUUIDs() {
 		List<Project> projects = this.projectDao.getAll();
 		this.project_uuids.clear();
