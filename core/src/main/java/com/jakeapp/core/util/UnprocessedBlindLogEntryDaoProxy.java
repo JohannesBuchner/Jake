@@ -100,10 +100,10 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	}
 
 	/**
-	 * @see ILogEntryDao#getCurrentTags(JakeObject)
+	 * @see ILogEntryDao#getTags(JakeObject)
 	 */
 	public Collection<Tag> getCurrentTags(JakeObject belongsTo) {
-		return this.innerDao.getCurrentTags(belongsTo);
+		return this.innerDao.getTags(belongsTo);
 	}
 
 	/**

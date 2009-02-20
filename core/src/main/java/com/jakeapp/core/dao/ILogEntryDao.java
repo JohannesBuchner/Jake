@@ -210,7 +210,9 @@ public interface ILogEntryDao {
 	 *            false: only unprocessed<br>
 	 * @return a Collection sorted ascending by timestamp. on no results returns
 	 *         a empty Collection
+	 * @deprecated try to avoid and ask for a direct query
 	 */
+	@Deprecated
 	public List<LogEntry<? extends ILogable>> findMatching(
 			LogEntry<? extends ILogable> le, boolean processedState);
 
@@ -227,7 +229,9 @@ public interface ILogEntryDao {
 	 *         a empty Collection
 	 * @throws NullPointerException
 	 *             if timestamp is null
+	 * @deprecated try to avoid and ask for a direct query
 	 */
+	@Deprecated
 	public List<LogEntry<? extends ILogable>> findMatchingBefore(
 			LogEntry<? extends ILogable> le, boolean processedState)
 			throws NullPointerException;
@@ -245,7 +249,9 @@ public interface ILogEntryDao {
 	 *         a empty Collection
 	 * @throws NullPointerException
 	 *             if timestamp is null
+	 * @deprecated try to avoid and ask for a direct query
 	 */
+	@Deprecated
 	public List<LogEntry<? extends ILogable>> findMatchingAfter(
 			LogEntry<? extends ILogable> le, boolean processedState)
 			throws NullPointerException;
@@ -260,7 +266,9 @@ public interface ILogEntryDao {
 	 *            true: only processed<br>
 	 *            false: only unprocessed<br>
 	 * @return the LogEntry, or null if no such entry exists
+	 * @deprecated try to avoid and ask for a direct query
 	 */
+	@Deprecated
 	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le,
 			boolean processedState);
 
@@ -289,7 +297,7 @@ public interface ILogEntryDao {
 	 * @param belongsTo
 	 * @return an empty collection if no tags (not null) or the tags otherwise
 	 */
-	public Collection<Tag> getCurrentTags(JakeObject belongsTo);
+	public Collection<Tag> getTags(JakeObject belongsTo);
 
 	/**
 	 * Gets the first {@link LogEntry}. It has the

@@ -78,8 +78,6 @@ public class LogEntry<T extends ILogable> implements Serializable {
 	/**
 	 * @return the <code>uuid</code> for this <code>LogEntry</code>.
 	 */
-//	@Id
-//	@Column(name="ID", nullable=false)
 	@Transient
     public UUID getUuid() {
 		return this.uuid;
@@ -247,4 +245,80 @@ public class LogEntry<T extends ILogable> implements Serializable {
     protected void setObjectuuid(String objectuuid) {
         this.objectuuid = objectuuid;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((belongsTo == null) ? 0 : belongsTo.hashCode());
+		result = prime * result + ((checksum == null) ? 0 : checksum.hashCode());
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + ((logAction == null) ? 0 : logAction.hashCode());
+		result = prime * result + ((member == null) ? 0 : member.hashCode());
+		result = prime * result + ((objectuuid == null) ? 0 : objectuuid.hashCode());
+		result = prime * result + (processed ? 1231 : 1237);
+		result = prime * result + ((project == null) ? 0 : project.hashCode());
+		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LogEntry other = (LogEntry) obj;
+		if (belongsTo == null) {
+			if (other.belongsTo != null)
+				return false;
+		} else if (!belongsTo.equals(other.belongsTo))
+			return false;
+		if (checksum == null) {
+			if (other.checksum != null)
+				return false;
+		} else if (!checksum.equals(other.checksum))
+			return false;
+		if (comment == null) {
+			if (other.comment != null)
+				return false;
+		} else if (!comment.equals(other.comment))
+			return false;
+		if (logAction == null) {
+			if (other.logAction != null)
+				return false;
+		} else if (!logAction.equals(other.logAction))
+			return false;
+		if (member == null) {
+			if (other.member != null)
+				return false;
+		} else if (!member.equals(other.member))
+			return false;
+		if (objectuuid == null) {
+			if (other.objectuuid != null)
+				return false;
+		} else if (!objectuuid.equals(other.objectuuid))
+			return false;
+		if (processed != other.processed)
+			return false;
+		if (project == null) {
+			if (other.project != null)
+				return false;
+		} else if (!project.equals(other.project))
+			return false;
+		if (timestamp == null) {
+			if (other.timestamp != null)
+				return false;
+		} else if (!timestamp.equals(other.timestamp))
+			return false;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
+	}
 }

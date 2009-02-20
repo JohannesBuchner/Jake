@@ -17,11 +17,8 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.LogEntryGenerator;
-import com.jakeapp.core.domain.ProjectLogEntry;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.Tag;
 
@@ -34,6 +31,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	private Query query(String query) {
+		return unsortedQuery(query + " ORDER BY time asc, id asc");
+	}
+
+	private Query unsortedQuery(String query) {
 		return sess().createQuery(query);
 	}
 
@@ -47,6 +48,27 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				default:
 					logEntry.setProcessed(true);
 			}
+		}
+		switch (logEntry.getLogAction()) {
+			case JAKE_OBJECT_DELETE:
+			case JAKE_OBJECT_NEW_VERSION:
+			case JAKE_OBJECT_LOCK:
+			case JAKE_OBJECT_UNLOCK:
+			case TAG_ADD:
+			case TAG_REMOVE:
+				if (logEntry.getObjectuuid() == null) {
+					// functions need this for indexing / lazy deserialization
+					throw new IllegalArgumentException("ObjectUUID index not set!");
+				}
+				break;
+			default:
+				if (logEntry.getObjectuuid() != null) {
+					// other types are very very seldom, and we need the object
+					// anyway. so no index there.
+					throw new IllegalArgumentException(
+							"ObjectUUID index should not be set!");
+				}
+				break;
 		}
 		sess().persist(logEntry);
 	}
@@ -68,14 +90,14 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<JakeObject>>();
 		return query(
-				"FROM logentries WHERE processed = false AND objectuuid = ? ORDER BY time asc")
+				"FROM logentries WHERE processed = false AND objectuuid = ?")
 				.setString(0, jakeObject.getUuid().toString()).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed() {
-		return query("FROM logentries WHERE processed = false ORDER BY time asc").list();
+		return query("FROM logentries WHERE processed = false").list();
 	}
 
 	@Override
@@ -96,7 +118,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogEntry<? extends ILogable>> getAll(boolean includeUnprocessed) {
-		return processedAwareLogEntryQuery("", includeUnprocessed).list();
+		return processedAwareLogEntryQuery("ORDER BY time asc", includeUnprocessed).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,7 +127,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			boolean includeUnprocessed) {
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
-		return processedAwareLogEntryQuery("AND objectuuid = ? ORDER BY time asc",
+		return processedAwareLogEntryQuery("AND objectuuid = ?",
 				includeUnprocessed).setString(0, jakeObject.getUuid().toString()).list();
 	}
 
@@ -120,7 +142,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(
 			boolean includeUnprocessed) {
 		return processedAwareLogEntryQuery(
-				"AND (action = ? OR action = ?) ORDER BY time asc", includeUnprocessed)
+				"AND (action = ? OR action = ?)", includeUnprocessed)
 				.setInteger(0, LogAction.JAKE_OBJECT_NEW_VERSION.ordinal()).setInteger(1,
 						LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
 	}
@@ -132,7 +154,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
 		return processedAwareLogEntryQuery(
-				"AND objectuuid = ? AND action = ? ORDER BY time asc", includeUnprocessed)
+				"AND objectuuid = ? AND action = ?", includeUnprocessed)
 				.setString(0, jakeObject.getUuid().toString()).setInteger(1,
 						LogAction.JAKE_OBJECT_NEW_VERSION.ordinal()).list();
 	}
@@ -143,20 +165,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
 		return processedAwareLogEntryQuery(
-				"AND objectuuid = ? AND action = ? ORDER BY time asc", includeUnprocessed)
+				"AND objectuuid = ? AND action = ?", includeUnprocessed)
 				.setString(0, jakeObject.getUuid().toString()).setInteger(1,
 						LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
 	}
-
-	private void dumpTable() {
-		List<LogEntry<? extends ILogable>> results = getAll(true);
-		log.debug("DUMPING LOGENTRIES: ___");
-		for (LogEntry<? extends ILogable> r : results) {
-			log.debug(r);
-		}
-		log.debug("DUMPING LOGENTRIES DONE");
-	}
-
 
 	/**
 	 * @param list
@@ -306,7 +318,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Boolean getDeleteState(JakeObject belongsTo, boolean includeUnprocessed) {
 		LogEntry<JakeObject> leNew = lastLogEntryOrNull(getAllVersionsOfJakeObject(
@@ -332,7 +343,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public LogEntry<JakeObject> getLastVersion(JakeObject belongsTo,
 			boolean includeUnprocessed) {
@@ -389,7 +399,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<ProjectMember>> getAllProjectMemberLogEntries() {
-		return query("FROM logentries WHERE (action = ? OR action = ?) ORDER BY time asc")
+		return query("FROM logentries WHERE (action = ? OR action = ?)")
 				.setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
 				.setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
 	}
@@ -404,7 +414,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (belongsTo.getUuid() == null)
 			return new HashSet<LogEntry<Tag>>();
 		return query(
-				"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?) ORDER BY time asc")
+				"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?)")
 				.setString(0, belongsTo.getUuid().toString()).setInteger(1,
 						LogAction.TAG_ADD.ordinal()).setInteger(2,
 						LogAction.TAG_REMOVE.ordinal()).list();
@@ -420,7 +430,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (belongsTo.getUuid() == null)
 			return new HashSet<LogEntry<JakeObject>>();
 		return query(
-				"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?) ORDER BY time asc")
+				"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?)")
 				.setString(0, belongsTo.getUuid().toString()).setInteger(1,
 						LogAction.JAKE_OBJECT_LOCK.ordinal()).setInteger(2,
 						LogAction.JAKE_OBJECT_UNLOCK.ordinal()).list();
@@ -443,7 +453,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public Collection<Tag> getCurrentTags(JakeObject jakeObject) {
+	public Collection<Tag> getTags(JakeObject jakeObject) {
 		List<Tag> tags = new LinkedList<Tag>();
 		for (LogEntry<Tag> le : getTagEntries(jakeObject)) {
 			if (le.getLogAction() == LogAction.TAG_ADD) {
@@ -467,7 +477,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public Collection<ProjectMember> getCurrentProjectMembers() {
 		Map<ProjectMember, List<ProjectMember>> people = getTrustGraph();
-		
+
 		List<ProjectMember> trusted = new LinkedList<ProjectMember>();
 		for (ProjectMember member : people.keySet()) {
 			if (people.get(member).size() > 0) {

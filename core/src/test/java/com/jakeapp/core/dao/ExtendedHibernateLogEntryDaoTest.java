@@ -97,21 +97,21 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		me = new ProjectMember(u[1], "NICKNAME", TrustState.TRUST);
 
 		LogEntry<Project> projectLogEntry = new ProjectLogEntry(u[2],
-				LogAction.PROJECT_CREATED, new Date(2009, 01, 03), project, project,
-				me, "comment", null, true);
+				LogAction.PROJECT_CREATED, new Date(2009, 01, 03), project, project, me,
+				"comment", null, true);
 
 
 		logEntryDao.create(projectLogEntry);
 
 		note1 = new NoteObject(u[3], project, "foo bar");
 		JakeObjectLogEntry note1announce = LogEntryGenerator.newLogEntry(note1,
-				LogAction.JAKE_OBJECT_NEW_VERSION, project, me,
-				"initial checkin", null, true);
+				LogAction.JAKE_OBJECT_NEW_VERSION, project, me, "initial checkin", null,
+				true);
 		logEntryDao.create(note1announce);
 
 		JakeObjectLogEntry note1announce2 = LogEntryGenerator.newLogEntry(note1,
-				LogAction.JAKE_OBJECT_NEW_VERSION, project, me,
-				"improved version", null, false);
+				LogAction.JAKE_OBJECT_NEW_VERSION, project, me, "improved version", null,
+				false);
 		logEntryDao.create(note1announce2);
 
 		file1 = new FileObject(u[5], project, "foo bar");
@@ -120,16 +120,13 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 				"mychecksum", true);
 		logEntryDao.create(file1announce);
 		JakeObjectLogEntry file1lock = LogEntryGenerator.newLogEntry(file1,
-				LogAction.JAKE_OBJECT_LOCK, project, me, "locking ...", null,
-				true);
+				LogAction.JAKE_OBJECT_LOCK, project, me, "locking ...", null, true);
 		logEntryDao.create(file1lock);
 		JakeObjectLogEntry file1unlock = LogEntryGenerator.newLogEntry(file1,
-				LogAction.JAKE_OBJECT_UNLOCK, project, me, "unlocking ...",
-				null, true);
+				LogAction.JAKE_OBJECT_UNLOCK, project, me, "unlocking ...", null, true);
 		logEntryDao.create(file1unlock);
 		JakeObjectLogEntry file1lock2 = LogEntryGenerator.newLogEntry(file1,
-				LogAction.JAKE_OBJECT_LOCK, project, me, "locking ...", null,
-				true);
+				LogAction.JAKE_OBJECT_LOCK, project, me, "locking ...", null, true);
 		logEntryDao.create(file1lock2);
 		JakeObjectLogEntry file1delete = LogEntryGenerator.newLogEntry(file1,
 				LogAction.JAKE_OBJECT_DELETE, project, me, "I hate this file",
@@ -139,7 +136,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		Tag tag = new Tag("tag1");
 		tag.setObject(file1);
 		Tag tag2 = new Tag("tag2");
-		tag.setObject(file1);
+		tag2.setObject(file1);
 
 		TagLogEntry file1tag = LogEntryGenerator.newLogEntry(tag, LogAction.TAG_ADD,
 				project, me);
@@ -264,6 +261,24 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 
 	@Transactional
 	@Test
+	public void testFileTags() throws Exception {
+
+		Collection<Tag> filetags = logEntryDao.getTags(file1);
+		Assert.assertEquals(1, filetags.size());
+		Tag tag = filetags.iterator().next();
+		Assert.assertEquals("tag2", tag.getName());
+		Assert.assertEquals(file1, tag.getObject());
+	}
+
+	@Transactional
+	@Test
+	public void testNoteTags() throws Exception {
+		Collection<Tag> notetags = logEntryDao.getTags(note1);
+		Assert.assertEquals(0, notetags.size());
+	}
+
+	@Transactional
+	@Test
 	public void testProjectMembers_empty() throws Exception {
 		Assert.assertEquals(0, logEntryDao.getCurrentProjectMembers().size());
 
@@ -303,6 +318,26 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		Assert.assertEquals(2, logEntryDao.getCurrentProjectMembers().size());
 
 		Assert.assertEquals(4, logEntryDao.getTrustGraph().size());
+	}
+
+	@Transactional
+	@Test
+	public void testGet_TagLogEntry_belongsTo() {
+		List<LogEntry<? extends ILogable>> result = logEntryDao.getAll(true);
+		Assert.assertEquals(11, result.size());
+		int i = 0;
+		while(result.get(i).getLogAction() != LogAction.TAG_ADD)
+			i++;
+		LogEntry<? extends ILogable> le = result.get(8);
+		Assert.assertEquals(LogAction.TAG_ADD, le.getLogAction());
+		LogEntry<Tag> tagle = (LogEntry<Tag>) le;
+		Tag tag = (Tag) le.getBelongsTo();
+		Assert.assertEquals("tag2", tag.getName());
+		JakeObject jo = tag.getObject();
+		Assert.assertEquals(file1, jo);
+		FileObject fo = (FileObject) jo;
+		Assert.assertEquals(file1, fo);
+
 	}
 
 
