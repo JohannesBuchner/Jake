@@ -1,12 +1,3 @@
-Failed tests: 
-  testCreateProject(com.jakeapp.core.services.TestFrontendUsage)
-
-Tests in error: 
-  testStatus_AnnounceNote(com.jakeapp.core.synchronization.TestSyncService)
-  testStatus_ModifyAnnouncedNote(com.jakeapp.core.synchronization.TestSyncService)
-  testStatus_PullModifyNote(com.jakeapp.core.synchronization.TestSyncService)
-  testStatus_DeleteAnnouncedNote(com.jakeapp.core.synchronization.TestSyncService)
-  testStatus_AddTagAnnouncedNote(com.jakeapp.core.synchronization.TestSyncService)
-  testStatus_AddTagsAnnouncedNote(com.jakeapp.core.synchronization.TestSyncService)
-  testStatus_RemoveTagAnnouncedNote(com.jakeapp.core.synchronization.TestSyncService)
-  testCreateAndAssignAfterwards(com.jakeapp.core.services.TestFrontendUsage)
+Tests in error in core:
+testCreateProject(com.jakeapp.core.services.TestFrontendUsage)
+testCreateAndAssignAfterwards(com.jakeapp.core.services.TestFrontendUsage)
