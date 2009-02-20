@@ -97,7 +97,7 @@ lazyclean:
 
 # up: update to newest revision and scroll logs
 up:
-	oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
+	@oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
 
 # 
 # 
@@ -107,4 +107,4 @@ up:
 # Linux. 
 # 
 
-.PHONY: gui core fss ics ics-xmpp commander start quickstart clean mrproper lazyclean 
+.PHONY: install gui core fss ics ics-xmpp commander start depstart mockstart instantquit quickstart console clean mrproper lazyclean up
