@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import org.apache.log4j.Logger;
@@ -20,11 +21,17 @@ public class EventsTableModel extends AbstractTableModel {
 
 	private static final Logger log = Logger.getLogger(EventsTableModel.class);
 	private Project project;
-	private JakeObject jakeObject;
+	private AttributedJakeObject<? extends JakeObject> attributedJakeObject;
 	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private static final int MaxLogEntriesShown = 100;
-
+	private static final String[] colNames = new String[]{"Action", "When"};
+	
+	private enum LogColumns {
+		ACTION, WHEN
+	}
+	
 	/**
+
 	 * Creates a event table model that shows ALL events.
 	 */
 	public EventsTableModel(Project project) {
@@ -34,14 +41,14 @@ public class EventsTableModel extends AbstractTableModel {
 	/**
 	 * Creates a event model that is limited to events from a JakeObject
 	 *
-	 * @param jakeObject
+	 * @param attributedJakeObject
 	 */
-	public EventsTableModel(Project project, JakeObject jakeObject) {
-		this.setJakeObject(jakeObject);
+	public EventsTableModel(Project project, AttributedJakeObject<JakeObject> attributedJakeObject) {
+		this.setJakeObject(attributedJakeObject);
 
-		log.info("Initializing EventsTableModel with jakeObject: " + jakeObject);
+		log.info("Initializing EventsTableModel with jakeObject: " + attributedJakeObject);
 
-		updateData();
+		this.updateData();
 	}
 
 	/**
@@ -54,38 +61,35 @@ public class EventsTableModel extends AbstractTableModel {
 	public void updateData() {
 		//test if current Jake object is null, if so all log entries will be shown
 		log.info("Updating events data...");
+		//FIXME: make proper initialization to evade this ugly null tests...
+		if (this.getProject() != null && this.getAttributedJakeObject() != null) {
+			this.logEntries = JakeMainApp.getApp().getCore().getLog(
+					  getProject(), getAttributedJakeObject().getJakeObject(), MaxLogEntriesShown);
 
-		this.logEntries = JakeMainApp.getApp().getCore().getLog(
-				  getProject(), getJakeObject(), MaxLogEntriesShown);
+		}
+		log.debug("received logs: " + this.logEntries);
 	}
 
-	String[] colNames = new String[]{"Action", "When"};
-
-
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 	public void setProject(Project project) {
 		this.project = project;
 
-		updateData();
+		this.updateData();
 	}
 
 
-	public JakeObject getJakeObject() {
-		return jakeObject;
+	public AttributedJakeObject<? extends JakeObject> getAttributedJakeObject() {
+		return this.attributedJakeObject;
 	}
 
-	public void setJakeObject(JakeObject jakeObject) {
-		this.jakeObject = jakeObject;
+	public void setJakeObject(AttributedJakeObject<? extends JakeObject> attributedJakeObject) {
+		log.debug("setting attributedJakeObject: " + attributedJakeObject);
+		this.attributedJakeObject = attributedJakeObject;
 
-		updateData();
-	}
-
-
-	enum LogColumns {
-		Action, User
+		this.updateData();
 	}
 
 	public int getColumnCount() {
@@ -93,7 +97,7 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return logEntries.size();
+		return this.logEntries.size();
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -102,15 +106,14 @@ public class EventsTableModel extends AbstractTableModel {
 
 		LogColumns col = LogColumns.values()[columnIndex];
 		switch (col) {
-			case Action:
+			case ACTION:
 				return logEntry;
 
-			case User:
+			case WHEN:
 				return TimeUtilities.getRelativeTime(logEntry.getTimestamp());
 
 			default:
-				throw new IllegalArgumentException(
-						  "Cannot get Information for column " + columnIndex);
+				throw new IllegalArgumentException("Cannot get Information for column " + columnIndex);
 		}
 	}
 
@@ -120,6 +123,6 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public List<LogEntry> getLogEntries() {
-		return logEntries;
+		return this.logEntries;
 	}
 }

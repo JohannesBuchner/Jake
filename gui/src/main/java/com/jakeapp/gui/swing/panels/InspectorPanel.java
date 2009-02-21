@@ -31,13 +31,17 @@ import java.io.File;
  */
 public class InspectorPanel extends JXPanel implements
 		  ProjectChanged, ProjectSelectionChanged, FileSelectionChanged, ProjectViewChanged, NoteSelectionChanged {
+
+	private static final long serialVersionUID = 7743765581263700424L;
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
+
 	public static final int INSPECTOR_SIZE = 250;
+	
 	private Project project;
 	private ResourceMap resourceMap;
 	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
-	private FileObject fileObject;
-	private AttributedJakeObject<NoteObject> noteObject;
+	private AttributedJakeObject<FileObject> attributedFileObject;
+	private AttributedJakeObject<NoteObject> attributedNoteObject;
 
 	private JXTable eventsTable;
 	private JLabel icoLabel;
@@ -79,28 +83,29 @@ public class InspectorPanel extends JXPanel implements
 
 		this.setBackground(Platform.getStyler().getWindowBackground());
 
-		eventsTableModel = new EventsTableModel(getProject());
-		eventsTable = new ITunesTable();
-		eventsTable.setModel(eventsTableModel);
-		eventsTable.setMinimumSize(new Dimension(50, INSPECTOR_SIZE));
-		ConfigControlsHelper.configEventsTable(eventsTable);
-		eventsTable.updateUI();
-		this.add(eventsTable, "dock south, grow 150 150, gpy 150");
+		//FIXME: pass a jakeObject to the EventTableModel c'tor.
+		this.setEventsTableModel(new EventsTableModel(getProject()));
+		this.eventsTable = new ITunesTable();
+		this.eventsTable.setModel(this.getEventsTableModel());
+		this.eventsTable.setMinimumSize(new Dimension(50, INSPECTOR_SIZE));
+		ConfigControlsHelper.configEventsTable(this.eventsTable);
+		this.eventsTable.updateUI();
+		this.add(this.eventsTable, "dock south, grow 150 150, gpy 150");
 
 		JPanel headerPanel = new JPanel(new MigLayout("wrap 1, fill"));
 		headerPanel.setOpaque(false);
 
 		// add icon
-		icoLabel = new JLabel();
-		headerPanel.add(icoLabel, "dock west, hidemode 1, w 64!, h 64!");
+		this.icoLabel = new JLabel();
+		headerPanel.add(this.icoLabel, "dock west, hidemode 1, w 64!, h 64!");
 
 		// add name
-		nameLabel = new JLabel();
-		headerPanel.add(nameLabel, "wrap, grow");
+		this.nameLabel = new JLabel();
+		headerPanel.add(this.nameLabel, "wrap, grow");
 
 		// add size
-		sizeLabel = new JLabel();
-		headerPanel.add(sizeLabel, "wrap, grow");
+		this.sizeLabel = new JLabel();
+		headerPanel.add(this.sizeLabel, "wrap, grow");
 
 		this.add(headerPanel, "span 2, wrap, grow");
 
@@ -110,23 +115,23 @@ public class InspectorPanel extends JXPanel implements
 		JLabel lastAccessTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
 		lastAccessTextLabel.setFont(smallFont);
 		this.add(lastAccessTextLabel, "right");
-		lastAccessTimeAndUser = new JLabel();
-		lastAccessTimeAndUser.setFont(smallFont);
-		this.add(lastAccessTimeAndUser, "growy, wrap");
+		this.lastAccessTimeAndUser = new JLabel();
+		this.lastAccessTimeAndUser.setFont(smallFont);
+		this.add(this.lastAccessTimeAndUser, "growy, wrap");
 
 		// add tags
 		JLabel tagsHeaderLabel = new JLabel(getResourceMap().getString("tagsLabel"));
 		this.add(tagsHeaderLabel, "right");
-		tagsLabel = new JLabel("");
-		this.add(tagsLabel, "growy, wrap");
+		this.tagsLabel = new JLabel("");
+		this.add(this.tagsLabel, "growy, wrap");
 
 		// add full path
 		JLabel fullPathTextLabel = new JLabel(getResourceMap().getString("pathLabel"));
 		fullPathTextLabel.setFont(smallFont);
 		this.add(fullPathTextLabel, "right");
-		fullPathLabel = new JLabel();
-		fullPathLabel.setFont(smallFont);
-		this.add(fullPathLabel, "growy, wrap");
+		this.fullPathLabel = new JLabel();
+		this.fullPathLabel.setFont(smallFont);
+		this.add(this.fullPathLabel, "growy, wrap");
 
 		// config the history table
 		this.add(new JLabel(getResourceMap().getString("historyLabel")), "span 2, wrap");
@@ -141,76 +146,74 @@ public class InspectorPanel extends JXPanel implements
 
 		// always update the table
 		// HACK: disable for DEMO
-		eventsTableModel.setProject(null);
+		this.getEventsTableModel().setProject(null);
 
-		if (getFileObject() != null && isFileContext()) {
+		if (getAttributedFileObject() != null && isFileContext()) {
 			File file = null;
 			try {
-				file = JakeMainApp.getCore().getFile(getFileObject());
+				file = JakeMainApp.getCore().getFile(getAttributedFileObject().getJakeObject());
 			} catch (FileOperationFailedException e) {
 				ExceptionUtilities.showError(e);
 			}
-			icoLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
+			this.icoLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
 
-			nameLabel.setText(StringUtilities.htmlize(StringUtilities.bold(
-					  FileObjectHelper.getName(getFileObject().getRelPath()))));
+			this.nameLabel.setText(StringUtilities.htmlize(StringUtilities.bold(
+					  FileObjectHelper.getName(getAttributedFileObject().getJakeObject().getRelPath()))));
 
-			sizeLabel.setText(FileObjectHelper.getSizeHR(getFileObject()));
+			this.sizeLabel.setText(FileObjectHelper.getSizeHR(getAttributedFileObject().getJakeObject()));
 
 			// TODO: @Chris: update tags
 
-			fullPathLabel.setText(
-					  FileObjectHelper.getPath(getFileObject().getRelPath()));
-			log.debug(fullPathLabel.getText());
-			lastAccessTimeAndUser.setText(StringUtilities.htmlize(Translator.get(getResourceMap(), "byLabel",
-					  FileObjectHelper.getTimeRel(getFileObject()),
-					  FileObjectHelper.getLastModifier(getFileObject()))));
+			this.fullPathLabel.setText(
+					  FileObjectHelper.getPath(getAttributedFileObject().getJakeObject().getRelPath()));
+			log.debug(this.fullPathLabel.getText());
+			this.lastAccessTimeAndUser.setText(StringUtilities.htmlize(Translator.get(getResourceMap(), "byLabel",
+					  FileObjectHelper.getTimeRel(getAttributedFileObject().getJakeObject()),
+					  FileObjectHelper.getLastModifier(getAttributedFileObject().getJakeObject()))));
 
-			eventsTableModel.setJakeObject(getFileObject());
+			this.getEventsTableModel().setJakeObject(getAttributedFileObject());
 		} else if (getNoteObject() != null && isNoteContext()) {
-			icoLabel.setIcon(notesIcon);
-			nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject().getJakeObject())));
-			sizeLabel.setText("");
-			fullPathLabel.setText("");
+			this.icoLabel.setIcon(this.notesIcon);
+			this.nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject().getJakeObject())));
+			this.sizeLabel.setText("");
+			this.fullPathLabel.setText("");
 
-		  lastAccessTimeAndUser.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
+		  this.lastAccessTimeAndUser.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
 
 
 			// TODO: inspector for notes
-			eventsTableModel.setJakeObject(getFileObject());
+			this.getEventsTableModel().setJakeObject(getAttributedFileObject());
 		} else {
-			icoLabel.setIcon(null);
-			nameLabel.setText("");
-			sizeLabel.setText("");
-			fullPathLabel.setText("");
-			lastAccessTimeAndUser.setText("");
+			this.icoLabel.setIcon(null);
+			this.nameLabel.setText("");
+			this.sizeLabel.setText("");
+			this.fullPathLabel.setText("");
+			this.lastAccessTimeAndUser.setText("");
 
 			// hide table contents
-			eventsTableModel.setProject(null);
+			this.getEventsTableModel().setProject(null);
 		}
 
-		eventsTable.updateUI();
-		;
+		this.eventsTable.updateUI();
 	}
 
 	protected ResourceMap getResourceMap() {
-		return resourceMap;
+		return this.resourceMap;
 	}
 
 	protected void setResourceMap(ResourceMap resourceMap) {
 		this.resourceMap = resourceMap;
 	}
 
-	public FileObject getFileObject() {
-		return fileObject;
+	public AttributedJakeObject<FileObject> getAttributedFileObject() {
+		return this.attributedFileObject;
 	}
 
-	public void setFileObject(FileObject fileObject) {
-		this.fileObject = fileObject;
+	public void setFileObject(AttributedJakeObject<FileObject> attributedFileObject) {
+		this.attributedFileObject = attributedFileObject;
 
 		updatePanel();
 	}
-
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ev) {
@@ -218,27 +221,29 @@ public class InspectorPanel extends JXPanel implements
 	}
 
 	@Override
-	public void setProject(Project pr) {
-		this.project = pr;
+	public void setProject(Project project) {
+		this.project = project;
+		this.getEventsTableModel().setProject(project);
 
 		updatePanel();
 	}
 
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 	@Override
 	public void fileSelectionChanged(FileSelectedEvent event) {
-		setFileObject(event.getSingleFile());
+		this.setFileObject(event.getSingleFile());
 	}
 
 	public AttributedJakeObject<NoteObject> getNoteObject() {
-		return noteObject;
+		return this.attributedNoteObject;
 	}
 
 	public void setNoteObject(AttributedJakeObject<NoteObject> noteObject) {
-		this.noteObject = noteObject;
+		this.attributedNoteObject = noteObject;
+		this.getEventsTableModel().setJakeObject(noteObject);
 	}
 
 	/**
@@ -267,7 +272,7 @@ public class InspectorPanel extends JXPanel implements
 	}
 
 	private JakeMainView.ProjectViewPanelEnum getProjectViewPanel() {
-		return projectViewPanel;
+		return this.projectViewPanel;
 	}
 
 	@Override
@@ -277,6 +282,16 @@ public class InspectorPanel extends JXPanel implements
 		setNoteObject(event.getSingleNote());
 		updatePanel();
 	}
+
+	private EventsTableModel getEventsTableModel() {
+		return this.eventsTableModel;
+	}
+
+	private void setEventsTableModel(EventsTableModel eventsTableModel) {
+		this.eventsTableModel = eventsTableModel;
+	}
+	
+	
 }
 
 

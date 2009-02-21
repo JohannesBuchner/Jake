@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.callbacks;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 
 import java.util.List;
 
@@ -16,34 +17,34 @@ public interface FileSelectionChanged {
 	 * I think this is ugly, but Peter > me.
 	 */
 	public class FileSelectedEvent {
-		private List<FileObject> files;
+		private List<AttributedJakeObject<FileObject>> attributedFiles;
 
-		public FileSelectedEvent(List<FileObject> files) {
-			this.files = files;
+		public FileSelectedEvent(List<AttributedJakeObject<FileObject>> files) {
+			this.attributedFiles = files;
 		}
 
 		public int size() {
-			return files.size();
+			return this.attributedFiles.size();
 		}
 
 		public boolean isSingleFileSelected() {
-			return (files != null) && files.size() == 1;
+			return (this.attributedFiles != null) && this.attributedFiles.size() == 1;
 		}
 
 		public boolean isNoFileSelected() {
-			return (files == null) || files.size() == 0;
+			return (this.attributedFiles == null) || this.attributedFiles.size() == 0;
 		}
 
 		public boolean isMultipleFilesSelected() {
-			return (files != null) && files.size() > 1;
+			return (this.attributedFiles != null) && this.attributedFiles.size() > 1;
 		}
 
-		public FileObject getSingleFile() {
-			return (files != null && files.size() == 1) ? files.get(0) : null;
+		public AttributedJakeObject<FileObject> getSingleFile() {
+			return (this.attributedFiles != null && this.attributedFiles.size() == 1) ? this.attributedFiles.get(0) : null;
 		}
 
-		public List<FileObject> getFiles() {
-			return files;
+		public List<AttributedJakeObject<FileObject>> getFiles() {
+			return this.attributedFiles;
 		}
 	}
 
