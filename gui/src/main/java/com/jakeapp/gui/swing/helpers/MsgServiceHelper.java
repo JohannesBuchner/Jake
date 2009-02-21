@@ -27,6 +27,7 @@ public class MsgServiceHelper {
 			log.warn("Tried to check LogIn state for NULL msg service!");
 			return false;
 		}
+		log.debug("Getting msg-service visibility-status: " + msg.getVisibilityStatus().toString());
 		return msg.getVisibilityStatus() != VisibilityStatus.OFFLINE;
 	}
 

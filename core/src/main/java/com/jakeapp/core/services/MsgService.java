@@ -63,6 +63,8 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws Exception the login failed for another reason
 	 */
 	public final boolean login() throws Exception {
+		boolean result;
+		
 		log.debug("calling plain login");
 
 		if (this.getServiceCredentials() == null)
@@ -71,7 +73,9 @@ public abstract class MsgService<T extends UserId> {
 		if (!checkCredentials())
 			return false;
 
-		return this.doLogin();
+		result = this.doLogin();
+		if (result) this.setVisibilityStatus(VisibilityStatus.ONLINE);
+		return result;
 	}
 
 
@@ -129,6 +133,7 @@ public abstract class MsgService<T extends UserId> {
 	 */
 	public final void logout() throws Exception {
 		log.debug("MsgService -> logout");
+		this.setVisibilityStatus(VisibilityStatus.OFFLINE);
         this.doLogout();
 	}
 
