@@ -190,6 +190,11 @@ public class MsgServiceFactory {
 				return msg;
 			}
 		}
-		return null;
+		try {
+			return this.addMsgService(credentials);
+		} catch (Exception e) {
+			log.error("Unable to create MessageService:",e);
+			return null;
+		}
 	}
 }

@@ -128,12 +128,7 @@ public class Project implements ILogable {
 	 * @param messageService	the MsgService connected with the project.
 	 */
 	public void setMessageService(MsgService messageService) {
-		this.messageService = messageService;
-		this.setUserId(
-				(messageService==null)?
-						null:
-						messageService.getUserId()
-		);
+		this.messageService = messageService;	
 	}
 
 	/**
@@ -223,14 +218,10 @@ public class Project implements ILogable {
 	 */
 	@Transient
 	public UserId getUserId() {
-		return new UserId(this.getCredentials().getProtocol(), this.getCredentials().getUserId());
+		return (this.getMessageService()==null)?
+					null:
+					this.getMessageService().getUserId();
 	}
-
-
-	public void setUserId(UserId userId) {
-		// TODO: remove
-	}
-
 
 	/**
 	 * AutoLogin determines, if the project should automatically
