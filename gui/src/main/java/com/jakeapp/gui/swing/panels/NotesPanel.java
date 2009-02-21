@@ -379,7 +379,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 * @return the list of currently selected notes. If nothing is selected, an empty list is returned.
 	 */
 	public List<AttributedJakeObject<NoteObject>> getSelectedNotes() {
-		log.debug("get selected notes...");
+		//log.debug("get selected notes...");
 		List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
 
 		if (this.notesTable.getSelectedRow() == -1) {

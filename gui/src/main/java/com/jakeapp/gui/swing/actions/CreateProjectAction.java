@@ -27,25 +27,28 @@ public class CreateProjectAction extends ProjectAction {
 		super();
 
 		putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
-				  getString("createProjectMenuItem.text") + (ellipsis ? "..." : ""));
+						getString("createProjectMenuItem.text") + (ellipsis ? "..." : ""));
 
 		Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/createproject.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+						getClass().getResource("/icons/createproject.png")).getScaledInstance(32,
+						32, Image.SCALE_SMOOTH));
 		putValue(Action.LARGE_ICON_KEY, createProjectIcon);
 	}
 
 
 	public void actionPerformed(ActionEvent actionEvent) {
-		log.info("Create Project: " + getProject());
+		log.info("Create Project action invoked");
 
 		String path = FileUtilities.openDirectoryChooser(null,
-				  JakeMainView.getMainView().getResourceMap().getString("createProjectDialogTitle"));
+						JakeMainView.getMainView().getResourceMap().getString(
+										"createProjectDialogTitle"));
 		log.info("Directory was: " + path);
 
 		// create the directory if path was not null
 		if (path != null) {
-			JakeMainApp.getApp().getCore().createProject(
-					  ProjectHelper.createDefaultPath(path), path, JakeMainApp.getMsgService());
+			JakeMainApp.getCore()
+							.createProject(ProjectHelper.createDefaultPath(path), path,
+											JakeMainApp.getMsgService());
 		}
 	}
 

@@ -151,7 +151,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	}
 
 	public void addNodeSelectionListener(NodeSelectionChanged listener) {
-		log.debug("NodeSelectionListener added");
 		nodeSelectionListeners.add(listener);
 	}
 

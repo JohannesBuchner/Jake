@@ -372,6 +372,7 @@ public interface ICoreAccess {
 	 *
 	 * @param project The project in question
 	 * @return A FolderObject that represents the root of the tree
+	 * @throws com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException
 	 */
 	public FolderObject getProjectRootFolder(Project project)
 					throws ProjectFolderMissingException;

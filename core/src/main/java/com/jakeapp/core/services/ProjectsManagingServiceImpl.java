@@ -1,22 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.IJakeObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
@@ -27,20 +10,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.LogEntryGenerator;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TagLogEntry;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
@@ -57,6 +27,14 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements IProjectsManagingService {
 
@@ -276,18 +254,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		List<NoteObject> notesList = new ArrayList<NoteObject>();
 
 
-		notesList.add(new NoteObject(new UUID(1, 1), project, "If you have five dollars and Chuck Norris has five dollars, Chuck Norris has more money than you"));
-		notesList.add(new NoteObject(new UUID(2, 1), project, "Apple pays Chuck Norris 99 cents every time he listens to a song."));
-		notesList.add(new NoteObject(new UUID(3, 1), project, "Chuck Norris is suing Myspace for taking the name of what he calls everything around you."));
-		notesList.add(new NoteObject(new UUID(4, 1), project, "Chuck Norris destroyed the periodic table, because he only recognizes the element of surprise."));
-		notesList.add(new NoteObject(new UUID(5, 1), project, "The leading causes of death in the United States are: 1. Heart Disease 2. Chuck Norris 3. Cancer."));
-		notesList.add(new NoteObject(new UUID(6, 1), project, "Chuck Norris does not sleep. He waits."));
-		notesList.add(new NoteObject(new UUID(7, 1), project, "There is no theory of evolution. Just a list of animals Chuck Norris allows to live. "));
-		notesList.add(new NoteObject(new UUID(8, 1), project, "Guns don't kill people, Chuck Norris does."));
-		notesList.add(new NoteObject(new UUID(9, 1), project, "Chuck Norris does not need an undo function"));
-		notesList.add(new NoteObject(new UUID(10, 1), project, "Chuck Norris can kill two stones with one bird."));
-		notesList.add(new NoteObject(new UUID(11, 1), project, "Chuck Norris knows: Jake is the best file-sharing app ever."));
-
+		notesList.add(new NoteObject(UUID.randomUUID(), project, "Create Notes for your Project and share them with your friends."));
+		notesList.add(new NoteObject(UUID.randomUUID(), project, "Everyone can add, change or remove the project notes."));
 
 		for (NoteObject note : notesList) {
 			noteObjectDao.persist(note);
@@ -320,19 +288,17 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	public boolean startProject(Project project, ChangeListener cl)
 			  throws IllegalArgumentException, FileNotFoundException,
 			  ProjectException {
-		log.info("start project: " + project + "project id: " + project.getProjectId());
+		log.info("start project: " + project);
 
 		// Check preconditions
 		if (project == null)
-			throw new IllegalArgumentException();
-		if (!project.isOpen() || project.isStarted())
+			throw new IllegalArgumentException("project is null!");
+		if (!project.isOpen() || project.isStarted()) {
+			log.warn("Attemted to start a project that's not open/already started: " + project);
 			return false;
+		}
 
 		log.debug("Userid of Project that is about to be started is: " + project.getUserId());
-
-		// TODO: enable sync! (DEMO HACK)
-		//this.syncService.startServing(project,
-		//		  new TrustRequestHandlePolicy(project), cl);
 
 		project.setStarted(true);
 
@@ -341,7 +307,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
-
 
 		return true;
 	}
@@ -615,11 +580,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 		// Check preconditions
 		if (project == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("project is null");
 		if (userId == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("user id is null");
 		if (project.getUserId() != null)
-			throw new IllegalAccessException();
+			throw new IllegalAccessException("User ID of the project is not null. (is: " + project.getUserId()+")");
 
 		dao = this.getProjectMemberDao(project);
 
@@ -868,7 +833,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 
 		/* FIXME Hack. There is not reason why the MsgService is not set already. */
-		if (project.getMessageService() == null) project.setMessageService(this.getMsgService());
+		//if (project.getMessageService() == null) project.setMessageService(this.getMsgService());
 
 		id = project.getMessageService().getUserId(userid);
 		log.debug("extracted the userid to invite: " + userid + userid != null);
