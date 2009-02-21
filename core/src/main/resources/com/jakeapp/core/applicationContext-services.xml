@@ -17,9 +17,7 @@
     <bean id="projectsFileServices" class="com.jakeapp.core.services.ProjectsFileServicesImpl"/>
 
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
-        <property name="db" ref="applicationContextFactory"/>
-        <property name="icServicesManager" ref="icServiceManager"/>
-        <property name="userTranslator" ref="userTranslator"/>
+        <property name="applicationContextFactory" ref="applicationContextFactory"/>
         <property name="projectsFileServices" ref="projectsFileServices" />
     </bean>
 
@@ -55,11 +53,5 @@
 	<constructor-arg index="3" ref="serviceCredentialsDao"
                          type="com.jakeapp.core.dao.IServiceCredentialsDao" />
     </bean>
-
-
-    <bean id="icServiceManager" class="com.jakeapp.core.services.ICServicesManager">
-
-    </bean>
-
 
 </beans>

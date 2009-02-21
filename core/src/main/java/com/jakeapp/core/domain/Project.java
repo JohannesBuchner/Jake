@@ -37,7 +37,6 @@ public class Project implements ILogable {
 	private String name;
 	private UUID projectId;
 	private File rootPath;
-	private UserId userId;
 	private ServiceCredentials credentials;
 
 	// TODO: setting the MsgService here is really ugly
@@ -224,12 +223,12 @@ public class Project implements ILogable {
 	 */
 	@Transient
 	public UserId getUserId() {
-		return this.userId;
+		return new UserId(this.getCredentials().getProtocol(), this.getCredentials().getUserId());
 	}
 
 
 	public void setUserId(UserId userId) {
-		this.userId = userId;
+		// TODO: remove
 	}
 
 

@@ -20,9 +20,4 @@
         
     </bean>
 
-    <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
-        <constructor-arg ref="applicationContextFactory" index="0"
-                         type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
-    </bean>
-
 </beans>

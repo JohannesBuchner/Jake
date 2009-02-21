@@ -45,7 +45,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	private IProjectsFileServices projectsFileServices;
 
-	private MsgService messageService;
 	private MsgServiceFactory msgServiceFactory;
 
 	public ProjectsManagingServiceImpl(
@@ -124,15 +123,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return result;
 	}
 
-	public void setMsgService(MsgService service) {
-		this.messageService = service;
-	}
-
-	private MsgService getMsgService() {
-		return this.messageService;
-	}
-
-
 	/**
 	 * ***** STARTING IMPLEMENTATIONS *************
 	 */
@@ -169,7 +159,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	private void initProject(Project p) {
-		p.setMessageService(this.getMsgService());
+		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
+		if(!p.getUserId().equals(p.getMessageService().getUserId()))
+			throw new IllegalStateException();
 	}
 
 
@@ -217,7 +209,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		// Open the project
 		this.openProject(project);
 
-		UserId user = this.getMsgService().getUserId();
+		UserId user = msgService.getUserId();
 		this.getLogEntryDao(project).create(new ProjectLogEntry(project, user));
 		project.setMessageService(msgService);
 

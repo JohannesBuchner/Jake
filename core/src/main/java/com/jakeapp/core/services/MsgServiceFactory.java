@@ -77,40 +77,8 @@ public class MsgServiceFactory {
 					.debug("Creating new XMPPMsgService for userId "
 							+ credentials.getUserId());
 			result = new XMPPMsgService();
+			result.setIcsManager(new FailoverICServicesManager());
 			result.setServiceCredentials(credentials);
-
-			// try {
-			// if(!credentials.getUuid().isEmpty())
-			// {
-			// log.debug("uuid is not empty");
-			//
-			// if(userIdDao == null)
-			// log.debug("userIdDao = null");
-			//
-			// UserId userId = userIdDao.get(
-			// UUID.fromString(
-			// credentials.getUuid()
-			// )
-			// );
-			//
-			// log.debug("setting userid");
-			// result.setUserId(userId);
-			//
-			// }
-			// else
-			// {
-			// log.debug("uuid is empty");
-			//
-			//
-			//
-			// }
-			//
-			// } catch (InvalidUserIdException e) {
-			// e.printStackTrace();
-			// } catch (NoSuchUserIdException e) {
-			// e.printStackTrace();
-			// }
-
 		} else {
 			log.warn("Currently unsupported protocol given");
 			throw new ProtocolNotSupportedException();

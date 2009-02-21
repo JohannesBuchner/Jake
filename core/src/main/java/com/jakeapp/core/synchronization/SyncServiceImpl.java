@@ -7,7 +7,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -21,7 +20,7 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
-import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
+import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
 import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
@@ -30,9 +29,6 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
-import com.jakeapp.jake.ics.status.IStatusService;
-import com.jakeapp.jake.ics.users.IUsersService;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,26 +77,14 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private ProjectApplicationContextFactory db;
 
-	private ICServicesManager icServicesManager;
-
-	private UserTranslator userTranslator;
-
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
 	ICService getICS(Project p) {
-		return this.icServicesManager.getICService(p);
+		return p.getMessageService().getIcsManager().getICService(p);
 	}
 
 	IFSService getFSS(Project p) {
 		return this.getProjectsFileServices().startProject(p);
-	}
-
-	public ICServicesManager getIcServicesManager() {
-		return this.icServicesManager;
-	}
-
-	public void setIcServicesManager(ICServicesManager icServicesManager) {
-		this.icServicesManager = icServicesManager;
 	}
 
 	public IProjectsFileServices getProjectsFileServices() {
@@ -183,10 +167,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private String getMyUserid(Project p) {
 		return p.getUserId().getUserId();
-	}
-
-	private com.jakeapp.jake.ics.UserId getMyBackendUserid(Project p) {
-		return userTranslator.getBackendUserIdFromDomainUserId(p.getUserId());
 	}
 
 	@Transactional
@@ -297,8 +277,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		FileObject fo = (FileObject) le.getBelongsTo();
 		String relpath = fo.getRelPath();
 		//
-		FailoverCapableFileTransferService ts = getTransferService(p);
-		log.debug("pulling file from $randomguy");
+		//FailoverCapableFileTransferService ts = getTransferService(p);
+		//log.debug("pulling file from $randomguy");
 		throw new IllegalStateException("pulling files not implemented yet");
 		// ts.request(jo.ge, nsl);
 		// TODO: getPotentialProviders
@@ -352,13 +332,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		return null;
 	}
-
-	private FailoverCapableFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
-		// TODO: Use FailoverCapableFileTransferService
-		return getIcServicesManager().getTransferService(p, getMyBackendUserid(p));
-	}
-
+	
 	/**
 	 * Avoiding stub objects (without ID)
 	 * 
@@ -596,24 +570,14 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
 			throws ProjectException {
 
-		this.projectsFileServices.startProject(p);
-
-		// FSService fs;
-		// try {
-		// fs = new FSService();
-		// } catch (NoSuchAlgorithmException e) {
-		// throw new ProjectException(e);
-		// }
 		setRequestHandelPolicy(rhp);
 		runningProjects.put(p.getProjectId(), p);
 		// projectsFssMap.put(p.getProjectId(), fs);
 		projectChangeListeners.put(p.getProjectId(), cl);
 		// this creates the ics
-		getICS(p);
 		log.debug("adding receive hooks");
 		try {
-			getICS(p).getStatusService().login(getMyBackendUserid(p),
-					p.getCredentials().getPlainTextPassword());
+			p.getMessageService().loginICS(getICS(p));
 		} catch (TimeoutException e) {
 			log.error("logging in for starting project failed", e);
 		} catch (NetworkException e) {
@@ -732,20 +696,14 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 
-	public ProjectApplicationContextFactory getDb() {
-		return db;
-	}
-
-
-	public void setDb(ProjectApplicationContextFactory projectApplicationContextFactory) {
+	public void setApplicationContextFactory(ProjectApplicationContextFactory projectApplicationContextFactory) {
 		this.db = projectApplicationContextFactory;
 	}
 
 
 	public RequestHandlePolicy getRequestHandelPolicy() {
 		if (this.rhp == null) {
-			this.rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices,
-					userTranslator);
+			this.rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices);
 		}
 		return this.rhp;
 	}
@@ -753,14 +711,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	public void setRequestHandelPolicy(RequestHandlePolicy rhp) {
 		this.rhp = rhp;
-	}
-
-	public void setUserTranslator(UserTranslator userTranslator) {
-		this.userTranslator = userTranslator;
-	}
-
-	public UserTranslator getUserTranslator() {
-		return userTranslator;
 	}
 
 	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
@@ -779,24 +729,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	public UserId getUserIdFromProjectMember(Project project, UserId member) {
 		return null; // TODO
-	}
-
-	/* for the demo, to be removed and replaced by delegate methods */
-	public IMsgService getBackendMsgService(Project p) {
-		return getICS(p).getMsgService().getFriendMsgService();
-	}
-
-	public IStatusService getBackendStatusService(Project p) {
-		return getICS(p).getStatusService();
-	}
-
-	public IUsersService getBackendUsersService(Project p) {
-		return getICS(p).getUsersService();
-	}
-
-	public IFSService getBackendFSService(Project p) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -855,6 +787,10 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				log.error("Not logged in");
 			}
 		}
+	}
+
+	private IFileTransferService getTransferService(Project p) throws NotLoggedInException {
+		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
 
 	private Project getProjectByUserId(UUID projectid) {

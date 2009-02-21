@@ -1,107 +1,43 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
-import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
-import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
-import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
-import org.apache.log4j.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 
 
-public class ICServicesManager {
+public interface ICServicesManager {
 
-	private static final boolean SOCKETS_ENABLED = false;
+	/**
+	 * get the ICS for the project
+	 * @param p
+	 * @return
+	 */
+	ICService getICService(Project p);
 
-	private static Logger log = Logger.getLogger(ICServicesManager.class);
+	/**
+	 * get a transfer service to transmit something
+	 * @param p
+	 * @return
+	 * @throws NotLoggedInException
+	 */
+	IFileTransferService getTransferService(Project p) throws NotLoggedInException;
 
-	private Map<String, ICService> services = new HashMap<String, ICService>();
-	private Map<String, FailoverCapableFileTransferService> transfer = new HashMap<String, FailoverCapableFileTransferService>();
+	/**
+	 * translate a userId to something the ICS can work with
+	 * @param u
+	 * @param p
+	 * @return
+	 */
+	com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u);
 
-	private int SOCKET_TIMEOUT_SECONDS;
+	/**
+	 * get your own userId
+	 * @param p
+	 * @return
+	 */
+	com.jakeapp.jake.ics.UserId getBackendUserId(Project p);
 
-	public ICService getICService(Project p) {
-		ICService ics = null;
-
-		if (this.services.containsKey(p.getProjectId()))
-			ics = this.services.get(p.getProjectId());
-		else {
-			ics = this.createICService(p);
-			this.services.put(p.getProjectId(), ics);
-		}
-
-		return ics;
-	}
-
-	public FailoverCapableFileTransferService getTransferService(Project p, com.jakeapp.jake.ics.UserId user)
-			  throws NotLoggedInException {
-		ICService ics = getICService(p);
-		IMsgService msg = ics.getMsgService();
-		FailoverCapableFileTransferService fcfts = null;
-
-		if (this.transfer.containsKey(p)) {
-			fcfts = this.transfer.get(p.getProjectId());
-		} else {
-			fcfts = createTransferService(user, ics, msg);
-
-			this.transfer.put(p.getProjectId(), fcfts);
-		}
-
-		return fcfts;
-	}
-
-	private FailoverCapableFileTransferService createTransferService(
-			  com.jakeapp.jake.ics.UserId user, ICService ics, IMsgService msg)
-			  throws NotLoggedInException {
-		FailoverCapableFileTransferService fcfts;
-		fcfts = new FailoverCapableFileTransferService();
-		if (SOCKETS_ENABLED)
-			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(
-					  SOCKET_TIMEOUT_SECONDS), msg, user);
-
-		ITransferMethodFactory inbandMethod = ics.getTransferMethodFactory();
-		if (inbandMethod == null) {
-			log.fatal("inband method not provided");
-		} else {
-			fcfts.addTransferMethod(inbandMethod, msg, user);
-		}
-		return fcfts;
-	}
-
-	public com.jakeapp.jake.ics.UserId getBackendUserId(UserId u, Project p) {
-		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
-			log.debug("Creating new XMPPICService for userId "
-					  + p.getCredentials().getUserId());
-			return new XmppUserId(u.getUserId() + "/" + p.getProjectId());
-		} else {
-			log.fatal("Currently unsupported protocol given");
-			throw new IllegalArgumentException(new ProtocolNotSupportedException());
-		}
-	}
-
-	private ICService createICService(Project p) {
-		log.debug("creating ICS");
-		ServiceCredentials cred = p.getCredentials();
-		ICService ics = null;
-
-//		if (cred.getProtocol().equals(ProtocolType.XMPP)) {
-		log.debug("Creating new XMPPICService for cred:  " + cred);
-		ics = new XmppICService(XMPPMsgService.namespace, p.getName());
-//		} else {
-//			log.fatal("Currently unsupported protocol given");
-//			throw new IllegalArgumentException(new ProtocolNotSupportedException());
-//		}
-
-		return ics;
-	}
 }

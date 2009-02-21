@@ -20,8 +20,8 @@ import com.jakeapp.core.util.ProjectApplicationContextFactory;
 public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 
 	public TrustAwareRequestHandlePolicy(ProjectApplicationContextFactory db,
-			IProjectsFileServices projectsFileServices, UserTranslator userTranslator) {
-		super(db, projectsFileServices, userTranslator);
+			IProjectsFileServices projectsFileServices) {
+		super(db, projectsFileServices);
 	}
 
 	private static final Logger log = Logger
@@ -43,8 +43,7 @@ public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 			
 			for(LogEntry<? extends ILogable> entry : allVersions) {
 				if(members.contains(entry.getMember())) {
-					providers.add(userTranslator.getUserIdFromProjectMember(jo.getProject(),
-							entry.getMember()));
+					providers.add(entry.getMember());
 				}
 			}
 		} catch (NoSuchLogEntryException e) {

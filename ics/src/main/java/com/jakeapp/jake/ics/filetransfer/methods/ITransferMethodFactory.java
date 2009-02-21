@@ -17,6 +17,7 @@ public interface ITransferMethodFactory {
 	 * return a new instance of this transferMethod (using this once is wise)
 	 * 
 	 * @param negotiationService
+	 * @param user your userid
 	 * @return
 	 * @throws NotLoggedInException
 	 */

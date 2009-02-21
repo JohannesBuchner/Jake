@@ -10,6 +10,7 @@ import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
@@ -23,20 +24,13 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	public static final String namespace = "http://jakeapp.com/protocols/xmpp/versions/1";
 
-	private XmppICService ics = new XmppICService(namespace, "Jake");
+	private XmppICService mainIcs = new XmppICService(namespace, "Jake");
 
 	private XmppUserId icsXmppUserId;
 
 	private String host;
 
-
 	public XMPPMsgService() {
-
-		//
-		// this.setUserId(new XMPPUserId(this.getServiceCredentials(),
-		// UUID.randomUUID(),
-		// "todo useridstring", "todo nickname", "todo firstname",
-		// "todo surname"));
 
 	}
 
@@ -67,7 +61,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		log.debug("got credentials: "
 				+ this.getServiceCredentials().getUserId() + " pwl: "
 				+ this.getServiceCredentials().getPlainTextPassword().length());
-		boolean success = this.ics.getStatusService().login(this.icsXmppUserId,
+		boolean success = this.mainIcs.getStatusService().login(this.icsXmppUserId,
 				this.getServiceCredentials().getPlainTextPassword());
 
 
@@ -104,7 +98,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	protected void doLogout() throws Exception {
 		log.debug("XMPPMsgService -> logout");
 
-		this.ics.getStatusService().logout();
+		this.mainIcs.getStatusService().logout();
 	}
 
 	@Override
@@ -228,7 +222,12 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	public void createAccount() throws NetworkException {
-		ics.getStatusService().createAccount(icsXmppUserId,
+		mainIcs.getStatusService().createAccount(icsXmppUserId,
 				this.getServiceCredentials().getPlainTextPassword());
+	}
+
+	@Override
+	protected ICService getMainIcs() {
+		return this.getMainIcs();
 	}
 }

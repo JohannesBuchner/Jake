@@ -24,18 +24,15 @@ import com.jakeapp.jake.fss.IFSService;
 public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
 	public TrustAllRequestHandlePolicy(ProjectApplicationContextFactory db,
-			IProjectsFileServices projectsFileServices, UserTranslator userTranslator) {
+			IProjectsFileServices projectsFileServices) {
 		super();
 		this.db = db;
 		this.projectsFileServices = projectsFileServices;
-		this.userTranslator = userTranslator;
 	}
 
 	private static final Logger log = Logger.getLogger(TrustAllRequestHandlePolicy.class);
 
 	protected ProjectApplicationContextFactory db;
-
-	protected UserTranslator userTranslator;
 
 
     private IProjectsFileServices projectsFileServices;
@@ -46,9 +43,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
 		List<UserId> providers = new LinkedList<UserId>();
 		try {
-			UserId member = db.getLogEntryDao(jo).getLastOfJakeObject(jo).getMember();
-			providers.add(userTranslator.getUserIdFromProjectMember(jo.getProject(),
-					member));
+			providers.add(db.getLogEntryDao(jo).getLastOfJakeObject(jo).getMember());
 		} catch (NoSuchLogEntryException e) {
 		}
 		return providers;
