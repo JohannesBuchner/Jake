@@ -19,6 +19,7 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.Tag;
 
@@ -416,9 +417,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<UserId>> getAllProjectMemberLogEntries() {
-		return query("FROM logentries WHERE (action = ? OR action = ?)").setInteger(0,
+		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ?)").setInteger(0,
 				LogAction.START_TRUSTING_PROJECTMEMBER.ordinal()).setInteger(1,
-				LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
+				LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).setInteger(2,
+						LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
 	}
 
 	/**
@@ -511,13 +513,23 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public Boolean trusts(UserId a, UserId b) {
+	public boolean trusts(UserId a, UserId b) {
 		return getTrustGraph().get(a).contains(b);
+	}
+
+	@Override
+	public TrustState trustsHow(UserId a, UserId b) {
+		return getExtendedTrustGraph().get(a).get(b);
 	}
 
 	@Override
 	public Collection<UserId> trusts(UserId a) {
 		return getTrustGraph().get(a);
+	}
+
+	@Override
+	public Map<UserId, TrustState> trustsHow(UserId a) {
+		return getExtendedTrustGraph().get(a);
 	}
 
 	@Override
@@ -538,6 +550,36 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			}
 			if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
 				people.get(whom).remove(who);
+			}
+			if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
+				people.get(whom).remove(who);
+			}
+		}
+		return people;
+	}
+
+
+	@Override
+	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph() {
+		Map<UserId, Map<UserId, TrustState>> people = new HashMap<UserId, Map<UserId,TrustState>>();
+		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
+		people.put(first.getMember(), new HashMap<UserId, TrustState>());
+
+		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
+		for (LogEntry<UserId> le : entries) {
+			UserId who = le.getMember();
+			UserId whom = le.getBelongsTo();
+			if (people.get(whom) == null) {
+				people.put(whom, new HashMap<UserId, TrustState>());
+			}
+			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
+				people.get(whom).put(who, TrustState.TRUST);
+			}
+			if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
+				people.get(whom).put(who, TrustState.NO_TRUST);
+			}
+			if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
+				people.get(whom).put(who, TrustState.AUTO_ADD_REMOVE);
 			}
 		}
 		return people;

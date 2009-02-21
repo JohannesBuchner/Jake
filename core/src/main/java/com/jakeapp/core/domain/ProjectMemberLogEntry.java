@@ -15,7 +15,8 @@ public class ProjectMemberLogEntry extends LogEntry<UserId> implements Serializa
 		super(UUID.randomUUID(), logAction, getTime(), belongsTo, member, null, null,
 				true);
 		if (logAction != LogAction.START_TRUSTING_PROJECTMEMBER
-				&& logAction != LogAction.STOP_TRUSTING_PROJECTMEMBER)
+				&& logAction != LogAction.STOP_TRUSTING_PROJECTMEMBER
+				&& logAction != LogAction.FOLLOW_TRUSTING_PROJECTMEMBER)
 			throw new IllegalArgumentException("invalid logaction for logentry");
 	}
 

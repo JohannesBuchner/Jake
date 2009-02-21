@@ -19,7 +19,6 @@ import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 

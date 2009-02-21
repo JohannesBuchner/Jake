@@ -11,6 +11,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 
 /**
@@ -327,7 +328,27 @@ public interface ILogEntryDao {
 	 * @return false if no logentries found or last was
 	 *         {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}
 	 */
-	public Boolean trusts(UserId a, UserId b);
+	public boolean trusts(UserId a, UserId b);
+
+	/**
+	 * Does a trust b?
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public TrustState trustsHow(UserId a, UserId b);
+
+	/**
+	 * Whom does a trust?
+	 * 
+	 * @param a
+	 * @deprecated don't know if needed
+	 * @return
+	 */
+	@Deprecated
+	public Map<UserId, TrustState> trustsHow(UserId a);
+
 
 	/**
 	 * Whom does a trust?
@@ -346,6 +367,12 @@ public interface ILogEntryDao {
 	 *         must not be null
 	 */
 	public Map<UserId, List<UserId>> getTrustGraph();
+
+
+	/**
+	 * @return a mapping of truststate to user for each user (A trusts [B full, C not, D normal])
+	 */
+	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph();
 
 
 }

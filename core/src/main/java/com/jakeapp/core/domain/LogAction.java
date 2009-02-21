@@ -78,6 +78,17 @@ public enum LogAction implements Serializable {
 	STOP_TRUSTING_PROJECTMEMBER,
 
 	/**
+	 * The user adding this {@link LogEntry} states that the user adding it
+	 * trusts incoming changes from the user in belongsTo <br>
+	 * The user adding this automatically
+	 * starts trusting users when they appear to be trusted by the user and 
+	 * stops trusting users when they appear to be trusted by the user<br/>
+	 * belongsTo: {@link UserID} <br/>
+	 * important LogEntry attributes: none
+	 */
+	FOLLOW_TRUSTING_PROJECTMEMBER,
+
+	/**
 	 * the object has been soft locked. <br/>
 	 * belongsTo: {@link JakeObject} <br/>
 	 * important LogEntry attributes: commitmsg
