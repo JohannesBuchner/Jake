@@ -1,5 +1,6 @@
 package com.jakeapp.core.synchronization;
 
+import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.UserId;
@@ -17,8 +18,8 @@ public class JakeObjectStatus {
 
 	private Existence existence;
 	private SyncStatus syncStatus;
-	private LogEntry lastVersionLogEntry;
-	private LogEntry lastLockLogEntry;
+	private LogEntry<? extends ILogable> lastVersionLogEntry;
+	private LogEntry<? extends ILogable> lastLockLogEntry;
 
 	/**
 	 * * @param lastVersionLogAction
@@ -33,7 +34,7 @@ public class JakeObjectStatus {
 	 *      {@link com.jakeapp.core.synchronization.Existence#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
 	 *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
 	 */
-	public JakeObjectStatus(LogEntry lastVersionLogEntry, LogEntry lastLockLogEntry,
+	public JakeObjectStatus(LogEntry<? extends ILogable> lastVersionLogEntry, LogEntry<? extends ILogable> lastLockLogEntry,
 					boolean objectExistsLocally, boolean checksumDifferentFromLastNewVersionLogEntry,
 					boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
 		log.debug("generating JakeObjectStatus: " + ": lastVersionLogEntry:"
@@ -46,14 +47,35 @@ public class JakeObjectStatus {
 		this.lastLockLogEntry = lastLockLogEntry;
 
 		this.existence = Existence
-				.getExistance(objectExistsLocally, lastVersionLogEntry.getLogAction());
+				.getExistance(objectExistsLocally, getLastVersionLogEntryLogAction());
 		this.syncStatus = SyncStatus.getSyncStatus(
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction, objectExistsLocally);
 		log.debug("result:" + this.toString());
 	}
 
-	public LogEntry getLastVersionLogEntry() {
+	private LogAction getLastVersionLogEntryLogAction() {
+		return getFailsafeLogAction(this.getLastVersionLogEntry());
+	}
+	
+	private LogAction getFailsafeLogAction(LogEntry<? extends ILogable> le) {
+		if(le == null) {
+			return null;
+		}else{
+			return le.getLogAction();
+		}
+	}
+	
+	private UserId getNullsafeMember(LogEntry<? extends ILogable> le) {
+		if(le == null) {
+			return null;
+		}else{
+			return le.getMember();
+		}
+	}
+
+
+	public LogEntry<? extends ILogable> getLastVersionLogEntry() {
 		return this.lastVersionLogEntry;
 	}
 
@@ -63,15 +85,15 @@ public class JakeObjectStatus {
 	 * @return returns null of no LogEntry
 	 */
 	public UserId getLastVersionEditor() {
-		if(getLastVersionLogEntry() != null) {
-			return getLastVersionLogEntry().getMember();
-		}else {
-			return null;
-		}
+		return getNullsafeMember(getLastVersionLogEntry());
 	}
 
 	public LockStatus getLockStatus() {
-		return LockStatus.getLockStatus(lastLockLogEntry.getLogAction());
+		return LockStatus.getLockStatus(getLockEntryAction());
+	}
+
+	private LogAction getLockEntryAction() {
+		return getFailsafeLogAction(getLockLogEntry());
 	}
 
 
@@ -125,7 +147,7 @@ public class JakeObjectStatus {
 	 * 
 	 * @return lock entry or null
 	 */
-	public LogEntry getLockLogEntry() {
+	public LogEntry<? extends ILogable> getLockLogEntry() {
 		return this.lastLockLogEntry;
 	}
 

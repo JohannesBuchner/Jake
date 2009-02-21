@@ -1,5 +1,6 @@
 package com.jakeapp.core.synchronization;
 
+import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
@@ -26,8 +27,8 @@ public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus
 	 * @param lastModificationDate
 	 * @param size
 	 * */
-	public AttributedJakeObject(T jakeObject, LogEntry lastVersionLogEntry,
-			LogEntry lastLockLogEntry, boolean objectExistsLocally,
+	public AttributedJakeObject(T jakeObject, LogEntry<? extends ILogable> lastVersionLogEntry,
+			LogEntry<? extends ILogable> lastLockLogEntry, boolean objectExistsLocally,
 			boolean checksumDifferentFromLastNewVersionLogEntry,
 			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,
 			long lastModificationDate, long size) {
