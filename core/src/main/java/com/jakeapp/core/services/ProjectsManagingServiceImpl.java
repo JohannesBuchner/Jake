@@ -5,12 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -46,7 +44,6 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.UserTranslator;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
@@ -55,12 +52,12 @@ import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 
-public class ProjectsManagingServiceImpl extends JakeService implements IProjectsManagingService {
+public class ProjectsManagingServiceImpl extends JakeService implements
+		IProjectsManagingService {
 
-	private static final Logger log = Logger
-			  .getLogger(ProjectsManagingServiceImpl.class);
+	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
 
-	//private List<Project> projectList = new ArrayList<Project>();
+	// private List<Project> projectList = new ArrayList<Project>();
 
 	private IProjectDao projectDao;
 
@@ -68,10 +65,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	private IProjectsFileServices projectsFileServices;
 
-	private MsgService messageService;
+	private MsgServiceFactory msgServiceFactory;
 
-	public ProjectsManagingServiceImpl(ProjectApplicationContextFactory applicationContextFactory) {
+	public ProjectsManagingServiceImpl(
+			ProjectApplicationContextFactory applicationContextFactory,
+			MsgServiceFactory msgServiceFactory) {
 		super(applicationContextFactory);
+		this.msgServiceFactory = msgServiceFactory;
 	}
 
 	public IFriendlySyncService getSyncService() {
@@ -101,25 +101,20 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 		try {
 			result = this.getProjectsFileServices().getProjectFSService(p);
-		}
-		catch (ProjectNotLoadedException pnle) {
+		} catch (ProjectNotLoadedException pnle) {
 			ex = pnle;
 		}
 
-		//FIXME getProject prevents some ugly Exceptions - remove after release
+		// FIXME getProject prevents some ugly Exceptions - remove after release
 		if (result == null) {
-			if (p.isOpen()) result = this.getProjectsFileServices().startProject(p);
-			else throw ex;
+			if (p.isOpen())
+				result = this.getProjectsFileServices().startProject(p);
+			else
+				throw ex;
 		}
 
 		return result;
 	}
-
-	/*
-		 private List<Project> getInternalProjectList() {
-			  return this.projectList;
-		 }
-		 */
 
 	@SuppressWarnings("unused")
 	private ApplicationContext getContext(Project p) {
@@ -138,30 +133,24 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return this.getApplicationContextFactory().getFileObjectDao(project);
 	}
 
-	private IJakeObjectDao<JakeObject> getJakeObjectDao(final Project project, final JakeObject jo) {
+	private IJakeObjectDao<JakeObject> getJakeObjectDao(final Project project,
+			final JakeObject jo) {
 		IJakeObjectDao result = null;
 
 		if (jo != null) {
-			if (jo instanceof FileObject) result = (IJakeObjectDao) this.getFileObjectDao(project);
-			else if (jo instanceof NoteObject) result = (IJakeObjectDao) this.getNoteObjectDao(project);
+			if (jo instanceof FileObject)
+				result = (IJakeObjectDao) this.getFileObjectDao(project);
+			else if (jo instanceof NoteObject)
+				result = (IJakeObjectDao) this.getNoteObjectDao(project);
 		}
 
 		return result;
 	}
 
-	@Override
-	public void setMsgService(MsgService service) {
-		this.messageService = service;
-	}
-
-	private MsgService getMsgService() {
-		return this.messageService;
-	}
-
-
 	/**
 	 * ***** STARTING IMPLEMENTATIONS *************
 	 */
+
 	@Transactional
 	@Override
 	public List<Project> getProjectList() {
@@ -185,7 +174,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Transactional
 	@Override
 	public List<Project> getProjectList(InvitationState state) {
-        log.debug("calling getProjectList");
+		log.debug("calling getProjectList");
 		List<Project> result = this.getProjectDao().getAll(state);
 
 		for (Project p : result)
@@ -195,23 +184,22 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	private void initProject(Project p) {
-		p.setMessageService(this.getMsgService());
+		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
+		if(!p.getUserId().equals(p.getMessageService().getUserId()))
+			throw new IllegalStateException();
 	}
-
 
 	@Transactional
 	@Override
-	public Project createProject(String name, String rootPath,
-										  MsgService msgService) throws FileNotFoundException,
-			  IllegalArgumentException {
+	public Project createProject(String name, String rootPath, MsgService msgService)
+			throws FileNotFoundException, IllegalArgumentException {
 
-		log.debug("Creating a Project with name " + name + ", path "
-				  + rootPath + " and MsgService " + msgService);
+		log.debug("Creating a Project with name " + name + ", path " + rootPath
+				+ " and MsgService " + msgService);
 		File projectRoot = new File(rootPath);
 
 		// create a new, empty project
-		Project project = new Project(name, UUID.randomUUID(), msgService,
-				  projectRoot);
+		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
 
 		// add Project to the global database
 		try {
@@ -246,11 +234,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		// create an applicationContext for the Project
 		// this.applicationContextFactory.getApplicationContext(project);
 
-		UserId user = this.getMsgService().getUserId();
+		UserId user = msgService.getUserId();
 		this.getLogEntryDao(project).create(new ProjectLogEntry(project, user));
 		project.setMessageService(msgService);
-		//if (msgService != null)
-		//	project.setUserId(msgService.getUserId());
+		// if (msgService != null)
+		// project.setUserId(msgService.getUserId());
 
 		// welcome the user
 		// TODO: only attach on the first created project!
@@ -261,15 +249,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	/**
 	 * adds example notes. May be removed in the future.
+	 * 
 	 * @param project
 	 */
 	private void attachTestNotes(Project project) {
-		INoteObjectDao noteObjectDao = this.getApplicationContextFactory().getNoteObjectDao(project);
+		INoteObjectDao noteObjectDao = this.getApplicationContextFactory()
+				.getNoteObjectDao(project);
 		List<NoteObject> notesList = new ArrayList<NoteObject>();
 
 		// these are local notes, they don't have a log entry
-		notesList.add(new NoteObject(UUID.randomUUID(), project, "Create Notes for your Project and share them with your friends."));
-		notesList.add(new NoteObject(UUID.randomUUID(), project, "Everyone can add, change or remove the project notes."));
+		notesList.add(new NoteObject(UUID.randomUUID(), project,
+				"Create Notes for your Project and share them with your friends."));
+		notesList.add(new NoteObject(UUID.randomUUID(), project,
+				"Everyone can add, change or remove the project notes."));
 
 		for (NoteObject note : notesList) {
 			noteObjectDao.persist(note);
@@ -286,9 +278,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	/**
 	 * creates a file for the Project-local database
-	 *
-	 * @param p The project, in whos root folder to create a
-	 *          database in.
+	 * 
+	 * @param p
+	 *            The project, in whos root folder to create a database in.
 	 */
 	private void createProjectDatabase(Project p) {
 		log.info("Create project database: " + p);
@@ -300,19 +292,20 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	public boolean startProject(Project project, ChangeListener cl)
-			  throws IllegalArgumentException, FileNotFoundException,
-			  ProjectException {
+			throws IllegalArgumentException, FileNotFoundException, ProjectException {
 		log.info("start project: " + project);
 
 		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException("project is null!");
 		if (!project.isOpen() || project.isStarted()) {
-			log.warn("Attemted to start a project that's not open/already started: " + project);
+			log.warn("Attemted to start a project that's not open/already started: "
+					+ project);
 			return false;
 		}
 
-		log.debug("Userid of Project that is about to be started is: " + project.getUserId());
+		log.debug("Userid of Project that is about to be started is: "
+				+ project.getUserId());
 
 		project.setStarted(true);
 
@@ -326,8 +319,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	@Override
-	public boolean stopProject(Project project)
-			  throws IllegalArgumentException, FileNotFoundException {
+	public boolean stopProject(Project project) throws IllegalArgumentException,
+			FileNotFoundException {
 		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException();
@@ -353,7 +346,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public void closeProject(Project project) throws IllegalArgumentException,
-			  FileNotFoundException {
+			FileNotFoundException {
 		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException();
@@ -364,7 +357,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		project.setOpen(false);
 
 		// remove project from internal list
-		//this.getInternalProjectList().remove(project);
+		// this.getInternalProjectList().remove(project);
 		// remove the project's file services
 
 		this.getProjectsFileServices().stopProject(project);
@@ -373,17 +366,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		try {
 			this.getProjectDao().delete(project);
 		} catch (NoSuchProjectException e) {
-			log
-					  .warn(
-								 "Project does not exist in DB and cannot be deleted from it.",
-								 e);
+			log.warn("Project does not exist in DB and cannot be deleted from it.", e);
 		}
 	}
 
 	@Override
 	@Transactional
-	public Project openProject(Project project)
-			  throws IllegalArgumentException, FileNotFoundException {
+	public Project openProject(Project project) throws IllegalArgumentException,
+			FileNotFoundException {
 
 		File rootPath = new File(project.getRootPath());
 
@@ -398,26 +388,25 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		}
 		// Check if rootpath is indeed a directory
 		if (!rootPath.isDirectory()) {
-			log.warn("Project folder is not a directory: "
-					  + rootPath.toString());
+			log.warn("Project folder is not a directory: " + rootPath.toString());
 			throw new FileNotFoundException();
 		}
 
 		// create Project
-//		result = new Project(name, UUID.randomUUID(), null, // msgService
-//				  rootPath);
+		// result = new Project(name, UUID.randomUUID(), null, // msgService
+		// rootPath);
 
 		// Check if the Project-internal Database can be read (and read
 		// it!)
-		//if (!this.checkProjectDatabaseExists(result))
-		//	throw new FileNotFoundException();
+		// if (!this.checkProjectDatabaseExists(result))
+		// throw new FileNotFoundException();
 
 
 		// add the project's file services
 		this.getProjectsFileServices().startProject(project);
 
 		// add project to internal list
-		//this.getInternalProjectList().add(project);
+		// this.getInternalProjectList().add(project);
 
 		project.setOpen(true);
 
@@ -426,8 +415,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	public boolean deleteProject(Project project, boolean deleteProjectFiles)
-			  throws IllegalArgumentException, SecurityException,
-			  FileNotFoundException {
+			throws IllegalArgumentException, SecurityException, FileNotFoundException {
 		boolean result = true;
 		IFSService fss;
 		FileNotFoundException t = null;
@@ -467,7 +455,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
-			  throws IllegalArgumentException {
+			throws IllegalArgumentException {
 		UnprocessedBlindLogEntryDaoProxy dao;
 		List<LogEntry<? extends com.jakeapp.core.domain.ILogable>> result = null;
 
@@ -485,7 +473,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
-			  throws IllegalArgumentException {
+			throws IllegalArgumentException {
 		Project project;
 		UnprocessedBlindLogEntryDaoProxy dao;
 		List<LogEntry<JakeObject>> entries = null;
@@ -510,19 +498,20 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	/**
-	 * Assigns a User Id to the Project.
-	 * Called only once, to bind user and project.
-	 * It's not supposed to change an already bound user id.
-	 *
-	 * @param project the Project to set the UserId
-	 * @param userId	the UserId to be set
+	 * Assigns a User Id to the Project. Called only once, to bind user and
+	 * project. It's not supposed to change an already bound user id.
+	 * 
+	 * @param project
+	 *            the Project to set the UserId
+	 * @param userId
+	 *            the UserId to be set
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
 	@Transactional
 	@Override
 	public void assignUserToProject(Project project, UserId userId)
-			  throws IllegalArgumentException, IllegalAccessException {
+			throws IllegalArgumentException, IllegalAccessException {
 
 		// Check preconditions
 		if (project == null)
@@ -530,7 +519,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		if (userId == null)
 			throw new IllegalArgumentException("User ID is null");
 		if (project.getUserId() != null)
-			throw new IllegalStateException("Project already has a user Id: " + project.getUserId());
+			throw new IllegalStateException("Project already has a user Id: "
+					+ project.getUserId());
 
 		// connect userId and project
 		project.setUserId(userId);
@@ -550,10 +540,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	/**
 	 * Adds a new Projectmember to a Project. It may not exist in the Project
 	 * yet.
-	 *
-	 * @param project Project to add a member to. Must not be null.
-	 * @param userId  Member to add. Must not be null.
-	 * @return 		    the ProjectMember added
+	 * 
+	 * @param project
+	 *            Project to add a member to. Must not be null.
+	 * @param userId
+	 *            Member to add. Must not be null.
+	 * @return the ProjectMember added
 	 */
 	@Transactional
 	private UserId addProjectMember(Project project, UserId userId) {
@@ -566,36 +558,39 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	/**
-	 * @param project may not be null
-	 * @param userId  may not be null
+	 * @param project
+	 *            may not be null
+	 * @param userId
+	 *            may not be null
 	 * @return null if the User with the ID userId is not found in the Project.
 	 *         The corresponding ProjectMember if it exists.
 	 */
 	@Transactional
 	private UserId getProjectMember(Project project, UserId userId) {
-		return getMsgService().getUserId();
+		return project.getMessageService().getUserId();
 	}
 
 	@Override
 	@Transactional
 	public void setTrust(Project project, UserId userId, TrustState trust)
-			  throws IllegalArgumentException, IllegalAccessException {
+			throws IllegalArgumentException, IllegalAccessException {
 		// TODO: use startTrusting, stopStrusting
 	}
 
 	/**
 	 * sends an Invitation to another ProjectMember
-	 *
+	 * 
 	 * @param project
 	 * @param userId
 	 */
 	private void inviteMember(Project project, UserId userId) {
 		if (project.getUserId() == null) {
 			throw new IllegalArgumentException(
-							"Project needs a UserId before a member can be invited.");
+					"Project needs a UserId before a member can be invited.");
 		}
 
-		// this is perfectly ok, invite is called on ourself in setTrust (assignUserToProject)
+		// this is perfectly ok, invite is called on ourself in setTrust
+		// (assignUserToProject)
 		if (project.getUserId().equals(userId)) {
 			log.info("Not inviting myself.");
 		} else {
@@ -615,9 +610,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	public AvailableLaterObject<Integer> getProjectFileCount(Project project)
-			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
+			throws NoSuchProjectException, FileNotFoundException,
+			IllegalArgumentException {
 
-        log.debug("\n\n\n\n\n\n\t\tCalling getProjectFileCount");
+		log.debug("\n\n\n\n\n\n\t\tCalling getProjectFileCount");
 
 
 		AvailableLaterWrapperObject<Integer, List<FileObject>> sizeFuture;
@@ -632,9 +628,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project)
-			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
+			throws NoSuchProjectException, FileNotFoundException,
+			IllegalArgumentException {
 
-        log.debug("\n\n\n\n\t\tCalling getProjectSizeTotal");
+		log.debug("\n\n\n\n\t\tCalling getProjectSizeTotal");
 
 
 		AvailableLaterWrapperObject<Long, List<FileObject>> sizeFuture;
@@ -653,16 +650,18 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
-			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
-        log.debug("\n\n\n\t\tCalling getAllProjectFiles");
+			throws NoSuchProjectException, FileNotFoundException,
+			IllegalArgumentException {
+		log.debug("\n\n\n\t\tCalling getAllProjectFiles");
 
-        return getApplicationContextFactory().getAllProjectFilesFuture(project); 
+		return getApplicationContextFactory().getAllProjectFilesFuture(project);
 	}
 
 	@Override
 	@Transactional
-	public FileObject getFileObjectByRelPath(Project project, String relpath) throws NoSuchJakeObjectException {
-        log.debug("calling getFileObjectByRelPath for relpath: " + relpath);
+	public FileObject getFileObjectByRelPath(Project project, String relpath)
+			throws NoSuchJakeObjectException {
+		log.debug("calling getFileObjectByRelPath for relpath: " + relpath);
 		IFileObjectDao dao = this.getFileObjectDao(project);
 		return dao.get(relpath);
 	}
@@ -670,7 +669,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public void joinProject(Project project, UserId inviter)
-			  throws IllegalStateException, NoSuchProjectException {
+			throws IllegalStateException, NoSuchProjectException {
 
 		// preconditions
 		if (project == null)
@@ -690,8 +689,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	public void rejectProject(Project project, UserId inviter)
-			  throws IllegalStateException, NoSuchProjectException {
-		//preconditions
+			throws IllegalStateException, NoSuchProjectException {
+		// preconditions
 		if (project == null)
 			throw new NoSuchProjectException();
 		if (!project.isInvitation())
@@ -713,7 +712,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public void updateProjectName(Project project, String newName)
-			  throws NoSuchProjectException {
+			throws NoSuchProjectException {
 
 		if (project == null)
 			throw new NoSuchProjectException();
@@ -725,12 +724,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	@Override
-	public Date getLastEdit(JakeObject jo)
-			  throws NoSuchProjectException, IllegalArgumentException {
+	public Date getLastEdit(JakeObject jo) throws NoSuchProjectException,
+			IllegalArgumentException {
 		LogEntry<? extends ILogable> logentry;
 		Date result;
 
-		//get the most recent logentry for the JakeObject
+		// get the most recent logentry for the JakeObject
 		try {
 			logentry = this.getMostRecentFor(jo);
 			result = logentry.getTimestamp();
@@ -742,12 +741,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	}
 
 	@Override
-	public UserId getLastEditor(JakeObject jo)
-			  throws NoSuchProjectException, IllegalArgumentException {
+	public UserId getLastEditor(JakeObject jo) throws NoSuchProjectException,
+			IllegalArgumentException {
 		LogEntry<? extends ILogable> logentry;
 		UserId result;
 
-		//get the most recent logentry for the JakeObject
+		// get the most recent logentry for the JakeObject
 		try {
 			logentry = this.getMostRecentFor(jo);
 			result = logentry.getMember();
@@ -760,14 +759,17 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Transactional
 	private LogEntry<? extends ILogable> getMostRecentFor(JakeObject jo)
-			  throws NoSuchProjectException, IllegalArgumentException, NoSuchLogEntryException {
+			throws NoSuchProjectException, IllegalArgumentException,
+			NoSuchLogEntryException {
 		LogEntry<? extends ILogable> logentry;
 
-		if (jo == null) throw new IllegalArgumentException();
-		if (jo.getProject() == null) throw new NoSuchProjectException();
+		if (jo == null)
+			throw new IllegalArgumentException();
+		if (jo.getProject() == null)
+			throw new NoSuchProjectException();
 
-		//get the most recent logentry for the JakeObject
-		//TODO rather call getMostRecentProcessed
+		// get the most recent logentry for the JakeObject
+		// TODO rather call getMostRecentProcessed
 		logentry = this.getLogEntryDao(jo.getProject()).getLastVersionOfJakeObject(jo);
 
 		return logentry;
@@ -783,7 +785,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public List<UserId> getProjectMembers(Project project) throws NoSuchProjectException {
-		if (project == null) throw new NoSuchProjectException();
+		if (project == null)
+			throw new NoSuchProjectException();
 
 		return new LinkedList(this.getLogEntryDao(project).getCurrentProjectMembers());
 	}
@@ -799,7 +802,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Transactional
 	public UserId getLastModifier(JakeObject jakeObject) {
 		try {
-			return this.getLogEntryDao(jakeObject.getProject()).getLastVersionOfJakeObject(jakeObject).getMember();
+			return this.getLogEntryDao(jakeObject.getProject())
+					.getLastVersionOfJakeObject(jakeObject).getMember();
 		} catch (NoSuchLogEntryException e) {
 			return null;
 		}
@@ -811,8 +815,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		UserId member;
 		UserId id;
 
-		log.info("invite project: " + project + " userid: " +
-				  userid + " msgservice: " + project.getMessageService());
+		log.info("invite project: " + project + " userid: " + userid + " msgservice: "
+				+ project.getMessageService());
 
 		id = project.getMessageService().getUserId(userid);
 		log.debug("extracted the userid to invite: " + userid);
@@ -826,7 +830,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public List<UserId> getUninvitedPeople(Project project)
-			  throws IllegalArgumentException, NoSuchProjectException {
+			throws IllegalArgumentException, NoSuchProjectException {
 		// TODO
 		return new LinkedList<UserId>();
 	}
@@ -838,11 +842,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	@Transactional
-	public Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException, NoSuchJakeObjectException {
+	public Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException,
+			NoSuchJakeObjectException {
 		try {
 			return new TreeSet<Tag>(getTagsListFor(jo));
-		}
-		catch (NullPointerException npex) {
+		} catch (NullPointerException npex) {
 			throw new NoSuchJakeObjectException(npex);
 		}
 	}
@@ -855,7 +859,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	@Transactional
-	public void setTagsForJakeObject(JakeObject jo, Set<Tag> tags) throws NoSuchJakeObjectException {
+	public void setTagsForJakeObject(JakeObject jo, Set<Tag> tags)
+			throws NoSuchJakeObjectException {
 		List<Tag> toAdd = new ArrayList<Tag>();
 		List<Tag> toRemove = new ArrayList<Tag>();
 		List<Tag> current = this.getTagsListFor(jo);
@@ -863,7 +868,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		TagLogEntry logEntry;
 		IJakeObjectDao dao = this.getJakeObjectDao(jo.getProject(), jo);
 
-		//calculate which tags to add and remove
+		// calculate which tags to add and remove
 		for (Tag t : tags)
 			if (!current.contains(t))
 				toAdd.add(t);
@@ -872,7 +877,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 			if (!tags.contains(t))
 				toRemove.add(t);
 
-		//remove and add tags
+		// remove and add tags
 		for (Tag t : toRemove)
 			removeTag(jo, t);
 
@@ -886,15 +891,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	private void addTag(JakeObject jo, Tag t) throws NoSuchJakeObjectException {
 		LogEntry<Tag> logEntry;
-		logEntry = new TagLogEntry(LogAction.TAG_ADD, 
-				  t, this.getProjectMember(jo.getProject(), jo.getProject().getUserId()));
+		logEntry = new TagLogEntry(LogAction.TAG_ADD, t, this.getProjectMember(jo
+				.getProject(), jo.getProject().getUserId()));
 		this.getLogEntryDao(jo.getProject()).create(logEntry);
 	}
 
 	private void removeTag(JakeObject jo, Tag t) throws NoSuchJakeObjectException {
 		TagLogEntry logEntry;
-		logEntry = new TagLogEntry(LogAction.TAG_REMOVE, 
-				  t, this.getProjectMember(jo.getProject(), jo.getProject().getUserId()));
+		logEntry = new TagLogEntry(LogAction.TAG_REMOVE, t, this.getProjectMember(jo
+				.getProject(), jo.getProject().getUserId()));
 		this.getLogEntryDao(jo.getProject()).create(logEntry);
 	}
 
@@ -909,13 +914,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	@Transactional
 	public void saveNote(NoteObject no) {
-        this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).persist(no);
+		this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).persist(no);
 	}
 
 	@Override
 	@Transactional
-	public void deleteNote(NoteObject no) throws IllegalArgumentException, NoSuchJakeObjectException {
-        this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).delete(no);
+	public void deleteNote(NoteObject no) throws IllegalArgumentException,
+			NoSuchJakeObjectException {
+		this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).delete(no);
 	}
 
 	@Override
@@ -935,8 +941,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		Project p = jo.getProject();
 		UserId me = getProjectMember(p, p.getUserId());
 		LogEntry le = new JakeObjectLogEntry(which, jo, me, comment, null, true);
-        this.getApplicationContextFactory().getLogEntryDao(p).create(le);
-        
+		this.getApplicationContextFactory().getLogEntryDao(p).create(le);
+
 	}
 
 }

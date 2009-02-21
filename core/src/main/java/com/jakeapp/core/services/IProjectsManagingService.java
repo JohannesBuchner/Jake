@@ -26,12 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface IProjectsManagingService {
 	/**
-	 * Sets the messageService to be used by this ProjectsManagingService
-	 * @param service
-	 */
-	void setMsgService(MsgService service);
-	
-	/**
 	 * Get a list of all Projects known to jake
 	 *
 	 * @return a list of all known jake projects

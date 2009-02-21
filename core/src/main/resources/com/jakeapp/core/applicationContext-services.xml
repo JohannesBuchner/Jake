@@ -14,9 +14,6 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-
-
-
     <bean id="projectsFileServices" class="com.jakeapp.core.services.ProjectsFileServicesImpl"/>
 
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
@@ -40,7 +37,6 @@
     <bean id="msgService" class="com.jakeapp.core.services.MsgService" abstract="true">
 
     </bean>
-
 
     <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
         <constructor-arg index="0" ref="serviceCredentialsDao"

@@ -88,10 +88,6 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		sync = frontend.getSyncService(sessionId);
 		db = (ProjectApplicationContextFactory) applicationContext
 				.getBean("applicationContextFactory");
-		XMPPMsgService msg = new XMPPMsgService();
-		msg.setServiceCredentials(new ServiceCredentials("me@localhost", "mypasswd"));
-		pms.setMsgService(msg);
-
 		createProjectWorkaround();
 		testLogEntriesCount(1);
 		me = pms.getProjectMembers(project).get(0);

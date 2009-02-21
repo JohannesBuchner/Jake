@@ -25,7 +25,4 @@
                          type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
     </bean>
 
-    <bean id="xmppServiceHolder" class="com.jakeapp.core.integration.XMPPICServiceHolder" />
-
-
 </beans>

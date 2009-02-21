@@ -216,4 +216,13 @@ public class MsgServiceFactory {
 	public ServiceCredentials get(MsgService service) {
 		return this.map.get(service);
 	}
+
+	public MsgService getByCredentials(ServiceCredentials credentials) {
+		for(MsgService msg : getAll()) {
+			if(msg.getServiceCredentials().equals(credentials)) {
+				return msg;
+			}
+		}
+		return null;
+	}
 }

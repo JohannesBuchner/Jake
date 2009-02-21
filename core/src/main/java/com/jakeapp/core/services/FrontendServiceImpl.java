@@ -39,20 +39,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	private IServiceCredentialsDao serviceCredentialsDao;
 
 	private IFriendlySyncService sync;
-	
-	/* begin 
-	 * last login is preserved to set it all projects.... 
-	 */
-	private MsgService lastLogin;
-	
-	private MsgService getLastLogin() {
-		return this.lastLogin;
-	}
-	
-	private void setLastLogin(MsgService lastLogin) {
-		this.lastLogin = lastLogin;
-	}
-	/* end */
 
 	/**
 	 * Constructor
@@ -72,7 +58,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
-		projectsManagingService.setMsgService(this.getLastLogin());
 		return projectsManagingService;
 	}
 
@@ -299,8 +284,6 @@ public class FrontendServiceImpl implements IFrontendService {
 						getServiceCredentialsDao().update(credentials);
 				}
 				
-				if (result) 
-					setLastLogin(service);
 				return result;
 			}
 			
