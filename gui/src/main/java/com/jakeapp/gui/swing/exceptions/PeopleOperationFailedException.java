@@ -7,4 +7,11 @@ package com.jakeapp.gui.swing.exceptions;
  */
 public class PeopleOperationFailedException extends NestedException {
 
+	public PeopleOperationFailedException(Exception ex) {
+		super(ex);
+	}
+
+	public PeopleOperationFailedException() {
+
+	}
 }

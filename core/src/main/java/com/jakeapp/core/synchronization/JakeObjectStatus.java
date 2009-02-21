@@ -1,72 +1,63 @@
 package com.jakeapp.core.synchronization;
 
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.UserId;
-
 /**
- * @author johannes
+ * This is the JakeObjectStatus - the base class for AttributedJakeObject.
+ * Describing Infos about a domain object are saved here.
+ * Primary User: FileObject, NoteObject.
+ *
+ * @author johannes, peter
  */
 public class JakeObjectStatus {
-
 	static final Logger log = Logger.getLogger(JakeObjectStatus.class);
 
-	private LockStatus lockStatus;
-
 	private Existence existence;
-
 	private SyncStatus syncStatus;
-
-	private UserId lastVersionProjectMember;
-
-	private UserId lockOwner;
+	private LogEntry lastVersionLogEntry;
+	private LogEntry lastLockLogEntry;
 
 	/**
 	 * * @param lastVersionLogAction
-	 * 
-	 * @param lastVersionProjectMember
-	 * @param lockOwner
-	 * @param lastLockLogAction
+	 *
+	 * @param lastVersionLogEntry
+	 * @param lastLockLogEntry
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
 	 * @param hasUnprocessedLogEntries
-	 * @param lastProcessedLogAction
-	 * @see {@link com.jakeapp.core.synchronization.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
+	 * @param lastProcessedLogAction		 @see {@link com.jakeapp.core.synchronization.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
 	 *      ,
 	 *      {@link com.jakeapp.core.synchronization.Existence#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
 	 *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
 	 */
-	public JakeObjectStatus(LogAction lastVersionLogAction,
-			UserId lastVersionProjectMember, UserId lockOwner,
-			LogAction lastLockLogAction, boolean objectExistsLocally,
-			boolean checksumDifferentFromLastNewVersionLogEntry,
-			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
-		log.debug("generating JakeObjectStatus: " + ": lastVersionLogAction:"
-				+ lastVersionLogAction + " lastVersionProjectMember:"
-				+ lastVersionProjectMember + " lockOwner:" + lockOwner
-				+ " lastLockLogAction:" + lastLockLogAction + " objectExistsLocally:"
+	public JakeObjectStatus(LogEntry lastVersionLogEntry, LogEntry lastLockLogEntry,
+					boolean objectExistsLocally, boolean checksumDifferentFromLastNewVersionLogEntry,
+					boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
+		log.debug("generating JakeObjectStatus: " + ": lastVersionLogEntry:"
+				+ lastVersionLogEntry + " lastLockLogEntry:" + lastLockLogEntry + " objectExistsLocally:"
 				+ objectExistsLocally + " checksumDifferentFromLastNewVersionLogEntry:"
 				+ checksumDifferentFromLastNewVersionLogEntry
 				+ " hasUnprocessedLogEntries:" + hasUnprocessedLogEntries
 				+ " lastProcessedLogAction:" + lastProcessedLogAction);
-		this.lockStatus = LockStatus.getLockStatus(lastLockLogAction);
+		this.lastVersionLogEntry = lastVersionLogEntry;
+		this.lastLockLogEntry = lastLockLogEntry;
+
 		this.existence = Existence
-				.getExistance(objectExistsLocally, lastVersionLogAction);
+				.getExistance(objectExistsLocally, lastVersionLogEntry.getLogAction());
 		this.syncStatus = SyncStatus.getSyncStatus(
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction, objectExistsLocally);
-		this.lastVersionProjectMember = lastVersionProjectMember;
-		this.lockOwner = lockOwner;
 		log.debug("result:" + this.toString());
 	}
 
-	public UserId getLastVersionProjectMember() {
-		return this.lastVersionProjectMember;
+	public LogEntry getLastVersionLogEntry() {
+		return this.lastVersionLogEntry;
 	}
 
 	public LockStatus getLockStatus() {
-		return this.lockStatus;
+		return LockStatus.getLockStatus(lastLockLogEntry.getLogAction());
 	}
 
 
@@ -116,12 +107,12 @@ public class JakeObjectStatus {
 	}
 
 	/**
-	 * If locked, this returns the lock owner.
+	 * If locked, this returns the lock entry
 	 * 
-	 * @return ProjectMember aka lock owner, or null
+	 * @return lock entry or null
 	 */
-	public UserId getLockOwner() {
-		return lockOwner;
+	public LogEntry getLockLogEntry() {
+		return this.lastLockLogEntry;
 	}
 
 	/**

@@ -1,10 +1,9 @@
 package com.jakeapp.gui.swing.models;
 
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
+import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 // FIXME: could be improved...
 public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 	public InvitePeopleComboBoxModel(Project project) {
-		super(convertToProxyMemberProjectList(JakeMainApp.getApp().getCore().getSuggestedPeople(project)).toArray());
+		super(convertToProxyMemberProjectList(JakeMainApp.getCore().getSuggestedUser(project)).toArray());
 	}
 
 	private static List<ProjectMemberProxy> convertToProxyMemberProjectList(List<ProjectMember> members) {
@@ -42,8 +41,9 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 		@Override
 		public String toString() {
 			try {
-				return JakeMainApp.getCore().getProjectMemberID(JakeMainApp.getProject(),getPm()) + " (" + ProjectMemberHelpers.getNickOrFullName(getPm(), 30) + ")";
-			} catch (NoSuchProjectMemberException e) {
+				return JakeMainApp.getCore().getProjectMemberID(JakeMainApp.getProject(),getPm()) + " (" + UserHelper
+								.getNickOrFullName(getPm(), 30) + ")";
+			} catch (NoSuchUserException e) {
 			}
 			return "";
 		}

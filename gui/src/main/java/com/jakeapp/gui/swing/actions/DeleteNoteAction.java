@@ -54,7 +54,7 @@ public class DeleteNoteAction extends NoteAction {
 			if (cache.get(0).isLocked()) { //is locked
 				ProjectMember lockOwner = cache.get(0).getLockOwner();
 
-				if (lockOwner.equals(JakeMainApp.getProjectMember())) { //local member is owner
+				if (lockOwner.equals(JakeMainApp.getCurrentUser())) { //local member is owner
 					text = map.getString("confirmDeleteNote.text");
 				} else {
 					text = Translator.get(map, "confirmDeleteLockedNote.text", lockOwner.getNickname());
@@ -101,7 +101,7 @@ public class DeleteNoteAction extends NoteAction {
 	}
 
 	private boolean isMyLock(AttributedJakeObject<NoteObject> note) {
-		return note.getLockOwner().equals(JakeMainApp.getProjectMember());
+		return note.getLockOwner().equals(JakeMainApp.getCurrentUser());
 	}
 
 	@Override

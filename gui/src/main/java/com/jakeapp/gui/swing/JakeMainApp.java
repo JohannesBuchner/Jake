@@ -7,16 +7,19 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.GlassJFrame;
 import com.jakeapp.gui.swing.dialogs.SplashWindow;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.AppUtilities;
+import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
+import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.Platform;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -24,13 +27,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The main class of the application.
  */
-public class JakeMainApp extends SingleFrameApplication implements
-		  ProjectSelectionChanged {
+public class JakeMainApp extends SingleFrameApplication implements ProjectSelectionChanged {
 
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
 
@@ -56,15 +62,16 @@ public class JakeMainApp extends SingleFrameApplication implements
 			System.exit(0);
 		}
 
-		ApplicationInstanceManager.setApplicationInstanceListener(new ApplicationInstanceListener() {
-			public void newInstanceCreated() {
-				log.info("New Jake instance detected, showing current!");
+		ApplicationInstanceManager
+						.setApplicationInstanceListener(new ApplicationInstanceListener() {
+							public void newInstanceCreated() {
+								log.info("New Jake instance detected, showing current!");
 
-				// User tried to load jake a second time.
-				// so open first instane!
-				JakeMainView.setMainWindowVisible(true);
-			}
-		});
+								// User tried to load jake a second time.
+								// so open first instane!
+								JakeMainView.setMainWindowVisible(true);
+							}
+						});
 
 		// show splash
 		//SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -79,8 +86,10 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 		String type = System.getProperty("com.jakeapp.gui.test.usemock");
 		if (type == null) {
-			int res = JOptionPane.showOptionDialog(null, "Do you want the real thing or the mock (looser)", "Jake",
-					  JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			int res = JOptionPane.showOptionDialog(null,
+							"Do you want the real thing or the mock (looser)", "Jake",
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							options, options[0]);
 			if (res == JOptionPane.YES_OPTION) {
 				type = "no";
 			} else if (res == JOptionPane.CANCEL_OPTION) {
@@ -92,15 +101,13 @@ public class JakeMainApp extends SingleFrameApplication implements
 		if ("yes".equals(type)) {
 			log.debug("************* Using MOCK **************");
 			applicationContext = new ClassPathXmlApplicationContext(
-					  new String[]{"/com/jakeapp/core/applicationContext.xml"
-								 , "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"});
+							new String[]{"/com/jakeapp/core/applicationContext.xml", "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"});
 
 			AppUtilities.setAppName("Jake on steroids (mocked)");
 		} else {
 			log.debug("************* Using REAL **************");
 			applicationContext = new ClassPathXmlApplicationContext(
-					  new String[]{"/com/jakeapp/core/applicationContext.xml"
-								 , "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
+							new String[]{"/com/jakeapp/core/applicationContext.xml", "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
 		}
 
 
@@ -113,11 +120,11 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 
 		Map<String, String> backendCredentials = new HashMap<String, String>();
-//		backendCredentials.put("frontendUsername", "swingGui");
-//		backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
-//		backendCredentials.put("backendHost", "127.0.0.1");
-//		backendCredentials.put("backendPort", "5000");
-//		backendCredentials.put("backendName", "defaultBackendServiceName");
+		//		backendCredentials.put("frontendUsername", "swingGui");
+		//		backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
+		//		backendCredentials.put("backendHost", "127.0.0.1");
+		//		backendCredentials.put("backendPort", "5000");
+		//		backendCredentials.put("backendName", "defaultBackendServiceName");
 
 
 		try {
@@ -126,62 +133,62 @@ public class JakeMainApp extends SingleFrameApplication implements
 
 			/** DEBUG ***/
 			ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
-					  "somepass");
+							"somepass");
 			sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
 			sc1.setProtocol(ProtocolType.XMPP);
-//            try {
-//                sc1.setServerAddress(Inet4Address.getLocalHost());
-//            } catch (UnknownHostException e) {
-//                e.printStackTrace();
-//            }
+			//            try {
+			//                sc1.setServerAddress(Inet4Address.getLocalHost());
+			//            } catch (UnknownHostException e) {
+			//                e.printStackTrace();
+			//            }
 			sc1.setServerAddress("jabber.fsinf.at");
 			sc1.setServerPort(5222);
 			sc1.setEncryptionUsed(false);
 
 
 			ServiceCredentials sc2 = new ServiceCredentials("pstein@jabber.fsinf.at",
-					  "somepass");
+							"somepass");
 			sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
 			sc2.setProtocol(ProtocolType.XMPP);
 			sc2.setServerAddress("jabber.fsinf.at");
 
-//            try {
-//                sc2.setServerAddress(Inet4Address.getLocalHost());
-//            } catch (UnknownHostException e) {
-//                e.printStackTrace();
-//            }
+			//            try {
+			//                sc2.setServerAddress(Inet4Address.getLocalHost());
+			//            } catch (UnknownHostException e) {
+			//                e.printStackTrace();
+			//            }
 			sc2.setServerPort(5222);
 			sc2.setEncryptionUsed(false);
 
 
 			ServiceCredentials sc3 = new ServiceCredentials("pstein@jabber.fsinf.at",
-					  "somepass");
+							"somepass");
 			sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
 			sc3.setProtocol(ProtocolType.XMPP);
 			sc3.setServerAddress("jabber.fsinf.at");
-//            try {
-//                sc3.setServerAddress(Inet4Address.getLocalHost());
-//            } catch (UnknownHostException e) {
-//                e.printStackTrace();
-//            }
+			//            try {
+			//                sc3.setServerAddress(Inet4Address.getLocalHost());
+			//            } catch (UnknownHostException e) {
+			//                e.printStackTrace();
+			//            }
 			sc3.setServerPort(5222);
 			sc3.setEncryptionUsed(false);
 
 
-//            try {
-//                getCore().addAccount(sc1);
-//                getCore().addAccount(sc2);
-//                getCore().addAccount(sc3);
-////
-////
-//            }
-//            catch (ProtocolNotSupportedException e) {
-//                e.printStackTrace();
-//            } catch (FrontendNotLoggedInException e) {
-//                e.printStackTrace();
-//            } catch (NetworkException e) {
-//                e.printStackTrace();
-//            }
+			//            try {
+			//                getCore().addAccount(sc1);
+			//                getCore().addAccount(sc2);
+			//                getCore().addAccount(sc3);
+			////
+			////
+			//            }
+			//            catch (ProtocolNotSupportedException e) {
+			//                e.printStackTrace();
+			//            } catch (FrontendNotLoggedInException e) {
+			//                e.printStackTrace();
+			//            } catch (NetworkException e) {
+			//                e.printStackTrace();
+			//            }
 
 
 		} catch (InvalidCredentialsException e) {
@@ -254,7 +261,8 @@ public class JakeMainApp extends SingleFrameApplication implements
 			} else {
 				// try to use nimbus (available starting j6u10)
 				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					UIManager.setLookAndFeel(
+									"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 				} catch (Exception r) {
 					// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -434,15 +442,11 @@ public class JakeMainApp extends SingleFrameApplication implements
 	}
 
 	/**
-	 * Returns the one and only project member that is within app (and project) context.
-	 * @return
+	 * Returns the one and only project user that is within app (and project) context.
+	 *
+	 * @return current user
 	 */
-	public static ProjectMember getProjectMember() {
-		try {
-			return getCore().getProjectMember(getProject(), getProject().getMessageService());
-		} catch (NoSuchProjectMemberException e) {
-			log.warn("Error getting project member", e);
-			return null;
-		}
+	public static UserId getCurrentUser() {
+		return getProject().getMessageService().getUserId();
 	}
 }

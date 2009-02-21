@@ -1,35 +1,11 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.dao.exceptions.NoSuchUserException;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.IProjectsFileServices;
@@ -57,6 +33,21 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -439,8 +430,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		}
 		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
 
-		UserId lastVersionProjectMember = getProjectMemberNullSafe(lastle);
-
 		// 3 locally modified?
 		boolean checksumEqualToLastNewVersionLogEntry;
 		// 3.5 size
@@ -489,18 +478,14 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		}
 
 		LogEntry<JakeObject> locklog = led.getLock(fo);
-		// 4.5 lockowner
-		UserId lockOwner = getProjectMemberNullSafe(locklog);
 
 		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(fo);
 		// 6 lastprocessed
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
-		// 7 lock
-		LogAction lastLockLogAction = getLogActionNullSafe(locklog);
 
-		return new AttributedJakeObject<FileObject>(fo, lastVersionLogAction,
-				lastVersionProjectMember, lockOwner, lastLockLogAction,
+		return new AttributedJakeObject<FileObject>(fo, lastle,
+				locklog,
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
 				size);
@@ -540,8 +525,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		} catch (NoSuchLogEntryException e1) {
 			lastle = null;
 		}
-		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
-		UserId lastVersionProjectMember = getProjectMemberNullSafe(lastle);
 
 		// 3 locally modified?
 		boolean checksumEqualToLastNewVersionLogEntry;
@@ -560,18 +543,13 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		if (lastle != null)
 			lastModificationDate = lastle.getTimestamp().getTime();
 
-		// 4.5 lockowner
-		UserId lockOwner = getProjectMemberNullSafe(led.getLock(no));
-
 		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(no);
 		// 6 lastprocessed
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
-		// 7 lock
-		LogAction lastLockLogAction = getLogActionNullSafe(led.getLock(no));
 
-		return new AttributedJakeObject<NoteObject>(no, lastVersionLogAction,
-				lastVersionProjectMember, lockOwner, lastLockLogAction,
+		return new AttributedJakeObject<NoteObject>(no, lastle,
+				led.getLock(no),
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
 				size);
@@ -795,7 +773,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	public UserId getProjectMemberFromUserId(Project project, UserId userid)
-			throws NoSuchProjectMemberException {
+			throws NoSuchUserException {
 		return null; // TODO
 	}
 

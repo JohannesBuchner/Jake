@@ -174,7 +174,7 @@ public class ResolveConflictDialog extends JakeDialog {
 	private String getUseRemoteFileString() {
 		try {
 			return Translator.get(getResourceMap(), "resolveThemButton",
-					  ProjectMemberHelpers.getNickOrFullName(JakeMainApp.getCore().getLastModifier(fo)));
+					  UserHelper.getNickOrFullName(JakeMainApp.getCore().getLastModifier(fo)));
 		} catch (NoSuchLogEntryException e) {
 			log.error(e);
 			ExceptionUtilities.showError(e);

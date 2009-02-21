@@ -1,24 +1,5 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.core.AllowSlowChecker;
@@ -37,6 +18,24 @@ import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
@@ -272,7 +271,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(LockStatus.CLOSED, status.getLockStatus());
-		Assert.assertEquals(me, status.getLockOwner());
+		Assert.assertEquals(me, status.getLockLogEntry().getMember());
 	}
 
 	public void testUnLockStatus_Independence(Method m) throws Exception {
@@ -284,7 +283,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(LockStatus.OPEN, status.getLockStatus());
-		Assert.assertEquals(null, status.getLockOwner());
+		Assert.assertEquals(null, status.getLockLogEntry().getMember());
 	}
 
 	public void myteardown() throws Exception {

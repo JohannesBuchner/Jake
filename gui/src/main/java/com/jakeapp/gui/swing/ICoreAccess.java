@@ -1,7 +1,6 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -9,16 +8,27 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.AttributedJakeObject;
-import com.jakeapp.core.synchronization.exceptions.SyncException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.*;
-import com.jakeapp.gui.swing.exceptions.*;
+import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback;
+import com.jakeapp.gui.swing.callbacks.FilesChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public interface ICoreAccess {
@@ -204,38 +214,6 @@ public interface ICoreAccess {
 	 */
 	public List<MsgService> getMsgServics() throws FrontendNotLoggedInException;
 
-
-	/**
-	 * Returns the project member from the msg service
-	 *
-	 * @param msg: MsgService
-	 * @return project member from msg service.
-	 * @throws NoSuchProjectMemberException
-	 */
-	public ProjectMember getProjectMember(Project project, MsgService msg)
-					throws NoSuchProjectMemberException;
-
-	/**
-	 * Returns the corresponding ID to a ProjectMember.
-	 * (Jabber, msn, whatever)
-	 *
-	 * @param pm
-	 * @return
-	 * @throws NoSuchProjectMemberException
-	 */
-	public String getProjectMemberID(Project project, ProjectMember pm)
-					throws NoSuchProjectMemberException;
-
-
-	/**
-	 * Returns the MsgService for a ProiectMember.
-	 *
-	 * @param member
-	 * @return
-	 */
-	public MsgService getMsgService(ProjectMember member);
-
-
 	/******************* Project functions ********************/
 
 
@@ -388,6 +366,7 @@ public interface ICoreAccess {
 	/**
 	 * Gets the sync status of a file
 	 *
+	 * @param project
 	 * @param file The file for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
@@ -418,14 +397,6 @@ public interface ICoreAccess {
 	 */
 	public Date getLocalFileLastModified(FileObject fo);
 
-	/**
-	 * Gets the last modified date for a FileObject in the filesystem
-	 *
-	 * @param file
-	 * @return
-	 */
-	public Date getFileLastModified(FileObject file);
-
 
 	/**
 	 * Imports a file OR folder which is not currently in the project folder by
@@ -434,19 +405,11 @@ public interface ICoreAccess {
 	 * @param project
 	 * @param files:             list of files to import.
 	 * @param destFolderRelPath: if null or "", copy to project root. @return true on success, false on error
+	 * @return
 	 */
 	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(
 					Project project, List<File> files, String destFolderRelPath);
 
-
-	/**
-	 * Returns the Projectmember who last modified this JakeObject (Note/File)
-	 *
-	 * @param jakeObject
-	 * @return the projectMember
-	 */
-	public ProjectMember getLastModifier(JakeObject jakeObject)
-					throws NoSuchLogEntryException;
 
 	// TODO: What happens to FileObjects and FolderObjects? Are we going to have a common superclass?
 	/**
@@ -566,25 +529,6 @@ public interface ICoreAccess {
 					throws NoteOperationFailedException;
 
 	/**
-	 * Get the <code>Date</code> of the last edit of the note.
-	 *
-	 * @param note the note in question
-	 * @return the date of the last edit
-	 * @throws NoteOperationFailedException raised if fetching the last edit failed.
-	 */
-	public Date getLastEdit(NoteObject note) throws NoteOperationFailedException;
-
-	/**
-	 * Get the <code>ProjectMemeber<code> who last edited the given note.
-	 *
-	 * @param note the note in question
-	 * @return the <code>ProjectMember</code> who last edited this note.
-	 * @throws NoteOperationFailedException raised if fetching the last editor failed.
-	 */
-	public ProjectMember getLastEditor(NoteObject note)
-					throws NoteOperationFailedException;
-
-	/**
 	 * Delete the given note, no matter if it is a local or shared note.
 	 *
 	 * @param note the note to be deleted.
@@ -598,36 +542,9 @@ public interface ICoreAccess {
 	 * @param note the note to be added
 	 * @throws NoteOperationFailedException exception is raised whenever a note could not be created.
 	 */
-	public void newNote(NoteObject note) throws NoteOperationFailedException;
+	public void createNote(NoteObject note) throws NoteOperationFailedException;
 
 	/******************* Soft Lock ***************************/
-
-	/**
-	 * Determine if the given jakeObject is soft locked.
-	 *
-	 * @param jakeObject the jakeObject in question.
-	 * @return <code>true</code> iff the given <code>JakeObject</code> is soft locked.
-	 */
-	public boolean isSoftLocked(JakeObject jakeObject);
-
-	/**
-	 * Get the locking message of a soft locked <code>JakeObject</code>
-	 *
-	 * @param jakeObject the JakeObject in question
-	 * @return the locking message of the given <code>JakeObject</code>. The method may return <code>
-	 *         null</code> iff the given <code>JakeObject</code> is not locked.
-	 */
-	public String getLockingMessage(JakeObject jakeObject);
-
-	/**
-	 * Get the owner of a soft lock. The owner of the lock is the project member who locked the file
-	 * (if someone changes a lock, he/she becomes the owner as well -> owner = last editor of the lock)
-	 *
-	 * @param jakeObject the jake object that is locked
-	 * @return the owner of the lock of the given jake object. The method may return <code>
-	 *         null</code> iff the given <code>JakeObject</code> is not locked.
-	 */
-	public ProjectMember getLockOwner(JakeObject jakeObject);
 
 	/**
 	 * Set the soft lock for a <code>JakeObject</code>.
@@ -652,27 +569,27 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<ProjectMember> getPeople(Project project)
+	public List<UserId> getPeople(Project project)
 					throws PeopleOperationFailedException;
 
 	/**
 	 * Sets the nickname of people. Checks for error
 	 *
 	 * @param project
-	 * @param pm
+	 * @param userId
 	 * @param nick
 	 * @return
 	 */
-	public boolean setPeopleNickname(Project project, ProjectMember pm, String nick);
+	public boolean setPeopleNickname(Project project, UserId userId, String nick);
 
 	/**
 	 * Set the Trust State of people.
 	 *
 	 * @param project
-	 * @param member
+	 * @param userId
 	 * @param trust
 	 */
-	public void peopleSetTrustState(Project project, ProjectMember member,
+	public void peopleSetTrustState(Project project, UserId userId,
 																	TrustState trust);
 
 
@@ -691,15 +608,8 @@ public interface ICoreAccess {
 	 * @param project : current project
 	 * @return list of Projectmembers which have only their usernames set (people-xmpp-ids)
 	 */
-	public List<ProjectMember> getSuggestedPeople(Project project);
+	public List<UserId> getSuggestedUser(Project project);
 
-	/**
-	 * Determine if a <code>ProjectMember</code> is online
-	 *
-	 * @param member
-	 * @return <code>true</code> iff the member is online.
-	 */
-	public boolean isOnline(ProjectMember member);
 
 	/******************* Log functions ********************/
 
@@ -710,9 +620,9 @@ public interface ICoreAccess {
 	 * @param project		 : the project to query. can be null.
 	 * @param jakeObject: log for specific object or global. can be null.
 	 * @param entries		 : amount of entries. -1 for everything.
-	 * @return: list of log entries or empty list.
+	 * @return list of log entries or empty list.
 	 */
-	public List<LogEntry> getLog(Project project, JakeObject jakeObject, int entries);
+	public List<LogEntry<? extends ILogable>> getLog(Project project, JakeObject jakeObject, int entries);
 
 	/**
 	 * Save the given note. Jesus saves!
@@ -741,6 +651,7 @@ public interface ICoreAccess {
 	 *
 	 * @param fo The wrapped File Object
 	 * @return java file class
+	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
 	 */
 	File getFile(FileObject fo) throws FileOperationFailedException;
 }

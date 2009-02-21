@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.gui.swing.JakeMainApp;
 import org.apache.log4j.Logger;
 
@@ -20,15 +20,15 @@ public abstract class PeopleListAction extends ProjectAction {
     }
 
     /**
-     * Checks a ProjectMember in the list for a specific TrustState.
+     * Checks a UserId in the list for a specific TrustState.
      *
      * @param trust: The TrustState to compare.
      * @return true if TrustState is equal, false if not equal or != 1 members selected.
      */
-    protected boolean checkProjectMemberStatus(TrustState trust) {
+    protected boolean checkUserIdStatus(TrustState trust) {
         boolean selected;
         if (getList().getSelectedValue() != null) {
-            ProjectMember member = (ProjectMember) getList().getSelectedValue();
+            UserId member = (UserId) getList().getSelectedValue();
             selected = member.getTrustState() == trust;
         } else {
             selected = false;
@@ -44,13 +44,13 @@ public abstract class PeopleListAction extends ProjectAction {
     protected void actionOnSelectedPeople(TrustState trust) {
         // support multiselect
         for (Object oMember : getList().getSelectedValues()) {
-            ProjectMember member = (ProjectMember) oMember;
+            UserId member = (UserId) oMember;
 
             if (member == null) {
                 log.warn("Action TrustNoPeopleAction failed for " + oMember);
                 return;
             } else {
-                JakeMainApp.getApp().getCore().peopleSetTrustState(
+                JakeMainApp.getCore().peopleSetTrustState(
                         getProject(), member, trust);
             }
         }

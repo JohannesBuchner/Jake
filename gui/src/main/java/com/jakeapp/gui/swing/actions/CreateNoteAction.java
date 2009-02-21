@@ -1,7 +1,6 @@
 package com.jakeapp.gui.swing.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.UUID;
 
 import javax.swing.Action;
 
@@ -36,7 +35,7 @@ public class CreateNoteAction extends NoteAction {
 					NotesPanel.getInstance().getCurrentProject(),
 					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent"));
 			
-			JakeMainApp.getCore().newNote(newNote);
+			JakeMainApp.getCore().createNote(newNote);
 			//this.refreshNotesPanel();
 			int row = NotesPanel.getInstance().getNotesTableModel().getRow(newNote);
 			if (row > -1) {

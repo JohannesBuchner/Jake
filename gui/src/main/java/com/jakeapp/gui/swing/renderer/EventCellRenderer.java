@@ -6,7 +6,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NewsPanel;
@@ -104,7 +104,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 		}
 
 		// begin the string with e.g. "You" or "Peter" (Nicknames/FullNames)
-		msg += ProjectMemberHelpers.getLocalizedUserNick(loge.getMember()) + " ";
+		msg += UserHelper.getLocalizedUserNick(loge.getMember()) + " ";
 
 		/* Build the String and set the operation Icon.
 					*/

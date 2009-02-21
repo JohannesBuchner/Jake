@@ -52,7 +52,7 @@ public class SaveNoteAction extends NoteAction {
 			this.setEnabled(true);
 			
 			if(this.getSelectedNote().isLocked()) { // the file is locked
-				if (getSelectedNote().getLockOwner().equals(JakeMainApp.getProjectMember())) {
+				if (getSelectedNote().getLockOwner().equals(JakeMainApp.getCurrentUser())) {
 					// local user has lock
 					this.setEnabled(true);
 				} else {

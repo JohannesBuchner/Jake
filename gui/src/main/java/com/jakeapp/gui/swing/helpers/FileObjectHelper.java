@@ -139,7 +139,7 @@ public class FileObjectHelper {
 	 */
 	public static String getLastModifier(FileObject fo) {
 		try {
-			return ProjectMemberHelpers.getNickOrFullName(JakeMainApp.getApp().getCore().getLastModifier(fo));
+			return UserHelper.getNickOrFullName(JakeMainApp.getApp().getCore().getLastModifier(fo));
 		} catch (NoSuchLogEntryException e) {
 			log.warn("No log entry found for " + fo, e);
 			return "<no log found>";

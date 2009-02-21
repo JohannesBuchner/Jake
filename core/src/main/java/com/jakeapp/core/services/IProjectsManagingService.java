@@ -266,11 +266,6 @@ public interface IProjectsManagingService {
 	UserId getLastEditor(JakeObject jo) throws NoSuchProjectException,
 			  IllegalArgumentException;
 
-
-	UserId getProjectMember(Project project, MsgService msg);
-
-
-
 	/**
 	 * @param project The Project that Fileobject should be located in.
 	 * @param relpath The path where to look for a FileObject
@@ -287,16 +282,10 @@ public interface IProjectsManagingService {
 	 * @param project
 	 * @throws NoSuchProjectException If <code>project</code> does
 	 *                                not exist or is null.
+	 * @return
 	 */
 	List<UserId> getProjectMembers(Project project) throws NoSuchProjectException;
 
-
-	/**
-	 * stores Project member information
-	 *
-	 * @param member a member that already exists
-	 */
-	void updateProjectMember(Project project, UserId member);
 
 	/**
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
@@ -310,7 +299,7 @@ public interface IProjectsManagingService {
 	 *
 	 * @param project Project to add the ProjectMember for
 	 * @param userid  The UserId (nick+protocol) of the other user.
-	 * @return The new {@link ProjectMember}
+	 * @return The new {@link UserId}
 	 * @throws UserIdFormatException if the userid did not have the correct format
 	 */
 	UserId invite(Project project, String userid)
@@ -376,5 +365,10 @@ public interface IProjectsManagingService {
 	 * @param comment can be null
 	 */
 	void unlock(JakeObject jo, String comment);
-	
+
+
+	void setUserNickname(Project project, UserId userId, String nick);
+
+	void setUserTrustState(Project project, UserId userId, TrustState trust);
+
 }

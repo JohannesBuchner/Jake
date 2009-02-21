@@ -1,11 +1,11 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.ProjectMemberHelpers;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,46 +16,52 @@ import java.awt.*;
  */
 // TODO: localize
 public class PeopleListCellRenderer extends DefaultListCellRenderer {
-	final static ImageIcon projectMemberIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-projectmember.png")));
+	final static ImageIcon projectMemberIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+									"/icons/user-online-projectmember.png")));
 	// TODO: offline projectmember!
-	final static ImageIcon onlineFullTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-fulltrust.png")));
-	final static ImageIcon onlineTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-trust.png")));
-	final static ImageIcon onlineNoTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
-	final static ImageIcon offlineFullTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-offline-fulltrust.png")));
-	final static ImageIcon offlineTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-offline-trust.png")));
-	final static ImageIcon offlineNoTrustIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource("/icons/user-offline-notrust.png")));
+	final static ImageIcon onlineFullTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+									"/icons/user-online-fulltrust.png")));
+	final static ImageIcon onlineTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-online-trust.png")));
+	final static ImageIcon onlineNoTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
+	final static ImageIcon offlineFullTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+									"/icons/user-offline-fulltrust.png")));
+	final static ImageIcon offlineTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-offline-trust.png")));
+	final static ImageIcon offlineNoTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-offline-notrust.png")));
 
 
 	/* This is the only method defined by ListCellRenderer.  We just
 		 * reconfigure the Jlabel each time we're called.
 		 */
 	@Override
-	public Component getListCellRendererComponent(
-			  JList list,
-			  Object value,	// value to display
-			  int index,		// cell index
-			  boolean iss,	 // is the cell selected
-			  boolean chf)	 // the list and the cell have the focus
+	public Component getListCellRendererComponent(JList list, Object value,
+					// value to display
+					int index,		// cell index
+					boolean iss,	 // is the cell selected
+					boolean chf)	 // the list and the cell have the focus
 	{
 
 		boolean isProjectMember = index == 0;
 
-		/*
-					* Pre-format the data we wanna show for ProjectMember
-					*/
-		//FIXME: unsafe type cast
-		ProjectMember member = (ProjectMember) value;
+		UserId user = (UserId) value;
 
-		String nickOrFullName = ProjectMemberHelpers.getNickOrFullName(member);
+		String nickOrFullName = UserHelper.getNickOrFullName(user);
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";
-		String shortStatusStr = null;
-		try {
-			shortStatusStr = JakeMainApp.getCore().getProjectMemberID(JakeMainApp.getProject(), member);
-		} catch (NoSuchProjectMemberException e) {
-			ExceptionUtilities.showError(e);
-		}
+		String shortStatusStr;
+
+		shortStatusStr = user.getUserId();
 
 		String valStr;
 
@@ -73,13 +79,13 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		super.getListCellRendererComponent(list, valStr, index, iss, chf);
 
 		// We additionally set the JLabels icon property here.
-		
-		TrustState memberTrust = member.getTrustState();
+
+		TrustState memberTrust = user.getTrustState();
 
 		// TODO: substitute with online/offline check!
 		// FIXME: Hack, Hack, Hack
-		boolean online = JakeMainApp.getCore().isOnline(member);
-		
+		boolean online = JakeMainApp.getCore().isOnline(user);
+
 		if (online) {
 			switch (memberTrust) {
 				case AUTO_ADD_REMOVE: {
@@ -95,7 +101,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 				}
 			}
 		} else {
-			switch (member.getTrustState()) {
+			switch (user.getTrustState()) {
 				case AUTO_ADD_REMOVE: {
 					setIcon(offlineFullTrustIcon);
 				}
@@ -110,7 +116,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			}
 		}
 
-		// override icon for own project member
+		// override icon for own project user
 		if (isProjectMember) {
 			setIcon(projectMemberIcon);
 		}
@@ -135,16 +141,16 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		}
 
 		// TODO: add first/surname!
-		setToolTipText("<html><b>" + member.getNickname() +
-				  "</b><br>" + statusStr + "</html>");
+		setToolTipText(
+						"<html><b>" + user.getNickname() + "</b><br>" + statusStr + "</html>");
 		// set the tooltip text
 		/*
-		MsgService msg = JakeMainApp.getCore().getMsgService(member);
-		member.
+		MsgService msg = JakeMainApp.getCore().getMsgService(user);
+		user.
 
-			 setToolTipText("<html><font size=5>" + member..getFirstName() + " "
-						+ member.getUserId().getSurName() + "</font><br><b>'" +
-						member.getUserId().getNickname() +
+			 setToolTipText("<html><font size=5>" + user..getFirstName() + " "
+						+ user.getUserId().getSurName() + "</font><br><b>'" +
+						user.getUserId().getNickname() +
 						"'</b><br>" + statusStr + "</html>");
 		*/
 		return this;

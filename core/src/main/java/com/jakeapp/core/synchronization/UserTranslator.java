@@ -1,6 +1,6 @@
 package com.jakeapp.core.synchronization;
 
-import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
+import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.UserId;
@@ -22,7 +22,7 @@ public class UserTranslator {
 	}
 
 	public UserId getProjectMemberFromUserId(Project project, UserId userid)
-			throws NoSuchProjectMemberException {
+			throws NoSuchUserException {
 		return null;
 	}
 

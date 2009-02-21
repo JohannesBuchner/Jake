@@ -1,8 +1,7 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import com.jakeapp.core.domain.FileObject;
 
 import java.util.List;
 import java.util.UUID;
@@ -89,7 +88,7 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 		if (result.size() > 0) {
 			return result.get(0);
 		}
-		throw new NoSuchJakeObjectException("No fileObject by given relPath there");
+		throw new NoSuchJakeObjectException("No fileObject by given relPath " + relPath);
 
 	}
 
