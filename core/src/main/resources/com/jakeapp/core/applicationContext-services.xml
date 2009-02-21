@@ -27,6 +27,8 @@
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
     	<constructor-arg ref="applicationContextFactory" index="0"
                        type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
+        <constructor-arg ref="msgServiceFactory" index="1"
+                         type="com.jakeapp.core.services.MsgServiceFactory"/>
     
         <property name="projectDao" ref="projectDao"/>
         <property name="applicationContextFactory" ref="applicationContextFactory"/>

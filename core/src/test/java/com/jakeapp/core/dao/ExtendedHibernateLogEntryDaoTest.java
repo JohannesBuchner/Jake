@@ -274,7 +274,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 	@Transactional
 	@Test
 	public void testProjectMembers_empty() throws Exception {
-		Assert.assertEquals(0, logEntryDao.getCurrentProjectMembers().size());
+		Assert.assertEquals(1, logEntryDao.getCurrentProjectMembers().size());
 
 		Assert.assertEquals(1, logEntryDao.getTrustGraph().size());
 	}
