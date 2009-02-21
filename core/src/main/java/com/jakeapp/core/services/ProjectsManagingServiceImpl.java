@@ -588,6 +588,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 			throw new IllegalArgumentException("user id is null");
 		if (project.getUserId() == null)
 			throw new IllegalAccessException("User ID of the project is null.");
+		if (userId.equals(project.getUserId()))
+			return;
 
 		dao = this.getProjectMemberDao(project);
 
