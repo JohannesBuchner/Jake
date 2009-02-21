@@ -37,33 +37,39 @@ public class SoftlockNoteAction extends NoteAction {
 		boolean cachedNewLockingState = !this.isLocked;
 
 		for (AttributedJakeObject<NoteObject> note : this.getSelectedNotes()) {
-			core.setSoftLock(note.getJakeObject(), cachedNewLockingState, null);
+			if (!note.isLocal()) {
+				log.debug("locking note: " + note);
+				core.setSoftLock(note.getJakeObject(), cachedNewLockingState, null);	
+			}
 		}
 	}
 
 	@Override
 	public void updateAction() {
 		if (this.hasSelectedNotes()) {
-			this.setEnabled(true);
-
-			if (this.getSelectedNote().isLocal()) {
+			this.isLocked = this.getSelectedNote().isLocked();
+			log.debug("the topmost selected note isLocked: " + this.isLocked + " isOnlyLocal: " + this.getSelectedNote().isOnlyLocal());
+			
+			if (this.getSelectedNote().isOnlyLocal()) {
 				this.setEnabled(false);
-			} else if (this.isLocked) {
-				if (this.hasSingleSelectedNote()) {
-					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNote"));
-				} else {
-					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNotes"));
-				}
 			} else {
-				if (this.getSelectedNotes().size() == 1) {
-					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
+				this.setEnabled(true);
+				if (this.isLocked) {
+					if (this.hasSingleSelectedNote()) {
+						this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNote"));
+					} else {
+						this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("unlockNotes"));
+					}
 				} else {
-					this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNotes"));
+					if (this.getSelectedNotes().size() == 1) {
+						this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
+					} else {
+						this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNotes"));
+					}
 				}
 			}
 		} else {
-			this.setEnabled(false);
-			this.putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().getString("softLockNote"));
+			setEnabled(false);
 		}
 	}
 }

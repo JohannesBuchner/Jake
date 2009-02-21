@@ -29,34 +29,15 @@ public class NotesTableModel extends DefaultTableModel {
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
 	private List<String> columnNames;
-	private List<AttributedJakeObject<NoteObject>> notes;
+	private List<AttributedJakeObject<NoteObject>> attributedNotes;
 	private ResourceMap resourceMap;
 	private ICoreAccess core;
 	private Icon padlock, shared_note;
 
-	/*
-	private class NoteMetaDataWrapper {
-		public NoteObject note; OK
-		public Date lastEdit;
-		public String lastEditor;
-		public boolean isLocal;
-		public boolean isSoftLocked;
-		public String lockingMessage;
-
-		public NoteMetaDataWrapper(NoteObject note, Date lastEdit, String lastEditor, boolean isLocal, boolean isSoftLocked) {
-			this.note = note;
-			this.lastEdit = lastEdit;
-			this.lastEditor = lastEditor;
-			this.isLocal = isLocal;
-			this.isSoftLocked = isSoftLocked;
-		}
-	}
-	*/
-
 	public NotesTableModel() {
 		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
-		this.notes = new ArrayList<AttributedJakeObject<NoteObject>>();
+		this.attributedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
 		this.core = JakeMainApp.getCore();
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
@@ -77,7 +58,7 @@ public class NotesTableModel extends DefaultTableModel {
 	}
 
 	public AttributedJakeObject<NoteObject> getNoteAtRow(int row) {
-		return this.notes.get(row);
+		return this.attributedNotes.get(row);
 	}
 
 	@Override
@@ -92,7 +73,7 @@ public class NotesTableModel extends DefaultTableModel {
 
 	@Override
 	public int getRowCount() {
-		return this.notes != null ? this.notes.size() : 0;
+		return this.attributedNotes != null ? this.attributedNotes.size() : 0;
 	}
 
 	/**
@@ -111,36 +92,19 @@ public class NotesTableModel extends DefaultTableModel {
 		if (project == null) {
 			return;
 		}
-		this.notes.clear();
-
+		
+		this.attributedNotes.clear();
 		try {
-			this.notes = this.core.getNotes(project);
-
-			// TODO: clean after fixing
-			/*
-			for (AttributedJakeObject n : incomingNotes) {
-				//n.setProject(project);
-				try {
-					this.notes.add(new NoteMetaDataWrapper(n,
-							  this.core.getLastEdit(n),
-							  "first + last",
-							  this.core.isLocalNote(n),
-							  this.core.isSoftLocked(n)));
-				} catch (NoteOperationFailedException e) {
-					ExceptionUtilities.showError(e);
-				}
-			}
-			*/
+			this.attributedNotes = this.core.getNotes(project);
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);
 		}
 	}
 
-
-		@Override
+	@Override
 	public Object getValueAt(int row, int column) {
 		Object value;
-		AttributedJakeObject note = this.getNotes().get(row);
+		AttributedJakeObject<NoteObject> note = this.getAttributedNotes().get(row);
 		switch (column) {
 			case 0: // soft lock
 				if (note.isLocked()) {
@@ -156,7 +120,7 @@ public class NotesTableModel extends DefaultTableModel {
 					value = "";
 				break;
 			case 2: //content
-				value = ((NoteObject)note.getJakeObject()).getContent();
+				value = (note.getJakeObject()).getContent();
 				break;
 			case 3: //last edit
 				value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
@@ -172,8 +136,8 @@ public class NotesTableModel extends DefaultTableModel {
 		return value;
 	}
 
-	private List<AttributedJakeObject<NoteObject>> getNotes() {
-		return this.notes;
+	private List<AttributedJakeObject<NoteObject>> getAttributedNotes() {
+		return this.attributedNotes;
 	}
 
 	@Override
@@ -193,13 +157,13 @@ public class NotesTableModel extends DefaultTableModel {
 	/**
 	 * Returns the row of a given note.
 	 * @param note
-	 * @return the number of the row of the goven row if it exists in the model, or -1 if it does not
+	 * @return the number of the row of the given row if it exists in the model, or -1 if it does not
 	 * exist.
 	 */
 	public int getRow(NoteObject note) {
 		int row = -1;
-		for (int i = 0; i < this.notes.size(); i++) {
-			if (this.notes.get(i).getJakeObject().equals(note)) {
+		for (int i = 0; i < this.attributedNotes.size(); i++) {
+			if (this.attributedNotes.get(i).getJakeObject().equals(note)) {
 				row = i;
 				break;
 			}

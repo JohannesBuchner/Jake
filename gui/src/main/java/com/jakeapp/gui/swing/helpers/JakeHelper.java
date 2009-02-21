@@ -1,5 +1,8 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
@@ -57,5 +60,20 @@ public class JakeHelper {
 
 	public static void showInfoMsg(String s) {
 		showMsg(s, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	/**
+	 * Determine whether a jake object is editable. 'editable' in that case means that it is either
+	 * not locked or the lock owner equals the local user.
+	 * @param attributedJakeObject the attributedJakeObject that is to be tested.
+	 * @return <code>true</code> iff the JakeObject is either not locked or the lock owner equals the
+	 * local user. <code>false</code> else, i.e. if the JakeObject is locked by someone.
+	 */
+	public static boolean isEditable (AttributedJakeObject<? extends JakeObject> attributedJakeObject) {
+		if (attributedJakeObject.isLocked()) {
+			return JakeMainApp.getCore().getLockOwner(attributedJakeObject.getJakeObject()).getUserId()
+			.equals(JakeMainApp.getProject().getUserId());
+		}
+		return true;
 	}
 }

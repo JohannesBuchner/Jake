@@ -1,14 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * NotesPanel.java
- *
- * Created on Dec 3, 2008, 2:00:15 AM
- */
-
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.NoteObject;
@@ -22,6 +11,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
@@ -54,6 +44,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private static final long serialVersionUID = -7703570005631651276L;
 	private static NotesPanel instance;
 	private static Logger log = Logger.getLogger(NotesPanel.class);
+	//FIXME magic number, make property
 	private final static int TableUpdateDelay = 20000; // 20 sec
 	private Timer tableUpdateTimer;
 	private java.util.List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
@@ -88,8 +79,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.popupMenu.add(new JMenuItem(new SoftlockNoteAction()));
 		}
 
-		public NoteContainerMouseListener(NotesPanel panel, JTable table,
-																			NotesTableModel tableModel) {
+		public NoteContainerMouseListener(NotesPanel panel, JTable table, NotesTableModel tableModel) {
 			super();
 			this.panel = panel;
 			this.table = table;
@@ -143,8 +133,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		instance = this;
 
 		// get resource map
-		this.setResourceMap(
-						org.jdesktop.application.Application.getInstance(JakeMainApp.class)
+		this.setResourceMap(org.jdesktop.application.Application.getInstance(JakeMainApp.class)
 										.getContext().getResourceMap(NotesPanel.class));
 
 		//get core
@@ -164,8 +153,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 		//final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
-		this.notesTable.addMouseListener(
-						new NoteContainerMouseListener(this, this.notesTable,
+		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable,
 										this.notesTableModel));
 
 		// install event table update timer
@@ -184,25 +172,15 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	public void valueChanged(ListSelectionEvent e) {
 		if (this.notesTable.getSelectedRow() == -1) {
 			this.noteReader.setText("");
+			this.noteReader.setEditable(false);
 			this.notifyNoteSelectionListeners(new ArrayList<AttributedJakeObject<NoteObject>>());
 		} else {
 			String text;
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow())
 							.getJakeObject().getContent();
 			this.noteReader.setText(text);
-			this.noteReader.setEditable(true);
 
-			// TODO: this is wrong, fix!!! (equals, etc)
-			if (this.getSelectedNote().isLocked()){ // the file is locked
-				if (this.core.getLockOwner(getSelectedNote().getJakeObject()).getUserId()
-								.equals(JakeMainApp.getProject().getUserId())) {
-					// local user has lock
-					this.noteReader.setEditable(true);
-				} else {
-					//somone else has the lock
-					this.noteReader.setEditable(false);
-				}
-			}
+			this.noteReader.setEditable(JakeHelper.isEditable(getSelectedNote()));
 		}
 
 		List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
@@ -212,16 +190,21 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notifyNoteSelectionListeners(selectedNotes);
 	}
 
+	/**
+	 * Get the first of the selected notes. if no notes are selected, <code>null</code> is returned
+	 * instead.
+	 * @return the first note of the selectedNotes, if notes are selected, <code>null</code>instead.
+	 */
 	private AttributedJakeObject<NoteObject> getSelectedNote() {
-		if (getSelectedNotes().size() > 0) return getSelectedNotes().get(0);
-		else return null;
+		if (getSelectedNotes().size() > 0) {
+			return getSelectedNotes().get(0);
+		}
+		return null;
 	}
-
 
 	public ResourceMap getResourceMap() {
 		return this.resourceMap;
 	}
-
 
 	public void setResourceMap(ResourceMap resourceMap) {
 		this.resourceMap = resourceMap;
@@ -232,7 +215,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 	/**
-	 * Get the current Project.
+	 * Set the current Project.
 	 *
 	 * @param currentProject
 	 */
@@ -243,7 +226,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ignored) {
-		//log.info("received projectChangedEvent: " + ignored.toString());
 		this.notesTableModel.update();
 		this.notesTable.updateUI();
 	}
@@ -275,7 +257,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.notesTable.setSortable(true);
 		this.notesTable.setColumnControlVisible(true);
 
-		// FIXME: set column with for soft lock and shared note
 		this.notesTable.getColumnModel().getColumn(0).setResizable(false); // lock
 		this.notesTable.getColumnModel().getColumn(0).setMaxWidth(20);
 		this.notesTable.getColumnModel().getColumn(1).setResizable(false); // shared note
@@ -362,14 +343,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteSelectionListeners.remove(listener);
 	}
 
-	public void notifyNoteSelectionListeners(
-					List<AttributedJakeObject<NoteObject>> selectedNotes) {
+	public void notifyNoteSelectionListeners(List<AttributedJakeObject<NoteObject>> selectedNotes) {
 
 		log.debug("notify note selection listeners");
 
 		for (NoteSelectionChanged listener : this.noteSelectionListeners) {
-			listener.noteSelectionChanged(
-							new NoteSelectionChanged.NoteSelectedEvent(selectedNotes));
+			listener.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(selectedNotes));
 		}
 	}
 
