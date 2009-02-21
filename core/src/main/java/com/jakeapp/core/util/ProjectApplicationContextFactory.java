@@ -23,6 +23,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 
 /**
  * A factory that creates and configures spring application contexts.
@@ -134,6 +135,16 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		}
 		return allmembers;
 	}
+
+    /**
+     * Returns a new instance of an AllProjectsFilesFuture belonging to the corresponding project.
+     * @param project The Project in question
+     * @return an AllProjectFilesFuture
+     */
+    public AllProjectFilesFuture getAllProjectFilesFuture(Project project)
+    {
+        return (AllProjectFilesFuture) getApplicationContext(project).getBean("allProjectFilesFuture");
+    }
 
 	/**
 	 * Get the <code>ApplicationContext</code> for a given <code>

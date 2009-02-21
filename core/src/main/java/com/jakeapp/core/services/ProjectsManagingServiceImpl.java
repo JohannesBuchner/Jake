@@ -14,7 +14,6 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
-import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -627,7 +626,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	public AvailableLaterObject<Integer> getProjectFileCount(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
 
-        log.debug("\t\tCalling getProjectFileCount");
+        log.debug("\n\n\n\n\n\n\t\tCalling getProjectFileCount");
 
 
 		AvailableLaterWrapperObject<Integer, List<FileObject>> sizeFuture;
@@ -644,7 +643,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
 
-        log.debug("\t\tCalling getProjectSizeTotal");
+        log.debug("\n\n\n\n\t\tCalling getProjectSizeTotal");
 
 
 		AvailableLaterWrapperObject<Long, List<FileObject>> sizeFuture;
@@ -664,8 +663,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	@Override
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException {
-        log.debug("\t\tCalling getAllProjectFiles");
-		return new AllProjectFilesFuture(getApplicationContextFactory(), project);
+        log.debug("\n\n\n\t\tCalling getAllProjectFiles");
+
+        return getApplicationContextFactory().getAllProjectFilesFuture(project); 
 	}
 
 	@Override

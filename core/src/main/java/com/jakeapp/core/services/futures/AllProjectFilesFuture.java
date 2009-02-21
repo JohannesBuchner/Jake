@@ -39,11 +39,13 @@ public class AllProjectFilesFuture extends
 	}
 
 
+
+
     public AllProjectFilesFuture(ProjectApplicationContextFactory
             applicationContextFactory, Project project) {
 		super(new ArrayList<FileObject>());
 
-        log.debug("Creating a AllProjectFilesFuture");
+        log.debug("\n\n\n\n\n\n\n\n\nCreating a AllProjectFilesFuture\n\n\n\n\n\n\n\n\n");
 
 		this.applicationContextFactory = applicationContextFactory;
         this.project = project;
@@ -78,7 +80,7 @@ public class AllProjectFilesFuture extends
 //
 //        log.debug("open session");
 //        sf.openSession();
-        log.debug("Calculating the  AllProjectFilesFuture");
+        log.debug("\n\n\n\n\n\n\n\n\nCalculating the  AllProjectFilesFuture\n\n\n\n\n\n\n\n\n");
 
         List<FileObject> result = new ArrayList<FileObject>();
         result = this.applicationContextFactory.getFileObjectDao(project).getAll();
@@ -91,6 +93,8 @@ public class AllProjectFilesFuture extends
 
 
         result.add(new FileObject(project, "blabla"));
+
+        log.debug("\n\n\n\n\n\n\n\n\nfinished calculation\n\n\n\n\n\n\n\n\n");
 
         return result;
 

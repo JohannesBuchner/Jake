@@ -546,6 +546,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project) {
+        log.debug("Calling getAllProjectFiles");
 		AvailableLaterObject<List<FileObject>> result = null;
 		Exception ex = null;
 
@@ -623,6 +624,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 						//get an appropriate FileObject - with the real UUID
 						//The UUid may still be null e.g. if the file only exists locally
 						//and has just been detected.
+                        log.debug(f);
 						fo.addFile(pms.getFileObjectByRelPath(prj, f));
 					} else if (fss.folderExists(relPath)) {
 						FolderObject subfolder = recursiveFileSystemHelper(prj, f,
