@@ -197,7 +197,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		Project project = new Project(name, UUID.randomUUID(), msgService,
 				  projectRoot);
 
-
 		// add Project to the global database
 		try {
 			project = this.getProjectDao().create(project);
@@ -205,7 +204,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 			log.error("Opening a project failed: Project was invalid");
 			throw new IllegalArgumentException();
 		}
-
 
 		// create and initialize the Project's root folder
 		/*
@@ -229,17 +227,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		// Open the project
 		this.openProject(project);
 
-
-		// create an applicationContext for the Project
-		// this.applicationContextFactory.getApplicationContext(project);
-
-
-		project.setMessageService(msgService);
-		//if (msgService != null)
-		//	project.setUserId(msgService.getUserId());
-
+		// welcome the user
+		// TODO: only attach on the first created project!
 		attachTestNotes(project);
-
 
 		return project;
 	}
@@ -252,7 +242,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		INoteObjectDao noteObjectDao = this.getApplicationContextFactory().getNoteObjectDao(project);
 		List<NoteObject> notesList = new ArrayList<NoteObject>();
 
-
+		// these are local notes, they don't have a log entry
 		notesList.add(new NoteObject(UUID.randomUUID(), project, "Create Notes for your Project and share them with your friends."));
 		notesList.add(new NoteObject(UUID.randomUUID(), project, "Everyone can add, change or remove the project notes."));
 
@@ -494,6 +484,16 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return result;
 	}
 
+	/**
+	 * Assigns a User Id to the Project.
+	 * Called only once, to bind user and project.
+	 * It's not supposed to change an already bound user id.
+	 *
+	 * @param project the Project to set the UserId
+	 * @param userId	the UserId to be set
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@Transactional
 	@Override
 	public void assignUserToProject(Project project, UserId userId)
@@ -501,11 +501,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 		// Check preconditions
 		if (project == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Project is null");
 		if (userId == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("User ID is null");
 		if (project.getUserId() != null)
-			throw new IllegalStateException();
+			throw new IllegalStateException("Project already has a user Id: " + project.getUserId());
 
 		// connect userId and project
 		project.setUserId(userId);
@@ -528,10 +528,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	 *
 	 * @param project Project to add a member to. Must not be null.
 	 * @param userId  Member to add. Must not be null.
+	 * @return 		    the ProjectMember added
 	 */
 	@Transactional
 	private ProjectMember addProjectMember(Project project, UserId userId) {
-		log.debug("Adding ProjectMember to Project: " + project + ';' + userId);
+		log.debug("Adding ProjectMember to Project: " + project + ';' + userId.getUuid());
 
 		IProjectMemberDao dao;
 		ProjectMember member;
@@ -542,6 +543,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		// create ProjectMember and add it to Project
 		member = new ProjectMember(userId.getUuid(), userId.getNickname(), this
 				  .getDefaultTrustState());
+
 		member = dao.persist(project, member);
 
 		return member;
@@ -559,6 +561,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	 */
 	@Transactional
 	private ProjectMember getProjectMember(Project project, UserId userId) {
+		log.debug("getting project member for " + userId);
 		/*
 		 * verlaesst sich auf userid.getUUid == projectMember.getUUid
 		 */
@@ -566,6 +569,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		try {
 			return this.getProjectMemberDao(project).get(userId.getUuid());
 		} catch (NoSuchProjectMemberException e) {
+			log.warn("Project Member not found", e);
 			return null;
 		}
 	}
@@ -582,8 +586,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 			throw new IllegalArgumentException("project is null");
 		if (userId == null)
 			throw new IllegalArgumentException("user id is null");
-		if (project.getUserId() != null)
-			throw new IllegalAccessException("User ID of the project is not null. (is: " + project.getUserId()+")");
+		if (project.getUserId() == null)
+			throw new IllegalAccessException("User ID of the project is null.");
 
 		dao = this.getProjectMemberDao(project);
 
@@ -607,9 +611,20 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	 * sends an Invitation to another ProjectMember
 	 *
 	 * @param project
+	 * @param userId
 	 */
 	private void inviteMember(Project project, UserId userId) {
-		this.getSyncService().invite(project, userId);
+		if (project.getUserId() == null) {
+			throw new IllegalArgumentException(
+							"Project needs a UserId before a member can be invited.");
+		}
+
+		// this is perfectly ok, invite is called on ourself in setTrust (assignUserToProject)
+		if (project.getUserId().equals(userId)) {
+			log.info("Not inviting myself.");
+		} else {
+			this.getSyncService().invite(project, userId);
+		}
 	}
 
 	@Transactional
@@ -827,16 +842,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		ProjectMember member;
 		UserId id;
 
-
 		log.info("invite project: " + project + " userid: " +
 				  userid + " msgservice: " + project.getMessageService());
 
-
-		/* FIXME Hack. There is not reason why the MsgService is not set already. */
-		//if (project.getMessageService() == null) project.setMessageService(this.getMsgService());
-
 		id = project.getMessageService().getUserId(userid);
-		log.debug("extracted the userid to invite: " + userid + userid != null);
+		log.debug("extracted the userid to invite: " + userid);
 
 		member = this.addProjectMember(project, id);
 		this.getSyncService().invite(project, id);

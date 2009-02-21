@@ -275,6 +275,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	public void startProject(Project project) {
+		log.info("Starting project: " + project);
 
 		// HACK: create ChangeListener and add to
 
@@ -303,8 +304,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				}
 			};
 
+			// actual project start
 			this.getFrontendService().getProjectsManagingService(this.getSessionId())
 							.startProject(project, syncChangeListener);
+
 		} catch (IllegalArgumentException e) {
 			log.debug("Illegal project for starting specified.", e);
 		} catch (FileNotFoundException e) {
@@ -532,9 +535,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fo = recursiveFileSystemHelper(project, "", "", pms.getFileServices(project),
 							pms);
 		} catch (IllegalArgumentException e) {
-			//empty implementation
+			log.warn("Error creating FolderObject", e);
 		} catch (IllegalStateException e) {
-			//empty implementation
+			log.warn("Error creating FolderObject", e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (ProjectNotLoadedException e) {
@@ -883,31 +886,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		Runnable runner = new Runnable() {
 			public void run() {
-				Project pr;
+				Project project;
+				IProjectsManagingService pms = frontendService.getProjectsManagingService(sessionId);
 
 				try {
 					// add Project to core-internal list
-					pr = frontendService.getProjectsManagingService(sessionId)
-									.createProject(name, path, msg);
+					project = pms.createProject(name, path, msg);
 
-					/*
-					* The project is created, but not started and no user is assigned to it.
-					*/
+					// add a user to the project
+					pms.assignUserToProject(project, msg.getUserId());
 
-					/* FIXME since there is only one user in the current implementation, it is added to the project! */
-					if (pr.getUserId() == null) {
-						try {
-							frontendService.getProjectsManagingService(sessionId)
-											.assignUserToProject(pr, pr.getMessageService().getUserId());
-							log.debug(
-											"After creation, the project's userid is: " + pr.getUserId());
-						} catch (IllegalAccessException e) {
-							// FIXME: is this expected? Why?
-							log.error("assigning the current iser id to project failed", e);
-						}
-					}
-
-					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(pr,
+					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 									ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
 				} catch (FrontendNotLoggedInException e) {
@@ -916,6 +905,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
 				} catch (FileNotFoundException e) {
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+				} catch (IllegalAccessException e) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 				}
 			}

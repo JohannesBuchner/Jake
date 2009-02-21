@@ -1,22 +1,18 @@
 package com.jakeapp.core.services;
 
-import java.io.File;
-import java.util.HashMap;
-
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.jake.test.FSTestCommons;
+import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.services.IFrontendService;
-import com.jakeapp.core.services.IProjectsManagingService;
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.jake.test.FSTestCommons;
-import com.jakeapp.jake.test.TmpdirEnabledTestCase;
+import java.io.File;
+import java.util.HashMap;
 
 
 public class TestFrontendUsage extends TmpdirEnabledTestCase {
@@ -56,6 +52,11 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				msg);
 		Assert.assertNotNull(project.getMessageService());
+		Assert.assertNull(project.getUserId());
+
+		// now assign the user id
+		pms.assignUserToProject(project, msg.getUserId());
+
 		Assert.assertNotNull(project.getUserId());
 
 		Assert.assertEquals(1, pms.getProjectMembers(project).size());
@@ -83,13 +84,13 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				null);
 		Assert.assertNull(project.getMessageService());
-		// Assert.assertNull(project.getUserId().getUuid());
 
 		ServiceCredentials cred = new ServiceCredentials(id, password);
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		pms.assignUserToProject(project, msg.getUserId());
+		project.setMessageService(msg);
 
 		Assert.assertNotNull(project.getMessageService());
 

@@ -163,8 +163,6 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	public T getUserId() {
-
-
 		return this.userId;
 	}
 
@@ -232,8 +230,7 @@ public abstract class MsgService<T extends UserId> {
 	 * Creates an account for the Service, with the specified
 	 * ServiceCredentials. You have to have setCredentials first.
 	 *
-	 * @return success status
-	 * @throws Exception
+	 * @throws NetworkException
 	 */
 	public abstract void createAccount() throws NetworkException;
 

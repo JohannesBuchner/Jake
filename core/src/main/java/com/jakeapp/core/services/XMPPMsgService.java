@@ -1,26 +1,19 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.dao.exceptions.NoSuchUserIdException;
 import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.XMPPUserId;
-import com.jakeapp.core.domain.exceptions.UserIdFormatException;
-import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
-import com.jakeapp.core.dao.IUserIdDao;
-import com.jakeapp.core.dao.exceptions.NoSuchUserIdException;
+import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.UserId;
+import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.ArrayList;
-import java.util.LinkedList;
-
-import org.apache.log4j.Logger;
 
 /**
  * Implementation of the MessageService for the XMPP Messaging Protocol
@@ -222,16 +215,19 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 		// "todo surname"));
 
 
+
 		if (this.userId == null) {
 			log.debug("current userid is null");
 
 			try {
+				if(this.getServiceCredentials() != null) {
 				setUserId(XMPPUserId.createFromUserId(getUserIdDao()
 						.get(
 								UUID.fromString(this.getServiceCredentials()
 										.getUuid())))
 
 				);
+				}
 				return this.userId;
 			} catch (InvalidUserIdException e) {
 				log.debug("InvalidUserIdException couldn't get UserId");

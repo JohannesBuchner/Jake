@@ -36,35 +36,38 @@ public class Project implements ILogable {
 	private static final long serialVersionUID = 4634971877310089896L;
 	private String name;
 	private UUID projectId;
-
-	private transient MsgService messageService;
 	private File rootPath;
+	private UserId userId;
+	private ServiceCredentials credentials;
+
+	// TODO: setting the MsgService here is really ugly
+	// Is there no way to just fetch the appropiate MsgService from the UserID?
+	// Seems inconsistent to me, because there may be a difference between
+	// userID and msgService.getUserId! @pstein
+	private transient MsgService messageService;
+	
 	private transient boolean started;
 	private transient boolean open;
 	private transient boolean autoAnnounceEnabled = true;
 	private transient boolean autoPullEnabled = true;
 	private transient boolean autologin;
-	private UserId userId;
-	private ServiceCredentials credentials;
 	private transient InvitationState invitationState = InvitationState.ACCEPTED;
 
 	/**
 	 * Construct a Project. Freshly constructed projects are always stopped.
 	 *
-	 * @param name		 the name of the project
-	 * @param projectId  the unique projectId
+	 * @param name			 the name of the project
+	 * @param projectId	the unique projectId
 	 * @param msgService the <code>msgService</code> to be used
-	 * @param rootPath	the root path of the project, i.e.
+	 * @param rootPath	 the root path of the project, i.e.
 	 *                   the  path of the project folder.
 	 */
-	public Project(String name, UUID projectId,
-						MsgService msgService,
-						File rootPath) {
+	public Project(String name, UUID projectId, MsgService msgService, File rootPath) {
 		this.setName(name);
 		this.setProjectId(projectId);
-		this.setMessageService(msgService);
 		this.setRootPath(rootPath);
 		this.setCredentials(null);
+		this.setMessageService(msgService);
 	}
 
 
@@ -119,6 +122,12 @@ public class Project implements ILogable {
 		return this.messageService;
 	}
 
+	/**
+	 * Only set message service internal.
+	 * This is directly connected with UserId, so update it when this is changed.
+	 *
+	 * @param messageService	the MsgService connected with the project.
+	 */
 	public void setMessageService(MsgService messageService) {
 		this.messageService = messageService;
 	}
@@ -213,9 +222,11 @@ public class Project implements ILogable {
 		return this.userId;
 	}
 
+
 	public void setUserId(UserId userId) {
 		this.userId = userId;
 	}
+
 
 	/**
 	 * AutoLogin determines, if the project should automatically
@@ -279,7 +290,7 @@ public class Project implements ILogable {
 	/**
 	 * @return the invitationState
 	 */
-//    @Transient // TODO change here to save invitation state
+	//    @Transient // TODO change here to save invitation state
 	@Column(name = "invitationstate")
 	public InvitationState getInvitationState() {
 		return invitationState;
@@ -288,7 +299,7 @@ public class Project implements ILogable {
 	/**
 	 * Convenicence Methode for getInvitationState.
 	 *
-	 * @return: true if project is invited only.
+	 * @return true if project is invited only.
 	 */
 	@Transient
 	public boolean isInvitation() {
@@ -302,9 +313,7 @@ public class Project implements ILogable {
 	 */
 	@Override
 	public String toString() {
-		return "Project " + getName() + "(" + getProjectId() + "), "
-				+ getRootPath() + " user: " + getUserId() + " started: " + isStarted() + " state: "
-				+ getInvitationState();
+		return "Project " + getName() + "(" + getProjectId() + "), " + getRootPath() + " user: " + getUserId() + " started: " + isStarted() + " state: " + getInvitationState();
 	}
 
 	/**
@@ -359,14 +368,11 @@ public class Project implements ILogable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.name == null) ? 0
-				  : this.name.hashCode());
-		result = prime * result
-				  + ((this.projectId == null) ? 0 : this.projectId.hashCode());
-		result = prime * result
-				  + ((this.rootPath == null) ? 0 : this.rootPath.hashCode());
+		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result + ((this.projectId == null) ? 0 : this.projectId
+						.hashCode());
+		result = prime * result + ((this.rootPath == null) ? 0 : this.rootPath
+						.hashCode());
 		return result;
 	}
-
-
 }

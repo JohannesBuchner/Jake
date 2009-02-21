@@ -207,7 +207,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * @return
 	 */
 	private JPanel createAddUserPanel() {
-		log.debug("creting add user panel...");
+		log.debug("creating add user panel...");
 
 		// create the add user panel
 		JPanel addUserPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
