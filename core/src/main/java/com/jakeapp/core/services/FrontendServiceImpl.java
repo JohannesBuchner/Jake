@@ -273,7 +273,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
 			final boolean rememberPassword) {
-		
+
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override

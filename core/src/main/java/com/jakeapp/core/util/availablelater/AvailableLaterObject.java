@@ -1,6 +1,7 @@
 package com.jakeapp.core.util.availablelater;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * provides a method of providing the result later. The
@@ -23,6 +24,8 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	protected AvailabilityListener<T> listener;
 
 	protected Semaphore s = new Semaphore(0);
+	
+	private AtomicBoolean alreadyStarted = new AtomicBoolean(false);
 
 	/* server functions */
 	protected void set(T o) {
@@ -92,7 +95,17 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	 * @return
 	 */
 	public AvailableLaterObject<T> start() {
-		new Thread(this).start();
+		if (!this.setAlreadyStarted())
+			new Thread(this).start();
+			
 		return this;
+	}
+
+	private boolean setAlreadyStarted() {
+		return this.alreadyStarted.getAndSet(true);
+	}
+
+	protected boolean isAlreadyStarted() {
+		return this.alreadyStarted.get();
 	}
 }

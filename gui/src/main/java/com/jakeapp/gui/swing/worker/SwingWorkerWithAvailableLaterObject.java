@@ -40,6 +40,9 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 			error(e);
 		}
 		this.value.setListener(this);
+		
+		this.value.start();
+		
 		s.acquire();
 		if (exception != null)
 			throw exception;
