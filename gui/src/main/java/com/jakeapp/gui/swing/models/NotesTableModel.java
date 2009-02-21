@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -126,9 +127,13 @@ public class NotesTableModel extends DefaultTableModel {
 				value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
 				break;
 			case 4: //last editor
-				value = note.getLastVersionProjectMember();
+				ProjectMember pm = note.getLastVersionProjectMember();
+				if (pm != null) {
+					value = pm.getNickname();
+				} else {
+					value = "-";
+				}
 				break;
-
 			default:
 				value = "illegal column count!";
 				log.warn("column count out of range. Range is 0-2, actually was :" + Integer.toString(row));

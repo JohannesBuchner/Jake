@@ -696,8 +696,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void deleteNote(NoteObject note) throws NoteOperationFailedException {
 		try {
-			this.frontendService.getSyncService(this.sessionId)
-							.announce(note, LogAction.JAKE_OBJECT_DELETE, "");
+			this.frontendService.getProjectsManagingService(this.getSessionId()).deleteNote(note);
 		} catch (Exception e) {
 			throw new NoteOperationFailedException(e);
 		}
