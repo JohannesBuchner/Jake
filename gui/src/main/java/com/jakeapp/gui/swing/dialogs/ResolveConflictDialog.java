@@ -4,12 +4,19 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
+import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.JakeAction;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.FileObjectHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.GuiUtilities;
+import com.jakeapp.gui.swing.helpers.StringUtilities;
+import com.jakeapp.gui.swing.helpers.Translator;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
@@ -26,7 +33,7 @@ import java.awt.event.ActionListener;
  */
 public class ResolveConflictDialog extends JakeDialog {
 	private static final Logger log = Logger.getLogger(ResolveConflictDialog.class);
-	private FileObject fo;
+	private AttributedJakeObject<FileObject> fo;
 	private JButton resolveBtn;
 	private JRadioButton useLocalRadioButton;
 	private JRadioButton useRemoteRadioButton;
@@ -38,21 +45,24 @@ public class ResolveConflictDialog extends JakeDialog {
 	 * @param project
 	 * @param fo
 	 */
-	private ResolveConflictDialog(Project project, FileObject fo) {
+	private ResolveConflictDialog(Project project,
+					AttributedJakeObject<FileObject> fo) {
 		super(project);
 		log.info("Opening ResolveConflictDialog on " + project + " with file: " + fo);
 
 		this.fo = fo;
 
 		// load the resource map
-		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  JakeMainApp.class).getContext()
-				  .getResourceMap(ResolveConflictDialog.class));
+		setResourceMap(
+						org.jdesktop.application.Application.getInstance(JakeMainApp.class)
+										.getContext().getResourceMap(ResolveConflictDialog.class));
 
 		initDialog();
 
 		// set custom properties
-		setDialogTitle(getResourceMap().getString("resolveTitle") + " " + FileObjectHelper.getName(fo.getRelPath()));
+		setDialogTitle(
+						getResourceMap().getString("resolveTitle") + " " + FileObjectHelper
+										.getName(fo.getJakeObject().getRelPath()));
 		setMessage("resolveHeader");
 		setPicture("/icons/file-conflict-large.png");
 	}
@@ -62,7 +72,8 @@ public class ResolveConflictDialog extends JakeDialog {
 	protected JButton initComponents() {
 
 		// create the custom content for resolve conflict. (with row gaps)
-		JPanel customPanel = new JPanel(new MigLayout("wrap 3, ins 0, fill", "", "[]unrel[]rel[]"));
+		JPanel customPanel = new JPanel(
+						new MigLayout("wrap 3, ins 0, fill", "", "[]unrel[]rel[]"));
 
 		JPanel hyp = new JPanel(new MigLayout("nogrid, ins 0, fill"));
 
@@ -71,14 +82,15 @@ public class ResolveConflictDialog extends JakeDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GuiUtilities.selectFileInFileViewer(FileObjectHelper.getPath(JakeMainApp.getCore().getFile(fo)));
+					GuiUtilities.selectFileInFileViewer(
+									FileObjectHelper.getPath(JakeMainApp.getCore().getFile(fo.getJakeObject())));
 				} catch (FileOperationFailedException ex) {
 					ExceptionUtilities.showError(ex);
 				}
 			}
 		});
 		// surround with html to wrap text
-		path.setText(FileUtilities.getAbsPath(fo));
+		path.setText(FileUtilities.getAbsPath(fo.getJakeObject()));
 
 		//TODO: works on windows only?
 		path.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -95,18 +107,23 @@ public class ResolveConflictDialog extends JakeDialog {
 
 		// demermine the differences
 		boolean localLarger = core.getLocalFileSize(fo) < core.getFileSize(fo);
-		boolean localNewer = core.getLocalFileLastModified(fo).after(core.getFileLastModified(fo));
+		boolean localNewer = core.getLocalFileLastModified(fo).after(fo).);
 
-		JLabel localLabel = new JLabel("<html>" + getResourceMap().getString("localLabelBegin") + " " +
-				  StringUtilities.boldIf(FileObjectHelper.getLocalSizeHR(fo), localLarger) + ", " +
-				  StringUtilities.boldIf(FileObjectHelper.getLocalTime(fo) + " ("
-							 + FileObjectHelper.getLocalTimeRel(fo) + ")", localNewer) + "</html>");
+		JLabel localLabel = new JLabel("<html>" + getResourceMap()
+						.getString("localLabelBegin") + " " + StringUtilities
+						.boldIf(FileObjectHelper.getLocalSizeHR(fo),
+										localLarger) + ", " + StringUtilities
+						.boldIf(FileObjectHelper.getLocalTime(fo) + " (" + FileObjectHelper
+										.getLocalTimeRel(fo) + ")", localNewer) + "</html>");
 		JButton viewLocal = new JButton(getResourceMap().getString("openFileButton"));
 
-		JLabel remoteLabel = new JLabel("<html><font color=red>" + FileObjectHelper.getLastModifier(fo) + "</font>" + getResourceMap().getString("remoteLabelBegin") + " " +
-				  StringUtilities.boldIf(FileObjectHelper.getSizeHR(fo), !localLarger) + ", " +
-				  StringUtilities.boldIf(FileObjectHelper.getTime(fo) + " ("
-							 + FileObjectHelper.getTimeRel(fo) + ")", !localNewer) + "</html>");
+		JLabel remoteLabel = new JLabel("<html><font color=red>" + FileObjectHelper
+						.getLastModifier(fo) + "</font>" + getResourceMap()
+						.getString("remoteLabelBegin") + " " + StringUtilities
+						.boldIf(FileObjectHelper.getSizeHR(fo),
+										!localLarger) + ", " + StringUtilities
+						.boldIf(FileObjectHelper.getTime(fo) + " (" + FileObjectHelper
+										.getTimeRel(fo) + ")", !localNewer) + "</html>");
 		JButton viewRemote = new JButton(getResourceMap().getString("openFileButton"));
 
 		ActionListener updateResolveAction = new ActionListener() {
@@ -116,7 +133,8 @@ public class ResolveConflictDialog extends JakeDialog {
 			}
 		};
 
-		useLocalRadioButton = new JRadioButton(getResourceMap().getString("resolveMyButton"));
+		useLocalRadioButton = new JRadioButton(
+						getResourceMap().getString("resolveMyButton"));
 		useLocalRadioButton.addActionListener(updateResolveAction);
 		useRemoteRadioButton = new JRadioButton(getUseRemoteFileString());
 		useRemoteRadioButton.addActionListener(updateResolveAction);
@@ -172,14 +190,8 @@ public class ResolveConflictDialog extends JakeDialog {
 	}
 
 	private String getUseRemoteFileString() {
-		try {
 			return Translator.get(getResourceMap(), "resolveThemButton",
-					  UserHelper.getNickOrFullName(JakeMainApp.getCore().getLastModifier(fo)));
-		} catch (NoSuchLogEntryException e) {
-			log.error(e);
-			ExceptionUtilities.showError(e);
-			return "";
-		}
+							UserHelper.getNickOrFullName(fo.getLastVersionLogEntry().getMember()));
 	}
 
 	/**

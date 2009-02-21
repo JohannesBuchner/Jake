@@ -70,10 +70,7 @@ public class JakeHelper {
 	 * local user. <code>false</code> else, i.e. if the JakeObject is locked by someone.
 	 */
 	public static boolean isEditable (AttributedJakeObject<? extends JakeObject> attributedJakeObject) {
-		if (attributedJakeObject.isLocked()) {
-			return JakeMainApp.getCore().getLockOwner(attributedJakeObject.getJakeObject()).getUserId()
-			.equals(JakeMainApp.getProject().getUserId());
-		}
-		return true;
+		return !attributedJakeObject.isLocked() || attributedJakeObject.getLockLogEntry()
+						.getMember().equals(JakeMainApp.getProject().getUserId());
 	}
 }

@@ -676,9 +676,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return list of people in this project OR empty list.
 	 */
-	public List<UserInfo> getPeople(Project project)
+	public List<UserInfo> getProjectUser(Project project)
 					throws PeopleOperationFailedException {
-		log.info("getPeople from project " + project);
+		log.info("getProjectUser from project " + project);
 
 		List<UserInfo> users = new ArrayList<UserInfo>();
 
@@ -692,6 +692,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (NoSuchProjectException ex) {
 			throw new PeopleOperationFailedException(ex);
 		}
+	}
+
+	@Override
+	public UserInfo getUserInfo(UserId user) {
+		return pms.getProjectUserInfo(JakeMainApp.getProject(), user);
 	}
 
 	@Override

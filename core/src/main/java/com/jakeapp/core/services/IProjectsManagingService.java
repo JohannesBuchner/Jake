@@ -301,6 +301,16 @@ public interface IProjectsManagingService {
 
 
 	/**
+	 * Return a UserInfo for a User.
+	 *
+	 * @param project
+	 * @param user
+	 * @return
+	 */
+	public UserInfo getProjectUserInfo(Project project, UserId user);
+
+
+	/**
 	 * @param jakeObject
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
 	 */

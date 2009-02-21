@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 
@@ -51,15 +51,15 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		boolean isProjectMember = index == 0;
 
-		UserId user = (UserId) value;
+		UserInfo user = (UserInfo) value;
 
-		String nickOrFullName = UserHelper.getNickOrFullName(user);
+		String nickOrFullName = UserHelper.getNickOrFullName(user.getUser());
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";
 		String shortStatusStr;
 
-		shortStatusStr = user.getUserId();
+		shortStatusStr = user.getUser().getUserId();
 
 		String valStr;
 
@@ -78,13 +78,9 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		// We additionally set the JLabels icon property here.
 
-		TrustState memberTrust = user.getTrustState();
+		TrustState memberTrust = user.getTrust();
 
-		// TODO: substitute with online/offline check!
-		// FIXME: Hack, Hack, Hack
-		boolean online = JakeMainApp.getCore().isOnline(user);
-
-		if (online) {
+		if (user.isOnline()) {
 			switch (memberTrust) {
 				case AUTO_ADD_REMOVE: {
 					setIcon(onlineFullTrustIcon);
@@ -99,7 +95,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 				}
 			}
 		} else {
-			switch (user.getTrustState()) {
+			switch (user.getTrust()) {
 				case AUTO_ADD_REMOVE: {
 					setIcon(offlineFullTrustIcon);
 				}
@@ -140,7 +136,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		// TODO: add first/surname!
 		setToolTipText(
-						"<html><b>" + user.getNickname() + "</b><br>" + statusStr + "</html>");
+						"<html><b>" + user.getNickName() + "</b><br>" + statusStr + "</html>");
 		// set the tooltip text
 		/*
 		MsgService msg = JakeMainApp.getCore().getMsgService(user);

@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.controls;
 
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.synchronization.UserInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ public class PeopleListCellEditor extends DefaultCellEditor implements ListCellE
 	 * @return
 	 */
 	public Component getListCellEditorComponent(JList list, Object value, boolean isSelected, int index) {
-		delegate.setValue(((ProjectMember) value).getNickname());
+		delegate.setValue(((UserInfo) value).getNickName());
 		return editorComponent;
 	}
 }

@@ -50,4 +50,8 @@ public class UserInfo {
 	public UserId getUser() {
 		return userId;
 	}
+
+	public boolean isOnline() {
+		return getStatus() == VisibilityStatus.ONLINE;
+	}
 }

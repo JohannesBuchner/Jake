@@ -52,7 +52,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				msg);
 		Assert.assertNotNull(project.getMessageService());
-		//Assert.assertNull(project.getUserId());
 
 		Assert.assertNotNull(project.getUserId());
 

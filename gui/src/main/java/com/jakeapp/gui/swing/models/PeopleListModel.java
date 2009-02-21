@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -12,26 +12,25 @@ import com.jakeapp.gui.swing.helpers.JakeHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Capsulates ProjectMember into a ListModel.
+ * Capsulates UserId into a ListModel.
  */
 public class PeopleListModel extends AbstractListModel
 		  implements MutableListModel, ProjectSelectionChanged, ProjectChanged {
 	private static final Logger log = Logger.getLogger(PeopleListModel.class);
 
-	private List<ProjectMember> people;
+	private List<UserInfo> people;
 	private Project project;
 
 	public PeopleListModel() {
 
-		this.people = new ArrayList<ProjectMember>();
+		this.people = new ArrayList<UserInfo>();
 		
 		// register for events
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
 		updateModel();
@@ -42,13 +41,7 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	public Object getElementAt(int i) {
-//		if (i == 0) {
-		// modify first projectMember(WE)
-//			ProjectMember member = people.get(0);
-//			return member;
-//		} else {
 		return this.people.get(i);
-//		}
 	}
 
 
@@ -58,9 +51,9 @@ public class PeopleListModel extends AbstractListModel
 
 	private void updateModel() {
 		try {
-			this.people = JakeMainApp.getApp().getCore().getPeople(getProject());
+			this.people = JakeMainApp.getCore().getProjectUser(getProject());
 		} catch (PeopleOperationFailedException e) {
-			this.people = new ArrayList<ProjectMember>();
+			this.people = new ArrayList<UserInfo>();
 			ExceptionUtilities.showError(e);
 		}
 
@@ -79,17 +72,13 @@ public class PeopleListModel extends AbstractListModel
 
 	@Override
 	public boolean isCellEditable(int index) {
-
 		// we are not editable!
-		if (index > 0)
-			return true;
-		else
-			return false;
+		return index > 0;
 	}
 
 	@Override
 	public void setValueAt(Object value, int index) {
-		if (!JakeMainApp.getApp().getCore().setPeopleNickname(getProject(), people.get(index), (String) value)) {
+		if (!JakeMainApp.getCore().setPeopleNickname(getProject(), people.get(index).getUser(), (String) value)) {
 
 			JakeHelper.showMsgTranslated("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
 

@@ -570,8 +570,15 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<UserInfo> getPeople(Project project)
+	public List<UserInfo> getProjectUser(Project project)
 					throws PeopleOperationFailedException;
+
+	/**
+	 * Get the UserInfo from a User
+	 * @param member
+	 * @return
+	 */
+	UserInfo getUserInfo(UserId member);	
 
 	/**
 	 * Sets the nickname of people. Checks for error

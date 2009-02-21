@@ -716,30 +716,37 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	@Transactional
-	public List<UserInfo> getProjectUserInfos(Project project) throws NoSuchProjectException {
+	public List<UserInfo> getProjectUserInfos(Project project)
+					throws NoSuchProjectException {
 		if (project == null) throw new NoSuchProjectException();
 
-		Collection<UserId> users = this.getLogEntryDao(project).getCurrentProjectMembers();
+		Collection<UserId> users = this.getLogEntryDao(project)
+						.getCurrentProjectMembers();
 
 		List<UserInfo> userInfos = new LinkedList<UserInfo>();
 
-		for(UserId user : users) {
-			Boolean trustb = this.getLogEntryDao(project).trusts(project.getUserId(), user);
-			TrustState state;
-
-			// TODO: TrustState.AUTO_ADD (or so) is missing!!!
-			if(trustb) {
-				state = TrustState.TRUST;
-			}else {
-				state = TrustState.NO_TRUST;
-			}
-
-			// TODO: fill in with useful data
-			UserInfo userInfo = new UserInfo(state, VisibilityStatus.ONLINE, "Nick", "First", "Last", user);
+		for (UserId user : users) {
+			UserInfo userInfo = getProjectUserInfo(project, user);
 			userInfos.add(userInfo);
 		}
 
 		return userInfos;
+	}
+
+	@Override
+	public UserInfo getProjectUserInfo(Project project, UserId user) {
+		Boolean trustb = this.getLogEntryDao(project).trusts(project.getUserId(), user);
+		TrustState state;
+
+		// TODO: TrustState.AUTO_ADD (or so) is missing!!!
+		if (trustb) {
+			state = TrustState.TRUST;
+		} else {
+			state = TrustState.NO_TRUST;
+		}
+
+		// TODO: fill in with useful data
+		return new UserInfo(state, VisibilityStatus.ONLINE, "Nick", "First", "Last", user);
 	}
 
 

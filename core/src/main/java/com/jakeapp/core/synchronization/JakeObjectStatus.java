@@ -2,6 +2,7 @@ package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.UserId;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,6 +55,19 @@ public class JakeObjectStatus {
 
 	public LogEntry getLastVersionLogEntry() {
 		return this.lastVersionLogEntry;
+	}
+
+	/**
+	 * Returns the Last Editor of this Object.
+	 * Failsafe variant.
+	 * @return returns null of no LogEntry
+	 */
+	public UserId getLastVersionEditor() {
+		if(getLastVersionLogEntry() != null) {
+			return getLastVersionLogEntry().getMember();
+		}else {
+			return null;
+		}
 	}
 
 	public LockStatus getLockStatus() {
