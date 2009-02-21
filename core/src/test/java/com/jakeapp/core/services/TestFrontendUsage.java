@@ -58,7 +58,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(1, pms.getProjectUsers(project).size());
 		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(
-				project).get(0).getUser().getUserId());
+				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
@@ -82,7 +82,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(1, pms.getProjectUsers(project).size());
 		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(
-				project).get(0).getUser().getUserId());
+				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
@@ -101,7 +101,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(1, pms.getProjectUsers(project).size());
 		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(
-				project).get(0).getUser().getUserId());
+				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}

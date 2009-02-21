@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.models;
 
-import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 
@@ -12,48 +12,46 @@ import java.util.List;
 /**
  * Special Model to preserve data
  *
- * @author: studpete
  */
 // FIXME: could be improved...
 public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 	public InvitePeopleComboBoxModel(Project project) {
-		super(convertToProxyMemberProjectList(JakeMainApp.getCore().getSuggestedUser(project)).toArray());
+		super(convertToProxyMemberProjectList(
+						JakeMainApp.getCore().getSuggestedUser(project)).toArray());
 	}
 
-	private static List<ProjectMemberProxy> convertToProxyMemberProjectList(List<ProjectMember> members) {
+	private static List<UserIdProxy> convertToProxyMemberProjectList(
+					List<UserId> members) {
 		// proxy
-		List<ProjectMemberProxy> list = new ArrayList<ProjectMemberProxy>();
+		List<UserIdProxy> list = new ArrayList<UserIdProxy>();
 
-		for (ProjectMember m : members) {
-			list.add(new ProjectMemberProxy(m));
+		for (UserId m : members) {
+			list.add(new UserIdProxy(m));
 		}
 		return list;
 	}
 
 
-	private static class ProjectMemberProxy {
-		private ProjectMember pm;
+	private static class UserIdProxy {
+		private UserId user;
 
-		public ProjectMemberProxy(ProjectMember pm) {
-			this.setPm(pm);
+		public UserIdProxy(UserId user) {
+			this.setUser(user);
 		}
 
 		@Override
 		public String toString() {
-			try {
-				return JakeMainApp.getCore().getProjectMemberID(JakeMainApp.getProject(),getPm()) + " (" + UserHelper
-								.getNickOrFullName(getPm(), 30) + ")";
-			} catch (NoSuchUserException e) {
-			}
-			return "";
+
+			return user.getUserId() + " (" + UserHelper
+							.getNickOrFullName(getUser(), 30) + ")";
 		}
 
-		public ProjectMember getPm() {
-			return pm;
+		public UserId getUser() {
+			return user;
 		}
 
-		public void setPm(ProjectMember pm) {
-			this.pm = pm;
+		public void setUser(UserId user) {
+			this.user = user;
 		}
 	}
 }
