@@ -34,6 +34,6 @@ public class FSTestCase {
 
 	@Test
 	public void notest() {
-		Assert.assertNotNull(mytempdir);
+		Assert.assertNull(null);
 	}
 }

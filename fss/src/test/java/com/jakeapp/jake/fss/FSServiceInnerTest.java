@@ -124,13 +124,16 @@ public class FSServiceInnerTest extends FSTestCase {
 	
 	@Override
 	@Before
-	@Prerequisite(checker = DesktopSupportedChecker.class)
+	//@Prerequisite(checker = DesktopSupportedChecker.class)  - does not work
 	public void setUp() throws Exception {
 		super.setUp();
-		fss = new FSService();
-		fss.setRootPath(mytempdir);
-		Assert.assertEquals("rootpath",mytempdir,fss.getRootPath());
-		Assert.assertFalse(fss.getRootPath().startsWith("/home"));
+		
+		if ((new DesktopSupportedChecker()).satisfy()) {
+			fss = new FSService();
+			fss.setRootPath(mytempdir);
+			Assert.assertEquals("rootpath",mytempdir,fss.getRootPath());
+			Assert.assertFalse(fss.getRootPath().startsWith("/home"));
+		}
 	}
 	
 }
