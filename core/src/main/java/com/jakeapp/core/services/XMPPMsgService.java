@@ -76,7 +76,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 			/*
 			try {
 				com.jakeapp.core.domain.UserId result = getUserIdDao().get(
-						this.getUserId());
+						this.getUser());
 				this.setUserId(XMPPUserId.createFromUserId(result));
 			} catch (NoSuchUserIdException e) {
 				e.printStackTrace();
@@ -84,8 +84,8 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 				XMPPUserId xmppResult = new XMPPUserId(this
 						.getServiceCredentials(), UUID.fromString(this
 						.getServiceCredentials().getUuid()), this
-						.getServiceCredentials().getUserId(), this
-						.getServiceCredentials().getUserId(), "", "");
+						.getServiceCredentials().getUser(), this
+						.getServiceCredentials().getUser(), "", "");
 
 				try {
 					getUserIdDao().create(xmppResult);
@@ -124,12 +124,12 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		// dbInput = getUserIdDao().getAll(this.getServiceCredentials());
 		//
 		// for (com.jakeapp.core.domain.UserId user : result) {
-		// userIds.add(user.getUserId());
+		// userIds.add(user.getUser());
 		// }
 		//
 		// for (UserId user : this.ics.getUsersService().getUsers()) {
 		//
-		// if (!userIds.contains(user.getUserId()))
+		// if (!userIds.contains(user.getUser()))
 		// try {
 		// result.add(
 		// XMPPUserId.createFromUserId(
@@ -138,13 +138,13 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		// new XMPPUserId(
 		// this.getServiceCredentials(),
 		// UUID.randomUUID(),
-		// user.getUserId(),
-		// user.getUserId(), "", ""
+		// user.getUser(),
+		// user.getUser(), "", ""
 		// )
 		// )
 		// )
 		// );
-		// userIds.add(user.getUserId());
+		// userIds.add(user.getUser());
 		// } catch (InvalidUserIdException e) {
 		// e.printStackTrace();
 		// }
@@ -162,13 +162,13 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	public UserId getUserId(String userId) throws UserIdFormatException {
-		log.debug("calling getUserId");
+		log.debug("calling getUser");
 
 		UserId result = new UserId(ProtocolType.XMPP, userId);
 		return result;
 
 		//
-		// if (super.getUserId() == null) {
+		// if (super.getUser() == null) {
 		// log.debug("current userid is null");
 		//
 		// try {
@@ -185,7 +185,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		// e.printStackTrace();
 		// }
 		//
-		// if (super.getUserId() == null) {
+		// if (super.getUser() == null) {
 		// log.debug("userid is still null");
 		// XMPPUserId result = new XMPPUserId(this.getServiceCredentials(), UUID
 		// .randomUUID(), "TODO test", "todo nickname", "todo firstname",

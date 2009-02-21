@@ -8,6 +8,7 @@ import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
@@ -569,7 +570,7 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<UserId> getPeople(Project project)
+	public List<UserInfo> getPeople(Project project)
 					throws PeopleOperationFailedException;
 
 	/**

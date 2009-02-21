@@ -302,7 +302,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		throw new IllegalStateException("pulling files not implemented yet");
 		// ts.request(jo.ge, nsl);
 		// TODO: getPotentialProviders
-		// if(le.getUserId().equals(userid))
+		// if(le.getUser().equals(userid))
 		// throw new com.jakeapp.core.dao.exceptions.NoSuchLogEntryException();
 
 		// if(!isLoggedIn(userid))

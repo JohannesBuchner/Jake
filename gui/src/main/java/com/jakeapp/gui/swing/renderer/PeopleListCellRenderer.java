@@ -1,10 +1,8 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 
 import javax.swing.*;
@@ -149,8 +147,8 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		user.
 
 			 setToolTipText("<html><font size=5>" + user..getFirstName() + " "
-						+ user.getUserId().getSurName() + "</font><br><b>'" +
-						user.getUserId().getNickname() +
+						+ user.getUser().getSurName() + "</font><br><b>'" +
+						user.getUser().getNickname() +
 						"'</b><br>" + statusStr + "</html>");
 		*/
 		return this;

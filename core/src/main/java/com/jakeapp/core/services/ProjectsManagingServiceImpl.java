@@ -15,6 +15,7 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
@@ -714,10 +715,39 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	@Override
 	@Transactional
-	public List<UserId> getProjectMembers(Project project) throws NoSuchProjectException {
+	public List<UserId> getProjectUsers(Project project) throws NoSuchProjectException {
 		if (project == null) throw new NoSuchProjectException();
 
-		return new LinkedList<UserId>(this.getLogEntryDao(project).getCurrentProjectMembers());
+		return this.getLogEntryDao(project).getCurrentProjectMembers();
+	}
+
+
+	@Override
+	@Transactional
+	public List<UserInfo> getProjectUserInfos(Project project) throws NoSuchProjectException {
+		if (project == null) throw new NoSuchProjectException();
+
+		Collection<UserId> users = this.getLogEntryDao(project).getCurrentProjectMembers();
+
+		List<UserInfo> userInfos = new LinkedList<UserInfo>();
+
+		for(UserId user : users) {
+			Boolean trustb = this.getLogEntryDao(project).trusts(project.getUserId(), user);
+			TrustState state;
+
+			// TODO: TrustState.AUTO_ADD (or so) is missing!!!
+			if(trustb) {
+				state = TrustState.TRUST;
+			}else {
+				state = TrustState.NO_TRUST;
+			}
+
+			// TODO: fill in with useful data
+			UserInfo userInfo = new UserInfo(state, VisibilityStatus.ONLINE, "Nick", "First", "Last", user);
+			userInfos.add(userInfo);
+		}
+
+		return userInfos;
 	}
 
 

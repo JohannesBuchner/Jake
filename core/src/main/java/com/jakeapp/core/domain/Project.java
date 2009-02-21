@@ -43,7 +43,7 @@ public class Project implements ILogable {
 	// TODO: setting the MsgService here is really ugly
 	// Is there no way to just fetch the appropiate MsgService from the UserID?
 	// Seems inconsistent to me, because there may be a difference between
-	// userID and msgService.getUserId! @pstein
+	// userID and msgService.getUser! @pstein
 	private transient MsgService messageService;
 	
 	private transient boolean started;

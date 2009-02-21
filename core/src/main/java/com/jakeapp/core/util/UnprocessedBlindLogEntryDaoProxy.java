@@ -85,7 +85,9 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	}
 
 	/**
+	 * @param jakeObject
 	 * @see ILogEntryDao#getAllVersionsOfJakeObject(JakeObject, boolean)
+	 * @return
 	 */
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(
 			T jakeObject) {
@@ -94,8 +96,9 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 
 	/**
 	 * @see ILogEntryDao#getCurrentProjectMembers()
+	 * @return
 	 */
-	public Collection<UserId> getCurrentProjectMembers() {
+	public List<UserId> getCurrentProjectMembers() {
 		return this.innerDao.getCurrentProjectMembers();
 	}
 

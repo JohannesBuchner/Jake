@@ -125,7 +125,7 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 
 			// TODO: is this user id the id from the inviter?
 			// TODO: enable when this works without mock!
-			String userId = "<needs real impl>"; //getProject().getUserId().toString();
+			String userId = "<needs real impl>"; //getProject().getUser().toString();
 			userNameLabel.setText(JakeMainView.getMainView().getResourceMap().getString("projectInvitedFrom") + " " + userId);
 		}
 	}

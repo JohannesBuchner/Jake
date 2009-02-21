@@ -492,7 +492,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public Collection<UserId> getCurrentProjectMembers() {
+	public List<UserId> getCurrentProjectMembers() {
 		Map<UserId, List<UserId>> people = getTrustGraph();
 		UserId creator = getProjectCreatedEntry().getMember();
 

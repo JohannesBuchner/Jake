@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
@@ -14,8 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import org.springframework.transaction.annotation.Transactional;
+import java.util.Collection;
 
 /**
  * This handles the list of projects and their states
@@ -279,17 +279,29 @@ public interface IProjectsManagingService {
 
 
 	/**
-	 * Returns all ProjectMembers that are stored for a project.
+	 * Returns all Users that are stored for a project.
 	 *
 	 * @param project
 	 * @throws NoSuchProjectException If <code>project</code> does
 	 *                                not exist or is null.
 	 * @return
 	 */
-	List<UserId> getProjectMembers(Project project) throws NoSuchProjectException;
+		List<UserId> getProjectUsers(Project project) throws NoSuchProjectException;
 
 
 	/**
+	 * Returns all Users (in UserInfo's) that are stored for a project.
+	 *
+	 * @param project
+	 * @throws NoSuchProjectException If <code>project</code> does
+	 *                                not exist or is null.
+	 * @return
+	 */
+	List<UserInfo> getProjectUserInfos(Project project) throws NoSuchProjectException;
+
+
+	/**
+	 * @param jakeObject
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
 	 */
 	UserId getLastModifier(JakeObject jakeObject);

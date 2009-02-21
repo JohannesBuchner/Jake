@@ -308,8 +308,8 @@ public interface ILogEntryDao {
 	 * Iterates in time through all
 	 * {@link LogAction#START_TRUSTING_PROJECTMEMBER} and
 	 * {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}. <br>
-	 * Keeps a map of who trusts a {@link ProjectMember}. returns all
-	 * {@link ProjectMember} that at the end of the time have people that trust
+	 * Keeps a map of who trusts a {@link UserId}. returns all
+	 * {@link UserId} that at the end of the time have people that trust
 	 * them. Also looks at the {@value LogAction#PROJECT_CREATED} at the
 	 * beginning.
 	 * 
@@ -317,7 +317,7 @@ public interface ILogEntryDao {
 	 * @return an empty collection if no projectmembers (not null) or the tags
 	 *         otherwise
 	 */
-	public Collection<UserId> getCurrentProjectMembers();
+	public List<UserId> getCurrentProjectMembers();
 
 	/**
 	 * Does a trust b?
@@ -335,7 +335,7 @@ public interface ILogEntryDao {
 	 * @param a
 	 * @deprecated don't know if needed
 	 * @return an empty Collection if no logentries found (not null) or the
-	 *         {@link ProjectMember}s that have
+	 *         {@link UserId}s that have
 	 *         {@link LogAction#START_TRUSTING_PROJECTMEMBER} as last action
 	 */
 	@Deprecated

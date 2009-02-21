@@ -1,12 +1,6 @@
 package com.jakeapp.core.integration;
 
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
-import com.jakeapp.jake.ics.users.IUsersService;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
-import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.Project;
 
@@ -114,7 +108,7 @@ public final class XMPPICServiceHolder {
 
 //            service.getStatusService().login(
 //
-//                    new XmppUserId(credentials.getUserId()),
+//                    new XmppUserId(credentials.getUser()),
 //                    credentials.getPlainTextPassword());
 
 

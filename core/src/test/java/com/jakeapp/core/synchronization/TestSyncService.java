@@ -14,7 +14,6 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
@@ -89,7 +88,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 				.getBean("applicationContextFactory");
 		createProjectWorkaround();
 		testLogEntriesCount(1);
-		me = pms.getProjectMembers(project).get(0);
+		me = pms.getProjectUsers(project).get(0);
 		note = new NoteObject(project, ORIGINAL_CONTENT);
 	}
 
@@ -106,9 +105,9 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		Assert.assertNotNull(project.getMessageService());
 		Assert.assertNotNull(project.getUserId());
 
-		Assert.assertEquals(1, pms.getProjectMembers(project).size());
-		Assert.assertNotNull(pms.getProjectMembers(project).get(0));
-		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectMembers(
+		Assert.assertEquals(1, pms.getProjectUsers(project).size());
+		Assert.assertNotNull(pms.getProjectUsers(project).get(0));
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(
 				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());

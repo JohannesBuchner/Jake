@@ -17,25 +17,47 @@ import com.jakeapp.core.synchronization.AttributedJakeObject;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
+import com.jakeapp.gui.swing.callbacks.FilesChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.exceptions.*;
+import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
+import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
+import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.IProjectModificationListener;
-import com.jakeapp.jake.fss.exceptions.*;
+import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
+import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAFileException;
+import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
@@ -654,11 +676,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return list of people in this project OR empty list.
 	 */
-	public List<UserId> getPeople(Project project)
+	public List<UserInfo> getPeople(Project project)
 					throws PeopleOperationFailedException {
 		log.info("getPeople from project " + project);
 
-		List<UserId> users = new ArrayList<UserId>();
+		List<UserInfo> users = new ArrayList<UserInfo>();
 
 		if (project == null) {
 			log.warn("Get People for empty UserID.");
@@ -666,7 +688,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		try {
-			return pms.getProjectMembers(project);
+			return pms.getProjectUserInfos(project);
 		} catch (NoSuchProjectException ex) {
 			throw new PeopleOperationFailedException(ex);
 		}
