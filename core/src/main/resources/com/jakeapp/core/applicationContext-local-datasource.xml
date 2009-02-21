@@ -27,9 +27,6 @@
                 <value>com.jakeapp.core.domain.Project</value>
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
                 <value>com.jakeapp.core.domain.UserId</value>
-                <value>com.jakeapp.core.domain.XMPPUserId</value>
-                <!--<value>com.jakeapp.core.domain.UserId</value>-->
-                <value>com.jakeapp.core.domain.ProjectMember</value>
 
                 <value>com.jakeapp.core.domain.JakeObject</value>
                 <value>com.jakeapp.core.domain.NoteObject</value>

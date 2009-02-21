@@ -30,12 +30,9 @@
     <bean id="projectsManagingService" class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
     	<constructor-arg ref="applicationContextFactory" index="0"
                        type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
-        <constructor-arg ref="userIdDao" index="1"
-                       type="com.jakeapp.core.dao.IUserIdDao"/>
     
         <property name="projectDao" ref="projectDao"/>
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
-        <property name="userIdDao" ref="userIdDao" />
         <property name="syncService" ref="syncService" />
         <property name="projectsFileServices" ref="projectsFileServices" />
     </bean>
@@ -48,8 +45,6 @@
     <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
         <constructor-arg index="0" ref="serviceCredentialsDao"
                          type="com.jakeapp.core.dao.IServiceCredentialsDao" />
-        <constructor-arg index="1" ref="userIdDao"
-                         type="com.jakeapp.core.dao.IUserIdDao" />
     </bean>
 
 
@@ -67,15 +62,6 @@
     <bean id="icServiceManager" class="com.jakeapp.core.services.ICServicesManager">
 
     </bean>
-
-
-    <!--<bean id="friendlySyncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">-->
-    <!--<constructor-arg>-->
-    <!--< -->
-    <!---->
-    <!--</constructor-arg>-->
-    <!---->
-    <!--</bean>-->
 
 
 </beans>

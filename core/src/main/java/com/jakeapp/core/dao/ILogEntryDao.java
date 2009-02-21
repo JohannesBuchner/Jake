@@ -1,21 +1,17 @@
 package com.jakeapp.core.dao;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.UserId;
 
 /**
  * The interface for the logEntryDAO.
@@ -321,7 +317,7 @@ public interface ILogEntryDao {
 	 * @return an empty collection if no projectmembers (not null) or the tags
 	 *         otherwise
 	 */
-	public Collection<ProjectMember> getCurrentProjectMembers();
+	public Collection<UserId> getCurrentProjectMembers();
 
 	/**
 	 * Does a trust b?
@@ -331,7 +327,7 @@ public interface ILogEntryDao {
 	 * @return false if no logentries found or last was
 	 *         {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}
 	 */
-	public Boolean trusts(ProjectMember a, ProjectMember b);
+	public Boolean trusts(UserId a, UserId b);
 
 	/**
 	 * Whom does a trust?
@@ -343,13 +339,13 @@ public interface ILogEntryDao {
 	 *         {@link LogAction#START_TRUSTING_PROJECTMEMBER} as last action
 	 */
 	@Deprecated
-	public Collection<ProjectMember> trusts(ProjectMember a);
+	public Collection<UserId> trusts(UserId a);
 
 	/**
 	 * @return a mapping of the trusted users for each user (A trusts [B, C, D])
 	 *         must not be null
 	 */
-	public Map<ProjectMember, List<ProjectMember>> getTrustGraph();
+	public Map<UserId, List<UserId>> getTrustGraph();
 
 
 }

@@ -51,7 +51,7 @@
                 <value>com.jakeapp.core.domain.Project</value>
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
                 <!--<value>com.jakeapp.core.domain.UserId</value>-->
-                <value>com.jakeapp.core.domain.XMPPUserId</value>
+                <value>com.jakeapp.core.domain.UserId</value>
                 <value>com.jakeapp.core.domain.Configuration</value>
 
             </list>
@@ -109,11 +109,6 @@
     </bean>
 
     <bean id="projectDao" class="com.jakeapp.core.dao.HibernateProjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
-    </bean>
-
-
-    <bean id="userIdDao" class="com.jakeapp.core.dao.HibernateUserIdDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 

@@ -9,10 +9,12 @@ import java.io.Serializable;
 public class TagLogEntry extends LogEntry<Tag> implements Serializable {
     private static final long serialVersionUID = -7799185912611559431L;
 
-    public TagLogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project, Tag belongsTo,
-                       ProjectMember member, String comment, String checksum, Boolean processed) {
-        super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum, processed);
-
+    public TagLogEntry(LogAction logAction,Tag belongsTo,
+                       UserId member) {
+		super(UUID.randomUUID(), logAction, getTime(),
+				belongsTo, member, null, null, true);
+        if (logAction != LogAction.TAG_ADD && logAction != LogAction.TAG_REMOVE)
+			throw new IllegalArgumentException("invalid logaction for logentry");
         if(belongsTo.getObject() != null && belongsTo.getObject().getUuid() != null)
         	this.setObjectuuid(belongsTo.getObject().getUuid().toString());
     }

@@ -28,6 +28,10 @@ import javax.persistence.Transient;
 @Entity(name = "logentries")
 public class LogEntry<T extends ILogable> implements Serializable {
 
+	protected static Date getTime() {
+		return new Date();
+	}
+
 	private UUID uuid;
 
 	private LogAction logAction;
@@ -36,7 +40,7 @@ public class LogEntry<T extends ILogable> implements Serializable {
 
 	private T belongsTo;
 
-	private ProjectMember member;
+	private UserId member;
 
 	private String comment;
 
@@ -63,8 +67,8 @@ public class LogEntry<T extends ILogable> implements Serializable {
 	 * @param checksum
 	 * @param processed
 	 */
-	LogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
-			T belongsTo, ProjectMember member, String comment, String checksum,
+	LogEntry(UUID uuid, LogAction logAction, Date timestamp, 
+			T belongsTo, UserId member, String comment, String checksum,
 			Boolean processed) {
 		this.setUuid(uuid);
 		this.setLogAction(logAction);
@@ -209,28 +213,14 @@ public class LogEntry<T extends ILogable> implements Serializable {
 
 	// @ManyToOne
 
-	@ManyToOne
-	public ProjectMember getMember() {
+	@Lob
+	@Column(name = "issuer", nullable = true)
+	public UserId getMember() {
 		return member;
 	}
 
-	public void setMember(ProjectMember member) {
+	public void setMember(UserId member) {
 		this.member = member;
-	}
-
-	/**
-	 * this will return null. TODO: remove
-	 */
-	@Deprecated
-	public Project getProject() {
-		return null;
-	}
-
-	/**
-	 * this will do nothing. TODO: remove
-	 */
-	@Deprecated
-	public void setProject(Project p) {
 	}
 
 	@Override

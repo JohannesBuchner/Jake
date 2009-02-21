@@ -53,9 +53,7 @@
                 <value>com.jakeapp.core.domain.Project</value>
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
                 <value>com.jakeapp.core.domain.UserId</value>
-                <value>com.jakeapp.core.domain.XMPPUserId</value>
                 <!--<value>com.jakeapp.core.domain.UserId</value>-->
-                <value>com.jakeapp.core.domain.ProjectMember</value>
 
                 <value>com.jakeapp.core.domain.JakeObject</value>
                 <value>com.jakeapp.core.domain.NoteObject</value>
@@ -94,11 +92,6 @@
     <bean id="hibernateTemplate"
           class="org.springframework.orm.hibernate3.HibernateTemplate">
         <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-
-    <!-- local stuff -->
-    <bean id="projectMemberDao" class="com.jakeapp.core.dao.HibernateProjectMemberDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 
     <bean id="noteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">

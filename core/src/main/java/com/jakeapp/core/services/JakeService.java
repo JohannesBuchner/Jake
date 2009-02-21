@@ -1,11 +1,7 @@
 package com.jakeapp.core.services;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.dao.IUserIdDao;
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 /**
@@ -19,27 +15,16 @@ public abstract class JakeService {
 	private static final Logger log = Logger.getLogger(JakeService.class);
 	
 	private ProjectApplicationContextFactory applicationContextFactory;
-	private IUserIdDao userIdDao;
 	
 	
-	public JakeService(ProjectApplicationContextFactory applicationContextFactory,IUserIdDao userIdDao) {
+	public JakeService(ProjectApplicationContextFactory applicationContextFactory) {
 		super();
 		this.setApplicationContextFactory(applicationContextFactory);
-		this.setUserIdDao(userIdDao);
 	}
 	
 	/**
 	 * *********** GETTERS & SETTERS ************
 	 */
-	
-	public void setUserIdDao(IUserIdDao userIdDao) {
-		this.userIdDao = userIdDao;
-	}
-
-	public IUserIdDao getUserIdDao() {
-		return this.userIdDao;
-	}
-	
 	public ProjectApplicationContextFactory getApplicationContextFactory() {
 		return this.applicationContextFactory;
 	}

@@ -16,11 +16,9 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.util.ApplicationContextFactory;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.services.IProjectsFileServices;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
 
 public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
@@ -48,7 +46,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
 		List<UserId> providers = new LinkedList<UserId>();
 		try {
-			ProjectMember member = db.getLogEntryDao(jo).getLastOfJakeObject(jo).getMember();
+			UserId member = db.getLogEntryDao(jo).getLastOfJakeObject(jo).getMember();
 			providers.add(userTranslator.getUserIdFromProjectMember(jo.getProject(),
 					member));
 		} catch (NoSuchLogEntryException e) {

@@ -57,46 +57,6 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final FileObject addTagTo(FileObject jakeObject, final Tag tag) {
-		return super.addTagTo(jakeObject, tag);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final FileObject removeTagFrom(FileObject jakeObject, final Tag tag) {
-		return super.removeTagFrom(jakeObject, tag);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void addTagsTo(FileObject jakeObject, final Tag... tags) {
-		super.addTagsTo(jakeObject, tags);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final List<Tag> getTagsFor(final FileObject jakeObject) {
-		return super.getTagsFor(jakeObject);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void removeTagsFrom(FileObject jakeObject, Tag... tags) {
-		super.removeTagsFrom(jakeObject, tags);
-	}
-
 	@Override
 	public FileObject complete(FileObject jakeObject) throws NoSuchJakeObjectException {
 		// we do not mainly trust the UUID, because we don't want 2 FileObjects

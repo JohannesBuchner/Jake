@@ -166,8 +166,7 @@ public class EmptyTableHibernateLogEntryDaoTest extends AbstractJUnit4SpringCont
 	@Transactional
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testProjectCreator_invalid_empty() throws Exception {
-		Assert.assertEquals("NICKNAME", logEntryDao.getProjectCreatedEntry().getMember()
-				.getNickname());
+		Assert.assertEquals("me", logEntryDao.getProjectCreatedEntry().getMember());
 	}
 
 }

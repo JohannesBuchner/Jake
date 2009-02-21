@@ -23,8 +23,6 @@
     <bean id="userTranslator" class="com.jakeapp.core.synchronization.UserTranslator">
         <constructor-arg ref="applicationContextFactory" index="0"
                          type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
-        <constructor-arg ref="userIdDao" index="1"
-                         type="com.jakeapp.core.dao.IUserIdDao"/>
     </bean>
 
     <bean id="xmppServiceHolder" class="com.jakeapp.core.integration.XMPPICServiceHolder" />

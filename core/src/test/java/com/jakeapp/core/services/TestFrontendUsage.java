@@ -121,7 +121,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Assert.assertNotNull(project.getUserId());
 
 		Assert.assertEquals(1, pms.getProjectMembers(project).size());
-		Assert.assertEquals(project.getUserId().getUuid(), pms.getProjectMembers(
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectMembers(
 				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());

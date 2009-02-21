@@ -26,13 +26,14 @@ import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
@@ -42,8 +43,8 @@ import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 public class TestSyncService extends TmpdirEnabledTestCase {
 
 	private static Logger log = Logger.getLogger(TestSyncService.class);
-	
-	
+
+
 	private static final String MODIFIED_CONTENT = "my new content";
 
 	private HibernateTemplate hibernateTemplate;
@@ -68,7 +69,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 	private NoteObject note;
 
-	private ProjectMember me;
+	private UserId me;
 
 	private ILogEntryDao logEntryDao;
 
@@ -87,6 +88,10 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		sync = frontend.getSyncService(sessionId);
 		db = (ProjectApplicationContextFactory) applicationContext
 				.getBean("applicationContextFactory");
+		XMPPMsgService msg = new XMPPMsgService();
+		msg.setServiceCredentials(new ServiceCredentials("me@localhost", "mypasswd"));
+		pms.setMsgService(msg);
+
 		createProjectWorkaround();
 		testLogEntriesCount(1);
 		me = pms.getProjectMembers(project).get(0);
@@ -111,8 +116,9 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		Assert.assertNotNull(project.getUserId());
 
 		Assert.assertEquals(1, pms.getProjectMembers(project).size());
-		Assert.assertEquals(project.getUserId().getUuid(), pms.getProjectMembers(project)
-				.get(0).getUserId());
+		Assert.assertNotNull(pms.getProjectMembers(project).get(0));
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectMembers(
+				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 		testLogEntriesCount(1);
@@ -263,7 +269,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 	public void testLockStatus_Independence(Method m) throws Exception {
 		pms.lock(note, "it is mine!!");
-		
+
 		m.invoke(this, (Object[]) null);
 
 		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);

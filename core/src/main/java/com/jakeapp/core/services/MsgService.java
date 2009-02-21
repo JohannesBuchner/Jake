@@ -1,18 +1,18 @@
 package com.jakeapp.core.services;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
-import com.jakeapp.core.dao.IUserIdDao;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Abstract MessagingService declasring what the classes for the
@@ -32,7 +32,6 @@ public abstract class MsgService<T extends UserId> {
 
 	private ServiceCredentials serviceCredentials;
 
-    private static IUserIdDao userIdDao;
     private static IServiceCredentialsDao serviceCredentialsDao;
 
 
@@ -246,14 +245,6 @@ public abstract class MsgService<T extends UserId> {
 //                        !this.getServiceCredentials().getPlainTextPassword().isEmpty() ) );
 		return (this.getServiceCredentials() != null && !this.getServiceCredentials().getPlainTextPassword().isEmpty());
 	}
-
-    protected static IUserIdDao getUserIdDao() {
-        return userIdDao;
-    }
-
-    protected static void setUserIdDao(IUserIdDao userIdDao) {
-        MsgService.userIdDao = userIdDao;
-    }
 
     protected static IServiceCredentialsDao getServiceCredentialsDao() {
         return serviceCredentialsDao;

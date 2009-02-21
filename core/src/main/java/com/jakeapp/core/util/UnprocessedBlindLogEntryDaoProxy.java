@@ -13,8 +13,8 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.UserId;
 
 public final class UnprocessedBlindLogEntryDaoProxy {
 
@@ -95,7 +95,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	/**
 	 * @see ILogEntryDao#getCurrentProjectMembers()
 	 */
-	public Collection<ProjectMember> getCurrentProjectMembers() {
+	public Collection<UserId> getCurrentProjectMembers() {
 		return this.innerDao.getCurrentProjectMembers();
 	}
 
@@ -160,14 +160,14 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	/**
 	 * @see ILogEntryDao#getTrustGraph()
 	 */
-	public Map<ProjectMember, List<ProjectMember>> getTrustGraph() {
+	public Map<UserId, List<UserId>> getTrustGraph() {
 		return this.innerDao.getTrustGraph();
 	}
 
 	/**
 	 * @see ILogEntryDao#trusts(ProjectMember, ProjectMember)
 	 */
-	public Boolean trusts(ProjectMember a, ProjectMember b) {
+	public Boolean trusts(UserId a, UserId b) {
 		return this.innerDao.trusts(a, b);
 	}
 
@@ -175,7 +175,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 * @see ILogEntryDao#trusts(ProjectMember)
 	 */
 	@Deprecated
-	public Collection<ProjectMember> trusts(ProjectMember a) {
+	public Collection<UserId> trusts(UserId a) {
 		return this.innerDao.trusts(a);
 	}
 

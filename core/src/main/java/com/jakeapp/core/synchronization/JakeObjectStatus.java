@@ -3,7 +3,7 @@ package com.jakeapp.core.synchronization;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.UserId;
 
 /**
  * @author johannes
@@ -18,9 +18,9 @@ public class JakeObjectStatus {
 
 	private SyncStatus syncStatus;
 
-	private ProjectMember lastVersionProjectMember;
+	private UserId lastVersionProjectMember;
 
-	private ProjectMember lockOwner;
+	private UserId lockOwner;
 
 	/**
 	 * * @param lastVersionLogAction
@@ -38,7 +38,7 @@ public class JakeObjectStatus {
 	 *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
 	 */
 	public JakeObjectStatus(LogAction lastVersionLogAction,
-			ProjectMember lastVersionProjectMember, ProjectMember lockOwner,
+			UserId lastVersionProjectMember, UserId lockOwner,
 			LogAction lastLockLogAction, boolean objectExistsLocally,
 			boolean checksumDifferentFromLastNewVersionLogEntry,
 			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
@@ -61,7 +61,7 @@ public class JakeObjectStatus {
 		log.debug("result:" + this.toString());
 	}
 
-	public ProjectMember getLastVersionProjectMember() {
+	public UserId getLastVersionProjectMember() {
 		return this.lastVersionProjectMember;
 	}
 
@@ -120,7 +120,7 @@ public class JakeObjectStatus {
 	 * 
 	 * @return ProjectMember aka lock owner, or null
 	 */
-	public ProjectMember getLockOwner() {
+	public UserId getLockOwner() {
 		return lockOwner;
 	}
 

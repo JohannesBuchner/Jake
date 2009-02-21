@@ -1,24 +1,26 @@
 package com.jakeapp.core.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.dao.exceptions.NoSuchUserIdException;
 import com.jakeapp.core.domain.JakeMessage;
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.XMPPUserId;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Implementation of the MessageService for the XMPP Messaging Protocol
  */
-public class XMPPMsgService extends MsgService<XMPPUserId> {
+public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	private static Logger log = Logger.getLogger(XMPPMsgService.class);
 
@@ -114,8 +116,8 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	}
 
 	@Override
-	public List<XMPPUserId> getUserList() {
-		List<com.jakeapp.core.domain.XMPPUserId> result = new ArrayList<com.jakeapp.core.domain.XMPPUserId>();
+	public List<com.jakeapp.core.domain.UserId> getUserList() {
+		List<com.jakeapp.core.domain.UserId> result = new ArrayList<com.jakeapp.core.domain.UserId>();
 
 		// List<com.jakeapp.core.domain.UserId> dbInput;
 		// List<String> userIds = new LinkedList<String>();
@@ -162,12 +164,10 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	}
 
 	@Override
-	public XMPPUserId getUserId(String userId) throws UserIdFormatException {
+	public UserId getUserId(String userId) throws UserIdFormatException {
 		log.debug("calling getUserId");
 
-		XMPPUserId result = new XMPPUserId(this.getServiceCredentials(), UUID
-				.randomUUID(), "TODO test", "todo nickname", "todo firstname",
-				"todo surname");
+		UserId result = new UserId(ProtocolType.XMPP, userId);
 		return result;
 
 		//
@@ -208,63 +208,18 @@ public class XMPPMsgService extends MsgService<XMPPUserId> {
 	}
 
 	@Override
-	public XMPPUserId getUserId() {
-		// this.setUserId(new XMPPUserId(this.getServiceCredentials(),
-		// UUID.randomUUID(),
-		// "todo useridstring", "todo nickname", "todo firstname",
-		// "todo surname"));
-
-
-
-		if (this.userId == null) {
-			log.debug("current userid is null");
-
-			try {
-				if(this.getServiceCredentials() != null) {
-				setUserId(XMPPUserId.createFromUserId(getUserIdDao()
-						.get(
-								UUID.fromString(this.getServiceCredentials()
-										.getUuid())))
-
-				);
-				}
-				return this.userId;
-			} catch (InvalidUserIdException e) {
-				log.debug("InvalidUserIdException couldn't get UserId");
-				e.printStackTrace();
-			} catch (NoSuchUserIdException e) {
-				log.debug("NoSuchUserIdException couldn't get UserId");
-				e.printStackTrace();
-			}
-
-			if (this.userId == null) {
-				log.debug("userid is still null");
-				XMPPUserId result = new XMPPUserId(
-						this.getServiceCredentials(), UUID.randomUUID(),
-						"TODO test", "todo nickname", "todo firstname",
-						"todo surname");
-				return result;
-			} else {
-				log.debug("userid is not null");
-				return this.userId;
-			}
-
-		}
-
+	public UserId getUserId() {
 		return this.userId;
-
-
-		// return super.getUserId();
 	}
 
 	@Override
-	protected boolean checkFriends(XMPPUserId friend) {
+	protected boolean checkFriends(UserId friend) {
 		return false; // TODO
 	}
 
 	@Override
-	public List<XMPPUserId> findUser(String pattern) {
-		List<XMPPUserId> result = new ArrayList<XMPPUserId>();
+	public List<UserId> findUser(String pattern) {
+		List<UserId> result = new ArrayList<UserId>();
 		// TODO
 		return result;
 	}

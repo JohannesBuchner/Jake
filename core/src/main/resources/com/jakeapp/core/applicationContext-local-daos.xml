@@ -7,11 +7,6 @@
 
 
 
-    <!-- local stuff -->
-    <bean id="projectMemberDao" class="com.jakeapp.core.dao.HibernateProjectMemberDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
-    </bean>
-
     <bean id="noteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>

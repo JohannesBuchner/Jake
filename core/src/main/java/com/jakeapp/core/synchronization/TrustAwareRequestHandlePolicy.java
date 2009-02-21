@@ -3,7 +3,6 @@
  */
 package com.jakeapp.core.synchronization;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,14 +12,10 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
-import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.util.ApplicationContextFactory;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.services.IProjectsFileServices;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 
@@ -44,7 +39,7 @@ public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 					jo);
 			List<LogEntry<JakeObject>> allVersions = db.getLogEntryDao(jo).getAllVersionsOfJakeObject(jo);
 			
-			List<ProjectMember> members = db.getTrustedProjectMembers(jo.getProject());
+			List<UserId> members = db.getTrustedProjectMembers(jo.getProject());
 			
 			for(LogEntry<? extends ILogable> entry : allVersions) {
 				if(members.contains(entry.getMember())) {

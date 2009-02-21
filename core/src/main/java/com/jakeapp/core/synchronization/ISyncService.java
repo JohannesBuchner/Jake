@@ -70,7 +70,7 @@ public interface ISyncService {
 	 * @throws IllegalArgumentException if the supplied project or userId is null
 	 * @throws IllegalProtocolException if the supplied UserId is of the wrong protocol-type
 	 */
-	public Iterable<LogEntry<ILogable>> startLogSync(Project project, ProjectMember pm)
+	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId pm)
 			  throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
@@ -80,7 +80,7 @@ public interface ISyncService {
 	 * @param project
 	 * @param pm
 	 */
-	public void poke(Project project, ProjectMember pm);
+	public void poke(Project project, UserId pm);
 
 	/**
 	 * The object is requested (found in the log) and its content stored. The

@@ -7,15 +7,18 @@ import java.util.Date;
 
 
 @Entity
-public class ProjectMemberLogEntry extends LogEntry<ProjectMember> implements Serializable {
-    private static final long serialVersionUID = 2563444652671713845L;
+public class ProjectMemberLogEntry extends LogEntry<UserId> implements Serializable {
 
-    public ProjectMemberLogEntry(UUID uuid, LogAction logAction, Date timestamp, Project project,
-                                 ProjectMember belongsTo, ProjectMember member, String comment,
-                                 String checksum, Boolean processed) {
-        super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum, processed);
-    }
+	private static final long serialVersionUID = 2563444652671713845L;
 
-    public ProjectMemberLogEntry()
-    {}
+	public ProjectMemberLogEntry(LogAction logAction, UserId belongsTo, UserId member) {
+		super(UUID.randomUUID(), logAction, getTime(), belongsTo, member, null, null,
+				true);
+		if (logAction != LogAction.START_TRUSTING_PROJECTMEMBER
+				&& logAction != LogAction.STOP_TRUSTING_PROJECTMEMBER)
+			throw new IllegalArgumentException("invalid logaction for logentry");
+	}
+
+	public ProjectMemberLogEntry() {
+	}
 }

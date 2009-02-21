@@ -34,18 +34,6 @@ final class FileObjectDaoProxy implements IFileObjectDao {
 	}
 
 	@Override
-	public FileObject addTagTo(FileObject jakeObject, Tag tag)
-			throws NoSuchJakeObjectException {
-		return getWithProject(this.innerDao.addTagTo(jakeObject, tag));
-	}
-
-	@Override
-	public void addTagsTo(FileObject jakeObject, Tag... tags)
-			throws NoSuchJakeObjectException {
-		this.innerDao.addTagsTo(jakeObject, tags);
-	}
-
-	@Override
 	public FileObject complete(FileObject jakeObject)
 			throws NoSuchJakeObjectException {
 		return getWithProject(this.innerDao.complete(jakeObject));
@@ -71,25 +59,7 @@ final class FileObjectDaoProxy implements IFileObjectDao {
 	}
 
 	@Override
-	public List<Tag> getTagsFor(FileObject jakeObject)
-			throws NoSuchJakeObjectException {
-		return this.innerDao.getTagsFor(jakeObject);
-	}
-
-	@Override
 	public FileObject persist(FileObject jakeObject) {
 		return getWithProject(this.innerDao.persist(jakeObject));
-	}
-
-	@Override
-	public FileObject removeTagFrom(FileObject jakeObject, Tag tag)
-			throws NoSuchJakeObjectException {
-		return getWithProject(this.innerDao.removeTagFrom(jakeObject, tag));
-	}
-
-	@Override
-	public void removeTagsFrom(FileObject jakeObject, Tag... tags)
-			throws NoSuchJakeObjectException {
-		this.innerDao.removeTagsFrom(jakeObject, tags);
 	}
 }

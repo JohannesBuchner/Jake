@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.ProjectMember;
+import com.jakeapp.core.domain.UserId;
 
 /**
  * @author johannes
@@ -30,7 +30,7 @@ public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus
 	 *      .LogAction)
 	 */
 	public AttributedJakeObject(T jakeObject, LogAction lastVersionLogAction,
-			ProjectMember lastVersionProjectMember, ProjectMember lockOwner,
+			UserId lastVersionProjectMember, UserId lockOwner,
 			LogAction lastLockLogAction, boolean objectExistsLocally,
 			boolean checksumDifferentFromLastNewVersionLogEntry,
 			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,

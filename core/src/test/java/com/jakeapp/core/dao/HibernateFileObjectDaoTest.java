@@ -152,52 +152,6 @@ public class HibernateFileObjectDaoTest extends AbstractJUnit4SpringContextTests
 
     @Transactional
     @Test
-    public void testAddTagTo() throws InvalidTagNameException, NoSuchJakeObjectException {
-
-                        FileObject obj1 = new FileObject(
-                UUID.fromString("efcc5d3e-f7f1-4475-bbbb-7b5bd3bc34a5"),
-                null, // project
-                "/testAddTagTo_test1.txt");
-
-                fileObjectDao.persist(obj1);
-
-        Tag t1 = new Tag("testAddTagTo_tag1");
-
-        fileObjectDao.addTagTo(obj1, t1);
-
-
-        List<Tag> tagResults = fileObjectDao.getTagsFor(obj1);
-
-        Assert.assertTrue(tagResults.contains(t1));
-    }
-
-    @Transactional
-    @Test
-    public void testRemoveTagFrom() {
-        // Add your code here
-    }
-
-    @Transactional
-    @Test
-    public void testAddTagsTo() {
-        // Add your code here
-    }
-
-    @Transactional
-    @Test
-    public void testGetTagsFor() {
-        // Add your code here
-    }
-
-    @Transactional
-    @Test
-    public void testRemoveTagsFrom() {
-        // Add your code here
-    }
-
-
-    @Transactional
-    @Test
     public void testGetByRelPath() throws NoSuchJakeObjectException {
         FileObject fileObject, result;
         fileObject = new FileObject(UUID.fromString("3d32858a-166f-4204-8074-d11a2d745b9d"), null, "/blabla");

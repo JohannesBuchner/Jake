@@ -29,18 +29,6 @@ final class NoteObjectDaoProxy implements INoteObjectDao {
 	}
 
 	@Override
-	public NoteObject addTagTo(NoteObject jakeObject, Tag tag)
-			throws NoSuchJakeObjectException {
-		return getWithProject(this.innerDao.addTagTo(jakeObject, tag));
-	}
-
-	@Override
-	public void addTagsTo(NoteObject jakeObject, Tag... tags)
-			throws NoSuchJakeObjectException {
-		this.innerDao.addTagsTo(jakeObject, tags);
-	}
-
-	@Override
 	public NoteObject complete(NoteObject jakeObject)
 			throws NoSuchJakeObjectException {
 		return getWithProject(this.innerDao.complete(jakeObject));
@@ -66,25 +54,8 @@ final class NoteObjectDaoProxy implements INoteObjectDao {
 	}
 
 	@Override
-	public List<Tag> getTagsFor(NoteObject jakeObject)
-			throws NoSuchJakeObjectException {
-		return this.innerDao.getTagsFor(jakeObject);
-	}
-
-	@Override
 	public NoteObject persist(NoteObject jakeObject) {
 		return getWithProject(this.innerDao.persist(jakeObject));
 	}
 
-	@Override
-	public NoteObject removeTagFrom(NoteObject jakeObject, Tag tag)
-			throws NoSuchJakeObjectException {
-		return getWithProject(this.innerDao.removeTagFrom(jakeObject, tag));
-	}
-
-	@Override
-	public void removeTagsFrom(NoteObject jakeObject, Tag... tags)
-			throws NoSuchJakeObjectException {
-		this.innerDao.removeTagsFrom(jakeObject, tags);
-	}
 }

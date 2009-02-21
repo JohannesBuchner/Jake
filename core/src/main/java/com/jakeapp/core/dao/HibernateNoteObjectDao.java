@@ -47,22 +47,6 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NoteObject addTagTo(NoteObject jakeObject, Tag tag) {
-        return super.addTagTo(jakeObject, tag);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NoteObject removeTagFrom(NoteObject jakeObject, Tag tag) {
-        return super.removeTagFrom(jakeObject, tag);
-    }
-
 	@Override
 	public NoteObject complete(NoteObject jakeObject) throws NoSuchJakeObjectException {
 		return get(jakeObject.getUuid());

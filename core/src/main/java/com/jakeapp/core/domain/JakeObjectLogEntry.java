@@ -10,11 +10,21 @@ public class JakeObjectLogEntry extends LogEntry<JakeObject> implements Serializ
 
 	private static final long serialVersionUID = 3507342231350901911L;
 
+	public JakeObjectLogEntry(LogAction logAction, JakeObject belongsTo,
+			UserId member, String comment, String checksum, Boolean processed) {
+		this(UUID.randomUUID(), logAction, getTime(), belongsTo, member, comment,
+				checksum, processed);
+	}
+
 	public JakeObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp,
-			Project project, JakeObject belongsTo, ProjectMember member, String comment,
-			String checksum, Boolean processed) {
-		super(uuid, logAction, timestamp, project, belongsTo, member, comment, checksum,
-				processed);
+			JakeObject belongsTo, UserId member, String comment, String checksum,
+			Boolean processed) {
+		super(uuid, logAction, timestamp, belongsTo, member, comment, checksum, processed);
+		if (logAction != LogAction.JAKE_OBJECT_DELETE
+				&& logAction != LogAction.JAKE_OBJECT_NEW_VERSION
+				&& logAction != LogAction.JAKE_OBJECT_LOCK
+				&& logAction != LogAction.JAKE_OBJECT_UNLOCK)
+			throw new IllegalArgumentException("invalid logaction for logentry");
 		this.setObjectuuid(belongsTo.getUuid().toString());
 	}
 
@@ -22,9 +32,8 @@ public class JakeObjectLogEntry extends LogEntry<JakeObject> implements Serializ
 	}
 
 	public JakeObjectLogEntry(LogEntry<JakeObject> le) {
-		this(le.getUuid(), le.getLogAction(), le.getTimestamp(), le.getProject(),
-				(NoteObject) le.getBelongsTo(), le.getMember(), le.getComment(), le
-						.getChecksum(), le.isProcessed());
+		this(le.getUuid(), le.getLogAction(), le.getTimestamp(), le.getBelongsTo(), le
+				.getMember(), le.getComment(), le.getChecksum(), le.isProcessed());
 	}
 
 }

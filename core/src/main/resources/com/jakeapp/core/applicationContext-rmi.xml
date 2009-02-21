@@ -46,8 +46,6 @@
     <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
         <constructor-arg index="0" ref="serviceCredentialsDao"
                          type="com.jakeapp.core.dao.IServiceCredentialsDao" />
-        <constructor-arg index="1" ref="userIdDao"
-                         type="com.jakeapp.core.dao.IUserIdDao" />
     </bean>
 
 

@@ -1,11 +1,35 @@
 package com.jakeapp.core.synchronization;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectMemberException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.JakeObjectLogEntry;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICServicesManager;
 import com.jakeapp.core.services.IProjectsFileServices;
@@ -16,7 +40,10 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.exceptions.*;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
@@ -30,11 +57,6 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.*;
-import java.util.*;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -116,10 +138,9 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
-	protected List<ProjectMember> getProjectMembers(Project project)
+	protected List<UserId> getProjectMembers(Project project)
 			throws NoSuchProjectException {
-		syncProjectMembers(project);
-		return db.getProjectMemberDao(project).getAll(project);
+		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
 	}
 
 	/**
@@ -135,13 +156,13 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	@Transactional
 	private void syncProjectMembers(Project project) {
-		Collection<ProjectMember> members = db.getLogEntryDao(project)
+		Collection<UserId> members = db.getLogEntryDao(project)
 				.getCurrentProjectMembers();
-		for (ProjectMember member : members) {
+		for (UserId member : members) {
 			com.jakeapp.jake.ics.UserId userid = getBackendUserIdFromDomainProjectMember(
 					project, member);
 			try {
-				getICS(project).getUsersService().addUser(userid, member.getNickname());
+				getICS(project).getUsersService().addUser(userid, userid.getUserId());
 			} catch (NoSuchUseridException e) { // shit happens
 			} catch (NotLoggedInException e) {
 			} catch (IOException e) {
@@ -178,13 +199,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Transactional
-	private ProjectMember getMyProjectMember(Project p) {
-		try {
-			return db.getProjectMemberDao(p).get(p.getUserId().getUuid());
-		} catch (NoSuchProjectMemberException e) {
-			log.fatal("can't find myself in project", e);
-			return null;
-		}
+	private UserId getMyProjectMember(Project p) {
+		return p.getUserId();
 	}
 
 	public SyncServiceImpl() {
@@ -198,12 +214,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
 
-		JakeObjectLogEntry le;
+		LogEntry<JakeObject> le;
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
 			case JAKE_OBJECT_DELETE:
 				// what we do is always processed
-				le = LogEntryGenerator.newLogEntry(jo, action, jo.getProject(),
+				le = new JakeObjectLogEntry(action, jo,
 						getMyProjectMember(jo.getProject()), commitMsg, null, true);
 				break;
 			default:
@@ -254,13 +270,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
-	public void poke(Project project, ProjectMember pm) {
-		try {
-			getICS(project).getMsgService().sendMessage(
-					getBackendUserIdFromDomainProjectMember(project, pm), POKE_MESSAGE);
-		} catch (Exception e) {
-			log.info("during poke, a exception occured. ignoring. ", e);
-		}
+	public void poke(Project project, UserId pm) {
+		// TODO
 	}
 
 
@@ -340,7 +351,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
-	public Iterable<LogEntry<ILogable>> startLogSync(Project project, ProjectMember pm)
+	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId pm)
 			throws IllegalArgumentException, IllegalProtocolException {
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
@@ -391,7 +402,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * @param lastle
 	 * @return ProjectMember or null, if LogEntry is null.
 	 */
-	private ProjectMember getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
+	private UserId getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
 		if (lastle != null)
 			return lastle.getMember();
 		else
@@ -428,7 +439,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		}
 		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
 
-		ProjectMember lastVersionProjectMember = getProjectMemberNullSafe(lastle);
+		UserId lastVersionProjectMember = getProjectMemberNullSafe(lastle);
 
 		// 3 locally modified?
 		boolean checksumEqualToLastNewVersionLogEntry;
@@ -479,7 +490,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		LogEntry<JakeObject> locklog = led.getLock(fo);
 		// 4.5 lockowner
-		ProjectMember lockOwner = getProjectMemberNullSafe(locklog);
+		UserId lockOwner = getProjectMemberNullSafe(locklog);
 
 		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(fo);
@@ -530,7 +541,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			lastle = null;
 		}
 		LogAction lastVersionLogAction = getLogActionNullSafe(lastle);
-		ProjectMember lastVersionProjectMember = getProjectMemberNullSafe(lastle);
+		UserId lastVersionProjectMember = getProjectMemberNullSafe(lastle);
 
 		// 3 locally modified?
 		boolean checksumEqualToLastNewVersionLogEntry;
@@ -550,7 +561,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			lastModificationDate = lastle.getTimestamp().getTime();
 
 		// 4.5 lockowner
-		ProjectMember lockOwner = getProjectMemberNullSafe(led.getLock(no));
+		UserId lockOwner = getProjectMemberNullSafe(led.getLock(no));
 
 		// 5 unprocessed
 		boolean hasUnprocessedLogEntries = led.hasUnprocessed(no);
@@ -775,21 +786,21 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
-			ProjectMember member) {
-		return userTranslator.getBackendUserIdFromDomainProjectMember(p, member);
+			UserId member) {
+		return null; // TODO
 	}
 
 	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainUserId(UserId userid) {
-		return userTranslator.getBackendUserIdFromDomainUserId(userid);
+		return null; // TODO
 	}
 
-	public ProjectMember getProjectMemberFromUserId(Project project, UserId userid)
+	public UserId getProjectMemberFromUserId(Project project, UserId userid)
 			throws NoSuchProjectMemberException {
-		return userTranslator.getProjectMemberFromUserId(project, userid);
+		return null; // TODO
 	}
 
-	public UserId getUserIdFromProjectMember(Project project, ProjectMember member) {
-		return userTranslator.getUserIdFromProjectMember(project, member);
+	public UserId getUserIdFromProjectMember(Project project, UserId member) {
+		return null; // TODO
 	}
 
 	/* for the demo, to be removed and replaced by delegate methods */

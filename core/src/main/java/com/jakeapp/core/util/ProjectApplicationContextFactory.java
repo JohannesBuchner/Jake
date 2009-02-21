@@ -7,22 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.hibernate.SessionFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.IProjectMemberDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectMember;
 import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 
 /**
@@ -109,10 +107,6 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		return new UnprocessedBlindLogEntryDaoProxy(getUnprocessedAwareLogEntryDao(jo));
 	}
 
-	public IProjectMemberDao getProjectMemberDao(Project p) {
-		return (IProjectMemberDao) getApplicationContext(p).getBean("projectMemberDao");
-	}
-
 	public INoteObjectDao getNoteObjectDao(Project p) {
 		return getOrCreateNoteObjectDao(p);
 	}
@@ -121,19 +115,14 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		return getOrCreateFileObjectDao(p);
 	}
 
-	public Collection<ProjectMember> getProjectMembers(Project p)
+	public Collection<UserId> getProjectMembers(Project p)
 			throws NoSuchProjectException {
-		return getProjectMemberDao(p).getAll(p);
+		return getLogEntryDao(p).getCurrentProjectMembers();
 	}
 
-	public List<ProjectMember> getTrustedProjectMembers(Project p)
+	public List<UserId> getTrustedProjectMembers(Project p)
 			throws NoSuchProjectException {
-		List<ProjectMember> allmembers = getProjectMemberDao(p).getAll(p);
-		for (ProjectMember member : allmembers) {
-			if (member.getTrustState() != TrustState.NO_TRUST)
-				allmembers.remove(member);
-		}
-		return allmembers;
+		return getLogEntryDao(p).getTrustGraph().get(p.getUserId());
 	}
 
     /**

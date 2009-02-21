@@ -269,14 +269,12 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchProjectException	if the JakeObject's Project does not exist.
 	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
 	 */
-	ProjectMember getLastEditor(JakeObject jo) throws NoSuchProjectException,
+	UserId getLastEditor(JakeObject jo) throws NoSuchProjectException,
 			  IllegalArgumentException;
 
 
-	ProjectMember getProjectMember(Project project, MsgService msg);
+	UserId getProjectMember(Project project, MsgService msg);
 
-
-	String getProjectMemberID(Project project, ProjectMember pm);
 
 
 	/**
@@ -296,7 +294,7 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchProjectException If <code>project</code> does
 	 *                                not exist or is null.
 	 */
-	List<ProjectMember> getProjectMembers(Project project) throws NoSuchProjectException;
+	List<UserId> getProjectMembers(Project project) throws NoSuchProjectException;
 
 
 	/**
@@ -304,12 +302,12 @@ public interface IProjectsManagingService {
 	 *
 	 * @param member a member that already exists
 	 */
-	void updateProjectMember(Project project, ProjectMember member);
+	void updateProjectMember(Project project, UserId member);
 
 	/**
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
 	 */
-	ProjectMember getLastModifier(JakeObject jakeObject);
+	UserId getLastModifier(JakeObject jakeObject);
 
 
 	/**
@@ -321,7 +319,7 @@ public interface IProjectsManagingService {
 	 * @return The new {@link ProjectMember}
 	 * @throws UserIdFormatException if the userid did not have the correct format
 	 */
-	ProjectMember invite(Project project, String userid)
+	UserId invite(Project project, String userid)
 			  throws UserIdFormatException;
 
 	/**
@@ -332,7 +330,7 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchProjectException
 	 * @throws IllegalArgumentException
 	 */
-	List<ProjectMember> getUninvitedPeople(Project project) throws IllegalArgumentException, NoSuchProjectException;
+	List<UserId> getUninvitedPeople(Project project) throws IllegalArgumentException, NoSuchProjectException;
 
 
 	/**
