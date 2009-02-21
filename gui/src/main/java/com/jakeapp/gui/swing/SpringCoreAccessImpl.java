@@ -787,7 +787,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					project = pms.createProject(name, path, msg);
 
 					// add a user to the project
-					pms.assignUserToProject(project, msg.getUserId());
+					//pms.assignUserToProject(project, msg.getUserId());
 
 					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 									ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
@@ -799,9 +799,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
 				} catch (FileNotFoundException e) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
-				} catch (IllegalAccessException e) {
+				} /*catch (IllegalAccessException e) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
-				}
+				}*/
 			}
 		};
 

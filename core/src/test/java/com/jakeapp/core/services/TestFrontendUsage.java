@@ -52,10 +52,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				msg);
 		Assert.assertNotNull(project.getMessageService());
-		Assert.assertNull(project.getUserId());
-
-		// now assign the user id
-		pms.assignUserToProject(project, msg.getUserId());
+		//Assert.assertNull(project.getUserId());
 
 		Assert.assertNotNull(project.getUserId());
 
@@ -64,18 +61,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 				project).get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
-	}
-
-	@Test(expected = IllegalAccessException.class)
-	public void testCreateProjectAndUnnecessaryAssign() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password);
-		cred.setProtocol(ProtocolType.XMPP);
-		MsgService msg = frontend.addAccount(sessionId, cred);
-
-		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
-				msg);
-
-		pms.assignUserToProject(project, msg.getUserId());
 	}
 
 	// this fails == bug 33
@@ -89,7 +74,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
-		pms.assignUserToProject(project, msg.getUserId());
 		project.setMessageService(msg);
 
 		Assert.assertNotNull(project.getMessageService());
@@ -111,11 +95,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				msg);
-		try {
-			pms.assignUserToProject(project, msg.getUserId());
-		} catch (IllegalAccessException e) {
-			// we ignore that, just like the gui does
-		}
 
 		Assert.assertNotNull(project.getMessageService());
 		Assert.assertNotNull(project.getUserId());

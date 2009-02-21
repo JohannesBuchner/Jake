@@ -467,6 +467,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
+	/*
 	@Transactional
 	@Override
 	public void assignUserToProject(Project project, UserId userId)
@@ -494,6 +495,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		this.addUserToProject(project, userId);
 		this.setTrust(project, userId, TrustState.AUTO_ADD_REMOVE);
 	}
+	*/
 
 	/**
 	 * Adds a new Projectmember to a Project. It may not exist in the Project

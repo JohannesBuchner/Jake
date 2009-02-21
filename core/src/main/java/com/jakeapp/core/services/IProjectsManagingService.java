@@ -163,8 +163,10 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException if project or userId are null
 	 * @throws IllegalAccessException	if the project already has a userId set
 	 */
+	/*
 	void assignUserToProject(Project project, UserId userId)
 			  throws IllegalArgumentException, IllegalAccessException;
+	*/
 
 	/**
 	 * Sets the level of trust we have to the specified user. If the user does

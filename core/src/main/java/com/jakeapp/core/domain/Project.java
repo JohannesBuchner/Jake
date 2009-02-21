@@ -130,6 +130,11 @@ public class Project implements ILogable {
 	 */
 	public void setMessageService(MsgService messageService) {
 		this.messageService = messageService;
+		this.setUserId(
+				(messageService==null)?
+						null:
+						messageService.getUserId()
+		);
 	}
 
 	/**

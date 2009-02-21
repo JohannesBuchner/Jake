@@ -100,11 +100,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(), msg);
-		try {
-			pms.assignUserToProject(project, msg.getUserId());
-		} catch (IllegalAccessException e) {
-			// we ignore that, just like the gui does
-		}
+		
 		testLogEntriesCount(0);
 
 		Assert.assertNotNull(project.getMessageService());
