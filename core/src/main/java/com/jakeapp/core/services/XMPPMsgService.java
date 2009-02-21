@@ -2,16 +2,13 @@ package com.jakeapp.core.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.dao.exceptions.NoSuchUserIdException;
 import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.exceptions.InvalidUserIdException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;

@@ -1,18 +1,16 @@
 package com.jakeapp.core.domain;
 
-import javax.persistence.*;
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.dao.HibernateTagPK;
-import java.io.Serializable;
 
 /**
  * A simple tag. It only consists of a <code>name</code>.
  */
-@Entity(name = "tag")
-@UniqueConstraint(columnNames = {"objectid", "text"})
-@IdClass(HibernateTagPK.class)
+@Entity
 public class Tag implements ILogable, Serializable, Comparable<Tag> {
     private static final long serialVersionUID = -2201488676480921149L;
     private JakeObject jakeObject;

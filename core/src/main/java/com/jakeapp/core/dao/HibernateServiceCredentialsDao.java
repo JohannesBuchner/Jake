@@ -22,9 +22,6 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
 
 
     @Override
-    /**
-     * {@inheritDoc}
-     */
     public ServiceCredentials create(ServiceCredentials credentials) throws InvalidCredentialsException {
         if (credentials == null)
             throw new InvalidCredentialsException();
@@ -57,9 +54,6 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     }
 
     @Override
-    /**
-     * {@inheritDoc}
-     */
     public ServiceCredentials read(UUID uuid) throws NoSuchServiceCredentialsException {
         ServiceCredentials result = (ServiceCredentials) getHibernateTemplate().get(ServiceCredentials.class, uuid.toString());
         if (result == null)
@@ -68,7 +62,6 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
         return result;
     }
 
-    @Transactional
     @Override
     public List<ServiceCredentials> getAll() {
 
@@ -79,9 +72,6 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     }
 
     @Override
-    /**
-     * {@inheritDoc}
-     */
     public ServiceCredentials update(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
 
         if (!credentials.isSavePassword()) {
@@ -100,9 +90,6 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport
     }
 
     @Override
-    /**
-     * {@inheritDoc}
-     */
     public void delete(ServiceCredentials credentials) throws NoSuchServiceCredentialsException {
         try {
             getHibernateTemplate().delete(credentials/*, LockMode.WRITE*/);
