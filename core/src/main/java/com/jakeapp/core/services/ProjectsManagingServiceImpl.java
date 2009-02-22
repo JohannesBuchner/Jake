@@ -10,6 +10,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -117,11 +118,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 * @SuppressWarnings("unchecked") private IJakeObjectDao<JakeObject>
 	 * getJakeObjectDao(final Project project, final JakeObject jo) {
 	 * IJakeObjectDao result = null;
-	 *
+	 * 
 	 * if (jo != null) { if (jo instanceof FileObject) result =
 	 * this.getFileObjectDao(project); else if (jo instanceof NoteObject) result
 	 * = this.getNoteObjectDao(project); }
-	 *
+	 * 
 	 * return result; }
 	 */
 
@@ -136,18 +137,26 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		result = this.getProjectDao().getAll();
 		if (result != null) {
-			for (Project p : result) {
-				log.debug("getProjectList gave us a project with credentials:" + p.getCredentials());
-				initProject(p);	
-			}
-			
-
+			checkProjects(result);
 			log.debug("found " + result.size() + " projects to return");
 			return result;
+		} else {
+			log.warn("didn't get any results!!!!!from ProjectDao.getAll");
+			return Collections.emptyList();
 		}
-		log.warn("didn't get any results!!!!!from ProjectDao.getAll");
-		
-		return Collections.emptyList();
+	}
+
+	private void checkProjects(List<Project> result) {
+		for (Project p : result) {
+			log.debug("getProjectList gave us a project with credentials:"
+					+ p.getCredentials());
+			try {
+				initProject(p);
+			} catch (NoSuchProjectException e) {
+				log.error("invalid project: ", e);
+				result.remove(p);
+			}
+		}
 	}
 
 	@Transactional
@@ -155,19 +164,36 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public List<Project> getProjectList(InvitationState state) {
 		log.debug("calling getProjectList");
 		List<Project> result = this.getProjectDao().getAll(state);
-
-		for (Project p : result)
-			initProject(p);
-
+		checkProjects(result);
 		return result;
 	}
 
-	private void initProject(Project p) {
+	private void initProject(Project p) throws NoSuchProjectException {
+		log.debug("initialising project " + p);
+		if (p.getCredentials() == null) { 
+			log.warn("fixing null credentials (bug workaround) ");
+			try {
+				// workaround until many-to-one works (bug 46)
+				UserId user = new UserId(ProtocolType.XMPP, "testuser1@localhost");
+				ServiceCredentials credentials = new ServiceCredentials(user.toString(),
+						"testpasswd");
+				credentials.setProtocol(ProtocolType.XMPP);
+				credentials.setSavePassword(true);
+				MsgService<UserId> msg = this.msgServiceFactory
+						.createMsgService(credentials);
+				p.setMessageService(msg);
+				p.setCredentials(credentials);
+				this.projectDao.update(p);
+			} catch (ProtocolNotSupportedException e) {
+			}
+		}
+
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
 		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
 
-		if(!p.getUserId().equals(p.getMessageService().getUserId()))
+		if (!p.getUserId().equals(p.getMessageService().getUserId()))
 			throw new IllegalStateException();
+		log.debug("initialising project done for " + p);
 	}
 
 
@@ -180,7 +206,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 				+ " and MsgService " + msgService);
 		File projectRoot = new File(rootPath);
 
-		if (msgService==null || msgService.userId==null)
+		if (msgService == null || msgService.userId == null)
 			throw new IllegalArgumentException("MsgService must not be null!!");
 
 		// create a new, empty project
@@ -227,8 +253,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	private void createFirstLogEntry(Project project) {
-		//create the project's first logentry
-		if (project.getMessageService()!=null) {
+		// create the project's first logentry
+		if (project.getMessageService() != null) {
 			UserId user = project.getMessageService().getUserId();
 			this.getLogEntryDao(project).create(new ProjectLogEntry(project, user));
 		}
@@ -761,7 +787,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public UserInfo getProjectUserInfo(Project project, UserId user) {
-		TrustState state = this.getLogEntryDao(project).trustsHow(project.getUserId(), user);
+		TrustState state = this.getLogEntryDao(project).trustsHow(project.getUserId(),
+				user);
 
 		// TODO: fill in with useful data
 		return new UserInfo(state, VisibilityStatus.ONLINE, "Nick", "First", "Last", user);

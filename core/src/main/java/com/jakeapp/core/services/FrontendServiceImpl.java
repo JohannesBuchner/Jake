@@ -8,6 +8,7 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -205,7 +206,9 @@ public class FrontendServiceImpl implements IFrontendService {
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
-		return msgServiceFactory.createAccount(credentials);
+		MsgService svc = msgServiceFactory.createMsgService(credentials);
+
+		return new CreateAccountFuture(svc);
 	}
 
 	@Override

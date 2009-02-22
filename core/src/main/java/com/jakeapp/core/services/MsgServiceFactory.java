@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -143,27 +144,12 @@ public class MsgServiceFactory {
 				}
 			} catch (ProtocolNotSupportedException e) {
 				log.warn("Protocol not supported: ", e);
+				log.info("ignoring unsupported entry " + credentials);
 			}
 		}
+		log.debug("Made " + msgServices.size() + " messageservices");
 
 		return msgServices;
-	}
-
-	/**
-	 * create a account with the given credentials. You are not logged in
-	 * afterwards
-	 *
-	 * @param credentials
-	 * @return success state
-	 * @throws ProtocolNotSupportedException
-	 * @throws Exception
-	 */
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
-					throws ProtocolNotSupportedException, NetworkException {
-		log.debug("calling AvailableLaterObject");
-		MsgService svc = createMsgService(credentials);
-
-		return new CreateAccountFuture(svc);
 	}
 
 	/**
@@ -190,6 +176,11 @@ public class MsgServiceFactory {
 		return msgService;
 	}
 
+	/**
+	 * get the service credentials for this msgservice
+	 * @param service
+	 * @return
+	 */
 	public ServiceCredentials get(MsgService service) {
 		return this.map.get(service);
 	}
