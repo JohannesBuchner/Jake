@@ -3,6 +3,7 @@ package com.jakeapp.core.services;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -40,6 +41,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	// private List<Project> projectList = new ArrayList<Project>();
 
 	private IProjectDao projectDao;
+	private IServiceCredentialsDao serviceCredentialsDao;
 
 	private IFriendlySyncService syncService;
 
@@ -170,13 +172,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private void initProject(Project p) throws NoSuchProjectException {
 		log.debug("initialising project " + p);
-		if (p.getCredentials() == null) { 
+			
+		if (p.getCredentials()==null)
+		{ 
 			log.warn("fixing null credentials (bug workaround) ");
 			try {
 				// workaround until many-to-one works (bug 46)
 				UserId user = new UserId(ProtocolType.XMPP, "testuser1@localhost");
-				ServiceCredentials credentials = new ServiceCredentials(user.toString(),
-						"testpasswd");
+				ServiceCredentials credentials = this.getServiceCredentialsDao().getAll().get(0);
 				credentials.setProtocol(ProtocolType.XMPP);
 				credentials.setSavePassword(true);
 				MsgService<UserId> msg = this.msgServiceFactory
@@ -189,7 +192,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		}
 
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
-		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
+		if (p.getMessageService()==null)
+			p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
+		
+		//make sure the projects have fileservices
+		try {
+			this.getProjectsFileServices().getProjectFSService(p);
+		} catch (ProjectNotLoadedException e) {
+			this.getProjectsFileServices().startProject(p);
+		}
 
 		if (!p.getUserId().equals(p.getMessageService().getUserId()))
 			throw new IllegalStateException();
@@ -942,5 +953,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		LogEntry<JakeObject> le = new JakeObjectLogEntry(which, jo, me, comment, null,
 				true);
 		this.getApplicationContextFactory().getLogEntryDao(p).create(le);
+	}
+
+	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
+		this.serviceCredentialsDao = serviceCredentialsDao;
+	}
+
+	public IServiceCredentialsDao getServiceCredentialsDao() {
+		return serviceCredentialsDao;
 	}
 }

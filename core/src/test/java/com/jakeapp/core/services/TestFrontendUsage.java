@@ -137,7 +137,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Assert.assertTrue(pms.getProjectList().contains(project));
 		
 		pms.closeProject(project);
-		Assert.assertTrue(pms.getProjectList().contains(project));
+		Assert.assertFalse(pms.getProjectList().contains(project));
 		
 		Assert.assertEquals(project, pms.openProject(project));
 		Assert.assertTrue(pms.getProjectList().contains(project));
