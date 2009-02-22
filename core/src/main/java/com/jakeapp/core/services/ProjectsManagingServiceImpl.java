@@ -111,7 +111,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 	private IFileObjectDao getFileObjectDao(Project project) {
 		return this.getApplicationContextFactory().getFileObjectDao(project);
 	}
-
+	
+	/*
+	@SuppressWarnings("unchecked")
 	private IJakeObjectDao<JakeObject> getJakeObjectDao(final Project project, final JakeObject jo) {
 		IJakeObjectDao result = null;
 
@@ -121,7 +123,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		}
 
 		return result;
-	}
+	}*/
 
 	/**
 	 * ***** STARTING IMPLEMENTATIONS *************
@@ -804,10 +806,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private List<Tag> getTagsListFor(JakeObject jo) throws NoSuchJakeObjectException {
-		// TODO: get from logentries
-		return new LinkedList<Tag>();
+	private List<Tag> getTagsListFor(JakeObject jo) {
+		return new LinkedList<Tag>(this.getLogEntryDao(jo.getProject()).getCurrentTags(jo));
 	}
 
 	@Override
@@ -838,14 +838,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 		return Calendar.getInstance().getTime();
 	}
 
-	private void addTag(JakeObject jo, Tag t) throws NoSuchJakeObjectException {
+	private void addTag(JakeObject jo, Tag t) {
 		LogEntry<Tag> logEntry;
 		logEntry = new TagLogEntry(LogAction.TAG_ADD, 
 				  t, jo.getProject().getUserId());
 		this.getLogEntryDao(jo.getProject()).create(logEntry);
 	}
 
-	private void removeTag(JakeObject jo, Tag t) throws NoSuchJakeObjectException {
+	private void removeTag(JakeObject jo, Tag t) {
 		TagLogEntry logEntry;
 		logEntry = new TagLogEntry(LogAction.TAG_REMOVE, 
 				  t, jo.getProject().getUserId());

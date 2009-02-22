@@ -63,14 +63,14 @@ public class MsgServiceFactory {
 		log.debug("creating testData");
 	}
 
-	public MsgService createMsgService(ServiceCredentials credentials)
+	public MsgService<UserId> createMsgService(ServiceCredentials credentials)
 			throws ProtocolNotSupportedException {
 
 		log.debug("calling createMsgService ");
 		log.debug("creating MsgService for " + credentials.getUserId() + " pwl: "
 				+ credentials.getPlainTextPassword().length());
 		ensureInitialised();
-		MsgService result = null;
+		MsgService<UserId> result = null;
 		if (credentials.getProtocol() != null
 				&& credentials.getProtocol().equals(ProtocolType.XMPP)) {
 			log
@@ -92,20 +92,17 @@ public class MsgServiceFactory {
 	}
 
 	@Transactional
-	public List<MsgService> getAll() {
+	public List<MsgService<UserId>> getAll() {
 		log.debug("calling getAll");
 		// ensureInitialised();
 
-		List<ServiceCredentials> credentialsList = new ArrayList<ServiceCredentials>();
+		List<ServiceCredentials> credentialsList = this.serviceCredentialsDao.getAll();
 
-		credentialsList = this.serviceCredentialsDao.getAll();
-
-		List<MsgService> msgServices = new ArrayList<MsgService>();
+		List<MsgService<UserId>> msgServices = new ArrayList<MsgService<UserId>>();
 
 		for (ServiceCredentials credentials : credentialsList) {
 			try {
-				MsgService service = null;
-				service = this.createMsgService(credentials);
+				MsgService<UserId> service = this.createMsgService(credentials);
 				if (!msgServices.contains(service)) {
 					msgServices.add(service);
 					this.map.put(service, credentials);
@@ -147,7 +144,7 @@ public class MsgServiceFactory {
 			throws InvalidCredentialsException, ProtocolNotSupportedException {
 		log.debug("calling addMsgService");
 
-		MsgService svc = this.createMsgService(credentials);
+		MsgService<UserId> svc = this.createMsgService(credentials);
 		UserId user = null;
 		switch (credentials.getProtocol()) {
 

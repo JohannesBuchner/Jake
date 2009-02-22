@@ -45,7 +45,7 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 	@Prerequisite(checker = DesktopSupportedChecker.class)
 	public void testReadFile() throws Exception {
 		wipeRoot();
-		Assert.assertFalse("got a tempdir", mytempdir == null && mytempdir.length() > 0);
+		Assert.assertTrue("got a tempdir", mytempdir != null && mytempdir.length() > 0);
 
 		try {
 			fss.readFile(":");

@@ -16,6 +16,7 @@ public class NoteObject extends JakeObject {
 
 	private String content;
 
+	@SuppressWarnings("unused")
 	private NoteObject() {
 	}
 	

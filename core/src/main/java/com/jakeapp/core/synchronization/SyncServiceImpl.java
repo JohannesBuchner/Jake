@@ -222,15 +222,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			return completeIncomingObject(no);
 		} catch (NoSuchJakeObjectException e) {
 			log.debug("completing object failed, not in database yet.");
-			return (NoteObject) no; // we accept the UUID
+			return no; // we accept the UUID
 		}
 	}
 
 	private FileObject completeIncomingObjectOrNew(FileObject jo) {
 		try {
-			return completeIncomingObject((FileObject) jo);
+			return completeIncomingObject(jo);
 		} catch (NoSuchJakeObjectException e) {
-			return new FileObject(jo.getProject(), ((FileObject) jo).getRelPath());
+			return new FileObject(jo.getProject(), jo.getRelPath());
 		}
 	}
 
@@ -292,7 +292,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// return fo;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Transactional
 	public NoteObject pullNoteObject(Project p, LogEntry<JakeObject> le) {
 		log.debug("pulling note out of log");
@@ -491,7 +490,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		else
 			size = content.length();
 
-		List<LogEntry<? extends ILogable>> all = led.getAll(true);
 		// 2 last logAction
 		LogEntry<NoteObject> lastle;
 		try {
@@ -615,6 +613,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		private ChangeListener cl;
 
+		@SuppressWarnings("unused")
 		private IFileTransfer ft;
 
 		private JakeObject jo;
@@ -653,7 +652,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				BufferedReader bis = new BufferedReader(new InputStreamReader(data));
 				String content;
 				try {
-					content = bis.readLine();
+					content = bis.readLine(); // TODO: read whole thing
+					bis.close();
 				} catch (IOException e) {
 					content = "foo";
 				}
@@ -669,6 +669,10 @@ public class SyncServiceImpl extends FriendlySyncService implements
 					return;
 				}
 				cl.pullDone(jo);
+			}
+			try {
+				data.close();
+			} catch (IOException e) {
 			}
 		}
 
@@ -753,7 +757,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Transactional
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
 		int uuidlen = UUID.randomUUID().toString().length();
-		UUID projectid = UUID.fromString(content.substring(0, uuidlen));
+		String projectid = content.substring(0, uuidlen);
 		content = content.substring(uuidlen);
 		Project p = getProjectByUserId(projectid);
 		ChangeListener cl = projectChangeListeners.get(projectid);
@@ -793,11 +797,11 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
 
-	private Project getProjectByUserId(UUID projectid) {
+	private Project getProjectByUserId(String projectid) {
 		// for(i : getProjectsManagingService().getProjectList()
 		// return new Project(null, projectid, null, null);
 		// TODO: mocked for the demo
-		return runningProjects.get(projectid);
+		return this.runningProjects.get(projectid);
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.dao.exceptions.NoSuchConfigOptionException;
-import com.jakeapp.core.domain.Configuration;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.dao.DataAccessException;
-import org.apache.log4j.Logger;
-
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.jakeapp.core.domain.Configuration;
 
 
 /**
@@ -39,6 +39,7 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements IC
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public final boolean configurationValueExists(final String name) {
         List<String> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("SELECT TRUE FROM configuration WHERE key = ? ").setString(0, name).list();
@@ -52,7 +53,8 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements IC
         return configuration;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<Configuration> getAll() {
         List<Configuration> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("FROM configuration").list();
@@ -64,8 +66,8 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements IC
      * {@inheritDoc}
      */
     @Override
-    public final String getConfigurationValue(final String name)
-            throws NoSuchConfigOptionException {
+    @SuppressWarnings("unchecked")
+    public final String getConfigurationValue(final String name) {
 
         List<Configuration> result = this.getHibernateTemplate().getSessionFactory().getCurrentSession().
                 createQuery("FROM configuration WHERE key = ? ").setString(0, name).list();

@@ -134,7 +134,7 @@ public class TestSocketFileTransferWithMocks {
 	}
 
 	public void justRunServer() throws Exception {
-		FileRequest fr = new FileRequest("myfile.txt", true, new MockUserId("otherpeer"));
+		new FileRequest("myfile.txt", true, new MockUserId("otherpeer"));
 		UUID key = UUID.randomUUID();
 		
 		InetSocketAddress server = prepareServer(key);

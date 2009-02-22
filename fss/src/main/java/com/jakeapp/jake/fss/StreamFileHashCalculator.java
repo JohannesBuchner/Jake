@@ -27,6 +27,7 @@ public class StreamFileHashCalculator{
 		byte[] tmp = new byte[1024];
 		try {
 			while(dis.read(tmp) >= 0);
+			dis.close();
 		} catch (IOException e) {
 			return null;
 		}

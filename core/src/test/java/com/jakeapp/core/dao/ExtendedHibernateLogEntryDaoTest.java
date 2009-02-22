@@ -322,7 +322,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		LogEntry<? extends ILogable> le = result.get(8);
 		Assert.assertEquals(LogAction.TAG_ADD, le.getLogAction());
 		LogEntry<Tag> tagle = (LogEntry<Tag>) le;
-		Tag tag = (Tag) le.getBelongsTo();
+		Tag tag = tagle.getBelongsTo();
 		Assert.assertEquals("tag1", tag.getName());
 		JakeObject jo = tag.getObject();
 		Assert.assertEquals(file1, jo);

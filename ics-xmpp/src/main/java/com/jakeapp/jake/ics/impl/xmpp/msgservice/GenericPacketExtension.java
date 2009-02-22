@@ -19,10 +19,6 @@ public class GenericPacketExtension implements PacketExtension {
 	 */
 	private String content;
 	
-	private GenericPacketExtension() {
-		
-	}
-	
 	public GenericPacketExtension(String namespace) {
 		this.namespace = namespace;
 	}

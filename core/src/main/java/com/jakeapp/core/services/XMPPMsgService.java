@@ -222,12 +222,12 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	public void createAccount() throws NetworkException {
-		mainIcs.getStatusService().createAccount(icsXmppUserId,
+		this.mainIcs.getStatusService().createAccount(icsXmppUserId,
 				this.getServiceCredentials().getPlainTextPassword());
 	}
 
 	@Override
 	protected ICService getMainIcs() {
-		return this.getMainIcs();
+		return this.mainIcs;
 	}
 }

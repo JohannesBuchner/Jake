@@ -8,10 +8,6 @@ public class GenericPacketProvider implements PacketExtensionProvider {
 
 	private String namespace;
 
-	private GenericPacketProvider(){
-		
-	}
-	
 	public GenericPacketProvider(String namespace) {
 		if(namespace == null)
 			throw new NullPointerException();

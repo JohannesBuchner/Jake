@@ -48,7 +48,7 @@ public class TestXmppUserId {
 
 	@Test
 	public void testEqualsDifferentRessource2() {
-		Assert.assertEquals(new XmppUserId("foo@bar/MIRC"), (UserId) new MockUserId(
+		Assert.assertEquals(new XmppUserId("foo@bar/MIRC"), new MockUserId(
 				"foo@bar/Pidgin"));
 	}
 
@@ -66,7 +66,7 @@ public class TestXmppUserId {
 
 	@Test
 	public void testEqualsDifferentRessource4() {
-		Assert.assertFalse(new XmppUserId("foo@bar/MIRC").equals((UserId) new MockUserId(
+		Assert.assertFalse(new XmppUserId("foo@bar/MIRC").equals(new MockUserId(
 				"foo@baz/Pidgin")));
 	}
 

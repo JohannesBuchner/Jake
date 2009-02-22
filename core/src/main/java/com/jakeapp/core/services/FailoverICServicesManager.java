@@ -52,7 +52,7 @@ public class FailoverICServicesManager implements ICServicesManager {
 		IMsgService msg = ics.getMsgService();
 		FailoverCapableFileTransferService fcfts = null;
 
-		if (this.transfer.containsKey(p)) {
+		if (this.transfer.containsKey(p.getProjectId())) {
 			fcfts = this.transfer.get(p.getProjectId());
 		} else {
 			fcfts = createTransferService(this.getBackendUserId(p), ics, msg);

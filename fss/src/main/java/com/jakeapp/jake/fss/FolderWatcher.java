@@ -131,6 +131,7 @@ public class FolderWatcher {
 								newhash = calculateHash(f);
 							} catch (NotAReadableFileException e) {
 								e.printStackTrace();
+								continue;
 							}
 
 							lastmodifieddates.put(f, f.lastModified());

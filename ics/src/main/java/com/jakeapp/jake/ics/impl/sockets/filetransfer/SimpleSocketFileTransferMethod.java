@@ -419,7 +419,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 					Socket client = this.socket.accept();
 					this.log
 							.debug("Incoming connection. Starting another ClientHandler thread.");
-					new Thread(new ClientHandler(client, this.listener)).run();
+					new ClientHandler(client, this.listener).run();
 				};
 			} catch (IOException e) {
 				if (!isServing()) {
@@ -449,11 +449,11 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		}
 
 		public void run() {
+			InputStreamReader bis = null;
 			try {
-				char[] uuidContent = new char[UUID_LENGTH];
-				InputStreamReader bis = new InputStreamReader(this.client
-						.getInputStream());
+				bis = new InputStreamReader(this.client.getInputStream());
 
+				char[] uuidContent = new char[UUID_LENGTH];
 				this.log.debug("reading UUID");
 				bis.read(uuidContent, 0, UUID_LENGTH);
 				UUID requestKey = UUID.fromString(new String(uuidContent));
@@ -467,19 +467,20 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 					// prevent replay attacks
 					SimpleSocketFileTransferMethod.this.incomingRequests
 							.remove(requestKey);
-				} else if (fr == null) {
-					log.warn("got invalid/unknown requestKey");
 				} else {
-					log.info("we denied the client");
+					log.warn("got invalid/unknown requestKey");
 				}
 			} catch (IOException e) {
 				log.warn("serving client failed", e);
-			}
-			try {
-				log.debug("closing client connection");
-				this.client.close();
-			} catch (IOException e) {
-				log.error("closing failed", e);
+			} finally {
+				try {
+					log.debug("closing client connection");
+					if (bis != null)
+						bis.close();
+					this.client.close();
+				} catch (IOException e) {
+					log.error("closing failed", e);
+				}
 			}
 		}
 

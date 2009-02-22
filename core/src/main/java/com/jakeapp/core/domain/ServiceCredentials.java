@@ -40,17 +40,16 @@ public class ServiceCredentials implements Serializable {
 	private ProtocolType protocol;
 
 
-    private boolean savePassword = false;
+	private boolean savePassword = false;
 
-    public ServiceCredentials() {
+	public ServiceCredentials() {
 		this.resourceName = "JakeApp";
-        if(uuid == null)
-            this.uuid = UUID.randomUUID();
+		this.uuid = UUID.randomUUID();
 	}
 
 	/**
-	 * Construct new user credentials with the given params. <br/>
-	 * Note: the password will not be persisted unless you call
+	 * Construct new user credentials with the given params. <br/> Note: the
+	 * password will not be persisted unless you call
 	 * {@link #setSavePassword(boolean)}
 	 * 
 	 * @param userId
@@ -117,14 +116,13 @@ public class ServiceCredentials implements Serializable {
 	 */
 	@Column(name = "server", nullable = false)
 	public String getServerAddress() {
-		if(this.serverAddress == null)
-            return "";
-        return this.serverAddress.toString();
+		if (this.serverAddress == null)
+			return "";
+		return this.serverAddress;
 	}
 
-	public void setServerAddress(String serverAddress)
-			throws InvalidCredentialsException {
-        this.serverAddress = serverAddress;
+	public void setServerAddress(String serverAddress) throws InvalidCredentialsException {
+		this.serverAddress = serverAddress;
 
 	}
 
@@ -193,16 +191,16 @@ public class ServiceCredentials implements Serializable {
 	}
 
 
-    @Column(name = "savepassword")
-    public boolean isSavePassword() {
-        return savePassword;
-    }
+	@Column(name = "savepassword")
+	public boolean isSavePassword() {
+		return savePassword;
+	}
 
-    public void setSavePassword(boolean savePassword) {
-        this.savePassword = savePassword;
-    }
+	public void setSavePassword(boolean savePassword) {
+		this.savePassword = savePassword;
+	}
 
-    @Override
+	@Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;

@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
  * Identifies a user
  */
 public class UserId implements ILogable {
+	private static final long serialVersionUID = 3356457614479149943L;
 
 	public UserId() {
 		super();

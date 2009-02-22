@@ -1,18 +1,18 @@
 package com.jakeapp.core.dao;
 
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.Assert;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.transaction.annotation.Transactional;
-import org.apache.log4j.Logger;
-import com.jakeapp.core.domain.Configuration;
-import com.jakeapp.core.dao.exceptions.NoSuchConfigOptionException;
-
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.domain.Configuration;
 
 @ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
 public class HibernateConfigurationDaoTest extends AbstractJUnit4SpringContextTests {
@@ -99,7 +99,7 @@ public class HibernateConfigurationDaoTest extends AbstractJUnit4SpringContextTe
     }
 
     @Test
-    public void testGetConfigurationValue() throws NoSuchConfigOptionException {
+    public void testGetConfigurationValue()  {
                 Configuration conf;
         conf = new Configuration("testGetConfigurationValue", "testValue");
 

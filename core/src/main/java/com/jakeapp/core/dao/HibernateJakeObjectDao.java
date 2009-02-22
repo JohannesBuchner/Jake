@@ -42,6 +42,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public T get(final UUID objectId) throws NoSuchJakeObjectException {
 		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
@@ -57,7 +58,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 				objectId.toString()).list();
 
 		if (results.size() > 0)
-			return (T) results.get(0);
+			return results.get(0);
 
 		throw new NoSuchJakeObjectException("jakeobject with uuid " + objectId.toString()
 				+ "not found");

@@ -11,7 +11,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class ApplicationContextFactory {
-	protected static Logger log = Logger.getLogger(ProjectApplicationContextFactory.class);
+	protected final static Logger log = Logger.getLogger(ProjectApplicationContextFactory.class);
 	protected Hashtable<UUID, ConfigurableApplicationContext> contextTable;
 	private String[] configLocation;
 
@@ -65,7 +65,7 @@ public class ApplicationContextFactory {
 	 * @param configLocation the location of the config file (i.e. beans.xml etc.)
 	 * @see org.springframework.context.support.ClassPathXmlApplicationContext
 	 */
-	public void setConfigLocation(String[] configLocation) {
+	public synchronized void setConfigLocation(String[] configLocation) {
 		log.debug("Setting config Location to: ");
 		for (String bla : configLocation) {
 			log.debug(bla);

@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
@@ -183,10 +184,10 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		userListPanel.removeAll();
 
 		try {
-			List<MsgService> msgs = JakeMainApp.getCore().getMsgServics();
+			List<MsgService<UserId>> msgs = JakeMainApp.getCore().getMsgServics();
 
 			if (msgs != null) {
-				for (MsgService msg : msgs) {
+				for (MsgService<UserId> msg : msgs) {
 					UserControlPanel userPanel = new UserControlPanel(msg);
 					JXLayer userLayer = new JXLayer(userPanel);
 					//userLayer.setBackground(Color.WHITE);

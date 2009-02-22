@@ -82,8 +82,7 @@ public class AllProjectFilesFuture extends
 //        sf.openSession();
         log.debug("\n\n\n\n\n\n\n\n\nCalculating the  AllProjectFilesFuture\n\n\n\n\n\n\n\n\n");
 
-        List<FileObject> result = new ArrayList<FileObject>();
-        result = this.applicationContextFactory.getFileObjectDao(project).getAll();
+        List<FileObject> result = this.applicationContextFactory.getFileObjectDao(project).getAll();
 
         log.debug("found " + result.size() + " files in the DB ");
         for(FileObject file : result)

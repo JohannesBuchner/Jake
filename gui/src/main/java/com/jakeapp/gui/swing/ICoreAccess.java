@@ -213,7 +213,7 @@ public interface ICoreAccess {
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *          if the frontend has no session on the core
 	 */
-	public List<MsgService> getMsgServics() throws FrontendNotLoggedInException;
+	public List<MsgService<UserId>> getMsgServics() throws FrontendNotLoggedInException;
 
 	/******************* Project functions ********************/
 

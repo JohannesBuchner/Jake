@@ -104,7 +104,7 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
         noteObject = new NoteObject(UUID.fromString("0fa0028f-5555-4c39-9925-99a93cdc2b86"),
                 null, "testGet");
         noteObjectDao.persist(noteObject);
-        result = (NoteObject) noteObjectDao.get(noteObject.getUuid());
+        result = noteObjectDao.get(noteObject.getUuid());
 
         Assert.assertEquals(noteObject, result);
     }
@@ -120,7 +120,7 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
         noteObject = new NoteObject(UUID.fromString("0fa0028f-5035-4c39-3333-99a93cdc2b86"),
                 null, "testDelete");
         noteObjectDao.persist(noteObject);
-        result1 = (NoteObject) noteObjectDao.get(noteObject.getUuid());
+        result1 = noteObjectDao.get(noteObject.getUuid());
 
         Assert.assertEquals(noteObject, result1);
 
@@ -130,7 +130,7 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
             throw new Exception("Object not found!");
         }
 
-        result2 = (NoteObject) noteObjectDao.get(result1.getUuid()); // here exception gets thrown
+        result2 = noteObjectDao.get(result1.getUuid()); // here exception gets thrown
 
         Assert.assertNull(result2);
 

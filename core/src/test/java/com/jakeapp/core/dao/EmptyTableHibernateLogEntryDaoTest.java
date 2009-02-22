@@ -146,7 +146,7 @@ public class EmptyTableHibernateLogEntryDaoTest extends AbstractJUnit4SpringCont
 	@Transactional
 	@Test(expected = NoSuchLogEntryException.class)
 	public void testNextUnprocessed() throws Exception {
-		LogEntry<JakeObject> next = logEntryDao.getNextUnprocessed();
+		logEntryDao.getNextUnprocessed();
 	}
 
 	@Transactional

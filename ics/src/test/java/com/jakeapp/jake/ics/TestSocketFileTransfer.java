@@ -175,7 +175,7 @@ public class TestSocketFileTransfer {
 		Assert.assertTrue(this.t.awaitStep("clientside negotiation succeeded", 1,
 				  TimeUnit.SECONDS));
 
-		this.log.debug("main: waiting for filetransfer to finish: " + this.fileTransfer);
+		TestSocketFileTransfer.log.debug("main: waiting for filetransfer to finish: " + this.fileTransfer);
 
 
 		while (!this.fileTransfer.isDone()) {
@@ -319,7 +319,7 @@ public class TestSocketFileTransfer {
 		}
 	}
 
-	private final class NoFilesMapper implements FileRequestFileMapper {
+	static private final class NoFilesMapper implements FileRequestFileMapper {
 
 		@Override
 		public File getFileForRequest(@SuppressWarnings("unused") FileRequest r) {

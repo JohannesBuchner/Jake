@@ -230,7 +230,8 @@ public class JakeCommander {
 	class CreateAccountCommand extends LazyAvailabilityCommand<Void> {
 
 		public CreateAccountCommand() {
-			super("createAccount", "createAccount <xmppid> <password>", "provides a MsgService");
+			super("createAccount", "createAccount <xmppid> <password>",
+					"provides a MsgService");
 		}
 
 		@Override
@@ -368,7 +369,6 @@ public class JakeCommander {
 				System.out.println("creating project ...");
 				project = pms.createProject(projectFolder.getName(), projectFolder
 						.getAbsolutePath(), msg);
-				pms.assignUserToProject(project, msg.getUserId());
 
 				System.out.println("creating project done");
 			} catch (Exception e) {
@@ -466,13 +466,6 @@ public class JakeCommander {
 				}
 				System.out.println("\t" + project);
 				pms.openProject(project);
-				// workaround for bug 32 + bug 33
-				// TODO: remove after it these are fixed
-				try {
-					pms.assignUserToProject(project, msg.getUserId());
-				} catch (IllegalAccessException e) {
-					// we ignore that, just like the gui does
-				}
 
 				System.out.println("opening project done");
 			} catch (Exception e) {
@@ -609,7 +602,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("announcing ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_NEW_VERSION, "something new, something blue");
+				sync.announce(jo, LogAction.JAKE_OBJECT_NEW_VERSION,
+						"something new, something blue");
 				System.out.println("announcing done");
 			} catch (Exception e) {
 				System.out.println("announcing failed");
@@ -628,7 +622,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("deleting ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_DELETE, "something new, something red");
+				sync.announce(jo, LogAction.JAKE_OBJECT_DELETE,
+						"something new, something red");
 				System.out.println("deleting done");
 			} catch (Exception e) {
 				System.out.println("deleting failed");
@@ -647,8 +642,9 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("locking ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_LOCK,
-						"I'm working on this. Please wait for me to finish or contact me");
+				sync
+						.announce(jo, LogAction.JAKE_OBJECT_LOCK,
+								"I'm working on this. Please wait for me to finish or contact me");
 				System.out.println("locking done");
 			} catch (Exception e) {
 				System.out.println("locking failed");
@@ -667,7 +663,8 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("unlocking ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_UNLOCK, "I'm done working on this.");
+				sync.announce(jo, LogAction.JAKE_OBJECT_UNLOCK,
+						"I'm done working on this.");
 				System.out.println("unlocking done");
 			} catch (Exception e) {
 				System.out.println("unlocking failed");
@@ -700,7 +697,8 @@ public class JakeCommander {
 	class JakeObjectStatusCommand extends LazyJakeObjectCommand {
 
 		public JakeObjectStatusCommand() {
-			super("objectStatus", "prints the synchronisation+lock status of a JakeObject");
+			super("objectStatus",
+					"prints the synchronisation+lock status of a JakeObject");
 		}
 
 		@Override
@@ -773,8 +771,8 @@ public class JakeCommander {
 		for (Class<?> c : JakeCommander.class.getDeclaredClasses()) {
 			Command command;
 			try {
-				Constructor<Command> constructor = (Constructor<Command>) c.getConstructor(this
-						.getClass());
+				Constructor<Command> constructor = (Constructor<Command>) c
+						.getConstructor(this.getClass());
 				command = constructor.newInstance(this);
 			} catch (Exception e) {
 				continue;

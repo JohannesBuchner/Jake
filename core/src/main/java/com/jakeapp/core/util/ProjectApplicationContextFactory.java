@@ -154,9 +154,7 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 			loadProjectUUIDs();
 			if (!this.project_uuids.contains(identifier)) {
 				log.fatal("tried to open invalid context (database)!");
-				new Exception().printStackTrace();
-				System.err.print("FIX ME!");
-				System.exit(1);
+				throw new IllegalStateException("tried to load invalid database context");
 			}
 			return getApplicationContext(identifier);
 		}

@@ -34,8 +34,7 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 		if (project.getProjectId() == null)
 			throw new InvalidProjectException("projectId must not be null");
 
-		log.debug("persisting project with uuid "
-				+ ((project != null) ? project.getProjectId() : "null"));
+		log.debug("persisting project with uuid " + project.getProjectId());
 		try {
 			if (project.getProjectId().isEmpty())
 				project.setProjectId(UUID.randomUUID());

@@ -1,9 +1,8 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.dao.exceptions.NoSuchConfigOptionException;
-import com.jakeapp.core.domain.Configuration;
-
 import java.util.List;
+
+import com.jakeapp.core.domain.Configuration;
 
 /**
  * Serves as a frontend for database-independent Configuration management.
@@ -18,8 +17,7 @@ public interface IConfigurationDao {
 	 * @throws NoSuchConfigOptionException if there is no
      * configuration option by that name
 	 */
-	public String getConfigurationValue(String name)
-            throws NoSuchConfigOptionException;
+	public String getConfigurationValue(String name);
 
 	/**
 	 * Sets a configuration option.

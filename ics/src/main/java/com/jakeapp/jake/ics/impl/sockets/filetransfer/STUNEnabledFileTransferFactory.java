@@ -45,11 +45,12 @@ public class STUNEnabledFileTransferFactory implements ITransferMethodFactory {
 		return new SocketFileTransfer(negotiationService, user);
 	}
 
-	public class SocketFileTransfer implements ITransferMethod,
+	static public class SocketFileTransfer implements ITransferMethod,
 			IMessageReceiveListener {
 
 		private IMsgService negotiationService;
 
+		@SuppressWarnings("unused")
 		private Map<UUID, NegotiationState> runningrequests = new HashMap<UUID, NegotiationState>();
 
 		private ServerSocket socket;

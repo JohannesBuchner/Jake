@@ -18,7 +18,7 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
    private static Logger log = Logger.getLogger(ProjectsFileServicesImpl.class);
 
 
-    private Map<UUID, IFSService> fileServices = new HashMap<UUID, IFSService>();
+    private Map<String, IFSService> fileServices = new HashMap<String, IFSService>();
 
     public ProjectsFileServicesImpl()
     {
@@ -26,13 +26,13 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
 	@Override
     public IFSService startProject(Project project) {
-        if(this.fileServices.containsKey(UUID.fromString(project.getProjectId())))
-            return this.fileServices.get(UUID.fromString(project.getProjectId()));
+        if(this.fileServices.containsKey(project.getProjectId()))
+            return this.fileServices.get(project.getProjectId());
 
         try {
             IFSService fss = new FSService();
             fss.setRootPath(project.getRootPath());
-            fileServices.put(UUID.fromString(project.getProjectId()), fss);
+            fileServices.put(project.getProjectId(), fss);
 
             return fss;
         } catch (NoSuchAlgorithmException e) {
@@ -68,6 +68,7 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
     @Override
     public void stopProject(Project project) {
-        fileServices.remove(project);
+    	fileServices.get(project.getProjectId()).unsetRootPath();
+        fileServices.remove(project.getProjectId());
     }
 }

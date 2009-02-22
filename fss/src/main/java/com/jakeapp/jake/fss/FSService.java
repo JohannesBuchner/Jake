@@ -19,13 +19,13 @@ import java.util.regex.Pattern;
 public class FSService implements IFSService, IModificationListener {
 	private static Logger log = Logger.getLogger(FSService.class);
 
-	private String rootPath = null;
+	private String rootPath;
 
-	private StreamFileHashCalculator hasher = null;
+	private StreamFileHashCalculator hasher;
 
-	private FolderWatcher fw = null;
+	private FolderWatcher fw;
 
-	private FileLauncher launcher = null;
+	private FileLauncher launcher;
 
 	List<IProjectModificationListener> modificationListener;
 
@@ -83,7 +83,8 @@ public class FSService implements IFSService, IModificationListener {
 		return f.exists() && f.isFile();
 	}
 
-	public List<String> listFolder(String relpath) throws InvalidFilenameException {
+	public List<String> listFolder(String inrelpath) throws InvalidFilenameException {
+		String relpath = inrelpath;
 		while (relpath.startsWith("/")) {
 			relpath = relpath.substring(1);
 		}
@@ -151,6 +152,7 @@ public class FSService implements IFSService, IModificationListener {
 		int n;
 		try {
 			n = fr.read(buf, 0, len);
+			fr.close();
 		} catch (IOException e) {
 			throw new NotAReadableFileException();
 		}
@@ -192,9 +194,12 @@ public class FSService implements IFSService, IModificationListener {
 		return f.getAbsolutePath();
 	}
 
-	public String joinPath(String rootPath, String relpath) {
+	public String joinPath(String rootPath, String inrelpath) {
+		String relpath;
 		if ('/' != File.separatorChar)
-			relpath = relpath.replace('/', File.separatorChar);
+			relpath = inrelpath.replace('/', File.separatorChar);
+		else 
+			relpath = inrelpath;
 		String p = rootPath + File.separator + relpath;
 		if (File.separatorChar == '\\') {
 			p = p.replaceAll("\\\\\\\\", "\\\\");
