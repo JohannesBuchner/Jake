@@ -13,16 +13,16 @@ import java.util.List;
  * Flat representation of FolderObjectTreeTableModel
  */
 public class FileObjectsTableModel extends AbstractTableModel {
-	private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
+	private static final Logger log =
+					Logger.getLogger(FolderObjectsTreeTableModel.class);
 	private List<FileObject> files;
 
 	enum Columns {
 		FLock, FState, Name, Path, Size, LastMod, Tags
 	}
 
-	;
-
 	public FileObjectsTableModel(List<FileObject> files) {
+		log.info("Created FileObjectsTableModel with " + files.size() + " Files");
 		this.files = files;
 	}
 
@@ -93,7 +93,8 @@ public class FileObjectsTableModel extends AbstractTableModel {
 			case Path:
 				String s = ournode.getFileObject().getRelPath();
 				if (s.contains(System.getProperty("file.separator"))) {
-					return System.getProperty("file.separator") + s.substring(0, s.lastIndexOf(System.getProperty("file.separator")));
+					return System.getProperty("file.separator") + s
+									.substring(0, s.lastIndexOf(System.getProperty("file.separator")));
 				} else {
 					return System.getProperty("file.separator");
 				}

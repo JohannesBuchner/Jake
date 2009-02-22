@@ -665,6 +665,8 @@ public interface ICoreAccess {
 	 */
 	AvailableLaterObject<Boolean> login(MsgService service, String password,
 					boolean rememberPassword);
+
+	List<FileObject> getFilesDEBUG(Project project);
 }
 
 

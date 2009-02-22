@@ -566,6 +566,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return result.start();
 	}
 
+
+	@Override public List<FileObject> getFilesDEBUG(Project project) {
+		log.info("NODEBUG GETFILES +++++++++++++++++++++++++++++++++");
+		try {
+			return this.frontendService.getSyncService(this.sessionId).getFiles(project);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	@Override
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
 					Project project, T jakeObject) {
@@ -1161,6 +1172,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return this.getFrontendService()
 						.login(getSessionId(), service, password, rememberPassword);
 	}
+
+
 
 
 	@Override
