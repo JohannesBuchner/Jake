@@ -126,7 +126,7 @@ public class NotesTableModel extends DefaultTableModel {
 				value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
 				break;
 			case 4: //last editor
-				value = note.getLastVersionLogEntry().getMember();
+				value = note.getLastVersionEditor();
 				break;
 
 			default:
