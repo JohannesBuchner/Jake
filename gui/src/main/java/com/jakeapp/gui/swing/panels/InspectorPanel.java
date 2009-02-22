@@ -18,6 +18,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.io.File;
 
@@ -27,7 +28,7 @@ import java.io.File;
  * For File: Icon, Name, , Size, Tags, full path
  * Common: Last access time+user, History Table
  *
- * @author: studpete
+ * @author: studpete, simon
  */
 public class InspectorPanel extends JXPanel implements
 		  ProjectChanged, ProjectSelectionChanged, FileSelectionChanged, ProjectViewChanged, NoteSelectionChanged {
@@ -36,6 +37,8 @@ public class InspectorPanel extends JXPanel implements
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
 
 	public static final int INSPECTOR_SIZE = 250;
+	
+	private final Font smallFont = UIManager.getFont("Label.font").deriveFont(12);
 	
 	private Project project;
 	private ResourceMap resourceMap;
@@ -47,13 +50,18 @@ public class InspectorPanel extends JXPanel implements
 	private JLabel icoLabel;
 	private JLabel nameLabel;
 	private JLabel sizeLabel;
-	private JLabel lastAccessTimeAndUser;
+	private JLabel lastEditTimeAndUser;
 	private JLabel tagsLabel;
 	private JLabel fullPathLabel;
 	private EventsTableModel eventsTableModel;
+	private JPanel headerPanel;
 
 	private Icon notesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 			  getClass().getResource("/icons/notes.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+	private JPanel metaPanel;
+	private JLabel lastEditTextLabel;
+	private JLabel tagsHeaderLabel;
+	private JLabel fullPathTextLabel;
 
 	public InspectorPanel() {
 
@@ -73,16 +81,45 @@ public class InspectorPanel extends JXPanel implements
 	}
 
 	private void initComponents() {
-		this.setLayout(new MigLayout("wrap 2, fill"));
+		
+		//header panel
+		this.headerPanel = new JPanel(new MigLayout("fillx"));
+		this.headerPanel.setOpaque(false);
+		this.icoLabel = new JLabel();
+		this.headerPanel.add(this.icoLabel, "hidemode 1, w 64!, h 64!");
+		this.nameLabel = new JLabel();
+		this.headerPanel.add(this.nameLabel);
+		this.sizeLabel = new JLabel();
+		this.headerPanel.add(this.sizeLabel, "wrap, growx");
 
-		// not resizeable, fixed width
-		Dimension absSize = new Dimension(INSPECTOR_SIZE, INSPECTOR_SIZE);
-		this.setMinimumSize(new Dimension(100, 100));
-		//this.setMaximumSize(new Dimension((int) absSize.getWidth(), Integer.MAX_VALUE));
-		//this.setPreferredSize(absSize);
+		//meta panel
+		this.metaPanel = new JPanel(new MigLayout("fillx"));
+		this.metaPanel.setOpaque(false);
+		
+		this.lastEditTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
+		this.lastEditTextLabel.setFont(this.smallFont);
+		this.metaPanel.add(this.lastEditTextLabel, "right");
+		
+		this.lastEditTimeAndUser = new JLabel();
+		this.lastEditTimeAndUser.setFont(this.smallFont);
+		this.metaPanel.add(this.lastEditTimeAndUser, "wrap, growx");
 
-		this.setBackground(Platform.getStyler().getWindowBackground());
+		this.tagsHeaderLabel = new JLabel(getResourceMap().getString("tagsLabel"));
+		this.metaPanel.add(this.tagsHeaderLabel, "right");
+		
+		this.tagsLabel = new JLabel("");
+		this.metaPanel.add(this.tagsLabel, "wrap, growx");
 
+		// add full path
+		this.fullPathTextLabel = new JLabel(getResourceMap().getString("pathLabel"));
+		this.fullPathTextLabel.setFont(this.smallFont);
+		this.metaPanel.add(this.fullPathTextLabel, "right");
+		
+		this.fullPathLabel = new JLabel();
+		this.fullPathLabel.setFont(this.smallFont);
+		this.metaPanel.add(this.fullPathLabel, "wrap, growx");
+
+		// events table
 		//FIXME: pass a jakeObject to the EventTableModel c'tor.
 		this.setEventsTableModel(new EventsTableModel(getProject()));
 		this.eventsTable = new ITunesTable();
@@ -90,52 +127,22 @@ public class InspectorPanel extends JXPanel implements
 		this.eventsTable.setMinimumSize(new Dimension(50, INSPECTOR_SIZE));
 		ConfigControlsHelper.configEventsTable(this.eventsTable);
 		this.eventsTable.updateUI();
-		this.add(this.eventsTable, "dock south, grow 150 150, gpy 150");
+		
+		
+		//assembly
+		this.setLayout(new MigLayout("debug, wrap 1, fillx"));
+		this.add(this.headerPanel, "growx");
+		this.add(this.metaPanel, "growx");
+		this.add(this.eventsTable, "dock south, growy");
+		
+		// not resizeable, fixed width
+		Dimension absSize = new Dimension(INSPECTOR_SIZE, INSPECTOR_SIZE);
+		this.setMinimumSize(new Dimension(100, 100));
+		//this.setMaximumSize(new Dimension((int) absSize.getWidth(), Integer.MAX_VALUE));
+		//this.setPreferredSize(absSize);
 
-		JPanel headerPanel = new JPanel(new MigLayout("wrap 1, fill"));
-		headerPanel.setOpaque(false);
-
-		// add icon
-		this.icoLabel = new JLabel();
-		headerPanel.add(this.icoLabel, "dock west, hidemode 1, w 64!, h 64!");
-
-		// add name
-		this.nameLabel = new JLabel();
-		headerPanel.add(this.nameLabel, "wrap, grow");
-
-		// add size
-		this.sizeLabel = new JLabel();
-		headerPanel.add(this.sizeLabel, "wrap, grow");
-
-		this.add(headerPanel, "span 2, wrap, grow");
-
-		Font smallFont = UIManager.getFont("Label.font").deriveFont(12);
-
-		// last time+user modified
-		JLabel lastAccessTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
-		lastAccessTextLabel.setFont(smallFont);
-		this.add(lastAccessTextLabel, "right");
-		this.lastAccessTimeAndUser = new JLabel();
-		this.lastAccessTimeAndUser.setFont(smallFont);
-		this.add(this.lastAccessTimeAndUser, "growy, wrap");
-
-		// add tags
-		JLabel tagsHeaderLabel = new JLabel(getResourceMap().getString("tagsLabel"));
-		this.add(tagsHeaderLabel, "right");
-		this.tagsLabel = new JLabel("");
-		this.add(this.tagsLabel, "growy, wrap");
-
-		// add full path
-		JLabel fullPathTextLabel = new JLabel(getResourceMap().getString("pathLabel"));
-		fullPathTextLabel.setFont(smallFont);
-		this.add(fullPathTextLabel, "right");
-		this.fullPathLabel = new JLabel();
-		this.fullPathLabel.setFont(smallFont);
-		this.add(this.fullPathLabel, "growy, wrap");
-
-		// config the history table
-		this.add(new JLabel(getResourceMap().getString("historyLabel")), "span 2, wrap");
-
+		this.setBackground(Platform.getStyler().getWindowBackground());
+		
 		updatePanel();
 	}
 
@@ -179,7 +186,7 @@ public class InspectorPanel extends JXPanel implements
 			this.sizeLabel.setText("");
 			this.fullPathLabel.setText("");
 
-		  this.lastAccessTimeAndUser.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
+		  this.lastEditTimeAndUser.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
 
 
 			// TODO: inspector for notes
@@ -189,7 +196,7 @@ public class InspectorPanel extends JXPanel implements
 			this.nameLabel.setText("");
 			this.sizeLabel.setText("");
 			this.fullPathLabel.setText("");
-			this.lastAccessTimeAndUser.setText("");
+			this.lastEditTimeAndUser.setText("");
 
 			// hide table contents
 			this.getEventsTableModel().setProject(null);

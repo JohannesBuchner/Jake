@@ -20,7 +20,9 @@ import java.util.List;
  */
 public class EventsTableModel extends AbstractTableModel {
 
+	private static final long serialVersionUID = -3604724857190594625L;
 	private static final Logger log = Logger.getLogger(EventsTableModel.class);
+
 	private Project project;
 	private Attributed<? extends JakeObject> attributed;
 	private List<LogEntry<? extends ILogable>> logEntries = new ArrayList<LogEntry<? extends ILogable>>();
@@ -60,13 +62,11 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public void updateData() {
-		//test if current Jake object is null, if so all log entries will be shown
 		log.info("Updating events data...");
 		//FIXME: make proper initialization to evade this ugly null tests...
 		if (this.getProject() != null && this.getAttributedJakeObject() != null) {
 			this.logEntries = JakeMainApp.getCore().getLog(
 					  getProject(), getAttributedJakeObject().getJakeObject(), MaxLogEntriesShown);
-
 		}
 		log.debug("received logs: " + this.logEntries);
 	}
@@ -102,7 +102,7 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-
+		
 		LogEntry logEntry = logEntries.get(rowIndex);
 
 		LogColumns col = LogColumns.values()[columnIndex];

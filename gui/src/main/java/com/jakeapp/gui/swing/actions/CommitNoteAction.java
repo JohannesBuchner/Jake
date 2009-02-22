@@ -26,8 +26,7 @@ public class CommitNoteAction extends NoteAction {
 	public CommitNoteAction() {
 		super();
 
-		String actionStr = JakeMainView.getMainView().getResourceMap()
-						.getString("commitNoteMenuItem");
+		String actionStr = JakeMainView.getMainView().getResourceMap().getString("commitNoteMenuItem");
 		putValue(Action.NAME, actionStr);
 	}
 
