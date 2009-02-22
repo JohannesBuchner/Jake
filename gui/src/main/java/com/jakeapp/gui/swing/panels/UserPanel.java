@@ -95,7 +95,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * Create the User Panel.
 	 */
 	public UserPanel() {
-
 		setResourceMap(org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(UserPanel.class));
 
@@ -106,8 +105,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		initComponents();
 
 		// register the connection & reg status callback!
-		JakeMainApp.getApp().getCore().addConnectionStatusCallbackListener(this);
-		JakeMainApp.getApp().getCore().addRegistrationStatusCallbackListener(this);
+		JakeMainApp.getCore().addConnectionStatusCallbackListener(this);
+		JakeMainApp.getCore().addRegistrationStatusCallbackListener(this);
 
 		// device which panel to show!
 		updateView();
@@ -800,7 +799,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		private JButton signInBtn;
 
 		public UserControlPanel(final MsgService msg) {
-			log.info("creating UserControlPanel with " + msg);
+			log.info("creating UserControlPanel with " + msg +
+			", userID: " + msg.getUserId());
 			this.msg = msg;
 
 			ActionListener loginAction = new ActionListener() {
@@ -817,7 +817,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(), isRememberPassword()));
 						}
 
-
 						updateView();
 					} catch (Exception e1) {
 						ExceptionUtilities.showError(e1);
@@ -825,13 +824,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				}
 			};
 
-
 			this.setLayout(new MigLayout("wrap 2, fill"));
 
 			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(), 1));
 			this.setOpaque(false);
 
-			// HACK for mock
 			String msgUserId = msg.getUserId().getUserId();
 			
 			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msgUserId + "</b>"));

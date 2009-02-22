@@ -1,13 +1,7 @@
 package com.jakeapp.core.services;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.JakeMessage;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
@@ -16,7 +10,10 @@ import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Abstract MessagingService declasring what the classes for the
@@ -278,7 +275,7 @@ public abstract class MsgService<T extends UserId> {
 
 	abstract protected ICService getMainIcs();
 
-	public void loginICS(ICService ics) throws TimeoutException, NetworkException {
+	public void loginICS(ICService ics) throws NetworkException {
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = getMainIcs().getStatusService()
 					.getUserid();

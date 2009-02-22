@@ -1,14 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -18,6 +9,14 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Factory Class to create MsgServices by giving ServiceCredentials
@@ -33,18 +32,6 @@ public class MsgServiceFactory {
 
 	private Map<MsgService, ServiceCredentials> map = new HashMap<MsgService, ServiceCredentials>();
 
-	private boolean initialised = false;
-
-	private void ensureInitialised() {
-		log.debug("calling ensureInitialised");
-		if (!initialised) {
-			log.debug("was not initialized");
-			initialised = true;
-			createTestdata();
-
-		}
-	}
-
 	public MsgServiceFactory() {
 		log.debug("calling empty Constructor");
 	}
@@ -58,37 +45,63 @@ public class MsgServiceFactory {
 		return serviceCredentialsDao;
 	}
 
-	@Transactional
-	private void createTestdata() {
-		log.debug("creating testData");
-	}
-
 	public MsgService<UserId> createMsgService(ServiceCredentials credentials)
-			throws ProtocolNotSupportedException {
+					throws ProtocolNotSupportedException {
 
 		log.debug("calling createMsgService ");
-		log.debug("creating MsgService for " + credentials.getUserId() + " pwl: "
-				+ credentials.getPlainTextPassword().length());
-		ensureInitialised();
-		MsgService<UserId> result = null;
-		if (credentials.getProtocol() != null
-				&& credentials.getProtocol().equals(ProtocolType.XMPP)) {
-			log
-					.debug("Creating new XMPPMsgService for userId "
-							+ credentials.getUserId());
-			result = new XMPPMsgService();
-			result.setIcsManager(new FailoverICServicesManager());
-			result.setServiceCredentials(credentials);
+		log.debug("creating MsgService for " + credentials
+						.getUserId() + " pwl: " + credentials.getPlainTextPassword().length());
+
+		MsgService<UserId> msgService;
+		if (credentials.getProtocol() != null && credentials.getProtocol()
+						.equals(ProtocolType.XMPP)) {
+			log.debug("Creating new XMPPMsgService for userId " + credentials.getUserId());
+			msgService = new XMPPMsgService();
+			msgService.setIcsManager(new FailoverICServicesManager());
+			msgService.setServiceCredentials(credentials);
 		} else {
 			log.warn("Currently unsupported protocol given");
 			throw new ProtocolNotSupportedException();
 		}
-		log.debug("resulting MsgService is "
-				+ result.getServiceCredentials().getProtocol() + " for "
-				+ result.getServiceCredentials().getUserId() + " pwl: "
-				+ result.getServiceCredentials().getPlainTextPassword().length());
 
-		return result;
+		// create the UserId from the credentials.
+		msgService.setUserId(createUserforMsgService(credentials));
+
+		log.debug("resulting MsgService is " + msgService.getServiceCredentials()
+						.getProtocol() + " for " + msgService.getServiceCredentials()
+						.getUserId() + " pwl: " + msgService.getServiceCredentials()
+						.getPlainTextPassword().length() + "with UserId: " + msgService
+						.getUserId());
+
+		return msgService;
+	}
+
+	/**
+	 * Every MsgService has a UserId connected.
+	 * This creates the UserId from the ServiceCredentals.
+	 *
+	 * @param credentials ServiceCredentials that are used to create the UserId
+	 * @return
+	 * @throws ProtocolNotSupportedException
+	 */
+	private UserId createUserforMsgService(ServiceCredentials credentials)
+					throws ProtocolNotSupportedException {
+
+		// switch through the supported protocols and create the user
+		switch (credentials.getProtocol()) {
+			case XMPP:
+				UUID res = UUID.randomUUID();
+
+				if (credentials.getUuid() != null)
+					res = UUID.fromString(credentials.getUuid());
+
+				credentials.setUuid(res);
+
+				return new UserId(ProtocolType.XMPP, credentials.getUserId());
+
+			default:
+				throw new ProtocolNotSupportedException("Backend not yet implemented");
+		}
 	}
 
 	@Transactional
@@ -108,7 +121,7 @@ public class MsgServiceFactory {
 					this.map.put(service, credentials);
 				}
 			} catch (ProtocolNotSupportedException e) {
-
+				log.warn("Protocol not supported: ", e);
 			}
 		}
 
@@ -118,14 +131,14 @@ public class MsgServiceFactory {
 	/**
 	 * create a account with the given credentials. You are not logged in
 	 * afterwards
-	 * 
+	 *
 	 * @param credentials
 	 * @return success state
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception
 	 */
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
-			throws ProtocolNotSupportedException, NetworkException {
+					throws ProtocolNotSupportedException, NetworkException {
 		log.debug("calling AvailableLaterObject");
 		MsgService svc = createMsgService(credentials);
 
@@ -134,47 +147,26 @@ public class MsgServiceFactory {
 
 	/**
 	 * creates and adds a msgservice for the right protocol
-	 * 
+	 * This adds the ServiceCrenentials from the MsgService into the database.
+	 *
 	 * @param credentials
 	 * @return the service
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 */
 	public MsgService addMsgService(ServiceCredentials credentials)
-			throws InvalidCredentialsException, ProtocolNotSupportedException {
+					throws InvalidCredentialsException, ProtocolNotSupportedException {
 		log.debug("calling addMsgService");
 
-		MsgService<UserId> svc = this.createMsgService(credentials);
-		UserId user = null;
-		switch (credentials.getProtocol()) {
+		MsgService<UserId> msgService = this.createMsgService(credentials);
 
-			case XMPP:
+		// add to global array (NOT USED?)
+		msgServices.add(msgService);
 
-				UUID res = null;
-
-				if (credentials.getUuid() != null)
-					res = UUID.fromString(credentials.getUuid());
-
-				if (res == null)
-					res = UUID.randomUUID();
-
-				credentials.setUuid(res);
-
-				user = new UserId(ProtocolType.XMPP, credentials.getUserId());
-				break;
-
-			default:
-				throw new ProtocolNotSupportedException("Backend not yet implemented");
-
-		}
-		if (user != null)
-			svc.setUserId(user);
-
-		msgServices.add(svc);
-
+		// persist the ServicCredentials!
 		this.getServiceCredentialsDao().create(credentials);
-		return svc;
 
+		return msgService;
 	}
 
 	public ServiceCredentials get(MsgService service) {
@@ -182,15 +174,15 @@ public class MsgServiceFactory {
 	}
 
 	public MsgService getByCredentials(ServiceCredentials credentials) {
-		for(MsgService msg : getAll()) {
-			if(msg.getServiceCredentials().equals(credentials)) {
+		for (MsgService msg : getAll()) {
+			if (msg.getServiceCredentials().equals(credentials)) {
 				return msg;
 			}
 		}
 		try {
 			return this.addMsgService(credentials);
 		} catch (Exception e) {
-			log.error("Unable to create MessageService:",e);
+			log.error("Unable to create MessageService:", e);
 			return null;
 		}
 	}
