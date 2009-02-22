@@ -216,13 +216,13 @@ public class ServiceCredentials implements Serializable {
 		if (plainTextPassword != null ? !plainTextPassword.equals(that.plainTextPassword)
 				: that.plainTextPassword != null)
 			return false;
-		if (!resourceName.equals(that.resourceName))
+		if ( (resourceName!=null)?(!resourceName.equals(that.resourceName)):that.resourceName!=null)
 			return false;
-		if (!serverAddress.equals(that.serverAddress))
+		if ( (serverAddress!=null)?(!serverAddress.equals(that.serverAddress)):that.serverAddress!=null)
 			return false;
-		if (!userId.equals(that.userId))
+		if ( (userId!=null)?( !userId.equals(that.userId) ):that.userId!=null)
 			return false;
-		if (!uuid.equals(that.uuid))
+		if ( (uuid!=null) ? (!uuid.equals(that.uuid)):that.uuid!=null)
 			return false;
 
 		return true;
