@@ -39,6 +39,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     private static Logger log = Logger.getLogger(HibernateProjectDaoTest.class);
 
     private IProjectDao projectDao;
+    private IServiceCredentialsDao serviceCredentialsDao;
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));
 	private HibernateTemplate template;
 
@@ -81,6 +82,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     @Before
     public void setUp() {
     	this.setProjectDao((IProjectDao) this.applicationContext.getBean(DAO_BEAN_ID));
+    	this.setServiceCredentialsDao(((IServiceCredentialsDao) applicationContext.getBean("serviceCredentialsDao")));
     	this.setTemplate( (HibernateTemplate) applicationContext.getBean(HibernateProjectDaoTest.TEMPLATE_BEAN_ID) );
 
         if(!this.getTemplate().getSessionFactory().getCurrentSession().isOpen())
@@ -274,7 +276,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     }
     
     @Test(timeout = TestingConstants.UNITTESTTIME)
-    public final void read_shouldSetServiceCredentials() throws InvalidProjectException, NoSuchProjectException {  	
+    public final void read_shouldSetServiceCredentials() throws Exception {  	
     	Project p;
     	ServiceCredentials sc;
     	
@@ -283,7 +285,11 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     	//create and persist ServiceCredentials
     	sc = new ServiceCredentials("username","password");
     	sc.setProtocol(ProtocolType.XMPP);
-    	((IServiceCredentialsDao) applicationContext.getBean("serviceCredentialsDao")).create(sc);
+    	sc.setUuid(project_2_uuid);
+    	/*this.getServiceCredentialsDao().create(sc);
+    	this.getServiceCredentialsDao().delete(sc);
+    	this.getServiceCredentialsDao().create(sc);*/
+    	create_shouldAddProject();
     	//create Project
     	p = new Project(
     			"lol",
@@ -297,7 +303,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     	p.setCredentials(sc);
     	
     	//persist Project
-    	this.getProjectDao().create(p);
+    	projectDao.create(p);
     	
     	/* CALL */
     	p = this.getProjectDao().read(UUID.fromString(project_1_uuid));
@@ -368,4 +374,12 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 //            fail();
 //        }
 //    }
+
+	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
+		this.serviceCredentialsDao = serviceCredentialsDao;
+	}
+
+	public IServiceCredentialsDao getServiceCredentialsDao() {
+		return serviceCredentialsDao;
+	}
 }
