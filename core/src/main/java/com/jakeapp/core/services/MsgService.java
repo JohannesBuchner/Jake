@@ -129,6 +129,15 @@ public abstract class MsgService<T extends UserId> {
 
 		this.getServiceCredentials().setPlainTextPassword(newPassword);
 		this.getServiceCredentials().setSavePassword(shouldSavePassword);
+		
+		/* store */
+		//get Service credentials
+		if (this.getServiceCredentials()!=null) {
+			this.getServiceCredentials().setPlainTextPassword(newPassword);
+			this.getServiceCredentials().setSavePassword(shouldSavePassword);
+			//update and store the credentials
+			MsgService.serviceCredentialsDao.update(getServiceCredentials());
+		}
 
 		return this.login();
 

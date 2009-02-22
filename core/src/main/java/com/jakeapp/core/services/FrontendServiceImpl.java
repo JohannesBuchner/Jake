@@ -288,16 +288,6 @@ public class FrontendServiceImpl implements IFrontendService {
 					result = service.login(password, rememberPassword);
 				}
 				
-				/* store */
-				//get Service credentials
-				credentials = msgServiceFactory.get(service);
-				if (credentials!=null) {
-					credentials.setPlainTextPassword(password);
-					credentials.setSavePassword(rememberPassword);
-					//update and store the credentials
-						getServiceCredentialsDao().update(credentials);
-				}
-				
 				return result;
 			}
 			

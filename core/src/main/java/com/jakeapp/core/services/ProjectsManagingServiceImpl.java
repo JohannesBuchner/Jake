@@ -222,7 +222,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		// create a new, empty project
 		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
-		project.setCredentials(this.msgServiceFactory.get(msgService));
+		project.setCredentials(msgService.getServiceCredentials());
 
 		// add Project to the global database
 		try {

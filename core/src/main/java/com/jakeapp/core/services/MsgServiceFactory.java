@@ -33,8 +33,6 @@ public class MsgServiceFactory {
 
 	private List<MsgService> msgServices = new ArrayList<MsgService>();
 
-	private Map<MsgService, ServiceCredentials> map = new HashMap<MsgService, ServiceCredentials>();
-
 	@Injected
 	private ICSManager icsManager;
 
@@ -140,7 +138,6 @@ public class MsgServiceFactory {
 				MsgService<UserId> service = this.createMsgService(credentials);
 				if (!msgServices.contains(service)) {
 					msgServices.add(service);
-					this.map.put(service, credentials);
 				}
 			} catch (ProtocolNotSupportedException e) {
 				log.warn("Protocol not supported: ", e);
@@ -174,15 +171,6 @@ public class MsgServiceFactory {
 		this.getServiceCredentialsDao().create(credentials);
 
 		return msgService;
-	}
-
-	/**
-	 * get the service credentials for this msgservice
-	 * @param service
-	 * @return
-	 */
-	public ServiceCredentials get(MsgService service) {
-		return this.map.get(service);
 	}
 
 	/**
