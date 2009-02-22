@@ -759,15 +759,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public UserInfo getProjectUserInfo(Project project, UserId user) {
-		Boolean trustb = this.getLogEntryDao(project).trusts(project.getUserId(), user);
-		TrustState state;
-
-		// TODO: TrustState.AUTO_ADD (or so) is missing!!!
-		if (trustb) {
-			state = TrustState.TRUST;
-		} else {
-			state = TrustState.NO_TRUST;
-		}
+		TrustState state = this.getLogEntryDao(project).trustsHow(project.getUserId(), user);
 
 		// TODO: fill in with useful data
 		return new UserInfo(state, VisibilityStatus.ONLINE, "Nick", "First", "Last", user);

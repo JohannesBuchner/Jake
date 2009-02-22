@@ -525,12 +525,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public boolean trusts(UserId a, UserId b) {
-		return getTrustGraph().get(a).contains(b);
+		log.debug("check trust " + a + " against " + b);
+		List<UserId> trusted = getTrustGraph().get(a);
+		return trusted != null && trusted.contains(b);
 	}
 
 	@Override
 	public TrustState trustsHow(UserId a, UserId b) {
-		return getExtendedTrustGraph().get(a).get(b);
+		Map<UserId, TrustState> trusted = getExtendedTrustGraph().get(a);
+		if (trusted != null)
+			return getExtendedTrustGraph().get(a).get(b);
+		else
+			return TrustState.NO_TRUST;
 	}
 
 	@Override

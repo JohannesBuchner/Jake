@@ -3,10 +3,6 @@
  */
 package com.jakeapp.core.util;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
@@ -14,7 +10,12 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public final class UnprocessedBlindLogEntryDaoProxy {
 
@@ -172,6 +173,13 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 */
 	public Boolean trusts(UserId a, UserId b) {
 		return this.innerDao.trusts(a, b);
+	}
+
+	/**
+	 * @ see ILogEntryDao
+	 */
+	public TrustState trustsHow(UserId a, UserId b) {
+		return this.innerDao.trustsHow(a, b);
 	}
 
 	/**
