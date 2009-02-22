@@ -8,6 +8,7 @@ public interface IStatusService {
 
 	/**
 	 * Connects and authenticates on the used network service.
+	 * If the service is already logged in, a logout is done first.
 	 *
 	 * @param userid the network user id to be logged in
 	 * @param pw	  password
@@ -20,6 +21,7 @@ public interface IStatusService {
 
 	/**
 	 * Logs out and disconnects from the used network service.
+	 * If the service is already logged out, this does nothing.
 	 *
 	 * @throws NetworkException if the network connection is down and the logout couldn't be
 	 *                          propagated
