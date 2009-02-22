@@ -43,7 +43,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	}
 
 	
-	// this fails == bug 32
 	@Test
 	public void testCreateProject() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password);
@@ -63,9 +62,9 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
 
-	// this fails == bug 33
 	/*
-	 * should not work any more, since creating a project must always include
+	 * should not work any more (and should throw
+	 * a IllegalArgumentException), since creating a project must always include
 	 * setting a correct MsgService.
 	 */
 	@Test(timeout=TestingConstants.UNITTESTTIME,expected=IllegalArgumentException.class)
@@ -116,6 +115,9 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		ServiceCredentials cred = new ServiceCredentials(id, password);
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
+		
+		Assert.assertNotNull(msg);
+		Assert.assertEquals(cred,msg.getServiceCredentials());
 
 		Assert.assertEquals(0, pms.getProjectList().size());
 		

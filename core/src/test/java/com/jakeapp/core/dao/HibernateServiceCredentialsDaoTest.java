@@ -140,8 +140,6 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
 
         assertEquals(validCredentials, result);
-
-
     }
 
     @Test

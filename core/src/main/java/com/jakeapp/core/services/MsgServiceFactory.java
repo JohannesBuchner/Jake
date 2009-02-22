@@ -181,7 +181,7 @@ public class MsgServiceFactory {
 
 		MsgService<UserId> msgService = this.createMsgService(credentials);
 
-		// add to global array (NOT USED?)
+		// add to global array
 		msgServices.add(msgService);
 
 		// persist the ServicCredentials!
@@ -196,7 +196,7 @@ public class MsgServiceFactory {
 
 	/**
 	 * Tries to return the MsgService that is associated with ServiceCredentials.
-	 * ServiceCredentials is saved in the DB, MsgService not.
+	 * ServiceCredentials is saved in the DB, MsgServiccreateMsgServicee not.
 	 * If no MsgService was created until now, we try to created it.
 	 *
 	 * @param credentials

@@ -19,9 +19,12 @@ import org.apache.log4j.Logger;
 import com.jakeapp.TestingConstants;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.services.XMPPMsgService;
 
-//TODO Testcases which test the ManyToOn-Relation to the credentials
 
 /**
  * Unit Tests for HibernateProjectDao
@@ -268,6 +271,39 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
     @Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
     public final void read_persistNullShouldFail() throws NoSuchProjectException {
         projectDao.read(null);
+    }
+    
+    @Test(timeout = TestingConstants.UNITTESTTIME)
+    public final void read_shouldSetServiceCredentials() throws InvalidProjectException, NoSuchProjectException {  	
+    	Project p;
+    	ServiceCredentials sc;
+    	
+    	/* SETUP TEST */
+    	
+    	//create and persist ServiceCredentials
+    	sc = new ServiceCredentials("username","password");
+    	sc.setProtocol(ProtocolType.XMPP);
+    	((IServiceCredentialsDao) applicationContext.getBean("serviceCredentialsDao")).create(sc);
+    	//create Project
+    	p = new Project(
+    			"lol",
+    			UUID.fromString(project_1_uuid),
+    			new XMPPMsgService(),
+    			new File("/home/lol")
+    	);
+    	
+    	//connect Project and MessageService
+    	p.getMessageService().setServiceCredentials(sc);
+    	p.setCredentials(sc);
+    	
+    	//persist Project
+    	this.getProjectDao().create(p);
+    	
+    	/* CALL */
+    	p = this.getProjectDao().read(UUID.fromString(project_1_uuid));
+    	/* VALIDATE METHOD RESULTS */
+    	Assert.assertNotNull(p);
+    	Assert.assertNotNull(p.getMessageService());
     }
 
 

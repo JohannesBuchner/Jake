@@ -136,16 +136,18 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		result = this.getProjectDao().getAll();
 		if (result != null) {
-
-			for (Project p : result)
-				initProject(p);
+			for (Project p : result) {
+				log.debug("getProjectList gave us a project with credentials:" + p.getCredentials());
+				initProject(p);	
+			}
+			
 
 			log.debug("found " + result.size() + " projects to return");
 			return result;
 		}
-		log.warn("didn't get any results!!!!!");
-		throw new RuntimeException(" this should return an empty list");
-		// return Collections.unmodifiableList(this.getInternalProjectList());
+		log.warn("didn't get any results!!!!!from ProjectDao.getAll");
+		
+		return Collections.emptyList();
 	}
 
 	@Transactional

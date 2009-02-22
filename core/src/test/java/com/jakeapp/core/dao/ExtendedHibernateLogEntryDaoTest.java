@@ -230,6 +230,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 	public void testlocks() throws Exception {
 		Assert.assertEquals(null, logEntryDao.getLock(note1));
 		Assert.assertEquals(null, logEntryDao.getLock(nofile));
+		Assert.assertNotNull(logEntryDao.getLock(file1));
 		Assert.assertEquals("locking ...", logEntryDao.getLock(file1).getComment());
 	}
 
