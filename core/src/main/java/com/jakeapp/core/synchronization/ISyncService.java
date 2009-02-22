@@ -127,6 +127,9 @@ public interface ISyncService {
 	/**
 	 * start offering files to others, etc. TODO
 	 *
+	 * @param p
+	 * @param rhp
+	 * @param cl
 	 * @throws ProjectException
 	 */
 	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
@@ -134,16 +137,18 @@ public interface ISyncService {
 
 	/**
 	 * start offering files to others, etc. TODO
+	 * @param p
 	 */
 	public void stopServing(Project p);
 
 	/**
 	 * gets the files and their information
 	 *
+	 * @param p
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Attributed<FileObject>> getFiles(Project p) throws IOException;
+	public List<FileObject> getFiles(Project p) throws IOException;
 
 	/**
 	 * Invites a User to a project.
@@ -157,12 +162,16 @@ public interface ISyncService {
 	/**
 	 * Informs the person who invited us to a project that we accept the
 	 * invitation.
+	 * @param project
+	 * @param inviter
 	 */
 	void notifyInvitationAccepted(Project project, UserId inviter);
 
 	/**
 	 * Informs the person who invited us to a project that we reject the
 	 * invitation.
+	 * @param project
+	 * @param inviter
 	 */
 	void notifyInvitationRejected(Project project, UserId inviter);
 
@@ -202,5 +211,4 @@ public interface ISyncService {
 	 * @throws IOException
 	 */
 	public File getFile(FileObject fo) throws IOException;
-
 }

@@ -816,7 +816,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	@Override
 	@Transactional
-	public List<Attributed<FileObject>> getFiles(Project p) throws IOException {
+	public List<FileObject> getFiles(Project p) throws IOException {
+		log.debug("get files for project " + p);
 		IFSService fss = getFSS(p);
 
 		List<String> files = fss.recursiveListFiles();
@@ -832,15 +833,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			FileObject fo = new FileObject(p, relpath);
 			fileObjects.add(fo);
 		}
-		List<Attributed<FileObject>> stat = new LinkedList<Attributed<FileObject>>();
-		for (FileObject fo : fileObjects) {
-			try {
-				stat.add(getJakeObjectSyncStatus(fo));
-			} catch (InvalidFilenameException e) {
-				log.info("we found a invalid filename. silently ignoring.", e);
-			}
-		}
-		return stat;
+		
+		return fileObjects;
 	}
-
 }

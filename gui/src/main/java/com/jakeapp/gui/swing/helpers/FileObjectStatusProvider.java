@@ -86,11 +86,12 @@ public class FileObjectStatusProvider {
 
 	public static Component getLockedRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
-		if (JakeMainApp.getCore().isJakeObjectLocked(obj)) {
+		// TODO!!
+		//if (JakeMainApp.getCore().isJakeObjectLocked(obj)) {
 			label.setIcon(locked);
-		} else {
-			label.setIcon(unlocked);
-		}
+	//	} else {
+	//		label.setIcon(unlocked);
+	//	}
 		return label;
 	}
 

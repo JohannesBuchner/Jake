@@ -72,6 +72,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private String sessionId;
 
 	private Map<FilesChanged, IProjectModificationListener> fileListeners = new HashMap<FilesChanged, IProjectModificationListener>();
+	// event spread
+	private List<ConnectionStatus> connectionStatus;
+	private List<RegistrationStatus> registrationStatus;
+	private List<ProjectChanged> projectChanged;
+	private List<ErrorCallback> errorCallback;
+
 
 	/**
 	 * Core Access Mock initialisation code
@@ -94,14 +100,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<Project> getMyProjects() throws FrontendNotLoggedInException {
 
-		return frontendService.getProjectsManagingService(sessionId)
-						.getProjectList(InvitationState.ACCEPTED);
+		return pms.getProjectList(InvitationState.ACCEPTED);
 	}
 
 	@Override
 	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException {
-		return frontendService.getProjectsManagingService(sessionId)
-						.getProjectList(InvitationState.INVITED);
+		return pms.getProjectList(InvitationState.INVITED);
 	}
 
 
@@ -111,7 +115,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	private void handleNotLoggedInException(FrontendNotLoggedInException e) {
-		log.debug("Tried access core without a session", e);
+		log.warn("Tried access core without a session", e);
 	}
 
 	@Override
@@ -644,8 +648,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void createNote(NoteObject note) throws NoteOperationFailedException {
 		try {
-			this.frontendService.getProjectsManagingService(this.getSessionId())
-							.saveNote(note);
+			pms.saveNote(note);
 		} catch (Exception e) {
 			NoteOperationFailedException ex = new NoteOperationFailedException();
 			ex.append(e);
@@ -658,7 +661,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void deleteNote(NoteObject note) throws NoteOperationFailedException {
 		try {
-			this.frontendService.getProjectsManagingService(this.getSessionId()).deleteNote(note);
+			pms.deleteNote(note);
 		} catch (Exception e) {
 			throw new NoteOperationFailedException(e);
 		}
@@ -666,8 +669,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
-		this.frontendService.getProjectsManagingService(this.getSessionId())
-						.saveNote(note);
+		pms.saveNote(note);
 
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(),
 						ProjectChangedReason.State));
@@ -811,7 +813,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		Runnable runner = new Runnable() {
 			public void run() {
 				Project project;
-				IProjectsManagingService pms = frontendService.getProjectsManagingService(sessionId);
 
 				try {
 					// add Project to core-internal list
@@ -1036,11 +1037,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return result.start();
 	}
 
-	@Override
-	public boolean isJakeObjectLocked(JakeObject jo) {
-		return this.getFrontendService().getSyncService(this.getSessionId())
-						.getLock(jo) != null;
-	}
 
 	@Override
 	public void createNewFolderAt(Project project, String relpath, String folderName)
@@ -1102,10 +1098,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		e.printStackTrace();
 	}
 
-	public long getFileSize(FileObject file) {
-		return this.getLocalFileSize(file);
-	}
-
 	@Override
 	public long getLocalFileSize(FileObject fo) {
 		try {
@@ -1150,15 +1142,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (ProjectNotLoadedException e) {
 			this.handleProjectNotLoaded(e);
 		}
-
 		return new Date();
 	}
-
-	// event spread
-	private List<ConnectionStatus> connectionStatus;
-	private List<RegistrationStatus> registrationStatus;
-	private List<ProjectChanged> projectChanged;
-	private List<ErrorCallback> errorCallback;
 
 
 	@Override

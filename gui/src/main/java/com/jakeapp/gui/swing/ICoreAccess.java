@@ -477,14 +477,6 @@ public interface ICoreAccess {
 					throws FileOperationFailedException;
 
 	/**
-	 * Checks whether a given JakeObject is currently soft locked.
-	 *
-	 * @param jo The JakeObject to check
-	 * @return whether or not it is locked
-	 */
-	public boolean isJakeObjectLocked(JakeObject jo);
-
-	/**
 	 * Creates a folder at a given point in the relative path hierarchy of a project
 	 *
 	 * @param project		The project where the folder should be created
@@ -499,6 +491,7 @@ public interface ICoreAccess {
 	 * Allows for listeners to register which are notified of changes to local or remote files
 	 *
 	 * @param listener
+	 * @param project
 	 */
 	public void addFilesChangedListener(FilesChanged listener, Project project);
 
@@ -506,6 +499,7 @@ public interface ICoreAccess {
 	 * Unregister of FilesChanged listeners
 	 *
 	 * @param listener
+	 * @param project
 	 */
 	public void removeFilesChangedListener(FilesChanged listener, Project project);
 

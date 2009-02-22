@@ -70,7 +70,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	 */
 	@Transactional
 	public List<T> getAll() {
-		log.debug("getAll(Project) Test ========================================");
+		log.debug("getAll()  ========================================");
 
 		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
 				.getGenericSuperclass();
@@ -92,5 +92,4 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	public void delete(final T jakeObject) {
 		sess().delete(jakeObject);
 	}
-
 }
