@@ -20,7 +20,7 @@ public interface IServiceCredentialsDao {
      * @return the inserted ServiceCredentials
      * @throws SQLException if a database error occured
      */
-    public ServiceCredentials create(ServiceCredentials credentials) throws InvalidCredentialsException;
+    public ServiceCredentials persist(ServiceCredentials credentials) throws InvalidCredentialsException;
 
 
     /**

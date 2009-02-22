@@ -24,6 +24,8 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
@@ -41,6 +44,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	// private List<Project> projectList = new ArrayList<Project>();
 
 	private IProjectDao projectDao;
+
 	private IServiceCredentialsDao serviceCredentialsDao;
 
 	private IFriendlySyncService syncService;
@@ -78,24 +82,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public IFSService getFileServices(Project p) throws ProjectNotLoadedException {
-		IFSService result = null;
-		ProjectNotLoadedException ex = null;
-
-		try {
-			result = this.getProjectsFileServices().getProjectFSService(p);
-		} catch (ProjectNotLoadedException pnle) {
-			ex = pnle;
-		}
-
-		// FIXME getProject prevents some ugly Exceptions - remove after release
-		if (result == null) {
-			if (p.isOpen())
-				result = this.getProjectsFileServices().startProject(p);
-			else
-				throw ex;
-		}
-
-		return result;
+		return this.getProjectsFileServices().getProjectFSService(p);
 	}
 
 
@@ -157,6 +144,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			} catch (NoSuchProjectException e) {
 				log.error("invalid project: ", e);
 				result.remove(p);
+			} catch (NotADirectoryException e) {
+				log.error("invalid project: ", e);
+				result.remove(p);
 			}
 		}
 	}
@@ -170,16 +160,16 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return result;
 	}
 
-	private void initProject(Project p) throws NoSuchProjectException {
+	private void initProject(Project p) throws NoSuchProjectException, NotADirectoryException {
 		log.debug("initialising project " + p);
-			
-		if (p.getCredentials()==null)
-		{ 
+
+		if (p.getCredentials() == null) {
 			log.warn("fixing null credentials (bug workaround) ");
 			try {
 				// workaround until many-to-one works (bug 46)
 				UserId user = new UserId(ProtocolType.XMPP, "testuser1@localhost");
-				ServiceCredentials credentials = this.getServiceCredentialsDao().getAll().get(0);
+				ServiceCredentials credentials = this.getServiceCredentialsDao().getAll()
+						.get(0);
 				credentials.setProtocol(ProtocolType.XMPP);
 				credentials.setSavePassword(true);
 				MsgService<UserId> msg = this.msgServiceFactory
@@ -192,14 +182,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		}
 
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
-		if (p.getMessageService()==null)
+		if (p.getMessageService() == null)
 			p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
-		
-		//make sure the projects have fileservices
+
+		// make sure the projects have fileservices
 		try {
-			this.getProjectsFileServices().getProjectFSService(p);
-		} catch (ProjectNotLoadedException e) {
-			this.getProjectsFileServices().startProject(p);
+			this.getProjectsFileServices().startForProject(p);
+		} catch (IOException e) {
+			log.debug("starting fss failed", e);
 		}
 
 		if (!p.getUserId().equals(p.getMessageService().getUserId()))
@@ -211,7 +201,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	@Override
 	public Project createProject(String name, String rootPath, MsgService msgService)
-			throws FileNotFoundException, IllegalArgumentException {
+			throws IllegalArgumentException, IOException, NotADirectoryException {
 
 		log.debug("Creating a Project with name " + name + ", path " + rootPath
 				+ " and MsgService " + msgService);
@@ -252,7 +242,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		}
 
 		// Open the project
-		this.openProject(project);
+		try {
+			this.openProject(project);
+		} catch (InvalidProjectException e) {
+			throw new IllegalStateException("we created a illegal project", e);
+		}
 
 		this.createFirstLogEntry(project);
 
@@ -358,11 +352,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			syncService.stopServing(project);
 			// stops monitoring the project
 			this.getProjectsFileServices().getProjectFSService(project).unsetRootPath();
-
-		}
-
-		catch (ProjectNotLoadedException e) {
-			// this is ok!
 		} finally {
 			project.setStarted(false);
 		}
@@ -387,7 +376,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// this.getInternalProjectList().remove(project);
 		// remove the project's file services
 
-		this.getProjectsFileServices().stopProject(project);
+		this.getProjectsFileServices().stopForProject(project);
 
 		// Remove Project from the database
 		try {
@@ -400,23 +389,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	@Transactional
 	public Project openProject(Project project) throws IllegalArgumentException,
-			FileNotFoundException {
+			InvalidProjectException, IOException, NotADirectoryException {
 
 		File rootPath = new File(project.getRootPath());
 
-		// Check if we can at least read the specified directory
-		if (!rootPath.canRead()) {
-			log.warn("Cannot read project folder: " + rootPath.toString());
-			throw new FileNotFoundException();
-		}
-		// Check if rootpath is indeed a directory
-		if (!rootPath.isDirectory()) {
-			log.warn("Project folder is not a directory: " + rootPath.toString());
-			throw new FileNotFoundException();
-		}
-
 		// add the project's file services
-		this.getProjectsFileServices().startProject(project);
+		this.getProjectsFileServices().startForProject(project);
+		
+		this.getProjectDao().create(project);
+
 
 		project.setOpen(true);
 
@@ -425,7 +406,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public boolean deleteProject(Project project, boolean deleteProjectFiles)
-			throws IllegalArgumentException, SecurityException, FileNotFoundException {
+			throws IllegalArgumentException, SecurityException, IOException, NotADirectoryException {
 		boolean result = true;
 		IFSService fss;
 		FileNotFoundException t = null;
@@ -437,7 +418,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// Remove the Project's root folder
 		if (deleteProjectFiles) {
 			log.debug("trashing project files: " + project.getRootPath());
-			fss = this.getProjectsFileServices().startProject(project);
+			fss = this.getProjectsFileServices().startForProject(project);
 			if (fss != null) {
 				try {
 					if (!fss.trashFolder("/")) {
@@ -449,7 +430,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 					t = e;
 				}
 			}
-			this.getProjectsFileServices().stopProject(project);
+			this.getProjectsFileServices().stopForProject(project);
 		}
 
 		// Make sure project is stopped & closed

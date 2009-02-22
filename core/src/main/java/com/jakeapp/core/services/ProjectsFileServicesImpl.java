@@ -15,60 +15,54 @@ import org.apache.log4j.Logger;
 
 
 public class ProjectsFileServicesImpl implements IProjectsFileServices {
-   private static Logger log = Logger.getLogger(ProjectsFileServicesImpl.class);
+
+	private static Logger log = Logger.getLogger(ProjectsFileServicesImpl.class);
 
 
-    private Map<String, IFSService> fileServices = new HashMap<String, IFSService>();
+	private Map<String, IFSService> fileServices = new HashMap<String, IFSService>();
 
-    public ProjectsFileServicesImpl()
-    {
-    }
+	public ProjectsFileServicesImpl() {
+	}
 
 	@Override
-    public IFSService startProject(Project project) {
-        if(this.fileServices.containsKey(project.getProjectId()))
-            return this.fileServices.get(project.getProjectId());
+	public IFSService startForProject(Project project) throws IOException, NotADirectoryException {
+		if (this.fileServices.containsKey(project.getProjectId()))
+			return this.fileServices.get(project.getProjectId());
 
-        try {
-            IFSService fss = new FSService();
-            fss.setRootPath(project.getRootPath());
-            fileServices.put(project.getProjectId(), fss);
+		IFSService fss;
+		try {
+			fss = new FSService();
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException("Not running a supported Desktop, eh?", e);
+		}
+		fss.setRootPath(project.getRootPath());
+		fileServices.put(project.getProjectId(), fss);
 
-            return fss;
-        } catch (NoSuchAlgorithmException e) {
-            log.warn("Got a NoSuchAlgorithmException");
-            return null;
-        } catch (NotADirectoryException e) {
-            log.warn("Got a NotADirectoryException");
-            return null;
-        } catch (IOException e) {
-            log.warn("Got a IOException");
-            return null;
-        }
-    }
+		return fss;
+	}
 
-    @Override
-    public IFSService getProjectFSService(Project project) throws ProjectNotLoadedException {
-        if(fileServices.containsKey(UUID.fromString(project.getProjectId())))
-        {
-            return fileServices.get(UUID.fromString(project.getProjectId()));
-        }
-        throw new ProjectNotLoadedException("Project with uuid " + project.getProjectId() + " not loaded");
-    }
+	@Override
+	public IFSService getProjectFSService(Project project) {
+		if (fileServices.containsKey(UUID.fromString(project.getProjectId()))) {
+			return fileServices.get(UUID.fromString(project.getProjectId()));
+		}
+		throw new IllegalStateException("Project with uuid " + project.getProjectId()
+				+ " has no fss");
+	}
 
-    public IFSService getProjectFSServiceByUUID(String uuid) throws ProjectNotLoadedException {
-        UUID projectUuid = UUID.fromString(uuid);
-        if(fileServices.containsKey(projectUuid))
-        {
-            return fileServices.get(projectUuid);
-        }
-        throw new ProjectNotLoadedException("Project with uuid " + uuid + " not loaded");
-    }
+	public IFSService getProjectFSServiceByUUID(String uuid)
+			throws ProjectNotLoadedException {
+		UUID projectUuid = UUID.fromString(uuid);
+		if (fileServices.containsKey(projectUuid)) {
+			return fileServices.get(projectUuid);
+		}
+		throw new ProjectNotLoadedException("Project with uuid " + uuid + " not loaded");
+	}
 
 
-    @Override
-    public void stopProject(Project project) {
-    	fileServices.get(project.getProjectId()).unsetRootPath();
-        fileServices.remove(project.getProjectId());
-    }
+	@Override
+	public void stopForProject(Project project) {
+		fileServices.get(project.getProjectId()).unsetRootPath();
+		fileServices.remove(project.getProjectId());
+	}
 }

@@ -76,7 +76,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     @Test(expected = InvalidCredentialsException.class)
     @Transactional
     public final void create_shouldFailPersistNull() throws InvalidCredentialsException {
-        serviceCredentialsDao.create(null);
+        serviceCredentialsDao.persist(null);
     }
 
 
@@ -89,7 +89,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     public final void create_persistEmptyCredentials() throws InvalidCredentialsException {
         ServiceCredentials credentials = new ServiceCredentials();
 
-        serviceCredentialsDao.create(credentials);
+        serviceCredentialsDao.persist(credentials);
     }
 
 
@@ -127,7 +127,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     public final void create_persistBasicCredentialsTest() throws InvalidCredentialsException, UnknownHostException {
 
 
-        serviceCredentialsDao.create(validCredentials);
+        serviceCredentialsDao.persist(validCredentials);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
         ServiceCredentials result;
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b3");
         validCredentials.setSavePassword(true);
-        serviceCredentialsDao.create(validCredentials);
+        serviceCredentialsDao.persist(validCredentials);
         result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
 
         assertEquals(validCredentials, result);
@@ -147,7 +147,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     public final void createRead_testNoPasswordSaving() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
         ServiceCredentials result;
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b4");
-        serviceCredentialsDao.create(validCredentials);
+        serviceCredentialsDao.persist(validCredentials);
         validCredentials.setSavePassword(false);
         result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
         assertFalse("not the same with password in",validCredentials.equals(result));

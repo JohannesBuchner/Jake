@@ -3,6 +3,7 @@ package com.jakeapp.core.services;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -10,8 +11,10 @@ import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -54,10 +57,12 @@ public interface IProjectsManagingService {
 	 * @return the loaded instance of this <code>Project</code>
 	 * @throws FileNotFoundException	 if the rootPath is invalid
 	 * @throws IllegalArgumentException if the supplied <code>name</code> is invalid
+	 * @throws NotADirectoryException 
+	 * @throws IOException 
 	 */
 	Project createProject(String name, String rootPath,
 								 MsgService msgService) throws FileNotFoundException,
-			  IllegalArgumentException;
+			  IllegalArgumentException, IOException, NotADirectoryException;
 
 
 	/**
@@ -99,9 +104,12 @@ public interface IProjectsManagingService {
 	 * @throws FileNotFoundException	 if the rootPath of the loaded <code>Project</code> does not
 	 *                                  exist anymore or it is not a readable directory or the
 	 *                                  database- file cannot be opened.
+	 * @throws InvalidProjectException 
+	 * @throws NotADirectoryException 
+	 * @throws IOException 
 	 */
 	Project openProject(Project project)
-			  throws IllegalArgumentException, FileNotFoundException;
+			  throws IllegalArgumentException, InvalidProjectException, IOException, NotADirectoryException;
 
 
 	/**
@@ -123,14 +131,12 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException if the supplied <code>Project</code> is null
 	 * @throws SecurityException		  if the supplied <code>Project</code> could not be deleted due
 	 *                                  to filesystem permissons
-	 * @throws FileNotFoundException	 if the rootFolder of the <code>Project</code> already got
-	 *                                  deleted. The project is removed from within jake, but the
-	 *                                  user should be informed that he should not manually delete
-	 *                                  projects.
+	 * @throws NotADirectoryException 
+	 * @throws IOException 
 	 */
 	boolean deleteProject(Project project, boolean deleteProjectFiles)
 			  throws IllegalArgumentException, SecurityException,
-			  FileNotFoundException;
+			  FileNotFoundException, IOException, NotADirectoryException;
 
 	/**
 	 * Get all LogEntrys from the supplied project

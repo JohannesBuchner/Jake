@@ -42,6 +42,7 @@ import com.jakeapp.jake.fss.IProjectModificationListener;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -388,7 +389,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
-				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
+					//report to gui that the rootpath is invalid
+					log.warn("Project cannot be deleted:", e);
+					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+				} catch (NotADirectoryException e) {
 					//report to gui that the rootpath is invalid
 					log.warn("Project cannot be deleted: its folder does not exist.", e);
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
@@ -836,11 +841,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 									e);
 				} catch (RuntimeException run) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
-				} catch (FileNotFoundException e) {
+				} catch (Exception e) {
 					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
-				} /*catch (IllegalAccessException e) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
-				}*/
+				}
 			}
 		};
 

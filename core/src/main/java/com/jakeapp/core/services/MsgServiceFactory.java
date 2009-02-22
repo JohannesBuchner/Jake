@@ -168,7 +168,7 @@ public class MsgServiceFactory {
 		msgServices.add(msgService);
 
 		// persist the ServicCredentials!
-		this.getServiceCredentialsDao().create(credentials);
+		this.getServiceCredentialsDao().persist(credentials);
 
 		return msgService;
 	}

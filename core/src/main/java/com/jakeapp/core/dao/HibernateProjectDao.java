@@ -30,10 +30,10 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 				|| project.getName().length() == 0) {
 			throw new InvalidProjectException();
 		}
-		
-		if (project.getCredentials()==null) {
-			new InvalidProjectException("A project's ServiceCredentials may not be null.").printStackTrace();
-			throw new InvalidProjectException("A project's ServiceCredentials may not be null.");
+
+		if (project.getCredentials() == null) {
+			throw new InvalidProjectException(
+					"A project's ServiceCredentials may not be null.");
 		}
 
 		if (project.getProjectId() == null)

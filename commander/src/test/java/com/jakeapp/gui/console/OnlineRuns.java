@@ -17,7 +17,7 @@ public class OnlineRuns extends TestDBEnabledTestCase {
 
 	@Override
 	protected String getDbTemplateName() {
-		return "oneuserWithOneProjectContainingNotes";
+		return "oneuser";
 	}
 
 	@Override

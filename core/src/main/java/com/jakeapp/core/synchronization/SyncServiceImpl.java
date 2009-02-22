@@ -87,7 +87,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	IFSService getFSS(Project p) {
-		return this.getProjectsFileServices().startProject(p);
+		return this.getProjectsFileServices().getProjectFSService(p);
 	}
 
 	public IProjectsFileServices getProjectsFileServices() {

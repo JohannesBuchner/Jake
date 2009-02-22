@@ -105,6 +105,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		credentials1 = new ServiceCredentials("me@localhost", "mypasswd");
 		credentials1.setProtocol(ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);
+		project1.setCredentials(credentials1);
 
 		if (!this.getTemplate().getSessionFactory().getCurrentSession().isOpen()) {
 			log.debug("opening session");
@@ -128,6 +129,8 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	public final void testProjectDao() throws InvalidProjectException,
 			NoSuchProjectException {
 		Project actual;
+		ServiceCredentials credentials = this.getServiceCredentialsDao().persist(
+				credentials1);
 		actual = this.getProjectDao().create(project1);
 		Assert.assertEquals(project1, actual);
 		Assert.assertEquals(1, this.getProjectDao().getAll().size());
@@ -137,7 +140,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	@Test
 	public final void testServiceCredentialsDao() throws InvalidProjectException,
 			NoSuchProjectException {
-		ServiceCredentials credentials = this.getServiceCredentialsDao().create(
+		ServiceCredentials credentials = this.getServiceCredentialsDao().persist(
 				credentials1);
 		Assert.assertEquals(credentials, credentials1);
 		Assert.assertEquals(1, this.getServiceCredentialsDao().getAll().size());
