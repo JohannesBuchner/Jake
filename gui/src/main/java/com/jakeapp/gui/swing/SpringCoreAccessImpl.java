@@ -1140,13 +1140,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public void setSoftLock(JakeObject jakeObject, boolean isSet,
-					String lockingMessage) {
-
-		// TODO: implement
-
-		this.fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(),
+	public void setSoftLock(JakeObject jakeObject, boolean isSet, String lockingMessage) {
+		if (isSet) {
+			this.getFrontendService().getProjectsManagingService(getSessionId())
+					.lock(jakeObject, lockingMessage);	
+		} else {
+			this.getFrontendService().getProjectsManagingService(getSessionId())
+					.unlock(jakeObject, lockingMessage);	
+		}
+		
+		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(),
 										ProjectChangedReason.Deleted));
 	}
 
