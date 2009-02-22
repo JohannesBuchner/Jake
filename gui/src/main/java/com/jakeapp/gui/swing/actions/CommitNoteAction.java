@@ -33,8 +33,9 @@ public class CommitNoteAction extends NoteAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			core.announceJakeObject(this.getSelectedNotes().get(0).getJakeObject(), null);
-			//XXX update view
+			for (Attributed<NoteObject> attributedNote : this.getSelectedNotes()) {
+				core.announceJakeObject(attributedNote.getJakeObject(), null);
+			}
 			this.refreshNotesPanel();
 		} catch (FileOperationFailedException e1) {
 			ExceptionUtilities.showError(e1);
