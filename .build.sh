@@ -19,7 +19,12 @@ info_txt() {
 
 check_prerequisites() {
 	for i in $PREREQ; do 
-		[[ -e ../.rebuild_${i}_dependent ]] && touch .rebuild && break
+		if [[ -e ../.rebuild_${i}_dependent ]]; then
+			if [[ -e ${JAR} && ${JAR} -nt ../.rebuild_${i}_dependent ]]; then
+				touch .rebuild
+				break
+			fi
+		fi
 	done
 	true
 }
@@ -47,13 +52,15 @@ clearrebuild() {
 do_rebuild() {
 	echo pwd: $PWD
 	echo ${MVN} install
-	${MVN} install && touch ../.rebuild_${TARGET}_dependent && clearrebuild
+	${MVN} install && touch ../.rebuild_${TARGET}_dependent && clearrebuild || exit 1
 }
 rebuild() {
-	test -e .rebuild && { 
-		echo "yes "; 
-		do_rebuild 
-	} || echo "no "
+	if test -e .rebuild; then
+		echo "yes" 
+		do_rebuild
+	else
+		echo "no"
+	fi
 }
 
 printtesterrors() {
