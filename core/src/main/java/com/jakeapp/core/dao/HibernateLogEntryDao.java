@@ -488,9 +488,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@SuppressWarnings("unchecked")
 	@Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
-		return (LogEntry<? extends ILogable>) sess().createQuery(
+		try {
+			return (LogEntry<? extends ILogable>) sess().createQuery(
 				"FROM logentries WHERE action = ?").setInteger(0,
 				LogAction.PROJECT_CREATED.ordinal()).list().get(0);
+		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			return null;
+		}
 	}
 
 	@Override

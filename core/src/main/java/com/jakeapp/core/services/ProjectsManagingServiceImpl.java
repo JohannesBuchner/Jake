@@ -212,16 +212,24 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		// Open the project
 		this.openProject(project);
-
-		UserId user = msgService.getUserId();
-		this.getLogEntryDao(project).create(new ProjectLogEntry(project, user));
-		project.setMessageService(msgService);
+		
+		//TODO this should also be done if a msgService is assigned a user
+		//the first time.
+		this.createFirstLogEntry(project);
 
 		// welcome the user
 		// TODO: only attach on the first created project!
 		attachTestNotes(project);
 
 		return project;
+	}
+
+	private void createFirstLogEntry(Project project) {
+		//create the project's first logentry
+		if (project.getMessageService()!=null) {
+			UserId user = project.getMessageService().getUserId();
+			this.getLogEntryDao(project).create(new ProjectLogEntry(project, user));
+		}
 	}
 
 	/**
