@@ -36,7 +36,7 @@ public class UserId implements ILogable {
 	}
 
 	public String getUserId() {
-		return userId;
+		return this.userId;
 	}
 
 	public void setProtocolType(ProtocolType protocolType) {
@@ -44,7 +44,11 @@ public class UserId implements ILogable {
 	}
 
 	public ProtocolType getProtocolType() {
-		return protocolType;
+		return this.protocolType;
 	}
 	
+	@Override
+	public String toString() {
+		return this.protocolType + ":" + getUserId();
+	}
 }
