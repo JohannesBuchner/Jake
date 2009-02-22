@@ -49,8 +49,9 @@ public class MsgServiceFactory {
 					throws ProtocolNotSupportedException {
 
 		log.debug("calling createMsgService ");
-		log.debug("creating MsgService for " + credentials
-						.getUserId() + " pwl: " + credentials.getPlainTextPassword().length());
+		log.debug("credentials=" +( (credentials==null)?"null":"not null"));
+		log.debug("credentials.UserId="+((credentials==null)?"null":credentials.getUserId()));
+		log.debug("ptpwlength="+((credentials==null||credentials.getPlainTextPassword()==null)?"null":""+credentials.getPlainTextPassword().length()));
 
 		MsgService<UserId> msgService;
 		if (credentials.getProtocol() != null && credentials.getProtocol()

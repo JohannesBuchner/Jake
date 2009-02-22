@@ -286,4 +286,30 @@ public abstract class MsgService<T extends UserId> {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((serviceCredentials == null) ? 0 : serviceCredentials.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MsgService other = (MsgService) obj;
+		if (serviceCredentials == null) {
+			if (other.serviceCredentials != null)
+				return false;
+		} else if (!serviceCredentials.equals(other.serviceCredentials))
+			return false;
+		return true;
+	}
+	
 }

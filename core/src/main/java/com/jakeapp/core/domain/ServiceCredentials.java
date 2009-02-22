@@ -230,14 +230,14 @@ public class ServiceCredentials implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int result = uuid.hashCode();
-		result = 31 * result + userId.hashCode();
+		int result = (uuid==null)?0:uuid.hashCode();
+		result = 31 * result + ((userId==null)?0:userId.hashCode());
 		result = 31 * result
 				+ (plainTextPassword != null ? plainTextPassword.hashCode() : 0);
-		result = 31 * result + serverAddress.hashCode();
+		result = 31 * result + ((serverAddress==null)?0:serverAddress.hashCode());
 		result = 31 * result + (int) (serverPort ^ (serverPort >>> 32));
 		result = 31 * result + (encryptionUsed ? 1 : 0);
-		result = 31 * result + resourceName.hashCode();
+		result = 31 * result + ((resourceName==null)?0:resourceName.hashCode());
 		return result;
 	}
 }

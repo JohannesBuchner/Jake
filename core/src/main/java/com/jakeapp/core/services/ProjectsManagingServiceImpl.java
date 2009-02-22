@@ -165,9 +165,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	private void initProject(Project p) {
 		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
 
-		// TODO: fails with NullPointer?
-		//if(!p.getUserId().equals(p.getMessageService().getUserId()))
-		//	throw new IllegalStateException();
+		if(!p.getUserId().equals(p.getMessageService().getUserId()))
+			throw new IllegalStateException();
 	}
 
 
@@ -185,6 +184,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		
 		// create a new, empty project
 		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
+		project.setCredentials(this.msgServiceFactory.get(msgService));
 
 		// add Project to the global database
 		try {
@@ -216,8 +216,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// Open the project
 		this.openProject(project);
 		
-		//TODO this should also be done if a msgService is assigned a user
-		//the first time.
 		this.createFirstLogEntry(project);
 
 		// welcome the user
