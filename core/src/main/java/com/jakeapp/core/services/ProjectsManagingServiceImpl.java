@@ -160,8 +160,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements IProject
 
 	private void initProject(Project p) {
 		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
-		if(!p.getUserId().equals(p.getMessageService().getUserId()))
-			throw new IllegalStateException();
+
+		// TODO: faiils with NullPointer?
+//		if(!p.getUserId().equals(p.getMessageService().getUserId()))
+//			throw new IllegalStateException();
 	}
 
 

@@ -107,10 +107,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void setFrontendService(IFrontendService frontendService) {
 		this.frontendService = frontendService;
-
-		// also cache the pms
-		// TODO: cache somewhere else!
-		//pms = frontendService.getProjectsManagingService(this.sessionId);
 	}
 
 	private void handleNotLoggedInException(FrontendNotLoggedInException e) {
@@ -121,6 +117,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void authenticateOnBackend(Map<String, String> authenticationData)
 					throws InvalidCredentialsException {
 		this.sessionId = this.frontendService.authenticate(authenticationData);
+
+		// also cache the pms
+		pms = frontendService.getProjectsManagingService(this.sessionId);
 	}
 
 	@Override
