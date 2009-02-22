@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.TestingConstants;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -63,7 +64,11 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	}
 
 	// this fails == bug 33
-	@Test
+	/*
+	 * should not work any more, since creating a project must always include
+	 * setting a correct MsgService.
+	 */
+	@Test(timeout=TestingConstants.UNITTESTTIME,expected=IllegalArgumentException.class)
 	public void testCreateAndAssignAfterwards() throws Exception {
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				null);

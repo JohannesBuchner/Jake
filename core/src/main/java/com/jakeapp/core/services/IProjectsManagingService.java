@@ -50,7 +50,7 @@ public interface IProjectsManagingService {
 	 * @param rootPath	the Path to the rootFolder of this <code>Project</code>. If it
 	 *                   does not yet exist, it is created.
 	 * @param msgService The MessageService this project should be assigned to. <b>THIS
-	 *                   CAN BE NULL!</b>
+	 *                   MUST NOT BE NULL!</b>
 	 * @return the loaded instance of this <code>Project</code>
 	 * @throws FileNotFoundException	 if the rootPath is invalid
 	 * @throws IllegalArgumentException if the supplied <code>name</code> is invalid

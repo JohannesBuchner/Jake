@@ -300,7 +300,8 @@ public interface ILogEntryDao {
 	 * Gets the first {@link LogEntry}. It has the
 	 * {@link LogAction#PROJECT_CREATED}.
 	 * 
-	 * @return
+	 * @return the LogEntry that marks the project as created or null,
+	 * if no such LogEntry exists.
 	 */
 	public LogEntry<? extends ILogable> getProjectCreatedEntry();
 

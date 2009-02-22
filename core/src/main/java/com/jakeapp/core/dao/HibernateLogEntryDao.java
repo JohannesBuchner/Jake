@@ -488,29 +488,36 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@SuppressWarnings("unchecked")
 	@Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
-		try {
+		try{
 			return (LogEntry<? extends ILogable>) sess().createQuery(
 				"FROM logentries WHERE action = ?").setInteger(0,
 				LogAction.PROJECT_CREATED.ordinal()).list().get(0);
-		} catch (ArrayIndexOutOfBoundsException aioobe) {
+		} catch (IndexOutOfBoundsException ioobe) {
 			return null;
 		}
 	}
 
 	@Override
 	public List<UserId> getCurrentProjectMembers() {
+		LogEntry<? extends ILogable> pce;
 		Map<UserId, List<UserId>> people = getTrustGraph();
-		UserId creator = getProjectCreatedEntry().getMember();
-
+		pce = getProjectCreatedEntry();
+		UserId creator;
 		List<UserId> trusted = new LinkedList<UserId>();
-		for (UserId member : people.keySet()) {
-			if (people.get(member).size() > 0) {
-				// member isn't trusted by someone -> ok
-				trusted.add(member);
+		
+		if (pce != null) {
+			creator = pce.getMember();
+
+			trusted = new LinkedList<UserId>();
+			for (UserId member : people.keySet()) {
+				if (people.get(member).size() > 0) {
+					// member isn't trusted by someone -> ok
+					trusted.add(member);
+				}
 			}
-		}
-		if(!trusted.contains(creator)) {
-			trusted.add(creator);
+			if (!trusted.contains(creator)) {
+				trusted.add(creator);
+			}
 		}
 		
 		return trusted;
@@ -540,7 +547,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	public Map<UserId, List<UserId>> getTrustGraph() {
 		Map<UserId, List<UserId>> people = new HashMap<UserId, List<UserId>>();
 		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-		people.put(first.getMember(), new LinkedList<UserId>());
+		if (first!=null)
+			people.put(first.getMember(), new LinkedList<UserId>());
 
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<UserId> le : entries) {

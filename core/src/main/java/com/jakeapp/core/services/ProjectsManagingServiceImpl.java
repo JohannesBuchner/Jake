@@ -165,9 +165,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	private void initProject(Project p) {
 		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
 
-		// TODO: faiils with NullPointer?
-		// if(!p.getUserId().equals(p.getMessageService().getUserId()))
-		// throw new IllegalStateException();
+		// TODO: fails with NullPointer?
+		//if(!p.getUserId().equals(p.getMessageService().getUserId()))
+		//	throw new IllegalStateException();
 	}
 
 
@@ -180,6 +180,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 				+ " and MsgService " + msgService);
 		File projectRoot = new File(rootPath);
 
+		if (msgService==null || msgService.userId==null)
+			throw new IllegalArgumentException("MsgService must not be null!!");
+		
 		// create a new, empty project
 		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
 
