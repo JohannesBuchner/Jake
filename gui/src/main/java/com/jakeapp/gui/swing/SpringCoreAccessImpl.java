@@ -552,7 +552,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ex = e;
 		}
 
-		if (result == null) result = new AvailableErrorObject<List<FileObject>>(ex);
+		if (result == null) {
+			log.debug("getFiles failed, returning error", ex);
+			result = new AvailableErrorObject<List<FileObject>>(ex);
+		}
+
+		log.debug("getFiles - start AvailableLaterObject");
 		return result.start();
 	}
 

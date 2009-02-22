@@ -4,14 +4,13 @@ import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableNowObject;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class AllProjectFilesFuture extends AvailableNowObject<List<FileObject>> {
+public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>> {
 
 	private static Logger log = Logger.getLogger(AllProjectFilesFuture.class);
 
@@ -29,7 +28,7 @@ public class AllProjectFilesFuture extends AvailableNowObject<List<FileObject>> 
 	}
 
 	public AllProjectFilesFuture(IFileObjectDao dao) {
-		super(new ArrayList<FileObject>());
+		super();
 		this.setFileObjectDao(dao);
 	}
 
@@ -37,27 +36,29 @@ public class AllProjectFilesFuture extends AvailableNowObject<List<FileObject>> 
 	public AllProjectFilesFuture(
 					ProjectApplicationContextFactory applicationContextFactory,
 					Project project) {
-		super(new ArrayList<FileObject>());
+		super();
 
 		log.debug(
-						"\n\n\n\n\n\n\n\n\nCreating a AllProjectFilesFuture\n\n\n\n\n\n\n\n\n");
+						"\n\n\n\n\n\n\n\n\nCreating a AllProjectFilesFuture with " +
+										applicationContextFactory + "on project " + project);
 
 		this.applicationContextFactory = applicationContextFactory;
 		this.project = project;
+
+		fileObjectDao = this.applicationContextFactory.getFileObjectDao(project);
 	}
 
 
-	@Override
-	@Transactional
+	@Override @Transactional
 	public List<FileObject> calculate() {
-		log.debug("\n\n\n\n starting thread & running AllProjectFilesFuture ... \n\n\n\n");
+		log.debug(
+						"\n\n\n\n starting thread & running AllProjectFilesFuture ... \n\n\n\n");
 
-		List<FileObject> result = this.applicationContextFactory
-						.getFileObjectDao(project).getAll();
+		List<FileObject> result =fileObjectDao.getAll();
 
 		log.debug("found " + result.size() + " files in the DB ");
 		for (FileObject file : result) {
-			System.out.println("file = " + file);
+			log.debug("file = " + file);
 		}
 
 		result.add(new FileObject(project, "blabla"));

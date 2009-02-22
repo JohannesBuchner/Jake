@@ -1,5 +1,7 @@
 package com.jakeapp.core.util.availablelater;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -18,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *            result type
  */
 public abstract class AvailableLaterObject<T> implements Runnable {
-
+	private static Logger log = Logger.getLogger(AvailableLaterObject.class);
 	protected T innercontent;
 
 	protected AvailabilityListener<T> listener;
@@ -34,6 +36,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	}
 
 	public AvailableLaterObject() {
+		log.debug("Created AvailableLaterObject");
 	}
 /*
 	@Deprecated
@@ -44,9 +47,11 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	public abstract T calculate() throws Exception;
 	
 	public void run() {
+	log.debug("Running " + this.getClass().getSimpleName());
 		try {
 			this.set(this.calculate());
 		} catch (Exception e) {
+			log.warn("Calculation failed with an error: ", e);
 			getListener().error(e);
 		}
 	}
@@ -95,6 +100,8 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	 * @return
 	 */
 	public AvailableLaterObject<T> start() {
+		log.debug("Starting " + this.getClass());
+
 		if (!this.setAlreadyStarted())
 			new Thread(this).start();
 			

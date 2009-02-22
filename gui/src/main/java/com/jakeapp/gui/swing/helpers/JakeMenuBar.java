@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.panels.FilePanel;
@@ -154,8 +155,8 @@ public class JakeMenuBar extends JMenuBar {
 		JMenu debugMenu = new JMenu();
 		debugMenu.setText("Debug");
 
-		JMenuItem reloadFileViewItem = new JMenuItem("Reload File View");
-		reloadFileViewItem.addActionListener(new ActionListener() {
+		JMenuItem reloadFileDebugItem = new JMenuItem("Reload File View");
+		reloadFileDebugItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -163,7 +164,18 @@ public class JakeMenuBar extends JMenuBar {
 				FilePanel.getInstance().resetFilter();
 			}
 		});
-		debugMenu.add(reloadFileViewItem);
+		debugMenu.add(reloadFileDebugItem);
+
+		JMenuItem cureGetFilesDebugViewItem = new JMenuItem("core().getFiles()");
+		cureGetFilesDebugViewItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				log.info("called: core().getFiles()");
+				JakeMainApp.getCore().getFiles(JakeMainApp.getProject());
+			}
+		});
+		debugMenu.add(cureGetFilesDebugViewItem);
 
 		this.add(debugMenu);
 
