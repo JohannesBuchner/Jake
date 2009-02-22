@@ -14,7 +14,6 @@
             <list>
                 <value>/com/jakeapp/core/applicationContext-local-datasource.xml</value>
                 <value>/com/jakeapp/core/applicationContext-local-daos.xml</value>
-                <value>/com/jakeapp/core/applicationContext-local-tasks.xml</value>
             </list>
         </property>
         

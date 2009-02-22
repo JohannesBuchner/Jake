@@ -604,7 +604,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
 			throws NoSuchProjectException, FileNotFoundException,
 			IllegalArgumentException {
-		log.debug("\n\n\n\t\tCalling getAllProjectFiles");
+		log.debug("Calling getAllProjectFiles for " + project);
 
 		return getApplicationContextFactory().getAllProjectFilesFuture(project);
 	}
