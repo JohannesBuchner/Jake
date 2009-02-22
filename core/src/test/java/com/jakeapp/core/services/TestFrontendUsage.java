@@ -109,4 +109,38 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 	}
+	
+
+	@Test
+	public void testProjectRoundtrip() throws Exception {
+		ServiceCredentials cred = new ServiceCredentials(id, password);
+		cred.setProtocol(ProtocolType.XMPP);
+		MsgService msg = frontend.addAccount(sessionId, cred);
+
+		Assert.assertEquals(0, pms.getProjectList().size());
+		
+		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
+				msg);
+		Assert.assertNotNull(project.getMessageService());
+		Assert.assertNotNull(project.getUserId());
+
+		Assert.assertEquals(1, pms.getProjectUsers(project).size());
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(
+				project).get(0).getUserId());
+
+		Assert.assertEquals(msg.getUserId(), project.getUserId());
+		Assert.assertEquals(1, pms.getProjectList().size());
+
+		Assert.assertEquals(project, pms.openProject(project));
+		Assert.assertTrue(pms.getProjectList().contains(project));
+		
+		pms.closeProject(project);
+		Assert.assertTrue(pms.getProjectList().contains(project));
+		
+		Assert.assertEquals(project, pms.openProject(project));
+		Assert.assertTrue(pms.getProjectList().contains(project));
+		
+		Assert.assertTrue(pms.deleteProject(project, true));
+		Assert.assertFalse(pms.getProjectList().contains(project));
+	}	
 }

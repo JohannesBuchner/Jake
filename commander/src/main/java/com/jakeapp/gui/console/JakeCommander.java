@@ -417,6 +417,7 @@ public class JakeCommander {
 			try {
 				System.out.println("closing project ...");
 				pms.closeProject(project);
+				project = null;
 				System.out.println("closing project done");
 			} catch (Exception e) {
 				System.out.println("listing projects failed");
