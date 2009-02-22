@@ -7,6 +7,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchUserException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
+import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -79,8 +80,10 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
+	private ICSManager icsManager;
+	
 	ICService getICS(Project p) {
-		return p.getMessageService().getIcsManager().getICService(p);
+		return getICSManager().getICService(p);
 	}
 
 	IFSService getFSS(Project p) {
@@ -134,16 +137,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		Collection<UserId> members = db.getLogEntryDao(project)
 				.getCurrentProjectMembers();
 		for (UserId member : members) {
-			com.jakeapp.jake.ics.UserId userid = getBackendUserIdFromDomainProjectMember(
-					project, member);
+			// TODO!!
+			com.jakeapp.jake.ics.UserId userid = new XmppUserId("foobar");
+			// TODO
 			try {
 				getICS(project).getUsersService().addUser(userid, userid.getUserId());
 			} catch (NoSuchUseridException e) { // shit happens
 			} catch (NotLoggedInException e) {
 			} catch (IOException e) {
 			}
-			// TODO: fixup ProjectMember table.
-			// if(db.getProjectMemberDao(project).getAll(project))
 		}
 	}
 
@@ -574,13 +576,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		projectChangeListeners.put(p.getProjectId(), cl);
 		// this creates the ics
 		log.debug("adding receive hooks");
-		try {
-			p.getMessageService().loginICS(getICS(p));
-		} catch (TimeoutException e) {
-			log.error("logging in for starting project failed", e);
-		} catch (NetworkException e) {
-			log.error("logging in for starting project failed", e);
-		}
+		
 		getICS(p).getMsgService().registerReceiveMessageListener(this);
 	}
 
@@ -717,24 +713,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		this.rhp = rhp;
 	}
 
-	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainProjectMember(Project p,
-			UserId member) {
-		return null; // TODO
-	}
-
-	public com.jakeapp.jake.ics.UserId getBackendUserIdFromDomainUserId(UserId userid) {
-		return null; // TODO
-	}
-
-	public UserId getProjectMemberFromUserId(Project project, UserId userid)
-			throws NoSuchUserException {
-		return null; // TODO
-	}
-
-	public UserId getUserIdFromProjectMember(Project project, UserId member) {
-		return null; // TODO
-	}
-
 	@Override
 	public void invite(Project project, UserId userId) {
 		// TODO Auto-generated method stub
@@ -836,4 +814,13 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		
 		return fileObjects;
 	}
+
+	public void setICSManager(ICSManager ics) {
+		this.icsManager = ics;
+	}
+
+	public ICSManager getICSManager() {
+		return icsManager;
+	}
+
 }

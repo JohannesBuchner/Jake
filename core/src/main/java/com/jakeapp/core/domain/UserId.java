@@ -5,6 +5,8 @@ package com.jakeapp.core.domain;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+
 
 /**
  * Identifies a user
@@ -44,4 +46,5 @@ public class UserId implements ILogable {
 	public ProtocolType getProtocolType() {
 		return protocolType;
 	}
+	
 }

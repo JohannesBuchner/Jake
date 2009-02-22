@@ -803,11 +803,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return new LinkedList<UserId>();
 	}
 
-	@SuppressWarnings("unchecked")
-	private boolean isFriend(Project project, UserId uid) {
-		return project.getMessageService().checkFriends(uid);
-	}
-
 	@Override
 	@Transactional
 	public Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException,

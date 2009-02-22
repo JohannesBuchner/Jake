@@ -2,6 +2,7 @@ package com.jakeapp.core.services;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.core.Injected;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 /**
@@ -16,7 +17,7 @@ public abstract class JakeService {
 	
 	private ProjectApplicationContextFactory applicationContextFactory;
 	
-	
+	@Injected
 	public JakeService(ProjectApplicationContextFactory applicationContextFactory) {
 		super();
 		this.setApplicationContextFactory(applicationContextFactory);

@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
@@ -26,14 +27,18 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	private static Logger log = Logger.getLogger(FrontendServiceImpl.class);
 
+	@Injected
 	private IProjectsManagingService projectsManagingService;
 
+	@Injected
 	private MsgServiceFactory msgServiceFactory;
 
-	private Map<String, FrontendSession> sessions;
+	private Map<String, FrontendSession> sessions = new HashMap<String, FrontendSession>();
 	
+	@Injected
 	private IServiceCredentialsDao serviceCredentialsDao;
 
+	@Injected
 	private IFriendlySyncService sync;
 
 	/**
@@ -43,11 +48,11 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @param msgServiceFactory
 	 * @param sync
 	 */
+	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
 										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync,
 										IServiceCredentialsDao serviceCredentialsDao) {
 		this.setProjectsManagingService(projectsManagingService);
-		this.setSessions(new HashMap<String, FrontendSession>());
 		this.msgServiceFactory = msgServiceFactory;
 		this.sync = sync;
 		this.serviceCredentialsDao = serviceCredentialsDao;

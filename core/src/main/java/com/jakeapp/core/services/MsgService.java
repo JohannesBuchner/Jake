@@ -1,7 +1,13 @@
 package com.jakeapp.core.services;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.dao.IServiceCredentialsDao;
-import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
@@ -10,18 +16,19 @@ import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
+import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 
 /**
- * Abstract MessagingService declasring what the classes for the
+ * Abstract MessagingService declaring what the classes for the
  * instant-messaging protocols (XMPP, ICQ, etc.) need to implement.
+ * 
+ * Does not know anything about Projects.
  * 
  * @author dominik
  */
-
 public abstract class MsgService<T extends UserId> {
 
 	private static final Logger log = Logger.getLogger(MsgService.class);
@@ -36,13 +43,33 @@ public abstract class MsgService<T extends UserId> {
 
 	private static IServiceCredentialsDao serviceCredentialsDao;
 
-	protected ICServicesManager icsManager;
+	protected ICSManager icsManager;
 
-	public void setIcsManager(ICServicesManager icsManager) {
+	private static class SubsystemListeners {
+
+		public SubsystemListeners(ILoginStateListener lsl,
+				IOnlineStatusListener onlineStatusListener,
+				IMessageReceiveListener receiveListener) {
+			super();
+			this.lsl = lsl;
+			this.onlineStatusListener = onlineStatusListener;
+			this.receiveListener = receiveListener;
+		}
+
+		public IMessageReceiveListener receiveListener;
+
+		public ILoginStateListener lsl;
+
+		public IOnlineStatusListener onlineStatusListener;
+	}
+
+	private Map<ICService, SubsystemListeners> activeSubsystems = new HashMap<ICService, SubsystemListeners>();
+
+	public void setIcsManager(ICSManager icsManager) {
 		this.icsManager = icsManager;
 	}
 
-	public ICServicesManager getIcsManager() {
+	public ICSManager getIcsManager() {
 		return icsManager;
 	}
 
@@ -85,11 +112,11 @@ public abstract class MsgService<T extends UserId> {
 			return false;
 
 		result = this.doLogin();
-		if (result)
-			this.setVisibilityStatus(VisibilityStatus.ONLINE);
+
+		updateActiveSubsystems();
+
 		return result;
 	}
-
 
 	@Transactional
 	public final boolean login(String newPassword, boolean shouldSavePassword)
@@ -149,6 +176,8 @@ public abstract class MsgService<T extends UserId> {
 		log.debug("MsgService -> logout");
 		this.setVisibilityStatus(VisibilityStatus.OFFLINE);
 		this.doLogout();
+
+		updateActiveSubsystems();
 	}
 
 	/**
@@ -164,14 +193,6 @@ public abstract class MsgService<T extends UserId> {
 		this.serviceCredentials = credentials;
 	}
 
-
-	public abstract void sendMessage(JakeMessage message);
-
-	// public void addMessageReceiveListener(IMessageReceiveListener listener);
-
-	// public void removeMessageReceiveListener(IMessageReceiveListener
-	// listener);
-
 	public boolean setVisibilityStatus(VisibilityStatus newStatus) {
 		this.visibilityStatus = newStatus;
 		return false;
@@ -184,8 +205,6 @@ public abstract class MsgService<T extends UserId> {
 	public T getUserId() {
 		return this.userId;
 	}
-
-	public abstract List<T> getUserList();
 
 	/**
 	 * Get a UserId Instance from this Messaging-Service
@@ -205,48 +224,11 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	/**
-	 * Find out if the supplied &lt;T extends UserId&gt; is a friend of the
-	 * current user of this MsgService
-	 * 
-	 * @param friend
-	 *            the <code>T extends UserId</code> to check friendship
-	 * @return true if friends, false if not
-	 * @throws IllegalArgumentException
-	 *             if the supplied friend is null
-	 */
-	public final boolean isFriend(T friend) throws IllegalArgumentException {
-		if (friend == null)
-			throw new IllegalArgumentException("friend must not be null");
-		return this.checkFriends(friend);
-	}
-
-	protected abstract boolean checkFriends(T friend);
-
-	/**
-	 * Searches for Users matching a pattern, to add them as trusted users
-	 * later.
-	 * 
-	 * @param pattern
-	 *            The pattern that is searched for in Usernames. Implementations
-	 *            of <code>MsgService</code> may look for the pattern in other
-	 *            userdata as well.
-	 * @return A list of users matching the pattern.
-	 */
-	public abstract List<T> findUser(String pattern);
-
-	/**
-	 * Get the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
-	 * 
-	 * @return the ServiceType of this MsgService (XMPP, ICQ, MSN, etc.)
-	 */
-	public abstract String getServiceName();
-
-	/**
 	 * Get the type of this MsgService (e.g. to display fancy buttons)
 	 * 
 	 * @return The <code>ProtocolType</code> of this MessageService
 	 */
-	public final ProtocolType getServiceType() {
+	public final ProtocolType getProtocolType() {
 		return this.getServiceCredentials().getProtocol();
 	}
 
@@ -275,15 +257,44 @@ public abstract class MsgService<T extends UserId> {
 
 	abstract protected ICService getMainIcs();
 
-	public void loginICS(ICService ics) throws NetworkException {
+	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
+
+	private void updateActiveSubsystems() throws NotLoggedInException, NetworkException,
+			TimeoutException {
+		for(Entry<ICService, SubsystemListeners> el : this.activeSubsystems.entrySet()) {
+			this.updateSubsystemStatus(el.getKey(), el.getValue());
+		}
+	}
+
+	public void activateSubsystem(ICService ics, IMessageReceiveListener receiveListener,
+			ILoginStateListener lsl, IOnlineStatusListener onlineStatusListener)
+			throws TimeoutException, NetworkException {
+		
+		SubsystemListeners listeners = new SubsystemListeners(lsl, onlineStatusListener,
+				receiveListener);
+		this.activeSubsystems.put(ics, listeners);
+		
+		updateSubsystemStatus(ics, listeners);
+	}
+
+	private void updateSubsystemStatus(ICService ics, SubsystemListeners listeners)
+			throws NotLoggedInException, NetworkException, TimeoutException {
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = getMainIcs().getStatusService()
 					.getUserid();
+			ics.getMsgService().registerReceiveMessageListener(listeners.receiveListener);
+			ics.getUsersService().registerOnlineStatusListener(listeners.onlineStatusListener);
 			ics.getStatusService().login(user,
 					this.getServiceCredentials().getPlainTextPassword());
+			ics.getStatusService().registerLoginStateListener(listeners.lsl);
 		} else {
-			throw new NotLoggedInException();
+			ics.getStatusService().logout();
 		}
+	}
+
+	public void deactivateSubsystem(ICService ics) throws NetworkException {
+		this.activeSubsystems.remove(ics);
+		ics.getStatusService().logout();
 	}
 
 	@Override

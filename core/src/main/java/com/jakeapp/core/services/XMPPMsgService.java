@@ -26,7 +26,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	private XmppICService mainIcs = new XmppICService(namespace, "Jake");
 
-	private XmppUserId icsXmppUserId;
+	private XmppUserId mainUserId;
 
 	private String host;
 
@@ -39,16 +39,16 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		ServiceCredentials cred = this.getServiceCredentials();
 		log.debug("got credentials: " + cred.getUserId() + " pwl: "
 				+ cred.getPlainTextPassword().length());
-		this.icsXmppUserId = new XmppUserId(new XmppUserId(cred.getUserId())
+		this.mainUserId = new XmppUserId(new XmppUserId(cred.getUserId())
 				.getUserIdWithOutResource()
 				+ "/Jake");
-		if (!this.icsXmppUserId.isOfCorrectUseridFormat()) {
-			this.icsXmppUserId = null;
+		if (!this.mainUserId.isOfCorrectUseridFormat()) {
+			this.mainUserId = null;
 			return false;
 		}
 		this.host = cred.getServerAddress();
 		if (this.host == null || this.host.isEmpty()) {
-			this.host = this.icsXmppUserId.getHost();
+			this.host = this.mainUserId.getHost();
 		}
 		if (cred.getPlainTextPassword().isEmpty()) {
 			return false;
@@ -61,7 +61,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		log.debug("got credentials: "
 				+ this.getServiceCredentials().getUserId() + " pwl: "
 				+ this.getServiceCredentials().getPlainTextPassword().length());
-		boolean success = this.mainIcs.getStatusService().login(this.icsXmppUserId,
+		boolean success = this.mainIcs.getStatusService().login(this.mainUserId,
 				this.getServiceCredentials().getPlainTextPassword());
 
 
@@ -95,63 +95,10 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	}
 
 	@Override
-	protected void doLogout() throws Exception {
+	protected void doLogout() throws NetworkException {
 		log.debug("XMPPMsgService -> logout");
 
 		this.mainIcs.getStatusService().logout();
-	}
-
-	@Override
-	public void sendMessage(JakeMessage message) {
-		// TODO
-	}
-
-	@Override
-	public List<com.jakeapp.core.domain.UserId> getUserList() {
-		List<com.jakeapp.core.domain.UserId> result = new ArrayList<com.jakeapp.core.domain.UserId>();
-
-		// List<com.jakeapp.core.domain.UserId> dbInput;
-		// List<String> userIds = new LinkedList<String>();
-		//
-		//
-		// try {
-		// dbInput = getUserIdDao().getAll(this.getServiceCredentials());
-		//
-		// for (com.jakeapp.core.domain.UserId user : result) {
-		// userIds.add(user.getUser());
-		// }
-		//
-		// for (UserId user : this.ics.getUsersService().getUsers()) {
-		//
-		// if (!userIds.contains(user.getUser()))
-		// try {
-		// result.add(
-		// XMPPUserId.createFromUserId(
-		// getUserIdDao().create(
-		//
-		// new XMPPUserId(
-		// this.getServiceCredentials(),
-		// UUID.randomUUID(),
-		// user.getUser(),
-		// user.getUser(), "", ""
-		// )
-		// )
-		// )
-		// );
-		// userIds.add(user.getUser());
-		// } catch (InvalidUserIdException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		//
-		//
-		// } catch (InvalidCredentialsException e) {
-		// e.printStackTrace();
-		// } catch (NotLoggedInException e) {
-		// e.printStackTrace();
-		// }
-
-		return result;
 	}
 
 	@Override
@@ -204,30 +151,18 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	}
 
 	@Override
-	protected boolean checkFriends(UserId friend) {
-		return false; // TODO
-	}
-
-	@Override
-	public List<UserId> findUser(String pattern) {
-		List<UserId> result = new ArrayList<UserId>();
-		// TODO
-		return result;
-	}
-
-	@Override
-	public String getServiceName() {
-		return "XMPP";
-	}
-
-	@Override
 	public void createAccount() throws NetworkException {
-		this.mainIcs.getStatusService().createAccount(icsXmppUserId,
+		this.mainIcs.getStatusService().createAccount(mainUserId,
 				this.getServiceCredentials().getPlainTextPassword());
 	}
 
 	@Override
 	protected ICService getMainIcs() {
 		return this.mainIcs;
+	}
+
+	@Override
+	protected XmppUserId getMainUserId() {
+		return this.mainUserId;
 	}
 }

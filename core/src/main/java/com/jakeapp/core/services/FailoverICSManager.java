@@ -1,5 +1,11 @@
 package com.jakeapp.core.services;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -13,17 +19,13 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFa
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
-import org.apache.log4j.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
-public class FailoverICServicesManager implements ICServicesManager {
+public class FailoverICSManager implements ICSManager {
 
 	private static final boolean SOCKETS_ENABLED = false;
 
-	private static Logger log = Logger.getLogger(FailoverICServicesManager.class);
+	private static Logger log = Logger.getLogger(FailoverICSManager.class);
 
 	private Map<String, ICService> services = new HashMap<String, ICService>();
 
@@ -31,6 +33,8 @@ public class FailoverICServicesManager implements ICServicesManager {
 
 	private int SOCKET_TIMEOUT_SECONDS;
 
+	private Map<String, ICService> activeServices = new HashMap<String, ICService>();
+	
 	@Override
 	public ICService getICService(Project p) {
 		ICService ics = null;
@@ -92,7 +96,7 @@ public class FailoverICServicesManager implements ICServicesManager {
 			throw new IllegalArgumentException(new ProtocolNotSupportedException());
 		}
 	}
-
+	
 	@Override
 	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p) {
 		return this.getBackendUserId(p, p.getUserId());
@@ -111,5 +115,10 @@ public class FailoverICServicesManager implements ICServicesManager {
 			throw new IllegalArgumentException(new ProtocolNotSupportedException());
 		}
 		return ics;
+	}
+	
+	
+	public Collection<ICService> getAll() {
+		return this.services.values();
 	}
 }

@@ -1,5 +1,7 @@
 package com.jakeapp.core.services;
 
+import java.util.Collection;
+
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.jake.ics.ICService;
@@ -8,36 +10,51 @@ import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 
 
-public interface ICServicesManager {
+/**
+ * Holds the subsystems and their mapping to the Project 
+ * @author johannes
+ */
+public interface ICSManager {
 
 	/**
 	 * get the ICS for the project
+	 * 
 	 * @param p
 	 * @return
 	 */
-	ICService getICService(Project p);
+	public ICService getICService(Project p);
 
 	/**
 	 * get a transfer service to transmit something
+	 * 
 	 * @param p
 	 * @return
 	 * @throws NotLoggedInException
 	 */
-	IFileTransferService getTransferService(Project p) throws NotLoggedInException;
+	public IFileTransferService getTransferService(Project p) throws NotLoggedInException;
 
 	/**
 	 * translate a userId to something the ICS can work with
+	 * 
 	 * @param u
 	 * @param p
 	 * @return
 	 */
-	com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u);
+	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u);
 
 	/**
 	 * get your own userId
+	 * 
 	 * @param p
 	 * @return
 	 */
-	com.jakeapp.jake.ics.UserId getBackendUserId(Project p);
+	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p);
+
+	/**
+	 * get all subsystems
+	 * 
+	 * @return
+	 */
+	public Collection<ICService> getAll();
 
 }

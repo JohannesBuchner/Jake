@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -26,11 +27,25 @@ public class MsgServiceFactory {
 
 	private static Logger log = Logger.getLogger(MsgServiceFactory.class);
 
+	@Injected
 	private IServiceCredentialsDao serviceCredentialsDao;
 
 	private List<MsgService> msgServices = new ArrayList<MsgService>();
 
 	private Map<MsgService, ServiceCredentials> map = new HashMap<MsgService, ServiceCredentials>();
+
+	@Injected
+	private ICSManager icsManager;
+
+	
+	public ICSManager getICSManager() {
+		return icsManager;
+	}
+
+	
+	public void setICSManager(ICSManager icsManager) {
+		this.icsManager = icsManager;
+	}
 
 	public MsgServiceFactory() {
 		log.debug("calling empty Constructor");
@@ -62,7 +77,7 @@ public class MsgServiceFactory {
 						.equals(ProtocolType.XMPP)) {
 			log.debug("Creating new XMPPMsgService for userId " + credentials.getUserId());
 			msgService = new XMPPMsgService();
-			msgService.setIcsManager(new FailoverICServicesManager());
+			msgService.setIcsManager(icsManager);
 			msgService.setServiceCredentials(credentials);
 		} else {
 			log.warn("Currently unsupported protocol given");
