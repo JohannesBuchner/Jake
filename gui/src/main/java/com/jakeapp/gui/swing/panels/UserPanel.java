@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
@@ -16,7 +15,11 @@ import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
 import com.jakeapp.gui.swing.worker.LoginAccountWorker;
@@ -597,12 +600,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 */
 	private JPanel createSignInSuccessPanel() {
 
-		// TODO remove HACK: set msgservice of projects!!
-		log.warn("HACK: setting msg services..." + JakeMainApp.getMsgService());
-		for (Project p : JakeMainApp.getCore().getMyProjects()) {
-			p.setMessageService(JakeMainApp.getMsgService());
-		}
-
 		// create the drag & drop hint
 		JPanel loginSuccessPanel = new JPanel();
 		loginSuccessPanel.setTransferHandler(new ProjectDropHandler());
@@ -835,12 +832,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			this.setOpaque(false);
 
 			// HACK for mock
-			String msgUserId = "";
-			try {
-				msgUserId = msg.getUserId().getUserId();
-			} catch (NullPointerException e) {
-				log.warn(e);
-			}
+			String msgUserId = msg.getUserId().getUserId();
+			
 			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msgUserId + "</b>"));
 			this.add(userLabel, "span 2, gapbottom 8");
 

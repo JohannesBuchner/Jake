@@ -1,17 +1,18 @@
 package com.jakeapp.core.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is the only visible interface to other components accessing the jake
@@ -115,6 +116,15 @@ public interface IFrontendService {
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException;
+
+	/**
+	 * Removes an account from the database registry
+	 *
+	 * @param sessionId
+	 * @param msg
+	 */
+	void removeAccount(String sessionId, MsgService msg)  throws FrontendNotLoggedInException,
+																															 NoSuchMsgServiceException;
 
 	/**
 	 * Logs all Message services that are currently active out.

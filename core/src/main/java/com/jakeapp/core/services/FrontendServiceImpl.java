@@ -1,28 +1,23 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.dao.IServiceCredentialsDao;
-import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.ISyncService;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -215,6 +210,16 @@ public class FrontendServiceImpl implements IFrontendService {
 		checkSession(sessionId);
 
 		return msgServiceFactory.addMsgService(credentials);
+	}
+
+	@Override
+	public void removeAccount(String sessionId, MsgService msg)
+					throws FrontendNotLoggedInException, NoSuchMsgServiceException {
+		checkSession(sessionId);
+
+		// TODO: implement!
+		log.warn("Needs IMPLEMENTATION");
+		//msgServiceFactory.removeMsgService(msg);
 	}
 
 	@Override

@@ -56,6 +56,7 @@ public interface IFSService extends Serializable {
 	 * Joins the rootpath with the relativePath. The absolute filename is
 	 * converted to the right path seperator.
 	 * 
+	 * @param relativePath
 	 * @return the absolute path for the relativePath
 	 * 
 	 * @throws InvalidFilenameException
@@ -150,8 +151,7 @@ public interface IFSService extends Serializable {
 	 * @throws NotAFileException			if the relativePath isn't a file
 	 */
 	public InputStream readFileStream(String relativePath)
-			  throws InvalidFilenameException, NotAFileException,
-			  FileNotFoundException, NotAReadableFileException;
+			  throws InvalidFilenameException, FileNotFoundException, NotAReadableFileException;
 
 	/**
 	 * Sets and stores the root path for operations that use a relativePath.
@@ -194,7 +194,7 @@ public interface IFSService extends Serializable {
 	 * Writes the content to the file. Creates subdirectories, if needed.
 	 *
 	 * @param relativePath the relative path to the file
-	 * @param content		The new file content
+	 * @param stream the new file stream
 	 * @throws InvalidFilenameException if the filename is not valid for jake
 	 * @throws IOException				  if an I/O Error occured
 	 * @throws NotAFileException		  if the relativePath is not a file
@@ -247,6 +247,7 @@ public interface IFSService extends Serializable {
 	 * @throws InvalidFilenameException if the filename is invalid for jake
 	 * @throws FileNotFoundException	 if no file is found at this relativePath
 	 * @throws NotAFileException		  if the relativePath is not a file
+	 * @throws NotADirectoryException
 	 */
 	// TODO: unit tests!
 	public boolean deleteFolder(String relativePath)
@@ -384,6 +385,7 @@ public interface IFSService extends Serializable {
 	 * this is only a convenience-method  since folders are not managed by
 	 * the jake core.
 	 *
+	 * @param relpath
 	 * @throws InvalidFilenameException if the relpath is not valid
 	 * @throws IOException				  if the folder cannot be created
 	 */

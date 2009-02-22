@@ -4,6 +4,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -203,7 +204,7 @@ public interface ICoreAccess {
 	 */
 	public void removeAccount(MsgService msg)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
-								 ProtocolNotSupportedException, NetworkException;
+								 ProtocolNotSupportedException, NetworkException, NoSuchMsgServiceException;
 
 
 	/**

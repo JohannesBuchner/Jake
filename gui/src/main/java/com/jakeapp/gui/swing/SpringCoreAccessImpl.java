@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
@@ -192,9 +193,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void removeAccount(MsgService msg)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
-								 ProtocolNotSupportedException, NetworkException {
+								 ProtocolNotSupportedException, NetworkException,
+								 NoSuchMsgServiceException {
+		
 		log.warn("removeAccount: " + msg + " NOT IMPLEMENTED YET");
-		//TODO
+
+		this.frontendService.removeAccount(this.sessionId, msg);
 	}
 
 	public void addRegistrationStatusCallbackListener(RegistrationStatus cb) {
@@ -1182,10 +1186,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public File getFile(FileObject fo) throws FileOperationFailedException {
 		log.debug("getFile: fo: " + fo + " in pr: " + (fo != null ? fo.getProject() : null));
 
+		// no need to go in iss if everything is null.
+		if(fo == null) {
+			log.warn("Tried to get a File with FileObject Null");
+			return null;
+		}
+
 		IFriendlySyncService sync = this.frontendService.getSyncService(this.sessionId);
 		try {
 			return sync.getFile(fo);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new FileOperationFailedException(e);
 		}
 	}
