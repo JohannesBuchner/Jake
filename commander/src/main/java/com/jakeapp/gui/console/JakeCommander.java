@@ -231,8 +231,7 @@ public class JakeCommander {
 				return false;
 			String id = args[1];
 			String password = args[2];
-			ServiceCredentials cred = new ServiceCredentials(id, password);
-			cred.setProtocol(ProtocolType.XMPP);
+			ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 			try {
 				frontend.createAccount(sessionId, cred).setListener(this);
 				System.out.println("got the MsgService");
@@ -272,8 +271,7 @@ public class JakeCommander {
 
 			String id = args[1];
 			String password = args[2];
-			ServiceCredentials cred = new ServiceCredentials(id, password);
-			cred.setProtocol(ProtocolType.XMPP);
+			ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 			try {
 				msg = frontend.addAccount(sessionId, cred);
 				System.out.println("got the MsgService");

@@ -119,8 +119,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
 				.begin();
 
-		cred = new ServiceCredentials("foo@bar", "");
-		cred.setProtocol(ProtocolType.XMPP);
+		cred = new ServiceCredentials("foo@bar", "", ProtocolType.XMPP);
 		cred.setUuid(UUID.randomUUID());
 		getServiceCredentialsDao().persist(cred);
 		

@@ -102,8 +102,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		this.setTemplate((HibernateTemplate) applicationContext
 				.getBean(HibernateProjectCredentialsTest.TEMPLATE_BEAN_ID));
 
-		credentials1 = new ServiceCredentials("me@localhost", "mypasswd");
-		credentials1.setProtocol(ProtocolType.XMPP);
+		credentials1 = new ServiceCredentials("me@localhost", "mypasswd", ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);
 		project1.setCredentials(credentials1);
 
@@ -176,8 +175,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	@Test
 	public final void testProjectWithMsgServiceDao() throws Exception {
 		Project p;
-		ServiceCredentials sc = new ServiceCredentials("username", "password");
-		sc.setProtocol(ProtocolType.XMPP);
+		ServiceCredentials sc = new ServiceCredentials("username", "password", ProtocolType.XMPP);
 		sc.setUuid(project_1_uuid);
 		
 		// don't do this, the project's create saves it for us

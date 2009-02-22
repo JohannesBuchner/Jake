@@ -45,8 +45,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	
 	@Test
 	public void testCreateProject() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password);
-		cred.setProtocol(ProtocolType.XMPP);
+		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
@@ -73,8 +72,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 				null);
 		Assert.assertNull(project.getMessageService());
 
-		ServiceCredentials cred = new ServiceCredentials(id, password);
-		cred.setProtocol(ProtocolType.XMPP);
+		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		project.setMessageService(msg);
@@ -92,8 +90,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	@Test
 	public void testCreateProjectWorkaround() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password);
-		cred.setProtocol(ProtocolType.XMPP);
+		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
@@ -112,8 +109,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	@Test
 	public void testProjectRoundtrip() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password);
-		cred.setProtocol(ProtocolType.XMPP);
+		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 		int projectCount;
 		

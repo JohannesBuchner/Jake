@@ -17,6 +17,9 @@ import javax.persistence.Transient;
 @Entity(name = "servicecredentials")
 public class ServiceCredentials implements Serializable {
 
+	private static final String JAKE_RESOURCE = "JakeApp";
+
+
 	private static final long serialVersionUID = -3550631428630088119L;
 
 
@@ -43,7 +46,7 @@ public class ServiceCredentials implements Serializable {
 	private boolean savePassword = false;
 
 	public ServiceCredentials() {
-		this.resourceName = "JakeApp";
+		this.resourceName = JAKE_RESOURCE;
 		this.uuid = UUID.randomUUID();
 	}
 
@@ -56,11 +59,14 @@ public class ServiceCredentials implements Serializable {
 	 *            the userid to be used
 	 * @param plainTextPassword
 	 *            the password in plaintext-format for this userId
+	 * @param protocolType
+	 *            The Protocol the credentials are bound to.
 	 */
-	public ServiceCredentials(String userId, String plainTextPassword) {
+	public ServiceCredentials(String userId, String plainTextPassword, ProtocolType protocolType) {
 		this.userId = userId;
 		this.plainTextPassword = plainTextPassword;
-		this.resourceName = "JakeApp";
+		this.resourceName = JAKE_RESOURCE;
+		this.setProtocol(protocolType);
 	}
 
 	@Id
