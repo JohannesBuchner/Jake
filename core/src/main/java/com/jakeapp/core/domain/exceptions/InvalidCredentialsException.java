@@ -3,7 +3,7 @@ package com.jakeapp.core.domain.exceptions;
 /**
  * This exception gets thrown if the supplied credentials are not fully filled out.
  */
-public class InvalidCredentialsException extends Exception {
+public class InvalidCredentialsException extends RuntimeException {
     private static final long serialVersionUID = -8083631804017188758L;
 
     public InvalidCredentialsException() {

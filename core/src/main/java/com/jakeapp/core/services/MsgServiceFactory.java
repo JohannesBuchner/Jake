@@ -48,7 +48,11 @@ public class MsgServiceFactory {
 	public MsgService<UserId> createMsgService(ServiceCredentials credentials)
 					throws ProtocolNotSupportedException {
 
-		log.debug("calling createMsgService ");
+		if(credentials == null) {
+			throw new InvalidCredentialsException("Credentials cannot be null!");
+		}
+
+		log.debug("calling createMsgService with crendentials: " + credentials);
 		log.debug("credentials=" +( (credentials==null)?"null":"not null"));
 		log.debug("credentials.UserId="+((credentials==null)?"null":credentials.getUserId()));
 		log.debug("ptpwlength="+((credentials==null||credentials.getPlainTextPassword()==null)?"null":""+credentials.getPlainTextPassword().length()));
@@ -111,6 +115,7 @@ public class MsgServiceFactory {
 		// ensureInitialised();
 
 		List<ServiceCredentials> credentialsList = this.serviceCredentialsDao.getAll();
+		log.debug("Found " + credentialsList.size() + " Credentials in the DB");
 
 		List<MsgService<UserId>> msgServices = new ArrayList<MsgService<UserId>>();
 
@@ -174,7 +179,17 @@ public class MsgServiceFactory {
 		return this.map.get(service);
 	}
 
+	/**
+	 * Tries to return the MsgService that is associated with ServiceCredentials.
+	 * ServiceCredentials is saved in the DB, MsgService not.
+	 * If no MsgService was created until now, we try to created it.
+	 *
+	 * @param credentials
+	 * @return the MsgService or null.
+	 */
 	public MsgService getByCredentials(ServiceCredentials credentials) {
+		log.debug("Get MsgService by credentials: " + credentials);
+
 		for (MsgService msg : getAll()) {
 			if (msg.getServiceCredentials().equals(credentials)) {
 				return msg;

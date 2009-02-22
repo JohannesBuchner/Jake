@@ -8,6 +8,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
 import org.apache.log4j.Logger;
 
@@ -241,8 +242,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		try {
 			myprojects = getCore().getMyProjects();
 		} catch (FrontendNotLoggedInException e) {
-			//TODO @ Peter: Show error message
-			e.printStackTrace();
+			ExceptionUtilities.showError(e);
 		}
 		for (Project project : myprojects) {
 			Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;

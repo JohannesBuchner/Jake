@@ -496,9 +496,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public FolderObject getProjectRootFolder(Project project)
+	public FolderObject getFolder(Project project, FolderObject parent)
 					throws ProjectFolderMissingException {
 		log.info("get root folder for " + project);
+
+		// currently disabled, until i fix this.
+		/*
 
 		String rootPath = project.getRootPath();
 		File rootFolder = new File(rootPath);
@@ -506,9 +509,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new ProjectFolderMissingException(rootPath);
 		}
 
-		/*
-									 * Construct a folder from the entire project
-									 */
 		FolderObject fo = null;
 		try {
 			IProjectsManagingService pms = this.getFrontendService()
@@ -526,11 +526,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		return fo;
+		*/
+		return null;
 	}
 
 	@Override
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project) {
-        log.debug("Calling getAllProjectFiles");
+	public AvailableLaterObject<List<FileObject>> getFiles(Project project) {
+		log.debug("Calling getFiles");
 		AvailableLaterObject<List<FileObject>> result = null;
 		Exception ex = null;
 
@@ -538,13 +540,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			result = this.getFrontendService().getProjectsManagingService(sessionId)
 							.getAllProjectFiles(project);
 		} catch (FileNotFoundException e) {
-			ex = e;
+			ex =  new FileOperationFailedException(e);
 		} catch (IllegalArgumentException e) {
-			ex = e;
+			ex = new FileOperationFailedException(e);
 		} catch (IllegalStateException e) {
-			ex = e;
+			ex = new FileOperationFailedException(e);
 		} catch (NoSuchProjectException e) {
-			ex = e;
+			ex = new FileOperationFailedException(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			ex = e;
@@ -555,11 +557,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public Attributed getJakeObjectSyncStatus(Project project,
-					FileObject file) {
+	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
+					Project project, T jakeObject) {
 		try {
 			return this.getFrontendService().getSyncService(getSessionId())
-							.getJakeObjectSyncStatus(file);
+							.getJakeObjectSyncStatus(jakeObject);
 		} catch (NotAFileException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FileNotFoundException e) {
@@ -1101,6 +1103,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public long getLocalFileSize(FileObject fo) {
 		try {
+			// TODO: this is not the intended data! used for conflict resolving...
 			return this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getFileServices(fo.getProject()).getFileSize(fo.getRelPath());
 		} catch (FileNotFoundException e) {
@@ -1125,6 +1128,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public Date getLocalFileLastModified(FileObject fo) {
 		try {
+			// TODO: this is not the intended data! used for conflict resolving...
 			return new Date(
 							this.getFrontendService().getProjectsManagingService(getSessionId())
 											.getFileServices(fo.getProject()).getLastModified(

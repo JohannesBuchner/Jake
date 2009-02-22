@@ -19,11 +19,21 @@ import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.cmacwidgets.*;
+import com.jakeapp.gui.swing.controls.cmacwidgets.GreenHudButtonUI;
+import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTreeTable;
+import com.jakeapp.gui.swing.controls.cmacwidgets.JakeHudButtonUI;
+import com.jakeapp.gui.swing.controls.cmacwidgets.RedHudButtonUI;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
 import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.DebugHelper;
+import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
@@ -36,6 +46,7 @@ import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.Filter;
 import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.*;
@@ -46,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author studpete
+ * @author studpete, csutter
  */
 public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged {
 	private static final Logger log = Logger.getLogger(FilePanel.class);
@@ -68,7 +79,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private JToggleButton conflictsBtn;
 
 	// use tree (true) or flat (false)
-	private boolean treeViewActive = true;
+	// TODO: set to false for debug only
+	private boolean treeViewActive = false;
 
 	private final JPopupMenu popupMenu = new JakePopupMenu();
 
@@ -191,18 +203,15 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
-		//infoPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
-
 		fileTreeTable.setScrollsOnExpand(true);
 		fileTreeTable.setSortable(true);
 		fileTreeTable.setColumnControlVisible(true);
 
-/*		// ETreeTable performs its own striping on the mac
+		// ETreeTable performs its own striping on the mac
 		if (!Platform.isMac()) {
 			fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 			fileTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
-*/
 
 		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
 		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class,
@@ -291,7 +300,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		private int nodeColumn;
 
 		public FileContainerMouseListener(FilePanel p, JTable fileContainer,
-																			int nodeColumn) {
+						int nodeColumn) {
 			super();
 			this.panel = p;
 			this.container = fileContainer;
@@ -495,8 +504,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			// TODO: lazy loading !!!
 			try {
 				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(
-								JakeMainApp.getCore().getProjectRootFolder(
-												JakeMainApp.getProject())));
+								JakeMainApp.getCore().getFolder(JakeMainApp.getProject(), null)));
 				fileTreeTable.setTreeTableModel(treeTableModel);
 			} catch (ProjectFolderMissingException e) {
 				e.printStackTrace();

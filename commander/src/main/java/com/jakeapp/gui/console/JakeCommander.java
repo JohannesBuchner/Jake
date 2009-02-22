@@ -1,28 +1,6 @@
 package com.jakeapp.gui.console;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
@@ -34,6 +12,19 @@ import com.jakeapp.gui.console.commandline.CmdManager;
 import com.jakeapp.gui.console.commandline.Command;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 import com.jakeapp.gui.console.commandline.StoppableCmdManager;
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Test client accepting cli input
@@ -182,9 +173,9 @@ public class JakeCommander {
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
-				for (Attributed f : sync.getFiles(project)) {
-					if (uuid.equals(f.getJakeObject().getUuid()))
-						jo = f.getJakeObject();
+				for (FileObject f : sync.getFiles(project)) {
+					if (uuid.equals(f.getUuid()))
+						jo = f;
 				}
 			} catch (FrontendNotLoggedInException e) {
 				e.printStackTrace();
@@ -582,7 +573,7 @@ public class JakeCommander {
 				for (Attributed f : sync.getNotes(project)) {
 					System.out.println("\t" + f);
 				}
-				for (Attributed f : sync.getFiles(project)) {
+				for (FileObject f : sync.getFiles(project)) {
 					System.out.println("\t" + f);
 				}
 			} catch (FrontendNotLoggedInException e) {

@@ -168,6 +168,10 @@ public interface ICoreAccess {
 	 *
 	 * @throws Exception
 	 * @throws ProtocolNotSupportedException
+	 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
+	 *
+	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
+	 *
 	 */
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
@@ -186,6 +190,8 @@ public interface ICoreAccess {
 	 *                                       If the given Credentials are not valid
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception
+	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
+	 *
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
@@ -201,10 +207,13 @@ public interface ICoreAccess {
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 * @throws NetworkException
+	 * @throws com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException
+	 *
 	 */
 	public void removeAccount(MsgService msg)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
-								 ProtocolNotSupportedException, NetworkException, NoSuchMsgServiceException;
+								 ProtocolNotSupportedException, NetworkException,
+								 NoSuchMsgServiceException;
 
 
 	/**
@@ -214,7 +223,8 @@ public interface ICoreAccess {
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *          if the frontend has no session on the core
 	 */
-	public List<MsgService<UserId>> getMsgServics() throws FrontendNotLoggedInException;
+	public List<MsgService<UserId>> getMsgServics()
+					throws FrontendNotLoggedInException;
 
 	/******************* Project functions ********************/
 
@@ -348,13 +358,26 @@ public interface ICoreAccess {
 	/*******************************************************/
 
 	/**
+	 * Returns a java file class for the FileObject
+	 *
+	 * @param fo The wrapped File Object
+	 * @return java file class
+	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
+	 *
+	 */
+	File getFile(FileObject fo) throws FileOperationFailedException;
+
+
+	/**
 	 * Retrieves a file/folder tree for the project
 	 *
 	 * @param project The project in question
+	 * @param parent
 	 * @return A FolderObject that represents the root of the tree
 	 * @throws com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException
+	 *
 	 */
-	public FolderObject getProjectRootFolder(Project project)
+	public FolderObject getFolder(Project project, FolderObject parent)
 					throws ProjectFolderMissingException;
 
 	/**
@@ -363,17 +386,17 @@ public interface ICoreAccess {
 	 * @param project The project in question
 	 * @return A collection of all FileObjects in the project
 	 */
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project);
+	public AvailableLaterObject<List<FileObject>> getFiles(Project project);
 
 	/**
 	 * Gets the sync status of a file
 	 *
 	 * @param project
-	 * @param file The file for which the status should be determined
+	 * @param jakeObject		The jakeObject for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
-	public Attributed getJakeObjectSyncStatus(Project project,
-																											FileObject file);
+	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
+					Project project, T jakeObject);
 
 	/**
 	 * Get the file size for a local file copy (possibly modified)
@@ -451,10 +474,11 @@ public interface ICoreAccess {
 	 * @throws SyncException
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
+	 * @return
+	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
 	 */
 	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo,
-																											 String commitmsg)
-					throws FileOperationFailedException;
+					String commitmsg) throws FileOperationFailedException;
 
 
 	/**
@@ -544,7 +568,7 @@ public interface ICoreAccess {
 	 *                       <code>falso</code>
 	 */
 	public void setSoftLock(JakeObject jakeObject, boolean isSet,
-													String lockingMessage);
+					String lockingMessage);
 
 	/******************* People functions ********************/
 
@@ -562,10 +586,11 @@ public interface ICoreAccess {
 
 	/**
 	 * Get the UserInfo from a User
+	 *
 	 * @param member
 	 * @return
 	 */
-	UserInfo getUserInfo(UserId member);	
+	UserInfo getUserInfo(UserId member);
 
 	/**
 	 * Sets the nickname of people. Checks for error
@@ -584,8 +609,7 @@ public interface ICoreAccess {
 	 * @param userId
 	 * @param trust
 	 */
-	public void peopleSetTrustState(Project project, UserId userId,
-																	TrustState trust);
+	public void peopleSetTrustState(Project project, UserId userId, TrustState trust);
 
 
 	/**
@@ -617,7 +641,8 @@ public interface ICoreAccess {
 	 * @param entries		 : amount of entries. -1 for everything.
 	 * @return list of log entries or empty list.
 	 */
-	public List<LogEntry<? extends ILogable>> getLog(Project project, JakeObject jakeObject, int entries);
+	public List<LogEntry<? extends ILogable>> getLog(Project project,
+					JakeObject jakeObject, int entries);
 
 	/**
 	 * Save the given note. Jesus saves!
@@ -639,18 +664,7 @@ public interface ICoreAccess {
 	 * @return An object reporting the progress of the login
 	 */
 	AvailableLaterObject<Boolean> login(MsgService service, String password,
-																			boolean rememberPassword);
-
-	/**
-	 * Returns a java file class for the FileObject
-	 *
-	 * @param fo The wrapped File Object
-	 * @return java file class
-	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
-	 */
-	File getFile(FileObject fo) throws FileOperationFailedException;
-
-
+					boolean rememberPassword);
 }
 
 

@@ -13,7 +13,8 @@ import java.util.concurrent.ExecutionException;
 /**
  * @author: studpete
  */
-public class GetAllProjectFilesWorker extends SwingWorkerWithAvailableLaterObject<List<FileObject>> {
+public class GetAllProjectFilesWorker extends
+				SwingWorkerWithAvailableLaterObject<List<FileObject>> {
 	private static final Logger log = Logger.getLogger(GetAllProjectFilesWorker.class);
 	private Project project;
 
@@ -23,8 +24,8 @@ public class GetAllProjectFilesWorker extends SwingWorkerWithAvailableLaterObjec
 
 	@Override
 	protected AvailableLaterObject<List<FileObject>> calculateFunction() {
-        log.debug("calling GetAllProjectFilesWorker:calculateFunction");
-		return JakeMainApp.getCore().getAllProjectFiles(project);
+		log.debug("calling GetAllProjectFilesWorker:calculateFunction");
+		return JakeMainApp.getCore().getFiles(project);
 	}
 
 	@Override

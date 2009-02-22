@@ -230,7 +230,8 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 	public void filesChanged() {
 		try {
 			log.debug("Hooray, our files changed!");
-			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getProjectRootFolder(JakeMainApp.getApp().getProject()));
+			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getFolder(JakeMainApp.getApp().getProject(),
+							null));
 			this.setRoot(node);
 		} catch (ProjectFolderMissingException e) {
 			log.error("Couldn't find project root folder");

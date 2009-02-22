@@ -205,7 +205,6 @@ public interface IProjectsManagingService {
 	 * Retrieves all Files that exist in a <code>Project</code>
 	 *
 	 * @param project
-	 * @param listener A listener for reporting status
 	 * @return A List of all files.
 	 * @throws NoSuchProjectException	If the specified Project does not exist.
 	 * @throws FileNotFoundException	 If the root path of the specified Project is not found.

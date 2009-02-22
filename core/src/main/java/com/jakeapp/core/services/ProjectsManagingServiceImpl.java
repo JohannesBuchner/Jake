@@ -1,7 +1,6 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.dao.IFileObjectDao;
-import com.jakeapp.core.dao.IJakeObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -9,7 +8,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
@@ -119,11 +117,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 * @SuppressWarnings("unchecked") private IJakeObjectDao<JakeObject>
 	 * getJakeObjectDao(final Project project, final JakeObject jo) {
 	 * IJakeObjectDao result = null;
-	 * 
+	 *
 	 * if (jo != null) { if (jo instanceof FileObject) result =
 	 * this.getFileObjectDao(project); else if (jo instanceof NoteObject) result
 	 * = this.getNoteObjectDao(project); }
-	 * 
+	 *
 	 * return result; }
 	 */
 
@@ -163,6 +161,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	private void initProject(Project p) {
+		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
 		p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
 
 		if(!p.getUserId().equals(p.getMessageService().getUserId()))
@@ -181,7 +180,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		if (msgService==null || msgService.userId==null)
 			throw new IllegalArgumentException("MsgService must not be null!!");
-		
+
 		// create a new, empty project
 		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
 		project.setCredentials(this.msgServiceFactory.get(msgService));
@@ -215,7 +214,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		// Open the project
 		this.openProject(project);
-		
+
 		this.createFirstLogEntry(project);
 
 		// welcome the user
