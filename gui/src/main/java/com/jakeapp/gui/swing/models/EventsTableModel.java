@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * The Events Table Model. Used on the News Panel to show last events.
  *
- * @author: studpete
+ * @author: studpete, simon
  */
 public class EventsTableModel extends AbstractTableModel {
 
@@ -24,7 +24,7 @@ public class EventsTableModel extends AbstractTableModel {
 	private static final Logger log = Logger.getLogger(EventsTableModel.class);
 
 	private Project project;
-	private Attributed<? extends JakeObject> attributed;
+	private Attributed<? extends JakeObject> attributedJakeObject;
 	private List<LogEntry<? extends ILogable>> logEntries = new ArrayList<LogEntry<? extends ILogable>>();
 	private static final int MaxLogEntriesShown = 100;
 	private static final String[] colNames = new String[]{"Action", "When"};
@@ -44,12 +44,14 @@ public class EventsTableModel extends AbstractTableModel {
 	/**
 	 * Creates a event model that is limited to events from a JakeObject
 	 *
-	 * @param attributed
+	 * @param attributedJakeObject
 	 */
-	public EventsTableModel(Project project, Attributed<JakeObject> attributed) {
-		this.setJakeObject(attributed);
+	public EventsTableModel(Project project, Attributed<JakeObject> attributedJakeObject) {
+		this.setProject(project);
+		this.setJakeObject(attributedJakeObject);
 
-		log.info("Initializing EventsTableModel with jakeObject: " + attributed);
+		log.info("Initializing EventsTableModel with jakeObject: " + attributedJakeObject 
+				+ ", and project: " + this.getProject());
 
 		this.updateData();
 	}
@@ -64,11 +66,13 @@ public class EventsTableModel extends AbstractTableModel {
 	public void updateData() {
 		log.info("Updating events data...");
 		//FIXME: make proper initialization to evade this ugly null tests...
-		if (this.getProject() != null && this.getAttributedJakeObject() != null) {
+		if (this.getProject() != null && this.attributedJakeObject != null) {
+			log.info("Update in progress. Please stand by...");
 			this.logEntries = JakeMainApp.getCore().getLog(
 					  getProject(), getAttributedJakeObject().getJakeObject(), MaxLogEntriesShown);
+		} else if (this.getProject() != null) { //FIXME: DRY, general crap
+			this.logEntries = JakeMainApp.getCore().getLog(getProject(), null, MaxLogEntriesShown);
 		}
-		log.debug("received logs: " + this.logEntries);
 	}
 
 	public Project getProject() {
@@ -83,12 +87,12 @@ public class EventsTableModel extends AbstractTableModel {
 
 
 	public Attributed<? extends JakeObject> getAttributedJakeObject() {
-		return this.attributed;
+		return this.attributedJakeObject;
 	}
 
 	public void setJakeObject(Attributed<? extends JakeObject> attributed) {
 		log.debug("setting attributed: " + attributed);
-		this.attributed = attributed;
+		this.attributedJakeObject = attributed;
 
 		this.updateData();
 	}
