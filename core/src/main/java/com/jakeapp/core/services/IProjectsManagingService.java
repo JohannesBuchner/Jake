@@ -190,7 +190,7 @@ public interface IProjectsManagingService {
 	/**
 	 * @return a service for file-operations
 	 */
-	IFSService getFileServices(Project p) throws ProjectNotLoadedException;
+	IFSService getFileServices(Project p);
 
 	/**
 	 * @return The number of files in a Project

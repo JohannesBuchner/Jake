@@ -907,9 +907,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FrontendNotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
-		} catch (ProjectNotLoadedException e) {
-			log.debug("Tried to delete file of project not loaded");
-			this.handleProjectNotLoaded(e);
 		}
 	}
 
@@ -1001,9 +998,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			log.error("Creating a subdirectory that should not be created failed...");
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
-		} catch (ProjectNotLoadedException e) {
-			log.error("tried to rename a file of a project thats not loaded");
-			this.handleProjectNotLoaded(e);
 		}
 	}
 
@@ -1064,8 +1058,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new InvalidNewFolderException(relpath);
 		} catch (IOException e) {
 			throw new InvalidNewFolderException(relpath);
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
 		}
 	}
 
@@ -1079,13 +1071,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		};
 
 		this.fileListeners.put(listener, projectModificationListener);
-		try {
 			this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getFileServices(project)
 							.addModificationListener(projectModificationListener);
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
-		}
 	}
 
 	@Override
@@ -1094,13 +1082,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		projectModificationListener = this.fileListeners.get(listener);
 
-		if (projectModificationListener != null) try {
+		if (projectModificationListener != null) 
 			this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getFileServices(project)
 							.removeModificationListener(projectModificationListener);
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
-		}
 	}
 
 	private void handleProjectNotLoaded(ProjectNotLoadedException e) {
@@ -1126,8 +1111,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
 		}
 
 		return 0;
@@ -1151,8 +1134,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.fireErrorListener(new JakeErrorEvent(e));
 		} catch (InvalidFilenameException e) {
 			this.fireErrorListener(new JakeErrorEvent(e));
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
 		}
 		return new Date();
 	}

@@ -81,7 +81,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	@Override
-	public IFSService getFileServices(Project p) throws ProjectNotLoadedException {
+	public IFSService getFileServices(Project p) {
 		return this.getProjectsFileServices().getProjectFSService(p);
 	}
 
@@ -222,17 +222,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			throw new IllegalArgumentException();
 		}
 
-		// create and initialize the Project's root folder
-		/*
-		 * Since the FSService would start to watch the directory immediately,
-		 * it is not created yet.
-		 */
-		projectRoot.mkdirs();
-		if (!projectRoot.isDirectory() || !projectRoot.canWrite()) {
-			log.warn("Creating a Project's root path failed.");
-			throw new FileNotFoundException();
-		}
-
 		try {
 			log.debug("initializing project folder");
 			this.initializeProjectFolder(project);
@@ -351,7 +340,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			syncService.stopServing(project);
 			// stops monitoring the project
-			this.getProjectsFileServices().getProjectFSService(project).unsetRootPath();
+			this.getProjectsFileServices().stopForProject(project);
 		} finally {
 			project.setStarted(false);
 		}
@@ -608,11 +597,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		AvailableLaterObject<List<FileObject>> filesFuture;
 
 		filesFuture = this.getAllProjectFiles(project);
-		try {
-			sizeFuture = new ProjectSizeTotalFuture(getFileServices(project));
-		} catch (ProjectNotLoadedException e) {
-			throw new NoSuchProjectException(e);
-		}
+		sizeFuture = new ProjectSizeTotalFuture(getFileServices(project));
 		sizeFuture.setSource(filesFuture);
 
 		return sizeFuture;

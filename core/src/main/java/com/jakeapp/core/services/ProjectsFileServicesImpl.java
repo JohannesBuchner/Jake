@@ -25,10 +25,12 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 	}
 
 	@Override
-	public IFSService startForProject(Project project) throws IOException, NotADirectoryException {
+	public IFSService startForProject(Project project) throws IOException,
+			NotADirectoryException {
 		if (this.fileServices.containsKey(project.getProjectId()))
 			return this.fileServices.get(project.getProjectId());
 
+		log.info("Starting fss for project " + project);
 		IFSService fss;
 		try {
 			fss = new FSService();
@@ -43,20 +45,11 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
 	@Override
 	public IFSService getProjectFSService(Project project) {
-		if (fileServices.containsKey(UUID.fromString(project.getProjectId()))) {
-			return fileServices.get(UUID.fromString(project.getProjectId()));
+		if (fileServices.containsKey(project.getProjectId())) {
+			return fileServices.get(project.getProjectId());
 		}
 		throw new IllegalStateException("Project with uuid " + project.getProjectId()
 				+ " has no fss");
-	}
-
-	public IFSService getProjectFSServiceByUUID(String uuid)
-			throws ProjectNotLoadedException {
-		UUID projectUuid = UUID.fromString(uuid);
-		if (fileServices.containsKey(projectUuid)) {
-			return fileServices.get(projectUuid);
-		}
-		throw new ProjectNotLoadedException("Project with uuid " + uuid + " not loaded");
 	}
 
 

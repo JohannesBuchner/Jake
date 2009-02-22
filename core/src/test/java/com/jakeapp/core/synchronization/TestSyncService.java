@@ -86,20 +86,20 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		sync = frontend.getSyncService(sessionId);
 		db = (ProjectApplicationContextFactory) applicationContext
 				.getBean("applicationContextFactory");
-		createProjectWorkaround();
+		createProject();
 		testLogEntriesCount(1);
 		me = pms.getProjectUsers(project).get(0);
 		note = new NoteObject(project, ORIGINAL_CONTENT);
 	}
 
 	@Transactional
-	public void createProjectWorkaround() throws Exception {
+	public void createProject() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password);
 		cred.setProtocol(ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(), msg);
-		
+
 		testLogEntriesCount(0);
 
 		Assert.assertNotNull(project.getMessageService());
@@ -107,23 +107,23 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		Assert.assertEquals(1, pms.getProjectUsers(project).size());
 		Assert.assertNotNull(pms.getProjectUsers(project).get(0));
-		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(
-				project).get(0).getUserId());
+		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(project)
+				.get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
 		testLogEntriesCount(1);
 	}
 
-
 	@Transactional
 	private void testLogEntriesCount(int count) {
 		// this throws a noSessionBoundToThreadException. why?
-		// Assert.assertEquals(count, db.getUnprocessedAwareLogEntryDao(project)
-		// .getAll(true).size());
+		//Assert.assertEquals(count, db.getUnprocessedAwareLogEntryDao(project)
+		//		.getAll(true).size());
 	}
 
 
 	@Test
+	@Transactional
 	public void testStatus_NonExistantNote() throws Exception {
 		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 

@@ -32,14 +32,6 @@ public interface IProjectsFileServices {
     public IFSService getProjectFSService(Project project);
 
     /**
-     * 
-     * @param uuid
-     * @return the FSS for the project
-     * @throws ProjectNotLoadedException if none loaded
-     */
-    public IFSService getProjectFSServiceByUUID(String uuid) throws ProjectNotLoadedException;
-
-    /**
      * this should be called to stop running threads
      * @param project
      */
