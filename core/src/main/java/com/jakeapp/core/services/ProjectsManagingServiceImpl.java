@@ -214,27 +214,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
 		project.setCredentials(msgService.getServiceCredentials());
 
-		// add Project to the global database
+		// Open the project (add to database)
 		try {
-			project = this.getProjectDao().create(project);
+			this.openProject(project);
 		} catch (InvalidProjectException e) {
-			log.error("Opening a project failed: Project was invalid");
-			throw new IllegalArgumentException();
+			throw new IllegalStateException("we created a illegal project", e);
 		}
-
+		
 		try {
 			log.debug("initializing project folder");
 			this.initializeProjectFolder(project);
 		} catch (IOException e) {
 			log.debug("initializing project folder didn't work");
 			throw new FileNotFoundException();
-		}
-
-		// Open the project
-		try {
-			this.openProject(project);
-		} catch (InvalidProjectException e) {
-			throw new IllegalStateException("we created a illegal project", e);
 		}
 
 		this.createFirstLogEntry(project);
@@ -382,11 +374,17 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		File rootPath = new File(project.getRootPath());
 
+		
+		// add Project to the global database
+		try {
+			project = this.getProjectDao().create(project);
+		} catch (InvalidProjectException e) {
+			log.error("Opening a project failed: Project was invalid");
+			throw new IllegalArgumentException();
+		}
+		
 		// add the project's file services
 		this.getProjectsFileServices().startForProject(project);
-		
-		this.getProjectDao().create(project);
-
 
 		project.setOpen(true);
 
@@ -419,7 +417,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 					t = e;
 				}
 			}
-			this.getProjectsFileServices().stopForProject(project);
 		}
 
 		// Make sure project is stopped & closed

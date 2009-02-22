@@ -441,7 +441,7 @@ public class JakeCommander {
 	class OpenProjectCommand extends LazyProjectDirectoryCommand {
 
 		public OpenProjectCommand() {
-			super("openProject", "provides a open project");
+			super("openProject", "provides an open project");
 		}
 
 		@Override
@@ -456,7 +456,11 @@ public class JakeCommander {
 					System.out.println("no such project");
 					return;
 				}
+				
+				
 				System.out.println("\t" + project);
+				//TODO @ Johannes
+				log.error("This is completely wrong, all Projects in getProjectList are open.");
 				pms.openProject(project);
 
 				System.out.println("opening project done");
