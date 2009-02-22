@@ -376,7 +376,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 
 	@Transactional
-	public AttributedJakeObject<FileObject> getJakeObjectSyncStatus(FileObject foin)
+	public Attributed<FileObject> getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
 		Project p = foin.getProject();
 		IFSService fss = getFSS(p);
@@ -458,7 +458,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// 6 lastprocessed
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
 
-		return new AttributedJakeObject<FileObject>(fo, lastle,
+		return new Attributed<FileObject>(fo, lastle,
 				locklog,
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
@@ -466,7 +466,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Transactional
-	public AttributedJakeObject<NoteObject> getJakeObjectSyncStatus(NoteObject noin) {
+	public Attributed<NoteObject> getJakeObjectSyncStatus(NoteObject noin) {
 		Project p = noin.getProject();
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
 
@@ -522,7 +522,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		// 6 lastprocessed
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
 
-		return new AttributedJakeObject<NoteObject>(no, lastle,
+		return new Attributed<NoteObject>(no, lastle,
 				led.getLock(no),
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
@@ -531,12 +531,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Transactional
 	@Override
-	public <T extends JakeObject> AttributedJakeObject<T> getJakeObjectSyncStatus(T jo)
+	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T jo)
 			throws InvalidFilenameException, NotAReadableFileException, IOException {
 		if (isNoteObject(jo))
-			return (AttributedJakeObject<T>) getJakeObjectSyncStatus((NoteObject) jo);
+			return (Attributed<T>) getJakeObjectSyncStatus((NoteObject) jo);
 		else
-			return (AttributedJakeObject<T>) getJakeObjectSyncStatus((FileObject) jo);
+			return (Attributed<T>) getJakeObjectSyncStatus((FileObject) jo);
 	}
 
 	/**
@@ -545,8 +545,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	@Override
 	@Transactional
-	public List<AttributedJakeObject<NoteObject>> getNotes(Project p) {
-		List<AttributedJakeObject<NoteObject>> stat = new LinkedList<AttributedJakeObject<NoteObject>>();
+	public List<Attributed<NoteObject>> getNotes(Project p) {
+		List<Attributed<NoteObject>> stat = new LinkedList<Attributed<NoteObject>>();
 
 		// TODO: add deleted
 		for (NoteObject no : this.db.getNoteObjectDao(p).getAll()) {
@@ -812,7 +812,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	@Override
 	@Transactional
-	public List<AttributedJakeObject<FileObject>> getFiles(Project p) throws IOException {
+	public List<Attributed<FileObject>> getFiles(Project p) throws IOException {
 		IFSService fss = getFSS(p);
 
 		List<String> files = fss.recursiveListFiles();
@@ -828,7 +828,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 			FileObject fo = new FileObject(p, relpath);
 			fileObjects.add(fo);
 		}
-		List<AttributedJakeObject<FileObject>> stat = new LinkedList<AttributedJakeObject<FileObject>>();
+		List<Attributed<FileObject>> stat = new LinkedList<Attributed<FileObject>>();
 		for (FileObject fo : fileObjects) {
 			try {
 				stat.add(getJakeObjectSyncStatus(fo));

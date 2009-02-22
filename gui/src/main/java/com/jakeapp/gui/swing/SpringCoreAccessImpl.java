@@ -13,7 +13,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.PullFuture;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -109,7 +109,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		this.frontendService = frontendService;
 
 		// also cache the pms
-		pms = frontendService.getProjectsManagingService(this.sessionId);
+		// TODO: cache somewhere else!
+		//pms = frontendService.getProjectsManagingService(this.sessionId);
 	}
 
 	private void handleNotLoggedInException(FrontendNotLoggedInException e) {
@@ -547,7 +548,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AttributedJakeObject getJakeObjectSyncStatus(Project project,
+	public Attributed getJakeObjectSyncStatus(Project project,
 					FileObject file) {
 		try {
 			return this.getFrontendService().getSyncService(getSessionId())
@@ -626,7 +627,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return fo;
 	}
 
-	public List<AttributedJakeObject<NoteObject>> getNotes(Project project)
+	public List<Attributed<NoteObject>> getNotes(Project project)
 					throws NoteOperationFailedException {
 		try {
 			// FIXME: do this over the SyncService. You also get AttributedJakeObjects

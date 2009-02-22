@@ -3,7 +3,8 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import org.apache.log4j.Logger;
@@ -21,11 +22,11 @@ public class EventsTableModel extends AbstractTableModel {
 
 	private static final Logger log = Logger.getLogger(EventsTableModel.class);
 	private Project project;
-	private AttributedJakeObject<? extends JakeObject> attributedJakeObject;
-	private List<LogEntry> logEntries = new ArrayList<LogEntry>();
+	private Attributed<? extends JakeObject> attributed;
+	private List<LogEntry<? extends ILogable>> logEntries = new ArrayList<LogEntry<? extends ILogable>>();
 	private static final int MaxLogEntriesShown = 100;
 	private static final String[] colNames = new String[]{"Action", "When"};
-	
+
 	private enum LogColumns {
 		ACTION, WHEN
 	}
@@ -41,12 +42,12 @@ public class EventsTableModel extends AbstractTableModel {
 	/**
 	 * Creates a event model that is limited to events from a JakeObject
 	 *
-	 * @param attributedJakeObject
+	 * @param attributed
 	 */
-	public EventsTableModel(Project project, AttributedJakeObject<JakeObject> attributedJakeObject) {
-		this.setJakeObject(attributedJakeObject);
+	public EventsTableModel(Project project, Attributed<JakeObject> attributed) {
+		this.setJakeObject(attributed);
 
-		log.info("Initializing EventsTableModel with jakeObject: " + attributedJakeObject);
+		log.info("Initializing EventsTableModel with jakeObject: " + attributed);
 
 		this.updateData();
 	}
@@ -63,7 +64,7 @@ public class EventsTableModel extends AbstractTableModel {
 		log.info("Updating events data...");
 		//FIXME: make proper initialization to evade this ugly null tests...
 		if (this.getProject() != null && this.getAttributedJakeObject() != null) {
-			this.logEntries = JakeMainApp.getApp().getCore().getLog(
+			this.logEntries = JakeMainApp.getCore().getLog(
 					  getProject(), getAttributedJakeObject().getJakeObject(), MaxLogEntriesShown);
 
 		}
@@ -81,13 +82,13 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 
-	public AttributedJakeObject<? extends JakeObject> getAttributedJakeObject() {
-		return this.attributedJakeObject;
+	public Attributed<? extends JakeObject> getAttributedJakeObject() {
+		return this.attributed;
 	}
 
-	public void setJakeObject(AttributedJakeObject<? extends JakeObject> attributedJakeObject) {
-		log.debug("setting attributedJakeObject: " + attributedJakeObject);
-		this.attributedJakeObject = attributedJakeObject;
+	public void setJakeObject(Attributed<? extends JakeObject> attributed) {
+		log.debug("setting attributed: " + attributed);
+		this.attributed = attributed;
 
 		this.updateData();
 	}
@@ -122,7 +123,7 @@ public class EventsTableModel extends AbstractTableModel {
 		return colNames[columnIndex];
 	}
 
-	public List<LogEntry> getLogEntries() {
+	public List<LogEntry<? extends ILogable>> getLogEntries() {
 		return this.logEntries;
 	}
 }

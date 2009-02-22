@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import org.apache.log4j.Logger;
 
@@ -61,7 +61,7 @@ public class FileObjectStatusProvider {
 	public static Component getStatusRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
 
-		AttributedJakeObject status = JakeMainApp.getCore()
+		Attributed status = JakeMainApp.getCore()
 						.getJakeObjectSyncStatus(JakeMainApp.getProject(), obj);
 
 		if (status == null) {

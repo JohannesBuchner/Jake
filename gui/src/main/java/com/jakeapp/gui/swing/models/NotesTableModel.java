@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -29,7 +29,7 @@ public class NotesTableModel extends DefaultTableModel {
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
 	private List<String> columnNames;
-	private List<AttributedJakeObject<NoteObject>> attributedNotes;
+	private List<Attributed<NoteObject>> attributedNotes;
 	private ResourceMap resourceMap;
 	private ICoreAccess core;
 	private Icon padlock, shared_note;
@@ -37,7 +37,7 @@ public class NotesTableModel extends DefaultTableModel {
 	public NotesTableModel() {
 		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
-		this.attributedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
+		this.attributedNotes = new ArrayList<Attributed<NoteObject>>();
 		this.core = JakeMainApp.getCore();
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
@@ -57,7 +57,7 @@ public class NotesTableModel extends DefaultTableModel {
 		return this.resourceMap;
 	}
 
-	public AttributedJakeObject<NoteObject> getNoteAtRow(int row) {
+	public Attributed<NoteObject> getNoteAtRow(int row) {
 		return this.attributedNotes.get(row);
 	}
 
@@ -104,7 +104,7 @@ public class NotesTableModel extends DefaultTableModel {
 	@Override
 	public Object getValueAt(int row, int column) {
 		Object value;
-		AttributedJakeObject<NoteObject> note = this.getAttributedNotes().get(row);
+		Attributed<NoteObject> note = this.getAttributedNotes().get(row);
 		switch (column) {
 			case 0: // soft lock
 				if (note.isLocked()) {
@@ -136,7 +136,7 @@ public class NotesTableModel extends DefaultTableModel {
 		return value;
 	}
 
-	private List<AttributedJakeObject<NoteObject>> getAttributedNotes() {
+	private List<Attributed<NoteObject>> getAttributedNotes() {
 		return this.attributedNotes;
 	}
 

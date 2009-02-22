@@ -109,11 +109,12 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 				case 2:
 					return ournode;
 				case 3:
-					return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+					// TODO: fix, change to attributed
+					//return FileUtilities.getSize(JakeMainApp.getCore().getFileSize(ournode.getFileObject()));
 				case 4:
-					return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+					//return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
 				case 5:
-					return TagHelper.tagsToString(JakeMainApp.getApp().getCore().getTagsForFileObject(ournode.getFileObject()));
+					return TagHelper.tagsToString(JakeMainApp.getCore().getTagsForFileObject(ournode.getFileObject()));
 				default:
 					return "INVALIDCOLUMN";
 			}

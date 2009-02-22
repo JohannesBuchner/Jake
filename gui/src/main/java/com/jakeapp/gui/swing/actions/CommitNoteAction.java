@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
@@ -46,7 +46,7 @@ public class CommitNoteAction extends NoteAction {
 	public void updateAction() {
 		if (this.hasSelectedNotes()) {
 			boolean isLocal = false;
-			for (AttributedJakeObject<NoteObject> note : getSelectedNotes()) {
+			for (Attributed<NoteObject> note : getSelectedNotes()) {
 				if (note.isLocal()) {
 					isLocal = true;
 					break;

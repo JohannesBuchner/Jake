@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
@@ -36,7 +36,7 @@ public class SoftlockNoteAction extends NoteAction {
 		ICoreAccess core = JakeMainApp.getCore();
 		boolean cachedNewLockingState = !this.isLocked;
 
-		for (AttributedJakeObject<NoteObject> note : this.getSelectedNotes()) {
+		for (Attributed<NoteObject> note : this.getSelectedNotes()) {
 			if (!note.isLocal()) {
 				log.debug("locking note: " + note);
 				core.setSoftLock(note.getJakeObject(), cachedNewLockingState, null);	

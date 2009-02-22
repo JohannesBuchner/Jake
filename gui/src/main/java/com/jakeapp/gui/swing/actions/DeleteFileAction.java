@@ -2,16 +2,11 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
-import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -41,7 +36,7 @@ public class DeleteFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		final List<String> cache = new ArrayList<String>();
-		List<AttributedJakeObject<FileObject>> files = new ArrayList<AttributedJakeObject<FileObject>>();
+		List<Attributed<FileObject>> files = new ArrayList<Attributed<FileObject>>();
 
 		ICoreAccess core = JakeMainApp.getCore();
 		UserId currentUser = JakeMainApp.getProject().getUserId();
@@ -51,6 +46,9 @@ public class DeleteFileAction extends FileAction {
 						"genericCancel")};
 		String text;
 
+
+		// TODO: wtf?
+/*
 		for (ProjectFilesTreeNode node : getNodes()) {
 			if (node.isFile()) {
 				cache.add(node.getFileObject().getRelPath());
@@ -94,6 +92,7 @@ public class DeleteFileAction extends FileAction {
 				text = Translator
 								.get(map, "confirmDeleteFiles.text", String.valueOf(cache.size()));
 			}
+
 		}
 
 		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,
@@ -109,5 +108,6 @@ public class DeleteFileAction extends FileAction {
 								}
 							}
 						});
-	}
+	*/}
+
 }

@@ -125,7 +125,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 	@Test
 	public void testStatus_NonExistantNote() throws Exception {
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		testLogEntriesCount(1);
 
@@ -140,7 +140,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 	public void testStatus_NewNote() throws Exception {
 		pms.saveNote(note);
 		Assert.assertNotNull(note.getUuid());
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(Existence.EXISTS_LOCAL, status.getExistence());
@@ -153,7 +153,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		testStatus_NewNote();
 		sync.announce(note, LogAction.JAKE_OBJECT_NEW_VERSION, "done");
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(Existence.EXISTS_ON_BOTH, status.getExistence());
@@ -167,7 +167,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		note.setContent(MODIFIED_CONTENT);
 		pms.saveNote(note);
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(Existence.EXISTS_ON_BOTH, status.getExistence());
@@ -182,7 +182,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		Assert.assertEquals(ORIGINAL_CONTENT, revertedNote.getContent());
 		Assert.assertEquals(MODIFIED_CONTENT, note.getContent());
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(ORIGINAL_CONTENT, status.getJakeObject().getContent());
 		Assert.assertEquals(note, status.getJakeObject());
@@ -196,7 +196,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		testStatus_NewNote();
 		pms.deleteNote(note);
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(Existence.NON_EXISTANT, status.getExistence());
@@ -208,7 +208,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		testStatus_AnnounceNote();
 		pms.deleteNote(note);
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(Existence.EXISTS_REMOTE, status.getExistence());
@@ -231,7 +231,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		pms.setTagsForJakeObject(note, tags);
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(Existence.EXISTS_ON_BOTH, status.getExistence());
@@ -262,7 +262,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		m.invoke(this, (Object[]) null);
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(LockStatus.CLOSED, status.getLockStatus());
@@ -274,7 +274,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		m.invoke(this, (Object[]) null);
 
-		AttributedJakeObject<NoteObject> status = sync.getJakeObjectSyncStatus(note);
+		Attributed<NoteObject> status = sync.getJakeObjectSyncStatus(note);
 
 		Assert.assertEquals(note, status.getJakeObject());
 		Assert.assertEquals(LockStatus.OPEN, status.getLockStatus());

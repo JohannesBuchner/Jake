@@ -9,9 +9,9 @@ import org.apache.log4j.Logger;
 /**
  * @author johannes
  */
-public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus {
+public class Attributed<T extends JakeObject> extends JakeObjectStatus {
 
-	static final Logger log = Logger.getLogger(AttributedJakeObject.class);
+	static final Logger log = Logger.getLogger(Attributed.class);
 	private T jakeObject;
 	private long lastModificationDate;
 	private long size;
@@ -27,7 +27,7 @@ public class AttributedJakeObject<T extends JakeObject> extends JakeObjectStatus
 	 * @param lastModificationDate
 	 * @param size
 	 * */
-	public AttributedJakeObject(T jakeObject, LogEntry<? extends ILogable> lastVersionLogEntry,
+	public Attributed(T jakeObject, LogEntry<? extends ILogable> lastVersionLogEntry,
 			LogEntry<? extends ILogable> lastLockLogEntry, boolean objectExistsLocally,
 			boolean checksumDifferentFromLastNewVersionLogEntry,
 			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,

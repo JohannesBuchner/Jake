@@ -1,10 +1,9 @@
 package com.jakeapp.gui.swing.dialogs;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.JakeAction;
@@ -25,15 +24,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 /**
- * People Invitation Dialog. Opens modal dialog to add ProjectMembers
- *
- * @author: studpete
+ * Resolve Conflict Dialog.
  */
 public class ResolveConflictDialog extends JakeDialog {
 	private static final Logger log = Logger.getLogger(ResolveConflictDialog.class);
-	private AttributedJakeObject<FileObject> fo;
+	private Attributed<FileObject> fo;
 	private JButton resolveBtn;
 	private JRadioButton useLocalRadioButton;
 	private JRadioButton useRemoteRadioButton;
@@ -45,8 +43,7 @@ public class ResolveConflictDialog extends JakeDialog {
 	 * @param project
 	 * @param fo
 	 */
-	private ResolveConflictDialog(Project project,
-					AttributedJakeObject<FileObject> fo) {
+	private ResolveConflictDialog(Project project, Attributed<FileObject> fo) {
 		super(project);
 		log.info("Opening ResolveConflictDialog on " + project + " with file: " + fo);
 
@@ -82,8 +79,8 @@ public class ResolveConflictDialog extends JakeDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GuiUtilities.selectFileInFileViewer(
-									FileObjectHelper.getPath(JakeMainApp.getCore().getFile(fo.getJakeObject())));
+					GuiUtilities.selectFileInFileViewer(FileObjectHelper.getPath(
+									JakeMainApp.getCore().getFile(fo.getJakeObject())));
 				} catch (FileOperationFailedException ex) {
 					ExceptionUtilities.showError(ex);
 				}
@@ -106,14 +103,15 @@ public class ResolveConflictDialog extends JakeDialog {
 
 
 		// demermine the differences
-		boolean localLarger = core.getLocalFileSize(fo) < core.getFileSize(fo);
-		boolean localNewer = core.getLocalFileLastModified(fo).after(fo).);
+		boolean localLarger = core.getLocalFileSize(fo.getJakeObject()) < fo.getSize();
+		boolean localNewer = core.getLocalFileLastModified(fo.getJakeObject())
+						.after(new Date(fo.getLastModificationDate()));
 
 		JLabel localLabel = new JLabel("<html>" + getResourceMap()
 						.getString("localLabelBegin") + " " + StringUtilities
-						.boldIf(FileObjectHelper.getLocalSizeHR(fo),
+						.boldIf(FileObjectHelper.getLocalSizeHR(fo.getJakeObject()),
 										localLarger) + ", " + StringUtilities
-						.boldIf(FileObjectHelper.getLocalTime(fo) + " (" + FileObjectHelper
+						.boldIf(FileObjectHelper.getLocalTime(fo.getJakeObject()) + " (" + FileObjectHelper
 										.getLocalTimeRel(fo) + ")", localNewer) + "</html>");
 		JButton viewLocal = new JButton(getResourceMap().getString("openFileButton"));
 
@@ -190,8 +188,8 @@ public class ResolveConflictDialog extends JakeDialog {
 	}
 
 	private String getUseRemoteFileString() {
-			return Translator.get(getResourceMap(), "resolveThemButton",
-							UserHelper.getNickOrFullName(fo.getLastVersionLogEntry().getMember()));
+		return Translator.get(getResourceMap(), "resolveThemButton",
+						UserHelper.getNickOrFullName(fo.getLastVersionLogEntry().getMember()));
 	}
 
 	/**
@@ -220,7 +218,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		// if local file is selected, we have to announce that.
 		if (isLocalSelected()) {
 			try {
-				JakeMainApp.getCore().announceJakeObject(fo, null);
+				JakeMainApp.getCore().announceJakeObject(fo.getJakeObject(), null);
 				//}// catch (SyncException e) {
 				//log.error(e);
 				//ExceptionUtilities.showError(e);
@@ -235,7 +233,7 @@ public class ResolveConflictDialog extends JakeDialog {
 			// remote file must have been selected.
 			// so pull the file from remote (overwrites our file)
 			try {
-				JakeMainApp.getCore().pullJakeObject(fo);
+				JakeMainApp.getCore().pullJakeObject(fo.getJakeObject());
 			} catch (FrontendNotLoggedInException e) {
 				log.error(e);
 				ExceptionUtilities.showError(e);
@@ -254,7 +252,7 @@ public class ResolveConflictDialog extends JakeDialog {
 	 * @param project: project where people will be added.
 	 * @param fo:      file object
 	 */
-	public static void showDialog(Project project, FileObject fo) {
+	public static void showDialog(Project project, Attributed<FileObject> fo) {
 		ResolveConflictDialog dlg = new ResolveConflictDialog(project, fo);
 		dlg.showDialogSized(700, 280);
 	}

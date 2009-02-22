@@ -143,7 +143,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<AttributedJakeObject<FileObject>> getFiles(Project p) throws IOException;
+	public List<Attributed<FileObject>> getFiles(Project p) throws IOException;
 
 	/**
 	 * Invites a User to a project.
@@ -180,7 +180,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<AttributedJakeObject<NoteObject>> getNotes(Project p) throws IOException;
+	public List<Attributed<NoteObject>> getNotes(Project p) throws IOException;
 
 	/**
 	 * gets the SyncStatus for a specific JakeObject
@@ -191,7 +191,7 @@ public interface ISyncService {
 	 * @throws NotAReadableFileException
 	 * @throws IOException
 	 */
-	public <T extends JakeObject> AttributedJakeObject<T> getJakeObjectSyncStatus(T fo)
+	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T fo)
 			  throws InvalidFilenameException, NotAReadableFileException, IOException;
 
 	/**

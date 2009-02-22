@@ -161,7 +161,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
 		log.debug("notify selection listeners");
 		for (FileSelectionChanged c : fileSelectionListeners) {
-			c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
+			//c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
 		}
 	}
 

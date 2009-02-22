@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
@@ -41,7 +41,7 @@ public class DeleteNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-				final List<AttributedJakeObject<NoteObject>> cache = new ArrayList<AttributedJakeObject<NoteObject>>(getSelectedNotes());
+				final List<Attributed<NoteObject>> cache = new ArrayList<Attributed<NoteObject>>(getSelectedNotes());
 
 		ResourceMap map = NotesPanel.getInstance().getResourceMap();
 		String[] options = {map.getString("confirmDeleteNote.ok"), map.getString("genericCancel")};
@@ -63,7 +63,7 @@ public class DeleteNoteAction extends NoteAction {
 		} else { //batch delete
 			log.debug("batch delete -------------------------------------------------------------");
 			boolean locked = false;
-			for (AttributedJakeObject<NoteObject> note : cache) {
+			for (Attributed<NoteObject> note : cache) {
 				if (note.isLocked() && !JakeHelper.isEditable(note)) {
 					locked = true;
 					break;
@@ -84,7 +84,7 @@ public class DeleteNoteAction extends NoteAction {
 			@Override
 			public void optionSelected(SheetEvent evt) {
 				if (evt.getOption() == 0) {
-					for (AttributedJakeObject<NoteObject> note : cache) {
+					for (Attributed<NoteObject> note : cache) {
 						try {
 							JakeMainApp.getCore().deleteNote(note.getJakeObject());
 						} catch (NoteOperationFailedException e) {

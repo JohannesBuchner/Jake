@@ -1,8 +1,9 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
@@ -97,9 +98,10 @@ public class FileObjectsTableModel extends AbstractTableModel {
 					return System.getProperty("file.separator");
 				}
 			case Size:
-				return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+				// TODO
+				//return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
 			case LastMod:
-				return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+				//return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
 			case Tags:
 				return "";
 			default:

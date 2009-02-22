@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -28,7 +27,7 @@ import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.gui.console.commandline.CmdManager;
@@ -179,11 +178,11 @@ public class JakeCommander {
 			}
 			JakeObject jo = null;
 			try {
-				for (AttributedJakeObject f : sync.getNotes(project)) {
+				for (Attributed f : sync.getNotes(project)) {
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
-				for (AttributedJakeObject f : sync.getFiles(project)) {
+				for (Attributed f : sync.getFiles(project)) {
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
@@ -586,10 +585,10 @@ public class JakeCommander {
 				return;
 			}
 			try {
-				for (AttributedJakeObject f : sync.getNotes(project)) {
+				for (Attributed f : sync.getNotes(project)) {
 					System.out.println("\t" + f);
 				}
-				for (AttributedJakeObject f : sync.getFiles(project)) {
+				for (Attributed f : sync.getFiles(project)) {
 					System.out.println("\t" + f);
 				}
 			} catch (FrontendNotLoggedInException e) {
@@ -708,7 +707,7 @@ public class JakeCommander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("getting JakeObject status ... ");
-				AttributedJakeObject status = sync.getJakeObjectSyncStatus(jo);
+				Attributed status = sync.getJakeObjectSyncStatus(jo);
 				System.out.println("\t" + jo);
 				System.out.println("\t\t" + status);
 				System.out.println("\t\t" + sync.getLock(jo));

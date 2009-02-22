@@ -1,18 +1,11 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.core.domain.FileObject;
-
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.util.List;
-
-import org.jdesktop.swingx.JXTreeTable;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class LockFileAction extends FileAction {
 	public LockFileAction() {
@@ -39,6 +32,7 @@ public class LockFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		FileObject fo = getSingleNode().getFileObject();
-		JakeMainApp.getCore().setSoftLock(fo, !JakeMainApp.getCore().isSoftLocked(fo), "");
+		// TODO: fix
+		//JakeMainApp.getCore().setSoftLock(fo, !JakeMainApp.getCore().isSoftLocked(fo), "");
 	}
 }

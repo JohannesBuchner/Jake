@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.panels.NotesPanel;
@@ -20,7 +20,7 @@ public abstract class NoteAction extends ProjectAction implements NoteSelectionC
 	private static final long serialVersionUID = 8541763489137302803L;
 	private static Logger log = Logger.getLogger(NoteAction.class);
 
-	private List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
+	private List<Attributed<NoteObject>> selectedNotes = new ArrayList<Attributed<NoteObject>>();
 
 	/**
 	 * Constructs a new NoteAction that works with the given notesTable.
@@ -43,11 +43,11 @@ public abstract class NoteAction extends ProjectAction implements NoteSelectionC
 		updateAction();
 	}
 
-	public List<AttributedJakeObject<NoteObject>> getSelectedNotes() {
+	public List<Attributed<NoteObject>> getSelectedNotes() {
 		return this.selectedNotes;
 	}
 
-	public void setSelectedNotes(List<AttributedJakeObject<NoteObject>> notes) {
+	public void setSelectedNotes(List<Attributed<NoteObject>> notes) {
 		this.selectedNotes = notes;
 	}
 
@@ -63,7 +63,7 @@ public abstract class NoteAction extends ProjectAction implements NoteSelectionC
 										ProjectChangedEvent.ProjectChangedReason.Sync));
 	}
 
-	protected AttributedJakeObject<NoteObject> getSelectedNote() {
+	protected Attributed<NoteObject> getSelectedNote() {
 		if (getSelectedNotes().size() > 0) {
 			return getSelectedNotes().get(0);
 		} else {

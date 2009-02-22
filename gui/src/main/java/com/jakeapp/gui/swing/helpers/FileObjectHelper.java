@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import org.apache.log4j.Logger;
@@ -65,15 +65,19 @@ public class FileObjectHelper {
 		return FileUtilities.getPathFromPathWithFile(path);
 	}
 
+	public static String getPath(Attributed<FileObject> afo) {
+		return getPath(afo.getJakeObject());
+	}
+
 	/**
 	 * Get File Size Human Readable (MB, KB, ...)
 	 * Do not use until you want to resolve conflicts - usually returns the same as std. call!
 	 *
-	 * @param fo: FileObject
+	 * @param afo: FileObject
 	 * @return human readable file size.
 	 */
-	public static String getSizeHR(FileObject fo) {
-		return FileUtilities.getSize(JakeMainApp.getCore().getLocalFileSize(fo), 1, false);
+	public static String getSizeHR(Attributed<FileObject> afo) {
+		return FileUtilities.getSize(afo.getSize(), 1, false);
 	}
 
 	/**
@@ -83,40 +87,42 @@ public class FileObjectHelper {
 	 * @return human readable file size.
 	 */
 	public static String getLocalSizeHR(FileObject fo) {
-		return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(fo), 1, false);
+		return FileUtilities
+						.getSize(JakeMainApp.getCore().getLocalFileSize(fo), 1, false);
 	}
 
 
 	/**
 	 * Returns the realtive Time of the last edit for the FileObject. ("a minute ago", ...)
 	 *
-	 * @param fo: FileObject
+	 * @param afo: AttributedJakeObject<FileObject>
 	 * @return relative time for last edit of file
 	 */
-	public static String getTimeRel(FileObject fo) {
-		return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(fo));
+	public static String getTimeRel(Attributed<FileObject> afo) {
+		return TimeUtilities.getRelativeTime(afo.getLastModificationDate());
 	}
 
 	/**
 	 * Returns the realtive Time of the last edit for the local version of FileObject. ("a minute ago", ...)
 	 * Do not use until you want to resolve conflicts - usually returns the same as std. call!
 	 *
-	 * @param fo: FileObject
+	 * @param afo: AttributedJakeObject<FileObject>
 	 * @return relative time for last edit of file
 	 */
-	public static String getLocalTimeRel(FileObject fo) {
-		return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getLocalFileLastModified(fo));
+	public static String getLocalTimeRel(Attributed<FileObject> afo) {
+		return TimeUtilities.getRelativeTime(
+						JakeMainApp.getCore().getLocalFileLastModified(afo.getJakeObject()));
 	}
 
 	/**
 	 * Returns the tile of the last edit for the FileObject, absolut.
 	 *
-	 * @param fo: FileObject
+	 * @param afo: AttributedJakeObject<FileObject>
 	 * @return absolute time for last edit of file
 	 */
-	public static String getTime(FileObject fo) {
+	public static String getTime(Attributed<FileObject> afo) {
 		DateFormat df = new SimpleDateFormat();
-		return df.format(JakeMainApp.getApp().getCore().getFileLastModified(fo));
+		return df.format(afo.getLastModificationDate());
 	}
 
 	/**
@@ -128,21 +134,16 @@ public class FileObjectHelper {
 	 */
 	public static String getLocalTime(FileObject fo) {
 		DateFormat df = new SimpleDateFormat();
-		return df.format(JakeMainApp.getApp().getCore().getLocalFileLastModified(fo));
+		return df.format(JakeMainApp.getCore().getLocalFileLastModified(fo));
 	}
 
 	/**
 	 * Returns the last modifier for a FileObject as Nick/Full Name
 	 *
-	 * @param fo: FileObject
+	 * @param afo: FileObject
 	 * @return string of nick/full name.
 	 */
-	public static String getLastModifier(FileObject fo) {
-		try {
-			return UserHelper.getNickOrFullName(JakeMainApp.getApp().getCore().getLastModifier(fo));
-		} catch (NoSuchLogEntryException e) {
-			log.warn("No log entry found for " + fo, e);
-			return "<no log found>";
-		}
+	public static String getLastModifier(Attributed<FileObject> afo) {
+		return UserHelper.getNickOrFullName(afo.getLastVersionEditor());
 	}
 }

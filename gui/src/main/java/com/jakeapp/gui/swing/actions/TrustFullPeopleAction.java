@@ -26,7 +26,7 @@ public class TrustFullPeopleAction extends PeopleListAction {
         putValue(Action.NAME, actionStr);
 
         // update state
-        putValue(Action.SELECTED_KEY, checkProjectMemberStatus(actionTrustState));
+        putValue(Action.SELECTED_KEY, checkUserIdStatus(actionTrustState));
     }
 
 

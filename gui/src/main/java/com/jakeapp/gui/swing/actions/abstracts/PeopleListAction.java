@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import org.apache.log4j.Logger;
 
@@ -28,8 +29,8 @@ public abstract class PeopleListAction extends ProjectAction {
     protected boolean checkUserIdStatus(TrustState trust) {
         boolean selected;
         if (getList().getSelectedValue() != null) {
-            UserId member = (UserId) getList().getSelectedValue();
-            selected = member.getTrustState() == trust;
+            UserInfo userInfo = (UserInfo) getList().getSelectedValue();
+            selected = userInfo.getTrust() == trust;
         } else {
             selected = false;
         }

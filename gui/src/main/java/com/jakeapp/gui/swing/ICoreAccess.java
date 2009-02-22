@@ -7,7 +7,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
@@ -371,16 +371,8 @@ public interface ICoreAccess {
 	 * @param file The file for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
-	public AttributedJakeObject getJakeObjectSyncStatus(Project project,
+	public Attributed getJakeObjectSyncStatus(Project project,
 																											FileObject file);
-
-	/**
-	 * Gets the size of a FileObject in the filesystem
-	 *
-	 * @param file
-	 * @return
-	 */
-	public long getFileSize(FileObject file);
 
 	/**
 	 * Get the file size for a local file copy (possibly modified)
@@ -526,7 +518,7 @@ public interface ICoreAccess {
 	 * @return list of attibuted note objects
 	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public List<AttributedJakeObject<NoteObject>> getNotes(Project project)
+	public List<Attributed<NoteObject>> getNotes(Project project)
 					throws NoteOperationFailedException;
 
 	/**
@@ -662,6 +654,8 @@ public interface ICoreAccess {
 	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
 	 */
 	File getFile(FileObject fo) throws FileOperationFailedException;
+
+
 }
 
 

@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
@@ -123,7 +123,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 	private void notifyNoteSelectionListeners() {
-		notifyNoteSelectionListeners(new ArrayList<AttributedJakeObject<NoteObject>>());
+		notifyNoteSelectionListeners(new ArrayList<Attributed<NoteObject>>());
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		if (this.notesTable.getSelectedRow() == -1) {
 			this.noteReader.setText("");
 			this.noteReader.setEditable(false);
-			this.notifyNoteSelectionListeners(new ArrayList<AttributedJakeObject<NoteObject>>());
+			this.notifyNoteSelectionListeners(new ArrayList<Attributed<NoteObject>>());
 		} else {
 			String text;
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow())
@@ -183,7 +183,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.noteReader.setEditable(JakeHelper.isEditable(getSelectedNote()));
 		}
 
-		List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
+		List<Attributed<NoteObject>> selectedNotes = new ArrayList<Attributed<NoteObject>>();
 		for (int row : this.notesTable.getSelectedRows()) {
 			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
 		}
@@ -195,7 +195,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 * instead.
 	 * @return the first note of the selectedNotes, if notes are selected, <code>null</code>instead.
 	 */
-	private AttributedJakeObject<NoteObject> getSelectedNote() {
+	private Attributed<NoteObject> getSelectedNote() {
 		if (getSelectedNotes().size() > 0) {
 			return getSelectedNotes().get(0);
 		}
@@ -343,7 +343,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteSelectionListeners.remove(listener);
 	}
 
-	public void notifyNoteSelectionListeners(List<AttributedJakeObject<NoteObject>> selectedNotes) {
+	public void notifyNoteSelectionListeners(List<Attributed<NoteObject>> selectedNotes) {
 
 		log.debug("notify note selection listeners");
 
@@ -357,9 +357,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 *
 	 * @return the list of currently selected notes. If nothing is selected, an empty list is returned.
 	 */
-	public List<AttributedJakeObject<NoteObject>> getSelectedNotes() {
+	public List<Attributed<NoteObject>> getSelectedNotes() {
 		//log.debug("get selected notes...");
-		List<AttributedJakeObject<NoteObject>> selectedNotes = new ArrayList<AttributedJakeObject<NoteObject>>();
+		List<Attributed<NoteObject>> selectedNotes = new ArrayList<Attributed<NoteObject>>();
 
 		if (this.notesTable.getSelectedRow() == -1) {
 			return selectedNotes;

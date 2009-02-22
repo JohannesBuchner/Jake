@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.AttributedJakeObject;
+import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.*;
@@ -40,8 +40,8 @@ public class InspectorPanel extends JXPanel implements
 	private Project project;
 	private ResourceMap resourceMap;
 	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
-	private AttributedJakeObject<FileObject> attributedFileObject;
-	private AttributedJakeObject<NoteObject> attributedNoteObject;
+	private Attributed<FileObject> attributedFileObject;
+	private Attributed<NoteObject> attributedNoteObject;
 
 	private JXTable eventsTable;
 	private JLabel icoLabel;
@@ -160,17 +160,18 @@ public class InspectorPanel extends JXPanel implements
 			this.nameLabel.setText(StringUtilities.htmlize(StringUtilities.bold(
 					  FileObjectHelper.getName(getAttributedFileObject().getJakeObject().getRelPath()))));
 
-			this.sizeLabel.setText(FileObjectHelper.getSizeHR(getAttributedFileObject().getJakeObject()));
+			// TODO: fix!
+	//		this.sizeLabel.setText(FileObjectHelper.getSizeHR(getAttributedFileObject().getJakeObject()));
 
 			// TODO: @Chris: update tags
-
+/*
 			this.fullPathLabel.setText(
 					  FileObjectHelper.getPath(getAttributedFileObject().getJakeObject().getRelPath()));
 			log.debug(this.fullPathLabel.getText());
 			this.lastAccessTimeAndUser.setText(StringUtilities.htmlize(Translator.get(getResourceMap(), "byLabel",
 					  FileObjectHelper.getTimeRel(getAttributedFileObject().getJakeObject()),
 					  FileObjectHelper.getLastModifier(getAttributedFileObject().getJakeObject()))));
-
+*/
 			this.getEventsTableModel().setJakeObject(getAttributedFileObject());
 		} else if (getNoteObject() != null && isNoteContext()) {
 			this.icoLabel.setIcon(this.notesIcon);
@@ -205,11 +206,11 @@ public class InspectorPanel extends JXPanel implements
 		this.resourceMap = resourceMap;
 	}
 
-	public AttributedJakeObject<FileObject> getAttributedFileObject() {
+	public Attributed<FileObject> getAttributedFileObject() {
 		return this.attributedFileObject;
 	}
 
-	public void setFileObject(AttributedJakeObject<FileObject> attributedFileObject) {
+	public void setFileObject(Attributed<FileObject> attributedFileObject) {
 		this.attributedFileObject = attributedFileObject;
 
 		updatePanel();
@@ -237,11 +238,11 @@ public class InspectorPanel extends JXPanel implements
 		this.setFileObject(event.getSingleFile());
 	}
 
-	public AttributedJakeObject<NoteObject> getNoteObject() {
+	public Attributed<NoteObject> getNoteObject() {
 		return this.attributedNoteObject;
 	}
 
-	public void setNoteObject(AttributedJakeObject<NoteObject> noteObject) {
+	public void setNoteObject(Attributed<NoteObject> noteObject) {
 		this.attributedNoteObject = noteObject;
 		this.getEventsTableModel().setJakeObject(noteObject);
 	}
