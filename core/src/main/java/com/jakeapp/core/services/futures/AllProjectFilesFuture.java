@@ -54,7 +54,7 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 		log.debug(
 						"\n\n\n\n starting thread & running AllProjectFilesFuture ... \n\n\n\n");
 
-		List<FileObject> result =fileObjectDao.getAll();
+		List<FileObject> result = fileObjectDao.getAll();
 
 		log.debug("found " + result.size() + " files in the DB ");
 		for (FileObject file : result) {

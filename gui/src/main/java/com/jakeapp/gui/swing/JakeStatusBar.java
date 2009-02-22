@@ -1,23 +1,5 @@
 package com.jakeapp.gui.swing;
 
-import java.awt.Component;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-import org.apache.log4j.Logger;
-
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
@@ -39,6 +21,13 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 
 /**
  * User: studpete
@@ -124,15 +113,17 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		super(core);
 		instance = this;
 
+		// TODO reenable
+		/*
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 		JakeMainView.getMainView().addContextViewChangedListener(this);
 		JakeMainApp.getApp().addMsgServiceChangedListener(this);
 
 		// registering the connection status callback
 		getCore().addConnectionStatusCallbackListener(this);
-
+*/
 		statusBar = createStatusBar();
 	}
 

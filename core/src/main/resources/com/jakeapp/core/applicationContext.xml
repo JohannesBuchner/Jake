@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  - Application context definition for JPetStore's business layer.
-  - Contains bean references to the transaction manager and to the DAOs in
-  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
+  Main Application Context
   -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,14 +12,12 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
        default-lazy-init="true"
-       >
+        >
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <import resource="applicationContext-global-datasource.xml" />
+    <import resource="applicationContext-global-datasource.xml"/>
     <import resource="applicationContext-global-daos.xml"/>
-
-    <import resource="applicationContext-components.xml" />
-    
-    <import resource="applicationContext-services.xml" />
+    <import resource="applicationContext-components.xml"/>
+    <import resource="applicationContext-services.xml"/>
 </beans>

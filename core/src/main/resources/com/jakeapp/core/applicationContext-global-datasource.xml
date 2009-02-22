@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  - Application context definition for JPetStore's business layer.
-  - Contains bean references to the transaction manager and to the DAOs in
-  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
-  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
@@ -14,7 +9,7 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
        default-lazy-init="true"
-       >
+        >
 
     <tx:annotation-driven/>
 
@@ -33,8 +28,8 @@
         <!--<aop:pointcut id="frontendServiceOperation"-->
         <!--expression="execution(* com.jakeapp.core.services.IFrontendService.*(..))"/>-->
 
-
-        <aop:pointcut id="test" expression="execution(* com.jakeapp.core.dao.Hibernate*Dao.*(..))"/>
+        <aop:pointcut id="test"
+                      expression="execution(* com.jakeapp.core.dao.Hibernate*Dao.*(..))"/>
         <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="msgServiceFactoryOperation"/>-->
         <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="frontendServiceOperation"/>-->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="test"/>
@@ -45,7 +40,8 @@
 
     <!-- Configurer that replaces ${...} placeholders with values from properties files -->
     <!-- (in this case, mail and JDBC related properties) -->
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>/com/jakeapp/core/jdbc-global.properties</value>
@@ -56,41 +52,47 @@
     </bean>
 
 
-    <bean id="mainDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="mainDataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
-        <!--<property name="url" value="jdbc:hsqldb:mem:db;shutdown=false;create=true"/>-->
-        <property name="url" value="jdbc:hsqldb:file:.jake/jakeDB;shutdown=false;create=true"/>
+        <property name="url"
+                  value="jdbc:hsqldb:file:.jake/jakeDB;shutdown=false;create=true"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
-        <property name="connectionProperties">
+        <!--        <property name="connectionProperties">
             <props>
                 <prop key="shutdown">true</prop>
             </props>
-        </property>
-
+        </property>-->
     </bean>
 
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="annotatedClasses">
             <list>
                 <value>com.jakeapp.core.domain.Project</value>
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
-                <!--<value>com.jakeapp.core.domain.UserId</value>-->
                 <value>com.jakeapp.core.domain.UserId</value>
                 <value>com.jakeapp.core.domain.Configuration</value>
             </list>
         </property>
-        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
+        <property name="configurationClass"
+                  value="org.hibernate.cfg.AnnotationConfiguration"/>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect
+                </prop>
                 <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
                 <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
-                <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate3.SpringSessionContext</prop>
-                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
+                <prop key="hibernate.current_session_context_class">
+                    org.springframework.orm.hibernate3.SpringSessionContext
+                </prop>
+                <prop key="hibernate.transaction.factory_class">
+                    org.hibernate.transaction.JDBCTransactionFactory
+                </prop>
                 <prop key="hibernate.default_batch_fetch_size">0</prop>
                 <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
@@ -101,12 +103,7 @@
     </bean>
 
     <bean id="transactionManager"
-        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-    <!--<bean id="transactionManager"-->
-        <!--class="org.springframework.orm.hibernate3.HibernateTransactionManager">-->
-
-
-
+          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <bean id="hibernateTemplate"

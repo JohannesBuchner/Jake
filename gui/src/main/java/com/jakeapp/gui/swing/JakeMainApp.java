@@ -10,10 +10,8 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.controls.GlassJFrame;
 import com.jakeapp.gui.swing.dialogs.SplashWindow;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -48,11 +46,13 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	// only one per application.
 	private MsgService msgService = null;
 
-	private List<ProjectSelectionChanged> projectSelectionChanged = new LinkedList<ProjectSelectionChanged>();
-	private List<MsgServiceChanged> msgServiceChanged = new ArrayList<MsgServiceChanged>();
+	private List<ProjectSelectionChanged> projectSelectionChanged =
+					new LinkedList<ProjectSelectionChanged>();
+	private List<MsgServiceChanged> msgServiceChanged =
+					new ArrayList<MsgServiceChanged>();
 
 	public JakeMainApp() {
-		this.app = this;
+		app = this;
 
 		if (!ApplicationInstanceManager.registerInstance()) {
 			// instance already running.
@@ -75,39 +75,9 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		//SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 		//		  getClass().getResource("/icons/jakeapp-large.png"))).getImage());
 
-		ApplicationContext applicationContext;
-
-		String[] options = {"Real Thing", "Mock", "Quit"};
-
-		// HACK: always use real!
-		System.setProperty("com.jakeapp.gui.test.usemock", "no");
-
-		String type = System.getProperty("com.jakeapp.gui.test.usemock");
-		if (type == null) {
-			int res = JOptionPane.showOptionDialog(null,
-							"Do you want the real thing or the mock (looser)", "Jake",
-							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-							options, options[0]);
-			if (res == JOptionPane.YES_OPTION) {
-				type = "no";
-			} else if (res == JOptionPane.CANCEL_OPTION) {
-				saveQuit();
-			} else {
-				type = "yes";
-			}
-		}
-		if ("yes".equals(type)) {
-			// TODO: This can be deleted! Don't have mock anymore!
-			log.debug("************* Using MOCK **************");
-			applicationContext = new ClassPathXmlApplicationContext(
-							new String[]{"/com/jakeapp/core/applicationContext.xml", "/com/jakeapp/gui/swing/applicationContext-gui-mock.xml"});
-
-			AppUtilities.setAppName("Jake on steroids (mocked)");
-		} else {
-			//log.debug("************* Using REAL **************");
-			applicationContext = new ClassPathXmlApplicationContext(
-							new String[]{"/com/jakeapp/core/applicationContext.xml", "/com/jakeapp/gui/swing/applicationContext-gui.xml"});
-		}
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+						new String[]{"/com/jakeapp/core/applicationContext.xml",
+										"/com/jakeapp/gui/swing/applicationContext-gui.xml"});
 
 
 		// show "progress"
@@ -117,78 +87,10 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 		setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
 
-
 		Map<String, String> backendCredentials = new HashMap<String, String>();
-		//		backendCredentials.put("frontendUsername", "swingGui");
-		//		backendCredentials.put("frontendPassword", "JKL@SJKLA**SDJ@MMSA");
-		//		backendCredentials.put("backendHost", "127.0.0.1");
-		//		backendCredentials.put("backendPort", "5000");
-		//		backendCredentials.put("backendName", "defaultBackendServiceName");
-
 
 		try {
 			core.authenticateOnBackend(backendCredentials);
-
-
-//			/** DEBUG ***/
-//			ServiceCredentials sc1 = new ServiceCredentials("domdorn@jabber.fsinf.at",
-//							"somepass");
-//			sc1.setUuid("02918516-062d-4028-9d7a-ed0393d0a90d");
-//			sc1.setProtocol(ProtocolType.XMPP);
-//			//            try {
-//			//                sc1.setServerAddress(Inet4Address.getLocalHost());
-//			//            } catch (UnknownHostException e) {
-//			//                e.printStackTrace();
-//			//            }
-//			sc1.setServerAddress("jabber.fsinf.at");
-//			sc1.setServerPort(5222);
-//			sc1.setEncryptionUsed(false);
-//
-//
-//			ServiceCredentials sc2 = new ServiceCredentials("pstein@jabber.fsinf.at",
-//							"somepass");
-//			sc2.setUuid("48cce803-c878-46d3-b1e6-6165f75dcf88");
-//			sc2.setProtocol(ProtocolType.XMPP);
-//			sc2.setServerAddress("jabber.fsinf.at");
-//
-//			//            try {
-//			//                sc2.setServerAddress(Inet4Address.getLocalHost());
-//			//            } catch (UnknownHostException e) {
-//			//                e.printStackTrace();
-//			//            }
-//			sc2.setServerPort(5222);
-//			sc2.setEncryptionUsed(false);
-//
-//
-//			ServiceCredentials sc3 = new ServiceCredentials("pstein@jabber.fsinf.at",
-//							"somepass");
-//			sc3.setUuid("db9ac8a3-581f-42cc-ad81-2900eb74c390");
-//			sc3.setProtocol(ProtocolType.XMPP);
-//			sc3.setServerAddress("jabber.fsinf.at");
-//			//            try {
-//			//                sc3.setServerAddress(Inet4Address.getLocalHost());
-//			//            } catch (UnknownHostException e) {
-//			//                e.printStackTrace();
-//			//            }
-//			sc3.setServerPort(5222);
-//			sc3.setEncryptionUsed(false);
-//
-//
-//			//            try {
-//			//                getCore().addAccount(sc1);
-//			//                getCore().addAccount(sc2);
-//			//                getCore().addAccount(sc3);
-//			////
-//			////
-//			//            }
-//			//            catch (ProtocolNotSupportedException e) {
-//			//                e.printStackTrace();
-//			//            } catch (FrontendNotLoggedInException e) {
-//			//                e.printStackTrace();
-//			//            } catch (NetworkException e) {
-//			//                e.printStackTrace();
-//			//            }
-
 
 		} catch (InvalidCredentialsException e) {
 			String msg = "Failed to login to backend";
@@ -204,7 +106,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	 */
 	@Override
 	protected void startup() {
-		this.setMainFrame(new GlassJFrame("Jake"));
+		this.setMainFrame(new JFrame("Jake"));
 		show(new JakeMainView(this));
 	}
 

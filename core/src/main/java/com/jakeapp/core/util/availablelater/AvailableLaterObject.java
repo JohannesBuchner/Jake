@@ -102,8 +102,10 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	public AvailableLaterObject<T> start() {
 		log.debug("Starting " + this.getClass());
 
-		if (!this.setAlreadyStarted())
+		if (!this.setAlreadyStarted()) {
 			new Thread(this).start();
+			//this.run();
+		}
 			
 		return this;
 	}
