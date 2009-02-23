@@ -64,13 +64,18 @@ public class ThreadBroker implements Runnable {
 				continue;
 			log.debug("handling next task");
 			try {
-				this.tasks.remove(0).run();
+				InjectableTask<?> task = this.tasks.remove(0);
+				runTask(task);
 			} catch (Exception e) {
 				log.error("task died!", e);
 			}
 			log.debug("task done");
 		}
 		log.info("quitting broker");
+	}
+
+	protected void runTask(InjectableTask<?> task) {
+		task.run();
 	}
 
 }

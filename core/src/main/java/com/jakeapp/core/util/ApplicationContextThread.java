@@ -4,8 +4,12 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Transaction;
+import org.hibernate.classic.Session;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 
 /**
@@ -24,6 +28,8 @@ public class ApplicationContextThread extends ThreadBroker {
 
 	private final String[] configLocation;
 
+	private Session session;
+
 	/**
 	 * starts a new Thread that loads the given ApplicationContext
 	 * 
@@ -38,24 +44,9 @@ public class ApplicationContextThread extends ThreadBroker {
 
 	@Override
 	public void run() {
-
 		log.debug("requesting context");
-		try {
-			this.applicationContext = SpringThreadBroker.getInstance().doTask(
-					new InjectableTask<ClassPathXmlApplicationContext>() {
-
-						@Override
-						public ClassPathXmlApplicationContext calculate()
-								throws Exception {
-							return new ClassPathXmlApplicationContext(
-									ApplicationContextThread.this.configLocation);
-						}
-					});
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
+		this.applicationContext = new ClassPathXmlApplicationContext(
+				ApplicationContextThread.this.configLocation);
 		log.debug("configuring context");
 		Properties props = new Properties();
 		props.put("db_path", this.identifier.toString());
@@ -64,7 +55,32 @@ public class ApplicationContextThread extends ThreadBroker {
 		this.applicationContext.addBeanFactoryPostProcessor(cfg);
 		this.applicationContext.refresh();
 		log.debug("configuring context done");
+
+		checkSession();
+
 		super.run();
+	}
+
+	private void checkSession() {
+		log.debug("checking session");
+		HibernateTemplate hibernateTemplate = (HibernateTemplate) this.applicationContext
+				.getBean("hibernateTemplate");
+		try {
+			this.session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			log.info("we already have a session.");
+			return;
+		} catch (HibernateException e) {
+			log.info("no session in this thread", e);
+		}
+		log.info("lets open one?");
+		try {
+			this.session = hibernateTemplate.getSessionFactory().openSession();
+			log.info("session created.");
+			return;
+		} catch (HibernateException e) {
+			log.fatal("creating a session failed", e);
+			throw e;
+		}
 	}
 
 	public Object getBean(final String name) {
@@ -89,7 +105,22 @@ public class ApplicationContextThread extends ThreadBroker {
 
 	@Override
 	public void cancel() {
+		log.debug("stopping; closing session");
+		if (this.session != null)
+			this.session.close();
 		super.cancel();
 	}
 
+	/*
+	 * we could check here if the task failed (threw a exception) and do a
+	 * rollback, but our tasks are simple enough to not do anything wrong that
+	 * has to be rolled back if an exception occurs.
+	 */
+	@Override
+	protected void runTask(InjectableTask<?> task) {
+		checkSession();
+		Transaction transaction = this.session.beginTransaction();
+		super.runTask(task);
+		transaction.commit();
+	}
 }

@@ -51,11 +51,13 @@
                 <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
-
                 <prop key="hibernate.current_session_context_class">
-                    org.springframework.orm.hibernate3.SpringSessionContext
+                	thread
                 </prop>
+
+                <!--<prop key="hibernate.current_session_context_class">
+                    org.springframework.orm.hibernate3.SpringSessionContext
+                </prop>-->
                 <prop key="hibernate.transaction.factory_class">
                     org.hibernate.transaction.JDBCTransactionFactory
                 </prop>
