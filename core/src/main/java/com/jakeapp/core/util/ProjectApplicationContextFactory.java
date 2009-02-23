@@ -1,25 +1,27 @@
 package com.jakeapp.core.util;
 
-import com.jakeapp.core.dao.IFileObjectDao;
-import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.dao.INoteObjectDao;
-import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.services.futures.AllProjectFilesFuture;
-import org.hibernate.SessionFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.hibernate.SessionFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.dao.IFileObjectDao;
+import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.INoteObjectDao;
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.SpringThreadBroker;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 
 /**
  * A factory that creates and configures spring application contexts.
@@ -33,7 +35,7 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 
 	private IProjectDao projectDao;
 
-	private List<UUID> project_uuids = new ArrayList<UUID>();
+	private List<UUID> project_uuids = null;
 
 	private Map<Project, IFileObjectDao> fileObjectDaoProxies = new HashMap<Project, IFileObjectDao>();
 	private Map<Project, INoteObjectDao> noteObjectDaoProxies = new HashMap<Project, INoteObjectDao>();
@@ -49,9 +51,12 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		log.debug("Creating the ProjectApplicationContextFactory");
 		this.projectDao = projectDao;
 		this.sessionFactory = sessionFactory;
-
+		
 		//        sessionFactory.getCurrentSession().beginTransaction();
-		loadProjectUUIDs();
+		
+		// do not load here, it deadlocks the Spring thread
+		//loadProjectUUIDs();
+		
 		//        sessionFactory.getCurrentSession().getTransaction().commit();
 	}
 
@@ -79,9 +84,15 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		}
 		return this.noteObjectDaoProxies.get(p);
 	}
+	
+	private void ensureInitialised() {
+		if(this.project_uuids == null)
+			this.loadProjectUUIDs();
+	}
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	private void loadProjectUUIDs() {
+		this.project_uuids = new ArrayList<UUID>();
 		List<Project> projects = this.projectDao.getAll();
 		this.project_uuids.clear();
 		for (Project proj : projects) {
@@ -147,6 +158,7 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	public synchronized ApplicationContext getApplicationContext(Project project) {
 
 		UUID identifier = UUID.fromString(project.getProjectId());
+		ensureInitialised();
 		if (this.project_uuids.contains(identifier)) {
 			return getApplicationContext(identifier);
 		} else {

@@ -40,13 +40,13 @@ public interface ILogEntryDao {
 	/**
 	 * @return all unprocessed LogEntries of the Project
 	 */
-	public Collection<LogEntry<JakeObject>> getUnprocessed();
+	public List<LogEntry<JakeObject>> getUnprocessed();
 
 
 	/**
 	 * @return the unprocessed LogEntries of the JakeObject
 	 */
-	public Collection<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject);
+	public List<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject);
 
 
 	/**
@@ -195,80 +195,6 @@ public interface ILogEntryDao {
 	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than that.
 	 */
 	public List<FileObject> getExistingFileObjects(boolean includeUnprocessed);
-
-
-	/**
-	 * finds the LogEntries that match the supplied characteristics <br>
-	 * UUID, any of logAction, timestamp, project, belongsTo may be null
-	 * 
-	 * @param le
-	 * @param processedState
-	 *            true: only processed<br>
-	 *            false: only unprocessed<br>
-	 * @return a Collection sorted ascending by timestamp. on no results returns
-	 *         a empty Collection
-	 * @deprecated try to avoid and ask for a direct query
-	 */
-	@Deprecated
-	public List<LogEntry<? extends ILogable>> findMatching(
-			LogEntry<? extends ILogable> le, boolean processedState);
-
-	/**
-	 * finds the Logentries that match the supplied characteristics except for
-	 * timestamp and are &lt;= the supplied timestamp <br>
-	 * uuid, any of logAction, project, belongsTo may be null
-	 * 
-	 * @param le
-	 * @param processedState
-	 *            true: only processed<br>
-	 *            false: only unprocessed<br>
-	 * @return a Collection sorted ascending by timestamp. on no results returns
-	 *         a empty Collection
-	 * @throws NullPointerException
-	 *             if timestamp is null
-	 * @deprecated try to avoid and ask for a direct query
-	 */
-	@Deprecated
-	public List<LogEntry<? extends ILogable>> findMatchingBefore(
-			LogEntry<? extends ILogable> le, boolean processedState)
-			throws NullPointerException;
-
-	/**
-	 * finds the Logentries that match the supplied characteristics except for
-	 * timestamp and are &gt;= the supplied timestamp <br>
-	 * uuid, any of logAction, project, belongsTo may be null
-	 * 
-	 * @param le
-	 * @param processedState
-	 *            true: only processed<br>
-	 *            false: only unprocessed<br>
-	 * @return a Collection sorted ascending by timestamp. on no results returns
-	 *         a empty Collection
-	 * @throws NullPointerException
-	 *             if timestamp is null
-	 * @deprecated try to avoid and ask for a direct query
-	 */
-	@Deprecated
-	public List<LogEntry<? extends ILogable>> findMatchingAfter(
-			LogEntry<? extends ILogable> le, boolean processedState)
-			throws NullPointerException;
-
-	/**
-	 * finds the last LogEntry over time that matches the supplied
-	 * characteristics <br>
-	 * uuid, any of logAction, project, belongsTo may be null
-	 * 
-	 * @param le
-	 * @param processedState
-	 *            true: only processed<br>
-	 *            false: only unprocessed<br>
-	 * @return the LogEntry, or null if no such entry exists
-	 * @deprecated try to avoid and ask for a direct query
-	 */
-	@Deprecated
-	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le,
-			boolean processedState);
-
 
 	/**
 	 * checks if jo is currently locked by looking at all

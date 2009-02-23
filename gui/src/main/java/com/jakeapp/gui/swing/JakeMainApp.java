@@ -4,6 +4,21 @@
 
 package com.jakeapp.gui.swing;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.SingleFrameApplication;
+
+import com.jakeapp.core.dao.SpringThreadBroker;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -16,18 +31,6 @@ import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
-import org.apache.log4j.Logger;
-import org.jdesktop.application.Application;
-import org.jdesktop.application.SingleFrameApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The main class of the application.
@@ -61,31 +64,32 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		}
 
 		ApplicationInstanceManager
-						.setApplicationInstanceListener(new ApplicationInstanceListener() {
-							public void newInstanceCreated() {
-								log.info("New Jake instance detected, showing current!");
+				.setApplicationInstanceListener(new ApplicationInstanceListener() {
 
-								// User tried to load jake a second time.
-								// so open first instane!
-								JakeMainView.setMainWindowVisible(true);
-							}
-						});
+					public void newInstanceCreated() {
+						log.info("New Jake instance detected, showing current!");
+
+						// User tried to load jake a second time.
+						// so open first instane!
+						JakeMainView.setMainWindowVisible(true);
+					}
+				});
 
 		// show splash
-		//SplashWindow.splash(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-		//		  getClass().getResource("/icons/jakeapp-large.png"))).getImage());
+		// SplashWindow.splash(new
+		// ImageIcon(Toolkit.getDefaultToolkit().getImage(
+		// getClass().getResource("/icons/jakeapp-large.png"))).getImage());
 
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-						new String[]{"/com/jakeapp/core/applicationContext.xml",
-										"/com/jakeapp/gui/swing/applicationContext-gui.xml"});
-
+		SpringThreadBroker.getInstance().loadSpring(
+				new String[] { "/com/jakeapp/core/applicationContext.xml",
+						"/com/jakeapp/gui/swing/applicationContext-gui.xml" });
 
 		// show "progress"
 		if (JakeMainApp.getApp().getSplashFrame() != null) {
 			JakeMainApp.getApp().getSplashFrame().setTransparency(0.5F);
 		}
 
-		setCore((ICoreAccess) applicationContext.getBean("coreAccess"));
+		setCore((ICoreAccess) SpringThreadBroker.getInstance().getBean("coreAccess"));
 
 		Map<String, String> backendCredentials = new HashMap<String, String>();
 

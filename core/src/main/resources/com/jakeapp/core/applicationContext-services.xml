@@ -54,14 +54,14 @@
 
 
     <bean id="frontendService" class="com.jakeapp.core.services.FrontendServiceImpl">
-        <constructor-arg ref="projectsManagingService" index="0"
+        <constructor-arg index="0" ref="projectsManagingService"
                          type="com.jakeapp.core.services.IProjectsManagingService"/>
-        <constructor-arg ref="msgServiceFactory" index="1"
+        <constructor-arg index="1" ref="msgServiceFactory"
                          type="com.jakeapp.core.services.MsgServiceFactory"/>
-        <constructor-arg ref="syncService" index="2"
-                         type="com.jakeapp.core.synchronization.IFriendlySyncService"/>
+        <constructor-arg index="2" ref="syncService" 
+                         type="com.jakeapp.core.synchronization.IFriendlySyncService" />
         <constructor-arg index="3" ref="serviceCredentialsDao"
-                         type="com.jakeapp.core.dao.IServiceCredentialsDao"/>
+                         type="com.jakeapp.core.dao.IServiceCredentialsDao" />
     </bean>
 
 </beans>

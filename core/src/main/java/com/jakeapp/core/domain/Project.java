@@ -268,7 +268,8 @@ public class Project implements ILogable {
 	 * @return the credentials
 	 */
 	//@Column(name="USERID", nullable = false)
-	@ManyToOne(targetEntity = ServiceCredentials.class, fetch = FetchType.LAZY)
+	// Do not set to lazy, otherwise it is loaded in the wrong thread.
+	@ManyToOne(targetEntity = ServiceCredentials.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid", nullable = true)
 	public ServiceCredentials getCredentials() {
 		return credentials;

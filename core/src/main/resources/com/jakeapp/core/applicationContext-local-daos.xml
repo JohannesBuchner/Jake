@@ -6,17 +6,28 @@
        >
 
 
-
-    <bean id="noteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">
+    <bean id="backendNoteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
-
-    <bean id="fileObjectDao" class="com.jakeapp.core.dao.HibernateFileObjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    
+    <bean id="noteObjectDao" class="com.jakeapp.core.dao.ThreadedNoteObjectDao">
+        <constructor-arg index="0" ref="backendNoteObjectDao" type="com.jakeapp.core.dao.INoteObjectDao"/>
     </bean>
 
-    <bean id="logEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
+    <bean id="backendFileObjectDao" class="com.jakeapp.core.dao.HibernateFileObjectDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="fileObjectDao" class="com.jakeapp.core.dao.ThreadedFileObjectDao">
+        <constructor-arg index="0" ref="backendFileObjectDao" type="com.jakeapp.core.dao.IFileObjectDao"/>
+    </bean>
+
+    <bean id="backendLogEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="logEntryDao" class="com.jakeapp.core.dao.ThreadedLogEntryDao">
+        <constructor-arg index="0" ref="backendLogEntryDao" type="com.jakeapp.core.dao.ILogEntryDao"/>
     </bean>
 
 

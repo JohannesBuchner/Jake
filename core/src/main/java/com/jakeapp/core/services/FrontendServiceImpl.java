@@ -1,7 +1,17 @@
 package com.jakeapp.core.services;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.SpringThreadBroker;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -12,14 +22,6 @@ import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -41,7 +43,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Injected
 	private IFriendlySyncService sync;
-
+	
 	/**
 	 * Constructor
 	 *

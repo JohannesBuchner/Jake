@@ -35,36 +35,6 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	}
 
 	/**
-	 * @see ILogEntryDao#findLastMatching(LogEntry, Boolean)
-	 */
-	public LogEntry<? extends ILogable> findLastMatching(LogEntry<? extends ILogable> le) {
-		return this.innerDao.findLastMatching(le, processedState);
-	}
-
-	/**
-	 * @see ILogEntryDao#findMatching(LogEntry, Boolean)
-	 */
-	public List<LogEntry<? extends ILogable>> findMatching(LogEntry<? extends ILogable> le) {
-		return this.innerDao.findMatching(le, processedState);
-	}
-
-	/**
-	 * @see ILogEntryDao#findMatchingAfter(LogEntry, Boolean)
-	 */
-	public List<LogEntry<? extends ILogable>> findMatchingAfter(
-			LogEntry<? extends ILogable> le) throws NullPointerException {
-		return this.innerDao.findMatchingAfter(le, processedState);
-	}
-
-	/**
-	 * @see ILogEntryDao#findMatchingBefore(LogEntry, Boolean)
-	 */
-	public List<LogEntry<? extends ILogable>> findMatchingBefore(
-			LogEntry<? extends ILogable> le) throws NullPointerException {
-		return this.innerDao.findMatchingBefore(le, processedState);
-	}
-
-	/**
 	 * @see ILogEntryDao#getAll(boolean)
 	 */
 	public List<LogEntry<? extends ILogable>> getAll() {

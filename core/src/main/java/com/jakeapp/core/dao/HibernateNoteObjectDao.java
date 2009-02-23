@@ -10,41 +10,42 @@ import com.jakeapp.core.domain.Tag;
 /**
  * A hibernate noteObject DAO.
  */
-public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> implements INoteObjectDao {
+public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> implements
+		INoteObjectDao {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public NoteObject persist(NoteObject noin) {
-    	NoteObject no;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public NoteObject persist(NoteObject noin) {
+		NoteObject no;
 		if (noin.getUuid() == null)
 			no = new NoteObject(noin.getProject(), noin.getContent());
 		else
 			no = noin;
-        return super.persist(no);
-    }
+		return super.persist(no);
+	}
 
-    @Override
-    public NoteObject get(UUID objectId) throws NoSuchJakeObjectException {
-        return super.get(objectId);
-    }
+	@Override
+	public NoteObject get(UUID objectId) throws NoSuchJakeObjectException {
+		return super.get(objectId);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<NoteObject> getAll() {
-        return super.getAll();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<NoteObject> getAll() {
+		return super.getAll();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete(NoteObject jakeObject) {
-        super.delete(jakeObject);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void delete(NoteObject jakeObject) {
+		super.delete(jakeObject);
+	}
 
 
 	@Override
