@@ -10,8 +10,12 @@ import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Tag;
 
+/**
+ * This backpacks the Project attribute onto each retrieved JakeObject
+ * 
+ * @author johannes
+ */
 final class NoteObjectDaoProxy implements INoteObjectDao {
 
 	private final INoteObjectDao innerDao;

@@ -1,9 +1,8 @@
 package com.jakeapp.core.dao;
 import java.util.List;
-import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import com.jakeapp.core.domain.Configuration;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
 
 public class ThreadedConfigurationDao implements IConfigurationDao {
 
@@ -21,7 +20,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 	@Override
 	public void deleteConfigurationValue(final String name) {
 		
-		try { 
+		try {
 			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
 
 				@Override
@@ -30,7 +29,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -44,7 +43,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 	@Override
 	public boolean configurationValueExists(final String name) {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Boolean>() {
 
 				@Override
@@ -52,7 +51,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 					return ThreadedConfigurationDao.this.dao.configurationValueExists(name);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -66,7 +65,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 	@Override
 	public Configuration update(final Configuration configuration) {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Configuration>() {
 
 				@Override
@@ -74,7 +73,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 					return ThreadedConfigurationDao.this.dao.update(configuration);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -88,7 +87,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 	@Override
 	public List<Configuration> getAll() {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<Configuration>>() {
 
 				@Override
@@ -96,7 +95,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 					return ThreadedConfigurationDao.this.dao.getAll();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -110,7 +109,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 	@Override
 	public String getConfigurationValue(final String name) {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<String>() {
 
 				@Override
@@ -118,7 +117,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 					return ThreadedConfigurationDao.this.dao.getConfigurationValue(name);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -132,7 +131,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 	@Override
 	public void setConfigurationValue(final String name, final String value) {
 		
-		try { 
+		try {
 			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
 
 				@Override
@@ -141,7 +140,7 @@ public class ThreadedConfigurationDao implements IConfigurationDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

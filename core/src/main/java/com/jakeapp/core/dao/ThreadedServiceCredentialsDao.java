@@ -2,12 +2,11 @@ package com.jakeapp.core.dao;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
+
 import java.util.UUID;
 import java.util.List;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
-import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 
 public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
@@ -26,7 +25,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 	@Override
 	public ServiceCredentials persist(final ServiceCredentials credentials) 			throws InvalidCredentialsException {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<ServiceCredentials>() {
 
 				@Override
@@ -34,7 +33,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 					return ThreadedServiceCredentialsDao.this.dao.persist(credentials);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -48,7 +47,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 	@Override
 	public ServiceCredentials read(final UUID uuid) throws NoSuchServiceCredentialsException {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<ServiceCredentials>() {
 
 				@Override
@@ -56,7 +55,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 					return ThreadedServiceCredentialsDao.this.dao.read(uuid);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -70,7 +69,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 	@Override
 	public List<ServiceCredentials> getAll() {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<ServiceCredentials>>() {
 
 				@Override
@@ -78,7 +77,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 					return ThreadedServiceCredentialsDao.this.dao.getAll();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -92,7 +91,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 	@Override
 	public ServiceCredentials update(final ServiceCredentials credentials) 			throws NoSuchServiceCredentialsException {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<ServiceCredentials>() {
 
 				@Override
@@ -100,7 +99,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 					return ThreadedServiceCredentialsDao.this.dao.update(credentials);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -114,7 +113,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 	@Override
 	public void delete(final ServiceCredentials credentials) 			throws NoSuchServiceCredentialsException {
 		
-		try { 
+		try {
 			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
 
 				@Override
@@ -123,7 +122,7 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

@@ -82,12 +82,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return this.getProjectsFileServices().getProjectFSService(p);
 	}
 
-
-	@SuppressWarnings("unused")
-	private ApplicationContext getContext(Project p) {
-		return this.getApplicationContextFactory().getApplicationContext(p);
-	}
-
 	private UnprocessedBlindLogEntryDaoProxy getLogEntryDao(Project project) {
 		return this.getApplicationContextFactory().getLogEntryDao(project);
 	}
@@ -285,7 +279,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		log.info("Create project database: " + p);
 
 		// this should to all the magic
-		this.getApplicationContextFactory().getApplicationContext(p);
+		this.getApplicationContextFactory().getApplicationContextThread(p);
 	}
 
 
@@ -875,14 +869,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	@Transactional
 	public void saveNote(NoteObject no) {
-		this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).persist(no);
+		this.getNoteObjectDao(no.getProject()).persist(no);
 	}
 
 	@Override
 	@Transactional
 	public void deleteNote(NoteObject no) throws IllegalArgumentException,
 			NoSuchJakeObjectException {
-		this.getApplicationContextFactory().getNoteObjectDao(no.getProject()).delete(no);
+		this.getNoteObjectDao(no.getProject()).delete(no);
 	}
 
 	@Override

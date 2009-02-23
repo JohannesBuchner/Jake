@@ -8,16 +8,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.SpringThreadBroker;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
@@ -27,10 +25,12 @@ import com.jakeapp.core.services.futures.AllProjectFilesFuture;
  * A factory that creates and configures spring application contexts.
  * Application contexts for a certain <code>Project</code>are only created once
  * and then reused.
- *
+ * 
  * @author Simon
  */
 public class ProjectApplicationContextFactory extends ApplicationContextFactory {
+
+	@SuppressWarnings("unused")
 	private SessionFactory sessionFactory;
 
 	private IProjectDao projectDao;
@@ -38,39 +38,42 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	private List<UUID> project_uuids = null;
 
 	private Map<Project, IFileObjectDao> fileObjectDaoProxies = new HashMap<Project, IFileObjectDao>();
+
 	private Map<Project, INoteObjectDao> noteObjectDaoProxies = new HashMap<Project, INoteObjectDao>();
 
 	/**
 	 * Construct the ProjectApplicationContextFactory
+	 * 
 	 * @param projectDao
 	 * @param sessionFactory
 	 */
+	@Injected
 	public ProjectApplicationContextFactory(IProjectDao projectDao,
-					SessionFactory sessionFactory) {
+			SessionFactory sessionFactory) {
 		super();
 		log.debug("Creating the ProjectApplicationContextFactory");
 		this.projectDao = projectDao;
 		this.sessionFactory = sessionFactory;
-		
-		//        sessionFactory.getCurrentSession().beginTransaction();
-		
+
+		// sessionFactory.getCurrentSession().beginTransaction();
+
 		// do not load here, it deadlocks the Spring thread
-		//loadProjectUUIDs();
-		
-		//        sessionFactory.getCurrentSession().getTransaction().commit();
+		// loadProjectUUIDs();
+
+		// sessionFactory.getCurrentSession().getTransaction().commit();
 	}
 
 	/**
-	 * The IFileObjectDao is per Project. Thus it can't be injected and has to be
-	 * created here.
-	 *
+	 * The IFileObjectDao is per Project. Thus it can't be injected and has to
+	 * be created here.
+	 * 
 	 * @param p
 	 * @return
 	 */
 	private IFileObjectDao getOrCreateFileObjectDao(Project p) {
 		if (!this.fileObjectDaoProxies.containsKey(p)) {
-			IFileObjectDao innerDao = (IFileObjectDao) getApplicationContext(p)
-							.getBean("fileObjectDao");
+			IFileObjectDao innerDao = (IFileObjectDao) getApplicationContextThread(p)
+					.getBean("fileObjectDao");
 			this.fileObjectDaoProxies.put(p, new FileObjectDaoProxy(innerDao, p));
 		}
 		return this.fileObjectDaoProxies.get(p);
@@ -78,35 +81,37 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 
 	private INoteObjectDao getOrCreateNoteObjectDao(Project p) {
 		if (!this.noteObjectDaoProxies.containsKey(p)) {
-			INoteObjectDao innerDao = (INoteObjectDao) getApplicationContext(p)
-							.getBean("noteObjectDao");
+			INoteObjectDao innerDao = (INoteObjectDao) getApplicationContextThread(p)
+					.getBean("noteObjectDao");
 			this.noteObjectDaoProxies.put(p, new NoteObjectDaoProxy(innerDao, p));
 		}
 		return this.noteObjectDaoProxies.get(p);
 	}
-	
+
 	private void ensureInitialised() {
-		if(this.project_uuids == null)
+		if (this.project_uuids == null)
 			this.loadProjectUUIDs();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	private void loadProjectUUIDs() {
-		this.project_uuids = new ArrayList<UUID>();
-		List<Project> projects = this.projectDao.getAll();
-		this.project_uuids.clear();
+		List<UUID> project_uuids = new ArrayList<UUID>();
+		List<Project> projects = ProjectApplicationContextFactory.this.projectDao
+				.getAll();
+		project_uuids.clear();
 		for (Project proj : projects) {
-			this.project_uuids.add(UUID.fromString(proj.getProjectId()));
+			project_uuids.add(UUID.fromString(proj.getProjectId()));
 		}
+		this.project_uuids = project_uuids;
 	}
 
 	public ILogEntryDao getUnprocessedAwareLogEntryDao(Project p) {
-		return (ILogEntryDao) getApplicationContext(p).getBean("logEntryDao");
+		return (ILogEntryDao) getApplicationContextThread(p).getBean("logEntryDao");
 	}
 
 	public ILogEntryDao getUnprocessedAwareLogEntryDao(JakeObject jo) {
-		return (ILogEntryDao) getApplicationContext(jo.getProject())
-						.getBean("logEntryDao");
+		return (ILogEntryDao) getApplicationContextThread(jo.getProject()).getBean(
+				"logEntryDao");
 	}
 
 	public UnprocessedBlindLogEntryDaoProxy getLogEntryDao(Project p) {
@@ -125,20 +130,20 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		return getOrCreateFileObjectDao(p);
 	}
 
-	public Collection<UserId> getProjectMembers(Project p)
-					throws NoSuchProjectException {
+	public Collection<UserId> getProjectMembers(Project p) {
 		return getLogEntryDao(p).getCurrentProjectMembers();
 	}
 
-	public List<UserId> getTrustedProjectMembers(Project p)
-					throws NoSuchProjectException {
+	public List<UserId> getTrustedProjectMembers(Project p) {
 		return getLogEntryDao(p).getTrustGraph().get(p.getUserId());
 	}
 
 	/**
-	 * Returns a new instance of an AllProjectsFilesFuture belonging to the corresponding project.
-	 *
-	 * @param project The Project in question
+	 * Returns a new instance of an AllProjectsFilesFuture belonging to the
+	 * corresponding project.
+	 * 
+	 * @param project
+	 *            The Project in question
 	 * @return an AllProjectFilesFuture
 	 */
 	public AllProjectFilesFuture getAllProjectFilesFuture(Project project) {
@@ -151,23 +156,26 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	 * <code>ApplicationContext</code> for the given <code>Project</code>
 	 * already exists, the existing context is returned, otherwise a new context
 	 * will be created. This method is <code>synchronized</code>
-	 *
-	 * @param project the project for which the application context is used
+	 * 
+	 * @param project
+	 *            the project for which the application context is used
 	 * @return the <code>ApplicationContext</code>
 	 */
-	public synchronized ApplicationContext getApplicationContext(Project project) {
+	public synchronized ApplicationContextThread getApplicationContextThread(
+			Project project) {
 
 		UUID identifier = UUID.fromString(project.getProjectId());
 		ensureInitialised();
 		if (this.project_uuids.contains(identifier)) {
-			return getApplicationContext(identifier);
+			return super.getApplicationContextThread(identifier);
 		} else {
-			loadProjectUUIDs();
+			log.debug("loading project context");
+			this.loadProjectUUIDs();
 			if (!this.project_uuids.contains(identifier)) {
 				log.fatal("tried to open invalid context (database)!");
 				throw new IllegalStateException("tried to load invalid database context");
 			}
-			return getApplicationContext(identifier);
+			return super.getApplicationContextThread(identifier);
 		}
 	}
 }

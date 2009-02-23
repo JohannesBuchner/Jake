@@ -4,6 +4,8 @@ import java.util.UUID;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
 
 public class ThreadedNoteObjectDao implements INoteObjectDao {
 
@@ -21,15 +23,15 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 	@Override
 	public NoteObject persist(final NoteObject noin) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<NoteObject>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<NoteObject>() {
 
 				@Override
 				public NoteObject calculate() throws Exception {
 					return ThreadedNoteObjectDao.this.dao.persist(noin);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -43,15 +45,15 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 	@Override
 	public NoteObject get(final UUID objectId) throws NoSuchJakeObjectException {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<NoteObject>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<NoteObject>() {
 
 				@Override
 				public NoteObject calculate() throws Exception {
 					return ThreadedNoteObjectDao.this.dao.get(objectId);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -65,15 +67,15 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 	@Override
 	public List<NoteObject> getAll() {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<NoteObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<NoteObject>>() {
 
 				@Override
 				public List<NoteObject> calculate() throws Exception {
 					return ThreadedNoteObjectDao.this.dao.getAll();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -87,8 +89,8 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 	@Override
 	public void delete(final NoteObject jakeObject) {
 		
-		try { 
-			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
+		try {
+			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
 
 				@Override
 				public Void calculate() throws Exception {
@@ -96,7 +98,7 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -110,15 +112,15 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 	@Override
 	public NoteObject complete(final NoteObject jakeObject) throws NoSuchJakeObjectException {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<NoteObject>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<NoteObject>() {
 
 				@Override
 				public NoteObject calculate() throws Exception {
 					return ThreadedNoteObjectDao.this.dao.complete(jakeObject);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

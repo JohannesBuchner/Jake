@@ -6,10 +6,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
@@ -19,6 +17,8 @@ import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
 
 public class ThreadedLogEntryDao implements ILogEntryDao {
 
@@ -36,8 +36,8 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public void create(final LogEntry<? extends ILogable> logEntry) {
 		
-		try { 
-			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
+		try {
+			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
 
 				@Override
 				public Void calculate() throws Exception {
@@ -45,7 +45,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -59,8 +59,8 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public void setProcessed(final LogEntry<JakeObject> logEntry) {
 		
-		try { 
-			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
+		try {
+			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
 
 				@Override
 				public Void calculate() throws Exception {
@@ -68,7 +68,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -82,15 +82,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public boolean hasUnprocessed(final JakeObject jakeObject) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Boolean>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Boolean>() {
 
 				@Override
 				public Boolean calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.hasUnprocessed(jakeObject);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -104,15 +104,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed(final JakeObject jakeObject) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<LogEntry<JakeObject>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<JakeObject>>>() {
 
 				@Override
 				public List<LogEntry<JakeObject>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getUnprocessed(jakeObject);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -126,15 +126,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed() {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<LogEntry<JakeObject>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<JakeObject>>>() {
 
 				@Override
 				public List<LogEntry<JakeObject>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getUnprocessed();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -148,15 +148,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public LogEntry<JakeObject> getNextUnprocessed() throws NoSuchLogEntryException {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<LogEntry<JakeObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
 
 				@Override
 				public LogEntry<JakeObject> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getNextUnprocessed();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -170,15 +170,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public List<LogEntry<? extends ILogable>> getAll(final boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<LogEntry<? extends ILogable>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<? extends ILogable>>>() {
 
 				@Override
 				public List<LogEntry<? extends ILogable>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getAll(includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -192,15 +192,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(final T jakeObject, final 			boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<LogEntry<T>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<T>>>() {
 
 				@Override
 				public List<LogEntry<T>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getAllOfJakeObject(jakeObject, includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -214,15 +214,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public LogEntry<JakeObject> getLastOfJakeObject(final JakeObject jakeObject, final 			boolean includeUnprocessed) throws NoSuchLogEntryException {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<LogEntry<JakeObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
 
 				@Override
 				public LogEntry<JakeObject> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getLastOfJakeObject(jakeObject, includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -236,15 +236,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(final  			boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<LogEntry<T>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<T>>>() {
 
 				@Override
 				public List<LogEntry<T>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getAllVersions(includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -258,15 +258,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(final  			T jakeObject, final boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<LogEntry<T>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<T>>>() {
 
 				@Override
 				public List<LogEntry<T>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getAllVersionsOfJakeObject(jakeObject, includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -280,15 +280,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public LogEntry<JakeObject> getLastVersionOfJakeObject(final JakeObject jakeObject, final 			boolean includeUnprocessed) throws NoSuchLogEntryException {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<LogEntry<JakeObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
 
 				@Override
 				public LogEntry<JakeObject> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getLastVersionOfJakeObject(jakeObject, includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -302,15 +302,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public Boolean getDeleteState(final JakeObject belongsTo, final boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Boolean>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Boolean>() {
 
 				@Override
 				public Boolean calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getDeleteState(belongsTo, includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -324,15 +324,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public LogEntry<JakeObject> getLastVersion(final JakeObject belongsTo, final 			boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<LogEntry<JakeObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
 
 				@Override
 				public LogEntry<JakeObject> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getLastVersion(belongsTo, includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -346,15 +346,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public List<FileObject> getExistingFileObjects(final boolean includeUnprocessed) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<FileObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<FileObject>>() {
 
 				@Override
 				public List<FileObject> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getExistingFileObjects(includeUnprocessed);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -368,15 +368,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public LogEntry<JakeObject> getLock(final JakeObject jakeObject) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<LogEntry<JakeObject>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
 
 				@Override
 				public LogEntry<JakeObject> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getLock(jakeObject);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -390,15 +390,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public Collection<Tag> getTags(final JakeObject jakeObject) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Collection<Tag>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Collection<Tag>>() {
 
 				@Override
 				public Collection<Tag> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getTags(jakeObject);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -412,15 +412,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<LogEntry<? extends ILogable>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<? extends ILogable>>() {
 
 				@Override
 				public LogEntry<? extends ILogable> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getProjectCreatedEntry();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -434,15 +434,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public List<UserId> getCurrentProjectMembers() {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<UserId>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<UserId>>() {
 
 				@Override
 				public List<UserId> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getCurrentProjectMembers();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -456,15 +456,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public boolean trusts(final UserId a, final UserId b) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Boolean>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Boolean>() {
 
 				@Override
 				public Boolean calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.trusts(a, b);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -478,15 +478,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public TrustState trustsHow(final UserId a, final UserId b) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<TrustState>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<TrustState>() {
 
 				@Override
 				public TrustState calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.trustsHow(a, b);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -500,15 +500,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public Collection<UserId> trusts(final UserId a) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Collection<UserId>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Collection<UserId>>() {
 
 				@Override
 				public Collection<UserId> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.trusts(a);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -522,15 +522,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public Map<UserId, TrustState> trustsHow(final UserId a) {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Map<UserId, TrustState>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<UserId, TrustState>>() {
 
 				@Override
 				public Map<UserId, TrustState> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.trustsHow(a);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -544,15 +544,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public Map<UserId, List<UserId>> getTrustGraph() {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Map<UserId, List<UserId>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<UserId, List<UserId>>>() {
 
 				@Override
 				public Map<UserId, List<UserId>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getTrustGraph();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -566,15 +566,15 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	@Override
 	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph() {
 		
-		try { 
-			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Map<UserId, Map<UserId, TrustState>>>() {
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<UserId, Map<UserId, TrustState>>>() {
 
 				@Override
 				public Map<UserId, Map<UserId, TrustState>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getExtendedTrustGraph();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

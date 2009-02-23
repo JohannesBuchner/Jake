@@ -10,7 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.jakeapp.core.domain.Project;
 
@@ -42,21 +41,21 @@ public class ApplicationContextFactoryTest {
 	
 	@Test (timeout = 1000)
 	public void getApplicationContext_getAnyContext() {
-		ApplicationContext context = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
+		ApplicationContextThread context = factory.getApplicationContextThread(UUID.fromString(PROJECT_1.getProjectId()));
 		Assert.assertNotNull(context);
 	}
 	
 	@Test (timeout = 2000)
 	public void getApplicationContext_getTwoDifferentContexts() {
-		ApplicationContext context1 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
-		ApplicationContext context2 = factory.getApplicationContext(UUID.fromString(PROJECT_2.getProjectId()));
+		ApplicationContextThread context1 = factory.getApplicationContextThread(UUID.fromString(PROJECT_1.getProjectId()));
+		ApplicationContextThread context2 = factory.getApplicationContextThread(UUID.fromString(PROJECT_2.getProjectId()));
 		Assert.assertNotSame("factory returned same context", context1, context2);
 	}
 
 	@Test (timeout = 1000)
 	public void getApplicationContext_FactoryReturnsSameContext() {
-		ApplicationContext context1 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
-		ApplicationContext context2 = factory.getApplicationContext(UUID.fromString(PROJECT_1.getProjectId()));
+		ApplicationContextThread context1 = factory.getApplicationContextThread(UUID.fromString(PROJECT_1.getProjectId()));
+		ApplicationContextThread context2 = factory.getApplicationContextThread(UUID.fromString(PROJECT_1.getProjectId()));
 		Assert.assertSame("factory did not return the same context", context1, context2);
 	}
 

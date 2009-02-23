@@ -2,15 +2,13 @@ package com.jakeapp.core.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
 
 public class ThreadedProjectDao implements IProjectDao {
 
@@ -28,7 +26,7 @@ public class ThreadedProjectDao implements IProjectDao {
 	@Override
 	public Project create(final Project project) throws InvalidProjectException {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Project>() {
 
 				@Override
@@ -36,7 +34,7 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.create(project);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -50,7 +48,7 @@ public class ThreadedProjectDao implements IProjectDao {
 	@Override
 	public Project read(final UUID uuid) throws NoSuchProjectException {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Project>() {
 
 				@Override
@@ -58,7 +56,7 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.read(uuid);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -72,7 +70,7 @@ public class ThreadedProjectDao implements IProjectDao {
 	@Override
 	public Project update(final Project project) throws NoSuchProjectException {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Project>() {
 
 				@Override
@@ -80,7 +78,7 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.update(project);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -94,7 +92,7 @@ public class ThreadedProjectDao implements IProjectDao {
 	@Override
 	public List<Project> getAll() {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<Project>>() {
 
 				@Override
@@ -102,7 +100,7 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.getAll();
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -116,7 +114,7 @@ public class ThreadedProjectDao implements IProjectDao {
 	@Override
 	public void delete(final Project project) throws NoSuchProjectException {
 		
-		try { 
+		try {
 			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
 
 				@Override
@@ -125,7 +123,7 @@ public class ThreadedProjectDao implements IProjectDao {
 					return null;
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -139,7 +137,7 @@ public class ThreadedProjectDao implements IProjectDao {
 	@Override
 	public List<Project> getAll(final InvitationState state) {
 		
-		try { 
+		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<Project>>() {
 
 				@Override
@@ -147,7 +145,7 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.getAll(state);
 				}
 			});
-		}catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

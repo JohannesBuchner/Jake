@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.dao.SpringThreadBroker;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
@@ -28,6 +27,7 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.gui.console.commandline.CmdManager;
 import com.jakeapp.gui.console.commandline.Command;

@@ -1,7 +1,8 @@
 package com.jakeapp.core;
 
 /**
- * annotates what is injected by spring. just for information
+ * Annotates what is injected by spring. Just for information and documentation
+ * 
  * @author johannes
  */
 public @interface Injected {

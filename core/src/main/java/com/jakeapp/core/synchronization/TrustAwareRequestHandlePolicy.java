@@ -48,7 +48,6 @@ public class TrustAwareRequestHandlePolicy extends TrustAllRequestHandlePolicy {
 			}
 		} catch (NoSuchLogEntryException e) {
 		} catch (IllegalArgumentException e) {
-		} catch (NoSuchProjectException e) {
 		}
 		return providers;
 	}
