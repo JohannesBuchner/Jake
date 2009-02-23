@@ -288,7 +288,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 			this.core.backendLogOff();
 			this.core = null;
 		}
-
+		SpringThreadBroker.stopInstance();
 		System.exit(0);
 	}
 

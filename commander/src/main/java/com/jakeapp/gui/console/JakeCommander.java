@@ -43,7 +43,14 @@ public class JakeCommander {
 	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(JakeCommander.class);
 
-	private final CmdManager cmd = StoppableCmdManager.getInstance();
+	private final CmdManager cmd = StoppableCmdManager.getInstance(new Runnable() {
+
+		@Override
+		public void run() {
+			SpringThreadBroker.stopInstance();			
+		}
+		
+	});
 
 	private String sessionId;
 
