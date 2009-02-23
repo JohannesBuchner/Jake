@@ -595,6 +595,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.handleNotLoggedInException(e);
 		} catch (IOException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+		} catch(Exception e) {
+			log.warn("Catched generic exception while getting sync status", e);
 		}
 
 		return null;
@@ -673,9 +675,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			pms.saveNote(note);
 		} catch (Exception e) {
-			NoteOperationFailedException ex = new NoteOperationFailedException();
-			ex.append(e);
-			throw ex;
+			throw new NoteOperationFailedException(e);
 		}
 		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(),
 						ProjectChangedReason.State));
