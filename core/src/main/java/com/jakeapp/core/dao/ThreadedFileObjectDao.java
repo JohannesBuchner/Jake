@@ -1,11 +1,10 @@
 package com.jakeapp.core.dao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.util.InjectableTask;
-import com.jakeapp.core.util.SpringThreadBroker;
-
 import java.util.List;
 import java.util.UUID;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
 
 public class ThreadedFileObjectDao implements IFileObjectDao {
 

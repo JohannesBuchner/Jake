@@ -2,12 +2,11 @@ package com.jakeapp.core.dao;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
-import com.jakeapp.core.util.InjectableTask;
-import com.jakeapp.core.util.SpringThreadBroker;
-
 import java.util.UUID;
 import java.util.List;
 import org.hibernate.LockMode;
+import com.jakeapp.core.util.InjectableTask;
+import com.jakeapp.core.util.SpringThreadBroker;
 
 public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 
