@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.dialogs.JakeDebugger;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import net.roydesign.app.AboutJMenuItem;
@@ -189,7 +190,18 @@ public class JakeMenuBar extends JMenuBar {
 				xmppDebugViewItem.setSelected(XMPPConnection.DEBUG_ENABLED);
 			}
 		});
-		debugMenu.add(xmppDebugViewItem);		
+		debugMenu.add(xmppDebugViewItem);
+		
+
+		JMenuItem showDebuggerDebugViewItem = new JMenuItem("Show JakeDebugger");
+		showDebuggerDebugViewItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new JakeDebugger();
+			}
+		});
+		debugMenu.add(showDebuggerDebugViewItem);
 
 
 		this.add(debugMenu);
@@ -208,7 +220,7 @@ public class JakeMenuBar extends JMenuBar {
 			MRJAdapter.addReopenApplicationListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					log.debug("reopen");
-					//TODO: reshow window
+					JakeMainView.setMainWindowVisible(true);
 				}
 			});
 

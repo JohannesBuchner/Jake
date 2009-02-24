@@ -30,6 +30,7 @@ import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
@@ -39,6 +40,7 @@ import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
+import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -513,11 +515,10 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			fileTable.setModel(tableModel);
 
 			// start get all files from project, async
-			//JakeExecutor.exec(new GetAllProjectFilesWorker(JakeMainApp.getProject()));
-			// TODO
+			JakeExecutor.exec(new GetAllProjectFilesWorker(JakeMainApp.getProject()));
 
-			//setProjectFiles(JakeMainApp.getCore().getFilesNOWDEBUG(project));
-			setProjectFiles(JakeMainApp.getCore().getFilesDEBUG(project));
+			// FIXME
+			//setProjectFiles(JakeMainApp.getCore().getFilesDEBUG(project));
 		}
 	}
 

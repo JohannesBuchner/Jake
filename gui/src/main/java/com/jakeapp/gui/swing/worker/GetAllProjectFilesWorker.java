@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * @author: studpete
+ * @author studpete
  */
 public class GetAllProjectFilesWorker extends
 				SwingWorkerWithAvailableLaterObject<List<FileObject>> {
@@ -31,7 +31,6 @@ public class GetAllProjectFilesWorker extends
 	@Override
 	protected void done() {
 		log.info("Done GetAllProjectFilesWorker");
-		// TODO: this is ugly.
 
 		// done! so lets update the filetree
 		try {

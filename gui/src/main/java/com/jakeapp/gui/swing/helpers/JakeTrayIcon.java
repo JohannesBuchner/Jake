@@ -11,9 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * User: studpete
- * Date: Dec 25, 2008
- * Time: 12:33:18 PM
+ * Basic Tray Menu Implementation
+ * Will be expanded in later versions!
  */
 public class JakeTrayIcon {
 	private static final Logger log = Logger.getLogger(JakeTrayIcon.class);
@@ -25,14 +24,16 @@ public class JakeTrayIcon {
 		if (SystemTray.isSupported()) {
 
 			SystemTray tray = SystemTray.getSystemTray();
-			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/jakeapp.png"));
+			Image image = Toolkit.getDefaultToolkit()
+							.getImage(getClass().getResource("/icons/jakeapp.png"));
 
 			MouseListener mouseListener = new MouseListener() {
 
 				public void mouseClicked(MouseEvent e) {
 					System.out.println("Tray Icon - Mouse clicked!");
 
-					if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && !Platform.isMac()) {
+					if (e.getClickCount() == 2 && SwingUtilities
+									.isLeftMouseButton(e) && !Platform.isMac()) {
 						JakeMainView.toggleShowHideMainWindow();
 					}
 				}
@@ -109,13 +110,14 @@ public class JakeTrayIcon {
 	}
 
 	private void quit() {
-//        // TODO: make save shutdown
-//        log.info("Exiting...");
-//        System.exit(0);
+		//        // TODO: make save shutdown
+		//        log.info("Exiting...");
+		//        System.exit(0);
 		JakeMainView.getMainView().quit();
 	}
 
 	private String getShowHideWindowString() {
-		return JakeMainView.getResouceMap().getString(JakeMainView.isMainWindowVisible() ? "windowHide" : "windowShow");
+		return JakeMainView.getResouceMap().getString(
+						JakeMainView.isMainWindowVisible() ? "windowHide" : "windowShow");
 	}
 }
