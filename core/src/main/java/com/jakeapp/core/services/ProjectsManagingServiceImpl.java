@@ -16,6 +16,7 @@ import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.RequestHandlePolicy;
+import com.jakeapp.core.synchronization.TrustAwareRequestHandlePolicy;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -305,7 +306,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
 			this.getProjectsFileServices().startForProject(project);
-			/*TODO call me!/syncService.startServing(project, new RequestHandlePolicy(){}, new ChangeListener()})*/;
+			/*TODO call me!*/syncService.startServing(
+				project,
+				new TrustAwareRequestHandlePolicy(this.getApplicationContextFactory(), this.getProjectsFileServices()),
+				null/* new ChangeListener()}*/
+			);
 			project.setStarted(true);
 		} catch (Exception e) {
 			throw new ProjectException(e);
