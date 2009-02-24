@@ -621,7 +621,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					String name, IFSService fss, IProjectsManagingService pms)
 					throws IllegalArgumentException, IllegalStateException,
 								 FrontendNotLoggedInException {
-		FolderObject fo = new FolderObject(relPath, name);
+		FolderObject fo = new FolderObject(relPath, name, prj);
 		log.info("recursiveFileSystemHelper: " + prj + " relPath: " + relPath + 
 										" name: " + name + " ifss: " + fss + "iprojectManagingService: "
 										+ pms);
@@ -924,12 +924,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void rename(FileObject file, String newName) {
 		this.renamePath(file.getRelPath(), file.getProject(), newName);
+		//TODO change relpath - enable setRelPath
 	}
 
 	@Override
 	public void rename(FolderObject folder, String newName) {
-		//TODO obtain project
-		//TODO call renamePath
+		this.renamePath(folder.getRelPath(), folder.getProject(), newName);
+		//TODO change relpath
+		
 	}
 
 	@Override
@@ -1107,7 +1109,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public long getLocalFileSize(FileObject fo) {
 		try {
-			// TODO: this is not the intended data! used for conflict resolving...
+			//since the method only checks local files, it fails for files
+			//that only exist remotely
 			return this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getFileServices(fo.getProject()).getFileSize(fo.getRelPath());
 		} catch (FileNotFoundException e) {
@@ -1130,7 +1133,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public Date getLocalFileLastModified(FileObject fo) {
 		try {
-			// TODO: this is not the intended data! used for conflict resolving...
+			//since the method only checks local files, it fails for files
+			//that only exist remotely
 			return new Date(
 							this.getFrontendService().getProjectsManagingService(getSessionId())
 											.getFileServices(fo.getProject()).getLastModified(

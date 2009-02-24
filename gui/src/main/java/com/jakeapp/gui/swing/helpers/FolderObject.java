@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Project;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -13,12 +14,14 @@ import java.util.ArrayList;
 public class FolderObject {
    private String relPath;
    private String name;
+   private Project project;
    private List<FileObject> fileChildren = new ArrayList<FileObject>();
    private List<FolderObject> folderChildren = new ArrayList<FolderObject>();
 
-   public FolderObject(String relPath, String name) {
+   public FolderObject(String relPath, String name, Project project) {
       this.relPath = relPath;
       this.name = name;
+      this.setProject(project);
    }
 
    public String getRelPath() {
@@ -60,4 +63,12 @@ public class FolderObject {
    public void addFiles(List<FileObject> files) {
       fileChildren.addAll(files);
    }
+
+public void setProject(Project project) {
+	this.project = project;
+}
+
+public Project getProject() {
+	return project;
+}
 }
