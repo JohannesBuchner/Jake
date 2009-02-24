@@ -55,7 +55,13 @@
         </dependency>
         <dependency>
             <groupId>org.igniterealtime.smack</groupId>
-            <!-- TODO: Can be replaced with smackx in production code. -->
+            <artifactId>smackx</artifactId>
+            <version>3.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack</groupId>
+            <!-- TODO: Can be removed in production code. -->
             <artifactId>smackx-debug</artifactId>
             <version>3.1.0</version>
             <scope>compile</scope>
