@@ -71,5 +71,12 @@ public class SimpleFakeMessageExchanger {
 		public IMsgService getFriendMsgService() {
 			return this;
 		}
+
+		@Override
+		public void unRegisterReceiveMessageListener(
+				IMessageReceiveListener receiveListener) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

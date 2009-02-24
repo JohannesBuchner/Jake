@@ -578,13 +578,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		 throws ProjectException {
 
 		setRequestHandelPolicy(rhp);
-		runningProjects.put(p.getProjectId(), p);
-		// projectsFssMap.put(p.getProjectId(), fs);
-		projectChangeListeners.put(p.getProjectId(), cl);
+		
 		// this creates the ics
-		log.debug("adding receive hooks");
-
 		getICS(p).getMsgService().registerReceiveMessageListener(this);
+
+		projectChangeListeners.put(p.getProjectId(), cl);
+		runningProjects.put(p.getProjectId(), p);
 	}
 
 	private class PullListener implements INegotiationSuccessListener {
@@ -691,15 +690,21 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Override
 	public void stopServing(Project p) {
 		runningProjects.remove(p.getProjectId());
-		// TODO Auto-generated method stub
+		projectChangeListeners.remove(p.getProjectId());
+		
 		// TODO: remove ics hooks
+		//XXX dont know if logging out is sufficient - the listener is added directly to the
+		//Connection
+		
+		getICS(p).getMsgService().unRegisterReceiveMessageListener(this);
+		
 		try {
 			getICS(p).getStatusService().logout();
 		} catch (TimeoutException e) {
 			log.debug("logout failed", e);
 		} catch (NetworkException e) {
 			log.debug("logout failed", e);
-		}
+		}	
 	}
 
 

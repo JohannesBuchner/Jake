@@ -15,6 +15,7 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.RequestHandlePolicy;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -24,6 +25,9 @@ import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -296,14 +300,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 					+ project);
 			return false;
 		}
-
-		log.debug("Userid of Project that is about to be started is: "
-				+ project.getUserId());
-
-		project.setStarted(true);
+		
 
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
+			this.getProjectsFileServices().startForProject(project);
+			/*TODO call me!/syncService.startServing(project, new RequestHandlePolicy(){}, new ChangeListener()})*/;
+			project.setStarted(true);
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
@@ -320,6 +323,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (!project.isOpen() || !project.isStarted())
 			return false;
 
+		
 		try {
 			syncService.stopServing(project);
 			// stops monitoring the project

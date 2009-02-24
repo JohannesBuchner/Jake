@@ -64,4 +64,11 @@ public interface IMsgService {
 	 * {@link IUsersService}
 	 */
 	public IMsgService getFriendMsgService();
+
+	/**
+	 * Unregisteres a previously registered callback.
+	 * @param receiveListener
+	 * 	previously registered callback.
+	 */
+	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener);
 }

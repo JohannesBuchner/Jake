@@ -93,4 +93,9 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 	public void logoutHappened() {
 		this.initialized = false;
 	}
+
+	@Override
+	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener) {
+		//FIXME empty implementation
+	}
 }

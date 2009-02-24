@@ -45,4 +45,9 @@ public class FriendsOnlyMsgService implements IMsgService {
 			return false;
 		}
 	}
+
+	@Override
+	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener) {
+		//empty implementation
+	}
 }
