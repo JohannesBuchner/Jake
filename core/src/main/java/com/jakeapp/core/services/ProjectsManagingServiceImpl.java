@@ -306,11 +306,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
 			this.getProjectsFileServices().startForProject(project);
-			/*TODO call me!*/syncService.startServing(
+			/*TODO call me! syncService.startServing(
 				project,
 				new TrustAwareRequestHandlePolicy(this.getApplicationContextFactory(), this.getProjectsFileServices()),
-				null/* new ChangeListener()}*/
-			);
+				null/* new ChangeListener()}
+			);*/
 			project.setStarted(true);
 		} catch (Exception e) {
 			throw new ProjectException(e);
