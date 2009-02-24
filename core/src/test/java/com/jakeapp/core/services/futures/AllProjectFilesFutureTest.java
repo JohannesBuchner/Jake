@@ -19,7 +19,10 @@ import java.io.File;
 
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IFileObjectDao;
+import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
 import javax.sql.DataSource;
@@ -34,6 +37,9 @@ public class AllProjectFilesFutureTest extends AbstractJUnit4SpringContextTests 
 
     @Autowired
     private IProjectDao projectDao;
+
+    @Autowired
+    private IServiceCredentialsDao serviceCredentialsDao;
 
     @Autowired
     private IFileObjectDao fileObjectDao;
@@ -63,7 +69,10 @@ public class AllProjectFilesFutureTest extends AbstractJUnit4SpringContextTests 
     public void createExampleProject() throws InvalidProjectException {
 
         Project project = new Project("testProject", UUID.fromString("6662b7bc-188f-424d-a2cc-aba6cadd931c"), null, new File("/tmp/"));
-
+        
+        project.setCredentials(new ServiceCredentials("foo@bar", "", ProtocolType.XMPP));
+        
+        serviceCredentialsDao.persist(project.getCredentials());
         projectDao.create(project);
 
         System.out.println("success");

@@ -1,3 +1,1 @@
 Tests in error in core:
-testCreateProject(com.jakeapp.core.services.TestFrontendUsage)
-testCreateAndAssignAfterwards(com.jakeapp.core.services.TestFrontendUsage)

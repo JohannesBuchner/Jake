@@ -73,6 +73,10 @@
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 
+    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.HibernateServiceCredentialsDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+
     <bean id="fileObjectDao" class="com.jakeapp.core.dao.HibernateFileObjectDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
