@@ -156,6 +156,8 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return ThreadedLogEntryDao.this.dao.getNextUnprocessed();
 				}
 			});
+		} catch (NoSuchLogEntryException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -222,6 +224,8 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return ThreadedLogEntryDao.this.dao.getLastOfJakeObject(jakeObject, includeUnprocessed);
 				}
 			});
+		} catch (NoSuchLogEntryException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -288,6 +292,8 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return ThreadedLogEntryDao.this.dao.getLastVersionOfJakeObject(jakeObject, includeUnprocessed);
 				}
 			});
+		} catch (NoSuchLogEntryException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

@@ -54,6 +54,8 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 					return ThreadedServiceCredentialsDao.this.dao.read(uuid);
 				}
 			});
+		} catch (NoSuchServiceCredentialsException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

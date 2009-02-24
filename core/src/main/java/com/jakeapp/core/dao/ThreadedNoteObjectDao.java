@@ -53,6 +53,8 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 					return ThreadedNoteObjectDao.this.dao.get(objectId);
 				}
 			});
+		} catch (NoSuchJakeObjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -120,6 +122,8 @@ public class ThreadedNoteObjectDao implements INoteObjectDao {
 					return ThreadedNoteObjectDao.this.dao.complete(jakeObject);
 				}
 			});
+		} catch (NoSuchJakeObjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

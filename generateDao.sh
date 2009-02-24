@@ -36,26 +36,28 @@ function catchblock() {
 }
 
 function createTRegex() {
+	echo createTRegex $* 1>&2
 	RETURNTYPE=$1
 	NARGS=$2
 	NEXCEPTIONS=$3
 	NFIRSTEXCEPTION=$4
-	ADDITIONALCATCH=$5
+	ADDITIONALCATCH="$5"
 	
 	case "$NEXCEPTIONS" in 
 		"0")
-			createRegex $RETURNTYPE $NARGS $NEXCEPTIONS $NFIRSTEXCEPTION "$ADDITIONALCATCH"
+			createRegex $RETURNTYPE $NARGS "$ADDITIONALCATCH"
 			;;
 		*)
-			CATCH="$ADDITIONALCATCH"'(\'$NFIRSTEXCEPTION' e) {\n\t\t\tthrow e;\n\t\t}\n\t'
+			CATCH="$ADDITIONALCATCH"'\n\t\t} catch (\'$NFIRSTEXCEPTION' e) {\n\t\t\tthrow e;'
 			NEXCEPTIONS=$((NEXCEPTIONS-1)) 
 			NFIRSTEXCEPTION=$((NFIRSTEXCEPTION+1))
-			createTRegex $RETURNTYPE $NARGS $NEXCEPTIONS $NFIRSTEXCEPTION "$ADDITIONALCATCH"
+			createTRegex $RETURNTYPE $NARGS $NEXCEPTIONS $NFIRSTEXCEPTION "$CATCH"
 			;;
 	esac
 }
 
 function createRegex() {
+	echo createRegex $* 1>&2
 	RETURNTYPE=$1
 	NARGS=$2
 	ADDITIONALCATCH=$3
@@ -114,6 +116,7 @@ function createRegex() {
 FUNCTIONNAME='\([^ ]\{1,\}\)'
 PARAMTYPE='\([^,()]\{1,\}\)'
 PARAMNAME='\([^,()]\{1,\}\)'
+PARAM0=""
 PARAM1="$PARAMTYPE $PARAMNAME"
 PARAM2="$PARAM1, $PARAMTYPE $PARAMNAME"
 PARAM3="$PARAM2, $PARAMTYPE $PARAMNAME"
@@ -197,17 +200,35 @@ sed 's/^[^\t]/XXXXX/g' |grep -v XXXXX | # only stuff in class
 	#					}
 	#				});
 	# 
-	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM0"')\([^{]*\){}/'"$(createRegex void 0)"'/g' |
-	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM1"')\([^{]*\){}/'"$(createRegex void 1)"'/g' |
-	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM2"')\([^{]*\){}/'"$(createRegex void 2)"'/g' |
-	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM3"')\([^{]*\){}/'"$(createRegex void 3)"'/g' |
-	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM4"')\([^{]*\){}/'"$(createRegex void 4)"'/g' |
-	
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM0"')\( throws \([^{,]*\)\){}/'"$(createTRegex void 0 1 4)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM1"')\( throws \([^{,]*\)\){}/'"$(createTRegex void 1 1 6)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM2"')\( throws \([^{,]*\)\){}/'"$(createTRegex void 2 1 8)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM3"')\( throws \([^{,]*\)\){}/'"$(createTRegex void 3 1 10)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM4"')\( throws \([^{,]*\)\){}/'"$(createTRegex void 4 1 12)"'/g' |
+
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM0"')\([^{,]*\){}/'"$(createRegex void 0)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM1"')\([^{,]*\){}/'"$(createRegex void 1)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM2"')\([^{,]*\){}/'"$(createRegex void 2)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM3"')\([^{,]*\){}/'"$(createRegex void 3)"'/g' |
+	sed 's/\(void\)  *'"$FUNCTIONNAME"' *('"$PARAM4"')\([^{,]*\){}/'"$(createRegex void 4)"'/g' |
+
+	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM0"')\( throws \([^{,]*\)\){}/'"$(createTRegex boolean 0 1 4)"'/g' |
+	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM1"')\( throws \([^{,]*\)\){}/'"$(createTRegex boolean 1 1 6)"'/g' |
+	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM2"')\( throws \([^{,]*\)\){}/'"$(createTRegex boolean 2 1 8)"'/g' |
+	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM3"')\( throws \([^{,]*\)\){}/'"$(createTRegex boolean 3 1 10)"'/g' |
+	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM4"')\( throws \([^{,]*\)\){}/'"$(createTRegex boolean 4 1 12)"'/g' |
+
 	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM0"')\([^{]*\){}/'"$(createRegex boolean 0)"'/g' |
 	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM1"')\([^{]*\){}/'"$(createRegex boolean 1)"'/g' |
 	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM2"')\([^{]*\){}/'"$(createRegex boolean 2)"'/g' |
 	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM3"')\([^{]*\){}/'"$(createRegex boolean 3)"'/g' |
 	sed 's/\(boolean\)  *'"$FUNCTIONNAME"' *('"$PARAM4"')\([^{]*\){}/'"$(createRegex boolean 4)"'/g' |
+
+	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM0"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 0 1 4)"'/g' |
+	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM1"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 1 1 6)"'/g' |
+	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM2"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 2 1 8)"'/g' |
+	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM3"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 3 1 10)"'/g' |
+	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM4"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 4 1 12)"'/g' |
 
 	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM0"')\([^{]*\){}/'"$(createRegex type 0)"'/g' |
 	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM1"')\([^{]*\){}/'"$(createRegex type 1)"'/g' |
@@ -215,12 +236,24 @@ sed 's/^[^\t]/XXXXX/g' |grep -v XXXXX | # only stuff in class
 	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM3"')\([^{]*\){}/'"$(createRegex type 3)"'/g' |
 	sed 's/'"$PARAMETRTYPE2"'  *'"$FUNCTIONNAME"' *('"$PARAM4"')\([^{]*\){}/'"$(createRegex type 4)"'/g' |
 
+	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM0"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 0 1 4)"'/g' |
+	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM1"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 1 1 6)"'/g' |
+	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM2"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 2 1 8)"'/g' |
+	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM3"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 3 1 10)"'/g' |
+	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM4"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 4 1 12)"'/g' |
+
 	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM0"')\([^{]*\){}/'"$(createRegex type 0)"'/g' |
 	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM1"')\([^{]*\){}/'"$(createRegex type 1)"'/g' |
 	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM2"')\([^{]*\){}/'"$(createRegex type 2)"'/g' |
 	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM3"')\([^{]*\){}/'"$(createRegex type 3)"'/g' |
 	sed 's/'"$PARAMETRTYPE1"'  *'"$FUNCTIONNAME"' *('"$PARAM4"')\([^{]*\){}/'"$(createRegex type 4)"'/g' |
 
+	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM0"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 0 1 4)"'/g' |
+	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM1"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 1 1 6)"'/g' |
+	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM2"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 2 1 8)"'/g' |
+	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM3"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 3 1 10)"'/g' |
+	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM4"')\( throws \([^{,]*\)\){}/'"$(createTRegex type 4 1 12)"'/g' |
+	
 	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM0"')\([^{]*\){}/'"$(createRegex type 0)"'/g' |
 	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM1"')\([^{]*\){}/'"$(createRegex type 1)"'/g' |
 	sed 's/'"$PARAMETRTYPE0"'  *'"$FUNCTIONNAME"' *('"$PARAM2"')\([^{]*\){}/'"$(createRegex type 2)"'/g' |

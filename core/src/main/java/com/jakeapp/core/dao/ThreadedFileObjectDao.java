@@ -52,6 +52,8 @@ public class ThreadedFileObjectDao implements IFileObjectDao {
 					return ThreadedFileObjectDao.this.dao.get(objectId);
 				}
 			});
+		} catch (NoSuchJakeObjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -119,6 +121,8 @@ public class ThreadedFileObjectDao implements IFileObjectDao {
 					return ThreadedFileObjectDao.this.dao.complete(jakeObject);
 				}
 			});
+		} catch (NoSuchJakeObjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -141,6 +145,8 @@ public class ThreadedFileObjectDao implements IFileObjectDao {
 					return ThreadedFileObjectDao.this.dao.get(relpath);
 				}
 			});
+		} catch (NoSuchJakeObjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

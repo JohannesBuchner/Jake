@@ -34,6 +34,8 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.create(project);
 				}
 			});
+		} catch (InvalidProjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -56,6 +58,8 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.read(uuid);
 				}
 			});
+		} catch (NoSuchProjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -78,6 +82,8 @@ public class ThreadedProjectDao implements IProjectDao {
 					return ThreadedProjectDao.this.dao.update(project);
 				}
 			});
+		} catch (NoSuchProjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -123,6 +129,8 @@ public class ThreadedProjectDao implements IProjectDao {
 					return null;
 				}
 			});
+		} catch (NoSuchProjectException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
