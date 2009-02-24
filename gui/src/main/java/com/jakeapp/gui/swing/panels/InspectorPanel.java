@@ -35,7 +35,6 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	private static final long serialVersionUID = 7743765581263700424L;
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
 	public static final int INSPECTOR_SIZE = 250;
-	private final Font smallFont = UIManager.getFont("Label.font").deriveFont(12);
 	private Project project;
 	private ResourceMap resourceMap;
 	private Attributed<FileObject> attributedFileObject;
@@ -47,28 +46,31 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 
 	private Mode mode;
 	private JXTable eventsTable;
-	private JLabel icoLabel;
-	private JLabel nameLabel;
-	private JLabel sizeLabel;
+	private JLabel iconLabel;
+	private JLabel nameValue;
+	private JLabel sizeValue;
 	private JLabel lastEditedValue;
-	private JLabel tagsLabel;
-	private JLabel fullPathLabel;
+	private JLabel tagsValue;
+	private JLabel fullPathValue;
 	private EventsTableModel eventsTableModel;
 	private JPanel headerPanel;
 	private final Icon notesIcon = new ImageIcon(Toolkit.getDefaultToolkit()
 			.getImage(getClass().getResource("/icons/notes.png"))
 			.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
 
-	private JPanel noteMetaPanel;
-	private JLabel lastEditedTextLabel;
-	private JLabel tagsHeaderLabel;
-	private JLabel fullPathTextLabel;
-	private JPanel noteInspector;
-	private JPanel fileInspector;
+	private JPanel metaPanel;
+	private JLabel lastEditedLabel;
+	private JLabel tagsLabel;
+	private JLabel fullPathLabel;
+	private JPanel noteFileInspector;
 	private JPanel emptyInspector;
 	private ProjectViewPanelEnum projectViewPanel;
-	private JLabel lastEditorTextLabel;
+	private JLabel lastEditorLabel;
 	private JLabel lastEditorValue;
+	private SmallLabel lockedByLabel;
+	private SmallLabel lockedByValue;
+	private SmallLabel sharedLabel;
+	private JCheckBox sharedValue;
 
 	public InspectorPanel() {
 
@@ -93,35 +95,46 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 		// header panel
 		this.headerPanel = new JPanel(new MigLayout("fill"));
 		this.headerPanel.setOpaque(false);
-		this.icoLabel = new JLabel();
-		this.headerPanel.add(this.icoLabel, "w 64!, h 64!");
-		this.nameLabel = new JLabel();
-		this.headerPanel.add(this.nameLabel);
-		this.sizeLabel = new JLabel();
-		this.headerPanel.add(this.sizeLabel, "wrap, growx");
+		this.iconLabel = new JLabel();
+		this.headerPanel.add(this.iconLabel, "w 64!, h 64!");
+		this.nameValue = new JLabel();
+		this.headerPanel.add(this.nameValue);
+		this.sizeValue = new JLabel();
+		this.headerPanel.add(this.sizeValue, "growx");
 
-		// note meta panel
-		this.noteMetaPanel = new JPanel(new MigLayout("fill"));
-		this.noteMetaPanel.setOpaque(false);
+		// meta panel
+		this.metaPanel = new JPanel(new MigLayout("fill, wrap 2"));
+		this.metaPanel.setOpaque(false);
 
-		this.lastEditedTextLabel = new JLabel(getResourceMap().getString("lastEditedLabel"));
-		this.lastEditedTextLabel.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.lastEditedTextLabel, "right");
-		this.lastEditedValue = new JLabel();
-		this.lastEditedValue.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.lastEditedValue, "wrap, growx");
+		this.lastEditedLabel = new SmallLabel(getResourceMap().getString("lastEditedLabel"));
+		this.metaPanel.add(this.lastEditedLabel, "right");
+		this.lastEditedValue = new SmallLabel();
+		this.metaPanel.add(this.lastEditedValue, "growx");
 		
-		this.lastEditorTextLabel = new JLabel(getResourceMap().getString("lastEditorLabel"));
-		this.lastEditorTextLabel.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.lastEditorTextLabel, "right");
-		this.lastEditorValue = new JLabel();
-		this.lastEditorValue.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.lastEditorValue);
+		this.lastEditorLabel = new SmallLabel(getResourceMap().getString("lastEditorLabel"));
+		this.metaPanel.add(this.lastEditorLabel, "right");
+		this.lastEditorValue = new SmallLabel();
+		this.metaPanel.add(this.lastEditorValue, "growx"	);
+		
+		this.tagsLabel = new SmallLabel(getResourceMap().getString("tagsLabel"));
+		this.metaPanel.add(this.tagsLabel, "right, hidemode 2");
+		this.tagsValue = new SmallLabel();
+		this.metaPanel.add(this.tagsValue, "growx, hidemode 2");
+		
+		this.sharedLabel = new SmallLabel(getResourceMap().getString("sharedLabel"));
+		this.metaPanel.add(this.sharedLabel, "right");
+		this.sharedValue = new JCheckBox();
+		this.metaPanel.add(this.sharedValue, "growx");
+		
+		this.lockedByLabel = new SmallLabel(getResourceMap().getString("lockedByLabel"));
+		this.metaPanel.add(this.lockedByLabel, "right");
+		this.lockedByValue = new SmallLabel();
+		this.metaPanel.add(this.lockedByValue, "growx");
 
-
-		this.fullPathLabel = new JLabel();
-		this.fullPathLabel.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.fullPathLabel, "wrap, growx");
+		this.fullPathLabel = new SmallLabel(getResourceMap().getString("pathLabel"));
+		this.metaPanel.add(this.fullPathLabel, "right, hidemode 2");
+		this.fullPathValue = new SmallLabel();
+		this.metaPanel.add(this.fullPathValue, "grow, hidemode 2");
 
 		// events table
 		this.setEventsTableModel(new EventsTableModel(getProject()));
@@ -133,18 +146,12 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 
 
 		// assembly
-		this.noteInspector = new JPanel(new MigLayout("wrap 1, fill"));
-		this.noteInspector.setOpaque(false);
-		this.noteInspector.add(this.headerPanel, "growx");
-		this.noteInspector.add(this.noteMetaPanel, "growx");
-		this.noteInspector.add(this.eventsTable, "dock south, grow");
-		this.noteInspector.setVisible(false);
-
-		this.fileInspector = new JPanel(new MigLayout("wrap 1, fill"));
-		this.fileInspector.setOpaque(false);
-		this.fileInspector.add(this.headerPanel, "growx");
-		this.fileInspector.add(this.eventsTable, "dock south, grow");
-		this.fileInspector.setVisible(false);
+		this.noteFileInspector = new JPanel(new MigLayout("wrap 1, fill"));
+		this.noteFileInspector.setOpaque(false);
+		this.noteFileInspector.add(this.headerPanel, "growx");
+		this.noteFileInspector.add(this.metaPanel, "growx");
+		this.noteFileInspector.add(this.eventsTable, "dock south, grow");
+		this.noteFileInspector.setVisible(false);
 
 		this.emptyInspector = new JPanel();
 		this.emptyInspector.setOpaque(false);
@@ -152,9 +159,8 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 		JLabel spoon = new JLabel("There is no spoon!");// FIXME: randomness, i18n
 		this.emptyInspector.add(spoon, "center");
 
-		this.setLayout(new MigLayout("debug, wrap 1, fillx"));
-		this.add(this.noteInspector, "hidemode 2");
-		this.add(this.fileInspector, "hidemode 2");
+		this.setLayout(new MigLayout("wrap 1, fill"));
+		this.add(this.noteFileInspector, "hidemode 2");
 		this.add(this.emptyInspector, "hidemode 2");
 
 
@@ -184,38 +190,48 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 					} catch (FileOperationFailedException e) {
 						ExceptionUtilities.showError(e);
 					}
-					this.icoLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
-					this.nameLabel.setText(StringUtilities.htmlize(StringUtilities.bold(
+					this.iconLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
+					this.nameValue.setText(StringUtilities.htmlize(StringUtilities.bold(
 							  FileObjectHelper.getName(getAttributedFileObject().getJakeObject().getRelPath()))));
-	/*
+	
 				this.fullPathLabel.setText(
 						  FileObjectHelper.getPath(getAttributedFileObject().getJakeObject().getRelPath()));
 				log.debug(this.fullPathLabel.getText());
-				this.lastAccessTimeAndUser.setText(StringUtilities.htmlize(Translator.get(getResourceMap(), "byLabel",
-						  FileObjectHelper.getTimeRel(getAttributedFileObject().getJakeObject()),
-						  FileObjectHelper.getLastModifier(getAttributedFileObject().getJakeObject()))));
-	*/
+				this.lastEditedValue.setText(TimeUtilities.getRelativeTime(this.getAttributedFileObject().getLastModificationDate()));
 				this.getEventsTableModel().setJakeObject(getAttributedFileObject());
 				this.emptyInspector.setVisible(false);
-				this.fileInspector.setVisible(true);
-				this.noteInspector.setVisible(false);
+				this.noteFileInspector.setVisible(true);
 				break;
 			case NOTE:
-				this.icoLabel.setIcon(this.notesIcon);
-				this.nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject().getJakeObject())));
-				this.sizeLabel.setText("");
-				this.fullPathLabel.setText("");
-				this.lastEditedValue.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
-
-				this.noteInspector.setVisible(true);
-				this.fileInspector.setVisible(true);
-				this.emptyInspector.setVisible(true);
+				this.iconLabel.setIcon(this.notesIcon);
+				this.nameValue.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getAttributedNoteObject().getJakeObject())));
+				this.sizeValue.setVisible(false);
+				if (this.getAttributedNoteObject().getLastVersionEditor() != null) {
+					this.lastEditorValue.setText(this.getAttributedNoteObject().getLastVersionEditor().toString());	
+				} else {
+					this.lastEditorValue.setText("local"); //FIXME: elaborate, i18n
+				}
+				
+				this.fullPathLabel.setVisible(false);
+				this.fullPathValue.setVisible(false);
+				this.tagsLabel.setVisible(false);
+				this.tagsValue.setVisible(false);
+				this.lastEditedValue.setText(TimeUtilities.getRelativeTime(getAttributedNoteObject().getLastModificationDate()));
+				this.sharedValue.setEnabled(getAttributedNoteObject().isOnlyLocal());
+				if (this.getAttributedNoteObject().isLocked()) {
+					this.lockedByValue.setText(this.getAttributedNoteObject().getLockLogEntry().getMember().toString());
+				} else {
+					this.lockedByValue.setVisible(false);
+					this.lockedByLabel.setVisible(false);
+				}
+				
+				this.noteFileInspector.setVisible(true);
+				this.emptyInspector.setVisible(false);
 					
 				break;
 			case NONE:
 			default:
-				this.noteInspector.setVisible(false);
-				this.fileInspector.setVisible(false);
+				this.noteFileInspector.setVisible(false);
 				this.emptyInspector.setVisible(true);
 			}
 
@@ -263,7 +279,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 		this.setFileObject(event.getSingleFile());
 	}
 
-	public Attributed<NoteObject> getNoteObject() {
+	public Attributed<NoteObject> getAttributedNoteObject() {
 		return this.attributedNoteObject;
 	}
 
