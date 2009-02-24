@@ -218,7 +218,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	public Project createProject(String name, String rootPath, MsgService msgService)
 			throws IllegalArgumentException, IOException, NotADirectoryException {
-
+		
 		log.debug("Creating a Project with name " + name + ", path " + rootPath
 				+ " and MsgService " + msgService);
 		File projectRoot = new File(rootPath);
