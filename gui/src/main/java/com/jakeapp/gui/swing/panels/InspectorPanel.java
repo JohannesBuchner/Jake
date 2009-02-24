@@ -40,6 +40,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	private ResourceMap resourceMap;
 	private Attributed<FileObject> attributedFileObject;
 	private Attributed<NoteObject> attributedNoteObject;
+
 	private enum Mode {
 		FILE, NOTE, NONE;
 	}
@@ -62,9 +63,9 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	private JLabel lastEditedTextLabel;
 	private JLabel tagsHeaderLabel;
 	private JLabel fullPathTextLabel;
-	private JPanel NoteInspector;
-	private JPanel FileInspector;
-	private JPanel NoneInspector;
+	private JPanel noteInspector;
+	private JPanel fileInspector;
+	private JPanel emptyInspector;
 	private ProjectViewPanelEnum projectViewPanel;
 	private JLabel lastEditorTextLabel;
 	private JLabel lastEditorValue;
@@ -76,7 +77,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 				.getResourceMap(InspectorPanel.class));
 
 		// register for events
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		FilePanel.getInstance().addFileSelectionListener(this);
 		NotesPanel.getInstance().addNoteSelectionListener(this);
@@ -132,32 +133,29 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 
 
 		// assembly
-		this.NoteInspector = new JPanel();
-		this.NoteInspector.setOpaque(false);
-		this.NoteInspector.setLayout(new MigLayout("wrap 1, fill"));
-		this.NoteInspector.add(this.headerPanel, "growx");
-		this.NoteInspector.add(this.noteMetaPanel, "growx");
-		this.NoteInspector.add(this.eventsTable, "dock south, grow");
-		this.NoteInspector.setVisible(false);
+		this.noteInspector = new JPanel(new MigLayout("wrap 1, fill"));
+		this.noteInspector.setOpaque(false);
+		this.noteInspector.add(this.headerPanel, "growx");
+		this.noteInspector.add(this.noteMetaPanel, "growx");
+		this.noteInspector.add(this.eventsTable, "dock south, grow");
+		this.noteInspector.setVisible(false);
 
-		this.FileInspector = new JPanel();
-		this.FileInspector.setOpaque(false);
-		this.FileInspector.setLayout(new MigLayout("wrap 1, fill"));
-		this.FileInspector.add(this.headerPanel, "growx");
-		this.FileInspector.add(this.eventsTable, "dock south, grow");
-		this.FileInspector.setVisible(false);
+		this.fileInspector = new JPanel(new MigLayout("wrap 1, fill"));
+		this.fileInspector.setOpaque(false);
+		this.fileInspector.add(this.headerPanel, "growx");
+		this.fileInspector.add(this.eventsTable, "dock south, grow");
+		this.fileInspector.setVisible(false);
 
-		this.NoneInspector = new JPanel();
-		this.NoneInspector.setOpaque(false);
-		this.NoneInspector.setLayout(new MigLayout("fill"));
-		JLabel spoon = new JLabel();
-		spoon.setText("There is no spoon!"); // FIXME: randomness, i18n
-		this.NoneInspector.add(spoon, "center");
+		this.emptyInspector = new JPanel();
+		this.emptyInspector.setOpaque(false);
+		this.emptyInspector.setLayout(new MigLayout("fill"));
+		JLabel spoon = new JLabel("There is no spoon!");// FIXME: randomness, i18n
+		this.emptyInspector.add(spoon, "center");
 
 		this.setLayout(new MigLayout("debug, wrap 1, fillx"));
-		this.add(this.NoteInspector, "hidemode 3");
-		this.add(this.FileInspector, "hidemode 3");
-		this.add(this.NoneInspector, "hidemode 3");
+		this.add(this.noteInspector, "hidemode 2");
+		this.add(this.fileInspector, "hidemode 2");
+		this.add(this.emptyInspector, "hidemode 2");
 
 
 		// not resizeable, fixed width
@@ -198,9 +196,9 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 						  FileObjectHelper.getLastModifier(getAttributedFileObject().getJakeObject()))));
 	*/
 				this.getEventsTableModel().setJakeObject(getAttributedFileObject());
-				this.NoneInspector.setVisible(false);
-				this.FileInspector.setVisible(true);
-				this.NoteInspector.setVisible(false);
+				this.emptyInspector.setVisible(false);
+				this.fileInspector.setVisible(true);
+				this.noteInspector.setVisible(false);
 				break;
 			case NOTE:
 				this.icoLabel.setIcon(this.notesIcon);
@@ -209,16 +207,16 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 				this.fullPathLabel.setText("");
 				this.lastEditedValue.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
 
-				this.NoteInspector.setVisible(true);
-				this.FileInspector.setVisible(false);
-				this.NoneInspector.setVisible(false);
+				this.noteInspector.setVisible(true);
+				this.fileInspector.setVisible(true);
+				this.emptyInspector.setVisible(true);
 					
 				break;
 			case NONE:
 			default:
-				this.NoteInspector.setVisible(false);
-				this.FileInspector.setVisible(false);
-				this.NoneInspector.setVisible(true);
+				this.noteInspector.setVisible(false);
+				this.fileInspector.setVisible(false);
+				this.emptyInspector.setVisible(true);
 			}
 
 		this.eventsTable.updateUI();
