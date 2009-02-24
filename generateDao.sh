@@ -26,17 +26,10 @@ while(True):
 		print line.rstrip()
 EOF
 
-# TODO: Exceptions
-
-function catchblock() {
-	NEXCEPTION=$1
-	CATCH='\n\t\t} catch (RuntimeException e) {\n\t\t\tthrow e;\n\t\t} catch '
-	CATCH="$CATCH"'(Exception e) {\n\t\t\tthrow new IllegalStateException(e);\n\t\t}\n\t'
-	echo 
-}
+# TODO: >1 Exceptions
 
 function createTRegex() {
-	echo createTRegex $* 1>&2
+	# echo createTRegex $* 1>&2
 	RETURNTYPE=$1
 	NARGS=$2
 	NEXCEPTIONS=$3
@@ -57,7 +50,7 @@ function createTRegex() {
 }
 
 function createRegex() {
-	echo createRegex $* 1>&2
+	# echo createRegex $* 1>&2
 	RETURNTYPE=$1
 	NARGS=$2
 	ADDITIONALCATCH=$3
