@@ -139,10 +139,21 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	@Test
 	public final void testServiceCredentialsDao() throws InvalidProjectException,
 			NoSuchProjectException {
+		
+		//since rollback may not have happened, delete possibly inserted credentials1
+		try {
+			this.getServiceCredentialsDao().delete(credentials1);
+		}
+		catch (Exception ex) {
+			//empty handling
+		}
+		
+		
+		int before = this.getServiceCredentialsDao().getAll().size();
 		ServiceCredentials credentials = this.getServiceCredentialsDao().persist(
 				credentials1);
 		Assert.assertEquals(credentials, credentials1);
-		Assert.assertEquals(1, this.getServiceCredentialsDao().getAll().size());
+		Assert.assertEquals(before + 1, this.getServiceCredentialsDao().getAll().size());
 	}
 
 
