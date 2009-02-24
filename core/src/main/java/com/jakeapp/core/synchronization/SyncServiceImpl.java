@@ -776,6 +776,17 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				log.error("Not logged in");
 			}
 		}
+		if (content.startsWith(POKE_MESSAGE)) {
+			log.debug("Something has happened - let's sync logs");
+
+			// Eventually, this should consider things such as trust
+			try {
+				this.startLogSync(p, getICSManager().getFrontendUserId(p, from_userid));
+			} catch (IllegalProtocolException e) {
+				// This should neeeeeeeeever happen
+				log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync", e);
+			}
+		}
 	}
 
 	private IFileTransferService getTransferService(Project p) throws NotLoggedInException {

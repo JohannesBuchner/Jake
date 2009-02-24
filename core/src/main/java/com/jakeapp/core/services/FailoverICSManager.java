@@ -34,7 +34,7 @@ public class FailoverICSManager implements ICSManager {
 	private int SOCKET_TIMEOUT_SECONDS;
 
 	private Map<String, ICService> activeServices = new HashMap<String, ICService>();
-	
+
 	@Override
 	public ICService getICService(Project p) {
 		ICService ics = null;
@@ -51,7 +51,7 @@ public class FailoverICSManager implements ICSManager {
 
 	@Override
 	public FailoverCapableFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
+		 throws NotLoggedInException {
 		ICService ics = getICService(p);
 		IMsgService msg = ics.getMsgService();
 		FailoverCapableFileTransferService fcfts = null;
@@ -68,13 +68,13 @@ public class FailoverICSManager implements ICSManager {
 	}
 
 	private FailoverCapableFileTransferService createTransferService(
-			com.jakeapp.jake.ics.UserId user, ICService ics, IMsgService msg)
-			throws NotLoggedInException {
+		 com.jakeapp.jake.ics.UserId user, ICService ics, IMsgService msg)
+		 throws NotLoggedInException {
 		FailoverCapableFileTransferService fcfts;
 		fcfts = new FailoverCapableFileTransferService();
 		if (SOCKETS_ENABLED)
 			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(
-					SOCKET_TIMEOUT_SECONDS), msg, user);
+				 SOCKET_TIMEOUT_SECONDS), msg, user);
 
 		ITransferMethodFactory inbandMethod = ics.getTransferMethodFactory();
 		if (inbandMethod == null) {
@@ -89,14 +89,25 @@ public class FailoverICSManager implements ICSManager {
 	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u) {
 		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
 			log.debug("Creating new XMPPICService for userId "
-					+ p.getCredentials().getUserId());
+				 + p.getCredentials().getUserId());
 			return new XmppUserId(u.getUserId() + "/" + p.getProjectId());
 		} else {
 			log.fatal("Currently unsupported protocol given");
 			throw new IllegalArgumentException(new ProtocolNotSupportedException());
 		}
 	}
-	
+
+	@Override
+	public UserId getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u) {
+		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
+			log.debug("Getting frontend user ID for backend user id");
+			return new UserId(ProtocolType.XMPP, u.getUserId());
+		} else {
+			log.fatal("Currently unsupported protocol given");
+			throw new IllegalArgumentException(new ProtocolNotSupportedException());
+		}
+	}
+
 	@Override
 	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p) {
 		return this.getBackendUserId(p, p.getUserId());
@@ -116,8 +127,8 @@ public class FailoverICSManager implements ICSManager {
 		}
 		return ics;
 	}
-	
-	
+
+
 	public Collection<ICService> getAll() {
 		return this.services.values();
 	}

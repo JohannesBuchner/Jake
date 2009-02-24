@@ -11,14 +11,15 @@ import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 
 
 /**
- * Holds the subsystems and their mapping to the Project 
+ * Holds the subsystems and their mapping to the Project
+ *
  * @author johannes
  */
 public interface ICSManager {
 
 	/**
 	 * get the ICS for the project
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 */
@@ -26,7 +27,7 @@ public interface ICSManager {
 
 	/**
 	 * get a transfer service to transmit something
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 * @throws NotLoggedInException
@@ -35,7 +36,7 @@ public interface ICSManager {
 
 	/**
 	 * translate a userId to something the ICS can work with
-	 * 
+	 *
 	 * @param u
 	 * @param p
 	 * @return
@@ -43,8 +44,17 @@ public interface ICSManager {
 	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u);
 
 	/**
+	 * translate an ICS userId to something the "real world" can work with
+	 *
+	 * @param p
+	 * @param u
+	 * @return
+	 */
+	public UserId getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u);
+
+	/**
 	 * get your own userId
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 */
@@ -52,7 +62,7 @@ public interface ICSManager {
 
 	/**
 	 * get all subsystems
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<ICService> getAll();
