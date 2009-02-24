@@ -49,7 +49,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	private JLabel icoLabel;
 	private JLabel nameLabel;
 	private JLabel sizeLabel;
-	private JLabel lastEditTimeAndUser;
+	private JLabel lastEditedValue;
 	private JLabel tagsLabel;
 	private JLabel fullPathLabel;
 	private EventsTableModel eventsTableModel;
@@ -59,13 +59,15 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 			.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
 
 	private JPanel noteMetaPanel;
-	private JLabel lastEditTextLabel;
+	private JLabel lastEditedTextLabel;
 	private JLabel tagsHeaderLabel;
 	private JLabel fullPathTextLabel;
 	private JPanel NoteInspector;
 	private JPanel FileInspector;
 	private JPanel NoneInspector;
 	private ProjectViewPanelEnum projectViewPanel;
+	private JLabel lastEditorTextLabel;
+	private JLabel lastEditorValue;
 
 	public InspectorPanel() {
 
@@ -88,7 +90,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	private void initComponents() {
 
 		// header panel
-		this.headerPanel = new JPanel(new MigLayout("fillx"));
+		this.headerPanel = new JPanel(new MigLayout("fill"));
 		this.headerPanel.setOpaque(false);
 		this.icoLabel = new JLabel();
 		this.headerPanel.add(this.icoLabel, "w 64!, h 64!");
@@ -97,35 +99,30 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 		this.sizeLabel = new JLabel();
 		this.headerPanel.add(this.sizeLabel, "wrap, growx");
 
-		// meta panel
-		this.noteMetaPanel = new JPanel(new MigLayout("fillx"));
+		// note meta panel
+		this.noteMetaPanel = new JPanel(new MigLayout("fill"));
 		this.noteMetaPanel.setOpaque(false);
 
-		this.lastEditTextLabel = new JLabel(getResourceMap().getString("modifiedLabel"));
-		this.lastEditTextLabel.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.lastEditTextLabel, "right");
+		this.lastEditedTextLabel = new JLabel(getResourceMap().getString("lastEditedLabel"));
+		this.lastEditedTextLabel.setFont(this.smallFont);
+		this.noteMetaPanel.add(this.lastEditedTextLabel, "right");
+		this.lastEditedValue = new JLabel();
+		this.lastEditedValue.setFont(this.smallFont);
+		this.noteMetaPanel.add(this.lastEditedValue, "wrap, growx");
+		
+		this.lastEditorTextLabel = new JLabel(getResourceMap().getString("lastEditorLabel"));
+		this.lastEditorTextLabel.setFont(this.smallFont);
+		this.noteMetaPanel.add(this.lastEditorTextLabel, "right");
+		this.lastEditorValue = new JLabel();
+		this.lastEditorValue.setFont(this.smallFont);
+		this.noteMetaPanel.add(this.lastEditorValue);
 
-		this.lastEditTimeAndUser = new JLabel();
-		this.lastEditTimeAndUser.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.lastEditTimeAndUser, "wrap, growx");
-
-		this.tagsHeaderLabel = new JLabel(getResourceMap().getString("tagsLabel"));
-		this.noteMetaPanel.add(this.tagsHeaderLabel, "right");
-
-		this.tagsLabel = new JLabel("");
-		this.noteMetaPanel.add(this.tagsLabel, "wrap, growx");
-
-		// add full path
-		this.fullPathTextLabel = new JLabel(getResourceMap().getString("pathLabel"));
-		this.fullPathTextLabel.setFont(this.smallFont);
-		this.noteMetaPanel.add(this.fullPathTextLabel, "right");
 
 		this.fullPathLabel = new JLabel();
 		this.fullPathLabel.setFont(this.smallFont);
 		this.noteMetaPanel.add(this.fullPathLabel, "wrap, growx");
 
 		// events table
-		// FIXME: pass a jakeObject to the EventTableModel c'tor.
 		this.setEventsTableModel(new EventsTableModel(getProject()));
 		this.eventsTable = new ITunesTable();
 		this.eventsTable.setModel(this.getEventsTableModel());
@@ -137,31 +134,30 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 		// assembly
 		this.NoteInspector = new JPanel();
 		this.NoteInspector.setOpaque(false);
-		this.NoteInspector.setLayout(new MigLayout("debug, wrap 1, fill"));
+		this.NoteInspector.setLayout(new MigLayout("wrap 1, fill"));
 		this.NoteInspector.add(this.headerPanel, "growx");
 		this.NoteInspector.add(this.noteMetaPanel, "growx");
-		this.NoteInspector.add(this.eventsTable, "dock south, growy");
+		this.NoteInspector.add(this.eventsTable, "dock south, grow");
 		this.NoteInspector.setVisible(false);
 
 		this.FileInspector = new JPanel();
 		this.FileInspector.setOpaque(false);
-		this.FileInspector.setLayout(new MigLayout("debug, wrap 1, fill"));
+		this.FileInspector.setLayout(new MigLayout("wrap 1, fill"));
 		this.FileInspector.add(this.headerPanel, "growx");
-		this.FileInspector.add(this.eventsTable, "dock south, growy");
+		this.FileInspector.add(this.eventsTable, "dock south, grow");
 		this.FileInspector.setVisible(false);
 
 		this.NoneInspector = new JPanel();
 		this.NoneInspector.setOpaque(false);
 		this.NoneInspector.setLayout(new MigLayout("fill"));
-		// FIXME: randomness, i18n
 		JLabel spoon = new JLabel();
-		spoon.setText("There is no spoon!");
+		spoon.setText("There is no spoon!"); // FIXME: randomness, i18n
 		this.NoneInspector.add(spoon, "center");
 
 		this.setLayout(new MigLayout("debug, wrap 1, fillx"));
-		this.add(this.NoteInspector, "hidemode 2");
-		this.add(this.FileInspector, "hidemode 2");
-		this.add(this.NoneInspector, "hidemode 2");
+		this.add(this.NoteInspector, "hidemode 3");
+		this.add(this.FileInspector, "hidemode 3");
+		this.add(this.NoneInspector, "hidemode 3");
 
 
 		// not resizeable, fixed width
@@ -203,15 +199,15 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	*/
 				this.getEventsTableModel().setJakeObject(getAttributedFileObject());
 				this.NoneInspector.setVisible(false);
-				this.NoteInspector.setVisible(false);
 				this.FileInspector.setVisible(true);
+				this.NoteInspector.setVisible(false);
 				break;
 			case NOTE:
 				this.icoLabel.setIcon(this.notesIcon);
 				this.nameLabel.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(getNoteObject().getJakeObject())));
 				this.sizeLabel.setText("");
 				this.fullPathLabel.setText("");
-				this.lastEditTimeAndUser.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
+				this.lastEditedValue.setText(TimeUtilities.getRelativeTime(getNoteObject().getLastModificationDate()));
 
 				this.NoteInspector.setVisible(true);
 				this.FileInspector.setVisible(false);
