@@ -1,12 +1,9 @@
 package com.jakeapp.gui.console;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -29,28 +26,41 @@ import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
-import com.jakeapp.gui.console.commandline.CmdManager;
-import com.jakeapp.gui.console.commandline.Command;
 import com.jakeapp.gui.console.commandline.LazyCommand;
-import com.jakeapp.gui.console.commandline.StoppableCmdManager;
 
 /**
  * Test client accepting cli input
  */
-public class JakeCommander {
+public class JakeCommander extends Commander {
 
+	public JakeCommander(String[] args) {
+		super(args);
+	}
+
+	public JakeCommander(InputStream in) {
+		super.run(in);
+	}
+
+	public JakeCommander(InputStream in, boolean startWithHelp) {
+		super.run(in, startWithHelp);
+	}
+
+	public static void main(String[] args) {
+		new JakeCommander(args);
+	}
 
 	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(JakeCommander.class);
 
-	private final CmdManager cmd = StoppableCmdManager.getInstance(new Runnable() {
+	@Override
+	protected void onShutdown() {
+		SpringThreadBroker.stopInstance();
+	}
 
-		@Override
-		public void run() {
-			SpringThreadBroker.stopInstance();			
-		}
-		
-	});
+	@Override
+	protected void onStartup() {
+		startupCore();
+	}
 
 	private String sessionId;
 
@@ -65,43 +75,11 @@ public class JakeCommander {
 
 	public Project project;
 
-	public static void main(String[] args) {
-		boolean help = false;
-		InputStream instream;
-		if (args.length == 1) {
-			try {
-				instream = new FileInputStream(args[0]);
-			} catch (FileNotFoundException e) {
-				System.err.println(e.getMessage());
-				return;
-			}
-		} else {
-			instream = System.in;
-			help = true;
-		}
-		new JakeCommander(instream, help);
-	}
-
-	public JakeCommander(InputStream instream) {
-		this(instream, false);
-	}
-
-	public JakeCommander(InputStream instream, boolean startwithhelp) {
-		startupCore();
-		addCommands();
-		try {
-			if (startwithhelp)
-				cmd.help();
-
-			cmd.handle(instream);
-		} catch (IOException e) {
-		}
-	}
-
 	private void startupCore() {
 		SpringThreadBroker.getInstance().loadSpring(
 				new String[] { "/com/jakeapp/core/applicationContext.xml" });
-		frontend = (IFrontendService) SpringThreadBroker.getInstance().getBean("frontendService");
+		frontend = (IFrontendService) SpringThreadBroker.getInstance().getBean(
+				"frontendService");
 
 		try {
 			sessionId = frontend.authenticate(new HashMap<String, String>());
@@ -246,7 +224,8 @@ public class JakeCommander {
 				return false;
 			String id = args[1];
 			String password = args[2];
-			ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
+			ServiceCredentials cred = new ServiceCredentials(id, password,
+					ProtocolType.XMPP);
 			try {
 				frontend.createAccount(sessionId, cred).setListener(this);
 				System.out.println("got the MsgService");
@@ -286,7 +265,8 @@ public class JakeCommander {
 
 			String id = args[1];
 			String password = args[2];
-			ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
+			ServiceCredentials cred = new ServiceCredentials(id, password,
+					ProtocolType.XMPP);
 			try {
 				msg = frontend.addAccount(sessionId, cred);
 				System.out.println("got the MsgService");
@@ -430,6 +410,26 @@ public class JakeCommander {
 		}
 	};
 
+	class OpenProjectCommand extends LazyProjectDirectoryCommand {
+
+		public OpenProjectCommand() {
+			super("openProject", "provides a open project");
+		}
+
+		@Override
+		protected void handleArguments(File folder) {
+			try {
+				System.out.println("opening project");
+				project = new Project(folder.getName(), null, msg, folder);
+				pms.openProject(project);
+				System.out.println("opening project done");
+			} catch (Exception e) {
+				System.out.println("opening project failed");
+				e.printStackTrace();
+			}
+		}
+	};
+
 	class ListProjectsCommand extends LazyNoParamsCommand {
 
 		public ListProjectsCommand() {
@@ -451,16 +451,16 @@ public class JakeCommander {
 		}
 	};
 
-	class OpenProjectCommand extends LazyProjectDirectoryCommand {
+	class StartProjectCommand extends LazyProjectDirectoryCommand {
 
-		public OpenProjectCommand() {
-			super("openProject", "provides an open project");
+		public StartProjectCommand() {
+			super("startProject", "provides an started project");
 		}
 
 		@Override
 		public void handleArguments(File projectFolder) {
 			try {
-				System.out.println("opening project ...");
+				System.out.println("starting project ...");
 				for (Project p : pms.getProjectList()) {
 					if (new File(p.getRootPath()).equals(projectFolder))
 						project = p;
@@ -469,16 +469,12 @@ public class JakeCommander {
 					System.out.println("no such project");
 					return;
 				}
-				
-				
-				System.out.println("\t" + project);
-				//TODO @ Johannes
-				log.error("This is completely wrong, all Projects in getProjectList are open.");
-				pms.openProject(project);
 
-				System.out.println("opening project done");
+				System.out.println("\t" + project);
+				pms.startProject(project, new PrintingChangeListener());
+				System.out.println("starting project done");
 			} catch (Exception e) {
-				System.out.println("opening project failed");
+				System.out.println("starting project failed");
 				project = null;
 				e.printStackTrace();
 			}
@@ -773,20 +769,4 @@ public class JakeCommander {
 			}
 		}
 	};
-
-
-	private void addCommands() {
-		// we are so cool, we use reflection
-		for (Class<?> c : JakeCommander.class.getDeclaredClasses()) {
-			Command command;
-			try {
-				Constructor<Command> constructor = (Constructor<Command>) c
-						.getConstructor(this.getClass());
-				command = constructor.newInstance(this);
-			} catch (Exception e) {
-				continue;
-			}
-			this.cmd.registerCommand(command);
-		}
-	}
 }
