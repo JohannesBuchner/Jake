@@ -32,12 +32,9 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 
 	private static final Logger log = Logger.getLogger(TrustAllRequestHandlePolicy.class);
 
-	protected ProjectApplicationContextFactory db;
-
+	private ProjectApplicationContextFactory db;
 
     private IProjectsFileServices projectsFileServices;
-
-
 
 	@Override
 	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
