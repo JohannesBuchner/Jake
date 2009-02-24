@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -29,6 +30,8 @@ public class ApplicationContextThread extends ThreadBroker {
 	private final String[] configLocation;
 
 	private Session session;
+
+	private SessionFactory sessionFactory;
 
 	/**
 	 * starts a new Thread that loads the given ApplicationContext
@@ -56,31 +59,19 @@ public class ApplicationContextThread extends ThreadBroker {
 		this.applicationContext.refresh();
 		log.debug("configuring context done");
 
+		HibernateTemplate hibernateTemplate = (HibernateTemplate) this.applicationContext.getBean(
+				"sessionFactory");
+		this.sessionFactory = hibernateTemplate.getSessionFactory();
+		
 		checkSession();
 
 		super.run();
 	}
 
 	private void checkSession() {
-		log.debug("checking session");
-		HibernateTemplate hibernateTemplate = (HibernateTemplate) this.applicationContext
-				.getBean("hibernateTemplate");
-		try {
-			this.session = hibernateTemplate.getSessionFactory().getCurrentSession();
-			log.info("we already have a session.");
+		if(this.session != null && this.session.isOpen()) 
 			return;
-		} catch (HibernateException e) {
-			log.info("no session in this thread", e);
-		}
-		log.info("lets open one?");
-		try {
-			this.session = hibernateTemplate.getSessionFactory().openSession();
-			log.info("session created.");
-			return;
-		} catch (HibernateException e) {
-			log.fatal("creating a session failed", e);
-			throw e;
-		}
+		this.session = this.sessionFactory.openSession();
 	}
 
 	public Object getBean(final String name) {

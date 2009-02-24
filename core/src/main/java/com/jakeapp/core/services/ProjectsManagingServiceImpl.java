@@ -1,5 +1,22 @@
 package com.jakeapp.core.services;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
@@ -7,7 +24,22 @@ import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.InvitationState;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.JakeObjectLogEntry;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProjectLogEntry;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TagLogEntry;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -15,8 +47,6 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.RequestHandlePolicy;
-import com.jakeapp.core.synchronization.TrustAwareRequestHandlePolicy;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -26,17 +56,6 @@ import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
-import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
-
-import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
 		IProjectsManagingService {
@@ -156,7 +175,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return result;
 	}
 
-	private void initProject(Project p) throws NoSuchProjectException, NotADirectoryException {
+	private void initProject(Project p) throws NoSuchProjectException,
+			NotADirectoryException {
 		log.debug("initialising project " + p);
 
 		if (p.getCredentials() == null) {
@@ -216,7 +236,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		} catch (InvalidProjectException e) {
 			throw new IllegalStateException("we created a illegal project", e);
 		}
-		
+
 		try {
 			log.debug("initializing project folder");
 			this.initializeProjectFolder(project);
@@ -316,6 +336,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			throw new ProjectException(e);
 		}
 
+		this.syncService.startServing(project, cl);
+
 		return true;
 	}
 
@@ -374,7 +396,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		File rootPath = new File(project.getRootPath());
 
-		
+
 		// add Project to the global database
 		try {
 			project = this.getProjectDao().create(project);
@@ -382,7 +404,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			log.error("Opening a project failed: Project was invalid");
 			throw new IllegalArgumentException();
 		}
-		
+
 		// add the project's file services
 		this.getProjectsFileServices().startForProject(project);
 
@@ -393,7 +415,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public boolean deleteProject(Project project, boolean deleteProjectFiles)
-			throws IllegalArgumentException, SecurityException, IOException, NotADirectoryException {
+			throws IllegalArgumentException, SecurityException, IOException,
+			NotADirectoryException {
 		boolean result = true;
 		IFSService fss;
 		FileNotFoundException t = null;

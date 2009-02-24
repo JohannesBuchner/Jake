@@ -1,11 +1,35 @@
 package com.jakeapp.core.synchronization;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchUserException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.JakeObjectLogEntry;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
@@ -28,21 +52,6 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -72,12 +81,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 */
 	private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
 
+	@Injected
 	private RequestHandlePolicy rhp;
 
+	@Injected
 	private ProjectApplicationContextFactory db;
 
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
+	@Injected
 	private ICSManager icsManager;
 
 	ICService getICS(Project p) {
@@ -262,7 +274,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		 NotLoggedInException, IllegalArgumentException {
 		LogEntry<JakeObject> le = db.getLogEntryDao(jo).getLastVersion(jo);
 		log.debug("got logentry: " + le);
-		this.getRequestHandelPolicy().getPotentialJakeObjectProviders(jo);
+		this.getRequestHandlePolicy().getPotentialJakeObjectProviders(jo);
 		if (le == null) { // delete
 			log.debug("lets delete it");
 			try {
@@ -285,6 +297,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		 throws NotLoggedInException {
 		FileObject fo = (FileObject) le.getBelongsTo();
 		String relpath = fo.getRelPath();
+		
+		//ICService ics = this.icsManager.getICService(p);
+		//UserId user = this.icsManager.getBackendUserId(p, le.getMember());
+		//IMsgService negotiationService = null;
+		//ITransferMethod tm = ics.getTransferMethodFactory().getTransferMethod(negotiationService , user);
+		//tm.request(request, nsl)
 		//
 		//FailoverCapableFileTransferService ts = getTransferService(p);
 		//log.debug("pulling file from $randomguy");
@@ -574,10 +592,8 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 	@Override
-	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
+	public void startServing(Project p, ChangeListener cl)
 		 throws ProjectException {
-
-		setRequestHandelPolicy(rhp);
 		
 		// this creates the ics
 		getICS(p).getMsgService().registerReceiveMessageListener(this);
@@ -713,15 +729,12 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	}
 
 
-	public RequestHandlePolicy getRequestHandelPolicy() {
-		if (this.rhp == null) {
-			this.rhp = new TrustAllRequestHandlePolicy(db, projectsFileServices);
-		}
+	public RequestHandlePolicy getRequestHandlePolicy() {
 		return this.rhp;
 	}
 
-
-	public void setRequestHandelPolicy(RequestHandlePolicy rhp) {
+	@Injected
+	public void setRequestHandlePolicy(RequestHandlePolicy rhp) {
 		this.rhp = rhp;
 	}
 

@@ -125,14 +125,14 @@ public interface ISyncService {
 
 
 	/**
-	 * start offering files to others, etc. TODO
+	 * start offering files to others, etc. 
 	 *
 	 * @param p
 	 * @param rhp
 	 * @param cl
 	 * @throws ProjectException
 	 */
-	public void startServing(Project p, RequestHandlePolicy rhp, ChangeListener cl)
+	public void startServing(Project p, ChangeListener cl)
 			  throws ProjectException;
 
 	/**

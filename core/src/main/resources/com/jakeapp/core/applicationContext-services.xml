@@ -30,8 +30,18 @@
                          type="com.jakeapp.core.dao.IServiceCredentialsDao"/>
         <property name="ICSManager" ref="icsManager"/>
     </bean>
+    
+    <!-- TODO later: change to TrustAware -->
+    <bean id="requestHandlePolicy" class="com.jakeapp.core.synchronization.TrustAllRequestHandlePolicy">
+        <constructor-arg index="0" ref="applicationContextFactory"
+                         type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
+        <constructor-arg index="1" ref="projectsFileServices"
+                         type="com.jakeapp.core.services.IProjectsFileServices"/>
+    </bean>
+    
     <bean id="syncService" class="com.jakeapp.core.synchronization.SyncServiceImpl">
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
+        <property name="requestHandlePolicy" ref="requestHandlePolicy"/>
         <property name="projectsFileServices" ref="projectsFileServices"/>
         <property name="ICSManager" ref="icsManager"/>
     </bean>
