@@ -4,20 +4,6 @@
 
 package com.jakeapp.gui.swing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.Application;
-import org.jdesktop.application.SingleFrameApplication;
-
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -31,6 +17,16 @@ import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
+import org.apache.log4j.Logger;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.SingleFrameApplication;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The main class of the application.
@@ -79,6 +75,10 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		// SplashWindow.splash(new
 		// ImageIcon(Toolkit.getDefaultToolkit().getImage(
 		// getClass().getResource("/icons/jakeapp-large.png"))).getImage());
+
+		//ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+		//				new String[]{"/com/jakeapp/core/applicationContext.xml",
+		//								"/com/jakeapp/gui/swing/applicationContext-gui.xml"});
 
 		SpringThreadBroker.getInstance().loadSpring(
 				new String[] { "/com/jakeapp/core/applicationContext.xml",

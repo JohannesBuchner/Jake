@@ -23,6 +23,13 @@
 			<url>http://dev.jakeapp.com/build/maven-repository/</url>
 			<layout>default</layout>
 		</repository>
+        <!-- TODO: remove this repo, add smackx-debug to our repo -->
+		<repository>
+			<id>reucon</id>
+			<name>reucon maven</name>
+			<url>http://maven.reucon.com/public/</url>
+			<layout>default</layout>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -48,7 +55,8 @@
         </dependency>
         <dependency>
             <groupId>org.igniterealtime.smack</groupId>
-            <artifactId>smackx</artifactId>
+            <!-- TODO: Can be replaced with smackx in production code. -->
+            <artifactId>smackx-debug</artifactId>
             <version>3.1.0</version>
             <scope>compile</scope>
         </dependency>

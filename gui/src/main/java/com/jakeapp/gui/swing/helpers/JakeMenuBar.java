@@ -10,6 +10,7 @@ import net.roydesign.app.QuitJMenuItem;
 import net.roydesign.mac.MRJAdapter;
 import net.roydesign.ui.StandardMacAboutFrame;
 import org.apache.log4j.Logger;
+import org.jivesoftware.smack.XMPPConnection;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -176,6 +177,20 @@ public class JakeMenuBar extends JMenuBar {
 			}
 		});
 		debugMenu.add(cureGetFilesDebugViewItem);
+
+		final JCheckBoxMenuItem xmppDebugViewItem = new JCheckBoxMenuItem("XMPP Debug Window (activates on new connection)");
+		xmppDebugViewItem.setSelected(XMPPConnection.DEBUG_ENABLED);
+		xmppDebugViewItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				log.info("XMPP Debug Window");
+				XMPPConnection.DEBUG_ENABLED = true;
+				xmppDebugViewItem.setSelected(XMPPConnection.DEBUG_ENABLED);
+			}
+		});
+		debugMenu.add(xmppDebugViewItem);		
+
 
 		this.add(debugMenu);
 
