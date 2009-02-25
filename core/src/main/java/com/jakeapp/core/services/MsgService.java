@@ -204,13 +204,12 @@ public abstract class MsgService<T extends UserId> {
 
 	public VisibilityStatus getVisibilityStatus() {
 		if (this.getMainIcs() == null) {
-			log.warn("no main ics!");
-			return VisibilityStatus.OFFLINE;
+			throw new IllegalStateException("no main ics");
 		}
 		if (this.getMainIcs().getStatusService().isLoggedIn())
 			return VisibilityStatus.ONLINE;
 		else
-			return VisibilityStatus.OFFLINE;
+			return VisibilityStatus.ONLINE; // FIXME
 	}
 
 	public T getUserId() {
