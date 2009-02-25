@@ -327,16 +327,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
 			this.getProjectsFileServices().startForProject(project);
-			
 			this.syncService.startServing(project, cl);
-			
 			project.setStarted(true);
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
-
-		
-
 		return true;
 	}
 
