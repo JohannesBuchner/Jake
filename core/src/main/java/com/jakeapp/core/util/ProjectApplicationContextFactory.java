@@ -55,12 +55,8 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		this.projectDao = projectDao;
 		this.sessionFactory = sessionFactory;
 
-		// sessionFactory.getCurrentSession().beginTransaction();
-
 		// do not load here, it deadlocks the Spring thread
 		// loadProjectUUIDs();
-
-		// sessionFactory.getCurrentSession().getTransaction().commit();
 	}
 
 	/**

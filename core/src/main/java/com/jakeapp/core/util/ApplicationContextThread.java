@@ -33,6 +33,8 @@ public class ApplicationContextThread extends ThreadBroker {
 
 	private SessionFactory sessionFactory;
 
+	private HibernateTemplate hibernateTemplate;
+
 	/**
 	 * starts a new Thread that loads the given ApplicationContext
 	 * 
@@ -60,8 +62,11 @@ public class ApplicationContextThread extends ThreadBroker {
 			this.applicationContext.refresh();
 			log.debug("configuring context done");
 
-		checkSession();
+			this.hibernateTemplate = (HibernateTemplate) this.applicationContext
+					.getBean("hibernateTemplate");
+			this.sessionFactory = this.hibernateTemplate.getSessionFactory();
 
+			checkSession();
 		} catch (Exception e) {
 			log.fatal("starting ApplicationContextThread failed", e);
 			return;
@@ -70,19 +75,15 @@ public class ApplicationContextThread extends ThreadBroker {
 	}
 
 	private void checkSession() {
-		log.debug("checking session");
-		HibernateTemplate hibernateTemplate = (HibernateTemplate) this.applicationContext
-				.getBean("hibernateTemplate");
 		try {
-			this.session = hibernateTemplate.getSessionFactory().getCurrentSession();
-			log.info("we already have a session.");
+			this.session = this.sessionFactory.getCurrentSession();
 			return;
 		} catch (HibernateException e) {
 			log.info("no session in this thread", e);
 		}
-		log.info("lets open one?");
+		log.info("lets a new session");
 		try {
-			this.session = hibernateTemplate.getSessionFactory().openSession();
+			this.session = this.sessionFactory.openSession();
 			log.info("session created.");
 			return;
 		} catch (HibernateException e) {
@@ -128,9 +129,7 @@ public class ApplicationContextThread extends ThreadBroker {
 	protected void runTask(InjectableTask<?> task) {
 		checkSession();
 		Transaction transaction = this.session.beginTransaction();
-		log.info("transaction opened");
 		super.runTask(task);
-		log.info("committing transaction");
 		transaction.commit();
 	}
 }
