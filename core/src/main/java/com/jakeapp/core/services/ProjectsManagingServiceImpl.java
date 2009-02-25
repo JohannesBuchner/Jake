@@ -391,13 +391,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		File rootPath = new File(project.getRootPath());
 
+		if(project != null && project.getMessageService() != null && project.getCredentials() ==null)
+			project.setCredentials(project.getMessageService().getServiceCredentials());
 
 		// add Project to the global database
 		try {
 			project = this.getProjectDao().create(project);
 		} catch (InvalidProjectException e) {
 			log.error("Opening a project failed: Project was invalid");
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(e);
 		}
 
 		// add the project's file services
