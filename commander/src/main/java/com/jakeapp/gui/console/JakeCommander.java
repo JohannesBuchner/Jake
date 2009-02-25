@@ -110,9 +110,11 @@ public class JakeCommander extends Commander {
 	}
 
 	private abstract class LazyProjectDirectoryCommand extends LazyCommand {
+		private boolean cannotHaveProject;
 
-		public LazyProjectDirectoryCommand(String command, String help) {
+		public LazyProjectDirectoryCommand(String command, String help, boolean cannotHaveProject) {
 			super(command, command + " <Folder>", help);
+			this.cannotHaveProject = cannotHaveProject;
 		}
 
 		public LazyProjectDirectoryCommand(String command) {
@@ -124,7 +126,7 @@ public class JakeCommander extends Commander {
 			if (args.length != 2)
 				return false;
 			if (project != null)
-				return false;
+				if(cannotHaveProject) return false;
 			File projectFolder = new File(args[1]);
 			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
 				System.out.println("not a directory");
@@ -373,7 +375,7 @@ public class JakeCommander extends Commander {
 	class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
 		public CreateProjectCommand() {
-			super("createProject", "needs a MsgService; provides a open project");
+			super("createProject", "needs a MsgService; provides a open project", true);
 		}
 
 		@Override
@@ -446,7 +448,7 @@ public class JakeCommander extends Commander {
 	class OpenProjectCommand extends LazyProjectDirectoryCommand {
 
 		public OpenProjectCommand() {
-			super("openProject", "provides a open project");
+			super("openProject", "provides a open project", true);
 		}
 
 		@Override
@@ -487,7 +489,7 @@ public class JakeCommander extends Commander {
 	class StartProjectCommand extends LazyProjectDirectoryCommand {
 
 		public StartProjectCommand() {
-			super("startProject", "provides an started project");
+			super("startProject", "provides an started project", false);
 		}
 
 		@Override
@@ -552,7 +554,7 @@ public class JakeCommander extends Commander {
 	class AcceptInviteCommand extends LazyProjectDirectoryCommand {
 
 		public AcceptInviteCommand() {
-			super("acceptInvite", "needs MsgService; accepts first invited project");
+			super("acceptInvite", "needs MsgService; accepts first invited project", true);
 		}
 
 		@Override

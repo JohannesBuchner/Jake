@@ -62,10 +62,10 @@ import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 /**
  * This class should be active whenever you want to use files <p/> On
  * Project->pause/start call
- * {@link #startServing(Project, RequestHandlePolicy, ChangeListener)} and
+ * {@link #startServing(Project, ChangeListener)} and
  * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
  * used.
- * 
+ *
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncService implements
@@ -145,7 +145,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	 * <li>in the ics</li>
 	 * </ul>
 	 * We should only trust the logentries and fix everything else by that.
-	 * 
+	 *
 	 * @param project
 	 */
 	@Transactional
@@ -358,6 +358,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Override
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId pm)
 			throws IllegalArgumentException, IllegalProtocolException {
+		log.info("Started a log sync");
 		// TODO Auto-generated method stub
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
@@ -369,7 +370,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	/**
 	 * Avoiding stub objects (without ID)
-	 * 
+	 *
 	 * @param <T>
 	 * @param join
 	 * @return the FileObject or NoteObject from the Database
@@ -397,7 +398,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	/**
 	 * NullSave getter for {@link LogEntry#getMember()}
-	 * 
+	 *
 	 * @param lastle
 	 * @return ProjectMember or null, if LogEntry is null.
 	 */
@@ -623,7 +624,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		@Override
 		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
-				String content) {
+		                            String content) {
 			// TODO Auto-generated method stub
 
 		}
@@ -741,7 +742,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 		@Override
 		public void onUpdate(AdditionalFileTransferData transfer, Status status,
-				double progress) {
+		                     double progress) {
 			log.info("progress for " + jo + " : " + status + " - " + progress);
 			cl.pullProgressUpdate(jo, status, progress);
 		}
@@ -849,9 +850,7 @@ public class SyncServiceImpl extends FriendlySyncService implements
 				this.startLogSync(p, getICSManager().getFrontendUserId(p, from_userid));
 			} catch (IllegalProtocolException e) {
 				// This should neeeeeeeeever happen
-				log
-						.fatal(
-								"Received an unexpected IllegalProtocolException while trying to perform logsync",
+				log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
 								e);
 			}
 		}
