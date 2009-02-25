@@ -1,9 +1,13 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
@@ -83,6 +87,12 @@ public class FileObjectsTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
+
+		// FIXME cache!! get async?
+		Attributed<FileObject> fileInfo = JakeMainApp.getCore().getJakeObjectSyncStatus(
+								JakeMainApp.getProject(),
+								ournode.getFileObject());
+
 		switch (Columns.values()[columnIndex]) {
 			case FLock:
 				return new FileObjectLockedCell(ournode.getFileObject());
@@ -99,12 +109,11 @@ public class FileObjectsTableModel extends AbstractTableModel {
 					return System.getProperty("file.separator");
 				}
 			case Size:
-				// TODO
-				//return FileUtilities.getSize(JakeMainApp.getApp().getCore().getFileSize(ournode.getFileObject()));
+				return FileUtilities.getSize(fileInfo.getSize());
 			case LastMod:
-				//return TimeUtilities.getRelativeTime(JakeMainApp.getApp().getCore().getFileLastModified(ournode.getFileObject()));
+				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
 			case Tags:
-				return "";
+				return ""; // FIXME
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";

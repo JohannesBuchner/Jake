@@ -12,7 +12,6 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
@@ -317,11 +316,12 @@ public class JakeStatusBar extends JakeGuiComponent implements
 				JakeExecutor.exec(new ProjectSizeTotalWorker());
 			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
 				int notesCount = 0;
-				try {
-					notesCount = getCore().getNotes(getProject()).size();
-				} catch (NoteOperationFailedException e) {
-					ExceptionUtilities.showError(e);
-				}
+				//try {
+					// FIXME
+					//notesCount = getCore().getNotes(getProject()).size();
+				//} //catch (NoteOperationFailedException e) {
+					//ExceptionUtilities.showError(e);
+			//	}
 				String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
 
 				statusLabel.setText(notesCount + " " + notesCountStr);

@@ -537,8 +537,7 @@ public interface ICoreAccess {
 	 * @return list of attibuted note objects
 	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public List<Attributed<NoteObject>> getNotes(Project project)
-					throws NoteOperationFailedException;
+	public AvailableLaterObject<List<Attributed<NoteObject>>> getNotes(Project project);
 
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.
@@ -665,8 +664,6 @@ public interface ICoreAccess {
 	 */
 	AvailableLaterObject<Boolean> login(MsgService service, String password,
 					boolean rememberPassword);
-
-	List<FileObject> getFilesDEBUG(Project project);
 }
 
 

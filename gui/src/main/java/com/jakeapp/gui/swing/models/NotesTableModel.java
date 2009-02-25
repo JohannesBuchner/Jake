@@ -5,9 +5,9 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.worker.GetAllProjectNotesWorker;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -93,12 +93,18 @@ public class NotesTableModel extends DefaultTableModel {
 			return;
 		}
 
+		// get notes!6
+	  JakeExecutor.exec(new GetAllProjectNotesWorker(JakeMainApp.getProject()));
+	}
+
+	public void updateNotes(List<Attributed<NoteObject>> notes) {
+	// FIXME: exception handling!	
 		this.attributedNotes.clear();
-		try {
-			this.attributedNotes = this.core.getNotes(project);
-		} catch (NoteOperationFailedException e) {
-			ExceptionUtilities.showError(e);
-		}
+//		try {
+			this.attributedNotes = notes;
+	//	} catch (NoteOperationFailedException e) {
+//			ExceptionUtilities.showError(e);
+//		}
 	}
 
 	@Override

@@ -516,9 +516,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 			// start get all files from project, async
 			JakeExecutor.exec(new GetAllProjectFilesWorker(JakeMainApp.getProject()));
-
-			// FIXME
-			//setProjectFiles(JakeMainApp.getCore().getFilesDEBUG(project));
 		}
 	}
 

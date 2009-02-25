@@ -4,6 +4,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -148,7 +149,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<FileObject> getFiles(Project p) throws IOException;
+	public AvailableLaterObject<List<FileObject>> getFiles(Project p) throws IOException;
 
 	/**
 	 * Invites a User to a project.

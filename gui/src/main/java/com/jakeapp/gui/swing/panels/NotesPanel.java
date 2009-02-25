@@ -5,7 +5,11 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.actions.CommitNoteAction;
+import com.jakeapp.gui.swing.actions.CreateNoteAction;
+import com.jakeapp.gui.swing.actions.DeleteNoteAction;
+import com.jakeapp.gui.swing.actions.SaveNoteAction;
+import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
@@ -30,7 +34,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -396,5 +405,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	public JTable getNotesTable() {
 		return this.notesTable;
+	}
+
+	public void setProjectNotes(List<Attributed<NoteObject>> notes) {
+		notesTableModel.updateNotes(notes);
 	}
 }

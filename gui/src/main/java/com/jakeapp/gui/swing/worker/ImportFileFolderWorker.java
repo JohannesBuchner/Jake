@@ -6,10 +6,6 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import java.io.File;
 import java.util.List;
 
-/**
- * @author: studpete
- */
-
 public class ImportFileFolderWorker extends SwingWorkerWithAvailableLaterObject<Void> {
 	private List<File> files;
 	private String destFolderRelPath;
