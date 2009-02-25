@@ -47,31 +47,48 @@ public class ApplicationContextThread extends ThreadBroker {
 
 	@Override
 	public void run() {
-		log.debug("requesting context");
-		this.applicationContext = new ClassPathXmlApplicationContext(
-				ApplicationContextThread.this.configLocation);
-		log.debug("configuring context");
-		Properties props = new Properties();
-		props.put("db_path", this.identifier.toString());
-		PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
-		cfg.setProperties(props);
-		this.applicationContext.addBeanFactoryPostProcessor(cfg);
-		this.applicationContext.refresh();
-		log.debug("configuring context done");
+		try {
+			log.debug("requesting context");
+			this.applicationContext = new ClassPathXmlApplicationContext(
+					ApplicationContextThread.this.configLocation);
+			log.debug("configuring context");
+			Properties props = new Properties();
+			props.put("db_path", this.identifier.toString());
+			PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
+			cfg.setProperties(props);
+			this.applicationContext.addBeanFactoryPostProcessor(cfg);
+			this.applicationContext.refresh();
+			log.debug("configuring context done");
 
-		HibernateTemplate hibernateTemplate = (HibernateTemplate) this.applicationContext.getBean(
-				"sessionFactory");
-		this.sessionFactory = hibernateTemplate.getSessionFactory();
-		
 		checkSession();
 
+		} catch (Exception e) {
+			log.fatal("starting ApplicationContextThread failed", e);
+			return;
+		}
 		super.run();
 	}
 
 	private void checkSession() {
-		if(this.session != null && this.session.isOpen()) 
+		log.debug("checking session");
+		HibernateTemplate hibernateTemplate = (HibernateTemplate) this.applicationContext
+				.getBean("hibernateTemplate");
+		try {
+			this.session = hibernateTemplate.getSessionFactory().getCurrentSession();
+			log.info("we already have a session.");
 			return;
-		this.session = this.sessionFactory.openSession();
+		} catch (HibernateException e) {
+			log.info("no session in this thread", e);
+		}
+		log.info("lets open one?");
+		try {
+			this.session = hibernateTemplate.getSessionFactory().openSession();
+			log.info("session created.");
+			return;
+		} catch (HibernateException e) {
+			log.fatal("creating a session failed", e);
+			throw e;
+		}
 	}
 
 	public Object getBean(final String name) {
@@ -111,7 +128,9 @@ public class ApplicationContextThread extends ThreadBroker {
 	protected void runTask(InjectableTask<?> task) {
 		checkSession();
 		Transaction transaction = this.session.beginTransaction();
+		log.info("transaction opened");
 		super.runTask(task);
+		log.info("committing transaction");
 		transaction.commit();
 	}
 }
