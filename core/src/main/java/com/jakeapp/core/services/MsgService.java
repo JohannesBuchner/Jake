@@ -35,8 +35,6 @@ public abstract class MsgService<T extends UserId> {
 
 	private String name = "notInitialized";
 
-	private VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
-
 	protected T userId;
 
 	private ServiceCredentials serviceCredentials;
@@ -205,11 +203,13 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	public VisibilityStatus getVisibilityStatus() {
-		if(this.getMainIcs() == null)
+		if (this.getMainIcs() == null) {
+			log.warn("no main ics!");
 			return VisibilityStatus.OFFLINE;
-		if(this.getMainIcs().getStatusService().isLoggedIn())
+		}
+		if (this.getMainIcs().getStatusService().isLoggedIn())
 			return VisibilityStatus.ONLINE;
-		else 
+		else
 			return VisibilityStatus.OFFLINE;
 	}
 
@@ -289,6 +289,9 @@ public abstract class MsgService<T extends UserId> {
 
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
 			throws NotLoggedInException, NetworkException, TimeoutException {
+		log
+				.debug("updating status of " + ics + " to match "
+						+ this.getVisibilityStatus());
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = this.getIcsUser(ics, listeners);
 			log.debug("logging in " + user);
@@ -300,14 +303,15 @@ public abstract class MsgService<T extends UserId> {
 			ics.getStatusService().registerLoginStateListener(
 					listeners.loginStateListener);
 		} else {
-			if(ics.getStatusService().isLoggedIn()) {
+			if (ics.getStatusService().isLoggedIn()) {
 				log.debug("logging out " + ics.getStatusService().getUserid());
 				ics.getStatusService().logout();
 			}
 		}
 	}
 
-	abstract protected com.jakeapp.jake.ics.UserId getIcsUser(ICService ics, ICData listeners);
+	abstract protected com.jakeapp.jake.ics.UserId getIcsUser(ICService ics,
+			ICData listeners);
 
 	public void deactivateSubsystem(ICService ics) throws NetworkException {
 		this.activeSubsystems.remove(ics);

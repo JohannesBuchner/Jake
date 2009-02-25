@@ -26,10 +26,6 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	private XmppICService mainIcs = new XmppICService(namespace, "Jake");
 
-	private XmppUserId mainUserId;
-
-	private String host;
-
 	public XMPPMsgService() {
 
 	}
@@ -39,16 +35,8 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		ServiceCredentials cred = this.getServiceCredentials();
 		log.debug("got credentials: " + cred.getUserId() + " pwl: "
 				+ cred.getPlainTextPassword().length());
-		this.mainUserId = new XmppUserId(new XmppUserId(cred.getUserId())
-				.getUserIdWithOutResource()
-				+ "/Jake");
-		if (!this.mainUserId.isOfCorrectUseridFormat()) {
-			this.mainUserId = null;
+		if (!this.getMainUserId().isOfCorrectUseridFormat()) {
 			return false;
-		}
-		this.host = cred.getServerAddress();
-		if (this.host == null || this.host.isEmpty()) {
-			this.host = this.mainUserId.getHost();
 		}
 		if (cred.getPlainTextPassword().isEmpty()) {
 			return false;
@@ -62,7 +50,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 				.debug("got credentials: " + this.getServiceCredentials().getUserId()
 						+ " pwl: "
 						+ this.getServiceCredentials().getPlainTextPassword().length());
-		boolean success = this.mainIcs.getStatusService().login(this.mainUserId,
+		boolean success = this.mainIcs.getStatusService().login(this.getMainUserId(),
 				this.getServiceCredentials().getPlainTextPassword());
 
 
@@ -147,7 +135,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	public void createAccount() throws NetworkException {
-		this.mainIcs.getStatusService().createAccount(mainUserId,
+		this.mainIcs.getStatusService().createAccount(getMainUserId(),
 				this.getServiceCredentials().getPlainTextPassword());
 	}
 
@@ -158,7 +146,9 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	protected XmppUserId getMainUserId() {
-		return this.mainUserId;
+		return new XmppUserId(new XmppUserId(this.getServiceCredentials().getUserId())
+				.getUserIdWithOutResource()
+				+ "/Jake");
 	}
 
 	@Override
