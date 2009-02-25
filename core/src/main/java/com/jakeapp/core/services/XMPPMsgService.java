@@ -12,6 +12,7 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
@@ -45,7 +46,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	}
 
 	@Override
-	protected boolean doLogin() throws NetworkException {
+	protected boolean doLogin() throws TimeoutException, NetworkException {
 		log
 				.debug("got credentials: " + this.getServiceCredentials().getUserId()
 						+ " pwl: "
@@ -56,28 +57,13 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 		if (success) {
 			log.debug("login success");
-			/*
-			 * try { com.jakeapp.core.domain.UserId result = getUserIdDao().get(
-			 * this.getUser());
-			 * this.setUserId(XMPPUserId.createFromUserId(result)); } catch
-			 * (NoSuchUserIdException e) { e.printStackTrace(); } catch
-			 * (InvalidUserIdException e) { XMPPUserId xmppResult = new
-			 * XMPPUserId(this .getServiceCredentials(), UUID.fromString(this
-			 * .getServiceCredentials().getUuid()), this
-			 * .getServiceCredentials().getUser(), this
-			 * .getServiceCredentials().getUser(), "", "");
-			 * 
-			 * try { getUserIdDao().create(xmppResult);
-			 * this.setUserId(xmppResult); } catch (InvalidUserIdException e1) {
-			 * e1.printStackTrace(); } }
-			 */
 		}
 
 		return success;
 	}
 
 	@Override
-	protected void doLogout() throws NetworkException {
+	protected void doLogout() throws TimeoutException, NetworkException {
 		log.debug("XMPPMsgService -> logout");
 
 		this.mainIcs.getStatusService().logout();
@@ -85,47 +71,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	public UserId getUserId(String userId) throws UserIdFormatException {
-		log.debug("calling getUser");
-
-		UserId result = new UserId(ProtocolType.XMPP, userId);
-		return result;
-
-		//
-		// if (super.getUser() == null) {
-		// log.debug("current userid is null");
-		//
-		// try {
-		// setUserId(
-		// XMPPUserId.createFromUserId(getUserIdDao().get(UUID.fromString(this.
-		// getServiceCredentials().getUuid())))
-		//
-		// );
-		// return this.userId;
-		// } catch (InvalidUserIdException e) {
-		// log.debug("InvalidUserIdException couldn't get UserId");
-		// e.printStackTrace();
-		// } catch (NoSuchUserIdException e) {
-		// log.debug("NoSuchUserIdException couldn't get UserId");
-		// e.printStackTrace();
-		// }
-		//
-		// if (super.getUser() == null) {
-		// log.debug("userid is still null");
-		// XMPPUserId result = new XMPPUserId(this.getServiceCredentials(), UUID
-		// .randomUUID(), "TODO test", "todo nickname", "todo firstname",
-		// "todo surname");
-		// return result;
-		// }
-		// else
-		// {
-		// log.debug("userid is not null");
-		// return this.userId;
-		// }
-		//
-		// }
-		//
-		// return this.userId;
-
+		return new UserId(ProtocolType.XMPP, userId);
 	}
 
 	@Override

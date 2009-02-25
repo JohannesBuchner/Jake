@@ -98,10 +98,10 @@ public abstract class MsgService<T extends UserId> {
 	 * This method gets called by clients to login on this message service.
 	 * 
 	 * @return true on success, false on wrong password
-	 * @throws Exception
-	 *             the login failed for another reason
+	 * @throws NetworkException 
+	 * @throws TimeoutException 
 	 */
-	public final boolean login() throws Exception {
+	public final boolean login() throws TimeoutException, NetworkException {
 		boolean result;
 
 		log.debug("calling plain login");
@@ -175,14 +175,16 @@ public abstract class MsgService<T extends UserId> {
 
 	protected abstract boolean doCredentialsCheck();
 
-	protected abstract boolean doLogin() throws Exception;
+	protected abstract boolean doLogin() throws TimeoutException, NetworkException;
 
 	/**
 	 * idempotent
+	 * @throws NetworkException 
+	 * @throws TimeoutException 
 	 * 
 	 * @throws Exception
 	 */
-	public final void logout() throws Exception {
+	public final void logout() throws TimeoutException, NetworkException {
 		log.debug("MsgService -> logout");
 		this.doLogout();
 
@@ -191,10 +193,12 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * has to be idempotent
+	 * @throws NetworkException 
+	 * @throws TimeoutException 
 	 * 
 	 * @throws Exception
 	 */
-	protected abstract void doLogout() throws Exception;
+	protected abstract void doLogout() throws TimeoutException, NetworkException;
 
 	public void setServiceCredentials(ServiceCredentials credentials) {
 		log.debug("setting service credentials to " + credentials.getUserId() + " pwl: "
