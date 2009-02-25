@@ -82,4 +82,13 @@ public interface IUsersService {
 	 */
 	public void requestOnlineNotification(UserId userid)
 			throws NotLoggedInException;
+
+	/**
+	 * get the name associated with this user 
+	 * 
+	 * @param user
+	 * @return the name as set by addUser, or an empty String
+	 * @throws NotLoggedInException
+	 */
+	public String getNickName(UserId user) throws NotLoggedInException;
 }

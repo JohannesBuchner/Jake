@@ -57,12 +57,14 @@ import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
+import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.status.IStatusService;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
 		IProjectsManagingService {
@@ -794,42 +796,46 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		TrustState state;
 		com.jakeapp.jake.ics.UserId backendUser;
 		MsgService msgService;
-		String nickname, firstname, lastname;
-		VisibilityStatus visibilityStatus;
+		ICService ics;
+		String nickname = "", firstname = "", lastname = "";
+		VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
 		UserInfo result = null;
 		IStatusService statusService;
+		IUsersService usersService;
 
 		msgService = project.getMessageService();
 		backendUser = msgService.getIcsManager()
 				.getBackendUserId(project, user);
+		ics = msgService.getIcsManager().getICService(project);
 		statusService = msgService.getMainIcs().getStatusService();
-
+		usersService = ics.getUsersService();
+		
+		state = this.getLogEntryDao(project).trustsHow(project.getUserId(),
+				user);
+		
 		try {
-			state = this.getLogEntryDao(project).trustsHow(project.getUserId(),
-					user);
-			// TODO Handle different VisibilityStati
-			visibilityStatus = (statusService.isLoggedIn(backendUser)) ? VisibilityStatus.ONLINE
-					: VisibilityStatus.OFFLINE;
 			firstname = statusService.getFirstname(backendUser);
 			lastname = statusService.getLastname(backendUser);
-			nickname = backendUser.getUserId();
-
-			result = new UserInfo(state, visibilityStatus, nickname, firstname,
-					lastname, user);
-		} catch (NoSuchUseridException e) {
-			
-			//TODO some of these exception should be re-raised.
-			
-			log.warn("made request for non-existing UserId",e);
-		} catch (NotLoggedInException e) {
-			log.warn("Login required",e);
-		} catch (TimeoutException e) {
-			log.error("Operation timed out.",e);
-		} catch (NetworkException e) {
-			log.error("Network error.",e);
+			nickname = usersService.getNickName(backendUser);
 		} catch (OtherUserOfflineException e) {
-			log.warn("Other user is not online.",e);
+		} catch (NotLoggedInException e) {
+		} catch (NetworkException e) {
 		}
+		try{
+			usersService.requestOnlineNotification(backendUser);
+			if(statusService.isLoggedIn(backendUser)){
+				visibilityStatus = VisibilityStatus.ONLINE;
+			}else{
+				visibilityStatus = VisibilityStatus.OFFLINE;
+			}
+		} catch (NotLoggedInException e) {
+		} catch (TimeoutException e) {
+		} catch (NetworkException e) {
+		}
+		nickname = backendUser.getUserId();
+
+		result = new UserInfo(state, visibilityStatus, nickname, firstname,
+				lastname, user);
 
 		return result;
 	}

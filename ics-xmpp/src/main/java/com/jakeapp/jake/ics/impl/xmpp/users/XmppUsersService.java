@@ -87,6 +87,17 @@ public class XmppUsersService implements IUsersService {
 		return this.con.getConnection().getRoster();
 	}
 
+	public String getNickName(UserId user) throws NotLoggedInException {
+		assertLoggedIn();
+
+		RosterEntry entry = getGroup().getEntry(user.getUserId());
+		if(entry == null) {
+			return "";
+		}else{
+			return entry.getName();
+		}
+	}
+
 	public Iterable<UserId> getUsers() throws NotLoggedInException {
 		assertLoggedIn();
 
