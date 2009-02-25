@@ -45,7 +45,6 @@ import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
-import com.jakeapp.core.synchronization.ChangeAdapter;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
@@ -57,6 +56,12 @@ import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.status.IStatusService;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
 		IProjectsManagingService {
@@ -184,8 +189,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (p.getCredentials() == null) {
 			log.warn("fixing null credentials (bug workaround) ");
 			try {
-				// workaround until many-to-one works (bug 46)
-				UserId user = new UserId(ProtocolType.XMPP, "testuser1@localhost");
 				ServiceCredentials credentials = this.getServiceCredentialsDao().getAll()
 						.get(0);
 				credentials.setProtocol(ProtocolType.XMPP);
@@ -388,9 +391,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	public Project openProject(Project project) throws IllegalArgumentException,
 			InvalidProjectException, IOException, NotADirectoryException {
-
-		File rootPath = new File(project.getRootPath());
-
 		if(project != null && project.getMessageService() != null && project.getCredentials() ==null)
 			project.setCredentials(project.getMessageService().getServiceCredentials());
 
@@ -585,28 +585,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		
 		//insert logentry
 		this.getLogEntryDao(project).create(le);
-	}
-
-	/**
-	 * sends an Invitation to another ProjectMember
-	 * 
-	 * @param project
-	 * @param userId
-	 */
-	// TODO: why is this private? not needed?
-	private void inviteMember(Project project, UserId userId) {
-		if (project.getUserId() == null) {
-			throw new IllegalArgumentException(
-					"Project needs a UserId before a member can be invited.");
-		}
-
-		// this is perfectly ok, invite is called on ourself in setTrust
-		// (assignUserToProject)
-		if (project.getUserId().equals(userId)) {
-			log.info("Not inviting myself.");
-		} else {
-			this.getSyncService().invite(project, userId);
-		}
 	}
 
 	@Transactional
@@ -817,11 +795,47 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public UserInfo getProjectUserInfo(Project project, UserId user) {
-		TrustState state = this.getLogEntryDao(project).trustsHow(project.getUserId(),
-				user);
+		TrustState state;
+		com.jakeapp.jake.ics.UserId backendUser;
+		MsgService msgService;
+		String nickname, firstname, lastname;
+		VisibilityStatus visibilityStatus;
+		UserInfo result = null;
+		IStatusService statusService;
 
-		// TODO: fill in with useful data
-		return new UserInfo(state, VisibilityStatus.ONLINE, "Nick", "First", "Last", user);
+		msgService = project.getMessageService();
+		backendUser = msgService.getIcsManager()
+				.getBackendUserId(project, user);
+		statusService = msgService.getMainIcs().getStatusService();
+
+		try {
+			state = this.getLogEntryDao(project).trustsHow(project.getUserId(),
+					user);
+			// TODO Handle different VisibilityStati
+			visibilityStatus = (statusService.isLoggedIn(backendUser)) ? VisibilityStatus.ONLINE
+					: VisibilityStatus.OFFLINE;
+			firstname = statusService.getFirstname(backendUser);
+			lastname = statusService.getLastname(backendUser);
+			nickname = backendUser.getUserId();
+
+			result = new UserInfo(state, visibilityStatus, nickname, firstname,
+					lastname, user);
+		} catch (NoSuchUseridException e) {
+			
+			//TODO some of these exception should be re-raised.
+			
+			log.warn("made request for non-existing UserId",e);
+		} catch (NotLoggedInException e) {
+			log.warn("Login required",e);
+		} catch (TimeoutException e) {
+			log.error("Operation timed out.",e);
+		} catch (NetworkException e) {
+			log.error("Network error.",e);
+		} catch (OtherUserOfflineException e) {
+			log.warn("Other user is not online.",e);
+		}
+
+		return result;
 	}
 
 
