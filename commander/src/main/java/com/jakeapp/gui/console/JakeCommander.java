@@ -123,11 +123,11 @@ public class JakeCommander extends Commander {
 	}
 
 	private abstract class LazyProjectDirectoryCommand extends LazyCommand {
-		private boolean cannotHaveProject;
+		private boolean canHaveProject;
 
-		public LazyProjectDirectoryCommand(String command, String help, boolean cannotHaveProject) {
+		public LazyProjectDirectoryCommand(String command, String help, boolean canHaveProject) {
 			super(command, command + " <Folder>", help);
-			this.cannotHaveProject = cannotHaveProject;
+			this.canHaveProject = canHaveProject;
 		}
 
 		public LazyProjectDirectoryCommand(String command) {
@@ -138,8 +138,11 @@ public class JakeCommander extends Commander {
 		final public boolean handleArguments(String[] args) {
 			if (args.length != 2)
 				return false;
-			if (project != null)
-				if(cannotHaveProject) return false;
+			if (project != null) {
+				if(!canHaveProject){
+					return false;
+				}
+			}
 			File projectFolder = new File(args[1]);
 			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
 				System.out.println("not a directory");
@@ -388,7 +391,7 @@ public class JakeCommander extends Commander {
 	class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
 		public CreateProjectCommand() {
-			super("createProject", "needs a MsgService; provides a open project", true);
+			super("createProject", "needs a MsgService; provides a open project", false);
 		}
 
 		@Override
@@ -461,14 +464,14 @@ public class JakeCommander extends Commander {
 	class OpenProjectCommand extends LazyProjectDirectoryCommand {
 
 		public OpenProjectCommand() {
-			super("openProject", "provides a open project", true);
+			super("openProject", "provides a open project", false);
 		}
 
 		@Override
 		protected void handleArguments(File folder) {
 			try {
 				System.out.println("opening project");
-				project = new Project(folder.getName(), null, msg, folder);
+				project = new Project(folder.getName(), UUID.randomUUID(), msg, folder);
 				pms.openProject(project);
 				System.out.println("opening project done");
 			} catch (Exception e) {
@@ -502,7 +505,7 @@ public class JakeCommander extends Commander {
 	class StartProjectCommand extends LazyProjectDirectoryCommand {
 
 		public StartProjectCommand() {
-			super("startProject", "provides an started project", false);
+			super("startProject", "provides an started project", true);
 		}
 
 		@Override
@@ -583,7 +586,7 @@ public class JakeCommander extends Commander {
 	class AcceptInviteCommand extends LazyProjectDirectoryCommand {
 
 		public AcceptInviteCommand() {
-			super("acceptInvite", "needs MsgService; accepts first invited project", true);
+			super("acceptInvite", "needs MsgService; accepts first invited project", false);
 		}
 
 		@Override
