@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -26,6 +27,7 @@ import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 
 /**
@@ -146,8 +148,46 @@ public class JakeCommander extends Commander {
 			super(command, command + " <UUID>");
 		}
 
+		protected class GetFileListener implements AvailabilityListener<List<FileObject>> {
+			JakeObject jo;
+			UUID uuid;
+			
+			public GetFileListener(JakeObject jo,UUID uuid) {
+				super();
+				this.jo = jo;
+				this.uuid = uuid;
+			}
+			
+			@Override
+			public void error(Exception t) {
+				t.printStackTrace();
+			}
+
+			@Override
+			public void finished(List<FileObject> o) {
+				for (FileObject f : o)
+					if (uuid.equals(f.getUuid()))
+						jo = f;
+				
+				if (jo == null)
+					System.out.println("JakeObject not found");
+				else {
+					if (jo.getProject() == null)
+						jo.setProject(project);
+					handleArguments(jo);
+				}
+			}
+
+			@Override
+			public void statusUpdate(double progress, String status) {
+				//empty implementation
+			}
+		}
+		
 		@Override
 		final public boolean handleArguments(String[] args) {
+			AvailableLaterObject<List<FileObject>> avail;
+			
 			if (args.length != 2)
 				return false;
 			UUID uuid;
@@ -166,27 +206,20 @@ public class JakeCommander extends Commander {
 					if (uuid.equals(f.getJakeObject().getUuid()))
 						jo = f.getJakeObject();
 				}
-				for (FileObject f : sync.getFiles(project)) {
-					if (uuid.equals(f.getUuid()))
-						jo = f;
-				}
+				
+				avail = sync.getFiles(project);
+				avail.setListener(new GetFileListener(jo,uuid));
+				avail.start();
 			} catch (FrontendNotLoggedInException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (jo == null) {
-				System.out.println("JakeObject not found");
-				return true;
-			}
-			if (jo.getProject() == null)
-				jo.setProject(project);
-			handleArguments(jo);
+			
 			return true;
 		}
 
 		protected abstract void handleArguments(JakeObject jo);
-
 	}
 
 	private abstract class LazyNoParamsCommand extends LazyCommand {
@@ -575,9 +608,33 @@ public class JakeCommander extends Commander {
 		public ListObjectsCommand() {
 			super("listObjects", "needs Project");
 		}
+		
+		protected class GetFileListener implements AvailabilityListener<List<FileObject>> {
+			public GetFileListener() {
+				super();
+			}
+			
+			@Override
+			public void error(Exception t) {
+				t.printStackTrace();
+			}
+
+			@Override
+			public void finished(List<FileObject> o) {
+				for (FileObject f : o)
+					System.out.println("\t" + f);
+			}
+
+			@Override
+			public void statusUpdate(double progress, String status) {
+				//empty implementation
+			}
+		}
 
 		@Override
 		public void handleArguments() {
+			AvailableLaterObject<List<FileObject>> avail;
+			
 			if (project == null) {
 				System.out.println("no project");
 				return;
@@ -586,9 +643,9 @@ public class JakeCommander extends Commander {
 				for (Attributed f : sync.getNotes(project)) {
 					System.out.println("\t" + f);
 				}
-				for (FileObject f : sync.getFiles(project)) {
-					System.out.println("\t" + f);
-				}
+				avail = sync.getFiles(project);
+				avail.setListener(new GetFileListener());
+				avail.start();
 			} catch (FrontendNotLoggedInException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

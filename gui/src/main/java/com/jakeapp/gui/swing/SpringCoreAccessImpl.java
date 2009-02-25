@@ -15,6 +15,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.ChangeAdapter;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -264,31 +265,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		log.info("Starting project: " + project);
 
 		// HACK: create ChangeListener and add to
-
 		try {
 
-			ChangeListener syncChangeListener = new ChangeListener() {
-
-				@Override
-				public INegotiationSuccessListener beganRequest(JakeObject jo) {
-					return null;
-				}
-
-				@Override
-				public void pullNegotiationDone(JakeObject jo) {
-				}
-
-				@Override
-				public void pullDone(JakeObject jo) {
-				}
-
-				@Override
-				public void pullProgressUpdate(JakeObject jo, Status status,
-								double progress) {
-					log.info(
-									"pullProgressUpdate: " + jo + "status: " + status + " progress: " + progress);
-				}
-			};
+			ChangeListener syncChangeListener = new ChangeAdapter();
 
 			// actual project start
 			this.getFrontendService().getProjectsManagingService(this.getSessionId())

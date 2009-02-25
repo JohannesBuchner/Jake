@@ -45,6 +45,7 @@ import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
+import com.jakeapp.core.synchronization.ChangeAdapter;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
@@ -326,17 +327,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
 			this.getProjectsFileServices().startForProject(project);
-			/*TODO call me! syncService.startServing(
-				project,
-				new TrustAwareRequestHandlePolicy(this.getApplicationContextFactory(), this.getProjectsFileServices()),
-				null/* new ChangeListener()}
-			);*/
+			
+			this.syncService.startServing(project, cl);
+			
 			project.setStarted(true);
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
 
-		this.syncService.startServing(project, cl);
+		
 
 		return true;
 	}
