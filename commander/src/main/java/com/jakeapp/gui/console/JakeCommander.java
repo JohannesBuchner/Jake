@@ -541,6 +541,22 @@ public class JakeCommander extends Commander {
 			System.out.println("MsgService available: " + msg);
 		}
 	};
+	
+	class WaitCommand extends LazyNoParamsCommand {
+
+		public WaitCommand() {
+			super("wait", "waits for stdin input");
+		}
+
+		@Override
+		public void handleArguments() {
+			try {
+				System.in.read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	};
 
 	class InviteCommand extends LazyCommand {
 

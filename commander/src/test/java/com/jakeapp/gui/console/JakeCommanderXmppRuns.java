@@ -85,6 +85,7 @@ public class JakeCommanderXmppRuns extends TestDBEnabledTestCase {
 		fifo.addLine("openProject " + project);
 		fifo.addLine("startProject " + project);
 		fifo.addLine("login");
+		fifo.addLine("wait");
 		go();
 	}
 
