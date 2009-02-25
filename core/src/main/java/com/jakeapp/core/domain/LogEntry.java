@@ -66,7 +66,10 @@ public class LogEntry<T extends ILogable> implements Serializable {
 	 * @param comment
 	 * @param checksum
 	 * @param processed
+	 * 
+	 * @deprecated try to always use the subclasses (ProjectMemberLogEntry, etc)
 	 */
+	@Deprecated
 	LogEntry(UUID uuid, LogAction logAction, Date timestamp, 
 			T belongsTo, UserId member, String comment, String checksum,
 			Boolean processed) {

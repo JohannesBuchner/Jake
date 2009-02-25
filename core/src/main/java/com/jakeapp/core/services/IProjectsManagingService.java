@@ -395,9 +395,12 @@ public interface IProjectsManagingService {
 	 */
 	void unlock(JakeObject jo, String comment);
 
-
+	/**
+	 * 
+	 * @param project
+	 * @param userId
+	 * @param nick
+	 */
 	void setUserNickname(Project project, UserId userId, String nick);
-
-	void setUserTrustState(Project project, UserId userId, TrustState trust);
 
 }

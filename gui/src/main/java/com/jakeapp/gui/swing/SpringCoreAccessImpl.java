@@ -719,7 +719,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void peopleSetTrustState(Project project, UserId userId, TrustState trust) {
 
-		pms.setUserTrustState(project, userId, trust);
+		try {
+			pms.setTrust(project, userId, trust);
+		} catch (IllegalArgumentException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		} catch (IllegalAccessException e) {
+			this.fireErrorListener(new JakeErrorEvent(e));
+		}
 
 		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 						ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));

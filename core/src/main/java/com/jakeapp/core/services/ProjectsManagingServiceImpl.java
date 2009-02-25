@@ -34,6 +34,7 @@ import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProjectLogEntry;
+import com.jakeapp.core.domain.ProjectMemberLogEntry;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.Tag;
@@ -350,7 +351,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		
 		try {
-			syncService.stopServing(project);
+			this.syncService.stopServing(project);
 			// stops monitoring the project
 			this.getProjectsFileServices().stopForProject(project);
 		} finally {
@@ -576,12 +577,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 						LogAction.FOLLOW_TRUSTING_PROJECTMEMBER;
 		
 		//create logentry
-		le = new LogEntry<UserId>();
-		le.setBelongsTo(userId);
-		le.setLogAction(action);
-		le.setMember(project.getUserId());
-		le.setTimestamp(Calendar.getInstance().getTime());
-		le.setUuid(UUID.randomUUID());
+		le = new ProjectMemberLogEntry(action, project.getUserId(), userId);
 		
 		//insert logentry
 		this.getLogEntryDao(project).create(le);
@@ -971,11 +967,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public void setUserNickname(Project project, UserId userId, String nick) {
-		// TODO: implement!
-	}
-
-	@Override
-	public void setUserTrustState(Project project, UserId userId, TrustState trust) {
 		// TODO: implement!
 	}
 

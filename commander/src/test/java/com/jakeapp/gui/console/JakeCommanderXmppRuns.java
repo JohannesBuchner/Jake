@@ -82,7 +82,6 @@ public class JakeCommanderXmppRuns extends TestDBEnabledTestCase {
 	@Prerequisite(checker = XmppTestEnvironment.class)
 	@Test
 	public void testWithProjectOnlineRun() {
-		fifo.addLine("openProject " + project);
 		fifo.addLine("startProject " + project);
 		fifo.addLine("login");
 		fifo.addLine("wait");
