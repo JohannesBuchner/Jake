@@ -538,9 +538,20 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 *            Member to add. Must not be null.
 	 * @return the ProjectMember added
 	 */
-	@Transactional
+
 	private UserId addUserToProject(Project project, UserId userId) {
-		// TODO: @JOHANNES startTrusting
+		
+			try {
+				//check if this person is already a trusted project member
+				if (this.getLogEntryDao(project).trustsHow(project.getUserId(), userId)==TrustState.NO_TRUST) {
+					//add logentry stating that we now trust this member
+					this.setTrust(project, userId, TrustState.TRUST);
+				}
+			} catch (IllegalArgumentException e) {
+				//empty handling, as only a non-fulfilled precondition of this method was violated.
+			} catch (IllegalAccessException e) {
+				//empty handling, as only a non-fulfilled precondition of this method was violated.
+			}
 		return userId;
 	}
 
@@ -549,7 +560,31 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	public void setTrust(Project project, UserId userId, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException {
-		// TODO: @JOHANNES use startTrusting, stopStrusting
+		LogEntry<UserId> le;
+		LogAction action;
+		
+		//check preconditions
+		if (project==null) throw new IllegalArgumentException("Project may not be null");
+		else if (userId==null)  throw new IllegalArgumentException("UserId may not be null");
+		else if (project.getUserId()==null) throw new IllegalAccessException("Project must have a valid UserId");
+		
+		//determine action
+		action = (trust == TrustState.NO_TRUST) ? 
+				LogAction.STOP_TRUSTING_PROJECTMEMBER:
+				(trust == TrustState.TRUST) ?
+						LogAction.START_TRUSTING_PROJECTMEMBER:
+						LogAction.FOLLOW_TRUSTING_PROJECTMEMBER;
+		
+		//create logentry
+		le = new LogEntry<UserId>();
+		le.setBelongsTo(userId);
+		le.setLogAction(action);
+		le.setMember(project.getUserId());
+		le.setTimestamp(Calendar.getInstance().getTime());
+		le.setUuid(UUID.randomUUID());
+		
+		//insert logentry
+		this.getLogEntryDao(project).create(le);
 	}
 
 	/**
