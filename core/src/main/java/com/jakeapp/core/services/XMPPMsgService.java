@@ -58,9 +58,10 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	protected boolean doLogin() throws NetworkException {
-		log.debug("got credentials: "
-				+ this.getServiceCredentials().getUserId() + " pwl: "
-				+ this.getServiceCredentials().getPlainTextPassword().length());
+		log
+				.debug("got credentials: " + this.getServiceCredentials().getUserId()
+						+ " pwl: "
+						+ this.getServiceCredentials().getPlainTextPassword().length());
 		boolean success = this.mainIcs.getStatusService().login(this.mainUserId,
 				this.getServiceCredentials().getPlainTextPassword());
 
@@ -68,27 +69,20 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		if (success) {
 			log.debug("login success");
 			/*
-			try {
-				com.jakeapp.core.domain.UserId result = getUserIdDao().get(
-						this.getUser());
-				this.setUserId(XMPPUserId.createFromUserId(result));
-			} catch (NoSuchUserIdException e) {
-				e.printStackTrace();
-			} catch (InvalidUserIdException e) {
-				XMPPUserId xmppResult = new XMPPUserId(this
-						.getServiceCredentials(), UUID.fromString(this
-						.getServiceCredentials().getUuid()), this
-						.getServiceCredentials().getUser(), this
-						.getServiceCredentials().getUser(), "", "");
-
-				try {
-					getUserIdDao().create(xmppResult);
-					this.setUserId(xmppResult);
-				} catch (InvalidUserIdException e1) {
-					e1.printStackTrace();
-				}
-			}
-			*/
+			 * try { com.jakeapp.core.domain.UserId result = getUserIdDao().get(
+			 * this.getUser());
+			 * this.setUserId(XMPPUserId.createFromUserId(result)); } catch
+			 * (NoSuchUserIdException e) { e.printStackTrace(); } catch
+			 * (InvalidUserIdException e) { XMPPUserId xmppResult = new
+			 * XMPPUserId(this .getServiceCredentials(), UUID.fromString(this
+			 * .getServiceCredentials().getUuid()), this
+			 * .getServiceCredentials().getUser(), this
+			 * .getServiceCredentials().getUser(), "", "");
+			 * 
+			 * try { getUserIdDao().create(xmppResult);
+			 * this.setUserId(xmppResult); } catch (InvalidUserIdException e1) {
+			 * e1.printStackTrace(); } }
+			 */
 		}
 
 		return success;
@@ -114,7 +108,8 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		//
 		// try {
 		// setUserId(
-		// XMPPUserId.createFromUserId(getUserIdDao().get(UUID.fromString(this.getServiceCredentials().getUuid())))
+		// XMPPUserId.createFromUserId(getUserIdDao().get(UUID.fromString(this.
+		// getServiceCredentials().getUuid())))
 		//
 		// );
 		// return this.userId;
@@ -164,5 +159,12 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	@Override
 	protected XmppUserId getMainUserId() {
 		return this.mainUserId;
+	}
+
+	@Override
+	protected com.jakeapp.jake.ics.UserId getIcsUser(ICService ics,
+			com.jakeapp.core.services.MsgService.ICData listeners) {
+		return new XmppUserId(this.getMainUserId().getUserIdWithOutResource() + "/"
+				+ listeners.name);
 	}
 }

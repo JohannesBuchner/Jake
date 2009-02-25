@@ -180,6 +180,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			NotADirectoryException {
 		log.debug("initialising project " + p);
 
+		p.setOpen(true);
 		if (p.getCredentials() == null) {
 			log.warn("fixing null credentials (bug workaround) ");
 			try {

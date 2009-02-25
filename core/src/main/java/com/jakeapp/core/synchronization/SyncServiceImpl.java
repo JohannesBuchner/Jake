@@ -598,14 +598,15 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	@Override
 	public void startServing(Project p, ChangeListener cl) throws ProjectException {
-
+		log.debug("starting Project " + p);
 		// this creates the ics
 		ProjectRequestListener prl = new ProjectRequestListener(p);
 		try {
-			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl);
+			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl, p.getProjectId());
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
+		log.debug("Project " + p + " activated");
 
 		projectChangeListeners.put(p.getProjectId(), cl);
 		runningProjects.put(p.getProjectId(), p);

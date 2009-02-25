@@ -45,25 +45,28 @@ public abstract class MsgService<T extends UserId> {
 
 	protected ICSManager icsManager;
 
-	private static class SubsystemListeners {
+	static class ICData {
 
-		public SubsystemListeners(ILoginStateListener lsl,
+		public ICData(String name, ILoginStateListener loginStateListener,
 				IOnlineStatusListener onlineStatusListener,
 				IMessageReceiveListener receiveListener) {
 			super();
-			this.lsl = lsl;
+			this.loginStateListener = loginStateListener;
 			this.onlineStatusListener = onlineStatusListener;
 			this.receiveListener = receiveListener;
+			this.name = name;
 		}
 
 		public IMessageReceiveListener receiveListener;
 
-		public ILoginStateListener lsl;
+		public ILoginStateListener loginStateListener;
 
 		public IOnlineStatusListener onlineStatusListener;
+
+		public String name;
 	}
 
-	private Map<ICService, SubsystemListeners> activeSubsystems = new HashMap<ICService, SubsystemListeners>();
+	private Map<ICService, ICData> activeSubsystems = new HashMap<ICService, ICData>();
 
 	public void setIcsManager(ICSManager icsManager) {
 		this.icsManager = icsManager;
@@ -129,13 +132,13 @@ public abstract class MsgService<T extends UserId> {
 
 		this.getServiceCredentials().setPlainTextPassword(newPassword);
 		this.getServiceCredentials().setSavePassword(shouldSavePassword);
-		
+
 		/* store */
-		//get Service credentials
-		if (this.getServiceCredentials()!=null) {
+		// get Service credentials
+		if (this.getServiceCredentials() != null) {
 			this.getServiceCredentials().setPlainTextPassword(newPassword);
 			this.getServiceCredentials().setSavePassword(shouldSavePassword);
-			//update and store the credentials
+			// update and store the credentials
 			MsgService.serviceCredentialsDao.update(getServiceCredentials());
 		}
 
@@ -183,7 +186,6 @@ public abstract class MsgService<T extends UserId> {
 	 */
 	public final void logout() throws Exception {
 		log.debug("MsgService -> logout");
-		this.setVisibilityStatus(VisibilityStatus.OFFLINE);
 		this.doLogout();
 
 		updateActiveSubsystems();
@@ -202,13 +204,13 @@ public abstract class MsgService<T extends UserId> {
 		this.serviceCredentials = credentials;
 	}
 
-	public boolean setVisibilityStatus(VisibilityStatus newStatus) {
-		this.visibilityStatus = newStatus;
-		return false;
-	}
-
 	public VisibilityStatus getVisibilityStatus() {
-		return this.visibilityStatus;
+		if(this.getMainIcs() == null)
+			return VisibilityStatus.OFFLINE;
+		if(this.getMainIcs().getStatusService().isLoggedIn())
+			return VisibilityStatus.ONLINE;
+		else 
+			return VisibilityStatus.OFFLINE;
 	}
 
 	public T getUserId() {
@@ -270,36 +272,42 @@ public abstract class MsgService<T extends UserId> {
 
 	private void updateActiveSubsystems() throws NotLoggedInException, NetworkException,
 			TimeoutException {
-		for(Entry<ICService, SubsystemListeners> el : this.activeSubsystems.entrySet()) {
+		for (Entry<ICService, ICData> el : this.activeSubsystems.entrySet()) {
 			this.updateSubsystemStatus(el.getKey(), el.getValue());
 		}
 	}
 
 	public void activateSubsystem(ICService ics, IMessageReceiveListener receiveListener,
-			ILoginStateListener lsl, IOnlineStatusListener onlineStatusListener)
-			throws TimeoutException, NetworkException {
-		
-		SubsystemListeners listeners = new SubsystemListeners(lsl, onlineStatusListener,
-				receiveListener);
+			ILoginStateListener lsl, IOnlineStatusListener onlineStatusListener,
+			String name) throws TimeoutException, NetworkException {
+
+		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
-		
+
 		updateSubsystemStatus(ics, listeners);
 	}
 
-	private void updateSubsystemStatus(ICService ics, SubsystemListeners listeners)
+	private void updateSubsystemStatus(ICService ics, ICData listeners)
 			throws NotLoggedInException, NetworkException, TimeoutException {
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
-			com.jakeapp.jake.ics.UserId user = getMainIcs().getStatusService()
-					.getUserid();
+			com.jakeapp.jake.ics.UserId user = this.getIcsUser(ics, listeners);
+			log.debug("logging in " + user);
 			ics.getMsgService().registerReceiveMessageListener(listeners.receiveListener);
-			ics.getUsersService().registerOnlineStatusListener(listeners.onlineStatusListener);
+			ics.getUsersService().registerOnlineStatusListener(
+					listeners.onlineStatusListener);
 			ics.getStatusService().login(user,
 					this.getServiceCredentials().getPlainTextPassword());
-			ics.getStatusService().registerLoginStateListener(listeners.lsl);
+			ics.getStatusService().registerLoginStateListener(
+					listeners.loginStateListener);
 		} else {
-			ics.getStatusService().logout();
+			if(ics.getStatusService().isLoggedIn()) {
+				log.debug("logging out " + ics.getStatusService().getUserid());
+				ics.getStatusService().logout();
+			}
 		}
 	}
+
+	abstract protected com.jakeapp.jake.ics.UserId getIcsUser(ICService ics, ICData listeners);
 
 	public void deactivateSubsystem(ICService ics) throws NetworkException {
 		this.activeSubsystems.remove(ics);
@@ -331,5 +339,5 @@ public abstract class MsgService<T extends UserId> {
 			return false;
 		return true;
 	}
-	
+
 }
