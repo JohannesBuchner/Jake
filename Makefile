@@ -41,7 +41,10 @@ quickstart: gui
 
 # console: start console-gui (commander)
 console: commander 
-	cd commander; ${MVN} exec:java
+	cd commander; ${MVN} exec:java -Dexec.mainClass=com.jakeapp.gui.console.JakeCommander
+
+xmpp-console: commander
+	cd commander; ${MVN} exec:java -Dexec.mainClass=com.jakeapp.gui.console.XmppCommander
 
 # building & installing #
 
