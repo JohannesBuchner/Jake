@@ -10,15 +10,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
@@ -107,6 +99,27 @@ public class JakeCommander extends Commander {
 			super(command);
 		}
 
+	}
+
+	private abstract class LazyOtherUserCommand extends LazyCommand {
+		public LazyOtherUserCommand(String command) {
+			super(command, command + " <UserID>");
+		}
+
+		public LazyOtherUserCommand(String command, String help) {
+			super(command, command + " <UserID>", help);
+		}
+
+		public boolean handleArguments(String[] args) {
+			if(args.length != 2) return false;
+			if(project == null) return false;
+
+			handleArguments(args[1]);
+
+			return true;
+		}
+
+		public abstract void handleArguments(String userid);
 	}
 
 	private abstract class LazyProjectDirectoryCommand extends LazyCommand {
@@ -736,6 +749,19 @@ public class JakeCommander extends Commander {
 			}
 		}
 	};
+
+	class PokeCommand extends LazyOtherUserCommand {
+		public PokeCommand() {
+			super("poke", "Poke another user (inform them that it would be a good time to fetch our logs). " +
+					"Needs an open project.");
+		}
+
+		@Override
+		public void handleArguments(String userid) {
+			System.out.println("Poking " + userid + "...");
+			sync.poke(project, new UserId(ProtocolType.XMPP, userid));
+		}
+	}
 
 	class LogCommand extends LazyJakeObjectCommand {
 
