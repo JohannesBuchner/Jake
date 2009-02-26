@@ -52,7 +52,7 @@ public abstract class FileTransfer implements IFileTransfer {
 
 	@Override
 	public double getProgress() {
-		return Double.valueOf(getAmountWritten()) / getFileSize();
+		return (double) getAmountWritten() / getFileSize();
 	}
 
 	@Override
@@ -62,10 +62,7 @@ public abstract class FileTransfer implements IFileTransfer {
 
 	@Override
 	public boolean isDone() {
-		if (this.status == Status.in_progress || this.status == Status.negotiated)
-			return false;
-		else
-			return true;
+		return !(this.status == Status.in_progress || this.status == Status.negotiated);
 	}
 
 	@Override

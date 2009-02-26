@@ -13,12 +13,14 @@ public interface INegotiationSuccessListener {
 	/**
 	 * This TransferMethod didn't work, because the negotiation failed. Maybe
 	 * try some other TransferMethod?
-	 * 
+	 *
+	 * @param reason
 	 */
 	public void failed(Throwable reason);
 
 	/**
 	 * This TransferMethod worked. Follow the given {@link IFileTransfer} now.
+	 * @param ft
 	 */
 	public void succeeded(IFileTransfer ft);
 }

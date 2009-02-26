@@ -33,6 +33,7 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 	 *            -- A File object that represents the source for the copy
 	 * @param dest
 	 *            -- A File object that represents the destination for the copy.
+	 * @param ignoredDirectory
 	 * @throws IOException
 	 *             if unable to copy.
 	 */
@@ -61,9 +62,9 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 			// get a listing of files...
 			String list[] = src.list();
 			// copy all the files in the list.
-			for (int i = 0; i < list.length; i++) {
-				File dest1 = new File(dest, list[i]);
-				File src1 = new File(src, list[i]);
+			for (String aList : list) {
+				File dest1 = new File(dest, aList);
+				File src1 = new File(src, aList);
 				copyFiles(src1, dest1, ignoredDirectory);
 			}
 		} else {

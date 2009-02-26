@@ -27,6 +27,7 @@ public interface RequestHandlePolicy {
 	/**
 	 * Checks if it is ok to return the object.
 	 * 
+	 * @param from
 	 * @param jo
 	 * @return null if not allowed, the content otherwise
 	 */
@@ -38,6 +39,8 @@ public interface RequestHandlePolicy {
 	 * 
 	 * @param jo
 	 * @return whether retrieving is allowed
+	 * @param project
+	 * @param from
 	 */
 	public boolean handleLogSyncRequest(Project project, UserId from);
 }

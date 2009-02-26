@@ -39,14 +39,11 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		if (!this.getMainUserId().isOfCorrectUseridFormat()) {
 			return false;
 		}
-		if (cred.getPlainTextPassword().isEmpty()) {
-			return false;
-		}
-		return true;
+		return !cred.getPlainTextPassword().isEmpty();
 	}
 
 	@Override
-	protected boolean doLogin() throws TimeoutException, NetworkException {
+	protected boolean doLogin() throws NetworkException {
 		log
 				.debug("got credentials: " + this.getServiceCredentials().getUserId()
 						+ " pwl: "
@@ -63,7 +60,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	}
 
 	@Override
-	protected void doLogout() throws TimeoutException, NetworkException {
+	protected void doLogout() throws NetworkException {
 		log.debug("XMPPMsgService -> logout");
 
 		this.mainIcs.getStatusService().logout();

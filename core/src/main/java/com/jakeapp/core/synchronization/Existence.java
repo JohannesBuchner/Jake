@@ -19,6 +19,7 @@ public enum Existence {
 	 * @param lastLogAction			 {@link LogAction#JAKE_OBJECT_NEW_VERSION} or
 	 *                            {@link LogAction#JAKE_OBJECT_DELETE} or null.
 	 * @returnExistance
+	 * @return
 	 */
 	static Existence getExistance(boolean objectExistsLocally,
 																LogAction lastLogAction) {

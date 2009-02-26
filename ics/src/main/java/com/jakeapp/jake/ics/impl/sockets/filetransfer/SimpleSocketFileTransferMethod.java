@@ -151,7 +151,6 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 			SimpleSocketFileTransferFactory.log.info("negotiation failed", e);
 			nsl.failed(e);
 			removeOutgoing(r);
-			return;
 		}
 	}
 
@@ -187,7 +186,6 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 			 * third step, client receives ok from server
 			 */
 			handleServerOk(from_userid, inner);
-			return;
 		} else {
 			log.warn("unknown request from " + from_userid + ": " + content);
 		}
@@ -420,7 +418,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 					this.log
 							.debug("Incoming connection. Starting another ClientHandler thread.");
 					new ClientHandler(client, this.listener).run();
-				};
+				}
 			} catch (IOException e) {
 				if (!isServing()) {
 					this.log.info("SocketServer shutted down");

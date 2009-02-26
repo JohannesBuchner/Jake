@@ -48,7 +48,9 @@ public interface IProjectDao {
     
     /**
      * Get all projects with a certain invitation state
-     */
+		 * @param state
+		 * @return
+		 */
     List<Project> getAll(InvitationState state);
 
     /**

@@ -35,7 +35,7 @@ public class StreamFileHashCalculator{
 		
 		String s = "";
 		for(int i=0;i<b.length;i++){
-			int c = b[i]; 
+			int c = b[i];
 			if ( b[i] < 0 )
 				c = c + 256;
 			s = s.concat( halfbyte2str(c/16) + halfbyte2str(c%16));

@@ -33,6 +33,7 @@ public class Counter {
 	 * @param value
 	 * @param time
 	 * @param unit
+	 * @return
 	 */
 	public boolean await(int value, long time, TimeUnit unit) {
 		long timeleft = time;

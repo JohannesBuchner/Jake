@@ -91,7 +91,7 @@ public class FSService implements IFSService, IModificationListener {
 		File f = new File(getFullpath("/" + relpath));
 		List<String> list = new ArrayList<String>();
 		for (String file : FileUtils.listMinusA(f)) {
-			if (relpath != "")
+			if (!relpath.equals(""))
 				file = relpath + '/' + file;
 
 			if (isValidRelpath(file))
@@ -125,7 +125,7 @@ public class FSService implements IFSService, IModificationListener {
 
 	@Deprecated
 	public byte[] readFile(String relpath) throws InvalidFilenameException,
-			  NotAFileException, FileNotFoundException, NotAReadableFileException {
+																							 FileNotFoundException, NotAReadableFileException {
 
 		String filename = getFullpath(relpath);
 		File f = new File(filename);
@@ -162,7 +162,7 @@ public class FSService implements IFSService, IModificationListener {
 	}
 
 	public InputStream readFileStream(String relpath) throws InvalidFilenameException,
-			  NotAFileException, FileNotFoundException, NotAReadableFileException {
+																													 FileNotFoundException, NotAReadableFileException {
 
 		String filename = getFullpath(relpath);
 		File f = new File(filename);
@@ -294,11 +294,8 @@ public class FSService implements IFSService, IModificationListener {
 		if (!(m.find() && m.start() == 0 && m.end() == relpath.length())) {
 			return false;
 		}
-		if (relpath.contains("/../") || relpath.startsWith("../")
-				  || relpath.endsWith("/..") || relpath.equals("..")) {
-			return false;
-		}
-		return true;
+		return !(relpath.contains("/../") || relpath.startsWith("../") || relpath
+						.endsWith("/..") || relpath.equals(".."));
 	}
 
 	public boolean deleteFile(String relpath) throws InvalidFilenameException,

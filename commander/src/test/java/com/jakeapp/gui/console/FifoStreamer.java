@@ -9,7 +9,7 @@ import java.io.InputStream;
  */
 class FifoStreamer extends InputStream {
 
-	private String content = new String();
+	private String content = "";
 
 	private int pointer = 0;
 

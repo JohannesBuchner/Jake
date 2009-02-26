@@ -1,11 +1,11 @@
 package com.jakeapp.jake.ics.impl.xmpp.helper;
 
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+
+import java.io.IOException;
 
 
 public class XmppCommons {
@@ -26,6 +26,7 @@ public class XmppCommons {
 	 *            xmpp id
 	 * @param pw
 	 *            xmpp password
+	 * @param resource
 	 * @return the connection on success, or null on login failure
 	 * @throws IOException
 	 * @see {@link XmppCommons#login(String, String, String)} for parameters and
@@ -86,6 +87,7 @@ public class XmppCommons {
 	 * @param username
 	 * @param pw
 	 * @param hostname
+	 * @param resource
 	 * @return open connection or null on failure
 	 * @throws IOException
 	 *             on connect failure

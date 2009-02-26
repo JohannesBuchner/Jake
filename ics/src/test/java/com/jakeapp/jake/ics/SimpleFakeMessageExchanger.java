@@ -47,7 +47,7 @@ public class SimpleFakeMessageExchanger {
 
 		@Override
 		public Boolean sendMessage(UserId to_userid, String content)
-				throws NetworkException, NotLoggedInException, TimeoutException,
+				throws NetworkException, TimeoutException,
 				NoSuchUseridException, OtherUserOfflineException {
 			log.debug(user + " -> " + to_userid + " : " + content);
 			users.get(to_userid).notify(user, content);

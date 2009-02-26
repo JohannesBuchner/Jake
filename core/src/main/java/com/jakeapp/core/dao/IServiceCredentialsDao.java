@@ -19,6 +19,7 @@ public interface IServiceCredentialsDao {
      * @param credentials The ServiceCredentials to insert
      * @return the inserted ServiceCredentials
      * @throws SQLException if a database error occured
+		 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
     public ServiceCredentials persist(ServiceCredentials credentials) throws InvalidCredentialsException;
 

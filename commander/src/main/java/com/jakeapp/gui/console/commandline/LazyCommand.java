@@ -32,9 +32,7 @@ public abstract class LazyCommand extends Command {
 		String[] arguments = line.split("  *");
 		if (line.equals(command))
 			return handleArguments(arguments);
-		if (!line.startsWith(command + " "))
-			return false;
-		return handleArguments(arguments);
+		return line.startsWith(command + " ") && handleArguments(arguments);
 	}
 
 	/**

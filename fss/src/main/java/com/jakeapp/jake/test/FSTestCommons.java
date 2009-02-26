@@ -9,6 +9,7 @@ public abstract class FSTestCommons {
 
 	/**
 	 * gets a new temporary directory available for tests
+	 * @return
 	 */
 	public static File provideTempDir() {
 		clean();
@@ -68,10 +69,10 @@ public abstract class FSTestCommons {
 		} else {
 			String[] l = folder.list();
 			if (l != null) {
-				for (int i = 0; i < l.length; i++) {
-					if (recursiveDelete(new File(folder.getPath(), l[i])) == false) {
-						System.err.println("deleting " + l[i] + " in "
-								+ folder.getPath() + " failed!");
+				for (String aL : l) {
+					if (recursiveDelete(new File(folder.getPath(), aL)) == false) {
+						System.err.println(
+										"deleting " + aL + " in " + folder.getPath() + " failed!");
 						return false;
 					}
 				}

@@ -61,8 +61,7 @@ public interface IProjectsManagingService {
 	 * @throws IOException 
 	 */
 	Project createProject(String name, String rootPath,
-								 MsgService msgService) throws FileNotFoundException,
-			  IllegalArgumentException, IOException, NotADirectoryException;
+								 MsgService msgService) throws IllegalArgumentException, IOException, NotADirectoryException;
 
 
 	/**
@@ -132,11 +131,11 @@ public interface IProjectsManagingService {
 	 * @throws SecurityException		  if the supplied <code>Project</code> could not be deleted due
 	 *                                  to filesystem permissons
 	 * @throws NotADirectoryException 
-	 * @throws IOException 
+	 * @throws IOException
+	 * @throws java.io.FileNotFoundException
 	 */
 	boolean deleteProject(Project project, boolean deleteProjectFiles)
-			  throws IllegalArgumentException, SecurityException,
-			  FileNotFoundException, IOException, NotADirectoryException;
+			  throws IllegalArgumentException, SecurityException, IOException, NotADirectoryException;
 
 	/**
 	 * Get all LogEntrys from the supplied project
@@ -188,13 +187,18 @@ public interface IProjectsManagingService {
 			  throws IllegalArgumentException, IllegalAccessException;
 
 	/**
+	 * @param p
 	 * @return a service for file-operations
 	 */
 	IFSService getFileServices(Project p);
 
 	/**
+	 * @param project
 	 * @return The number of files in a Project
 	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
+	 * @throws java.io.FileNotFoundException
+	 * @throws IllegalArgumentException
 	 */
 	AvailableLaterObject<Integer> getProjectFileCount(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
@@ -203,6 +207,9 @@ public interface IProjectsManagingService {
 	 * @param project
 	 * @return The amount of bytes all files in a project take up.
 	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
+	 * @throws java.io.FileNotFoundException
+	 * @throws IllegalArgumentException
 	 */
 	AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
@@ -255,6 +262,7 @@ public interface IProjectsManagingService {
 			  throws NoSuchProjectException;
 
 	/**
+	 * @param jo
 	 * @return The date and time when a {@link JakeObject} was last modified. If the JakeObject
 	 *         has never been modified, the current Date is returned.
 	 * @throws NoSuchProjectException	if the JakeObject's Project does not exist.
@@ -265,6 +273,7 @@ public interface IProjectsManagingService {
 
 
 	/**
+	 * @param jo
 	 * @return The ProjectMember who last modified the JakeObject. If the JakeObject
 	 *         has never been modified, null is returned.
 	 * @throws NoSuchProjectException	if the JakeObject's Project does not exist.

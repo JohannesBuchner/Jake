@@ -121,10 +121,7 @@ public class XmppUsersService implements IUsersService {
 
 	private boolean isFriend(String xmppid) throws NotLoggedInException {
 		assertLoggedIn();
-		if (getGroup().getEntry(xmppid) != null)
-			return true;
-		else
-			return false;
+		return getGroup().getEntry(xmppid) != null;
 	}
 
 	public class DiscoveryThread implements Runnable {

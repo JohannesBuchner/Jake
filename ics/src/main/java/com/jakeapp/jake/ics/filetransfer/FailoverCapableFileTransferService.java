@@ -89,7 +89,7 @@ public class FailoverCapableFileTransferService implements IFileTransferService 
 			this.parentListener.succeeded(ft);
 		}
 
-	};
+	}
 
 	@Override
 	public void startServing(IncomingTransferListener l, FileRequestFileMapper mapper)

@@ -43,7 +43,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	//@SuppressWarnings("unchecked")
 	private void debugDump() {
-		return; // enable when stuff is weird
 		//log.debug("Current LogEntries: ");
 		//for(LogEntry le : (List<LogEntry<? extends ILogable>>)sess().createQuery("FROM logentries ORDER by timestamp asc, id asc").list()) {
 		//	log.debug(le);
@@ -275,11 +274,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			return false;
 		}
 		// both exist
-		if (leDel.getTimestamp().getTime() > leNew.getTimestamp().getTime()) {
-			return true;
-		} else {
-			return false;
-		}
+		return leDel.getTimestamp().getTime() > leNew.getTimestamp().getTime();
 	}
 
 	@Override
@@ -335,6 +330,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * LogAction.START_TRUSTING_PROJECTMEMBER and
 	 * LogAction.STOP_TRUSTING_PROJECTMEMBER that belong to the given
 	 * JakeObject, sorted ascending by timestamp
+	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<UserId>> getAllProjectMemberLogEntries() {
@@ -348,6 +344,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * finds all that match any of the two LogActions LogAction.TAG_ADD and
 	 * LogAction.TAG_REMOVE that belong to the given JakeObject, sorted
 	 * ascending by timestamp
+	 * @param belongsTo
+	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<Tag>> getTagEntries(JakeObject belongsTo) {
@@ -364,6 +362,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * finds all that match any of the two LogActions LogAction.JAKE_OBJECT_LOCK
 	 * and LogAction.JAKE_OBJECT_UNLOCK that belong to the given JakeObject,
 	 * sorted ascending by timestamp
+	 * @param belongsTo
+	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<JakeObject>> getLockEntries(JakeObject belongsTo) {

@@ -96,6 +96,7 @@ public interface IFrontendService {
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 * @throws Exception							the creation failed for another reason
+	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
 	 */
 	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
@@ -122,6 +123,8 @@ public interface IFrontendService {
 	 *
 	 * @param sessionId
 	 * @param msg
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 * @throws com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException
 	 */
 	void removeAccount(String sessionId, MsgService msg)  throws FrontendNotLoggedInException,
 																															 NoSuchMsgServiceException;
@@ -156,6 +159,7 @@ public interface IFrontendService {
 
 	/**
 	 * Logs a Messageservice in
+	 * @param session
 	 * @param service
 	 * @param password
 	 * @param rememberPassword

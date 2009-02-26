@@ -102,7 +102,7 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws NetworkException 
 	 * @throws TimeoutException 
 	 */
-	public final boolean login() throws TimeoutException, NetworkException {
+	public final boolean login() throws NetworkException {
 		boolean result;
 
 		log.debug("calling plain login");
@@ -121,7 +121,8 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	@Transactional
-	public final boolean login(String newPassword, boolean shouldSavePassword) throws TimeoutException, NetworkException
+	public final boolean login(String newPassword, boolean shouldSavePassword) throws
+																																						NetworkException
 			 {
 		log.debug("calling login with newPwd-Size: " + newPassword.length()
 				+ ", shouldSave: " + shouldSavePassword);
@@ -180,7 +181,7 @@ public abstract class MsgService<T extends UserId> {
 
 	protected abstract boolean doCredentialsCheck();
 
-	protected abstract boolean doLogin() throws TimeoutException, NetworkException;
+	protected abstract boolean doLogin() throws NetworkException;
 
 	/**
 	 * idempotent
@@ -189,7 +190,7 @@ public abstract class MsgService<T extends UserId> {
 	 * 
 	 * @throws Exception
 	 */
-	public final void logout() throws TimeoutException, NetworkException {
+	public final void logout() throws NetworkException {
 		log.debug("MsgService -> logout");
 		this.doLogout();
 
@@ -203,7 +204,7 @@ public abstract class MsgService<T extends UserId> {
 	 * 
 	 * @throws Exception
 	 */
-	protected abstract void doLogout() throws TimeoutException, NetworkException;
+	protected abstract void doLogout() throws NetworkException;
 
 	public void setServiceCredentials(ServiceCredentials credentials) {
 		log.debug("setting service credentials to " + credentials.getUserId() + " pwl: "
@@ -278,8 +279,7 @@ public abstract class MsgService<T extends UserId> {
 
 	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
 
-	private void updateActiveSubsystems() throws NotLoggedInException, NetworkException,
-			TimeoutException {
+	private void updateActiveSubsystems() throws NetworkException {
 		for (Entry<ICService, ICData> el : this.activeSubsystems.entrySet()) {
 			this.updateSubsystemStatus(el.getKey(), el.getValue());
 		}
@@ -287,7 +287,7 @@ public abstract class MsgService<T extends UserId> {
 
 	public void activateSubsystem(ICService ics, IMessageReceiveListener receiveListener,
 			ILoginStateListener lsl, IOnlineStatusListener onlineStatusListener,
-			String name) throws TimeoutException, NetworkException {
+			String name) throws NetworkException {
 
 		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
@@ -296,7 +296,7 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
-			throws NotLoggedInException, NetworkException, TimeoutException {
+			throws NetworkException {
 		log
 				.debug("updating status of " + ics + " to match "
 						+ this.getVisibilityStatus());

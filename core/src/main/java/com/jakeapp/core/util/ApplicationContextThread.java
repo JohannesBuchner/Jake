@@ -1,8 +1,5 @@
 package com.jakeapp.core.util;
 
-import java.util.Properties;
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -11,6 +8,9 @@ import org.hibernate.classic.Session;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+
+import java.util.Properties;
+import java.util.UUID;
 
 
 /**
@@ -85,7 +85,6 @@ public class ApplicationContextThread extends ThreadBroker {
 		try {
 			this.session = this.sessionFactory.openSession();
 			log.info("session created.");
-			return;
 		} catch (HibernateException e) {
 			log.fatal("creating a session failed", e);
 			throw e;

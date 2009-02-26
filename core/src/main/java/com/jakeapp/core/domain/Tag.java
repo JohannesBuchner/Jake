@@ -82,10 +82,9 @@ public class Tag implements ILogable, Serializable, Comparable<Tag> {
         Tag tag = (Tag) o;
 
         if (jakeObject != null ? !jakeObject.equals(tag.jakeObject) : tag.jakeObject != null) return false;
-        if (!name.equals(tag.name)) return false;
+			return name.equals(tag.name);
 
-        return true;
-    }
+		}
 
     @Override
     public int hashCode() {

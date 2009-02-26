@@ -47,11 +47,7 @@ public class IncomingGenericPacketListener implements PacketListener,
 	public boolean accept(Packet packet) {
 		GenericPacketExtension fre = (GenericPacketExtension) packet
 				.getExtension(this.namespace);
-		if (fre != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return fre != null;
 	}
 
 	public void notifyOthersAboutNewPacket(XmppUserId xmppUserId, String content) {

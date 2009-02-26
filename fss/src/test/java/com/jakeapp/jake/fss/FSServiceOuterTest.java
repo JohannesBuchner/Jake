@@ -124,11 +124,11 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 		Assert.assertTrue(fss.folderExists("/"));
 		Assert.assertFalse(fss.folderExists("/folderDoesNotExist"));
 		String[] dirnames = { "foobar", "/foo/bar/", "ran/dom/stuff" };
-		for (int i = 0; i < dirnames.length; i++) {
-			File f = new File(fss.getRootPath() + File.separator + dirnames[i]
-					+ File.separator);
+		for (String dirname : dirnames) {
+			File f = new File(
+							fss.getRootPath() + File.separator + dirname + File.separator);
 			f.mkdirs();
-			Assert.assertTrue(fss.folderExists(dirnames[i]));
+			Assert.assertTrue(fss.folderExists(dirname));
 		}
 		try {
 			fss.folderExists("/fol:derDoesNotExist");
@@ -148,12 +148,12 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 		Assert.assertFalse(fss.fileExists("fileDoesNotExist"));
 
 		String[] dirnames = { "foobar", "/foo/bar", "ran/dom/stuff" };
-		for (int i = 0; i < dirnames.length; i++) {
-			File f = new File(fss.getRootPath() + File.separator + dirnames[i]
-					+ File.separator);
+		for (String dirname : dirnames) {
+			File f = new File(
+							fss.getRootPath() + File.separator + dirname + File.separator);
 			f.getParentFile().mkdirs();
 			f.createNewFile();
-			Assert.assertTrue(fss.fileExists(dirnames[i]));
+			Assert.assertTrue(fss.fileExists(dirname));
 		}
 		try {
 			fss.fileExists("/fil:eDoesNotExist");
@@ -195,8 +195,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 
 		for (int j = 0; j < content.length; j++) {
 			boolean found = false;
-			for (int i = 0; i < s.size(); i++) {
-				if (s.get(i).equals(folder + sep + content[j])) {
+			for (String value : s) {
+				if (value.equals(folder + sep + content[j])) {
 					found = true;
 					break;
 				}
@@ -237,8 +237,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 
 		for (int j = 0; j < content.length; j++) {
 			boolean found = false;
-			for (int i = 0; i < s.size(); i++) {
-				if (s.get(i).equals(content[j])) {
+			for (String value : s) {
+				if (value.equals(content[j])) {
 					found = true;
 					break;
 				}
@@ -377,7 +377,8 @@ public class FSServiceOuterTest extends FSServiceTestCase {
 	/**
 	 * Tests that no exceptions are thrown. No application is launched, since
 	 * awt/swing is not started
-	 **/
+	 *
+	 * @throws Exception*/
 	@Test
 	@Prerequisite(checker = ThrowStuffInMyFaceChecker.class)
 	public void launchTest() throws Exception {

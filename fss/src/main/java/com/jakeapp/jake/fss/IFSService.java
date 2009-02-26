@@ -137,8 +137,7 @@ public interface IFSService extends Serializable {
 	 */
 	@Deprecated
 	public byte[] readFile(String relativePath)
-			  throws InvalidFilenameException, NotAFileException,
-			  FileNotFoundException, NotAReadableFileException;
+			  throws InvalidFilenameException, FileNotFoundException, NotAReadableFileException;
 
 	/**
 	 * Gives access to the content of a given file

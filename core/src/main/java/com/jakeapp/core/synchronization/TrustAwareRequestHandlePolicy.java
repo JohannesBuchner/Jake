@@ -110,6 +110,8 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 	}
 
 	/**
+	 * @param project
+	 * @param from
 	 * @return how much the user of <code>project</code> trusts <code>from</code>.
 	 * @throws IllegalArgumentException
 	 * 	if project, from or project.getUserId were not valid (e.g. null).

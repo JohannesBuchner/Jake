@@ -1,15 +1,5 @@
 package com.jakeapp.gui.console;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
@@ -21,6 +11,15 @@ import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.console.commandline.LazyCommand;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Test client accepting cli input
@@ -301,7 +300,7 @@ public class JakeCommander extends Commander {
 			System.out.println("status: " + status + " - " + progress);
 		}
 
-	};
+	}
 
 	class CoreLoginCommand extends LazyCommand {
 
@@ -326,7 +325,7 @@ public class JakeCommander extends Commander {
 			}
 			return true;
 		}
-	};
+	}
 
 	class CoreLogoutCommand extends LazyNoParamsCommand {
 
@@ -344,7 +343,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class LoginCommand extends LazyNoParamsCommand {
 
@@ -367,7 +366,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class LogoutCommand extends LazyNoParamsCommand {
 
@@ -386,7 +385,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
@@ -411,7 +410,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class DeleteProjectCommand extends LazyCommand {
 
@@ -439,7 +438,7 @@ public class JakeCommander extends Commander {
 			}
 			return true;
 		}
-	};
+	}
 
 	class CloseProjectCommand extends LazyNoParamsCommand {
 
@@ -459,7 +458,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class OpenProjectCommand extends LazyProjectDirectoryCommand {
 
@@ -479,7 +478,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class ListProjectsCommand extends LazyNoParamsCommand {
 
@@ -500,7 +499,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class StartProjectCommand extends LazyProjectDirectoryCommand {
 
@@ -530,7 +529,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class StatusCommand extends LazyNoParamsCommand {
 
@@ -543,8 +542,8 @@ public class JakeCommander extends Commander {
 			System.out.println("Project available: " + project);
 			System.out.println("MsgService available: " + msg);
 		}
-	};
-	
+	}
+
 	class WaitCommand extends LazyNoParamsCommand {
 
 		public WaitCommand() {
@@ -559,7 +558,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class InviteCommand extends LazyCommand {
 
@@ -581,7 +580,7 @@ public class JakeCommander extends Commander {
 			}
 			return true;
 		}
-	};
+	}
 
 	class AcceptInviteCommand extends LazyProjectDirectoryCommand {
 
@@ -591,6 +590,7 @@ public class JakeCommander extends Commander {
 
 		@Override
 		public void handleArguments(File projectFolder) {
+			// TODO: this doesn't loop - bug?
 			for (Project p : pms.getProjectList(InvitationState.INVITED)) {
 				project = p;
 				break;
@@ -608,7 +608,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class RejectInviteCommand extends LazyNoParamsCommand {
 
@@ -635,7 +635,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class ListObjectsCommand extends LazyNoParamsCommand {
 
@@ -686,7 +686,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class AnnounceCommand extends LazyJakeObjectCommand {
 
@@ -706,7 +706,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class DeleteCommand extends LazyJakeObjectCommand {
 
@@ -726,7 +726,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class LockCommand extends LazyJakeObjectCommand {
 
@@ -747,7 +747,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class UnLockCommand extends LazyJakeObjectCommand {
 
@@ -767,7 +767,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class PokeCommand extends LazyOtherUserCommand {
 		public PokeCommand() {
@@ -801,7 +801,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class JakeObjectStatusCommand extends LazyJakeObjectCommand {
 
@@ -824,7 +824,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class ModifyCommand extends LazyJakeObjectCommand {
 
@@ -851,7 +851,7 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 
 	class ProjectLogCommand extends LazyNoParamsCommand {
 
@@ -872,5 +872,5 @@ public class JakeCommander extends Commander {
 				e.printStackTrace();
 			}
 		}
-	};
+	}
 }

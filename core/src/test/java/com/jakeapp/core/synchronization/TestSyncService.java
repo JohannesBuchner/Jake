@@ -243,10 +243,8 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 		for (T v : values) {
 			vl.add(v);
 		}
-		for (int i = 0; i < expected.length; i++) {
-			Assert
-					.assertTrue("User " + expected[i] + " expected", vl
-							.remove(expected[i]));
+		for (T anExpected : expected) {
+			Assert.assertTrue("User " + anExpected + " expected", vl.remove(anExpected));
 		}
 		Assert
 				.assertEquals("no remaining users expected[" + vl.size() + "]: "

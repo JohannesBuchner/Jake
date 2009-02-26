@@ -60,6 +60,8 @@ public interface IFileTransferService {
 	 * first added is tried first, the last added is tried last (FIFO).
 	 * 
 	 * @param m
+	 * @param negotiationService
+	 * @param user
 	 * @throws NotLoggedInException
 	 */
 	void addTransferMethod(ITransferMethodFactory m, IMsgService negotiationService,
@@ -78,6 +80,8 @@ public interface IFileTransferService {
 	/**
 	 * starts serving on all registered TransferMethods
 	 * 
+	 * @param l
+	 * @param mapper
 	 * @throws NotLoggedInException
 	 */
 	public void startServing(IncomingTransferListener l, FileRequestFileMapper mapper)

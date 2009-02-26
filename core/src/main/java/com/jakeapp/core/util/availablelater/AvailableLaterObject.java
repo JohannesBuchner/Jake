@@ -58,6 +58,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	
 	/**
 	 * client function: get the result when done.
+	 * @return
 	 */
 	public T get() {
 		return innercontent;

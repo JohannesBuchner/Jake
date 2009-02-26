@@ -92,8 +92,7 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
-			  NetworkException, NotLoggedInException, TimeoutException {
+	public Boolean isLoggedIn(UserId userid) throws NetworkException, TimeoutException {
 		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (XmppUserId.isSameUser(getUserid(), userid))
@@ -109,10 +108,7 @@ public class XmppStatusService implements IStatusService {
 		}
 		Presence p = getRoster().getPresence(userid.toString());
 		log.debug("Presence for " + userid + ": " + p);
-		if (p.isAvailable())
-			return true;
-		else
-			return false;
+		return p.isAvailable();
 	}
 
 	private Roster getRoster() throws NotLoggedInException {
@@ -122,8 +118,7 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public Boolean login(UserId userid, String pw) throws NetworkException,
-			  TimeoutException {
+	public Boolean login(UserId userid, String pw) throws NetworkException {
 		XmppUserId xuid = new XmppUserId(userid);
 		if (!xuid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
@@ -179,7 +174,7 @@ public class XmppStatusService implements IStatusService {
 
 
 	@Override
-	public void logout() throws NetworkException, TimeoutException {
+	public void logout() throws NetworkException {
 		XmppCommons.logout(this.con.getConnection());
 		this.con.setConnection(null);
 		for (ILoginStateListener lsl : lsll) {
@@ -188,8 +183,7 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public void createAccount(UserId userid, String pw) throws NetworkException,
-			  TimeoutException {
+	public void createAccount(UserId userid, String pw) throws NetworkException {
 		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (isLoggedIn())

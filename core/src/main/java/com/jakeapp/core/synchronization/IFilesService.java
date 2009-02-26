@@ -11,6 +11,7 @@ public interface IFilesService {
 	 * get the file in the filesystem 
 	 * You should almost never use this!
 	 * @param jo
+	 * @return
 	 */
 	public File getFullpath(FileObject jo);
 	

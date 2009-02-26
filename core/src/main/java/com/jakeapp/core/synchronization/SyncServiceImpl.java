@@ -122,6 +122,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 	/**
 	 * returns true if NoteObject <br>
 	 * returns false if FileObject
+	 * @param jo
+	 * @return
 	 */
 	public Boolean isNoteObject(JakeObject jo) {
 		return jo instanceof NoteObject;

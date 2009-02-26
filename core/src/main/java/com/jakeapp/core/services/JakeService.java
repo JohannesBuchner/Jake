@@ -25,6 +25,7 @@ public abstract class JakeService {
 	
 	/**
 	 * *********** GETTERS & SETTERS ************
+	 * @return
 	 */
 	public ProjectApplicationContextFactory getApplicationContextFactory() {
 		return this.applicationContextFactory;

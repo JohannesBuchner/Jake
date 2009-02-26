@@ -32,6 +32,9 @@ public class Tracer {
 
 	/**
 	 * checks that no steps are left
+	 * @param time
+	 * @param unit
+	 * @return
 	 */
 	public boolean isDone(long time, TimeUnit unit) {
 		while (true) {
@@ -48,6 +51,7 @@ public class Tracer {
 
 	/**
 	 * checks that no steps are left
+	 * @return
 	 */
 	public boolean isDone() {
 		log.debug("Checking if done ...");
@@ -69,6 +73,7 @@ public class Tracer {
 	 * @param value
 	 * @param time
 	 * @param unit
+	 * @return
 	 */
 	public boolean awaitStep(String value, long time, TimeUnit unit) {
 		while (true) {
@@ -111,6 +116,7 @@ public class Tracer {
 	 * @param value
 	 * @param time
 	 * @param unit
+	 * @return
 	 */
 	public boolean await(List<String> value, long time, TimeUnit unit) {
 		for (String state : value) {
@@ -131,6 +137,7 @@ public class Tracer {
 	 *            comma (,) separated steps
 	 * @param time
 	 * @param unit
+	 * @return
 	 */
 	public boolean await(String value, long time, TimeUnit unit) {
 		for (String state : value.split(",")) {

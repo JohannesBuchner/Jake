@@ -101,6 +101,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	/**
 	 * *********** GETTERS & SETTERS ************
+	 * @return
 	 */
 
 	public IProjectDao getProjectDao() {

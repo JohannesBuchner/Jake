@@ -44,12 +44,14 @@ public interface ILogEntryDao {
 
 
 	/**
+	 * @param jakeObject
 	 * @return the unprocessed LogEntries of the JakeObject
 	 */
 	public List<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject);
 
 
 	/**
+	 * @param jakeObject
 	 * @return Whether unprocessed LogEntries of the JakeObject exist
 	 */
 	public boolean hasUnprocessed(JakeObject jakeObject);
@@ -193,6 +195,7 @@ public interface ILogEntryDao {
 	 * @return all fileObject that either don't have a
 	 *         {@link LogAction#JAKE_OBJECT_DELETE} <b>or</b> have a
 	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than that.
+	 * @param includeUnprocessed
 	 */
 	public List<FileObject> getExistingFileObjects(boolean includeUnprocessed);
 

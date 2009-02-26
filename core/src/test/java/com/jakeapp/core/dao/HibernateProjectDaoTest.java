@@ -144,6 +144,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	 * getting an error
 	 * 
 	 * @throws NoSuchProjectException
+	 * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
 	 */
 	// @Test(timeout = TestingConstants.UNITTESTTIME)
 	@Transactional
@@ -166,6 +167,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	 * @throws NoSuchProjectException
 	 *             if the Project is not found, indicating the persisting didn't
 	 *             work.
+	 * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
 	 */
 	// @Test(timeout = TestingConstants.UNITTESTTIME)
 	@Transactional
@@ -205,7 +207,8 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	 * This test creates a project and deletes it afterwards.
 	 * 
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
-	 * 
+	 *
+	 * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
 	 */
 	@Transactional
 	// @Test(timeout = TestingConstants.UNITTESTTIME)
@@ -230,7 +233,8 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	 * deleted project.
 	 * 
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
-	 * 
+	 *
+	 * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
 	 */
 	// @Test(timeout = TestingConstants.UNITTESTTIME, expected =
 	// NoSuchProjectException.class)
@@ -286,6 +290,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
 	/**
 	 * This test tries to create a null-project
+	 * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
 	 */
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = InvalidProjectException.class)
 	public final void create_persistNullshouldFail() throws InvalidProjectException {
@@ -294,6 +299,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
 	/**
 	 * This test tries to update a null-project
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void update_persistNullShouldFail() throws NoSuchProjectException {
@@ -302,6 +308,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
 	/**
 	 * This test tries to delete a null-project
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void delete_persistNullShouldFail() throws NoSuchProjectException {
@@ -311,6 +318,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
 	/**
 	 * This test tries to get a null-project
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void read_persistNullShouldFail() throws NoSuchProjectException {
@@ -337,6 +345,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	 * This test tries to persist a project with null as uuid
 	 * 
 	 * @throws InvalidProjectException
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void update_persistProjectWithNullUUID() throws NoSuchProjectException {
@@ -350,6 +359,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	 * This test tries to delete a project with null as uuid
 	 * 
 	 * @throws InvalidProjectException
+	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void delete_persistProjectWithNullUUID() throws NoSuchProjectException {

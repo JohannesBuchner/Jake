@@ -110,7 +110,7 @@ public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests
     }
 
     @Test(expected = NoSuchJakeObjectException.class)
-    public void testDelete() throws Exception, NoSuchJakeObjectException {
+    public void testDelete() throws Exception {
         // Add your code here
         NoteObject noteObject;
         NoteObject result1;

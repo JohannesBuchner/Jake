@@ -91,8 +91,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	/**
 	 * users having a s in the userid before the \@ are online
 	 */
-	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
-			  NetworkException, NotLoggedInException, TimeoutException {
+	public Boolean isLoggedIn(UserId userid) throws NetworkException, TimeoutException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (userid.equals(myuserid))
@@ -108,8 +107,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	/**
 	 * Login is successful, if userid == pw
 	 */
-	public Boolean login(UserId userid, String pw) throws NetworkException,
-			  TimeoutException {
+	public Boolean login(UserId userid, String pw) throws NetworkException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (loggedinstatus)
@@ -155,7 +153,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	 * If you send a message to someone, a reply is generated.
 	 */
 	public Boolean sendMessage(UserId to_userid, String content) throws NetworkException,
-			  NotLoggedInException, TimeoutException, NoSuchUseridException,
+																																			TimeoutException, NoSuchUseridException,
 			  OtherUserOfflineException {
 		log.info("Sending message to " + to_userid + " with content \"" + content + "\"");
 		UserId to = new MockUserId(to_userid);
@@ -186,9 +184,18 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 
 	/**
 	 * objects sent to other online users are accepted, but ignored.
+	 * @param to
+	 * @param objectidentifier
+	 * @param content
+	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
+	 * @throws com.jakeapp.jake.ics.exceptions.NotLoggedInException
+	 * @throws com.jakeapp.jake.ics.exceptions.TimeoutException
+	 * @throws com.jakeapp.jake.ics.exceptions.NoSuchUseridException
+	 * @throws com.jakeapp.jake.ics.exceptions.OtherUserOfflineException
+	 * @return
 	 */
 	public Boolean sendObject(UserId to, String objectidentifier, byte[] content)
-			  throws NetworkException, NotLoggedInException, TimeoutException,
+			  throws NetworkException, TimeoutException,
 			  NoSuchUseridException, OtherUserOfflineException {
 		if (!new MockUserId(to).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
@@ -251,8 +258,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	}
 
 	@Override
-	public void createAccount(UserId userid, String pw) throws NetworkException,
-			  TimeoutException {
+	public void createAccount(UserId userid, String pw) throws NetworkException {
 		// TODO can't really implement this ...
 	}
 

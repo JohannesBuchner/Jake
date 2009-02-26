@@ -14,6 +14,7 @@ public enum LockStatus {
 	 * @param lastLockLogAction
 	 *            {@link LogAction#JAKE_OBJECT_LOCK} or
 	 *            {@link LogAction#JAKE_OBJECT_UNLOCK} or null.
+	 * @return
 	 */
 	static LockStatus getLockStatus(LogAction lastLockLogAction) {
 		if (lastLockLogAction == LogAction.JAKE_OBJECT_UNLOCK || lastLockLogAction == null)

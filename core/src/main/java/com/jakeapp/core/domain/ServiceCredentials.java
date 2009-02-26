@@ -228,10 +228,8 @@ public class ServiceCredentials implements Serializable {
 			return false;
 		if ( (userId!=null)?( !userId.equals(that.userId) ):that.userId!=null)
 			return false;
-		if ( (uuid!=null) ? (!uuid.equals(that.uuid)):that.uuid!=null)
-			return false;
+		return !((uuid != null) ? (!uuid.equals(that.uuid)) : that.uuid != null);
 
-		return true;
 	}
 
 	@Override

@@ -16,8 +16,7 @@ public interface IStatusService {
 	 * @throws NetworkException if the network connection is down
 	 * @throws TimeoutException if a timeout is received
 	 */
-	public Boolean login(UserId userid, String pw) throws NetworkException,
-			  TimeoutException;
+	public Boolean login(UserId userid, String pw) throws NetworkException;
 
 	/**
 	 * Logs out and disconnects from the used network service.
@@ -27,20 +26,23 @@ public interface IStatusService {
 	 *                          propagated
 	 * @throws TimeoutException if a timeout occurred
 	 */
-	public void logout() throws NetworkException, TimeoutException;
+	public void logout() throws NetworkException;
 
 	/**
 	 * Creates a new user account.
 	 *
+	 * @param userid
+	 * @param pw
 	 * @throws NetworkException if the network connection is down and the logout couldn't be
 	 *                          propagated
 	 * @throws TimeoutException if a timeout occurred
 	 */
-	public void createAccount(UserId userid, String pw) throws NetworkException, TimeoutException;
+	public void createAccount(UserId userid, String pw) throws NetworkException;
 
 	/**
 	 * Checks whether the user is logged in. The implementation has to assert
 	 * that the user is still connected.
+	 * @return
 	 */
 	public Boolean isLoggedIn();
 
@@ -54,15 +56,17 @@ public interface IStatusService {
 	 * @throws NetworkException	  if the network connection is down
 	 * @throws NotLoggedInException if the user is not logged in
 	 * @throws TimeoutException	  if a timeout is received
+	 * @throws com.jakeapp.jake.ics.exceptions.NoSuchUseridException
+	 * @return
 	 */
-	public Boolean isLoggedIn(UserId userid) throws NoSuchUseridException,
-			  NetworkException, NotLoggedInException, TimeoutException;
+	public Boolean isLoggedIn(UserId userid) throws NetworkException, TimeoutException;
 
 	/**
 	 * @param userid the network user id in question
 	 * @return the firstname belonging to the userid
 	 * @throws NoSuchUseridException if there is no such user
 	 * @throws {@link					 OtherUserOfflineException}
+	 * @throws com.jakeapp.jake.ics.exceptions.OtherUserOfflineException
 	 */
 	public String getFirstname(UserId userid) throws NoSuchUseridException,
 			  OtherUserOfflineException;
@@ -72,6 +76,7 @@ public interface IStatusService {
 	 * @return the lastname belonging to the userid
 	 * @throws NoSuchUseridException if there is no such user
 	 * @throws {@link					 OtherUserOfflineException}
+	 * @throws com.jakeapp.jake.ics.exceptions.OtherUserOfflineException
 	 */
 	public String getLastname(UserId userid) throws NoSuchUseridException,
 			  OtherUserOfflineException;

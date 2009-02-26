@@ -45,9 +45,11 @@ public interface IMsgService {
 	 *             if the user is not logged in
 	 * @throws TimeoutException
 	 *             if a timeout occured
+	 * @throws com.jakeapp.jake.ics.exceptions.NoSuchUseridException
+	 * @throws com.jakeapp.jake.ics.exceptions.OtherUserOfflineException
 	 */
 	public Boolean sendMessage(UserId to_userid, String content) throws NetworkException,
-			NotLoggedInException, TimeoutException, NoSuchUseridException,
+																																			TimeoutException, NoSuchUseridException,
 			OtherUserOfflineException;
 
 	/**
@@ -62,6 +64,7 @@ public interface IMsgService {
 	/**
 	 * get a MsgService that can only send and receive from the UserIds in
 	 * {@link IUsersService}
+	 * @return
 	 */
 	public IMsgService getFriendMsgService();
 

@@ -21,12 +21,9 @@ public class XmppUserId extends UserId {
 	public boolean isOfCorrectUseridFormat() {
 		// TODO: this might not be the full wisdom ...
 
-		if (this.userId.contains("@")
-				&& this.userId.lastIndexOf("@") == this.userId.lastIndexOf("@")
-				&& this.userId.indexOf("@") > 0
-				&& this.userId.indexOf("@") < this.userId.length() - 1)
-			return true;
-		return false;
+		return this.userId.contains("@") && this.userId.lastIndexOf("@") == this.userId
+						.lastIndexOf("@") && this.userId.indexOf("@") > 0 && this.userId
+						.indexOf("@") < this.userId.length() - 1;
 	}
 
 	public String getHost() {
@@ -43,6 +40,8 @@ public class XmppUserId extends UserId {
 	 * @param a
 	 * @param b
 	 * @return
+	 * @param ua
+	 * @param ub
 	 */
 	public static boolean isSameUser(UserId ua, UserId ub) {
 		return isSameUser(ua.getUserId(), ub.getUserId());
@@ -60,8 +59,6 @@ public class XmppUserId extends UserId {
 	}
 
 	/**
-	 * 
-	 * @param userId
 	 * @return null if no resource
 	 */
 	public String getResource() {
@@ -92,10 +89,8 @@ public class XmppUserId extends UserId {
 			return false;
 		if (!(obj instanceof UserId)) {
 			// added string compare magic:
-			if (obj.getClass().equals(String.class)
-					&& isSameUser(this.userId, (String) obj))
-				return true;
-			return false;
+			return obj.getClass().equals(String.class) && isSameUser(this.userId,
+							(String) obj);
 		}
 		UserId other = (UserId) obj;
 		if (this.userId == null) {

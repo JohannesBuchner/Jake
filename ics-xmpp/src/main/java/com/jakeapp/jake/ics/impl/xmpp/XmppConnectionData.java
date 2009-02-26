@@ -37,6 +37,7 @@ public class XmppConnectionData {
 
 	/**
 	 * reflect ourselves to combine the services
+	 * @return
 	 */
 	public XmppICService getService() {
 		return this.service;
@@ -45,6 +46,7 @@ public class XmppConnectionData {
 	/**
 	 * The XML namespace to use to identify users online with a compatible
 	 * client
+	 * @return
 	 */
 	public String getNamespace() {
 		return this.namespace;
@@ -52,6 +54,7 @@ public class XmppConnectionData {
 
 	/**
 	 * The Roster group name to use
+	 * @return
 	 */
 	public String getGroupname() {
 		return this.groupname;

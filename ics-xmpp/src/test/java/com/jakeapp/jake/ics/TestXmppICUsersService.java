@@ -78,12 +78,10 @@ public class TestXmppICUsersService {
 			ul.add(new XmppUserId(u).getUserIdWithResource());
 			log.debug("have " + u);
 		}
-		for (int i = 0; i < expected.length; i++) {
-			log.debug("want "
-					+ new XmppUserId(expected[i]).getUserIdWithOutResource());
-			Assert.assertTrue("User " + expected[i] + " expected",
-					ul.remove(new XmppUserId(expected[i])
-							.getUserIdWithOutResource()));
+		for (UserId anExpected : expected) {
+			log.debug("want " + new XmppUserId(anExpected).getUserIdWithOutResource());
+			Assert.assertTrue("User " + anExpected + " expected",
+							ul.remove(new XmppUserId(anExpected).getUserIdWithOutResource()));
 		}
 		Assert.assertEquals("no remaining users: "
 				+ (ul.size() > 0 ? "especially not you, " + ul.get(0) : ""), 0,

@@ -25,8 +25,13 @@ public enum SyncStatus {
 	CONFLICT;
 
 	/**
+	 * @param checksumDifferentFromLastNewVersionLogEntry
+	 * @param hasUnprocessedLogEntries
+	 * @param lastProcessedLogAction
+	 * @param objectExistsLocally
 	 * @see SyncStatusCalculator#SyncStatusCalculator(boolean, boolean,
 	 *      LogAction, boolean)
+	 * @return
 	 */
 	static SyncStatus getSyncStatus(boolean checksumDifferentFromLastNewVersionLogEntry,
 			boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction,

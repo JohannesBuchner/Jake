@@ -53,6 +53,7 @@ public abstract class InjectableTask<T> implements Runnable {
 	 * override this to do your work
 	 * 
 	 * @return
+	 * @throws Exception
 	 */
 	public abstract T calculate() throws Exception;
 

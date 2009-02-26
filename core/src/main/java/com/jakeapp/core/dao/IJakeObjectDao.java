@@ -32,6 +32,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      *
      * @param objectId
      * @return
+		 * @throws com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException
      */
     public T get(final UUID objectId) throws NoSuchJakeObjectException ;
 

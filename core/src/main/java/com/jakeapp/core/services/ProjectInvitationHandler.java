@@ -80,7 +80,6 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 				this.invitationListener.invited(user, p);
 			} catch (Exception e) {
 				log.warn("error decoding invite message", e);
-				return;
 			}
 		}
 	}
@@ -128,7 +127,8 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 	}
 
 	/**
-	 * 
+	 *
+	 * @param il
 	 */
 	public void setInvitationListener(IProjectInvitationListener il) {
 		this.invitationListener = il;

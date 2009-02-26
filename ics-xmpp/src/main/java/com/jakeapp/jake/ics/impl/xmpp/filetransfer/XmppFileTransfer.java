@@ -3,17 +3,16 @@
  */
 package com.jakeapp.jake.ics.impl.xmpp.filetransfer;
 
-import java.io.File;
-
+import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
 import org.jivesoftware.smackx.filetransfer.FileTransfer;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
-import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
+import java.io.File;
 
 /**
  * Handles ongoing incoming and outgoing transfers. You want to watch its

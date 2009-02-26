@@ -34,17 +34,17 @@ public class FSServiceInnerTest extends FSTestCase {
 			"crazy/named/file/that.has.more.ext.s", "cool+-035.x_chars", 
 			"a", "ac (also cool).file", "...", "foo....bar", "foo/bar../abz"
 		};
-		for (int i = 0; i < valids.length; i++) {
-			Assert.assertTrue("valid name: " + valids[i], fss.isValidRelpath(valids[i]));
+		for (String valid : valids) {
+			Assert.assertTrue("valid name: " + valid, fss.isValidRelpath(valid));
 		}
 		Assert.assertFalse("up and out", fss.isValidRelpath("foo/../../bar.xls"));
 		Assert.assertFalse("up",fss.isValidRelpath("foo/../bar.xls"));
 		
 		String[] s = {"~","*","..","#","=","}","{","$","\"",
 				"'","!","%","&","<",">","|","","@","","^","\\", ":" };
-		
-		for (int i = 0; i < s.length; i++) {
-			Assert.assertFalse("Invalid character " + s[i], fss.isValidRelpath("~"));
+
+		for (String value : s) {
+			Assert.assertFalse("Invalid character " + value, fss.isValidRelpath("~"));
 		}
 		
 		Assert.assertFalse("backslash",fss.isValidRelpath("windows\\path"));
@@ -73,13 +73,13 @@ public class FSServiceInnerTest extends FSTestCase {
 		new File(mytempdir, "bla").mkdirs();
 		String[] dirnames = {mytempdir + "/bla/..", 
 				mytempdir + "/!", mytempdir + "/#"};
-		for (int i = 0; i < dirnames.length; i++) {
-			File f = new File(dirnames[i]);
+		for (String dirname : dirnames) {
+			File f = new File(dirname);
 			f.mkdirs();
 			Assert.assertTrue("Creating dir successful", f.exists() && f.isDirectory());
-			try{
-				fss.setRootPath(dirnames[i]);
-			}catch(NotADirectoryException e){
+			try {
+				fss.setRootPath(dirname);
+			} catch (NotADirectoryException e) {
 			}
 		}
 				

@@ -159,6 +159,7 @@ public class LogEntry<T extends ILogable> implements Serializable {
 	// }
 
 	/**
+	 * @param comment
 	 * @return The <code>ProjectMember</code> that caused this
 	 *         <code>LogEntry</code>.
 	 */

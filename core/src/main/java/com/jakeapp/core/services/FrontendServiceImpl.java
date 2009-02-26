@@ -53,6 +53,8 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @param projectsManagingService
 	 * @param msgServiceFactory
 	 * @param sync
+	 * @param serviceCredentialsDao
+	 * @param invitationListener
 	 */
 	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
@@ -127,6 +129,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @throws IllegalArgumentException if <code>sessionId</code> was null
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *                                  if no Session associated with <code>sessionId</code> exists.
+	 * @return
 	 */
 	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
 			  FrontendNotLoggedInException {
@@ -284,7 +287,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override
-			public Boolean calculate() throws TimeoutException, NetworkException  {
+			public Boolean calculate() throws NetworkException  {
 				ServiceCredentials credentials;
 				boolean result;
 				checkSession(session);

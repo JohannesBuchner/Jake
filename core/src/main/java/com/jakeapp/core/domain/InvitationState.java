@@ -17,5 +17,5 @@ public enum InvitationState implements Serializable {
 	/**
 	 * An invitation was received, but the invitation was not accepted yet.
 	 */
-	INVITED;
+	INVITED
 }

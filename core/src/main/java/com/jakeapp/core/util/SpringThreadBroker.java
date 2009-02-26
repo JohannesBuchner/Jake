@@ -39,6 +39,7 @@ public class SpringThreadBroker extends ThreadBroker {
 	 * 
 	 * @param o
 	 * @param applicationContextThread
+	 * @return
 	 */
 	public static ApplicationContextThread getThreadForObject(Object o) {
 		//log.debug("getting thread for " + o);
