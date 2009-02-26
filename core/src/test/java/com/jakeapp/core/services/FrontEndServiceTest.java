@@ -45,7 +45,7 @@ public class FrontEndServiceTest {
 
 		this.setService(new FrontendServiceImpl(
 				  null // IProjectsManagingService
-				  , null, null,null
+				  , null, null,null, null
 		)
 		);
 	}

@@ -266,4 +266,9 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getNickName(UserId user) throws NotLoggedInException {
+		return "";
+	}
 }

@@ -164,4 +164,5 @@ public interface IFrontendService {
 	 */
 	AvailableLaterObject<Boolean> login(String session, MsgService service, String password,
 			boolean rememberPassword);
+
 }

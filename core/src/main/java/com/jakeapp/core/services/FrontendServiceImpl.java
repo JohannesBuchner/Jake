@@ -19,9 +19,9 @@ import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -33,6 +33,9 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Injected
 	private IProjectsManagingService projectsManagingService;
 
+	@Injected
+	private IProjectInvitationListener internalInvitationListener;
+	
 	@Injected
 	private MsgServiceFactory msgServiceFactory;
 
@@ -54,11 +57,14 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
 										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync,
-										IServiceCredentialsDao serviceCredentialsDao) {
+										IServiceCredentialsDao serviceCredentialsDao,
+										IProjectInvitationListener invitationListener
+		) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.msgServiceFactory = msgServiceFactory;
 		this.sync = sync;
 		this.serviceCredentialsDao = serviceCredentialsDao;
+		this.internalInvitationListener = invitationListener;
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
@@ -278,7 +284,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override
-			public Boolean calculate() throws Exception {
+			public Boolean calculate() throws TimeoutException, NetworkException  {
 				ServiceCredentials credentials;
 				boolean result;
 				checkSession(session);
@@ -289,7 +295,10 @@ public class FrontendServiceImpl implements IFrontendService {
 				} else {
 					result = service.login(password, rememberPassword);
 				}
-				
+				ProjectInvitationHandler invitesHandler = new ProjectInvitationHandler(null);
+				invitesHandler
+						.setInvitationListener(FrontendServiceImpl.this.internalInvitationListener);
+				service.getMainIcs().getMsgService().registerReceiveMessageListener(invitesHandler);
 				return result;
 			}
 			
@@ -297,4 +306,5 @@ public class FrontendServiceImpl implements IFrontendService {
 		
 		return ret;
 	}
+
 }

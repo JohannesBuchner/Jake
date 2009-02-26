@@ -71,6 +71,8 @@
                          type="com.jakeapp.core.synchronization.IFriendlySyncService" />
         <constructor-arg index="3" ref="serviceCredentialsDao"
                          type="com.jakeapp.core.dao.IServiceCredentialsDao" />
+        <constructor-arg index="4" ref="projectsManagingService"
+                         type="com.jakeapp.core.services.IProjectInvitationListener"/>
     </bean>
 
 </beans>

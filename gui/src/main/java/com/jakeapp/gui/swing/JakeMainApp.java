@@ -79,18 +79,24 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		//ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 		//				new String[]{"/com/jakeapp/core/applicationContext.xml",
 		//								"/com/jakeapp/gui/swing/applicationContext-gui.xml"});
+		try{
+			SpringThreadBroker.getInstance().loadSpring(
+					new String[] { "/com/jakeapp/core/applicationContext.xml",
+							"/com/jakeapp/gui/swing/applicationContext-gui.xml" });
+	
+			// show "progress"
+			if (JakeMainApp.getApp().getSplashFrame() != null) {
+				JakeMainApp.getApp().getSplashFrame().setTransparency(0.5F);
+			}
+	
+			setCore((ICoreAccess) SpringThreadBroker.getInstance().getBean("coreAccess"));
 
-		SpringThreadBroker.getInstance().loadSpring(
-				new String[] { "/com/jakeapp/core/applicationContext.xml",
-						"/com/jakeapp/gui/swing/applicationContext-gui.xml" });
-
-		// show "progress"
-		if (JakeMainApp.getApp().getSplashFrame() != null) {
-			JakeMainApp.getApp().getSplashFrame().setTransparency(0.5F);
+		}catch(RuntimeException e){
+			SpringThreadBroker.stopInstance();
+			e.printStackTrace();
+			System.exit(1);
 		}
-
-		setCore((ICoreAccess) SpringThreadBroker.getInstance().getBean("coreAccess"));
-
+		
 		Map<String, String> backendCredentials = new HashMap<String, String>();
 
 		try {

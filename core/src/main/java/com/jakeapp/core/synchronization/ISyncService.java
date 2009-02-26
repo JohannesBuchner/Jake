@@ -152,31 +152,6 @@ public interface ISyncService {
 	public AvailableLaterObject<List<FileObject>> getFiles(Project p) throws IOException;
 
 	/**
-	 * Invites a User to a project.
-	 *
-	 * @param project The project to invite the user to.
-	 * @param userId  The userId of the User. There is already a corresponding
-	 *                ProjectMember-Object stored in the project-local database.
-	 */
-	void invite(Project project, UserId userId);
-
-	/**
-	 * Informs the person who invited us to a project that we accept the
-	 * invitation.
-	 * @param project
-	 * @param inviter
-	 */
-	void notifyInvitationAccepted(Project project, UserId inviter);
-
-	/**
-	 * Informs the person who invited us to a project that we reject the
-	 * invitation.
-	 * @param project
-	 * @param inviter
-	 */
-	void notifyInvitationRejected(Project project, UserId inviter);
-
-	/**
 	 * Gets the Tags for the object
 	 *
 	 * @param jo

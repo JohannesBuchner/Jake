@@ -402,5 +402,12 @@ public interface IProjectsManagingService {
 	 * @param nick
 	 */
 	void setUserNickname(Project project, UserId userId, String nick);
+	
+	/**
+	 * get notified when we are invited to a project 
+	 * 
+	 * @param il
+	 */
+	void setInvitationListener(IProjectInvitationListener il);
 
 }

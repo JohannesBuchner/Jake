@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
@@ -120,8 +121,8 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	@Transactional
-	public final boolean login(String newPassword, boolean shouldSavePassword)
-			throws Exception {
+	public final boolean login(String newPassword, boolean shouldSavePassword) throws TimeoutException, NetworkException
+			 {
 		log.debug("calling login with newPwd-Size: " + newPassword.length()
 				+ ", shouldSave: " + shouldSavePassword);
 
@@ -137,7 +138,11 @@ public abstract class MsgService<T extends UserId> {
 			this.getServiceCredentials().setPlainTextPassword(newPassword);
 			this.getServiceCredentials().setSavePassword(shouldSavePassword);
 			// update and store the credentials
-			MsgService.serviceCredentialsDao.update(getServiceCredentials());
+			try {
+				MsgService.serviceCredentialsDao.update(getServiceCredentials());
+			} catch (NoSuchServiceCredentialsException e) {
+				MsgService.serviceCredentialsDao.persist(getServiceCredentials());
+			}
 		}
 
 		return this.login();

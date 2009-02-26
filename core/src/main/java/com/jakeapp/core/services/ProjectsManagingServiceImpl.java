@@ -59,7 +59,6 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
@@ -67,7 +66,7 @@ import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
-		IProjectsManagingService {
+		IProjectsManagingService, IProjectInvitationListener {
 
 	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
 
@@ -82,6 +81,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	private IProjectsFileServices projectsFileServices;
 
 	private MsgServiceFactory msgServiceFactory;
+
+	private IProjectInvitationListener invitationListener;
 
 	public ProjectsManagingServiceImpl(
 			ProjectApplicationContextFactory applicationContextFactory,
@@ -541,7 +542,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 *            Member to add. Must not be null.
 	 * @return the ProjectMember added
 	 */
-
 	private UserId addUserToProject(Project project, UserId userId) {
 		
 			try {
@@ -668,7 +668,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// project does not exist
 
 		// notify the inviter
-		this.getSyncService().notifyInvitationAccepted(project, inviter);
+		ProjectInvitationHandler.notifyInvitationAccepted(project, inviter);
 	}
 
 	@Override
@@ -690,7 +690,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		}
 
 		// notify the inviter
-		this.getSyncService().notifyInvitationRejected(project, inviter);
+		ProjectInvitationHandler.notifyInvitationRejected(project, inviter);
 	}
 
 	@Override
@@ -865,7 +865,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		log.debug("extracted the userid to invite: " + userid);
 
 		member = this.addUserToProject(project, id);
-		this.getSyncService().invite(project, id);
+		ProjectInvitationHandler.invite(project, id);
 
 		return member;
 	}
@@ -991,5 +991,27 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	public IServiceCredentialsDao getServiceCredentialsDao() {
 		return serviceCredentialsDao;
+	}
+
+	@Override
+	public void setInvitationListener(IProjectInvitationListener il) {
+		this.invitationListener = il;
+	}
+	
+	public IProjectInvitationListener getInvitationListener() {
+		return this.invitationListener;
+	}
+
+	@Override
+	public void invited(UserId user, Project project) {
+		// add Project to the global database
+		try {
+			project = this.getProjectDao().create(project);
+		} catch (InvalidProjectException e) {
+			log.error("Creating the project we were invited to failed: Project was invalid");
+			throw new IllegalArgumentException(e);
+		}
+		
+		this.invitationListener.invited(user, project);
 	}
 }

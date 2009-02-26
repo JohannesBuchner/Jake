@@ -68,8 +68,7 @@ import com.jakeapp.jake.ics.status.IOnlineStatusListener;
  *
  * @author johannes
  */
-public class SyncServiceImpl extends FriendlySyncService implements
-		IMessageReceiveListener {
+public class SyncServiceImpl extends FriendlySyncService {
 
 	static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
@@ -80,7 +79,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	private static final String NEW_NOTE = "<newnote/>";
 
 	private IProjectsFileServices projectsFileServices;
-
 
 	/**
 	 * key is the UUID
@@ -100,6 +98,10 @@ public class SyncServiceImpl extends FriendlySyncService implements
 
 	ICService getICS(Project p) {
 		return getICSManager().getICService(p);
+	}
+	private IFileTransferService getTransferService(Project p)
+			throws NotLoggedInException {
+		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
 
 	IFSService getFSS(Project p) {
@@ -623,10 +625,56 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		}
 
 		@Override
-		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
-		                            String content) {
-			// TODO Auto-generated method stub
+		@Transactional
+		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+			int uuidlen = UUID.randomUUID().toString().length();
+			String projectid = content.substring(0, uuidlen);
+			content = content.substring(uuidlen);
+			Project p = getProjectByUserId(projectid);
+			ChangeListener cl = projectChangeListeners.get(projectid);
+			if (content.startsWith(NEW_NOTE)) {
+				log.debug("requesting note");
+				UUID uuid = UUID.fromString(content.substring(NEW_NOTE.length()));
+				log.debug("persisting object");
+				NoteObject no = new NoteObject(uuid, p, "loading ...");
+				db.getNoteObjectDao(p).persist(no);
+				log.debug("calling other user: " + from_userid);
+				try {
+					getTransferService(p).request(
+							new FileRequest("N" + uuid, false, from_userid),
+							cl.beganRequest(no));
+				} catch (NotLoggedInException e) {
+					log.error("Not logged in");
+				}
+			}
+			if (content.startsWith(NEW_FILE)) {
+				log.debug("requesting file");
+				String relpath = content.substring(NEW_FILE.length());
+				FileObject fo = new FileObject(p, relpath);
+				log.debug("persisting object");
+				db.getFileObjectDao(p).persist(fo);
+				log.debug("calling other user: " + from_userid);
+				try {
+					getTransferService(p).request(
+							new FileRequest("F" + relpath, false, from_userid),
+							cl.beganRequest(fo));
+				} catch (NotLoggedInException e) {
+					log.error("Not logged in");
+				}
+			}
+			if (content.startsWith(POKE_MESSAGE)) {
+				log.debug("Something has happened - let's sync logs");
 
+				// Eventually, this should consider things such as trust
+				UserId user = getICSManager().getFrontendUserId(p, from_userid);
+				try {
+					SyncServiceImpl.this.startLogSync(p, user);
+				} catch (IllegalProtocolException e) {
+					// This should neeeeeeeeever happen
+					log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
+									e);
+				}
+			}
 		}
 
 		@Override
@@ -754,13 +802,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 		runningProjects.remove(p.getProjectId());
 		projectChangeListeners.remove(p.getProjectId());
 
-		// TODO: remove ics hooks
-		// XXX dont know if logging out is sufficient - the listener is added
-		// directly to the
-		// Connection
-
-		getICS(p).getMsgService().unRegisterReceiveMessageListener(this);
-
 		try {
 			getICS(p).getStatusService().logout();
 		} catch (TimeoutException e) {
@@ -784,81 +825,6 @@ public class SyncServiceImpl extends FriendlySyncService implements
 	@Injected
 	public void setRequestHandlePolicy(RequestHandlePolicy rhp) {
 		this.rhp = rhp;
-	}
-
-	@Override
-	public void invite(Project project, UserId userId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void notifyInvitationAccepted(Project project, UserId inviter) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void notifyInvitationRejected(Project project, UserId inviter) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	@Transactional
-	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
-		int uuidlen = UUID.randomUUID().toString().length();
-		String projectid = content.substring(0, uuidlen);
-		content = content.substring(uuidlen);
-		Project p = getProjectByUserId(projectid);
-		ChangeListener cl = projectChangeListeners.get(projectid);
-		if (content.startsWith(NEW_NOTE)) {
-			log.debug("requesting note");
-			UUID uuid = UUID.fromString(content.substring(NEW_NOTE.length()));
-			log.debug("persisting object");
-			NoteObject no = new NoteObject(uuid, p, "loading ...");
-			db.getNoteObjectDao(p).persist(no);
-			log.debug("calling other user: " + from_userid);
-			try {
-				getTransferService(p).request(
-						new FileRequest("N" + uuid, false, from_userid),
-						cl.beganRequest(no));
-			} catch (NotLoggedInException e) {
-				log.error("Not logged in");
-			}
-		}
-		if (content.startsWith(NEW_FILE)) {
-			log.debug("requesting file");
-			String relpath = content.substring(NEW_FILE.length());
-			FileObject fo = new FileObject(p, relpath);
-			log.debug("persisting object");
-			db.getFileObjectDao(p).persist(fo);
-			log.debug("calling other user: " + from_userid);
-			try {
-				getTransferService(p).request(
-						new FileRequest("F" + relpath, false, from_userid),
-						cl.beganRequest(fo));
-			} catch (NotLoggedInException e) {
-				log.error("Not logged in");
-			}
-		}
-		if (content.startsWith(POKE_MESSAGE)) {
-			log.debug("Something has happened - let's sync logs");
-
-			// Eventually, this should consider things such as trust
-			try {
-				this.startLogSync(p, getICSManager().getFrontendUserId(p, from_userid));
-			} catch (IllegalProtocolException e) {
-				// This should neeeeeeeeever happen
-				log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
-								e);
-			}
-		}
-	}
-
-	private IFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
-		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
 
 	private Project getProjectByUserId(String projectid) {
