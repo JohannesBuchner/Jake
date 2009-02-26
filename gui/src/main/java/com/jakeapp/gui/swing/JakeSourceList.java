@@ -44,7 +44,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		super(core);
 
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 
 		sourceListContextMenu = createSourceListContextMenu();
 		sourceListInvitiationContextMenu = createSourceListInvitationContextMenu();
@@ -93,7 +93,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 														 int clickCount) {
 				//log.info(item.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
-				if (button == button.RIGHT) {
+				if (button == Button.RIGHT) {
 					// select the clicked project
 					getSourceList().setSelectedItem(item);
 				}

@@ -26,6 +26,7 @@ public interface SheetListener extends EventListener {
 	/**
 	 * This method is invoked, when the user selected an option on the
 	 * JOptionPane or the JFileChooser pane on the JSheet.
+	 * @param evt
 	 */
 	public void optionSelected(SheetEvent evt);
 }

@@ -24,7 +24,8 @@ public class StringHistory {
 
     /**
      * Creates a new history that starts with any history already on disk, and which writes changes out to disk as the occur.
-     */
+		 * @param filename
+		 */
     public StringHistory(String filename) {
         this.filename = filename;
         this.history = new ArrayList<String>();

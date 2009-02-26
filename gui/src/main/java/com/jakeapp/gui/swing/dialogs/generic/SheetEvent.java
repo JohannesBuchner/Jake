@@ -31,6 +31,7 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Creates a new instance.
+	 * @param source
 	 */
 	public SheetEvent(JSheet source) {
 		super(source);
@@ -38,6 +39,10 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Creates a new instance.
+	 * @param source
+	 * @param fileChooser
+	 * @param option
+	 * @param value
 	 */
 	public SheetEvent(JSheet source, JFileChooser fileChooser, int option, Object value) {
 		super(source);
@@ -48,6 +53,11 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Creates a new instance.
+	 * @param source
+	 * @param optionPane
+	 * @param option
+	 * @param value
+	 * @param inputValue
 	 */
 	public SheetEvent(JSheet source, JOptionPane optionPane, int option, Object value, Object inputValue) {
 		super(source);
@@ -60,6 +70,7 @@ public class SheetEvent extends EventObject {
 	/**
 	 * Returns the pane on the sheet. This is either a JFileChooser or a
 	 * JOptionPane.
+	 * @return
 	 */
 	public JComponent getPane() {
 		return pane;
@@ -67,6 +78,7 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Returns the JFileChooser pane on the sheet.
+	 * @return
 	 */
 	public JFileChooser getFileChooser() {
 		return (JFileChooser) pane;
@@ -74,6 +86,7 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Returns the JOptionPane pane on the sheet.
+	 * @return
 	 */
 	public JOptionPane getOptionPane() {
 		return (JOptionPane) pane;
@@ -81,6 +94,7 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Returns the option that the JFileChooser or JOptionPane returned.
+	 * @return
 	 */
 	public int getOption() {
 		return option;
@@ -88,6 +102,7 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Returns the value that the JFileChooser or JOptionPane returned.
+	 * @return
 	 */
 	public Object getValue() {
 		return value;
@@ -95,6 +110,7 @@ public class SheetEvent extends EventObject {
 
 	/**
 	 * Returns the input value that the JOptionPane returned, if it wants input.
+	 * @return
 	 */
 	public Object getInputValue() {
 		return inputValue;

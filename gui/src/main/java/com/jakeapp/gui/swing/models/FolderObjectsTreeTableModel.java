@@ -154,7 +154,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 
 			try {
 				Set<Tag> tags = TagHelper.stringToTags(fileobj, (String) value);
-				JakeMainApp.getApp().getCore().setTagsForFileObject(fileobj, tags);
+				JakeMainApp.getCore().setTagsForFileObject(fileobj, tags);
 			} catch (InvalidTagStringFormatException e) {
 				log.warn("Invalid tag string ('" + value + "')");
 			}
@@ -230,7 +230,8 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 	public void filesChanged() {
 		try {
 			log.debug("Hooray, our files changed!");
-			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getApp().getCore().getFolder(JakeMainApp.getApp().getProject(),
+			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getCore().getFolder(
+							JakeMainApp.getProject(),
 							null));
 			this.setRoot(node);
 		} catch (ProjectFolderMissingException e) {

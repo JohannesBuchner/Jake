@@ -44,6 +44,8 @@ public class GuiUtilities {
 
 	/**
 	 * Returns the appropriate background color for the given row index.
+	 * @param row
+	 * @return
 	 */
 	public static Color backgroundColorForRow(int row) {
 		if (Platform.isLin()) {
@@ -93,6 +95,7 @@ public class GuiUtilities {
 
 	/**
 	 * Guesses whether setFrameAlpha is likely to work.
+	 * @return
 	 */
 	public static boolean canSetFrameAlpha() {
 		// setFrameAlpha works on any version of Mac OS we can still run on.
@@ -118,12 +121,14 @@ public class GuiUtilities {
 	/**
 	 * Sets the opacity (1.0 => fully opaque, 0.0 => fully transparent) of the given Frame.
 	 * http://elliotth.blogspot.com/2007/08/transparent-java-windows-on-x11.html
+	 * @param frame
+	 * @param alpha
 	 */
 	public static void setFrameAlpha(JFrame frame, double alpha) {
 		final Method setWindowOpacityMethod = getAwtUtilitiesSetWindowOpacity();
 		if (setWindowOpacityMethod != null) {
 			try {
-				setWindowOpacityMethod.invoke(null, (Window) frame, (float) alpha);
+				setWindowOpacityMethod.invoke(null, frame, (float) alpha);
 			} catch (Throwable th) {
 				//log.warn("com.sun.awt.AWTUtilities.setWindowOpacity failed.", th);
 			}
@@ -149,7 +154,7 @@ public class GuiUtilities {
 				// long windowId = peer.getWindow();
 				Class<?> xWindowPeerClass = Class.forName("sun.awt.X11.XWindowPeer");
 				Method getWindowMethod = xWindowPeerClass.getMethod("getWindow");
-				long windowId = ((Long) getWindowMethod.invoke(peer, new Object[0])).longValue();
+				long windowId = (Long) getWindowMethod.invoke(peer, new Object[0]);
 
 				long value = (int) (0xff * alpha) << 24;
 				// sun.awt.X11.XAtom.get("_NET_WM_WINDOW_OPACITY").setCard32Property(windowId, value);

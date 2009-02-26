@@ -11,12 +11,11 @@ public interface ConnectionStatus {
         Offline, SigningIn, Online, NoConnection, UnknownError
     }
 
-    ;
-
-    /**
+	/**
      * Set the Connection Status
      *
      * @param status
+	 * @param msg
      */
     void setConnectionStatus(final ConnectionStati status, final String msg);
 }

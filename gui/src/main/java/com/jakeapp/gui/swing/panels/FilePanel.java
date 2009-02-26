@@ -128,10 +128,14 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	 */
 	public void resetFilter() {
 		fileTable.setFilters(null);
+
+		// TODO: reenable later
+		/*
 		if (treeViewActive) {
 			fileTreeTableScrollPane.setViewportView(fileTreeTable);
 			treeBtn.setSelected(true);
 		}
+		*/
 	}
 
 	private void initPopupMenu(JPopupMenu pm) {
@@ -237,6 +241,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// Initialize popup menu
 		initPopupMenu(popupMenu);
+
+		// TODO: remove later (hack to disable tree)
+		fileTreeTableScrollPane.setViewportView(fileTable);
 	}
 
 	public static FilePanel getInstance() {
@@ -415,14 +422,17 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 			}
 		}, controlPanel);
 
+
+		// TODO: remove hack
 		treeBtn = new JToggleButton(getResourceMap().getString("treeButton"));
 		treeBtn.setUI(new JakeHudButtonUI());
-		controlPanel.add(treeBtn, "split 2");
-		treeBtn.setSelected(true);
+		//controlPanel.add(treeBtn, "split 2");
+		//treeBtn.setSelected(true);
 
 		flatBtn = new JToggleButton(getResourceMap().getString("flatButton"));
 		flatBtn.setUI(new JakeHudButtonUI());
 		controlPanel.add(flatBtn);
+		flatBtn.setSelected(true);
 
 		ActionListener updateViewAction = new ActionListener() {
 			@Override

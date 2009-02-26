@@ -140,6 +140,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * Main method launching the application.
+	 * @param args
 	 */
 	public static void main(String[] args) {
 		startGui(args);
@@ -300,6 +301,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * Set a new Msg Service.
+	 * @param msg
 	 */
 	public static void setMsgService(MsgService msg) {
 		getApp().msgService = msg;

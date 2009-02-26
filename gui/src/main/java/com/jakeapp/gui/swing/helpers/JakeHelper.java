@@ -29,6 +29,7 @@ public class JakeHelper {
 	 * Shows the default message dialog with custom msgCode
 	 *
 	 * @param msgCode: string, queried from JakeMainView-properties file.
+	 * @param msgType
 	 */
 	public static void showMsgTranslated(String msgCode, int msgType) {
 		showMsg(JakeMainView.getMainView().getResourceMap().getString(msgCode), msgType);
@@ -36,6 +37,8 @@ public class JakeHelper {
 
 	/**
 	 * Shows a message to the user.
+	 * @param msg
+	 * @param msgType
 	 */
 	public static void showMsg(String msg, int msgType) {
 		log.info("Show Msg: " + msg + "(Type: " + msgType + ")");

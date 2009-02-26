@@ -32,11 +32,7 @@ public class Platform {
 	 * @return
 	 */
 	public static boolean isSetShowAsSheet() {
-		if (isMac()) {
-			return true;
-		} else {
-			return false;
-		}
+		return isMac();
 	}
 
 	enum OperatingSystem {

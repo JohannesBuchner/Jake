@@ -82,6 +82,8 @@ public class FileUtilities {
 	/**
 	 * Returns a new File for the given filename, coping with "~/".
 	 * Try not to ever use "new File(String)": use this instead.
+	 * @param filename
+	 * @return
 	 */
 	public static File fileFromString(String filename) {
 		return new File(FileUtilities.parseUserFriendlyName(filename));
@@ -91,6 +93,7 @@ public class FileUtilities {
 	 * Returns a default location for the new project.
 	 *
 	 * @param project
+	 * @return
 	 */
 	public static String getDefaultProjectLocation(Project project) {
 		if (project == null) {
@@ -108,12 +111,14 @@ public class FileUtilities {
 	/**
 	 * Checks that a name exists and is a directory. Returns null if it does, an error suitable for a UI
 	 * if not.
+	 * @param name
+	 * @return
 	 */
 	public static String checkDirectoryExistence(String name) {
 		File proposedDirectory = FileUtilities.fileFromString(name);
-		if (proposedDirectory.exists() == false) {
+		if (!proposedDirectory.exists()) {
 			return "Directory \"" + name + "\" does not exist.";
-		} else if (proposedDirectory.isDirectory() == false) {
+		} else if (!proposedDirectory.isDirectory()) {
 			return "The path \"" + name + "\" exists but does not refer to a directory.";
 		}
 		return null;
@@ -124,6 +129,7 @@ public class FileUtilities {
 	 * who's set $HOME wants it to override Windows' notion of the home
 	 * directory, which is what the "user.home" system property gets you.
 	 * Removes any trailing File.separators.
+	 * @return
 	 */
 	public static String getUserHomeDirectory() {
 		String result = System.getenv("HOME");
@@ -139,6 +145,9 @@ public class FileUtilities {
 	/**
 	 * Returns a new File for the given filename, coping with "~/".
 	 * Try not to ever use "new File(String, String)": use this instead.
+	 * @param parent
+	 * @param filename
+	 * @return
 	 */
 	public static File fileFromParentAndString(String parent, String filename) {
 		return fileFromString(FileUtilities.parseUserFriendlyName(parent) + File.separator + filename);
@@ -148,6 +157,8 @@ public class FileUtilities {
 	 * Converts paths of the form ~/src to /Users/elliotth/src (or
 	 * whatever the user's home directory is). Also copes with the
 	 * special case of ~ on its own, and with ~someone-else/tmp.
+	 * @param filename
+	 * @return
 	 */
 	public static String parseUserFriendlyName(String filename) {
 		String result = filename;
@@ -178,10 +189,12 @@ public class FileUtilities {
 	 * home directories too, but I can't think of a pure Java way to do
 	 * that.
 	 * Also adds a trailing separator to the name of a directory.
+	 * @param filename
+	 * @return
 	 */
 	public static String getUserFriendlyName(String filename) {
 		boolean isDirectory = fileFromString(filename).isDirectory();
-		if (isDirectory && filename.endsWith(File.separator) == false) {
+		if (isDirectory && !filename.endsWith(File.separator)) {
 			filename += File.separatorChar;
 		}
 		String home = getUserHomeDirectory() + File.separator;
@@ -204,6 +217,9 @@ public class FileUtilities {
 	 * Returns a temporary file whose name begins with 'prefix'.
 	 * The file will be deleted on exit.
 	 * On error, a RuntimeException is thrown which will refer to the file using 'humanReadableName'.
+	 * @param prefix
+	 * @param humanReadableName
+	 * @return
 	 */
 	public static File createTemporaryFile(String prefix, String humanReadableName) {
 		try {
@@ -220,6 +236,10 @@ public class FileUtilities {
 	 * The file will be deleted on exit.
 	 * Returns the name of the temporary file.
 	 * On error, a RuntimeException is thrown which will refer to the file using 'humanReadableName'.
+	 * @param prefix
+	 * @param humanReadableName
+	 * @param content
+	 * @return
 	 */
 	public static String createTemporaryFile(String prefix, String humanReadableName, String content) {
 		try {

@@ -128,6 +128,7 @@ public class JAsynchronousProgressIndicator extends JComponent {
 
 	/**
 	 * Sometimes the resizing caused by setVisible is annoying, and you'd just like the component not to paint itself.
+	 * @param newState
 	 */
 	public void setPainted(boolean newState) {
 		if (painted != newState) {
@@ -139,6 +140,8 @@ public class JAsynchronousProgressIndicator extends JComponent {
 	/**
 	 * Switches from the usual spinning "indeterminate" animation to a "determinate" pie chart style.
 	 * To revert to the "indeterminate" style, call either setProgress(0, 0) or stopAnimation.
+	 * @param newCurrentValue
+	 * @param newMaxValue
 	 */
 	public void setProgress(int newCurrentValue, int newMaxValue) {
 		final int oldCurrentValue = currentValue;

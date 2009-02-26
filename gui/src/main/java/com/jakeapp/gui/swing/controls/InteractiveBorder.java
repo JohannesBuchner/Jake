@@ -21,7 +21,9 @@ public abstract class InteractiveBorder extends EmptyBorder implements MouseInpu
     /**
      * We assume that the addition to the border is square, and can only go
      * on the left or right.
-     */
+		 * @param sideLength
+		 * @param onLeft
+		 */
     InteractiveBorder(int sideLength, boolean onLeft) {
         super(makeInsetsForPosition(sideLength, onLeft));
         this.sideLength = sideLength;
@@ -32,7 +34,8 @@ public abstract class InteractiveBorder extends EmptyBorder implements MouseInpu
      * Sets whether you want menu-like behavior (true) or button-like
      * behavior (false). The default is false, and buttonActivated is
      * only invoked after a press and release, both on-button.
-     */
+		 * @param newState
+		 */
     public void setActivateOnPress(boolean newState) {
         this.activateOnPress = newState;
     }
@@ -41,7 +44,8 @@ public abstract class InteractiveBorder extends EmptyBorder implements MouseInpu
      * Attaches this border to the given component, using a CompoundBorder.
      * You can add both a left and a right border to a component by invoking
      * this once on each border with the same component argument.
-     */
+		 * @param c
+		 */
     public void attachTo(JComponent c) {
         this.component = c;
         c.setBorder(BorderFactory.createCompoundBorder(c.getBorder(), this));
@@ -52,7 +56,8 @@ public abstract class InteractiveBorder extends EmptyBorder implements MouseInpu
     /**
      * Invoked when the button is activated; what 'activated' means depends
      * on whether or not this border is set to activate on press.
-     */
+		 * @param e
+		 */
     public abstract void buttonActivated(MouseEvent e);
 
     /**
@@ -62,7 +67,8 @@ public abstract class InteractiveBorder extends EmptyBorder implements MouseInpu
      * <p/>
      * You can call this from paintBorder to change your appearance (buttons
      * tend to depress or look darker, for example, when armed).
-     */
+		 * @return
+		 */
     public boolean isArmed() {
         return armed;
     }
@@ -78,7 +84,7 @@ public abstract class InteractiveBorder extends EmptyBorder implements MouseInpu
     private boolean isOverButton(MouseEvent e) {
         // If the button is down, we might be outside the component
         // without having had mouseExited invoked.
-        if (component.contains(e.getPoint()) == false) {
+        if (!component.contains(e.getPoint())) {
             return false;
         }
 

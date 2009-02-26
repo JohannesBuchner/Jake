@@ -33,7 +33,7 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 
 	public ProjectInvitationPanel() {
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 
 		initComponents();
 	}

@@ -75,7 +75,8 @@ public class ETable extends JXTable {
      * table model is insufficient to fill all the visible area
      * available to us. We don't involve cell renderers, because
      * we have no data.
-     */
+		 * @param g
+		 */
     protected void paintEmptyRows(Graphics g) {
         final int rowCount = getRowCount();
         final Rectangle clip = g.getClipBounds();
@@ -129,7 +130,7 @@ public class ETable extends JXTable {
         boolean focused = hasFocus();
         boolean selected = isCellSelected(row, column);
         if (selected) {
-            if (Platform.isMac() && focused == false && isEditing() == false) {
+            if (Platform.isMac() && !focused && !isEditing()) {
                 // Native Mac OS renders the selection differently if the table doesn't have the focus.
                 // The Mac OS LAF doesn't imitate this for us.
                 c.setBackground(MAC_UNFOCUSED_SELECTED_CELL_BACKGROUND_COLOR);
@@ -151,10 +152,10 @@ public class ETable extends JXTable {
                 // There's a similar situation on Mac OS.
                 jc.setOpaque(true);
                 // Mac OS 10.5 lets us use smaller checkboxes in table cells.
-                ((JCheckBox) jc).putClientProperty("JComponent.sizeVariant", "mini");
+                jc.putClientProperty("JComponent.sizeVariant", "mini");
             }
 
-            if (getCellSelectionEnabled() == false && isEditing() == false) {
+            if (!getCellSelectionEnabled() && !isEditing()) {
                 if (Platform.isMac()) {
                     jc.setBorder(new AquaTableCellBorder(selected, focused, getShowVerticalLines()));
                 } else {
@@ -226,7 +227,10 @@ public class ETable extends JXTable {
     /**
      * Sets the component's tool tip if the component is being rendered smaller than its preferred size.
      * This means that all users automatically get tool tips on truncated text fields that show them the full value.
-     */
+		 * @param c
+		 * @param row
+		 * @param column
+		 */
     private void initToolTip(JComponent c, int row, int column) {
         String toolTipText = null;
         if (c.getPreferredSize().width > getCellRect(row, column, false).width) {
@@ -261,7 +265,7 @@ public class ETable extends JXTable {
     protected void configureEnclosingScrollPane() {
         super.configureEnclosingScrollPane();
 
-        if (Platform.isMac() == false) {
+        if (!Platform.isMac()) {
             return;
         }
 

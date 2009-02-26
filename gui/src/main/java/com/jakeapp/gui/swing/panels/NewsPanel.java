@@ -74,7 +74,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// register the callbacks
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 
 		// init actions!
 		this.projectRunningButton.setAction(this.startStopProjectAction);

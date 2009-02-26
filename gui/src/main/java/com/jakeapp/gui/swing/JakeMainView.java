@@ -896,7 +896,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 
 	private ICoreAccess getCore() {
-		return JakeMainApp.getApp().getCore();
+		return JakeMainApp.getCore();
 	}
 
 	public Project getProject() {

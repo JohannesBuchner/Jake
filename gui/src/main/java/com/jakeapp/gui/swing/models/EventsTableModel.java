@@ -36,6 +36,7 @@ public class EventsTableModel extends AbstractTableModel {
 	/**
 
 	 * Creates a event table model that shows ALL events.
+	 * @param project
 	 */
 	public EventsTableModel(Project project) {
 		this(project, null);
@@ -44,6 +45,7 @@ public class EventsTableModel extends AbstractTableModel {
 	/**
 	 * Creates a event model that is limited to events from a JakeObject
 	 *
+	 * @param project
 	 * @param attributedJakeObject
 	 */
 	public EventsTableModel(Project project, Attributed<JakeObject> attributedJakeObject) {

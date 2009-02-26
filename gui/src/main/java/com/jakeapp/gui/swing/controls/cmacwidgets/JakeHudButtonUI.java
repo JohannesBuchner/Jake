@@ -116,6 +116,9 @@ public class JakeHudButtonUI extends BasicButtonUI {
 	/**
 	 * Creates a HUD style gradient paint for the given button offset from the top
 	 * and bottom of the button by the given line border size.
+	 * @param button
+	 * @param lineBorderWidth
+	 * @return
 	 */
 	private static Paint createButtonPaint(AbstractButton button,
 														int lineBorderWidth) {

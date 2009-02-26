@@ -246,8 +246,8 @@ public class JakeMenuBar extends JMenuBar {
 					StackTraceElement[] trace = thread.getStackTrace();
 					if(trace != null && trace.length > 1)
 						stack = trace[0].toString();
-					output.append(thread.getState() + " - [" + thread.getName() + "] "
-							+ stack + "\n");
+					output.append(thread.getState()).append(" - [").append(thread.getName())
+									.append("] ").append(stack).append("\n");
 				}
 
 				// Get thread subgroups of `group'

@@ -126,6 +126,7 @@ public class JSheet extends JDialog {
 
 	/**
 	 * Creates a new JSheet.
+	 * @param owner
 	 */
 	public JSheet(Frame owner) {
 		super(owner);
@@ -134,6 +135,7 @@ public class JSheet extends JDialog {
 
 	/**
 	 * Creates a new JSheet.
+	 * @param owner
 	 */
 	public JSheet(Dialog owner) {
 		super(owner);
@@ -286,6 +288,7 @@ public class JSheet extends JDialog {
 	/**
 	 * If this is set to true, the JSheet uses a transition effect when shown
 	 * and when hidden.
+	 * @param newValue
 	 */
 	public void setAnimated(boolean newValue) {
 		boolean oldValue = isAnimated;
@@ -296,6 +299,7 @@ public class JSheet extends JDialog {
 	/**
 	 * If this returns true, the JSheet uses a transition effect when shown
 	 * and when hidden.
+	 * @return
 	 */
 	public boolean isAnimated() {
 		return isAnimated;
@@ -304,6 +308,7 @@ public class JSheet extends JDialog {
 	/**
 	 * If this returns true, the JSheet uses native support for
 	 * sheet display.
+	 * @return
 	 */
 	private static boolean isNativeSheetSupported() {
 		return isNativeSheetSupported;
@@ -312,6 +317,7 @@ public class JSheet extends JDialog {
 	/**
 	 * If this returns true, the JSheet uses native support for
 	 * sheet display.
+	 * @return
 	 */
 	private static boolean isDocumentModalitySupported() {
 		return isDocumentModalitySupported;
@@ -473,6 +479,7 @@ public class JSheet extends JDialog {
 
 	/**
 	 * Requests attention from user. This is invoked when the sheet is opened.
+	 * @param requestCritical
 	 */
 	public static void requestUserAttention(boolean requestCritical) {
 		/*
@@ -491,6 +498,7 @@ public class JSheet extends JDialog {
 
 	/**
 	 * Adds a sheet listener.
+	 * @param l
 	 */
 	public void addSheetListener(SheetListener l) {
 		listenerList.add(SheetListener.class, l);
@@ -498,6 +506,7 @@ public class JSheet extends JDialog {
 
 	/**
 	 * Removes a sheet listener.
+	 * @param l
 	 */
 	public void removeSheetListener(SheetListener l) {
 		listenerList.remove(SheetListener.class, l);
@@ -508,6 +517,7 @@ public class JSheet extends JDialog {
 	 * notification on this event type.  The event instance
 	 * is lazily created using the parameters passed into
 	 * the fire method.
+	 * @param pane
 	 */
 	protected void fireOptionSelected(JOptionPane pane) {
 		Object value = pane.getValue();
@@ -518,7 +528,7 @@ public class JSheet extends JDialog {
 		} else {
 			if (pane.getOptions() == null) {
 				if (value instanceof Integer) {
-					option = ((Integer) value).intValue();
+					option = (Integer) value;
 				} else {
 					option = JOptionPane.CLOSED_OPTION;
 				}
@@ -545,6 +555,10 @@ public class JSheet extends JDialog {
 	 * notification on this event type.  The event instance
 	 * is lazily created using the parameters passed into
 	 * the fire method.
+	 * @param pane
+	 * @param option
+	 * @param value
+	 * @param inputValue
 	 */
 	protected void fireOptionSelected(JOptionPane pane, int option, Object value, Object inputValue) {
 		SheetEvent sheetEvent = null;
@@ -568,6 +582,8 @@ public class JSheet extends JDialog {
 	 * notification on this event type.  The event instance
 	 * is lazily created using the parameters passed into
 	 * the fire method.
+	 * @param pane
+	 * @param option
 	 */
 	protected void fireOptionSelected(JFileChooser pane, int option) {
 		SheetEvent sheetEvent = null;
@@ -703,6 +719,7 @@ public class JSheet extends JDialog {
 	 *
 	 * @param parentComponent the parent <code>Component</code> for the
 	 *                        dialog
+	 * @param message
 	 * @param listener		  The listener for SheetEvents.
 	 */
 	public static void showInputSheet(Component parentComponent,
@@ -1091,6 +1108,7 @@ public class JSheet extends JDialog {
 	 * text that appears in the approve button is determined by
 	 * the L&F.
 	 *
+	 * @param chooser
 	 * @param parent	the parent component of the dialog,
 	 *                 can be <code>null</code>.
 	 * @param listener The listener for SheetEvents.
@@ -1105,6 +1123,7 @@ public class JSheet extends JDialog {
 	 * text that appears in the approve button is determined by
 	 * the L&F.
 	 *
+	 * @param chooser
 	 * @param parent	the parent component of the dialog,
 	 *                 can be <code>null</code>.
 	 * @param listener The listener for SheetEvents.
@@ -1117,6 +1136,7 @@ public class JSheet extends JDialog {
 	/**
 	 * Displays a custom file chooser sheet with a custom approve button.
 	 *
+	 * @param chooser
 	 * @param parent				the parent component of the dialog;
 	 *                          can be <code>null</code>
 	 * @param approveButtonText the text of the <code>ApproveButton</code>

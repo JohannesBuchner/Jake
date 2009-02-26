@@ -88,7 +88,6 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 					org.jdesktop.application.Application
 									.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext()
 									.getResourceMap(NewsPanel.class);
-	;
 
 	public EventCellRenderer() {
 		log.debug("Init EventCellRenderer.");

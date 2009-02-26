@@ -41,7 +41,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 	private Attributed<NoteObject> attributedNoteObject;
 
 	private enum Mode {
-		FILE, NOTE, NONE;
+		FILE, NOTE, NONE
 	}
 
 	private Mode mode;

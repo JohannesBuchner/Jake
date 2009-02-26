@@ -33,6 +33,7 @@ public interface Styler {
 
 	/**
 	 * Returns the Font for Bold large fonts.
+	 * @return
 	 */
 	Font getH1Font();
 

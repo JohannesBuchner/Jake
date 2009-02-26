@@ -11,12 +11,11 @@ public interface RegistrationStatus {
         None, RegistrationActive, RegisterSuccess, NoConnection, UnknownError
     }
 
-    ;
-
-    /**
+	/**
      * Set the Registration Status
      *
      * @param status
+	 * @param msg
      */
     void setRegistrationStatus(final RegisterStati status, final String msg);
 }

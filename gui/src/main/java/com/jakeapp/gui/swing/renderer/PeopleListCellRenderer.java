@@ -49,11 +49,11 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 					boolean chf)	 // the list and the cell have the focus
 	{
 
-		boolean isProjectMember = index == 0;
+		boolean isYou = index == 0;
 
 		UserInfo user = (UserInfo) value;
 
-		String nickOrFullName = UserHelper.getNickOrFullName(user.getUser());
+		String nickOrFullName = UserHelper.getNickOrFullName(user);
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";
@@ -63,11 +63,13 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 
 		String valStr;
 
-		if (!isProjectMember) {
-			valStr = "<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+		if (!isYou) {
+			valStr =
+							"<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
 		} else {
 			// TODO: localize!
-			valStr = "<html><b>" + "You (" + nickOrFullName + ")</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+			valStr =
+							"<html><b>" + "You (" + nickOrFullName + ")</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
 		}
 
 		/* The DefaultListCellRenderer class will take care of
@@ -75,8 +77,6 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 				  * colors, and so on.
 				  */
 		super.getListCellRendererComponent(list, valStr, index, iss, chf);
-
-		// We additionally set the JLabels icon property here.
 
 		TrustState memberTrust = user.getTrust();
 
@@ -111,12 +111,11 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		}
 
 		// override icon for own project user
-		if (isProjectMember) {
+		if (isYou) {
 			setIcon(projectMemberIcon);
 		}
 
-		// TODO: replace check
-		String statusStr = (true) ? "Online" : "Offline";
+		String statusStr = (user.isOnline()) ? "Online" : "Offline";
 		statusStr += ", ";
 
 		// TODO: localize + change labels
@@ -134,19 +133,10 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			}
 		}
 
-		// TODO: add first/surname!
-		setToolTipText(
-						"<html><b>" + user.getNickName() + "</b><br>" + statusStr + "</html>");
-		// set the tooltip text
-		/*
-		MsgService msg = JakeMainApp.getCore().getMsgService(user);
-		user.
+		setToolTipText("<html><b> + user.getFirstName()" + " " + user
+						.getLastName() + "</b><br><b>'" + user
+						.getNickName() + "'</b><br>" + statusStr + "</html>");
 
-			 setToolTipText("<html><font size=5>" + user..getFirstName() + " "
-						+ user.getUser().getSurName() + "</font><br><b>'" +
-						user.getUser().getNickname() +
-						"'</b><br>" + statusStr + "</html>");
-		*/
 		return this;
 	}
 }

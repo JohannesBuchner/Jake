@@ -33,9 +33,9 @@ public class StartStopProjectAction extends ProjectAction {
 		if (!getProject().isStarted()) {
 			// TODO: exception handling
 
-			JakeMainApp.getApp().getCore().startProject(getProject());
+			JakeMainApp.getCore().startProject(getProject());
 		} else {
-			JakeMainApp.getApp().getCore().stopProject(getProject());
+			JakeMainApp.getCore().stopProject(getProject());
 		}
 	}
 

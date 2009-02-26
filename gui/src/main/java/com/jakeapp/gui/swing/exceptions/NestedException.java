@@ -45,7 +45,7 @@ public class NestedException extends Exception {
 
 	@Override
 	public String getMessage() {
-		String str = new String();
+		String str = "";
 		str = super.getMessage() + ", " + nestedExceptions.size() + " nested exception(s); <br>";
 
 		return str;
@@ -71,7 +71,7 @@ public class NestedException extends Exception {
 				stack.add(s);
 			}
 		}
-		return stack.toArray(new StackTraceElement[0]);
+		return stack.toArray(new StackTraceElement[stack.size()]);
 	}
 
 }

@@ -25,7 +25,8 @@ public class SplashWindow extends JFrame {
 		int imgHeight = splashImage.getHeight(this);
 		setSize(imgWidth, imgHeight);
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((screenDim.width - imgWidth) / 2, (screenDim.height - imgHeight) / 2);
+		setLocation((screenDim.width - imgWidth) / 2,
+						(screenDim.height - imgHeight) / 2);
 	}
 
 	@Override
@@ -86,12 +87,10 @@ public class SplashWindow extends JFrame {
 
 
 				if (!EventQueue.isDispatchThread()) {
-					synchronized (instance) {
-						while (!instance.paintCalled) {
-							try {
-								instance.wait();
-							} catch (InterruptedException e) {
-							}
+					while (!instance.paintCalled) {
+						try {
+							instance.wait();
+						} catch (InterruptedException e) {
 						}
 					}
 				}

@@ -21,10 +21,10 @@ public abstract class ProjectAction extends JakeAction
 
 	public ProjectAction() {
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getApp().getCore().addProjectChangedCallbackListener(this);
+		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
 
 		// initial load
-		setProject(JakeMainApp.getApp().getProject());
+		setProject(JakeMainApp.getProject());
 	}
 
 	public Project getProject() {

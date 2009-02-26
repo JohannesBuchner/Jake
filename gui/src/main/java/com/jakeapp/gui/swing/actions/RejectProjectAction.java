@@ -27,7 +27,7 @@ public class RejectProjectAction extends ProjectAction {
     public void actionPerformed(ActionEvent actionEvent) {
         log.info("Reject Project: " + getProject());
 
-        JakeMainApp.getApp().getCore().rejectProject(getProject());
+        JakeMainApp.getCore().rejectProject(getProject());
     }
 
 

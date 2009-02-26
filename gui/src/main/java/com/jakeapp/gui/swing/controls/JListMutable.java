@@ -50,7 +50,7 @@ public class JListMutable extends JXList implements CellEditorListener {
     }
 
     public boolean isEditing() {
-        return (editorComp == null) ? false : true;
+        return (editorComp != null);
     }
 
     public Component getEditorComponent() {
@@ -189,10 +189,9 @@ public class JListMutable extends JXList implements CellEditorListener {
     /*-------------------------------------------------[ Model Support ]---------------------------------------------------*/
 
     public boolean isCellEditable(int index) {
-        if (getModel() instanceof MutableListModel)
-            return ((MutableListModel) getModel()).isCellEditable(index);
-        return false;
-    }
+			return getModel() instanceof MutableListModel && ((MutableListModel) getModel())
+							.isCellEditable(index);
+		}
 
     public void setValueAt(Object value, int index) {
         ((MutableListModel) getModel()).setValueAt(value, index);

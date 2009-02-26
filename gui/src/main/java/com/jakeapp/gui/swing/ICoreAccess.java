@@ -432,6 +432,7 @@ public interface ICoreAccess {
 	/**
 	 * Deletes a file or folder (moves it to system trash)
 	 *
+	 * @param project
 	 * @param relpath The file or folder to be deleted
 	 */
 	public void deleteToTrash(Project project, String relpath);
@@ -471,7 +472,6 @@ public interface ICoreAccess {
 	/**
 	 * @param jo				object to be announced
 	 * @param commitmsg
-	 * @throws SyncException
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 * @return
@@ -496,6 +496,8 @@ public interface ICoreAccess {
 	 * @throws OtherUserOfflineException
 	 * @throws java.rmi.NoSuchObjectException
 	 * @throws NoSuchLogEntryException
+	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
+	 * @return
 	 */
 	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo)
 					throws FileOperationFailedException;

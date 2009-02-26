@@ -737,6 +737,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 	/**
 	 * Helper for showPanel; add or remove certain panel at runtime.
+	 * @param panel
+	 * @param show
 	 */
 	private void showContentPanel(JPanel panel, boolean show) {
 		if (show) {

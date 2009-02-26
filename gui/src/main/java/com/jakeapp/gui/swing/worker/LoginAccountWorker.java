@@ -25,12 +25,14 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Bool
 		this(msg, null, false);
 	}
 
-	public LoginAccountWorker(MsgService msg, String password, boolean rememberPassword) {
+	public LoginAccountWorker(MsgService msg, String password,
+					boolean rememberPassword) {
 		this.msg = msg;
 		this.password = password;
 		this.rememberPassword = rememberPassword;
 
-		log.info("Login Account Worker: " + msg + " pw: " + password + " remember: " + rememberPassword);
+		log.info(
+						"Login Account Worker: " + msg + " pw: " + password + " remember: " + rememberPassword);
 	}
 
 	@Override
@@ -41,12 +43,13 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Bool
 
 	@Override
 	protected void done() {
-		try {			
+		JakeStatusBar.showProgressAnimation(false);
+		try {
 			if (!this.get()) {
 				log.warn("Wrong User/Password");
-				JakeStatusBar.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
+				JakeStatusBar
+								.showMessage("Logging in unsuccessful: Wrong User/Password.", 100);
 			} else {
-				JakeStatusBar.showProgressAnimation(false);
 				JakeStatusBar.showMessage("Successfully logged in");
 				//JakeStatusBar.updateMessage();
 			}

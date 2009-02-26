@@ -42,7 +42,7 @@ public class RenameProjectAction extends ProjectAction {
 						  String prName = (String) evt.getInputValue();
 
 						  if (evt.getOption() == 0) {
-							  JakeMainApp.getApp().getCore().setProjectName(getProject(), prName);
+							  JakeMainApp.getCore().setProjectName(getProject(), prName);
 						  }
 					  }
 				  });

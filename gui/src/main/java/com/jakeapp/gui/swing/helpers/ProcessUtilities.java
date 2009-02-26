@@ -48,6 +48,9 @@ public class ProcessUtilities {
 	 * anything?
 	 * <p/>
 	 * listener may be null.
+	 * @param directory
+	 * @param command
+	 * @param listener
 	 */
 	public static void spawn(final File directory, final String[] command, final ProcessListener listener) {
 		final String quotedCommand = shellQuotedFormOf(Arrays.asList(command));
@@ -81,6 +84,8 @@ public class ProcessUtilities {
 
 	/**
 	 * Returns the process id of the given process, or -1 if we couldn't work it out.
+	 * @param process
+	 * @return
 	 */
 	public static int getProcessId(Process process) {
 		try {
@@ -94,6 +99,7 @@ public class ProcessUtilities {
 
 	/**
 	 * Returns the process id of the current JVM, or -1 if we couldn't work it out.
+	 * @return
 	 */
 	public static int getVmProcessId() {
 		try {
@@ -134,6 +140,8 @@ public class ProcessUtilities {
 	 * On other operating systems (assumed to be Unixes), the SHELL environment
 	 * variable is queried. If this isn't set, a default of /bin/sh is used,
 	 * though it probably won't work unless that happens to be bash(1).
+	 * @param command
+	 * @return
 	 */
 	public static String[] makeShellCommandArray(String command) {
 		String shell = System.getenv("SHELL");
@@ -186,6 +194,8 @@ public class ProcessUtilities {
 	/**
 	 * Sends the given signal to the given process. Returns false if
 	 * the signal could not be sent.
+	 * @param process
+	 * @return
 	 */
 	public static boolean terminateProcess(Process process) {
 		int pid = getProcessId(process);
@@ -206,6 +216,9 @@ public class ProcessUtilities {
 	 * Returns the integer file descriptor corresponding to one of
 	 * FileDescriptor.in, FileDescriptor.out or FileDescriptor.err
 	 * for the given process. Returns -1 on error.
+	 * @param process
+	 * @param which
+	 * @return
 	 */
 	public static int getFd(Process process, FileDescriptor which) {
 		if (which == FileDescriptor.in) {
@@ -236,6 +249,8 @@ public class ProcessUtilities {
 	 * Returns a single string representing the given command, quoted for
 	 * passing to a shell or, more usually, for unambiguous human-readable
 	 * output.
+	 * @param command
+	 * @return
 	 */
 	public static String shellQuotedFormOf(List<String> command) {
 		// FIXME: we only cope with spaces in commands, not other shell meta-characters.

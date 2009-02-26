@@ -50,9 +50,9 @@ public class RenameFileAction extends FileAction {
 		String newName = JOptionPane.showInputDialog(promptStr, currentName);
 		if (!newName.equals(currentName)) {
 			if (node.isFile()) {
-				JakeMainApp.getApp().getCore().rename(node.getFileObject(), newName);
+				JakeMainApp.getCore().rename(node.getFileObject(), newName);
 			} else if (node.isFolder()) {
-				JakeMainApp.getApp().getCore().rename(node.getFolderObject(), newName);
+				JakeMainApp.getCore().rename(node.getFolderObject(), newName);
 			}
 		}
 	}

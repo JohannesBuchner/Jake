@@ -38,10 +38,6 @@ public class UserHelper {
 	 * @return nickname or full name, if nn not set.
 	 */
 	public static String getNickOrFullName(UserInfo user) {
-		if(user.getUser() == JakeMainApp.getCurrentUser()) {
-			return "You"; // I18N
-		}
-
 		if(user.getNickName().length() > 0) {
 			return user.getNickName();
 		}if(user.getFirstName().length() > 0) {

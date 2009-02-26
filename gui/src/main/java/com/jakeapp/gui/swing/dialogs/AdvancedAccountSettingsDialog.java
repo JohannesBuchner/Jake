@@ -24,7 +24,7 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 
 	public AdvancedAccountSettingsDialog(ServiceCredentials creds) {
 		super(JakeMainApp.getProject());
-		this.setCreds(creds);
+		setCreds(creds);
 
 		setResourceMap(org.jdesktop.application.Application.getInstance(
 				  com.jakeapp.gui.swing.JakeMainApp.class).getContext()

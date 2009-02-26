@@ -36,7 +36,7 @@ public class TimeUtilities {
 
 		long delta = (now - then) / 1000;
 
-		if (delta < 1 * MINUTE) {
+		if (delta < MINUTE) {
 			return "less than a minute ago";
 		}
 		if (delta < 2 * MINUTE) {

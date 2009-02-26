@@ -29,7 +29,7 @@ public class JoinProjectAction extends ProjectAction {
     public void actionPerformed(ActionEvent actionEvent) {
         log.info("Joining Project: " + getProject());
 
-        JakeMainApp.getApp().getCore().joinProject(
+        JakeMainApp.getCore().joinProject(
                 getProjectLocation(), getProject());
     }
 

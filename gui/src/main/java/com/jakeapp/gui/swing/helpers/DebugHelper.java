@@ -23,6 +23,7 @@ public class DebugHelper {
 	 *
 	 * @param array
 	 * @param formatted
+	 * @param maxLen
 	 * @return string representation of array
 	 */
 	public static String arrayToString(Object array, DebugFormat formatted, int maxLen) {
@@ -43,7 +44,9 @@ public class DebugHelper {
 			for (int i = 0; i < length && (i < maxLen || maxLen < 0); i++) {
 				obj = Array.get(array, i);
 				if (obj != null) {
-					sb.append(obj + ((formatted == DebugFormat.FULL || formatted == DebugFormat.BRACES) ? "<br>" : ""));
+					sb.append(obj)
+									.append((formatted == DebugFormat.FULL || formatted == DebugFormat.BRACES) ?
+													"<br>" : "");
 				} else {
 					sb.append("[NULL]");
 				}

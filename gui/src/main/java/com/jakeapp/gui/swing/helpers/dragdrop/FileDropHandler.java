@@ -37,11 +37,8 @@ public class FileDropHandler extends TransferHandler {
 
 		Project pr = JakeMainApp.getProject();
 
-		if (copySupported && pr != null && !pr.isInvitation()) {
-			return true;
-		}
+		return copySupported && pr != null && !pr.isInvitation();
 
-		return false;
 	}
 
 	@Override

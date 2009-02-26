@@ -173,11 +173,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 		if (dl.getChildIndex() >= 0) {
 
 			// just say ok if there is no file list
-			if (files == null) {
-				return true;
-			} else {
-				return files.size() == 1 && files.get(0).isDirectory();
-			}
+			return files == null || files.size() == 1 && files.get(0).isDirectory();
 		}
 		return false;
 	}
@@ -194,11 +190,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 		if (dl.getChildIndex() == -1) {
 
 			// just say ok if there is no file list
-			if (files == null) {
-				return true;
-			} else {
-				return files.size() > 0;
-			}
+			return files == null || files.size() > 0;
 		}
 		return false;
 	}

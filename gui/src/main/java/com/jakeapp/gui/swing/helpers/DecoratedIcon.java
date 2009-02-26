@@ -19,9 +19,7 @@ public class DecoratedIcon implements Icon {
         UPPER_LEFT, UPPER_RIGHT, LOWER_LEFT, LOWER_RIGHT
     }
 
-    ;
-
-    public DecoratedIcon(Icon original, Icon decoration) {
+	public DecoratedIcon(Icon original, Icon decoration) {
         this(original, decoration, Location.LOWER_RIGHT);
     }
 
