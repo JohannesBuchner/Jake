@@ -52,23 +52,40 @@ public class UserId implements ILogable {
 		return this.protocolType + ":" + getUserId();
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((protocolType == null) ? 0 : protocolType.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		return result;
+	}
 
-        UserId userId1 = (UserId) o;
-
-        if (protocolType != userId1.protocolType) return false;
-        if (!userId.equals(userId1.userId)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = userId.hashCode();
-        result = 31 * result + protocolType.hashCode();
-        return result;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserId other = (UserId) obj;
+		if (protocolType == null) {
+			if (other.protocolType != null)
+				return false;
+		} else if (!protocolType.equals(other.protocolType))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
+		return true;
+	}
 }
