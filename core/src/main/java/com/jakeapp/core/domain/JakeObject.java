@@ -18,7 +18,6 @@ public abstract class JakeObject implements ILogable, Serializable {
     private UUID uuid;
     private Project project;
 
-
     private boolean deleted;
     private boolean modified;
 

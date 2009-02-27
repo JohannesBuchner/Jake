@@ -133,7 +133,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			}
 		}
 
-		setToolTipText("<html><b> + user.getFirstName()" + " " + user
+		setToolTipText("<html><b>" + user.getFirstName() + " " + user
 						.getLastName() + "</b><br><b>'" + user
 						.getNickName() + "'</b><br>" + statusStr + "</html>");
 

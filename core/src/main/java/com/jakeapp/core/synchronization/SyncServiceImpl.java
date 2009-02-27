@@ -1,35 +1,11 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
@@ -58,6 +34,21 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -446,13 +437,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 		// 3 locally modified?
 		boolean checksumEqualToLastNewVersionLogEntry;
 		// 3.5 size
-		long size;
-		LogEntry<FileObject> pulledle;
+		long size = 0;
+		LogEntry<FileObject> pulledle = null;
 		try {
-			pulledle = led.getLastVersionOfJakeObject(fo, false);
 			if (objectExistsLocally) {
 				try {
 					size = fss.getFileSize(fo.getRelPath());
+					pulledle = led.getLastVersionOfJakeObject(fo, false);
 					checksumEqualToLastNewVersionLogEntry = pulledle.getChecksum()
 							.equals(fss.calculateHashOverFile(fo.getRelPath()));
 				} catch (NotAReadableFileException e) {
@@ -465,9 +456,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 			} else {
 				checksumEqualToLastNewVersionLogEntry = false;
 				size = 0;
+				// TODO: We don't know the file size when it's remote.
 			}
 		} catch (NoSuchLogEntryException e1) {
-			size = 0;
+			//size = 0;
 			pulledle = null;
 			checksumEqualToLastNewVersionLogEntry = false;
 		}

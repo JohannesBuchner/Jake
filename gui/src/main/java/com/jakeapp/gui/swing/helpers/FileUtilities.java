@@ -296,7 +296,7 @@ public class FileUtilities {
 
 
 	static public String getSize(long size) {
-		return getSize(size, 2, true, true);
+		return getSize(size, 2, false, true);
 	}
 
 	static public String getSize(long size, int precision) {

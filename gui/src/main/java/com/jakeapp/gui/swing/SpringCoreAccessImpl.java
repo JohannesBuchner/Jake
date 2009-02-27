@@ -13,7 +13,6 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
-import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.synchronization.Attributed;
@@ -51,8 +50,6 @@ import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -545,12 +542,27 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
+	private final HashMap<JakeObject, Attributed<JakeObject>> syncStatusHash =
+					new HashMap<JakeObject, Attributed<JakeObject>>();
+
+
 	@Override
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
 					Project project, T jakeObject) {
 		try {
-			return this.getFrontendService().getSyncService(getSessionId())
+
+			// first, look if we have a recent revision in the cache
+			if(syncStatusHash.containsKey(jakeObject)) {
+				return (Attributed<T>)syncStatusHash.get(jakeObject);
+			}
+
+			Attributed<T> syncStatus = this.getFrontendService().getSyncService(getSessionId())
 							.getJakeObjectSyncStatus(jakeObject);
+
+			// implemented a stupid cache.
+			// TODO: needs intelligent cache flushing
+			syncStatusHash.put(jakeObject, (Attributed<JakeObject>)syncStatus);
+
 		} catch (NotAFileException e) {
 			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
 		} catch (FileNotFoundException e) {
@@ -1169,8 +1181,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public File getFile(FileObject fo) throws FileOperationFailedException {
-		log.debug("getFile: fo: " + fo + " in pr: " + (fo != null ? fo.getProject() :
-						null));
+		//log.debug("getFile: fo: " + fo + " in pr: " + (fo != null ? fo.getProject() :
+		//				null));
 
 		// no need to go in iss if everything is null.
 		if (fo == null) {

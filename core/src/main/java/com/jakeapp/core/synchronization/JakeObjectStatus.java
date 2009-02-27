@@ -37,12 +37,12 @@ public class JakeObjectStatus {
 	public JakeObjectStatus(LogEntry<? extends ILogable> lastVersionLogEntry, LogEntry<? extends ILogable> lastLockLogEntry,
 					boolean objectExistsLocally, boolean checksumDifferentFromLastNewVersionLogEntry,
 					boolean hasUnprocessedLogEntries, LogAction lastProcessedLogAction) {
-		log.debug("generating JakeObjectStatus: " + ": lastVersionLogEntry:"
-				+ lastVersionLogEntry + " lastLockLogEntry:" + lastLockLogEntry + " objectExistsLocally:"
-				+ objectExistsLocally + " checksumDifferentFromLastNewVersionLogEntry:"
-				+ checksumDifferentFromLastNewVersionLogEntry
-				+ " hasUnprocessedLogEntries:" + hasUnprocessedLogEntries
-				+ " lastProcessedLogAction:" + lastProcessedLogAction);
+//		log.debug("generating JakeObjectStatus: " + ": lastVersionLogEntry:"
+//				+ lastVersionLogEntry + " lastLockLogEntry:" + lastLockLogEntry + " objectExistsLocally:"
+//				+ objectExistsLocally + " checksumDifferentFromLastNewVersionLogEntry:"
+//				+ checksumDifferentFromLastNewVersionLogEntry
+//				+ " hasUnprocessedLogEntries:" + hasUnprocessedLogEntries
+//				+ " lastProcessedLogAction:" + lastProcessedLogAction);
 		this.lastVersionLogEntry = lastVersionLogEntry;
 		this.lastLockLogEntry = lastLockLogEntry;
 
@@ -51,7 +51,7 @@ public class JakeObjectStatus {
 		this.syncStatus = SyncStatus.getSyncStatus(
 				checksumDifferentFromLastNewVersionLogEntry, hasUnprocessedLogEntries,
 				lastProcessedLogAction, objectExistsLocally);
-		log.debug("result:" + this.toString());
+		//log.debug("result:" + this.toString());
 	}
 
 	private LogAction getLastVersionLogEntryLogAction() {

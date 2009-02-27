@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.helpers;
 
 import org.apache.log4j.Logger;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -57,13 +58,18 @@ public class TimeUtilities {
 		if (delta < 30 * DAY) {
 			return (delta / DAY) + " days ago";
 		}
+		else
+			return SimpleDateFormat.getDateTimeInstance().format(date);
+
+		// this information is too inaccurate
+		/*
 		if (delta < 12 * MONTH) {
 			long months = delta / MONTH;
 			return months <= 1 ? "one month ago" : months + " months ago";
 		} else {
 			long years = delta / YEAR;
 			return years <= 1 ? "one year ago" : years + " years ago";
-		}
+		}*/
 	}
 
 	public static String getRelativeTime(long date) {
