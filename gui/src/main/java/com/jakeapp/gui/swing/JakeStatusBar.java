@@ -3,7 +3,9 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.services.MsgService;
+import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
@@ -12,6 +14,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
@@ -105,6 +108,37 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 			// update project statistics
 			setProjectFileCount(projectFileCount + " " + filesStr);
+		}
+	}
+	
+	protected class NoteCountWorker extends SwingWorkerWithAvailableLaterObject<Integer> {
+		@Override
+		protected AvailableLaterObject<Integer> calculateFunction() {
+			return JakeMainApp.getCore().getNoteCount(JakeMainApp.getProject());
+		}
+
+		@Override
+		public void error(Exception e) {
+			log.warn(e);
+			this.finished(new Integer(0));
+		}
+		
+		@Override
+		protected void done() {
+			Integer objNoteCount = 0;
+			int notesCount = 0;
+			
+			try {
+				objNoteCount = this.get();
+				notesCount = (objNoteCount==null)?0:objNoteCount.intValue();
+			} catch (InterruptedException e) {
+				this.handleInterruption(e);
+			} catch (ExecutionException e) {
+				this.handleExecutionError(e);
+			}
+			
+			String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
+			statusLabel.setText(notesCount + " " + notesCountStr);
 		}
 	}
 
@@ -302,7 +336,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	public static void updateMessage() {
 		getInstance().updateMessageInt();
 	}
-
+	
 	/**
 	 * Updates the project label.
 	 * This is context specific.
@@ -315,17 +349,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 				JakeExecutor.exec(new ProjectFileCountWorker());
 				JakeExecutor.exec(new ProjectSizeTotalWorker());
 			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
-				int notesCount = 0;
-				//try {
-					// FIXME
-					//notesCount = getCore().getNotes(getProject()).size();
-				//} //catch (NoteOperationFailedException e) {
-					//ExceptionUtilities.showError(e);
-			//	}
-				String notesCountStr = getResourceMap().getString(notesCount == 1 ? "projectNote" : "projectNotes");
-
-				statusLabel.setText(notesCount + " " + notesCountStr);
-
+				JakeExecutor.exec(new NoteCountWorker());
 			} else {
 				// project view
 				if (getProject() != null) {

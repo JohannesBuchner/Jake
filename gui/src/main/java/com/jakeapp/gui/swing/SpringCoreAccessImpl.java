@@ -13,6 +13,8 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
+import com.jakeapp.core.services.futures.ProjectFileCountFuture;
+import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.ChangeAdapter;
@@ -23,6 +25,7 @@ import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
@@ -630,13 +633,24 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return new AvailableLaterObject<List<Attributed<NoteObject>>>() {
 			@Override public List<Attributed<NoteObject>> calculate() throws Exception {
 				try {
-					// FIXME: do this over the SyncService. You also get AttributedJakeObjects
 					return frontendService.getSyncService(sessionId).getNotes(project);
 				} catch (Exception e) {
 					throw new NoteOperationFailedException(e);
 				}
 			}
 		}.start();
+	}
+	
+	@Override
+	public AvailableLaterObject<Integer> getNoteCount(final Project project) {
+		AvailableLaterWrapperObject<Integer,List<Attributed<NoteObject>>> sizeFuture;
+		AvailableLaterObject<List<Attributed<NoteObject>>> notesFuture;
+
+		notesFuture = this.getNotes(project);
+		sizeFuture = new ProjectNoteCountFuture();
+		sizeFuture.setSource(notesFuture);
+
+		return sizeFuture;
 	}
 
 

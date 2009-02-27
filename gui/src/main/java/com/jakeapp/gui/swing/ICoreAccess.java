@@ -666,6 +666,15 @@ public interface ICoreAccess {
 	 */
 	AvailableLaterObject<Boolean> login(MsgService service, String password,
 					boolean rememberPassword);
+
+
+	/**
+	 * calculates how many notes are there for a project
+	 * @param project
+	 * @return
+	 *
+	 */
+	AvailableLaterObject<Integer> getNoteCount(Project project);
 }
 
 

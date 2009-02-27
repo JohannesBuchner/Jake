@@ -221,7 +221,7 @@ public abstract class MsgService<T extends UserId> {
 		if (this.getMainIcs().getStatusService().isLoggedIn())
 			return VisibilityStatus.ONLINE;
 		else
-			return VisibilityStatus.ONLINE; // FIXME
+			return VisibilityStatus.OFFLINE;
 	}
 
 	public T getUserId() {
