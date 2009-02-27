@@ -221,6 +221,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
 	public Project createProject(String name, String rootPath, MsgService msgService)
@@ -789,6 +790,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return userInfos;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public UserInfo getProjectUserInfo(Project project, UserId user) {
 		TrustState state;
@@ -868,6 +870,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return member;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public List<UserId> getUninvitedPeople(Project project)
@@ -909,7 +912,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		} catch (NotLoggedInException e) {
 			// empty handling
-			log.debug("Must be online to get uninvited people.");
+			log.debug("Must be online to get uninvited people.",e);
 		}
 
 		log.warn("getUninvitedPeople will not return any results!");

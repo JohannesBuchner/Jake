@@ -178,8 +178,11 @@ public class XmppCommons {
 	 * @return
 	 */
 	public static boolean isLoggedIn(XMPPConnection connection) {
-		if (connection == null)
+		if (connection == null) {
+			log.debug("Testing XMPPConnection....is null");
 			return false;
+		}
+		
 		log.debug(connection.getUser() + " - auth: "
 				+ connection.isAuthenticated());
 		return connection.isAuthenticated();

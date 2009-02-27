@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -21,7 +22,6 @@ import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -39,7 +39,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Injected
 	private MsgServiceFactory msgServiceFactory;
 
-	private Map<String, FrontendSession> sessions = new HashMap<String, FrontendSession>();
+	private Map<String, FrontendSession> sessions;
 	
 	@Injected
 	private IServiceCredentialsDao serviceCredentialsDao;
@@ -67,6 +67,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		this.sync = sync;
 		this.serviceCredentialsDao = serviceCredentialsDao;
 		this.internalInvitationListener = invitationListener;
+		this.setSessions(new HashMap<String, FrontendSession>());
 	}
 
 	private IProjectsManagingService getProjectsManagingService() {
@@ -131,6 +132,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	 *                                  if no Session associated with <code>sessionId</code> exists.
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
 			  FrontendNotLoggedInException {
 		checkSession(sessionId);
@@ -212,6 +214,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		return this.msgServiceFactory.getAll();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
@@ -222,6 +225,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		return new CreateAccountFuture(svc);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
@@ -231,21 +235,24 @@ public class FrontendServiceImpl implements IFrontendService {
 		return msgServiceFactory.addMsgService(credentials);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void removeAccount(String sessionId, MsgService msg)
 					throws FrontendNotLoggedInException, NoSuchMsgServiceException {
 		checkSession(sessionId);
-
-		// TODO: implement!
-		log.warn("Needs IMPLEMENTATION");
-		//msgServiceFactory.removeMsgService(msg);
+		
+		if (msg==null) throw new NoSuchMsgServiceException();
+		if (msg.getServiceCredentials()==null) throw new NoSuchMsgServiceException();
+		
+		try {
+			this.getServiceCredentialsDao().delete(msg.getServiceCredentials());
+		} catch (NoSuchServiceCredentialsException e) {
+			throw new NoSuchMsgServiceException(e);
+		}
 	}
 
 	@Override
 	public void signOut(String sessionId) throws FrontendNotLoggedInException {
-		FrontendSession session;
-		Iterable<MsgService> msgServices;
-
 		this.checkSession(sessionId);
 		this.getSessions().remove(sessionId);
 
@@ -279,6 +286,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		return this.getServiceCredentialsDao().getAll();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
