@@ -502,7 +502,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph() {
 		Map<UserId, Map<UserId, TrustState>> people = new HashMap<UserId, Map<UserId,TrustState>>();
 		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-		people.put(first.getMember(), new HashMap<UserId, TrustState>());
+		if(first != null)
+			people.put(first.getMember(), new HashMap<UserId, TrustState>());
 
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<UserId> le : entries) {

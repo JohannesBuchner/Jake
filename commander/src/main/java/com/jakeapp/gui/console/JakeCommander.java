@@ -3,6 +3,7 @@ package com.jakeapp.gui.console;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
+import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.Attributed;
@@ -78,6 +79,17 @@ public class JakeCommander extends Commander {
 			sessionId = frontend.authenticate(new HashMap<String, String>());
 			pms = frontend.getProjectsManagingService(sessionId);
 			sync = frontend.getSyncService(sessionId);
+			
+			pms.setInvitationListener(new IProjectInvitationListener(){
+
+				@Override
+				public void invited(UserId user, Project p) {
+					System.out.println("got invitation from " + user + " to " + p);
+					JakeCommander.this.project = p;
+				}
+				
+			});
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,11 +134,9 @@ public class JakeCommander extends Commander {
 	}
 
 	private abstract class LazyProjectDirectoryCommand extends LazyCommand {
-		private boolean canHaveProject;
 
-		public LazyProjectDirectoryCommand(String command, String help, boolean canHaveProject) {
+		public LazyProjectDirectoryCommand(String command, String help) {
 			super(command, command + " <Folder>", help);
-			this.canHaveProject = canHaveProject;
 		}
 
 		public LazyProjectDirectoryCommand(String command) {
@@ -138,9 +148,8 @@ public class JakeCommander extends Commander {
 			if (args.length != 2)
 				return false;
 			if (project != null) {
-				if(!canHaveProject){
-					return false;
-				}
+				System.out.println("this command doesn't work with a project set");
+				return true;
 			}
 			File projectFolder = new File(args[1]);
 			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
@@ -338,7 +347,7 @@ public class JakeCommander extends Commander {
 			try {
 				frontend.logout(sessionId);
 				msg = null;
-				System.out.println("MsgService deleted");
+				System.out.println("MsgService deleted. use stop now");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -390,7 +399,7 @@ public class JakeCommander extends Commander {
 	class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
 		public CreateProjectCommand() {
-			super("createProject", "needs a MsgService; provides a open project", false);
+			super("createProject", "needs a MsgService; provides a open project");
 		}
 
 		@Override
@@ -463,7 +472,7 @@ public class JakeCommander extends Commander {
 	class OpenProjectCommand extends LazyProjectDirectoryCommand {
 
 		public OpenProjectCommand() {
-			super("openProject", "provides a open project", false);
+			super("openProject", "provides a open project");
 		}
 
 		@Override
@@ -501,22 +510,18 @@ public class JakeCommander extends Commander {
 		}
 	}
 
-	class StartProjectCommand extends LazyProjectDirectoryCommand {
+	class StartProjectCommand extends LazyNoParamsCommand {
 
 		public StartProjectCommand() {
-			super("startProject", "provides an started project", true);
+			super("startProject", "provides an started project");
 		}
 
 		@Override
-		public void handleArguments(File projectFolder) {
+		public void handleArguments() {
 			try {
 				System.out.println("starting project ...");
-				for (Project p : pms.getProjectList()) {
-					if (new File(p.getRootPath()).equals(projectFolder))
-						project = p;
-				}
 				if (project == null) {
-					System.out.println("no such project");
+					System.out.println("no project");
 					return;
 				}
 
@@ -585,7 +590,7 @@ public class JakeCommander extends Commander {
 	class AcceptInviteCommand extends LazyProjectDirectoryCommand {
 
 		public AcceptInviteCommand() {
-			super("acceptInvite", "needs MsgService; accepts first invited project", false);
+			super("acceptInvite", "needs MsgService; accepts first invited project");
 		}
 
 		@Override
