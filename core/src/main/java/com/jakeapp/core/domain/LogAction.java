@@ -19,6 +19,7 @@ public enum LogAction implements Serializable {
 	 * belongsTo: null<br />
 	 * additional storing: UUID, Name <br/>
 	 * can only be the first {@link LogEntry}
+     * is always an instance of {@link ProjectLogEntry}
 	 */
 	PROJECT_CREATED,
 
@@ -100,5 +101,10 @@ public enum LogAction implements Serializable {
 	 * belongsTo: {@link JakeObject} <br/>
 	 * important LogEntry attributes: commitmsg
 	 */
-	JAKE_OBJECT_UNLOCK,
+	JAKE_OBJECT_UNLOCK
+
+
+
+
+
 }

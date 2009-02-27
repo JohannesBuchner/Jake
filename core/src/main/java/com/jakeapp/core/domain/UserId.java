@@ -51,4 +51,24 @@ public class UserId implements ILogable {
 	public String toString() {
 		return this.protocolType + ":" + getUserId();
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserId userId1 = (UserId) o;
+
+        if (protocolType != userId1.protocolType) return false;
+        if (!userId.equals(userId1.userId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId.hashCode();
+        result = 31 * result + protocolType.hashCode();
+        return result;
+    }
 }
