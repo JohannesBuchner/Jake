@@ -1,11 +1,12 @@
 package com.jakeapp.core.util.availablelater;
 
-import local.test.Tracer;
+import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.math.BigInteger;
-import java.util.concurrent.TimeUnit;
+import local.test.Tracer;
 
 
 public class AvailableLaterObjectTest {
@@ -28,7 +29,7 @@ public class AvailableLaterObjectTest {
 		}
 
 		public static AvailableLaterObject<Boolean> provideError() {
-			return new AvailableErrorObject<Boolean>(new RuntimeException("myerror"));
+			return new AvailableErrorObject<Boolean>(new Exception("myerror"));
 		}
 
 		public static AvailableLaterObject<Boolean> provideLaterError() {
@@ -37,6 +38,8 @@ public class AvailableLaterObjectTest {
 				@Override
 				public Boolean calculate() throws Exception {
 					Thread.sleep(20);
+					String a = null;
+					a.toString();
 					return true;
 				}
 			}.start();
