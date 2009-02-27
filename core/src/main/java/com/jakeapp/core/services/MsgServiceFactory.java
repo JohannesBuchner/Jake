@@ -65,6 +65,8 @@ public class MsgServiceFactory {
 		if(credentials == null) {
 			throw new InvalidCredentialsException("Credentials cannot be null!");
 		}
+		
+		MsgService.setServiceCredentialsDao(getServiceCredentialsDao());
 
 		log.debug("calling createMsgService with crendentials: " + credentials);
 		log.debug("credentials=" +( (credentials==null)?"null":"not null"));

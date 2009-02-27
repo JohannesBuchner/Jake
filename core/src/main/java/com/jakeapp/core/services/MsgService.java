@@ -121,9 +121,10 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	@Transactional
-	public final boolean login(String newPassword, boolean shouldSavePassword) throws
-																																						NetworkException
-			 {
+	public final boolean login(String newPassword, boolean shouldSavePassword)
+			throws NetworkException {
+		boolean result = false;
+		
 		log.debug("calling login with newPwd-Size: " + newPassword.length()
 				+ ", shouldSave: " + shouldSavePassword);
 
@@ -133,6 +134,8 @@ public abstract class MsgService<T extends UserId> {
 		this.getServiceCredentials().setPlainTextPassword(newPassword);
 		this.getServiceCredentials().setSavePassword(shouldSavePassword);
 
+		result = this.login();
+		
 		/* store */
 		// get Service credentials
 		if (this.getServiceCredentials() != null) {
@@ -146,8 +149,7 @@ public abstract class MsgService<T extends UserId> {
 			}
 		}
 
-		return this.login();
-
+		return result;
 	}
 
 	/**

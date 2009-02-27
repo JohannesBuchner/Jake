@@ -348,7 +348,7 @@ public interface IProjectsManagingService {
 	 * @return A list of people who are 'friends' irt. the Project's
 	 *         {@link MsgService}, are online and capable of running Projects
 	 *         but are currently not attached to <code>project</code>.
-	 * @throws NoSuchProjectException
+	 * @throws NoSuchProjectException project is null or has no MsgService set.
 	 * @throws IllegalArgumentException
 	 */
 	List<UserId> getUninvitedPeople(Project project) throws IllegalArgumentException, NoSuchProjectException;

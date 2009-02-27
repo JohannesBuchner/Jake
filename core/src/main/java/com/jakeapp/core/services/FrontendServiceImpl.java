@@ -288,7 +288,6 @@ public class FrontendServiceImpl implements IFrontendService {
 
 			@Override
 			public Boolean calculate() throws NetworkException  {
-				ServiceCredentials credentials;
 				boolean result;
 				checkSession(session);
 				
@@ -304,7 +303,6 @@ public class FrontendServiceImpl implements IFrontendService {
 				service.getMainIcs().getMsgService().registerReceiveMessageListener(invitesHandler);
 				return result;
 			}
-			
 		};
 		
 		return ret;

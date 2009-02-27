@@ -70,8 +70,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
 
-	// private List<Project> projectList = new ArrayList<Project>();
-
 	private IProjectDao projectDao;
 
 	private IServiceCredentialsDao serviceCredentialsDao;
@@ -99,9 +97,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		this.syncService = syncService;
 	}
 
-	/**
-	 * *********** GETTERS & SETTERS ************
-	 * @return
+	/*
+	 * *********** GETTERS & SETTERS ***********
 	 */
 
 	public IProjectDao getProjectDao() {
@@ -141,7 +138,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 * return result; }
 	 */
 
-	/**
+	/*
 	 * ***** STARTING IMPLEMENTATIONS *************
 	 */
 	@Transactional
@@ -875,8 +872,49 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	public List<UserId> getUninvitedPeople(Project project)
 			throws IllegalArgumentException, NoSuchProjectException {
-		// TODO
-		return new LinkedList<UserId>();
+
+		if (project == null || project.getMessageService() == null)
+			throw new NoSuchProjectException();
+
+		MsgService msgService;
+		ICService ics;
+		IUsersService usersService;
+		Iterable<com.jakeapp.jake.ics.UserId> possibleBackendUsers;
+		Collection<UserId> possibleUsers;
+		UserId possibleUser;
+		List<UserId> result = new LinkedList<UserId>();
+
+		msgService = project.getMessageService();
+		// backendUser = msgService.getIcsManager()
+		// .getBackendUserId(project, user);
+		ics = msgService.getIcsManager().getICService(project);
+		usersService = ics.getUsersService();
+
+		try {
+			// get all possible people
+			possibleBackendUsers = usersService.getUsers();
+
+			// convert them to 'frontend-users'
+			possibleUsers = new LinkedList<UserId>();
+			for (com.jakeapp.jake.ics.UserId possibleBackendUser : possibleBackendUsers) {
+				possibleUser = msgService.getIcsManager().getFrontendUserId(
+						project, possibleBackendUser);
+				if (possibleUser != null)
+					possibleUsers.add(possibleUser);
+			}
+
+			// subtract all people that are already in the project
+			possibleUsers.removeAll(this.getLogEntryDao(project)
+					.getCurrentProjectMembers());
+
+		} catch (NotLoggedInException e) {
+			// empty handling
+			log.debug("Must be online to get uninvited people.");
+		}
+
+		log.warn("getUninvitedPeople will not return any results!");
+
+		return result;
 	}
 
 	@Override
@@ -975,6 +1013,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	public void setUserNickname(Project project, UserId userId, String nick) {
 		// TODO: implement!
+		//TODO christopher: I think that this function is not supported
+		// by the current database structure
+		
 	}
 
 	@Transactional
