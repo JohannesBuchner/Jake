@@ -6,13 +6,12 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.SpringThreadBroker;
+import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.dialogs.SplashWindow;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -23,10 +22,8 @@ import org.jdesktop.application.SingleFrameApplication;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The main class of the application.
@@ -45,10 +42,11 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	// only one per application.
 	private MsgService msgService = null;
 
-	private List<ProjectSelectionChanged> projectSelectionChanged =
+	private final List<ProjectSelectionChanged> projectSelectionChanged =
 					new LinkedList<ProjectSelectionChanged>();
-	private List<MsgServiceChanged> msgServiceChanged =
+	private final List<MsgServiceChanged> msgServiceChanged =
 					new ArrayList<MsgServiceChanged>();
+	private final List<CoreChanged> coreChanged = new ArrayList<CoreChanged>();
 
 	public JakeMainApp() {
 		app = this;
@@ -76,38 +74,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		// ImageIcon(Toolkit.getDefaultToolkit().getImage(
 		// getClass().getResource("/icons/jakeapp-large.png"))).getImage());
 
-		//ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-		//				new String[]{"/com/jakeapp/core/applicationContext.xml",
-		//								"/com/jakeapp/gui/swing/applicationContext-gui.xml"});
-		try{
-			SpringThreadBroker.getInstance().loadSpring(
-					new String[] { "/com/jakeapp/core/applicationContext.xml",
-							"/com/jakeapp/gui/swing/applicationContext-gui.xml" });
-	
-			// show "progress"
-			if (JakeMainApp.getApp().getSplashFrame() != null) {
-				JakeMainApp.getApp().getSplashFrame().setTransparency(0.5F);
-			}
-	
-			setCore((ICoreAccess) SpringThreadBroker.getInstance().getBean("coreAccess"));
-
-		}catch(RuntimeException e){
-			SpringThreadBroker.stopInstance();
-			e.printStackTrace();
-			System.exit(1);
-		}
-		
-		Map<String, String> backendCredentials = new HashMap<String, String>();
-
-		try {
-			core.authenticateOnBackend(backendCredentials);
-
-		} catch (InvalidCredentialsException e) {
-			String msg = "Failed to login to backend";
-			JSheet.showMessageSheet(JakeMainView.getMainView().getFrame(), msg);
-			log.warn(msg);
-			ExceptionUtilities.showError(msg);
-		}
+		//initCore();
 	}
 
 	/**
@@ -134,7 +101,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	 *
 	 * @return the instance of JakeMock2App
 	 */
-	public static JakeMainApp getApplication() {
+	public static JakeMainApp getInstance() {
 		return Application.getInstance(JakeMainApp.class);
 	}
 
@@ -213,6 +180,11 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	public void setCore(ICoreAccess core) {
 		this.core = core;
+
+		// shout out our core change!
+		for(CoreChanged callback: coreChanged) {
+			callback.coreChanged();
+		}
 	}
 
 	/**
@@ -349,5 +321,13 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	 */
 	public static UserId getCurrentUser() {
 		return getProject().getMessageService().getUserId();
+	}
+
+	public static boolean isCoreInitialized() {
+		return getCore() != null;
+	}
+
+	public void addCoreChangedListener(CoreChanged coreCallback) {
+		coreChanged.add(coreCallback);
 	}
 }

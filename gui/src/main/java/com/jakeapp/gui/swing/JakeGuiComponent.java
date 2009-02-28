@@ -4,25 +4,14 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import org.jdesktop.application.ResourceMap;
 
-/**
- * User: studpete
- * Date: Dec 29, 2008
- * Time: 11:47:36 AM
- */
 public abstract class JakeGuiComponent implements ProjectSelectionChanged {
-    private Project project;
-    protected ICoreAccess core;
+	private Project project;
 
-    public JakeGuiComponent(ICoreAccess core) {
-        this.core = core;
+    public JakeGuiComponent() {
     }
 
     protected ResourceMap getResourceMap() {
         return JakeMainView.getResouceMap();
-    }
-
-    protected ICoreAccess getCore() {
-        return core;
     }
 
     public Project getProject() {

@@ -11,6 +11,7 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
+import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
@@ -24,6 +25,7 @@ import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
 import com.jakeapp.gui.swing.worker.LoginAccountWorker;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
@@ -49,7 +51,7 @@ import java.util.List;
  *
  * @author: studpete
  */
-public class UserPanel extends JXPanel implements RegistrationStatus, ConnectionStatus, MsgServiceChanged {
+public class UserPanel extends JXPanel implements RegistrationStatus, ConnectionStatus, MsgServiceChanged, CoreChanged {
 	private ResourceMap resourceMap;
 	private static final Logger log = Logger.getLogger(UserPanel.class);
 
@@ -67,13 +69,22 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private ServiceCredentials cred;
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
+	private JPanel loadingAppPanel;
 
-	private ImageIcon jakeWelcomeIcon = new ImageIcon(JakeMainView.getMainView().getLargeAppImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH));
+	private ImageIcon jakeWelcomeIcon = new ImageIcon(
+					JakeMainView.getMainView().getLargeAppImage().getScaledInstance(90, 90,
+									Image.SCALE_SMOOTH));
 	private JLabel userLabelLoginSuccess;
 	private JPanel userListPanel;
+	private JPanel addUserButtonPanel;
 
 	@Override
 	public void msgServiceChanged(MsgService msg) {
+		updateView();
+	}
+
+	@Override public void coreChanged() {
+		// called after statup, when core init is done.
 		updateView();
 	}
 
@@ -88,15 +99,16 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * The three user panels supported.
 	 */
 	private enum UserPanels {
-		AddUser, ManageUsers, LoggedIn
+		AddUser, ManageUsers, LoggedIn, LoadingApplication
 	}
 
 	/**
 	 * Create the User Panel.
 	 */
 	public UserPanel() {
-		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(UserPanel.class));
+		setResourceMap(org.jdesktop.application.Application
+						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
+						.getContext().getResourceMap(UserPanel.class));
 
 		// only support xmpp - for the moment
 		cred = new ServiceCredentials();
@@ -104,10 +116,12 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		initComponents();
 
-		// register the connection & reg status callback!
-		JakeMainApp.getCore().addConnectionStatusCallbackListener(this);
-		JakeMainApp.getCore().addRegistrationStatusCallbackListener(this);
+		JakeMainApp.getInstance().addCoreChangedListener(this);
 
+		// register the connection & reg status callback!
+		EventCore.get().addConnectionStatusCallbackListener(this);
+		//EventCore.get().addRegistrationStatusCallbackListener(this);
+				
 		// device which panel to show!
 		updateView();
 	}
@@ -128,10 +142,22 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		addUserPanel = createAddUserPanel();
 		loginUserPanel = createChooseUserPanel();
 		loginSuccessPanel = createSignInSuccessPanel();
+		loadingAppPanel = createLoadingAppPanel();
 
 		// set the background painter
-		this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+		this.setBackgroundPainter(
+						Platform.getStyler().getContentPanelBackgroundPainter());
 		JakeMainApp.getApp().addMsgServiceChangedListener(this);
+	}
+
+	private JPanel createLoadingAppPanel() {
+		JPanel loader = new JPanel(new MigLayout("wrap 1, fill, center, ins 0"));
+		loader.setOpaque(false);
+
+		JAsynchronousProgressIndicator inidcator = new JAsynchronousProgressIndicator();
+		inidcator.startAnimation();
+		loader.add(inidcator, "center");
+		return loader;
 	}
 
 	/**
@@ -147,7 +173,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		// the say hello heading
 		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fillx, top, ins 0"));
 		titlePanel.setOpaque(false);
-		JLabel selectUserLabel = new JLabel(getResourceMap().getString("selectUserLabel"));
+		JLabel selectUserLabel =
+						new JLabel(getResourceMap().getString("selectUserLabel"));
 		selectUserLabel.setIcon(jakeWelcomeIcon);
 		selectUserLabel.setVerticalTextPosition(JLabel.TOP);
 		titlePanel.add(selectUserLabel, "top, center, h 80!");
@@ -185,21 +212,23 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private void updateChooseUserPanel() {
 		userListPanel.removeAll();
 
-		try {
-			List<MsgService<UserId>> msgs = JakeMainApp.getCore().getMsgServics();
+		if (JakeMainApp.isCoreInitialized()) {
+			try {
+				List<MsgService<UserId>> msgs = JakeMainApp.getCore().getMsgServics();
 
-			if (msgs != null) {
-				for (MsgService<UserId> msg : msgs) {
-					UserControlPanel userPanel = new UserControlPanel(msg);
-					JXLayer userLayer = new JXLayer(userPanel);
-					//userLayer.setBackground(Color.WHITE);
-					//userLayer.set(new Color(0, 128, 0, 128));
-					//userLayer.setOpaque(true);
-					userListPanel.add(userLayer);
+				if (msgs != null) {
+					for (MsgService<UserId> msg : msgs) {
+						UserControlPanel userPanel = new UserControlPanel(msg);
+						JXLayer userLayer = new JXLayer(userPanel);
+						//userLayer.setBackground(Color.WHITE);
+						//userLayer.set(new Color(0, 128, 0, 128));
+						//userLayer.setOpaque(true);
+						userListPanel.add(userLayer);
+					}
 				}
+			} catch (FrontendNotLoggedInException e) {
+				ExceptionUtilities.showError(e);
 			}
-		} catch (FrontendNotLoggedInException e) {
-			ExceptionUtilities.showError(e);
 		}
 	}
 
@@ -219,14 +248,16 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		// the say hello heading
 		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fill, top, ins 0"));
 		titlePanel.setOpaque(false);
-		JLabel createAccountLabel = new JLabel(getResourceMap().getString("loginMessageLabel"));
+		JLabel createAccountLabel =
+						new JLabel(getResourceMap().getString("loginMessageLabel"));
 		createAccountLabel.setIcon(jakeWelcomeIcon);
 		createAccountLabel.setVerticalTextPosition(JLabel.TOP);
 		titlePanel.add(createAccountLabel, "top, center, h 80!");
 		addUserPanel.add(titlePanel, "wrap, gapbottom 20, top, grow, h 80:300");
 
 		// login existing with service
-		loginRadioButton = new JRadioButton(getResourceMap().getString("loginRadioButton"));
+		loginRadioButton =
+						new JRadioButton(getResourceMap().getString("loginRadioButton"));
 		loginRadioButton.setOpaque(false);
 		loginRadioButton.addActionListener(new ActionListener() {
 			@Override
@@ -237,7 +268,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginRadioButton.setSelected(true);
 
 		// register new
-		registerRadioButton = new JRadioButton(getResourceMap().getString("registerRadioButton"));
+		registerRadioButton =
+						new JRadioButton(getResourceMap().getString("registerRadioButton"));
 		registerRadioButton.setOpaque(false);
 		registerRadioButton.addActionListener(new ActionListener() {
 			@Override
@@ -251,15 +283,20 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginRegisterButtonGroup.add(loginRadioButton);
 
 		// login service
-		String[] loginServices = new String[]{"Google Talk", "Jabber", "United Internet (GMX, Web.de)"};
+		String[] loginServices =
+						new String[]{"Google Talk", "Jabber", "United Internet (GMX, Web.de)"};
 		Integer[] indexes = new Integer[]{0, 1, 2};
 		ImageIcon[] images = new ImageIcon[3];
 		images[0] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/service-google.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+						getClass().getResource("/icons/service-google.png")).getScaledInstance(
+						16, 16, Image.SCALE_SMOOTH));
 		images[1] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/service-jabber.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+						getClass().getResource("/icons/service-jabber.png")).getScaledInstance(
+						16, 16, Image.SCALE_SMOOTH));
 		images[2] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/service-unitedinternet.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+						getClass().getResource(
+										"/icons/service-unitedinternet.png")).getScaledInstance(16, 16,
+						Image.SCALE_SMOOTH));
 		loginServiceCheckBox = new JComboBox();
 		loginServiceCheckBox.setModel(new DefaultComboBoxModel(indexes));
 		IconComboBoxRenderer renderer = new IconComboBoxRenderer(images, loginServices);
@@ -285,11 +322,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		addUserPanel.add(registerUserDataPanel, "hidemode 1");
 
-		JPanel buttonPanel = new JPanel(new MigLayout("wrap 2, fill, ins 0"));
-		buttonPanel.setOpaque(false);
+		addUserButtonPanel = new JPanel(new MigLayout("wrap 2, fill, ins 0"));
+		addUserButtonPanel.setOpaque(false);
 
 		workingAnimation = new JAsynchronousProgressIndicator();
-		buttonPanel.add(workingAnimation, "hidemode 1, left");
+		addUserButtonPanel.add(workingAnimation, "hidemode 1, left");
 
 		signInRegisterButton = new JButton();
 		signInRegisterButton.putClientProperty("JButton.buttonType", "textured");
@@ -301,28 +338,36 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		});
 		updateSignInRegisterMode();
 
-		// add back button if there are users
-		try {
-			if (JakeMainApp.getCore().getMsgServics().size() > 0) {
-				log.debug("adding back button: getMsgServics().size()=" + JakeMainApp.getCore().getMsgServics().size());
-				JButton backBtn = new JButton(getResourceMap().getString("backBtn"));
-				backBtn.putClientProperty("JButton.buttonType", "textured");
-				backBtn.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						showPanel(UserPanels.ManageUsers);
-					}
-				});
-				buttonPanel.add(backBtn, "left, bottom, split");
-			}
-		} catch (FrontendNotLoggedInException e) {
-			ExceptionUtilities.showError(e);
-		}
-
-		buttonPanel.add(signInRegisterButton, "right, bottom, wrap");
-		addUserPanel.add(buttonPanel, "width 370!");
+		addUserPanel.add(addUserButtonPanel, "width 370!");
 		return addUserPanel;
 	}
+
+	private void updateUserSignInPanel() {
+
+		if (JakeMainApp.isCoreInitialized()) {
+			// add back button if there are users
+			try {
+				if (JakeMainApp.getCore().getMsgServics().size() > 0) {
+					log.debug("adding back button: getMsgServics().size()=" + JakeMainApp
+									.getCore().getMsgServics().size());
+					JButton backBtn = new JButton(getResourceMap().getString("backBtn"));
+					backBtn.putClientProperty("JButton.buttonType", "textured");
+					backBtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							showPanel(UserPanels.ManageUsers);
+						}
+					});
+					addUserButtonPanel.add(backBtn, "left, bottom, split");
+				}
+			} catch (FrontendNotLoggedInException e) {
+				ExceptionUtilities.showError(e);
+			}
+
+			addUserButtonPanel.add(signInRegisterButton, "right, bottom, wrap");
+		}
+	}
+
 
 	/**
 	 * Updates internal saved ServiceCredentials and return object.
@@ -355,9 +400,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
 					JakeMainApp.setMsgService(msg);
-					JakeExecutor.exec(new LoginAccountWorker(msg,
-							  loginUserDataPanel.getPassword(),
-							  loginUserDataPanel.isSetRememberPassword()));
+					JakeExecutor
+									.exec(new LoginAccountWorker(msg, loginUserDataPanel.getPassword(),
+													loginUserDataPanel.isSetRememberPassword()));
 
 				} catch (Exception e) {
 					log.warn(e);
@@ -423,11 +468,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * Updates the login username in representation to selected service.
 	 */
 	private void updateLoginUsernameLabel() {
-		if (loginServiceCheckBox.getSelectedIndex() ==
-				  SupportedServices.Google.ordinal()) {
+		if (loginServiceCheckBox.getSelectedIndex() == SupportedServices.Google
+						.ordinal()) {
 			loginUserDataPanel.setUserLabel("usernameGoogle");
-		} else if (loginServiceCheckBox.getSelectedIndex() ==
-				  SupportedServices.Jabber.ordinal()) {
+		} else if (loginServiceCheckBox.getSelectedIndex() == SupportedServices.Jabber
+						.ordinal()) {
 			loginUserDataPanel.setUserLabel("usernameJabber");
 		} else {
 			loginUserDataPanel.setUserLabel("usernameUInternet");
@@ -455,24 +500,28 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			if (addServer) {
 				// fill the registraton info panel
 				registrationInfoPanel = new JPanel(new MigLayout("wrap 2, ins 0"));
-				JLabel registrationLabel1 = new JLabel(getResourceMap().getString("registrationLabel1"));
+				JLabel registrationLabel1 =
+								new JLabel(getResourceMap().getString("registrationLabel1"));
 				registrationLabel1.setForeground(Color.DARK_GRAY);
 				registrationInfoPanel.add(registrationLabel1, "span 2, wrap");
-				JLabel registrationLabel2 = new JLabel(getResourceMap().getString("registrationLabel2"));
+				JLabel registrationLabel2 =
+								new JLabel(getResourceMap().getString("registrationLabel2"));
 				registrationLabel2.setForeground(Color.DARK_GRAY);
 				registrationInfoPanel.add(registrationLabel2);
-				LinkAction linkAction = new LinkAction(getResourceMap().getString("registrationLabel3")) {
-					public void actionPerformed(ActionEvent e) {
-						try {
-							Desktop.getDesktop().browse(new URI(getResourceMap().getString("registrationLabelHyperlink")));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (URISyntaxException e1) {
-							e1.printStackTrace();
-						}
-						setVisited(true);
-					}
-				};
+				LinkAction linkAction =
+								new LinkAction(getResourceMap().getString("registrationLabel3")) {
+									public void actionPerformed(ActionEvent e) {
+										try {
+											Desktop.getDesktop().browse(new URI(getResourceMap().getString(
+															"registrationLabelHyperlink")));
+										} catch (IOException e1) {
+											e1.printStackTrace();
+										} catch (URISyntaxException e1) {
+											e1.printStackTrace();
+										}
+										setVisited(true);
+									}
+								};
 				registrationInfoPanel.add(new JXHyperlink(linkAction), "gapbottom 10");
 				registrationInfoPanel.setOpaque(false);
 				this.add(registrationInfoPanel);
@@ -480,8 +529,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				JLabel serverLabel = new JLabel(getResourceMap().getString("serverLabel"));
 				serverLabel.setForeground(Color.DARK_GRAY);
 				serverComboBox = new JComboBox();
-				serverComboBox.setModel(new DefaultComboBoxModel(new String[]{"jabber.fsinf.at", "jabber.org",
-						  "jabber.ccc.de", "macjabber.de", "swissjabber.ch", "binaryfreedom.info"}));
+				serverComboBox.setModel(new DefaultComboBoxModel(
+								new String[]{"jabber.fsinf.at", "jabber.org", "jabber.ccc.de",
+												"macjabber.de", "swissjabber.ch", "binaryfreedom.info"}));
 				serverComboBox.setEditable(true);
 
 				this.add(serverLabel, "");
@@ -507,7 +557,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			});
 			this.add(passName, "width 350!");
 
-			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
+			rememberPassCheckBox =
+							new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
 			rememberPassCheckBox.setSelected(true);
 			rememberPassCheckBox.setOpaque(false);
 			this.add(rememberPassCheckBox, addServer ? "" : "split");
@@ -532,7 +583,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 			if (!addServer) {
 				// Advanced Settings
-				JButton loginAdvancedBtn = new JButton(getResourceMap().getString("advancedServerButton"));
+				JButton loginAdvancedBtn =
+								new JButton(getResourceMap().getString("advancedServerButton"));
 				loginAdvancedBtn.putClientProperty("JButton.buttonType", "textured");
 				loginAdvancedBtn.addActionListener(new ActionListener() {
 					@Override
@@ -568,7 +620,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		 * @return
 		 */
 		public String getServer() {
-			return serverComboBox != null ? serverComboBox.getSelectedItem().toString() : null;
+			return serverComboBox != null ? serverComboBox.getSelectedItem().toString() :
+							null;
 		}
 
 		/**
@@ -605,7 +658,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginSuccessPanel.setOpaque(false);
 		loginSuccessPanel.setLayout(new MigLayout("nogrid, al center, fill"));
 
-		JLabel headerLoginSuccess = new JLabel(getResourceMap().getString("signInSuccessHeader"));
+		JLabel headerLoginSuccess =
+						new JLabel(getResourceMap().getString("signInSuccessHeader"));
 		headerLoginSuccess.setFont(Platform.getStyler().getH1Font());
 		headerLoginSuccess.setForeground(Color.DARK_GRAY);
 		loginSuccessPanel.add(headerLoginSuccess, "top, center, wrap");
@@ -615,7 +669,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginSuccessPanel.add(userLabelLoginSuccess, "top, center, wrap");
 
 		// the sign out button
-		JButton signOutButton = new JButton(getResourceMap().getString("signInSuccessSignOut"));
+		JButton signOutButton =
+						new JButton(getResourceMap().getString("signInSuccessSignOut"));
 		signOutButton.putClientProperty("JButton.buttonType", "textured");
 		signOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -639,7 +694,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 		JLabel iconSuccess = new JLabel();
 		iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/dropfolder.png"))));
+						getClass().getResource("/icons/dropfolder.png"))));
 
 		loginSuccessPanel.add(iconSuccess, "wrap, al center");
 
@@ -660,7 +715,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 	private void updateSignInSuccessPanel() {
 		if (JakeMainApp.getMsgService() != null) {
-			userLabelLoginSuccess.setText(JakeMainApp.getMsgService().getUserId().getUserId());
+			userLabelLoginSuccess
+							.setText(JakeMainApp.getMsgService().getUserId().getUserId());
 		}
 	}
 
@@ -670,11 +726,11 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 	private boolean isSignInRegisterButtonEnabled() {
 		if (isModeSignIn()) {
-			return (loginUserDataPanel.getUserName().length() > 0 &&
-					  loginUserDataPanel.getPassword().length() > 0);
+			return (loginUserDataPanel.getUserName().length() > 0 && loginUserDataPanel
+							.getPassword().length() > 0);
 		} else {
-			return (registerUserDataPanel.getUserName().length() > 0 &&
-					  registerUserDataPanel.getPassword().length() > 0);
+			return (registerUserDataPanel.getUserName()
+							.length() > 0 && registerUserDataPanel.getPassword().length() > 0);
 
 		}
 	}
@@ -703,22 +759,25 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 * If not, show the add user screen.
 	 */
 	private void updateView() {
-		log.info("updating login view. selected user: " + JakeMainApp.getMsgService() +
-				  ", user count: " + JakeMainApp.getCore().getMsgServics().size());
+		log.info("updating login view. selected user: " + JakeMainApp.getMsgService());
 
 		// always update everything
 		updateSignInSuccessPanel();
 		updateChooseUserPanel();
 
 		// update the view (maybe already logged in)
-		if (JakeMainApp.getMsgService() != null) {
-			showPanel(UserPanels.LoggedIn);
-		} else {
-			if (JakeMainApp.getCore().getMsgServics().size() > 0) {
-				showPanel(UserPanels.ManageUsers);
+		if (JakeMainApp.isCoreInitialized()) {
+			if (JakeMainApp.getMsgService() != null) {
+				showPanel(UserPanels.LoggedIn);
 			} else {
-				showPanel(UserPanels.AddUser);
+				if (JakeMainApp.getCore().getMsgServics().size() > 0) {
+					showPanel(UserPanels.ManageUsers);
+				} else {
+					showPanel(UserPanels.AddUser);
+				}
 			}
+		}else {
+			showPanel(UserPanels.LoadingApplication);
 		}
 	}
 
@@ -727,16 +786,19 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	 *
 	 * @param panel
 	 */
+
 	private void showPanel(UserPanels panel) {
 		log.info("show panel: " + panel);
 		showContentPanel(addUserPanel, panel == UserPanels.AddUser);
 		showContentPanel(loginUserPanel, panel == UserPanels.ManageUsers);
 		showContentPanel(loginSuccessPanel, panel == UserPanels.LoggedIn);
+		showContentPanel(loadingAppPanel, panel == UserPanels.LoadingApplication);
 	}
 
 
 	/**
 	 * Helper for showPanel; add or remove certain panel at runtime.
+	 *
 	 * @param panel
 	 * @param show
 	 */
@@ -761,7 +823,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				// animation is controlled via swingworker
 
 				if (status == RegisterStati.RegistrationActive) {
-					signInRegisterButton.setText(getResourceMap().getString("loginRegisterProceed"));
+					signInRegisterButton
+									.setText(getResourceMap().getString("loginRegisterProceed"));
 					signInRegisterButton.setEnabled(false);
 				}
 			}
@@ -781,7 +844,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				updateView();
 
 				if (status == ConnectionStati.SigningIn) {
-					signInRegisterButton.setText(getResourceMap().getString("loginSignInProceed"));
+					signInRegisterButton
+									.setText(getResourceMap().getString("loginSignInProceed"));
 					signInRegisterButton.setEnabled(false);
 				}
 			}
@@ -801,22 +865,24 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		private JButton signInBtn;
 
 		public UserControlPanel(final MsgService msg) {
-			log.info("creating UserControlPanel with " + msg +
-			", userID: " + msg.getUserId());
+			log.info("creating UserControlPanel with " + msg + ", userID: " + msg
+							.getUserId());
 			this.msg = msg;
 
 			ActionListener loginAction = new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						log.info("Sign In with " + msg.getUserId() + " useSavedPassword: " + isMagicToken());
+						log.info("Sign In with " + msg
+										.getUserId() + " useSavedPassword: " + isMagicToken());
 						signInBtn.setEnabled(false);
 						JakeMainApp.setMsgService(msg);
 
 						if (isMagicToken()) {
 							JakeExecutor.exec(new LoginAccountWorker(msg));
 						} else {
-							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(), isRememberPassword()));
+							JakeExecutor.exec(new LoginAccountWorker(msg, getPassword(),
+											isRememberPassword()));
 						}
 
 						updateView();
@@ -832,17 +898,20 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 			this.setOpaque(false);
 
 			String msgUserId = msg.getUserId().getUserId();
-			
-			JLabel userLabel = new JLabel(StringUtilities.htmlize("<b>" + msgUserId + "</b>"));
+
+			JLabel userLabel =
+							new JLabel(StringUtilities.htmlize("<b>" + msgUserId + "</b>"));
 			this.add(userLabel, "span 2, gapbottom 8");
 
-			JLabel passLabel = new JLabel(getResourceMap().getString("passwordLabel") + ":");
+			JLabel passLabel =
+							new JLabel(getResourceMap().getString("passwordLabel") + ":");
 			this.add(passLabel, "left");
 			passField = new JPasswordField();
 			passField.addActionListener(loginAction);
 			this.add(passField, "w 200!");
 
-			rememberPassCheckBox = new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
+			rememberPassCheckBox =
+							new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
 			rememberPassCheckBox.setSelected(true);
 			rememberPassCheckBox.setOpaque(false);
 			rememberPassCheckBox.addActionListener(new ActionListener() {
@@ -875,7 +944,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 
 			// if a password is set, write a magic token into password field
 			// to represent the "not changed" state
-			log.info("msg.isPasswordSaved: " + msg.isPasswordSaved() + " for " + msg.getUserId());
+			log.info("msg.isPasswordSaved: " + msg.isPasswordSaved() + " for " + msg
+							.getUserId());
 			if (msg.isPasswordSaved()) {
 				passField.setText(MagicPassToken);
 			} else {

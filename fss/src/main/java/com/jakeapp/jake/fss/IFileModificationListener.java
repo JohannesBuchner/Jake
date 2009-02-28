@@ -8,6 +8,6 @@ import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
  * @author johannes
  */
 
-public interface IProjectModificationListener {
+public interface IFileModificationListener {
 	void fileModified(String relpath, ModifyActions action);
 }

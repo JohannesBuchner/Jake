@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.xcore.EventCore;
 
 /**
  * ProjectAction is an abstract action class for all project
@@ -21,7 +22,7 @@ public abstract class ProjectAction extends JakeAction
 
 	public ProjectAction() {
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 
 		// initial load
 		setProject(JakeMainApp.getProject());

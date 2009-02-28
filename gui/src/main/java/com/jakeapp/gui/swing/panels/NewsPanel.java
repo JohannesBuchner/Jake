@@ -2,7 +2,12 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.actions.InvitePeopleAction;
+import com.jakeapp.gui.swing.actions.RenamePeopleAction;
+import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.TrustFullPeopleAction;
+import com.jakeapp.gui.swing.actions.TrustNoPeopleAction;
+import com.jakeapp.gui.swing.actions.TrustPeopleAction;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
@@ -15,6 +20,7 @@ import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
 import com.jakeapp.gui.swing.renderer.PeopleListCellRenderer;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -40,11 +46,13 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 	private Icon startIcon;
 	private Icon stopIcon;
 	private Icon invalidIcon;
-	private StartStopProjectAction startStopProjectAction = new StartStopProjectAction();
+	private StartStopProjectAction startStopProjectAction =
+					new StartStopProjectAction();
 	private Timer eventsTableUpdateTimer;
-	private final static int EventTableUpdateDelay = 20000; // 20 sec //FIXME: magic number
+	private final static int EventTableUpdateDelay = 20000;
+					// 20 sec //FIXME: magic number
 	private EventsTableModel eventTableModel;
-	
+
 	private javax.swing.JPanel actionPanel;
 	private javax.swing.JCheckBox autoDownloadCB;
 	private javax.swing.JCheckBox autoUploadCB;
@@ -70,11 +78,13 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 	 */
 	public NewsPanel() {
 		initComponents();
-		setResourceMap(org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class));
+		setResourceMap(org.jdesktop.application.Application
+						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
+						.getContext().getResourceMap(NewsPanel.class));
 
 		// register the callbacks
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 
 		// init actions!
 		this.projectRunningButton.setAction(this.startStopProjectAction);
@@ -84,14 +94,15 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.autoDownloadCB.setOpaque(false);
 
 		// set the background painter
-		this.newsContentPanel.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+		this.newsContentPanel.setBackgroundPainter(
+						Platform.getStyler().getContentPanelBackgroundPainter());
 
 		this.startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/folder-open.png")));
+						getClass().getResource("/icons/folder-open.png")));
 		this.stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/folder.png")));
+						getClass().getResource("/icons/folder.png")));
 		this.invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/folder_invalid.png")));
+						getClass().getResource("/icons/folder_invalid.png")));
 
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -109,7 +120,8 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.peopleList.setHighlighters(HighlighterFactory.createSimpleStriping());
 		this.peopleList.setModel(new PeopleListModel());
 		this.peopleList.setCellRenderer(new PeopleListCellRenderer());
-		((JListMutable) this.peopleList).setListCellEditor(new PeopleListCellEditor(new JTextField()));
+		((JListMutable) this.peopleList)
+						.setListCellEditor(new PeopleListCellEditor(new JTextField()));
 
 		this.peopleList.addMouseListener(new PeopleListMouseListener());
 
@@ -124,13 +136,14 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.eventsTable.addMouseListener(new EventsTableMouseListener());
 
 		// install event table update timer
-		this.eventsTableUpdateTimer = new Timer(EventTableUpdateDelay, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				//log.debug("Updating eventsTable");
-				eventsTable.updateUI();
-			}
-		});
+		this.eventsTableUpdateTimer =
+						new Timer(EventTableUpdateDelay, new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent actionEvent) {
+								//log.debug("Updating eventsTable");
+								eventsTable.updateUI();
+							}
+						});
 		this.eventsTableUpdateTimer.start();
 	}
 
@@ -201,8 +214,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 			pm.add(new JCheckBoxMenuItem(new TrustPeopleAction(peopleList)));
 			pm.add(new JCheckBoxMenuItem(new TrustNoPeopleAction(peopleList)));
 
-			pm.show(peopleList, (int) me.getPoint().getX(), (int) me.getPoint()
-					  .getY());
+			pm.show(peopleList, (int) me.getPoint().getX(), (int) me.getPoint().getY());
 		}
 
 		@Override
@@ -240,7 +252,7 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		if (getProject() == null) {
 			return;
 		}
-/*
+		/*
 //TODO: find better way !
 		try {
 			FolderObject rootPath = JakeMainApp.getApp().getCore().getProjectRootFolder(getProject());
@@ -320,14 +332,19 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.optionsLabel = new javax.swing.JLabel();
 		this.autoDownloadCB = new javax.swing.JCheckBox();
 
-		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NewsPanel.class);
+		org.jdesktop.application.ResourceMap resourceMap =
+						org.jdesktop.application.Application
+										.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
+										.getContext().getResourceMap(NewsPanel.class);
 		setBackground(resourceMap.getColor("Form.background")); // NOI18N
 		setName("Form"); // NOI18N
 		setLayout(new java.awt.BorderLayout());
 
-		this.newsContentPanel.setBackground(resourceMap.getColor("newsContentPanel.background")); // NOI18N
+		this.newsContentPanel.setBackground(
+						resourceMap.getColor("newsContentPanel.background")); // NOI18N
 		this.newsContentPanel.setName("newsContentPanel"); // NOI18N
-		this.newsContentPanel.setLayout(new javax.swing.BoxLayout(newsContentPanel, javax.swing.BoxLayout.Y_AXIS));
+		this.newsContentPanel.setLayout(new javax.swing.BoxLayout(newsContentPanel,
+						javax.swing.BoxLayout.Y_AXIS));
 
 		this.titlePanel.setMaximumSize(new java.awt.Dimension(32767, 120));
 		this.titlePanel.setMinimumSize(new java.awt.Dimension(389, 120));
@@ -335,73 +352,92 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.titlePanel.setOpaque(false);
 		this.titlePanel.setPreferredSize(new java.awt.Dimension(389, 120));
 
-		this.projectFolderHyperlink.setText(resourceMap.getString("projectFolderHyperlink.text")); // NOI18N
+		this.projectFolderHyperlink
+						.setText(resourceMap.getString("projectFolderHyperlink.text")); // NOI18N
 		this.projectFolderHyperlink.setFocusable(false);
 		this.projectFolderHyperlink.setName("projectFolderHyperlink"); // NOI18N
-		this.projectFolderHyperlink.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				projectFolderHyperlinkActionPerformed(evt);
-			}
-		});
+		this.projectFolderHyperlink
+						.addActionListener(new java.awt.event.ActionListener() {
+							public void actionPerformed(java.awt.event.ActionEvent evt) {
+								projectFolderHyperlinkActionPerformed(evt);
+							}
+						});
 
-		this.projectStatusLabel.setText(resourceMap.getString("projectStatusLabel.text")); // NOI18N
+		this.projectStatusLabel
+						.setText(resourceMap.getString("projectStatusLabel.text")); // NOI18N
 		this.projectStatusLabel.setName("projectStatusLabel"); // NOI18N
 
-		this.projectRunningButton.setText(resourceMap.getString("projectRunningButton.text")); // NOI18N
+		this.projectRunningButton
+						.setText(resourceMap.getString("projectRunningButton.text")); // NOI18N
 		this.projectRunningButton.setName("projectRunningButton"); // NOI18N
 
-		this.projectIconLabel.setIcon(resourceMap.getIcon("projectIconLabel.icon")); // NOI18N
+		this.projectIconLabel
+						.setIcon(resourceMap.getIcon("projectIconLabel.icon")); // NOI18N
 		this.projectIconLabel.setName("projectIconLabel"); // NOI18N
 
 		this.projectTitlePanel.setName("projectTitlePanel"); // NOI18N
 		this.projectTitlePanel.setOpaque(false);
-		this.projectTitlePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+		this.projectTitlePanel
+						.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
 		this.projectLabel.setFont(resourceMap.getFont("projectLabel.font")); // NOI18N
 		this.projectLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		this.projectLabel.setText(resourceMap.getString("projectLabel.text")); // NOI18N
 		this.projectLabel.setName("projectLabel"); // NOI18N
 
-		javax.swing.GroupLayout titlePanelLayout = new javax.swing.GroupLayout(this.titlePanel);
+		javax.swing.GroupLayout titlePanelLayout =
+						new javax.swing.GroupLayout(this.titlePanel);
 		this.titlePanel.setLayout(titlePanelLayout);
-		titlePanelLayout.setHorizontalGroup(
-				  titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(titlePanelLayout.createSequentialGroup()
-							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		titlePanelLayout.setHorizontalGroup(titlePanelLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						titlePanelLayout.createSequentialGroup().addGroup(titlePanelLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addGroup(titlePanelLayout.createSequentialGroup()
-												  .addContainerGap()
-												  .addComponent(this.projectRunningButton))
-										.addGroup(titlePanelLayout.createSequentialGroup()
-										.addGap(28, 28, 28)
-										.addComponent(this.projectIconLabel)))
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(this.projectTitlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
-										.addComponent(this.projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addComponent(this.projectLabel)
-										.addComponent(this.projectStatusLabel))
-							 .addContainerGap())
-		);
-		titlePanelLayout.setVerticalGroup(
-				  titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(titlePanelLayout.createSequentialGroup()
-							 .addContainerGap()
-							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-										.addGroup(titlePanelLayout.createSequentialGroup()
-												  .addComponent(this.projectIconLabel)
-												  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-										.addGroup(titlePanelLayout.createSequentialGroup()
-										.addComponent(this.projectLabel)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(this.projectTitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(this.projectFolderHyperlink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addGap(11, 11, 11)))
-							 .addGroup(titlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(this.projectRunningButton)
-										.addComponent(this.projectStatusLabel))
-							 .addGap(30, 30, 30))
-		);
+														.addContainerGap().addComponent(
+														this.projectRunningButton)).addGroup(
+										titlePanelLayout.createSequentialGroup()
+														.addGap(28, 28, 28).addComponent(this.projectIconLabel)))
+										.addPreferredGap(
+														javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(titlePanelLayout.createParallelGroup(
+														javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(this.projectTitlePanel,
+																		javax.swing.GroupLayout.DEFAULT_SIZE, 515,
+																		Short.MAX_VALUE)
+														.addComponent(this.projectFolderHyperlink,
+																		javax.swing.GroupLayout.PREFERRED_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.PREFERRED_SIZE)
+														.addComponent(this.projectLabel).addComponent(
+														this.projectStatusLabel)).addContainerGap()));
+		titlePanelLayout.setVerticalGroup(titlePanelLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						titlePanelLayout.createSequentialGroup().addContainerGap().addGroup(
+										titlePanelLayout.createParallelGroup(
+														javax.swing.GroupLayout.Alignment.LEADING, false)
+														.addGroup(titlePanelLayout.createSequentialGroup()
+																		.addComponent(
+																						this.projectIconLabel).addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)).addGroup(
+														titlePanelLayout.createSequentialGroup()
+																		.addComponent(this.projectLabel).addPreferredGap(
+																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(this.projectTitlePanel,
+																						javax.swing.GroupLayout.PREFERRED_SIZE,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						javax.swing.GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																						javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						Short.MAX_VALUE)
+																		.addComponent(this.projectFolderHyperlink,
+																						javax.swing.GroupLayout.PREFERRED_SIZE,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						javax.swing.GroupLayout.PREFERRED_SIZE).addGap(
+																		11, 11, 11))).addGroup(titlePanelLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+										.addComponent(this.projectRunningButton).addComponent(
+										this.projectStatusLabel)).addGap(30, 30, 30)));
 
 		this.newsContentPanel.add(this.titlePanel);
 
@@ -409,7 +445,8 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.actionPanel.setOpaque(false);
 
 		this.eventsLabel.setFont(resourceMap.getFont("eventsLabel.font")); // NOI18N
-		this.eventsLabel.setForeground(resourceMap.getColor("eventsLabel.foreground")); // NOI18N
+		this.eventsLabel
+						.setForeground(resourceMap.getColor("eventsLabel.foreground")); // NOI18N
 		this.eventsLabel.setText(resourceMap.getString("eventsLabel.text")); // NOI18N
 		this.eventsLabel.setName("eventsLabel"); // NOI18N
 
@@ -419,7 +456,9 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.peopleScrollPanel.setName("peopleScrollPanel"); // NOI18N
 
 		this.peopleList.setModel(new javax.swing.AbstractListModel() {
-			String[] strings = {"<html><b><font color=green>Peter Steinberger</font></b><br>&nbsp;&nbsp;Online<br></html>", "<html><b><font color=blue>Dominik</font></b><br>&nbsp;&nbsp;Offline<br></html>"};
+			String[] strings =
+							{"<html><b><font color=green>Peter Steinberger</font></b><br>&nbsp;&nbsp;Online<br></html>",
+											"<html><b><font color=blue>Dominik</font></b><br>&nbsp;&nbsp;Offline<br></html>"};
 
 			public int getSize() {
 				return strings.length;
@@ -436,36 +475,46 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.peopleScrollPanel.setViewportView(this.peopleList);
 
 		this.peopleLabel.setFont(resourceMap.getFont("peopleLabel.font")); // NOI18N
-		this.peopleLabel.setForeground(resourceMap.getColor("peopleLabel.foreground")); // NOI18N
+		this.peopleLabel
+						.setForeground(resourceMap.getColor("peopleLabel.foreground")); // NOI18N
 		this.peopleLabel.setText(resourceMap.getString("peopleLabel.text")); // NOI18N
 		this.peopleLabel.setName("peopleLabel"); // NOI18N
 
-		javax.swing.GroupLayout actionPanelLayout = new javax.swing.GroupLayout(this.actionPanel);
+		javax.swing.GroupLayout actionPanelLayout =
+						new javax.swing.GroupLayout(this.actionPanel);
 		this.actionPanel.setLayout(actionPanelLayout);
-		actionPanelLayout.setHorizontalGroup(
-				  actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(actionPanelLayout.createSequentialGroup()
-							 .addContainerGap()
-							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(this.eventsLabel)
-										.addComponent(this.eventsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(this.peopleLabel)
-										.addComponent(this.peopleScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-							 .addContainerGap())
-		);
-		actionPanelLayout.setVerticalGroup(
-				  actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, actionPanelLayout.createSequentialGroup()
-							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(this.eventsLabel)
-										.addComponent(this.peopleLabel))
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-							 .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addComponent(this.eventsScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-							 .addComponent(this.peopleScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)))
-		);
+		actionPanelLayout.setHorizontalGroup(actionPanelLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						actionPanelLayout.createSequentialGroup().addContainerGap().addGroup(
+										actionPanelLayout.createParallelGroup(
+														javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(this.eventsLabel).addComponent(
+														this.eventsScrollPanel,
+														javax.swing.GroupLayout.DEFAULT_SIZE, 401,
+														Short.MAX_VALUE)).addPreferredGap(
+										javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(
+										actionPanelLayout.createParallelGroup(
+														javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(this.peopleLabel).addComponent(
+														this.peopleScrollPanel,
+														javax.swing.GroupLayout.PREFERRED_SIZE, 184,
+														javax.swing.GroupLayout.PREFERRED_SIZE)).addContainerGap()));
+		actionPanelLayout.setVerticalGroup(actionPanelLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						javax.swing.GroupLayout.Alignment.TRAILING,
+						actionPanelLayout.createSequentialGroup().addGroup(actionPanelLayout
+										.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+										.addComponent(this.eventsLabel).addComponent(this.peopleLabel))
+										.addPreferredGap(
+														javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(
+										actionPanelLayout.createParallelGroup(
+														javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(this.eventsScrollPanel,
+																		javax.swing.GroupLayout.DEFAULT_SIZE, 262,
+																		Short.MAX_VALUE).addComponent(
+														this.peopleScrollPanel,
+														javax.swing.GroupLayout.DEFAULT_SIZE, 262,
+														Short.MAX_VALUE))));
 
 		this.newsContentPanel.add(this.actionPanel);
 
@@ -480,49 +529,59 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		this.autoUploadCB.setName("autoUploadCB"); // NOI18N
 
 		this.optionsLabel.setFont(resourceMap.getFont("optionsLabel.font")); // NOI18N
-		this.optionsLabel.setForeground(resourceMap.getColor("optionsLabel.foreground")); // NOI18N
+		this.optionsLabel.setForeground(
+						resourceMap.getColor("optionsLabel.foreground")); // NOI18N
 		this.optionsLabel.setText(resourceMap.getString("optionsLabel.text")); // NOI18N
 		this.optionsLabel.setName("optionsLabel"); // NOI18N
 
 		this.autoDownloadCB.setSelected(true);
-		this.autoDownloadCB.setText(resourceMap.getString("autoDownloadCB.text")); // NOI18N
+		this.autoDownloadCB
+						.setText(resourceMap.getString("autoDownloadCB.text")); // NOI18N
 		this.autoDownloadCB.setName("autoDownloadCB"); // NOI18N
 
-		javax.swing.GroupLayout optionsPanelLayout = new javax.swing.GroupLayout(this.optionsPanel);
+		javax.swing.GroupLayout optionsPanelLayout =
+						new javax.swing.GroupLayout(this.optionsPanel);
 		this.optionsPanel.setLayout(optionsPanelLayout);
-		optionsPanelLayout.setHorizontalGroup(
-				  optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(optionsPanelLayout.createSequentialGroup()
-							 .addContainerGap()
-							 .addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addGroup(optionsPanelLayout.createSequentialGroup()
-												  .addComponent(this.optionsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-												  .addGap(168, 168, 168))
-										.addGroup(optionsPanelLayout.createSequentialGroup()
-										.addGap(21, 21, 21)
-										.addGroup(optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-										.addComponent(this.autoUploadCB, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(this.autoDownloadCB, javax.swing.GroupLayout.Alignment.LEADING))))
-							 .addGap(441, 441, 441))
-		);
-		optionsPanelLayout.setVerticalGroup(
-				  optionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-							 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, optionsPanelLayout.createSequentialGroup()
-							 .addContainerGap(20, Short.MAX_VALUE)
-							 .addComponent(this.optionsLabel)
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-							 .addComponent(this.autoDownloadCB)
-							 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-							 .addComponent(this.autoUploadCB)
-							 .addContainerGap())
-		);
+		optionsPanelLayout.setHorizontalGroup(optionsPanelLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						optionsPanelLayout.createSequentialGroup().addContainerGap().addGroup(
+										optionsPanelLayout.createParallelGroup(
+														javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+														optionsPanelLayout.createSequentialGroup()
+																		.addComponent(this.optionsLabel,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						263, Short.MAX_VALUE).addGap(168, 168,
+																		168)).addGroup(
+														optionsPanelLayout.createSequentialGroup()
+																		.addGap(21, 21, 21).addGroup(optionsPanelLayout
+																		.createParallelGroup(
+																						javax.swing.GroupLayout.Alignment.TRAILING,
+																						false).addComponent(this.autoUploadCB,
+																						javax.swing.GroupLayout.Alignment.LEADING,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						Short.MAX_VALUE).addComponent(
+																		this.autoDownloadCB,
+																		javax.swing.GroupLayout.Alignment.LEADING)))).addGap(
+										441, 441, 441)));
+		optionsPanelLayout.setVerticalGroup(optionsPanelLayout
+						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+						javax.swing.GroupLayout.Alignment.TRAILING,
+						optionsPanelLayout.createSequentialGroup()
+										.addContainerGap(20, Short.MAX_VALUE)
+										.addComponent(this.optionsLabel).addPreferredGap(
+										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(this.autoDownloadCB).addPreferredGap(
+										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(this.autoUploadCB).addContainerGap()));
 
 		this.newsContentPanel.add(this.optionsPanel);
 
 		add(this.newsContentPanel, java.awt.BorderLayout.CENTER);
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void projectFolderHyperlinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectFolderHyperlinkActionPerformed
+	private void projectFolderHyperlinkActionPerformed(
+					java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectFolderHyperlinkActionPerformed
 		log.info("Opening the Folder: " + getProject().getRootPath());
 		try {
 			Desktop.getDesktop().open(new File(getProject().getRootPath()));

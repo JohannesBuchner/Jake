@@ -7,11 +7,22 @@ import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.JakeMainView.ProjectViewPanelEnum;
-import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.FileObjectHelper;
+import com.jakeapp.gui.swing.helpers.NoteObjectHelper;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.StringUtilities;
+import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.models.EventsTableModel;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -19,7 +30,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.io.File;
 
@@ -79,7 +89,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 				.getResourceMap(InspectorPanel.class));
 
 		// register for events
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		FilePanel.getInstance().addFileSelectionListener(this);
 		NotesPanel.getInstance().addNoteSelectionListener(this);

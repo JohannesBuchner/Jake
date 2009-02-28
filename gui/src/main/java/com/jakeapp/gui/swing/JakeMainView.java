@@ -1,6 +1,10 @@
 package com.jakeapp.gui.swing;
 
-import com.explodingpixels.macwidgets.*;
+import com.explodingpixels.macwidgets.LabeledComponentGroup;
+import com.explodingpixels.macwidgets.MacButtonFactory;
+import com.explodingpixels.macwidgets.MacUtils;
+import com.explodingpixels.macwidgets.MacWidgetFactory;
+import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
@@ -9,13 +13,24 @@ import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ImportFileAction;
 import com.jakeapp.gui.swing.actions.InvitePeopleAction;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
+import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
-import com.jakeapp.gui.swing.panels.*;
+import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.panels.InspectorPanel;
+import com.jakeapp.gui.swing.panels.NewsPanel;
+import com.jakeapp.gui.swing.panels.NotesPanel;
+import com.jakeapp.gui.swing.panels.ProjectInvitationPanel;
+import com.jakeapp.gui.swing.panels.UserPanel;
+import com.jakeapp.gui.swing.worker.InitCoreWorker;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -41,7 +56,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView implements ProjectSelectionChanged, ErrorCallback, MsgServiceChanged {
+public class JakeMainView extends FrameView implements ProjectSelectionChanged, MsgServiceChanged {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
 	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
@@ -200,7 +215,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		this.getFrame().add(mainSplitPane, BorderLayout.CENTER);
 
 		// create status bar
-		jakeStatusBar = new JakeStatusBar(getCore());
+		jakeStatusBar = new JakeStatusBar();
 		statusPanel.add(jakeStatusBar.getComponent());
 
 		// set default window behaviour
@@ -224,6 +239,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
 			JakeMainApp.getApp().saveQuit();
 		}
+
+		JakeExecutor.exec(new InitCoreWorker());
 	}
 
 
@@ -307,8 +324,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		// register for project selection changes
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
-		getCore().addProjectChangedCallbackListener(new ProjectChangedCallback());
-		getCore().addErrorListener(this);
+		EventCore.get().addProjectChangedCallbackListener(new ProjectChangedCallback());
 		JakeMainApp.getApp().addMsgServiceChangedListener(this);
 	}
 
@@ -642,7 +658,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * @return the JSplitPane
 	 */
 	private JSplitPane createSourceListAndMainArea() {
-		sourceList = new JakeSourceList(getCore());
+		sourceList = new JakeSourceList();
 
 		// creates the special SplitPlane
 		JSplitPane splitPane = MacWidgetFactory
@@ -705,11 +721,11 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	@Action
 	public void showAboutBox() {
 		if (aboutBox == null) {
-			JFrame mainFrame = JakeMainApp.getApplication().getMainFrame();
+			JFrame mainFrame = JakeMainApp.getInstance().getMainFrame();
 			aboutBox = new JakeAboutDialog(mainFrame);
 			aboutBox.setLocationRelativeTo(mainFrame);
 		}
-		JakeMainApp.getApplication().show(aboutBox);
+		JakeMainApp.getInstance().show(aboutBox);
 	}
 
 
@@ -913,17 +929,6 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		updateAll();
 	}
-
-	/**
-	 * Called when the core is reporting an error.
-	 * (maybe from an async call)
-	 *
-	 * @param ee
-	 */
-	public void reportError(JakeErrorEvent ee) {
-		ExceptionUtilities.showError(ee);
-	}
-
 
 	public void addProjectViewChangedListener(ProjectViewChanged pvc) {
 		projectViewChanged.add(pvc);

@@ -9,6 +9,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXPanel;
 
@@ -24,7 +25,8 @@ import java.awt.event.ActionListener;
  * Date: Dec 23, 2008
  * Time: 5:35:46 PM
  */
-public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionChanged, ProjectChanged {
+public class ProjectInvitationPanel extends JXPanel implements
+				ProjectSelectionChanged, ProjectChanged {
 	private Project project;
 	private JTextField folderTextField;
 	private JLabel projectNameLabel;
@@ -33,7 +35,7 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 
 	public ProjectInvitationPanel() {
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 
 		initComponents();
 	}
@@ -41,7 +43,8 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 
 	private void initComponents() {
 		// set the background painter
-		this.setBackgroundPainter(Platform.getStyler().getContentPanelBackgroundPainter());
+		this.setBackgroundPainter(
+						Platform.getStyler().getContentPanelBackgroundPainter());
 
 		MigLayout layout = new MigLayout("wrap 1, fillx");
 		this.setLayout(layout);
@@ -56,7 +59,8 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 		this.add(projectNameLabel, "span 1 ,al center, wrap");
 
 		JLabel icon = new JLabel();
-		icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-new-large.png"))));
+		icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource("/icons/folder-new-large.png"))));
 
 		this.add(icon, "span 1, al center, wrap");
 
@@ -67,7 +71,8 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 		JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
 		folderSelectPanel.setOpaque(false);
 
-		folderTextField = new JTextField(FileUtilities.getDefaultProjectLocation(getProject()));
+		folderTextField =
+						new JTextField(FileUtilities.getDefaultProjectLocation(getProject()));
 		folderTextField.setEditable(false);
 		folderSelectPanel.add(folderTextField);
 
@@ -126,7 +131,8 @@ public class ProjectInvitationPanel extends JXPanel implements ProjectSelectionC
 			// TODO: is this user id the id from the inviter?
 			// TODO: enable when this works without mock!
 			String userId = "<needs real impl>"; //getProject().getUser().toString();
-			userNameLabel.setText(JakeMainView.getMainView().getResourceMap().getString("projectInvitedFrom") + " " + userId);
+			userNameLabel.setText(JakeMainView.getMainView().getResourceMap()
+							.getString("projectInvitedFrom") + " " + userId);
 		}
 	}
 }

@@ -4,10 +4,10 @@ import java.io.File;
 
 /**
  * Objects listening for file modifications have to implement this.
+ * this is fss-internal.
  * 
  * @author johannes
  */
-
 public interface IModificationListener {
 	/**
 	 * Actions that can occur for a file on a filesystem.

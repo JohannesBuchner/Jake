@@ -11,11 +11,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -34,47 +30,6 @@ import java.util.Set;
 
 
 public interface ICoreAccess {
-
-	/**
-	 * file was imported into project, it is represented in the database
-	 */
-	@Deprecated
-	public static final int SYNC_IS_IN_PROJECT = 1;
-	/**
-	 * is distributed
-	 */
-	@Deprecated
-	public static final int SYNC_HAS_LgetAllOGENTRIES = 2;
-	/**
-	 * we have this file
-	 */
-	@Deprecated
-	public static final int SYNC_EXISTS_LOCALLY = 4;
-	/**
-	 * it is from the latest version
-	 */
-	@Deprecated
-	public static final int SYNC_LOCAL_IS_LATEST = 8;
-	/**
-	 * we modified it
-	 */
-	@Deprecated
-	public static final int SYNC_LOCALLY_CHANGED = 16;
-	/**
-	 * Did someone delete it?
-	 */
-	@Deprecated
-	public static final int SYNC_EXISTS_REMOTELY = 32;
-	/**
-	 * A newer remote version exists
-	 */
-	@Deprecated
-	public static final int SYNC_REMOTE_IS_NEWER = 64;
-	/**
-	 * A newer remote version exists, we have a modified old version.
-	 */
-	@Deprecated
-	public static final int SYNC_IN_CONFLICT = SYNC_REMOTE_IS_NEWER | SYNC_LOCALLY_CHANGED;
 
 
 	/**************** Main core integration point *************/
@@ -107,56 +62,7 @@ public interface ICoreAccess {
 	 */
 	public void backendLogOff();
 
-
-	/******************* Generic functions ********************/
-
-	/**
-	 * Adds an error listener for error events
-	 *
-	 * @param ec
-	 */
-	public void addErrorListener(ErrorCallback ec);
-
-	/**
-	 * Removes the error listener for error events
-	 *
-	 * @param ec
-	 */
-	public void removeErrorListener(ErrorCallback ec);
-
-
 	/******************* User functions ********************/
-
-	/**
-	 * Registers the Connection Status Callback
-	 *
-	 * @param cb
-	 */
-	public void addConnectionStatusCallbackListener(ConnectionStatus cb);
-
-	/**
-	 * Deregisters the Connecton Status Callback
-	 *
-	 * @param cb
-	 */
-	public void removeConnectionStatusCallbackListener(ConnectionStatus cb);
-
-
-	/**
-	 * Registers the Registration Callback
-	 *
-	 * @param cb
-	 */
-	public void addRegistrationStatusCallbackListener(RegistrationStatus cb);
-
-
-	/**
-	 * Deregsters the Registration Status Callback
-	 *
-	 * @param cb
-	 */
-	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb);
-
 
 	/**
 	 * This tries to create a new Account with the given credentials (real
@@ -247,22 +153,6 @@ public interface ICoreAccess {
 	 *
 	 */
 	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException;
-
-
-	/**
-	 * Registers the Project changed Callback. This is called when a project
-	 * changes somehow.
-	 *
-	 * @param cb
-	 */
-	public void addProjectChangedCallbackListener(ProjectChanged cb);
-
-	/**
-	 * Deregisters the project changed callbac.
-	 *
-	 * @param cb
-	 */
-	public void removeProjectChangedCallbackListener(ProjectChanged cb);
 
 	/**
 	 * Stops the given project

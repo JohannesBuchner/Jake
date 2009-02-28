@@ -25,13 +25,9 @@ import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
-import com.jakeapp.gui.swing.callbacks.ErrorCallback.JakeErrorEvent;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -39,10 +35,13 @@ import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectCreationException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.JakeObjectAttributedCacheManager;
 import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.IFileModificationListener;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
-import com.jakeapp.jake.fss.IProjectModificationListener;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
@@ -68,29 +67,20 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private IFrontendService frontendService;
 	private IProjectsManagingService pms;
 
+	private final JakeObjectAttributedCacheManager attributedCacheMan =
+					new JakeObjectAttributedCacheManager(this);
+
 	/**
 	 * SessionId returned by the authentication Method of
 	 * FrontendService.authenticate.
 	 */
 	private String sessionId;
 
-	private Map<FilesChanged, IProjectModificationListener> fileListeners =
-					new HashMap<FilesChanged, IProjectModificationListener>();
-	// event spread
-	private List<ConnectionStatus> connectionStatus;
-	private List<RegistrationStatus> registrationStatus;
-	private List<ProjectChanged> projectChanged;
-	private List<ErrorCallback> errorCallback;
+	private Map<FilesChanged, IFileModificationListener> fileListeners =
+					new HashMap<FilesChanged, IFileModificationListener>();
 
 
-	/**
-	 * Core Access Mock initialisation code
-	 */
 	public SpringCoreAccessImpl() {
-		connectionStatus = new ArrayList<ConnectionStatus>();
-		registrationStatus = new ArrayList<RegistrationStatus>();
-		projectChanged = new ArrayList<ProjectChanged>();
-		errorCallback = new ArrayList<ErrorCallback>();
 	}
 
 	private IFrontendService getFrontendService() {
@@ -148,48 +138,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public void addErrorListener(ErrorCallback ec) {
-		errorCallback.add(ec);
-	}
-
-	public void removeErrorListener(ErrorCallback ec) {
-		errorCallback.remove(ec);
-	}
-
-	private void fireErrorListener(ErrorCallback.JakeErrorEvent ee) {
-		for (ErrorCallback callback : errorCallback) {
-			callback.reportError(ee);
-		}
-	}
-
-	public void addConnectionStatusCallbackListener(ConnectionStatus cb) {
-		log.info("Registers connection status callback: " + cb);
-
-		connectionStatus.add(cb);
-	}
-
-	public void removeConnectionStatusCallbackListener(ConnectionStatus cb) {
-		log.info("Deregisters connection status callback: " + cb);
-
-		connectionStatus.remove(cb);
-	}
-
-
-	private void fireConnectionStatus(ConnectionStatus.ConnectionStati state,
-					String str) {
-		log.info("spead callback event...");
-		for (ConnectionStatus callback : connectionStatus) {
-			callback.setConnectionStatus(state, str);
-		}
-	}
-
 	@Override
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
 								 ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.createAccount(this.sessionId, credentials).start();
-
-
 	}
 
 	@Override
@@ -210,35 +163,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		this.frontendService.removeAccount(this.sessionId, msg);
 	}
 
-	public void addRegistrationStatusCallbackListener(RegistrationStatus cb) {
-		log.info("Registers registration status callback: " + cb);
-	}
-
-	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb) {
-		log.info("Deregisters registration status callback: " + cb);
-	}
-
-
-	public void addProjectChangedCallbackListener(ProjectChanged cb) {
-		//log.info("Register project changed callback: " + cb);
-
-		projectChanged.add(cb);
-	}
-
-	public void removeProjectChangedCallbackListener(ProjectChanged cb) {
-		log.info("Deregister project changed callback: " + cb);
-
-		if (projectChanged.contains(cb)) {
-			projectChanged.remove(cb);
-		}
-	}
-
-	private void fireProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
-		for (ProjectChanged callback : projectChanged) {
-			callback.projectChanged(ev);
-		}
-	}
-
 	public void stopProject(Project project) {
 		log.info("stop project: " + project);
 
@@ -246,19 +170,18 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId())
 							.stopProject(project);
 		} catch (IllegalArgumentException e) {
-			log.debug("Illegal project for stopping specified.", e);
+			ExceptionUtilities.showError("Illegal project for stopping specified.", e);
 		} catch (FileNotFoundException e) {
-			log.warn("Project-Folder not found.", e);
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError("Project-Folder not found.", e);
 		} catch (IllegalStateException e) {
-			log.debug("Cannot access ProjectManagingService.", e);
+			ExceptionUtilities.showError("Cannot access ProjectManagingService.", e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		}
 
-		// generate event
-		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-						ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+		EventCore.get().fireProjectChanged(
+						new ProjectChanged.ProjectChangedEvent(project,
+										ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 	public void startProject(Project project) {
@@ -274,21 +197,21 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.startProject(project, syncChangeListener);
 
 		} catch (IllegalArgumentException e) {
-			log.debug("Illegal project for starting specified.", e);
+			ExceptionUtilities.showError("Illegal project for starting specified.", e);
 		} catch (FileNotFoundException e) {
-			log.warn("Project-Folder not found.", e);
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError("Project-Folder not found.", e);
 		} catch (IllegalStateException e) {
-			log.debug("Cannot access ProjectManagingService.", e);
+			ExceptionUtilities.showError("Cannot access ProjectManagingService.", e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (ProjectException e) {
-			log.warn("Generic Project Exception", e);
+			ExceptionUtilities.showError("Generic Project Exception", e);
 		}
 
 		// generate event
-		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-						ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+		EventCore.get().fireProjectChanged(
+						new ProjectChanged.ProjectChangedEvent(project,
+										ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
 	}
 
 
@@ -301,16 +224,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.getProjectsManagingService(this.getSessionId())
 							.getProjectFileCount(project);
 		} catch (FileNotFoundException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
 			ex = e;
 		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
 			ex = e;
 		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
 			ex = e;
 		} catch (NoSuchProjectException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
 			ex = e;
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
@@ -352,6 +271,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new IllegalArgumentException("Cannot delete empty project!");
 		}
 
+		// FIXME: convert to availablelater?
 		Runnable runner = new Runnable() {
 
 			public void run() {
@@ -366,21 +286,22 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 						throw new ProjectNotFoundException("Project not found in list!");
 					}
 
-					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-									ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
+					EventCore.get().fireProjectChanged(
+									new ProjectChanged.ProjectChangedEvent(project,
+													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+					ExceptionUtilities.showError(run);
 				} catch (IOException e) {
 					//report to gui that the rootpath is invalid
-					log.warn("Project cannot be deleted:", e);
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+					ExceptionUtilities.showError("Project cannot be deleted:", e);
 				} catch (NotADirectoryException e) {
 					//report to gui that the rootpath is invalid
-					log.warn("Project cannot be deleted: its folder does not exist.", e);
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+					ExceptionUtilities
+									.showError("Project cannot be deleted: its folder does not exist.",
+													e);
 				}
 			}
 		};
@@ -403,15 +324,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					getFrontendService().getProjectsManagingService(getSessionId())
 									.joinProject(project, project.getUserId());
 
-					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-									ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
+					EventCore.get().fireProjectChanged(
+									new ProjectChanged.ProjectChangedEvent(project,
+													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+					ExceptionUtilities.showError(run);
 				} catch (NoSuchProjectException e) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+					ExceptionUtilities.showError(e);
 				}
 			}
 		};
@@ -430,15 +352,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					getFrontendService().getProjectsManagingService(getSessionId())
 									.rejectProject(project, project.getUserId());
 
-					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-									ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
+					EventCore.get().fireProjectChanged(
+									new ProjectChanged.ProjectChangedEvent(project,
+													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
 
 				} catch (FrontendNotLoggedInException e) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
-				} catch (RuntimeException run) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+					ExceptionUtilities.showError(e);
+				} catch (RuntimeException e) {
+					ExceptionUtilities.showError(e);
 				} catch (NoSuchProjectException e) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+					ExceptionUtilities.showError(e);
 				}
 			}
 		};
@@ -453,8 +376,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			getFrontendService().getSyncService(getSessionId()).poke(project);
 
-			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Sync));
+			EventCore.get().fireProjectChanged(
+							new ProjectChanged.ProjectChangedEvent(project,
+											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Sync));
 
 		} catch (IllegalArgumentException e) {
 			//empty implementation
@@ -472,8 +396,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId())
 							.updateProjectName(project, prName);
-			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+			EventCore.get().fireProjectChanged(
+							new ProjectChanged.ProjectChangedEvent(project,
+											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
 		} catch (IllegalArgumentException e) {
 			//empty implementation
 		} catch (IllegalStateException e) {
@@ -542,41 +467,38 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	private final HashMap<JakeObject, Attributed<JakeObject>> syncStatusHash =
-					new HashMap<JakeObject, Attributed<JakeObject>>();
-
-
 	@Override
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
 					Project project, T jakeObject) {
 		try {
+			//log.debug("jakeObject" + jakeObject + jakeObject.hashCode());
 
 			// first, look if we have a recent revision in the cache
-			if(syncStatusHash.containsKey(jakeObject)) {
-				return (Attributed<T>)syncStatusHash.get(jakeObject);
+			if (attributedCacheMan.isCached(jakeObject)) {
+				return attributedCacheMan.getCached(jakeObject);
 			}
 
-			Attributed<T> syncStatus = this.getFrontendService().getSyncService(getSessionId())
-							.getJakeObjectSyncStatus(jakeObject);
+			Attributed<T> syncStatus =
+							this.getFrontendService().getSyncService(getSessionId())
+											.getJakeObjectSyncStatus(jakeObject);
 
-			// implemented a stupid cache.
-			// TODO: needs intelligent cache flushing
-			syncStatusHash.put(jakeObject, (Attributed<JakeObject>)syncStatus);
+			return attributedCacheMan.cacheObject(jakeObject, syncStatus);
 
 		} catch (NotAFileException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FileNotFoundException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (InvalidFilenameException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (NotAReadableFileException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IOException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (Exception e) {
-			log.warn("Catched generic exception while getting sync status", e);
+			ExceptionUtilities
+							.showError("Catched generic exception while getting sync status", e);
 		}
 
 		return null;
@@ -652,10 +574,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			}
 		}.start();
 	}
-	
+
 	@Override
 	public AvailableLaterObject<Integer> getNoteCount(final Project project) {
-		AvailableLaterWrapperObject<Integer,List<Attributed<NoteObject>>> sizeFuture;
+		AvailableLaterWrapperObject<Integer, List<Attributed<NoteObject>>> sizeFuture;
 		AvailableLaterObject<List<Attributed<NoteObject>>> notesFuture;
 
 		notesFuture = this.getNotes(project);
@@ -673,8 +595,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (Exception e) {
 			throw new NoteOperationFailedException(e);
 		}
-		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(),
-						ProjectChangedReason.State));
+		EventCore.get().fireProjectChanged(
+						new ProjectChanged.ProjectChangedEvent(note.getProject(),
+										ProjectChangedReason.State));
 	}
 
 	@Override
@@ -690,8 +613,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 		pms.saveNote(note);
 
-		this.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(),
-						ProjectChangedReason.State));
+		EventCore.get().fireProjectChanged(
+						new ProjectChanged.ProjectChangedEvent(note.getProject(),
+										ProjectChangedReason.State));
 	}
 
 
@@ -735,8 +659,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} else {
 			pms.setUserNickname(project, userId, nick);
 
-			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+			EventCore.get().fireProjectChanged(
+							new ProjectChanged.ProjectChangedEvent(project,
+											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 
 			return true;
 		}
@@ -748,13 +673,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			pms.setTrust(project, userId, trust);
 		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (IllegalAccessException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 
-		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-						ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+		EventCore.get().fireProjectChanged(
+						new ProjectChanged.ProjectChangedEvent(project,
+										ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 	}
 
 
@@ -764,19 +690,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.getFrontendService().getProjectsManagingService(getSessionId())
 							.invite(project, userid);
 
-			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-							ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+			EventCore.get().fireProjectChanged(
+							new ProjectChanged.ProjectChangedEvent(project,
+											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
 		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (UserIdFormatException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (Exception e) {
-			// TODO: generic fetcher?
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 	}
 
@@ -788,13 +714,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			members = this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getUninvitedPeople(project);
 		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (NoSuchProjectException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 
 		//never return null
@@ -842,30 +768,23 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					// add Project to core-internal list
 					project = pms.createProject(name, path, msg);
 
-					fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-									ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
+					EventCore.get().fireProjectChanged(
+									new ProjectChanged.ProjectChangedEvent(project,
+													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
 
 				} catch (FrontendNotLoggedInException e) {
 					log.debug("Tried to create a project while not authenticated to the core.",
 									e);
-				} catch (RuntimeException run) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(run));
+				} catch (RuntimeException e) {
+					ExceptionUtilities.showError(e);
 				} catch (Exception e) {
-					fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+					ExceptionUtilities.showError(e);
 				}
 			}
 		};
 
 		// start our runner thread, that makes a callback to project status
 		new Thread(runner).start();
-	}
-
-
-	private void fireRegistrationStatus(RegistrationStatus.RegisterStati state,
-					String str) {
-		for (RegistrationStatus callback : registrationStatus) {
-			callback.setRegistrationStatus(state, str);
-		}
 	}
 
 
@@ -905,15 +824,15 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							trashFile(relpath);
 		} catch (FileNotFoundException e) {
 			log.debug("Tried to delete nonexisting file", e);
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (IllegalArgumentException e) {
 			log.debug("Cannot delete FileObject", e);
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (IllegalStateException e) {
 			log.debug("Project service is not available.");
 		} catch (InvalidFilenameException e) {
 			log.debug("Filename of FileObject invalid: " + relpath);
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
 		}
@@ -939,13 +858,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.getProjectsManagingService(this.getSessionId())
 							.getTagsForJakeObject(fo);
 		} catch (IllegalArgumentException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (NoSuchJakeObjectException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 
 		return new TreeSet<Tag>();
@@ -957,13 +876,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId())
 							.setTagsForJakeObject(fo, tags);
 		} catch (IllegalArgumentException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (NoSuchJakeObjectException e) {
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 	}
 
@@ -983,28 +902,23 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 								 */
 		toFile = new File(new File(fromPath).getParentFile(), newName);
 
-
 		try {
 			this.getFrontendService().
 							getProjectsManagingService(this.getSessionId()).
 							getFileServices(project).moveFile(fromPath, toFile.toString());
 		} catch (IllegalArgumentException e) {
-			log.warn("Cannot rename file");
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError("Cannot rename file", e);
 		} catch (IllegalStateException e) {
 			log.debug("Project service is not available.");
 		} catch (InvalidFilenameException e) {
-			log.debug("Filename of FileObject invalid: " + fromPath);
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError("Filename of FileObject invalid: " + fromPath, e);
 		} catch (NotAReadableFileException e) {
-			log.warn("Cannot move an unreadable file");
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError("Cannot move an unreadable file", e);
 		} catch (FileAlreadyExistsException e) {
-			log.warn("Cannot move file: destination already exists.");
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities
+							.showError("Cannot move file: destination already exists.", e);
 		} catch (IOException e) {
-			log.warn("Cannot rename file");
-			fireErrorListener(new ErrorCallback.JakeErrorEvent(e));
+			ExceptionUtilities.showError("Cannot rename file", e);
 		} catch (CreatingSubDirectoriesFailedException e) {
 			log.error("Creating a subdirectory that should not be created failed...");
 		} catch (FrontendNotLoggedInException e) {
@@ -1074,30 +988,30 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void addFilesChangedListener(final FilesChanged listener, Project project) {
-		IProjectModificationListener projectModificationListener =
-						new IProjectModificationListener() {
+		IFileModificationListener fileModificationListener =
+						new IFileModificationListener() {
 
 							public void fileModified(String relpath, ModifyActions action) {
-								listener.filesChanged();
+								listener.filesChanged(relpath, action);
 							}
 						};
 
-		this.fileListeners.put(listener, projectModificationListener);
+		this.fileListeners.put(listener, fileModificationListener);
 		this.getFrontendService().getProjectsManagingService(getSessionId())
 						.getFileServices(project)
-						.addModificationListener(projectModificationListener);
+						.addModificationListener(fileModificationListener);
 	}
 
 	@Override
 	public void removeFilesChangedListener(FilesChanged listener, Project project) {
-		IProjectModificationListener projectModificationListener;
+		IFileModificationListener fileModificationListener;
 
-		projectModificationListener = this.fileListeners.get(listener);
+		fileModificationListener = this.fileListeners.get(listener);
 
-		if (projectModificationListener != null)
+		if (fileModificationListener != null)
 			this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getFileServices(project)
-							.removeModificationListener(projectModificationListener);
+							.removeModificationListener(fileModificationListener);
 	}
 
 	private void handleProjectNotLoaded(ProjectNotLoadedException e) {
@@ -1113,17 +1027,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			return this.getFrontendService().getProjectsManagingService(getSessionId())
 							.getFileServices(fo.getProject()).getFileSize(fo.getRelPath());
 		} catch (FileNotFoundException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (NotAFileException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (InvalidFilenameException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 
 		return 0;
@@ -1139,15 +1053,15 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 											.getFileServices(fo.getProject()).getLastModified(
 											fo.getRelPath()));
 		} catch (NotAFileException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (IllegalArgumentException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		} catch (InvalidFilenameException e) {
-			this.fireErrorListener(new JakeErrorEvent(e));
+			ExceptionUtilities.showError(e);
 		}
 		return new Date();
 	}
@@ -1164,7 +1078,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.unlock(jakeObject, lockingMessage);
 		}
 
-		this.fireProjectChanged(
+		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(),
 										ProjectChangedReason.Deleted));
 	}

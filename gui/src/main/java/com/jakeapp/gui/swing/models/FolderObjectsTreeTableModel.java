@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.jake.fss.IModificationListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -227,7 +228,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 	}
 
 	@Override
-	public void filesChanged() {
+	public void filesChanged(String relpath, IModificationListener.ModifyActions action) {
 		try {
 			log.debug("Hooray, our files changed!");
 			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getCore().getFolder(

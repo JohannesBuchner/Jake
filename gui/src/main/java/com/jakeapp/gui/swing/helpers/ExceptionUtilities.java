@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.gui.swing.callbacks.ErrorCallback;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -17,22 +18,26 @@ public class ExceptionUtilities {
 	 * Displays an exception to the user.
 	 * Function is Thread-Safe.
 	 *
+	 * @param msg
 	 * @param e: the exception to parse and show
 	 */
-	// TODO: provide a same way of logging, showing details.
-	// Custom Dialog would be great!
-	public static void showError(final Exception e) {
+	public static void showError(final String msg, final Exception e) {
 		if (SwingUtilities.isEventDispatchThread()) {
 			internalShowError(e);
 		} else {
 			Runnable runner = new Runnable() {
 				public void run() {
-					internalShowError(e);
+					internalShowError(msg, e);
 				}
 			};
 
 			SwingUtilities.invokeLater(runner);
 		}
+	}
+
+	// TODO: provide a same way of logging, showing details.
+	public static void showError(final Exception e) {
+		showError(null, e);
 	}
 
 	/**
@@ -41,27 +46,28 @@ public class ExceptionUtilities {
 	 * @param e
 	 */
 	private static void internalShowError(Exception e) {
-
-		log.warn("showing error", e);
-		//e.printStackTrace();
-
-		// disabled for demo ;o)
-		/*
-		JSheet.showMessageSheet(JakeMainApp.getFrame(),
-				  "<html><h2>" + e.getClass().getName() + "</h2><br><b>" + e.getMessage() + "</b><br><br> + " +
-							 DebugHelper.arrayToString(e.getStackTrace(), DebugHelper.DebugFormat.BRACES, 12) + "</html>",
-				  JOptionPane.ERROR_MESSAGE, null);
-	*/
+		internalShowError(null, e);
 	}
 
-	/**
-	 * Convenience wrapper for JakeErrorEvent.
-	 * Function is Thread-Safe.
-	 *
-	 * @param ee
-	 */
-	public static void showError(ErrorCallback.JakeErrorEvent ee) {
-		showError(ee.getException());
+	private static void internalShowError(String msg, Exception e) {
+		//log.warn("showing error", e);
+		e.printStackTrace();
+
+		if (msg == null) {
+			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+							"<html><h2>" + e.getClass().getName() + "</h2><br><b>" + e
+											.getMessage() + "</b><br><br> + " + DebugHelper
+											.arrayToString(e.getStackTrace(),
+															DebugHelper.DebugFormat.BRACES, 12) + "</html>",
+							JOptionPane.ERROR_MESSAGE, null);
+		} else {
+			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+							"<html><h2>" + msg + "</h2><br><b>" + e.getClass().getName() + ": " + e
+											.getMessage() + "</b><br><br> + " + DebugHelper
+											.arrayToString(e.getStackTrace(),
+															DebugHelper.DebugFormat.BRACES, 12) + "</html>",
+							JOptionPane.ERROR_MESSAGE, null);
+		}
 	}
 
 	/**
@@ -72,5 +78,9 @@ public class ExceptionUtilities {
 	 */
 	public static void showError(String msg) {
 		showError(new RuntimeException(msg));
+	}
+
+	public static void showError(String s, IllegalArgumentException e) {
+		showError(s, e);
 	}
 }

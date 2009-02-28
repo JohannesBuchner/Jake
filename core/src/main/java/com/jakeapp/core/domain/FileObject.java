@@ -71,4 +71,28 @@ public class FileObject extends JakeObject {
 	public String toString() {
 		return "File [" + super.toString() + "]:" + getRelPath();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof FileObject))
+			return false;
+		if (!super.equals(o))
+			return false;
+
+		FileObject that = (FileObject) o;
+
+		if (relPath != null ? !relPath.equals(that.relPath) : that.relPath != null)
+			return false;
+
+		return super.equals(o);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (relPath != null ? relPath.hashCode() : 0);
+		return result;
+	}
 }

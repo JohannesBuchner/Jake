@@ -342,22 +342,22 @@ public interface IFSService extends Serializable {
 	 * the newly created folder is watched too. When a folder is removed a
 	 * delete-Callback is issued for each file.
 	 *
-	 * @param projectModificationListener the object that registers itself as
+	 * @param fileModificationListener the object that registers itself as
 	 *                                    ProjectModificationListener
-	 * @see IProjectModificationListener
+	 * @see IFileModificationListener
 	 */
 	public void addModificationListener(
-			  IProjectModificationListener projectModificationListener);
+			  IFileModificationListener fileModificationListener);
 
 	/**
 	 * Removes a callback for watching the rootpath.
 	 *
-	 * @param projectModificationListener the object that cancels its registration as
+	 * @param fileModificationListener the object that cancels its registration as
 	 *                                    ProjectModificationListener
-	 * @see IProjectModificationListener
+	 * @see IFileModificationListener
 	 */
 	public void removeModificationListener(
-			  IProjectModificationListener projectModificationListener);
+			  IFileModificationListener fileModificationListener);
 
 	/**
 	 * get the last modified date for a file

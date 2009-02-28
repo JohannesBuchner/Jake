@@ -1,30 +1,42 @@
 package com.jakeapp.gui.swing;
 
-import com.explodingpixels.macwidgets.*;
+import com.explodingpixels.macwidgets.SourceList;
+import com.explodingpixels.macwidgets.SourceListCategory;
+import com.explodingpixels.macwidgets.SourceListClickListener;
+import com.explodingpixels.macwidgets.SourceListContextMenuProvider;
+import com.explodingpixels.macwidgets.SourceListItem;
+import com.explodingpixels.macwidgets.SourceListModel;
+import com.explodingpixels.macwidgets.SourceListSelectionListener;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.actions.CreateProjectAction;
+import com.jakeapp.gui.swing.actions.DeleteProjectAction;
+import com.jakeapp.gui.swing.actions.JoinProjectAction;
+import com.jakeapp.gui.swing.actions.RejectProjectAction;
+import com.jakeapp.gui.swing.actions.RenameProjectAction;
+import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.SyncProjectAction;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.EnumSet;
 
 /**
  * Manages the Source List for projects.
- * User: studpete
- * Date: Dec 29, 2008
- * Time: 11:43:29 AM
  */
 public class JakeSourceList extends JakeGuiComponent implements
-		  ProjectSelectionChanged, ProjectChanged {
+		  ProjectSelectionChanged, ProjectChanged, DataChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap;
@@ -40,18 +52,19 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 	private SourceListSelectionListener projectSelectionListener;
 
-	public JakeSourceList(ICoreAccess core) {
-		super(core);
+	public JakeSourceList() {
+		super();
 
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
+		EventCore.get().addDataChangedCallbackListener(this);
 
 		sourceListContextMenu = createSourceListContextMenu();
 		sourceListInvitiationContextMenu = createSourceListInvitationContextMenu();
 		sourceList = createSourceList();
 
 		// get internal tree
-		// TODO: this is a MODIFICATION of MacWidgets, need to fork+publish sources!
+		// FIXME: this is a MODIFICATION of MacWidgets, need to fork+publish sources!
 		JTree tree = sourceList.getTree();
 
 		tree.setDragEnabled(true);
@@ -220,6 +233,8 @@ public class JakeSourceList extends JakeGuiComponent implements
 	 * Updates the SourceList (project list)
 	 */
 	private void updateSourceList() {
+		if(!JakeMainApp.isCoreInitialized()) return;
+		
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
@@ -240,7 +255,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 		java.util.List<Project> myprojects = null;
 		try {
-			myprojects = getCore().getMyProjects();
+			myprojects = JakeMainApp.getCore().getMyProjects();
 		} catch (FrontendNotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
@@ -275,7 +290,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		}
 		java.util.List<Project> iprojects = null;
 		try {
-			iprojects = getCore().getInvitedProjects();
+			iprojects = JakeMainApp.getCore().getInvitedProjects();
 		} catch (FrontendNotLoggedInException e) {
 			// TODO @ Peter: reauthenticate, retry action, if it still fails show error message
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -380,5 +395,11 @@ public class JakeSourceList extends JakeGuiComponent implements
 		};
 
 		SwingUtilities.invokeLater(runner);
+	}
+
+	@Override public void dataChanged(EnumSet<Reason> reason) {
+		if(reason.contains(Reason.Projects)) {
+			updateSourceList();
+		}
 	}
 }

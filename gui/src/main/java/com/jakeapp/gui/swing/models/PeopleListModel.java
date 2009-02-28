@@ -9,6 +9,7 @@ import com.jakeapp.gui.swing.controls.MutableListModel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -30,7 +31,7 @@ public class PeopleListModel extends AbstractListModel
 		this.people = new ArrayList<UserInfo>();
 		
 		// register for events
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
 		updateModel();
@@ -50,6 +51,8 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	private void updateModel() {
+		if(!JakeMainApp.isCoreInitialized()) return;
+
 		try {
 			this.people = JakeMainApp.getCore().getProjectUser(getProject());
 		} catch (PeopleOperationFailedException e) {

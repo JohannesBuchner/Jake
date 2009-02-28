@@ -19,6 +19,7 @@ import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -153,7 +154,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		// register the callbacks
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 		this.notesTable.getSelectionModel().addListSelectionListener(this);
 
 		// TODO: make this a styler property

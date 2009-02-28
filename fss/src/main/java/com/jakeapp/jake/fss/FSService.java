@@ -27,7 +27,7 @@ public class FSService implements IFSService, IModificationListener {
 
 	private FileLauncher launcher;
 
-	List<IProjectModificationListener> modificationListener;
+	List<IFileModificationListener> modificationListener;
 
 	public FSService() throws NoSuchAlgorithmException {
 		hasher = new StreamFileHashCalculator();
@@ -66,14 +66,14 @@ public class FSService implements IFSService, IModificationListener {
 		fw.run();
 	}
 
-	public void addModificationListener(IProjectModificationListener l) {
+	public void addModificationListener(IFileModificationListener l) {
 		if (modificationListener == null) {
-			modificationListener = new ArrayList<IProjectModificationListener>();
+			modificationListener = new ArrayList<IFileModificationListener>();
 		}
 		modificationListener.add(l);
 	}
 
-	public void removeModificationListener(IProjectModificationListener l) {
+	public void removeModificationListener(IFileModificationListener l) {
 		if (modificationListener != null)
 			modificationListener.remove(l);
 	}
@@ -475,7 +475,7 @@ public class FSService implements IFSService, IModificationListener {
 		String relpath = f.getAbsolutePath().replace(rootPath + File.separator, "")
 				  .replace(File.separatorChar, '/');
 		if (modificationListener != null) {
-			for (IProjectModificationListener l : modificationListener) {
+			for (IFileModificationListener l : modificationListener) {
 				l.fileModified(relpath, action);
 			}
 		}

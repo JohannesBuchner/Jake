@@ -3,9 +3,7 @@ package com.jakeapp.gui.swing;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
@@ -14,7 +12,6 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
-import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
@@ -23,6 +20,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -142,21 +140,19 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		}
 	}
 
-	public JakeStatusBar(ICoreAccess core) {
-		super(core);
+	public JakeStatusBar() {
+		super();
 		instance = this;
 
-		// TODO reenable
-		/*
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		JakeMainApp.getCore().addProjectChangedCallbackListener(this);
+		EventCore.get().addProjectChangedCallbackListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 		JakeMainView.getMainView().addContextViewChangedListener(this);
 		JakeMainApp.getApp().addMsgServiceChangedListener(this);
 
 		// registering the connection status callback
-		getCore().addConnectionStatusCallbackListener(this);
-*/
+		EventCore.get().addConnectionStatusCallbackListener(this);
+
 		statusBar = createStatusBar();
 	}
 
@@ -355,7 +351,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 				if (getProject() != null) {
 					int peopleCount;
 					try {
-						peopleCount = getCore().getProjectUser(getProject()).size();
+						peopleCount = JakeMainApp.getCore().getProjectUser(getProject()).size();
 					} catch (PeopleOperationFailedException e) {
 						peopleCount = 0;
 						ExceptionUtilities.showError(e);
