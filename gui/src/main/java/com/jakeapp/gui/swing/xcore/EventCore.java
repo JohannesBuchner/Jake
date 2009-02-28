@@ -3,6 +3,8 @@ package com.jakeapp.gui.swing.xcore;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
@@ -31,7 +33,8 @@ public class EventCore {
 	//private final HashMap<Project, ProjectsChangeListener> projectChangeListenerHash =
 	//				new HashMap<Project, ProjectsChangeListener>();
 
-	private final ProjectsChangeListener projectsChangeListener = new ProjectsChangeListener();
+	private final ProjectsChangeListener projectsChangeListener =
+					new ProjectsChangeListener();
 
 	private final List<ConnectionStatus> connectionStatus;
 	//private final List<RegistrationStatus> registrationStatus;
@@ -46,6 +49,9 @@ public class EventCore {
 	private final HashMap<Project, ProjectChanged.ProjectChangedEvent>
 					lastProjectEvents =
 					new HashMap<Project, ProjectChanged.ProjectChangedEvent>();
+
+	private IProjectInvitationListener invitationListener =
+					new ProjectInvitationListener();
 
 	static {
 		instance = new EventCore();
@@ -177,6 +183,10 @@ public class EventCore {
 		return projectsChangeListener;
 	}
 
+	public IProjectInvitationListener getInvitiationListener() {
+		return invitationListener;
+	}
+
 	/*
 	public ChangeListener registerProjectChangeListener(Project project) {
 		ProjectsChangeListener pcl = new ProjectsChangeListener(project);
@@ -215,10 +225,23 @@ public class EventCore {
 
 	/**
 	 * Returns the last event for a project
+	 *
 	 * @param project
 	 * @return
 	 */
 	public ProjectChanged.ProjectChangedEvent getLastProjectEvent(Project project) {
 		return lastProjectEvents.get(project);
+	}
+
+	private class ProjectInvitationListener implements IProjectInvitationListener {
+		@Override public void invited(UserId user, Project p) {
+			log.debug("received invitation from " + user + " for project: " + p);
+
+			// save in InvitationManager
+			InvitationManager.get().saveInvitationSource(p, user);
+
+			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
+							ProjectChanged.ProjectChangedEvent.Reason.Invited));
+		}
 	}
 }
