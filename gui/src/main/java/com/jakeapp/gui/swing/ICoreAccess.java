@@ -155,18 +155,19 @@ public interface ICoreAccess {
 	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException;
 
 	/**
-	 * Starts the given project
-	 *
-	 * @param project
-	 */
-	public void startProject(Project project);
-
-	/**
 	 * Stops the given project
 	 *
 	 * @param project
 	 */
 	public void stopProject(Project project);
+
+
+	/**
+	 * Starts the given project
+	 *
+	 * @param project
+	 */
+	public void startProject(Project project);
 
 	/**
 	 * Returns absolute Number of files of the project.

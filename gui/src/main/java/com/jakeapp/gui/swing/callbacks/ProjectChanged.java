@@ -31,8 +31,7 @@ public interface ProjectChanged {
 		}
 
 		public enum Reason {
-			Created, StartStopState, Name, Deleted, Joined, Rejected, People, Invited, Syncing,
-			Files
+			Created, State, Name, Deleted, Joined, Rejected, People, Invited, Sync, Files
 		}
 	}
 

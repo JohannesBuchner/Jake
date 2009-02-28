@@ -111,4 +111,5 @@ public class JakeCommanderXmppRuns extends TestDBEnabledTestCase {
 		fifo.addLine("invite myuser2@localhost");
 		go();
 	}
+	
 }

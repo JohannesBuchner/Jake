@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.CreateNoteAction;
@@ -64,6 +65,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private org.jdesktop.swingx.JXTable notesTable;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
+	private ICoreAccess core;
 	private Project currentProject;
 	private JButton createBtn;
 	private JButton announceBtn;
@@ -143,6 +145,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		// get resource map
 		this.setResourceMap(org.jdesktop.application.Application.getInstance(JakeMainApp.class)
 										.getContext().getResourceMap(NotesPanel.class));
+
+		//get core
+		this.core = JakeMainApp.getCore();
 
 		// init components
 		initComponents();

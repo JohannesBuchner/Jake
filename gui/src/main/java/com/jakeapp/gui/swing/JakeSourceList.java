@@ -28,14 +28,15 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.EnumSet;
 
 /**
  * Manages the Source List for projects.
  */
-public class JakeSourceList extends JakeGuiComponent implements ProjectSelectionChanged, ProjectChanged, DataChanged {
+public class JakeSourceList extends JakeGuiComponent implements
+		  ProjectSelectionChanged, ProjectChanged, DataChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap;
@@ -83,15 +84,9 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	private SourceList createSourceList() {
 
 		// init the icons
-		projectStartedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-open.png")).getScaledInstance(16,
-						16, Image.SCALE_SMOOTH));
-		projectStoppedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/folder.png")).getScaledInstance(
-						16, 16, Image.SCALE_SMOOTH));
-		projectInvitedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-new.png")).getScaledInstance(16,
-						16, Image.SCALE_SMOOTH));
+		projectStartedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-open.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+		projectStoppedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+		projectInvitedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/folder-new.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 
 		// init the project <-> sourcelistitem - map
 		sourceListProjectMap = new HashMap<SourceListItem, Project>();
@@ -99,34 +94,31 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		// inits the main data model
 		projectSourceListModel = new SourceListModel();
 
-		myProjectsCategory = new SourceListCategory(
-						getResourceMap().getString("projectTreeMyProjects"));
-		invitedProjectsCategory = new SourceListCategory(
-						getResourceMap().getString("projectTreeInvitedProjects"));
+		myProjectsCategory = new SourceListCategory(getResourceMap().getString("projectTreeMyProjects"));
+		invitedProjectsCategory = new SourceListCategory(getResourceMap().getString("projectTreeInvitedProjects"));
 		projectSourceListModel.addCategory(myProjectsCategory);
 		projectSourceListModel.addCategory(invitedProjectsCategory);
 
 		// init the SourceListClickListener for project
-		final SourceListClickListener projectClickListener =
-						new SourceListClickListener() {
+		final SourceListClickListener projectClickListener = new SourceListClickListener() {
 
-							public void sourceListItemClicked(SourceListItem item, Button button,
-											int clickCount) {
-								//log.info(item.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
+			public void sourceListItemClicked(SourceListItem item, Button button,
+														 int clickCount) {
+				//log.info(item.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
-								if (button == Button.RIGHT) {
-									// select the clicked project
-									getSourceList().setSelectedItem(item);
-								}
-							}
+				if (button == Button.RIGHT) {
+					// select the clicked project
+					getSourceList().setSelectedItem(item);
+				}
+			}
 
-							public void sourceListCategoryClicked(SourceListCategory category,
-											Button button, int clickCount) {
-								//log.info(category.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
+			public void sourceListCategoryClicked(SourceListCategory category,
+															  Button button, int clickCount) {
+				//log.info(category.getText() + " clicked " + clickCount + " time" + JakeHelper.getPluralModifer(clickCount) + ".");
 
-								// we don't need that event
-							}
-						};
+				// we don't need that event
+			}
+		};
 
 
 		projectSelectionListener = new SourceListSelectionListener() {
@@ -143,8 +135,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 					JakeMainApp.getApp().setProject(null);
 
 					// show the login context panel
-					JakeMainView.getMainView()
-									.setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
+					JakeMainView.getMainView().setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
 				}
 			}
 		};
@@ -159,31 +150,30 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 			sourceList.useIAppStyleScrollBars();
 		}
 
-		final SourceListContextMenuProvider menuProvider =
-						new SourceListContextMenuProvider() {
+		final SourceListContextMenuProvider menuProvider = new SourceListContextMenuProvider() {
 
-							public JPopupMenu createContextMenu() {
-								JPopupMenu popupMenu = new JakePopupMenu();
-								popupMenu.add(new JMenuItem(new CreateProjectAction(true)));
-								return popupMenu;
-							}
+			public JPopupMenu createContextMenu() {
+				JPopupMenu popupMenu = new JakePopupMenu();
+				popupMenu.add(new JMenuItem(new CreateProjectAction(true)));
+				return popupMenu;
+			}
 
-							public JPopupMenu createContextMenu(SourceListItem item) {
-								Project project = sourceListProjectMap.get(item);
+			public JPopupMenu createContextMenu(SourceListItem item) {
+				Project project = sourceListProjectMap.get(item);
 
-								if (project.isInvitation()) {
-									return sourceListInvitiationContextMenu;
-								} else {
-									return sourceListContextMenu;
-								}
-							}
+				if (project.isInvitation()) {
+					return sourceListInvitiationContextMenu;
+				} else {
+					return sourceListContextMenu;
+				}
+			}
 
-							public JPopupMenu createContextMenu(SourceListCategory category) {
-								JPopupMenu popupMenu = new JakePopupMenu();
-								//popupMenu.add(new JMenuItem("Menu for " + category.getText()));
-								return popupMenu;
-							}
-						};
+			public JPopupMenu createContextMenu(SourceListCategory category) {
+				JPopupMenu popupMenu = new JakePopupMenu();
+				//popupMenu.add(new JMenuItem("Menu for " + category.getText()));
+				return popupMenu;
+			}
+		};
 
 		sourceList.setSourceListContextMenuProvider(menuProvider);
 		return sourceList;
@@ -243,9 +233,8 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	 * Updates the SourceList (project list)
 	 */
 	private void updateSourceList() {
-		if (!JakeMainApp.isCoreInitialized())
-			return;
-
+		if(!JakeMainApp.isCoreInitialized()) return;
+		
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
@@ -259,8 +248,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		// clear & update 'my projects'
 		// TODO: remove this hack 2x (prevent collapsing of sourcelist)
 		// TODO: do not deleted & recreate sli's (creates selection events we dont wanna have)
-		projectSourceListModel
-						.addItemToCategory(new SourceListItem(""), myProjectsCategory);
+		projectSourceListModel.addItemToCategory(new SourceListItem(""), myProjectsCategory);
 		while (myProjectsCategory.getItemCount() > 1) {
 			projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 		}
@@ -285,8 +273,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 			sourceListProjectMap.put(sli, project);
 
 			// check if project was selected, save this SourceListItem.
-			if (selectedProject != null && selectedProject.getRootPath()
-							.compareTo(project.getRootPath()) == 0) {
+			if (selectedProject != null && selectedProject.getRootPath().compareTo(project.getRootPath()) == 0) {
 				projectSLI = sli;
 			}
 		}
@@ -297,11 +284,9 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 			projectSourceListModel.addCategory(invitedProjectsCategory);
 		}
 
-		projectSourceListModel
-						.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
+		projectSourceListModel.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
 		while (invitedProjectsCategory.getItemCount() > 1) {
-			projectSourceListModel
-							.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+			projectSourceListModel.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
 		}
 		java.util.List<Project> iprojects = null;
 		try {
@@ -317,8 +302,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 			sourceListProjectMap.put(sli, project);
 
 			// check if project was selected, save this SourceListItem.
-			if (selectedProject != null && selectedProject.getProjectId()
-							.compareTo(project.getProjectId()) == 0) {
+			if (selectedProject != null && selectedProject.getProjectId().compareTo(project.getProjectId()) == 0) {
 				projectSLI = sli;
 			}
 		}
@@ -341,21 +325,6 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		}
 	}
 
-	/**
-	 * Returns the Item in the Sourceist for the Project
-	 *
-	 * @param project
-	 * @return
-	 */
-	private SourceListItem getListItemForProject(Project project) {
-		for (Map.Entry<SourceListItem, Project> slip : sourceListProjectMap.entrySet()) {
-			if (slip.getValue().equals(project)) {
-				return slip.getKey();
-			}
-		}
-		return null;
-	}
-
 
 	/**
 	 * Selects a certail project in the sourceList.
@@ -364,12 +333,20 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	 */
 	public void selectProject(Project project) {
 		log.info("selectProject in SourceList: " + project);
-		SourceListItem sli = getListItemForProject(project);
-		if (sli != null) {
-			sourceList.setSelectedItem(sli);
-		} else {
+		boolean success = false;
+		for (Map.Entry<SourceListItem, Project> slip : sourceListProjectMap.entrySet()) {
+			if (slip.getValue().equals(project)) {
+				sourceList.setSelectedItem(slip.getKey());
+				success = true;
+				break;
+			}
+		}
+
+		if (!success) {
 			removeSelection();
 			log.info("Project Selection: null");
+		}else {
+			log.info("Project Selection: " + project);
 		}
 	}
 
@@ -378,8 +355,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	 */
 	private void removeSelection() {
 		if (sourceList.getTree().getSelectionPath() != null) {
-			sourceList.getTree()
-							.removeSelectionPath(sourceList.getTree().getSelectionPath());
+			sourceList.getTree().removeSelectionPath(sourceList.getTree().getSelectionPath());
 		}
 	}
 
@@ -411,15 +387,10 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 				// TODO: make more specific instead of full update...
 				updateSourceList();
 
-				// react in a special way on some reasons
-				switch(ev.getReason()) {
-					case Created: {
+				// select a new created project
+				if (ev.getReason() == ProjectChangedEvent.Reason.Created) {
 					log.info("A new project was created - selecting: " + ev.getProject());
 					selectProject(ev.getProject());
-					}break;
-
-					case Syncing:
-						setProjectBusy(ev.getProject(), EnumSet.of(BusyState.Syncing));
 				}
 			}
 		};
@@ -428,29 +399,8 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	}
 
 	@Override public void dataChanged(EnumSet<Reason> reason) {
-		if (reason.contains(DataChanged.Reason.Projects)) {
+		if(reason.contains(DataChanged.Reason.Projects)) {
 			updateSourceList();
-		}
-	}
-
-	/**
-	 * The Project Busy state.
-	 */
-	enum BusyState {
-		Idle, Creating, Syncing
-	}
-
-	/**
-	 * Shows an indicator that the project is busy
-	 *
-	 * @param project
-	 * @param busy
-	 */
-	public void setProjectBusy(Project project, EnumSet<BusyState> busy) {
-		// TODO: VERY basic; what we want is an animation...
-		SourceListItem sli = getListItemForProject(project);
-		if (sli != null) {
-			sli.setCounterValue((busy.contains(BusyState.Idle) ? 0 : 1));
 		}
 	}
 }

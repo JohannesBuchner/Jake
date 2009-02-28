@@ -248,6 +248,10 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 		// set model project
 		this.eventTableModel.setProject(getProject());
 
+		// TODO: remove hack
+		if (getProject() == null) {
+			return;
+		}
 		/*
 //TODO: find better way !
 		try {
@@ -276,6 +280,10 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 		// update the icon (start/stop-state)
 		this.projectIconLabel.setIcon(getProject().isStarted() ? startIcon : stopIcon);
+
+		// update the event table
+
+		// update the people table
 
 
 		/*
