@@ -77,7 +77,7 @@ public class JakeCommander extends Commander {
 				"frontendService");
 
 		try {
-			sessionId = frontend.authenticate(new HashMap<String, String>());
+			sessionId = frontend.authenticate(new HashMap<String, String>(), new PrintingChangeListener());
 			pms = frontend.getProjectsManagingService(sessionId);
 			sync = frontend.getSyncService(sessionId);
 			
@@ -531,7 +531,7 @@ public class JakeCommander extends Commander {
 				}
 
 				System.out.println("\t" + project);
-				pms.startProject(project, new PrintingChangeListener());
+				pms.startProject(project);
 				System.out.println("starting project done");
 			} catch (Exception e) {
 				System.out.println("starting project failed");
