@@ -90,6 +90,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<Project> getMyProjects() throws FrontendNotLoggedInException {
+		// FIXME: return AvailableLater!
 		return pms.getProjectList(InvitationState.ACCEPTED);
 	}
 

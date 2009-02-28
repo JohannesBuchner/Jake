@@ -259,40 +259,6 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		// clear our old mapped data!
 		sourceListProjectMap.clear();
 
-		// clear & update 'my projects'
-		// TODO: remove this hack 2x (prevent collapsing of sourcelist)
-		// TODO: do not deleted & recreate sli's (creates selection events we dont wanna have)
-		projectSourceListModel
-						.addItemToCategory(new SourceListItem(""), myProjectsCategory);
-		while (myProjectsCategory.getItemCount() > 1) {
-			projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
-		}
-
-		java.util.List<Project> myprojects = null;
-		try {
-			myprojects = JakeMainApp.getCore().getMyProjects();
-		} catch (FrontendNotLoggedInException e) {
-			ExceptionUtilities.showError(e);
-		}
-		for (Project project : myprojects) {
-			SourceListItem sli = createSourceListItem(project);
-
-			// TODO: we need a new event source like project.getTotalNewEventCount()
-			int newEventsCount = 0;
-			if (newEventsCount > 0) {
-				sli.setCounterValue(newEventsCount);
-			}
-
-			projectSourceListModel.addItemToCategory(sli, myProjectsCategory);
-			sourceListProjectMap.put(sli, project);
-
-			// check if project was selected, save this SourceListItem.
-			if (selectedProject != null && selectedProject.getRootPath()
-							.compareTo(project.getRootPath()) == 0) {
-				projectSLI = sli;
-			}
-		}
-		projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 
 		// clear & update 'invited projects'
 		if (!projectSourceListModel.getCategories().contains(invitedProjectsCategory)) {
@@ -329,6 +295,46 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		if (invitedProjectsCategory.getItemCount() == 0) {
 			projectSourceListModel.removeCategory(invitedProjectsCategory);
 		}
+
+
+
+
+		// clear & update 'my projects'
+		// TODO: remove this hack 2x (prevent collapsing of sourcelist)
+		// TODO: do not deleted & recreate sli's (creates selection events we dont wanna have)
+		projectSourceListModel
+						.addItemToCategory(new SourceListItem(""), myProjectsCategory);
+		while (myProjectsCategory.getItemCount() > 1) {
+			projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
+		}
+
+		java.util.List<Project> myprojects = null;
+		try {
+			myprojects = JakeMainApp.getCore().getMyProjects();
+		} catch (FrontendNotLoggedInException e) {
+			ExceptionUtilities.showError(e);
+		}
+		for (Project project : myprojects) {
+			SourceListItem sli = createSourceListItem(project);
+
+			// TODO: we need a new event source like project.getTotalNewEventCount()
+			int newEventsCount = 0;
+			if (newEventsCount > 0) {
+				sli.setCounterValue(newEventsCount);
+			}
+
+			projectSourceListModel.addItemToCategory(sli, myProjectsCategory);
+			sourceListProjectMap.put(sli, project);
+
+			// check if project was selected, save this SourceListItem.
+			if (selectedProject != null && selectedProject.getRootPath()
+							.compareTo(project.getRootPath()) == 0) {
+				projectSLI = sli;
+			}
+		}
+		projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
+
+
 
 		if (getSourceList() != null && projectSLI != null) {
 			log.info("setting selected item: " + projectSLI);

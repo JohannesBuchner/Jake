@@ -265,6 +265,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		}
 	}
 
+
 	private class FileContainerMouseListener extends MouseAdapter {
 		private FilePanel panel;
 		private JTable container;
@@ -330,7 +331,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				log.debug("UGA UGA " + DebugHelper.arrayToString(nodeObjs));
 
 				showMenu(me);
-			} else if (SwingUtilities.isLeftMouseButton(me)) {
+			}
+			else if (SwingUtilities.isLeftMouseButton(me)) {
 				java.util.List<FileObject> fileObjs = new ArrayList<FileObject>();
 				java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
 
@@ -344,6 +346,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				}
 				EventCore.get().notifyFileSelectionListeners(fileObjs);
 				EventCore.get().notifyNodeSelectionListeners(nodeObjs);
+
+				//SwingUtilities.
 			}
 		}
 

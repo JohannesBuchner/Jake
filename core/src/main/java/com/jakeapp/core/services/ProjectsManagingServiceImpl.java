@@ -57,6 +57,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private ChangeListener changeListener;
 
+	// initialized projects are saved here.
+	private HashMap<Project, Boolean> activeProjects = new HashMap<Project, Boolean>();
+
 	public void setChangeListener(ChangeListener changeListener) {
 		this.changeListener = changeListener;
 	}
@@ -132,7 +135,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			log.debug("found " + result.size() + " projects to return");
 			return result;
 		} else {
-			log.warn("didn't get any results!!!!!from ProjectDao.getAll");
+			log.warn("didn't get any results from ProjectDao.getAll");
 			return Collections.emptyList();
 		}
 	}
@@ -174,25 +177,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		p.setOpen(true);
 
-		// FIXME: remove if no longer needed - HACK!
-		/*
-		if (p.getCredentials() == null) {
-			log.warn("fixing null credentials (bug workaround) ");
-			try {
-				ServiceCredentials credentials = this.getServiceCredentialsDao().getAll()
-						.get(0);
-				credentials.setProtocol(ProtocolType.XMPP);
-				credentials.setSavePassword(true);
-				MsgService<UserId> msg = this.msgServiceFactory
-						.createMsgService(credentials);
-				p.setMessageService(msg);
-				p.setCredentials(credentials);
-				this.projectDao.update(p);
-			} catch (ProtocolNotSupportedException e) {
-			}
-		}
-		*/
-
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
 		if (p.getMessageService() == null)
 			p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
@@ -212,12 +196,22 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		 * the database was started the last time the user manipulated it and must be
 		 * restarted here.
 		 */
-		if(p.isStarted()) {
+		if(p.isStarted() && !isActive(p)) {
 			p.setStarted(false);
 			this.startProject(p);
+			setActive(p);
 		}
 
 		log.debug("initialising project done for " + p);
+	}
+
+
+	private void setActive(Project p) {activeProjects.put(p, true);}
+
+
+	private boolean isActive(Project p) {
+		Boolean b = activeProjects.get(p);
+		return b != null ? b : false;
 	}
 
 
@@ -329,7 +323,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 					+ project);
 			return false;
 		}
-		
 
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
@@ -337,6 +330,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			this.syncService.startServing(project, changeListener);
 
 			project.setStarted(true);
+			this.setActive(project);
 			this.getProjectDao().update(project);
 		} catch (Exception e) {
 			throw new ProjectException(e);
