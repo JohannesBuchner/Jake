@@ -27,7 +27,7 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.ProjectChangedReason;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.Reason;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -181,7 +181,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+										ProjectChanged.ProjectChangedEvent.Reason.State));
 	}
 
 	public void startProject(Project project) {
@@ -211,7 +211,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// generate event
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.ProjectChangedReason.State));
+										Reason.State));
 	}
 
 
@@ -288,7 +288,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 					EventCore.get().fireProjectChanged(
 									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Deleted));
+													ProjectChanged.ProjectChangedEvent.Reason.Deleted));
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -326,7 +326,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 					EventCore.get().fireProjectChanged(
 									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Joined));
+													ProjectChanged.ProjectChangedEvent.Reason.Joined));
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -354,7 +354,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 					EventCore.get().fireProjectChanged(
 									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Rejected));
+													ProjectChanged.ProjectChangedEvent.Reason.Rejected));
 
 				} catch (FrontendNotLoggedInException e) {
 					ExceptionUtilities.showError(e);
@@ -378,7 +378,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			EventCore.get().fireProjectChanged(
 							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Sync));
+											ProjectChanged.ProjectChangedEvent.Reason.Sync));
 
 		} catch (IllegalArgumentException e) {
 			//empty implementation
@@ -398,7 +398,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.updateProjectName(project, prName);
 			EventCore.get().fireProjectChanged(
 							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Name));
+											ProjectChanged.ProjectChangedEvent.Reason.Name));
 		} catch (IllegalArgumentException e) {
 			//empty implementation
 		} catch (IllegalStateException e) {
@@ -597,7 +597,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(note.getProject(),
-										ProjectChangedReason.State));
+										ProjectChanged.ProjectChangedEvent.Reason.State));
 	}
 
 	@Override
@@ -615,7 +615,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(note.getProject(),
-										ProjectChangedReason.State));
+										ProjectChanged.ProjectChangedEvent.Reason.State));
 	}
 
 
@@ -661,7 +661,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			EventCore.get().fireProjectChanged(
 							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+											ProjectChanged.ProjectChangedEvent.Reason.People));
 
 			return true;
 		}
@@ -680,7 +680,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+										ProjectChanged.ProjectChangedEvent.Reason.People));
 	}
 
 
@@ -692,7 +692,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			EventCore.get().fireProjectChanged(
 							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.ProjectChangedReason.People));
+											ProjectChanged.ProjectChangedEvent.Reason.People));
 		} catch (IllegalArgumentException e) {
 			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
@@ -770,7 +770,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 					EventCore.get().fireProjectChanged(
 									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.ProjectChangedReason.Created));
+													ProjectChanged.ProjectChangedEvent.Reason.Created));
 
 				} catch (FrontendNotLoggedInException e) {
 					log.debug("Tried to create a project while not authenticated to the core.",
@@ -803,7 +803,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		//		}
 		//
 		//		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-		//				  project, ProjectChangedReason.Files));
+		//				  project, Reason.Files));
 		//
 		//		for (FilesChanged f : coreMock.filesChangedListeners) {
 		//			f.filesChanged();
@@ -1080,7 +1080,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(),
-										ProjectChangedReason.Deleted));
+										ProjectChanged.ProjectChangedEvent.Reason.Deleted));
 	}
 
 

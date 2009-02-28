@@ -142,6 +142,15 @@ public class FileUtilities {
 		return result;
 	}
 
+
+	/**
+	 * Get the Desktop directory
+	 * @return
+	 */
+	public static String getUserDesktopDirectory() {
+		return new File(getUserHomeDirectory(), "Desktop").getAbsolutePath();
+	}	
+
 	/**
 	 * Returns a new File for the given filename, coping with "~/".
 	 * Try not to ever use "new File(String, String)": use this instead.
@@ -422,4 +431,5 @@ public class FileUtilities {
 			return "";
 		}
 	}
+
 }

@@ -125,7 +125,7 @@ public class XmppCommons {
 
 	/**
 	 * connect and create account
-	 * 
+	 *  
 	 * @param username
 	 * @param pw
 	 * @param hostname

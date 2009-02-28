@@ -15,9 +15,9 @@ public interface ProjectChanged {
 	 */
 	public class ProjectChangedEvent {
 		private Project project;
-		private ProjectChangedReason reason;
+		private Reason reason;
 
-		public ProjectChangedEvent(Project project, ProjectChangedReason reason) {
+		public ProjectChangedEvent(Project project, Reason reason) {
 			this.project = project;
 			this.reason = reason;
 		}
@@ -26,11 +26,11 @@ public interface ProjectChanged {
 			return this.project;
 		}
 
-		public ProjectChangedReason getReason() {
+		public Reason getReason() {
 			return this.reason;
 		}
 
-		public enum ProjectChangedReason {
+		public enum Reason {
 			Created, State, Name, Deleted, Joined, Rejected, People, Invited, Sync, Files
 		}
 	}

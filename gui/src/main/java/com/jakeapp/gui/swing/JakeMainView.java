@@ -855,7 +855,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Called automatically on setProject()
 	 */
 	private void updateView() {
-		log.debug("updating view");
+		//log.debug("updating view");
 		Project pr = getProject();
 
 		boolean needsInvite = pr != null && pr

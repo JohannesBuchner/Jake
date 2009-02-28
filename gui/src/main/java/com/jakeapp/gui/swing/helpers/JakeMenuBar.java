@@ -1,12 +1,12 @@
 package com.jakeapp.gui.swing.helpers;
 
 import ch.randelshofer.quaqua.JSheet;
-
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.dialogs.JakeDebugger;
 import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.dialogs.JakeDebugger;
 import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.xcore.CreateExampleDirectory;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
 import net.roydesign.app.QuitJMenuItem;
@@ -26,11 +26,9 @@ import java.net.URI;
 /**
  * The Main Jake Menu Bar.
  * 
- * @author: studpete
+ * @author studpete
  */
 public class JakeMenuBar extends JMenuBar {
-
-	// TODO: refactor that shit !!!
 	private static final Logger log = Logger.getLogger(JakeMenuBar.class);
 
 	public JakeMenuBar() {
@@ -165,6 +163,16 @@ public class JakeMenuBar extends JMenuBar {
 		/***************************** Debug *****************************/
 		JMenu debugMenu = new JMenu();
 		debugMenu.setText("Debug");
+
+		JMenuItem createExampleDebugItem = new JMenuItem("Create JakeShared Directory");
+		createExampleDebugItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CreateExampleDirectory.create();
+			}
+		});
+		debugMenu.add(createExampleDebugItem);
 
 		JMenuItem reloadFileDebugItem = new JMenuItem("Reload File View");
 		reloadFileDebugItem.addActionListener(new ActionListener() {

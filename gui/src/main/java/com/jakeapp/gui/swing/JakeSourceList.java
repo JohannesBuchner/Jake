@@ -329,7 +329,6 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 	/**
 	 * Selects a certail project in the sourceList.
-	 * Throws a ProjectNotFoundException if the project was not found in the sourceList.
 	 *
 	 * @param project: the project that will be selected.
 	 */
@@ -337,7 +336,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		log.info("selectProject in SourceList: " + project);
 		boolean success = false;
 		for (Map.Entry<SourceListItem, Project> slip : sourceListProjectMap.entrySet()) {
-			if (slip.getValue() == project) {
+			if (slip.getValue().equals(project)) {
 				sourceList.setSelectedItem(slip.getKey());
 				success = true;
 				break;
@@ -346,6 +345,9 @@ public class JakeSourceList extends JakeGuiComponent implements
 
 		if (!success) {
 			removeSelection();
+			log.info("Project Selection: null");
+		}else {
+			log.info("Project Selection: " + project);
 		}
 	}
 
@@ -388,7 +390,8 @@ public class JakeSourceList extends JakeGuiComponent implements
 				updateSourceList();
 
 				// select a new created project
-				if (ev.getReason() == ProjectChangedEvent.ProjectChangedReason.Created) {
+				if (ev.getReason() == ProjectChangedEvent.Reason.Created) {
+					log.info("A new project was created - selecting: " + ev.getProject());
 					selectProject(ev.getProject());
 				}
 			}
@@ -398,7 +401,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 	}
 
 	@Override public void dataChanged(EnumSet<Reason> reason) {
-		if(reason.contains(Reason.Projects)) {
+		if(reason.contains(DataChanged.Reason.Projects)) {
 			updateSourceList();
 		}
 	}
