@@ -150,7 +150,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	public void testIncomingInviteMessage() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
-		int projectCount;
 
 		ProjectInvitationHandler pih = new ProjectInvitationHandler(msg);
 		pih.setInvitationListener((IProjectInvitationListener) pms);
@@ -162,7 +161,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	public void testIncomingAcceptMessage() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
-		int projectCount;
 
 		ProjectInvitationHandler pih = new ProjectInvitationHandler(msg);
 		pih.setInvitationListener((IProjectInvitationListener) pms);
@@ -174,7 +172,6 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	public void testIncomingRejectMessage() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
-		int projectCount;
 
 		ProjectInvitationHandler pih = new ProjectInvitationHandler(msg);
 		pih.setInvitationListener((IProjectInvitationListener) pms);
