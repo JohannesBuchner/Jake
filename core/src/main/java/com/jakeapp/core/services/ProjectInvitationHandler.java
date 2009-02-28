@@ -79,7 +79,11 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 
 				log.info("got invited to Project " + p + " by " + from_userid);
-				this.invitationListener.invited(user, p);
+				if (this.invitationListener == null) {
+					log.warn("no invitationListener registered! ignoring invite!");
+				} else {
+					this.invitationListener.invited(user, p);
+				}
 			} catch (Exception e) {
 				log.warn("error decoding invite message", e);
 			}

@@ -38,7 +38,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 				new String[] { "/com/jakeapp/core/applicationContext.xml" });
 		frontend = (IFrontendService) applicationContext.getBean("frontendService");
 
-		sessionId = frontend.authenticate(new HashMap<String, String>(), null);
+		sessionId = frontend.authenticate(new HashMap<String, String>());
 		pms = frontend.getProjectsManagingService(sessionId);
 	}
 

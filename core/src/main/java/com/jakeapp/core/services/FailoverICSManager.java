@@ -99,7 +99,7 @@ public class FailoverICSManager implements ICSManager {
 
 	@Override
 	public UserId getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u) {
-		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
+		if (p.getMessageService().getProtocolType().equals(ProtocolType.XMPP)) {
 			log.debug("Getting frontend user ID for backend user id");
 			return new UserId(ProtocolType.XMPP, u.getUserId());
 		} else {
