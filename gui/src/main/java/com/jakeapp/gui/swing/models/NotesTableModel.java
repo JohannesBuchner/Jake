@@ -138,7 +138,12 @@ public class NotesTableModel extends DefaultTableModel {
 				}
 				break;
 			case 4: //last editor
-				value = note.getLastVersionEditor();
+				if (note.getLastVersionEditor() != null) {
+					value = note.getLastVersionEditor().getUserId();	
+				} else {
+					value = "local"; //FIXME: i18n
+				}
+				
 				break;
 
 			default:
