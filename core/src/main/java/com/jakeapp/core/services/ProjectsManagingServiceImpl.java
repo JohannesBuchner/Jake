@@ -346,7 +346,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public boolean stopProject(Project project) throws IllegalArgumentException,
-			FileNotFoundException {
+																										FileNotFoundException,
+																										NoSuchProjectException {
 		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException();
@@ -359,6 +360,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			this.getProjectsFileServices().stopForProject(project);
 		} finally {
 			project.setStarted(false);
+			this.getProjectDao().update(project);
 		}
 
 		return true;
@@ -367,7 +369,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	@Transactional
 	public void closeProject(Project project) throws IllegalArgumentException,
-			FileNotFoundException {
+																									FileNotFoundException,
+																									NoSuchProjectException {
 		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException();
@@ -415,9 +418,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	@Override
-	public boolean deleteProject(Project project, boolean deleteProjectFiles)
-			throws IllegalArgumentException, SecurityException, IOException,
-			NotADirectoryException {
+	public boolean deleteProject(Project project, boolean deleteProjectFiles) throws IllegalArgumentException, SecurityException, IOException,
+																																									NotADirectoryException,
+																																									NoSuchProjectException {
 		boolean result = true;
 		IFSService fss;
 		FileNotFoundException t = null;

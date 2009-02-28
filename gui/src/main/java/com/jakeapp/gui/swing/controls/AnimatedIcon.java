@@ -91,6 +91,7 @@ public class AnimatedIcon implements Icon {
                         e.printStackTrace();
                     }
                 }
+							/*
                 if (is != null) {
                     GifDecoder decoder = new GifDecoder();
                     decoder.read(is);
@@ -98,6 +99,7 @@ public class AnimatedIcon implements Icon {
                     decoded.put(image, animated);
                     return animated;
                 }
+                */
             }
             return false;
         }

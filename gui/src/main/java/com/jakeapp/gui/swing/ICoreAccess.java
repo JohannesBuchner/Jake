@@ -159,7 +159,7 @@ public interface ICoreAccess {
 	 *
 	 * @param project
 	 */
-	public void stopProject(Project project);
+	public AvailableLaterObject<Void> stopProject(Project project);
 
 
 	/**

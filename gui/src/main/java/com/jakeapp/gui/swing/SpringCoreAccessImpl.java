@@ -15,7 +15,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
-import com.jakeapp.core.services.futures.StartProjectFuture;
+import com.jakeapp.core.services.futures.StartStopProjectFuture;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -163,29 +163,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	// only start from StartStopProjectWorker
 	public AvailableLaterObject<Void> startProject(Project project) {
 		log.info("Starting project: " + project);
-		return new StartProjectFuture(pms, project).start();
+		return new StartStopProjectFuture(pms, project, true).start();
 	}
 
 
-	public void stopProject(Project project) {
+	public AvailableLaterObject<Void> stopProject(Project project) {
 		log.info("stop project: " + project);
-
-		try {
-			this.getFrontendService().getProjectsManagingService(this.getSessionId())
-							.stopProject(project);
-		} catch (IllegalArgumentException e) {
-			ExceptionUtilities.showError("Illegal project for stopping specified.", e);
-		} catch (FileNotFoundException e) {
-			ExceptionUtilities.showError("Project-Folder not found.", e);
-		} catch (IllegalStateException e) {
-			ExceptionUtilities.showError("Cannot access ProjectManagingService.", e);
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		}
-
-		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanged));
+		return new StartStopProjectFuture(pms, project, false).start();
 	}
 
 
@@ -276,6 +260,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					ExceptionUtilities
 									.showError("Project cannot be deleted: its folder does not exist.",
 													e);
+				} catch (NoSuchProjectException e) {
+					ExceptionUtilities.showError(e);
 				}
 			}
 		};

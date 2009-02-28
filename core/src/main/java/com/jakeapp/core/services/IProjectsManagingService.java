@@ -88,8 +88,8 @@ public interface IProjectsManagingService {
 	 * @throws FileNotFoundException	 if the rootPath of the <code>Project</code> does not exist
 	 *                                  anymore
 	 */
-	boolean stopProject(Project project)
-			  throws IllegalArgumentException, FileNotFoundException;
+	boolean stopProject(Project project) throws IllegalArgumentException, FileNotFoundException,
+																							NoSuchProjectException;
 
 	/**
 	 * Set the ChangeListener for JakeObject - Changes.
@@ -125,7 +125,8 @@ public interface IProjectsManagingService {
 	 *                                  anymore
 	 */
 	void closeProject(Project project) throws IllegalArgumentException,
-			  FileNotFoundException;
+																						FileNotFoundException,
+																						NoSuchProjectException;
 
 
 	/**
@@ -139,8 +140,9 @@ public interface IProjectsManagingService {
 	 * @throws IOException
 	 * @throws java.io.FileNotFoundException
 	 */
-	boolean deleteProject(Project project, boolean deleteProjectFiles)
-			  throws IllegalArgumentException, SecurityException, IOException, NotADirectoryException;
+	boolean deleteProject(Project project, boolean deleteProjectFiles) throws IllegalArgumentException, SecurityException, IOException,
+																																						NotADirectoryException,
+																																						NoSuchProjectException;
 
 	/**
 	 * Get all LogEntrys from the supplied project
