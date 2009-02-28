@@ -20,6 +20,10 @@ public class LogEntrySerializer {
         this.projectDao = projectDao;
     }
 
+	// FIXME: This is temporary. Remove it once someone tells me why we need a ProjectDAO
+	//        if all we want to do is serialize...
+	public LogEntrySerializer() {}
+
     public String serialize(ProjectLogEntry logEntry) {
 
         Project project = logEntry.getProject();
@@ -218,8 +222,12 @@ public class LogEntrySerializer {
     }
 
 
-    public String serialize(LogEntry<ILogable> logEntry, Project project) {
-
+    public String serialize(LogEntry<? extends ILogable> logEntry, Project project) {
+	    Object o = logEntry.getBelongsTo();
+	    if(o instanceof JakeObjectLogEntry) {
+		    // FIXME: UGLY UGLY UGLY FUCKING UGLY
+		    return this.serialize((JakeObjectLogEntry)o, project);
+	    }
 
         throw new UnsupportedOperationException();
 //        return "";

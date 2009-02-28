@@ -6,17 +6,19 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
-import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.*;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -112,7 +114,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
 		this.projectsFileServices = projectsFileServices;
 	}
-
 
 	/* DAO stuff */
 
@@ -271,6 +272,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void poke(Project project, UserId pm) {
 		log.info("Poking user " + pm.getUserId());
 		ICService ics = getICS(project);
+		log.debug("ICS is logged in? " + ics.getStatusService().isLoggedIn());
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
 			String message = getUUIDStringForProject(project) + POKE_MESSAGE;
@@ -686,6 +688,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 			if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
 				log.info("Received logs request from " + from_userid.getUserId());
 
+				sendLogs(p, from_userid);
+
 				// TODO: Send our logs to this user
 
 				return;
@@ -746,6 +750,28 @@ public class SyncServiceImpl extends FriendlySyncService {
 		public void logoutHappened() {
 			// TODO Auto-generated method stub
 		   log.info("We logged out!");
+		}
+	}
+
+	private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
+		ICService ics = getICS(project);
+
+		try {
+			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
+
+			LogEntrySerializer robot = new LogEntrySerializer();
+
+			System.err.println("========= LOGS ==========");
+			for(LogEntry<? extends ILogable> l: logs) {
+				System.err.println(robot.serialize(l, project));
+			}
+			System.err.println("========= /LOGS =========");
+
+			ics.getMsgService().sendMessage(user, "THIS IS A LOG SYNC! SERIOUSLY!");
+		} catch (NetworkException e) {
+			log.warn("Could not sync logs", e);
+		} catch (OtherUserOfflineException e) {
+			log.warn("Could not sync logs", e);
 		}
 	}
 
@@ -837,7 +863,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 			}
 			try {
 				data.close();
-			} catch (IOException e) {
+			} catch (IOException ignored) {
+				log.debug("We don't care 'bout this exception");
 			}
 		}
 
