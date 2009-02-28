@@ -179,7 +179,7 @@ public class XmppCommons {
 	 */
 	public static boolean isLoggedIn(XMPPConnection connection) {
 		if (connection == null) {
-			log.debug("Testing XMPPConnection....is null");
+			log.debug("not logged in because connection is null");
 			return false;
 		}
 		
