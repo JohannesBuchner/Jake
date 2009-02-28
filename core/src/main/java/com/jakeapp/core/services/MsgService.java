@@ -356,5 +356,10 @@ public abstract class MsgService<T extends UserId> {
 			return false;
 		return true;
 	}
+	
+	public String toString() {
+		return this.getName() + " - user: " + getMainUserId() + " - "
+				+ this.getVisibilityStatus();
+	}
 
 }
