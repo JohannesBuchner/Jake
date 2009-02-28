@@ -11,9 +11,9 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.synchronization.exceptions.PullFailedException;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
@@ -86,6 +86,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 * key is the UUID
 	 */
 	private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
+	
+	private ChangeListener getProjectChangeListener(Project p) {
+		return (p==null)?null:
+			projectChangeListeners.get(p.getProjectId());
+	}
 
 	@Injected
 	private RequestHandlePolicy rhp;
@@ -318,6 +323,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 			return (T) pullFileObject(jo.getProject(), (FileObject)le.getBelongsTo());
 		
 		return jo; //TODO null? throw exception?
+		
+		//TODO call ChangeListener, PullWatcher, PullListener
 	}
 	
 	/**
@@ -343,25 +350,57 @@ public class SyncServiceImpl extends FriendlySyncService {
 		private IFileTransferService ts;
 		private FileRequest request;
 		private Semaphore sem;
-		
+		private ChangeListener cl;
+		private JakeObject jo;
 		private Throwable innerException;
 		
-		public FileRequestObject(IFileTransferService ts, FileRequest request) {
+		protected class FileProgressChangeListener extends ChangeListenerWrapper {
+			public FileProgressChangeListener(ChangeListener cl) {
+				super(cl);
+			}
+			
+			@Override
+			public void pullDone(JakeObject jo) {
+				sem.release();
+			}
+			
+			@Override
+			public void pullFailed(JakeObject jo, Exception reason) {
+				sem.release();
+				innerException = reason;
+			}
+		}
+		
+		public FileRequestObject(JakeObject jo,IFileTransferService ts, FileRequest request, ChangeListener cl) {
 			super();
 			this.ts = ts;
 			this.request = request;
+			this.cl = new FileProgressChangeListener(cl);
+			this.jo = jo;
 			sem = new Semaphore(0);
 			innerException = null;
 		}
 
 		@Override
 		public IFileTransfer calculate() throws Exception {
+			INegotiationSuccessListener listener = new PullListener(this.jo, cl);
 			ts.request(request, this);
-			//wait for listener
+			//wait for negotiation-success-listener
 			sem.acquire();
 			
-			if (this.innerException!=null && innerException instanceof Exception)
+			if (this.innerException!=null && innerException instanceof Exception) {
+				listener.failed(this.innerException);
 				throw (Exception)innerException;
+			}
+			
+			listener.succeeded(innercontent);
+			
+			//wait for FileProressChangeListener
+			sem.acquire();
+			if (this.innerException!=null && innerException instanceof Exception) {
+				throw (Exception)innerException;
+				//this exception came from the listener!
+			}
 			
 			return this.innercontent;
 		}
@@ -390,7 +429,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		if (p.getMessageService()==null) ;
 		
 		IFileTransferService ts;
-		IFileTransfer result;
+		IFileTransfer result = null;
 		FileRequest fr;
 		String relpath = fo.getRelPath();
 		ICService ics = this.icsManager.getICService(p);
@@ -399,6 +438,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		IFileTransferService fts = this.getTransferService(p);
 		UserId remotePeer;
 		com.jakeapp.jake.ics.UserId remoteBackendPeer;
+		ChangeListener cl = this.getProjectChangeListener(p);
 		
 		for (LogEntry potentialProvider : potentialProviders)
 			if (potentialProvider!=null && potentialProvider.getMember()!=null)
@@ -416,11 +456,15 @@ public class SyncServiceImpl extends FriendlySyncService {
 				);
 				*/
 				
+				//TODO write to tempfile rather than to relpath??
 				fr = new FileRequest(relpath, false, remoteBackendPeer);
 				
 				try {
+					//this also reports to the corresponding ChangeListener and
+					//watches the Filetransfer and returns after the filetransfer has
+					//either returned successfully or not successfully
 					result =
-						AvailableLaterWaiter.await(new FileRequestObject(ts,fr));
+						AvailableLaterWaiter.await(new FileRequestObject(fo,ts,fr,cl));
 					break;
 				}
 				catch (Exception ignored) {
@@ -429,8 +473,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 			}
 		
 		//TODO handle result
-		//TODO persist file object??
-		//TODO set processed
+		if (result!=null && result.isDone()) { //second part must be true after await returned
+			//TODO persist file object??
+			//TODO set processed
+		}
+		
 
 		// UserId user = this.icsManager.getBackendUserId(p, le.getMember());
 		// IMsgService negotiationService = null;
@@ -936,6 +983,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 		@Override
 		public void onFailure(AdditionalFileTransferData transfer, String error) {
+			cl.pullFailed(jo, new PullFailedException(error));
 			log.error("transfer for " + jo + " failed: " + error);
 		}
 

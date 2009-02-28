@@ -34,4 +34,9 @@ public class PrintingChangeListener implements ChangeListener {
 		log.info(jo + " - " + progress + " - " + status);
 	}
 
+	@Override
+	public void pullFailed(JakeObject jo, Exception reason) {
+		log.info(jo,reason);
+	}
+
 }

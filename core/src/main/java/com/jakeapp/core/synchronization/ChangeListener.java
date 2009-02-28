@@ -11,6 +11,11 @@ public interface ChangeListener {
 	public void pullNegotiationDone(JakeObject jo);
 
 	public void pullDone(JakeObject jo);
+	
+	/**
+	 * A pull-operation that has already begun failed.
+	 */
+	public void pullFailed(JakeObject jo, Exception reason);
 
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress);
 }

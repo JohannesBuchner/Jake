@@ -2,53 +2,49 @@ package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
 
-/**
- * Empty (default) implementation of a ChangeListener
- * @author djinn
- *
- */
-public class ChangeAdapter implements ChangeListener {
+public class ChangeListenerWrapper implements ChangeListener {
+	
+	private ChangeListener innercl;
+	
+	public ChangeListenerWrapper(ChangeListener cl) {
+		this.setInnercl(cl);
+	}
 
 	@Override
 	public INegotiationSuccessListener beganRequest(JakeObject jo) {
-		// empty implementation
-		return new INegotiationSuccessListener() {
-
-			@Override
-			public void failed(Throwable reason) {
-				// empty implementation
-			}
-
-			@Override
-			public void succeeded(IFileTransfer ft) {
-				// empty implementation
-			}
-		};
+		return this.getInnercl().beganRequest(jo);
 	}
 
 	@Override
 	public void pullDone(JakeObject jo) {
-		// empty implementation
+		this.getInnercl().pullDone(jo);
+
 	}
 
 	@Override
 	public void pullNegotiationDone(JakeObject jo) {
-		// empty implementation
+		this.getInnercl().pullNegotiationDone(jo);
 	}
 
 	@Override
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
-		// empty implementation
+		this.getInnercl().pullProgressUpdate(jo, status, progress);
 	}
-
+	
 	@Override
 	public void pullFailed(JakeObject jo, Exception reason) {
-		// empty implementation
-		
+		this.getInnercl().pullFailed(jo,reason);
+	}
+
+	protected void setInnercl(ChangeListener innercl) {
+		this.innercl = innercl;
+	}
+
+	protected ChangeListener getInnercl() {
+		return innercl;
 	}
 
 }

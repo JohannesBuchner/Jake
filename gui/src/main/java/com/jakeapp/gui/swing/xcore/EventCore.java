@@ -221,6 +221,11 @@ public class EventCore {
 						double progress) {
 			log.debug("pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
 		}
+
+		@Override
+		public void pullFailed(JakeObject jo, Exception reason) {
+			log.debug("pullFailed: " + jo,reason);
+		}
 	}
 
 	/**
