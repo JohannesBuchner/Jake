@@ -20,6 +20,7 @@ import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
@@ -46,7 +47,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Injected
 	private IFriendlySyncService sync;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -91,7 +92,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
 	 *
 	 * @throws IllegalArgumentException
-	 * @see #authenticate(Map)
+	 * @see IFrontendService#authenticate(java.util.Map
 	 */
 	private void checkCredentials(Map<String, String> credentials)
 			  throws IllegalArgumentException, InvalidCredentialsException {
@@ -148,7 +149,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 
 	@Override
-	public String authenticate(Map<String, String> credentials)
+	public String authenticate(Map<String, String> credentials, ChangeListener changeListener)
 			  throws IllegalArgumentException, InvalidCredentialsException {
 		String sessid;
 
@@ -157,6 +158,9 @@ public class FrontendServiceImpl implements IFrontendService {
 		// create new session
 		sessid = makeSessionID();
 		this.addSession(sessid, new FrontendSession());
+
+		// move data to projectmanaging service
+		this.getProjectsManagingService().setChangeListener(changeListener);
 
 		return sessid;
 	}

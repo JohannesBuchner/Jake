@@ -10,7 +10,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
-import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -55,6 +54,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	private MsgServiceFactory msgServiceFactory;
 
 	private IProjectInvitationListener invitationListener;
+
+	private ChangeListener changeListener;
+
+	public void setChangeListener(ChangeListener changeListener) {
+		this.changeListener = changeListener;
+	}
 
 	public ProjectsManagingServiceImpl(
 			ProjectApplicationContextFactory applicationContextFactory,
@@ -144,6 +149,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			} catch (NotADirectoryException e) {
 				log.error("invalid project: ", e);
 				result.remove(p);
+			} catch (FileNotFoundException e) {
+				log.error("invalid project (error on start): ", e);
+				result.remove(p);
+			} catch (ProjectException e) {
+				log.error("invalid project (error on start): ", e);
+				result.remove(p);
 			}
 		}
 	}
@@ -158,10 +169,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	private void initProject(Project p) throws NoSuchProjectException,
-			NotADirectoryException {
+			NotADirectoryException, FileNotFoundException, ProjectException {
 		log.debug("initialising project " + p);
 
 		p.setOpen(true);
+
+		// FIXME: remove if no longer needed - HACK!
+		/*
 		if (p.getCredentials() == null) {
 			log.warn("fixing null credentials (bug workaround) ");
 			try {
@@ -177,6 +191,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			} catch (ProtocolNotSupportedException e) {
 			}
 		}
+		*/
 
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
 		if (p.getMessageService() == null)
@@ -191,6 +206,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		if (!p.getUserId().equals(p.getMessageService().getUserId()))
 			throw new IllegalStateException();
+
+		// if a project is in started-state, we have to start some stuff for it
+		if(p.isStarted()) {
+			this.startProject(p);
+		}
+
 		log.debug("initialising project done for " + p);
 	}
 
@@ -291,7 +312,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 
 	@Override
-	public boolean startProject(Project project, ChangeListener cl)
+	public boolean startProject(Project project)
 			throws IllegalArgumentException, FileNotFoundException, ProjectException {
 		log.info("start project: " + project);
 
@@ -308,8 +329,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			this.getFileServices(project).setRootPath(project.getRootPath());
 			this.getProjectsFileServices().startForProject(project);
-			this.syncService.startServing(project, cl);
+			this.syncService.startServing(project, changeListener);
+
 			project.setStarted(true);
+			this.getProjectDao().update(project);
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
@@ -325,7 +348,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (!project.isOpen() || !project.isStarted())
 			return false;
 
-		
 		try {
 			this.syncService.stopServing(project);
 			// stops monitoring the project
