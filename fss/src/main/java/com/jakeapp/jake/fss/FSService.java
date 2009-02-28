@@ -436,9 +436,9 @@ public class FSService implements IFSService, IModificationListener {
 		String filename = getFullpath(relpath);
 		File f = new File(filename);
 		if (!f.exists())
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("Not found: " + filename);
 		if (!f.isFile())
-			throw new NotAFileException();
+			throw new NotAFileException(filename);
 		return f.length();
 	}
 

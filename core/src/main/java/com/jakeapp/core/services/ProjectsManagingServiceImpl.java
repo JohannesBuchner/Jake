@@ -1,22 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
@@ -24,23 +7,7 @@ import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.InvitationState;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectLogEntry;
-import com.jakeapp.core.domain.ProjectMemberLogEntry;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TagLogEntry;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -64,6 +31,13 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
 		IProjectsManagingService, IProjectInvitationListener {
@@ -599,8 +573,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			throws NoSuchProjectException, FileNotFoundException,
 			IllegalArgumentException {
 
-		log.debug("\n\n\n\n\n\n\t\tCalling getProjectFileCount");
-
+		log.debug("Calling getProjectFileCount");
 
 		AvailableLaterWrapperObject<Integer, List<FileObject>> sizeFuture;
 		AvailableLaterObject<List<FileObject>> filesFuture;

@@ -21,8 +21,8 @@ import java.awt.geom.*;
  * true, and you repeatedly invoke animateOneFrame.
  */
 public class JAsynchronousProgressIndicator extends JComponent {
-	private static final int DIAMETER = 16;
-	private static final int BAR_COUNT = 12;
+	private static final int DIAMETER = 30;
+	private static final int BAR_COUNT = 20;
 	private static Area[] bars;
 	private static Color[] colors;
 	private Timer timer;

@@ -79,6 +79,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private JLabel userLabelLoginSuccess;
 	private JPanel userListPanel;
 	private JPanel addUserButtonPanel;
+	private JButton signInRegisterBackBtn;
 
 	@Override
 	public void msgServiceChanged(MsgService msg) {
@@ -255,7 +256,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		}
 	}
 
-
 	/**
 	 * Creates the Add User Panel
 	 *
@@ -359,36 +359,28 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 				signInRegisterButtonPressed();
 			}
 		});
-		updateSignInRegisterMode();
+
+		// add back button if there are users
+		try {
+			signInRegisterBackBtn = new JButton(getResourceMap().getString("backBtn"));
+			signInRegisterBackBtn.setEnabled(false);
+			signInRegisterBackBtn.putClientProperty("JButton.buttonType", "textured");
+			signInRegisterBackBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					showPanel(UserPanels.ManageUsers);
+				}
+			});
+			addUserButtonPanel.add(signInRegisterBackBtn, "left, bottom, split");
+		} catch (FrontendNotLoggedInException e) {
+			ExceptionUtilities.showError(e);
+		}
+
+		addUserButtonPanel.add(signInRegisterButton, "right, bottom, wrap");
+
 
 		addUserPanel.add(addUserButtonPanel, "width 370!");
 		return addUserPanel;
-	}
-
-	private void updateUserSignInPanel() {
-
-		if (JakeMainApp.isCoreInitialized()) {
-			// add back button if there are users
-			try {
-				if (JakeMainApp.getCore().getMsgServics().size() > 0) {
-					log.debug("adding back button: getMsgServics().size()=" + JakeMainApp
-									.getCore().getMsgServics().size());
-					JButton backBtn = new JButton(getResourceMap().getString("backBtn"));
-					backBtn.putClientProperty("JButton.buttonType", "textured");
-					backBtn.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							showPanel(UserPanels.ManageUsers);
-						}
-					});
-					addUserButtonPanel.add(backBtn, "left, bottom, split");
-				}
-			} catch (FrontendNotLoggedInException e) {
-				ExceptionUtilities.showError(e);
-			}
-
-			addUserButtonPanel.add(signInRegisterButton, "right, bottom, wrap");
-		}
 	}
 
 
@@ -759,7 +751,9 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	}
 
 	private void updateSignInRegisterMode() {
-		//log.info("updating signin/register mode.");
+		signInRegisterBackBtn.setVisible(
+						JakeMainApp.isCoreInitialized() && JakeMainApp.getCore().getMsgServics()
+										.size() > 0);
 
 		loginUserDataPanel.setVisible(isModeSignIn());
 		registerUserDataPanel.setVisible(!isModeSignIn());
@@ -787,6 +781,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		// always update everything
 		updateSignInSuccessPanel();
 		updateChooseUserPanel();
+		updateSignInRegisterMode();
 
 		// update the view (maybe already logged in)
 		if (JakeMainApp.isCoreInitialized()) {

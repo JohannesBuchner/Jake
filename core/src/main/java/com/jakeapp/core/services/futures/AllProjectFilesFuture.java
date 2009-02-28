@@ -38,8 +38,7 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 					Project project) {
 		super();
 
-		log.debug(
-						"\n\n\n\n\n\n\n\n\nCreating a AllProjectFilesFuture with " +
+		log.debug("Creating a AllProjectFilesFuture with " +
 										applicationContextFactory + "on project " + project);
 
 		this.applicationContextFactory = applicationContextFactory;
@@ -51,19 +50,16 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 
 	@Override @Transactional
 	public List<FileObject> calculate() {
-		log.debug(
-						"\n\n\n\n starting thread & running AllProjectFilesFuture ... \n\n\n\n");
+		log.debug("starting thread & running AllProjectFilesFuture...");
 
 		List<FileObject> result = fileObjectDao.getAll();
 
-		log.debug("found " + result.size() + " files in the DB ");
+		log.debug("found " + result.size() + " files in the DB");
 		for (FileObject file : result) {
 			log.debug("file = " + file);
 		}
 
 		result.add(new FileObject(project, "blabla"));
-
-		log.debug("\n\n\n\n\n\n\n\n\nfinished calculation\n\n\n\n\n\n\n\n\n");
 
 		return result;
 	}
