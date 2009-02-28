@@ -35,14 +35,13 @@ public class SoftlockNoteAction extends NoteAction {
 	public void actionPerformed(ActionEvent ignored) {
 		log.debug("action performed; soft lock note");
 		log.debug("selected notes size: " + this.getSelectedNotes().size());
-		ICoreAccess core = JakeMainApp.getCore();
 		boolean cachedNewLockingState = !this.isLocked;
 
 		for (Attributed<NoteObject> attributedNote : this.getSelectedNotes()) {
 			log.debug("attributed note isLocal: " + attributedNote.isOnlyLocal());
 			if (!attributedNote.isOnlyLocal()) {
 				log.debug("locking note: " + attributedNote + ", setting lock to: " + cachedNewLockingState);
-				core.setSoftLock(attributedNote.getJakeObject(), cachedNewLockingState, null);	
+				JakeMainApp.getCore().setSoftLock(attributedNote.getJakeObject(), cachedNewLockingState, null);	
 			}
 		}
 	}

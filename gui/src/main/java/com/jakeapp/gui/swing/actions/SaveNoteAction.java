@@ -23,8 +23,6 @@ public class SaveNoteAction extends NoteAction {
 	private static final long serialVersionUID = 196271937528474367L;
 	private static final Logger log = Logger.getLogger(SaveNoteAction.class);
 	
-	private ICoreAccess core = JakeMainApp.getCore();
-
 	public SaveNoteAction() {
 		super();
 
@@ -40,7 +38,7 @@ public class SaveNoteAction extends NoteAction {
 		
 		log.debug("saving note with new content: " + newContent);
 		try {
-			this.core.saveNote(cachedNote);
+			JakeMainApp.getCore().saveNote(cachedNote);
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);
 		}

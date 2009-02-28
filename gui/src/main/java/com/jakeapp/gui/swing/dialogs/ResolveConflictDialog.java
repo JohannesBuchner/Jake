@@ -96,15 +96,13 @@ public class ResolveConflictDialog extends JakeDialog {
 		hyp.add(path, "growy");
 		this.add(hyp, "gapbottom 12");
 
-		ICoreAccess core = JakeMainApp.getCore();
-
 		// what are the differences?
 		// editor, size, time
 
 
 		// demermine the differences
-		boolean localLarger = core.getLocalFileSize(fo.getJakeObject()) < fo.getSize();
-		boolean localNewer = core.getLocalFileLastModified(fo.getJakeObject())
+		boolean localLarger = JakeMainApp.getCore().getLocalFileSize(fo.getJakeObject()) < fo.getSize();
+		boolean localNewer = JakeMainApp.getCore().getLocalFileLastModified(fo.getJakeObject())
 						.after(new Date(fo.getLastModificationDate()));
 
 		JLabel localLabel = new JLabel("<html>" + getResourceMap()

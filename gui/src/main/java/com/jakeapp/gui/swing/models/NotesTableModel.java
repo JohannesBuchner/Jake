@@ -37,7 +37,6 @@ public class NotesTableModel extends DefaultTableModel {
 		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
 		this.attributedNotes = new ArrayList<Attributed<NoteObject>>();
-		JakeMainApp.getCore();
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));

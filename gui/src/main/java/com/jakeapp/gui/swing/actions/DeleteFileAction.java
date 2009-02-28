@@ -38,7 +38,6 @@ public class DeleteFileAction extends FileAction {
 		final List<String> cache = new ArrayList<String>();
 		List<Attributed<FileObject>> files = new ArrayList<Attributed<FileObject>>();
 
-		ICoreAccess core = JakeMainApp.getCore();
 		UserId currentUser = JakeMainApp.getProject().getUserId();
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
