@@ -974,16 +974,25 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		this.getNoteObjectDao(no.getProject()).delete(no);
 	}
 
+   
 	@Override
 	@Transactional
 	public void lock(JakeObject jo, String comment) {
-		this.locking(jo, comment, LogAction.JAKE_OBJECT_LOCK);
+		Project p = jo.getProject();
+        UserId me = p.getUserId();
+        LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, null,
+                true);
+        this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
 	@Override
 	@Transactional
 	public void unlock(JakeObject jo, String comment) {
-		this.locking(jo, comment, LogAction.JAKE_OBJECT_UNLOCK);
+		Project p = jo.getProject();
+        UserId me = p.getUserId();
+        LogEntry<JakeObject> le = new JakeObjectUnlockLogEntry(jo, me, comment, null,
+                true);
+        this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
 	@Override
@@ -992,15 +1001,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		//TODO christopher: I think that this function is not supported
 		// by the current database structure
 		
-	}
-
-	@Transactional
-	private void locking(JakeObject jo, String comment, LogAction which) {
-		Project p = jo.getProject();
-		UserId me = p.getUserId();
-		LogEntry<JakeObject> le = new JakeObjectLogEntry(which, jo, me, comment, null,
-				true);
-		this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
 	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {

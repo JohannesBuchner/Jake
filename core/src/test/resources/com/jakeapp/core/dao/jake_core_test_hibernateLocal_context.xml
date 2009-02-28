@@ -61,6 +61,10 @@
                 <value>com.jakeapp.core.domain.Tag</value>
                 <!--<value>com.jakeapp.core.domain.LogEntry</value>-->
                 <value>com.jakeapp.core.domain.JakeObjectLogEntry</value>
+                <value>com.jakeapp.core.domain.JakeObjectDeleteLogEntry</value>
+                <value>com.jakeapp.core.domain.JakeObjectLockLogEntry</value>
+                <value>com.jakeapp.core.domain.JakeObjectUnlockLogEntry</value>
+                <value>com.jakeapp.core.domain.JakeObjectNewVersionLogEntry</value>
                 <value>com.jakeapp.core.domain.ProjectLogEntry</value>
                 <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
                 <value>com.jakeapp.core.domain.TagLogEntry</value>

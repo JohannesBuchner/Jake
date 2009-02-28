@@ -211,9 +211,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 		LogEntry<JakeObject> le;
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
+                le = new JakeObjectNewVersionLogEntry(jo, getMyProjectMember(jo
+                        .getProject()), commitMsg, null, true);
+                break;
+
 			case JAKE_OBJECT_DELETE:
 				// what we do is always processed
-				le = new JakeObjectLogEntry(action, jo, getMyProjectMember(jo
+				le = new JakeObjectDeleteLogEntry(jo, getMyProjectMember(jo
 						.getProject()), commitMsg, null, true);
 				break;
 			default:

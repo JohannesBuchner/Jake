@@ -203,7 +203,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 	}
 
 	@Test
-	public void testStatus_DeleteAnnouncedNote() throws Exception {
+	public void     testStatus_DeleteAnnouncedNote() throws Exception {
 		testStatus_AnnounceNote();
 		pms.deleteNote(note);
 
