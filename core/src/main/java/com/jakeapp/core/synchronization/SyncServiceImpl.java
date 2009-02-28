@@ -63,6 +63,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
+	private static final String BEGIN_PROJECT_UUID = "<project>";
+
+	private static final String END_PROJECT_UUID = "</project>";
+
 	private static final String POKE_MESSAGE = "<poke/>";
 
 	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
@@ -132,6 +136,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 	protected List<UserId> getProjectMembers(Project project)
 			throws NoSuchProjectException {
 		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
+	}
+
+	private static String getUUIDStringForProject(Project project) {
+		return BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID;
 	}
 
 	/**
@@ -630,9 +638,19 @@ public class SyncServiceImpl extends FriendlySyncService {
 			this.p = p;
 		}
 
+		private String getProjectUUID(String content) {
+			int begin = content.indexOf(BEGIN_PROJECT_UUID) + BEGIN_PROJECT_UUID.length();
+			int end = content.indexOf(END_PROJECT_UUID);
+
+			return content.substring(begin, end);
+		}
+
 		@Override
 		@Transactional
 		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+			String projectUUID = getProjectUUID(content);
+			log.info("Received a message for project " + projectUUID);
+
 			if (content.startsWith(POKE_MESSAGE)) {
 				log.info("Received poke from " + from_userid.getUserId());
 				log.debug("This means we should sync logs!");
