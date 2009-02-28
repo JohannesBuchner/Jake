@@ -515,6 +515,33 @@ public class JakeCommander extends Commander {
 		}
 	}
 
+	class SelectFirstProjectCommand extends LazyNoParamsCommand {
+		public SelectFirstProjectCommand() {
+			super("selectFirstProject", "Selects (\"opens\") the first project that exists" +
+					" locally - sort of like opening, but not really opening. Get it?");
+		}
+
+		@Override
+		public void handleArguments() {
+			try {
+				for (Project p : pms.getProjectList()) {
+					project = p;
+					break;
+				}
+			} catch (Exception e) {
+				System.err.println("EPIC FAIL trying to load project:");
+				e.printStackTrace(System.err);
+			}
+
+			if(project == null) {
+				System.err.println("THE PROJECT! IT DOES NOT EXIST! THE HUMANITY!");
+				return;
+			}
+
+			System.out.println("Project " + project.getProjectId() + " is now selected!");
+		}
+	}
+
 	class StartProjectCommand extends LazyNoParamsCommand {
 
 		public StartProjectCommand() {
