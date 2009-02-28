@@ -65,6 +65,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private static final String POKE_MESSAGE = "<poke/>";
 
+	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
+
 	private static final String NEW_FILE = "<newfile/>";
 
 	private static final String NEW_NOTE = "<newnote/>";
@@ -353,8 +355,18 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Override
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId pm)
 			throws IllegalArgumentException, IllegalProtocolException {
-		log.info("Started a log sync");
-		// TODO Auto-generated method stub
+		log.info("Requesting log sync from user " + pm.getUserId());
+
+		ICService ics = getICS(project);
+		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
+		try {
+			ics.getMsgService().sendMessage(uid, REQUEST_LOGS_MESSAGE);
+		} catch (NetworkException e) {
+			log.debug("Could not request logs from user " + pm.getUserId(), e);
+		} catch (OtherUserOfflineException e) {
+			log.debug("Could not request logs from user " + pm.getUserId(), e);
+		}
+
 		// TODO: request log & fetch answer
 		// TODO: make this an async operation (e.g. with an
 		// AvailableLaterObject)
@@ -637,6 +649,14 @@ public class SyncServiceImpl extends FriendlySyncService {
 				return;
 			}
 
+			if (content.startsWith(REQUEST_LOGS_MESSAGE)) {
+				log.info("Received logs request from " + from_userid.getUserId());
+
+				// TODO: Send our logs to this user
+
+				return;
+			}
+
 			// TODO: The stuff below here could use some refactoring 
 			// (e.g. redeclaring parameter content)
 			int uuidlen = UUID.randomUUID().toString().length();
@@ -679,19 +699,19 @@ public class SyncServiceImpl extends FriendlySyncService {
 		@Override
 		public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
 			// TODO Auto-generated method stub
-
+			log.info("Online status of " + userid.getUserId() + " changed...");
 		}
 
 		@Override
 		public void loginHappened() {
 			// TODO Auto-generated method stub
-
+			log.info("We logged in!");
 		}
 
 		@Override
 		public void logoutHappened() {
 			// TODO Auto-generated method stub
-
+		   log.info("We logged out!");
 		}
 	}
 
