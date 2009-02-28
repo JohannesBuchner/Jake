@@ -34,8 +34,6 @@ public abstract class MsgService<T extends UserId> {
 
 	private static final Logger log = Logger.getLogger(MsgService.class);
 
-	private String name = "notInitialized";
-
 	protected T userId;
 
 	private ServiceCredentials serviceCredentials;
@@ -80,19 +78,6 @@ public abstract class MsgService<T extends UserId> {
 	 */
 	protected ServiceCredentials getServiceCredentials() {
 		return serviceCredentials;
-	}
-
-	protected void setName(String name) {
-		this.name = name;
-	}
-
-
-	/**
-	 * @return The name of the Service associated to this
-	 *         <code>MsgService</code>.
-	 */
-	protected String getName() {
-		return name;
 	}
 
 	/**
@@ -220,12 +205,14 @@ public abstract class MsgService<T extends UserId> {
 		}
 		if (this.getMainIcs().getStatusService().isLoggedIn())
 			return VisibilityStatus.ONLINE;
-		else
+		else {
 			// FIXME: projects don't go online if we set offline here. Why?
+			log.debug("Main ICS says we are offline, we don't believe that (workaround!)");
 			// FIXME: This needs to be fixed - but **elsewhere**
 			// @christopher: There was a reason for this being here ;)
 		   //    setting it to offline breaks the intarnets!!!!111
 			return VisibilityStatus.ONLINE;
+		}
 	}
 
 	public T getUserId() {
@@ -359,7 +346,7 @@ public abstract class MsgService<T extends UserId> {
 	}
 	
 	public String toString() {
-		return this.getName() + " - user: " + getMainUserId() + " - "
+		return this.getProtocolType() + " - user: " + getMainUserId() + " - "
 				+ this.getVisibilityStatus();
 	}
 

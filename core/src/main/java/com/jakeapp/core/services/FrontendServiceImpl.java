@@ -316,4 +316,11 @@ public class FrontendServiceImpl implements IFrontendService {
 		return ret;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public AvailableLaterObject<Boolean> login(final String session,
+			final MsgService service) {
+		return login(session, service, null, true);
+	}
 }

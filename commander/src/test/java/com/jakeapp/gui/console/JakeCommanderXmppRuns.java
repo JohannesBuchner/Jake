@@ -102,4 +102,13 @@ public class JakeCommanderXmppRuns extends TestDBEnabledTestCase {
 		fifo.addLine("logout");
 		go();
 	}
+
+	@Prerequisite(checker = XmppTestEnvironment.class)
+	@Test
+	public void sendInvite() {
+		fifo.addLine("startProject");
+		fifo.addLine("login");
+		fifo.addLine("invite myuser2@localhost");
+		go();
+	}
 }

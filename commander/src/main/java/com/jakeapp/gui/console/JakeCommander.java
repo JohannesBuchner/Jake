@@ -8,6 +8,7 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -366,12 +367,16 @@ public class JakeCommander extends Commander {
 				System.out.println("do a coreLogin first");
 			}
 			try {
-				if (msg.login()) {
+				System.out.println("logging in ...");
+				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg));
+				if (result) {
 					System.out.println("logged in");
 				} else {
 					System.out.println("login returned false");
 				}
+				System.out.println("logging in done");
 			} catch (Exception e) {
+				System.out.println("logging in failed");
 				e.printStackTrace();
 			}
 		}

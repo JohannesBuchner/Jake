@@ -158,15 +158,25 @@ public interface IFrontendService {
 	Collection<ServiceCredentials> getLastLogins();
 
 	/**
-	 * Logs a Messageservice in
+	 * Logs a Messageservice in and sets the password
 	 * @param session
 	 * @param service
-	 * @param password
-	 * @param rememberPassword
+	 * @param password new password to be stored, or null to use the stored one. 
+	 * @param rememberPassword 
 	 * @return
 	 * @internally throws Exception 
 	 */
 	AvailableLaterObject<Boolean> login(String session, MsgService service, String password,
 			boolean rememberPassword);
+
+
+	/**
+	 * Logs a Messageservice in with the stored password
+	 * @param session
+	 * @param service
+	 * @return
+	 * @internally throws Exception 
+	 */
+	AvailableLaterObject<Boolean> login(String session, MsgService service);
 
 }

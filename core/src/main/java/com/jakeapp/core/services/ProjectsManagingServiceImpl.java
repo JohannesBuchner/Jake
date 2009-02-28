@@ -1013,6 +1013,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public void setInvitationListener(IProjectInvitationListener il) {
+		log.debug("set invitation listener to " + il);
 		this.invitationListener = il;
 	}
 	
@@ -1022,6 +1023,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public void invited(UserId user, Project project) {
+		log.info("got invited to Project " + project + " by " + user);
 		// add Project to the global database
 		try {
 			project = this.getProjectDao().create(project);

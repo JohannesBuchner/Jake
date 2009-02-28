@@ -65,6 +65,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 
 	@Override
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+		log.debug("receivedMessage: " + content + " from " + from_userid);
 		if (content.startsWith(INVITEMSG)) {
 			try {
 				String innercontent = content.substring(INVITEMSG.length());
@@ -77,10 +78,13 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 
+				log.info("got invited to Project " + p + " by " + from_userid);
 				this.invitationListener.invited(user, p);
 			} catch (Exception e) {
 				log.warn("error decoding invite message", e);
 			}
+		}else{
+			log.info("ignoring unknown message: " + content);
 		}
 	}
 
@@ -131,6 +135,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 	 * @param il
 	 */
 	public void setInvitationListener(IProjectInvitationListener il) {
+		log.debug("set invitationlistener to " + il);
 		this.invitationListener = il;
 	}
 }
