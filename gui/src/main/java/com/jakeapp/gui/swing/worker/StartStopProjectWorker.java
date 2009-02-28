@@ -28,8 +28,7 @@ public class StartStopProjectWorker
 		if (start) {
 			return JakeMainApp.getCore().startProject(project);
 		} else {
-			// FIXME: stop
-			return null;
+			return JakeMainApp.getCore().stopProject(project);
 		}
 	}
 

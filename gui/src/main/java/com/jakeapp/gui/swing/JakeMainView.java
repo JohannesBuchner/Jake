@@ -235,12 +235,13 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			JakeMainApp.getApp().getSplashFrame().setVisible(false);
 		}
 
+		JakeExecutor.exec(new InitCoreWorker());
+
+		
 		// debug property
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
 			JakeMainApp.getApp().saveQuit();
 		}
-
-		JakeExecutor.exec(new InitCoreWorker());
 	}
 
 
