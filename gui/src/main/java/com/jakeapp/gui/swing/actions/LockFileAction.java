@@ -7,7 +7,15 @@ import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * Action to lock and unlock a file. Only one file at a time, no batch support, no locking comment.
+ * @author Simon
+ *
+ */
 public class LockFileAction extends FileAction {
+
+	private static final long serialVersionUID = 3816960847280746811L;
+
 	public LockFileAction() {
 		super();
 
@@ -17,21 +25,23 @@ public class LockFileAction extends FileAction {
 		putValue(Action.NAME, actionStr);
 
 		// only enable if exact one element is selected AND that element is NOT a folder.
-		boolean enabled = (getSelectedRowCount() == 1 &&
+		boolean nuEnabledState = (getSelectedRowCount() == 1 &&
 			 getSingleNode().isFile());
-		setEnabled(enabled);
+		setEnabled(nuEnabledState);
 	}
 
 	@Override
 	public void updateAction() {
-		boolean enabled = (getSelectedRowCount() == 1 &&
+		boolean nuEnabledState = (getSelectedRowCount() == 1 &&
 			 getSingleNode().isFile());
-		setEnabled(enabled);
+		setEnabled(nuEnabledState);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		FileObject fo = getSingleNode().getFileObject();
+		
+//		boolean newLockingState = 
 		// TODO: fix
 		//JakeMainApp.getCore().setSoftLock(fo, !JakeMainApp.getCore().isSoftLocked(fo), "");
 	}

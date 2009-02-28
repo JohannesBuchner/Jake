@@ -29,13 +29,13 @@ public enum Existence {
 				return EXISTS_LOCAL;
 			else if (lastLogAction == LogAction.JAKE_OBJECT_NEW_VERSION)
 				return EXISTS_ON_BOTH;
-			else throw new IllegalStateException();
+			else throw new IllegalStateException("state was: objectExistsLocally = " + lastLogAction);
 		} else {
 			if (lastLogAction == LogAction.JAKE_OBJECT_DELETE || lastLogAction == null)
 				return NON_EXISTANT;
 			else if (lastLogAction == LogAction.JAKE_OBJECT_NEW_VERSION)
 				return EXISTS_REMOTE;
-			else throw new IllegalStateException();
+			else throw new IllegalStateException("state was: objectExistsLocally = " + lastLogAction);
 		}
 
 	}

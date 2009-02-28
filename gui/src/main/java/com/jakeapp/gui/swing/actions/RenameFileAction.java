@@ -46,7 +46,7 @@ public class RenameFileAction extends FileAction {
 		}
 
 		String promptStr = JakeMainView.getMainView().getResourceMap().
-			 getString("promptEditFile.text");
+			 getString("promptRenameFile");
 		String newName = JOptionPane.showInputDialog(promptStr, currentName);
 		if (!newName.equals(currentName)) {
 			if (node.isFile()) {
