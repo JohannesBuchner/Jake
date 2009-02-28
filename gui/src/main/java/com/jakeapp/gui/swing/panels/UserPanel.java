@@ -363,7 +363,6 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		// add back button if there are users
 		try {
 			signInRegisterBackBtn = new JButton(getResourceMap().getString("backBtn"));
-			signInRegisterBackBtn.setEnabled(false);
 			signInRegisterBackBtn.putClientProperty("JButton.buttonType", "textured");
 			signInRegisterBackBtn.addActionListener(new ActionListener() {
 				@Override
