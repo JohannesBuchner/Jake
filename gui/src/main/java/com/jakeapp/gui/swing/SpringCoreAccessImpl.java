@@ -15,6 +15,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
+import com.jakeapp.core.services.futures.StartProjectFuture;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -24,7 +25,6 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged.ProjectChangedEvent.Reason;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -160,17 +160,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		this.frontendService.removeAccount(this.sessionId, msg);
 	}
 
-	public void startProject(Project project) {
+	// only start from StartStopProjectWorker
+	public AvailableLaterObject<Void> startProject(Project project) {
 		log.info("Starting project: " + project);
-
-		// generate event
-		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(project,
-										Reason.StartStopStateChanging));
-
-		//return new StartProjectFuture(pms, project).start();
-// FIXME
-		//return this.pms.startProject(project).start();
+		return new StartProjectFuture(pms, project).start();
 	}
 
 

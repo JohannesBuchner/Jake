@@ -167,7 +167,7 @@ public interface ICoreAccess {
 	 *
 	 * @param project
 	 */
-	public void startProject(Project project);
+	public AvailableLaterObject<Void> startProject(Project project);
 
 	/**
 	 * Returns absolute Number of files of the project.

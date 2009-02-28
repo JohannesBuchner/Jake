@@ -160,7 +160,9 @@ public class FrontendServiceImpl implements IFrontendService {
 		this.addSession(sessid, new FrontendSession());
 
 		// move data to projectmanaging service
-		this.getProjectsManagingService().setChangeListener(changeListener);
+		if(changeListener != null) {
+			this.getProjectsManagingService().setChangeListener(changeListener);
+		}
 
 		return sessid;
 	}
