@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -74,7 +75,9 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 				String projectname = innercontent.substring(uuidlen);
 
 				Project p = new Project(projectname, uuid, msg, null);
+				p.setRootPath("");
 				p.setInvitationState(InvitationState.INVITED);
+				p.setCredentials(msg.getServiceCredentials());
 
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 

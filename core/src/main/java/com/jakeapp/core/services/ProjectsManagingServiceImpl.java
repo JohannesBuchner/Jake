@@ -1029,7 +1029,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	public void setUserNickname(Project project, UserId userId, String nick) {
 		// TODO: implement!
-		//TODO christopher: I think that this function is not supported
+		// TODO christopher: I think that this function is not supported
 		// by the current database structure
 		
 	}
