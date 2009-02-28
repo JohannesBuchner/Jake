@@ -101,11 +101,13 @@ public class Tracer {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Trace[");
-		for (String step : getTrace()) {
-			sb.append(step);
-			sb.append(",");
+		synchronized (trace) {
+			for (String step : getTrace()) {
+				sb.append(step);
+				sb.append(",");
+			}
+			sb.append("]");
 		}
-		sb.append("]");
 		return sb.toString();
 	}
 
