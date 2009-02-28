@@ -221,7 +221,6 @@ public abstract class MsgService<T extends UserId> {
 		if (this.getMainIcs().getStatusService().isLoggedIn())
 			return VisibilityStatus.ONLINE;
 		else
-			// FIXME: projects don't go online if we set offline here. Why?
 			// FIXME: This needs to be fixed - but **elsewhere**
 			// @christopher: There was a reason for this being here ;)
 		   //    setting it to offline breaks the intarnets!!!!111
