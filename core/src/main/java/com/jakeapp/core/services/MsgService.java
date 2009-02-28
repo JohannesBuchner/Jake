@@ -217,7 +217,8 @@ public abstract class MsgService<T extends UserId> {
 			
 			//it seems to work now...
 			// FIXME: NO IT DOESN'T!!!!!!!!1111 ;)
-			return VisibilityStatus.ONLINE;
+			// TODO: over 9000 fails!!!
+			return VisibilityStatus.OFFLINE;
 		}
 	}
 
