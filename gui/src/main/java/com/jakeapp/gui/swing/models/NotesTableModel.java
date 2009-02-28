@@ -129,7 +129,13 @@ public class NotesTableModel extends DefaultTableModel {
 				value = (note.getJakeObject()).getContent();
 				break;
 			case 3: //last edit
-				value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
+				// FIXME: it is unclear what the attributed<> returns as lastModificationDate if it is
+				// a local note.
+				if (note.getLastModificationDate() == 0) { 
+					value = "-";
+				} else {
+					value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
+				}
 				break;
 			case 4: //last editor
 				value = note.getLastVersionEditor();
