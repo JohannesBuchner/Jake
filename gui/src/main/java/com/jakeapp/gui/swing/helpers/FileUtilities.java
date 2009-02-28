@@ -13,6 +13,7 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.awt.*;
 
 /**
  * Collection of Utilities for working with files.
@@ -432,4 +433,11 @@ public class FileUtilities {
 		}
 	}
 
+	public static void openFile(File file) {
+		try {
+			Desktop.getDesktop().open(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

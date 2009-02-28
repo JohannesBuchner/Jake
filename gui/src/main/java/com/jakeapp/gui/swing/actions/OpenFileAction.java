@@ -4,13 +4,12 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 public class OpenFileAction extends FileAction {
 	private static final Logger log = Logger
@@ -36,17 +35,9 @@ public class OpenFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			Desktop.getDesktop().open(JakeMainApp.getCore().getFile(getSingleNode().getFileObject()));
-		} catch (IOException e1) {
-			ExceptionUtilities.showError(e1);
+			FileUtilities.openFile(JakeMainApp.getCore().getFile(getSingleNode().getFileObject()));
 		} catch (FileOperationFailedException e1) {
 			ExceptionUtilities.showError(e1);
 		}
-		/*
-		if (getSingleNode().isFile()) {
-			GuiUtilities.selectFileInFileViewer(getSingleNode().getFileObject().getAbsolutePath().getAbsolutePath());
-		} else {
-			GuiUtilities.selectFileInFileViewer(JakeMainApp.getApp().getProject().getRootPath() + getSingleNode().getFolderObject().getRelPath());
-		}*/
 	}
 }

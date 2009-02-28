@@ -23,15 +23,10 @@ import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTreeTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.JakeHudButtonUI;
 import com.jakeapp.gui.swing.controls.cmacwidgets.RedHudButtonUI;
 import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
+import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
 import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
-import com.jakeapp.gui.swing.helpers.DebugHelper;
-import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
-import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
-import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.models.FileObjectsTableModel;
 import com.jakeapp.gui.swing.models.FolderObjectsTreeTableModel;
 import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
@@ -347,7 +342,13 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				EventCore.get().notifyFileSelectionListeners(fileObjs);
 				EventCore.get().notifyNodeSelectionListeners(nodeObjs);
 
-				//SwingUtilities.
+				if(me.getClickCount() == 2 && fileObjs.size() == 1) {
+					try {
+						FileUtilities.openFile(JakeMainApp.getCore().getFile(fileObjs.get(0)));
+					} catch (FileOperationFailedException e) {
+						ExceptionUtilities.showError("Unable to open File", e);
+					}
+				}
 			}
 		}
 
