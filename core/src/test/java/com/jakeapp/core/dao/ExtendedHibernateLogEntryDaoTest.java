@@ -96,38 +96,44 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 
 
 		LogEntry<Project> projectLogEntry = new ProjectLogEntry(testProject, me);
-
-
+		setOrder(projectLogEntry, 1);
 		logEntryDao.create(projectLogEntry);
 
 		note1 = new NoteObject(u[3], project, "foo bar");
 		LogEntry<JakeObject> note1announce = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_NEW_VERSION, note1, me, "initial checkin", null,
 				true);
+		setOrder(note1announce, 2);
 		logEntryDao.create(note1announce);
 
 		LogEntry<JakeObject> note1announce2 = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_NEW_VERSION, note1, me, "improved version", null,
 				false);
+		setOrder(note1announce2, 3);
 		logEntryDao.create(note1announce2);
 
 		file1 = new FileObject(u[5], project, "foo bar");
 		LogEntry<JakeObject> file1announce = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_NEW_VERSION, file1, me, "my version", "mychecksum",
 				true);
+		setOrder(file1announce, 4);
 		logEntryDao.create(file1announce);
 		LogEntry<JakeObject> file1lock = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_LOCK, file1, me, "locking ...", null, true);
 		logEntryDao.create(file1lock);
+		setOrder(file1lock, 5);
 		LogEntry<JakeObject> file1unlock = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_UNLOCK, file1, me, "unlocking ...", null, true);
+		setOrder(file1unlock, 6);
 		logEntryDao.create(file1unlock);
 		LogEntry<JakeObject> file1lock2 = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_LOCK, file1, me, "locking ...", null, true);
+		setOrder(file1lock2, 7);
 		logEntryDao.create(file1lock2);
 		LogEntry<JakeObject> file1delete = new JakeObjectLogEntry(
 				LogAction.JAKE_OBJECT_DELETE, file1, me, "I hate this file",
 				"mychecksum", false);
+		setOrder(file1delete, 8);
 		logEntryDao.create(file1delete);
 
 		Tag tag = new Tag("tag1");
@@ -136,13 +142,21 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		tag2.setObject(file1);
 
 		TagLogEntry file1tag = new TagLogEntry(LogAction.TAG_ADD, tag, me);
+		setOrder(file1tag, 8);
 		logEntryDao.create(file1tag);
 		TagLogEntry file1tag2 = new TagLogEntry(LogAction.TAG_ADD, tag2, me);
+		setOrder(file1tag2, 9);
 		logEntryDao.create(file1tag2);
 		TagLogEntry file1untag = new TagLogEntry(LogAction.TAG_REMOVE, tag, me);
+		setOrder(file1untag, 10);
 		logEntryDao.create(file1untag);
 
 		nofile = new FileObject(u[13], project, "I dont exist");
+	}
+
+	private void setOrder(LogEntry<? extends ILogable> le, int i) {
+		Date d = new Date(1234567890+i*60);
+		le.setTimestamp(d);
 	}
 
 	private UUID[] u = { new UUID(1, 2), new UUID(1, 3), new UUID(1, 4), new UUID(1, 5),
@@ -320,7 +334,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		int i = 0;
 		while (result.get(i).getLogAction() != LogAction.TAG_ADD)
 			i++;
-		LogEntry<? extends ILogable> le = result.get(8);
+		LogEntry<? extends ILogable> le = result.get(i);
 		Assert.assertEquals(LogAction.TAG_ADD, le.getLogAction());
 		LogEntry<Tag> tagle = (LogEntry<Tag>) le;
 		Tag tag = tagle.getBelongsTo();
