@@ -33,7 +33,7 @@ public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 	}
 
 	@Override
-	public T calculate() {
+	public T calculate() throws Exception {
 		log.debug("Calculating AvailableNowObject - direct data return");
 		return this.get();
 	}

@@ -29,7 +29,7 @@ public class AvailableLaterObjectTest {
 		}
 
 		public static AvailableLaterObject<Boolean> provideError() {
-			return new AvailableErrorObject<Boolean>(new Exception("myerror"));
+			return new AvailableErrorObject<Boolean>(new Exception("myerror")).start();
 		}
 
 		public static AvailableLaterObject<Boolean> provideLaterError() {
@@ -113,32 +113,6 @@ public class AvailableLaterObjectTest {
 					return v[i - 1];
 				}
 			}.start();
-		}
-	}
-
-	static class TracingListener<V> implements AvailabilityListener<V> {
-
-		private Tracer tracer;
-
-		public TracingListener(Tracer tracer) {
-			super();
-			this.tracer = tracer;
-		}
-
-		@Override
-		public void error(Exception t) {
-			tracer.step("error: " + t.getMessage());
-		}
-
-		@Override
-		public void finished(V o) {
-			tracer.step("done: " + o.toString());
-		}
-
-		@Override
-		public void statusUpdate(double progress, String status) {
-			// tracer.step("status update");
-			// always nice, but never required
 		}
 	}
 

@@ -19,23 +19,20 @@ public class AvailableErrorObject<T> extends AvailableNowObject<T> {
 	}
 
 	@Override
-	public T calculate() {
-		getListener().error(this.exception);
-		return null;
+	public void setListener(AvailabilityListener<T> listener) {
+		listener.error(this.exception);
+	}
+
+	@Override
+	public T calculate() throws Exception {
+		throw this.exception;
 	}
 
 	private void setException(Exception exception) {
 		this.exception = exception;
-		if (this.getException()==null)
-			this.exception = new NullPointerException();
 	}
 
 	private Exception getException() {
 		return exception;
-	}
-	
-	@Override
-	public void setListener(AvailabilityListener<T> listener) {
-		listener.error(this.getException());
 	}
 }
