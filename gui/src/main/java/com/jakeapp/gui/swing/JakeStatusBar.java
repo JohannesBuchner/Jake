@@ -11,7 +11,7 @@ import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
+import com.jakeapp.gui.swing.controls.SpinningWheel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
@@ -47,7 +47,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
-	private JAsynchronousProgressIndicator progressDrawer;
+	private SpinningWheel progressDrawer;
 	private JLabel progressMessage;
 
 	private static JakeStatusBar getInstance() {
@@ -205,7 +205,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		bottomBar.addComponentToCenter(statusLabel);
 		bottomBar.installWindowDraggerOnWindow(JakeMainView.getMainView().getFrame());
 
-		progressDrawer = new JAsynchronousProgressIndicator();
+		progressDrawer = new SpinningWheel();
 		progressDrawer.setVisible(false);
 		bottomBar.addComponentToLeft(progressDrawer, 3);
 

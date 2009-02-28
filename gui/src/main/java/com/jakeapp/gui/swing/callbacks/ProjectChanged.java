@@ -31,7 +31,12 @@ public interface ProjectChanged {
 		}
 
 		public enum Reason {
-			Created, State, Name, Deleted, Joined, Rejected, People, Invited, Sync, Files
+			Created, StartStopStateChanging, StartStopStateChanged, Name, Deleted, Joined,
+			Rejected, People, Invited, Syncing, Files
+		}
+
+		public boolean isWorking() {
+			return reason == Reason.StartStopStateChanging;
 		}
 	}
 

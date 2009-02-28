@@ -60,7 +60,7 @@ public abstract class NoteAction extends ProjectAction implements NoteSelectionC
 		//XXX very cheap implementation
 		NotesPanel.getInstance().projectChanged(
 						new ProjectChangedEvent(JakeMainApp.getProject(),
-										ProjectChangedEvent.Reason.Sync));
+										ProjectChangedEvent.Reason.Syncing));
 	}
 
 	protected Attributed<NoteObject> getSelectedNote() {

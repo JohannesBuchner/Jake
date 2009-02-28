@@ -612,7 +612,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			throws NoSuchProjectException, FileNotFoundException,
 			IllegalArgumentException {
 
-		log.debug("\n\n\n\n\t\tCalling getProjectSizeTotal");
+		log.debug("Calling getProjectSizeTotal");
 
 
 		AvailableLaterWrapperObject<Long, List<FileObject>> sizeFuture;

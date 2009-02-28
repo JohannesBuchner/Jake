@@ -1,17 +1,11 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.jakeapp.gui.swing.controls.JAsynchronousProgressIndicator;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
-import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.core.domain.FileObject;
 
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.util.HashMap;
 
 
 public class FileStatusTreeCellRenderer extends DefaultTableCellRenderer {
