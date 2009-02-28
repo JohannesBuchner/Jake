@@ -106,10 +106,16 @@
             <artifactId>jxlayer</artifactId>
             <version>3.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.timingframework</groupId>
+            <artifactId>timingframework</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     <scm>
-    	<connection>scm:svn:svn://svn.jakeapp.com/trunk/gui</connection>
-    	<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/gui</developerConnection>
+        <connection>scm:svn:svn://svn.jakeapp.com/trunk/gui</connection>
+        <developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/gui
+        </developerConnection>
     </scm>
     <build>
         <resources>
@@ -155,7 +161,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.doublesignal.sepm.jake.gui.StartJake</mainClass>
+                            <mainClass>com.doublesignal.sepm.jake.gui.StartJake
+                            </mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -174,7 +181,9 @@
                 <configuration>
                     <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
                     <arguments>
-                        <argument>-Xdock:icon=icons/jakeapp-large.png -Xdock:name="Jake"</argument>
+                        <argument>-Xdock:icon=icons/jakeapp-large.png
+                            -Xdock:name="Jake"
+                        </argument>
                     </arguments>
                     <workingDirectory>target/classes</workingDirectory>
                 </configuration>
@@ -226,7 +235,8 @@
                         </tar>
 
                         <!-- Generate Mac app bundle -->
-                        <move file="launcher/target/classes/Jake.app" tofile="target/Jake.app"/>
+                        <move file="launcher/target/classes/Jake.app"
+                              tofile="target/Jake.app"/>
                         <copy todir="target/Jake.app/Contents/Resources/Java">
                             <fileset dir="">
                                 <filename name="*.jnilib"/>

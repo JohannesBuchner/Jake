@@ -29,6 +29,8 @@ import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.swingx.JXHyperlink;
@@ -121,7 +123,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		// register the connection & reg status callback!
 		EventCore.get().addConnectionStatusCallbackListener(this);
 		//EventCore.get().addRegistrationStatusCallbackListener(this);
-				
+
 		// device which panel to show!
 		updateView();
 	}
@@ -151,8 +153,24 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	}
 
 	private JPanel createLoadingAppPanel() {
-		JPanel loader = new JPanel(new MigLayout("wrap 1, fill, center, ins 0"));
+		JPanel loader = new JXPanel(new MigLayout("wrap 1, fill, center, ins 0"));
 		loader.setOpaque(false);
+
+		// the say hello heading
+		JXPanel jakeLogoContainer =
+						new JXPanel(new MigLayout("wrap 1, fill, center, ins 0"));
+		JLabel jakeLogo = new JLabel();
+		ImageIcon jakeLogoImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource("/icons/jakeapp-large.png")));
+		jakeLogo.setIcon(jakeLogoImage);
+		jakeLogoContainer.setOpaque(false);
+		jakeLogoContainer.add(jakeLogo, "center");
+		loader.add(jakeLogoContainer, "center");
+		jakeLogoContainer.setAlpha(1f);
+
+		PropertySetter modifier = new PropertySetter(jakeLogoContainer, "alpha", 1f, 0f);
+		Animator timer = new Animator(10000, modifier);
+		timer.start();
 
 		JAsynchronousProgressIndicator inidcator = new JAsynchronousProgressIndicator();
 		inidcator.startAnimation();
@@ -171,13 +189,8 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginUserPanel.setOpaque(false);
 
 		// the say hello heading
-		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fillx, top, ins 0"));
-		titlePanel.setOpaque(false);
-		JLabel selectUserLabel =
-						new JLabel(getResourceMap().getString("selectUserLabel"));
-		selectUserLabel.setIcon(jakeWelcomeIcon);
-		selectUserLabel.setVerticalTextPosition(JLabel.TOP);
-		titlePanel.add(selectUserLabel, "top, center, h 80!");
+		JPanel titlePanel =
+						createJakeTitle(getResourceMap().getString("selectUserLabel"));
 		loginUserPanel.add(titlePanel, "wrap, gapbottom 20, top, growx, h 80!");
 
 		// add link to create new user
@@ -206,6 +219,16 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		loginUserPanel.add(createAccountBtn, "wrap, center");
 
 		return loginUserPanel;
+	}
+
+	private JPanel createJakeTitle(String message) {
+		JPanel titlePanel = new JPanel(new MigLayout("nogrid, fillx, top, ins 0"));
+		titlePanel.setOpaque(false);
+		JLabel selectUserLabel = new JLabel(message);
+		selectUserLabel.setIcon(jakeWelcomeIcon);
+		selectUserLabel.setVerticalTextPosition(JLabel.TOP);
+		titlePanel.add(selectUserLabel, "top, center, h 80!");
+		return titlePanel;
 	}
 
 
@@ -776,7 +799,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 					showPanel(UserPanels.AddUser);
 				}
 			}
-		}else {
+		} else {
 			showPanel(UserPanels.LoadingApplication);
 		}
 	}
