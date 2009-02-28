@@ -57,8 +57,9 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 	}
 
 	@Override
-	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
+	public Iterable<LogEntry> getPotentialJakeObjectProviders(JakeObject jo) {
 		List<UserId> providers = new LinkedList<UserId>();
+		List<LogEntry> entries = new LinkedList<LogEntry>();
 
 		List<LogEntry<JakeObject>> allVersions = db.getLogEntryDao(jo)
 				.getAllVersionsOfJakeObject(jo);
@@ -69,10 +70,11 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 			if (members.contains(entry.getMember())
 					&& !providers.contains(entry.getMember())) {
 				providers.add(entry.getMember());
+				entries.add(entry);
 			}
 		}
 
-		return providers;
+		return entries;
 	}
 
 	@Override

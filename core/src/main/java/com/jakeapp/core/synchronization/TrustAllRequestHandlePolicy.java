@@ -14,6 +14,7 @@ import org.hsqldb.lib.StringInputStream;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
@@ -37,10 +38,10 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
     private IProjectsFileServices projectsFileServices;
 
 	@Override
-	public Iterable<UserId> getPotentialJakeObjectProviders(JakeObject jo) {
-		List<UserId> providers = new LinkedList<UserId>();
+	public Iterable<LogEntry> getPotentialJakeObjectProviders(JakeObject jo) {
+		List<LogEntry> providers = new LinkedList<LogEntry>();
 		try {
-			providers.add(db.getLogEntryDao(jo).getLastOfJakeObject(jo).getMember());
+			providers.add(db.getLogEntryDao(jo).getLastOfJakeObject(jo)/*.getMember()*/);
 		} catch (NoSuchLogEntryException e) {
 		}
 		return providers;

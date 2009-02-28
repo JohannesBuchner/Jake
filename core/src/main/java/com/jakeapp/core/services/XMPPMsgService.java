@@ -12,9 +12,13 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
  * Implementation of the MessageService for the XMPP Messaging Protocol

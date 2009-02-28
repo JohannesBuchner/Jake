@@ -11,6 +11,7 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -28,6 +29,7 @@ import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
 import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
+import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
@@ -51,6 +53,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -123,7 +126,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 * @param jo
 	 * @return
 	 */
-	public Boolean isNoteObject(JakeObject jo) {
+	public boolean isNoteObject(JakeObject jo) {
+		return jo instanceof NoteObject;
+	}
+	
+	public boolean isFileObject(JakeObject jo) {
 		return jo instanceof NoteObject;
 	}
 
@@ -134,7 +141,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	}
 
 	@Override
-	protected List<UserId> getProjectMembers(Project project)
+	protected Iterable<UserId> getProjectMembers(Project project)
 			throws NoSuchProjectException {
 		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
 	}
@@ -291,9 +298,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Override
 	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException,
 			NotLoggedInException, IllegalArgumentException {
+		
 		LogEntry<JakeObject> le = db.getLogEntryDao(jo).getLastVersion(jo);
 		log.debug("got logentry: " + le);
-		this.getRequestHandlePolicy().getPotentialJakeObjectProviders(jo);
 		if (le == null) { // delete
 			log.debug("lets delete it");
 			try {
@@ -305,19 +312,126 @@ public class SyncServiceImpl extends FriendlySyncService {
 			}
 			return jo;
 		}
-		if (isNoteObject(le.getBelongsTo()))
+		else if (isNoteObject(le.getBelongsTo()))
 			return (T) pullNoteObject(jo.getProject(), le);
-		else
-			return (T) pullFileObject(jo.getProject(), le);
+		else if (isFileObject(le.getBelongsTo()))
+			return (T) pullFileObject(jo.getProject(), (FileObject)le.getBelongsTo());
+		
+		return jo; //TODO null? throw exception?
 	}
-
+	
+	/**
+	 * Sets a LogEntry and all previously happened
+	 * LogEntries, that have the same 'belongsTo' to processed.
+	 * @param le
+	 */
+	@SuppressWarnings("unchecked")
 	@Transactional
-	public FileObject pullFileObject(Project p, LogEntry<JakeObject> le)
-			throws NotLoggedInException {
-		FileObject fo = (FileObject) le.getBelongsTo();
-		String relpath = fo.getRelPath();
+	private void setLogentryProcessed(JakeObject jo,LogEntry<? extends JakeObject> le) {
+		if (jo==null || le==null) return;
+		
+		//TODO there MUST be a better way to do this
+		db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
+		List<LogEntry<JakeObject>> versions = db.getLogEntryDao(jo).
+			getAllVersionsOfJakeObject(jo);
+		for (LogEntry<JakeObject> version : versions)
+			if (!version.isProcessed() && version.getTimestamp().before(le.getTimestamp()))
+				db.getUnprocessedAwareLogEntryDao(jo).setProcessed(version);
+	}
+	
+	protected class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements INegotiationSuccessListener {
+		private IFileTransferService ts;
+		private FileRequest request;
+		private Semaphore sem;
+		
+		private Throwable innerException;
+		
+		public FileRequestObject(IFileTransferService ts, FileRequest request) {
+			super();
+			this.ts = ts;
+			this.request = request;
+			sem = new Semaphore(0);
+			innerException = null;
+		}
 
-		// ICService ics = this.icsManager.getICService(p);
+		@Override
+		public IFileTransfer calculate() throws Exception {
+			ts.request(request, this);
+			//wait for listener
+			sem.acquire();
+			
+			if (this.innerException!=null && innerException instanceof Exception)
+				throw (Exception)innerException;
+			
+			return this.innercontent;
+		}
+
+		@Override
+		public void failed(Throwable reason) {
+			this.innerException = reason;
+			sem.release();
+		}
+
+		@Override
+		public void succeeded(IFileTransfer ft) {
+			this.innercontent = ft;
+			sem.release();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public FileObject pullFileObject(Project p, FileObject fo)
+			throws NotLoggedInException {
+		
+		//TODO preconditions-check
+		if (p==null) ;
+		if (fo==null) ;
+		if (p.getMessageService()==null) ;
+		
+		IFileTransferService ts;
+		IFileTransfer result;
+		FileRequest fr;
+		String relpath = fo.getRelPath();
+		ICService ics = this.icsManager.getICService(p);
+		Iterable<LogEntry> potentialProviders =
+			this.getRequestHandlePolicy().getPotentialJakeObjectProviders(fo);
+		IFileTransferService fts = this.getTransferService(p);
+		UserId remotePeer;
+		com.jakeapp.jake.ics.UserId remoteBackendPeer;
+		
+		for (LogEntry potentialProvider : potentialProviders)
+			if (potentialProvider!=null && potentialProvider.getMember()!=null)
+			{
+				remoteBackendPeer = 
+					this.icsManager.getBackendUserId(p,potentialProvider.getMember());
+				
+				ts = icsManager.getTransferService(p);
+				
+				/*
+				WRONG!
+				ics.getTransferMethodFactory().getTransferMethod(
+					ics.getMsgService(),
+					remoteBackendPeer
+				);
+				*/
+				
+				fr = new FileRequest(relpath, false, remoteBackendPeer);
+				
+				try {
+					result =
+						AvailableLaterWaiter.await(new FileRequestObject(ts,fr));
+					break;
+				}
+				catch (Exception ignored) {
+					//ignore Exception, continue with next potentialProvider
+				}
+			}
+		
+		//TODO handle result
+		//TODO persist file object??
+		//TODO set processed
+
 		// UserId user = this.icsManager.getBackendUserId(p, le.getMember());
 		// IMsgService negotiationService = null;
 		// ITransferMethod tm =
@@ -344,7 +458,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public NoteObject pullNoteObject(Project p, LogEntry<JakeObject> le) {
 		log.debug("pulling note out of log");
 		NoteObject no = (NoteObject) le.getBelongsTo();
-		return db.getNoteObjectDao(no.getProject()).persist(no);
+		
+		no = db.getNoteObjectDao(no.getProject()).persist(no);
+		this.setLogentryProcessed(no, le);
+		return no;
 	}
 
 	@Transactional
@@ -633,6 +750,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 		log.debug("Project " + p + " activated");
 
+		//TODO activate icsManager.getITransferServiceic
+		
 		projectChangeListeners.put(p.getProjectId(), cl);
 		runningProjects.put(p.getProjectId(), p);
 	}
@@ -961,5 +1080,4 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public ICSManager getICSManager() {
 		return icsManager;
 	}
-
 }

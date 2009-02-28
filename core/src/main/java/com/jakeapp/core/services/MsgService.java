@@ -11,6 +11,7 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import org.apache.log4j.Logger;
