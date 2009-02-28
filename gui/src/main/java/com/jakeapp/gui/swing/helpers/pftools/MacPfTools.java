@@ -23,6 +23,7 @@ public class MacPfTools extends AbstractPfTools {
 	 */
 	@Override
 	public Icon getFileIcon(File file, int size) {
+		log.debug("file: " + file + ", size: " + size);
 		return ch.randelshofer.quaqua.filechooser.Files.getIcon(file, size);
 	}
 }

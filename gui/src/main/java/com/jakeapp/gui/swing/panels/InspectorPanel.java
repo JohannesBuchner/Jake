@@ -286,7 +286,8 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 
 	@Override
 	public void fileSelectionChanged(FileSelectedEvent event) {
-		this.setFileObject(event.getSingleFile());
+		log.debug("received a fileSelectedEvent from the EventCore");
+		this.setFileObject(JakeMainApp.getCore().getJakeObjectSyncStatus(this.getProject(), event.getSingleFile()));
 	}
 
 	public Attributed<NoteObject> getAttributedNoteObject() {

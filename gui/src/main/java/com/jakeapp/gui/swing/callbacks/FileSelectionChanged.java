@@ -17,34 +17,34 @@ public interface FileSelectionChanged {
 	 * I think this is ugly, but Peter > me.
 	 */
 	public class FileSelectedEvent {
-		private List<Attributed<FileObject>> attributedFiles;
+		private List<FileObject> files;
 
-		public FileSelectedEvent(List<Attributed<FileObject>> files) {
-			this.attributedFiles = files;
+		public FileSelectedEvent(List<FileObject> files) {
+			this.files = files;
 		}
 
 		public int size() {
-			return this.attributedFiles.size();
+			return this.files.size();
 		}
 
 		public boolean isSingleFileSelected() {
-			return (this.attributedFiles != null) && this.attributedFiles.size() == 1;
+			return (this.files != null) && this.files.size() == 1;
 		}
 
 		public boolean isNoFileSelected() {
-			return (this.attributedFiles == null) || this.attributedFiles.size() == 0;
+			return (this.files == null) || this.files.size() == 0;
 		}
 
 		public boolean isMultipleFilesSelected() {
-			return (this.attributedFiles != null) && this.attributedFiles.size() > 1;
+			return (this.files != null) && this.files.size() > 1;
 		}
 
-		public Attributed<FileObject> getSingleFile() {
-			return (this.attributedFiles != null && this.attributedFiles.size() == 1) ? this.attributedFiles.get(0) : null;
+		public FileObject getSingleFile() {
+			return (this.files != null && this.files.size() == 1) ? this.files.get(0) : null;
 		}
 
-		public List<Attributed<FileObject>> getFiles() {
-			return this.attributedFiles;
+		public List<FileObject> getFiles() {
+			return this.files;
 		}
 	}
 

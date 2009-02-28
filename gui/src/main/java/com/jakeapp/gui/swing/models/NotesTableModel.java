@@ -31,14 +31,13 @@ public class NotesTableModel extends DefaultTableModel {
 	private List<String> columnNames;
 	private List<Attributed<NoteObject>> attributedNotes;
 	private ResourceMap resourceMap;
-	private ICoreAccess core;
 	private Icon padlock, shared_note;
 
 	public NotesTableModel() {
 		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
 
 		this.attributedNotes = new ArrayList<Attributed<NoteObject>>();
-		this.core = JakeMainApp.getCore();
+		JakeMainApp.getCore();
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));

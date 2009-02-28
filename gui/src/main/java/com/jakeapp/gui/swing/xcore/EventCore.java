@@ -166,8 +166,8 @@ public class EventCore {
 
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
 		log.debug("notify selection listeners");
-		for (FileSelectionChanged c : fileSelectionListeners) {
-			//c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
+		for (FileSelectionChanged listener : fileSelectionListeners) {
+			listener.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
 		}
 	}
 
