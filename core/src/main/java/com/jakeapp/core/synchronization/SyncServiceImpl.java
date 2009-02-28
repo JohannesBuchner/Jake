@@ -621,6 +621,24 @@ public class SyncServiceImpl extends FriendlySyncService {
 		@Override
 		@Transactional
 		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+			if (content.startsWith(POKE_MESSAGE)) {
+				log.info("Received poke from " + from_userid.getUserId());
+				log.debug("This means we should sync logs!");
+
+				// Eventually, this should consider things such as trust
+				UserId user = getICSManager().getFrontendUserId(p, from_userid);
+				try {
+					SyncServiceImpl.this.startLogSync(p, user);
+				} catch (IllegalProtocolException e) {
+					// This should neeeeeeeeever happen
+					log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
+									e);
+				}
+				return;
+			}
+
+			// TODO: The stuff below here could use some refactoring 
+			// (e.g. redeclaring parameter content)
 			int uuidlen = UUID.randomUUID().toString().length();
 			String projectid = content.substring(0, uuidlen);
 			content = content.substring(uuidlen);
@@ -654,19 +672,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 							cl.beganRequest(fo));
 				} catch (NotLoggedInException e) {
 					log.error("Not logged in");
-				}
-			}
-			if (content.startsWith(POKE_MESSAGE)) {
-				log.debug("Something has happened - let's sync logs");
-
-				// Eventually, this should consider things such as trust
-				UserId user = getICSManager().getFrontendUserId(p, from_userid);
-				try {
-					SyncServiceImpl.this.startLogSync(p, user);
-				} catch (IllegalProtocolException e) {
-					// This should neeeeeeeeever happen
-					log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
-									e);
 				}
 			}
 		}
