@@ -36,7 +36,7 @@ public enum LogAction implements Serializable {
 	 * additional storing: whether {@link FileObject} or {@link NoteObject},
 	 * relpath/UUID<br/>
 	 * important LogEntry attributes: comment, checksum
-     * is always an instance of {@link JakeObjectLogEntry}
+     * is always an instance of {@link JakeObjectNewVersionLogEntry}
 	 */
 	JAKE_OBJECT_NEW_VERSION,
 
@@ -46,7 +46,7 @@ public enum LogAction implements Serializable {
 	 * additional storing: whether {@link FileObject} or {@link NoteObject},
 	 * relpath/UUID<br/>
 	 * important LogEntry attributes: comment
-     * is always an instance of {@link JakeObjectLogEntry}
+     * is always an instance of {@link JakeObjectDeleteLogEntry}
 	 */
 	JAKE_OBJECT_DELETE,
 
@@ -95,6 +95,7 @@ public enum LogAction implements Serializable {
 	 * the object has been soft locked. <br/>
 	 * belongsTo: {@link JakeObject} <br/>
 	 * important LogEntry attributes: commitmsg
+     * always an instance of {@link JakeObjectLockLogEntry }
 	 */
 	JAKE_OBJECT_LOCK,
 
@@ -102,6 +103,7 @@ public enum LogAction implements Serializable {
 	 * the object has been soft locked. <br/>
 	 * belongsTo: {@link JakeObject} <br/>
 	 * important LogEntry attributes: commitmsg
+     * always an instance of {@link JakeObjectUnlockLogEntry }
 	 */
 	JAKE_OBJECT_UNLOCK
 

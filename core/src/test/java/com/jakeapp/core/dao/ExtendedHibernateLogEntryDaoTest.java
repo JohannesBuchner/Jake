@@ -18,21 +18,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectLogEntry;
-import com.jakeapp.core.domain.ProjectMemberLogEntry;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TagLogEntry;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;
@@ -100,38 +86,38 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		logEntryDao.create(projectLogEntry);
 
 		note1 = new NoteObject(u[3], project, "foo bar");
-		LogEntry<JakeObject> note1announce = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_NEW_VERSION, note1, me, "initial checkin", null,
+		LogEntry<JakeObject> note1announce = new JakeObjectNewVersionLogEntry(
+				note1, me, "initial checkin", null,
 				true);
 		setOrder(note1announce, 2);
 		logEntryDao.create(note1announce);
 
-		LogEntry<JakeObject> note1announce2 = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_NEW_VERSION, note1, me, "improved version", null,
+		LogEntry<JakeObject> note1announce2 = new JakeObjectNewVersionLogEntry(
+				 note1, me, "improved version", null,
 				false);
 		setOrder(note1announce2, 3);
 		logEntryDao.create(note1announce2);
 
 		file1 = new FileObject(u[5], project, "foo bar");
-		LogEntry<JakeObject> file1announce = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_NEW_VERSION, file1, me, "my version", "mychecksum",
+		LogEntry<JakeObject> file1announce = new JakeObjectNewVersionLogEntry(
+				file1, me, "my version", "mychecksum",
 				true);
 		setOrder(file1announce, 4);
 		logEntryDao.create(file1announce);
-		LogEntry<JakeObject> file1lock = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_LOCK, file1, me, "locking ...", null, true);
+		LogEntry<JakeObject> file1lock = new JakeObjectLockLogEntry(
+				file1, me, "locking ...", null, true);
 		logEntryDao.create(file1lock);
 		setOrder(file1lock, 5);
-		LogEntry<JakeObject> file1unlock = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_UNLOCK, file1, me, "unlocking ...", null, true);
+		LogEntry<JakeObject> file1unlock = new JakeObjectUnlockLogEntry(
+				file1, me, "unlocking ...", null, true);
 		setOrder(file1unlock, 6);
 		logEntryDao.create(file1unlock);
-		LogEntry<JakeObject> file1lock2 = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_LOCK, file1, me, "locking ...", null, true);
+		LogEntry<JakeObject> file1lock2 = new JakeObjectLockLogEntry(
+				file1, me, "locking ...", null, true);
 		setOrder(file1lock2, 7);
 		logEntryDao.create(file1lock2);
-		LogEntry<JakeObject> file1delete = new JakeObjectLogEntry(
-				LogAction.JAKE_OBJECT_DELETE, file1, me, "I hate this file",
+		LogEntry<JakeObject> file1delete = new JakeObjectDeleteLogEntry(
+				file1, me, "I hate this file",
 				"mychecksum", false);
 		setOrder(file1delete, 8);
 		logEntryDao.create(file1delete);

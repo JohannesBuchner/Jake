@@ -15,20 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.JakeObjectLogEntry;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProjectLogEntry;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TagLogEntry;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;
@@ -182,8 +169,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 				.fromString("509161b3-999e-4cb8-914b-31816c54c2ca"), testProject,
 				"content");
 
-		LogEntry<JakeObject> noteObjectLogEntry = new JakeObjectLogEntry(LogAction.JAKE_OBJECT_NEW_VERSION,
-				note, projectMember,
+		LogEntry<JakeObject> noteObjectLogEntry = new JakeObjectNewVersionLogEntry(note, projectMember,
 				"testGetAll_NoteObjectLogEntry", "testGetAll_NoteObjectLogEntry", false);
 
 		logEntryDao.create(noteObjectLogEntry);
@@ -214,8 +200,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 				.fromString("35fd9e4d-7810-4110-a1d1-7db0c1c10068"), testProject, "/tmp");
 
 
-		LogEntry<JakeObject> fileObjectLogEntry = new JakeObjectLogEntry(LogAction.JAKE_OBJECT_NEW_VERSION,
-				fileObject, projectMember,
+		LogEntry<JakeObject> fileObjectLogEntry = new JakeObjectNewVersionLogEntry(	fileObject, projectMember,
 				"testGetAll_FileObjectLogEntry", "testGetAll_FileObjectLogEntry", false);
 
 		logEntryDao.create(fileObjectLogEntry);

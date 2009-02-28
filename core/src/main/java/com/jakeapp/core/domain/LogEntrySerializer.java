@@ -290,7 +290,7 @@ public class LogEntrySerializer {
             }
             case JAKE_OBJECT_LOCK: {
                 Project p = null;
-                JakeObjectLogEntry result;
+                JakeObjectLockLogEntry result;
 
                 p = projectDao.read(projectUUID); // throws NoSuchProjectException
 
@@ -325,7 +325,7 @@ public class LogEntrySerializer {
             }
             case JAKE_OBJECT_NEW_VERSION: {
                 Project p = null;
-                JakeObjectLogEntry result;
+                JakeObjectNewVersionLogEntry result;
 
                 p = projectDao.read(projectUUID); // throws NoSuchProjectException
 
