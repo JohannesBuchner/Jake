@@ -14,4 +14,20 @@ public interface IProjectInvitationListener {
 	 */
 	public void invited(UserId user, Project p);
 
+	/**
+	 * the user has accepted the invitation
+	 * 
+	 * @param user
+	 * @param p
+	 */
+	public void accepted(UserId user, Project p);
+
+	/**
+	 * the user has accepted the invitation
+	 * 
+	 * @param user
+	 * @param p
+	 */
+	public void rejected(UserId user, Project p);
+
 }

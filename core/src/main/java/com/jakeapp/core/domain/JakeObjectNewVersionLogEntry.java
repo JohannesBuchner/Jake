@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 
 
 @Entity
-@DiscriminatorColumn(name = "action")
 @DiscriminatorValue(value = "JAKE_OBJECT_NEW_VERSION")
 public class JakeObjectNewVersionLogEntry extends JakeObjectLogEntry {
     public JakeObjectNewVersionLogEntry(JakeObject belongsTo, UserId member, String comment, String checksum, Boolean processed) {

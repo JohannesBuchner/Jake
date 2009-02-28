@@ -6,7 +6,6 @@ import javax.persistence.DiscriminatorValue;
 
 
 @Entity
-@DiscriminatorColumn(name = "action")
 @DiscriminatorValue(value = "JAKE_OBJECT_LOCK")
 public class JakeObjectLockLogEntry extends JakeObjectLogEntry {
     public JakeObjectLockLogEntry(JakeObject belongsTo, UserId member, String comment, String checksum, Boolean processed) {

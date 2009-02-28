@@ -1065,4 +1065,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		
 		this.invitationListener.invited(user, project);
 	}
+
+	@Override
+	public void accepted(UserId user, Project p) {
+		this.invitationListener.accepted(user, p);
+	}
+
+	@Override
+	public void rejected(UserId user, Project p) {
+		this.invitationListener.rejected(user, p);
+	}
 }

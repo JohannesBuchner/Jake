@@ -88,6 +88,16 @@ public class JakeCommander extends Commander {
 					System.out.println("got invitation from " + user + " to " + p);
 					JakeCommander.this.project = p;
 				}
+
+				@Override
+				public void accepted(UserId user, Project p) {
+					System.out.println("got accept from " + user + " to " + p);
+				}
+
+				@Override
+				public void rejected(UserId user, Project p) {
+					System.out.println("got reject from " + user + " to " + p);
+				}
 				
 			});
 			

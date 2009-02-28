@@ -71,13 +71,8 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 			try {
 				String innercontent = content.substring(INVITEMSG.length());
 				String uuidstr = innercontent.substring(0, uuidlen);
-				UUID uuid = UUID.fromString(uuidstr);
-				String projectname = innercontent.substring(uuidlen);
-
-				Project p = new Project(projectname, uuid, msg, null);
-				p.setRootPath("");
+				Project p = getProject(innercontent, uuidstr);
 				p.setInvitationState(InvitationState.INVITED);
-				p.setCredentials(msg.getServiceCredentials());
 
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 
@@ -90,9 +85,53 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 			} catch (Exception e) {
 				log.warn("error decoding invite message", e);
 			}
+		}else if (content.startsWith(ACCEPTMSG)) {
+			try {
+				String innercontent = content.substring(ACCEPTMSG.length());
+				String uuidstr = innercontent.substring(0, uuidlen);
+				Project p = getProject(innercontent, uuidstr);
+
+				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+
+				log.info("got invited to Project " + p + " by " + from_userid);
+				if (this.invitationListener == null) {
+					log.warn("no invitationListener registered! ignoring invite!");
+				} else {
+					this.invitationListener.accepted(user, p);
+				}
+			} catch (Exception e) {
+				log.warn("error decoding accept message", e);
+			}
+		}else if (content.startsWith(REJECTMSG)) {
+				try {
+					String innercontent = content.substring(REJECTMSG.length());
+					String uuidstr = innercontent.substring(0, uuidlen);
+					Project p = getProject(innercontent, uuidstr);
+
+					UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+
+					log.info("got invited to Project " + p + " by " + from_userid);
+					if (this.invitationListener == null) {
+						log.warn("no invitationListener registered! ignoring invite!");
+					} else {
+						this.invitationListener.rejected(user, p);
+					}
+				} catch (Exception e) {
+					log.warn("error decoding reject message", e);
+				}
 		}else{
 			log.info("ignoring unknown message: " + content);
 		}
+	}
+
+	private Project getProject(String innercontent, String uuidstr) {
+		UUID uuid = UUID.fromString(uuidstr);
+		String projectname = innercontent.substring(uuidlen);
+
+		Project p = new Project(projectname, uuid, msg, null);
+		p.setRootPath("");
+		p.setCredentials(msg.getServiceCredentials());
+		return p;
 	}
 
 	private static String createInviteMessage(Project project) {

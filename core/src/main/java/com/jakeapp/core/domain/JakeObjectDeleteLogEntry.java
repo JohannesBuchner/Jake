@@ -5,7 +5,6 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 
 @Entity
-@DiscriminatorColumn(name = "action")
 @DiscriminatorValue(value = "JAKE_OBJECT_DELETE")
 public class JakeObjectDeleteLogEntry extends JakeObjectLogEntry {
     public JakeObjectDeleteLogEntry(JakeObject belongsTo, UserId member, String comment, String checksum, Boolean processed) {

@@ -5,7 +5,6 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 
 @Entity
-@DiscriminatorColumn(name = "action")
 @DiscriminatorValue(value = "TAG_REMOVE")
 public class TagRemoveLogEntry extends TagLogEntry {
 
