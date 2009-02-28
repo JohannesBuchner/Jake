@@ -36,6 +36,7 @@ public enum LogAction implements Serializable {
 	 * additional storing: whether {@link FileObject} or {@link NoteObject},
 	 * relpath/UUID<br/>
 	 * important LogEntry attributes: comment, checksum
+     * is always an instance of {@link JakeObjectLogEntry}
 	 */
 	JAKE_OBJECT_NEW_VERSION,
 
@@ -45,6 +46,7 @@ public enum LogAction implements Serializable {
 	 * additional storing: whether {@link FileObject} or {@link NoteObject},
 	 * relpath/UUID<br/>
 	 * important LogEntry attributes: comment
+     * is always an instance of {@link JakeObjectLogEntry}
 	 */
 	JAKE_OBJECT_DELETE,
 

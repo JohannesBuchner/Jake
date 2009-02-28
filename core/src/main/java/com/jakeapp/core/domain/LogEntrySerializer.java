@@ -16,13 +16,11 @@ public class LogEntrySerializer {
     private final String SEPERATOR = "XXAAAXXX"; //  SEPERATOR LOOKS LIKE |\/|
     private final String SEPERATOR_REGEX = "XXAAAXXX";
 
-    public LogEntrySerializer(IProjectDao projectDao)
-    {
+    public LogEntrySerializer(IProjectDao projectDao) {
         this.projectDao = projectDao;
     }
 
-    public String serialize(ProjectLogEntry logEntry)
-    {
+    public String serialize(ProjectLogEntry logEntry) {
 
         Project project = logEntry.getProject();
 
@@ -38,19 +36,49 @@ public class LogEntrySerializer {
 
         sb.append(SEPERATOR).append(project.getName());
 
-//        sb.append(SEPERATOR).append();
 
-
-
-
+        sb.append(SEPERATOR);
 
         return sb.toString();
     }
-    
 
-    public String serialize(LogEntry<ILogable> logEntry, Project project)
-    {
 
+    public String serialize(JakeObjectLogEntry logEntry, Project project) {
+
+
+        StringBuffer sb = new StringBuffer(500);
+
+        sb.append(SEPERATOR).append(project.getProjectId());
+        sb.append(SEPERATOR).append(logEntry.getTimestamp().getTime());
+        sb.append(SEPERATOR).append(logEntry.getLogAction().ordinal());
+        sb.append(SEPERATOR).append(logEntry.getMember().getProtocolType().ordinal());
+        sb.append(SEPERATOR).append(logEntry.getMember().getUserId());
+        sb.append(SEPERATOR).append(logEntry.getUuid().toString());
+
+        sb.append(SEPERATOR);
+        if (logEntry.getBelongsTo() instanceof FileObject) {
+            sb.append("F");
+            sb.append(SEPERATOR).append(((FileObject) logEntry.getBelongsTo()).getRelPath());
+        } else if (logEntry.getBelongsTo() instanceof NoteObject) {
+            sb.append("N");
+            sb.append(SEPERATOR).append(((NoteObject) logEntry.getBelongsTo()).getContent());
+        } else
+            throw new UnsupportedOperationException();
+
+        sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUuid().toString());
+
+        sb.append(SEPERATOR).append(logEntry.getComment());
+        sb.append(SEPERATOR).append(logEntry.getChecksum());
+
+//        sb.append(SEPERATOR).append(project.getName());
+
+
+        sb.append(SEPERATOR);
+        return sb.toString();
+    }
+
+
+    public String serialize(LogEntry<ILogable> logEntry, Project project) {
 
 
         throw new UnsupportedOperationException();
@@ -58,14 +86,10 @@ public class LogEntrySerializer {
     }
 
 
-
-
-
-
-    public LogEntry deserialize(String input) throws NoSuchProjectException {
+    public LogEntry<? extends ILogable> deserialize(String input) throws NoSuchProjectException {
         String[] parts = input.split(SEPERATOR_REGEX);
 
-        if(parts.length < 4)
+        if (parts.length < 4)
             throw new InvalidDeserializerCallException();
 
         UUID projectUUID = UUID.fromString(parts[1]);
@@ -78,13 +102,11 @@ public class LogEntrySerializer {
         UUID logEntryUUID = UUID.fromString(parts[6]);
 
 
-
         System.out.println("projectUUID = " + projectUUID);
         System.out.println("date = " + date);
         System.out.println("logAction = " + logAction);
 
-        for(String part : parts)
-        {
+        for (String part : parts) {
             System.out.println("part = " + part);
         }
 
@@ -96,22 +118,67 @@ public class LogEntrySerializer {
                 break;
             case JAKE_OBJECT_LOCK:
                 break;
-            case JAKE_OBJECT_NEW_VERSION:
-                break;
+            case JAKE_OBJECT_NEW_VERSION: {
+                Project p = null;
+                JakeObjectLogEntry result;
+                
+                p = projectDao.read(projectUUID); // throws NoSuchProjectException
+
+                String type = parts[7];
+
+                JakeObject jakeObject;
+                if (type.equals("F")) {
+                    String relPath = parts[8];
+                    jakeObject = new FileObject(p, relPath);
+                } else if (type.equals("N")) {
+                    String content = parts[8];
+                    jakeObject = new NoteObject(p, content);
+
+
+                } else
+                    throw new InvalidDeserializerCallException();
+
+                jakeObject.setUuid(UUID.fromString(parts[9]));
+
+
+                String comment = parts[10];
+                String checksum = parts[11];
+
+
+
+                result = new JakeObjectLogEntry(logAction, jakeObject, remoteUser, comment, checksum, false);
+
+
+                /// always do this
+                result.setTimestamp(date);
+                result.setUuid(logEntryUUID);
+                return result;
+
+            }
+
             case JAKE_OBJECT_UNLOCK:
                 break;
             case NOOP:
                 break;
             case PROJECT_CREATED:
+            {
+                ProjectLogEntry result;
                 String projectName = parts[7];
+                Project p = null;
+                try {
+                    p = projectDao.read(projectUUID);
+                } catch (NoSuchProjectException e) {
+                    p = new Project(projectName, projectUUID, null, null);
+                }
 
-                Project p = projectDao.read(projectUUID);
-//                Project p = new Project(projectName, projectUUID, null, null);
-                ProjectLogEntry result =  new ProjectLogEntry(p, remoteUser);
+                result = new ProjectLogEntry(p, remoteUser);
+
+
+                /// always do this
                 result.setTimestamp(date);
                 result.setUuid(logEntryUUID);
-
-                return result; 
+                return result;
+            }
             case START_TRUSTING_PROJECTMEMBER:
                 break;
             case STOP_TRUSTING_PROJECTMEMBER:
@@ -121,8 +188,6 @@ public class LogEntrySerializer {
             case TAG_REMOVE:
                 break;
         }
-
-
 
 
         throw new UnsupportedOperationException();
