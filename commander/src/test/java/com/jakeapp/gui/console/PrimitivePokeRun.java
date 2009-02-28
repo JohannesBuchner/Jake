@@ -32,7 +32,7 @@ public class PrimitivePokeRun extends TmpdirEnabledTestCase {
 		fifo.addLine("coreLogin john@localhost jake");
 		fifo.addLine("login");
 		fifo.addLine("openProject c:\\jake\\test3");
-		fifo.addLine("startProject c:\\jake\\test3");
+		fifo.addLine("startProject");
 		fifo.addLine("poke john@localhost");
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");

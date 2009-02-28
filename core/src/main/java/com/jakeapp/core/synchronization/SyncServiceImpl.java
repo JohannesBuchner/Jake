@@ -273,7 +273,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 		ICService ics = getICS(project);
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			ics.getMsgService().sendMessage(uid, POKE_MESSAGE);
+			String message = getUUIDStringForProject(project) + POKE_MESSAGE;
+			log.debug("Sending message: \"" + message + "\"");
+			ics.getMsgService().sendMessage(uid, message);
 		} catch (NetworkException e) {
 			log.debug("Could not poke user " + pm.getUserId(), e);
 		} catch (OtherUserOfflineException e) {
@@ -372,7 +374,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		ICService ics = getICS(project);
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			ics.getMsgService().sendMessage(uid, REQUEST_LOGS_MESSAGE);
+			ics.getMsgService().sendMessage(uid, getUUIDStringForProject(project) + REQUEST_LOGS_MESSAGE);
 		} catch (NetworkException e) {
 			log.debug("Could not request logs from user " + pm.getUserId(), e);
 		} catch (OtherUserOfflineException e) {
@@ -653,9 +655,19 @@ public class SyncServiceImpl extends FriendlySyncService {
 		@Transactional
 		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
 			String projectUUID = getProjectUUID(content);
-			log.info("Received a message for project " + projectUUID);
+			log.debug("Received a message for project " + projectUUID);
 
-			if (content.startsWith(POKE_MESSAGE)) {
+			if(!projectUUID.equals(p.getProjectId())) {
+				log.debug("Discarding message because it's not for this project");
+				return;
+			}
+
+			log.debug("Message is for this project!");
+
+			String message = content.substring(BEGIN_PROJECT_UUID.length() + projectUUID.length() + END_PROJECT_UUID.length());
+			log.debug("Message content: \"" + message + "\"");
+
+			if (message.startsWith(POKE_MESSAGE)) {
 				log.info("Received poke from " + from_userid.getUserId());
 				log.debug("This means we should sync logs!");
 
@@ -671,7 +683,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 				return;
 			}
 
-			if (content.startsWith(REQUEST_LOGS_MESSAGE)) {
+			if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
 				log.info("Received logs request from " + from_userid.getUserId());
 
 				// TODO: Send our logs to this user
@@ -682,13 +694,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 			// TODO: The stuff below here could use some refactoring 
 			// (e.g. redeclaring parameter content)
 			int uuidlen = UUID.randomUUID().toString().length();
-			String projectid = content.substring(0, uuidlen);
-			content = content.substring(uuidlen);
+			String projectid = message.substring(0, uuidlen);
+			message = message.substring(uuidlen);
 			Project p = getProjectByUserId(projectid);
 			ChangeListener cl = projectChangeListeners.get(projectid);
-			if (content.startsWith(NEW_NOTE)) {
+			if (message.startsWith(NEW_NOTE)) {
 				log.debug("requesting note");
-				UUID uuid = UUID.fromString(content.substring(NEW_NOTE.length()));
+				UUID uuid = UUID.fromString(message.substring(NEW_NOTE.length()));
 				log.debug("persisting object");
 				NoteObject no = new NoteObject(uuid, p, "loading ...");
 				db.getNoteObjectDao(p).persist(no);
@@ -701,9 +713,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 					log.error("Not logged in");
 				}
 			}
-			if (content.startsWith(NEW_FILE)) {
+			if (message.startsWith(NEW_FILE)) {
 				log.debug("requesting file");
-				String relpath = content.substring(NEW_FILE.length());
+				String relpath = message.substring(NEW_FILE.length());
 				FileObject fo = new FileObject(p, relpath);
 				log.debug("persisting object");
 				db.getFileObjectDao(p).persist(fo);
