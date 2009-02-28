@@ -13,6 +13,7 @@ import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
@@ -200,7 +201,6 @@ public class EventCore {
 */
 
 	private class ProjectsChangeListener implements ChangeListener {
-
 		public ProjectsChangeListener() {
 		}
 
@@ -246,10 +246,18 @@ public class EventCore {
 
 		@Override public void accepted(UserId user, Project p) {
 			log.debug("accepted: " + user + ", project" + p);
+
+			// TODO: find a better place for that
+			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+							"User " + user + " accepted your Invitation to " + p);
 		}
 
 		@Override public void rejected(UserId user, Project p) {
 			log.debug("rejected" + user + ", project" + p);
+
+			// TODO: find a better place for that			
+			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+							"User " + user + " rejected your Invitation to " + p);
 		}
 	}
 }

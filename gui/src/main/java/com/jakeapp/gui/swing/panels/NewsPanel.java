@@ -8,6 +8,7 @@ import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.TrustFullPeopleAction;
 import com.jakeapp.gui.swing.actions.TrustNoPeopleAction;
 import com.jakeapp.gui.swing.actions.TrustPeopleAction;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
@@ -33,11 +34,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumSet;
 
 /**
  * @author studpete
  */
-public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged {
+public class NewsPanel extends javax.swing.JPanel implements
+				ProjectSelectionChanged, ProjectChanged, DataChanged {
 
 	private static final long serialVersionUID = -6867091182930736758L;
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
@@ -145,6 +148,12 @@ public class NewsPanel extends javax.swing.JPanel implements ProjectSelectionCha
 							}
 						});
 		this.eventsTableUpdateTimer.start();
+	}
+
+	@Override public void dataChanged(EnumSet<Reason> reason) {
+		if(reason.contains(Reason.LogEntries)) {
+			this.updatePanel();
+		}
 	}
 
 
