@@ -111,7 +111,7 @@ public class MsgServiceFactory {
 						.getProtocol() + " for " + msgService.getServiceCredentials()
 						.getUserId() + " pwl: " + msgService.getServiceCredentials()
 						.getPlainTextPassword().length() + "with UserId: " + msgService
-						.getUserId());
+						.getUserId() + " and its status is: " + msgService.getVisibilityStatus());
 
 		return msgService;
 	}

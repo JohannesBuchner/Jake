@@ -98,9 +98,11 @@ public abstract class MsgService<T extends UserId> {
 		if (!checkCredentials())
 			return false;
 
+		log.debug("before doLogin: " + this.getVisibilityStatus());
 		result = this.doLogin();
-
+		log.debug("plain login has happened " + this.getVisibilityStatus());
 		updateActiveSubsystems();
+		
 
 		return result;
 	}
@@ -211,7 +213,10 @@ public abstract class MsgService<T extends UserId> {
 			// FIXME: This needs to be fixed - but **elsewhere**
 			// @christopher: There was a reason for this being here ;)
 		   //    setting it to offline breaks the intarnets!!!!111
-			return VisibilityStatus.ONLINE;
+			//return VisibilityStatus.ONLINE;
+			
+			//it seems to work now...
+			return VisibilityStatus.OFFLINE;
 		}
 	}
 
@@ -284,14 +289,14 @@ public abstract class MsgService<T extends UserId> {
 
 		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
-
+		log.debug("before updateSubSystemStatus: " + this.getVisibilityStatus());
 		updateSubsystemStatus(ics, listeners);
+		log.debug("after updateSubSystemStatus: " + this.getVisibilityStatus());
 	}
 
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
 			throws NetworkException {
-		log
-				.debug("updating status of " + ics + " to match "
+		log.warn("updating status of " + ics + " to match "
 						+ this.getVisibilityStatus());
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = this.getIcsUser(ics, listeners);

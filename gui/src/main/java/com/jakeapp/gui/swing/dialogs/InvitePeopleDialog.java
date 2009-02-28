@@ -80,7 +80,9 @@ public class InvitePeopleDialog extends JakeDialog {
 	 * Reads the comboBox and sends the invites to the core.
 	 */
 	private void invitePeopleAction() {
-		JakeMainApp.getCore().invitePeople(getProject(), peopleComboBox.getSelectedItem().toString());
+		if (peopleComboBox.getSelectedItem() != null)
+			JakeMainApp.getCore().invitePeople(getProject(),
+					peopleComboBox.getSelectedItem().toString());
 		closeDialog();
 	}
 

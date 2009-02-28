@@ -88,8 +88,8 @@ public class FailoverICSManager implements ICSManager {
 	@Override
 	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u) {
 		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
-			log.debug("Creating new XMPPICService for userId "
-				 + p.getCredentials().getUserId());
+			log.debug("Creating new XMPPUserId for userId "
+				 + u);
 			return new XmppUserId(u.getUserId() + "/" + p.getProjectId());
 		} else {
 			log.fatal("Currently unsupported protocol given");

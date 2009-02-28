@@ -207,8 +207,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (!p.getUserId().equals(p.getMessageService().getUserId()))
 			throw new IllegalStateException();
 
-		// if a project is in started-state, we have to start some stuff for it
+		/*
+		 * A project, that has the started-property set although it was just fetched from
+		 * the database was started the last time the user manipulated it and must be
+		 * restarted here.
+		 */
 		if(p.isStarted()) {
+			p.setStarted(false);
 			this.startProject(p);
 		}
 
@@ -890,6 +895,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		try {
 			// get all possible people
+			log.debug("before usersService.getUsers;status is: " + msgService.getVisibilityStatus());
 			possibleBackendUsers = usersService.getUsers();
 
 			// convert them to 'frontend-users'
