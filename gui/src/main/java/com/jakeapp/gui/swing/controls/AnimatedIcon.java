@@ -12,10 +12,6 @@
  */
 package com.jakeapp.gui.swing.controls;
 
-import sun.awt.image.GifImageDecoder;
-import sun.awt.image.ImageDecoder;
-import sun.awt.image.InputStreamImageSource;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -70,7 +66,8 @@ public class AnimatedIcon implements Icon {
                 catch(Exception e) {
                     e.printStackTrace();
                 }
-                if (is == null) {
+                /*
+                if (is == null) {  
                     try {
                         // Beware: lots of hackery to obtain the image input stream
                         // Be sure to catch security exceptions
@@ -91,7 +88,7 @@ public class AnimatedIcon implements Icon {
                         e.printStackTrace();
                     }
                 }
-							/*
+
                 if (is != null) {
                     GifDecoder decoder = new GifDecoder();
                     decoder.read(is);

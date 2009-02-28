@@ -126,16 +126,23 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 			if (Platform.isWin() || Platform.isMac()) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} else {
-				// try to use nimbus (available starting j6u10)
-				try {
-					UIManager.setLookAndFeel(
-									"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-				} catch (Exception r) {
-					// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				}
-			}
-		} catch (Exception e) {
+                // try to use nimbus (available starting j6u10)
+
+                // FIXME: detect <= j6u10
+                if (false) {
+                    try {
+                        UIManager.setLookAndFeel(
+                                "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+
+                    } catch (Exception r) {
+                        // and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    }
+                }else {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+            }
+        } catch (Exception e) {
 			log.warn("LAF Exception: ", e);
 		}
 
