@@ -134,7 +134,7 @@ public class Project implements ILogable {
 	 */
 	@Column(name = "ROOTPATH", nullable = false)
 	public String getRootPath() {
-		return this.rootPath.toString();
+		return this.rootPath != null ? this.rootPath.toString() : null;
 	}
 
 	public void setRootPath(final String rootPath) {

@@ -17,21 +17,33 @@ public class FileIconLabelHelper {
 
 	private static JFileChooser fileChooser = new JFileChooser();
 
+	public static Icon getIcon(File file) {
+		try {
+			return fileChooser.getIcon(file);
+		} catch (NullPointerException e) {
+			log.info("Error getting icon for " + file.getAbsolutePath());
+			return null;
+		}
+	}
+
+
+	public static Component getIconLabel(FileObject fo) {
+		try {
+			return getIconLabel(JakeMainApp.getCore().getFile(fo));
+		} catch (FileOperationFailedException e) {
+			log.warn("Couldn't get Icon for " + fo);
+			return null;
+		}
+	}
+
 	/**
-	 * @param fo
+	 * @param file
 	 * @return Icon Component
 	 */
-	public static Component getIconLabel(FileObject fo) {
+	public static Component getIconLabel(File file) {
 		JLabel label = new JLabel();
 		label.setOpaque(true);
 		label.setBackground(new Color(255, 255, 255, 0));
-
-		File file = null;
-		try {
-			file = JakeMainApp.getCore().getFile(fo);
-		} catch (FileOperationFailedException e) {
-			ExceptionUtilities.showError(e);
-		}
 
 		// TODO: resolve this error!
 		if (file == null) {
@@ -40,13 +52,7 @@ public class FileIconLabelHelper {
 			return label;
 		}
 
-		Icon nativeIcon;
-		try {
-			nativeIcon = fileChooser.getIcon(file);
-		} catch (NullPointerException e) {
-			log.info("Error getting icon for " + file.getAbsolutePath());
-			nativeIcon = null;
-		}
+		Icon nativeIcon = getIcon(file);
 
 		// File or folder name
 		label.setText(file.getName());

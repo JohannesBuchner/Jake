@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.helpers.pftools;
 
+import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -16,6 +17,6 @@ public class NullPfTools extends AbstractPfTools {
 	@Override
 	public Icon getFileIcon(File file, int size) {
 		log.debug("Null impl called for getFileIcon: " + file);
-		return null;
+		return FileIconLabelHelper.getIcon(file);
 	}
 }

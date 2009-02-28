@@ -243,5 +243,13 @@ public class EventCore {
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
 							ProjectChanged.ProjectChangedEvent.Reason.Invited));
 		}
+
+		@Override public void accepted(UserId user, Project p) {
+			log.debug("accepted: " + user + ", project" + p);
+		}
+
+		@Override public void rejected(UserId user, Project p) {
+			log.debug("rejected" + user + ", project" + p);
+		}
 	}
 }

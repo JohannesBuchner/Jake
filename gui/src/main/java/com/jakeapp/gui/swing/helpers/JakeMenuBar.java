@@ -1,12 +1,14 @@
 package com.jakeapp.gui.swing.helpers;
 
 import ch.randelshofer.quaqua.JSheet;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.dialogs.JakeDebugger;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.xcore.CreateExampleDirectory;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
 import net.roydesign.app.QuitJMenuItem;
@@ -173,6 +175,16 @@ public class JakeMenuBar extends JMenuBar {
 			}
 		});
 		debugMenu.add(createExampleDebugItem);
+
+		JMenuItem testInvitationDebugItem = new JMenuItem("Add Test Invitation");
+		testInvitationDebugItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EventCore.get().getInvitiationListener().invited(null, new Project());
+			}
+		});
+		debugMenu.add(testInvitationDebugItem);
 
 		JMenuItem reloadFileDebugItem = new JMenuItem("Reload File View");
 		reloadFileDebugItem.addActionListener(new ActionListener() {

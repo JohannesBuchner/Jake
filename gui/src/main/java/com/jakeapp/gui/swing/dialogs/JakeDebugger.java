@@ -1,5 +1,8 @@
 package com.jakeapp.gui.swing.dialogs;
 
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.JXPanel;
+
 import javax.swing.*;
 
 public class JakeDebugger extends JDialog {
@@ -9,6 +12,10 @@ public class JakeDebugger extends JDialog {
 	}
 
 	private void initComponents() {
-		this.add(new JLabel("TODO"));
+		JXPanel panel = new JXPanel(new MigLayout("wrap 2"));
+		panel.add(new JLabel("Library Path:"));
+		panel.add(new JLabel(System.getProperty("java.library.path")));
+		this.add(panel);
+		this.pack();
 	}
 }

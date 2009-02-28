@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.helpers.pftools;
 
+import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -25,7 +26,8 @@ public class WinPfTools extends AbstractPfTools {
 	 */
 	@Override
 	public Icon getFileIcon(File file, int size) {
-		return null;
+
+		return FileIconLabelHelper.getIcon(file);
 
 		// TODO: fix this, call using reflections!
 		/*
