@@ -4,10 +4,9 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
-import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.UserInfo;
+import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 /**
  * This handles the list of projects and their states
@@ -68,7 +66,6 @@ public interface IProjectsManagingService {
 	 * Start the given project (load database)
 	 *
 	 * @param project the <code>Project</code> to be loaded
-	 * @param cl		get notified for changes
 	 * @return true on success, false on error
 	 * @throws IllegalArgumentException if the supplied <code>Project</code> is null
 	 * @throws FileNotFoundException	 if the rootPath of the <code>Project</code> does not exist
@@ -76,7 +73,7 @@ public interface IProjectsManagingService {
 	 * @throws ProjectException			couldn't start the project for another reason (algorithms
 	 *                                  missing, desktop not supported by java, etc.)
 	 */
-	boolean startProject(Project project, ChangeListener cl)
+	boolean startProject(Project project)
 			  throws IllegalArgumentException, FileNotFoundException,
 			  ProjectException;
 
@@ -93,6 +90,14 @@ public interface IProjectsManagingService {
 	 */
 	boolean stopProject(Project project)
 			  throws IllegalArgumentException, FileNotFoundException;
+
+	/**
+	 * Set the ChangeListener for JakeObject - Changes.
+	 * Called from backend-logon.
+	 *
+	 * @param changeListener
+	 */
+	public void setChangeListener(ChangeListener changeListener);
 
 	/**
 	 * Loads the given project (load database)

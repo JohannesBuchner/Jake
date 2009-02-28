@@ -16,8 +16,6 @@ import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.synchronization.Attributed;
-import com.jakeapp.core.synchronization.ChangeAdapter;
-import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.UserInfo;
@@ -93,7 +91,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<Project> getMyProjects() throws FrontendNotLoggedInException {
-
 		return pms.getProjectList(InvitationState.ACCEPTED);
 	}
 
@@ -115,7 +112,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void authenticateOnBackend(Map<String, String> authenticationData)
 					throws InvalidCredentialsException {
-		this.sessionId = this.frontendService.authenticate(authenticationData);
+		this.sessionId = this.frontendService.authenticate(authenticationData,
+																											 EventCore.get().getChangeListener());
 
 		// also cache the pms
 		pms = frontendService.getProjectsManagingService(this.sessionId);
@@ -123,6 +121,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void backendLogOff() {
+		log.info("Logging out of the backend...");
 		try {
 			this.frontendService.logout(this.sessionId);
 		} catch (FrontendNotLoggedInException e) {
@@ -159,9 +158,36 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 								 NoSuchMsgServiceException {
 
 		log.warn("removeAccount: " + msg + " NOT IMPLEMENTED YET");
-
 		this.frontendService.removeAccount(this.sessionId, msg);
 	}
+
+	public void startProject(Project project) {
+		log.info("Starting project: " + project);
+
+		try {
+			// FIXME: change to AvailableLater
+			// actual project start
+			this.getFrontendService().getProjectsManagingService(this.getSessionId())
+							.startProject(project);
+
+		} catch (IllegalArgumentException e) {
+			ExceptionUtilities.showError("Illegal project for starting specified.", e);
+		} catch (FileNotFoundException e) {
+			ExceptionUtilities.showError("Project-Folder not found.", e);
+		} catch (IllegalStateException e) {
+			ExceptionUtilities.showError("Cannot access ProjectManagingService.", e);
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+		} catch (ProjectException e) {
+			ExceptionUtilities.showError("Generic Project Exception", e);
+		}
+
+		// generate event
+		EventCore.get().fireProjectChanged(
+						new ProjectChanged.ProjectChangedEvent(project,
+										Reason.StartStopState));
+	}
+
 
 	public void stopProject(Project project) {
 		log.info("stop project: " + project);
@@ -181,37 +207,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.Reason.State));
-	}
-
-	public void startProject(Project project) {
-		log.info("Starting project: " + project);
-
-		// HACK: create ChangeListener and add to
-		try {
-
-			ChangeListener syncChangeListener = new ChangeAdapter();
-
-			// actual project start
-			this.getFrontendService().getProjectsManagingService(this.getSessionId())
-							.startProject(project, syncChangeListener);
-
-		} catch (IllegalArgumentException e) {
-			ExceptionUtilities.showError("Illegal project for starting specified.", e);
-		} catch (FileNotFoundException e) {
-			ExceptionUtilities.showError("Project-Folder not found.", e);
-		} catch (IllegalStateException e) {
-			ExceptionUtilities.showError("Cannot access ProjectManagingService.", e);
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		} catch (ProjectException e) {
-			ExceptionUtilities.showError("Generic Project Exception", e);
-		}
-
-		// generate event
-		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(project,
-										Reason.State));
+										ProjectChanged.ProjectChangedEvent.Reason.StartStopState));
 	}
 
 
@@ -378,7 +374,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			EventCore.get().fireProjectChanged(
 							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.Reason.Sync));
+											ProjectChanged.ProjectChangedEvent.Reason.Syncing));
 
 		} catch (IllegalArgumentException e) {
 			//empty implementation
@@ -597,7 +593,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(note.getProject(),
-										ProjectChanged.ProjectChangedEvent.Reason.State));
+										ProjectChanged.ProjectChangedEvent.Reason.StartStopState));
 	}
 
 	@Override
@@ -615,7 +611,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		EventCore.get().fireProjectChanged(
 						new ProjectChanged.ProjectChangedEvent(note.getProject(),
-										ProjectChanged.ProjectChangedEvent.Reason.State));
+										ProjectChanged.ProjectChangedEvent.Reason.StartStopState));
 	}
 
 

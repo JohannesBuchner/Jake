@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
+import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
@@ -24,14 +25,15 @@ public interface IFrontendService {
 	 * This method is used to authenticate a client accessing the jake-core. On
 	 * a successful authentication a Session-Identifier (sessionId) is returned
 	 *
-	 * @param credentials a Map of credentials // TODO to be specified. Has to be empty for 
-	 * 		current implementation 
+	 * @param credentials a Map of credentials // TODO to be specified. Has to be empty for
+	 * 		current implementation
+	 * @param changeListener						 the callback or JakeObject-changes
 	 * @return a Session-Identifier
 	 * @throws IllegalArgumentException	 if the supplied credentials are null or one of the entries is
 	 *                                     null
 	 * @throws InvalidCredentialsException if the supplied credentials are wrong
 	 */
-	public String authenticate(Map<String, String> credentials)
+	public String authenticate(Map<String, String> credentials, ChangeListener changeListener)
 			  throws IllegalArgumentException, InvalidCredentialsException;
 
 	/**

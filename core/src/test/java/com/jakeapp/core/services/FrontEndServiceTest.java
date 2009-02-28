@@ -56,7 +56,7 @@ public class FrontEndServiceTest {
 
 	@Test(timeout = TestingConstants.UNITTESTTIME)
 	public void authenticate_shouldNOTFailWithEmptyCredentials() throws IllegalArgumentException, InvalidCredentialsException {
-		this.getService().authenticate(new HashMap<String, String>());
+		this.getService().authenticate(new HashMap<String, String>(), null);
 	}
 
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = FrontendNotLoggedInException.class)
@@ -66,7 +66,7 @@ public class FrontEndServiceTest {
 
 	@Test(timeout = TestingConstants.UNITTESTTIME, expected = FrontendNotLoggedInException.class)
 	public void logout_shouldNotFailSecondTime() throws IllegalArgumentException, FrontendNotLoggedInException, InvalidCredentialsException {
-		String sessionid = this.getService().authenticate(VALID_CREDENTIALS);
+		String sessionid = this.getService().authenticate(VALID_CREDENTIALS, null);
 		this.getService().logout(sessionid);
 
 		//CALL
@@ -76,7 +76,7 @@ public class FrontEndServiceTest {
 
 	@Test(timeout = TestingConstants.UNITTESTTIME)
 	public void logout_shouldSucceed() throws IllegalArgumentException, FrontendNotLoggedInException, InvalidCredentialsException {
-		String sessionid = this.getService().authenticate(VALID_CREDENTIALS);
+		String sessionid = this.getService().authenticate(VALID_CREDENTIALS, null);
 
 		//CALL
 		this.getService().logout(sessionid);

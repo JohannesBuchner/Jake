@@ -1,19 +1,23 @@
 package com.jakeapp.gui.swing.xcore;
 
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
-import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * The Core Event Distributor.
@@ -21,13 +25,20 @@ import java.util.EnumSet;
 public class EventCore {
 	private static final Logger log = Logger.getLogger(EventCore.class);
 	private static EventCore instance;
+
+	//private final HashMap<Project, ProjectsChangeListener> projectChangeListenerHash =
+	//				new HashMap<Project, ProjectsChangeListener>();
+
+	private final ProjectsChangeListener projectsChangeListener = new ProjectsChangeListener();
+
 	private final List<ConnectionStatus> connectionStatus;
 	//private final List<RegistrationStatus> registrationStatus;
 	private final List<ProjectChanged> projectChanged;
 	private final List<DataChanged> dataChanged;
-	private List<FileSelectionChanged> fileSelectionListeners = new ArrayList<FileSelectionChanged>();
-	private List<NodeSelectionChanged> nodeSelectionListeners = new ArrayList<NodeSelectionChanged>();
-
+	private List<FileSelectionChanged> fileSelectionListeners =
+					new ArrayList<FileSelectionChanged>();
+	private List<NodeSelectionChanged> nodeSelectionListeners =
+					new ArrayList<NodeSelectionChanged>();
 
 
 	static {
@@ -57,8 +68,6 @@ public class EventCore {
 	}
 
 	public void addProjectChangedCallbackListener(ProjectChanged cb) {
-		//log.info("Register project changed callback: " + cb);
-
 		projectChanged.add(cb);
 	}
 
@@ -77,14 +86,10 @@ public class EventCore {
 	}
 
 	public void addConnectionStatusCallbackListener(ConnectionStatus cb) {
-		log.info("Registers connection status callback: " + cb);
-
 		connectionStatus.add(cb);
 	}
 
 	public void removeConnectionStatusCallbackListener(ConnectionStatus cb) {
-		log.info("Deregisters connection status callback: " + cb);
-
 		connectionStatus.remove(cb);
 	}
 
@@ -160,5 +165,43 @@ public class EventCore {
 		}
 	}
 
+	public ChangeListener getChangeListener() {
+		return projectsChangeListener;
+	}
 
+	/*
+	public ChangeListener registerProjectChangeListener(Project project) {
+		ProjectsChangeListener pcl = new ProjectsChangeListener(project);
+		projectChangeListenerHash.put(project, pcl);
+		return pcl;
+	}
+
+	public void removeProjectChangeListener(Project project) {
+		projectChangeListenerHash.remove(project);
+	}
+*/
+
+	private class ProjectsChangeListener implements ChangeListener {
+
+		public ProjectsChangeListener() {
+		}
+
+		@Override public INegotiationSuccessListener beganRequest(JakeObject jo) {
+			log.debug("beganRequest for " + jo);
+			return null;
+		}
+
+		@Override public void pullNegotiationDone(JakeObject jo) {
+			log.debug("pullNegitiationDone: " + jo);
+		}
+
+		@Override public void pullDone(JakeObject jo) {
+			log.debug("pullDone: " + jo);
+		}
+
+		@Override public void pullProgressUpdate(JakeObject jo, Status status,
+						double progress) {
+			log.debug("pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
+		}
+	}
 }
