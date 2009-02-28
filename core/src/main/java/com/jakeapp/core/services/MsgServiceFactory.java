@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+//TODO this 'factory' stores the elements it constructed, but they are never removed.
+
 /**
  * Factory Class to create MsgServices by giving ServiceCredentials
  */
@@ -31,7 +33,12 @@ public class MsgServiceFactory {
 	@Injected
 	private IServiceCredentialsDao serviceCredentialsDao;
 
-	private List<MsgService> msgServices = new ArrayList<MsgService>();
+	private Map<ServiceCredentials,MsgService<UserId>> msgServices =
+			new HashMap<ServiceCredentials,MsgService<UserId>>();
+	
+	private Map<ServiceCredentials,MsgService<UserId>> getMsgServices() {
+		return msgServices;
+	}
 
 	@Injected
 	private ICSManager icsManager;
@@ -59,9 +66,18 @@ public class MsgServiceFactory {
 		return serviceCredentialsDao;
 	}
 
+	/**
+	 * Creates a new MessageService if one for the specified credentials does not exist
+	 * yet.
+	 * @param credentials The ServiceCredentials to create a MsgService for.
+	 * @throws ProtocolNotSupportedException if the protocol specified in the
+	 * 	credentials is not supported.
+	 */
 	public MsgService<UserId> createMsgService(ServiceCredentials credentials)
 					throws ProtocolNotSupportedException {
-
+		MsgService<UserId> msgService;
+		boolean needsInitialization=false;
+		
 		if(credentials == null) {
 			throw new InvalidCredentialsException("Credentials cannot be null!");
 		}
@@ -69,24 +85,27 @@ public class MsgServiceFactory {
 		MsgService.setServiceCredentialsDao(getServiceCredentialsDao());
 
 		log.debug("calling createMsgService with crendentials: " + credentials);
-		log.debug("credentials=" +( (credentials==null)?"null":"not null"));
 		log.debug("credentials.UserId="+((credentials==null)?"null":credentials.getUserId()));
 		log.debug("ptpwlength="+((credentials==null||credentials.getPlainTextPassword()==null)?"null":""+credentials.getPlainTextPassword().length()));
 
-		MsgService<UserId> msgService;
-		if (credentials.getProtocol() != null && credentials.getProtocol()
+		if (this.getMsgServices().containsKey(credentials) && (msgService=(MsgService<UserId>) (this.getMsgServices().get(credentials)))!=null  )
+			log.debug("retrieving a STORED MessageService.");
+		else if (credentials.getProtocol() != null && credentials.getProtocol()
 						.equals(ProtocolType.XMPP)) {
 			log.debug("Creating new XMPPMsgService for userId " + credentials.getUserId());
 			msgService = new XMPPMsgService();
 			msgService.setIcsManager(icsManager);
 			msgService.setServiceCredentials(credentials);
+			this.getMsgServices().put(credentials, msgService);
+			needsInitialization = true;
 		} else {
 			log.warn("Currently unsupported protocol given");
 			throw new ProtocolNotSupportedException();
 		}
 
 		// create the UserId from the credentials.
-		msgService.setUserId(createUserforMsgService(credentials));
+		if (needsInitialization)
+			msgService.setUserId(createUserforMsgService(credentials));
 
 		log.debug("resulting MsgService is " + msgService.getServiceCredentials()
 						.getProtocol() + " for " + msgService.getServiceCredentials()
@@ -133,22 +152,22 @@ public class MsgServiceFactory {
 		List<ServiceCredentials> credentialsList = this.serviceCredentialsDao.getAll();
 		log.debug("Found " + credentialsList.size() + " Credentials in the DB");
 
-		List<MsgService<UserId>> msgServices = new ArrayList<MsgService<UserId>>();
+		List<MsgService<UserId>> result = new ArrayList<MsgService<UserId>>();
 
 		for (ServiceCredentials credentials : credentialsList) {
 			try {
 				MsgService<UserId> service = this.createMsgService(credentials);
-				if (!msgServices.contains(service)) {
-					msgServices.add(service);
+				if (!result.contains(service)) {
+					result.add(service);
 				}
 			} catch (ProtocolNotSupportedException e) {
 				log.warn("Protocol not supported: ", e);
 				log.info("ignoring unsupported entry " + credentials);
 			}
 		}
-		log.debug("Made " + msgServices.size() + " messageservices");
+		log.debug("Made " + result.size() + " messageservices");
 
-		return msgServices;
+		return result;
 	}
 
 	/**
@@ -167,7 +186,7 @@ public class MsgServiceFactory {
 		MsgService<UserId> msgService = this.createMsgService(credentials);
 
 		// add to global array
-		msgServices.add(msgService);
+		this.getMsgServices().put(credentials,msgService);
 
 		// persist the ServicCredentials!
 		this.getServiceCredentialsDao().persist(credentials);
