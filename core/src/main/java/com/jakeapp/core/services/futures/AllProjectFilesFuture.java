@@ -16,15 +16,10 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 
 	private IFileObjectDao fileObjectDao;
 
-	private ProjectApplicationContextFactory applicationContextFactory;
 	private Project project;
 
 	private void setFileObjectDao(IFileObjectDao fileObjectDao) {
 		this.fileObjectDao = fileObjectDao;
-	}
-
-	private IFileObjectDao getFileObjectDao() {
-		return fileObjectDao;
 	}
 
 	public AllProjectFilesFuture(IFileObjectDao dao) {
@@ -41,10 +36,9 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 		log.debug("Creating a AllProjectFilesFuture with " +
 										applicationContextFactory + "on project " + project);
 
-		this.applicationContextFactory = applicationContextFactory;
 		this.project = project;
 
-		fileObjectDao = this.applicationContextFactory.getFileObjectDao(project);
+		fileObjectDao = applicationContextFactory.getFileObjectDao(project);
 	}
 
 
@@ -58,8 +52,6 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 		for (FileObject file : result) {
 			log.debug("file = " + file);
 		}
-
-		result.add(new FileObject(project, "blabla"));
 
 		return result;
 	}
