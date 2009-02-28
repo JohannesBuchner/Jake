@@ -15,8 +15,6 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
-import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.GreenHudButtonUI;
@@ -41,6 +39,7 @@ import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTreeCellRenderer;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -67,10 +66,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 	public static final int FILETABLE_NODECOLUMN = 2;
 
 	private Project project;
-
-	private java.util.List<FileSelectionChanged> fileSelectionListeners = new ArrayList<FileSelectionChanged>();
-	private java.util.List<NodeSelectionChanged> nodeSelectionListeners = new ArrayList<NodeSelectionChanged>();
-
 	private ResourceMap resourceMap;
 	private JToggleButton treeBtn;
 	private JToggleButton flatBtn;
@@ -156,37 +151,6 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 		pm.add(new JSeparator());
 		pm.add(new JMenuItem(new LockFileAction()));
 		pm.add(new JMenuItem(new LockWithMessageFileAction()));
-	}
-
-	public void addFileSelectionListener(FileSelectionChanged listener) {
-		fileSelectionListeners.add(listener);
-	}
-
-	public void removeFileSelectionListener(FileSelectionChanged listener) {
-		fileSelectionListeners.remove(listener);
-	}
-
-	public void addNodeSelectionListener(NodeSelectionChanged listener) {
-		nodeSelectionListeners.add(listener);
-	}
-
-	public void removeNodeSelectionListener(NodeSelectionChanged listener) {
-		nodeSelectionListeners.remove(listener);
-	}
-
-	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
-		log.debug("notify selection listeners");
-		for (FileSelectionChanged c : fileSelectionListeners) {
-			//c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
-		}
-	}
-
-	public void notifyNodeSelectionListeners(
-					java.util.List<ProjectFilesTreeNode> objs) {
-		log.debug("notify selection listeners");
-		for (NodeSelectionChanged c : nodeSelectionListeners) {
-			c.nodeSelectionChanged(new NodeSelectionChanged.NodeSelectedEvent(objs));
-		}
 	}
 
 	/**
@@ -296,8 +260,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 				nodeObjs.add(node);
 			}
 
-			panel.notifyFileSelectionListeners(fileObjs);
-			panel.notifyNodeSelectionListeners(nodeObjs);
+			EventCore.get().notifyFileSelectionListeners(fileObjs);
+			EventCore.get().notifyNodeSelectionListeners(nodeObjs);
 		}
 	}
 
@@ -348,9 +312,9 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 						fileObjs.add(node.getFileObject());
 
-						panel.notifyFileSelectionListeners(fileObjs);
+						EventCore.get().notifyFileSelectionListeners(fileObjs);
 					} else {
-						panel.notifyFileSelectionListeners(null);
+						EventCore.get().notifyFileSelectionListeners(null);
 					}
 
 				}
@@ -361,7 +325,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 					nodeObjs.add(node);
 				}
 
-				panel.notifyNodeSelectionListeners(nodeObjs);
+				EventCore.get().notifyNodeSelectionListeners(nodeObjs);
 
 				log.debug("UGA UGA " + DebugHelper.arrayToString(nodeObjs));
 
@@ -378,8 +342,8 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 					}
 					nodeObjs.add(node);
 				}
-				panel.notifyFileSelectionListeners(fileObjs);
-				panel.notifyNodeSelectionListeners(nodeObjs);
+				EventCore.get().notifyFileSelectionListeners(fileObjs);
+				EventCore.get().notifyNodeSelectionListeners(nodeObjs);
 			}
 		}
 

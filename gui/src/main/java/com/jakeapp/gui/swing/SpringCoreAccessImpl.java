@@ -760,6 +760,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new NullPointerException("Path cannot be null.");
 		}
 
+		// TODO: AvailableLaterObject
 		Runnable runner = new Runnable() {
 			public void run() {
 				Project project;
@@ -773,7 +774,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 													ProjectChanged.ProjectChangedEvent.Reason.Created));
 
 				} catch (FrontendNotLoggedInException e) {
-					log.debug("Tried to create a project while not authenticated to the core.",
+					ExceptionUtilities.showError("Tried to create a project while not authenticated to the core.",
 									e);
 				} catch (RuntimeException e) {
 					ExceptionUtilities.showError(e);

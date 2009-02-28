@@ -292,8 +292,7 @@ public class JakeSourceList extends JakeGuiComponent implements
 		try {
 			iprojects = JakeMainApp.getCore().getInvitedProjects();
 		} catch (FrontendNotLoggedInException e) {
-			// TODO @ Peter: reauthenticate, retry action, if it still fails show error message
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			e.printStackTrace();
 		}
 		for (Project project : iprojects) {
 			Icon prIcon = projectInvitedIcon;
@@ -354,7 +353,6 @@ public class JakeSourceList extends JakeGuiComponent implements
 	/**
 	 * Removes the current selection (if any)
 	 */
-	// TODO: this uses interal tree api. move into SourceList api?
 	private void removeSelection() {
 		if (sourceList.getTree().getSelectionPath() != null) {
 			sourceList.getTree().removeSelectionPath(sourceList.getTree().getSelectionPath());

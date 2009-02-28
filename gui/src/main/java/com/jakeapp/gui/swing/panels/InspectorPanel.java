@@ -91,7 +91,7 @@ public class InspectorPanel extends JXPanel implements ProjectChanged, ProjectSe
 		// register for events
 		EventCore.get().addProjectChangedCallbackListener(this);
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		FilePanel.getInstance().addFileSelectionListener(this);
+		EventCore.get().addFileSelectionListener(this);
 		NotesPanel.getInstance().addNoteSelectionListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 

@@ -5,6 +5,7 @@ import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 
 	public FileAction() {
 		super();
-		FilePanel.getInstance().addNodeSelectionListener(this);
+		EventCore.get().addNodeSelectionListener(this);
 		selectedRowCount = 0;
 		nodes = new ArrayList<ProjectFilesTreeNode>();
 

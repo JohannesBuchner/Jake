@@ -1,10 +1,14 @@
 package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
+import com.jakeapp.core.domain.FileObject;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -21,6 +25,10 @@ public class EventCore {
 	//private final List<RegistrationStatus> registrationStatus;
 	private final List<ProjectChanged> projectChanged;
 	private final List<DataChanged> dataChanged;
+	private List<FileSelectionChanged> fileSelectionListeners = new ArrayList<FileSelectionChanged>();
+	private List<NodeSelectionChanged> nodeSelectionListeners = new ArrayList<NodeSelectionChanged>();
+
+
 
 	static {
 		instance = new EventCore();
@@ -119,5 +127,38 @@ public class EventCore {
 			callback.setRegistrationStatus(state, str);
 		}
 	}*/
+
+
+	public void addFileSelectionListener(FileSelectionChanged listener) {
+		fileSelectionListeners.add(listener);
+	}
+
+	public void removeFileSelectionListener(FileSelectionChanged listener) {
+		fileSelectionListeners.remove(listener);
+	}
+
+	public void addNodeSelectionListener(NodeSelectionChanged listener) {
+		nodeSelectionListeners.add(listener);
+	}
+
+	public void removeNodeSelectionListener(NodeSelectionChanged listener) {
+		nodeSelectionListeners.remove(listener);
+	}
+
+	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
+		log.debug("notify selection listeners");
+		for (FileSelectionChanged c : fileSelectionListeners) {
+			//c.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
+		}
+	}
+
+	public void notifyNodeSelectionListeners(
+					java.util.List<ProjectFilesTreeNode> objs) {
+		log.debug("notify selection listeners");
+		for (NodeSelectionChanged c : nodeSelectionListeners) {
+			c.nodeSelectionChanged(new NodeSelectionChanged.NodeSelectedEvent(objs));
+		}
+	}
+
 
 }
