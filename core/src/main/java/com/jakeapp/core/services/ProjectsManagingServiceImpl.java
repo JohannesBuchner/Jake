@@ -942,14 +942,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	private void addTag(JakeObject jo, Tag t) {
 		LogEntry<Tag> logEntry;
 		t.setObject(jo);
-		logEntry = new TagLogEntry(LogAction.TAG_ADD, t, jo.getProject().getUserId());
+		logEntry = new TagAddLogEntry(t, jo.getProject().getUserId());
 		this.getLogEntryDao(jo.getProject()).create(logEntry);
 	}
 
 	private void removeTag(JakeObject jo, Tag t) {
-		TagLogEntry logEntry;
+		TagRemoveLogEntry logEntry;
 		t.setObject(jo);
-		logEntry = new TagLogEntry(LogAction.TAG_REMOVE, t, jo.getProject().getUserId());
+		logEntry = new TagRemoveLogEntry(t, jo.getProject().getUserId());
 		this.getLogEntryDao(jo.getProject()).create(logEntry);
 	}
 

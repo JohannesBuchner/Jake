@@ -6,7 +6,7 @@ import java.util.Date;
 import java.io.Serializable;
 
 @Entity
-public class TagLogEntry extends LogEntry<Tag> implements Serializable {
+public abstract class TagLogEntry extends LogEntry<Tag> implements Serializable {
     private static final long serialVersionUID = -7799185912611559431L;
 
     public TagLogEntry(LogAction logAction,Tag belongsTo,

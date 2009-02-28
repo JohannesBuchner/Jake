@@ -127,13 +127,13 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		Tag tag2 = new Tag("tag2");
 		tag2.setObject(file1);
 
-		TagLogEntry file1tag = new TagLogEntry(LogAction.TAG_ADD, tag, me);
+		TagLogEntry file1tag = new TagAddLogEntry(tag, me);
 		setOrder(file1tag, 8);
 		logEntryDao.create(file1tag);
-		TagLogEntry file1tag2 = new TagLogEntry(LogAction.TAG_ADD, tag2, me);
+		TagLogEntry file1tag2 = new TagAddLogEntry(tag2, me);
 		setOrder(file1tag2, 9);
 		logEntryDao.create(file1tag2);
-		TagLogEntry file1untag = new TagLogEntry(LogAction.TAG_REMOVE, tag, me);
+		TagLogEntry file1untag = new TagRemoveLogEntry(tag, me);
 		setOrder(file1untag, 10);
 		logEntryDao.create(file1untag);
 

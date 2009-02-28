@@ -44,6 +44,8 @@
                 <value>com.jakeapp.core.domain.ProjectLogEntry</value>
                 <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
                 <value>com.jakeapp.core.domain.TagLogEntry</value>
+                <value>com.jakeapp.core.domain.TagAddLogEntry</value>
+                <value>com.jakeapp.core.domain.TagRemoveLogEntry</value>
             </list>
         </property>
         <property name="configurationClass"
@@ -56,7 +58,7 @@
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.current_session_context_class">
-                	thread
+                    thread
                 </prop>
 
                 <!--<prop key="hibernate.current_session_context_class">

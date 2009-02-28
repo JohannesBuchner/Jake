@@ -6,7 +6,7 @@ import java.util.Date;
 import java.io.Serializable;
 
 @Entity
-public class JakeObjectLogEntry extends LogEntry<JakeObject> implements Serializable {
+public abstract class JakeObjectLogEntry extends LogEntry<JakeObject> implements Serializable {
 
 	private static final long serialVersionUID = 3507342231350901911L;
 

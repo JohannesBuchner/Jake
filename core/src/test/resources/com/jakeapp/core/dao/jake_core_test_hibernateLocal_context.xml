@@ -68,6 +68,8 @@
                 <value>com.jakeapp.core.domain.ProjectLogEntry</value>
                 <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
                 <value>com.jakeapp.core.domain.TagLogEntry</value>
+                <value>com.jakeapp.core.domain.TagAddLogEntry</value>
+                <value>com.jakeapp.core.domain.TagRemoveLogEntry</value>
 
             </list>
         </property>

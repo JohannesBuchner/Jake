@@ -139,8 +139,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 		Tag t1 = new Tag("test");
 		t1.setObject(new NoteObject(testProject, "foo bar"));
 
-		LogEntry<Tag> tagLogEntry = new TagLogEntry(LogAction.TAG_ADD,
-				t1, projectMember);
+		LogEntry<Tag> tagLogEntry = new TagAddLogEntry(t1, projectMember);
 
 		logEntryDao.create(tagLogEntry);
 
