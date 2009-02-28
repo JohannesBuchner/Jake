@@ -41,13 +41,15 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return sess().createQuery(query);
 	}
 
-	//@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	private void debugDump() {
-		//log.debug("Current LogEntries: ");
-		//for(LogEntry le : (List<LogEntry<? extends ILogable>>)sess().createQuery("FROM logentries ORDER by timestamp asc, id asc").list()) {
-		//	log.debug(le);
-		//}
-		//log.debug("Current LogEntries done ");
+		// log.debug("Current LogEntries: ");
+		// for(LogEntry le : (List<LogEntry<? extends
+		// ILogable>>)sess().createQuery
+		// ("FROM logentries ORDER by timestamp asc, id asc").list()) {
+		// log.debug(le);
+		// }
+		// log.debug("Current LogEntries done ");
 	}
 
 	@Override
@@ -135,8 +137,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogEntry<? extends ILogable>> getAll(boolean includeUnprocessed) {
-		return processedAwareLogEntryQuery("", includeUnprocessed)
-				.list();
+		return processedAwareLogEntryQuery("", includeUnprocessed).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -330,20 +331,22 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * LogAction.START_TRUSTING_PROJECTMEMBER and
 	 * LogAction.STOP_TRUSTING_PROJECTMEMBER that belong to the given
 	 * JakeObject, sorted ascending by timestamp
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<UserId>> getAllProjectMemberLogEntries() {
-		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ?)").setInteger(0,
-				LogAction.START_TRUSTING_PROJECTMEMBER.ordinal()).setInteger(1,
-				LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).setInteger(2,
-						LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
+		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ?)")
+				.setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
+				.setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal())
+				.setInteger(2, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
 	}
 
 	/**
 	 * finds all that match any of the two LogActions LogAction.TAG_ADD and
 	 * LogAction.TAG_REMOVE that belong to the given JakeObject, sorted
 	 * ascending by timestamp
+	 * 
 	 * @param belongsTo
 	 * @return
 	 */
@@ -362,6 +365,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * finds all that match any of the two LogActions LogAction.JAKE_OBJECT_LOCK
 	 * and LogAction.JAKE_OBJECT_UNLOCK that belong to the given JakeObject,
 	 * sorted ascending by timestamp
+	 * 
 	 * @param belongsTo
 	 * @return
 	 */
@@ -409,10 +413,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@SuppressWarnings("unchecked")
 	@Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
-		try{
+		try {
 			return (LogEntry<? extends ILogable>) sess().createQuery(
-				"FROM logentries WHERE action = ?").setInteger(0,
-				LogAction.PROJECT_CREATED.ordinal()).list().get(0);
+					"FROM logentries WHERE action = ?").setInteger(0,
+					LogAction.PROJECT_CREATED.ordinal()).list().get(0);
 		} catch (IndexOutOfBoundsException ioobe) {
 			return null;
 		}
@@ -425,7 +429,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		pce = getProjectCreatedEntry();
 		UserId creator;
 		List<UserId> trusted = new LinkedList<UserId>();
-		
+
 		if (pce != null) {
 			creator = pce.getMember();
 
@@ -440,7 +444,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				trusted.add(creator);
 			}
 		}
-		
+
 		return trusted;
 	}
 
@@ -474,8 +478,11 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	public Map<UserId, List<UserId>> getTrustGraph() {
 		Map<UserId, List<UserId>> people = new HashMap<UserId, List<UserId>>();
 		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-		if (first!=null)
+		if (first != null) {
 			people.put(first.getMember(), new LinkedList<UserId>());
+		} else {
+			log.error("Invalid database: no ProjectCreatedEntry!");
+		}
 
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<UserId> le : entries) {
@@ -500,9 +507,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph() {
-		Map<UserId, Map<UserId, TrustState>> people = new HashMap<UserId, Map<UserId,TrustState>>();
+		Map<UserId, Map<UserId, TrustState>> people = new HashMap<UserId, Map<UserId, TrustState>>();
 		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-		people.put(first.getMember(), new HashMap<UserId, TrustState>());
+		if (first != null) {
+			people.put(first.getMember(), new HashMap<UserId, TrustState>());
+		} else {
+			log.error("Invalid database: no ProjectCreatedEntry!");
+		}
 
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<UserId> le : entries) {
