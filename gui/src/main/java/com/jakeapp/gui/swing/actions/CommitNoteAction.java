@@ -10,6 +10,9 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 
 import javax.swing.*;
+
+import org.apache.log4j.Logger;
+
 import java.awt.event.ActionEvent;
 
 /**
@@ -20,9 +23,7 @@ import java.awt.event.ActionEvent;
 public class CommitNoteAction extends NoteAction {
 
 	private static final long serialVersionUID = 5522637881549894198L;
-
-	private static final ICoreAccess core = JakeMainApp.getCore();
-
+	private static final Logger log = Logger.getLogger(CommitNoteAction.class);
 	public CommitNoteAction() {
 		super();
 
@@ -34,7 +35,8 @@ public class CommitNoteAction extends NoteAction {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			for (Attributed<NoteObject> attributedNote : this.getSelectedNotes()) {
-				core.announceJakeObject(attributedNote.getJakeObject(), null);
+
+				JakeMainApp.getCore().announceJakeObject(attributedNote.getJakeObject(), null);
 			}
 			this.refreshNotesPanel();
 		} catch (FileOperationFailedException e1) {
