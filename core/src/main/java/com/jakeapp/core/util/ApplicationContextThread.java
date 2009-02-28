@@ -114,9 +114,9 @@ public class ApplicationContextThread extends ThreadBroker {
 	@Override
 	public void cancel() {
 		log.debug("stopping; closing session");
+		super.cancel();
 		if (this.session != null && this.session.isOpen())
 			this.session.close();
-		super.cancel();
 	}
 
 	/*
