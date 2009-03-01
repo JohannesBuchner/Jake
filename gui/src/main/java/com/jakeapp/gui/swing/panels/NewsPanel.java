@@ -228,13 +228,13 @@ public class NewsPanel extends javax.swing.JPanel implements
 
 		@Override
 		public void mousePressed(MouseEvent mouseEvent) {
-			log.info("mousePressed");
+			log.trace("mousePressed");
 			//showMenu(mouseEvent);
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent mouseEvent) {
-			log.info("mouseReleased");
+			log.trace("mouseReleased");
 			//showMenu(mouseEvent);
 		}
 
@@ -252,15 +252,15 @@ public class NewsPanel extends javax.swing.JPanel implements
 	 * Update the news panel.
 	 */
 	private void updatePanel() {
-		log.info("updating panel with " + getProject());
+		log.trace("updating panel with " + getProject());
 
 		// set model project
 		this.eventTableModel.setProject(getProject());
 
 		// TODO: remove hack
-		if (getProject() == null) {
-			return;
-		}
+//		if (getProject() == null) {
+//			return;
+//		}
 		/*
 //TODO: find better way !
 		try {
@@ -623,5 +623,4 @@ public class NewsPanel extends javax.swing.JPanel implements
 	public void projectChanged(ProjectChangedEvent ev) {
 		updatePanel();
 	}
-
 }

@@ -16,6 +16,9 @@ import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 
 // @author Santhosh Kumar T - santhosh@in.fiorano.com
+/**
+ * This is an editable JList.
+ */
 public class JListMutable extends JXList implements CellEditorListener {
     protected Component editorComp = null;
     protected int editingIndex = -1;

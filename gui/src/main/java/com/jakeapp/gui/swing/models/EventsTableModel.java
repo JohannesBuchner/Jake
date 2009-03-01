@@ -93,7 +93,7 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public void setJakeObject(Attributed<? extends JakeObject> attributed) {
-		log.debug("setting attributed: " + attributed);
+		log.trace("setting attributed: " + attributed);
 		this.attributedJakeObject = attributed;
 
 		this.updateData();

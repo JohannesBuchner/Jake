@@ -5,7 +5,8 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
-import com.jakeapp.gui.swing.dialogs.JakeDebugger;
+import com.jakeapp.gui.swing.dialogs.debugging.JakeDebugger;
+import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.xcore.CreateExampleProject;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -176,7 +177,21 @@ public class JakeMenuBar extends JMenuBar {
 		});
 		debugMenu.add(createExampleDebugItem);
 
-		JMenuItem testInvitationDebugItem = new JMenuItem("Add Test Invitation");
+
+			JMenuItem tasksDebugItem = new JMenuItem("Open Task Window");
+		tasksDebugItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ActiveTasks.createDialog();
+			}
+		});
+		debugMenu.add(tasksDebugItem);
+
+
+		debugMenu.add(new JSeparator());
+
+		JMenuItem testInvitationDebugItem = new JMenuItem("Add Test Invitation (broken)");
 		testInvitationDebugItem.addActionListener(new ActionListener() {
 
 			@Override
@@ -185,6 +200,7 @@ public class JakeMenuBar extends JMenuBar {
 			}
 		});
 		debugMenu.add(testInvitationDebugItem);
+
 
 		JMenuItem reloadFileDebugItem = new JMenuItem("Reload File View");
 		reloadFileDebugItem.addActionListener(new ActionListener() {

@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.worker.GetProjectsWorker;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -17,6 +18,7 @@ import java.util.List;
  * @author studpete
  */
 public class ObjectCache {
+	private static final Logger log = Logger.getLogger(ObjectCache.class);
 	private static ObjectCache instance = new ObjectCache();
 
 	private List<Project> myProjects = new ArrayList<Project>();
@@ -40,7 +42,10 @@ public class ObjectCache {
 
 	public void setMyProjects(List<Project> myProjects) {
 		this.myProjects = myProjects;
+		fireProjectDataChanged();
+	}
 
+	private void fireProjectDataChanged() {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Projects));
 	}
 
@@ -50,8 +55,7 @@ public class ObjectCache {
 
 	public void setInvitedProjects(List<Project> invitedProjects) {
 		this.invitedProjects = invitedProjects;
-
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Projects));
+		fireProjectDataChanged();
 	}
 
 

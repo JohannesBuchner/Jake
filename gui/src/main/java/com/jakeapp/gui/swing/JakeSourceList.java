@@ -20,10 +20,14 @@ import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.SpinningDial;
+import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
+import com.jakeapp.gui.swing.controls.WaitIndicator;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
+import com.jakeapp.gui.swing.worker.GetProjectsWorker;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
@@ -257,8 +261,8 @@ public class JakeSourceList extends JakeGuiComponent
 	 * Updates the SourceList (project list)
 	 */
 	private void updateSourceList() {
-		if (!JakeMainApp.isCoreInitialized())
-			return;
+	  setWaiting(sourceList.getComponent(), !JakeMainApp.isCoreInitialized() ||
+						JakeExecutor.isTaskRunning(GetProjectsWorker.class.getSimpleName()));
 
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
@@ -354,6 +358,21 @@ public class JakeSourceList extends JakeGuiComponent
 			JakeMainApp.getApp().setProject(null);
 		}
 	}
+
+    private static void setWaiting(JComponent c, boolean on) {
+			log.debug("SourceList-setWaiting: " + on);
+        WaitIndicator w = (WaitIndicator)c.getClientProperty("waiter");
+        if (w == null) {
+            if (on) {
+                w = new SpinningDialWaitIndicator(c);
+            }
+        }
+        else if (!on) {
+            w.dispose();
+            w = null;
+        }
+        c.putClientProperty("waiter", w);
+    }	
 
 	private SourceListItem createSourceListItem(Project project) {
 		Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;

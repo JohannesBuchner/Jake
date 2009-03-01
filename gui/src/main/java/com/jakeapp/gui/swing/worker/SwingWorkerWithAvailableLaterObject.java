@@ -6,6 +6,7 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.StatusUpdate;
+import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import org.apache.log4j.Logger;
 
@@ -32,6 +33,9 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	private AvailableLaterObject<T> value;
 
 	private Exception exception;
+
+	private double progress;
+	private String status;
 
 	@Override
 	protected T doInBackground() throws Exception {
@@ -67,7 +71,12 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 
 	@Override
 	public void statusUpdate(double progress, String status) {
+		this.progress = progress;
+		this.status = status;
 		publish(new StatusUpdate(progress, status));
+
+		// HACK to show tasks
+		ActiveTasks.tasksUpdated();
 	}
 
 	protected void handleInterruption(InterruptedException e) {
@@ -76,5 +85,10 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 
 	protected void handleExecutionError(ExecutionException e) {
 		log.warn("Swingworker execution failed: " + e.getMessage(), e);
+	}
+
+	@Override
+	public String toString() {
+		return value.toString() + ": " + progress + " " + status;
 	}
 }

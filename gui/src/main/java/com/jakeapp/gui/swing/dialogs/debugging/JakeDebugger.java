@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.dialogs;
+package com.jakeapp.gui.swing.dialogs.debugging;
 
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXPanel;
