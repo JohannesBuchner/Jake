@@ -49,6 +49,8 @@ public class DeleteFileAction extends FileAction {
 	//TODO replace core calls with ObjectCache-Calls
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		log.debug("omg, we will delete something...");
+		
 		//final List<String> cache = new ArrayList<String>();
 		
 		final List<FileObject> files = new ArrayList<FileObject>();
@@ -63,8 +65,7 @@ public class DeleteFileAction extends FileAction {
 		Attributed<FileObject> af;
 		Project p = JakeMainApp.getProject();
 		
-		//preconditions-check
-		if (files==null || files.size()<1) return;
+		log.debug("getting files to delete");
 
  		//get all files to be deleted
 		for (ProjectFilesTreeNode node : getNodes()) {
@@ -74,7 +75,9 @@ public class DeleteFileAction extends FileAction {
 				files.addAll(node.getFolderObject().flattenFolder());
 			}
 		}
-
+		
+		log.debug("got n files to delete, n="+files.size());
+		
 		//check locks
 		for (FileObject f : files) {
 			af = JakeMainApp.getCore().getAttributed(p,f);
@@ -84,6 +87,8 @@ public class DeleteFileAction extends FileAction {
 				break;
 			}
 		}
+		
+		log.debug("checked locks, locked="+(lockEntry!=null));
 		
 		/*
 		 * decide, which user-interaction is appropriate
@@ -105,6 +110,8 @@ public class DeleteFileAction extends FileAction {
 					.get(map, "confirmDeleteFiles.text", String.valueOf(files.size()));
 			}
 		}
+		
+		log.debug("User-interaction text is: "+ text);
 		
 		//ask user and do the real work with a Worker!
 		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,

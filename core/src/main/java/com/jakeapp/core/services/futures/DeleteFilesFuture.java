@@ -3,6 +3,8 @@ package com.jakeapp.core.services.futures;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -11,6 +13,8 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 
 
 public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
+	
+	private static final Logger log = Logger.getLogger(ProjectSizeTotalFuture.class);
 	
 	private IFileObjectDao dao;
 	private IFSService fsService;
@@ -51,6 +55,8 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 	}
 	
 	private void deleteFile(FileObject fo) {
+		log.debug("deleting a file!!" + fo.getRelPath());
+		
 		//update
 		fo.setDeleted(true);
 		this.getDao().persist(fo);
@@ -58,12 +64,10 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 		//delete physical file
 		try {
 			this.getFsService().trashFile(fo.getRelPath());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidFilenameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileNotFoundException ignored) {
+			//ignore exception - file is already gone
+		} catch (InvalidFilenameException ignored) {
+			//ignore exception - file cannot be handled by jake
 		}
 	}
 	
