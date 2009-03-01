@@ -161,7 +161,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 			}
 			break;
 
-			case NOOP: {
+			case PROJECT_JOINED: {
 				setIcon(peopleAcceptInvitationIcon);
 				msg += Translator
 								.get(newsResourceMap, "eventsProjectMemberInvitationAccepted");

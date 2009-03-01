@@ -63,10 +63,10 @@ public class LogEntrySerializerTest {
     }
 
     @Test
-    public void testProjectLogEntry_existingProject() throws NoSuchProjectException, InvalidTagNameException {
+    public void testProjectCreatedLogEntry_existingProject() throws NoSuchProjectException, InvalidTagNameException {
 
 
-        ProjectLogEntry logEntry = new ProjectLogEntry(sampleProject1, sampleUserId1);
+        ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
         String serializedString = serializer.serialize(logEntry);
         when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
@@ -82,9 +82,9 @@ public class LogEntrySerializerTest {
     }
 
     @Test
-    public void testProjectLogEntry_projectNotExisting() throws NoSuchProjectException, InvalidTagNameException {
+    public void testProjectCreatedLogEntry_projectNotExisting() throws NoSuchProjectException, InvalidTagNameException {
 
-        ProjectLogEntry logEntry = new ProjectLogEntry(sampleProject1, sampleUserId1);
+        ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
         String serializedString = serializer.serialize(logEntry);
 
         when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());

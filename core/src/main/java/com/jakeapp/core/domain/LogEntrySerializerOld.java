@@ -134,7 +134,7 @@ public class LogEntrySerializerOld {
 				appendJakeObjectReference(result, (JakeObject) data);
 				log.debug("7 - leaving switch");
 				return result.toString();
-			case NOOP:
+			case PROJECT_JOINED:
 				log.debug("6 - inside switch");
 				log.debug("7 - leaving switch");
 				return result.toString();
@@ -209,7 +209,7 @@ public class LogEntrySerializerOld {
 //				  TODO
 //                detachJakeObjectReference(le, input);
 //				return le;
-			case NOOP:
+			case PROJECT_JOINED:
 //                TODO
 //				return le;
 		}

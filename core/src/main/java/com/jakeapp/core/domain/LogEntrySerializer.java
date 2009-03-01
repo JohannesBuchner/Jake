@@ -156,7 +156,7 @@ public class LogEntrySerializer {
                 return serialize(JakeObjectNewVersionLogEntry.parse(logEntry), project);
             case JAKE_OBJECT_UNLOCK:
                 return serialize(JakeObjectUnlockLogEntry.parse(logEntry), project);
-            case NOOP:
+            case PROJECT_JOINED:
                 break;
             case PROJECT_CREATED:
                 break;
@@ -368,7 +368,7 @@ public class LogEntrySerializer {
                     p = new Project(projectName, projectUUID, null, null);
                 }
 
-                result = new ProjectLogEntry(p, remoteUser);
+                result = new ProjectCreatedLogEntry(p, remoteUser);
 
 
                 /// always do this
@@ -376,7 +376,7 @@ public class LogEntrySerializer {
                 result.setUuid(logEntryUUID);
                 return result;
             }
-            case NOOP:
+            case PROJECT_JOINED:
                 break;
             case FOLLOW_TRUSTING_PROJECTMEMBER:
                 break;

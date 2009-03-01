@@ -28,7 +28,7 @@ public enum LogAction implements Serializable {
 	 * accepted)<br />
 	 * belongsTo: null<br />
 	 */
-	NOOP,
+	PROJECT_JOINED,
 
 	/**
 	 * a new version of a JakeObject was created. <br/>
@@ -99,7 +99,7 @@ public enum LogAction implements Serializable {
 	 */
 	JAKE_OBJECT_LOCK,
 
-	/**
+    /**
 	 * the object has been soft locked. <br/>
 	 * belongsTo: {@link JakeObject} <br/>
 	 * important LogEntry attributes: commitmsg

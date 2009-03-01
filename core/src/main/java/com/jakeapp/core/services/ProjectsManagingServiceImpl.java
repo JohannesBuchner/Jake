@@ -261,7 +261,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// create the project's first logentry
 		if (project.getMessageService() != null) {
 			UserId user = project.getMessageService().getUserId();
-			this.getLogEntryDao(project).create(new ProjectLogEntry(project, user));
+			this.getLogEntryDao(project).create(new ProjectCreatedLogEntry(project, user));
 		}
 	}
 

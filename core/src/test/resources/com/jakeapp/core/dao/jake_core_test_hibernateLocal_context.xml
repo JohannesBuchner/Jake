@@ -14,7 +14,7 @@
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
        default-lazy-init="true"
-	>
+        >
 
     <tx:annotation-driven/>
     <!-- ========================= GENERAL DEFINITIONS ========================= -->
@@ -66,6 +66,8 @@
                 <value>com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.ProjectLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.ProjectMemberLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.TagLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.TagAddLogEntry</value>
@@ -101,16 +103,16 @@
     </bean>
 
     <bean id="noteObjectDao" class="com.jakeapp.core.dao.HibernateNoteObjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
     <bean id="fileObjectDao" class="com.jakeapp.core.dao.HibernateFileObjectDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
 
     <bean id="logEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
-        <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
 </beans>

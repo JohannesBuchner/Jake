@@ -15,10 +15,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.logentries.TagAddLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectLogEntry;
+import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;
@@ -84,7 +81,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
 		UserId projectMember = new UserId(ProtocolType.XMPP, "me");
 
-		LogEntry<Project> projectLogEntry = new ProjectLogEntry(testProject, projectMember);
+		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, projectMember);
 
 
 		logEntryDao.create(projectLogEntry);
@@ -102,8 +99,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
 
 
-		LogEntry<Project> projectLogEntry = new ProjectLogEntry(testProject,
-				projectMember);
+		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, projectMember);
 
 		logEntryDao.create(projectLogEntry);
 

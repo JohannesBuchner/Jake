@@ -42,6 +42,8 @@
                 <value>com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.ProjectLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.ProjectMemberLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.TagLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.TagAddLogEntry</value>

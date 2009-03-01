@@ -74,6 +74,8 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 
 	}
 
+
+
 	private void fill() throws InvalidTagNameException {
 		MsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
@@ -82,7 +84,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 				.fromString("e0cd2322-6766-40a0-82c5-bcc0fe7a67c2"), msgService, file);
 
 
-		LogEntry<Project> projectLogEntry = new ProjectLogEntry(testProject, me);
+		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, me);// TODO is this correct ?
 		setOrder(projectLogEntry, 1);
 		logEntryDao.create(projectLogEntry);
 
