@@ -240,9 +240,9 @@ public class JakeCommander extends Commander {
 			}
 			JakeObject jo = null;
 			try {
-				for (Attributed f : sync.getNotes(project)) {
-					if (uuid.equals(f.getJakeObject().getUuid()))
-						jo = f.getJakeObject();
+				for (NoteObject f : sync.getNotes(project)) {
+					if (uuid.equals(f.getUuid()))
+						jo = f;
 				}
 				
 				avail = sync.getFiles(project);
@@ -735,7 +735,7 @@ public class JakeCommander extends Commander {
 				return;
 			}
 			try {
-				for (Attributed f : sync.getNotes(project)) {
+				for (NoteObject f : sync.getNotes(project)) {
 					System.out.println("\t" + f);
 				}
 				avail = sync.getFiles(project);

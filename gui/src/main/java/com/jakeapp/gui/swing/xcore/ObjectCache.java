@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
@@ -35,8 +34,8 @@ public class ObjectCache {
 					new HashMap<Project, List<FileObject>>();
 	private HashMap<Project, List<NoteObject>> notes =
 					new HashMap<Project, List<NoteObject>>();
-	private HashMap<Project, List<LogEntry>> logEntries =
-					new HashMap<Project, List<LogEntry>>();
+	//private HashMap<Project, List<LogEntry>> logEntries =
+	//				new HashMap<Project, List<LogEntry>>();
 
 	// do not construct
 	private ObjectCache() {

@@ -899,7 +899,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			// get all possible people
 			log.debug("before usersService.getUsers;status is: " + msgService.getVisibilityStatus());
-			possibleBackendUsers = usersService.getUsers();
+			possibleBackendUsers = usersService.getAllUsers();
 
 			// convert them to 'frontend-users'
 			possibleUsers = new LinkedList<UserId>();
