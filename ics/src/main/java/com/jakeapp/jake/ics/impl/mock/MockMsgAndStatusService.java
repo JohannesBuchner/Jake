@@ -230,6 +230,11 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	}
 
 	@Override
+	public Iterable<UserId> getAllUsers() throws NotLoggedInException {
+		return this.friends;
+	}
+
+	@Override
 	public boolean isCapable(UserId userid) throws IOException, NotLoggedInException,
 			  NoSuchUseridException {
 		return true;

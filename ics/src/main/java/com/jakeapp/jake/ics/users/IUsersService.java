@@ -53,6 +53,13 @@ public interface IUsersService {
 	public Iterable<UserId> getUsers() throws NotLoggedInException;
 
 	/**
+	 * 
+	 * @return all user, also those that are not in our friends list
+	 * @throws NotLoggedInException
+	 */
+	public Iterable<UserId> getAllUsers() throws NotLoggedInException;
+
+	/**
 	 * Is this special someone in our group?
 	 * 
 	 * @param xmppid

@@ -108,6 +108,18 @@ public class XmppUsersService implements IUsersService {
 		}
 		return users;
 	}
+	
+	public Iterable<UserId> getAllUsers() throws NotLoggedInException {
+		assertLoggedIn();
+
+		Set<UserId> users = new HashSet<UserId>();
+
+		for (RosterEntry re : getRoster().getEntries()) {
+			users.add(new XmppUserId(re.getUser()));
+		}
+		return users;
+	}
+
 
 	public RosterGroup getGroup() throws NotLoggedInException {
 		assertLoggedIn();
