@@ -351,7 +351,6 @@ public class LogEntrySerializerTest {
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(sampleProject1, sampleUserId1);
 
 		String serializedString = serializer.serialize(logEntry);
-		System.out.println("serializedString = " + serializedString);
 		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
 
