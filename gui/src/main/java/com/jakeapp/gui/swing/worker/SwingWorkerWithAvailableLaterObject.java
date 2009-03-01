@@ -6,6 +6,7 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.StatusUpdate;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -60,6 +61,8 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	@Override
 	public void finished(T o) {
 		s.release();
+
+		JakeExecutor.removeTask(this.getClass());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
@@ -28,6 +29,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 /**
  * User: studpete

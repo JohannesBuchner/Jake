@@ -50,6 +50,10 @@ public class ExceptionUtilities {
 	}
 
 	private static void internalShowError(String msg, Exception e) {
+		if(e == null) {
+			log.info("Tried to show empty exception");
+		}
+
 		//log.warn("showing error", e);
 		e.printStackTrace();
 

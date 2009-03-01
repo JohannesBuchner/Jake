@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * The Core Event Distributor.
@@ -40,6 +41,9 @@ public class EventCore {
 	private final List<ConnectionStatus> connectionStatus;
 	//private final List<RegistrationStatus> registrationStatus;
 	private final List<ProjectChanged> projectChanged;
+	private final Stack<ProjectChanged.ProjectChangedEvent> projectEvents =
+					new Stack<ProjectChanged.ProjectChangedEvent>();
+
 	private final List<DataChanged> dataChanged;
 	private List<FileSelectionChanged> fileSelectionListeners =
 					new ArrayList<FileSelectionChanged>();
@@ -73,6 +77,7 @@ public class EventCore {
 	}
 
 	private void fireAllChanged() {
+		ObjectCache.get().updateAll();
 		fireDataChanged(DataChanged.All);
 	}
 
@@ -85,7 +90,7 @@ public class EventCore {
 	}
 
 	public void removeProjectChangedCallbackListener(ProjectChanged cb) {
-		log.info("Deregister project changed callback: " + cb);
+		log.trace("Deregister project changed callback: " + cb);
 
 		if (projectChanged.contains(cb)) {
 			projectChanged.remove(cb);
@@ -95,8 +100,20 @@ public class EventCore {
 	public void fireProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
 		lastProjectEvents.put(ev.getProject(), ev);
 
+		// save event in the stack, until new data has arrived from db
+		projectEvents.add(ev);
+		ObjectCache.get().updateProjects();
+	}
+
+	private void spreadProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
 		for (ProjectChanged callback : projectChanged) {
 			callback.projectChanged(ev);
+		}
+	}
+
+	private void shootStalledProjectChangedEvents() {
+		while(!projectEvents.empty()) {
+					spreadProjectChanged(projectEvents.pop());
 		}
 	}
 
@@ -111,7 +128,7 @@ public class EventCore {
 
 	public void fireConnectionStatus(ConnectionStatus.ConnectionStati state,
 					String str) {
-		log.info("spead callback event...");
+		log.trace("spead callback event...");
 		for (ConnectionStatus callback : connectionStatus) {
 			callback.setConnectionStatus(state, str);
 		}
@@ -126,10 +143,13 @@ public class EventCore {
 	}
 
 	public void fireDataChanged(EnumSet<DataChanged.Reason> reason) {
-		log.info("spead callback event data changed: " + reason);
+		log.trace("spead callback event data changed: " + reason);
 		for (DataChanged callback : dataChanged) {
 			callback.dataChanged(reason);
 		}
+
+		// any stalled events?
+		shootStalledProjectChangedEvents();
 	}
 
 	/*

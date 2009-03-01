@@ -22,11 +22,11 @@ import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.EnumSet;
 
 
 public interface ICoreAccess {
@@ -134,25 +134,16 @@ public interface ICoreAccess {
 
 	/******************* Project functions ********************/
 
-
 	/**
-	 * Get all my projects(started/stopped), but not the invited ones. List is
-	 * alphabetically sorted.
+	 * Get  projects(started/stopped/invited - depends on the filter.
+	 * List is alphabetically sorted. (TODO: is it?)
 	 *
+	 * @param filter	EnumSet of the InvitationState
 	 * @return list of projects.
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 */
-	public List<Project> getMyProjects() throws FrontendNotLoggedInException;
+	public AvailableLaterObject<List<Project>> getProjects(EnumSet<InvitationState> filter);
 
-	/**
-	 * Get projects where i am invited to. List is alphabetically sorted.
-	 *
-	 * @return list of invited projects.
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *
-	 */
-	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException;
 
 	/**
 	 * Stops the given project

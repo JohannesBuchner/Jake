@@ -66,7 +66,7 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public void updateData() {
-		log.info("Updating events data...");
+		log.trace("Updating events data...");
 		//FIXME: make proper initialization to evade this ugly null tests...
 		if (this.getProject() != null && this.attributedJakeObject != null) {
 			log.info("Update in progress. Please stand by...");

@@ -13,6 +13,7 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
+import com.jakeapp.core.services.futures.GetProjectsFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.services.futures.StartStopProjectFuture;
@@ -83,16 +84,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<Project> getMyProjects() throws FrontendNotLoggedInException {
-		// FIXME: return AvailableLater!
-		return pms.getProjectList(InvitationState.ACCEPTED);
+	public AvailableLaterObject<List<Project>> getProjects(EnumSet<InvitationState> filter) {
+		return new GetProjectsFuture(pms, filter).start();
 	}
-
-	@Override
-	public List<Project> getInvitedProjects() throws FrontendNotLoggedInException {
-		return pms.getProjectList(InvitationState.INVITED);
-	}
-
 
 	@Override
 	public void setFrontendService(IFrontendService frontendService) {

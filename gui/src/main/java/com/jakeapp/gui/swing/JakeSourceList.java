@@ -25,6 +25,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -36,7 +37,8 @@ import java.util.Map;
 /**
  * Manages the Source List for projects.
  */
-public class JakeSourceList extends JakeGuiComponent implements ProjectSelectionChanged, ProjectChanged, DataChanged {
+public class JakeSourceList extends JakeGuiComponent
+				implements ProjectSelectionChanged, ProjectChanged, DataChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap;
@@ -72,6 +74,9 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		tree.setDropMode(DropMode.ON_OR_INSERT);
 		tree.setTransferHandler(new JakeSourceListTransferHandler());
 
+		// start deferred updates
+		ObjectCache.get().updateProjects();
+
 		// run the inital update, later updated by events
 		updateSourceList();
 	}
@@ -85,15 +90,21 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	private SourceList createSourceList() {
 
 		// init the icons
-		projectStartedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-open.png")).getScaledInstance(16,
-						16, Image.SCALE_SMOOTH));
+		projectStartedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
+						.getImage(getClass().getResource("/icons/folder-open.png")).getScaledInstance(
+						16,
+						16,
+						Image.SCALE_SMOOTH));
 		projectStoppedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
 						.getImage(getClass().getResource("/icons/folder.png")).getScaledInstance(
-						16, 16, Image.SCALE_SMOOTH));
-		projectInvitedIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-new.png")).getScaledInstance(16,
-						16, Image.SCALE_SMOOTH));
+						16,
+						16,
+						Image.SCALE_SMOOTH));
+		projectInvitedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
+						.getImage(getClass().getResource("/icons/folder-new.png")).getScaledInstance(
+						16,
+						16,
+						Image.SCALE_SMOOTH));
 		projectWorkingIcon = new SpinningDial(16, 16);
 
 		// init the project <-> sourcelistitem - map
@@ -102,10 +113,10 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		// inits the main data model
 		projectSourceListModel = new SourceListModel();
 
-		myProjectsCategory = new SourceListCategory(
-						getResourceMap().getString("projectTreeMyProjects"));
-		invitedProjectsCategory = new SourceListCategory(
-						getResourceMap().getString("projectTreeInvitedProjects"));
+		myProjectsCategory =
+						new SourceListCategory(getResourceMap().getString("projectTreeMyProjects"));
+		invitedProjectsCategory = new SourceListCategory(getResourceMap().getString(
+						"projectTreeInvitedProjects"));
 		projectSourceListModel.addCategory(myProjectsCategory);
 		projectSourceListModel.addCategory(invitedProjectsCategory);
 
@@ -250,7 +261,6 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 			return;
 
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
-
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
 
 		Project selectedProject = getProject();
@@ -273,7 +283,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		}
 		java.util.List<Project> iprojects = null;
 		try {
-			iprojects = JakeMainApp.getCore().getInvitedProjects();
+			iprojects = ObjectCache.get().getInvitedProjects();
 		} catch (FrontendNotLoggedInException e) {
 			e.printStackTrace();
 		}
@@ -296,9 +306,6 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 			projectSourceListModel.removeCategory(invitedProjectsCategory);
 		}
 
-
-
-
 		// clear & update 'my projects'
 		// TODO: remove this hack 2x (prevent collapsing of sourcelist)
 		// TODO: do not deleted & recreate sli's (creates selection events we dont wanna have)
@@ -310,7 +317,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 
 		java.util.List<Project> myprojects = null;
 		try {
-			myprojects = JakeMainApp.getCore().getMyProjects();
+			myprojects = ObjectCache.get().getMyProjects();
 		} catch (FrontendNotLoggedInException e) {
 			ExceptionUtilities.showError(e);
 		}
@@ -335,7 +342,6 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 
 
-
 		if (getSourceList() != null && projectSLI != null) {
 			log.info("setting selected item: " + projectSLI);
 			getSourceList().setSelectedItem(projectSLI);
@@ -353,8 +359,9 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 		Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
 
 		// override the icon if work is in process
-		ProjectChanged.ProjectChangedEvent pce = EventCore.get().getLastProjectEvent(project);
-		if(pce != null && pce.isWorking()) {
+		ProjectChanged.ProjectChangedEvent pce =
+						EventCore.get().getLastProjectEvent(project);
+		if (pce != null && pce.isWorking()) {
 			prIcon = projectWorkingIcon;
 		}
 
@@ -424,7 +431,7 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 	 * @param ev
 	 */
 	public void projectChanged(final ProjectChangedEvent ev) {
-		log.info("Received project changed callback.");
+		log.trace("Received project changed callback.");
 
 		Runnable runner = new Runnable() {
 			public void run() {
@@ -433,11 +440,12 @@ public class JakeSourceList extends JakeGuiComponent implements ProjectSelection
 				updateSourceList();
 
 				// react in a special way on some reasons
-				switch(ev.getReason()) {
+				switch (ev.getReason()) {
 					case Created: {
-					log.info("A new project was created - selecting: " + ev.getProject());
-					selectProject(ev.getProject());
-					}break;
+						log.info("A new project was created - selecting: " + ev.getProject());
+						selectProject(ev.getProject());
+					}
+					break;
 
 					case Syncing:
 						setProjectBusy(ev.getProject(), EnumSet.of(BusyState.Syncing));

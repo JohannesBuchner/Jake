@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;

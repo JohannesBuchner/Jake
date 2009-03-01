@@ -4,8 +4,8 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.xcore.EventCore;
 
 public class StartStopProjectWorker
 				extends SwingWorkerWithAvailableLaterObject<Void> {
