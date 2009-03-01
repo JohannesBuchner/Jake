@@ -1,0 +1,16 @@
+/*C1*/SET SCHEMA PUBLIC
+CONNECT USER SA
+DISCONNECT
+/*C2*/SET SCHEMA PUBLIC
+CONNECT USER SA
+create table Tag (object varbinary(255) not null, name varchar(255) not null, primary key (name))
+create table fileobject (relPath varchar(255) not null, objectId char(36) not null, primary key (objectId))
+create table jakeobject (objectId char(36) not null, deleted bit, modified bit, primary key (objectId), unique (objectId))
+create table logentries (DTYPE varchar(31) not null, id varchar(255) not null, belongsto longvarbinary, hash varchar(255), comment varchar(255), action integer not null, issuer longvarbinary, objectuuid varchar(255), processed bit not null, time timestamp not null, project varbinary(255), primary key (id))
+create table note (text varchar(255) not null, objectId char(36) not null, primary key (objectId))
+create table project (UUID varchar(255) not null, AUTOANNOUNCE bit not null, AUTOPULL bit not null, AUTOLOGIN bit not null, invitationstate integer, NAME varchar(255) not null, OPENED bit not null, ROOTPATH varchar(255) not null, STARTED bit not null, userid varchar(255), primary key (UUID), unique (UUID))
+create table servicecredentials (uuid varchar(255) not null, autologin bit, encryption bit not null, password varchar(255), protocol varchar(255), resourcename varchar(255) not null, savepassword bit, server varchar(255) not null, port bigint not null, username varchar(255) not null, primary key (uuid))
+alter table fileobject add constraint FK9A298BBBE0E1910 foreign key (objectId) references jakeobject
+alter table note add constraint FK33AFF2E0E1910 foreign key (objectId) references jakeobject
+alter table project add constraint FKED904B19954BA233 foreign key (userid) references servicecredentials
+DISCONNECT

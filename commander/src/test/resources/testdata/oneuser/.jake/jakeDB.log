@@ -1,0 +1,15 @@
+CREATE USER SA PASSWORD "" ADMIN
+/*C1*/SET SCHEMA PUBLIC
+CONNECT USER SA
+DISCONNECT
+/*C2*/SET SCHEMA PUBLIC
+CONNECT USER SA
+create table configuration (key varchar(255) not null, value varchar(255), primary key (key))
+create table project (UUID varchar(255) not null, AUTOANNOUNCE bit not null, AUTOPULL bit not null, AUTOLOGIN bit not null, invitationstate integer, NAME varchar(255) not null, OPENED bit not null, ROOTPATH varchar(255) not null, STARTED bit not null, userid varchar(255), primary key (UUID), unique (UUID))
+create table servicecredentials (uuid varchar(255) not null, autologin bit, encryption bit not null, password varchar(255), protocol varchar(255), resourcename varchar(255) not null, savepassword bit, server varchar(255) not null, port bigint not null, username varchar(255) not null, primary key (uuid))
+alter table project add constraint FKED904B19954BA233 foreign key (userid) references servicecredentials
+DELETE FROM SERVICECREDENTIALS WHERE UUID='45e2daac-144d-426d-8d3c-d2b00ba6592e'
+INSERT INTO SERVICECREDENTIALS VALUES('45e2daac-144d-426d-8d3c-d2b00ba6592e',FALSE,FALSE,'testpasswd1','XMPP','JakeApp',TRUE,'',0,'testuser1@localhost')
+COMMIT
+SET AUTOCOMMIT TRUE
+DISCONNECT
