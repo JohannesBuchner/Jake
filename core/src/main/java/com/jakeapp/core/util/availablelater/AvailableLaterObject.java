@@ -31,7 +31,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 
 	/* server functions */
 	protected void set(T o) {
-		this.innercontent = o;
+		this.setInnercontent(o);
 		getListener().finished(o);
 	}
 
@@ -61,7 +61,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	 * @return
 	 */
 	public T get() {
-		return innercontent;
+		return getInnercontent();
 	}
 	
 	/**
@@ -117,5 +117,13 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 
 	protected boolean isAlreadyStarted() {
 		return this.alreadyStarted.get();
+	}
+
+	protected T getInnercontent() {
+		return innercontent;
+	}
+
+	protected void setInnercontent(T innercontent) {
+		this.innercontent = innercontent;
 	}
 }

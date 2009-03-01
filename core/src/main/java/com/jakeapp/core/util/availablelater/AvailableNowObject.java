@@ -15,7 +15,7 @@ public class AvailableNowObject<T> extends AvailableLaterObject<T> {
 	/* server functions */
 	@Override
 	protected void set(T o) {
-		this.innercontent = o;
+		this.setInnercontent(o);
 	}
 
 	@Override

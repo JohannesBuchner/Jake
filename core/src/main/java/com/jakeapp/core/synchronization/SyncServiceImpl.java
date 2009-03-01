@@ -13,7 +13,6 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.synchronization.exceptions.PullFailedException;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -27,14 +26,9 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
-import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
-import com.jakeapp.jake.ics.filetransfer.ITransferListener;
-import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
-import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
@@ -42,12 +36,9 @@ import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -56,7 +47,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.concurrent.Semaphore;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -72,7 +62,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	private static final String BEGIN_PROJECT_UUID = "<project>";
-
 	private static final String END_PROJECT_UUID = "</project>";
 
 	private static final String BEGIN_LOGENTRY = "<le>";
@@ -84,10 +73,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
 
 	private static final String LOGENTRIES_MESSAGE = "<logentries/>";
-
-	private static final String NEW_FILE = "<newfile/>";
+	    	private static final String NEW_FILE = "<newfile/>";
 
 	private static final String NEW_NOTE = "<newnote/>";
+
 
 	private IProjectsFileServices projectsFileServices;
 
@@ -379,80 +368,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 			if (!version.isProcessed() && version.getTimestamp().before(le.getTimestamp()))
 				db.getUnprocessedAwareLogEntryDao(jo).setProcessed(version);
 	}
-	
-	protected class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements INegotiationSuccessListener {
-		private IFileTransferService ts;
-		private FileRequest request;
-		private Semaphore sem;
-		private ChangeListener cl;
-		private JakeObject jo;
-		private Throwable innerException;
-		
-		protected class FileProgressChangeListener extends ChangeListenerWrapper {
-			public FileProgressChangeListener(ChangeListener cl) {
-				super(cl);
-			}
-			
-			@Override
-			public void pullDone(JakeObject jo) {
-				sem.release();
-			}
-			
-			@Override
-			public void pullFailed(JakeObject jo, Exception reason) {
-				sem.release();
-				innerException = reason;
-			}
-		}
-		
-		public FileRequestObject(JakeObject jo,IFileTransferService ts, FileRequest request, ChangeListener cl) {
-			super();
-			this.ts = ts;
-			this.request = request;
-			this.cl = new FileProgressChangeListener(cl);
-			this.jo = jo;
-			sem = new Semaphore(0);
-			innerException = null;
-		}
 
-		@Override
-		public IFileTransfer calculate() throws Exception {
-			INegotiationSuccessListener listener = new PullListener(this.jo, cl);
-			ts.request(request, this);
-			//wait for negotiation-success-listener
-			sem.acquire();
-			
-			if (this.innerException!=null && innerException instanceof Exception) {
-				listener.failed(this.innerException);
-				throw (Exception)innerException;
-			}
-			
-			listener.succeeded(innercontent);
-			
-			//wait for FileProressChangeListener
-			sem.acquire();
-			if (this.innerException!=null && innerException instanceof Exception) {
-				throw (Exception)innerException;
-				//this exception came from the listener!
-			}
-			
-			return this.innercontent;
-		}
 
-		@Override
-		public void failed(Throwable reason) {
-			this.innerException = reason;
-			sem.release();
-		}
 
-		@Override
-		public void succeeded(IFileTransfer ft) {
-			this.innercontent = ft;
-			sem.release();
-		}
-	}
-	
-	
 	/** 
 	 * Pulls a Fileobject from any available source and - if the pull
 	 * has been successful - sets all LogEntries that became obsoleted by the pull
@@ -512,7 +430,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 					//watches the Filetransfer and returns after the filetransfer has
 					//either returned successfully or not successfully
 					result =
-						AvailableLaterWaiter.await(new FileRequestObject(fo,ts,fr,cl));
+						AvailableLaterWaiter.await(new FileRequestObject(fo,ts,fr,cl, db));
 					//Save potentialProvider for later usage.
 					realProvider = potentialProvider;
 					break;
@@ -833,6 +751,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if(prl == null) {
+//			prl = new ProjectRequestListener2(p, getICSManager(), (ISyncService) this);
 			prl = new ProjectRequestListener(p);
 			projectRequestListeners.put(p.getProjectId(), prl);
 		}
@@ -981,136 +900,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 	}
 
-	private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
-		ICService ics = getICS(project);
 
-		try {
-			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
-
-
-			StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
-
-			log.debug("Starting to process log entries...");
-			for(LogEntry l: logs) {
-				try {
-					sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
-					log.debug("Serialised log entry, new sb content: " + sb.toString());
-				} catch(Throwable e) {
-					log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
-				}
-			}
-			log.debug("Finished processing log entries! Now sending.");
-
-			ics.getMsgService().sendMessage(user, sb.toString());
-		} catch (NetworkException e) {
-			log.warn("Could not sync logs", e);
-		} catch (OtherUserOfflineException e) {
-			log.warn("Could not sync logs", e);
-		}
-	}
-
-	private class PullListener implements INegotiationSuccessListener {
-
-		private ChangeListener cl;
-
-		private JakeObject jo;
-
-		private PullListener(JakeObject jo, ChangeListener cl) {
-			this.cl = cl;
-			this.jo = jo;
-		}
-
-		@Override
-		public void failed(Throwable reason) {
-			log.error("pulling failed.");
-		}
-
-		@Override
-		public void succeeded(IFileTransfer ft) {
-			log.info("pulling negotiation succeeded");
-			cl.pullNegotiationDone(jo);
-			new TransferWatcherThread(ft, new PullWatcher(jo, cl, ft));
-		}
-
-	}
-
-	private class PullWatcher implements ITransferListener {
-
-		private ChangeListener cl;
-
-		@SuppressWarnings("unused")
-		private IFileTransfer ft;
-
-		private JakeObject jo;
-
-		public PullWatcher(JakeObject jo, ChangeListener cl, IFileTransfer ft) {
-			this.cl = cl;
-			this.ft = ft;
-			this.jo = jo;
-		}
-
-		@Override
-		public void onFailure(AdditionalFileTransferData transfer, String error) {
-			cl.pullFailed(jo, new PullFailedException(error));
-			log.error("transfer for " + jo + " failed: " + error);
-		}
-
-		@Override
-		@Transactional
-		public void onSuccess(AdditionalFileTransferData transfer) {
-			log.info("transfer for " + jo + " succeeded");
-			FileInputStream data;
-			try {
-				data = new FileInputStream(transfer.getDataFile());
-			} catch (FileNotFoundException e2) {
-				log.error("opening file failed:", e2);
-				return;
-			}
-			if (jo instanceof NoteObject) {
-				NoteObject no;
-				try {
-					no = db.getNoteObjectDao(jo.getProject()).get(jo.getUuid());
-				} catch (Exception e1) {
-					log.error("404", e1);
-					return;
-				}
-
-				BufferedReader bis = new BufferedReader(new InputStreamReader(data));
-				String content;
-				try {
-					content = bis.readLine(); // TODO: read whole thing
-					bis.close();
-				} catch (IOException e) {
-					content = "foo";
-				}
-				no.setContent(content);
-				cl.pullDone(jo);
-			}
-			if (jo instanceof FileObject) {
-				String target = ((FileObject) jo).getRelPath();
-				try {
-					getFSS(jo.getProject()).writeFileStream(target, data);
-				} catch (Exception e) {
-					log.error("writing file failed:", e);
-					return;
-				}
-				cl.pullDone(jo);
-			}
-			try {
-				data.close();
-			} catch (IOException ignored) {
-				log.debug("We don't care 'bout this exception");
-			}
-		}
-
-		@Override
-		public void onUpdate(AdditionalFileTransferData transfer, Status status,
-		                     double progress) {
-			log.info("progress for " + jo + " : " + status + " - " + progress);
-			cl.pullProgressUpdate(jo, status, progress);
-		}
-
-	}
 
 	@Override
 	public void stopServing(Project p) {
@@ -1202,4 +992,34 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public ICSManager getICSManager() {
 		return icsManager;
 	}
+
+	private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
+		ICService ics = getICS(project);
+
+		try {
+			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
+
+
+			StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
+
+			log.debug("Starting to process log entries...");
+			for (LogEntry l : logs) {
+				try {
+					sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
+					log.debug("Serialised log entry, new sb content: " + sb.toString());
+				} catch (Throwable e) {
+					log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
+				}
+			}
+			log.debug("Finished processing log entries! Now sending.");
+
+			ics.getMsgService().sendMessage(user, sb.toString());
+		} catch (NetworkException e) {
+			log.warn("Could not sync logs", e);
+		} catch (OtherUserOfflineException e) {
+			log.warn("Could not sync logs", e);
+		}
+	}
+
+
 }
