@@ -11,7 +11,6 @@ import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.dialogs.SplashWindow;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -289,10 +288,6 @@ public class JakeMainApp extends SingleFrameApplication
 	 */
 	public static MsgService getMsgService() {
 		return getApp().msgService;
-	}
-
-	public SplashWindow getSplashFrame() {
-		return SplashWindow.getInstance();
 	}
 
 	/**

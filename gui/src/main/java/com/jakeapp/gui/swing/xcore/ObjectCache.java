@@ -98,8 +98,12 @@ public class ObjectCache {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Notes), project);
 	}
 
+	/**
+	 * Only update the project if core is initialized
+	 * and a user(=MsgService) is selected.
+	 */
 	public void updateProjects() {
-		if (JakeMainApp.isCoreInitialized()) {
+		if (JakeMainApp.isCoreInitialized() && JakeMainApp.getMsgService() != null) {
 			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
 			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.INVITED)));
 		}
