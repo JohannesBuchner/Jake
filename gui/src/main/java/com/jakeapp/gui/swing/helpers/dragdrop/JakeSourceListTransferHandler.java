@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.helpers.dragdrop;
 
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
@@ -141,9 +142,11 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 					}
 				}
 			} else if (isAddToProject(dl, files)) {
-				log.info("add to project!");
+				// FIXME:
+				Project project = JakeMainApp.getProject();
+				log.info("add to project: " + project);
 
-				JakeExecutor.exec(new ImportFileFolderWorker(files, "/"));
+				JakeExecutor.exec(new ImportFileFolderWorker(project, files, "/"));
 			}
 
 

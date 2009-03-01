@@ -66,7 +66,7 @@ public class ImportFileAction extends FileAction {
 		}
 
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
-		JakeExecutor.exec(new ImportFileFolderWorker(
+		JakeExecutor.exec(new ImportFileFolderWorker(JakeMainApp.getProject(),
 				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
 	}
 }

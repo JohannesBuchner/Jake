@@ -32,14 +32,10 @@ public class EventCore {
 	private static final Logger log = Logger.getLogger(EventCore.class);
 	private static EventCore instance;
 
-	//private final HashMap<Project, ProjectsChangeListener> projectChangeListenerHash =
-	//				new HashMap<Project, ProjectsChangeListener>();
-
 	private final ProjectsChangeListener projectsChangeListener =
 					new ProjectsChangeListener();
 
 	private final List<ConnectionStatus> connectionStatus;
-	//private final List<RegistrationStatus> registrationStatus;
 	private final List<ProjectChanged> projectChanged;
 	private final Stack<ProjectChanged.ProjectChangedEvent> projectEvents =
 					new Stack<ProjectChanged.ProjectChangedEvent>();
@@ -78,7 +74,7 @@ public class EventCore {
 
 	private void fireAllChanged() {
 		ObjectCache.get().updateAll();
-		fireDataChanged(DataChanged.All);
+		fireDataChanged(DataChanged.All, null);
 	}
 
 	public static EventCore get() {
@@ -142,32 +138,15 @@ public class EventCore {
 		dataChanged.remove(cb);
 	}
 
-	public void fireDataChanged(EnumSet<DataChanged.Reason> reason) {
+	public void fireDataChanged(EnumSet<DataChanged.Reason> reason, Project p) {
 		log.trace("spead callback event data changed: " + reason);
 		for (DataChanged callback : dataChanged) {
-			callback.dataChanged(reason);
+			callback.dataChanged(reason, p);
 		}
 
 		// any stalled events?
 		shootStalledProjectChangedEvents();
 	}
-
-	/*
-	public void addRegistrationStatusCallbackListener(RegistrationStatus cb) {
-		log.info("Registers registration status callback: " + cb);
-	}
-
-	public void removeRegistrationStatusCallbackListener(RegistrationStatus cb) {
-		log.info("Deregisters registration status callback: " + cb);
-	}
-
-	private void fireRegistrationStatus(RegistrationStatus.RegisterStati state,
-					String str) {
-		for (RegistrationStatus callback : registrationStatus) {
-			callback.setRegistrationStatus(state, str);
-		}
-	}*/
-
 
 	public void addFileSelectionListener(FileSelectionChanged listener) {
 		fileSelectionListeners.add(listener);
@@ -208,27 +187,15 @@ public class EventCore {
 		return invitationListener;
 	}
 
-	public void fireNotesChanged() {
+	public void fireNotesChanged(Project p) {
 
 		// change in the notes mostly changes the log entries too!
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries));
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries), p);
 	}
 
-	public void fireFilesChanged() {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files));
+	public void fireFilesChanged(Project p) {
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
 	}
-
-	/*
-	public ChangeListener registerProjectChangeListener(Project project) {
-		ProjectsChangeListener pcl = new ProjectsChangeListener(project);
-		projectChangeListenerHash.put(project, pcl);
-		return pcl;
-	}
-
-	public void removeProjectChangeListener(Project project) {
-		projectChangeListenerHash.remove(project);
-	}
-*/
 
 	private class ProjectsChangeListener implements ChangeListener {
 		public ProjectsChangeListener() {

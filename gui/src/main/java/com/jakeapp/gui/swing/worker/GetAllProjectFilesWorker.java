@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -32,9 +32,9 @@ public class GetAllProjectFilesWorker extends
 	protected void done() {
 		log.info("Done GetAllProjectFilesWorker");
 
-		// done! so lets update the filetree
+		// done! save into object cache
 		try {
-			FilePanel.getInstance().setProjectFiles(this.get());
+			ObjectCache.get().setFiles(project, get());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {

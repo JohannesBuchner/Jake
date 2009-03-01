@@ -565,7 +565,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new NoteOperationFailedException(e);
 		}
 
-		EventCore.get().fireNotesChanged();
+		EventCore.get().fireNotesChanged(note.getProject());
 	}
 
 	@Override
@@ -580,7 +580,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 		pms.saveNote(note);
-		EventCore.get().fireNotesChanged();
+		EventCore.get().fireNotesChanged(note.getProject());
 	}
 
 

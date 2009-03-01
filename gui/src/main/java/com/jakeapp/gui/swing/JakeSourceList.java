@@ -475,7 +475,7 @@ public class JakeSourceList extends JakeGuiComponent
 		SwingUtilities.invokeLater(runner);
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason) {
+	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
 		if (reason.contains(DataChanged.Reason.Projects)) {
 			updateSourceList();
 		}

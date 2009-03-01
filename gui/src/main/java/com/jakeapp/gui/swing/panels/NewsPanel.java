@@ -150,7 +150,7 @@ public class NewsPanel extends javax.swing.JPanel implements
 		this.eventsTableUpdateTimer.start();
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason) {
+	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
 		if(reason.contains(Reason.LogEntries)) {
 			this.updatePanel();
 		}

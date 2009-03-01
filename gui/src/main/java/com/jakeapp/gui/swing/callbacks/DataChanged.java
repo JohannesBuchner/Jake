@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.callbacks;
 
+import com.jakeapp.core.domain.Project;
+
 import java.util.EnumSet;
 
 /**
@@ -11,5 +13,10 @@ public interface DataChanged {
 
 	public static EnumSet<Reason> All = EnumSet.allOf(Reason.class);
 
-	public void dataChanged(EnumSet<Reason> reason);
+	/**
+	 * Callback when new data is in the object cache
+	 * @param reason
+	 * @param p optional variable
+	 */
+	public void dataChanged(EnumSet<Reason> reason, Project p);
 }

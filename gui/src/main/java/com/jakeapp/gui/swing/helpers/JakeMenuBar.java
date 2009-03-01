@@ -200,6 +200,8 @@ public class JakeMenuBar extends JMenuBar {
 					} else {
 						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					}
+					SwingUtilities.updateComponentTreeUI(JakeMainApp.getFrame());
+					JakeMainApp.getFrame().pack();
 
 				} catch (Exception r) {
 					ExceptionUtilities.showError(r);

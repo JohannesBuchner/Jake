@@ -1,34 +1,67 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
  * Flat representation of FolderObjectTreeTableModel
  */
-public class FileObjectsTableModel extends AbstractTableModel {
+public class FileObjectsTableModel extends AbstractTableModel
+				implements ProjectSelectionChanged, DataChanged {
 	private static final Logger log =
 					Logger.getLogger(FolderObjectsTreeTableModel.class);
+
 	private List<FileObject> files;
+
+	@Override public void setProject(Project pr) {
+		updateData();
+	}
+
+	private void updateData() {
+		this.files = ObjectCache.get().getFiles(JakeMainApp.getProject());
+	}
+
+	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
+		// fixme react on specific project only
+		if(reason.contains(Reason.Files)) {
+			fireUpdate();
+		}
+	}
 
 	enum Columns {
 		FLock, FState, Name, Path, Size, LastMod, Tags
 	}
 
-	public FileObjectsTableModel(List<FileObject> files) {
-		log.info("Created FileObjectsTableModel with " + files.size() + " Files");
-		this.files = files;
+	public FileObjectsTableModel() {
+		log.trace("Created FileObjectsTableModel");
+
+		// register for selection changes
+		EventCore.get().addDataChangedCallbackListener(this);
+		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+
+		updateData();
 	}
+
+		public void fireUpdate() {
+			updateData();
+			this.fireTableDataChanged();
+		}
 
 	@Override
 	public String getColumnName(int column) {
@@ -76,22 +109,26 @@ public class FileObjectsTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return files.size();
+		return files != null ? files.size() : 0;
 	}
 
 	@Override
 	public int getColumnCount() {
-		return 7;
+		return Columns.values().length;
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		if(files == null || rowIndex >= files.size()) {
+			log.warn("Attemt to get value for invalid row " + rowIndex);
+		}
+
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 
 		// FIXME cache!! get async?
 		Attributed<FileObject> fileInfo = JakeMainApp.getCore().getJakeObjectSyncStatus(
-								JakeMainApp.getProject(),
-								ournode.getFileObject());
+						JakeMainApp.getProject(),
+						ournode.getFileObject());
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:

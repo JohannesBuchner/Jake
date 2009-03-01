@@ -198,6 +198,13 @@ public class InspectorPanel extends JXPanel
 	 */
 	public void updatePanel() {
 		log.debug("mode: " + this.mode);
+
+		// HACK: quick fix
+		if((mode == Mode.FILE && attributedFileObject == null)
+						|| (mode == Mode.NOTE && attributedNoteObject == null)) {
+			mode = Mode.NONE;
+		}
+
 		switch (this.mode) {
 			case FILE:
 				File file = null;

@@ -35,12 +35,12 @@ public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObjec
 	@Override
 	protected void done() {
 		// inform the core that there are new log entries available.
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries));
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), null);
 		if (this.jos.size()>0) {
 			if ((this.jos.get(0)) instanceof FileObject)
-				EventCore.get().fireFilesChanged();
+				EventCore.get().fireFilesChanged(this.jos.get(0).getProject());
 			else
-				EventCore.get().fireNotesChanged();
+				EventCore.get().fireNotesChanged(this.jos.get(0).getProject());
 		}
 	}
 

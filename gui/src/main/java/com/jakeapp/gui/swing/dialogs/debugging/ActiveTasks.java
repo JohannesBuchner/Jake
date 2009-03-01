@@ -97,7 +97,7 @@ public class ActiveTasks extends JXPanel {
 			try {
 				fireContentsChanged(this, 0, getSize());
 			} catch (Exception e) {
-				// we don't care
+				// i can't hear you ;o)
 			}
 		}
 	}
