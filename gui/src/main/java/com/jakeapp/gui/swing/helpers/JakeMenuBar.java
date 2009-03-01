@@ -7,7 +7,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.dialogs.JakeDebugger;
 import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.gui.swing.xcore.CreateExampleDirectory;
+import com.jakeapp.gui.swing.xcore.CreateExampleProject;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
@@ -171,7 +171,7 @@ public class JakeMenuBar extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CreateExampleDirectory.create();
+				CreateExampleProject.create();
 			}
 		});
 		debugMenu.add(createExampleDebugItem);

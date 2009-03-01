@@ -5,14 +5,16 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 /**
  * This creates an example directory for the user
  *
  * @author studpete
  */
-public class CreateExampleDirectory {
-	public CreateExampleDirectory() {
+public class CreateExampleProject {
+	public CreateExampleProject() {
 	}
 
 	public static void create() {
@@ -24,6 +26,13 @@ public class CreateExampleDirectory {
 			// add a file
 			File infoFile = new File(newDir, "Put your data here to share it.txt");
 			infoFile.createNewFile();
+
+			FileWriter writer = new FileWriter(infoFile);
+			PrintWriter out = new PrintWriter(writer);
+
+			out.println("Jake is a modern, shortened form of the male name Jacob");
+			out.close();
+			writer.close();
 
 			JakeMainApp.getCore().createProject("JakeShared", newDir.getAbsolutePath(),
 							JakeMainApp.getMsgService());

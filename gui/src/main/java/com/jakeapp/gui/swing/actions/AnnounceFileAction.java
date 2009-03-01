@@ -35,7 +35,7 @@ public class AnnounceFileAction extends FileAction {
 		ArrayList<FileObject> files = getSelectedFiles();
 
 		try {
-			JakeMainApp.getCore().announceFileObjects(files);
+			JakeMainApp.getCore().announceJakeObjects(files, null);
 		} catch (FileOperationFailedException ex) {
 			ExceptionUtilities.showError(ex);
 		}

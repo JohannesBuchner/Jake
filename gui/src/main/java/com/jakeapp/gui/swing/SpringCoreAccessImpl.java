@@ -51,13 +51,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
@@ -891,27 +885,28 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 	}
 
+
+	@Override public AvailableLaterObject<Void> announceJakeObject(JakeObject jo,
+					String commitMsg) throws FileOperationFailedException {
+		return announceJakeObjects(Arrays.asList(jo), commitMsg);
+	}
+
 	@Override
-	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo,
-					String commitmsg) throws FileOperationFailedException {
+	public<T extends JakeObject> AvailableLaterObject<Void> announceJakeObjects(
+					List<T> jos, String commitMsg)
+					throws FileOperationFailedException {
 		ISyncService iss;
 		AvailableLaterObject<Void> result;
 
 		try {
-			iss = this.getFrontendService().getSyncService(this.getSessionId());
-			result = new AnnounceFuture(iss, jo, LogAction.JAKE_OBJECT_NEW_VERSION);
+			iss = this.frontendService.getSyncService(this.getSessionId());
+			result = new AnnounceFuture(iss, jos, commitMsg);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			throw new FileOperationFailedException(e);
 		}
 
 		return result.start();
-	}
-
-
-	@Override
-	public void announceFileObjects(ArrayList<FileObject> jos)
-					throws FileOperationFailedException {
 	}
 
 	@Override

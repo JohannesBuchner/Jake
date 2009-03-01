@@ -373,9 +373,11 @@ public interface ICoreAccess {
 
 	/**
 	 * @param jos JakeObjects to be announced
+	 * @param commitMsg
 	 * @throws FileOperationFailedException nested exception for file based errors.
 	 */
-	public void announceFileObjects(ArrayList<FileObject> jos)
+	public<T extends JakeObject> AvailableLaterObject<Void> announceJakeObjects(
+					List<T> jos, String commitMsg)
 					throws FileOperationFailedException;
 
 
