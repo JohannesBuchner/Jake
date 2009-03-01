@@ -13,6 +13,7 @@ import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
@@ -53,6 +54,9 @@ public class EventCore {
 
 	private IProjectInvitationListener invitationListener =
 					new ProjectInvitationListener();
+
+	private final List<PropertyChanged> propertyChangedListeners =
+					new ArrayList<PropertyChanged>();
 
 	static {
 		instance = new EventCore();
@@ -164,6 +168,15 @@ public class EventCore {
 		nodeSelectionListeners.remove(listener);
 	}
 
+	public void addPropertyListener(PropertyChanged listener) {
+		propertyChangedListeners.add(listener);
+	}
+
+	public void removePropertyListener(PropertyChanged listener) {
+		propertyChangedListeners.remove(listener);
+	}
+
+
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
 		log.debug("notify selection listeners");
 		for (FileSelectionChanged listener : fileSelectionListeners) {
@@ -173,7 +186,7 @@ public class EventCore {
 
 	public void notifyNodeSelectionListeners(
 					java.util.List<ProjectFilesTreeNode> objs) {
-		log.debug("notify selection listeners");
+		log.trace("notify selection listeners");
 		for (NodeSelectionChanged c : nodeSelectionListeners) {
 			c.nodeSelectionChanged(new NodeSelectionChanged.NodeSelectedEvent(objs));
 		}
@@ -207,6 +220,7 @@ public class EventCore {
 		//ObjectCache.get().updateLog(p);
 		fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
 	}
+
 
 	private class ProjectsChangeListener implements ChangeListener {
 		public ProjectsChangeListener() {
@@ -245,6 +259,23 @@ public class EventCore {
 	public ProjectChanged.ProjectChangedEvent getLastProjectEvent(Project project) {
 		return lastProjectEvents.get(project);
 	}
+
+
+	/**
+	 * Fire Event that a property has changed.
+	 *
+	 * @param reason
+	 * @param project
+	 * @param obj
+	 */
+	public void firePropertyChanged(PropertyChanged.Reason reason, Project project,
+					Object obj) {
+		log.trace("notify property changed listeners");
+		for (PropertyChanged c : propertyChangedListeners) {
+			c.propertyChanged(EnumSet.of(reason), project, obj);
+		}
+	}
+
 
 	private class ProjectInvitationListener implements IProjectInvitationListener {
 		@Override public void invited(UserId user, Project p) {

@@ -102,8 +102,11 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		// FIXME: cache better!?
 		List<NoteObject> rawNotes = ObjectCache.get().getNotes(p);
 		this.attributedNotes.clear();
-		for(NoteObject note : rawNotes) {
-			this.attributedNotes.add(JakeMainApp.getCore().<NoteObject>getAttributed(p, note));
+		if (rawNotes != null) {
+			for (NoteObject note : rawNotes) {
+				this.attributedNotes
+								.add(JakeMainApp.getCore().<NoteObject>getAttributed(p, note));
+			}
 		}
 		this.fireTableDataChanged();
 	}

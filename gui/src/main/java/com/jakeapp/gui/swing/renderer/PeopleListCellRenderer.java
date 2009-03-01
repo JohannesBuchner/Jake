@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.UserHelper;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,28 +15,29 @@ import java.awt.*;
  */
 // TODO: localize
 public class PeopleListCellRenderer extends DefaultListCellRenderer {
-	final static ImageIcon projectMemberIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-									"/icons/user-online-projectmember.png")));
+	private static final Logger log = Logger.getLogger(PeopleListCellRenderer.class);
+	final static ImageIcon projectMemberIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-online-projectmember.png")));
 	// TODO: offline projectmember!
-	final static ImageIcon onlineFullTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-									"/icons/user-online-fulltrust.png")));
-	final static ImageIcon onlineTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-online-trust.png")));
-	final static ImageIcon onlineNoTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
-	final static ImageIcon offlineFullTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-									"/icons/user-offline-fulltrust.png")));
-	final static ImageIcon offlineTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-offline-trust.png")));
-	final static ImageIcon offlineNoTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-offline-notrust.png")));
+	final static ImageIcon onlineFullTrustIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-online-fulltrust.png")));
+	final static ImageIcon onlineTrustIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-online-trust.png")));
+	final static ImageIcon onlineNoTrustIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-online-notrust.png")));
+	final static ImageIcon offlineFullTrustIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-offline-fulltrust.png")));
+	final static ImageIcon offlineTrustIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-offline-trust.png")));
+	final static ImageIcon offlineNoTrustIcon = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+					"/icons/user-offline-notrust.png")));
 
 
 	/* This is the only method defined by ListCellRenderer.  We just
@@ -79,6 +81,10 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		super.getListCellRendererComponent(list, valStr, index, iss, chf);
 
 		TrustState memberTrust = user.getTrust();
+		if (memberTrust == null) {
+			log.warn("Received NULL member trust from " + user);
+			memberTrust = TrustState.NO_TRUST;
+		}
 
 		if (user.isOnline()) {
 			switch (memberTrust) {
@@ -95,7 +101,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 				}
 			}
 		} else {
-			switch (user.getTrust()) {
+			switch (memberTrust) {
 				case AUTO_ADD_REMOVE: {
 					setIcon(offlineFullTrustIcon);
 				}

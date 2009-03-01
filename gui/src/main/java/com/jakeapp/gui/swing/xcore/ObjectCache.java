@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
 import com.jakeapp.gui.swing.worker.GetAllProjectNotesWorker;
 import com.jakeapp.gui.swing.worker.GetProjectsWorker;
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author studpete
  */
-public class ObjectCache {
+public class ObjectCache implements PropertyChanged {
 	private static final Logger log = Logger.getLogger(ObjectCache.class);
 	private static ObjectCache instance = new ObjectCache();
 
@@ -39,6 +40,7 @@ public class ObjectCache {
 
 	// do not construct
 	private ObjectCache() {
+		EventCore.get().addPropertyListener(this);
 	}
 
 	/**
@@ -150,4 +152,21 @@ public class ObjectCache {
 		}
 	}
 	*/
+
+	/**
+	 * Catch the PropertyChange - Event.
+	 * We may have to update some data of some app properties change.
+	 * @param reason
+	 * @param p optional variable
+	 * @param data optional poperty
+	 */
+	@Override public void propertyChanged(EnumSet<Reason> reason, Project p,
+					Object data) {
+
+		// update the projects when the MsgService is selected
+		// (thus the user logged in)
+		if(reason.contains(Reason.MsgService)) {
+			this.updateProjects();
+		}
+	}
 }

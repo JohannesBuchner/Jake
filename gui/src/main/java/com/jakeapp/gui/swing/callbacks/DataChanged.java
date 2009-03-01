@@ -18,5 +18,5 @@ public interface DataChanged {
 	 * @param reason
 	 * @param p optional variable
 	 */
-	public void dataChanged(EnumSet<Reason> reason, Project p);
+	public void dataChanged(EnumSet<DataChanged.Reason> reason, Project p);
 }

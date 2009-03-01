@@ -6,14 +6,19 @@ import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
-import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.AppUtilities;
+import com.jakeapp.gui.swing.helpers.GuiUtilities;
+import com.jakeapp.gui.swing.helpers.JakeHelper;
+import com.jakeapp.gui.swing.helpers.JakeMenuBar;
+import com.jakeapp.gui.swing.helpers.JakeTrayIcon;
+import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.SegmentButtonCreator;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.InspectorPanel;
@@ -39,6 +44,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 
@@ -46,7 +52,7 @@ import java.util.List;
  * The application's main frame.
  */
 public class JakeMainView extends FrameView
-				implements ProjectSelectionChanged, MsgServiceChanged {
+				implements ProjectSelectionChanged, PropertyChanged {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
 	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
@@ -103,6 +109,11 @@ public class JakeMainView extends FrameView
 	 */
 	public Image getLargeAppImage() {
 		return IconAppLarge;
+	}
+
+	@Override public void propertyChanged(EnumSet<Reason> reason, Project p,
+					Object data) {
+		updateAll();
 	}
 
 	/**
@@ -343,7 +354,7 @@ public class JakeMainView extends FrameView
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
 		EventCore.get().addProjectChangedCallbackListener(new ProjectChangedCallback());
-		JakeMainApp.getApp().addMsgServiceChangedListener(this);
+		EventCore.get().addPropertyListener(this);
 	}
 
 
@@ -788,11 +799,6 @@ public class JakeMainView extends FrameView
 
 	public void quit() {
 		app.saveQuit();
-	}
-
-	@Override
-	public void msgServiceChanged(MsgService msg) {
-		updateAll();
 	}
 
 	public static boolean isMainWindowVisible() {

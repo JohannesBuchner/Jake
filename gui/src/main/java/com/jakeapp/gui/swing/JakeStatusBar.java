@@ -4,16 +4,15 @@ import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.VisibilityStatus;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
@@ -40,7 +39,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class JakeStatusBar extends JakeGuiComponent
 				implements ConnectionStatus, ProjectSelectionChanged, ProjectChanged,
-				ProjectViewChanged, ContextViewChanged, MsgServiceChanged, DataChanged {
+				ProjectViewChanged, ContextViewChanged, DataChanged, PropertyChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
 	private static JakeStatusBar instance;
@@ -53,7 +52,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
 	private SpinningWheelComponent progressDrawer;
-//	private JLabel progressMessage;
+	//	private JLabel progressMessage;
 
 	Icon chooseUserIcon =
 					new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(
@@ -61,7 +60,14 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	Icon spinningDial = new SpinningDial(12, 12);
 
-	enum IconEnum {Offline, LoggingIn, Online}
+	@Override public void propertyChanged(EnumSet<PropertyChanged.Reason> reason,
+					Project p, Object data) {
+		updateConnectionDisplay();
+	}
+
+	enum IconEnum {
+		Offline, LoggingIn, Online
+	}
 
 	public static JakeStatusBar getInstance() {
 		return instance;
@@ -77,11 +83,12 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	/**
 	 * Get the Icon corresponding to the Connection State.
+	 *
 	 * @param icon
 	 * @return
 	 */
 	private Icon getConnectionIcon(IconEnum icon) {
-		switch(icon) {
+		switch (icon) {
 			case Offline:
 				return chooseUserIcon;
 			case LoggingIn:
@@ -93,7 +100,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
+	@Override public void dataChanged(EnumSet<DataChanged.Reason> reason, Project p) {
 		updateMessage();
 	}
 
@@ -197,7 +204,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		EventCore.get().addProjectChangedCallbackListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 		JakeMainView.getMainView().addContextViewChangedListener(this);
-		JakeMainApp.getApp().addMsgServiceChangedListener(this);
+		EventCore.get().addPropertyListener(this);
 
 		// registering the connection status callback
 		EventCore.get().addConnectionStatusCallbackListener(this);
@@ -229,11 +236,12 @@ public class JakeStatusBar extends JakeGuiComponent
 		// TODO: neet online/offline info!
 		if (JakeMainApp.getMsgService() != null) {
 			String user = JakeMainApp.getMsgService().getUserId().getUserId();
-			VisibilityStatus visibility = JakeMainApp.getMsgService().getVisibilityStatus();
-			msg =  visibility + " - " + user;
+			VisibilityStatus visibility =
+							JakeMainApp.getMsgService().getVisibilityStatus();
+			msg = visibility + " - " + user;
 			icon = IconEnum.LoggingIn;
 
-			if(visibility == VisibilityStatus.ONLINE) {
+			if (visibility == VisibilityStatus.ONLINE) {
 				icon = IconEnum.Online;
 			}
 
@@ -445,10 +453,6 @@ public class JakeStatusBar extends JakeGuiComponent
 		return contextViewPanel;
 	}
 
-	@Override
-	public void msgServiceChanged(MsgService msg) {
-		updateConnectionDisplay();
-	}
 
 	// HACK: should be called via listener, implicit only...
 	public static void showProgressAnimation(final boolean show) {

@@ -9,12 +9,13 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
-import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -34,14 +35,12 @@ public class JakeMainApp extends SingleFrameApplication
 	private ICoreAccess core;
 	private Project project = null;
 
-	// this is the message service the user chooses.
-	// only one per application.
+	// this is the message service the user chooses (one per application)
 	private MsgService msgService = null;
 
 	private final List<ProjectSelectionChanged> projectSelectionChanged =
 					new LinkedList<ProjectSelectionChanged>();
-	private final List<MsgServiceChanged> msgServiceChanged =
-					new ArrayList<MsgServiceChanged>();
+
 	private final List<CoreChanged> coreChanged = new ArrayList<CoreChanged>();
 
 	public JakeMainApp() {
@@ -235,32 +234,9 @@ public class JakeMainApp extends SingleFrameApplication
 		}
 	}
 
-	/**
-	 * Fires when a new User is selected.
-	 */
-	private void fireMsgServiceChanged() {
-		log.info("Fire Message Service Changed: " + getMsgService());
-		for (MsgServiceChanged msc : msgServiceChanged) {
-			try {
-				msc.msgServiceChanged(getMsgService());
-			} catch (RuntimeException ex) {
-				log.error("Catched an exception while setting message service: ", ex);
-				ExceptionUtilities.showError(ex);
-			}
-		}
-	}
-
-	public void addMsgServiceChangedListener(MsgServiceChanged msc) {
-		msgServiceChanged.add(msc);
-	}
-
-	public void removeMsgServiceChangedListener(MsgServiceChanged msc) {
-		msgServiceChanged.remove(msc);
-	}
-
 
 	public void saveQuit() {
-		log.debug("Calling saveQuit");
+		log.trace("Calling saveQuit");
 
 		if (this.core != null) {
 			this.core.backendLogOff();
@@ -278,7 +254,8 @@ public class JakeMainApp extends SingleFrameApplication
 	public static void setMsgService(MsgService msg) {
 		getApp().msgService = msg;
 
-		getApp().fireMsgServiceChanged();
+		// inform the event core for this change
+		EventCore.get().firePropertyChanged(PropertyChanged.Reason.MsgService, null, msg);
 	}
 
 	/**
