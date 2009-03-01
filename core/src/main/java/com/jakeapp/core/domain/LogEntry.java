@@ -26,7 +26,7 @@ import javax.persistence.Transient;
  */
 
 @Entity(name = "logentries")
-public class LogEntry<T extends ILogable> implements Serializable {
+public abstract class LogEntry<T extends ILogable> implements Serializable {
 
 	protected static Date getTime() {
 		return new Date();
@@ -60,7 +60,6 @@ public class LogEntry<T extends ILogable> implements Serializable {
 	 *            <code>LogEntry</code> even between clients.
 	 * @param logAction
 	 * @param timestamp
-	 * @param project
 	 * @param belongsTo
 	 * @param member
 	 * @param comment

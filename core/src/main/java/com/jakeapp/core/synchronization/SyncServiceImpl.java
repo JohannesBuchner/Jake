@@ -948,7 +948,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			LogEntrySerializer robot = new LogEntrySerializer();
 
 			System.err.println("========= LOGS ==========");
-			for(LogEntry<? extends ILogable> l: logs) {
+			for(LogEntry l: logs) {
 				System.err.println("--- START");
 				System.err.println(robot.serialize(l, project));
 				System.err.println("--- END");

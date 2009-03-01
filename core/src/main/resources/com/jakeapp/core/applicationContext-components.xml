@@ -19,7 +19,7 @@
     </bean>
 
     <bean id="logEntrySerializer" class="com.jakeapp.core.domain.LogEntrySerializer">
-        <constructor-arg index="0" ref="projectDao" />
+       
     </bean>
 
 </beans>
