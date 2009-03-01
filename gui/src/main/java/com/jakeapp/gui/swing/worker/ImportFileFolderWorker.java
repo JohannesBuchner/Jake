@@ -9,17 +9,22 @@ import com.jakeapp.gui.swing.xcore.EventCore;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Import File Folder Worker
+ */
 public class ImportFileFolderWorker
 				extends SwingWorkerWithAvailableLaterObject<Void> {
 	private Project p;
 	private List<File> files;
 	private String destFolderRelPath;
 
-	public ImportFileFolderWorker(Project p, List<File> files, String destFolderRelPath) {
+	public ImportFileFolderWorker(Project p, List<File> files,
+					String destFolderRelPath) {
 		this.p = p;
 		this.files = files;
 		this.destFolderRelPath = destFolderRelPath;
 	}
+
 
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
@@ -34,7 +39,7 @@ public class ImportFileFolderWorker
 		EventCore.get().fireFilesChanged(p);
 	}
 
-		@Override
+	@Override
 	public void error(Exception e) {
 		ExceptionUtilities.showError(e);
 	}
