@@ -424,7 +424,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
 					Project project, T jakeObject) {
 		try {
-			//log.debug("jakeObject" + jakeObject + jakeObject.hashCode());
+			log.debug("jakeObject" + jakeObject);
 
 			// first, look if we have a recent revision in the cache
 			if (attributedCacheMan.isCached(jakeObject)) {

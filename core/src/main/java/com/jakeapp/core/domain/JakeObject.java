@@ -1,9 +1,13 @@
 package com.jakeapp.core.domain;
 
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Transient;
 import java.io.Serializable;
-
-import javax.persistence.*;
+import java.util.UUID;
 
 /**
  * The representation of the jakeObject. A JakeObject is anything that
@@ -115,7 +119,7 @@ public abstract class JakeObject implements ILogable, Serializable {
 
 	@Override
 	public String toString() {
-		return "JakeObject:" + this.getUuid();
+		return "JakeObject:" + this.getUuid() + this.hashCode();
 	}
 
 	@Override

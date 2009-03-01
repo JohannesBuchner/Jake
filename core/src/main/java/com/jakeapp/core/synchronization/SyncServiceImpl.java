@@ -594,8 +594,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			throws InvalidFilenameException, IOException {
 		log.debug("get JakeObjectStatus for "+ foin);
 		if(foin == null) {
-			// FIXME: better exception?
-			throw new RuntimeException("FileObject is null!");
+			throw new IllegalArgumentException("FileObject is null!");
 		}
 
 		Project p = foin.getProject();
