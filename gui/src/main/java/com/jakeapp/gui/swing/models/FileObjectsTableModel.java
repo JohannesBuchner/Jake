@@ -119,8 +119,9 @@ public class FileObjectsTableModel extends AbstractTableModel
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(files == null || rowIndex >= files.size()) {
+		if(files == null || rowIndex >= files.size() || rowIndex<0) {
 			log.warn("Attemt to get value for invalid row " + rowIndex);
+			return null;
 		}
 
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
