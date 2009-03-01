@@ -605,7 +605,7 @@ public class JakeMainView extends FrameView
 	 */
 	private void updateProjectToggleButtons() {
 		boolean canBeSelected = getContextViewPanel() == ContextPanelEnum.Project;
-		log.debug("updateProjectToggleButtons. canBeSelected=" + canBeSelected);
+		log.trace("updateProjectToggleButtons. canBeSelected=" + canBeSelected);
 
 		contextSwitcherButtons.get(ProjectView.News.ordinal())
 						.setSelected(canBeSelected && getProjectViewPanel() == ProjectView.News);
@@ -650,8 +650,8 @@ public class JakeMainView extends FrameView
 	}
 
 	private void updateSourceListVisibility() {
-		log.debug("update sourcelist visible state: visible=" + JakeMainApp
-						.getMsgService() != null);
+		log.trace("update sourcelist visible state: visible=" + JakeMainApp
+						.getMsgService());
 
 		if (JakeMainApp.getMsgService() == null) {
 			this.mainSplitPane.getLeftComponent().setVisible(false);

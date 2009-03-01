@@ -410,13 +410,13 @@ public class JakeSourceList extends JakeGuiComponent
 	 * @param project: the project that will be selected.
 	 */
 	public void selectProject(Project project) {
-		log.info("selectProject in SourceList: " + project);
+		log.trace("selectProject in SourceList: " + project);
 		SourceListItem sli = getListItemForProject(project);
 		if (sli != null) {
 			sourceList.setSelectedItem(sli);
 		} else {
 			removeSelection();
-			log.info("Project Selection: null");
+			log.trace("Project Selection: null");
 		}
 	}
 
