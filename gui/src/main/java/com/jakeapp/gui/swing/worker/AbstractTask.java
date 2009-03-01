@@ -7,7 +7,6 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.StatusUpdate;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -23,10 +22,10 @@ import java.util.concurrent.Semaphore;
  * @author johannes
  * @param <T>
  */
-public abstract class SwingWorkerWithAvailableLaterObject<T> extends
-		  SwingWorker<T, StatusUpdate> implements AvailabilityListener<T> {
+public abstract class AbstractTask<T> extends
+		  SwingWorker<T, StatusUpdate> implements AvailabilityListener<T>, IJakeTask {
 
-	private static final Logger log = Logger.getLogger(SwingWorkerWithAvailableLaterObject.class);
+	private static final Logger log = Logger.getLogger(AbstractTask.class);
 
 	private Semaphore s = new Semaphore(0);
 
@@ -60,13 +59,18 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	public void error(Exception t) {
 		this.exception = t;
 		s.release();
+
+		JakeExecutor.removeTask(this);
 	}
 
 	@Override
 	public void finished(T o) {
 		s.release();
+	}
 
-		JakeExecutor.removeTask(this.getClass());
+	@Override
+	protected void done() {
+		JakeExecutor.removeTask(this);
 	}
 
 	@Override
@@ -90,5 +94,11 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 	@Override
 	public String toString() {
 		return (value != null ? value.toString() : "") + ": " + progress + " " + status;
+	}
+
+	@Override
+	public int hashCode() {
+		// Fixme: is this a good idea?
+		return getClass().toString().hashCode();
 	}
 }

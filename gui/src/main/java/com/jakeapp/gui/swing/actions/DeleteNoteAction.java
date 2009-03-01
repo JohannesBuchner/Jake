@@ -11,13 +11,11 @@ import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
 import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
-import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.DeleteJakeObjectsWorker;
+import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -96,7 +94,7 @@ public class DeleteNoteAction extends NoteAction {
 						notes.add(note.getJakeObject());
 					if (notes.size()>0) {
 						project = notes.get(0).getProject();
-						JakeExecutor.exec(new DeleteJakeObjectsWorker(project,notes));
+						JakeExecutor.exec(new DeleteJakeObjectsTask(project,notes));
 					}
 				}
 			}

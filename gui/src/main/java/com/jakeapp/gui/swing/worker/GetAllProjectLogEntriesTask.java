@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
@@ -14,25 +13,24 @@ import java.util.concurrent.ExecutionException;
  * @author studpete
  */
 // TODO??
-public class GetAllProjectLogEntriesWorker extends
-				SwingWorkerWithAvailableLaterObject<List<FileObject>> {
-	private static final Logger log = Logger.getLogger(GetAllProjectLogEntriesWorker.class);
+public class GetAllProjectLogEntriesTask extends AbstractTask<List<FileObject>> {
+	private static final Logger log = Logger.getLogger(GetAllProjectLogEntriesTask.class);
 	private Project project;
 
-	public GetAllProjectLogEntriesWorker(Project project) {
+	public GetAllProjectLogEntriesTask(Project project) {
 		this.project = project;
 	}
 
 	@Override
 	protected AvailableLaterObject<List<FileObject>> calculateFunction() {
-		log.debug("calling GetAllProjectFilesWorker:calculateFunction");
+		log.debug("calling GetAllProjectFilesTask:calculateFunction");
 		//return JakeMainApp.getCore().getL
 		return null;
 	}
 
 	@Override
 	protected void done() {
-		log.info("Done GetAllProjectFilesWorker");
+		log.info("Done GetAllProjectFilesTask");
 
 		// done! save into object cache
 		try {

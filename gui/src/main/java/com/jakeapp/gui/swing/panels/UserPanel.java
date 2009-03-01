@@ -24,8 +24,8 @@ import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.LoginAccountWorker;
-import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
+import com.jakeapp.gui.swing.worker.LoginAccountTask;
+import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import net.miginfocom.swing.MigLayout;
@@ -425,7 +425,7 @@ public class UserPanel extends JXPanel
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
 					JakeMainApp.setMsgService(msg);
-					JakeExecutor.exec(new LoginAccountWorker(msg,
+					JakeExecutor.exec(new LoginAccountTask(msg,
 									loginUserDataPanel.getPassword(),
 									loginUserDataPanel.isSetRememberPassword()));
 
@@ -436,7 +436,7 @@ public class UserPanel extends JXPanel
 					updateView();
 				}
 			} else {
-				JakeExecutor.exec(new RegisterAccountWorker(getCredientals()));
+				JakeExecutor.exec(new RegisterAccountTask(getCredientals()));
 				updateView();
 				// TODO
 			}
@@ -449,11 +449,11 @@ public class UserPanel extends JXPanel
 	/**
 	 * Private inner worker for account registration.
 	 */
-	private class RegisterAccountWorker
-					extends SwingWorkerWithAvailableLaterObject<Void> {
+	private class RegisterAccountTask
+					extends AbstractTask<Void> {
 		private ServiceCredentials cred;
 
-		private RegisterAccountWorker(ServiceCredentials cred) {
+		private RegisterAccountTask(ServiceCredentials cred) {
 			this.cred = cred;
 		}
 
@@ -912,9 +912,9 @@ public class UserPanel extends JXPanel
 						JakeMainApp.setMsgService(msg);
 
 						if (isMagicToken()) {
-							JakeExecutor.exec(new LoginAccountWorker(msg));
+							JakeExecutor.exec(new LoginAccountTask(msg));
 						} else {
-							JakeExecutor.exec(new LoginAccountWorker(msg,
+							JakeExecutor.exec(new LoginAccountTask(msg,
 											getPassword(),
 											isRememberPassword()));
 						}

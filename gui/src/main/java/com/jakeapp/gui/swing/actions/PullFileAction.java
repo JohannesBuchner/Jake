@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.PullJakeObjectsWorker;
+import com.jakeapp.gui.swing.worker.PullJakeObjectsTask;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -31,6 +31,6 @@ public class PullFileAction extends FileAction {
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<JakeObject> jos = new ArrayList<JakeObject>(this.getSelectedFiles().size());
 		jos.addAll(this.getSelectedFiles());
-		JakeExecutor.exec(new PullJakeObjectsWorker(jos));
+		JakeExecutor.exec(new PullJakeObjectsTask(jos));
 	}
 }

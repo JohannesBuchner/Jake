@@ -8,9 +8,9 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.PropertyChanged;
-import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
-import com.jakeapp.gui.swing.worker.GetAllProjectNotesWorker;
-import com.jakeapp.gui.swing.worker.GetProjectsWorker;
+import com.jakeapp.gui.swing.worker.GetAllProjectFilesTask;
+import com.jakeapp.gui.swing.worker.GetAllProjectNotesTask;
+import com.jakeapp.gui.swing.worker.GetProjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
@@ -106,21 +106,21 @@ public class ObjectCache implements PropertyChanged {
 	 */
 	public void updateProjects() {
 		if (JakeMainApp.isCoreInitialized() && JakeMainApp.getMsgService() != null) {
-			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
-			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.INVITED)));
+			JakeExecutor.exec(new GetProjectsTask(EnumSet.of(InvitationState.ACCEPTED)));
+			JakeExecutor.exec(new GetProjectsTask(EnumSet.of(InvitationState.INVITED)));
 		}
 	}
 
 	public void updateFiles(Project p) {
 		if (JakeMainApp.isCoreInitialized()) {
-			JakeExecutor.exec(new GetAllProjectFilesWorker(p));
+			JakeExecutor.exec(new GetAllProjectFilesTask(p));
 			JakeStatusBar.updateMessage();
 		}
 	}
 
 	public void updateNotes(Project p) {
 		if (JakeMainApp.isCoreInitialized()) {
-			JakeExecutor.exec(new GetAllProjectNotesWorker(p));
+			JakeExecutor.exec(new GetAllProjectNotesTask(p));
 		}
 	}
 
@@ -148,7 +148,7 @@ public class ObjectCache implements PropertyChanged {
 	/*
 	public void updateLog(Project p) {
 		if (JakeMainApp.isCoreInitialized()) {
-			JakeExecutor.exec(new GetAllProjectNotesWorker(p));
+			JakeExecutor.exec(new GetAllProjectNotesTask(p));
 		}
 	}
 	*/

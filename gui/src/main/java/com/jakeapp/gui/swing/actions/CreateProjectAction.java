@@ -29,9 +29,11 @@ public class CreateProjectAction extends ProjectAction {
 		putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
 						getString("createProjectMenuItem.text") + (ellipsis ? "..." : ""));
 
-		Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/createproject.png")).getScaledInstance(32,
-						32, Image.SCALE_SMOOTH));
+		Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit()
+						.getImage(getClass().getResource("/icons/createproject.png")).getScaledInstance(
+						32,
+						32,
+						Image.SCALE_SMOOTH));
 		putValue(Action.LARGE_ICON_KEY, createProjectIcon);
 	}
 
@@ -46,14 +48,15 @@ public class CreateProjectAction extends ProjectAction {
 
 		// create the directory if path was not null
 		if (path != null) {
-			JakeMainApp.getCore()
-							.createProject(ProjectHelper.createDefaultPath(path), path,
-											JakeMainApp.getMsgService());
+			JakeMainApp.getCore().createProject(ProjectHelper.createDefaultPath(path),
+							path,
+							JakeMainApp.getMsgService());
 		}
 	}
 
 
 	@Override
 	public void updateAction() {
+		setEnabled(JakeMainApp.getMsgService() != null);
 	}
 }

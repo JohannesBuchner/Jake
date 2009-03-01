@@ -13,19 +13,19 @@ import org.apache.log4j.Logger;
 /**
  * Private inner worker for account registration.
  */
-public class LoginAccountWorker
-				extends SwingWorkerWithAvailableLaterObject<Boolean> {
-	private static final Logger log = Logger.getLogger(LoginAccountWorker.class);
+public class LoginAccountTask
+				extends AbstractTask<Boolean> {
+	private static final Logger log = Logger.getLogger(LoginAccountTask.class);
 
 	private MsgService msg;
 	private String password;
 	private boolean rememberPassword;
 
-	public LoginAccountWorker(MsgService msg) {
+	public LoginAccountTask(MsgService msg) {
 		this(msg, null, false);
 	}
 
-	public LoginAccountWorker(MsgService msg, String password,
+	public LoginAccountTask(MsgService msg, String password,
 					boolean rememberPassword) {
 		this.msg = msg;
 		this.password = password;

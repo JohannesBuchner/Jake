@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.AnnounceJakeObjectWorker;
+import com.jakeapp.gui.swing.worker.AnnounceJakeObjectTask;
 
 import org.apache.log4j.Logger;
 
@@ -37,6 +37,6 @@ public class AnnounceFileAction extends FileAction {
 		ArrayList<FileObject> files = getSelectedFiles();
 		ArrayList<JakeObject> jos = new ArrayList<JakeObject>(files.size());
 		jos.addAll(files);
-		JakeExecutor.exec(new AnnounceJakeObjectWorker(jos,null));
+		JakeExecutor.exec(new AnnounceJakeObjectTask(jos,null));
 	}
 }

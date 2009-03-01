@@ -19,15 +19,17 @@ import com.jakeapp.gui.swing.actions.SyncProjectAction;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
 import com.jakeapp.gui.swing.controls.WaitIndicator;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
-import com.jakeapp.gui.swing.worker.GetProjectsWorker;
+import com.jakeapp.gui.swing.worker.GetProjectsTask;
+import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
@@ -42,7 +44,7 @@ import java.util.Map;
  * Manages the Source List for projects.
  */
 public class JakeSourceList extends JakeGuiComponent
-				implements ProjectSelectionChanged, ProjectChanged, DataChanged {
+				implements ProjectSelectionChanged, ProjectChanged, DataChanged, TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap;
@@ -65,6 +67,7 @@ public class JakeSourceList extends JakeGuiComponent
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
 		EventCore.get().addDataChangedCallbackListener(this);
+		EventCore.get().addTasksChangedListener(this);
 
 		sourceListContextMenu = createSourceListContextMenu();
 		sourceListInvitiationContextMenu = createSourceListInvitationContextMenu();
@@ -261,8 +264,8 @@ public class JakeSourceList extends JakeGuiComponent
 	 * Updates the SourceList (project list)
 	 */
 	private void updateSourceList() {
-	  setWaiting(sourceList.getComponent(), !JakeMainApp.isCoreInitialized() ||
-						JakeExecutor.isTaskRunning(GetProjectsWorker.class.getSimpleName()));
+	  setWaiting(sourceList.getComponent(), 
+						JakeExecutor.isTaskRunning(GetProjectsTask.class));
 
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
@@ -433,7 +436,8 @@ public class JakeSourceList extends JakeGuiComponent
 
 	@Override
 	protected void projectUpdated() {
-		//updateSourceList();
+		// fixme: needed?
+		updateSourceList();
 	}
 
 	public SourceList getSourceList() {
@@ -480,6 +484,22 @@ public class JakeSourceList extends JakeGuiComponent
 			updateSourceList();
 		}
 	}
+
+	@Override public void taskStarted(IJakeTask worker) {
+		if(worker instanceof GetProjectsTask) {
+			updateSourceList();
+		}
+	}
+
+	@Override public void taskUpdated(IJakeTask worker) {
+	}
+
+	@Override public void taskFinished(IJakeTask worker) {
+		if(worker instanceof GetProjectsTask) {
+			updateSourceList();
+		}
+	}
+
 
 	/**
 	 * The Project Busy state.

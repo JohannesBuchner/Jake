@@ -5,7 +5,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
-import com.jakeapp.gui.swing.worker.ImportFileFolderWorker;
+import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -146,7 +146,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 				Project project = JakeMainApp.getProject();
 				log.info("add to project: " + project);
 
-				JakeExecutor.exec(new ImportFileFolderWorker(project, files, "/"));
+				JakeExecutor.exec(new ImportFileFolderTask(project, files, "/"));
 			}
 
 

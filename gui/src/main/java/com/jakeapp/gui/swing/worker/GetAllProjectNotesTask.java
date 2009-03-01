@@ -14,24 +14,23 @@ import java.util.concurrent.ExecutionException;
  * Get all Notes for a certain project
  * @author studpete
  */
-public class GetAllProjectNotesWorker extends
-				SwingWorkerWithAvailableLaterObject<List<NoteObject>> {
-	private static final Logger log = Logger.getLogger(GetAllProjectNotesWorker.class);
+public class GetAllProjectNotesTask extends AbstractTask<List<NoteObject>> {
+	private static final Logger log = Logger.getLogger(GetAllProjectNotesTask.class);
 	private Project project;
 
-	public GetAllProjectNotesWorker(Project project) {
+	public GetAllProjectNotesTask(Project project) {
 		this.project = project;
 	}
 
 	@Override
 	protected AvailableLaterObject<List<NoteObject>> calculateFunction() {
-		log.debug("calling GetAllProjectNotesWorker:calculateFunction");
+		log.debug("calling GetAllProjectNotesTask:calculateFunction");
 		return JakeMainApp.getCore().getNotes(project);
 	}
 
 	@Override
 	protected void done() {
-		log.trace("Done GetAllProjectNotesWorker");
+		log.trace("Done GetAllProjectNotesTask");
 
 		// done! so lets update the filetree
 		try {

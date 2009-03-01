@@ -155,7 +155,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		this.frontendService.removeAccount(this.sessionId, msg);
 	}
 
-	// only start from StartStopProjectWorker
+	// only start from StartStopProjectTask
 	public AvailableLaterObject<Void> startProject(Project project) {
 		log.info("Starting project: " + project);
 		return new StartStopProjectFuture(pms, project, true).start();

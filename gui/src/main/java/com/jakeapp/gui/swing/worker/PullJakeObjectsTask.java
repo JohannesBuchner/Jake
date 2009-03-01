@@ -14,11 +14,11 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 
-public class PullJakeObjectsWorker extends SwingWorkerWithAvailableLaterObject<Void> {
+public class PullJakeObjectsTask extends AbstractTask<Void> {
 
 	private List<JakeObject> jakeObjects;
 
-	public PullJakeObjectsWorker(List<JakeObject> jakeObjects) {
+	public PullJakeObjectsTask(List<JakeObject> jakeObjects) {
 		this.jakeObjects = jakeObjects;
 	}
 	

@@ -13,11 +13,11 @@ import com.jakeapp.gui.swing.xcore.EventCore;
 import java.util.EnumSet;
 import java.util.List;
 
-public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObject<Void> {
+public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 	private List<JakeObject> jos;
 	private String commitMessage;
 
-	public AnnounceJakeObjectWorker(List<JakeObject> jos, String commitMessage) {
+	public AnnounceJakeObjectTask(List<JakeObject> jos, String commitMessage) {
 		this.jos = jos;
 		this.commitMessage = (commitMessage==null)?"":commitMessage;
 	}

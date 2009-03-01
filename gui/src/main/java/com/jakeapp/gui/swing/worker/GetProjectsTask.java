@@ -12,17 +12,17 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-
-public class GetProjectsWorker
-				extends SwingWorkerWithAvailableLaterObject<List<Project>> {
+public class GetProjectsTask
+				extends AbstractTask<List<Project>> {
 	private EnumSet<InvitationState> filter;
 
-	public GetProjectsWorker(EnumSet<InvitationState> filter) {
+	public GetProjectsTask(EnumSet<InvitationState> filter) {
 		this.filter = filter;
 	}
 
 	@Override
 	protected AvailableLaterObject<List<Project>> calculateFunction() {
+
 		if (JakeMainApp.isCoreInitialized()) {
 			return JakeMainApp.getCore().getProjects(filter);
 		}else {

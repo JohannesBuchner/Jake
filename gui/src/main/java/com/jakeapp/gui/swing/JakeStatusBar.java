@@ -22,7 +22,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.SwingWorkerWithAvailableLaterObject;
+import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
@@ -105,8 +105,8 @@ public class JakeStatusBar extends JakeGuiComponent
 	}
 
 
-	protected class ProjectSizeTotalWorker
-					extends SwingWorkerWithAvailableLaterObject<Long> {
+	protected class ProjectSizeTotalTask
+					extends AbstractTask<Long> {
 		@Override
 		protected AvailableLaterObject<Long> calculateFunction() {
 			return JakeMainApp.getCore().getProjectSizeTotal(getProject());
@@ -132,8 +132,8 @@ public class JakeStatusBar extends JakeGuiComponent
 	/**
 	 * Worker to count all project files
 	 */
-	protected class ProjectFileCountWorker
-					extends SwingWorkerWithAvailableLaterObject<Integer> {
+	protected class ProjectFileCountTask
+					extends AbstractTask<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
 			log.info("calculating total file count...");
@@ -163,8 +163,8 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 	}
 
-	protected class NoteCountWorker
-					extends SwingWorkerWithAvailableLaterObject<Integer> {
+	protected class NoteCountTask
+					extends AbstractTask<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
 			return JakeMainApp.getCore().getNoteCount(JakeMainApp.getProject());
@@ -353,10 +353,10 @@ public class JakeStatusBar extends JakeGuiComponent
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
 			if (getProjectViewPanel() == JakeMainView.ProjectView.Files) {
 				// update the status bar label
-				JakeExecutor.exec(new ProjectFileCountWorker());
-				JakeExecutor.exec(new ProjectSizeTotalWorker());
+				JakeExecutor.exec(new ProjectFileCountTask());
+				JakeExecutor.exec(new ProjectSizeTotalTask());
 			} else if (getProjectViewPanel() == JakeMainView.ProjectView.Notes) {
-				JakeExecutor.exec(new NoteCountWorker());
+				JakeExecutor.exec(new NoteCountTask());
 			} else {
 				// project view
 				if (getProject() != null) {

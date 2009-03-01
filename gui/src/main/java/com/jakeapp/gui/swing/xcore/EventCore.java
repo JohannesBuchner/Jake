@@ -7,15 +7,10 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.CoreChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
@@ -57,6 +52,9 @@ public class EventCore {
 
 	private final List<PropertyChanged> propertyChangedListeners =
 					new ArrayList<PropertyChanged>();
+
+	private final List<TaskChanged> taskChangedListeners =
+					new ArrayList<TaskChanged>();
 
 	static {
 		instance = new EventCore();
@@ -219,6 +217,30 @@ public class EventCore {
 	public void fireLogChanged(Project p) {
 		//ObjectCache.get().updateLog(p);
 		fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
+	}
+
+	public void addTasksChangedListener(TaskChanged callback) {
+		taskChangedListeners.add(callback);
+	}
+
+	public void removeTasksChangedListener(TaskChanged callback) {
+		taskChangedListeners.remove(callback);
+	}
+
+	public void fireTasksChangedListener(IJakeTask task,
+					TaskChanged.TaskOps op) {
+		for (TaskChanged callback : taskChangedListeners) {
+			switch (op) {
+				case Started:
+					callback.taskStarted(task);
+					break;
+				case Updated:
+					callback.taskUpdated(task);
+					break;
+				case Finished:
+					callback.taskFinished(task);
+			}
+		}
 	}
 
 

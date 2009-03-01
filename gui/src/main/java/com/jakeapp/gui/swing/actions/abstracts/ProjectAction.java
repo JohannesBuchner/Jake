@@ -4,18 +4,18 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.xcore.EventCore;
+
+import java.util.EnumSet;
 
 /**
  * ProjectAction is an abstract action class for all project
  * related actions.
  * Implements the changed and selection interface.
- * User: studpete
- * Date: Dec 29, 2008
- * Time: 1:16:39 AM
  */
 public abstract class ProjectAction extends JakeAction
-		  implements ProjectSelectionChanged, ProjectChanged {
+		  implements ProjectSelectionChanged, ProjectChanged, PropertyChanged {
 	//private static final Logger log = Logger.getLogger(ProjectAction.class);
 
 	private Project project;
@@ -23,6 +23,7 @@ public abstract class ProjectAction extends JakeAction
 	public ProjectAction() {
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
+		EventCore.get().addPropertyListener(this);
 
 		// initial load
 		setProject(JakeMainApp.getProject());
@@ -39,10 +40,13 @@ public abstract class ProjectAction extends JakeAction
 	}
 
 	public void updateAction() {
-		// defaults to null
 	}
 
 	public void projectChanged(final ProjectChangedEvent ev) {
+		updateAction();
+	}
+
+	public void propertyChanged(EnumSet<Reason> reason, Project p, Object data) {
 		updateAction();
 	}
 }

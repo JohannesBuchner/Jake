@@ -7,18 +7,16 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.Attributed;
-import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
 import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
-import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.gui.swing.worker.DeleteJakeObjectsWorker;
+import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 import org.apache.log4j.Logger;
@@ -122,7 +120,7 @@ public class DeleteFileAction extends FileAction {
 							public void optionSelected(SheetEvent evt) {
 								if (evt.getOption() == 0) {
 									log.debug("Deleting now!!!");
-									JakeExecutor.exec(new DeleteJakeObjectsWorker(
+									JakeExecutor.exec(new DeleteJakeObjectsTask(
 										JakeMainApp.getProject(),
 										new ArrayList<JakeObject>(files)
 									));

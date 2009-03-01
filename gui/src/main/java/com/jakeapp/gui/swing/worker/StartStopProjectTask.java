@@ -7,12 +7,12 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
-public class StartStopProjectWorker
-				extends SwingWorkerWithAvailableLaterObject<Void> {
+public class StartStopProjectTask
+				extends AbstractTask<Void> {
 	private Project project;
 	private boolean start;
 
-	public StartStopProjectWorker(Project project, boolean start) {
+	public StartStopProjectTask(Project project, boolean start) {
 		this.project = project;
 		this.start = start;
 	}

@@ -1,8 +1,8 @@
 package com.jakeapp.gui.swing.dialogs.debugging;
 
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
@@ -116,9 +116,8 @@ public class ActiveTasks extends JXPanel {
 				Map.Entry<String, Runnable> runner = (Map.Entry<String, Runnable>) value;
 
 				valStr = StringUtilities
-								.htmlize(StringUtilities.bold(runner.getKey()) + "<br>" + runner
-												.getValue() + "<br> + " + arrayToString(getAllFields(runner
-												.getValue().getClass()), "<br>", runner.getValue()));
+								.htmlize(runner.getValue() + "<br> + " + arrayToString(getAllFields(
+												runner.getValue().getClass()), "<br>", runner.getValue()));
 			} else {
 				valStr = value.toString();
 			}

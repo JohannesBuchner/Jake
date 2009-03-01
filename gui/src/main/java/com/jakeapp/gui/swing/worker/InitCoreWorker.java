@@ -6,7 +6,6 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -14,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class InitCoreWorker extends SwingWorker<ICoreAccess, Void> {
+public class InitCoreWorker extends SwingWorker<ICoreAccess, Void> implements IJakeTask {
 	private static final Logger log = Logger.getLogger(InitCoreWorker.class);
 
 	public InitCoreWorker() {
@@ -45,7 +44,7 @@ public class InitCoreWorker extends SwingWorker<ICoreAccess, Void> {
 			ICoreAccess core = get();
 			core.authenticateOnBackend(backendCredentials);
 			JakeMainApp.getInstance().setCore(core);
-			JakeExecutor.removeTask(this.getClass());
+			JakeExecutor.removeTask(this);
 
 			success = true;
 		} catch (InterruptedException e) {

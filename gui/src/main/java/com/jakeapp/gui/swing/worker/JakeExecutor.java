@@ -1,8 +1,11 @@
 package com.jakeapp.gui.swing.worker;
 
+import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.util.LinkedHashMap;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -17,8 +20,8 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	private static final Logger log = Logger.getLogger(JakeExecutor.class);
 	private static JakeExecutor instance;
 
-	private LinkedHashMap<String, Runnable> runningTasks =
-					new LinkedHashMap<String, Runnable>();
+	private LinkedHashMap<Integer, IJakeTask> runningTasks =
+					new LinkedHashMap<Integer, IJakeTask>();
 
 	public static JakeExecutor getInstance() {
 		if (instance == null) {
@@ -31,17 +34,17 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	/**
 	 * Calls ThreadPoolExecutor.execute.
 	 *
-	 * @param command Commaand that should be executed.
+	 * @param task Commaand that should be executed.
 	 */
-	public static void exec(Runnable command) {
-		getInstance().execute(command);
-		getInstance().addRunningTask(command);
+	public static void exec(IJakeTask task) {
+		getInstance().execute(task);
+		getInstance().addRunningTask(task);
 	}
 
-	private void addRunningTask(Runnable command) {
-		log.debug("Register Task: " + command.getClass().getSimpleName());
-		runningTasks.put(command.getClass().getSimpleName(), command);
-		fireTasksChanged();
+	private void addRunningTask(IJakeTask task) {
+		log.debug("Register Task: " + task.getClass().getSimpleName());
+		runningTasks.put(task.hashCode(), task);
+		fireTasksChanged(task, TaskChanged.TaskOps.Started);
 	}
 
 	// private for singleton
@@ -49,30 +52,28 @@ public class JakeExecutor extends ThreadPoolExecutor {
 		super(4, 15, 5, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
 
-	/**
-	 * Checks if a Task is currently running.
-	 *
-	 * @param str
-	 * @return
-	 */
-	public static boolean isTaskRunning(String str) {
-		log.debug("IsTaskRunning? " + str + ": " + getInstance().runningTasks.get(str));
-		log.debug("Tasks running: " + getInstance().runningTasks.size());
-		return getInstance().runningTasks.get(str) != null;
+	public static void removeTask(IJakeTask task) {
+		getInstance().runningTasks.remove(task.hashCode());
+		fireTasksChanged(task, TaskChanged.TaskOps.Finished);
 	}
 
-	public static void removeTask(String str) {
-		getInstance().runningTasks.remove(str);
-		fireTasksChanged();
+	private static void fireTasksChanged(final IJakeTask task, final TaskChanged.TaskOps op) {
+		// make call threadsave!
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				EventCore.get().fireTasksChangedListener(task, op);
+
+				// FIXME: use new interface TaskChanged
+				ActiveTasks.tasksUpdated();
+			}
+		});	
 	}
 
-	private static void fireTasksChanged() {ActiveTasks.tasksUpdated();}
-
-	public static void removeTask(Class aclass) {
-		getInstance().runningTasks.remove(aclass.getSimpleName());
-	}
-
-	public static LinkedHashMap<String, Runnable> getTasks() {
+	public static LinkedHashMap<Integer, IJakeTask> getTasks() {
 		return getInstance().runningTasks;
+	}
+
+	public static boolean isTaskRunning(Class aclass) {
+		return getInstance().runningTasks.containsKey(aclass.toString().hashCode());
 	}
 }
