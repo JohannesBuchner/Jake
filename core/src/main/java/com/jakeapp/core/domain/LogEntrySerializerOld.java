@@ -71,52 +71,73 @@ public class LogEntrySerializerOld {
 		}
 	}
 
-	public static String serialize(LogEntry<ILogable> le, Project project) {
+	public static String serialize(LogEntry<? extends ILogable> le, Project project) {
+		log.debug(1);
 		le.getChecksum();
 		le.getLogAction();
+		log.debug(2);
 		UserId who = le.getMember();
 		Project p = project;
+		log.debug(3);
 		Long when = le.getTimestamp().getTime();
 		SerializedObject result = new SerializedObject(le.getLogAction().toString());
 		result.add(when.toString());
+		log.debug(4);
         // TODO
 //		result.add(ut.getUserIdFromProjectMember(p, who).getUserId());
 
 		ILogable data = le.getBelongsTo();
+		log.debug(5);
 		switch (le.getLogAction()) {
 			/** LogAction **/
 			case PROJECT_CREATED:
+				log.debug("6 - inside switch");
 				result.add(p.getProjectId());
 				result.add(p.getName());
+				log.debug("7 - leaving switch");
 				return result.toString();
 			case START_TRUSTING_PROJECTMEMBER:
+				log.debug("6 - inside switch");
 				UserId other = (UserId) data;
+				log.debug("7 - leaving switch");
 				throw new RuntimeException("Method not yet implemented! This is a bug, fix it!");
 //                return null; // TODO
 //                return result.add(ut.getUserIdFromProjectMember(p, other).getUserId())
 //						.toString();
 			case STOP_TRUSTING_PROJECTMEMBER:
+				log.debug("6 - inside switch");
 				UserId otherU = (UserId) data;
+				log.debug("7 - leaving switch");
                 throw new RuntimeException("Method not yet implemented! This is a bug, fix it!");
 //                return null; // TODO
 //				return result.add(ut.getUserIdFromProjectMember(p, otherU).getUserId())
 //						.toString();
 			case JAKE_OBJECT_NEW_VERSION:
+				log.debug("6 - inside switch");
 				appendJakeObjectReference(result, (JakeObject) data);
+				log.debug("6.1 - after append");
 				result.add(le.getChecksum());
+				log.debug("6.2 - after checksum");
 				result.add(le.getComment());
+				log.debug("7 - leaving switch");
 				return result.toString();
 			case JAKE_OBJECT_DELETE:
 			case JAKE_OBJECT_LOCK:
 			case JAKE_OBJECT_UNLOCK:
+				log.debug("6 - inside switch");
 				appendJakeObjectReference(result, (JakeObject) data);
 				result.add(le.getComment());
+				log.debug("7 - leaving switch");
 				return result.toString();
 			case TAG_ADD:
 			case TAG_REMOVE:
+				log.debug("6 - inside switch");
 				appendJakeObjectReference(result, (JakeObject) data);
+				log.debug("7 - leaving switch");
 				return result.toString();
 			case NOOP:
+				log.debug("6 - inside switch");
+				log.debug("7 - leaving switch");
 				return result.toString();
 		}
 
@@ -124,15 +145,21 @@ public class LogEntrySerializerOld {
 	}
 
 	private static void appendJakeObjectReference(SerializedObject result, JakeObject jo) {
+		log.debug("Inside appendJakeObjectReference");
 		if (jo instanceof FileObject) {
+			log.debug(" ... is FileObject");
 			result.add("F");
 			result.add(((FileObject) jo).getRelPath());
+			log.debug(" ... finished adding");
 		} else if (jo instanceof NoteObject) {
+			log.debug(" ... is NoteObject");
 			result.add("N");
 			NoteObject note = (NoteObject) jo;
 			result.add(note.getUuid().toString());
 			result.add(note.getContent());
+			log.debug(" ... finished adding");
 		} else {
+			log.debug(" ... throwing exception");
 			throw new InvalidSerializerCallException();
 		}
 	}

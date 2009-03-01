@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 import com.jakeapp.jake.test.XmppTestEnvironment;
+import com.jakeapp.jake.test.TestDBEnabledTestCase;
 import com.jakeapp.gui.console.JakeCommander;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.googlecode.junit.ext.Prerequisite;
@@ -22,32 +23,36 @@ import com.googlecode.junit.ext.Prerequisite;
  * @author johannes
  */
 @RunWith(PrerequisiteAwareClassRunner.class)
-public class PrimitivePokeRun extends TmpdirEnabledTestCase {
+public class PrimitivePokeRunWithMySpecialDirectory extends TestDBEnabledTestCase {
 
-	
-	
+
+
 	private String user;
+	private String password;
 
 	@Override
 	@Before
 	public void setup() throws Exception {
-		FSTestCommons.recursiveDelete(new File(".jake"));
 		super.setup();
-		
-		this.user = XmppTestEnvironment.getXmppId("poker");
-		XmppTestEnvironment.assureUserExists(XmppTestEnvironment.getHost(), "poker", "poker");
+
+		this.user = XmppTestEnvironment.getXmppId("lisa");
+		this.password = "jake";
+		XmppTestEnvironment.assureUserExists(XmppTestEnvironment.getHost(), "lisa", this.password);
+	}
+
+	@Override
+	protected String getDbTemplateName() {
+		// it's EPIC, man!
+		return "epicfail";
 	}
 
 	@Test
 	@Prerequisite(checker = XmppTestEnvironment.class)
 	public void bugRun() {
 		FifoStreamer fifo = new FifoStreamer();
-		fifo.addLine("coreLogin " + this.user + " poker");         
+		fifo.addLine("coreLogin " + this.user + " " + this.password);
 		fifo.addLine("login");
-		fifo.addLine("openProject " + this.tmpdir);
-		fifo.addLine("startProject");
-		fifo.addLine("poke " + this.user);
-		fifo.addLine("unselectProject");
+		fifo.addLine("listProjects");
 		fifo.addLine("selectFirstProject");
 		fifo.addLine("poke " + this.user);
 		fifo.addLine("coreLogout");

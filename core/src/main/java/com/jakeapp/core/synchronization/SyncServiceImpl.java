@@ -923,7 +923,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 			System.err.println("========= LOGS ==========");
 			for(LogEntry<? extends ILogable> l: logs) {
+				System.err.println("--- START");
 				System.err.println(robot.serialize(l, project));
+				System.err.println("--- END");
 			}
 			System.err.println("========= /LOGS =========");
 

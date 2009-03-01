@@ -552,6 +552,19 @@ public class JakeCommander extends Commander {
 		}
 	}
 
+	class UnSelectProjectCommand extends LazyNoParamsCommand {
+		public UnSelectProjectCommand() {
+			super("unselectProject", "Unselects (\"closes\") the current project");
+		}
+
+		@Override
+		public void handleArguments() {
+			project = null;
+
+			System.out.println("Project is now null!");
+		}
+	}
+
 	class StartProjectCommand extends LazyNoParamsCommand {
 
 		public StartProjectCommand() {

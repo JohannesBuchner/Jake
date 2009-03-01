@@ -223,6 +223,8 @@ public class LogEntrySerializer {
 
 
     public String serialize(LogEntry<? extends ILogable> logEntry, Project project) {
+	    if(true) return "foo";
+
 	    Object o = logEntry.getBelongsTo();
 	    if(o instanceof JakeObjectLogEntry) {
 		    // FIXME: UGLY UGLY UGLY FUCKING UGLY
