@@ -418,15 +418,26 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 	}
 	
+	
+	/** 
+	 * Pulls a Fileobject from any available source and - if the pull
+	 * has been successful - sets all LogEntries that became obsoleted by the pull
+	 * to processed.
+	 * @param p The Project the fileobject should belong to
+	 * @param fo The File to pull
+	 * @return fo
+	 * @throws NotLoggedInException if there is not logged in MsgService for p
+	 * @throws NoSuchLogEntryException if there are no LogEntries for the JakeObject.
+	 * @throws IllegalArgumentException if p or fo were null.
+	 */
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public FileObject pullFileObject(Project p, FileObject fo)
-			throws NotLoggedInException {
-		
-		//TODO preconditions-check
-		if (p==null) ;
-		if (fo==null) ;
-		if (p.getMessageService()==null) ;
+			throws NotLoggedInException, NoSuchLogEntryException, IllegalArgumentException {
+		//preconditions-check
+		if (p==null) throw new IllegalArgumentException("Project may not be null");
+		if (fo==null) throw new IllegalArgumentException("FileObject may not be null");
+		if (p.getMessageService()==null) throw new NotLoggedInException();
 		
 		IFileTransferService ts;
 		IFileTransfer result = null;
@@ -439,6 +450,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 		UserId remotePeer;
 		com.jakeapp.jake.ics.UserId remoteBackendPeer;
 		ChangeListener cl = this.getProjectChangeListener(p);
+		LogEntry realProvider = null;
+		
+		if (potentialProviders == null) throw new NoSuchLogEntryException();
 		
 		for (LogEntry potentialProvider : potentialProviders)
 			if (potentialProvider!=null && potentialProvider.getMember()!=null)
@@ -465,6 +479,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 					//either returned successfully or not successfully
 					result =
 						AvailableLaterWaiter.await(new FileRequestObject(fo,ts,fr,cl));
+					//Save potentialProvider for later usage.
+					realProvider = potentialProvider;
 					break;
 				}
 				catch (Exception ignored) {
@@ -472,33 +488,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 				}
 			}
 		
-		//TODO handle result
-		if (result!=null && result.isDone()) { //second part must be true after await returned
-			//TODO persist file object??
-			//TODO set processed
-		}
+		//handle result
+		if (result!=null && result.isDone() && realProvider!=null) //second part must be true after await returned
+			this.setLogentryProcessed(fo, realProvider);
 		
-
-		// UserId user = this.icsManager.getBackendUserId(p, le.getMember());
-		// IMsgService negotiationService = null;
-		// ITransferMethod tm =
-		// ics.getTransferMethodFactory().getTransferMethod(negotiationService ,
-		// user);
-		// tm.request(request, nsl)
-		//
-		// FailoverCapableFileTransferService ts = getTransferService(p);
-		// log.debug("pulling file from $randomguy");
-		throw new IllegalStateException("pulling files not implemented yet");
-		// ts.request(jo.ge, nsl);
-		// TODO: getPotentialProviders
-		// if(le.getUser().equals(userid))
-		// throw new com.jakeapp.core.dao.exceptions.NoSuchLogEntryException();
-
-		// if(!isLoggedIn(userid))
-		// throw new
-		// com.jakeapp.jake.ics.exceptions.OtherUserOfflineException();
-		// TODO: fetch
-		// return fo;
+		return fo;
 	}
 
 	@Transactional
