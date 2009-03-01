@@ -425,7 +425,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
 					Project project, T jakeObject) {
 		try {
-			log.debug("jakeObject" + jakeObject);
+			log.trace("jakeObject" + jakeObject);
 
 			// sanity check - hey, we don't wanna mess with the core!
 			if(jakeObject == null) {
