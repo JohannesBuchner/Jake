@@ -70,6 +70,7 @@ public class JakeCommander extends Commander {
 	private MsgService msg;
 
 	public Project project;
+	public UserId invitingUser;
 
 	private void startupCore() {
 		SpringThreadBroker.getInstance().loadSpring(
@@ -88,6 +89,7 @@ public class JakeCommander extends Commander {
 				public void invited(UserId user, Project p) {
 					System.out.println("got invitation from " + user + " to " + p);
 					JakeCommander.this.project = p;
+					JakeCommander.this.invitingUser = user;
 				}
 
 				@Override
@@ -163,6 +165,33 @@ public class JakeCommander extends Commander {
 				System.out.println("this command doesn't work with a project set");
 				return true;
 			}
+			File projectFolder = new File(args[1]);
+			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
+				System.out.println("not a directory");
+				return true;
+			}
+			handleArguments(projectFolder);
+			return true;
+		}
+
+		protected abstract void handleArguments(File folder);
+
+	}
+
+	private abstract class LazyProjectDirectoryCommandThatDoesNotNeedProject extends LazyCommand {
+
+		public LazyProjectDirectoryCommandThatDoesNotNeedProject(String command, String help) {
+			super(command, command + " <Folder>", help);
+		}
+
+		public LazyProjectDirectoryCommandThatDoesNotNeedProject(String command) {
+			super(command, command + " <Folder>");
+		}
+
+		@Override
+		final public boolean handleArguments(String[] args) {
+			if (args.length != 2)
+				return false;
 			File projectFolder = new File(args[1]);
 			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
 				System.out.println("not a directory");
@@ -631,7 +660,7 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("listing ...");
-				for(UserId p : pms.getUninvitedPeople(project)) {
+				for(UserId p : pms.getSuggestedPeopleForInvite(project)) {
 					System.out.println("\t" + p);
 				}
 				System.out.println("listing done");
@@ -664,7 +693,7 @@ public class JakeCommander extends Commander {
 		}
 	}
 
-	class AcceptInviteCommand extends LazyProjectDirectoryCommand {
+	class AcceptInviteCommand extends LazyProjectDirectoryCommandThatDoesNotNeedProject {
 
 		public AcceptInviteCommand() {
 			super("acceptInvite", "needs MsgService; accepts first invited project");
@@ -683,7 +712,7 @@ public class JakeCommander extends Commander {
 			}
 			try {
 				System.out.println("joining ...");
-				pms.joinProject(project, null);
+				pms.joinProject(project, invitingUser);
 				System.out.println("joining done");
 			} catch (Exception e) {
 				System.out.println("joining failed");

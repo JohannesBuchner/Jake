@@ -670,7 +670,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// project does not exist
 
 		// notify the inviter
+		if(inviter != null)
 		ProjectInvitationHandler.notifyInvitationAccepted(project, inviter);
+		else log.warn("Inviter not notified because we don't know who it is?!");
 	}
 
 	@Override
