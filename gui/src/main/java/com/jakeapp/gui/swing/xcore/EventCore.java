@@ -193,8 +193,13 @@ public class EventCore {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries), p);
 	}
 
+	/**
+	 * Updates the cache and spreads the event when new data is available.
+	 * @param p
+	 */
 	public void fireFilesChanged(Project p) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
+		ObjectCache.get().updateFiles(p);
+		//EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
 	}
 
 	private class ProjectsChangeListener implements ChangeListener {
