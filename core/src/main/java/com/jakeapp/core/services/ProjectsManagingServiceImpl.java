@@ -876,7 +876,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<UserId> getUninvitedPeople(Project project)
+	public List<UserId> getSuggestedPeopleForInvite(Project project)
 			throws IllegalArgumentException, NoSuchProjectException {
 
 		if (project == null || project.getMessageService() == null)

@@ -359,7 +359,7 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchProjectException project is null or has no MsgService set.
 	 * @throws IllegalArgumentException
 	 */
-	List<UserId> getUninvitedPeople(Project project) throws IllegalArgumentException, NoSuchProjectException;
+	List<UserId> getSuggestedPeopleForInvite(Project project) throws IllegalArgumentException, NoSuchProjectException;
 
 
 	/**
