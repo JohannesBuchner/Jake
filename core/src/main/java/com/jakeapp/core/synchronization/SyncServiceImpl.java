@@ -907,7 +907,19 @@ public class SyncServiceImpl extends FriendlySyncService {
 			if(message.startsWith(LOGENTRIES_MESSAGE)) {
 				log.info("Received serialized logentries from " + from_userid.getUserId());
 
-				log.info("MESSAGE: " + message);
+				String les = message.substring(LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(), message.length() - END_LOGENTRY.length());
+				String[] logentries = les.split(END_LOGENTRY + BEGIN_LOGENTRY);
+
+				for(String l: logentries) {
+					log.debug("Log entry serialized content: \"" + l + "\"");
+					try {
+						LogEntry entry = logEntrySerializer.deserialize(l);
+						log.debug("Deserialized successfully, it is a " + entry.getLogAction() + " for object UUID " + entry.getObjectuuid());
+						db.getLogEntryDao(p).create(entry);;
+					} catch (Throwable t) {
+						log.debug("Failed to deserialize and/or save", t);
+					}
+				}
 			}
 
 			// TODO: The stuff below here could use some refactoring 
