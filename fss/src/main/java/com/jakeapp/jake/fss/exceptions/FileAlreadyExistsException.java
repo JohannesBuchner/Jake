@@ -11,6 +11,10 @@ public class FileAlreadyExistsException extends Exception {
 	public FileAlreadyExistsException() {
 	}
 
+	public FileAlreadyExistsException(String msg) {
+		super(msg);
+	}
+
 	public FileAlreadyExistsException(Throwable arg0) {
 		super(arg0);
 	}

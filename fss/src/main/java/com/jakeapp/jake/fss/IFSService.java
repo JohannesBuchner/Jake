@@ -278,6 +278,24 @@ public interface IFSService extends Serializable {
 	boolean trashFolder(String relativePath)
 			  throws InvalidFilenameException, FileNotFoundException;
 
+
+	/**
+	 * Copy file
+	 * @param from
+	 * @param to
+	 * @return
+	 * @throws InvalidFilenameException
+	 * @throws NotAReadableFileException
+	 * @throws FileAlreadyExistsException
+	 * @throws IOException
+	 * @throws CreatingSubDirectoriesFailedException
+	 */
+	// FIXME: need tests for that?
+	public boolean copyFile(String from, String to)
+					throws InvalidFilenameException, NotAReadableFileException,
+					FileAlreadyExistsException, IOException,
+					CreatingSubDirectoriesFailedException;
+
 	/**
 	 * @param from the relative path to the file to be moved
 	 * @param to	the relative path of the destination to move the file to
@@ -396,5 +414,7 @@ public interface IFSService extends Serializable {
 	 * @param file
 	 * @param destFolderRelPath
 	 */
-	void importFile(File file, String destFolderRelPath);
+	void importFile(File file, String destFolderRelPath) throws IOException,
+					InvalidFilenameException, NotAReadableFileException,
+					FileAlreadyExistsException, CreatingSubDirectoriesFailedException;
 }

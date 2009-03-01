@@ -6,7 +6,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
@@ -19,7 +18,7 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
-import com.jakeapp.jake.ics.*;
+import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -29,7 +28,6 @@ import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
 import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
-import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
@@ -594,6 +592,12 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Transactional
 	public Attributed<FileObject> getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
+		log.debug("get JakeObjectStatus for "+ foin);
+		if(foin == null) {
+			// FIXME: better exception?
+			throw new RuntimeException("FileObject is null!");
+		}
+
 		Project p = foin.getProject();
 		IFSService fss = getFSS(p);
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);

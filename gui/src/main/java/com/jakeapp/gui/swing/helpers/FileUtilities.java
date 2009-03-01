@@ -433,7 +433,8 @@ public class FileUtilities {
 		}
 	}
 
-	public static void openFile(File file) {
+	// FIXME: remove and us FSSservice:lauchFile
+	public static void launchFile(File file) {
 		try {
 			Desktop.getDesktop().open(file);
 		} catch (IOException e) {

@@ -35,7 +35,7 @@ public class OpenFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			FileUtilities.openFile(JakeMainApp.getCore().getFile(getSingleNode().getFileObject()));
+			FileUtilities.launchFile(JakeMainApp.getCore().getFile(getSingleNode().getFileObject()));
 		} catch (FileOperationFailedException e1) {
 			ExceptionUtilities.showError(e1);
 		}

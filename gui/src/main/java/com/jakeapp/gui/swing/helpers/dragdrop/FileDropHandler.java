@@ -57,7 +57,7 @@ public class FileDropHandler extends TransferHandler {
 			/* data of type javaFileListFlavor is a list of files */
 			List<File> fileList = (List<File>) data;
 
-			JakeExecutor.exec(new ImportFileFolderWorker(fileList, ""));
+			JakeExecutor.exec(new ImportFileFolderWorker(fileList, "/"));
 
 		} catch (UnsupportedFlavorException e) {
 			return false;

@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.xcore.EventCore;
 
 import java.io.File;
 import java.util.List;
@@ -22,5 +23,10 @@ public class ImportFileFolderWorker
 						.importExternalFileFolderIntoProject(JakeMainApp.getProject(),
 										files,
 										destFolderRelPath);
+	}
+
+	@Override
+	protected void done() {
+		EventCore.get().fireFilesChanged();
 	}
 }

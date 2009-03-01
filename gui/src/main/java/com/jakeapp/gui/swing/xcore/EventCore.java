@@ -215,7 +215,7 @@ public class EventCore {
 	}
 
 	public void fireFilesChanged() {
-		// TODO
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files));
 	}
 
 	/*

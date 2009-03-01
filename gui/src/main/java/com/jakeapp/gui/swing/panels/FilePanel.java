@@ -22,8 +22,8 @@ import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTreeTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.JakeHudButtonUI;
 import com.jakeapp.gui.swing.controls.cmacwidgets.RedHudButtonUI;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
 import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.helpers.*;
@@ -53,7 +53,8 @@ import java.util.List;
 /**
  * @author studpete, csutter
  */
-public class FilePanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged {
+public class FilePanel extends javax.swing.JPanel implements
+				ProjectSelectionChanged, ProjectChanged {
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 	private static FilePanel instance;
 
@@ -344,7 +345,7 @@ public class FilePanel extends javax.swing.JPanel implements ProjectSelectionCha
 
 				if(me.getClickCount() == 2 && fileObjs.size() == 1) {
 					try {
-						FileUtilities.openFile(JakeMainApp.getCore().getFile(fileObjs.get(0)));
+						FileUtilities.launchFile(JakeMainApp.getCore().getFile(fileObjs.get(0)));
 					} catch (FileOperationFailedException e) {
 						ExceptionUtilities.showError("Unable to open File", e);
 					}

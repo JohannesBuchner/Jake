@@ -143,7 +143,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 			} else if (isAddToProject(dl, files)) {
 				log.info("add to project!");
 
-				JakeExecutor.exec(new ImportFileFolderWorker(files, ""));
+				JakeExecutor.exec(new ImportFileFolderWorker(files, "/"));
 			}
 
 
