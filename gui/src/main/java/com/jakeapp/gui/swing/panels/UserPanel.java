@@ -14,7 +14,7 @@ import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
-import com.jakeapp.gui.swing.controls.SpinningWheel;
+import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -67,7 +67,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 	private UserDataPanel loginUserDataPanel;
 	private UserDataPanel registerUserDataPanel;
 	private JComboBox loginServiceCheckBox;
-	private SpinningWheel workingAnimation;
+	private SpinningWheelComponent workingAnimation;
 	private ServiceCredentials cred;
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
@@ -173,7 +173,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		Animator timer = new Animator(10000, modifier);
 		timer.start();
 
-		SpinningWheel inidcator = new SpinningWheel();
+		SpinningWheelComponent inidcator = new SpinningWheelComponent();
 		inidcator.startAnimation();
 		loader.add(inidcator, "center");
 		return loader;
@@ -348,7 +348,7 @@ public class UserPanel extends JXPanel implements RegistrationStatus, Connection
 		addUserButtonPanel = new JPanel(new MigLayout("wrap 2, fill, ins 0"));
 		addUserButtonPanel.setOpaque(false);
 
-		workingAnimation = new SpinningWheel();
+		workingAnimation = new SpinningWheelComponent();
 		addUserButtonPanel.add(workingAnimation, "hidemode 1, left");
 
 		signInRegisterButton = new JButton();

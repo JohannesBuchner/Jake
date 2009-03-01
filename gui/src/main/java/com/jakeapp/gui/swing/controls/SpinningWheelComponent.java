@@ -20,7 +20,7 @@ import java.awt.geom.*;
  * stopAnimation when it finishes. In the second, isDisplayedWhenStopped is
  * true, and you repeatedly invoke animateOneFrame.
  */
-public class SpinningWheel extends JComponent {
+public class SpinningWheelComponent extends JComponent {
 	private static final int DIAMETER = 30;
 	private static final int BAR_COUNT = 20;
 	private static Area[] bars;
@@ -33,7 +33,7 @@ public class SpinningWheel extends JComponent {
 	private int currentValue = 0;
 	private int maxValue = 0;
 
-	public SpinningWheel() {
+	public SpinningWheelComponent() {
 		initBars();
 		initColors();
 		initTimer();
@@ -213,9 +213,9 @@ public class SpinningWheel extends JComponent {
 	/*
 		 public static void main(String[] args) {
 			  // FIXME: we could auto-generate this kind of code via reflection.
-			  MainFrame f = new MainFrame("SpinningWheel test");
+			  MainFrame f = new MainFrame("SpinningWheelComponent test");
 
-			  final SpinningWheel asynchronousProgressIndicator = new SpinningWheel();
+			  final SpinningWheelComponent asynchronousProgressIndicator = new SpinningWheelComponent();
 
 			  final JCheckBox displayedWhenStoppedCheckbox = new JCheckBox("displayedWhenStopped", asynchronousProgressIndicator.isDisplayedWhenStopped());
 			  displayedWhenStoppedCheckbox.addItemListener(new ItemListener() {
