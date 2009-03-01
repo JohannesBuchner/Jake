@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;

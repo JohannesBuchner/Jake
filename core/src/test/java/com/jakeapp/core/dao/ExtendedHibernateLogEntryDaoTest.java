@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;

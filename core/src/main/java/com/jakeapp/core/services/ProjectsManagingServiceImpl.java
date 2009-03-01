@@ -8,6 +8,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;

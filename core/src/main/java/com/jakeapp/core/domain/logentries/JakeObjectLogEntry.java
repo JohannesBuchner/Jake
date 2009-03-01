@@ -1,4 +1,8 @@
-package com.jakeapp.core.domain;
+package com.jakeapp.core.domain.logentries;
+
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.UserId;
 
 import javax.persistence.Entity;
 import java.util.UUID;

@@ -1,4 +1,8 @@
-package com.jakeapp.core.domain;
+package com.jakeapp.core.domain.logentries;
+
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.UserId;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,7 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 

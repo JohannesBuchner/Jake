@@ -1,13 +1,13 @@
 package com.jakeapp.core.domain;
 
 import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.IJakeObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.domain.logentries.*;
 
 import java.util.UUID;
 import java.util.Date;
@@ -180,7 +180,7 @@ public class LogEntrySerializer {
     public LogEntry<? extends ILogable> deserialize(String input) throws InvalidDeserializerCallException {
         String[] parts = input.split(SEPERATOR_REGEX);
 
-        if (parts.length < 4)
+        if (parts.length < 6)
             throw new InvalidDeserializerCallException();
 
         UUID projectUUID = UUID.fromString(parts[1]);

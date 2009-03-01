@@ -1,7 +1,10 @@
-package com.jakeapp.core.domain;
+package com.jakeapp.core.domain.logentries;
+
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.LogAction;
 
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 
 

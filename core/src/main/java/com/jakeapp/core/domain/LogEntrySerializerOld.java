@@ -6,8 +6,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import com.jakeapp.core.synchronization.exceptions.InvalidSerializerCallException;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
-
-
+import com.jakeapp.core.domain.logentries.LogEntry;
 
 
 /***

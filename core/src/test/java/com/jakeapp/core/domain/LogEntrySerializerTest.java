@@ -16,6 +16,7 @@ import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.domain.logentries.*;
 import junit.framework.Assert;
 
 /**

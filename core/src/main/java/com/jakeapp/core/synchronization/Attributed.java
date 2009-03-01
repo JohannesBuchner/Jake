@@ -3,7 +3,7 @@ package com.jakeapp.core.synchronization;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import org.apache.log4j.Logger;
 
 /**

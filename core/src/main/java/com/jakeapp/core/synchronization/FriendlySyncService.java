@@ -7,7 +7,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;

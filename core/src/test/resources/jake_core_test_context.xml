@@ -30,7 +30,7 @@
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.JakeMessage</value>
                 <value>com.jakeapp.core.domain.JakeObject</value>
-         <!--   <value>com.jakeapp.core.domain.LogEntry</value> -->
+         <!--   <value>com.jakeapp.core.domain.logentries.LogEntry</value> -->
                 <value>com.jakeapp.core.domain.NoteObject</value>
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
                 <value>com.jakeapp.core.domain.XMPPUserId</value>

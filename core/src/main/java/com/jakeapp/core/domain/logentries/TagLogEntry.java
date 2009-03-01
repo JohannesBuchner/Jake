@@ -1,8 +1,11 @@
-package com.jakeapp.core.domain;
+package com.jakeapp.core.domain.logentries;
+
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.UserId;
 
 import javax.persistence.Entity;
 import java.util.UUID;
-import java.util.Date;
 import java.io.Serializable;
 
 @Entity

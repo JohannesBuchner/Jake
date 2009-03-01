@@ -1,7 +1,6 @@
 package com.jakeapp.core.dao;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,7 +17,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.Tag;

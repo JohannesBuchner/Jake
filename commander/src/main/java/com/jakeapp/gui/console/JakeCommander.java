@@ -1,6 +1,7 @@
 package com.jakeapp.gui.console;
 
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectInvitationListener;

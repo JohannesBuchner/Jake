@@ -2,6 +2,7 @@ package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -52,7 +53,7 @@ import java.util.List;
  * Also see the sequential diagrams and technical description.
  *
  * @author johannes
- * @see LogEntry
+ * @see com.jakeapp.core.domain.logentries.LogEntry
  * @see IMsgService
  */
 /*

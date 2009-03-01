@@ -3,7 +3,7 @@ package com.jakeapp.core.synchronization;
 import java.io.InputStream;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 
@@ -17,7 +17,7 @@ public interface RequestHandlePolicy {
 	 * example)
 	 * Instead of a List of all possible providers, the LogEntries corresponding
 	 * to the providers are returned. The providers can be accessed via
-	 * {@link LogEntry#getMember()}
+	 * {@link com.jakeapp.core.domain.logentries.LogEntry#getMember()}
 	 * 
 	 * @param jo
 	 * @return the Logentries with the UserIds to try, null if noone could be found

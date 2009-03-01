@@ -35,17 +35,17 @@
                 <value>com.jakeapp.core.domain.NoteObject</value>
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.Tag</value>
-                <!--<value>com.jakeapp.core.domain.LogEntry</value>-->
-                <value>com.jakeapp.core.domain.JakeObjectLogEntry</value>
-                <value>com.jakeapp.core.domain.JakeObjectDeleteLogEntry</value>
-                <value>com.jakeapp.core.domain.JakeObjectLockLogEntry</value>
-                <value>com.jakeapp.core.domain.JakeObjectUnlockLogEntry</value>
-                <value>com.jakeapp.core.domain.JakeObjectNewVersionLogEntry</value>
-                <value>com.jakeapp.core.domain.ProjectLogEntry</value>
-                <value>com.jakeapp.core.domain.ProjectMemberLogEntry</value>
-                <value>com.jakeapp.core.domain.TagLogEntry</value>
-                <value>com.jakeapp.core.domain.TagAddLogEntry</value>
-                <value>com.jakeapp.core.domain.TagRemoveLogEntry</value>
+                <!--<value>com.jakeapp.core.domain.logentries.LogEntry</value>-->
+                <value>com.jakeapp.core.domain.logentries.JakeObjectLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.JakeObjectDeleteLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.ProjectLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.ProjectMemberLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.TagLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.TagAddLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.TagRemoveLogEntry</value>
             </list>
         </property>
         <property name="configurationClass"
