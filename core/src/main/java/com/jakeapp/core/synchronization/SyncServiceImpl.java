@@ -63,23 +63,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private static final String BEGIN_PROJECT_UUID = "<project>";
 	private static final String END_PROJECT_UUID = "</project>";
-
-	private static final String BEGIN_LOGENTRY = "<le>";
-
-	private static final String END_LOGENTRY = "</le>";
-
 	private static final String POKE_MESSAGE = "<poke/>";
-
 	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
 
-	private static final String LOGENTRIES_MESSAGE = "<logentries/>";
-	    	private static final String NEW_FILE = "<newfile/>";
-
-	private static final String NEW_NOTE = "<newnote/>";
-
-
 	private IProjectsFileServices projectsFileServices;
-
 	private LogEntrySerializer logEntrySerializer;
 
 	public LogEntrySerializer getLogEntrySerializer() {
@@ -111,14 +98,15 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Injected
 	private ProjectApplicationContextFactory db;
 
-	private Map<String, Project> runningProjects = new HashMap<String, Project>();
-
 	@Injected
 	private ICSManager icsManager;
+
+	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
 	ICService getICS(Project p) {
 		return getICSManager().getICService(p);
 	}
+
 	private IFileTransferService getTransferService(Project p)
 			throws NotLoggedInException {
 		return p.getMessageService().getIcsManager().getTransferService(p);
@@ -164,9 +152,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
 	}
 
-	private static String getUUIDStringForProject(Project project) {
-		return BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID;
-	}
+
 
 	/**
 	 * We keep track of the Project members
@@ -310,7 +296,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		log.debug("ICS is logged in? " + ics.getStatusService().isLoggedIn());
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			String message = getUUIDStringForProject(project) + POKE_MESSAGE;
+			String message = BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID + POKE_MESSAGE;
 			log.debug("Sending message: \"" + message + "\"");
 			ics.getMsgService().sendMessage(uid, message);
 		} catch (NetworkException e) {
@@ -398,7 +384,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 		ICService ics = this.icsManager.getICService(p);
 		Iterable<LogEntry> potentialProviders =
 			this.getRequestHandlePolicy().getPotentialJakeObjectProviders(fo);
-		IFileTransferService fts = this.getTransferService(p);
+		IFileTransferService fts = p.getMessageService().getIcsManager().getTransferService(p);
+
 		UserId remotePeer;
 		com.jakeapp.jake.ics.UserId remoteBackendPeer;
 		ChangeListener cl = this.getProjectChangeListener(p);
@@ -486,7 +473,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		ICService ics = getICS(project);
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			ics.getMsgService().sendMessage(uid, getUUIDStringForProject(project) + REQUEST_LOGS_MESSAGE);
+			ics.getMsgService().sendMessage(uid, BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID + REQUEST_LOGS_MESSAGE);
 		} catch (NetworkException e) {
 			log.debug("Could not request logs from user " + pm.getUserId(), e);
 		} catch (OtherUserOfflineException e) {
@@ -752,7 +739,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if(prl == null) {
 //			prl = new ProjectRequestListener2(p, getICSManager(), (ISyncService) this);
-			prl = new ProjectRequestListener(p);
+			prl = new ProjectRequestListener(p, icsManager, db);
 			projectRequestListeners.put(p.getProjectId(), prl);
 		}
 		try {
@@ -771,10 +758,64 @@ public class SyncServiceImpl extends FriendlySyncService {
 	private class ProjectRequestListener implements IMessageReceiveListener,
 			IOnlineStatusListener, ILoginStateListener {
 
+		private static final String BEGIN_LOGENTRY = "<le>";
+		private static final String END_LOGENTRY = "</le>";
+		private static final String BEGIN_PROJECT_UUID = "<project>";
+		private static final String END_PROJECT_UUID = "</project>";
+		private static final String LOGENTRIES_MESSAGE = "<logentries/>";
+		private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
+		private static final String NEW_FILE = "<newfile/>";
+
+
+
+		private static final String NEW_NOTE = "<newnote/>";
+
+//		private static Logger log = Logger.getLogger(ProjectRequestListener.class);
+		private Logger log = Logger.getLogger(ProjectRequestListener.class); // TODO in own class, make this static!
+
+		private String getUUIDStringForProject(Project project) {
+			return BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID;
+		}
+
+
+		private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
+			ICService ics = icsManager.getICService(project);
+
+			try {
+				List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
+
+
+				StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
+
+				log.debug("Starting to process log entries...");
+				for (LogEntry l : logs) {
+					try {
+						sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
+						log.debug("Serialised log entry, new sb content: " + sb.toString());
+					} catch (Throwable e) {
+						log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
+					}
+				}
+				log.debug("Finished processing log entries! Now sending.");
+
+				ics.getMsgService().sendMessage(user, sb.toString());
+			} catch (NetworkException e) {
+				log.warn("Could not sync logs", e);
+			} catch (OtherUserOfflineException e) {
+				log.warn("Could not sync logs", e);
+			}
+		}
+
+
 		private Project p;
 
-		public ProjectRequestListener(Project p) {
+		private ICSManager icsManager;
+		private ProjectApplicationContextFactory db;
+
+		public ProjectRequestListener(Project p, ICSManager icsManager, ProjectApplicationContextFactory db) {
 			this.p = p;
+			this.icsManager = icsManager;
+			this.db = db;
 		}
 
 		private String getProjectUUID(String content) {
@@ -790,7 +831,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 			String projectUUID = getProjectUUID(content);
 			log.debug("Received a message for project " + projectUUID);
 
-			if(!projectUUID.equals(p.getProjectId())) {
+			if (!projectUUID.equals(p.getProjectId())) {
 				log.debug("Discarding message because it's not for this project");
 				return;
 			}
@@ -811,7 +852,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 				} catch (IllegalProtocolException e) {
 					// This should neeeeeeeeever happen
 					log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
-									e);
+							e);
 				}
 				return;
 			}
@@ -823,25 +864,26 @@ public class SyncServiceImpl extends FriendlySyncService {
 				return;
 			}
 
-			if(message.startsWith(LOGENTRIES_MESSAGE)) {
+			if (message.startsWith(LOGENTRIES_MESSAGE)) {
 				log.info("Received serialized logentries from " + from_userid.getUserId());
 
 				String les = message.substring(LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(), message.length() - END_LOGENTRY.length());
 				String[] logentries = les.split(END_LOGENTRY + BEGIN_LOGENTRY);
 
-				for(String l: logentries) {
+				for (String l : logentries) {
 					log.debug("Log entry serialized content: \"" + l + "\"");
 					try {
 						LogEntry entry = logEntrySerializer.deserialize(l);
 						log.debug("Deserialized successfully, it is a " + entry.getLogAction() + " for object UUID " + entry.getObjectuuid());
-						db.getLogEntryDao(p).create(entry);;
+						db.getLogEntryDao(p).create(entry);
+						;
 					} catch (Throwable t) {
 						log.debug("Failed to deserialize and/or save", t);
 					}
 				}
 			}
 
-			// TODO: The stuff below here could use some refactoring 
+			// TODO: The stuff below here could use some refactoring
 			// (e.g. redeclaring parameter content)
 			int uuidlen = UUID.randomUUID().toString().length();
 			String projectid = message.substring(0, uuidlen);
@@ -856,7 +898,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 				db.getNoteObjectDao(p).persist(no);
 				log.debug("calling other user: " + from_userid);
 				try {
-					getTransferService(p).request(
+					p.getMessageService().getIcsManager().getTransferService(p).request(
 							new FileRequest("N" + uuid, false, from_userid),
 							cl.beganRequest(no));
 				} catch (NotLoggedInException e) {
@@ -871,7 +913,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 				db.getFileObjectDao(p).persist(fo);
 				log.debug("calling other user: " + from_userid);
 				try {
-					getTransferService(p).request(
+					p.getMessageService().getIcsManager().getTransferService(p).request(
 							new FileRequest("F" + relpath, false, from_userid),
 							cl.beganRequest(fo));
 				} catch (NotLoggedInException e) {
@@ -896,7 +938,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		@Override
 		public void logoutHappened() {
 			// TODO Auto-generated method stub
-		   log.info("We logged out with project " + this.p);
+			log.info("We logged out with project " + this.p);
 		}
 	}
 
@@ -993,33 +1035,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return icsManager;
 	}
 
-	private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
-		ICService ics = getICS(project);
-
-		try {
-			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
-
-
-			StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
-
-			log.debug("Starting to process log entries...");
-			for (LogEntry l : logs) {
-				try {
-					sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
-					log.debug("Serialised log entry, new sb content: " + sb.toString());
-				} catch (Throwable e) {
-					log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
-				}
-			}
-			log.debug("Finished processing log entries! Now sending.");
-
-			ics.getMsgService().sendMessage(user, sb.toString());
-		} catch (NetworkException e) {
-			log.warn("Could not sync logs", e);
-		} catch (OtherUserOfflineException e) {
-			log.warn("Could not sync logs", e);
-		}
-	}
 
 
 }
