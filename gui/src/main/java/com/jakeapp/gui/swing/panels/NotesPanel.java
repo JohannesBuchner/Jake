@@ -1,9 +1,47 @@
 package com.jakeapp.gui.swing.panels;
 
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.FilterPipeline;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
-import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.CreateNoteAction;
@@ -20,29 +58,6 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
 import com.jakeapp.gui.swing.xcore.EventCore;
-import net.miginfocom.swing.MigLayout;
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.GlossPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The NotesPanel
@@ -54,15 +69,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private static final long serialVersionUID = -7703570005631651276L;
 	private static NotesPanel instance;
 	private static Logger log = Logger.getLogger(NotesPanel.class);
-	//FIXME magic number, make property
-	private final static int TableUpdateDelay = 20000; // 20 sec
+	private final static int TableUpdateDelay = 20000; // 20 sec 	//FIXME magic number, make property
 	private Timer tableUpdateTimer;
-	private java.util.List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
+	private List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
 	private NotesTableModel notesTableModel;
-	private javax.swing.JScrollPane notesTableScrollPane;
-	private javax.swing.JSplitPane mainSplitPane;
-	private org.jdesktop.swingx.JXPanel noteReaderPanel;
-	private org.jdesktop.swingx.JXTable notesTable;
+	private JScrollPane notesTableScrollPane;
+	private JSplitPane mainSplitPane;
+	private JXPanel noteReaderPanel;
+	private JXTable notesTable;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
 	private Project currentProject;
