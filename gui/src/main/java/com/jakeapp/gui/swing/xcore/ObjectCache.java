@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
@@ -91,6 +92,7 @@ public class ObjectCache {
 	public void updateFiles(Project p) {
 		if (JakeMainApp.isCoreInitialized()) {
 			JakeExecutor.exec(new GetAllProjectFilesWorker(p));
+			JakeStatusBar.updateMessage();
 		}
 	}
 
