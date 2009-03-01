@@ -254,13 +254,17 @@ public class NewsPanel extends javax.swing.JPanel implements
 	private void updatePanel() {
 		log.trace("updating panel with " + getProject());
 
+		// don't update if project is null
+		if (getProject() == null) {
+			return;
+		}
+
 		// set model project
 		this.eventTableModel.setProject(getProject());
 
-		// TODO: remove hack
-//		if (getProject() == null) {
-//			return;
-//		}
+
+
+
 		/*
 //TODO: find better way !
 		try {
