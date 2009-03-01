@@ -127,6 +127,7 @@ public class JakeMainApp extends SingleFrameApplication
 										"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 
 					} catch (Exception r) {
+						
 						// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
 						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					}

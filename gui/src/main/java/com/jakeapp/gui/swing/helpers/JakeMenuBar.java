@@ -5,8 +5,8 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.*;
-import com.jakeapp.gui.swing.dialogs.debugging.JakeDebugger;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
+import com.jakeapp.gui.swing.dialogs.debugging.JakeDebugger;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.xcore.CreateExampleProject;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -28,7 +28,7 @@ import java.net.URI;
 
 /**
  * The Main Jake Menu Bar.
- * 
+ *
  * @author studpete
  */
 public class JakeMenuBar extends JMenuBar {
@@ -39,9 +39,10 @@ public class JakeMenuBar extends JMenuBar {
 
 		// Get the application instance
 		Application app = Application.getInstance();
-		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application
-				.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-				.getResourceMap(JakeMainView.class);
+		org.jdesktop.application.ResourceMap resourceMap =
+						org.jdesktop.application.Application
+										.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
+										.getContext().getResourceMap(JakeMainView.class);
 
 
 		/****************************** Project *********************************/
@@ -113,10 +114,11 @@ public class JakeMenuBar extends JMenuBar {
 
 		JMenuItem visitWebsiteMenuItem = new JMenuItem();
 		javax.swing.ActionMap actionMap = org.jdesktop.application.Application
-				.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-				.getActionMap(JakeMainView.class, JakeMainView.getMainView());
+						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+						.getActionMap(JakeMainView.class, JakeMainView.getMainView());
 		visitWebsiteMenuItem.setAction(actionMap.get("showJakeWebsite")); // NOI18N
-		visitWebsiteMenuItem.setText(resourceMap.getString("visitWebsiteMenuItem.text")); // NOI18N
+		visitWebsiteMenuItem
+						.setText(resourceMap.getString("visitWebsiteMenuItem.text")); // NOI18N
 		visitWebsiteMenuItem.setName("visitWebsiteMenuItem"); // NOI18N
 		helpMenu.add(visitWebsiteMenuItem);
 
@@ -127,25 +129,22 @@ public class JakeMenuBar extends JMenuBar {
 		aboutMenuItem.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				StandardMacAboutFrame aboutFrame = new StandardMacAboutFrame(AppUtilities
-						.getAppName(), AppUtilities.getAppVersion());
-				aboutFrame.setApplicationIcon(UIManager
-						.getIcon("OptionPane.informationIcon"));
+				StandardMacAboutFrame aboutFrame =
+								new StandardMacAboutFrame(AppUtilities.getAppName(),
+												AppUtilities.getAppVersion());
+				aboutFrame
+								.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
 				aboutFrame.setBuildVersion("001");
 				aboutFrame.setCopyright("Copyright 2007-2009, Best ASE Team TU Vienna");
-				aboutFrame.setCredits("<html><body>Jake<br>"
-						+ "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>"
-						+ "<br>We are proud to present you Jake." + "<b></b><br>"
-						+ "Send your Feedback to: "
-						+ "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>"
-						+ "</body></html>", "text/html");
+				aboutFrame
+								.setCredits("<html><body>Jake<br>" + "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>" + "<br>We are proud to present you Jake." + "<b></b><br>" + "Send your Feedback to: " + "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>" + "</body></html>",
+												"text/html");
 				aboutFrame.setHyperlinkListener(new HyperlinkListener() {
 
 					public void hyperlinkUpdate(HyperlinkEvent e) {
 						if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 							try {
-								Desktop.getDesktop().browse(
-										new URI(e.getURL().toString()));
+								Desktop.getDesktop().browse(new URI(e.getURL().toString()));
 							} catch (Exception ex) {
 								ex.printStackTrace();
 							}
@@ -178,7 +177,7 @@ public class JakeMenuBar extends JMenuBar {
 		debugMenu.add(createExampleDebugItem);
 
 
-			JMenuItem tasksDebugItem = new JMenuItem("Open Task Window");
+		JMenuItem tasksDebugItem = new JMenuItem("Open Task Window");
 		tasksDebugItem.addActionListener(new ActionListener() {
 
 			@Override
@@ -189,9 +188,30 @@ public class JakeMenuBar extends JMenuBar {
 		debugMenu.add(tasksDebugItem);
 
 
+		final JMenuItem nimbusDebugItem = new JCheckBoxMenuItem("Use Nimbus LAF");
+		nimbusDebugItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (nimbusDebugItem.isSelected()) {
+						UIManager.setLookAndFeel(
+										"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					} else {
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+
+				} catch (Exception r) {
+					ExceptionUtilities.showError(r);
+				}
+			}
+		});
+		debugMenu.add(nimbusDebugItem);
+
 		debugMenu.add(new JSeparator());
 
-		JMenuItem testInvitationDebugItem = new JMenuItem("Add Test Invitation (broken)");
+		JMenuItem testInvitationDebugItem =
+						new JMenuItem("Add Test Invitation (broken)");
 		testInvitationDebugItem.addActionListener(new ActionListener() {
 
 			@Override
@@ -224,8 +244,8 @@ public class JakeMenuBar extends JMenuBar {
 		});
 		debugMenu.add(cureGetFilesDebugViewItem);
 
-		final JCheckBoxMenuItem xmppDebugViewItem = new JCheckBoxMenuItem(
-				"XMPP Debug Window (activates on new connection)");
+		final JCheckBoxMenuItem xmppDebugViewItem =
+						new JCheckBoxMenuItem("XMPP Debug Window (activates on new connection)");
 		xmppDebugViewItem.setSelected(XMPPConnection.DEBUG_ENABLED);
 		xmppDebugViewItem.addActionListener(new ActionListener() {
 
@@ -280,7 +300,7 @@ public class JakeMenuBar extends JMenuBar {
 					}
 					String stack = "";
 					StackTraceElement[] trace = thread.getStackTrace();
-					if(trace != null && trace.length > 1)
+					if (trace != null && trace.length > 1)
 						stack = trace[0].toString();
 					output.append(thread.getState()).append(" - [").append(thread.getName())
 									.append("] ").append(stack).append("\n");
