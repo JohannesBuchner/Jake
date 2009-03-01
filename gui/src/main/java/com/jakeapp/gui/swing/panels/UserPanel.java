@@ -244,7 +244,7 @@ public class UserPanel extends JXPanel
 
 		if (JakeMainApp.isCoreInitialized()) {
 			try {
-				List<MsgService<UserId>> msgs = JakeMainApp.getCore().getMsgServics();
+				List<MsgService<UserId>> msgs = JakeMainApp.getCore().getMsgServices();
 
 				if (msgs != null) {
 					for (MsgService<UserId> msg : msgs) {
@@ -766,7 +766,7 @@ public class UserPanel extends JXPanel
 	private void updateSignInRegisterMode() {
 		signInRegisterBackBtn
 						.setVisible(JakeMainApp.isCoreInitialized() && JakeMainApp.getCore()
-										.getMsgServics().size() > 0);
+										.getMsgServices().size() > 0);
 
 		loginUserDataPanel.setVisible(isModeSignIn());
 		registerUserDataPanel.setVisible(!isModeSignIn());
@@ -801,7 +801,7 @@ public class UserPanel extends JXPanel
 			if (JakeMainApp.getMsgService() != null) {
 				showPanel(UserPanels.LoggedIn);
 			} else {
-				if (JakeMainApp.getCore().getMsgServics().size() > 0) {
+				if (JakeMainApp.getCore().getMsgServices().size() > 0) {
 					showPanel(UserPanels.ManageUsers);
 				} else {
 					showPanel(UserPanels.AddUser);

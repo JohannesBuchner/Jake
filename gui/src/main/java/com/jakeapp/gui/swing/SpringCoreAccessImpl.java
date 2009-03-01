@@ -125,7 +125,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<MsgService<UserId>> getMsgServics()
+	public List<MsgService<UserId>> getMsgServices()
 					throws FrontendNotLoggedInException {
 		return this.frontendService.getMsgServices(this.sessionId);
 	}
