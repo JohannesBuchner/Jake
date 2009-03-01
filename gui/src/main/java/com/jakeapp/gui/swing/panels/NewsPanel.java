@@ -109,13 +109,13 @@ public class NewsPanel extends javax.swing.JPanel implements
 
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				getProject().setAutoPullEnabled(autoDownloadCB.isSelected());
+				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(), autoDownloadCB.isSelected(), null);
 			}
 		});
 
 		this.autoUploadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				getProject().setAutoAnnounceEnabled(autoUploadCB.isSelected());
+				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(), null, autoUploadCB.isSelected());
 			}
 		});
 

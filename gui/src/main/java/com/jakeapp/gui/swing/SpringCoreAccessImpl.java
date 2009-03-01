@@ -17,6 +17,7 @@ import com.jakeapp.core.services.futures.GetProjectsFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.services.futures.StartStopProjectFuture;
+import com.jakeapp.core.services.futures.ImportFilesFuture;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -84,7 +85,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<List<Project>> getProjects(EnumSet<InvitationState> filter) {
+	public AvailableLaterObject<List<Project>> getProjects(
+					EnumSet<InvitationState> filter) {
 		return new GetProjectsFuture(pms, filter).start();
 	}
 
@@ -537,6 +539,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return sizeFuture;
 	}
 
+	@Override public void setProjectSettings(Project p, Boolean autoPull,
+					Boolean autoPush) {
+		if (autoPull != null)
+			p.setAutoPullEnabled(autoPull);
+		if (autoPush != null)
+			p.setAutoAnnounceEnabled(autoPush);
+
+		// FIXME: needs support from core?
+		// where do we activate the code that activates the watcher?
+	}
+
 
 	@Override
 	public void createNote(NoteObject note) throws NoteOperationFailedException {
@@ -545,12 +558,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (Exception e) {
 			throw new NoteOperationFailedException(e);
 		}
-		// FIXME: add corrent event
-		/*
-		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(note.getProject(),
-										ProjectChanged.ProjectChangedEvent.Reason.StartStopState));
-										*/
+
+		EventCore.get().fireNotesChanged();
 	}
 
 	@Override
@@ -565,10 +574,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 		pms.saveNote(note);
-
-		EventCore.get()
-						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(note.getProject(),
-										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanged));
+		EventCore.get().fireNotesChanged();
 	}
 
 
@@ -605,6 +611,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public boolean setPeopleNickname(Project project, UserId userId, String nick) {
 		log.info("setPeopleNickname: project: " + project + " ProjectMember: " + userId + " Nick: " + nick);
 
+		// FIXME: AS OF 1.3.09, this seems broken?
 		// TODO: ignore this and create a regex for checking!
 		if (nick.indexOf("<") != -1) {
 			return false;
@@ -621,7 +628,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void peopleSetTrustState(Project project, UserId userId, TrustState trust) {
-
 		try {
 			pms.setTrust(project, userId, trust);
 		} catch (IllegalArgumentException e) {
@@ -744,25 +750,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(
 					Project project, List<File> files, String destFolderRelPath) {
-
-		// TODO: implement
-
-		//		for (File file : files) {
-		//			try {
-		//				copy(file.getAbsolutePath(), new File(project.getRootPath(), destFolderRelPath).getAbsolutePath());
-		//			} catch (Exception e) {
-		//				log.warn("copy failed", e);
-		//			}
-		//		}
-		//
-		//		fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
-		//				  project, Reason.Files));
-		//
-		//		for (FilesChanged f : coreMock.filesChangedListeners) {
-		//			f.filesChanged();
-		//		}
-
-		return null;
+		return new ImportFilesFuture(this.pms.getFileServices(project), files, destFolderRelPath).start();
 	}
 
 
@@ -886,9 +874,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public<T extends JakeObject> AvailableLaterObject<Void> announceJakeObjects(
-					List<T> jos, String commitMsg)
-					throws FileOperationFailedException {
+	public <T extends JakeObject> AvailableLaterObject<Void> announceJakeObjects(
+					List<T> jos, String commitMsg) throws FileOperationFailedException {
 		ISyncService iss;
 		AvailableLaterObject<Void> result;
 

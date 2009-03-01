@@ -112,8 +112,8 @@ public class EventCore {
 	}
 
 	private void shootStalledProjectChangedEvents() {
-		while(!projectEvents.empty()) {
-					spreadProjectChanged(projectEvents.pop());
+		while (!projectEvents.empty()) {
+			spreadProjectChanged(projectEvents.pop());
 		}
 	}
 
@@ -208,6 +208,16 @@ public class EventCore {
 		return invitationListener;
 	}
 
+	public void fireNotesChanged() {
+
+		// change in the notes mostly changes the log entries too!
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries));
+	}
+
+	public void fireFilesChanged() {
+		// TODO
+	}
+
 	/*
 	public ChangeListener registerProjectChangeListener(Project project) {
 		ProjectsChangeListener pcl = new ProjectsChangeListener(project);
@@ -244,7 +254,7 @@ public class EventCore {
 
 		@Override
 		public void pullFailed(JakeObject jo, Exception reason) {
-			log.debug("pullFailed: " + jo,reason);
+			log.debug("pullFailed: " + jo, reason);
 		}
 	}
 

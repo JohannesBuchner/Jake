@@ -493,4 +493,9 @@ public class FSService implements IFSService, IModificationListener {
 		if (f.exists()) throw new IOException();
 		if (!f.mkdirs()) throw new IOException();
 	}
+
+
+	@Override public void importFile(File file, String destFolderRelPath) {
+	// FIXME:!!
+	}
 }

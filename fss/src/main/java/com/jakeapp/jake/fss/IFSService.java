@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -389,4 +390,11 @@ public interface IFSService extends Serializable {
 	 * @throws IOException				  if the folder cannot be created
 	 */
 	void createFolder(String relpath) throws InvalidFilenameException, IOException;
+
+	/**
+	 * Imports a File into the project.
+	 * @param file
+	 * @param destFolderRelPath
+	 */
+	void importFile(File file, String destFolderRelPath);
 }

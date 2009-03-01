@@ -558,6 +558,14 @@ public interface ICoreAccess {
 	 *
 	 */
 	AvailableLaterObject<Integer> getNoteCount(Project project);
+
+	/**
+	 * Set project settings
+	 * @param p
+	 * @param autoPull
+	 * @param autoPush
+	 */
+	void setProjectSettings(Project p, Boolean autoPull, Boolean autoPush);
 }
 
 

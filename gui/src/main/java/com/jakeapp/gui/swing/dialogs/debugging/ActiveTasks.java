@@ -10,8 +10,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,9 +52,13 @@ public class ActiveTasks extends JXPanel {
 	}
 
 	public void updateTasks() {
-		this.model.fireUpdate();
-		this.tasks.invalidate();
-		this.tasks.updateUI();
+		try {
+			this.model.fireUpdate();
+			this.tasks.invalidate();
+			this.tasks.updateUI();
+		} catch (Exception ex) {
+			// don't care
+		}
 	}
 
 	public static void tasksUpdated() {
@@ -82,15 +86,19 @@ public class ActiveTasks extends JXPanel {
 
 		@Override public Object getElementAt(int index) {
 			int realSize = JakeExecutor.getTasks().size();
-			if(index < JakeExecutor.getTasks().size()) {
-			return JakeExecutor.getTasks().entrySet().toArray()[index];
-			}else {
+			if (index < JakeExecutor.getTasks().size()) {
+				return JakeExecutor.getTasks().entrySet().toArray()[index];
+			} else {
 				return history.get(index - realSize);
 			}
 		}
 
 		public void fireUpdate() {
-			fireContentsChanged(this, 0, getSize());
+			try {
+				fireContentsChanged(this, 0, getSize());
+			} catch (Exception e) {
+				// we don't care
+			}
 		}
 	}
 
@@ -104,14 +112,14 @@ public class ActiveTasks extends JXPanel {
 		{
 			String valStr;
 
-			if(value instanceof Map.Entry) {
-			Map.Entry<String, Runnable> runner = (Map.Entry<String, Runnable>) value;
+			if (value instanceof Map.Entry) {
+				Map.Entry<String, Runnable> runner = (Map.Entry<String, Runnable>) value;
 
-			valStr = StringUtilities
-							.htmlize(StringUtilities.bold(runner.getKey()) + "<br>" + runner
-											.getValue() + "<br> + " + arrayToString(getAllFields(runner
-											.getValue().getClass()), "<br>", runner.getValue()));
-			}else {
+				valStr = StringUtilities
+								.htmlize(StringUtilities.bold(runner.getKey()) + "<br>" + runner
+												.getValue() + "<br> + " + arrayToString(getAllFields(runner
+												.getValue().getClass()), "<br>", runner.getValue()));
+			} else {
 				valStr = value.toString();
 			}
 
