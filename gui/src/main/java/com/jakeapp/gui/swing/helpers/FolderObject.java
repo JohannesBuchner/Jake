@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
+import java.util.Collection;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -64,11 +65,27 @@ public class FolderObject {
       fileChildren.addAll(files);
    }
 
-public void setProject(Project project) {
-	this.project = project;
-}
+   public void setProject(Project project) {
+	   this.project = project;
+   }
 
-public Project getProject() {
-	return project;
-}
+   public Project getProject() {
+	   return project;
+   }
+   
+   /**
+	 * Retrieves all FileObjects that are directly or indirectly under this
+	 * FolderObject
+	 * @return An empty list if fo is null or contains no files, a list of all files
+	 * 	otherwise.
+	 */
+	public Collection<FileObject> flattenFolder() {
+		Collection<FileObject> result = new ArrayList<FileObject>();
+		
+		result.addAll(getFileChildren());
+		for (FolderObject childFolder : this.getFolderChildren())
+			result.addAll(childFolder.flattenFolder());
+		
+		return result;
+	}
 }

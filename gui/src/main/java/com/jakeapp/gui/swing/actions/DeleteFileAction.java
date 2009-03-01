@@ -1,12 +1,18 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
+import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -32,68 +38,71 @@ public class DeleteFileAction extends FileAction {
 	public void updateAction() {
 		setEnabled(getSelectedRowCount() > 0);
 	}
-
+	
+	//TODO replace core calls with ObjectCache-Calls
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final List<String> cache = new ArrayList<String>();
-		List<Attributed<FileObject>> files = new ArrayList<Attributed<FileObject>>();
+		//final List<String> cache = new ArrayList<String>();
+		
+		List<FileObject> files = new ArrayList<FileObject>();
+		List<Attributed<FileObject>> attributedFiles = new ArrayList<Attributed<FileObject>>();
 
 		UserId currentUser = JakeMainApp.getProject().getUserId();
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
 		String[] options = {map.getString("confirmDeleteFile.ok"), map.getString(
-						"genericCancel")};
+						"geILogablecel")};
 		String text;
+		LogEntry<? extends ILogable> lockEntry = null;
+		Attributed<FileObject> af;
+		Project p = JakeMainApp.getProject();
+		
+		//preconditions-check
+		if (files==null || files.size()<1) return;
 
-
-		// TODO: wtf?
-/*
+ 		//get all files to be deleted
 		for (ProjectFilesTreeNode node : getNodes()) {
 			if (node.isFile()) {
-				cache.add(node.getFileObject().getRelPath());
 				files.add(node.getFileObject());
 			} else if (node.isFolder()) {
-				cache.add(node.getFolderObject().getRelPath());
+				files.addAll(node.getFolderObject().flattenFolder());
 			}
 		}
 
-
-		if (files.size() == 1) { //single delete
-			if (files.get(0)) { //is locked
-				UserId lockOwner = core.getLockOwner(files.get(0));
-
-				if (lockOwner.getUserId().equals(currentUser)) { //local member is owner
-					text = map.getString("confirmDeleteFile.text");
-				} else {
-					text = Translator
-									.get(map, "confirmDeleteLockedFile.text", lockOwner.getNickname());
-				}
+		//check locks
+		for (FileObject f : files) {
+			af = JakeMainApp.getCore().getAttributed(p,f);
+			if (af.isLocked() && !af.getLockLogEntry().getMember().equals(currentUser)) {
+				log.debug("File " + f.getRelPath() + " is locked!");
+				lockEntry = af.getLockLogEntry();
+				break;
+			}
+		}
+		
+		/*
+		 * decide, which user-interaction is appropriate
+		 * There are different confirm-messages for different lock-counts
+		 */
+		text = "";
+		if (files.size()==1) {
+			if (lockEntry!=null) {
+				text = Translator
+					.get(map, "confirmDeleteLockedFile.text", lockEntry.getMember().getUserId());
 			} else {
 				text = map.getString("confirmDeleteFile.text");
 			}
-		} else { //batch delete
-			log.debug(
-							"batch delete -------------------------------------------------------------");
-			boolean locked = false;
-			for (FileObject f : files) {
-				if (core.isJakeObjectLocked(f) && !core.getLockOwner(f).getUserId()
-								.equals(currentUser)) {
-					log.debug("File " + f.getRelPath() + " is locked!");
-					locked = true;
-					break;
-				}
-			}
-			if (locked) {
-				log.debug("at least one file is locked");
+		} else {
+			if (lockEntry!=null) {
 				text = map.getString("confirmDeleteLockedFiles.text");
 			} else {
-				log.debug("no file is locked or locked by the local user");
 				text = Translator
-								.get(map, "confirmDeleteFiles.text", String.valueOf(cache.size()));
+					.get(map, "confirmDeleteFiles.text", String.valueOf(files.size()));
 			}
-
 		}
-
+		
+		//TODO ask user and do the real work with a Worker!
+		
+/*
 		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, options, options[0],
 						new SheetListener() {
