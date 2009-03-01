@@ -40,6 +40,9 @@
                 <value>com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.ProjectMemberLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.StopTrustingProjectMemberLogEntry</value>
+                <value>com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry</value>                                
                 <value>com.jakeapp.core.domain.logentries.TagLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.TagAddLogEntry</value>
                 <value>com.jakeapp.core.domain.logentries.TagRemoveLogEntry</value>

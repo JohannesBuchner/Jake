@@ -295,14 +295,10 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		UserId member1 = new UserId(ProtocolType.XMPP, "max");
 		UserId member2 = new UserId(ProtocolType.XMPP, "jack");
 		UserId member3 = new UserId(ProtocolType.XMPP, "rick");
-		logEntryDao.create(new ProjectMemberLogEntry(
-				LogAction.START_TRUSTING_PROJECTMEMBER, me, me));
-		logEntryDao.create(new ProjectMemberLogEntry(
-				LogAction.START_TRUSTING_PROJECTMEMBER, member2, me));
-		logEntryDao.create(new ProjectMemberLogEntry(
-				LogAction.START_TRUSTING_PROJECTMEMBER, member2, member1));
-		logEntryDao.create(new ProjectMemberLogEntry(
-				LogAction.START_TRUSTING_PROJECTMEMBER, member3, member1));
+		logEntryDao.create(new StartTrustingProjectMemberLogEntry(me, me));
+		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member2, me));
+		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member2, member1));
+		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member3, member1));
 
 		Assert.assertEquals(3, logEntryDao.getCurrentProjectMembers().size());
 		/*

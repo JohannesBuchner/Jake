@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.when;
+import org.springframework.test.annotation.ExpectedException;
 
 
 import java.util.UUID;
@@ -17,6 +18,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.logentries.*;
+import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
 import junit.framework.Assert;
 
 /**
@@ -39,7 +41,8 @@ public class LogEntrySerializerTest {
 	static final Project sampleProject1 = new Project("sampleProjectName1",
 			UUID.fromString("9ffbce4c-9352-46bb-a1e2-2547404241e1"), null, null);
 
-	static final UserId sampleUserId1 = new UserId(ProtocolType.XMPP, "domdorn@jabber.fsinf.at");
+	static final UserId sampleUserId1 = new UserId(ProtocolType.XMPP, "test1@jabber.jakeapp.com");
+	static final UserId sampleUserId2 = new UserId(ProtocolType.XMPP, "test2@jabber.jakeapp.com");
 
 	static final FileObject sampleFileObject1 = new FileObject(sampleProject1, "/sampleFileObject1");
 	static final NoteObject sampleNoteObject1 = new NoteObject(sampleProject1, "this is simpleNoteObject1 and a \n test");
@@ -294,7 +297,7 @@ public class LogEntrySerializerTest {
 		System.out.println("serializedString = " + serializedString);
 		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
 
-		
+
 		LogEntry result = serializer.deserialize(serializedString);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof ProjectCreatedLogEntry);
@@ -306,7 +309,7 @@ public class LogEntrySerializerTest {
 		Assert.assertEquals(logEntry, result);
 	}
 
-		@Test
+	@Test
 	public void testProjectCreatedLogEntry_ProjectAlreadyExists() throws NoSuchProjectException {
 		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
 
@@ -341,12 +344,12 @@ public class LogEntrySerializerTest {
 
 		Assert.assertTrue(logEntry.equals(result));
 		Assert.assertTrue(result.equals(logEntry));
-		                   
+
 		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
 		Assert.assertEquals(logEntry, result);
 	}
 
-		@Test
+	@Test
 	public void testProjectJoinedLogEntry_ProjectAlreadyExists() throws NoSuchProjectException {
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(sampleProject1, sampleUserId1);
 
@@ -365,7 +368,101 @@ public class LogEntrySerializerTest {
 		Assert.assertEquals(logEntry, result);
 	}
 
+	@Test
+	public void testStartTrustingProjectMemberLogEntry_existingProject() throws NoSuchProjectException {
 
+		StartTrustingProjectMemberLogEntry logEntry = new StartTrustingProjectMemberLogEntry(sampleUserId1, sampleUserId2);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof StartTrustingProjectMemberLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+	@Test(expected = InvalidDeserializerCallException.class)
+	public void testStartTrustingProjectMemberLogEntry_nonExistingProject() throws NoSuchProjectException {
+		StartTrustingProjectMemberLogEntry logEntry = new StartTrustingProjectMemberLogEntry(sampleUserId1, sampleUserId2);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
+
+		serializer.deserialize(serializedString);
+		Assert.fail(); // exception should be thrown
+	}
+
+	@Test
+	public void testStopTrustingProjectMemberLogEntry_existingProject() throws NoSuchProjectException {
+
+		StopTrustingProjectMemberLogEntry logEntry = new StopTrustingProjectMemberLogEntry(sampleUserId1, sampleUserId2);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof StopTrustingProjectMemberLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+	@Test(expected = InvalidDeserializerCallException.class)
+	public void testStopTrustingProjectMemberLogEntry_nonExistingProject() throws NoSuchProjectException {
+		StopTrustingProjectMemberLogEntry logEntry = new StopTrustingProjectMemberLogEntry(sampleUserId1, sampleUserId2);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
+
+		serializer.deserialize(serializedString);
+		Assert.fail(); // exception should be thrown
+	}
+
+	@Test
+	public void testFollowTrustingProjectMemberLogEntry_existingProject() throws NoSuchProjectException {
+
+		FollowTrustingProjectMemberLogEntry logEntry = new FollowTrustingProjectMemberLogEntry(sampleUserId1, sampleUserId2);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof FollowTrustingProjectMemberLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+	@Test(expected = InvalidDeserializerCallException.class)
+	public void testFollowTrustingProjectMemberLogEntry_nonExistingProject() throws NoSuchProjectException {
+		FollowTrustingProjectMemberLogEntry logEntry = new FollowTrustingProjectMemberLogEntry(sampleUserId1, sampleUserId2);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
+
+		serializer.deserialize(serializedString);
+		Assert.fail(); // exception should be thrown
+	}
 
 
 	@Test

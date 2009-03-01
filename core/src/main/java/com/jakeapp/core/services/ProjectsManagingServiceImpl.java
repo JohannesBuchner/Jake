@@ -567,23 +567,23 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void setTrust(Project project, UserId userId, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException {
 		LogEntry<UserId> le;
-		LogAction action;
-		
+
 		//check preconditions
 		if (project==null) throw new IllegalArgumentException("Project may not be null");
 		else if (userId==null)  throw new IllegalArgumentException("UserId may not be null");
 		else if (project.getUserId()==null) throw new IllegalAccessException("Project must have a valid UserId");
 		
 		//determine action
-		action = (trust == TrustState.NO_TRUST) ? 
-				LogAction.STOP_TRUSTING_PROJECTMEMBER:
-				(trust == TrustState.TRUST) ?
-						LogAction.START_TRUSTING_PROJECTMEMBER:
-						LogAction.FOLLOW_TRUSTING_PROJECTMEMBER;
-		
-		//create logentry
-		le = new ProjectMemberLogEntry(action, project.getUserId(), userId);
-		
+		if (trust == TrustState.NO_TRUST) {
+			le = new StopTrustingProjectMemberLogEntry(project.getUserId(), userId);
+		}
+		else if (trust == TrustState.TRUST) {
+			le = new StartTrustingProjectMemberLogEntry(project.getUserId(), userId);
+		}
+		else {
+			le = new FollowTrustingProjectMemberLogEntry(project.getUserId(), userId);
+		}
+
 		//insert logentry
 		this.getLogEntryDao(project).create(le);
 	}

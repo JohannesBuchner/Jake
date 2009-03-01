@@ -3,6 +3,7 @@ package com.jakeapp.core.domain.logentries;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.ILogable;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -19,5 +20,8 @@ public class ProjectCreatedLogEntry extends ProjectLogEntry {
         setLogAction(LogAction.PROJECT_CREATED);
     }
 
-    
+
+	public static ProjectLogEntry parse(LogEntry<? extends ILogable> logEntry) {
+		return new ProjectCreatedLogEntry((Project) logEntry.getBelongsTo(), logEntry.getMember());
+	}
 }

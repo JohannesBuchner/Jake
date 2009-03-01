@@ -227,14 +227,23 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		sc1.setUuid(uuid);
 		sc1.setSavePassword(true);
 
+
 		ServiceCredentials sc2 = new ServiceCredentials("username2", "password2",
 				ProtocolType.XMPP);
 		sc2.setUuid(uuid);
 		sc2.setSavePassword(true);
 
-		this.serviceCredentialsDao.create(sc1);
+		try
+		{
+			this.serviceCredentialsDao.create(sc1);
+		}
+		catch(InvalidCredentialsException e)
+		{
+			Assert.fail();
+		}
+		
 		this.serviceCredentialsDao.create(sc2);
-
+		Assert.fail();
 	}
 	
 	@Transactional
