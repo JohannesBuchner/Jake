@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.logentries.LogEntry;
@@ -10,10 +11,16 @@ import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
+import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.worker.DeleteJakeObjectsWorker;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
+
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -44,8 +51,7 @@ public class DeleteFileAction extends FileAction {
 	public void actionPerformed(ActionEvent e) {
 		//final List<String> cache = new ArrayList<String>();
 		
-		List<FileObject> files = new ArrayList<FileObject>();
-		List<Attributed<FileObject>> attributedFiles = new ArrayList<Attributed<FileObject>>();
+		final List<FileObject> files = new ArrayList<FileObject>();
 
 		UserId currentUser = JakeMainApp.getProject().getUserId();
 
@@ -100,22 +106,28 @@ public class DeleteFileAction extends FileAction {
 			}
 		}
 		
-		//TODO ask user and do the real work with a Worker!
-		
-/*
+		//ask user and do the real work with a Worker!
 		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, options, options[0],
 						new SheetListener() {
+
 							@Override
 							public void optionSelected(SheetEvent evt) {
 								if (evt.getOption() == 0) {
-									for (String item : cache) {
+									log.debug("Deleting now!!!");
+									JakeExecutor.exec(new DeleteJakeObjectsWorker(
+										JakeMainApp.getProject(),
+										new ArrayList<JakeObject>(files)
+									));
+									/*for (String item : cache) {
 										JakeMainApp.getCore()
 														.deleteToTrash(JakeMainApp.getProject(), item);
 									}
+									*/
 								}
+								
 							}
 						});
-	*/}
+	}
 
 }
