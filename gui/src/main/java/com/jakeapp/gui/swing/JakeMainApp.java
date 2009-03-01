@@ -28,14 +28,11 @@ import java.util.List;
 /**
  * The main class of the application.
  */
-public class JakeMainApp extends SingleFrameApplication implements ProjectSelectionChanged {
-
+public class JakeMainApp extends SingleFrameApplication
+				implements ProjectSelectionChanged {
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
-
 	private static JakeMainApp app;
-
 	private ICoreAccess core;
-
 	private Project project = null;
 
 	// this is the message service the user chooses.
@@ -58,23 +55,16 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		}
 
 		ApplicationInstanceManager
-				.setApplicationInstanceListener(new ApplicationInstanceListener() {
+						.setApplicationInstanceListener(new ApplicationInstanceListener() {
 
-					public void newInstanceCreated() {
-						log.info("New Jake instance detected, showing current!");
+							public void newInstanceCreated() {
+								log.info("New Jake instance detected, showing current!");
 
-						// User tried to load jake a second time.
-						// so open first instane!
-						JakeMainView.setMainWindowVisible(true);
-					}
-				});
-
-		// show splash
-		// SplashWindow.splash(new
-		// ImageIcon(Toolkit.getDefaultToolkit().getImage(
-		// getClass().getResource("/icons/jakeapp-large.png"))).getImage());
-
-		//initCore();
+								// User tried to load jake a second time.
+								// so open first instane!
+								JakeMainView.setMainWindowVisible(true);
+							}
+						});
 	}
 
 	/**
@@ -107,6 +97,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * Main method launching the application.
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -119,6 +110,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 	 * @param args
 	 */
 	private static void startGui(String[] args) {
+		log.info("Using Java VM: " + System.getProperty("java.version"));
 
 		// we use the system laf everywhere except linux.
 		// gtk is ugly here - we us nimbus (when available)
@@ -126,23 +118,23 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 			if (Platform.isWin() || Platform.isMac()) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} else {
-                // try to use nimbus (available starting j6u10)
+				// try to use nimbus (available starting j6u10)
 
-                // FIXME: detect <= j6u10
-                if (false) {
-                    try {
-                        UIManager.setLookAndFeel(
-                                "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				// FIXME: detect <= j6u10
+				if (false) {
+					try {
+						UIManager.setLookAndFeel(
+										"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 
-                    } catch (Exception r) {
-                        // and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    }
-                }else {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                }
-            }
-        } catch (Exception e) {
+					} catch (Exception r) {
+						// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
+						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					}
+				} else {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				}
+			}
+		} catch (Exception e) {
 			log.warn("LAF Exception: ", e);
 		}
 
@@ -189,7 +181,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 		this.core = core;
 
 		// shout out our core change!
-		for(CoreChanged callback: coreChanged) {
+		for (CoreChanged callback : coreChanged) {
 			callback.coreChanged();
 		}
 	}
@@ -280,6 +272,7 @@ public class JakeMainApp extends SingleFrameApplication implements ProjectSelect
 
 	/**
 	 * Set a new Msg Service.
+	 *
 	 * @param msg
 	 */
 	public static void setMsgService(MsgService msg) {

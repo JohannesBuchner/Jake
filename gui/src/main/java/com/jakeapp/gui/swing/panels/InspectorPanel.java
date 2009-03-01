@@ -159,7 +159,6 @@ public class InspectorPanel extends JXPanel
 		this.eventsTable.updateUI();
 		this.eventsTableScrollPane = new JScrollPane(this.eventsTable);
 
-
 		// assembly
 		this.noteFileInspector = new JPanel(new MigLayout("wrap 1, fill, ins 0"));
 		this.noteFileInspector.setOpaque(false);

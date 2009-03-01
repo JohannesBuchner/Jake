@@ -62,14 +62,22 @@ public class ObjectCache {
 
 
 	public void updateProjects() {
-
 		if (JakeMainApp.isCoreInitialized()) {
 			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
 			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.INVITED)));
 		}
 	}
 
+
+	private void updateFiles() {
+		if (JakeMainApp.isCoreInitialized()) {
+			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
+		}
+	}	
+
 	public void updateAll() {
 		updateProjects();
+		updateFiles();
 	}
+
 }
