@@ -19,7 +19,8 @@
     </bean>
 
     <bean id="logEntrySerializer" class="com.jakeapp.core.domain.LogEntrySerializer">
-       
+        <property name="applicationContextFactory" ref="applicationContextFactory" />
+        <property name="projectDao" ref="projectDao" />
     </bean>
 
 </beans>
