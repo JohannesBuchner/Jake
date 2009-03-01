@@ -620,6 +620,27 @@ public class JakeCommander extends Commander {
 			}
 		}
 	}
+	
+	class ListInvitableCommand extends LazyNoParamsCommand {
+
+		public ListInvitableCommand() {
+			super("listInvitable");
+		}
+
+		@Override
+		public void handleArguments() {
+			try {
+				System.out.println("listing ...");
+				for(UserId p : pms.getUninvitedPeople(project)) {
+					System.out.println("\t" + p);
+				}
+				System.out.println("listing done");
+			} catch (Exception e) {
+				System.out.println("listing failed");
+				e.printStackTrace();
+			}
+		}
+	}
 
 	class InviteCommand extends LazyCommand {
 
