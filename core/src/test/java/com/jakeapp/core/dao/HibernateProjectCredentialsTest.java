@@ -252,12 +252,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		int origsize = this.serviceCredentialsDao.getAll().size();
 		
 		this.serviceCredentialsDao.create(sc1);
-		this.serviceCredentialsDao.update(sc2);
-	
-		List<ServiceCredentials> list = this.serviceCredentialsDao.getAll();
-		
-		Assert.assertEquals(origsize + 1, list.size());
-		ServiceCredentials entry = list.get(origsize);
+		ServiceCredentials entry = this.serviceCredentialsDao.update(sc2);
 		
 		Assert.assertEquals(sc2.getUserId(), entry.getUserId());
 		Assert.assertEquals(sc2.getUuid(), entry.getUuid());
@@ -282,13 +277,8 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		sc2.setUuid(UUID.fromString(uuid.toString()));
 		sc2.setSavePassword(true);
 		
-		this.serviceCredentialsDao.update(sc2);
+		ServiceCredentials entry = this.serviceCredentialsDao.update(sc2);
 	
-		List<ServiceCredentials> list = this.serviceCredentialsDao.getAll();
-		
-		Assert.assertEquals(origsize + 1, list.size());
-		ServiceCredentials entry = list.get(origsize);
-		
 		Assert.assertEquals(sc2.getUserId(), entry.getUserId());
 		Assert.assertEquals(sc2.getUuid(), entry.getUuid());
 		// Assert.assertEquals(sc2, entry);
