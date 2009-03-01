@@ -91,32 +91,15 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	}
 
 	@Test
-	public void testCreateProjectWorkaround() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
-		MsgService msg = frontend.addAccount(sessionId, cred);
-
-		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
-				msg);
-
-		Assert.assertNotNull(project.getMessageService());
-		Assert.assertNotNull(project.getUserId());
-
-		Assert.assertEquals(1, pms.getProjectUsers(project).size());
-		Assert.assertEquals(project.getUserId().getUserId(), pms.getProjectUsers(project)
-				.get(0).getUserId());
-
-		Assert.assertEquals(msg.getUserId(), project.getUserId());
-	}
-
-
-	@Test
 	public void testProjectRoundtrip() throws Exception {
 		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 		int projectCount;
 
 		Assert.assertNotNull(msg);
-		Assert.assertEquals(cred, msg.getServiceCredentials());
+		Assert.assertEquals(cred.getProtocolType(), msg.getServiceCredentials().getProtocolType());
+		Assert.assertEquals(cred.getUserId(), msg.getServiceCredentials().getUserId());
+		Assert.assertEquals(cred.getUuid(), msg.getServiceCredentials().getUuid());
 
 		projectCount = pms.getProjectList().size();
 

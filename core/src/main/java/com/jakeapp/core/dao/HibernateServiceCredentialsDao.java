@@ -103,8 +103,8 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 			credentials.setPlainTextPassword("");
 		}
 
-
 		try {
+			
 			getHibernateTemplate().update(credentials/* , LockMode.WRITE */);
 		} catch (DataAccessException e) {
 			throw new NoSuchServiceCredentialsException(e);
