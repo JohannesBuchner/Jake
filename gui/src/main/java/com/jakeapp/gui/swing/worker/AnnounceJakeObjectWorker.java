@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -35,6 +36,12 @@ public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObjec
 	protected void done() {
 		// inform the core that there are new log entries available.
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries));
+		if (this.jos.size()>0) {
+			if ((this.jos.get(0)) instanceof FileObject)
+				EventCore.get().fireFilesChanged();
+			else
+				EventCore.get().fireNotesChanged();
+		}
 	}
 
 

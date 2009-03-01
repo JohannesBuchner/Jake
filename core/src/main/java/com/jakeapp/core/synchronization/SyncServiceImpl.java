@@ -64,7 +64,7 @@ import java.util.concurrent.Semaphore;
  */
 public class SyncServiceImpl extends FriendlySyncService {
 
-	static final Logger log = Logger.getLogger(SyncServiceImpl.class);
+	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	private static final String BEGIN_PROJECT_UUID = "<project>";
 
