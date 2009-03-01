@@ -18,7 +18,7 @@ public abstract class ProjectLogEntry extends LogEntry<Project> implements Seria
 
     public ProjectLogEntry(LogAction logAction, Project project, UserId member) {
         super(UUID.randomUUID(),
-				LogAction.PROJECT_CREATED, getTime(), project, member, null,
+				logAction, getTime(), project, member, null,
 				null, true);
         this.project = project;
     }

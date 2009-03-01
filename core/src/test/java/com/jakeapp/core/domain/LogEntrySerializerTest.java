@@ -25,220 +25,352 @@ import junit.framework.Assert;
 //@ContextConfiguration(locations = {})
 public class LogEntrySerializerTest {
 
-    @Mock
-    IProjectDao projectDao;
-    @Mock
-    IFileObjectDao fileObjectDao;
+	@Mock
+	IProjectDao projectDao;
+	@Mock
+	IFileObjectDao fileObjectDao;
 
-    @Mock
-    INoteObjectDao noteObjectDao;
+	@Mock
+	INoteObjectDao noteObjectDao;
 
-    LogEntrySerializer serializer;
+	LogEntrySerializer serializer;
 
 
-    static final Project sampleProject1 = new Project("sampleName1",
-            UUID.fromString("9ffbce4c-9352-46bb-a1e2-2547404241e1"), null, null);
+	static final Project sampleProject1 = new Project("sampleProjectName1",
+			UUID.fromString("9ffbce4c-9352-46bb-a1e2-2547404241e1"), null, null);
 
-    static final UserId sampleUserId1 = new UserId(ProtocolType.XMPP, "domdorn@jabber.fsinf.at");
+	static final UserId sampleUserId1 = new UserId(ProtocolType.XMPP, "domdorn@jabber.fsinf.at");
 
-    static final FileObject sampleFileObject1 = new FileObject(sampleProject1, "/bla");
+	static final FileObject sampleFileObject1 = new FileObject(sampleProject1, "/sampleFileObject1");
+	static final NoteObject sampleNoteObject1 = new NoteObject(sampleProject1, "this is simpleNoteObject1 and a \n test");
 
-    {
-        sampleFileObject1.setUuid(UUID.fromString("52b77f5a-b038-4994-bb4b-322920af11fe"));
-    }
+	{
+		sampleFileObject1.setUuid(UUID.fromString("52b77f5a-b038-4994-bb4b-322920af11fe"));
+		sampleNoteObject1.setUuid(UUID.fromString("2184126f-5b5a-43cc-a1cf-c2c3ad33be5a"));
+	}
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-//        projectDao = new Mock(IProjectDao.class);
-        serializer = new LogEntrySerializer();
-        serializer.setProjectDao(projectDao);
-        serializer.setFileObjectDao(fileObjectDao);
-        serializer.setNoteObjectDao(noteObjectDao);
-    }
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
 
-    @After
-    public void tearDown() {
-        // Add your code here
-    }
+		serializer = new LogEntrySerializer();
+		serializer.setProjectDao(projectDao);
+		serializer.setFileObjectDao(fileObjectDao);
+		serializer.setNoteObjectDao(noteObjectDao);
+	}
 
-    @Test
-    public void testProjectCreatedLogEntry_existingProject() throws NoSuchProjectException, InvalidTagNameException {
+	@After
+	public void tearDown() {
+		// Add your code here
+	}
 
+	@Test
+	public void testProjectCreatedLogEntry_existingProject() throws NoSuchProjectException, InvalidTagNameException {
 
-        ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
-        String serializedString = serializer.serialize(logEntry);
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof ProjectLogEntry);
+		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
+		String serializedString = serializer.serialize(logEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
-    }
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
-    @Test
-    public void testProjectCreatedLogEntry_projectNotExisting() throws NoSuchProjectException, InvalidTagNameException {
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
-        ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
-        String serializedString = serializer.serialize(logEntry);
+	@Test
+	public void testProjectCreatedLogEntry_projectNotExisting() throws NoSuchProjectException, InvalidTagNameException {
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
+		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
+		String serializedString = serializer.serialize(logEntry);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof ProjectLogEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
-    }
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
 
+	}
 
-    @Test
-    public void testFileObjectLogEntry_newVersion() throws NoSuchProjectException, InvalidTagNameException {
 
-        JakeObjectNewVersionLogEntry logEntry = new JakeObjectNewVersionLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
+	@Test
+	public void testFileObjectLogEntry_newVersion() throws NoSuchProjectException, InvalidTagNameException {
 
+		JakeObjectNewVersionLogEntry logEntry = new JakeObjectNewVersionLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
-        String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof JakeObjectNewVersionLogEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof JakeObjectNewVersionLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
-    }
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
-    @Test
-    public void testFileObjectLogEntry_lock() throws NoSuchProjectException, InvalidTagNameException {
 
+	@Test
+	public void testFileObjectLogEntry_lock() throws NoSuchProjectException, InvalidTagNameException {
 
-        JakeObjectLockLogEntry logEntry = new JakeObjectLockLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
+		JakeObjectLockLogEntry logEntry = new JakeObjectLockLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
-        String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof JakeObjectLockLogEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof JakeObjectLockLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
-    }
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
-    @Test
-    public void testFileObjectLogEntry_unlock() throws NoSuchProjectException, InvalidTagNameException {
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
+	@Test
+	public void testFileObjectLogEntry_unlock() throws NoSuchProjectException, InvalidTagNameException {
 
-        JakeObjectUnlockLogEntry logEntry = new JakeObjectUnlockLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
+		JakeObjectUnlockLogEntry logEntry = new JakeObjectUnlockLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
-        String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof JakeObjectUnlockLogEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof JakeObjectUnlockLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
-    }
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
-    @Test
-    public void testFileObjectLogEntry_delete() throws NoSuchProjectException, InvalidTagNameException {
-        JakeObjectDeleteLogEntry logEntry = new JakeObjectDeleteLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
+	@Test
+	public void testFileObjectLogEntry_delete() throws NoSuchProjectException, InvalidTagNameException {
+		JakeObjectDeleteLogEntry logEntry = new JakeObjectDeleteLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
 
-        String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof JakeObjectDeleteLogEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof JakeObjectDeleteLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
-    }
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
-    @Test
-    public void testTagAddLogEntry() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
-        Tag sampleTag = new Tag("test");
-        sampleTag.setObject(sampleFileObject1);
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
-        TagAddLogEntry logEntry = new TagAddLogEntry(sampleTag, sampleUserId1);
+	@Test
+	public void testTagAddLogEntry_fileObject() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
+		Tag sampleTag = new Tag("test");
+		sampleTag.setObject(sampleFileObject1);
 
-        String serializedString = serializer.serialize(logEntry, sampleProject1);
+		TagAddLogEntry logEntry = new TagAddLogEntry(sampleTag, sampleUserId1);
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
-        when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof TagAddLogEntry);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof TagAddLogEntry);
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
-    }
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
-    @Test
-    public void testTagRemoveLogEntry() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
-        Tag sampleTag = new Tag("test");
-        sampleTag.setObject(sampleFileObject1);
+	@Test
+	public void testTagAddLogEntry_noteObject() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
+		Tag sampleTag = new Tag("test");
+		sampleTag.setObject(sampleNoteObject1);
 
-        TagRemoveLogEntry logEntry = new TagRemoveLogEntry(sampleTag, sampleUserId1);
+		TagAddLogEntry logEntry = new TagAddLogEntry(sampleTag, sampleUserId1);
 
-        String serializedString = serializer.serialize(logEntry, sampleProject1);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
-        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
-        when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(noteObjectDao.get(sampleNoteObject1.getUuid())).thenReturn(sampleNoteObject1);
 
-        LogEntry result = serializer.deserialize(serializedString);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof TagRemoveLogEntry);
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof TagAddLogEntry);
 
-        Assert.assertTrue(logEntry.equals(result));
-        Assert.assertTrue(result.equals(logEntry));
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
 
-        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-        Assert.assertEquals(logEntry, result);
-    }
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
 
 
-    @Test
-    public void testDeserialize() {
-        // Add your code here
-    }
+	@Test
+	public void testTagRemoveLogEntry_fileObject() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
+		Tag sampleTag = new Tag("test");
+		sampleTag.setObject(sampleFileObject1);
+
+		TagRemoveLogEntry logEntry = new TagRemoveLogEntry(sampleTag, sampleUserId1);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof TagRemoveLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+
+	@Test
+	public void testTagRemoveLogEntry_noteObject() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
+		Tag sampleTag = new Tag("test");
+		sampleTag.setObject(sampleNoteObject1);
+
+		TagRemoveLogEntry logEntry = new TagRemoveLogEntry(sampleTag, sampleUserId1);
+
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(noteObjectDao.get(sampleNoteObject1.getUuid())).thenReturn(sampleNoteObject1);
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof TagRemoveLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+
+	@Test
+	public void testProjectCreatedLogEntry_ProjectDoesNotExist() throws NoSuchProjectException {
+		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
+
+		String serializedString = serializer.serialize(logEntry);
+		System.out.println("serializedString = " + serializedString);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
+
+		
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectCreatedLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+		@Test
+	public void testProjectCreatedLogEntry_ProjectAlreadyExists() throws NoSuchProjectException {
+		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
+
+		String serializedString = serializer.serialize(logEntry);
+		System.out.println("serializedString = " + serializedString);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectCreatedLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+	@Test
+	public void testProjectJoinedLogEntry_ProjectDoesNotExist() throws NoSuchProjectException {
+		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
+
+		String serializedString = serializer.serialize(logEntry);
+		System.out.println("serializedString = " + serializedString);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenThrow(new NoSuchProjectException());
+
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectCreatedLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+		                   
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+		@Test
+	public void testProjectJoinedLogEntry_ProjectAlreadyExists() throws NoSuchProjectException {
+		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(sampleProject1, sampleUserId1);
+
+		String serializedString = serializer.serialize(logEntry);
+		System.out.println("serializedString = " + serializedString);
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectJoinedLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+
+
+
+	@Test
+	public void testDeserialize() {
+		// Add your code here
+	}
 }

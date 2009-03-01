@@ -41,27 +41,7 @@ public class LogEntrySerializer {
     public LogEntrySerializer() {
     }
 
-    public String serialize(ProjectLogEntry logEntry) {
 
-        Project project = logEntry.getProject();
-
-        StringBuffer sb = new StringBuffer(500);
-
-        sb.append(SEPERATOR).append(project.getProjectId());
-        sb.append(SEPERATOR).append(logEntry.getTimestamp().getTime());
-        sb.append(SEPERATOR).append(logEntry.getLogAction().ordinal());
-        sb.append(SEPERATOR).append(logEntry.getMember().getProtocolType().ordinal());
-        sb.append(SEPERATOR).append(logEntry.getMember().getUserId());
-        sb.append(SEPERATOR).append(logEntry.getUuid().toString());
-
-
-        sb.append(SEPERATOR).append(project.getName());
-
-
-        sb.append(SEPERATOR);
-
-        return sb.toString();
-    }
 
 
     public String serialize(JakeObjectNewVersionLogEntry logEntry, Project project) {
@@ -143,6 +123,39 @@ public class LogEntrySerializer {
         sb.append(SEPERATOR);
         return sb.toString();
     }
+
+	public String serialize(ProjectLogEntry logEntry) {
+
+        Project project = logEntry.getProject();
+
+        StringBuffer sb = new StringBuffer(500);
+
+        sb.append(SEPERATOR).append(project.getProjectId());
+        sb.append(SEPERATOR).append(logEntry.getTimestamp().getTime());
+        sb.append(SEPERATOR).append(logEntry.getLogAction().ordinal());
+        sb.append(SEPERATOR).append(logEntry.getMember().getProtocolType().ordinal());
+        sb.append(SEPERATOR).append(logEntry.getMember().getUserId());
+        sb.append(SEPERATOR).append(logEntry.getUuid().toString());
+
+
+        sb.append(SEPERATOR).append(project.getName());
+
+
+        sb.append(SEPERATOR);
+
+        return sb.toString();
+}
+
+	public String serialize(ProjectCreatedLogEntry logEntry)
+	{
+		return this.serialize((ProjectLogEntry) logEntry);
+	}
+
+
+	public String serialize(ProjectJoinedLogEntry logEntry)
+	{
+		return this.serialize((ProjectLogEntry) logEntry);
+	}
 
 
     public String serialize(LogEntry<? extends ILogable> logEntry, Project project) {
@@ -359,25 +372,45 @@ public class LogEntrySerializer {
                 return result;
             }
             case PROJECT_CREATED: {
-                ProjectLogEntry result;
+                ProjectCreatedLogEntry result;
                 String projectName = parts[7];
                 Project p = null;
                 try {
                     p = projectDao.read(projectUUID);
+					// project already exists
                 } catch (NoSuchProjectException e) {
                     p = new Project(projectName, projectUUID, null, null);
+					// project object created
                 }
 
                 result = new ProjectCreatedLogEntry(p, remoteUser);
-
+				result.setProject(p);
 
                 /// always do this
                 result.setTimestamp(date);
                 result.setUuid(logEntryUUID);
                 return result;
             }
-            case PROJECT_JOINED:
-                break;
+            case PROJECT_JOINED:{
+                ProjectJoinedLogEntry result;
+                String projectName = parts[7];
+                Project p = null;
+                try {
+                    p = projectDao.read(projectUUID);
+					// project already exists
+                } catch (NoSuchProjectException e) {
+                    p = new Project(projectName, projectUUID, null, null);
+					// project object created
+                }
+
+                result = new ProjectJoinedLogEntry(p, remoteUser);
+				result.setProject(p);
+
+                /// always do this
+                result.setTimestamp(date);
+                result.setUuid(logEntryUUID);
+                return result;
+            }
             case FOLLOW_TRUSTING_PROJECTMEMBER:
                 break;
             case START_TRUSTING_PROJECTMEMBER:
