@@ -215,6 +215,32 @@ public class LogEntrySerializerTest {
 
 
     @Test
+    public void testTagRemoveLogEntry() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
+        Tag sampleTag = new Tag("test");
+        sampleTag.setObject(sampleFileObject1);
+
+        TagRemoveLogEntry logEntry = new TagRemoveLogEntry(sampleTag, sampleUserId1);
+
+        String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+        when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+        when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
+
+        LogEntry result = serializer.deserialize(serializedString);
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result instanceof TagRemoveLogEntry);
+
+        Assert.assertTrue(logEntry.equals(result));
+        Assert.assertTrue(result.equals(logEntry));
+
+        Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+        Assert.assertEquals(logEntry, result);
+
+
+    }
+
+
+    @Test
     public void testDeserialize() {
         // Add your code here
     }
