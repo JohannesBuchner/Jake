@@ -1,8 +1,6 @@
 package com.jakeapp.core.domain.logentries;
 
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.*;
 
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
@@ -18,4 +16,14 @@ public class TagAddLogEntry extends TagLogEntry {
     public TagAddLogEntry() {
         setLogAction(LogAction.TAG_ADD);
     }
+
+
+    public static TagAddLogEntry parse(LogEntry<? extends ILogable> logEntry) {
+
+        if (!logEntry.getLogAction().equals(LogAction.TAG_ADD))
+            throw new UnsupportedOperationException();
+
+        return new TagAddLogEntry((Tag) logEntry.getBelongsTo(), logEntry.getMember());
+    }
+
 }

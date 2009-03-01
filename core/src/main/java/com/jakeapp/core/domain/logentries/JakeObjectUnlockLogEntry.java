@@ -3,6 +3,7 @@ package com.jakeapp.core.domain.logentries;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.ILogable;
 
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
@@ -17,5 +18,20 @@ public class JakeObjectUnlockLogEntry extends JakeObjectLogEntry {
 
     public JakeObjectUnlockLogEntry() {
         setLogAction(LogAction.JAKE_OBJECT_UNLOCK);
+    }
+
+
+    public static JakeObjectUnlockLogEntry parse(LogEntry<? extends ILogable> logEntry) {
+
+        if (!logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_UNLOCK))
+            throw new UnsupportedOperationException();
+
+        return new JakeObjectUnlockLogEntry(
+                (JakeObject) logEntry.getBelongsTo(),
+                logEntry.getMember(),
+                logEntry.getComment(),
+                logEntry.getChecksum(),
+                logEntry.isProcessed()
+        );
     }
 }

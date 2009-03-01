@@ -148,17 +148,14 @@ public class LogEntrySerializer {
     public String serialize(LogEntry<? extends ILogable> logEntry, Project project) {
         LogAction action = logEntry.getLogAction();
         switch (action) {
-
-            case FOLLOW_TRUSTING_PROJECTMEMBER:
-                break;
             case JAKE_OBJECT_DELETE:
-                break;
+                return serialize(JakeObjectDeleteLogEntry.parse(logEntry), project);
             case JAKE_OBJECT_LOCK:
-                break;
+                return serialize(JakeObjectLockLogEntry.parse(logEntry), project);
             case JAKE_OBJECT_NEW_VERSION:
-                break;
+                return serialize(JakeObjectNewVersionLogEntry.parse(logEntry), project);
             case JAKE_OBJECT_UNLOCK:
-                break;
+                return serialize(JakeObjectUnlockLogEntry.parse(logEntry), project);
             case NOOP:
                 break;
             case PROJECT_CREATED:
@@ -167,13 +164,14 @@ public class LogEntrySerializer {
                 break;
             case STOP_TRUSTING_PROJECTMEMBER:
                 break;
+            case FOLLOW_TRUSTING_PROJECTMEMBER:
+                break;
             case TAG_ADD:
-
-                break;
+                return serialize(TagAddLogEntry.parse(logEntry), project);
             case TAG_REMOVE:
-                break;
+                return serialize(TagRemoveLogEntry.parse(logEntry), project);
         }
-        return "foo";
+        throw new UnsupportedOperationException();
     }
 
 

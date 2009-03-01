@@ -42,4 +42,7 @@ public class ProjectLogEntry extends LogEntry<Project> implements Serializable {
         return "";
     }
 
+
+    
+
 }
