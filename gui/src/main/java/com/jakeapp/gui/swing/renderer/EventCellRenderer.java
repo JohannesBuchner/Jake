@@ -1,26 +1,25 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.jakeapp.core.domain.logentries.LogEntry;
+import com.explodingpixels.macwidgets.MacFontUtils;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.panels.NewsPanel;
-import com.explodingpixels.macwidgets.MacFontUtils;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
  * The PeopleListCellRenderer.
  * Renders People info with Status Icon.
  */
-public class EventCellRenderer extends DefaultTableCellRenderer {
+public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 	private static final Logger log = Logger.getLogger(EventCellRenderer.class);
 
 	// file actions
@@ -91,7 +90,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 									.getResourceMap(NewsPanel.class);
 
 	public EventCellRenderer() {
-		log.debug("Init EventCellRenderer.");
+		log.trace("Init EventCellRenderer.");
 	}
 
 	/* This is the only method defined by DefaultTableCellRenderer.  We just

@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Renders a ColboBox with a Icon and Text
  *
- * @author: studpete
+ * @author studpete
  */
 public class IconComboBoxRenderer extends JLabel
 		  implements ListCellRenderer {

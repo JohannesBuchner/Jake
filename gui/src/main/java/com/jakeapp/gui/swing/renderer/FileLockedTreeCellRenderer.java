@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.*;
 import java.awt.*;
 
-public class FileLockedTreeCellRenderer extends DefaultTableCellRenderer {
+public class FileLockedTreeCellRenderer extends DefaultJakeTableCellRenderer {
 
 
 	@Override

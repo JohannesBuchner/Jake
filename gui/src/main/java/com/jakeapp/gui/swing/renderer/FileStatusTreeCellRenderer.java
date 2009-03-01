@@ -1,14 +1,13 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 
-public class FileStatusTreeCellRenderer extends DefaultTableCellRenderer {
+public class FileStatusTreeCellRenderer extends DefaultJakeTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		table.getColumnModel().getColumn(column).setMaxWidth(25);

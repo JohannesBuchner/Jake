@@ -4,13 +4,12 @@ import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 /**
  * Renders file nodes in the ProjectFilesTable
  */
-public class ProjectFilesTableCellRenderer implements TableCellRenderer {
+public class ProjectFilesTableCellRenderer extends DefaultJakeTableCellRenderer {
 	public ProjectFilesTableCellRenderer() {
 	}
 
