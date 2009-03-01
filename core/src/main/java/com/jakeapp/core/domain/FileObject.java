@@ -2,6 +2,8 @@ package com.jakeapp.core.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
+import java.util.Comparator;
 import java.util.UUID;
 
 /**
@@ -94,5 +96,20 @@ public class FileObject extends JakeObject {
 		int result = super.hashCode();
 		result = 31 * result + (relPath != null ? relPath.hashCode() : 0);
 		return result;
+	}
+	
+	public static Comparator<FileObject> getRelpathComparator() {
+		return new Comparator<FileObject>() {
+			@Override
+			public int compare(FileObject arg0, FileObject arg1) {
+				if (arg0==null) return (arg1==null)?0:-1;
+				if (arg1==null) return 1;
+				
+				if (arg0.getRelPath()==null) return (arg1.getRelPath()==null)?0:-1;
+				if (arg1.getRelPath()==null) return 1;
+				
+				return arg0.getRelPath().compareTo(arg1.getRelPath());
+			}
+		};
 	}
 }

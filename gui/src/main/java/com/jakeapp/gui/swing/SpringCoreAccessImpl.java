@@ -417,7 +417,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		log.debug("getFiles - start AvailableLaterObject");
-		return result.start();
+		return result;
 	}
 
 

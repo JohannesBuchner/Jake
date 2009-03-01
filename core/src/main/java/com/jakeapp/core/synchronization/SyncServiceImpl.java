@@ -53,6 +53,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 
@@ -1130,18 +1132,22 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 				List<String> files = fss.recursiveListFiles();
 
-				List<FileObject> fileObjects = new LinkedList<FileObject>();
+				//contains method should only check the relpath
+				SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject.getRelpathComparator());
 
-				// TODO: add deleted (from logEntries)
 				for (FileObject fo : db.getFileObjectDao(p).getAll()) {
-					fileObjects.add(fo);
+					sortedFiles.add(fo);
 				}
 
 				for (String relpath : files) {
 					FileObject fo = new FileObject(p, relpath);
-					fileObjects.add(fo);
+					if ( !sortedFiles.contains(fo) )
+						sortedFiles.add(fo);
 				}
-				return fileObjects;
+				
+				// TODO: add deleted (from logEntries)
+				
+				return new LinkedList<FileObject>(sortedFiles);
 			}
 		};
 	}
