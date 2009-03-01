@@ -108,8 +108,6 @@ public class JakeMainApp extends SingleFrameApplication
 	 * @param args
 	 */
 	private static void startGui(String[] args) {
-		log.info("Using Java VM: " + System.getProperty("java.version"));
-
 		// we use the system laf everywhere except linux.
 		// gtk is ugly here - we us nimbus (when available)
 		try {

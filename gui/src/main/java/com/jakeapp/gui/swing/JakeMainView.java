@@ -539,7 +539,7 @@ public class JakeMainView extends FrameView
 		// refresh panel
 		contentPanel.updateUI();
 
-		log.debug("now: isInspectorEnabled: " + isInspectorEnabled() + " isInspectorPanelVisible: " + isInspectorPanelVisible() + " isInspectorAllowed: " + isInspectorAllowed());
+		log.trace("now: isInspectorEnabled: " + isInspectorEnabled() + " isInspectorPanelVisible: " + isInspectorPanelVisible() + " isInspectorAllowed: " + isInspectorAllowed());
 	}
 
 	private boolean isInspectorPanelVisible() {

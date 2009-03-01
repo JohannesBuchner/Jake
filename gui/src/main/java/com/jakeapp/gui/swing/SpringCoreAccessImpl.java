@@ -678,8 +678,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		List<UserId> members = null;
 
 		try {
-			members = this.getFrontendService().getProjectsManagingService(getSessionId())
-							.getUninvitedPeople(project);
+			members = this.getFrontendService().getProjectsManagingService(getSessionId()).getSuggestedPeopleForInvite(project);
 		} catch (IllegalArgumentException e) {
 			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {

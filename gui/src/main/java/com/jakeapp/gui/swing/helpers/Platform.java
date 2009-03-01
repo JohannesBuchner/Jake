@@ -67,8 +67,9 @@ public class Platform {
 			pftools = new NullPfTools();
 		}
 
-		log.info("Detected Platform: " + os + " " + System.getProperty("os.name") + ", Loaded Styler: " +
-				  styler.getClass().getName());
+		log.info("Jake's Platform: " + System.getProperty("os.name") + " @ " + System
+						.getProperty("java.version") + ", using " + styler.getClass()
+						.getSimpleName() + " with LAF " + UIManager.getLookAndFeel().getName());
 	}
 
 
@@ -151,11 +152,13 @@ public class Platform {
 	public static void fixWmClass() {
 		try {
 			Toolkit xToolkit = Toolkit.getDefaultToolkit();
-			java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+			java.lang.reflect.Field awtAppClassNameField =
+							xToolkit.getClass().getDeclaredField("awtAppClassName");
 			awtAppClassNameField.setAccessible(true);
 			awtAppClassNameField.set(xToolkit, AppUtilities.getAppName());
 		} catch (Throwable th) {
-			log.warn("Failed to fix WM_CLASS for " + AppUtilities.getAppName() + " windows.", th);
+			log.warn("Failed to fix WM_CLASS for " + AppUtilities
+							.getAppName() + " windows.", th);
 		}
 	}
 
@@ -170,14 +173,18 @@ public class Platform {
 	 */
 	public static void setEventCounter(int num) {
 		log.debug("set event count to: " + num);
-		java.awt.Image originalIcon = Toolkit.getDefaultToolkit().getImage(Platform.class.getResource("/icons/jakeapp-large.png"));
+		java.awt.Image originalIcon = Toolkit.getDefaultToolkit()
+						.getImage(Platform.class.getResource("/icons/jakeapp-large.png"));
 		ImageIcon ico = new ImageIcon(originalIcon);
 
-		BufferedImage newIcon = new BufferedImage(ico.getIconWidth(), ico.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage newIcon = new BufferedImage(ico.getIconWidth(),
+						ico.getIconHeight(),
+						BufferedImage.TYPE_INT_ARGB);
 
 		Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
 
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
 		graphics.setColor(Color.decode("#E40000"));
 
 		graphics.drawImage(originalIcon, 0, 0, null);

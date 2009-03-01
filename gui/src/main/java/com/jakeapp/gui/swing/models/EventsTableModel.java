@@ -53,14 +53,14 @@ public class EventsTableModel extends AbstractTableModel {
 		this.setProject(project);
 		this.setJakeObject(attributedJakeObject);
 
-		log.info("Initializing EventsTableModel with jakeObject: " + attributedJakeObject + ", and project: " + this
+		log.trace("Initializing EventsTableModel with jakeObject: " + attributedJakeObject + ", and project: " + this
 						.getProject());
 
 		this.updateData();
 	}
 
 	/**
-	 * Create EvetsTableModel, empty.
+	 * Create EventsTableModel, empty.
 	 */
 	public EventsTableModel() {
 		this(null, null);

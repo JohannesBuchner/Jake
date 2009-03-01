@@ -197,7 +197,7 @@ public class InspectorPanel extends JXPanel
 	 * Updates the panel with current data
 	 */
 	public void updatePanel() {
-		log.debug("mode: " + this.mode);
+		log.trace("mode: " + this.mode);
 
 		// HACK: quick fix
 		if((mode == Mode.FILE && attributedFileObject == null)

@@ -268,7 +268,7 @@ public class UserPanel extends JXPanel
 	 * @return
 	 */
 	private JPanel createAddUserPanel() {
-		log.debug("creating add user panel...");
+		log.trace("creating add user panel...");
 
 		// create the add user panel
 		JPanel addUserPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
@@ -791,7 +791,7 @@ public class UserPanel extends JXPanel
 	 * If not, show the add user screen.
 	 */
 	private void updateView() {
-		log.info("updating login view. selected user: " + JakeMainApp.getMsgService());
+		log.trace("updating login view. selected user: " + JakeMainApp.getMsgService());
 
 		// always update everything
 		updateSignInSuccessPanel();
@@ -821,7 +821,7 @@ public class UserPanel extends JXPanel
 	 */
 
 	private void showPanel(UserPanels panel) {
-		log.info("show panel: " + panel);
+		log.trace("show panel: " + panel);
 		showContentPanel(addUserPanel, panel == UserPanels.AddUser);
 		showContentPanel(loginUserPanel, panel == UserPanels.ManageUsers);
 		showContentPanel(loginSuccessPanel, panel == UserPanels.LoggedIn);
