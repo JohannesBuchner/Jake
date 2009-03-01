@@ -592,15 +592,15 @@ public class UserPanel extends JXPanel
 
 			DocumentListener dl = new DocumentListener() {
 				public void insertUpdate(DocumentEvent documentEvent) {
-					updateSignInRegisterMode();
+					updateSignInRegisterModeButtons();
 				}
 
 				public void removeUpdate(DocumentEvent documentEvent) {
-					updateSignInRegisterMode();
+					updateSignInRegisterModeButtons();
 				}
 
 				public void changedUpdate(DocumentEvent documentEvent) {
-					updateSignInRegisterMode();
+					updateSignInRegisterModeButtons();
 				}
 			};
 
@@ -778,8 +778,10 @@ public class UserPanel extends JXPanel
 		} else {
 			signInRegisterButton.setText(getResourceMap().getString("loginRegister"));
 		}
+		updateSignInRegisterModeButtons();
+	}
 
-		// disable the button as long as no credidentals are entered
+	private void updateSignInRegisterModeButtons() {// disable the button as long as no credidentals are entered
 		signInRegisterButton.setEnabled(isSignInRegisterButtonEnabled());
 	}
 
