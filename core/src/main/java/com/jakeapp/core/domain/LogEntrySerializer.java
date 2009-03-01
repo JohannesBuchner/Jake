@@ -65,85 +65,22 @@ public class LogEntrySerializer {
 
 
     public String serialize(JakeObjectNewVersionLogEntry logEntry, Project project) {
-
-
-        StringBuffer sb = prepareSerializedString(logEntry, project);
-
-
-        sb.append(SEPERATOR);
-        if (logEntry.getBelongsTo() instanceof FileObject) {
-            sb.append("F");
-            sb.append(SEPERATOR).append(((FileObject) logEntry.getBelongsTo()).getRelPath());
-        } else if (logEntry.getBelongsTo() instanceof NoteObject) {
-            sb.append("N");
-            sb.append(SEPERATOR).append(((NoteObject) logEntry.getBelongsTo()).getContent());
-        } else
-            throw new UnsupportedOperationException();
-
-        sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUuid().toString());
-
-        sb.append(SEPERATOR).append(logEntry.getComment());
-        sb.append(SEPERATOR).append(logEntry.getChecksum());
-
-//        sb.append(SEPERATOR).append(project.getName());
-
-
-        sb.append(SEPERATOR);
-        return sb.toString();
+        return this.serialize((JakeObjectLogEntry) logEntry, project);
     }
 
     public String serialize(JakeObjectLockLogEntry logEntry, Project project) {
-
-
-        StringBuffer sb = prepareSerializedString(logEntry, project);
-
-
-        sb.append(SEPERATOR);
-        if (logEntry.getBelongsTo() instanceof FileObject) {
-            sb.append("F");
-            sb.append(SEPERATOR).append(((FileObject) logEntry.getBelongsTo()).getRelPath());
-        } else if (logEntry.getBelongsTo() instanceof NoteObject) {
-            sb.append("N");
-            sb.append(SEPERATOR).append(((NoteObject) logEntry.getBelongsTo()).getContent());
-        } else
-            throw new UnsupportedOperationException();
-
-
-        sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUuid().toString());
-
-        sb.append(SEPERATOR).append(logEntry.getComment());
-        sb.append(SEPERATOR).append(logEntry.getChecksum());
-
-        sb.append(SEPERATOR);
-        return sb.toString();
+        return this.serialize((JakeObjectLogEntry) logEntry, project);
     }
 
     public String serialize(JakeObjectUnlockLogEntry logEntry, Project project) {
-
-        StringBuffer sb = prepareSerializedString(logEntry, project);
-
-
-        sb.append(SEPERATOR);
-        if (logEntry.getBelongsTo() instanceof FileObject) {
-            sb.append("F");
-            sb.append(SEPERATOR).append(((FileObject) logEntry.getBelongsTo()).getRelPath());
-        } else if (logEntry.getBelongsTo() instanceof NoteObject) {
-            sb.append("N");
-            sb.append(SEPERATOR).append(((NoteObject) logEntry.getBelongsTo()).getContent());
-        } else
-            throw new UnsupportedOperationException();
-
-
-        sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUuid().toString());
-
-        sb.append(SEPERATOR).append(logEntry.getComment());
-        sb.append(SEPERATOR).append(logEntry.getChecksum());
-
-        sb.append(SEPERATOR);
-        return sb.toString();
+        return this.serialize((JakeObjectLogEntry) logEntry, project);
     }
 
     public String serialize(JakeObjectDeleteLogEntry logEntry, Project project) {
+        return this.serialize((JakeObjectLogEntry) logEntry, project);
+    }
+
+    private String serialize(JakeObjectLogEntry logEntry, Project project) {
 
         StringBuffer sb = prepareSerializedString(logEntry, project);
 
@@ -166,49 +103,10 @@ public class LogEntrySerializer {
 
         sb.append(SEPERATOR);
         return sb.toString();
-    }
-
-    public String serialize(JakeObjectLogEntry logEntry, Project project) {
-        throw new UnsupportedOperationException("This should never be reached, as there" +
-                " should be a corresponding method for this");
-
-/*
-StringBuffer sb = prepareSerializedString(logEntry, project);
-
-if (logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_NEW_VERSION)) {
-   // TODO REFACTOR THIS!
-   sb.append(SEPERATOR);
-   if (logEntry.getBelongsTo() instanceof FileObject) {
-       sb.append("F");
-       sb.append(SEPERATOR).append(((FileObject) logEntry.getBelongsTo()).getRelPath());
-   } else if (logEntry.getBelongsTo() instanceof NoteObject) {
-       sb.append("N");
-       sb.append(SEPERATOR).append(((NoteObject) logEntry.getBelongsTo()).getContent());
-   } else
-       throw new UnsupportedOperationException();
-} else if (logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_DELETE) || logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_LOCK)
-       || logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_UNLOCK)) {
-
-
-} else
-   throw new InvalidDeserializerCallException();
-
-
-sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUuid().toString());
-
-sb.append(SEPERATOR).append(logEntry.getComment());
-sb.append(SEPERATOR).append(logEntry.getChecksum());
-
-//        sb.append(SEPERATOR).append(project.getName());
-
-
-sb.append(SEPERATOR);
-return sb.toString();*/
     }
 
     private StringBuffer prepareSerializedString(LogEntry logEntry, Project project) {
         StringBuffer sb = new StringBuffer(500);
-
 
         sb.append(SEPERATOR).append(project.getProjectId());
         sb.append(SEPERATOR).append(logEntry.getTimestamp().getTime());
@@ -221,24 +119,14 @@ return sb.toString();*/
 
 
     public String serialize(TagAddLogEntry logEntry, Project project) {
-        StringBuffer sb = prepareSerializedString(logEntry, project);
-
-        sb.append(SEPERATOR);
-        if (logEntry.getBelongsTo().getObject() instanceof FileObject) {
-            sb.append("F");
-        } else if (logEntry.getBelongsTo().getObject() instanceof NoteObject) {
-            sb.append("N");
-        } else
-            throw new UnsupportedOperationException();
-
-        sb.append(SEPERATOR).append(logEntry.getBelongsTo().getName());
-
-        sb.append(SEPERATOR).append(logEntry.getBelongsTo().getObject().getUuid().toString());
-        sb.append(SEPERATOR);
-        return sb.toString();
+        return this.serialize((TagLogEntry) logEntry, project);
     }
 
     public String serialize(TagRemoveLogEntry logEntry, Project project) {
+        return this.serialize((TagLogEntry) logEntry, project);
+    }
+
+    private String serialize(TagLogEntry logEntry, Project project) {
         StringBuffer sb = prepareSerializedString(logEntry, project);
 
         sb.append(SEPERATOR);
@@ -540,7 +428,7 @@ return sb.toString();*/
 
 
             }
-            case TAG_REMOVE:{
+            case TAG_REMOVE: {
                 Project p = null;
                 TagRemoveLogEntry result;
 
@@ -586,7 +474,6 @@ return sb.toString();*/
 
 
         throw new UnsupportedOperationException();
-//        return null;
     }
 
 }

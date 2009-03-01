@@ -210,9 +210,7 @@ public class LogEntrySerializerTest {
         Assert.assertEquals(logEntry.hashCode(), result.hashCode());
         Assert.assertEquals(logEntry, result);
 
-
     }
-
 
     @Test
     public void testTagRemoveLogEntry() throws InvalidTagNameException, NoSuchProjectException, NoSuchJakeObjectException {
@@ -235,8 +233,6 @@ public class LogEntrySerializerTest {
 
         Assert.assertEquals(logEntry.hashCode(), result.hashCode());
         Assert.assertEquals(logEntry, result);
-
-
     }
 
 
