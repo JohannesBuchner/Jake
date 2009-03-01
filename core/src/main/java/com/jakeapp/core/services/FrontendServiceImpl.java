@@ -38,7 +38,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	private IProjectInvitationListener internalInvitationListener;
 	
 	@Injected
-	private MsgServiceFactory msgServiceFactory;
+	private MsgServiceManager msgServiceFactory;
 
 	private Map<String, FrontendSession> sessions;
 	
@@ -59,7 +59,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	 */
 	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
-										MsgServiceFactory msgServiceFactory, IFriendlySyncService sync,
+										MsgServiceManager msgServiceFactory, IFriendlySyncService sync,
 										IServiceCredentialsDao serviceCredentialsDao,
 										IProjectInvitationListener invitationListener
 		) {
@@ -226,7 +226,7 @@ public class FrontendServiceImpl implements IFrontendService {
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
-		MsgService svc = msgServiceFactory.createMsgService(credentials);
+		MsgService svc = msgServiceFactory.getOrCreate(credentials);
 
 		return new CreateAccountFuture(svc);
 	}
@@ -238,7 +238,7 @@ public class FrontendServiceImpl implements IFrontendService {
 			  ProtocolNotSupportedException {
 		checkSession(sessionId);
 
-		return msgServiceFactory.getByCredentials(credentials);
+		return msgServiceFactory.getOrCreate(credentials);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -52,7 +52,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private IProjectsFileServices projectsFileServices;
 
-	private MsgServiceFactory msgServiceFactory;
+	private MsgServiceManager msgServiceFactory;
 
 	private IProjectInvitationListener invitationListener;
 
@@ -67,7 +67,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	public ProjectsManagingServiceImpl(
 			ProjectApplicationContextFactory applicationContextFactory,
-			MsgServiceFactory msgServiceFactory) {
+			MsgServiceManager msgServiceFactory) {
 		super(applicationContextFactory);
 		this.msgServiceFactory = msgServiceFactory;
 	}
@@ -180,7 +180,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
 		if (p.getMessageService() == null)
-			p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
+			p.setMessageService(msgServiceFactory.getOrCreate(p.getCredentials()));
 		
 		if(p.getCredentials() != p.getMessageService().getServiceCredentials()){
 			p.setCredentials(p.getMessageService().getServiceCredentials());

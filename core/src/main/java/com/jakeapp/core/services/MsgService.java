@@ -40,9 +40,7 @@ public abstract class MsgService<T extends UserId> {
 
 	protected ICSManager icsManager;
 
-	protected boolean shouldBeLoggedIn = false;
-
-	static class ICData {
+	static protected class ICData {
 
 		public ICData(String name, ILoginStateListener loginStateListener,
 						IOnlineStatusListener onlineStatusListener,
@@ -91,7 +89,6 @@ public abstract class MsgService<T extends UserId> {
 		boolean result;
 
 		log.debug("calling plain login");
-		this.shouldBeLoggedIn = true;
 
 		if (this.getServiceCredentials() == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
@@ -99,9 +96,9 @@ public abstract class MsgService<T extends UserId> {
 		if (!checkCredentials())
 			return false;
 
-		log.debug("before doLogin: " + this.getCurrentVisibilityStatus());
+		log.debug("before doLogin: " + this.getVisibilityStatus());
 		result = this.doLogin();
-		log.debug("plain login has happened " + this.getCurrentVisibilityStatus());
+		log.debug("plain login has happened " + this.getVisibilityStatus());
 		updateActiveSubsystems();
 
 
@@ -180,7 +177,6 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws Exception
 	 */
 	public final void logout() throws NetworkException {
-		this.shouldBeLoggedIn = false;
 		log.debug("MsgService -> logout");
 		this.doLogout();
 
@@ -209,42 +205,6 @@ public abstract class MsgService<T extends UserId> {
 			return VisibilityStatus.ONLINE;
 		} else {
 			return VisibilityStatus.OFFLINE;
-			/*
-			if (this.shouldBeLoggedIn) {
-				tryToLogIn();
-				if(this.getMainIcs().getStatusService().isLoggedIn()) {
-					return VisibilityStatus.ONLINE;
-				}else{
-					// FIXME: projects don't go online if we set offline here. Why?
-					log.error("We are unexpectedly offline");
-					// FIXME: This needs to be fixed - but **elsewhere**
-					// @christopher: There was a reason for this being here ;)
-					// setting it to offline breaks the intarnets!!!!111
-					// return VisibilityStatus.ONLINE;
-					// FIXME: SHUT UP THE FUCK YOU MUST!
-					return VisibilityStatus.OFFLINE;
-				}
-			}else{
-				return VisibilityStatus.OFFLINE;
-			}*/
-		}
-	}
-
-	private VisibilityStatus getCurrentVisibilityStatus() {
-		if (this.getMainIcs().getStatusService().isLoggedIn()) {
-			return VisibilityStatus.ONLINE;
-		} else {
-			return VisibilityStatus.OFFLINE;
-		}
-	}
-
-	private void tryToLogIn() {
-		try {
-			// log.debug("trying to fix login status ...");
-			boolean result = this.doLogin();
-			log.debug("trying to fix login status: " + result);
-		} catch (NetworkException e) {
-			//log.debug("trying to fix login status failed", e);
 		}
 	}
 
@@ -304,11 +264,11 @@ public abstract class MsgService<T extends UserId> {
 	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
 
 	private void updateActiveSubsystems() throws NetworkException {
-		log.debug("main ics is logged in? " + getCurrentVisibilityStatus());
+		log.debug("main ics is logged in? " + getVisibilityStatus());
 		for (Entry<ICService, ICData> el : this.activeSubsystems.entrySet()) {
 			this.updateSubsystemStatus(el.getKey(), el.getValue());
 		}
-		log.debug("main ics is logged in? " + getCurrentVisibilityStatus());
+		log.debug("main ics is logged in? " + getVisibilityStatus());
 	}
 
 	public void activateSubsystem(ICService ics,
@@ -318,9 +278,9 @@ public abstract class MsgService<T extends UserId> {
 
 		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
-		log.debug("before updateSubSystemStatus: " + this.getCurrentVisibilityStatus());
+		log.debug("before updateSubSystemStatus: " + this.getVisibilityStatus());
 		updateSubsystemStatus(ics, listeners);
-		log.debug("after updateSubSystemStatus: " + this.getCurrentVisibilityStatus());
+		log.debug("after updateSubSystemStatus: " + this.getVisibilityStatus());
 	}
 
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
@@ -379,9 +339,10 @@ public abstract class MsgService<T extends UserId> {
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		return this.getProtocolType() + " - user: " + getMainUserId() + " - " + this
-						.getCurrentVisibilityStatus();
+						.getVisibilityStatus();
 	}
 
 }

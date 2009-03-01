@@ -18,18 +18,13 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 
-//TODO this 'factory' stores the elements it constructed, but they are never removed.
-
 /**
- * Factory Class to create MsgServices by giving ServiceCredentials
+ * Manager that creates and stores MsgServices
  */
 @Transactional
-public class MsgServiceFactory {
+public class MsgServiceManager {
 
-	private static Logger log = Logger.getLogger(MsgServiceFactory.class);
-
-	@Injected
-	private IServiceCredentialsDao serviceCredentialsDao;
+	private static Logger log = Logger.getLogger(MsgServiceManager.class);
 
 	/**
 	 * Key is the Credentials UUID
@@ -37,16 +32,11 @@ public class MsgServiceFactory {
 	private Map<String, MsgService<UserId>> msgServices = new HashMap<String, MsgService<UserId>>();
 
 	@Injected
+	private IServiceCredentialsDao serviceCredentialsDao;
+
+	@Injected
 	private ICSManager icsManager;
 
-	public MsgServiceFactory() {
-		// 
-	}
-	
-	public MsgServiceFactory(IServiceCredentialsDao serviceCredentialsDao) {
-		this.serviceCredentialsDao = serviceCredentialsDao; 
-	}
-	
 	public void setICSManager(ICSManager icsManager) {
 		this.icsManager = icsManager;
 	}
@@ -54,6 +44,11 @@ public class MsgServiceFactory {
 	private IServiceCredentialsDao getServiceCredentialsDao() {
 		return this.serviceCredentialsDao;
 	}
+
+	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
+		this.serviceCredentialsDao = serviceCredentialsDao;
+	}
+
 
 	/**
 	 * Creates a new MessageService if one for the specified credentials does
@@ -65,7 +60,7 @@ public class MsgServiceFactory {
 	 *             if the protocol specified in the credentials is not
 	 *             supported.
 	 */
-	public MsgService<UserId> createMsgService(ServiceCredentials credentials)
+	private MsgService<UserId> create(ServiceCredentials credentials)
 			throws ProtocolNotSupportedException {
 		log.info("Creating MsgService for " + credentials);
 		MsgService<UserId> msgService;
@@ -80,7 +75,7 @@ public class MsgServiceFactory {
 
 		MsgService.setServiceCredentialsDao(getServiceCredentialsDao());
 
-		log.debug("calling createMsgService with crendentials: " + credentials);
+		log.debug("creating MsgService with crendentials: " + credentials);
 		log.debug("UserId="
 				+ credentials.getUserId()
 				+ " pwl = "
@@ -97,7 +92,7 @@ public class MsgServiceFactory {
 			msgService.setServiceCredentials(credentials);
 			this.msgServices.put(credentials.getUuid(), msgService);
 			msgService.setUserId(createUserforMsgService(credentials));
-			
+
 			log.debug("resulting MsgService is " + msgService);
 			return msgService;
 		} else {
@@ -148,9 +143,10 @@ public class MsgServiceFactory {
 		for (ServiceCredentials credentials : credentialsList) {
 			if (!this.msgServices.containsKey(credentials.getUuid())) {
 				try {
-					MsgService<UserId> service = this.createMsgService(credentials);
-					if(credentials.getUuid() == null) {
-						throw new IllegalStateException("createMsgService didn't fill uuid");
+					MsgService<UserId> service = this.create(credentials);
+					if (credentials.getUuid() == null) {
+						throw new IllegalStateException(
+								"createMsgService didn't fill uuid");
 					}
 					this.msgServices.put(credentials.getUuid(), service);
 				} catch (ProtocolNotSupportedException e) {
@@ -174,15 +170,15 @@ public class MsgServiceFactory {
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 */
-	public MsgService addMsgService(ServiceCredentials credentials)
+	private MsgService add(ServiceCredentials credentials)
 			throws InvalidCredentialsException, ProtocolNotSupportedException {
 		log.debug("calling addMsgService");
 
-		if(credentials.getUuid() == null) {
+		if (credentials.getUuid() == null) {
 			log.debug("no UUID in credentials. fixing ...");
 			credentials.setUuid(UUID.randomUUID());
 		}
-		
+
 		// persist the ServiceCredentials!
 		try {
 			this.getServiceCredentialsDao().read(UUID.fromString(credentials.getUuid()));
@@ -190,10 +186,8 @@ public class MsgServiceFactory {
 		} catch (NoSuchServiceCredentialsException e) {
 			this.getServiceCredentialsDao().create(credentials);
 		}
-		log.debug("stored. calling getAll() to create the MsgService");
 		getAll();
-		log.debug("done, getting by credentials");
-		return getByCredentials(credentials);
+		return getOrCreate(credentials);
 	}
 
 	/**
@@ -205,18 +199,18 @@ public class MsgServiceFactory {
 	 * @param credentials
 	 * @return the MsgService or null.
 	 */
-	public MsgService getByCredentials(ServiceCredentials credentials) {
+	public MsgService getOrCreate(ServiceCredentials credentials) {
 		log.debug("Get MsgService by credentials: " + credentials);
 
 		MsgService<UserId> msg = find(credentials);
-		if(msg != null) {
+		if (msg != null) {
 			log.debug("reused already-loaded msgservice");
 			return msg;
 		}
 		log.info("not found in cache");
 
 		try {
-			return this.addMsgService(credentials);
+			return this.add(credentials);
 		} catch (Exception e) {
 			log.error("Unable to create MessageService:", e);
 			return null;
@@ -226,19 +220,16 @@ public class MsgServiceFactory {
 
 	private MsgService<UserId> find(ServiceCredentials credentials) {
 		if (this.msgServices.containsKey(credentials.getUuid())) {
-			log.debug("got it");
 			return this.msgServices.get(credentials.getUuid());
 		}
 		List<MsgService<UserId>> list = getAll();
 		if (this.msgServices.containsKey(credentials.getUuid())) {
-			log.debug("got it after a getAll");
 			return this.msgServices.get(credentials.getUuid());
 		}
 
 		// find a similar one
 		for (MsgService<UserId> m : list) {
 			ServiceCredentials c = m.getServiceCredentials();
-			log.debug("comparing " + c + " with seeked " + credentials);
 			if (credentials.getProtocol() == c.getProtocol()
 					&& credentials.getUserId().equals(c.getUserId())) {
 				credentials.setUuid(c.getUuid());
@@ -251,5 +242,12 @@ public class MsgServiceFactory {
 			return this.msgServices.get(credentials.getUuid());
 		}
 		return null;
+	}
+
+	/**
+	 * releases all stored MessageServices
+	 */
+	public void free() {
+		this.msgServices.clear();
 	}
 }

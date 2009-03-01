@@ -25,9 +25,8 @@
 
     </bean>
 
-    <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
-        <constructor-arg index="0" ref="serviceCredentialsDao"
-                         type="com.jakeapp.core.dao.IServiceCredentialsDao"/>
+    <bean id="msgServiceManager" class="com.jakeapp.core.services.MsgServiceManager">
+        <property name="serviceCredentialsDao" ref="serviceCredentialsDao"/>
         <property name="ICSManager" ref="icsManager"/>
     </bean>
     
@@ -51,8 +50,8 @@
           class="com.jakeapp.core.services.ProjectsManagingServiceImpl">
         <constructor-arg ref="applicationContextFactory" index="0"
                          type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
-        <constructor-arg ref="msgServiceFactory" index="1"
-                         type="com.jakeapp.core.services.MsgServiceFactory"/>
+        <constructor-arg ref="msgServiceManager" index="1"
+                         type="com.jakeapp.core.services.MsgServiceManager"/>
 
         <property name="projectDao" ref="projectDao"/>
         <property name="serviceCredentialsDao" ref="serviceCredentialsDao"/>
@@ -65,8 +64,8 @@
     <bean id="frontendService" class="com.jakeapp.core.services.FrontendServiceImpl">
         <constructor-arg index="0" ref="projectsManagingService"
                          type="com.jakeapp.core.services.IProjectsManagingService"/>
-        <constructor-arg index="1" ref="msgServiceFactory"
-                         type="com.jakeapp.core.services.MsgServiceFactory"/>
+        <constructor-arg index="1" ref="msgServiceManager"
+                         type="com.jakeapp.core.services.MsgServiceManager"/>
         <constructor-arg index="2" ref="syncService" 
                          type="com.jakeapp.core.synchronization.IFriendlySyncService" />
         <constructor-arg index="3" ref="serviceCredentialsDao"
