@@ -422,7 +422,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
+	public <T extends JakeObject> Attributed<T> getAttributed(
 					Project project, T jakeObject) {
 		try {
 			log.trace("jakeObject" + jakeObject);
@@ -518,12 +518,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return fo;
 	}
 
-	public AvailableLaterObject<List<Attributed<NoteObject>>> getNotes(
+	public AvailableLaterObject<List<NoteObject>> getNotes(
 					final Project project) {
 
 		// FIXME: exception handling?
-		return new AvailableLaterObject<List<Attributed<NoteObject>>>() {
-			@Override public List<Attributed<NoteObject>> calculate() throws Exception {
+		return new AvailableLaterObject<List<NoteObject>>() {
+			@Override public List<NoteObject> calculate() throws Exception {
 				try {
 					return frontendService.getSyncService(sessionId).getNotes(project);
 				} catch (Exception e) {
@@ -535,8 +535,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Integer> getNoteCount(final Project project) {
-		AvailableLaterWrapperObject<Integer, List<Attributed<NoteObject>>> sizeFuture;
-		AvailableLaterObject<List<Attributed<NoteObject>>> notesFuture;
+		AvailableLaterWrapperObject<Integer, List<NoteObject>> sizeFuture;
+		AvailableLaterObject<List<NoteObject>> notesFuture;
 
 		notesFuture = this.getNotes(project);
 		sizeFuture = new ProjectNoteCountFuture();

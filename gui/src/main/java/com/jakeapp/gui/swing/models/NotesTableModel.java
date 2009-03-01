@@ -4,9 +4,10 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
-import com.jakeapp.gui.swing.worker.GetAllProjectNotesWorker;
+import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -14,6 +15,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -21,19 +23,21 @@ import java.util.List;
  *
  * @author Simon
  */
-public class NotesTableModel extends DefaultTableModel {
+public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	private static final long serialVersionUID = -2745782032637383756L;
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
 	private List<String> columnNames;
-	private List<Attributed<NoteObject>> attributedNotes;
+	private List<Attributed<NoteObject>> attributedNotes =
+					new ArrayList<Attributed<NoteObject>>();
+	;
 	private ResourceMap resourceMap;
 	private Icon padlock, shared_note;
 
 	public NotesTableModel() {
-		this.resourceMap = org.jdesktop.application.Application.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext().getResourceMap(NotesTableModel.class);
-
-		this.attributedNotes = new ArrayList<Attributed<NoteObject>>();
+		this.resourceMap = org.jdesktop.application.Application
+						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class).getContext()
+						.getResourceMap(NotesTableModel.class);
 		this.columnNames = new ArrayList<String>();
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderSoftLock"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderlocalNote"));
@@ -41,11 +45,14 @@ public class NotesTableModel extends DefaultTableModel {
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
 
-		this.padlock = new ImageIcon(Toolkit.getDefaultToolkit()
-				  .getImage(JakeMainApp.class.getResource("/icons/file-lock.png")));
-		this.shared_note = new ImageIcon(Toolkit.getDefaultToolkit()
-				  .getImage(JakeMainApp.class.getResource("/icons/shared_note.png")));
+		this.padlock = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+						"/icons/file-lock.png")));
+		this.shared_note = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+						"/icons/shared_note.png")));
 
+		EventCore.get().addDataChangedCallbackListener(this);
 	}
 
 	private ResourceMap getResourceMap() {
@@ -88,18 +95,17 @@ public class NotesTableModel extends DefaultTableModel {
 			return;
 		}
 
-		// get notes!
-	  JakeExecutor.exec(new GetAllProjectNotesWorker(JakeMainApp.getProject()));
+		ObjectCache.get().updateNotes(project);
 	}
 
-	public void updateNotes(List<Attributed<NoteObject>> notes) {
-	// FIXME: exception handling!	
+	public void updateNotes(Project p) {
+		// FIXME: cache better!?
+		List<NoteObject> rawNotes = ObjectCache.get().getNotes(p);
 		this.attributedNotes.clear();
-//		try {
-			this.attributedNotes = notes;
-	//	} catch (NoteOperationFailedException e) {
-//			ExceptionUtilities.showError(e);
-//		}
+		for(NoteObject note : rawNotes) {
+			this.attributedNotes.add(JakeMainApp.getCore().<NoteObject>getAttributed(p, note));
+		}
+		this.fireTableDataChanged();
 	}
 
 	@Override
@@ -126,7 +132,7 @@ public class NotesTableModel extends DefaultTableModel {
 			case 3: //last edit
 				// FIXME: it is unclear what the attributed<> returns as lastModificationDate if it is
 				// a local note.
-				if (note.getLastModificationDate() == 0) { 
+				if (note.getLastModificationDate() == 0) {
 					value = "-";
 				} else {
 					value = TimeUtilities.getRelativeTime(note.getLastModificationDate());
@@ -134,16 +140,17 @@ public class NotesTableModel extends DefaultTableModel {
 				break;
 			case 4: //last editor
 				if (note.getLastVersionEditor() != null) {
-					value = note.getLastVersionEditor().getUserId();	
+					value = note.getLastVersionEditor().getUserId();
 				} else {
 					value = "local"; //FIXME: i18n
 				}
-				
+
 				break;
 
 			default:
 				value = "illegal column count!";
-				log.warn("column count out of range. Range is 0-2, actually was :" + Integer.toString(row));
+				log.warn("column count out of range. Range is 0-2, actually was :" + Integer
+								.toString(row));
 		}
 		return value;
 	}
@@ -165,12 +172,13 @@ public class NotesTableModel extends DefaultTableModel {
 		}
 		return Object.class;
 	}
-	
+
 	/**
 	 * Returns the row of a given note.
+	 *
 	 * @param note
 	 * @return the number of the row of the given row if it exists in the model, or -1 if it does not
-	 * exist.
+	 *         exist.
 	 */
 	public int getRow(NoteObject note) {
 		int row = -1;
@@ -181,5 +189,11 @@ public class NotesTableModel extends DefaultTableModel {
 			}
 		}
 		return row;
+	}
+
+	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
+		if (reason.contains(Reason.Notes)) {
+			updateNotes(p);
+		}
 	}
 }

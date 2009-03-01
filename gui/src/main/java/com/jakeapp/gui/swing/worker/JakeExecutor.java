@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.helpers;
+package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import org.apache.log4j.Logger;

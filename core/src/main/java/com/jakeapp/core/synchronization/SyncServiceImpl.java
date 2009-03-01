@@ -794,14 +794,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 */
 	@Override
 	@Transactional
-	public List<Attributed<NoteObject>> getNotes(Project p) {
-		List<Attributed<NoteObject>> stat = new LinkedList<Attributed<NoteObject>>();
-
-		// TODO: add deleted
-		for (NoteObject no : this.db.getNoteObjectDao(p).getAll()) {
-			stat.add(getJakeObjectSyncStatus(no));
-		}
-		return stat;
+	public List<NoteObject> getNotes(Project p) {
+		return this.db.getNoteObjectDao(p).getAll();
 	}
 
 	@Override

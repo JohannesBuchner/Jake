@@ -277,7 +277,7 @@ public interface ICoreAccess {
 	 * @param jakeObject		The jakeObject for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
-	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(
+	public <T extends JakeObject> Attributed<T> getAttributed(
 					Project project, T jakeObject);
 
 	/**
@@ -433,7 +433,7 @@ public interface ICoreAccess {
 	 * @return list of attibuted note objects
 	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public AvailableLaterObject<List<Attributed<NoteObject>>> getNotes(Project project);
+	public AvailableLaterObject<List<NoteObject>> getNotes(Project project);
 
 	/**
 	 * Delete the given note, no matter if it is a local or shared note.

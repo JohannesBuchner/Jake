@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.worker.StartStopProjectWorker;
 import org.apache.log4j.Logger;

@@ -61,7 +61,7 @@ public class FileObjectStatusProvider {
 	public static Component getStatusRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
 
-		Attributed<FileObject> status = JakeMainApp.getCore().getJakeObjectSyncStatus(JakeMainApp.getProject(), obj);
+		Attributed<FileObject> status = JakeMainApp.getCore().getAttributed(JakeMainApp.getProject(), obj);
 
 		if (status == null) {
 			log.warn("Got NULL for sync status of: " + obj);

@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.helpers.dragdrop;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.worker.ImportFileFolderWorker;
 import org.apache.log4j.Logger;

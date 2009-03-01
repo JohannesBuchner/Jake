@@ -1,12 +1,9 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.PullJakeObjectsWorker;
 
 import javax.swing.*;

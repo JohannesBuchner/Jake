@@ -27,7 +27,7 @@ public class FileObjectDateFilter extends PatternFilter {
 		if (!node.isFile()) return false;
 
 		long modified = JakeMainApp.getCore()
-						.getJakeObjectSyncStatus(JakeMainApp.getProject(), node.getFileObject())
+						.getAttributed(JakeMainApp.getProject(), node.getFileObject())
 						.getLastModificationDate();
 		long now = new Date().getTime();
 

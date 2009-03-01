@@ -127,7 +127,7 @@ public class FileObjectsTableModel extends AbstractTableModel
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 
 		// FIXME cache!! get async?
-		Attributed<FileObject> fileInfo = JakeMainApp.getCore().getJakeObjectSyncStatus(
+		Attributed<FileObject> fileInfo = JakeMainApp.getCore().getAttributed(
 						JakeMainApp.getProject(),
 						ournode.getFileObject());
 

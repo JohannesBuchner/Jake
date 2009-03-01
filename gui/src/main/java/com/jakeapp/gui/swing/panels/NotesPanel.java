@@ -19,6 +19,7 @@ import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -226,10 +227,13 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	}
 
 
+	/**
+	 * When we receive a ProjectChanged-Event, go and get new notes.
+	 * @param e
+	 */
 	@Override
-	public void projectChanged(ProjectChangedEvent ignored) {
-		this.notesTableModel.update();
-		this.notesTable.updateUI();
+	public void projectChanged(ProjectChangedEvent e) {
+		ObjectCache.get().updateNotes(e.getProject());
 	}
 
 	@Override
@@ -398,9 +402,5 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 	public JTable getNotesTable() {
 		return this.notesTable;
-	}
-
-	public void setProjectNotes(List<Attributed<NoteObject>> notes) {
-		notesTableModel.updateNotes(notes);
 	}
 }

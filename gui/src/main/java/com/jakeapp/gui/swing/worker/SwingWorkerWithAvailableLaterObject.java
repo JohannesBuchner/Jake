@@ -7,7 +7,7 @@ import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.StatusUpdate;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

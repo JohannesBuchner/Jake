@@ -24,7 +24,7 @@ public class FileObjectConflictStatusFilter extends PatternFilter {
 						.getValueAt(row, FilePanel.FILETREETABLE_NODECOLUMN);
 
 		return node.isFile() && JakeMainApp.getCore()
-						.getJakeObjectSyncStatus(JakeMainApp.getProject(), node.getFileObject())
+						.getAttributed(JakeMainApp.getProject(), node.getFileObject())
 						.isInConflict();
 	}
 }

@@ -314,7 +314,7 @@ public class InspectorPanel extends JXPanel
 		log.debug("received a fileSelectedEvent from the EventCore");
 		if (event.isSingleFileSelected()) {
 			this.setFileObject(JakeMainApp
-							.getCore().getJakeObjectSyncStatus(this.getProject(),
+							.getCore().getAttributed(this.getProject(),
 							event.getSingleFile()));
 		} else {
 			this.clear();

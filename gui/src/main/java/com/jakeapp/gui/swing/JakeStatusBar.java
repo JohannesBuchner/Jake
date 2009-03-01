@@ -15,7 +15,7 @@ import com.jakeapp.gui.swing.controls.SpinningWheel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
 import com.jakeapp.gui.swing.helpers.Platform;

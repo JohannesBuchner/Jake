@@ -23,7 +23,7 @@ import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
 import com.jakeapp.gui.swing.controls.WaitIndicator;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;

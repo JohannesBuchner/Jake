@@ -22,6 +22,7 @@ import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.panels.ProjectInvitationPanel;
 import com.jakeapp.gui.swing.panels.UserPanel;
 import com.jakeapp.gui.swing.worker.InitCoreWorker;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;

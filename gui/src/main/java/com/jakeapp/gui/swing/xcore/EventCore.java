@@ -188,18 +188,24 @@ public class EventCore {
 	}
 
 	public void fireNotesChanged(Project p) {
-
-		// change in the notes mostly changes the log entries too!
-		fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries), p);
+		ObjectCache.get().updateNotes(p);
+		fireLogChanged(p);
 	}
 
 	/**
 	 * Updates the cache and spreads the event when new data is available.
+	 *
 	 * @param p
 	 */
 	public void fireFilesChanged(Project p) {
 		ObjectCache.get().updateFiles(p);
-		//EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
+		fireLogChanged(p);
+	}
+
+	// FIXME: need conversion to AvailableLater?
+	public void fireLogChanged(Project p) {
+		//ObjectCache.get().updateLog(p);
+		fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
 	}
 
 	private class ProjectsChangeListener implements ChangeListener {

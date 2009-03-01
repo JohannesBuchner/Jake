@@ -130,7 +130,6 @@ public interface ISyncService {
 	 * start offering files to others, etc. 
 	 *
 	 * @param p
-	 * @param rhp
 	 * @param cl
 	 * @throws ProjectException
 	 */
@@ -166,7 +165,7 @@ public interface ISyncService {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<Attributed<NoteObject>> getNotes(Project p) throws IOException;
+	public List<NoteObject> getNotes(Project p) throws IOException;
 
 	/**
 	 * gets the SyncStatus for a specific JakeObject

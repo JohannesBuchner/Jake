@@ -4,12 +4,14 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesWorker;
+import com.jakeapp.gui.swing.worker.GetAllProjectNotesWorker;
 import com.jakeapp.gui.swing.worker.GetProjectsWorker;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class ObjectCache {
 					new HashMap<Project, List<FileObject>>();
 	private HashMap<Project, List<NoteObject>> notes =
 					new HashMap<Project, List<NoteObject>>();
+	private HashMap<Project, List<LogEntry>> logEntries =
+					new HashMap<Project, List<LogEntry>>();
 
 	// do not construct
 	private ObjectCache() {
@@ -82,6 +86,19 @@ public class ObjectCache {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), project);
 	}
 
+	public List<NoteObject> getNotes(Project p) {
+		return notes.get(p);
+	}
+
+	public void setNotes(Project project, List<NoteObject> notes) {
+		this.notes.put(project, notes);
+		fireNotesDataChanged(project);
+	}
+
+	private void fireNotesDataChanged(Project project) {
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Notes), project);
+	}
+
 	public void updateProjects() {
 		if (JakeMainApp.isCoreInitialized()) {
 			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
@@ -93,6 +110,12 @@ public class ObjectCache {
 		if (JakeMainApp.isCoreInitialized()) {
 			JakeExecutor.exec(new GetAllProjectFilesWorker(p));
 			JakeStatusBar.updateMessage();
+		}
+	}
+
+	public void updateNotes(Project p) {
+		if (JakeMainApp.isCoreInitialized()) {
+			JakeExecutor.exec(new GetAllProjectNotesWorker(p));
 		}
 	}
 
@@ -116,4 +139,12 @@ public class ObjectCache {
 			return new ArrayList<FileObject>();
 		}
 	}
+
+	/*
+	public void updateLog(Project p) {
+		if (JakeMainApp.isCoreInitialized()) {
+			JakeExecutor.exec(new GetAllProjectNotesWorker(p));
+		}
+	}
+	*/
 }
