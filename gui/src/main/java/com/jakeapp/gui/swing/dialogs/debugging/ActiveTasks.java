@@ -66,6 +66,7 @@ public class ActiveTasks extends JXPanel {
 	public static void createDialog() {
 		JDialog dlg = new JDialog(JakeMainApp.getFrame(), "Jake Background Tasks");
 		dlg.add(new ActiveTasks());
+		dlg.setMinimumSize(new Dimension(250, 400));
 		dlg.pack();
 		dlg.setVisible(true);
 	}

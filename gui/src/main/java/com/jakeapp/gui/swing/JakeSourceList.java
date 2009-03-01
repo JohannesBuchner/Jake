@@ -433,7 +433,7 @@ public class JakeSourceList extends JakeGuiComponent
 
 	@Override
 	protected void projectUpdated() {
-		updateSourceList();
+		//updateSourceList();
 	}
 
 	public SourceList getSourceList() {

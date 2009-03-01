@@ -2,12 +2,10 @@ package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 
 import java.util.EnumSet;
@@ -46,9 +44,6 @@ public class GetProjectsWorker
 		} catch (ExecutionException e) {
 			ExceptionUtilities.showError(e);
 		}
-
-		// inform the core that there is new data available
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Projects));
 	}
 
 

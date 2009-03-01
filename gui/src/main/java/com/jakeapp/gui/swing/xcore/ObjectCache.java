@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.worker.GetProjectsWorker;
@@ -30,6 +31,7 @@ public class ObjectCache {
 
 	/**
 	 * Returns the Singleton Instance.
+	 *
 	 * @return
 	 */
 	public static ObjectCache get() {
@@ -60,8 +62,11 @@ public class ObjectCache {
 
 
 	public void updateProjects() {
-		JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
-		JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.INVITED)));
+
+		if (JakeMainApp.isCoreInitialized()) {
+			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.ACCEPTED)));
+			JakeExecutor.exec(new GetProjectsWorker(EnumSet.of(InvitationState.INVITED)));
+		}
 	}
 
 	public void updateAll() {

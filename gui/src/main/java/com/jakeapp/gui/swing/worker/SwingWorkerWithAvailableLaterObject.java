@@ -89,6 +89,6 @@ public abstract class SwingWorkerWithAvailableLaterObject<T> extends
 
 	@Override
 	public String toString() {
-		return value.toString() + ": " + progress + " " + status;
+		return (value != null ? value.toString() : "") + ": " + progress + " " + status;
 	}
 }
