@@ -53,7 +53,7 @@ public class ImportFileAction extends FileAction {
 		log.info("number files selected: " + dialog.getSelectedFiles().length);
 
 		// get destination folder. root if nothing selected.
-		String destFolder = "";
+		String destFolder = "/";
 
 		if (getSelectedRowCount() > 0) {
 			ProjectFilesTreeNode node = getSingleNode();
