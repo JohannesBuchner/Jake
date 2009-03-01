@@ -19,6 +19,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import junit.framework.Assert;
 
 /**
@@ -34,6 +35,10 @@ public class LogEntrySerializerTest {
 
 	@Mock
 	INoteObjectDao noteObjectDao;
+
+
+	@Mock
+	ProjectApplicationContextFactory applicationContextFactory;
 
 	LogEntrySerializer serializer;
 
@@ -60,6 +65,7 @@ public class LogEntrySerializerTest {
 		serializer.setProjectDao(projectDao);
 		serializer.setFileObjectDao(fileObjectDao);
 		serializer.setNoteObjectDao(noteObjectDao);
+		serializer.setApplicationContextFactory(applicationContextFactory);
 	}
 
 	@After
@@ -204,6 +210,9 @@ public class LogEntrySerializerTest {
 		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
 		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+		when(applicationContextFactory.getFileObjectDao(sampleProject1)).thenReturn(fileObjectDao);
+
 		when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
 
 		LogEntry result = serializer.deserialize(serializedString);
@@ -227,6 +236,7 @@ public class LogEntrySerializerTest {
 		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
 		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(applicationContextFactory.getNoteObjectDao(sampleProject1)).thenReturn(noteObjectDao);
 		when(noteObjectDao.get(sampleNoteObject1.getUuid())).thenReturn(sampleNoteObject1);
 
 		LogEntry result = serializer.deserialize(serializedString);
@@ -251,6 +261,7 @@ public class LogEntrySerializerTest {
 		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
 		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(applicationContextFactory.getFileObjectDao(sampleProject1)).thenReturn(fileObjectDao);
 		when(fileObjectDao.get(sampleFileObject1.getUuid())).thenReturn(sampleFileObject1);
 
 		LogEntry result = serializer.deserialize(serializedString);
@@ -275,6 +286,7 @@ public class LogEntrySerializerTest {
 		String serializedString = serializer.serialize(logEntry, sampleProject1);
 
 		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		when(applicationContextFactory.getNoteObjectDao(sampleProject1)).thenReturn(noteObjectDao);
 		when(noteObjectDao.get(sampleNoteObject1.getUuid())).thenReturn(sampleNoteObject1);
 
 		LogEntry result = serializer.deserialize(serializedString);

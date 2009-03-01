@@ -8,6 +8,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.logentries.*;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 import java.util.UUID;
 import java.util.Date;
@@ -15,13 +16,22 @@ import java.util.Date;
 
 public class LogEntrySerializer {
 
-	IProjectDao projectDao;
-	IFileObjectDao fileObjectDao;
-	INoteObjectDao noteObjectDao;
+	private IProjectDao projectDao;
+	private IFileObjectDao fileObjectDao;
+	private INoteObjectDao noteObjectDao;
+	private ProjectApplicationContextFactory applicationContextFactory;
+
 
 	private final String SEPERATOR = "XXAAAXXX";
 	private final String SEPERATOR_REGEX = "XXAAAXXX";
 
+	public ProjectApplicationContextFactory getApplicationContextFactory() {
+		return applicationContextFactory;
+	}
+
+	public void setApplicationContextFactory(ProjectApplicationContextFactory applicationContextFactory) {
+		this.applicationContextFactory = applicationContextFactory;
+	}
 
 	public void setFileObjectDao(IFileObjectDao fileObjectDao) {
 		this.fileObjectDao = fileObjectDao;
@@ -39,6 +49,11 @@ public class LogEntrySerializer {
 	// FIXME: This is temporary. Remove it once someone tells me why we need a ProjectDAO
 	//        if all we want to do is serialize...
 	public LogEntrySerializer() {
+	}
+
+	public LogEntrySerializer(ProjectApplicationContextFactory applicationContextFactory)
+	{
+		this.applicationContextFactory = applicationContextFactory;
 	}
 
 
@@ -148,34 +163,24 @@ public class LogEntrySerializer {
 		return this.serialize((ProjectLogEntry) logEntry);
 	}
 
-
 	public String serialize(ProjectJoinedLogEntry logEntry) {
 		return this.serialize((ProjectLogEntry) logEntry);
 	}
 
 	public String serialize(StartTrustingProjectMemberLogEntry logEntry, Project project) {
-		StringBuffer sb = prepareSerializedString(logEntry, project);
-		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getProtocolType().ordinal());
-		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUserId());
-
-
-		sb.append(SEPERATOR);
-
-		return sb.toString();
+		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
 	public String serialize(StopTrustingProjectMemberLogEntry logEntry, Project project) {
-		StringBuffer sb = prepareSerializedString(logEntry, project);
-		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getProtocolType().ordinal());
-		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUserId());
-
-
-		sb.append(SEPERATOR);
-
-		return sb.toString();
+		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
 	public String serialize(FollowTrustingProjectMemberLogEntry logEntry, Project project) {
+		return this.serialize((ProjectMemberLogEntry) logEntry, project);
+	}
+
+
+	private String serialize(ProjectMemberLogEntry logEntry, Project project) {
 		StringBuffer sb = prepareSerializedString(logEntry, project);
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getProtocolType().ordinal());
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUserId());
@@ -185,7 +190,6 @@ public class LogEntrySerializer {
 
 		return sb.toString();
 	}
-
 
 	public String serialize(LogEntry<? extends ILogable> logEntry, Project project) {
 		LogAction action = logEntry.getLogAction();
@@ -247,7 +251,7 @@ public class LogEntrySerializer {
 				JakeObjectDeleteLogEntry result;
 
 				try {
-					p = projectDao.read(projectUUID); // throws NoSuchProjectException
+					p = getProjectDao().read(projectUUID); // throws NoSuchProjectException
 				} catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
 				}
@@ -286,7 +290,7 @@ public class LogEntrySerializer {
 				JakeObjectLockLogEntry result;
 
 				try {
-					p = projectDao.read(projectUUID); // throws NoSuchProjectException
+					p = getProjectDao().read(projectUUID); // throws NoSuchProjectException
 				} catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
 				}
@@ -325,7 +329,7 @@ public class LogEntrySerializer {
 				JakeObjectNewVersionLogEntry result;
 
 				try {
-					p = projectDao.read(projectUUID); // throws NoSuchProjectException
+					p = getProjectDao().read(projectUUID); // throws NoSuchProjectException
 				} catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
 				}
@@ -366,7 +370,7 @@ public class LogEntrySerializer {
 				JakeObjectUnlockLogEntry result;
 
 				try {
-					p = projectDao.read(projectUUID); // throws NoSuchProjectException
+					p = getProjectDao().read(projectUUID); // throws NoSuchProjectException
 				} catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
 				}
@@ -405,7 +409,7 @@ public class LogEntrySerializer {
 				String projectName = parts[7];
 				Project p = null;
 				try {
-					p = projectDao.read(projectUUID);
+					p = getProjectDao().read(projectUUID);
 					// project already exists
 				} catch (NoSuchProjectException e) {
 					p = new Project(projectName, projectUUID, null, null);
@@ -425,7 +429,7 @@ public class LogEntrySerializer {
 				String projectName = parts[7];
 				Project p = null;
 				try {
-					p = projectDao.read(projectUUID);
+					p = getProjectDao().read(projectUUID);
 					// project already exists
 				} catch (NoSuchProjectException e) {
 					p = new Project(projectName, projectUUID, null, null);
@@ -444,7 +448,7 @@ public class LogEntrySerializer {
 				FollowTrustingProjectMemberLogEntry result;
 				Project p = null;
 				try {
-					p = projectDao.read(projectUUID);
+					p = getProjectDao().read(projectUUID);
 				}
 				catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
@@ -464,7 +468,7 @@ public class LogEntrySerializer {
 				StartTrustingProjectMemberLogEntry result;
 				Project p = null;
 				try {
-					p = projectDao.read(projectUUID);
+					p = getProjectDao().read(projectUUID);
 				}
 				catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
@@ -484,7 +488,7 @@ public class LogEntrySerializer {
 				StopTrustingProjectMemberLogEntry result;
 				Project p = null;
 				try {
-					p = projectDao.read(projectUUID);
+					p = getProjectDao().read(projectUUID);
 				}
 				catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
@@ -504,7 +508,7 @@ public class LogEntrySerializer {
 				TagAddLogEntry result;
 
 				try {
-					p = projectDao.read(projectUUID); // throws NoSuchProjectException
+					p = getProjectDao().read(projectUUID); // throws NoSuchProjectException
 				} catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
 				}
@@ -515,9 +519,9 @@ public class LogEntrySerializer {
 				Tag tag = null;
 				try {
 					if (type.equals("F")) {
-						jakeObject = fileObjectDao.get(UUID.fromString(parts[9]));
+						jakeObject = getFileObjectDao(p).get(UUID.fromString(parts[9]));
 					} else if (type.equals("N")) {
-						jakeObject = noteObjectDao.get(UUID.fromString(parts[9]));
+						jakeObject = getNoteObjectDao(p).get(UUID.fromString(parts[9]));
 					} else
 						throw new InvalidDeserializerCallException();
 
@@ -546,7 +550,7 @@ public class LogEntrySerializer {
 				TagRemoveLogEntry result;
 
 				try {
-					p = projectDao.read(projectUUID); // throws NoSuchProjectException
+					p = getProjectDao().read(projectUUID); // throws NoSuchProjectException
 				} catch (NoSuchProjectException e) {
 					throw new InvalidDeserializerCallException();
 				}
@@ -557,9 +561,9 @@ public class LogEntrySerializer {
 				Tag tag = null;
 				try {
 					if (type.equals("F")) {
-						jakeObject = fileObjectDao.get(UUID.fromString(parts[9]));
+						jakeObject = getFileObjectDao(p).get(UUID.fromString(parts[9]));
 					} else if (type.equals("N")) {
-						jakeObject = noteObjectDao.get(UUID.fromString(parts[9]));
+						jakeObject = getNoteObjectDao(p).get(UUID.fromString(parts[9]));
 					} else
 						throw new InvalidDeserializerCallException();
 
@@ -589,4 +593,15 @@ public class LogEntrySerializer {
 		throw new UnsupportedOperationException();
 	}
 
+	private IProjectDao getProjectDao() {
+		return projectDao;
+	}
+
+	private IFileObjectDao getFileObjectDao(Project project) {
+		return applicationContextFactory.getFileObjectDao(project);
+	}
+
+	private INoteObjectDao getNoteObjectDao(Project project) {
+		return applicationContextFactory.getNoteObjectDao(project);
+	}
 }
