@@ -216,10 +216,6 @@ public class JakeMainView extends FrameView
 
 		updateTitle();
 
-		if (JakeMainApp.getApp().getSplashFrame() != null) {
-			JakeMainApp.getApp().getSplashFrame().setVisible(false);
-		}
-
 		JakeExecutor.exec(new InitCoreWorker());
 
 		// debug property
