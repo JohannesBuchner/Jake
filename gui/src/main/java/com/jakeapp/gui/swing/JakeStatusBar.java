@@ -5,7 +5,6 @@ import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
@@ -29,7 +28,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.ExecutionException;
-import java.util.List;
 
 /**
  * User: studpete
@@ -44,7 +42,7 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	private JLabel statusLabel;
 	private JButton connectionButton;
 	private TriAreaComponent statusBar;
-	private JakeMainView.ProjectViewPanelEnum projectViewPanel;
+	private JakeMainView.ProjectView projectViewPanel;
 	private JakeMainView.ContextPanelEnum contextViewPanel;
 
 	private String projectFileCount = "";
@@ -342,11 +340,11 @@ public class JakeStatusBar extends JakeGuiComponent implements
 	public void updateMessageInt() {
 
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
-			if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Files) {
+			if (getProjectViewPanel() == JakeMainView.ProjectView.Files) {
 				// update the status bar label
 				JakeExecutor.exec(new ProjectFileCountWorker());
 				JakeExecutor.exec(new ProjectSizeTotalWorker());
-			} else if (getProjectViewPanel() == JakeMainView.ProjectViewPanelEnum.Notes) {
+			} else if (getProjectViewPanel() == JakeMainView.ProjectView.Notes) {
 				JakeExecutor.exec(new NoteCountWorker());
 			} else {
 				// project view
@@ -423,13 +421,13 @@ public class JakeStatusBar extends JakeGuiComponent implements
 		projectUpdated();
 	}
 
-	public void setProjectViewPanel(JakeMainView.ProjectViewPanelEnum panel) {
+	public void setProjectViewPanel(JakeMainView.ProjectView panel) {
 		this.projectViewPanel = panel;
 
 		projectUpdated();
 	}
 
-	public JakeMainView.ProjectViewPanelEnum getProjectViewPanel() {
+	public JakeMainView.ProjectView getProjectViewPanel() {
 		return projectViewPanel;
 	}
 

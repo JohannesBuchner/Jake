@@ -77,7 +77,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private JSplitPane contentPanelSplit;
 	private JDialog aboutBox;
 
-	private ProjectViewPanelEnum projectViewPanel = ProjectViewPanelEnum.News;
+	private ProjectView projectViewPanel = ProjectView.News;
 	private ContextPanelEnum contextViewPanel = ContextPanelEnum.Login;
 	private JakeStatusBar jakeStatusBar;
 	private JakeTrayIcon tray;
@@ -116,7 +116,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	/**
 	 * Project View: set of toggle buttons. Alwasy one state setup.
 	 */
-	public enum ProjectViewPanelEnum {
+	public enum ProjectView {
 		News, Files, Notes
 	}
 
@@ -573,8 +573,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	private boolean isInspectorAllowed() {
 		boolean hasProject = getProject() != null;
-		boolean isFilePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectViewPanelEnum.Files;
-		boolean isNotePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectViewPanelEnum.Notes;
+		boolean isFilePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Files;
+		boolean isNotePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Notes;
 
 		return hasProject && (isFilePaneOpen || isNotePaneOpen);
 	}
@@ -584,15 +584,15 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	public void setProjectViewFromToolBarButtons() {
 		// determine toggle button selection
-		if (contextSwitcherButtons.get(ProjectViewPanelEnum.News.ordinal())
+		if (contextSwitcherButtons.get(ProjectView.News.ordinal())
 						.isSelected()) {
-			setProjectViewPanel(ProjectViewPanelEnum.News);
-		} else if (contextSwitcherButtons.get(ProjectViewPanelEnum.Files.ordinal())
+			setProjectViewPanel(ProjectView.News);
+		} else if (contextSwitcherButtons.get(ProjectView.Files.ordinal())
 						.isSelected()) {
-			setProjectViewPanel(ProjectViewPanelEnum.Files);
-		} else if (contextSwitcherButtons.get(ProjectViewPanelEnum.Notes.ordinal())
+			setProjectViewPanel(ProjectView.Files);
+		} else if (contextSwitcherButtons.get(ProjectView.Notes.ordinal())
 						.isSelected()) {
-			setProjectViewPanel(ProjectViewPanelEnum.Notes);
+			setProjectViewPanel(ProjectView.Notes);
 		}
 	}
 
@@ -754,7 +754,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	}
 
 
-	public ProjectViewPanelEnum getProjectViewPanel() {
+	public ProjectView getProjectViewPanel() {
 		return projectViewPanel;
 	}
 
@@ -764,7 +764,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 *
 	 * @param view: the project view panel that should be active.
 	 */
-	public void setProjectViewPanel(ProjectViewPanelEnum view) {
+	public void setProjectViewPanel(ProjectView view) {
 		this.projectViewPanel = view;
 		updateProjectViewPanel();
 		fireProjectViewChanged();
@@ -778,12 +778,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		boolean canBeSelected = getContextViewPanel() == ContextPanelEnum.Project;
 		log.debug("updateProjectToggleButtons. canBeSelected=" + canBeSelected);
 
-		contextSwitcherButtons.get(ProjectViewPanelEnum.News.ordinal()).setSelected(
-						canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.News);
-		contextSwitcherButtons.get(ProjectViewPanelEnum.Files.ordinal()).setSelected(
-						canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.Files);
-		contextSwitcherButtons.get(ProjectViewPanelEnum.Notes.ordinal()).setSelected(
-						canBeSelected && getProjectViewPanel() == ProjectViewPanelEnum.Notes);
+		contextSwitcherButtons.get(ProjectView.News.ordinal()).setSelected(
+						canBeSelected && getProjectViewPanel() == ProjectView.News);
+		contextSwitcherButtons.get(ProjectView.Files.ordinal()).setSelected(
+						canBeSelected && getProjectViewPanel() == ProjectView.Files);
+		contextSwitcherButtons.get(ProjectView.Notes.ordinal()).setSelected(
+						canBeSelected && getProjectViewPanel() == ProjectView.Notes);
 
 		// adapt button style
 		for (JToggleButton btn : contextSwitcherButtons) {
@@ -795,7 +795,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Updates the Project View, called after setting with setProjectViewPanel
 	 */
 	private void updateProjectViewPanel() {
-		ProjectViewPanelEnum view = getProjectViewPanel();
+		ProjectView view = getProjectViewPanel();
 
 		// only set if project panels are shown!
 		boolean show = getContextViewPanel() == ContextPanelEnum.Project;
@@ -805,9 +805,9 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 			sourceList.selectProject(null);
 		}
 
-		showContentPanel(newsPanel, show && view == ProjectViewPanelEnum.News);
-		showContentPanel(filePanel, show && view == ProjectViewPanelEnum.Files);
-		showContentPanel(notesPanel, show && view == ProjectViewPanelEnum.Notes);
+		showContentPanel(newsPanel, show && view == ProjectView.News);
+		showContentPanel(filePanel, show && view == ProjectView.Files);
+		showContentPanel(notesPanel, show && view == ProjectView.Notes);
 
 		updateProjectToggleButtons();
 

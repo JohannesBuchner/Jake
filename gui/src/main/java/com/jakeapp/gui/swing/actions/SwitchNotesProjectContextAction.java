@@ -16,6 +16,6 @@ public class SwitchNotesProjectContextAction extends SwitchProjectContextAction 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JakeMainView.getMainView().setProjectViewPanel(JakeMainView.ProjectViewPanelEnum.Notes);
+		JakeMainView.getMainView().setProjectViewPanel(JakeMainView.ProjectView.Notes);
 	}
 }

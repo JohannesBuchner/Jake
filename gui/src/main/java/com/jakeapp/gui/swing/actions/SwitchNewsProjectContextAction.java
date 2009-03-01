@@ -16,6 +16,6 @@ public class SwitchNewsProjectContextAction extends SwitchProjectContextAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JakeMainView.getMainView().setProjectViewPanel(JakeMainView.ProjectViewPanelEnum.News);
+		JakeMainView.getMainView().setProjectViewPanel(JakeMainView.ProjectView.News);
 	}
 }

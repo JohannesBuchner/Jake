@@ -16,6 +16,6 @@ public class SwitchFilesProjectContextAction extends SwitchProjectContextAction 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JakeMainView.getMainView().setProjectViewPanel(JakeMainView.ProjectViewPanelEnum.Files);
+		JakeMainView.getMainView().setProjectViewPanel(JakeMainView.ProjectView.Files);
 	}
 }

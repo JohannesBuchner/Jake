@@ -426,6 +426,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			log.debug("jakeObject" + jakeObject);
 
+			// sanity check - hey, we don't wanna mess with the core!
+			if(jakeObject == null) {
+				return null;
+			}
+
 			// first, look if we have a recent revision in the cache
 			if (attributedCacheMan.isCached(jakeObject)) {
 				return attributedCacheMan.getCached(jakeObject);

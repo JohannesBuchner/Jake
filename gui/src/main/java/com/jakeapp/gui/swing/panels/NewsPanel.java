@@ -464,19 +464,6 @@ public class NewsPanel extends javax.swing.JPanel implements
 
 		this.peopleScrollPanel.setName("peopleScrollPanel"); // NOI18N
 
-		this.peopleList.setModel(new javax.swing.AbstractListModel() {
-			String[] strings =
-							{"<html><b><font color=green>Peter Steinberger</font></b><br>&nbsp;&nbsp;Online<br></html>",
-											"<html><b><font color=blue>Dominik</font></b><br>&nbsp;&nbsp;Offline<br></html>"};
-
-			public int getSize() {
-				return strings.length;
-			}
-
-			public Object getElementAt(int i) {
-				return strings[i];
-			}
-		});
 		this.peopleList.setDoubleBuffered(true);
 		this.peopleList.setDragEnabled(true);
 		this.peopleList.setName("peopleList"); // NOI18N

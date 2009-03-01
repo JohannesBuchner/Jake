@@ -6,7 +6,7 @@ import org.jdesktop.swingx.JXTable;
 import javax.swing.*;
 
 /**
- * @author: studpete
+ * @author studpete
  */
 public class ConfigControlsHelper {
 
@@ -20,7 +20,7 @@ public class ConfigControlsHelper {
 		table.getColumn(0).setCellRenderer(new EventCellRenderer());
 		table.setSortable(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.setColumnControlVisible(false);
+		table.setColumnControlVisible(true); // TODO false
 		table.setEditable(false);
 		table.setDoubleBuffered(true);
 		table.setRolloverEnabled(false);
@@ -28,7 +28,6 @@ public class ConfigControlsHelper {
 
 
 	// do not instantiate
-	private void ConfigControlsHelper() {
-
+	private ConfigControlsHelper() {
 	}
 }

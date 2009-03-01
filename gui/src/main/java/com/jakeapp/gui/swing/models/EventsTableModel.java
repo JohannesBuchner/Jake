@@ -1,9 +1,9 @@
 package com.jakeapp.gui.swing.models;
 
+import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -14,28 +14,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Events Table Model. Used on the News Panel to show last events.
+ * The Events Table Model. Used on the News Panel & Inspector.
  *
- * @author: studpete, simon
+ * @author studpete, simon
  */
 public class EventsTableModel extends AbstractTableModel {
-
 	private static final long serialVersionUID = -3604724857190594625L;
 	private static final Logger log = Logger.getLogger(EventsTableModel.class);
 
 	private Project project;
 	private Attributed<? extends JakeObject> attributedJakeObject;
-	private List<LogEntry<? extends ILogable>> logEntries = new ArrayList<LogEntry<? extends ILogable>>();
+	private List<LogEntry<? extends ILogable>> logEntries =
+					new ArrayList<LogEntry<? extends ILogable>>();
 	private static final int MaxLogEntriesShown = 100;
 	private static final String[] colNames = new String[]{"Action", "When"};
 
 	private enum LogColumns {
 		ACTION, WHEN
 	}
-	
-	/**
 
+	/**
 	 * Creates a event table model that shows ALL events.
+	 *
 	 * @param project
 	 */
 	public EventsTableModel(Project project) {
@@ -48,12 +48,13 @@ public class EventsTableModel extends AbstractTableModel {
 	 * @param project
 	 * @param attributedJakeObject
 	 */
-	public EventsTableModel(Project project, Attributed<JakeObject> attributedJakeObject) {
+	public EventsTableModel(Project project,
+					Attributed<JakeObject> attributedJakeObject) {
 		this.setProject(project);
 		this.setJakeObject(attributedJakeObject);
 
-		log.info("Initializing EventsTableModel with jakeObject: " + attributedJakeObject 
-				+ ", and project: " + this.getProject());
+		log.info("Initializing EventsTableModel with jakeObject: " + attributedJakeObject + ", and project: " + this
+						.getProject());
 
 		this.updateData();
 	}
@@ -67,13 +68,12 @@ public class EventsTableModel extends AbstractTableModel {
 
 	public void updateData() {
 		log.trace("Updating events data...");
-		//FIXME: make proper initialization to evade this ugly null tests...
-		if (this.getProject() != null && this.attributedJakeObject != null) {
-			log.info("Update in progress. Please stand by...");
-			this.logEntries = JakeMainApp.getCore().getLog(
-					  getProject(), getAttributedJakeObject().getJakeObject(), MaxLogEntriesShown);
-		} else if (this.getProject() != null) { //FIXME: DRY, general crap
-			this.logEntries = JakeMainApp.getCore().getLog(getProject(), null, MaxLogEntriesShown);
+
+		if (this.getProject() != null) {
+			this.logEntries = JakeMainApp.getCore().getLog(getProject(),
+							getAttributedJakeObject() != null ?
+											getAttributedJakeObject().getJakeObject() : null,
+							MaxLogEntriesShown);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		
+
 		LogEntry logEntry = logEntries.get(rowIndex);
 
 		LogColumns col = LogColumns.values()[columnIndex];
@@ -127,6 +127,18 @@ public class EventsTableModel extends AbstractTableModel {
 	@Override
 	public String getColumnName(int columnIndex) {
 		return colNames[columnIndex];
+	}
+
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		switch (columnIndex) {
+			case 0:
+				return LogEntry.class;
+			case 1:
+				return String.class;
+			default:
+				return null;
+		}
 	}
 
 	public List<LogEntry<? extends ILogable>> getLogEntries() {
