@@ -30,7 +30,6 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	private List<String> columnNames;
 	private List<Attributed<NoteObject>> attributedNotes =
 					new ArrayList<Attributed<NoteObject>>();
-	;
 	private ResourceMap resourceMap;
 	private Icon padlock, shared_note;
 
@@ -100,6 +99,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 
 	public void updateNotes(Project p) {
 		// FIXME: cache better!?
+		log.debug("updating notes from core and merge with attributes...");
 		List<NoteObject> rawNotes = ObjectCache.get().getNotes(p);
 		this.attributedNotes.clear();
 		if (rawNotes != null) {
@@ -108,6 +108,8 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 								.add(JakeMainApp.getCore().<NoteObject>getAttributed(p, note));
 			}
 		}
+		log.debug("update done.");
+
 		this.fireTableDataChanged();
 	}
 
