@@ -1063,16 +1063,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			throw new IllegalArgumentException(e);
 		}
 		
-		this.invitationListener.invited(user, project);
+		if (this.invitationListener != null)
+			this.invitationListener.invited(user, project);
 	}
 
 	@Override
 	public void accepted(UserId user, Project p) {
-		this.invitationListener.accepted(user, p);
+		if (this.invitationListener != null)
+			this.invitationListener.accepted(user, p);
 	}
 
 	@Override
 	public void rejected(UserId user, Project p) {
-		this.invitationListener.rejected(user, p);
+		if (this.invitationListener != null)
+			this.invitationListener.rejected(user, p);
 	}
 }
