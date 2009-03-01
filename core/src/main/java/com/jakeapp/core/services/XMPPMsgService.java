@@ -48,17 +48,13 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
 	@Override
 	protected boolean doLogin() throws NetworkException {
-		log
-				.debug("got credentials: " + this.getServiceCredentials().getUserId()
-						+ " pwl: "
-						+ this.getServiceCredentials().getPlainTextPassword().length());
+		String pass = this.getServiceCredentials().getPlainTextPassword();
+		log.debug("got credentials: " + this.getServiceCredentials().getUserId()
+				+ " pwl: " + pass.length());
 		boolean success = this.mainIcs.getStatusService().login(this.getMainUserId(),
-				this.getServiceCredentials().getPlainTextPassword());
+				pass);
 
-
-		if (success) {
-			log.debug("login success");
-		}
+		log.debug("login success: " + success);
 
 		return success;
 	}
