@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.explodingpixels.macwidgets.MacFontUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -64,6 +65,7 @@ public class FileIconLabelHelper {
 		}
 
 		label.setIcon(nativeIcon);
+		label.setFont(MacFontUtils.ITUNES_FONT);
 
 		return label;
 	}

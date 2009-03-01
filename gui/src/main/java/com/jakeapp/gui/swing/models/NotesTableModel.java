@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
-import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -23,9 +22,7 @@ import java.util.List;
  * @author Simon
  */
 public class NotesTableModel extends DefaultTableModel {
-
 	private static final long serialVersionUID = -2745782032637383756L;
-
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
 	private List<String> columnNames;
@@ -91,7 +88,7 @@ public class NotesTableModel extends DefaultTableModel {
 			return;
 		}
 
-		// get notes!6
+		// get notes!
 	  JakeExecutor.exec(new GetAllProjectNotesWorker(JakeMainApp.getProject()));
 	}
 

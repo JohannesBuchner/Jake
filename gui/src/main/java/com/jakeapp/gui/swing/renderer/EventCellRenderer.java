@@ -8,6 +8,7 @@ import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.panels.NewsPanel;
+import com.explodingpixels.macwidgets.MacFontUtils;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -204,6 +205,7 @@ public class EventCellRenderer extends DefaultTableCellRenderer {
 				  * the JLabels text property, it's foreground and background
 				  * colors, and so on.
 				  */
+		setFont(MacFontUtils.ITUNES_FONT);
 		super.getTableCellRendererComponent(table, valStr, isSelected, hasFocus, row,
 						column);
 

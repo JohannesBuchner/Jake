@@ -1,17 +1,12 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
-import java.awt.event.ActionEvent;
-import java.util.List;
-
-import org.jdesktop.swingx.JXTreeTable;
-
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
+import java.awt.event.ActionEvent;
 
 public class RenameFileAction extends FileAction {
 	public RenameFileAction() {
@@ -47,6 +42,7 @@ public class RenameFileAction extends FileAction {
 
 		String promptStr = JakeMainView.getMainView().getResourceMap().
 			 getString("promptRenameFile");
+		// FIXME: sheets
 		String newName = JOptionPane.showInputDialog(promptStr, currentName);
 		if (!newName.equals(currentName)) {
 			if (node.isFile()) {

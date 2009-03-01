@@ -7,15 +7,10 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Chris
- * Date: Jan 5, 2009
- * Time: 10:29:07 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TagSetRenderer extends JXPanel implements TableCellRenderer {
     public TagSetRenderer() {
-        this.add(new JLabel("fuck"));
+        this.add(new JLabel(""));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.panels;
 
+import com.explodingpixels.macwidgets.SourceListControlBar;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.InvitePeopleAction;
@@ -14,6 +15,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
@@ -39,8 +41,8 @@ import java.util.EnumSet;
 /**
  * @author studpete
  */
-public class NewsPanel extends javax.swing.JPanel implements
-				ProjectSelectionChanged, ProjectChanged, DataChanged {
+public class NewsPanel extends javax.swing.JPanel
+				implements ProjectSelectionChanged, ProjectChanged, DataChanged {
 
 	private static final long serialVersionUID = -6867091182930736758L;
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
@@ -53,7 +55,7 @@ public class NewsPanel extends javax.swing.JPanel implements
 					new StartStopProjectAction();
 	private Timer eventsTableUpdateTimer;
 	private final static int EventTableUpdateDelay = 20000;
-					// 20 sec //FIXME: magic number
+	// 20 sec //FIXME: magic number
 	private EventsTableModel eventTableModel;
 
 	private javax.swing.JPanel actionPanel;
@@ -79,6 +81,7 @@ public class NewsPanel extends javax.swing.JPanel implements
 	/**
 	 * Creates new form NewsPanel
 	 */
+	// FIXME: rewrite in miglayout!
 	public NewsPanel() {
 		initComponents();
 		setResourceMap(org.jdesktop.application.Application
@@ -97,25 +100,31 @@ public class NewsPanel extends javax.swing.JPanel implements
 		this.autoDownloadCB.setOpaque(false);
 
 		// set the background painter
-		this.newsContentPanel.setBackgroundPainter(
-						Platform.getStyler().getContentPanelBackgroundPainter());
+		this.newsContentPanel.setBackgroundPainter(Platform
+						.getStyler().getContentPanelBackgroundPainter());
 
-		this.startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-open.png")));
-		this.stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder.png")));
-		this.invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder_invalid.png")));
+		this.startIcon = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(getClass().getResource(
+						"/icons/folder-open.png")));
+		this.stopIcon = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(getClass().getResource("/icons/folder.png")));
+		this.invalidIcon = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(getClass().getResource(
+						"/icons/folder_invalid.png")));
 
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(), autoDownloadCB.isSelected(), null);
+				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(),
+								autoDownloadCB.isSelected(),
+								null);
 			}
 		});
 
 		this.autoUploadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(), null, autoUploadCB.isSelected());
+				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(),
+								null,
+								autoUploadCB.isSelected());
 			}
 		});
 
@@ -151,7 +160,7 @@ public class NewsPanel extends javax.swing.JPanel implements
 	}
 
 	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
-		if(reason.contains(Reason.LogEntries)) {
+		if (reason.contains(Reason.LogEntries)) {
 			this.updatePanel();
 		}
 	}
@@ -160,6 +169,7 @@ public class NewsPanel extends javax.swing.JPanel implements
 	/**
 	 * private inner mouselistener for events table.
 	 */
+	// TODO: make hyperlinks?
 	private class EventsTableMouseListener implements MouseListener {
 
 		@Override
@@ -263,8 +273,6 @@ public class NewsPanel extends javax.swing.JPanel implements
 		this.eventTableModel.setProject(getProject());
 
 
-
-
 		/*
 //TODO: find better way !
 		try {
@@ -294,12 +302,8 @@ public class NewsPanel extends javax.swing.JPanel implements
 		// update the icon (start/stop-state)
 		this.projectIconLabel.setIcon(getProject().isStarted() ? startIcon : stopIcon);
 
-		// update the event table
-
-		// update the people table
-
-
 		/*
+		// FIXME?
 		SourceListControlBar cb = new SourceListControlBar();
 		cb.createAndAddButton(startIcon, new ActionListener() {
 
@@ -308,9 +312,10 @@ public class NewsPanel extends javax.swing.JPanel implements
 				JSheet.showMessageSheet(peopleList, "Bla");
 			}
 		});
-		
+
 		this.add(cb.getComponent());
-*/
+		*/
+
 	}
 
 	/**
@@ -353,8 +358,8 @@ public class NewsPanel extends javax.swing.JPanel implements
 		setName("Form"); // NOI18N
 		setLayout(new java.awt.BorderLayout());
 
-		this.newsContentPanel.setBackground(
-						resourceMap.getColor("newsContentPanel.background")); // NOI18N
+		this.newsContentPanel
+						.setBackground(resourceMap.getColor("newsContentPanel.background")); // NOI18N
 		this.newsContentPanel.setName("newsContentPanel"); // NOI18N
 		this.newsContentPanel.setLayout(new javax.swing.BoxLayout(newsContentPanel,
 						javax.swing.BoxLayout.Y_AXIS));
@@ -406,51 +411,52 @@ public class NewsPanel extends javax.swing.JPanel implements
 						titlePanelLayout.createSequentialGroup().addGroup(titlePanelLayout
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 										.addGroup(titlePanelLayout.createSequentialGroup()
-														.addContainerGap().addComponent(
-														this.projectRunningButton)).addGroup(
+														.addContainerGap().addComponent(this.projectRunningButton)).addGroup(
 										titlePanelLayout.createSequentialGroup()
 														.addGap(28, 28, 28).addComponent(this.projectIconLabel)))
-										.addPreferredGap(
-														javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(titlePanelLayout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(titlePanelLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 														.addComponent(this.projectTitlePanel,
-																		javax.swing.GroupLayout.DEFAULT_SIZE, 515,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		515,
 																		Short.MAX_VALUE)
 														.addComponent(this.projectFolderHyperlink,
 																		javax.swing.GroupLayout.PREFERRED_SIZE,
 																		javax.swing.GroupLayout.DEFAULT_SIZE,
 																		javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(this.projectLabel).addComponent(
-														this.projectStatusLabel)).addContainerGap()));
+														.addComponent(this.projectLabel).addComponent(this.projectStatusLabel)).addContainerGap()));
 		titlePanelLayout.setVerticalGroup(titlePanelLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-						titlePanelLayout.createSequentialGroup().addContainerGap().addGroup(
-										titlePanelLayout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING, false)
+						titlePanelLayout.createSequentialGroup().addContainerGap()
+										.addGroup(titlePanelLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
+																		false)
 														.addGroup(titlePanelLayout.createSequentialGroup()
-																		.addComponent(
-																						this.projectIconLabel).addPreferredGap(
+																		.addComponent(this.projectIconLabel).addPreferredGap(
 																		javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)).addGroup(
 														titlePanelLayout.createSequentialGroup()
-																		.addComponent(this.projectLabel).addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																		.addComponent(this.projectLabel)
+																		.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 																		.addComponent(this.projectTitlePanel,
 																						javax.swing.GroupLayout.PREFERRED_SIZE,
 																						javax.swing.GroupLayout.DEFAULT_SIZE,
 																						javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addPreferredGap(
-																						javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+																		.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 																						javax.swing.GroupLayout.DEFAULT_SIZE,
 																						Short.MAX_VALUE)
 																		.addComponent(this.projectFolderHyperlink,
 																						javax.swing.GroupLayout.PREFERRED_SIZE,
 																						javax.swing.GroupLayout.DEFAULT_SIZE,
 																						javax.swing.GroupLayout.PREFERRED_SIZE).addGap(
-																		11, 11, 11))).addGroup(titlePanelLayout
+																		11,
+																		11,
+																		11))).addGroup(titlePanelLayout
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(this.projectRunningButton).addComponent(
-										this.projectStatusLabel)).addGap(30, 30, 30)));
+										.addComponent(this.projectRunningButton).addComponent(this.projectStatusLabel)).addGap(
+										30,
+										30,
+										30)));
 
 		this.newsContentPanel.add(this.titlePanel);
 
@@ -485,19 +491,19 @@ public class NewsPanel extends javax.swing.JPanel implements
 		this.actionPanel.setLayout(actionPanelLayout);
 		actionPanelLayout.setHorizontalGroup(actionPanelLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-						actionPanelLayout.createSequentialGroup().addContainerGap().addGroup(
-										actionPanelLayout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(this.eventsLabel).addComponent(
-														this.eventsScrollPanel,
-														javax.swing.GroupLayout.DEFAULT_SIZE, 401,
-														Short.MAX_VALUE)).addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(
-										actionPanelLayout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(this.peopleLabel).addComponent(
-														this.peopleScrollPanel,
-														javax.swing.GroupLayout.PREFERRED_SIZE, 184,
+						actionPanelLayout.createSequentialGroup().addContainerGap()
+										.addGroup(actionPanelLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(this.eventsLabel).addComponent(this.eventsScrollPanel,
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														401,
+														Short.MAX_VALUE))
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(actionPanelLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addComponent(this.peopleLabel).addComponent(this.peopleScrollPanel,
+														javax.swing.GroupLayout.PREFERRED_SIZE,
+														184,
 														javax.swing.GroupLayout.PREFERRED_SIZE)).addContainerGap()));
 		actionPanelLayout.setVerticalGroup(actionPanelLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
@@ -505,15 +511,15 @@ public class NewsPanel extends javax.swing.JPanel implements
 						actionPanelLayout.createSequentialGroup().addGroup(actionPanelLayout
 										.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 										.addComponent(this.eventsLabel).addComponent(this.peopleLabel))
-										.addPreferredGap(
-														javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(
-										actionPanelLayout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(
+										actionPanelLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 														.addComponent(this.eventsScrollPanel,
-																		javax.swing.GroupLayout.DEFAULT_SIZE, 262,
-																		Short.MAX_VALUE).addComponent(
-														this.peopleScrollPanel,
-														javax.swing.GroupLayout.DEFAULT_SIZE, 262,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		262,
+																		Short.MAX_VALUE).addComponent(this.peopleScrollPanel,
+														javax.swing.GroupLayout.DEFAULT_SIZE,
+														262,
 														Short.MAX_VALUE))));
 
 		this.newsContentPanel.add(this.actionPanel);
@@ -529,8 +535,8 @@ public class NewsPanel extends javax.swing.JPanel implements
 		this.autoUploadCB.setName("autoUploadCB"); // NOI18N
 
 		this.optionsLabel.setFont(resourceMap.getFont("optionsLabel.font")); // NOI18N
-		this.optionsLabel.setForeground(
-						resourceMap.getColor("optionsLabel.foreground")); // NOI18N
+		this.optionsLabel
+						.setForeground(resourceMap.getColor("optionsLabel.foreground")); // NOI18N
 		this.optionsLabel.setText(resourceMap.getString("optionsLabel.text")); // NOI18N
 		this.optionsLabel.setName("optionsLabel"); // NOI18N
 
@@ -544,35 +550,37 @@ public class NewsPanel extends javax.swing.JPanel implements
 		this.optionsPanel.setLayout(optionsPanelLayout);
 		optionsPanelLayout.setHorizontalGroup(optionsPanelLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-						optionsPanelLayout.createSequentialGroup().addContainerGap().addGroup(
-										optionsPanelLayout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-														optionsPanelLayout.createSequentialGroup()
+						optionsPanelLayout.createSequentialGroup().addContainerGap()
+										.addGroup(optionsPanelLayout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addGroup(optionsPanelLayout.createSequentialGroup()
 																		.addComponent(this.optionsLabel,
 																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						263, Short.MAX_VALUE).addGap(168, 168,
-																		168)).addGroup(
-														optionsPanelLayout.createSequentialGroup()
-																		.addGap(21, 21, 21).addGroup(optionsPanelLayout
-																		.createParallelGroup(
-																						javax.swing.GroupLayout.Alignment.TRAILING,
+																						263,
+																						Short.MAX_VALUE).addGap(168,
+																		168,
+																		168)).addGroup(optionsPanelLayout
+														.createSequentialGroup().addGap(21, 21, 21).addGroup(
+														optionsPanelLayout
+																		.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING,
 																						false).addComponent(this.autoUploadCB,
-																						javax.swing.GroupLayout.Alignment.LEADING,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						javax.swing.GroupLayout.DEFAULT_SIZE,
-																						Short.MAX_VALUE).addComponent(
-																		this.autoDownloadCB,
+																		javax.swing.GroupLayout.Alignment.LEADING,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE).addComponent(this.autoDownloadCB,
 																		javax.swing.GroupLayout.Alignment.LEADING)))).addGap(
-										441, 441, 441)));
+										441,
+										441,
+										441)));
 		optionsPanelLayout.setVerticalGroup(optionsPanelLayout
 						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
 						javax.swing.GroupLayout.Alignment.TRAILING,
 						optionsPanelLayout.createSequentialGroup()
 										.addContainerGap(20, Short.MAX_VALUE)
-										.addComponent(this.optionsLabel).addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(this.autoDownloadCB).addPreferredGap(
-										javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(this.optionsLabel)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(this.autoDownloadCB)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(this.autoUploadCB).addContainerGap()));
 
 		this.newsContentPanel.add(this.optionsPanel);
@@ -581,7 +589,7 @@ public class NewsPanel extends javax.swing.JPanel implements
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void projectFolderHyperlinkActionPerformed(
-					java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectFolderHyperlinkActionPerformed
+					java.awt.event.ActionEvent evt) {
 		log.info("Opening the Folder: " + getProject().getRootPath());
 		try {
 			Desktop.getDesktop().open(new File(getProject().getRootPath()));

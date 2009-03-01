@@ -1,7 +1,5 @@
 package com.jakeapp.gui.swing;
 
-import com.explodingpixels.macwidgets.LabeledComponentGroup;
-import com.explodingpixels.macwidgets.MacButtonFactory;
 import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
@@ -9,18 +7,12 @@ import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.gui.swing.actions.CreateProjectAction;
-import com.jakeapp.gui.swing.actions.ImportFileAction;
-import com.jakeapp.gui.swing.actions.InvitePeopleAction;
-import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.MsgServiceChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
-import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
 import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.FilePanel;
@@ -36,11 +28,8 @@ import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.PatternFilter;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,13 +39,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView implements ProjectSelectionChanged, MsgServiceChanged {
+public class JakeMainView extends FrameView
+				implements ProjectSelectionChanged, MsgServiceChanged {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
 	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
@@ -82,17 +71,19 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	private JakeStatusBar jakeStatusBar;
 	private JakeTrayIcon tray;
 
-	private List<ProjectViewChanged> projectViewChanged = new ArrayList<ProjectViewChanged>();
-	private List<ContextViewChanged> contextViewChanged = new ArrayList<ContextViewChanged>();
+	private List<ProjectViewChanged> projectViewChanged =
+					new ArrayList<ProjectViewChanged>();
+	private List<ContextViewChanged> contextViewChanged =
+					new ArrayList<ContextViewChanged>();
 	private JPanel statusPanel;
 
 	private JakeMainApp app;
 	private JakeSourceList sourceList;
 	private JSplitPane mainSplitPane;
-	private SearchField searchField;
 
 	private Image IconAppSmall;
 	private Image IconAppLarge;
+	private final JakeToolbar jakeToolbar;
 
 	public boolean isInspectorEnabled() {
 		return inspectorEnabled;
@@ -127,35 +118,27 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		Login, Project, Invitation
 	}
 
-	// toolbar
-	private AbstractButton createProjectButton;
-	private AbstractButton addFilesButton;
-	private AbstractButton invitePeopleButton;
-	private AbstractButton inspectorButton;
-
 
 	//	public JakeMainView(SingleFrameApplication app) {
 	public JakeMainView(JakeMainApp app) {
 		super(app);
 
-		// show "progress"
-		if (JakeMainApp.getApp().getSplashFrame() != null) {
-			JakeMainApp.getApp().getSplashFrame().setTransparency(1F);
-		}
+		IconAppSmall = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(getClass().getResource("/icons/jakeapp.png")))
+						.getImage();
 
-
-		IconAppSmall = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/jakeapp.png"))).getImage();
-
-		IconAppLarge = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/jakeapp-large.png"))).getImage();
+		IconAppLarge = new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(getClass().getResource(
+						"/icons/jakeapp-large.png"))).getImage();
 
 		setMainView(this);
 		this.app = app;
 
 		tray = new JakeTrayIcon();
+		jakeToolbar = new JakeToolbar(this);
 
 		// init the panels
+		// FIXME: lazy loading!
 		loginPanel = new UserPanel();
 		newsPanel = new NewsPanel();
 		filePanel = new FilePanel();
@@ -194,7 +177,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		// init the content panel and the splitter
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
-		contentPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, contentPanel,
+		contentPanelSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+						contentPanel,
 						inspectorPanel);
 		contentPanelSplit.setOneTouchExpandable(false);
 		contentPanelSplit.setContinuousLayout(true);
@@ -207,7 +191,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		updateInspectorPanelVisibility();
 
 		// add the toolbar
-		TriAreaComponent toolBar = createToolBar();
+		TriAreaComponent toolBar = jakeToolbar.createToolBar();
 		this.getFrame().add(toolBar.getComponent(), BorderLayout.NORTH);
 
 		// create the panels split pane
@@ -237,13 +221,49 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 
 		JakeExecutor.exec(new InitCoreWorker());
 
-		
 		// debug property
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
 			JakeMainApp.getApp().saveQuit();
 		}
 	}
 
+
+	public NewsPanel getNewsPanel() {
+		if (newsPanel == null) {
+			newsPanel = new NewsPanel();
+		}
+		return newsPanel;
+	}
+
+	public FilePanel getFilePanel() {
+		if (filePanel == null) {
+			filePanel = new FilePanel();
+		}
+		return filePanel;
+	}
+
+	public NotesPanel getNotesPanel() {
+		if (notesPanel == null) {
+			notesPanel = new NotesPanel();
+		}
+		return notesPanel;
+	}
+
+	public ProjectInvitationPanel getInvitationPanel() {
+		return invitationPanel;
+	}
+
+	public UserPanel getLoginPanel() {
+		return loginPanel;
+	}
+
+	public JPanel getContextSwitcherPane() {
+		return contextSwitcherPane;
+	}
+
+	public List<JToggleButton> getContextSwitcherButtons() {
+		return contextSwitcherButtons;
+	}
 
 	/**
 	 * This is a private inner class to control the resizing
@@ -272,8 +292,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 				int current = splitPane.getDividerLocation();
 				int max = splitPane.getMaximumDividerLocation();
 				log.debug("splitPaneResized: current: " + current + " max: " + max);
-				log.debug(
-								"splitPane.getWidth()-current: " + (splitPane.getWidth() - current));
+				log.debug("splitPane.getWidth()-current: " + (splitPane
+								.getWidth() - current));
 
 				// hide inspector!
 				if ((splitPane.getWidth() - current) < 155) {
@@ -286,8 +306,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 				}
 				// limit the minimum size manually, to detect closing wish
 				else if ((splitPane.getWidth() - current) < InspectorPanel.INSPECTOR_SIZE) {
-					splitPane.setDividerLocation(
-									splitPane.getWidth() - InspectorPanel.INSPECTOR_SIZE);
+					splitPane.setDividerLocation(splitPane
+									.getWidth() - InspectorPanel.INSPECTOR_SIZE);
 					setInspectorEnabled(true);
 				} else {
 					setInspectorEnabled(true);
@@ -366,215 +386,18 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		}
 	}
 
-	/**
-	 * Creates the unified toolbar on top.
-	 *
-	 * @return TriAreaComponent of toolbar.
-	 */
-	private TriAreaComponent createToolBar() {
-		// create empty toolbar
-		TriAreaComponent toolBar = MacWidgetFactory.createUnifiedToolBar();
-		// Create Project
-		ProjectAction createProjectAction;
-		createProjectAction = new CreateProjectAction(false);
-		JButton createProjectJButton = new JButton();
-		createProjectJButton.setAction(createProjectAction);
-		createProjectButton = MacButtonFactory
-						.makeUnifiedToolBarButton(createProjectJButton);
-		createProjectButton.setEnabled(true);
-		createProjectButton.setBorder(new LineBorder(Color.BLACK, 0));
-		toolBar.addComponentToLeft(createProjectButton, 10);
-
-		// Add Files
-		Icon addFilesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/toolbar-addfiles.png")).getScaledInstance(
-						32, 32, Image.SCALE_SMOOTH));
-		JButton jCreateAddFilesButton = new JButton(
-						getResourceMap().getString("toolbarAddFiles"), addFilesIcon);
-
-		addFilesButton = MacButtonFactory
-						.makeUnifiedToolBarButton(jCreateAddFilesButton);
-		addFilesButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				new ImportFileAction().openImportDialog();
-			}
-		});
-		addFilesButton.setEnabled(true);
-		jCreateAddFilesButton.setBorder(new LineBorder(Color.BLACK, 0));
-		toolBar.addComponentToLeft(addFilesButton, 10);
-
-		/*
-		// Create Note
-		Icon noteIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource("/icons/notes.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-		JButton jCreateNodeButton = new JButton(getResourceMap().getString("toolbarCreateNote"), noteIcon);
-
-		addFilesButton = MacButtonFactory.makeUnifiedToolBarButton(jCreateNodeButton);
-		addFilesButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				addFilesAction();
-			}
-		});
-		addFilesButton.setEnabled(true);
-		jCreateNodeButton.setBorder(new LineBorder(Color.BLACK, 0));
-		toolBar.addComponentToLeft(addFilesButton, 10);
-		*/
-
-		// Add People
-
-		JButton invitePeopleJButton = new JButton(new InvitePeopleAction(false));
-		invitePeopleButton = MacButtonFactory
-						.makeUnifiedToolBarButton(invitePeopleJButton);
-		invitePeopleButton.setBorder(new LineBorder(Color.BLACK, 0));
-		toolBar.addComponentToLeft(invitePeopleButton, 10);
-
-
-		/*
-			 // Announce File
-			 Icon announceIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResourceMap("/icons/announce.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-			 JButton announceJButton = new JButton("Announce", announceIcon);
-
-
-			 AbstractButton announceButton =
-						MacButtonFactory.makeUnifiedToolBarButton(announceJButton);
-
-			 announceButton.setEnabled(true);
-			 announceJButton.setBorder(new LineBorder(Color.BLACK, 0));
-			 toolBar.addComponentToRight(announceButton, 10);
-
-			 // Pull File
-			 Icon pullIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResourceMap("/icons/pull.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-
-			 JButton jPullButton = new JButton("Pull", pullIcon);
-			 AbstractButton pullButton =
-						MacButtonFactory.makeUnifiedToolBarButton(jPullButton);
-			 pullButton.setEnabled(true);
-			 jPullButton.setBorder(new LineBorder(Color.BLACK, 0));
-
-			 toolBar.addComponentToRight(pullButton, 10);
-  */
-/*
-        // Lock File
-        Icon lockIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                getClass().getResourceMap("/icons/lock.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-        JButton jLockButton = new JButton("Lock File", lockIcon);
-        AbstractButton lockButton =
-                MacButtonFactory.makeUnifiedToolBarButton(
-                        jLockButton);
-        lockButton.setEnabled(false);
-        jLockButton.setBorder(new LineBorder(Color.BLACK, 0));
-        toolBar.addComponentToRight(lockButton, 10);
-*/
-
-		Icon inspectorIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32,
-						Image.SCALE_SMOOTH));
-		JButton inspectorJButton = new JButton("Inspector", inspectorIcon);
-		inspectorJButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent event) {
-				setInspectorEnabled(!isInspectorEnabled());
-			}
-		});
-
-
-		// The mighty Inspector
-		inspectorButton = MacButtonFactory.makeUnifiedToolBarButton(inspectorJButton);
-		inspectorButton.setEnabled(true);
-		inspectorJButton.setBorder(new LineBorder(Color.BLACK, 0));
-		toolBar.addComponentToRight(inspectorButton, 10);
-
-
-		//announceButton.setBackground(Color.);
-
-		/*
-				  JButton annouceButton = new JButton("Announce");
-				  annouceButton.putClientProperty("JButton.buttonType", "textured");
-					*/
-		//toolBar.addComponentToLeft(announceButton);
-		//toolBar.add(announceButton);
-
-
-		searchField = new SearchField();
-		searchField.putClientProperty("JTextField.variant", "search");
-		searchField.setSendsNotificationForEachKeystroke(true);
-		toolBar.addComponentToRight(
-						new LabeledComponentGroup("Search", searchField).getComponent());
-
-		final FilePanel filePanelp = filePanel;
-		searchField.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				log.debug("Search field: " + e.getActionCommand());
-				if (e.getActionCommand().equals("")) {
-					filePanelp.resetFilter();
-					NotesPanel.getInstance().resetFilter();
-				} else {
-					try {
-						PatternFilter fileFilter = new FileObjectNameFilter(
-										e.getActionCommand());
-						PatternFilter notesFilter = new PatternFilter(e.getActionCommand(), 0,
-										2);
-
-						FilterPipeline filePipeline = new FilterPipeline(fileFilter);
-						FilterPipeline notesPipeline = new FilterPipeline(notesFilter);
-
-						filePanelp.switchToFlatAndFilter(filePipeline);
-
-						NotesPanel.getInstance().setFilter(notesPipeline);
-					} catch (PatternSyntaxException ex) {
-						log.info("Invalid regex was entered in search field", ex);
-					}
-				}
-			}
-		});
-
-		toolBar.addComponentToCenter(
-						new LabeledComponentGroup("View", contextSwitcherPane).getComponent());
-
-		toolBar.installWindowDraggerOnWindow(this.getFrame());
-
-		updateToolBar();
-		return toolBar;
-	}
-
-
-	/**
-	 * Enables/disables the toolbar depending on current dataset
-	 */
-	private void updateToolBar() {
-		boolean hasProject = getProject() != null;
-		boolean isInvite = getProject() != null && getProject()
-						.getInvitationState() == InvitationState.INVITED;
-		boolean isProjectContext = getContextViewPanel() == ContextPanelEnum.Project;
-		boolean hasUser = JakeMainApp.getMsgService() != null;
-
-		createProjectButton.setEnabled(hasUser);
-		addFilesButton.setEnabled(hasProject && !isInvite);
-		invitePeopleButton.setEnabled(hasProject && !isInvite);
-		for (JToggleButton btn : contextSwitcherButtons) {
-			btn.setEnabled(isProjectContext && hasProject && !isInvite);
-		}
-		inspectorButton.setEnabled(isInspectorAllowed());
-		searchField.setEditable(hasProject);
-	}
 
 	/**
 	 * Checks if the inspector is allowed to be displayed.
 	 *
 	 * @return true if CAN be displayed with current content.
 	 */
-	private boolean isInspectorAllowed() {
+	protected boolean isInspectorAllowed() {
 		boolean hasProject = getProject() != null;
-		boolean isFilePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Files;
-		boolean isNotePaneOpen = getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Notes;
+		boolean isFilePaneOpen =
+						getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Files;
+		boolean isNotePaneOpen =
+						getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Notes;
 
 		return hasProject && (isFilePaneOpen || isNotePaneOpen);
 	}
@@ -584,8 +407,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 */
 	public void setProjectViewFromToolBarButtons() {
 		// determine toggle button selection
-		if (contextSwitcherButtons.get(ProjectView.News.ordinal())
-						.isSelected()) {
+		if (contextSwitcherButtons.get(ProjectView.News.ordinal()).isSelected()) {
 			setProjectViewPanel(ProjectView.News);
 		} else if (contextSwitcherButtons.get(ProjectView.Files.ordinal())
 						.isSelected()) {
@@ -613,8 +435,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		switcherPanel.setOpaque(false);
 
 		ButtonGroup switcherGroup = new ButtonGroup();
-		contextSwitcherButtons = SegmentButtonCreator
-						.createSegmentedTexturedButtons(3, switcherGroup);
+		contextSwitcherButtons =
+						SegmentButtonCreator.createSegmentedTexturedButtons(3, switcherGroup);
 
 		contextSwitcherButtons.get(0).setText("Project");
 		contextSwitcherButtons.get(1).setText("Files");
@@ -709,8 +531,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		// refresh panel
 		contentPanel.updateUI();
 
-		log.debug(
-						"now: isInspectorEnabled: " + isInspectorEnabled() + " isInspectorPanelVisible: " + isInspectorPanelVisible() + " isInspectorAllowed: " + isInspectorAllowed());
+		log.debug("now: isInspectorEnabled: " + isInspectorEnabled() + " isInspectorPanelVisible: " + isInspectorPanelVisible() + " isInspectorAllowed: " + isInspectorAllowed());
 	}
 
 	private boolean isInspectorPanelVisible() {
@@ -748,7 +569,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 	 * Updates the window
 	 */
 	private void updateAll() {
-		updateToolBar();
+		jakeToolbar.updateToolBar();
 		updateTitle();
 		updateView();
 	}
@@ -778,12 +599,12 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		boolean canBeSelected = getContextViewPanel() == ContextPanelEnum.Project;
 		log.debug("updateProjectToggleButtons. canBeSelected=" + canBeSelected);
 
-		contextSwitcherButtons.get(ProjectView.News.ordinal()).setSelected(
-						canBeSelected && getProjectViewPanel() == ProjectView.News);
-		contextSwitcherButtons.get(ProjectView.Files.ordinal()).setSelected(
-						canBeSelected && getProjectViewPanel() == ProjectView.Files);
-		contextSwitcherButtons.get(ProjectView.Notes.ordinal()).setSelected(
-						canBeSelected && getProjectViewPanel() == ProjectView.Notes);
+		contextSwitcherButtons.get(ProjectView.News.ordinal())
+						.setSelected(canBeSelected && getProjectViewPanel() == ProjectView.News);
+		contextSwitcherButtons.get(ProjectView.Files.ordinal())
+						.setSelected(canBeSelected && getProjectViewPanel() == ProjectView.Files);
+		contextSwitcherButtons.get(ProjectView.Notes.ordinal())
+						.setSelected(canBeSelected && getProjectViewPanel() == ProjectView.Notes);
 
 		// adapt button style
 		for (JToggleButton btn : contextSwitcherButtons) {
@@ -817,7 +638,7 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		updateSourceListVisibility();
 
 		// toolbar changes with viewPort
-		updateToolBar();
+		jakeToolbar.updateToolBar();
 	}
 
 	private void updateSourceListVisibility() {
@@ -859,8 +680,8 @@ public class JakeMainView extends FrameView implements ProjectSelectionChanged, 
 		//log.debug("updating view");
 		Project pr = getProject();
 
-		boolean needsInvite = pr != null && pr
-						.getInvitationState() == InvitationState.INVITED;
+		boolean needsInvite =
+						pr != null && pr.getInvitationState() == InvitationState.INVITED;
 		// determine what to show
 		if (pr == null) {
 			setContextViewPanel(ContextPanelEnum.Login);

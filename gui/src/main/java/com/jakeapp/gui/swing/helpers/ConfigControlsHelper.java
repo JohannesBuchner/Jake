@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.gui.swing.renderer.EventCellRenderer;
+import com.explodingpixels.macwidgets.MacFontUtils;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class ConfigControlsHelper {
 		table.setEditable(false);
 		table.setDoubleBuffered(true);
 		table.setRolloverEnabled(false);
+		table.setFont(MacFontUtils.ITUNES_FONT);
 	}
 
 

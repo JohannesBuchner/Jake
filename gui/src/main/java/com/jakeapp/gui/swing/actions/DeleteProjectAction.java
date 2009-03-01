@@ -29,22 +29,6 @@ public class DeleteProjectAction extends ProjectAction {
 		log.info("Delete Project: " + getProject());
 
 		DeleteProjectDialog.showDialog(getProject());
-
-		/*
-		Object[] options = {JakeMainView.getMainView().getResourceMap().getString("confirmDeleteProjectDelete"), JakeMainView.getMainView().getResourceMap().getString("GenericCancel")};
-
-		JSheet.showOptionSheet(JakeMainView.getMainView().getFrame(),
-				  JakeMainView.getMainView().getResourceMap().getString("confirmDeleteProject"),
-				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0], new SheetListener() {
-
-					  @Override
-					  public void optionSelected(SheetEvent evt) {
-						  if (evt.getOption() == 0) {
-							  JakeMainApp.getApp().getCore().deleteProject(getProject(), deleteFilesCheckBox.isSelected());
-						  }
-					  }
-				  });
-				  */
 	}
 
 

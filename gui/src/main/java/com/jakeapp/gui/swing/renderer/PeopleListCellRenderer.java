@@ -69,7 +69,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		} else {
 			// TODO: localize!
 			valStr =
-							"<html><b>" + "You (" + nickOrFullName + ")</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+							"<html><b>You</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
 		}
 
 		/* The DefaultListCellRenderer class will take care of

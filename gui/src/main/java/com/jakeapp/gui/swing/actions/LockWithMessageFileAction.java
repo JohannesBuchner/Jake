@@ -1,14 +1,10 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-
-import javax.swing.*;
-
 import org.jdesktop.application.ResourceMap;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 /**
  * Action for locking files with a message. No batch processing.
@@ -41,6 +37,7 @@ public class LockWithMessageFileAction extends FileAction {
 	public void actionPerformed(ActionEvent e) {
 
 		String promptStr = this.resourceMap.getString("promptLockWithComment");
+		// FIXME: sheet!
 		String comment = JOptionPane.showInputDialog(promptStr, null);
 		
 		//TODO lock with comment 
