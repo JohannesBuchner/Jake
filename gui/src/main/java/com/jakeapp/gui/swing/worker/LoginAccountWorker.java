@@ -4,7 +4,6 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
 
 /**
@@ -14,7 +13,8 @@ import org.apache.log4j.Logger;
 /**
  * Private inner worker for account registration.
  */
-public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Boolean> {
+public class LoginAccountWorker
+				extends SwingWorkerWithAvailableLaterObject<Boolean> {
 	private static final Logger log = Logger.getLogger(LoginAccountWorker.class);
 
 	private MsgService msg;
@@ -31,8 +31,7 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Bool
 		this.password = password;
 		this.rememberPassword = rememberPassword;
 
-		log.info(
-						"Login Account Worker: " + msg + " pw: " + password + " remember: " + rememberPassword);
+		log.info("Login Account Worker: " + msg + " pw: " + password + " remember: " + rememberPassword);
 	}
 
 	@Override
@@ -55,7 +54,8 @@ public class LoginAccountWorker extends SwingWorkerWithAvailableLaterObject<Bool
 			}
 		} catch (Exception e) {
 			log.warn("Login failed: " + e);
-			ExceptionUtilities.showError(e);
+			//ExceptionUtilities.showError("Log In did not succeed.", e);
+			JakeStatusBar.showMessage("Logging in unsuccessful: " + e.getMessage(), 100);
 		}
 	}
 }
