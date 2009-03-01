@@ -1,13 +1,17 @@
 package com.jakeapp.gui.swing.actions;
 
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.PullJakeObjectsWorker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class PullFileAction extends FileAction {
 	public PullFileAction() {
@@ -28,11 +32,8 @@ public class PullFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		try {
-			// TODO: save object, or rely on events?
-			JakeMainApp.getCore().pullJakeObject(this.getSelectedFile());
-		} catch (FileOperationFailedException ex) {
-			ExceptionUtilities.showError(ex);
-		}
+		ArrayList<JakeObject> jos = new ArrayList<JakeObject>(this.getSelectedFiles().size());
+		jos.addAll(this.getSelectedFiles());
+		JakeExecutor.exec(new PullJakeObjectsWorker(jos));
 	}
 }

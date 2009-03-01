@@ -901,17 +901,23 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo)
 					throws FileOperationFailedException {
+		return this.pullJakeObjects(Arrays.asList(jo));
+	}
+
+	@Override
+	public AvailableLaterObject<Void> pullJakeObjects(
+			List<JakeObject> jakeObjects) throws FileOperationFailedException {
 		ISyncService iss;
 		AvailableLaterObject<Void> result;
 
 		try {
-			iss = this.getFrontendService().getSyncService(this.getSessionId());
-			result = new PullFuture(iss, jo);
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-			throw new FileOperationFailedException(e);
-		}
-
+			iss = this.frontendService.getSyncService(this.getSessionId());
+			result = new PullFuture(iss, jakeObjects);
+			} catch (FrontendNotLoggedInException e) {
+				this.handleNotLoggedInException(e);
+				throw new FileOperationFailedException(e);
+			}
+			
 		return result.start();
 	}
 
@@ -1059,4 +1065,5 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new FileOperationFailedException(e);
 		}
 	}
+
 }

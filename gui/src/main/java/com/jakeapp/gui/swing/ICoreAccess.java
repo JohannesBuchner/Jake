@@ -374,7 +374,8 @@ public interface ICoreAccess {
 
 
 	/**
-	 * @param jo
+	 * Pull singe file from a remote peer.
+	 * @param jo the jakeObject that should be pulled.
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 * @throws OtherUserOfflineException
@@ -385,6 +386,15 @@ public interface ICoreAccess {
 	 */
 	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo)
 					throws FileOperationFailedException;
+	
+	/**
+	 * Pull a list of files from remote peers.
+	 * @param jakeObjects the list of files that are to be pulled
+	 * @return
+	 * @throws FileOperationFailedException
+	 */
+	public AvailableLaterObject<Void> pullJakeObjects(List<JakeObject> jakeObjects)
+					throws FileOperationFailedException; 
 
 	/**
 	 * Creates a folder at a given point in the relative path hierarchy of a project
