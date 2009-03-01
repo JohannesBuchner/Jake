@@ -883,6 +883,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					List<T> jos, String commitMsg) throws FileOperationFailedException {
 		ISyncService iss;
 		AvailableLaterObject<Void> result;
+		
+		if (commitMsg==null) commitMsg = "";
 
 		try {
 			iss = this.frontendService.getSyncService(this.getSessionId());
@@ -892,7 +894,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new FileOperationFailedException(e);
 		}
 
-		return result.start();
+		return result;
 	}
 
 	@Override

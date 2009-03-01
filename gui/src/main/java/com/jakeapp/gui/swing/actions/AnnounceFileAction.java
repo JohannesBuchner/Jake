@@ -1,11 +1,15 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.JakeExecutor;
+import com.jakeapp.gui.swing.worker.AnnounceJakeObjectWorker;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -13,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 public class AnnounceFileAction extends FileAction {
+	private static final long serialVersionUID = 1L;
 	private static final Logger log = Logger.getLogger(AnnounceFileAction.class);
 
 	public AnnounceFileAction() {
@@ -33,11 +38,8 @@ public class AnnounceFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<FileObject> files = getSelectedFiles();
-
-		try {
-			JakeMainApp.getCore().announceJakeObjects(files, null);
-		} catch (FileOperationFailedException ex) {
-			ExceptionUtilities.showError(ex);
-		}
+		ArrayList<JakeObject> jos = new ArrayList<JakeObject>(files.size());
+		jos.addAll(files);
+		JakeExecutor.exec(new AnnounceJakeObjectWorker(jos,null));
 	}
 }

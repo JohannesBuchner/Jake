@@ -216,10 +216,22 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void announce(JakeObject jo, LogAction action, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
+		NoteObject note=null;
+		FileObject fo=null;
+		LogEntry<JakeObject> le;
+		
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
 
-		LogEntry<JakeObject> le;
+		jo = completeIncomingObjectSafe(jo);
+		/*
+		if (isNoteObject(jo)) {
+			note = completeIncomingObjectOrNew((NoteObject) jo);
+		} else {
+			fo = completeIncomingObjectOrNew((FileObject) jo);
+		}
+		*/
+		
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
                 le = new JakeObjectNewVersionLogEntry(jo, getMyProjectMember(jo
@@ -237,15 +249,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 		log.debug("prepared logentry");
 		if (isNoteObject(jo)) {
 			log.debug("storing note ...");
-			NoteObject note;
-			note = completeIncomingObjectOrNew((NoteObject) jo);
+			note = (NoteObject)jo;
 			db.getNoteObjectDao(jo.getProject()).persist(note);
 			db.getLogEntryDao(jo).create(le);
 			log.debug("storing note done.");
 		} else {
 			log.debug("getting file hash ....");
-			FileObject fo;
-			fo = completeIncomingObjectOrNew((FileObject) jo);
+			fo = (FileObject)jo;
 			if (action == LogAction.JAKE_OBJECT_NEW_VERSION)
 				le.setChecksum(fss.calculateHashOverFile(fo.getRelPath()));
 			log.debug("getting file hash done. storing ...");
@@ -268,7 +278,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 		try {
 			return completeIncomingObject(jo);
 		} catch (NoSuchJakeObjectException e) {
-			return new FileObject(jo.getProject(), jo.getRelPath());
+			return new FileObject(UUID.randomUUID(),jo.getProject(), jo.getRelPath());
 		}
 	}
 
@@ -545,6 +555,19 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 
 		return null;
+	}
+	
+	/**
+	 * Avoiding stub objects (without ID)
+	 */
+	@SuppressWarnings("unchecked")
+	@Transactional
+	private JakeObject completeIncomingObjectSafe(JakeObject join) {
+		if (isNoteObject(join)) {
+			return this.completeIncomingObjectOrNew((NoteObject)join);
+		} else {
+			return this.completeIncomingObjectOrNew((FileObject)join);
+		}
 	}
 
 	/**

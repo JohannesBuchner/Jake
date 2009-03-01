@@ -10,20 +10,21 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class AnnounceJakeObjectWorker extends SwingWorkerWithAvailableLaterObject<Void> {
-	private JakeObject jo;
+	private List<JakeObject> jos;
 	private String commitMessage;
 
-	public AnnounceJakeObjectWorker(JakeObject jo, String commitMessage) {
-		this.jo = jo;
-		this.commitMessage = commitMessage;
+	public AnnounceJakeObjectWorker(List<JakeObject> jos, String commitMessage) {
+		this.jos = jos;
+		this.commitMessage = (commitMessage==null)?"":commitMessage;
 	}
 
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
 		try {
-			return JakeMainApp.getCore().announceJakeObject(jo, commitMessage);
+			return JakeMainApp.getCore().announceJakeObjects(jos, commitMessage);
 		} catch (FileOperationFailedException e) {
 			return new AvailableErrorObject<Void>(e);
 		}
