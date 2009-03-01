@@ -107,11 +107,7 @@ public class MsgServiceFactory {
 		if (needsInitialization)
 			msgService.setUserId(createUserforMsgService(credentials));
 
-		log.debug("resulting MsgService is " + msgService.getServiceCredentials()
-						.getProtocol() + " for " + msgService.getServiceCredentials()
-						.getUserId() + " pwl: " + msgService.getServiceCredentials()
-						.getPlainTextPassword().length() + "with UserId: " + msgService
-						.getUserId() + " and its status is: " + msgService.getVisibilityStatus());
+		log.debug("resulting MsgService is " + msgService);
 
 		return msgService;
 	}
