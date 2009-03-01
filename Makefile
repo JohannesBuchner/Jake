@@ -21,15 +21,11 @@ help:
 
 # @start: start gui with simple install (no dependency system)
 start: install
-	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
+	cd gui; ${MVN} exec:java
 
 # @depstart: start gui with dependency system
 depstart: gui 
-	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=no
-# mockstart: start gui (with mock backend) with simple install
-# 				(no dependency system)
-mockstart: install
-	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.test.usemock=yes
+	cd gui; ${MVN} exec:java
 
 # instantquit: start gui and quit it immediatly (for debugging spring)
 instantquit: gui
@@ -120,4 +116,4 @@ generateDaos:
 # Linux. 
 # 
 
-.PHONY: install gui core fss ics ics-xmpp commander start depstart mockstart instantquit quickstart console clean mrproper lazyclean up
+.PHONY: install gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
