@@ -21,7 +21,7 @@ public interface IServiceCredentialsDao {
      * @throws SQLException if a database error occured
 		 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
-    public ServiceCredentials persist(ServiceCredentials credentials) throws InvalidCredentialsException;
+    public ServiceCredentials create(ServiceCredentials credentials) throws InvalidCredentialsException;
 
 
     /**

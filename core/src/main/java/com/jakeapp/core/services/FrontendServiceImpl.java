@@ -238,7 +238,7 @@ public class FrontendServiceImpl implements IFrontendService {
 			  ProtocolNotSupportedException {
 		checkSession(sessionId);
 
-		return msgServiceFactory.addMsgService(credentials);
+		return msgServiceFactory.getByCredentials(credentials);
 	}
 
 	@SuppressWarnings("unchecked")

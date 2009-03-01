@@ -181,7 +181,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
 		if (p.getMessageService() == null)
 			p.setMessageService(msgServiceFactory.getByCredentials(p.getCredentials()));
-
+		
+		if(p.getCredentials() != p.getMessageService().getServiceCredentials()){
+			p.setCredentials(p.getMessageService().getServiceCredentials());
+			this.getProjectDao().update(p);
+		}
+		
 		// make sure the projects have fileservices
 		try {
 			this.getProjectsFileServices().startForProject(p);

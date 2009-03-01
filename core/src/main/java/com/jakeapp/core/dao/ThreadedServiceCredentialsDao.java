@@ -22,14 +22,14 @@ public class ThreadedServiceCredentialsDao implements IServiceCredentialsDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public ServiceCredentials persist(final ServiceCredentials credentials) 			throws InvalidCredentialsException {
+	public ServiceCredentials create(final ServiceCredentials credentials) 			throws InvalidCredentialsException {
 		
 		try {
 			return SpringThreadBroker.getInstance().doTask(new InjectableTask<ServiceCredentials>() {
 
 				@Override
 				public ServiceCredentials calculate() throws Exception {
-					return ThreadedServiceCredentialsDao.this.dao.persist(credentials);
+					return ThreadedServiceCredentialsDao.this.dao.create(credentials);
 				}
 			});
 		} catch (RuntimeException e) {

@@ -72,7 +72,7 @@ public class AllProjectFilesFutureTest extends AbstractJUnit4SpringContextTests 
         
         project.setCredentials(new ServiceCredentials("foo@bar", "", ProtocolType.XMPP));
         
-        serviceCredentialsDao.persist(project.getCredentials());
+        serviceCredentialsDao.create(project.getCredentials());
         projectDao.create(project);
 
         System.out.println("success");

@@ -183,7 +183,9 @@ public class ServiceCredentials implements Serializable {
 	}
 
 	@Column(name = "protocol")
-	private String getProtocolType() {
+	public String getProtocolType() {
+		if(this.protocol == null)
+			return "";
 		return this.protocol.toString();
 	}
 
@@ -243,5 +245,11 @@ public class ServiceCredentials implements Serializable {
 		result = 31 * result + (encryptionUsed ? 1 : 0);
 		result = 31 * result + ((resourceName==null)?0:resourceName.hashCode());
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ":" + this.getProtocol() + ":"
+				+ this.getUserId() + " [" + this.getUuid() + "]";
 	}
 }

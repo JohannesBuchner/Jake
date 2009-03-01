@@ -90,6 +90,11 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 */
 	private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
 	
+	/**
+	 * key is the UUID
+	 */
+	private Map<String, ProjectRequestListener> projectRequestListeners = new HashMap<String, ProjectRequestListener>();
+	
 	private ChangeListener getProjectChangeListener(Project p) {
 		return (p==null)?null:
 			projectChangeListeners.get(p.getProjectId());
@@ -814,7 +819,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void startServing(Project p, ChangeListener cl) throws ProjectException {
 		log.debug("starting Project " + p);
 		// this creates the ics
-		ProjectRequestListener prl = new ProjectRequestListener(p);
+		
+		
+		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
+		if(prl == null) {
+			prl = new ProjectRequestListener(p);
+			projectRequestListeners.put(p.getProjectId(), prl);
+		}
 		try {
 			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl, p.getProjectId());
 		} catch (Exception e) {
@@ -928,19 +939,20 @@ public class SyncServiceImpl extends FriendlySyncService {
 		@Override
 		public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
 			// TODO Auto-generated method stub
-			log.info("Online status of " + userid.getUserId() + " changed...");
+			log.info("Online status of " + userid.getUserId() + " changed... (Project "
+					+ p + ")");
 		}
 
 		@Override
 		public void loginHappened() {
 			// TODO Auto-generated method stub
-			log.info("We logged in!");
+			log.info("We logged in with project " + this.p);
 		}
 
 		@Override
 		public void logoutHappened() {
 			// TODO Auto-generated method stub
-		   log.info("We logged out!");
+		   log.info("We logged out with project " + this.p);
 		}
 	}
 
@@ -1073,11 +1085,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	@Override
 	public void stopServing(Project p) {
+		log.debug("stopping project " + p);
+		
 		runningProjects.remove(p.getProjectId());
 		projectChangeListeners.remove(p.getProjectId());
 
 		try {
-			getICS(p).getStatusService().logout();
+			p.getMessageService().deactivateSubsystem(getICS(p));
 		} catch (TimeoutException e) {
 			log.debug("logout failed", e);
 		} catch (NetworkException e) {

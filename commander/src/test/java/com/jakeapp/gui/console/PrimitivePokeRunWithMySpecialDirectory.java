@@ -35,15 +35,15 @@ public class PrimitivePokeRunWithMySpecialDirectory extends TestDBEnabledTestCas
 	public void setup() throws Exception {
 		super.setup();
 
-		this.user = XmppTestEnvironment.getXmppId("lisa");
-		this.password = "jake";
-		XmppTestEnvironment.assureUserExists(XmppTestEnvironment.getHost(), "lisa", this.password);
+		this.user = XmppTestEnvironment.getXmppId("testuser1");
+		this.password = "testpasswd1";
+		XmppTestEnvironment.assureUserExists(XmppTestEnvironment.getHost(), "testuser1", this.password);
 	}
 
 	@Override
 	protected String getDbTemplateName() {
 		// it's EPIC, man!
-		return "epicfail";
+		return "otheruserWithSameProjectEmpty";
 	}
 
 	@Test
@@ -54,6 +54,7 @@ public class PrimitivePokeRunWithMySpecialDirectory extends TestDBEnabledTestCas
 		fifo.addLine("login");
 		fifo.addLine("listProjects");
 		fifo.addLine("selectFirstProject");
+		fifo.addLine("startProject");
 		fifo.addLine("poke " + this.user);
 		fifo.addLine("coreLogout");
 		fifo.addLine("stop");

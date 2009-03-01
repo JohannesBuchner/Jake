@@ -41,6 +41,8 @@ public abstract class MsgService<T extends UserId> {
 
 	protected ICSManager icsManager;
 
+	protected boolean shouldBeLoggedIn = false;
+
 	static class ICData {
 
 		public ICData(String name, ILoginStateListener loginStateListener,
@@ -69,27 +71,28 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	public ICSManager getIcsManager() {
-		return icsManager;
+		return this.icsManager;
 	}
 
 	/**
-	 * @return Servicecredentials if they are already set.
+	 * @return {@link ServiceCredentials} if they are already set.
 	 */
 	protected ServiceCredentials getServiceCredentials() {
-		return serviceCredentials;
+		return this.serviceCredentials;
 	}
 
 	/**
 	 * This method gets called by clients to login on this message service.
 	 * 
 	 * @return true on success, false on wrong password
-	 * @throws NetworkException 
-	 * @throws TimeoutException 
+	 * @throws NetworkException
+	 * @throws TimeoutException
 	 */
 	public final boolean login() throws NetworkException {
 		boolean result;
 
 		log.debug("calling plain login");
+		this.shouldBeLoggedIn = true;
 
 		if (this.getServiceCredentials() == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
@@ -97,11 +100,11 @@ public abstract class MsgService<T extends UserId> {
 		if (!checkCredentials())
 			return false;
 
-		log.debug("before doLogin: " + this.getVisibilityStatus());
+		log.debug("before doLogin: " + this.getCurrentVisibilityStatus());
 		result = this.doLogin();
-		log.debug("plain login has happened " + this.getVisibilityStatus());
+		log.debug("plain login has happened " + this.getCurrentVisibilityStatus());
 		updateActiveSubsystems();
-		
+
 
 		return result;
 	}
@@ -110,7 +113,7 @@ public abstract class MsgService<T extends UserId> {
 	public final boolean login(String newPassword, boolean shouldSavePassword)
 			throws NetworkException {
 		boolean result = false;
-		
+
 		log.debug("calling login with newPwd-Size: " + newPassword.length()
 				+ ", shouldSave: " + shouldSavePassword);
 
@@ -121,7 +124,7 @@ public abstract class MsgService<T extends UserId> {
 		this.getServiceCredentials().setSavePassword(shouldSavePassword);
 
 		result = this.login();
-		
+
 		/* store */
 		// get Service credentials
 		if (this.getServiceCredentials() != null) {
@@ -131,7 +134,7 @@ public abstract class MsgService<T extends UserId> {
 			try {
 				MsgService.serviceCredentialsDao.update(getServiceCredentials());
 			} catch (NoSuchServiceCredentialsException e) {
-				MsgService.serviceCredentialsDao.persist(getServiceCredentials());
+				MsgService.serviceCredentialsDao.create(getServiceCredentials());
 			}
 		}
 
@@ -173,12 +176,14 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * idempotent
-	 * @throws NetworkException 
-	 * @throws TimeoutException 
+	 * 
+	 * @throws NetworkException
+	 * @throws TimeoutException
 	 * 
 	 * @throws Exception
 	 */
 	public final void logout() throws NetworkException {
+		this.shouldBeLoggedIn = false;
 		log.debug("MsgService -> logout");
 		this.doLogout();
 
@@ -187,8 +192,9 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * has to be idempotent
-	 * @throws NetworkException 
-	 * @throws TimeoutException 
+	 * 
+	 * @throws NetworkException
+	 * @throws TimeoutException
 	 * 
 	 * @throws Exception
 	 */
@@ -201,26 +207,44 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	public VisibilityStatus getVisibilityStatus() {
-		if (this.getMainIcs() == null) {
-			throw new IllegalStateException("no main ics");
-		}
-		if (this.getMainIcs().getStatusService().isLoggedIn())
+		if (this.getMainIcs().getStatusService().isLoggedIn()) {
 			return VisibilityStatus.ONLINE;
-		else {
-			// FIXME: projects don't go online if we set offline here. Why?
-			log.debug("Main ICS says we are offline, we don't believe that (workaround!)");
-			// FIXME: This needs to be fixed - but **elsewhere**
-			// @christopher: There was a reason for this being here ;)
-		   //    setting it to offline breaks the intarnets!!!!111
-			//return VisibilityStatus.ONLINE;
-			
-			//it seems to work now...
-			// FIXME: NO IT DOESN'T!!!!!!!!1111 ;)
-			// TODO: over 9000 fails!!!
-			// FIXME: Apparently it still doesn't work. E-p-i-c f-a-i-l.
-			// Apparently it does now. Or maybe I'm just imagining things. *pray*
+		} else {
+			if (this.shouldBeLoggedIn) {
+				tryToFixLoggedIn();
+				if(this.getMainIcs().getStatusService().isLoggedIn()) {
+					return VisibilityStatus.ONLINE;
+				}else{
+					// FIXME: projects don't go online if we set offline here. Why?
+					log.error("We are unexpectedly offline");
+					// FIXME: This needs to be fixed - but **elsewhere**
+					// @christopher: There was a reason for this being here ;)
+					// setting it to offline breaks the intarnets!!!!111
+					// return VisibilityStatus.ONLINE;
+					return VisibilityStatus.OFFLINE;
+				}
+			}else{
+				return VisibilityStatus.OFFLINE;
+			}
+		}
+	}
+	
+	private VisibilityStatus getCurrentVisibilityStatus() {
+		if (this.getMainIcs().getStatusService().isLoggedIn()) {
+			return VisibilityStatus.ONLINE;
+		} else {
 			return VisibilityStatus.OFFLINE;
-		}                                 
+		}
+	}
+
+	private void tryToFixLoggedIn() {
+		try {
+			// log.debug("trying to fix login status ...");
+			boolean result = this.doLogin();
+			log.debug("trying to fix login status: " + result);
+		} catch (NetworkException e) {
+			//log.debug("trying to fix login status failed", e);
+		}
 	}
 
 	public T getUserId() {
@@ -281,9 +305,11 @@ public abstract class MsgService<T extends UserId> {
 	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
 
 	private void updateActiveSubsystems() throws NetworkException {
+		log.debug("main ics is logged in? " + getCurrentVisibilityStatus());
 		for (Entry<ICService, ICData> el : this.activeSubsystems.entrySet()) {
 			this.updateSubsystemStatus(el.getKey(), el.getValue());
 		}
+		log.debug("main ics is logged in? " + getCurrentVisibilityStatus());
 	}
 
 	public void activateSubsystem(ICService ics, IMessageReceiveListener receiveListener,
@@ -292,15 +318,14 @@ public abstract class MsgService<T extends UserId> {
 
 		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
-		log.debug("before updateSubSystemStatus: " + this.getVisibilityStatus());
+		log.debug("before updateSubSystemStatus: " + this.getCurrentVisibilityStatus());
 		updateSubsystemStatus(ics, listeners);
-		log.debug("after updateSubSystemStatus: " + this.getVisibilityStatus());
+		log.debug("after updateSubSystemStatus: " + this.getCurrentVisibilityStatus());
 	}
 
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
 			throws NetworkException {
-		log.warn("updating status of " + ics + " to match "
-						+ this.getVisibilityStatus());
+		log.warn("updating status of " + ics + " to match " + this.getVisibilityStatus());
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = this.getIcsUser(ics, listeners);
 			log.debug("logging in " + user);
@@ -352,10 +377,10 @@ public abstract class MsgService<T extends UserId> {
 			return false;
 		return true;
 	}
-	
+
 	public String toString() {
 		return this.getProtocolType() + " - user: " + getMainUserId() + " - "
-				+ this.getVisibilityStatus();
+				+ this.getCurrentVisibilityStatus();
 	}
 
 }

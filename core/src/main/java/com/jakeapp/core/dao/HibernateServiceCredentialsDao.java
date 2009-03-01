@@ -23,7 +23,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 
 
 	@Override
-	public ServiceCredentials persist(ServiceCredentials credentials)
+	public ServiceCredentials create(ServiceCredentials credentials)
 			throws InvalidCredentialsException {
 		if (credentials == null)
 			throw new InvalidCredentialsException();
@@ -45,16 +45,12 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 
 
 		log.debug("persisting ServiceCredentials with uuid " + credentials.getUuid());
-
+		
+		// TODO: beautify. 
 		try {
-			this.read(credentials.getUuid());
-			this.update(credentials);
-		} catch (NoSuchServiceCredentialsException e1) {
-			try {
-				getHibernateTemplate().persist(credentials);
-			} catch (DataAccessException e) {
-				throw new InvalidCredentialsException(e);
-			}
+			getHibernateTemplate().persist(credentials);
+		} catch (DataAccessException e) {
+			throw new InvalidCredentialsException(e);
 		}
 		credentials.setPlainTextPassword(origpw);
 		return credentials;
@@ -75,6 +71,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ServiceCredentials> getAll() {
 
@@ -88,7 +85,20 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 	@Override
 	public ServiceCredentials update(ServiceCredentials credentials)
 			throws NoSuchServiceCredentialsException {
+		if (credentials == null)
+			throw new InvalidCredentialsException();
 
+		if (credentials.getUuid() == null) {
+			credentials.setUuid(UUID.randomUUID());
+		}
+		
+		if (credentials.getUserId() == null)
+			throw new InvalidCredentialsException();
+
+		if (credentials.getServerAddress() == null)
+			throw new InvalidCredentialsException();
+
+		String origpw = credentials.getPlainTextPassword();
 		if (!credentials.isSavePassword()) {
 			credentials.setPlainTextPassword("");
 		}
@@ -100,6 +110,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 			throw new NoSuchServiceCredentialsException(e);
 		}
 
+		credentials.setPlainTextPassword(origpw);
 		return credentials;
 	}
 
