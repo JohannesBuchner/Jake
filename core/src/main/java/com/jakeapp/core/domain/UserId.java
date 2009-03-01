@@ -29,7 +29,7 @@ public class UserId implements ILogable {
 
 	private String userId;
 
-	private transient ProtocolType protocolType;
+	private ProtocolType protocolType;
 
 	public void setUserId(String userId) {
 		this.userId = userId;

@@ -10,7 +10,6 @@ import javax.persistence.DiscriminatorValue;
 
 
 @Entity
-@DiscriminatorColumn(name = "action")
 @DiscriminatorValue(value = "START_TRUSTING_PROJECTMEMBER")
 public class StartTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
   	public StartTrustingProjectMemberLogEntry(UserId userId, UserId me)

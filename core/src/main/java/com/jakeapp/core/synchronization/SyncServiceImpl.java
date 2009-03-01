@@ -91,6 +91,16 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private IProjectsFileServices projectsFileServices;
 
+	private LogEntrySerializer logEntrySerializer;
+
+	public LogEntrySerializer getLogEntrySerializer() {
+		return logEntrySerializer;
+	}
+
+	public void setLogEntrySerializer(LogEntrySerializer logEntrySerializer) {
+		this.logEntrySerializer = logEntrySerializer;
+	}
+
 	/**
 	 * key is the UUID
 	 */
@@ -965,14 +975,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 		try {
 			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
 
-			LogEntrySerializer robot = new LogEntrySerializer();
 
 			StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
 
 			log.debug("Starting to process log entries...");
 			for(LogEntry l: logs) {
 				try {
-					sb.append(BEGIN_LOGENTRY).append(robot.serialize(l, project)).append(END_LOGENTRY);
+					sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
 					log.debug("Serialised log entry, new sb content: " + sb.toString());
 				} catch(Throwable e) {
 					log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
