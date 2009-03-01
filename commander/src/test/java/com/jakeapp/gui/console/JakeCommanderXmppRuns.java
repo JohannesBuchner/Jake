@@ -20,9 +20,9 @@ import com.jakeapp.jake.test.XmppTestEnvironment;
 public class JakeCommanderXmppRuns extends TestDBEnabledTestCase {
 
 	private static XmppUserId testUser1 = new XmppUserId(XmppTestEnvironment
-			.getXmppId("testuser1"));
+			.getXmppId("myuser1"));
 
-	private static String testUser1Passwd = "testpasswd1";
+	private static String testUser1Passwd = "mypasswd1";
 
 	private static final String project = "testproject1";
 
