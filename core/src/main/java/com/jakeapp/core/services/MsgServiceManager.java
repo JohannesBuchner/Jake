@@ -131,6 +131,13 @@ public class MsgServiceManager {
 		}
 	}
 
+	public List<MsgService<UserId>> getLoaded() {
+		List<MsgService<UserId>> result = new ArrayList<MsgService<UserId>>();
+		result.addAll(this.msgServices.values());
+		log.debug("got " + result.size() + " messageservices");
+		return result;
+	}
+
 	@Transactional
 	public List<MsgService<UserId>> getAll() {
 		log.debug("calling getAll");
@@ -155,10 +162,7 @@ public class MsgServiceManager {
 				}
 			}
 		}
-		List<MsgService<UserId>> result = new ArrayList<MsgService<UserId>>();
-		result.addAll(this.msgServices.values());
-		log.debug("got " + result.size() + " messageservices");
-		return result;
+		return getLoaded();
 	}
 
 	/**

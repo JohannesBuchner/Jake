@@ -913,13 +913,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			// subtract all people that are already in the project
 			possibleUsers.removeAll(this.getLogEntryDao(project)
 					.getCurrentProjectMembers());
-
+			result.addAll(possibleUsers);
 		} catch (NotLoggedInException e) {
 			// empty handling
 			log.debug("Must be online to get uninvited people.",e);
 		}
 
-		log.warn("getUninvitedPeople will not return any results!");
+		log.info("getUninvitedPeople returns " + result.size() + " results");
 
 		return result;
 	}

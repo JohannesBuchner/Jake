@@ -117,7 +117,8 @@ public class XmppCommons {
 			return connection;
 		} catch (XMPPException e) {
 			log.debug("login not ok: " + e.getMessage());
-			connection.disconnect();
+			if (connection != null)
+				connection.disconnect();
 			connection = null;
 			return null;
 		}
