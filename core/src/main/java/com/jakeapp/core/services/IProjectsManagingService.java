@@ -396,7 +396,22 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchJakeObjectException 
 	 * @throws IllegalArgumentException 
 	 */
-	void deleteNote(NoteObject note) throws IllegalArgumentException, NoSuchJakeObjectException;
+	void deleteNote(NoteObject note) throws IllegalArgumentException;
+	
+	/**
+	 * Deletes a FileObject, but does not announce the deletion
+	 * @param fo
+	 * @return TODO
+	 * @throws NoSuchJakeObjectException
+	 */
+	AvailableLaterObject<Void> deleteFile(FileObject fo) throws NoSuchJakeObjectException;
+	
+	/**
+	 * 
+	 * @param fos
+	 * @return number of deleted files
+	 */
+	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos);
 
 	/**
 	 * 

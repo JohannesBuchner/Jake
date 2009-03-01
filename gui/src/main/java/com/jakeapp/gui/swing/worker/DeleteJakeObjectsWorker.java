@@ -1,12 +1,17 @@
 package com.jakeapp.gui.swing.worker;
 
 import java.util.EnumSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.util.availablelater.AvailableNowObject;
+import com.jakeapp.core.util.availablelater.AvailableErrorObject;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
@@ -18,7 +23,6 @@ public class DeleteJakeObjectsWorker extends SwingWorkerWithAvailableLaterObject
 	private Project getProject() {
 		return project;
 	}
-
 	
 	private void setProject(Project project) {
 		this.project = project;
@@ -40,8 +44,26 @@ public class DeleteJakeObjectsWorker extends SwingWorkerWithAvailableLaterObject
 	
 	@Override
 	protected AvailableLaterObject<Integer> calculateFunction() throws RuntimeException {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.jos==null || this.jos.size()==0) {
+			return new AvailableNowObject<Integer>(0);
+		}
+		else if (this.jos.get(0) instanceof NoteObject) {
+			ArrayList<NoteObject> notes = new ArrayList<NoteObject>(); //this is bogus...check
+			for (JakeObject jo : jos)
+				notes.add((NoteObject)jo);
+			return JakeMainApp.getCore().deleteNotes(notes);
+		}
+		else if (this.jos.get(0) instanceof FileObject) {
+			ArrayList<FileObject> files = new ArrayList<FileObject>(); //this is bogus...check
+			for (JakeObject jo : jos)
+				files.add((FileObject)jo);
+			return JakeMainApp.getCore().deleteFiles(files);
+		}
+		else {
+			return new AvailableErrorObject<Integer>(
+				new IllegalStateException("DeleteJakeObjectsWorker was not correctly initialized.")
+			);
+		}
 	}
 	
 	@Override

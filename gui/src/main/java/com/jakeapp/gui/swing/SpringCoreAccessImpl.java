@@ -88,7 +88,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public AvailableLaterObject<List<Project>> getProjects(
 					EnumSet<InvitationState> filter) {
-		return new GetProjectsFuture(pms, filter).start();
+		return new GetProjectsFuture(pms, filter);
 	}
 
 	@Override
@@ -572,12 +572,26 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void deleteNote(NoteObject note) throws NoteOperationFailedException {
-		try {
-			pms.deleteNote(note);
-		} catch (Exception e) {
-			throw new NoteOperationFailedException(e);
-		}
+	public AvailableLaterObject<Void> deleteNote(final NoteObject note) {
+		return new AvailableLaterObject<Void>() {
+			@Override
+			public Void calculate() throws Exception {
+				pms.deleteNote(note);
+				return null;
+			}
+		};
+	}
+	
+	@Override
+	public AvailableLaterObject<Integer> deleteNotes(final List<NoteObject> notes) {
+		return new AvailableLaterObject<Integer>() {
+			@Override
+			public Integer calculate() throws Exception {
+				for (NoteObject note:notes)
+					pms.deleteNote(note);
+				return notes.size();
+			}
+		};
 	}
 
 	@Override
@@ -766,7 +780,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public void deleteToTrash(Project project, String relpath) {
 		// TODO: What do we do with folders?
 		try {
-			// TODO: announce deletion
 			this.getFrontendService().
 							getProjectsManagingService(this.getSessionId()).
 							getFileServices(project).
@@ -785,6 +798,20 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (FrontendNotLoggedInException e) {
 			log.debug("Tried access session without signing in.", e);
 		}
+	}
+	
+	@Override
+	public AvailableLaterObject<Void> deleteFile(FileObject fo) {
+		try {
+			return this.getFrontendService().getProjectsManagingService(getSessionId()).deleteFile(fo);
+		} catch (Exception e) {
+			return new AvailableErrorObject<Void>(e);
+		}
+	}
+	
+	@Override
+	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo) {
+		return this.getFrontendService().getProjectsManagingService(getSessionId()).deleteFiles(fo);
 	}
 
 	@Override

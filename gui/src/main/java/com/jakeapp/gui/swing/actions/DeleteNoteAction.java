@@ -1,6 +1,8 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -14,6 +16,9 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NotesPanel;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
+import com.jakeapp.gui.swing.worker.DeleteJakeObjectsWorker;
+
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -41,12 +46,11 @@ public class DeleteNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-				final List<Attributed<NoteObject>> cache = new ArrayList<Attributed<NoteObject>>(getSelectedNotes());
+		final List<Attributed<NoteObject>> cache = getSelectedNotes();
 
 		ResourceMap map = NotesPanel.getInstance().getResourceMap();
 		String[] options = {map.getString("confirmDeleteNote.ok"), map.getString("genericCancel")};
 		String text;
-
 		
 		if (cache.size() == 1) { //single delete
 			if (cache.get(0).isLocked()) { //is locked
@@ -83,16 +87,17 @@ public class DeleteNoteAction extends NoteAction {
 				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0], new SheetListener() {
 			@Override
 			public void optionSelected(SheetEvent evt) {
+				final List<JakeObject> notes = new ArrayList<JakeObject>();
+				Project project = null;
+				
+				
 				if (evt.getOption() == 0) {
-					for (Attributed<NoteObject> note : cache) {
-						try {
-							JakeMainApp.getCore().deleteNote(note.getJakeObject());
-						} catch (NoteOperationFailedException e) {
-							ExceptionUtilities.showError(e);
-						}
+					for (Attributed<NoteObject> note : cache)
+						notes.add(note.getJakeObject());
+					if (notes.size()>0) {
+						project = notes.get(0).getProject();
+						JakeExecutor.exec(new DeleteJakeObjectsWorker(project,notes));
 					}
-					//XXX update view
-					refreshNotesPanel();
 				}
 			}
 		});

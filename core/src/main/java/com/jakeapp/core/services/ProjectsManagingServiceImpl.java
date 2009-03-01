@@ -11,6 +11,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.services.futures.DeleteFilesFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.ChangeListener;
@@ -21,6 +22,7 @@ import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
+import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
@@ -1002,11 +1004,46 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public void deleteNote(NoteObject no) throws IllegalArgumentException,
-			NoSuchJakeObjectException {
-		this.getNoteObjectDao(no.getProject()).delete(no);
+	public void deleteNote(NoteObject no) throws IllegalArgumentException {
+		//this.getNoteObjectDao(no.getProject()).delete(no);
+		no.setDeleted(true);
+		this.getNoteObjectDao(no.getProject()).persist(no);
 	}
-
+	
+	@Override
+	@Transactional
+	public AvailableLaterObject<Void> deleteFile(FileObject fo) {
+		List<FileObject> fos = new ArrayList<FileObject>();
+		fos.add(fo);
+		AvailableLaterWrapperObject<Void,Integer> result = 
+			new AvailableLaterWrapperObject<Void,Integer>() {
+				@Override
+				public Void calculate() throws Exception {
+					return null; //the entire calculation is done by the source
+				}
+			};
+		result.setSource(this.deleteFiles(fos));
+		
+		return result;
+	}
+	
+	@Override
+	@Transactional
+	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos) {
+		Project project;
+		
+		if (fos.size()<0)
+			return new AvailableNowObject<Integer>(0);
+		else {
+			project = fos.get(0).getProject(); 
+				
+			return new DeleteFilesFuture(
+				this.getFileObjectDao(project),
+				this.getProjectsFileServices().getProjectFSService(project),
+				fos
+			);
+		}
+	}
    
 	@Override
 	@Transactional

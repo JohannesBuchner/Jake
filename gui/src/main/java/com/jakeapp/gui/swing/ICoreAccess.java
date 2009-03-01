@@ -318,6 +318,21 @@ public interface ICoreAccess {
 	 * @param relpath The file or folder to be deleted
 	 */
 	public void deleteToTrash(Project project, String relpath);
+	
+	/**
+	 * Deletes a file to trash and announces the deletion
+	 * @param fo
+	 * @return
+	 */
+	AvailableLaterObject<Void> deleteFile(FileObject fo);
+
+	/**
+	 * Deletes many files and announces their deletion
+	 * @param fos
+	 * @return An AvailableLaterObject that calculates the
+	 * 	number of deleted files.
+	 */
+	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos);
 
 	/**
 	 * Renames a file
@@ -436,12 +451,19 @@ public interface ICoreAccess {
 	public AvailableLaterObject<List<NoteObject>> getNotes(Project project);
 
 	/**
-	 * Delete the given note, no matter if it is a local or shared note.
+	 * Deletes the given note, no matter if it is a local or shared note.
 	 *
 	 * @param note the note to be deleted.
-	 * @throws NoteOperationFailedException raised if an the given note could not be deleted.
 	 */
-	public void deleteNote(NoteObject note) throws NoteOperationFailedException;
+	public AvailableLaterObject<Void> deleteNote(final NoteObject note)/* throws NoteOperationFailedException*/;
+	
+	/**
+	 * Deletes the given notes, no matter if it is a local or shared note.
+	 *
+	 * @param notse the note to be deleted.
+	 * @return An AvailableLaterObject that calculates the number of deleted notes.
+	 */
+	public AvailableLaterObject<Integer> deleteNotes(final List<NoteObject> notes);
 
 	/**
 	 * Add a new note.
