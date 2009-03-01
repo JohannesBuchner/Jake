@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * FilePanel.java
- *
- * Created on Dec 2, 2008, 10:28:37 PM
- */
 package com.jakeapp.gui.swing.panels;
 
 import com.explodingpixels.widgets.WindowUtils;
@@ -55,6 +45,9 @@ import java.util.List;
  */
 public class FilePanel extends javax.swing.JPanel implements
 				ProjectSelectionChanged, ProjectChanged {
+	
+	private static final long serialVersionUID = -3419475619689818265L;
+	
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 	private static FilePanel instance;
 
@@ -79,23 +72,23 @@ public class FilePanel extends javax.swing.JPanel implements
 	 * Displays files as a file/folder tree or list of relative paths (classic Jake ;-)
 	 */
 	public void switchFileDisplay() {
-		if (flatBtn.isSelected()) {
-			fileTreeTableScrollPane.setViewportView(fileTable);
-			treeViewActive = false;
+		if (this.flatBtn.isSelected()) {
+			this.fileTreeTableScrollPane.setViewportView(this.fileTable);
+			this.treeViewActive = false;
 			resetFilter();
 		} else {
 			// We don't need this anymore because resetFilter() does it for us 
 			// fileTreeTableScrollPane.setViewportView(fileTreeTable);
-			treeViewActive = true;
+			this.treeViewActive = true;
 			resetFilter();
 		}
 	}
 
 	public void filterFileDisplay() {
-		if (conflictsBtn.isSelected()) {
+		if (this.conflictsBtn.isSelected()) {
 			Filter filter = new FileObjectConflictStatusFilter();
 			switchToFlatAndFilter(new FilterPipeline(filter));
-		} else if (newBtn.isSelected()) {
+		} else if (this.newBtn.isSelected()) {
 			Filter filter = new FileObjectDateFilter();
 			switchToFlatAndFilter(new FilterPipeline(filter));
 		} else {
@@ -109,16 +102,16 @@ public class FilePanel extends javax.swing.JPanel implements
 	 * @param pipeline The filter pipeline to apply
 	 */
 	public void switchToFlatAndFilter(FilterPipeline pipeline) {
-		fileTreeTableScrollPane.setViewportView(fileTable);
-		fileTable.setFilters(pipeline);
-		flatBtn.setSelected(true);
+		this.fileTreeTableScrollPane.setViewportView(this.fileTable);
+		this.fileTable.setFilters(pipeline);
+		this.flatBtn.setSelected(true);
 	}
 
 	/**
 	 * Resets all applied filters
 	 */
 	public void resetFilter() {
-		fileTable.setFilters(null);
+		this.fileTable.setFilters(null);
 
 		// TODO: reenable later
 		/*
@@ -167,43 +160,43 @@ public class FilePanel extends javax.swing.JPanel implements
 
 		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 
-		fileTreeTable.setScrollsOnExpand(true);
-		fileTreeTable.setSortable(true);
-		fileTreeTable.setColumnControlVisible(true);
+		this.fileTreeTable.setScrollsOnExpand(true);
+		this.fileTreeTable.setSortable(true);
+		this.fileTreeTable.setColumnControlVisible(true);
 
 		// ETreeTable performs its own striping on the mac
 		if (!Platform.isMac()) {
-			fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
-			fileTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+			this.fileTreeTable.setHighlighters(HighlighterFactory.createSimpleStriping());
+			this.fileTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		}
 
-		fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
-		fileTable.setDefaultRenderer(ProjectFilesTreeNode.class,
+		this.fileTreeTable.setTreeCellRenderer(new ProjectFilesTreeCellRenderer());
+		this.fileTable.setDefaultRenderer(ProjectFilesTreeNode.class,
 						new ProjectFilesTableCellRenderer());
 
-		fileTreeTable.setDefaultRenderer(FileObjectStatusCell.class,
+		this.fileTreeTable.setDefaultRenderer(FileObjectStatusCell.class,
 						new FileStatusTreeCellRenderer());
-		fileTreeTable.setDefaultRenderer(FileObjectLockedCell.class,
+		this.fileTreeTable.setDefaultRenderer(FileObjectLockedCell.class,
 						new FileLockedTreeCellRenderer());
 
-		fileTable.setDefaultRenderer(FileObjectStatusCell.class,
+		this.fileTable.setDefaultRenderer(FileObjectStatusCell.class,
 						new FileStatusTreeCellRenderer());
-		fileTable.setDefaultRenderer(FileObjectLockedCell.class,
+		this.fileTable.setDefaultRenderer(FileObjectLockedCell.class,
 						new FileLockedTreeCellRenderer());
 
-		fileTreeTable.addMouseListener(
+		this.fileTreeTable.addMouseListener(
 						new FileContainerMouseListener(this, fileTreeTable,
 										FILETREETABLE_NODECOLUMN));
-		fileTable.addMouseListener(
+		this.fileTable.addMouseListener(
 						new FileContainerMouseListener(this, fileTable, FILETABLE_NODECOLUMN));
 
-		fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
+		this.fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
 
 		// Initialize popup menu
-		initPopupMenu(popupMenu);
+		initPopupMenu(this.popupMenu);
 
 		// TODO: remove later (hack to disable tree)
-		fileTreeTableScrollPane.setViewportView(fileTable);
+		this.fileTreeTableScrollPane.setViewportView(this.fileTable);
 	}
 
 	public static FilePanel getInstance() {
@@ -211,7 +204,7 @@ public class FilePanel extends javax.swing.JPanel implements
 	}
 
 	public ResourceMap getResourceMap() {
-		return resourceMap;
+		return this.resourceMap;
 	}
 
 	public void setResourceMap(ResourceMap resourceMap) {
@@ -220,10 +213,10 @@ public class FilePanel extends javax.swing.JPanel implements
 
 	public List<ProjectFilesTreeNode> getSelectedNodes() {
 		java.util.List<ProjectFilesTreeNode> nodeObjs = new ArrayList<ProjectFilesTreeNode>();
-		for (int row : fileTreeTable.getSelectedRows()) {
-			ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable
+		for (int row : this.fileTreeTable.getSelectedRows()) {
+			ProjectFilesTreeNode node = (ProjectFilesTreeNode) this.fileTreeTable
 							.getValueAt(row,
-											(treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+											(this.treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
 			nodeObjs.add(node);
 		}
 
@@ -394,15 +387,15 @@ public class FilePanel extends javax.swing.JPanel implements
 
 
 		// TODO: remove hack
-		treeBtn = new JToggleButton(getResourceMap().getString("treeButton"));
-		treeBtn.setUI(new JakeHudButtonUI());
+		this.treeBtn = new JToggleButton(getResourceMap().getString("treeButton"));
+		this.treeBtn.setUI(new JakeHudButtonUI());
 		//controlPanel.add(treeBtn, "split 2");
 		//treeBtn.setSelected(true);
 
-		flatBtn = new JToggleButton(getResourceMap().getString("flatButton"));
-		flatBtn.setUI(new JakeHudButtonUI());
-		controlPanel.add(flatBtn);
-		flatBtn.setSelected(true);
+		this.flatBtn = new JToggleButton(getResourceMap().getString("flatButton"));
+		this.flatBtn.setUI(new JakeHudButtonUI());
+		controlPanel.add(this.flatBtn);
+		this.flatBtn.setSelected(true);
 
 		ActionListener updateViewAction = new ActionListener() {
 			@Override
@@ -420,49 +413,49 @@ public class FilePanel extends javax.swing.JPanel implements
 			}
 		};
 
-		flatBtn.addActionListener(updateViewAction);
-		treeBtn.addActionListener(updateViewAction);
+		this.flatBtn.addActionListener(updateViewAction);
+		this.treeBtn.addActionListener(updateViewAction);
 
 		ButtonGroup showGrp = new ButtonGroup();
-		showGrp.add(flatBtn);
-		showGrp.add(treeBtn);
+		showGrp.add(this.flatBtn);
+		showGrp.add(this.treeBtn);
 
-		allBtn = new JToggleButton(getResourceMap().getString("filterAllButton"));
-		allBtn.setUI(new JakeHudButtonUI());
-		controlPanel.add(allBtn, "split 3, right");
-		allBtn.setSelected(true);
+		this.allBtn = new JToggleButton(getResourceMap().getString("filterAllButton"));
+		this.allBtn.setUI(new JakeHudButtonUI());
+		controlPanel.add(this.allBtn, "split 3, right");
+		this.allBtn.setSelected(true);
 
-		newBtn = new JToggleButton(getResourceMap().getString("filterNewButton"));
-		newBtn.setUI(new GreenHudButtonUI());
-		controlPanel.add(newBtn, "right");
+		this.newBtn = new JToggleButton(getResourceMap().getString("filterNewButton"));
+		this.newBtn.setUI(new GreenHudButtonUI());
+		controlPanel.add(this.newBtn, "right");
 
-		conflictsBtn = new JToggleButton(
+		this.conflictsBtn = new JToggleButton(
 						getResourceMap().getString("filterConflictsButton"));
-		conflictsBtn.setUI(new RedHudButtonUI());
-		controlPanel.add(conflictsBtn, "right, wrap");
+		this.conflictsBtn.setUI(new RedHudButtonUI());
+		controlPanel.add(this.conflictsBtn, "right, wrap");
 
 		this.add(controlPanel, "growx");
 
-		allBtn.addActionListener(filterViewAction);
-		newBtn.addActionListener(filterViewAction);
-		conflictsBtn.addActionListener(filterViewAction);
+		this.allBtn.addActionListener(filterViewAction);
+		this.newBtn.addActionListener(filterViewAction);
+		this.conflictsBtn.addActionListener(filterViewAction);
 
 		ButtonGroup filterGrp = new ButtonGroup();
-		filterGrp.add(allBtn);
-		filterGrp.add(newBtn);
-		filterGrp.add(conflictsBtn);
+		filterGrp.add(this.allBtn);
+		filterGrp.add(this.newBtn);
+		filterGrp.add(this.conflictsBtn);
 
 		// add file treetable
-		fileTreeTableScrollPane = new javax.swing.JScrollPane();
-		fileTreeTable = new ITunesTreeTable();
+		this.fileTreeTableScrollPane = new javax.swing.JScrollPane();
+		this.fileTreeTable = new ITunesTreeTable();
 
 		// add file table
-		fileTable = new ITunesTable();
+		this.fileTable = new ITunesTable();
 
 		// Default display (first): TreeTable
-		fileTreeTableScrollPane.setViewportView(fileTreeTable);
+		this.fileTreeTableScrollPane.setViewportView(this.fileTreeTable);
 
-		this.add(fileTreeTableScrollPane, "grow");
+		this.add(this.fileTreeTableScrollPane, "grow");
 	}
 
 	private org.jdesktop.swingx.JXTreeTable fileTreeTable;
@@ -470,7 +463,7 @@ public class FilePanel extends javax.swing.JPanel implements
 	private javax.swing.JScrollPane fileTreeTableScrollPane;
 
 	public Project getProject() {
-		return project;
+		return this.project;
 	}
 
 	public void setProject(Project project) {
@@ -485,14 +478,14 @@ public class FilePanel extends javax.swing.JPanel implements
 			try {
 				treeTableModel = new FolderObjectsTreeTableModel(new ProjectFilesTreeNode(
 								JakeMainApp.getCore().getFolder(JakeMainApp.getProject(), null)));
-				fileTreeTable.setTreeTableModel(treeTableModel);
+				this.fileTreeTable.setTreeTableModel(treeTableModel);
 			} catch (ProjectFolderMissingException e) {
 				e.printStackTrace();
 			}
 
 			tableModel = new FileObjectsTableModel(new ArrayList<FileObject>());
 
-			fileTable.setModel(tableModel);
+			this.fileTable.setModel(tableModel);
 
 			// start get all files from project, async
 			JakeExecutor.exec(new GetAllProjectFilesWorker(JakeMainApp.getProject()));
@@ -501,7 +494,7 @@ public class FilePanel extends javax.swing.JPanel implements
 
 	public void setProjectFiles(java.util.List<FileObject> files) {
 		log.info("setting project files...");
-		fileTable.setModel(new FileObjectsTableModel(files));
-		fileTable.updateUI();
+		this.fileTable.setModel(new FileObjectsTableModel(files));
+		this.fileTable.updateUI();
 	}
 }

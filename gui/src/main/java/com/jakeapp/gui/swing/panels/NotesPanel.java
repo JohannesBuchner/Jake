@@ -75,7 +75,6 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
 		private JTable table;
-		private NotesTableModel tableModel;
 		private JPopupMenu popupMenu;
 
 		{
@@ -88,11 +87,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.popupMenu.add(new JMenuItem(new SoftlockNoteAction()));
 		}
 
-		public NoteContainerMouseListener(NotesPanel panel, JTable table, NotesTableModel tableModel) {
+		public NoteContainerMouseListener(NotesPanel panel, JTable table) {
 			super();
 			this.panel = panel;
 			this.table = table;
-			this.tableModel = tableModel;
 		}
 
 		@Override
@@ -159,8 +157,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 		//final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
-		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable,
-										this.notesTableModel));
+		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable));
 
 		// install event table update timer
 		this.tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
