@@ -190,7 +190,7 @@ public class EventCore {
 	public void fireNotesChanged(Project p) {
 
 		// change in the notes mostly changes the log entries too!
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries), p);
+		fireDataChanged(EnumSet.of(DataChanged.Reason.LogEntries), p);
 	}
 
 	/**

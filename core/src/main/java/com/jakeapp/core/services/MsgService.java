@@ -11,7 +11,6 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import org.apache.log4j.Logger;
@@ -24,9 +23,9 @@ import java.util.Map.Entry;
 /**
  * Abstract MessagingService declaring what the classes for the
  * instant-messaging protocols (XMPP, ICQ, etc.) need to implement.
- * 
+ * <p/>
  * Does not know anything about Projects.
- * 
+ *
  * @author dominik
  */
 public abstract class MsgService<T extends UserId> {
@@ -46,8 +45,8 @@ public abstract class MsgService<T extends UserId> {
 	static class ICData {
 
 		public ICData(String name, ILoginStateListener loginStateListener,
-				IOnlineStatusListener onlineStatusListener,
-				IMessageReceiveListener receiveListener) {
+						IOnlineStatusListener onlineStatusListener,
+						IMessageReceiveListener receiveListener) {
 			super();
 			this.loginStateListener = loginStateListener;
 			this.onlineStatusListener = onlineStatusListener;
@@ -83,7 +82,7 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * This method gets called by clients to login on this message service.
-	 * 
+	 *
 	 * @return true on success, false on wrong password
 	 * @throws NetworkException
 	 * @throws TimeoutException
@@ -111,11 +110,11 @@ public abstract class MsgService<T extends UserId> {
 
 	@Transactional
 	public final boolean login(String newPassword, boolean shouldSavePassword)
-			throws NetworkException {
+					throws NetworkException {
 		boolean result = false;
 
-		log.debug("calling login with newPwd-Size: " + newPassword.length()
-				+ ", shouldSave: " + shouldSavePassword);
+		log.debug("calling login with newPwd-Size: " + newPassword
+						.length() + ", shouldSave: " + shouldSavePassword);
 
 		if (this.getServiceCredentials() == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
@@ -144,11 +143,10 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
 	 * are valid.
-	 * 
+	 *
 	 * @return <code>true</code> iff the credentials are valid.
-	 * @throws InvalidCredentialsException
-	 *             if the credentials stored in this <code>MsgService</code> are
-	 *             insufficiently specified (e.g. they are null)
+	 * @throws InvalidCredentialsException if the credentials stored in this <code>MsgService</code> are
+	 *                                     insufficiently specified (e.g. they are null)
 	 */
 	protected boolean checkCredentials() throws InvalidCredentialsException {
 		ServiceCredentials serviceCredentials = this.getServiceCredentials();
@@ -160,12 +158,12 @@ public abstract class MsgService<T extends UserId> {
 
 		if (serviceCredentials.getPlainTextPassword() == null)
 			throw new InvalidCredentialsException(
-					"credentials.plainTextPassword must not be null");
+							"credentials.plainTextPassword must not be null");
 
 
 		if (serviceCredentials.getServerAddress() == null)
 			throw new InvalidCredentialsException(
-					"credentials.serverAddress must not be null");
+							"credentials.serverAddress must not be null");
 
 		return this.doCredentialsCheck();
 	}
@@ -176,10 +174,9 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * idempotent
-	 * 
+	 *
 	 * @throws NetworkException
 	 * @throws TimeoutException
-	 * 
 	 * @throws Exception
 	 */
 	public final void logout() throws NetworkException {
@@ -192,26 +189,29 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * has to be idempotent
-	 * 
+	 *
 	 * @throws NetworkException
 	 * @throws TimeoutException
-	 * 
 	 * @throws Exception
 	 */
 	protected abstract void doLogout() throws NetworkException;
 
 	public void setServiceCredentials(ServiceCredentials credentials) {
-		log.debug("setting service credentials to " + credentials.getUserId() + " pwl: "
-				+ credentials.getPlainTextPassword().length());
+		log.debug("setting service credentials to " + credentials
+						.getUserId() + " pwl: " + credentials.getPlainTextPassword().length());
 		this.serviceCredentials = credentials;
 	}
 
+	//  A GETTER SHOULD *never ever* to lengthy tasks when run in gui-thread.
 	public VisibilityStatus getVisibilityStatus() {
+
 		if (this.getMainIcs().getStatusService().isLoggedIn()) {
 			return VisibilityStatus.ONLINE;
 		} else {
+			return VisibilityStatus.OFFLINE;
+			/*
 			if (this.shouldBeLoggedIn) {
-				tryToFixLoggedIn();
+				tryToLogIn();
 				if(this.getMainIcs().getStatusService().isLoggedIn()) {
 					return VisibilityStatus.ONLINE;
 				}else{
@@ -221,14 +221,15 @@ public abstract class MsgService<T extends UserId> {
 					// @christopher: There was a reason for this being here ;)
 					// setting it to offline breaks the intarnets!!!!111
 					// return VisibilityStatus.ONLINE;
+					// FIXME: SHUT UP THE FUCK YOU MUST!
 					return VisibilityStatus.OFFLINE;
 				}
 			}else{
 				return VisibilityStatus.OFFLINE;
-			}
+			}*/
 		}
 	}
-	
+
 	private VisibilityStatus getCurrentVisibilityStatus() {
 		if (this.getMainIcs().getStatusService().isLoggedIn()) {
 			return VisibilityStatus.ONLINE;
@@ -237,7 +238,7 @@ public abstract class MsgService<T extends UserId> {
 		}
 	}
 
-	private void tryToFixLoggedIn() {
+	private void tryToLogIn() {
 		try {
 			// log.debug("trying to fix login status ...");
 			boolean result = this.doLogin();
@@ -253,13 +254,11 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * Get a UserId Instance from this Messaging-Service
-	 * 
-	 * @param userId
-	 *            the String representation of the userId
+	 *
+	 * @param userId the String representation of the userId
 	 * @return a &lt;T extends UserId&gt; Object
-	 * @throws UserIdFormatException
-	 *             if the format of the input is not valid for this
-	 *             Messaging-Service
+	 * @throws UserIdFormatException if the format of the input is not valid for this
+	 *                               Messaging-Service
 	 */
 	public abstract T getUserId(String userId) throws UserIdFormatException;
 
@@ -270,7 +269,7 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * Get the type of this MsgService (e.g. to display fancy buttons)
-	 * 
+	 *
 	 * @return The <code>ProtocolType</code> of this MessageService
 	 */
 	public final ProtocolType getProtocolType() {
@@ -280,7 +279,7 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * Creates an account for the Service, with the specified
 	 * ServiceCredentials. You have to have setCredentials first.
-	 * 
+	 *
 	 * @throws NetworkException
 	 */
 	public abstract void createAccount() throws NetworkException;
@@ -288,7 +287,7 @@ public abstract class MsgService<T extends UserId> {
 
 	public final boolean isPasswordSaved() {
 		return (this.getServiceCredentials() != null && !this.getServiceCredentials()
-				.getPlainTextPassword().isEmpty());
+						.getPlainTextPassword().isEmpty());
 	}
 
 	protected static IServiceCredentialsDao getServiceCredentialsDao() {
@@ -296,7 +295,7 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	protected static void setServiceCredentialsDao(
-			IServiceCredentialsDao serviceCredentialsDao) {
+					IServiceCredentialsDao serviceCredentialsDao) {
 		MsgService.serviceCredentialsDao = serviceCredentialsDao;
 	}
 
@@ -312,9 +311,10 @@ public abstract class MsgService<T extends UserId> {
 		log.debug("main ics is logged in? " + getCurrentVisibilityStatus());
 	}
 
-	public void activateSubsystem(ICService ics, IMessageReceiveListener receiveListener,
-			ILoginStateListener lsl, IOnlineStatusListener onlineStatusListener,
-			String name) throws NetworkException {
+	public void activateSubsystem(ICService ics,
+					IMessageReceiveListener receiveListener, ILoginStateListener lsl,
+					IOnlineStatusListener onlineStatusListener, String name)
+					throws NetworkException {
 
 		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
@@ -324,18 +324,19 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
-			throws NetworkException {
-		log.warn("updating status of " + ics + " to match " + this.getVisibilityStatus());
+					throws NetworkException {
+		log.warn("updating status of " + ics + " to match " + this
+						.getVisibilityStatus());
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = this.getIcsUser(ics, listeners);
 			log.debug("logging in " + user);
 			ics.getMsgService().registerReceiveMessageListener(listeners.receiveListener);
-			ics.getUsersService().registerOnlineStatusListener(
-					listeners.onlineStatusListener);
-			ics.getStatusService().login(user,
-					this.getServiceCredentials().getPlainTextPassword());
-			ics.getStatusService().registerLoginStateListener(
-					listeners.loginStateListener);
+			ics.getUsersService()
+							.registerOnlineStatusListener(listeners.onlineStatusListener);
+			ics.getStatusService()
+							.login(user, this.getServiceCredentials().getPlainTextPassword());
+			ics.getStatusService()
+							.registerLoginStateListener(listeners.loginStateListener);
 		} else {
 			if (ics.getStatusService().isLoggedIn()) {
 				log.debug("logging out " + ics.getStatusService().getUserid());
@@ -345,7 +346,7 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	abstract protected com.jakeapp.jake.ics.UserId getIcsUser(ICService ics,
-			ICData listeners);
+					ICData listeners);
 
 	public void deactivateSubsystem(ICService ics) throws NetworkException {
 		this.activeSubsystems.remove(ics);
@@ -356,8 +357,8 @@ public abstract class MsgService<T extends UserId> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((serviceCredentials == null) ? 0 : serviceCredentials.hashCode());
+		result = prime * result + ((serviceCredentials == null) ? 0 :
+						serviceCredentials.hashCode());
 		return result;
 	}
 
@@ -379,8 +380,8 @@ public abstract class MsgService<T extends UserId> {
 	}
 
 	public String toString() {
-		return this.getProtocolType() + " - user: " + getMainUserId() + " - "
-				+ this.getCurrentVisibilityStatus();
+		return this.getProtocolType() + " - user: " + getMainUserId() + " - " + this
+						.getCurrentVisibilityStatus();
 	}
 
 }

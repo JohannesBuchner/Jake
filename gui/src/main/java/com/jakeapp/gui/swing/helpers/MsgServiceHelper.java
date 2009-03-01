@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 /**
  * Various helpers for MsgService.
  *
- * @author: studpete
+ * @author studpete
  */
 public class MsgServiceHelper {
 	private static final Logger log = Logger.getLogger(MsgServiceHelper.class);
