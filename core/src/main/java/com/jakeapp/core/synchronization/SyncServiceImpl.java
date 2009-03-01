@@ -75,9 +75,15 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private static final String END_PROJECT_UUID = "</project>";
 
+	private static final String BEGIN_LOGENTRY = "<le>";
+
+	private static final String END_LOGENTRY = "</le>";
+
 	private static final String POKE_MESSAGE = "<poke/>";
 
 	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
+
+	private static final String LOGENTRIES_MESSAGE = "<logentries/>";
 
 	private static final String NEW_FILE = "<newfile/>";
 
@@ -89,7 +95,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 * key is the UUID
 	 */
 	private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
-	
+
 	/**
 	 * key is the UUID
 	 */
@@ -885,10 +891,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 				log.info("Received logs request from " + from_userid.getUserId());
 
 				sendLogs(p, from_userid);
-
-				// TODO: Send our logs to this user
-
 				return;
+			}
+
+			if(message.startsWith(LOGENTRIES_MESSAGE)) {
+				log.info("Received serialized logentries from " + from_userid.getUserId());
+
+				log.info("MESSAGE: " + message);
 			}
 
 			// TODO: The stuff below here could use some refactoring 
@@ -958,15 +967,20 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 			LogEntrySerializer robot = new LogEntrySerializer();
 
-			System.err.println("========= LOGS ==========");
-			for(LogEntry l: logs) {
-				System.err.println("--- START");
-				System.err.println(robot.serialize(l, project));
-				System.err.println("--- END");
-			}
-			System.err.println("========= /LOGS =========");
+			StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
 
-			ics.getMsgService().sendMessage(user, "THIS IS A LOG SYNC! SERIOUSLY!");
+			log.debug("Starting to process log entries...");
+			for(LogEntry l: logs) {
+				try {
+					sb.append(BEGIN_LOGENTRY).append(robot.serialize(l, project)).append(END_LOGENTRY);
+					log.debug("Serialised log entry, new sb content: " + sb.toString());
+				} catch(Throwable e) {
+					log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
+				}
+			}
+			log.debug("Finished processing log entries! Now sending.");
+
+			ics.getMsgService().sendMessage(user, sb.toString());
 		} catch (NetworkException e) {
 			log.warn("Could not sync logs", e);
 		} catch (OtherUserOfflineException e) {

@@ -43,7 +43,7 @@ public class PrimitivePokeRunWithMySpecialDirectory extends TestDBEnabledTestCas
 	@Override
 	protected String getDbTemplateName() {
 		// it's EPIC, man!
-		return "otheruserWithSameProjectEmpty";
+		return "oneuserWithOneProjectContainingNotes";
 	}
 
 	@Test
