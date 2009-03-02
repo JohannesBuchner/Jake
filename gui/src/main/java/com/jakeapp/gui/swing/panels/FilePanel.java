@@ -398,7 +398,7 @@ public class FilePanel extends javax.swing.JPanel
 
 		this.flatBtn = new JToggleButton(getResourceMap().getString("flatButton"));
 		this.flatBtn.setUI(new JakeHudButtonUI());
-		controlPanel.add(this.flatBtn);
+		//controlPanel.add(this.flatBtn);
 		this.flatBtn.setSelected(true);
 
 		ActionListener updateViewAction = new ActionListener() {

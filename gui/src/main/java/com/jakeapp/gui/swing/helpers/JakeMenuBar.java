@@ -53,8 +53,8 @@ public class JakeMenuBar extends JMenuBar {
 		projectMenu.add(new JMenuItem(new SyncProjectAction()));
 		projectMenu.addSeparator();
 		projectMenu.add(new JMenuItem(new StartStopProjectAction()));
-		projectMenu.add(new JMenuItem(new RenameFileAction()));
-		projectMenu.add(new JMenuItem(new DeleteFileAction()));
+		projectMenu.add(new JMenuItem(new RenameProjectAction()));
+		projectMenu.add(new JMenuItem(new DeleteProjectAction()));
 		projectMenu.addSeparator();
 		projectMenu.add(new JMenuItem(new InvitePeopleAction(true)));
 		projectMenu.addSeparator();

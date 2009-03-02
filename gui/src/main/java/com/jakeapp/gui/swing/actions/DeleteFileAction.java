@@ -18,7 +18,6 @@ import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -42,30 +41,31 @@ public class DeleteFileAction extends FileAction {
 	@Override
 	public void updateAction() {
 		setEnabled(getSelectedRowCount() > 0);
+		super.updateAction();
 	}
-	
+
 	//TODO replace core calls with ObjectCache-Calls
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		log.debug("omg, we will delete something...");
-		
+
 		//final List<String> cache = new ArrayList<String>();
-		
+
 		final List<FileObject> files = new ArrayList<FileObject>();
 
 		UserId currentUser = JakeMainApp.getProject().getUserId();
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
-		String[] options = {map.getString("confirmDeleteFile.ok"), map.getString(
-						"genericCancel")};
+		String[] options =
+						{map.getString("confirmDeleteFile.ok"), map.getString("genericCancel")};
 		String text;
 		LogEntry<? extends ILogable> lockEntry = null;
 		Attributed<FileObject> af;
 		Project p = JakeMainApp.getProject();
-		
+
 		log.debug("getting files to delete");
 
- 		//get all files to be deleted
+		//get all files to be deleted
 		for (ProjectFilesTreeNode node : getNodes()) {
 			if (node.isFile()) {
 				files.add(node.getFileObject());
@@ -73,66 +73,70 @@ public class DeleteFileAction extends FileAction {
 				files.addAll(node.getFolderObject().flattenFolder());
 			}
 		}
-		
-		log.debug("got n files to delete, n="+files.size());
-		
+
+		log.debug("got n files to delete, n=" + files.size());
+
 		//check locks
 		for (FileObject f : files) {
-			af = JakeMainApp.getCore().getAttributed(p,f);
+			af = JakeMainApp.getCore().getAttributed(p, f);
 			if (af.isLocked() && !af.getLockLogEntry().getMember().equals(currentUser)) {
 				log.debug("File " + f.getRelPath() + " is locked!");
 				lockEntry = af.getLockLogEntry();
 				break;
 			}
 		}
-		
-		log.debug("checked locks, locked="+(lockEntry!=null));
-		
+
+		log.debug("checked locks, locked=" + (lockEntry != null));
+
 		/*
-		 * decide, which user-interaction is appropriate
-		 * There are different confirm-messages for different lock-counts
-		 */
+				 * decide, which user-interaction is appropriate
+				 * There are different confirm-messages for different lock-counts
+				 */
 		text = "";
-		if (files.size()==1) {
-			if (lockEntry!=null) {
-				text = Translator
-					.get(map, "confirmDeleteLockedFile.text", lockEntry.getMember().getUserId());
+		if (files.size() == 1) {
+			if (lockEntry != null) {
+				text = Translator.get(map,
+								"confirmDeleteLockedFile.text",
+								lockEntry.getMember().getUserId());
 			} else {
 				text = map.getString("confirmDeleteFile.text");
 			}
 		} else {
-			if (lockEntry!=null) {
+			if (lockEntry != null) {
 				text = map.getString("confirmDeleteLockedFiles.text");
 			} else {
 				text = Translator
-					.get(map, "confirmDeleteFiles.text", String.valueOf(files.size()));
+								.get(map, "confirmDeleteFiles.text", String.valueOf(files.size()));
 			}
 		}
-		
-		log.debug("User-interaction text is: "+ text);
-		
+
+		log.debug("User-interaction text is: " + text);
+
 		//ask user and do the real work with a Worker!
-		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, options, options[0],
+		JSheet.showOptionSheet(FilePanel.getInstance(),
+						text,
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[0],
 						new SheetListener() {
 
 							@Override
 							public void optionSelected(SheetEvent evt) {
 								if (evt.getOption() == 0) {
 									log.debug("Deleting now!!!");
-									JakeExecutor.exec(new DeleteJakeObjectsTask(
-										JakeMainApp.getProject(),
-										new ArrayList<JakeObject>(files)
-									));
+									JakeExecutor
+													.exec(new DeleteJakeObjectsTask(JakeMainApp.getProject(),
+																	new ArrayList<JakeObject>(files)));
 									/*for (String item : cache) {
 										JakeMainApp.getCore()
 														.deleteToTrash(JakeMainApp.getProject(), item);
 									}
 									*/
 								}
-								
+
 							}
 						});
 	}
-
 }

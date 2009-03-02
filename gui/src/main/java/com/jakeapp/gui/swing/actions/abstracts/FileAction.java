@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
@@ -89,5 +90,12 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 
 	public int getSelectedRowCount() {
 		return this.selectedRowCount;
+	}
+
+	@Override
+	public void updateAction() {
+		super.updateAction();
+
+		setEnabled(this.isEnabled() && JakeMainApp.getMsgService() != null);
 	}
 }
