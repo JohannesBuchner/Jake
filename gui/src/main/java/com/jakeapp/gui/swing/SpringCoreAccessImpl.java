@@ -3,22 +3,22 @@ package com.jakeapp.gui.swing;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
 import com.jakeapp.core.services.futures.GetProjectsFuture;
+import com.jakeapp.core.services.futures.ImportFilesFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
 import com.jakeapp.core.services.futures.StartStopProjectFuture;
-import com.jakeapp.core.services.futures.ImportFilesFuture;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ISyncService;
@@ -97,7 +97,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	private void handleNotLoggedInException(FrontendNotLoggedInException e) {
-		log.warn("Tried access core without a session", e);
+		ExceptionUtilities.showError("Tried access core without a session", e);
 	}
 
 	@Override
@@ -335,13 +335,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							ProjectChanged.ProjectChangedEvent.Reason.Syncing));
 
 		} catch (IllegalArgumentException e) {
-			//empty implementation
+			ExceptionUtilities.showError(e);
 		} catch (IllegalStateException e) {
-			//empty implementation
+			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (NoSuchProjectException e) {
-			e.printStackTrace();
+			ExceptionUtilities.showError(e);
 		}
 	}
 
@@ -422,13 +422,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public <T extends JakeObject> Attributed<T> getAttributed(
-					Project project, T jakeObject) {
+	public <T extends JakeObject> Attributed<T> getAttributed(Project project,
+					T jakeObject) {
 		try {
 			log.trace("jakeObject" + jakeObject);
 
 			// sanity check - hey, we don't wanna mess with the core!
-			if(jakeObject == null) {
+			if (jakeObject == null) {
 				return null;
 			}
 
@@ -521,8 +521,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return fo;
 	}
 
-	public AvailableLaterObject<List<NoteObject>> getNotes(
-					final Project project) {
+	public AvailableLaterObject<List<NoteObject>> getNotes(final Project project) {
 
 		// FIXME: exception handling?
 		return new AvailableLaterObject<List<NoteObject>>() {
@@ -581,13 +580,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			}
 		};
 	}
-	
+
 	@Override
 	public AvailableLaterObject<Integer> deleteNotes(final List<NoteObject> notes) {
 		return new AvailableLaterObject<Integer>() {
 			@Override
 			public Integer calculate() throws Exception {
-				for (NoteObject note:notes)
+				for (NoteObject note : notes)
 					pms.deleteNote(note);
 				return notes.size();
 			}
@@ -692,7 +691,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		List<UserId> members = null;
 
 		try {
-			members = this.getFrontendService().getProjectsManagingService(getSessionId()).getSuggestedPeopleForInvite(project);
+			members = this.getFrontendService().getProjectsManagingService(getSessionId())
+							.getSuggestedPeopleForInvite(project);
 		} catch (IllegalArgumentException e) {
 			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
@@ -772,7 +772,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(
 					Project project, List<File> files, String destFolderRelPath) {
-		return new ImportFilesFuture(this.pms.getFileServices(project), files, destFolderRelPath).start();
+		return new ImportFilesFuture(this.pms.getFileServices(project),
+						files,
+						destFolderRelPath).start();
 	}
 
 
@@ -799,16 +801,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			log.debug("Tried access session without signing in.", e);
 		}
 	}
-	
+
 	@Override
 	public AvailableLaterObject<Void> deleteFile(FileObject fo) {
 		try {
-			return this.getFrontendService().getProjectsManagingService(getSessionId()).deleteFile(fo);
+			return this.getFrontendService().getProjectsManagingService(getSessionId())
+							.deleteFile(fo);
 		} catch (Exception e) {
 			return new AvailableErrorObject<Void>(e);
 		}
 	}
-	
+
 	@Override
 	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo) {
 		return this.pms.deleteFiles(fo);
@@ -913,8 +916,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					List<T> jos, String commitMsg) throws FileOperationFailedException {
 		ISyncService iss;
 		AvailableLaterObject<Void> result;
-		
-		if (commitMsg==null) commitMsg = "";
+
+		if (commitMsg == null)
+			commitMsg = "";
 
 		try {
 			iss = this.frontendService.getSyncService(this.getSessionId());
@@ -934,19 +938,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Void> pullJakeObjects(
-			List<JakeObject> jakeObjects) throws FileOperationFailedException {
+	public AvailableLaterObject<Void> pullJakeObjects(List<JakeObject> jakeObjects)
+					throws FileOperationFailedException {
 		ISyncService iss;
 		AvailableLaterObject<Void> result;
 
 		try {
 			iss = this.frontendService.getSyncService(this.getSessionId());
 			result = new PullFuture(iss, jakeObjects);
-			} catch (FrontendNotLoggedInException e) {
-				this.handleNotLoggedInException(e);
-				throw new FileOperationFailedException(e);
-			}
-			
+		} catch (FrontendNotLoggedInException e) {
+			this.handleNotLoggedInException(e);
+			throw new FileOperationFailedException(e);
+		}
+
 		return result.start();
 	}
 
