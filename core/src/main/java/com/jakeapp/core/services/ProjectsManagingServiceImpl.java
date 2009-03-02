@@ -1012,7 +1012,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	
 	@Override
 	@Transactional
-	public AvailableLaterObject<Void> deleteFile(FileObject fo) {
+	public AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) {
 		List<FileObject> fos = new ArrayList<FileObject>();
 		fos.add(fo);
 		AvailableLaterWrapperObject<Void,Integer> result = 
@@ -1022,14 +1022,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 					return null; //the entire calculation is done by the source
 				}
 			};
-		result.setSource(this.deleteFiles(fos));
+		result.setSource(this.deleteFiles(fos, trash));
 		
 		return result;
 	}
 	
 	@Override
 	@Transactional
-	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos) {
+	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos, boolean trash) {
 		Project project;
 		
 		if (fos.size()<0)
@@ -1040,7 +1040,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			return new DeleteFilesFuture(
 				this.getFileObjectDao(project),
 				this.getProjectsFileServices().getProjectFSService(project),
-				fos
+				fos,trash
 			);
 		}
 	}

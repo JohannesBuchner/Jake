@@ -6,13 +6,7 @@ import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.VisibilityStatus;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
-import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.*;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
@@ -21,8 +15,9 @@ import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.AbstractTask;
+import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
@@ -39,7 +34,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class JakeStatusBar extends JakeGuiComponent
 				implements ConnectionStatus, ProjectSelectionChanged, ProjectChanged,
-				ProjectViewChanged, ContextViewChanged, DataChanged, PropertyChanged {
+				ProjectViewChanged, ContextViewChanged, DataChanged, PropertyChanged,
+				TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
 	private static JakeStatusBar instance;
@@ -59,10 +55,37 @@ public class JakeStatusBar extends JakeGuiComponent
 									"/icons/login.png")));
 
 	Icon spinningDial = new SpinningDial(12, 12);
+	private JLabel progressMsg;
 
 	@Override public void propertyChanged(EnumSet<PropertyChanged.Reason> reason,
 					Project p, Object data) {
 		updateConnectionDisplay();
+	}
+
+	@Override public void taskStarted(IJakeTask task) {
+		updateTaskDisplay();
+	}
+
+	private void updateTaskDisplay() {
+		if(JakeExecutor.hasTasksRunning()) {
+		this.showProgressAnimation(true);
+			String moreTasks = "";
+			if(JakeExecutor.countTasksRunning() > 1) {
+				moreTasks = String.format(" (%d)", JakeExecutor.countTasksRunning());
+			}
+		this.progressMsg.setText(JakeExecutor.getLatestTask().getClass().getSimpleName() + moreTasks);
+		}else {
+			this.showProgressAnimation(false);
+			this.progressMsg.setText("");
+		}
+	}
+
+	@Override public void taskUpdated(IJakeTask task) {
+		updateTaskDisplay();
+	}
+
+	@Override public void taskFinished(IJakeTask task) {
+		updateTaskDisplay();
 	}
 
 	enum IconEnum {
@@ -105,8 +128,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	}
 
 
-	protected class ProjectSizeTotalTask
-					extends AbstractTask<Long> {
+	protected class ProjectSizeTotalTask extends AbstractTask<Long> {
 		@Override
 		protected AvailableLaterObject<Long> calculateFunction() {
 			return JakeMainApp.getCore().getProjectSizeTotal(getProject());
@@ -114,6 +136,7 @@ public class JakeStatusBar extends JakeGuiComponent
 
 		@Override
 		protected void done() {
+			super.done();
 			long projectSizeTotal = 0;
 			try {
 				projectSizeTotal = this.get();
@@ -132,8 +155,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	/**
 	 * Worker to count all project files
 	 */
-	protected class ProjectFileCountTask
-					extends AbstractTask<Integer> {
+	protected class ProjectFileCountTask extends AbstractTask<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
 			log.info("calculating total file count...");
@@ -145,6 +167,7 @@ public class JakeStatusBar extends JakeGuiComponent
 
 		@Override
 		protected void done() {
+			super.done();
 			// update the status bar label
 			int projectFileCount = 0;
 
@@ -163,8 +186,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 	}
 
-	protected class NoteCountTask
-					extends AbstractTask<Integer> {
+	protected class NoteCountTask extends AbstractTask<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
 			return JakeMainApp.getCore().getNoteCount(JakeMainApp.getProject());
@@ -178,6 +200,7 @@ public class JakeStatusBar extends JakeGuiComponent
 
 		@Override
 		protected void done() {
+			super.done();
 			Integer objNoteCount = 0;
 			int notesCount = 0;
 
@@ -205,6 +228,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 		JakeMainView.getMainView().addContextViewChangedListener(this);
 		EventCore.get().addPropertyListener(this);
+		EventCore.get().addTasksChangedListener(this);
 
 		// registering the connection status callback
 		EventCore.get().addConnectionStatusCallbackListener(this);
@@ -278,6 +302,12 @@ public class JakeStatusBar extends JakeGuiComponent
 		progressDrawer = new SpinningWheelComponent();
 		progressDrawer.setVisible(false);
 		bottomBar.addComponentToLeft(progressDrawer, 3);
+
+		// FIXME: remove after release
+		progressMsg = MacWidgetFactory.createEmphasizedLabel("");
+		progressMsg.setFont(progressMsg.getFont().deriveFont(progressMsg.getFont()
+						.getSize() - 2f));
+		bottomBar.addComponentToLeft(progressMsg, 3);
 
 		// connection info
 		connectionButton = new JButton();
@@ -362,7 +392,7 @@ public class JakeStatusBar extends JakeGuiComponent
 				if (getProject() != null) {
 					int peopleCount;
 					try {
-						peopleCount = JakeMainApp.getCore().getProjectUser(getProject()).size();
+						peopleCount = JakeMainApp.getCore().getUser(getProject()).size();
 					} catch (PeopleOperationFailedException e) {
 						peopleCount = 0;
 						ExceptionUtilities.showError(e);
@@ -454,9 +484,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	}
 
 
-	// HACK: should be called via listener, implicit only...
-	public static void showProgressAnimation(final boolean show) {
-
+	private void showProgressAnimation(final boolean show) {
 		Runnable runner = new Runnable() {
 			@Override
 			public void run() {
@@ -477,7 +505,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	public static void showMessage(final String msg, int progress) {
 		showMessage(msg);
 		// TODO: pie!
-		showProgressAnimation(progress > 0 && progress < 100);
+		//showProgressAnimation(progress > 0 && progress < 100);
 	}
 
 	// TODO: should use tasks framework

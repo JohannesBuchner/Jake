@@ -33,13 +33,11 @@ import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.ProjectCreationException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.exceptions.ProjectNotFoundException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.JakeObjectAttributedCacheManager;
-import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.IFileModificationListener;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
@@ -156,15 +154,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	// only start from StartStopProjectTask
-	public AvailableLaterObject<Void> startProject(Project project) {
+	public AvailableLaterObject<Void> startStopProject(Project project, boolean start) {
 		log.info("Starting project: " + project);
-		return new StartStopProjectFuture(pms, project, true).start();
-	}
-
-
-	public AvailableLaterObject<Void> stopProject(Project project) {
-		log.info("stop project: " + project);
-		return new StartStopProjectFuture(pms, project, false).start();
+		return new StartStopProjectFuture(pms, project, start).start();
 	}
 
 
@@ -365,41 +357,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public FolderObject getFolder(Project project, FolderObject parent)
-					throws ProjectFolderMissingException {
-		log.info("get root folder for " + project);
-
-		// currently disabled, until i fix this.
-		/*
-
-		String rootPath = project.getRootPath();
-		File rootFolder = new File(rootPath);
-		if (!rootFolder.exists()) {
-			throw new ProjectFolderMissingException(rootPath);
-		}
-
-		FolderObject fo = null;
-		try {
-			IProjectsManagingService pms = this.getFrontendService()
-							.getProjectsManagingService(getSessionId());
-			fo = recursiveFileSystemHelper(project, "", "", pms.getFileServices(project),
-							pms);
-		} catch (IllegalArgumentException e) {
-			log.warn("Error creating FolderObject", e);
-		} catch (IllegalStateException e) {
-			log.warn("Error creating FolderObject", e);
-		} catch (FrontendNotLoggedInException e) {
-			this.handleNotLoggedInException(e);
-		} catch (ProjectNotLoadedException e) {
-			this.handleProjectNotLoaded(e);
-		}
-
-		return fo;
-		*/
-		return null;
-	}
-
-	@Override
 	public AvailableLaterObject<List<FileObject>> getFiles(Project project) {
 		log.debug("Calling getFiles");
 		AvailableLaterObject<List<FileObject>> result = null;
@@ -466,60 +423,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		return null;
 	}
 
-	/**
-	 * Helper method: Works recursively through the file system to
-	 * build the FolderObject for getProjectRootFolder()
-	 *
-	 * @param prj		 The project the created Folder Object is in.
-	 * @param relPath a Project-relative path to the returned folder object.
-	 * @param name		the name of the current folder. It is the last part of relPath
-	 * @param fss		 The FileSystemService used to access the Project-Folder
-	 * @param pms
-	 * @return
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *
-	 * @throws IllegalStateException
-	 * @throws IllegalArgumentException
-	 */
-	private FolderObject recursiveFileSystemHelper(Project prj, String relPath,
-					String name, IFSService fss, IProjectsManagingService pms)
-					throws IllegalArgumentException, IllegalStateException,
-					FrontendNotLoggedInException {
-		FolderObject fo = new FolderObject(relPath, name, prj);
-		log.info("recursiveFileSystemHelper: " + prj + " relPath: " + relPath + " name: " + name + " ifss: " + fss + "iprojectManagingService: " + pms);
-		try {
-			for (String f : fss.listFolder(relPath)) {
-				// f is a valid relpath
-				try {
-					if (fss.fileExists(f)) {
-						//is an ordinary file
-						//get an appropriate FileObject - with the real UUID
-						//The UUid may still be null e.g. if the file only exists locally
-						//and has just been detected.
-						log.debug(f);
-
-						fo.addFile(pms.getFileObjectByRelPath(prj, f));
-					} else if (fss.folderExists(relPath)) {
-						FolderObject subfolder =
-										recursiveFileSystemHelper(prj, f, fss.getFileName(f), fss, pms);
-						fo.addFolder(subfolder);
-					}
-				} catch (InvalidFilenameException e) {
-					log.info("Invalid Filename", e);
-				} catch (IOException e) {
-					log.info("Generic File Exception", e);
-				} catch (NoSuchJakeObjectException e) {
-					log.warn("FileObject not found?", e);
-				}
-			}
-		} catch (InvalidFilenameException e) {
-			log.info("Invalid Filename", e);
-		} catch (IOException e) {
-			log.info("Generic File Exception", e);
-		}
-
-		return fo;
-	}
 
 	public AvailableLaterObject<List<NoteObject>> getNotes(final Project project) {
 
@@ -606,9 +509,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return list of people in this project OR empty list.
 	 */
-	public List<UserInfo> getProjectUser(Project project)
+	public List<UserInfo> getUser(Project project)
 					throws PeopleOperationFailedException {
-		log.info("getProjectUser from project " + project);
+		log.info("getUser from project " + project);
 
 		List<UserInfo> users = new ArrayList<UserInfo>();
 
@@ -630,8 +533,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public boolean setPeopleNickname(Project project, UserId userId, String nick) {
-		log.info("setPeopleNickname: project: " + project + " ProjectMember: " + userId + " Nick: " + nick);
+	public boolean setUserNick(Project project, UserId userId, String nick) {
+		log.info("setUserNick: project: " + project + " ProjectMember: " + userId + " Nick: " + nick);
 
 		// FIXME: AS OF 1.3.09, this seems broken?
 		// TODO: ignore this and create a regex for checking!
@@ -649,7 +552,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void peopleSetTrustState(Project project, UserId userId, TrustState trust) {
+	public void setTrustState(Project project, UserId userId, TrustState trust) {
 		try {
 			pms.setTrust(project, userId, trust);
 		} catch (IllegalArgumentException e) {
@@ -665,7 +568,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public void invitePeople(Project project, String userid) {
+	public void inviteUser(Project project, String userid) {
 		try {
 			this.getFrontendService().getProjectsManagingService(getSessionId())
 							.invite(project, userid);
@@ -778,43 +681,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	@Override
-	public void deleteToTrash(Project project, String relpath) {
-		// TODO: What do we do with folders?
-		try {
-			this.getFrontendService().
-							getProjectsManagingService(this.getSessionId()).
-							getFileServices(project).
-							trashFile(relpath);
-		} catch (FileNotFoundException e) {
-			log.debug("Tried to delete nonexisting file", e);
-			ExceptionUtilities.showError(e);
-		} catch (IllegalArgumentException e) {
-			log.debug("Cannot delete FileObject", e);
-			ExceptionUtilities.showError(e);
-		} catch (IllegalStateException e) {
-			log.debug("Project service is not available.");
-		} catch (InvalidFilenameException e) {
-			log.debug("Filename of FileObject invalid: " + relpath);
-			ExceptionUtilities.showError(e);
-		} catch (FrontendNotLoggedInException e) {
-			log.debug("Tried access session without signing in.", e);
-		}
-	}
 
 	@Override
-	public AvailableLaterObject<Void> deleteFile(FileObject fo) {
+	public AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) {
 		try {
-			return this.getFrontendService().getProjectsManagingService(getSessionId())
-							.deleteFile(fo);
+			return this.pms.deleteFile(fo, trash);
 		} catch (Exception e) {
 			return new AvailableErrorObject<Void>(e);
 		}
 	}
 
 	@Override
-	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo) {
-		return this.pms.deleteFiles(fo);
+	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo, boolean trash) {
+		return this.pms.deleteFiles(fo, trash);
 	}
 
 	@Override

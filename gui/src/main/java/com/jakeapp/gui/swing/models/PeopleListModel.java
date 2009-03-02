@@ -54,7 +54,7 @@ public class PeopleListModel extends AbstractListModel
 		if(!JakeMainApp.isCoreInitialized()) return;
 
 		try {
-			this.people = JakeMainApp.getCore().getProjectUser(getProject());
+			this.people = JakeMainApp.getCore().getUser(getProject());
 		} catch (PeopleOperationFailedException e) {
 			this.people = new ArrayList<UserInfo>();
 			ExceptionUtilities.showError(e);
@@ -81,7 +81,7 @@ public class PeopleListModel extends AbstractListModel
 
 	@Override
 	public void setValueAt(Object value, int index) {
-		if (!JakeMainApp.getCore().setPeopleNickname(getProject(), people.get(index).getUser(), (String) value)) {
+		if (!JakeMainApp.getCore().setUserNick(getProject(), people.get(index).getUser(), (String) value)) {
 
 			JakeHelper.showMsgTranslated("PeopleListRenameNicknameInvalid", JOptionPane.WARNING_MESSAGE);
 

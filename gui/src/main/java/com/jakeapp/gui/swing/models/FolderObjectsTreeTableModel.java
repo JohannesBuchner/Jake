@@ -5,8 +5,11 @@ import com.jakeapp.core.domain.Tag;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
-import com.jakeapp.gui.swing.helpers.*;
+import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
+import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.TagHelper;
 import com.jakeapp.jake.fss.IModificationListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.treetable.TreeTableModel;
@@ -229,14 +232,14 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 
 	@Override
 	public void filesChanged(String relpath, IModificationListener.ModifyActions action) {
-		try {
-			log.debug("Hooray, our files changed!");
-			ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getCore().getFolder(
-							JakeMainApp.getProject(),
-							null));
-			this.setRoot(node);
-		} catch (ProjectFolderMissingException e) {
-			log.error("Couldn't find project root folder");
-		}
+//		try {
+//			log.debug("Hooray, our files changed!");
+//			//ProjectFilesTreeNode node = new ProjectFilesTreeNode(JakeMainApp.getCore().getFolder(
+//			//				JakeMainApp.getProject(),
+//			//				null));
+//			//this.setRoot(node);
+//		} catch (ProjectFolderMissingException e) {
+//			log.error("Couldn't find project root folder");
+//		}
 	}
 }

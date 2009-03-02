@@ -57,7 +57,7 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 			ArrayList<FileObject> files = new ArrayList<FileObject>(); //this is bogus...check
 			for (JakeObject jo : jos)
 				files.add((FileObject)jo);
-			return JakeMainApp.getCore().deleteFiles(files);
+			return JakeMainApp.getCore().deleteFiles(files, false);
 		}
 		else {
 			return new AvailableErrorObject<Integer>(

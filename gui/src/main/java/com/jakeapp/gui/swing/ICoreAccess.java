@@ -2,10 +2,10 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -17,19 +17,21 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
-import com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 
 import java.io.File;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.EnumSet;
 
 
+/**
+ * The Main Interface for core <-> gui communication.
+ */
 public interface ICoreAccess {
 
 
@@ -63,6 +65,20 @@ public interface ICoreAccess {
 	 */
 	public void backendLogOff();
 
+	/**
+	 * Logs a user in
+	 *
+	 * @param service					The message service to log in
+	 * @param password				 password needed to authenticate.
+	 *                         If password is null it is tried to authenticate without password.
+	 * @param rememberPassword Indicates if the password should be stored with the
+	 *                         service credentials that will be generated.
+	 * @return An object reporting the progress of the login
+	 */
+	AvailableLaterObject<Boolean> login(MsgService service, String password,
+					boolean rememberPassword);
+
+
 	/******************* User functions ********************/
 
 	/**
@@ -82,7 +98,7 @@ public interface ICoreAccess {
 	 */
 	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
-								 ProtocolNotSupportedException, NetworkException;
+					ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -102,7 +118,7 @@ public interface ICoreAccess {
 	 */
 	public MsgService addAccount(ServiceCredentials credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
-								 ProtocolNotSupportedException, NetworkException;
+					ProtocolNotSupportedException, NetworkException;
 
 
 	/**
@@ -119,8 +135,7 @@ public interface ICoreAccess {
 	 */
 	public void removeAccount(MsgService msg)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
-								 ProtocolNotSupportedException, NetworkException,
-								 NoSuchMsgServiceException;
+					ProtocolNotSupportedException, NetworkException, NoSuchMsgServiceException;
 
 
 	/**
@@ -139,27 +154,21 @@ public interface ICoreAccess {
 	 * Get  projects(started/stopped/invited - depends on the filter.
 	 * List is alphabetically sorted. (TODO: is it?)
 	 *
-	 * @param filter	EnumSet of the InvitationState
+	 * @param filter EnumSet of the InvitationState
 	 * @return list of projects.
-	 *
 	 */
-	public AvailableLaterObject<List<Project>> getProjects(EnumSet<InvitationState> filter);
-
+	public AvailableLaterObject<List<Project>> getProjects(
+					EnumSet<InvitationState> filter);
 
 	/**
-	 * Stops the given project
+	 * Starts or Stops a given project
 	 *
 	 * @param project
+	 * @param start	 true to start the project, false to stop
+	 * @return
 	 */
-	public AvailableLaterObject<Void> stopProject(Project project);
+	public AvailableLaterObject<Void> startStopProject(Project project, boolean start);
 
-
-	/**
-	 * Starts the given project
-	 *
-	 * @param project
-	 */
-	public AvailableLaterObject<Void> startProject(Project project);
 
 	/**
 	 * Returns absolute Number of files of the project.
@@ -167,6 +176,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return
 	 */
+	// fixme: delete this, use cace!
 	public AvailableLaterObject<Integer> getProjectFileCount(Project project);
 
 	/**
@@ -175,6 +185,7 @@ public interface ICoreAccess {
 	 * @param project
 	 * @return size in bytes.
 	 */
+	// fixme: delete this, use cache???
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project);
 
 
@@ -235,6 +246,15 @@ public interface ICoreAccess {
 	public void setProjectName(Project project, String prName);
 
 
+	/**
+	 * Set project settings
+	 *
+	 * @param p
+	 * @param autoPull
+	 * @param autoPush
+	 */
+	void setProjectSettings(Project p, Boolean autoPull, Boolean autoPush);
+
 	/*******************************************************/
 	/******************* File functions ********************/
 	/*******************************************************/
@@ -249,19 +269,6 @@ public interface ICoreAccess {
 	 */
 	File getFile(FileObject fo) throws FileOperationFailedException;
 
-
-	/**
-	 * Retrieves a file/folder tree for the project
-	 *
-	 * @param project The project in question
-	 * @param parent
-	 * @return A FolderObject that represents the root of the tree
-	 * @throws com.jakeapp.gui.swing.exceptions.ProjectFolderMissingException
-	 *
-	 */
-	public FolderObject getFolder(Project project, FolderObject parent)
-					throws ProjectFolderMissingException;
-
 	/**
 	 * Retrieves all files within a project
 	 *
@@ -274,11 +281,11 @@ public interface ICoreAccess {
 	 * Gets the sync status of a file
 	 *
 	 * @param project
-	 * @param jakeObject		The jakeObject for which the status should be determined
+	 * @param jakeObject The jakeObject for which the status should be determined
 	 * @return The file's status as int (defined here)
 	 */
-	public <T extends JakeObject> Attributed<T> getAttributed(
-					Project project, T jakeObject);
+	public <T extends JakeObject> Attributed<T> getAttributed(Project project,
+					T jakeObject);
 
 	/**
 	 * Get the file size for a local file copy (possibly modified)
@@ -309,30 +316,24 @@ public interface ICoreAccess {
 	public AvailableLaterObject<Void> importExternalFileFolderIntoProject(
 					Project project, List<File> files, String destFolderRelPath);
 
-
-	// TODO: What happens to FileObjects and FolderObjects? Are we going to have a common superclass?
-	/**
-	 * Deletes a file or folder (moves it to system trash)
-	 *
-	 * @param project
-	 * @param relpath The file or folder to be deleted
-	 */
-	public void deleteToTrash(Project project, String relpath);
-	
 	/**
 	 * Deletes a file to trash and announces the deletion
+	 *
 	 * @param fo
+	 * @param trash
 	 * @return
 	 */
-	AvailableLaterObject<Void> deleteFile(FileObject fo);
+	AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash);
 
 	/**
 	 * Deletes many files and announces their deletion
+	 *
 	 * @param fos
+	 * @param trash
 	 * @return An AvailableLaterObject that calculates the
-	 * 	number of deleted files.
+	 *         number of deleted files.
 	 */
-	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos);
+	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos, boolean trash);
 
 	/**
 	 * Renames a file
@@ -369,47 +370,51 @@ public interface ICoreAccess {
 	/**
 	 * @param jo				object to be announced
 	 * @param commitmsg
+	 * @return
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
-	 * @return
 	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
+	 *
 	 */
 	public AvailableLaterObject<Void> announceJakeObject(JakeObject jo,
 					String commitmsg) throws FileOperationFailedException;
 
 
 	/**
-	 * @param jos JakeObjects to be announced
+	 * @param jos			 JakeObjects to be announced
 	 * @param commitMsg
+	 * @return
 	 * @throws FileOperationFailedException nested exception for file based errors.
 	 */
-	public<T extends JakeObject> AvailableLaterObject<Void> announceJakeObjects(
-					List<T> jos, String commitMsg)
-					throws FileOperationFailedException;
+	public <T extends JakeObject> AvailableLaterObject<Void> announceJakeObjects(
+					List<T> jos, String commitMsg) throws FileOperationFailedException;
 
 
 	/**
 	 * Pull singe file from a remote peer.
+	 *
 	 * @param jo the jakeObject that should be pulled.
+	 * @return
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *
 	 * @throws OtherUserOfflineException
 	 * @throws java.rmi.NoSuchObjectException
 	 * @throws NoSuchLogEntryException
 	 * @throws com.jakeapp.gui.swing.exceptions.FileOperationFailedException
-	 * @return
+	 *
 	 */
 	public AvailableLaterObject<Void> pullJakeObject(JakeObject jo)
 					throws FileOperationFailedException;
-	
+
 	/**
 	 * Pull a list of files from remote peers.
+	 *
 	 * @param jakeObjects the list of files that are to be pulled
 	 * @return
 	 * @throws FileOperationFailedException
 	 */
 	public AvailableLaterObject<Void> pullJakeObjects(List<JakeObject> jakeObjects)
-					throws FileOperationFailedException; 
+					throws FileOperationFailedException;
 
 	/**
 	 * Creates a folder at a given point in the relative path hierarchy of a project
@@ -428,6 +433,7 @@ public interface ICoreAccess {
 	 * @param listener
 	 * @param project
 	 */
+	// fixme: move to eventcore!
 	public void addFilesChangedListener(FilesChanged listener, Project project);
 
 	/**
@@ -454,13 +460,15 @@ public interface ICoreAccess {
 	 * Deletes the given note, no matter if it is a local or shared note.
 	 *
 	 * @param note the note to be deleted.
+	 * @return
 	 */
-	public AvailableLaterObject<Void> deleteNote(final NoteObject note)/* throws NoteOperationFailedException*/;
-	
+	public AvailableLaterObject<Void> deleteNote(
+					final NoteObject note)/* throws NoteOperationFailedException*/;
+
 	/**
 	 * Deletes the given notes, no matter if it is a local or shared note.
 	 *
-	 * @param notse the note to be deleted.
+	 * @param notes the note to be deleted.
 	 * @return An AvailableLaterObject that calculates the number of deleted notes.
 	 */
 	public AvailableLaterObject<Integer> deleteNotes(final List<NoteObject> notes);
@@ -473,19 +481,38 @@ public interface ICoreAccess {
 	 */
 	public void createNote(NoteObject note) throws NoteOperationFailedException;
 
+
+	/**
+	 * Save the given note. Jesus saves!
+	 *
+	 * @param note the not that is to saved.
+	 * @throws NoteOperationFailedException raised if the operation can not be completed, i.e. if the
+	 *                                      note couldn not be saved.
+	 */
+	public void saveNote(NoteObject note) throws NoteOperationFailedException;
+
+
+	/**
+	 * calculates how many notes are there for a project
+	 *
+	 * @param project
+	 * @return
+	 */
+	// fixme: remove
+	AvailableLaterObject<Integer> getNoteCount(Project project);
+
 	/******************* Soft Lock ***************************/
 
 	/**
 	 * Set the soft lock for a <code>JakeObject</code>.
 	 *
-	 * @param jakeObject		 the <code>JakeObject</code> for which the lock is to be set.
-	 * @param isSet					enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
-	 *                       enable the lock
-	 * @param lockingMessage the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
-	 *                       <code>falso</code>
+	 * @param jakeObject the <code>JakeObject</code> for which the lock is to be set.
+	 * @param isSet			enable/disable the lock. Set this to <code>false</code> to disable the lock, <code>true</code> to
+	 *                   enable the lock
+	 * @param logMsg		 the locking message for the lock. This argument is ignored, if <code>isSet</code> is set to
+	 *                   <code>falso</code>
 	 */
-	public void setSoftLock(JakeObject jakeObject, boolean isSet,
-					String lockingMessage);
+	public void setSoftLock(JakeObject jakeObject, boolean isSet, String logMsg);
 
 	/******************* People functions ********************/
 
@@ -498,7 +525,7 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<UserInfo> getProjectUser(Project project)
+	public List<UserInfo> getUser(Project project)
 					throws PeopleOperationFailedException;
 
 	/**
@@ -517,7 +544,7 @@ public interface ICoreAccess {
 	 * @param nick
 	 * @return
 	 */
-	public boolean setPeopleNickname(Project project, UserId userId, String nick);
+	public boolean setUserNick(Project project, UserId userId, String nick);
 
 	/**
 	 * Set the Trust State of people.
@@ -526,7 +553,7 @@ public interface ICoreAccess {
 	 * @param userId
 	 * @param trust
 	 */
-	public void peopleSetTrustState(Project project, UserId userId, TrustState trust);
+	public void setTrustState(Project project, UserId userId, TrustState trust);
 
 
 	/**
@@ -535,7 +562,7 @@ public interface ICoreAccess {
 	 * @param project : the project to invite the pm
 	 * @param userid	: the user id as string (xmpp, ...)
 	 */
-	void invitePeople(Project project, String userid);
+	void inviteUser(Project project, String userid);
 
 	/**
 	 * Returns suggested people for invitation. Returns a list of known people
@@ -560,45 +587,4 @@ public interface ICoreAccess {
 	 */
 	public List<LogEntry<? extends ILogable>> getLog(Project project,
 					JakeObject jakeObject, int entries);
-
-	/**
-	 * Save the given note. Jesus saves!
-	 *
-	 * @param note the not that is to saved.
-	 * @throws NoteOperationFailedException raised if the operation can not be completed, i.e. if the
-	 *                                      note couldn not be saved.
-	 */
-	public void saveNote(NoteObject note) throws NoteOperationFailedException;
-
-	/**
-	 * Logs a user in
-	 *
-	 * @param service					The message service to log in
-	 * @param password				 password needed to authenticate.
-	 *                         If password is null it is tried to authenticate without password.
-	 * @param rememberPassword Indicates if the password should be stored with the
-	 *                         service credentials that will be generated.
-	 * @return An object reporting the progress of the login
-	 */
-	AvailableLaterObject<Boolean> login(MsgService service, String password,
-					boolean rememberPassword);
-
-
-	/**
-	 * calculates how many notes are there for a project
-	 * @param project
-	 * @return
-	 *
-	 */
-	AvailableLaterObject<Integer> getNoteCount(Project project);
-
-	/**
-	 * Set project settings
-	 * @param p
-	 * @param autoPull
-	 * @param autoPush
-	 */
-	void setProjectSettings(Project p, Boolean autoPull, Boolean autoPush);
 }
-
-

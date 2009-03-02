@@ -401,17 +401,19 @@ public interface IProjectsManagingService {
 	/**
 	 * Deletes a FileObject, but does not announce the deletion
 	 * @param fo
+	 * @param trash
 	 * @return TODO
 	 * @throws NoSuchJakeObjectException
 	 */
-	AvailableLaterObject<Void> deleteFile(FileObject fo) throws NoSuchJakeObjectException;
+	AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) throws NoSuchJakeObjectException;
 	
 	/**
 	 * 
 	 * @param fos
+	 * @param trash
 	 * @return number of deleted files
 	 */
-	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos);
+	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos, boolean trash);
 
 	/**
 	 * 

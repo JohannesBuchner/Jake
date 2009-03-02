@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;
@@ -18,6 +19,7 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 	private IFileObjectDao dao;
 	private IFSService fsService;
 	List<FileObject> toDelete;
+	boolean trash;
 
 	private IFileObjectDao getDao() {
 		return dao;
@@ -47,15 +49,16 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 
 
 	public DeleteFilesFuture(IFileObjectDao dao, IFSService fsService,
-					List<FileObject> toDelete) {
+					List<FileObject> toDelete, boolean trash) {
 		super();
 		this.setDao(dao);
 		this.setFsService(fsService);
 		this.setToDelete(toDelete);
+		this.trash = trash;
 	}
 
 	private void deleteFile(FileObject fo) {
-		log.debug("deleting a file!!" + fo.getRelPath());
+		log.debug("trashing/deleting a file!!" + fo.getRelPath());
 
 		// update database if object has entry (uuid is true)
 		if (fo.getUuid() != null) {
@@ -65,11 +68,17 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 
 		// delete physical file
 		try {
-			this.getFsService().trashFile(fo.getRelPath());
+			if (trash) {
+				this.getFsService().trashFile(fo.getRelPath());
+			} else {
+				this.getFsService().deleteFile(fo.getRelPath());
+			}
 		} catch (FileNotFoundException ignored) {
-			//ignore exception - file is already gone
+			log.warn("File not found: ", ignored);
 		} catch (InvalidFilenameException ignored) {
-			//ignore exception - file cannot be handled by jake
+			log.warn("Invalid Filename: ", ignored);
+		} catch (NotAFileException e) {
+			log.warn("Not a File: ", e);
 		}
 	}
 

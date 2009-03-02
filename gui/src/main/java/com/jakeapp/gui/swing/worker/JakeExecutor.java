@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -75,5 +76,25 @@ public class JakeExecutor extends ThreadPoolExecutor {
 
 	public static boolean isTaskRunning(Class aclass) {
 		return getInstance().runningTasks.containsKey(aclass.toString().hashCode());
+	}
+
+	public static boolean hasTasksRunning() {
+		return getInstance().runningTasks.size() > 0;
+	}
+
+	/**
+	 * Get Task on top of executor
+	 * @return
+	 */
+	public static IJakeTask getLatestTask() {
+		IJakeTask last = null;
+			for(Map.Entry<Integer, IJakeTask> entry : getInstance().runningTasks.entrySet()) {
+				last = entry.getValue();
+			}
+		return last;
+	}
+
+	public static int countTasksRunning() {
+		return getInstance().runningTasks.size();
 	}
 }

@@ -24,11 +24,7 @@ public class StartStopProjectTask extends AbstractTask<Void> {
 						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanging));
 
-		if (start) {
-			return JakeMainApp.getCore().startProject(project);
-		} else {
-			return JakeMainApp.getCore().stopProject(project);
-		}
+		return JakeMainApp.getCore().startStopProject(project, start);
 	}
 
 	@Override

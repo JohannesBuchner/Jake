@@ -51,7 +51,7 @@ public abstract class PeopleListAction extends ProjectAction {
                 log.warn("Action TrustNoPeopleAction failed for " + oMember);
                 return;
             } else {
-                JakeMainApp.getCore().peopleSetTrustState(
+                JakeMainApp.getCore().setTrustState(
                         getProject(), member, trust);
             }
         }
