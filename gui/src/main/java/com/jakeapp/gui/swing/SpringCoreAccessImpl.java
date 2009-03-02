@@ -811,7 +811,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	
 	@Override
 	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo) {
-		return this.getFrontendService().getProjectsManagingService(getSessionId()).deleteFiles(fo);
+		return this.pms.deleteFiles(fo);
 	}
 
 	@Override

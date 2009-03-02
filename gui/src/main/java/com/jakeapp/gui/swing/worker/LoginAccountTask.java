@@ -13,8 +13,7 @@ import org.apache.log4j.Logger;
 /**
  * Private inner worker for account registration.
  */
-public class LoginAccountTask
-				extends AbstractTask<Boolean> {
+public class LoginAccountTask extends AbstractTask<Boolean> {
 	private static final Logger log = Logger.getLogger(LoginAccountTask.class);
 
 	private MsgService msg;
@@ -42,12 +41,13 @@ public class LoginAccountTask
 
 	@Override
 	protected void done() {
+		super.done();
+		
 		//JakeStatusBar.showProgressAnimation(false);
 		try {
 			if (!this.get()) {
 				log.warn("Wrong User/Password");
-				JakeStatusBar
-								.showMessage("Login unsuccessful: Wrong User/Password.", 100);
+				JakeStatusBar.showMessage("Login unsuccessful: Wrong User/Password.", 100);
 			} else {
 				JakeStatusBar.showMessage("Successfully logged in");
 				//JakeStatusBar.updateMessage();

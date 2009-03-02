@@ -14,7 +14,8 @@ import java.util.concurrent.ExecutionException;
  */
 // TODO??
 public class GetAllProjectLogEntriesTask extends AbstractTask<List<FileObject>> {
-	private static final Logger log = Logger.getLogger(GetAllProjectLogEntriesTask.class);
+	private static final Logger log =
+					Logger.getLogger(GetAllProjectLogEntriesTask.class);
 	private Project project;
 
 	public GetAllProjectLogEntriesTask(Project project) {
@@ -30,6 +31,8 @@ public class GetAllProjectLogEntriesTask extends AbstractTask<List<FileObject>> 
 
 	@Override
 	protected void done() {
+		super.done();
+
 		log.info("Done GetAllProjectFilesTask");
 
 		// done! save into object cache

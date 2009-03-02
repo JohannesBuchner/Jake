@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Get all Notes for a certain project
+ *
  * @author studpete
  */
 public class GetAllProjectNotesTask extends AbstractTask<List<NoteObject>> {
@@ -30,6 +31,8 @@ public class GetAllProjectNotesTask extends AbstractTask<List<NoteObject>> {
 
 	@Override
 	protected void done() {
+		super.done();
+		
 		log.trace("Done GetAllProjectNotesTask");
 
 		// done! so lets update the filetree

@@ -57,7 +57,7 @@ public class DeleteFileAction extends FileAction {
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
 		String[] options = {map.getString("confirmDeleteFile.ok"), map.getString(
-						"geILogablecel")};
+						"genericCancel")};
 		String text;
 		LogEntry<? extends ILogable> lockEntry = null;
 		Attributed<FileObject> af;

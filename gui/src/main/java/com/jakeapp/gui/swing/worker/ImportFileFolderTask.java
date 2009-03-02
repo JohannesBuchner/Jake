@@ -12,8 +12,7 @@ import java.util.List;
 /**
  * Import File Folder Worker
  */
-public class ImportFileFolderTask
-				extends AbstractTask<Void> {
+public class ImportFileFolderTask extends AbstractTask<Void> {
 	private Project p;
 	private List<File> files;
 	private String destFolderRelPath;
@@ -36,6 +35,7 @@ public class ImportFileFolderTask
 
 	@Override
 	protected void done() {
+		super.done();
 		EventCore.get().fireFilesChanged(p);
 	}
 

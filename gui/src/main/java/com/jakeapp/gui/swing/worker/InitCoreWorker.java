@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class InitCoreWorker extends SwingWorker<ICoreAccess, Void> implements IJakeTask {
+public class InitCoreWorker extends SwingWorker<ICoreAccess, Void>
+				implements IJakeTask {
 	private static final Logger log = Logger.getLogger(InitCoreWorker.class);
 
 	public InitCoreWorker() {
@@ -37,6 +38,8 @@ public class InitCoreWorker extends SwingWorker<ICoreAccess, Void> implements IJ
 
 	@Override
 	public void done() {
+		super.done();
+		
 		boolean success = false;
 		try {
 			// get core & authenticate

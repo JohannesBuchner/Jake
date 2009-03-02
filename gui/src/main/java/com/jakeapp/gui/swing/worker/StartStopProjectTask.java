@@ -7,8 +7,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
-public class StartStopProjectTask
-				extends AbstractTask<Void> {
+public class StartStopProjectTask extends AbstractTask<Void> {
 	private Project project;
 	private boolean start;
 
@@ -21,8 +20,8 @@ public class StartStopProjectTask
 	protected AvailableLaterObject<Void> calculateFunction() {
 
 		// generate event
-		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(project,
+		EventCore.get()
+						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanging));
 
 		if (start) {
@@ -34,9 +33,10 @@ public class StartStopProjectTask
 
 	@Override
 	protected void done() {
+		super.done();
 		// generate event
-		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(project,
+		EventCore.get()
+						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanged));
 	}
 

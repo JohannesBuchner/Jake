@@ -12,8 +12,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class GetProjectsTask
-				extends AbstractTask<List<Project>> {
+public class GetProjectsTask extends AbstractTask<List<Project>> {
 	private EnumSet<InvitationState> filter;
 
 	public GetProjectsTask(EnumSet<InvitationState> filter) {
@@ -25,7 +24,7 @@ public class GetProjectsTask
 
 		if (JakeMainApp.isCoreInitialized()) {
 			return JakeMainApp.getCore().getProjects(filter);
-		}else {
+		} else {
 			// return an error, but fail silently (core just needs more time for init)
 			return new AvailableErrorObject<List<Project>>(null);
 		}
@@ -33,6 +32,8 @@ public class GetProjectsTask
 
 	@Override
 	protected void done() {
+		super.done();
+
 		try {
 			if (filter.contains(InvitationState.ACCEPTED)) {
 				ObjectCache.get().setMyProjects(get());

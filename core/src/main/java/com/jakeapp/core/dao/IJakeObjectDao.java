@@ -2,8 +2,6 @@ package com.jakeapp.core.dao;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Tag;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +22,7 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param jakeObject The <code>JakeObject</code>to be persisted
      * @return The <code>JakeObject</code> that has been persisted
      */
+		// fixme: what errors can you throw?
     public T persist(final T jakeObject);
 
 
