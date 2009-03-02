@@ -40,6 +40,7 @@ public abstract class ProjectAction extends JakeAction
 	}
 
 	public void updateAction() {
+		setEnabled(this.isEnabled() && JakeMainApp.getMsgService() != null);		
 	}
 
 	public void projectChanged(final ProjectChangedEvent ev) {
