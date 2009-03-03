@@ -43,7 +43,6 @@
         <property name="requestHandlePolicy" ref="requestHandlePolicy"/>
         <property name="projectsFileServices" ref="projectsFileServices"/>
         <property name="ICSManager" ref="icsManager"/>
-	    <property name="logEntrySerializer" ref="logEntrySerializer" />
         <property name="messageMarshaller" ref="messageMarshaller" />
     </bean>
 

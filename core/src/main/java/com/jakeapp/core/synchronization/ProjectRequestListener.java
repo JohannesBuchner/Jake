@@ -39,8 +39,6 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 	private ICSManager ICSManager;
 	private ProjectApplicationContextFactory db;
 
-	private LogEntrySerializer logEntrySerializer;
-
 	private IInternalSyncService syncService;
 
 	private MessageMarshaller messageMarshaller;
@@ -52,13 +50,11 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			Project p,
 			ICSManager icsManager,
 			ProjectApplicationContextFactory db,
-			LogEntrySerializer logEntrySerializer,
 			IInternalSyncService syncService,
 			MessageMarshaller messageMarshaller) {
 		this.p = p;
 		this.ICSManager = icsManager;
 		this.db = db;
-		this.logEntrySerializer = logEntrySerializer;
 		this.syncService = syncService;
 		this.messageMarshaller = messageMarshaller;
 	}

@@ -61,15 +61,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	private IProjectsFileServices projectsFileServices;
-	private LogEntrySerializer logEntrySerializer;
 
-	public LogEntrySerializer getLogEntrySerializer() {
-		return logEntrySerializer;
-	}
-
-	public void setLogEntrySerializer(LogEntrySerializer logEntrySerializer) {
-		this.logEntrySerializer = logEntrySerializer;
-	}
 
 	/**
 	 * key is the UUID
@@ -296,8 +288,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if (prl == null) {
-			prl = new ProjectRequestListener(p, icsManager, db,
-					logEntrySerializer, (IInternalSyncService) this, messageMarshaller);
+			prl = new ProjectRequestListener(p, icsManager, db, (IInternalSyncService) this, messageMarshaller);
 			projectRequestListeners.put(p.getProjectId(), prl);
 		}
 		try {
