@@ -13,6 +13,7 @@ import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -58,10 +59,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
-	private static final String BEGIN_PROJECT_UUID = "<project>";
-	private static final String END_PROJECT_UUID = "</project>";
-	private static final String POKE_MESSAGE = "<poke/>";
-	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
 
 	private IProjectsFileServices projectsFileServices;
 	private LogEntrySerializer logEntrySerializer;
@@ -101,8 +98,20 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
 
-	/* DAO stuff */
+	// if this component gets more complex,
+	// inject it with spring
+	@Injected
+	private MessageMarshaller messageMarshaller;
 
+	public MessageMarshaller getMessageMarshaller() {
+		return messageMarshaller;
+	}
+
+	public void setMessageMarshaller(MessageMarshaller messageMarshaller) {
+		this.messageMarshaller = messageMarshaller;
+	}
+
+	/* DAO stuff */
 
 	@Override
 	protected Iterable<UserId> getProjectMembers(Project project)
@@ -182,7 +191,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		log.debug("ICS is logged in? " + ics.getStatusService().isLoggedIn());
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			String message = BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID + POKE_MESSAGE;
+			String message;
+			message = messageMarshaller.pokeProject(project.getProjectId());
 			log.debug("Sending message: \"" + message + "\"");
 			ics.getMsgService().sendMessage(uid, message);
 		} catch (NetworkException e) {
@@ -230,7 +240,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		ICService ics = getICS(project);
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			ics.getMsgService().sendMessage(uid, BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID + REQUEST_LOGS_MESSAGE);
+			String msg = messageMarshaller.requestLogs(project.getProjectId());
+			ics.getMsgService().sendMessage(uid, msg);
 		} catch (NetworkException e) {
 			log.debug("Could not request logs from user " + pm.getUserId(), e);
 		} catch (OtherUserOfflineException e) {
@@ -285,7 +296,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if (prl == null) {
-			prl = new ProjectRequestListener(p, icsManager, db, logEntrySerializer, (IInternalSyncService) this);
+			prl = new ProjectRequestListener(p, icsManager, db,
+					logEntrySerializer, (IInternalSyncService) this, messageMarshaller);
 			projectRequestListeners.put(p.getProjectId(), prl);
 		}
 		try {

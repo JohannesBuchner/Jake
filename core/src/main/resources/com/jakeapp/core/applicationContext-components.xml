@@ -23,4 +23,9 @@
         <property name="projectDao" ref="projectDao" />
     </bean>
 
+
+    <bean id="messageMarshaller" class="com.jakeapp.core.synchronization.helpers.MessageMarshaller">
+        <constructor-arg ref="logEntrySerializer" />
+    </bean>
+
 </beans>

@@ -13,6 +13,7 @@ import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
 
@@ -42,6 +43,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 
 	private IInternalSyncService syncService;
 
+	private MessageMarshaller messageMarshaller;
+
 	private static Logger log = Logger.getLogger(ProjectRequestListener.class);
 
 
@@ -50,12 +53,14 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			ICSManager icsManager,
 			ProjectApplicationContextFactory db,
 			LogEntrySerializer logEntrySerializer,
-			IInternalSyncService syncService) {
+			IInternalSyncService syncService,
+			MessageMarshaller messageMarshaller) {
 		this.p = p;
 		this.ICSManager = icsManager;
 		this.db = db;
 		this.logEntrySerializer = logEntrySerializer;
 		this.syncService = syncService;
+		this.messageMarshaller = messageMarshaller;
 	}
 
 
@@ -63,9 +68,7 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		return ICSManager;
 	}
 
-	private String getUUIDStringForProject(Project project) {
-		return BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID;
-	}
+
 
 
 	private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
@@ -73,22 +76,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 
 		try {
 			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
-
-
-			StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
-
-			log.debug("Starting to process log entries...");
-			for (LogEntry l : logs) {
-				try {
-					sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
-					log.debug("Serialised log entry, new sb content: " + sb.toString());
-				} catch (Throwable e) {
-					log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
-				}
-			}
-			log.debug("Finished processing log entries! Now sending.");
-
-			ics.getMsgService().sendMessage(user, sb.toString());
+			String message = messageMarshaller.packLogEntries(project, logs);
+			ics.getMsgService().sendMessage(user, message);
 		} catch (NetworkException e) {
 			log.warn("Could not sync logs", e);
 		} catch (OtherUserOfflineException e) {
@@ -107,6 +96,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 	@Override
 	@Transactional
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+
+
 		String projectUUID = getProjectUUID(content);
 		log.debug("Received a message for project " + projectUUID);
 
@@ -147,16 +138,18 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			log.info("Received serialized logentries from " + from_userid.getUserId());
 
 			String les = message.substring(LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(), message.length() - END_LOGENTRY.length());
-			String[] logentries = les.split(END_LOGENTRY + BEGIN_LOGENTRY);
 
-			for (String l : logentries) {
-				log.debug("Log entry serialized content: \"" + l + "\"");
-				try {
-					LogEntry entry = logEntrySerializer.deserialize(l);
+			List<LogEntry> logEntries = messageMarshaller.unpackLogEntries(les);
+
+			for(LogEntry entry : logEntries)
+			{
+				try
+				{
 					log.debug("Deserialized successfully, it is a " + entry.getLogAction() + " for object UUID " + entry.getObjectuuid());
 					db.getLogEntryDao(p).create(entry);
-					;
-				} catch (Throwable t) {
+				}
+				catch(Throwable t)
+				{
 					log.debug("Failed to deserialize and/or save", t);
 				}
 			}
@@ -184,6 +177,7 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 				log.error("Not logged in");
 			}
 		}
+
 		if (message.startsWith(NEW_FILE)) {
 			log.debug("requesting file");
 			String relpath = message.substring(NEW_FILE.length());
