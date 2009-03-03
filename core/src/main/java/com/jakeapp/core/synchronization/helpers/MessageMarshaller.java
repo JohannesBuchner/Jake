@@ -1,30 +1,34 @@
 package com.jakeapp.core.synchronization.helpers;
 
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.synchronization.ChangeListener;
-import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogEntrySerializer;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.logentries.LogEntry;
+
 /**
- * This class is used to marshall and demarshall (serialize & deserialize) messages
- * sent to a msgService or received from a msgService
+ * This class is used to marshal and unmarshal (build and analyze) messages sent
+ * to a msgService or received from a msgService
  */
 public class MessageMarshaller {
 
 	private static final String BEGIN_PROJECT_UUID = "<project>";
+
 	private static final String END_PROJECT_UUID = "</project>";
+
 	private static final String POKE_MESSAGE = "<poke/>";
+
 	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
 
 	private static final String BEGIN_LOGENTRY = "<le>";
+
 	private static final String END_LOGENTRY = "</le>";
 
 	private static final String LOGENTRIES_MESSAGE = "<logentries/>";
@@ -37,26 +41,35 @@ public class MessageMarshaller {
 		this.logEntrySerializer = logEntrySerializer;
 	}
 
-	public String pokeProject(String projectId) {
-		return BEGIN_PROJECT_UUID + projectId + END_PROJECT_UUID + POKE_MESSAGE;
+	public String pokeProject(Project project) {
+		return getUUIDStringForProject(project) + POKE_MESSAGE;
 	}
 
-	public String requestLogs(String projectId) {
-		return BEGIN_PROJECT_UUID + projectId + END_PROJECT_UUID + REQUEST_LOGS_MESSAGE;
+	public String requestLogs(Project project) {
+		return getUUIDStringForProject(project) + REQUEST_LOGS_MESSAGE;
+	}
+
+	public String requestFile(Project project, LogEntry<JakeObject> le) {
+		// can't use XML characters
+		return project.getProjectId() + "." + le.getUuid();
 	}
 
 
 	public String packLogEntries(Project project, List<LogEntry<? extends ILogable>> logs) {
 
-		StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
+		StringBuffer sb = new StringBuffer(getUUIDStringForProject(project))
+				.append(LOGENTRIES_MESSAGE);
 
 		log.debug("Starting to process log entries...");
-		for (LogEntry l : logs) {
+		for (LogEntry<? extends ILogable> l : logs) {
 			try {
-				sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
+				sb.append(BEGIN_LOGENTRY).append(
+						this.logEntrySerializer.serialize(l, project)).append(
+						END_LOGENTRY);
 				log.debug("Serialised log entry, new sb content: " + sb.toString());
 			} catch (Throwable e) {
-				log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
+				log.info("Failed to serialize log entry: " + l.getLogAction().toString()
+						+ "(" + l.toString() + ")", e);
 			}
 		}
 		log.debug("Finished processing log entries! Now sending.");
@@ -69,22 +82,41 @@ public class MessageMarshaller {
 		return BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID;
 	}
 
-	public List<LogEntry> unpackLogEntries(String les)
-	{
-		List<LogEntry> results = new ArrayList<LogEntry>();
+	public List<LogEntry<? extends ILogable>> unpackLogEntries(String les) {
+		List<LogEntry<? extends ILogable>> results = new ArrayList<LogEntry<? extends ILogable>>();
 		String[] logentries = les.split(END_LOGENTRY + BEGIN_LOGENTRY);
 
-			for (String l : logentries) {
-				try {
-					results.add(logEntrySerializer.deserialize(l));
-				} catch (Throwable t) {
-					log.debug("Failed to deserialize and/or save", t);
-				}
+		for (String l : logentries) {
+			try {
+				results.add(this.logEntrySerializer.deserialize(l));
+			} catch (Throwable t) {
+				log.debug("Failed to deserialize and/or save", t);
 			}
+		}
 		return results;
 	}
 
+	public UUID getProjectUUIDFromRequestMessage(String incomingMessage) {
+		try {
+			String[] parts = incomingMessage.split("\\.", 2);
+			if(parts.length != 2)
+				return null;
+			return UUID.fromString(parts[0]);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
+	public UUID getLogEntryUUIDFromRequestMessage(String incomingMessage) {
+		try {
+			String[] parts = incomingMessage.split("\\.", 2);
+			if(parts.length != 2)
+				return null;
+			return UUID.fromString(parts[1]);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 
 }

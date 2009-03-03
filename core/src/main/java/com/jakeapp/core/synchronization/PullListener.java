@@ -23,7 +23,7 @@ public class PullListener implements INegotiationSuccessListener {
 
 	@Override
 	public void failed(Throwable reason) {
-		log.error("pulling failed.");
+		log.error("pulling failed.", reason);
 	}
 
 	@Override

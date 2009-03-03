@@ -300,7 +300,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member2, member1));
 		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member3, member1));
 
-		Assert.assertEquals(3, logEntryDao.getCurrentProjectMembers().size());
+		Assert.assertEquals(2, logEntryDao.getCurrentProjectMembers().size());
 		/*
 		Assert.assertEquals(3, logEntryDao.getTrustGraph().size());
 		logEntryDao.create(new ProjectMemberLogEntry(

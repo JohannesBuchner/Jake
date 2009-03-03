@@ -28,6 +28,7 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
+import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
@@ -48,11 +49,10 @@ import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On
- * Project->pause/start call
- * {@link #startServing(Project, ChangeListener)} and
+ * Project->pause/start call {@link #startServing(Project, ChangeListener)} and
  * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
  * used.
- *
+ * 
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncService implements IInternalSyncService {
@@ -69,16 +69,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 */
 	private Map<String, ProjectRequestListener> projectRequestListeners = new HashMap<String, ProjectRequestListener>();
 
-
-
-
-
 	@Injected
 	private IProjectsFileServices projectsFileServices;
 
 	private ChangeListener getProjectChangeListener(Project p) {
-		return (p == null) ? null :
-				projectChangeListeners.get(p.getProjectId());
+		return (p == null) ? null : projectChangeListeners.get(p.getProjectId());
 	}
 
 	@Injected
@@ -130,12 +125,10 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		jo = completeIncomingObjectSafe(jo);
 		/*
-		if (isNoteObject(jo)) {
-			note = completeIncomingObjectOrNew((NoteObject) jo);
-		} else {
-			fo = completeIncomingObjectOrNew((FileObject) jo);
-		}
-		*/
+		 * if (isNoteObject(jo)) { note =
+		 * completeIncomingObjectOrNew((NoteObject) jo); } else { fo =
+		 * completeIncomingObjectOrNew((FileObject) jo); }
+		 */
 
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
@@ -145,8 +138,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 			case JAKE_OBJECT_DELETE:
 				// what we do is always processed
-				le = new JakeObjectDeleteLogEntry(jo, getMyProjectMember(jo
-						.getProject()), commitMsg, null, true);
+				le = new JakeObjectDeleteLogEntry(jo,
+						getMyProjectMember(jo.getProject()), commitMsg, null, true);
 				break;
 			default:
 				throw new IllegalArgumentException("invalid logaction");
@@ -185,7 +178,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
 			String message;
-			message = messageMarshaller.pokeProject(project.getProjectId());
+			message = messageMarshaller.pokeProject(project);
 			log.debug("Sending message: \"" + message + "\"");
 			ics.getMsgService().sendMessage(uid, message);
 		} catch (NetworkException e) {
@@ -219,9 +212,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		else if (isFileObject(le.getBelongsTo()))
 			return (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
 
-		return jo; //TODO null? throw exception?
+		return jo; // TODO null? throw exception?
 
-		//TODO call ChangeListener, PullWatcher, PullListener
+		// TODO call ChangeListener, PullWatcher, PullListener
 	}
 
 
@@ -233,7 +226,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		ICService ics = getICS(project);
 		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
-			String msg = messageMarshaller.requestLogs(project.getProjectId());
+			String msg = messageMarshaller.requestLogs(project);
 			ics.getMsgService().sendMessage(uid, msg);
 		} catch (NetworkException e) {
 			log.debug("Could not request logs from user " + pm.getUserId(), e);
@@ -283,24 +276,25 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	@Override
 	public void startServing(Project p, ChangeListener cl) throws ProjectException {
-		log.debug("starting Project " + p);
-		// this creates the ics
-
+		log.debug("starting to serve for Project " + p);
 
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if (prl == null) {
-			prl = new ProjectRequestListener(p, icsManager, db, (IInternalSyncService) this, messageMarshaller);
+			prl = new ProjectRequestListener(p, icsManager, db,
+					(IInternalSyncService) this, messageMarshaller);
 			projectRequestListeners.put(p.getProjectId(), prl);
 		}
 		try {
-			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl, p.getProjectId());
+			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl,
+					p.getProjectId());
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
+
+		// activate icsManager.getITransferServiceic
+		
 		log.debug("Project " + p + " activated");
-
-		//TODO activate icsManager.getITransferServiceic
-
+		
 		projectChangeListeners.put(p.getProjectId(), cl);
 		runningProjects.put(p.getProjectId(), p);
 	}
@@ -347,8 +341,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 				List<String> files = fss.recursiveListFiles();
 
-				//contains method should only check the relpath
-				SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject.getRelpathComparator());
+				// contains method should only check the relpath
+				SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject
+						.getRelpathComparator());
 
 				for (FileObject fo : db.getFileObjectDao(p).getAll()) {
 					sortedFiles.add(fo);
@@ -380,7 +375,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	//////////// PUT ALL LOCAL HELPERS BEYOND THIS LINE
+	// ////////// PUT ALL LOCAL HELPERS BEYOND THIS LINE
 
 
 	public void setICSManager(ICSManager ics) {
@@ -407,7 +402,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	/**
 	 * Avoiding stub objects (without ID)
-	 *
+	 * 
 	 * @param <T>
 	 * @param join
 	 * @return the FileObject or NoteObject from the Database
@@ -432,8 +427,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		else
 			return lock.getLogAction();
 	}
-
-
 
 
 	@Transactional
@@ -495,7 +488,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				// TODO: We don't know the file size when it's remote.
 			}
 		} catch (NoSuchLogEntryException e1) {
-			//size = 0;
+			// size = 0;
 			pulledle = null;
 			checksumEqualToLastNewVersionLogEntry = false;
 		}
@@ -593,8 +586,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-
-
 	@Transactional
 	private UserId getMyProjectMember(Project p) {
 		return p.getUserId();
@@ -604,7 +595,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	private ICService getICS(Project p) {
 		return getICSManager().getICService(p);
 	}
-
 
 
 	private IFSService getFSS(Project p) {
@@ -644,77 +634,81 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 	/**
-	 * Pulls a Fileobject from any available source and - if the pull
-	 * has been successful - sets all LogEntries that became obsoleted by the pull
-	 * to processed.
-	 *
-	 * @param p  The Project the fileobject should belong to
-	 * @param fo The File to pull
+	 * Pulls a Fileobject from any available source and - if the pull has been
+	 * successful - sets all LogEntries that became obsoleted by the pull to
+	 * processed.
+	 * 
+	 * @param p
+	 *            The Project the fileobject should belong to
+	 * @param fo
+	 *            The File to pull
 	 * @return fo
-	 * @throws NotLoggedInException	 if there is not logged in MsgService for p
-	 * @throws NoSuchLogEntryException  if there are no LogEntries for the JakeObject.
-	 * @throws IllegalArgumentException if p or fo were null.
+	 * @throws NotLoggedInException
+	 *             if there is not logged in MsgService for p
+	 * @throws NoSuchLogEntryException
+	 *             if there are no LogEntries for the JakeObject.
+	 * @throws IllegalArgumentException
+	 *             if p or fo were null.
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public FileObject pullFileObject(Project p, FileObject fo)
-			throws NotLoggedInException, NoSuchLogEntryException, IllegalArgumentException {
-		//preconditions-check
-		if (p == null) throw new IllegalArgumentException("Project may not be null");
-		if (fo == null) throw new IllegalArgumentException("FileObject may not be null");
-		if (p.getMessageService() == null) throw new NotLoggedInException();
+			throws NotLoggedInException, NoSuchLogEntryException,
+			IllegalArgumentException {
+		// preconditions-check
+		if (p == null)
+			throw new IllegalArgumentException("Project may not be null");
+		if (fo == null)
+			throw new IllegalArgumentException("FileObject may not be null");
+		if (p.getMessageService() == null)
+			throw new NotLoggedInException();
 
 		IFileTransferService ts;
 		IFileTransfer result = null;
 		FileRequest fr;
 		String relpath = fo.getRelPath();
 		ICService ics = this.icsManager.getICService(p);
-		Iterable<LogEntry> potentialProviders =
-				this.getRequestHandlePolicy().getPotentialJakeObjectProviders(fo);
-		IFileTransferService fts = p.getMessageService().getIcsManager().getTransferService(p);
+		Iterable<LogEntry> potentialProviders = this.getRequestHandlePolicy()
+				.getPotentialJakeObjectProviders(fo);
+		IFileTransferService fts = p.getMessageService().getIcsManager()
+				.getTransferService(p);
 
 		UserId remotePeer;
 		com.jakeapp.jake.ics.UserId remoteBackendPeer;
 		ChangeListener cl = this.getProjectChangeListener(p);
 		LogEntry realProvider = null;
 
-		if (potentialProviders == null) throw new NoSuchLogEntryException();
+		if (potentialProviders == null)
+			throw new NoSuchLogEntryException();
 
-		for (LogEntry potentialProvider : potentialProviders)
+		for (LogEntry potentialProvider : potentialProviders) {
 			if (potentialProvider != null && potentialProvider.getMember() != null) {
-				remoteBackendPeer =
-						this.icsManager.getBackendUserId(p, potentialProvider.getMember());
+				remoteBackendPeer = this.icsManager.getBackendUserId(p, potentialProvider
+						.getMember());
 
 				ts = icsManager.getTransferService(p);
 
-				/*
-				WRONG!
-				ics.getTransferMethodFactory().getTransferMethod(
-					ics.getMsgService(),
-					remoteBackendPeer
-				);
-				*/
-
-				//TODO write to tempfile rather than to relpath??
 				fr = new FileRequest(relpath, false, remoteBackendPeer);
 
 				try {
-					//this also reports to the corresponding ChangeListener and
-					//watches the Filetransfer and returns after the filetransfer has
-					//either returned successfully or not successfully
-					result =
-							AvailableLaterWaiter.await(new FileRequestObject(fo, ts, fr, cl, db));
-					//Save potentialProvider for later usage.
+					// this also reports to the corresponding ChangeListener and
+					// watches the Filetransfer and returns after the
+					// filetransfer has
+					// either returned successfully or not successfully
+					result = AvailableLaterWaiter.await(new FileRequestObject(fo, ts, fr,
+							cl, db));
+					// Save potentialProvider for later usage.
 					realProvider = potentialProvider;
 					break;
-				}
-				catch (Exception ignored) {
-					//ignore Exception, continue with next potentialProvider
+				} catch (Exception ignored) {
+					// ignore Exception, continue with next potentialProvider
 				}
 			}
+		}
 
-		//handle result
-		if (result != null && result.isDone() && realProvider != null) //second part must be true after await returned
+		// handle result
+		// second  part must be true after await returned
+		if (result != null && result.isDone() && realProvider != null)
 			this.setLogentryProcessed(fo, realProvider);
 
 		return fo;
@@ -755,7 +749,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/**
 	 * returns true if NoteObject <br>
 	 * returns false if FileObject
-	 *
+	 * 
 	 * @param jo
 	 * @return
 	 */
@@ -768,15 +762,16 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 	/**
-	 * Sets a LogEntry and all previously happened
-	 * LogEntries, that have the same 'belongsTo' to processed.
-	 *
+	 * Sets a LogEntry and all previously happened LogEntries, that have the
+	 * same 'belongsTo' to processed.
+	 * 
 	 * @param le
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional
 	private void setLogentryProcessed(JakeObject jo, LogEntry<? extends JakeObject> le) {
-		if (jo == null || le == null) return;
+		if (jo == null || le == null)
+			return;
 
 
 		db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
@@ -800,14 +795,13 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-
-
-	// UNUSED STUFF COMES HERE.. PLEASE REMVOE AS SOON AS YOU KNOW WE DON'T NEED IT
+	// UNUSED STUFF COMES HERE.. PLEASE REMVOE AS SOON AS YOU KNOW WE DON'T NEED
+	// IT
 
 
 	/**
 	 * NullSave getter for {@link LogEntry#getMember()}
-	 *
+	 * 
 	 * @param lastle
 	 * @return ProjectMember or null, if LogEntry is null.
 	 */
@@ -818,15 +812,14 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			return null;
 	}
 
-	 	/**
+	/**
 	 * We keep track of the Project members
 	 * <ul>
-	 * <li>in the DB</li>
 	 * <li>in log</li>
 	 * <li>in the ics</li>
 	 * </ul>
 	 * We should only trust the logentries and fix everything else by that.
-	 *
+	 * 
 	 * @param project
 	 */
 	@Transactional
@@ -834,25 +827,24 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		Collection<UserId> members = db.getLogEntryDao(project)
 				.getCurrentProjectMembers();
 		for (UserId member : members) {
-			// TODO!!
-			com.jakeapp.jake.ics.UserId userid = new XmppUserId("foobar");
-			// TODO
+			com.jakeapp.jake.ics.UserId userid = getICSManager().getBackendUserId(project, member); 
 			try {
 				getICS(project).getUsersService().addUser(userid, userid.getUserId());
-			} catch (NoSuchUseridException e) { // shit happens
-			} catch (NotLoggedInException e) {
-			} catch (IOException e) {
+			} catch (NoSuchUseridException e) { 
+				log.warn("no such user: " + member);
+			} catch (Exception e) {
+				// silent fail 
 			}
 		}
 	}
 
 
-	private boolean isReachable(Project p, String userid) {
+	private boolean isReachable(Project p, UserId u) {
 		ICService ics = getICS(p);
 		if (ics == null)
 			return false;
 		try {
-			return ics.getStatusService().isLoggedIn(new XmppUserId(userid));
+			return ics.getStatusService().isLoggedIn(getICSManager().getBackendUserId(p, u));
 		} catch (NoSuchUseridException e) {
 			return false;
 		} catch (NotLoggedInException e) {
@@ -873,8 +865,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			throws NotLoggedInException {
 		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
-
-
 
 
 }

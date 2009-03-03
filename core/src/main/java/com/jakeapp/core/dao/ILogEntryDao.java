@@ -3,16 +3,17 @@ package com.jakeapp.core.dao;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.logentries.LogEntry;
 
 /**
  * The interface for the logEntryDAO.
@@ -28,6 +29,13 @@ public interface ILogEntryDao {
 	 */
 	void create(LogEntry<? extends ILogable> logEntry);
 
+
+	/**
+	 * @returns the LogEntry with the given UUID
+	 * @param uuid
+	 * @throws NoSuchLogEntryException
+	 */
+	LogEntry<? extends ILogable> get(UUID uuid, boolean includeUnprocessed) throws NoSuchLogEntryException;
 
 	/**
 	 * change the &quot;processed&quot; field of a logEntry
@@ -310,7 +318,7 @@ public interface ILogEntryDao {
 	 * previous to this one to processed 
 	 * @param logEntry
 	 */
-	public void setAllPreviousProcessed(LogEntry logEntry);
+	public void setAllPreviousProcessed(LogEntry<? extends ILogable> logEntry);
 
 
 }

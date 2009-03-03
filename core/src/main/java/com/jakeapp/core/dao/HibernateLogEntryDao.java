@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -88,6 +89,21 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		sess().persist(logEntry);
 		debugDump();
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public LogEntry<? extends ILogable> get(UUID uuid, boolean includeUnprocessed)
+			throws NoSuchLogEntryException {
+		List<LogEntry<? extends ILogable>> result = processedAwareLogEntryQuery(
+				"AND id = ?", includeUnprocessed).setString(0, uuid.toString()).list();
+
+		if (result.size() > 0) {
+			return result.get(0);
+		} else {
+			throw new NoSuchLogEntryException();
+		}
+	}
+
 
 	@Override
 	public void setProcessed(LogEntry<JakeObject> logEntry) {
@@ -538,7 +554,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public void setAllPreviousProcessed(LogEntry logEntry) {
+	public void setAllPreviousProcessed(LogEntry<? extends ILogable> logEntry) {
 		// TODO do this with sql, something like
 		// UPDATE LOGENTRY SET PROCESSED = TRUE WHERE belongsTo = ? AND timestamp < ?
 		JakeObject jo = (JakeObject) logEntry.getBelongsTo();

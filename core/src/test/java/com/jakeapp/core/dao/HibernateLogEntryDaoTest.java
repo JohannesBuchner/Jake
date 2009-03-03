@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
@@ -211,6 +212,29 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
 		Assert.assertTrue(result.contains(fileObjectLogEntry));
 
+	}
+
+	@Transactional
+	@Test
+	public void testGet() throws Exception {
+		MsgService msgService = new XMPPMsgService();
+		File file = new File(System.getProperty("user.dir"));
+
+
+		Project testProject = new Project("test", UUID
+				.fromString("e0cd2322-6766-40a0-82c5-bcc0fe7a67c2"), msgService, file);
+
+		UserId projectMember = new UserId(ProtocolType.XMPP, "me");
+
+		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, projectMember);
+		UUID uuid = new UUID(31,312);
+		projectLogEntry.setUuid(uuid);
+		
+		logEntryDao.create(projectLogEntry);
+		
+		LogEntry<? extends ILogable> actual = logEntryDao.get(uuid, true);
+		Assert.assertEquals(projectLogEntry, actual);
+		
 	}
 
 }

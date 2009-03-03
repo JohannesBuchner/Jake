@@ -171,7 +171,7 @@ public class FSService implements IFSService, IModificationListener {
 		return readFileStreamAbs(getFullpath(relpath));
 	}
 
-	public InputStream readFileStreamAbs(String filename)
+	public static InputStream readFileStreamAbs(String filename)
 					throws InvalidFilenameException, FileNotFoundException,
 					NotAReadableFileException {
 		File f = new File(filename);
@@ -247,7 +247,7 @@ public class FSService implements IFSService, IModificationListener {
 		writeFileStreamAbs(getFullpath(relpath), source);
 	}
 
-	public void writeFileStreamAbs(String filename, InputStream source)
+	public static void writeFileStreamAbs(String filename, InputStream source)
 					throws InvalidFilenameException, NotAFileException,
 					CreatingSubDirectoriesFailedException, IOException {
 		File f = new File(filename);
@@ -438,7 +438,7 @@ public class FSService implements IFSService, IModificationListener {
 		checkFileNotExists(fileTo);
 
 		// TODO this should be atomic
-		this.writeFileStream(fileTo.getAbsolutePath(),
+		this.writeFileStreamAbs(fileTo.getAbsolutePath(),
 						this.readFileStream(fileFrom.getAbsolutePath()));
 
 		return true;
@@ -585,24 +585,24 @@ public class FSService implements IFSService, IModificationListener {
 	}
 
 
-	private void checkIsFile(File f) throws NotAFileException {
+	private static void checkIsFile(File f) throws NotAFileException {
 		if (!f.isFile())
 			throw new NotAFileException("Not a file: " + f.getAbsolutePath());
 	}
 
-	private void checkFileNotExists(File f) throws FileAlreadyExistsException {
+	private static void checkFileNotExists(File f) throws FileAlreadyExistsException {
 		if (f.exists()) {
 			throw new FileAlreadyExistsException("File already exists: " + f
 							.getAbsolutePath());
 		}
 	}
 
-	private void checkFileExists(File f) throws FileNotFoundException {
+	private static void checkFileExists(File f) throws FileNotFoundException {
 		if (!f.exists())
 			throw new FileNotFoundException("File not found: " + f.getAbsolutePath());
 	}
 
-	private void checkFileIsReadable(File f) throws NotAReadableFileException {
+	private static void checkFileIsReadable(File f) throws NotAReadableFileException {
 		if (!f.exists()) {
 			throw new NotAFileException("Not a file: " + f);
 		}

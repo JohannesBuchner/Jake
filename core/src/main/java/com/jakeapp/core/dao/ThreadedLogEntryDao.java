@@ -1,12 +1,18 @@
 package com.jakeapp.core.dao;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.UUID;
+import org.hibernate.Query;
+import org.hibernate.classic.Session;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
@@ -37,6 +43,28 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 				public Void calculate() throws Exception {
 					ThreadedLogEntryDao.this.dao.create(logEntry);
 					return null;
+				}
+			});
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */	
+	@Override
+	public LogEntry<? extends ILogable> get(final UUID uuid, final boolean includeUnprocessed) 			throws NoSuchLogEntryException {
+		
+		try {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<? extends ILogable>>() {
+
+				@Override
+				public LogEntry<? extends ILogable> calculate() throws Exception {
+					return ThreadedLogEntryDao.this.dao.get(uuid, includeUnprocessed);
 				}
 			});
 		} catch (RuntimeException e) {
@@ -582,13 +610,12 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-
-		/**
+	/**
 	 * {@inheritDoc}
-	 */
+	 */	
 	@Override
-	public void setAllPreviousProcessed(final LogEntry logEntry) {
-
+	public void setAllPreviousProcessed(final LogEntry<? extends ILogable> logEntry) {
+		
 		try {
 			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
 
@@ -603,7 +630,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
-
+	
 	}
 
 

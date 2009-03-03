@@ -6,16 +6,17 @@ package com.jakeapp.core.util;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.logentries.LogEntry;
 
 public final class UnprocessedBlindLogEntryDaoProxy {
 
@@ -38,6 +39,15 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 */
 	public List<LogEntry<? extends ILogable>> getAll() {
 		return this.innerDao.getAll(includeUnprocessed);
+	}
+
+	/**
+	 * @see ILogEntryDao#getAll(boolean)
+	 * @return
+	 * @throws NoSuchLogEntryException 
+	 */
+	public LogEntry<? extends ILogable> get(UUID uuid) throws NoSuchLogEntryException {
+		return this.innerDao.get(uuid, includeUnprocessed);
 	}
 
 	/**
