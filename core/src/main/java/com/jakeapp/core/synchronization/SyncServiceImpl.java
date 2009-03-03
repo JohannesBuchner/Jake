@@ -33,8 +33,6 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.synchronization.IInternalSyncService;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -431,18 +429,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			return lock.getLogAction();
 	}
 
-	/**
-	 * NullSave getter for {@link LogEntry#getMember()}
-	 *
-	 * @param lastle
-	 * @return ProjectMember or null, if LogEntry is null.
-	 */
-	private UserId getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
-		if (lastle != null)
-			return lastle.getMember();
-		else
-			return null;
-	}
+
 
 
 	@Transactional
@@ -602,55 +589,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	/**
-	 * We keep track of the Project members
-	 * <ul>
-	 * <li>in the DB</li>
-	 * <li>in log</li>
-	 * <li>in the ics</li>
-	 * </ul>
-	 * We should only trust the logentries and fix everything else by that.
-	 *
-	 * @param project
-	 */
-	@Transactional
-	private void syncProjectMembers(Project project) {
-		Collection<UserId> members = db.getLogEntryDao(project)
-				.getCurrentProjectMembers();
-		for (UserId member : members) {
-			// TODO!!
-			com.jakeapp.jake.ics.UserId userid = new XmppUserId("foobar");
-			// TODO
-			try {
-				getICS(project).getUsersService().addUser(userid, userid.getUserId());
-			} catch (NoSuchUseridException e) { // shit happens
-			} catch (NotLoggedInException e) {
-			} catch (IOException e) {
-			}
-		}
-	}
 
-
-	private boolean isReachable(Project p, String userid) {
-		ICService ics = getICS(p);
-		if (ics == null)
-			return false;
-		try {
-			return ics.getStatusService().isLoggedIn(new XmppUserId(userid));
-		} catch (NoSuchUseridException e) {
-			return false;
-		} catch (NotLoggedInException e) {
-			return false;
-		} catch (TimeoutException e) {
-			return false;
-		} catch (NetworkException e) {
-			return false;
-		}
-	}
-
-	private String getMyUserid(Project p) {
-		return p.getUserId().getUserId();
-	}
 
 	@Transactional
 	private UserId getMyProjectMember(Project p) {
@@ -662,10 +601,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		return getICSManager().getICService(p);
 	}
 
-	private IFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
-		return p.getMessageService().getIcsManager().getTransferService(p);
-	}
+
 
 	IFSService getFSS(Project p) {
 		return this.getProjectsFileServices().getProjectFSService(p);
@@ -862,6 +798,83 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	public void setRequestHandlePolicy(RequestHandlePolicy rhp) {
 		this.rhp = rhp;
 	}
+
+
+
+
+	// UNUSED STUFF COMES HERE.. PLEASE REMVOE AS SOON AS YOU KNOW WE DON'T NEED IT
+
+
+	/**
+	 * NullSave getter for {@link LogEntry#getMember()}
+	 *
+	 * @param lastle
+	 * @return ProjectMember or null, if LogEntry is null.
+	 */
+	private UserId getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
+		if (lastle != null)
+			return lastle.getMember();
+		else
+			return null;
+	}
+
+	 	/**
+	 * We keep track of the Project members
+	 * <ul>
+	 * <li>in the DB</li>
+	 * <li>in log</li>
+	 * <li>in the ics</li>
+	 * </ul>
+	 * We should only trust the logentries and fix everything else by that.
+	 *
+	 * @param project
+	 */
+	@Transactional
+	private void syncProjectMembers(Project project) {
+		Collection<UserId> members = db.getLogEntryDao(project)
+				.getCurrentProjectMembers();
+		for (UserId member : members) {
+			// TODO!!
+			com.jakeapp.jake.ics.UserId userid = new XmppUserId("foobar");
+			// TODO
+			try {
+				getICS(project).getUsersService().addUser(userid, userid.getUserId());
+			} catch (NoSuchUseridException e) { // shit happens
+			} catch (NotLoggedInException e) {
+			} catch (IOException e) {
+			}
+		}
+	}
+
+
+	private boolean isReachable(Project p, String userid) {
+		ICService ics = getICS(p);
+		if (ics == null)
+			return false;
+		try {
+			return ics.getStatusService().isLoggedIn(new XmppUserId(userid));
+		} catch (NoSuchUseridException e) {
+			return false;
+		} catch (NotLoggedInException e) {
+			return false;
+		} catch (TimeoutException e) {
+			return false;
+		} catch (NetworkException e) {
+			return false;
+		}
+	}
+
+	private String getMyUserid(Project p) {
+		return p.getUserId().getUserId();
+	}
+
+
+	private IFileTransferService getTransferService(Project p)
+			throws NotLoggedInException {
+		return p.getMessageService().getIcsManager().getTransferService(p);
+	}
+
+
 
 
 }
