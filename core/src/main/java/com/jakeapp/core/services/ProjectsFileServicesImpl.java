@@ -10,6 +10,7 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import org.apache.log4j.Logger;
 
@@ -55,7 +56,12 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
 	@Override
 	public void stopForProject(Project project) {
-		fileServices.get(project.getProjectId()).unsetRootPath();
-		fileServices.remove(project.getProjectId());
+		if(project.getInvitationState() != InvitationState.INVITED) {
+			log.info("Stopping & removing project");
+			fileServices.get(project.getProjectId()).unsetRootPath();
+			fileServices.remove(project.getProjectId());
+		} else {
+			log.info("Project was never started, so it doesn't need to be removed");
+		}
 	}
 }

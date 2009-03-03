@@ -305,7 +305,7 @@ public class Project implements ILogable {
 	 */
 	@Override
 	public String toString() {
-		return "Project " + getName() + "(" + getProjectId() + "), " + ((getRootPath() != null)? getRootPath() : "null ") + " user: " + getUserId() + " started: " + isStarted() + " state: " + getInvitationState();
+		return "Project " + getName() + "(" + getProjectId() + "), path: \"" + ((getRootPath() != null)? getRootPath() : "null") + "\" user: " + getUserId() + " started: " + isStarted() + " state: " + getInvitationState();
 	}
 
 	/**

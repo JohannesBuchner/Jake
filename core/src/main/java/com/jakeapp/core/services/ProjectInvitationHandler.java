@@ -172,7 +172,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 		try {
 			ics.getMsgService().sendMessage(backendUser, REJECTMSG);
 		} catch (Exception e) {
-			log.warn("sending accept failed", e);
+			log.warn("sending reject failed", e);
 		}
 	}
 

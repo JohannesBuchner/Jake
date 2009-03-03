@@ -710,9 +710,10 @@ public class JakeCommander extends Commander {
 				System.out.println("no projects where we are invited found.");
 				return;
 			}
+			project.setRootPath(projectFolder);
 			try {
 				System.out.println("joining ...");
-				pms.joinProject(project, invitingUser);
+				pms.joinProject(project, projectFolder, invitingUser);
 				System.out.println("joining done");
 			} catch (Exception e) {
 				System.out.println("joining failed");
@@ -739,7 +740,7 @@ public class JakeCommander extends Commander {
 			}
 			try {
 				System.out.println("joining ...");
-				pms.joinProject(project, null);
+				pms.rejectProject(project, invitingUser);
 				System.out.println("joining done");
 			} catch (Exception e) {
 				System.out.println("joining failed");

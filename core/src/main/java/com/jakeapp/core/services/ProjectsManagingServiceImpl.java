@@ -188,12 +188,14 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			p.setCredentials(p.getMessageService().getServiceCredentials());
 			this.getProjectDao().update(p);
 		}
-		
-		// make sure the projects have fileservices
-		try {
-			this.getProjectsFileServices().startForProject(p);
-		} catch (IOException e) {
-			log.debug("starting fss failed", e);
+
+		if(p.getInvitationState() != InvitationState.INVITED) {
+			// make sure the projects have fileservices
+			try {
+				this.getProjectsFileServices().startForProject(p);
+			} catch (IOException e) {
+				log.debug("starting fss failed", e);
+			}
 		}
 
 		if (!p.getUserId().equals(p.getMessageService().getUserId()))
@@ -656,7 +658,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public void joinProject(Project project, UserId inviter)
+	public void joinProject(Project project, File rootPath, UserId inviter)
 			throws IllegalStateException, NoSuchProjectException {
 
 		// preconditions
@@ -667,14 +669,26 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 		// update join state
 		project.setInvitationState(InvitationState.ACCEPTED);
+		project.setRootPath(rootPath);
 		this.getProjectDao().update(project); // may throw a
 		// NoSuchProjectException if
 		// project does not exist
 
+		try {
+			initProject(project);
+		} catch (Exception e) {
+			log.warn("Something weird happened while trying to init project!", e);
+		}
+
 		// notify the inviter
-		if(inviter != null)
-		ProjectInvitationHandler.notifyInvitationAccepted(project, inviter);
-		else log.warn("Inviter not notified because we don't know who it is?!");
+		try {
+			// FIXME: WTF WHY DOESN'T THIS WORK:
+			// if(inviter != null)
+			// ProjectInvitationHandler.notifyInvitationAccepted(project, inviter);
+			// else log.warn("Inviter not notified because we don't know who it is?!");
+		} catch (Exception e) {
+			log.warn("Couldn't notify inviter for some reason");
+		}
 	}
 
 	@Override

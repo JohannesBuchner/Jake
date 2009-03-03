@@ -15,6 +15,7 @@ import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -243,7 +244,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
-	void joinProject(Project project, UserId inviter)
+	void joinProject(Project project, File rootPath, UserId inviter)
 			  throws IllegalStateException, NoSuchProjectException;
 
 
