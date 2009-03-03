@@ -1019,9 +1019,16 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	@Transactional
 	public void deleteNote(NoteObject no) throws IllegalArgumentException {
-		//this.getNoteObjectDao(no.getProject()).delete(no);
 		no.setDeleted(true);
 		this.getNoteObjectDao(no.getProject()).persist(no);
+		// christopher: if you want to call persist to delete the object, you have to
+		// implement that too! if you don't want to delete the note, you have to correct
+		// SyncService et. al. to operate correctly (TestSyncService, etc.)
+		try {
+			this.getNoteObjectDao(no.getProject()).delete(no);
+		} catch (NoSuchJakeObjectException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 	
 	@Override
