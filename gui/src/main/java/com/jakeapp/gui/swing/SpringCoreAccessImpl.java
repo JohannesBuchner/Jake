@@ -268,7 +268,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 				try {
 					project.setRootPath(path);
 					getFrontendService().getProjectsManagingService(getSessionId())
-									.joinProject(project, project.getUserId());
+									.joinProject(project, new File(path), project.getUserId());
 
 					EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 									project,
