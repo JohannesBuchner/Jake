@@ -59,10 +59,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
-
-	private IProjectsFileServices projectsFileServices;
-
-
 	/**
 	 * key is the UUID
 	 */
@@ -72,6 +68,13 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 * key is the UUID
 	 */
 	private Map<String, ProjectRequestListener> projectRequestListeners = new HashMap<String, ProjectRequestListener>();
+
+
+
+
+
+	@Injected
+	private IProjectsFileServices projectsFileServices;
 
 	private ChangeListener getProjectChangeListener(Project p) {
 		return (p == null) ? null :
@@ -90,8 +93,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
 
-	// if this component gets more complex,
-	// inject it with spring
 	@Injected
 	private MessageMarshaller messageMarshaller;
 
@@ -600,13 +601,13 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	ICService getICS(Project p) {
+	private ICService getICS(Project p) {
 		return getICSManager().getICService(p);
 	}
 
 
 
-	IFSService getFSS(Project p) {
+	private IFSService getFSS(Project p) {
 		return this.getProjectsFileServices().getProjectFSService(p);
 	}
 
@@ -777,13 +778,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	private void setLogentryProcessed(JakeObject jo, LogEntry<? extends JakeObject> le) {
 		if (jo == null || le == null) return;
 
-		//TODO there MUST be a better way to do this
+
 		db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
-		List<LogEntry<JakeObject>> versions = db.getLogEntryDao(jo).
-				getAllVersionsOfJakeObject(jo);
-		for (LogEntry<JakeObject> version : versions)
-			if (!version.isProcessed() && version.getTimestamp().before(le.getTimestamp()))
-				db.getUnprocessedAwareLogEntryDao(jo).setProcessed(version);
+		db.getUnprocessedAwareLogEntryDao(jo).setAllPreviousProcessed(le);
 	}
 
 

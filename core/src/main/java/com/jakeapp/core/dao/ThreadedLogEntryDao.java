@@ -583,4 +583,28 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	}
 
 
+		/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setAllPreviousProcessed(final LogEntry logEntry) {
+
+		try {
+			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
+
+				@Override
+				public Void calculate() throws Exception {
+					ThreadedLogEntryDao.this.dao.setAllPreviousProcessed(logEntry);
+					return null;
+				}
+			});
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+
+	}
+
+
 }

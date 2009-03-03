@@ -176,6 +176,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				.setInteger(1, LogAction.JAKE_OBJECT_NEW_VERSION.ordinal()).list();
 	}
 
+
+
 	@SuppressWarnings("unchecked")
 	private <T extends JakeObject> List<LogEntry<T>> getAllDeletesOfJakeObject(
 			T jakeObject, boolean includeUnprocessed) {
@@ -533,5 +535,17 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			}
 		}
 		return people;
+	}
+
+	@Override
+	public void setAllPreviousProcessed(LogEntry logEntry) {
+		// TODO do this with sql, something like
+		// UPDATE LOGENTRY SET PROCESSED = TRUE WHERE belongsTo = ? AND timestamp < ?
+		JakeObject jo = (JakeObject) logEntry.getBelongsTo();
+
+		List<LogEntry<JakeObject>> versions = this.getAllVersionsOfJakeObject(jo, true);
+		for (LogEntry<JakeObject> version : versions)
+			if (!version.isProcessed() && version.getTimestamp().before(logEntry.getTimestamp()))
+				this.setProcessed(version);
 	}
 }

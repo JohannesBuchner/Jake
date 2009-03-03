@@ -305,4 +305,12 @@ public interface ILogEntryDao {
 	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph();
 
 
+	/**
+	 * This methods sets all LogEntries with the same belongsTo object
+	 * previous to this one to processed 
+	 * @param logEntry
+	 */
+	public void setAllPreviousProcessed(LogEntry logEntry);
+
+
 }
