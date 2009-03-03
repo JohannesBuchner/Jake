@@ -13,7 +13,9 @@ import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.gui.console.commandline.LazyCommand;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -214,42 +216,6 @@ public class JakeCommander extends Commander {
 		public LazyJakeObjectCommand(String command) {
 			super(command, command + " <UUID>");
 		}
-
-		protected class GetFileListener implements AvailabilityListener<List<FileObject>> {
-			JakeObject jo;
-			UUID uuid;
-			
-			public GetFileListener(JakeObject jo,UUID uuid) {
-				super();
-				this.jo = jo;
-				this.uuid = uuid;
-			}
-			
-			@Override
-			public void error(Exception t) {
-				t.printStackTrace();
-			}
-
-			@Override
-			public void finished(List<FileObject> o) {
-				for (FileObject f : o)
-					if (uuid.equals(f.getUuid()))
-						jo = f;
-				
-				if (jo == null)
-					System.out.println("JakeObject not found");
-				else {
-					if (jo.getProject() == null)
-						jo.setProject(project);
-					handleArguments(jo);
-				}
-			}
-
-			@Override
-			public void statusUpdate(double progress, String status) {
-				//empty implementation
-			}
-		}
 		
 		@Override
 		final public boolean handleArguments(String[] args) {
@@ -270,19 +236,22 @@ public class JakeCommander extends Commander {
 			JakeObject jo = null;
 			try {
 				for (NoteObject f : sync.getNotes(project)) {
-					if (uuid.equals(f.getUuid()))
-						jo = f;
+					if (uuid.equals(f.getUuid())) {
+						handleArguments(f);
+						return true;
+					}
 				}
-				
-				avail = sync.getFiles(project);
-				avail.setListener(new GetFileListener(jo,uuid));
-				avail.start();
-			} catch (FrontendNotLoggedInException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+
+				for (FileObject f : AvailableLaterWaiter.await(sync.getFiles(project))) {
+					if (uuid.equals(f.getUuid())) {
+						handleArguments(f);
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace(System.err);  //To change body of catch statement use File | Settings | File Templates.
 			}
-			
+
 			return true;
 		}
 
@@ -981,6 +950,28 @@ public class JakeCommander extends Commander {
 				System.out.println("listing project log done");
 			} catch (Exception e) {
 				System.out.println("listing project log failed");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	class PullCommand extends LazyJakeObjectCommand {
+
+		public PullCommand() {
+			super("pull", "Pulls a JakeObject (duh!)");
+		}
+
+		@Override
+		protected void handleArguments(JakeObject jo) {
+			System.out.println("Starting to pull...");
+			try {
+				sync.pullObject(jo);
+				System.out.println("Finished pulling...");
+			} catch (NoSuchLogEntryException e) {
+				System.out.println("FAILED to pull!");
+				e.printStackTrace();
+			} catch (NotLoggedInException e) {
+				System.out.println("FAILED to pull!");
 				e.printStackTrace();
 			}
 		}

@@ -1,9 +1,6 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.IFileObjectDao;
-import com.jakeapp.core.dao.INoteObjectDao;
-import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.*;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -464,16 +461,16 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
 			throws IllegalArgumentException {
-		UnprocessedBlindLogEntryDaoProxy dao;
+		ILogEntryDao dao;
 		List<LogEntry<? extends com.jakeapp.core.domain.ILogable>> result = null;
 
 		if (project == null)
 			throw new IllegalArgumentException();
 
-		dao = this.getLogEntryDao(project);
+		dao = this.getApplicationContextFactory().getUnprocessedAwareLogEntryDao(project);
 
 		// get Log via LogentryDao
-		result = dao.getAll();
+		result = dao.getAll(true);
 
 		return result;
 	}

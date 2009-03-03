@@ -206,15 +206,20 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			} catch (NoSuchJakeObjectException e) {
 				throw new IllegalArgumentException(e);
 			}
+			log.debug("");
 			return jo;
-		} else if (isNoteObject(le.getBelongsTo()))
+		} else if (isNoteObject(le.getBelongsTo())) {
+			log.debug("Pulling a noteobject...");
 			return (T) pullNoteObject(jo.getProject(), le);
-		else if (isFileObject(le.getBelongsTo()))
+		}
+		else if (isFileObject(le.getBelongsTo())) {
+			log.debug("Pulling a fileobject...");
 			return (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
+		}
 
-		return jo; // TODO null? throw exception?
+		throw new IllegalStateException();
 
-		// TODO call ChangeListener, PullWatcher, PullListener
+		// TODO: call ChangeListener, PullWatcher, PullListener
 	}
 
 

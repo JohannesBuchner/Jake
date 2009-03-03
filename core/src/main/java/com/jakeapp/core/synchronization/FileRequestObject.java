@@ -10,6 +10,8 @@ import com.jakeapp.core.domain.JakeObject;
 
 import java.util.concurrent.Semaphore;
 
+import org.apache.log4j.Logger;
+
 class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements INegotiationSuccessListener {
 	private IFileTransferService ts;
 	private FileRequest request;
@@ -18,6 +20,8 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 	private JakeObject jo;
 	private Throwable innerException;
 	private ProjectApplicationContextFactory db;
+
+	private static Logger log = Logger.getLogger(FileRequestObject.class);
 
 
 	protected class FileProgressChangeListener extends ChangeListenerWrapper {
@@ -37,6 +41,15 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "FileRequestObject{" +
+				"ts=" + ts +
+				", request=" + request +
+				", jo=" + jo +
+				'}';
+	}
+
 	public FileRequestObject(JakeObject jo,
 							 IFileTransferService ts,
 							 FileRequest request,
@@ -50,6 +63,7 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 		sem = new Semaphore(0);
 		this.db = db;
 		innerException = null;
+		log.debug(this.toString());
 	}
 
 	@Override
