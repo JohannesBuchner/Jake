@@ -12,17 +12,20 @@ import javax.persistence.DiscriminatorValue;
 @Entity
 @DiscriminatorValue(value = "START_TRUSTING_PROJECTMEMBER")
 public class StartTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
-  	public StartTrustingProjectMemberLogEntry(UserId userId, UserId me)
-	{
+
+	public StartTrustingProjectMemberLogEntry(UserId userId, UserId me) {
 		super(LogAction.START_TRUSTING_PROJECTMEMBER, userId, me);
 	}
 
-	public StartTrustingProjectMemberLogEntry()
-	{
+	public StartTrustingProjectMemberLogEntry() {
 		setLogAction(LogAction.START_TRUSTING_PROJECTMEMBER);
 	}
 
-	public static StartTrustingProjectMemberLogEntry parse(LogEntry<? extends ILogable> logEntry) {
-		return new StartTrustingProjectMemberLogEntry((UserId) logEntry.getBelongsTo(), logEntry.getMember());
+	public static StartTrustingProjectMemberLogEntry parse(
+			LogEntry<? extends ILogable> logEntry) {
+		StartTrustingProjectMemberLogEntry le = new StartTrustingProjectMemberLogEntry(
+				(UserId) logEntry.getBelongsTo(), logEntry.getMember());
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
 	}
 }

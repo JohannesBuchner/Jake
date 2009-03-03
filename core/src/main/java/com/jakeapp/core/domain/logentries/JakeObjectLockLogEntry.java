@@ -12,8 +12,8 @@ import javax.persistence.DiscriminatorValue;
 @Entity
 @DiscriminatorValue(value = "JAKE_OBJECT_LOCK")
 public class JakeObjectLockLogEntry extends JakeObjectLogEntry {
-    public JakeObjectLockLogEntry(JakeObject belongsTo, UserId member, String comment, String checksum, Boolean processed) {
-        super(LogAction.JAKE_OBJECT_LOCK, belongsTo, member, comment, checksum, processed);
+    public JakeObjectLockLogEntry(JakeObject belongsTo, UserId member, String comment, Boolean processed) {
+        super(LogAction.JAKE_OBJECT_LOCK, belongsTo, member, comment, null, processed);
     }
 
     public JakeObjectLockLogEntry() {
@@ -27,12 +27,13 @@ public class JakeObjectLockLogEntry extends JakeObjectLogEntry {
         if (!logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_LOCK))
             throw new UnsupportedOperationException();
 
-            return new JakeObjectLockLogEntry(
+        JakeObjectLockLogEntry le = new JakeObjectLockLogEntry(
                     (JakeObject) logEntry.getBelongsTo(),
                     logEntry.getMember(),
                     logEntry.getComment(),
-                    logEntry.getChecksum(),
                     logEntry.isProcessed()
             );
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
     }
 }

@@ -139,7 +139,7 @@ public class LogEntrySerializerTest {
 	public void testFileObjectLogEntry_lock() throws NoSuchProjectException, InvalidTagNameException {
 
 
-		JakeObjectLockLogEntry logEntry = new JakeObjectLockLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
+		JakeObjectLockLogEntry logEntry = new JakeObjectLockLogEntry(sampleFileObject1, sampleUserId1, "some comment", false);
 
 
 		String serializedString = serializer.serialize(logEntry, sampleProject1);
@@ -161,7 +161,7 @@ public class LogEntrySerializerTest {
 	public void testFileObjectLogEntry_unlock() throws NoSuchProjectException, InvalidTagNameException {
 
 
-		JakeObjectUnlockLogEntry logEntry = new JakeObjectUnlockLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
+		JakeObjectUnlockLogEntry logEntry = new JakeObjectUnlockLogEntry(sampleFileObject1, sampleUserId1, "some comment", false);
 
 
 		String serializedString = serializer.serialize(logEntry, sampleProject1);
@@ -182,7 +182,7 @@ public class LogEntrySerializerTest {
 
 	@Test
 	public void testFileObjectLogEntry_delete() throws NoSuchProjectException, InvalidTagNameException {
-		JakeObjectDeleteLogEntry logEntry = new JakeObjectDeleteLogEntry(sampleFileObject1, sampleUserId1, "some comment", "CRC32CHECKSUM", false);
+		JakeObjectDeleteLogEntry logEntry = new JakeObjectDeleteLogEntry(sampleFileObject1, sampleUserId1, "some comment", false);
 
 
 		String serializedString = serializer.serialize(logEntry, sampleProject1);

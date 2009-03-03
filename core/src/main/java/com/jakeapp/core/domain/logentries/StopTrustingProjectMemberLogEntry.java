@@ -13,18 +13,20 @@ import javax.persistence.DiscriminatorColumn;
 @DiscriminatorValue(value = "STOP_TRUSTING_PROJECTMEMBER")
 public class StopTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
 
-   	public StopTrustingProjectMemberLogEntry(UserId userId, UserId me)
-	{
+	public StopTrustingProjectMemberLogEntry(UserId userId, UserId me) {
 		super(LogAction.STOP_TRUSTING_PROJECTMEMBER, userId, me);
 	}
 
-	public StopTrustingProjectMemberLogEntry()
-	{
+	public StopTrustingProjectMemberLogEntry() {
 		setLogAction(LogAction.STOP_TRUSTING_PROJECTMEMBER);
 	}
 
 
-	public static StopTrustingProjectMemberLogEntry parse(LogEntry<? extends ILogable> logEntry) {
-		return new StopTrustingProjectMemberLogEntry((UserId) logEntry.getBelongsTo(), logEntry.getMember());
+	public static StopTrustingProjectMemberLogEntry parse(
+			LogEntry<? extends ILogable> logEntry) {
+		StopTrustingProjectMemberLogEntry le = new StopTrustingProjectMemberLogEntry(
+				(UserId) logEntry.getBelongsTo(), logEntry.getMember());
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
 	}
 }

@@ -11,15 +11,19 @@ import javax.persistence.DiscriminatorValue;
 @Entity
 @DiscriminatorValue(value = "PROJECT_JOINED")
 public class ProjectJoinedLogEntry extends ProjectLogEntry {
-    public ProjectJoinedLogEntry(Project project, UserId member) {
-        super(LogAction.PROJECT_JOINED, project, member);
-    }
 
-    public ProjectJoinedLogEntry() {
-        setLogAction(LogAction.PROJECT_JOINED);
-    }
+	public ProjectJoinedLogEntry(Project project, UserId member) {
+		super(LogAction.PROJECT_JOINED, project, member);
+	}
+
+	public ProjectJoinedLogEntry() {
+		setLogAction(LogAction.PROJECT_JOINED);
+	}
 
 	public static ProjectLogEntry parse(LogEntry<? extends ILogable> logEntry) {
-		return new ProjectJoinedLogEntry((Project) logEntry.getBelongsTo(), logEntry.getMember());
+		ProjectJoinedLogEntry le = new ProjectJoinedLogEntry((Project) logEntry
+				.getBelongsTo(), logEntry.getMember());
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
 	}
 }

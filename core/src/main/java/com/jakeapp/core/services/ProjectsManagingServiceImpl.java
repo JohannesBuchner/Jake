@@ -1068,8 +1068,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void lock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
         UserId me = p.getUserId();
-        LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, null,
-                true);
+        LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
@@ -1078,8 +1077,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void unlock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
         UserId me = p.getUserId();
-        LogEntry<JakeObject> le = new JakeObjectUnlockLogEntry(jo, me, comment, null,
-                true);
+        LogEntry<JakeObject> le = new JakeObjectUnlockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 

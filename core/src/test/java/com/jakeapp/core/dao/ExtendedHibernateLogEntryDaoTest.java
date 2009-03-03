@@ -108,20 +108,19 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 		setOrder(file1announce, 4);
 		logEntryDao.create(file1announce);
 		LogEntry<JakeObject> file1lock = new JakeObjectLockLogEntry(
-				file1, me, "locking ...", null, true);
+				file1, me, "locking ...", true);
 		logEntryDao.create(file1lock);
 		setOrder(file1lock, 5);
 		LogEntry<JakeObject> file1unlock = new JakeObjectUnlockLogEntry(
-				file1, me, "unlocking ...", null, true);
+				file1, me, "unlocking ...", true);
 		setOrder(file1unlock, 6);
 		logEntryDao.create(file1unlock);
 		LogEntry<JakeObject> file1lock2 = new JakeObjectLockLogEntry(
-				file1, me, "locking ...", null, true);
+				file1, me, "locking ...", true);
 		setOrder(file1lock2, 7);
 		logEntryDao.create(file1lock2);
 		LogEntry<JakeObject> file1delete = new JakeObjectDeleteLogEntry(
-				file1, me, "I hate this file",
-				"mychecksum", false);
+				file1, me, "I hate this file", false);
 		setOrder(file1delete, 8);
 		logEntryDao.create(file1delete);
 

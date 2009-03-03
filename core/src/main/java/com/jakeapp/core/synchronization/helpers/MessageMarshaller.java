@@ -88,9 +88,11 @@ public class MessageMarshaller {
 
 		for (String l : logentries) {
 			try {
-				results.add(this.logEntrySerializer.deserialize(l));
+				LogEntry<? extends ILogable> logentry = this.logEntrySerializer.deserialize(l);
+				log.debug("got logentry: " + logentry);
+				results.add(logentry);
 			} catch (Throwable t) {
-				log.debug("Failed to deserialize and/or save", t);
+				log.warn("Failed to deserialize and/or save", t);
 			}
 		}
 		return results;

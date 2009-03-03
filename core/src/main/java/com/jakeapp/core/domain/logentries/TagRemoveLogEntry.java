@@ -26,7 +26,9 @@ public class TagRemoveLogEntry extends TagLogEntry {
         if (!logEntry.getLogAction().equals(LogAction.TAG_REMOVE))
             throw new UnsupportedOperationException();
 
-        return new TagRemoveLogEntry((Tag) logEntry.getBelongsTo(), logEntry.getMember());
+        TagRemoveLogEntry le = new TagRemoveLogEntry((Tag) logEntry.getBelongsTo(), logEntry.getMember());
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
     }
 
 }

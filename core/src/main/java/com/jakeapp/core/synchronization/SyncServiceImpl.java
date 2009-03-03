@@ -139,7 +139,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			case JAKE_OBJECT_DELETE:
 				// what we do is always processed
 				le = new JakeObjectDeleteLogEntry(jo,
-						getMyProjectMember(jo.getProject()), commitMsg, null, true);
+						getMyProjectMember(jo.getProject()), commitMsg, true);
 				break;
 			default:
 				throw new IllegalArgumentException("invalid logaction");

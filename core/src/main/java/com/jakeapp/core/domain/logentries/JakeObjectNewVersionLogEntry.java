@@ -26,13 +26,15 @@ public class JakeObjectNewVersionLogEntry extends JakeObjectLogEntry {
         if (!logEntry.getLogAction().equals(LogAction.JAKE_OBJECT_NEW_VERSION))
             throw new UnsupportedOperationException();
 
-        return new JakeObjectNewVersionLogEntry(
+        JakeObjectNewVersionLogEntry le = new JakeObjectNewVersionLogEntry(
                 (JakeObject) logEntry.getBelongsTo(),
                 logEntry.getMember(),
                 logEntry.getComment(),
                 logEntry.getChecksum(),
                 logEntry.isProcessed()
         );
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
     }
 
 }

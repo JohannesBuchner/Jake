@@ -277,7 +277,7 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 
-				result = new JakeObjectDeleteLogEntry(jakeObject, remoteUser, comment, checksum, false);
+				result = new JakeObjectDeleteLogEntry(jakeObject, remoteUser, comment, false);
 
 
 				/// always do this
@@ -316,7 +316,7 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 
-				result = new JakeObjectLockLogEntry(jakeObject, remoteUser, comment, checksum, false);
+				result = new JakeObjectLockLogEntry(jakeObject, remoteUser, comment, false);
 
 
 				/// always do this
@@ -396,7 +396,7 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 
-				result = new JakeObjectUnlockLogEntry(jakeObject, remoteUser, comment, checksum, false);
+				result = new JakeObjectUnlockLogEntry(jakeObject, remoteUser, comment, false);
 
 
 				/// always do this

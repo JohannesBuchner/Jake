@@ -22,6 +22,8 @@ public class FollowTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
 	}
 
 	public static FollowTrustingProjectMemberLogEntry parse(LogEntry<? extends ILogable> logEntry) {
-		return new FollowTrustingProjectMemberLogEntry((UserId) logEntry.getBelongsTo(), logEntry.getMember());
+		FollowTrustingProjectMemberLogEntry le = new FollowTrustingProjectMemberLogEntry((UserId) logEntry.getBelongsTo(), logEntry.getMember());
+		le.setTimestamp(logEntry.getTimestamp());
+		return le;
 	}
 }
