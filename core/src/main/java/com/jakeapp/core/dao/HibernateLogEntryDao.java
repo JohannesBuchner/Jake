@@ -487,17 +487,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		for (LogEntry<UserId> le : entries) {
 			UserId who = le.getMember();
 			UserId whom = le.getBelongsTo();
-			if (people.get(whom) == null) {
-				people.put(whom, new LinkedList<UserId>());
+			if (people.get(who) == null) {
+				people.put(who, new LinkedList<UserId>());
 			}
+			
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
-				people.get(whom).add(who);
+				people.get(who).add(whom);
 			}
-			if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
-				people.get(whom).remove(who);
+			else if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
+				people.get(who).remove(whom);
 			}
-			if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
-				people.get(whom).remove(who);
+			else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
+				people.get(who).remove(whom);
 			}
 		}
 		return people;
@@ -518,17 +519,17 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		for (LogEntry<UserId> le : entries) {
 			UserId who = le.getMember();
 			UserId whom = le.getBelongsTo();
-			if (people.get(whom) == null) {
-				people.put(whom, new HashMap<UserId, TrustState>());
+			if (people.get(who) == null) {
+				people.put(who, new HashMap<UserId, TrustState>());
 			}
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
-				people.get(whom).put(who, TrustState.TRUST);
+				people.get(who).put(whom, TrustState.TRUST);
 			}
 			if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
-				people.get(whom).put(who, TrustState.NO_TRUST);
+				people.get(who).put(whom, TrustState.NO_TRUST);
 			}
 			if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
-				people.get(whom).put(who, TrustState.AUTO_ADD_REMOVE);
+				people.get(who).put(whom, TrustState.AUTO_ADD_REMOVE);
 			}
 		}
 		return people;

@@ -42,8 +42,8 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 		@Override
 		public String toString() {
 
-			return user.getUserId() + " (" + UserHelper
-							.getNickOrFullName(getUser(), 30) + ")";
+			return user.getUserId()/* + " (" + UserHelper
+							.getNickOrFullName(getUser(), 30) + ")"*/;
 		}
 
 		public UserId getUser() {

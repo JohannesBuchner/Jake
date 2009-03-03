@@ -577,13 +577,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		
 		//determine action
 		if (trust == TrustState.NO_TRUST) {
-			le = new StopTrustingProjectMemberLogEntry(project.getUserId(), userId);
+			le = new StopTrustingProjectMemberLogEntry(userId, project.getUserId());
 		}
 		else if (trust == TrustState.TRUST) {
-			le = new StartTrustingProjectMemberLogEntry(project.getUserId(), userId);
+			le = new StartTrustingProjectMemberLogEntry(userId, project.getUserId());
 		}
 		else {
-			le = new FollowTrustingProjectMemberLogEntry(project.getUserId(), userId);
+			le = new FollowTrustingProjectMemberLogEntry(userId, project.getUserId());
 		}
 
 		//insert logentry
