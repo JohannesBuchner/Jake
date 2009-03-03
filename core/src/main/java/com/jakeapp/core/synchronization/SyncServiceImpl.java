@@ -30,11 +30,10 @@ import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.status.ILoginStateListener;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.synchronization.IInternalSyncService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,7 +56,7 @@ import java.util.UUID;
  *
  * @author johannes
  */
-public class SyncServiceImpl extends FriendlySyncService {
+public class SyncServiceImpl extends FriendlySyncService implements IInternalSyncService {
 
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
@@ -86,10 +85,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 	 * key is the UUID
 	 */
 	private Map<String, ProjectRequestListener> projectRequestListeners = new HashMap<String, ProjectRequestListener>();
-	
+
 	private ChangeListener getProjectChangeListener(Project p) {
-		return (p==null)?null:
-			projectChangeListeners.get(p.getProjectId());
+		return (p == null) ? null :
+				projectChangeListeners.get(p.getProjectId());
 	}
 
 	@Injected
@@ -103,48 +102,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 	private Map<String, Project> runningProjects = new HashMap<String, Project>();
 
-	ICService getICS(Project p) {
-		return getICSManager().getICService(p);
-	}
-
-	private IFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
-		return p.getMessageService().getIcsManager().getTransferService(p);
-	}
-
-	IFSService getFSS(Project p) {
-		return this.getProjectsFileServices().getProjectFSService(p);
-	}
-
-	public IProjectsFileServices getProjectsFileServices() {
-		return this.projectsFileServices;
-	}
-
-	public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
-		this.projectsFileServices = projectsFileServices;
-	}
 
 	/* DAO stuff */
 
-	/**
-	 * returns true if NoteObject <br>
-	 * returns false if FileObject
-	 * @param jo
-	 * @return
-	 */
-	public boolean isNoteObject(JakeObject jo) {
-		return jo instanceof NoteObject;
-	}
-	
-	public boolean isFileObject(JakeObject jo) {
-		return jo instanceof NoteObject;
-	}
-
-	@Transactional
-	private FileObject getFileObjectByRelpath(Project p, String relpath)
-			throws NoSuchJakeObjectException {
-		return db.getFileObjectDao(p).complete(new FileObject(p, relpath));
-	}
 
 	@Override
 	protected Iterable<UserId> getProjectMembers(Project project)
@@ -152,62 +112,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
 	}
 
-
-
-	/**
-	 * We keep track of the Project members
-	 * <ul>
-	 * <li>in the DB</li>
-	 * <li>in log</li>
-	 * <li>in the ics</li>
-	 * </ul>
-	 * We should only trust the logentries and fix everything else by that.
-	 *
-	 * @param project
-	 */
-	@Transactional
-	private void syncProjectMembers(Project project) {
-		Collection<UserId> members = db.getLogEntryDao(project)
-				.getCurrentProjectMembers();
-		for (UserId member : members) {
-			// TODO!!
-			com.jakeapp.jake.ics.UserId userid = new XmppUserId("foobar");
-			// TODO
-			try {
-				getICS(project).getUsersService().addUser(userid, userid.getUserId());
-			} catch (NoSuchUseridException e) { // shit happens
-			} catch (NotLoggedInException e) {
-			} catch (IOException e) {
-			}
-		}
-	}
-
-
-	private boolean isReachable(Project p, String userid) {
-		ICService ics = getICS(p);
-		if (ics == null)
-			return false;
-		try {
-			return ics.getStatusService().isLoggedIn(new XmppUserId(userid));
-		} catch (NoSuchUseridException e) {
-			return false;
-		} catch (NotLoggedInException e) {
-			return false;
-		} catch (TimeoutException e) {
-			return false;
-		} catch (NetworkException e) {
-			return false;
-		}
-	}
-
-	private String getMyUserid(Project p) {
-		return p.getUserId().getUserId();
-	}
-
-	@Transactional
-	private UserId getMyProjectMember(Project p) {
-		return p.getUserId();
-	}
 
 	public SyncServiceImpl() {
 	}
@@ -217,10 +121,10 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void announce(JakeObject jo, LogAction action, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
-		NoteObject note=null;
-		FileObject fo=null;
+		NoteObject note = null;
+		FileObject fo = null;
 		LogEntry<JakeObject> le;
-		
+
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
 
@@ -232,12 +136,12 @@ public class SyncServiceImpl extends FriendlySyncService {
 			fo = completeIncomingObjectOrNew((FileObject) jo);
 		}
 		*/
-		
+
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
-                le = new JakeObjectNewVersionLogEntry(jo, getMyProjectMember(jo
-                        .getProject()), commitMsg, null, true);
-                break;
+				le = new JakeObjectNewVersionLogEntry(jo, getMyProjectMember(jo
+						.getProject()), commitMsg, null, true);
+				break;
 
 			case JAKE_OBJECT_DELETE:
 				// what we do is always processed
@@ -250,13 +154,13 @@ public class SyncServiceImpl extends FriendlySyncService {
 		log.debug("prepared logentry");
 		if (isNoteObject(jo)) {
 			log.debug("storing note ...");
-			note = (NoteObject)jo;
+			note = (NoteObject) jo;
 			db.getNoteObjectDao(jo.getProject()).persist(note);
 			db.getLogEntryDao(jo).create(le);
 			log.debug("storing note done.");
 		} else {
 			log.debug("getting file hash ....");
-			fo = (FileObject)jo;
+			fo = (FileObject) jo;
 			if (action == LogAction.JAKE_OBJECT_NEW_VERSION)
 				le.setChecksum(fss.calculateHashOverFile(fo.getRelPath()));
 			log.debug("getting file hash done. storing ...");
@@ -266,22 +170,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 		}
 	}
 
-	private NoteObject completeIncomingObjectOrNew(NoteObject no) {
-		try {
-			return completeIncomingObject(no);
-		} catch (NoSuchJakeObjectException e) {
-			log.debug("completing object failed, not in database yet.");
-			return no; // we accept the UUID
-		}
-	}
-
-	private FileObject completeIncomingObjectOrNew(FileObject jo) {
-		try {
-			return completeIncomingObject(jo);
-		} catch (NoSuchJakeObjectException e) {
-			return new FileObject(UUID.randomUUID(),jo.getProject(), jo.getRelPath());
-		}
-	}
 
 	@Override
 	@Transactional
@@ -312,7 +200,7 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Override
 	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException,
 			NotLoggedInException, IllegalArgumentException {
-		
+
 		LogEntry<JakeObject> le = db.getLogEntryDao(jo).getLastVersion(jo);
 		log.debug("got logentry: " + le);
 		if (le == null) { // delete
@@ -325,145 +213,16 @@ public class SyncServiceImpl extends FriendlySyncService {
 				throw new IllegalArgumentException(e);
 			}
 			return jo;
-		}
-		else if (isNoteObject(le.getBelongsTo()))
+		} else if (isNoteObject(le.getBelongsTo()))
 			return (T) pullNoteObject(jo.getProject(), le);
 		else if (isFileObject(le.getBelongsTo()))
-			return (T) pullFileObject(jo.getProject(), (FileObject)le.getBelongsTo());
-		
+			return (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
+
 		return jo; //TODO null? throw exception?
-		
+
 		//TODO call ChangeListener, PullWatcher, PullListener
 	}
-	
-	/**
-	 * Sets a LogEntry and all previously happened
-	 * LogEntries, that have the same 'belongsTo' to processed.
-	 * @param le
-	 */
-	@SuppressWarnings("unchecked")
-	@Transactional
-	private void setLogentryProcessed(JakeObject jo,LogEntry<? extends JakeObject> le) {
-		if (jo==null || le==null) return;
-		
-		//TODO there MUST be a better way to do this
-		db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
-		List<LogEntry<JakeObject>> versions = db.getLogEntryDao(jo).
-			getAllVersionsOfJakeObject(jo);
-		for (LogEntry<JakeObject> version : versions)
-			if (!version.isProcessed() && version.getTimestamp().before(le.getTimestamp()))
-				db.getUnprocessedAwareLogEntryDao(jo).setProcessed(version);
-	}
 
-
-
-	/** 
-	 * Pulls a Fileobject from any available source and - if the pull
-	 * has been successful - sets all LogEntries that became obsoleted by the pull
-	 * to processed.
-	 * @param p The Project the fileobject should belong to
-	 * @param fo The File to pull
-	 * @return fo
-	 * @throws NotLoggedInException if there is not logged in MsgService for p
-	 * @throws NoSuchLogEntryException if there are no LogEntries for the JakeObject.
-	 * @throws IllegalArgumentException if p or fo were null.
-	 */
-	@SuppressWarnings("unchecked")
-	@Transactional
-	public FileObject pullFileObject(Project p, FileObject fo)
-			throws NotLoggedInException, NoSuchLogEntryException, IllegalArgumentException {
-		//preconditions-check
-		if (p==null) throw new IllegalArgumentException("Project may not be null");
-		if (fo==null) throw new IllegalArgumentException("FileObject may not be null");
-		if (p.getMessageService()==null) throw new NotLoggedInException();
-		
-		IFileTransferService ts;
-		IFileTransfer result = null;
-		FileRequest fr;
-		String relpath = fo.getRelPath();
-		ICService ics = this.icsManager.getICService(p);
-		Iterable<LogEntry> potentialProviders =
-			this.getRequestHandlePolicy().getPotentialJakeObjectProviders(fo);
-		IFileTransferService fts = p.getMessageService().getIcsManager().getTransferService(p);
-
-		UserId remotePeer;
-		com.jakeapp.jake.ics.UserId remoteBackendPeer;
-		ChangeListener cl = this.getProjectChangeListener(p);
-		LogEntry realProvider = null;
-		
-		if (potentialProviders == null) throw new NoSuchLogEntryException();
-		
-		for (LogEntry potentialProvider : potentialProviders)
-			if (potentialProvider!=null && potentialProvider.getMember()!=null)
-			{
-				remoteBackendPeer = 
-					this.icsManager.getBackendUserId(p,potentialProvider.getMember());
-				
-				ts = icsManager.getTransferService(p);
-				
-				/*
-				WRONG!
-				ics.getTransferMethodFactory().getTransferMethod(
-					ics.getMsgService(),
-					remoteBackendPeer
-				);
-				*/
-				
-				//TODO write to tempfile rather than to relpath??
-				fr = new FileRequest(relpath, false, remoteBackendPeer);
-				
-				try {
-					//this also reports to the corresponding ChangeListener and
-					//watches the Filetransfer and returns after the filetransfer has
-					//either returned successfully or not successfully
-					result =
-						AvailableLaterWaiter.await(new FileRequestObject(fo,ts,fr,cl, db));
-					//Save potentialProvider for later usage.
-					realProvider = potentialProvider;
-					break;
-				}
-				catch (Exception ignored) {
-					//ignore Exception, continue with next potentialProvider
-				}
-			}
-		
-		//handle result
-		if (result!=null && result.isDone() && realProvider!=null) //second part must be true after await returned
-			this.setLogentryProcessed(fo, realProvider);
-		
-		return fo;
-	}
-
-	@Transactional
-	public NoteObject pullNoteObject(Project p, LogEntry<JakeObject> le) {
-		log.debug("pulling note out of log");
-		NoteObject no = (NoteObject) le.getBelongsTo();
-		
-		no = db.getNoteObjectDao(no.getProject()).persist(no);
-		this.setLogentryProcessed(no, le);
-		return no;
-	}
-
-	@Transactional
-	private void deleteBecauseRemoteSaidSo(JakeObject jo)
-			throws IllegalArgumentException, NoSuchJakeObjectException,
-			FileNotFoundException {
-		if (jo instanceof NoteObject) {
-			db.getNoteObjectDao(jo.getProject()).delete((NoteObject) jo);
-		}
-		if (jo instanceof FileObject) {
-			db.getFileObjectDao(jo.getProject()).delete((FileObject) jo);
-			try {
-				getFSS(jo.getProject()).deleteFile(((FileObject) jo).getRelPath());
-			} catch (NotAFileException e) {
-				log.fatal("database corrupted: tried to delete a file that isn't a file",
-						e);
-			} catch (InvalidFilenameException e) {
-				log.fatal("database corrupted: tried to delete a file that isn't "
-						+ "a valid file", e);
-			}
-		}
-	}
 
 	@Override
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId pm)
@@ -487,7 +246,150 @@ public class SyncServiceImpl extends FriendlySyncService {
 
 		return null;
 	}
-	
+
+
+	@Transactional
+	@Override
+	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T jo)
+			throws InvalidFilenameException, NotAReadableFileException, IOException {
+		if (isNoteObject(jo))
+			return (Attributed<T>) getJakeObjectSyncStatus((NoteObject) jo);
+		else
+			return (Attributed<T>) getJakeObjectSyncStatus((FileObject) jo);
+	}
+
+	/**
+	 * This is a expensive operation as it recalculates all hashes <br>
+	 * Do it once on start, and then use a listener
+	 */
+	@Override
+	@Transactional
+	public List<NoteObject> getNotes(Project p) {
+		return this.db.getNoteObjectDao(p).getAll();
+	}
+
+	@Override
+	public File getFile(FileObject fo) throws IOException {
+		IFSService fss = getFSS(fo.getProject());
+		try {
+			return new File(fss.getFullpath(fo.getRelPath()));
+		} catch (InvalidFilenameException e) {
+			log.fatal("db corrupted: contains invalid filenames");
+			return null;
+		}
+	}
+
+	@Override
+	public void startServing(Project p, ChangeListener cl) throws ProjectException {
+		log.debug("starting Project " + p);
+		// this creates the ics
+
+
+		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
+		if (prl == null) {
+			prl = new ProjectRequestListener(p, icsManager, db, logEntrySerializer, (IInternalSyncService) this);
+			projectRequestListeners.put(p.getProjectId(), prl);
+		}
+		try {
+			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl, p.getProjectId());
+		} catch (Exception e) {
+			throw new ProjectException(e);
+		}
+		log.debug("Project " + p + " activated");
+
+		//TODO activate icsManager.getITransferServiceic
+
+		projectChangeListeners.put(p.getProjectId(), cl);
+		runningProjects.put(p.getProjectId(), p);
+	}
+
+
+	@Override
+	public void stopServing(Project p) {
+		log.debug("stopping project " + p);
+
+		runningProjects.remove(p.getProjectId());
+		projectChangeListeners.remove(p.getProjectId());
+
+		try {
+			p.getMessageService().deactivateSubsystem(getICS(p));
+		} catch (TimeoutException e) {
+			log.debug("logout failed", e);
+		} catch (NetworkException e) {
+			log.debug("logout failed", e);
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public void getTags(JakeObject jo) {
+		db.getLogEntryDao(jo).getCurrentTags(jo);
+	}
+
+	/**
+	 * This is a expensive operation as it recalculates all hashes <br>
+	 * Do it once on start, and then use a listener
+	 */
+	@Override
+	@Transactional
+	public AvailableLaterObject<List<FileObject>> getFiles(final Project p)
+			throws IOException {
+		log.debug("get files for project " + p);
+
+		return new AvailableLaterObject<List<FileObject>>() {
+
+			@Override
+			public List<FileObject> calculate() throws Exception {
+				IFSService fss = getFSS(p);
+
+				List<String> files = fss.recursiveListFiles();
+
+				//contains method should only check the relpath
+				SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject.getRelpathComparator());
+
+				for (FileObject fo : db.getFileObjectDao(p).getAll()) {
+					sortedFiles.add(fo);
+				}
+
+				for (String relpath : files) {
+					FileObject fo = new FileObject(p, relpath);
+					if (!sortedFiles.contains(fo))
+						sortedFiles.add(fo);
+				}
+
+				// TODO: add deleted (from logEntries)
+
+				return new LinkedList<FileObject>(sortedFiles);
+			}
+		};
+	}
+
+
+	public Project getProjectById(String projectid) {
+		// for(i : getProjectsManagingService().getProjectList()
+		// return new Project(null, projectid, null, null);
+		// TODO: mocked for the demo
+		return this.runningProjects.get(projectid);
+	}
+
+	public ChangeListener getProjectChangeListener(String projectId) {
+		return projectChangeListeners.get(projectId);
+	}
+
+
+	//////////// PUT ALL LOCAL HELPERS BEYOND THIS LINE
+
+
+	public void setICSManager(ICSManager ics) {
+		this.icsManager = ics;
+	}
+
+	public ICSManager getICSManager() {
+		return icsManager;
+	}
+
+
 	/**
 	 * Avoiding stub objects (without ID)
 	 */
@@ -495,9 +397,9 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Transactional
 	private JakeObject completeIncomingObjectSafe(JakeObject join) {
 		if (isNoteObject(join)) {
-			return this.completeIncomingObjectOrNew((NoteObject)join);
+			return this.completeIncomingObjectOrNew((NoteObject) join);
 		} else {
-			return this.completeIncomingObjectOrNew((FileObject)join);
+			return this.completeIncomingObjectOrNew((FileObject) join);
 		}
 	}
 
@@ -546,8 +448,8 @@ public class SyncServiceImpl extends FriendlySyncService {
 	@Transactional
 	public Attributed<FileObject> getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
-		log.debug("get JakeObjectStatus for "+ foin);
-		if(foin == null) {
+		log.debug("get JakeObjectStatus for " + foin);
+		if (foin == null) {
 			throw new IllegalArgumentException("FileObject is null!");
 		}
 
@@ -699,265 +601,250 @@ public class SyncServiceImpl extends FriendlySyncService {
 				size);
 	}
 
+
+	/**
+	 * We keep track of the Project members
+	 * <ul>
+	 * <li>in the DB</li>
+	 * <li>in log</li>
+	 * <li>in the ics</li>
+	 * </ul>
+	 * We should only trust the logentries and fix everything else by that.
+	 *
+	 * @param project
+	 */
 	@Transactional
-	@Override
-	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T jo)
-			throws InvalidFilenameException, NotAReadableFileException, IOException {
-		if (isNoteObject(jo))
-			return (Attributed<T>) getJakeObjectSyncStatus((NoteObject) jo);
-		else
-			return (Attributed<T>) getJakeObjectSyncStatus((FileObject) jo);
+	private void syncProjectMembers(Project project) {
+		Collection<UserId> members = db.getLogEntryDao(project)
+				.getCurrentProjectMembers();
+		for (UserId member : members) {
+			// TODO!!
+			com.jakeapp.jake.ics.UserId userid = new XmppUserId("foobar");
+			// TODO
+			try {
+				getICS(project).getUsersService().addUser(userid, userid.getUserId());
+			} catch (NoSuchUseridException e) { // shit happens
+			} catch (NotLoggedInException e) {
+			} catch (IOException e) {
+			}
+		}
+	}
+
+
+	private boolean isReachable(Project p, String userid) {
+		ICService ics = getICS(p);
+		if (ics == null)
+			return false;
+		try {
+			return ics.getStatusService().isLoggedIn(new XmppUserId(userid));
+		} catch (NoSuchUseridException e) {
+			return false;
+		} catch (NotLoggedInException e) {
+			return false;
+		} catch (TimeoutException e) {
+			return false;
+		} catch (NetworkException e) {
+			return false;
+		}
+	}
+
+	private String getMyUserid(Project p) {
+		return p.getUserId().getUserId();
+	}
+
+	@Transactional
+	private UserId getMyProjectMember(Project p) {
+		return p.getUserId();
+	}
+
+
+	ICService getICS(Project p) {
+		return getICSManager().getICService(p);
+	}
+
+	private IFileTransferService getTransferService(Project p)
+			throws NotLoggedInException {
+		return p.getMessageService().getIcsManager().getTransferService(p);
+	}
+
+	IFSService getFSS(Project p) {
+		return this.getProjectsFileServices().getProjectFSService(p);
+	}
+
+	public IProjectsFileServices getProjectsFileServices() {
+		return this.projectsFileServices;
+	}
+
+	public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
+		this.projectsFileServices = projectsFileServices;
+	}
+
+
+	@Transactional
+	private FileObject getFileObjectByRelpath(Project p, String relpath)
+			throws NoSuchJakeObjectException {
+		return db.getFileObjectDao(p).complete(new FileObject(p, relpath));
+	}
+
+	private NoteObject completeIncomingObjectOrNew(NoteObject no) {
+		try {
+			return completeIncomingObject(no);
+		} catch (NoSuchJakeObjectException e) {
+			log.debug("completing object failed, not in database yet.");
+			return no; // we accept the UUID
+		}
+	}
+
+	private FileObject completeIncomingObjectOrNew(FileObject jo) {
+		try {
+			return completeIncomingObject(jo);
+		} catch (NoSuchJakeObjectException e) {
+			return new FileObject(UUID.randomUUID(), jo.getProject(), jo.getRelPath());
+		}
 	}
 
 	/**
-	 * This is a expensive operation as it recalculates all hashes <br>
-	 * Do it once on start, and then use a listener
+	 * Pulls a Fileobject from any available source and - if the pull
+	 * has been successful - sets all LogEntries that became obsoleted by the pull
+	 * to processed.
+	 *
+	 * @param p  The Project the fileobject should belong to
+	 * @param fo The File to pull
+	 * @return fo
+	 * @throws NotLoggedInException	 if there is not logged in MsgService for p
+	 * @throws NoSuchLogEntryException  if there are no LogEntries for the JakeObject.
+	 * @throws IllegalArgumentException if p or fo were null.
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<NoteObject> getNotes(Project p) {
-		return this.db.getNoteObjectDao(p).getAll();
+	public FileObject pullFileObject(Project p, FileObject fo)
+			throws NotLoggedInException, NoSuchLogEntryException, IllegalArgumentException {
+		//preconditions-check
+		if (p == null) throw new IllegalArgumentException("Project may not be null");
+		if (fo == null) throw new IllegalArgumentException("FileObject may not be null");
+		if (p.getMessageService() == null) throw new NotLoggedInException();
+
+		IFileTransferService ts;
+		IFileTransfer result = null;
+		FileRequest fr;
+		String relpath = fo.getRelPath();
+		ICService ics = this.icsManager.getICService(p);
+		Iterable<LogEntry> potentialProviders =
+				this.getRequestHandlePolicy().getPotentialJakeObjectProviders(fo);
+		IFileTransferService fts = p.getMessageService().getIcsManager().getTransferService(p);
+
+		UserId remotePeer;
+		com.jakeapp.jake.ics.UserId remoteBackendPeer;
+		ChangeListener cl = this.getProjectChangeListener(p);
+		LogEntry realProvider = null;
+
+		if (potentialProviders == null) throw new NoSuchLogEntryException();
+
+		for (LogEntry potentialProvider : potentialProviders)
+			if (potentialProvider != null && potentialProvider.getMember() != null) {
+				remoteBackendPeer =
+						this.icsManager.getBackendUserId(p, potentialProvider.getMember());
+
+				ts = icsManager.getTransferService(p);
+
+				/*
+				WRONG!
+				ics.getTransferMethodFactory().getTransferMethod(
+					ics.getMsgService(),
+					remoteBackendPeer
+				);
+				*/
+
+				//TODO write to tempfile rather than to relpath??
+				fr = new FileRequest(relpath, false, remoteBackendPeer);
+
+				try {
+					//this also reports to the corresponding ChangeListener and
+					//watches the Filetransfer and returns after the filetransfer has
+					//either returned successfully or not successfully
+					result =
+							AvailableLaterWaiter.await(new FileRequestObject(fo, ts, fr, cl, db));
+					//Save potentialProvider for later usage.
+					realProvider = potentialProvider;
+					break;
+				}
+				catch (Exception ignored) {
+					//ignore Exception, continue with next potentialProvider
+				}
+			}
+
+		//handle result
+		if (result != null && result.isDone() && realProvider != null) //second part must be true after await returned
+			this.setLogentryProcessed(fo, realProvider);
+
+		return fo;
 	}
 
-	@Override
-	public File getFile(FileObject fo) throws IOException {
-		IFSService fss = getFSS(fo.getProject());
-		try {
-			return new File(fss.getFullpath(fo.getRelPath()));
-		} catch (InvalidFilenameException e) {
-			log.fatal("db corrupted: contains invalid filenames");
-			return null;
-		}
+	@Transactional
+	public NoteObject pullNoteObject(Project p, LogEntry<JakeObject> le) {
+		log.debug("pulling note out of log");
+		NoteObject no = (NoteObject) le.getBelongsTo();
+
+		no = db.getNoteObjectDao(no.getProject()).persist(no);
+		this.setLogentryProcessed(no, le);
+		return no;
 	}
 
-	@Override
-	public void startServing(Project p, ChangeListener cl) throws ProjectException {
-		log.debug("starting Project " + p);
-		// this creates the ics
-		
-		
-		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
-		if(prl == null) {
-//			prl = new ProjectRequestListener2(p, getICSManager(), (ISyncService) this);
-			prl = new ProjectRequestListener(p, icsManager, db);
-			projectRequestListeners.put(p.getProjectId(), prl);
+	@Transactional
+	private void deleteBecauseRemoteSaidSo(JakeObject jo)
+			throws IllegalArgumentException, NoSuchJakeObjectException,
+			FileNotFoundException {
+		if (jo instanceof NoteObject) {
+			db.getNoteObjectDao(jo.getProject()).delete((NoteObject) jo);
 		}
-		try {
-			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl, p.getProjectId());
-		} catch (Exception e) {
-			throw new ProjectException(e);
-		}
-		log.debug("Project " + p + " activated");
-
-		//TODO activate icsManager.getITransferServiceic
-		
-		projectChangeListeners.put(p.getProjectId(), cl);
-		runningProjects.put(p.getProjectId(), p);
-	}
-
-	private class ProjectRequestListener implements IMessageReceiveListener,
-			IOnlineStatusListener, ILoginStateListener {
-
-		private static final String BEGIN_LOGENTRY = "<le>";
-		private static final String END_LOGENTRY = "</le>";
-		private static final String BEGIN_PROJECT_UUID = "<project>";
-		private static final String END_PROJECT_UUID = "</project>";
-		private static final String LOGENTRIES_MESSAGE = "<logentries/>";
-		private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
-		private static final String NEW_FILE = "<newfile/>";
-
-
-
-		private static final String NEW_NOTE = "<newnote/>";
-
-//		private static Logger log = Logger.getLogger(ProjectRequestListener.class);
-		private Logger log = Logger.getLogger(ProjectRequestListener.class); // TODO in own class, make this static!
-
-		private String getUUIDStringForProject(Project project) {
-			return BEGIN_PROJECT_UUID + project.getProjectId() + END_PROJECT_UUID;
-		}
-
-
-		private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
-			ICService ics = icsManager.getICService(project);
-
+		if (jo instanceof FileObject) {
+			db.getFileObjectDao(jo.getProject()).delete((FileObject) jo);
 			try {
-				List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
-
-
-				StringBuffer sb = new StringBuffer(getUUIDStringForProject(project)).append(LOGENTRIES_MESSAGE);
-
-				log.debug("Starting to process log entries...");
-				for (LogEntry l : logs) {
-					try {
-						sb.append(BEGIN_LOGENTRY).append(logEntrySerializer.serialize(l, project)).append(END_LOGENTRY);
-						log.debug("Serialised log entry, new sb content: " + sb.toString());
-					} catch (Throwable e) {
-						log.info("Failed to serialize log entry: " + l.getLogAction().toString() + "(" + l.toString() + ")", e);
-					}
-				}
-				log.debug("Finished processing log entries! Now sending.");
-
-				ics.getMsgService().sendMessage(user, sb.toString());
-			} catch (NetworkException e) {
-				log.warn("Could not sync logs", e);
-			} catch (OtherUserOfflineException e) {
-				log.warn("Could not sync logs", e);
+				getFSS(jo.getProject()).deleteFile(((FileObject) jo).getRelPath());
+			} catch (NotAFileException e) {
+				log.fatal("database corrupted: tried to delete a file that isn't a file",
+						e);
+			} catch (InvalidFilenameException e) {
+				log.fatal("database corrupted: tried to delete a file that isn't "
+						+ "a valid file", e);
 			}
-		}
-
-
-		private Project p;
-
-		private ICSManager icsManager;
-		private ProjectApplicationContextFactory db;
-
-		public ProjectRequestListener(Project p, ICSManager icsManager, ProjectApplicationContextFactory db) {
-			this.p = p;
-			this.icsManager = icsManager;
-			this.db = db;
-		}
-
-		private String getProjectUUID(String content) {
-			int begin = content.indexOf(BEGIN_PROJECT_UUID) + BEGIN_PROJECT_UUID.length();
-			int end = content.indexOf(END_PROJECT_UUID);
-
-			return content.substring(begin, end);
-		}
-
-		@Override
-		@Transactional
-		public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
-			String projectUUID = getProjectUUID(content);
-			log.debug("Received a message for project " + projectUUID);
-
-			if (!projectUUID.equals(p.getProjectId())) {
-				log.debug("Discarding message because it's not for this project");
-				return;
-			}
-
-			log.debug("Message is for this project!");
-
-			String message = content.substring(BEGIN_PROJECT_UUID.length() + projectUUID.length() + END_PROJECT_UUID.length());
-			log.debug("Message content: \"" + message + "\"");
-
-			if (message.startsWith(POKE_MESSAGE)) {
-				log.info("Received poke from " + from_userid.getUserId());
-				log.debug("This means we should sync logs!");
-
-				// Eventually, this should consider things such as trust
-				UserId user = getICSManager().getFrontendUserId(p, from_userid);
-				try {
-					SyncServiceImpl.this.startLogSync(p, user);
-				} catch (IllegalProtocolException e) {
-					// This should neeeeeeeeever happen
-					log.fatal("Received an unexpected IllegalProtocolException while trying to perform logsync",
-							e);
-				}
-				return;
-			}
-
-			if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
-				log.info("Received logs request from " + from_userid.getUserId());
-
-				sendLogs(p, from_userid);
-				return;
-			}
-
-			if (message.startsWith(LOGENTRIES_MESSAGE)) {
-				log.info("Received serialized logentries from " + from_userid.getUserId());
-
-				String les = message.substring(LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(), message.length() - END_LOGENTRY.length());
-				String[] logentries = les.split(END_LOGENTRY + BEGIN_LOGENTRY);
-
-				for (String l : logentries) {
-					log.debug("Log entry serialized content: \"" + l + "\"");
-					try {
-						LogEntry entry = logEntrySerializer.deserialize(l);
-						log.debug("Deserialized successfully, it is a " + entry.getLogAction() + " for object UUID " + entry.getObjectuuid());
-						db.getLogEntryDao(p).create(entry);
-						;
-					} catch (Throwable t) {
-						log.debug("Failed to deserialize and/or save", t);
-					}
-				}
-			}
-
-			// TODO: The stuff below here could use some refactoring
-			// (e.g. redeclaring parameter content)
-			int uuidlen = UUID.randomUUID().toString().length();
-			String projectid = message.substring(0, uuidlen);
-			message = message.substring(uuidlen);
-			Project p = getProjectByUserId(projectid);
-			ChangeListener cl = projectChangeListeners.get(projectid);
-			if (message.startsWith(NEW_NOTE)) {
-				log.debug("requesting note");
-				UUID uuid = UUID.fromString(message.substring(NEW_NOTE.length()));
-				log.debug("persisting object");
-				NoteObject no = new NoteObject(uuid, p, "loading ...");
-				db.getNoteObjectDao(p).persist(no);
-				log.debug("calling other user: " + from_userid);
-				try {
-					p.getMessageService().getIcsManager().getTransferService(p).request(
-							new FileRequest("N" + uuid, false, from_userid),
-							cl.beganRequest(no));
-				} catch (NotLoggedInException e) {
-					log.error("Not logged in");
-				}
-			}
-			if (message.startsWith(NEW_FILE)) {
-				log.debug("requesting file");
-				String relpath = message.substring(NEW_FILE.length());
-				FileObject fo = new FileObject(p, relpath);
-				log.debug("persisting object");
-				db.getFileObjectDao(p).persist(fo);
-				log.debug("calling other user: " + from_userid);
-				try {
-					p.getMessageService().getIcsManager().getTransferService(p).request(
-							new FileRequest("F" + relpath, false, from_userid),
-							cl.beganRequest(fo));
-				} catch (NotLoggedInException e) {
-					log.error("Not logged in");
-				}
-			}
-		}
-
-		@Override
-		public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
-			// TODO Auto-generated method stub
-			log.info("Online status of " + userid.getUserId() + " changed... (Project "
-					+ p + ")");
-		}
-
-		@Override
-		public void loginHappened() {
-			// TODO Auto-generated method stub
-			log.info("We logged in with project " + this.p);
-		}
-
-		@Override
-		public void logoutHappened() {
-			// TODO Auto-generated method stub
-			log.info("We logged out with project " + this.p);
 		}
 	}
 
 
+	/**
+	 * returns true if NoteObject <br>
+	 * returns false if FileObject
+	 *
+	 * @param jo
+	 * @return
+	 */
+	public boolean isNoteObject(JakeObject jo) {
+		return jo instanceof NoteObject;
+	}
 
-	@Override
-	public void stopServing(Project p) {
-		log.debug("stopping project " + p);
-		
-		runningProjects.remove(p.getProjectId());
-		projectChangeListeners.remove(p.getProjectId());
+	public boolean isFileObject(JakeObject jo) {
+		return jo instanceof NoteObject;
+	}
 
-		try {
-			p.getMessageService().deactivateSubsystem(getICS(p));
-		} catch (TimeoutException e) {
-			log.debug("logout failed", e);
-		} catch (NetworkException e) {
-			log.debug("logout failed", e);
-		}
+	/**
+	 * Sets a LogEntry and all previously happened
+	 * LogEntries, that have the same 'belongsTo' to processed.
+	 *
+	 * @param le
+	 */
+	@SuppressWarnings("unchecked")
+	@Transactional
+	private void setLogentryProcessed(JakeObject jo, LogEntry<? extends JakeObject> le) {
+		if (jo == null || le == null) return;
+
+		//TODO there MUST be a better way to do this
+		db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
+		List<LogEntry<JakeObject>> versions = db.getLogEntryDao(jo).
+				getAllVersionsOfJakeObject(jo);
+		for (LogEntry<JakeObject> version : versions)
+			if (!version.isProcessed() && version.getTimestamp().before(le.getTimestamp()))
+				db.getUnprocessedAwareLogEntryDao(jo).setProcessed(version);
 	}
 
 
@@ -975,66 +862,6 @@ public class SyncServiceImpl extends FriendlySyncService {
 	public void setRequestHandlePolicy(RequestHandlePolicy rhp) {
 		this.rhp = rhp;
 	}
-
-	private Project getProjectByUserId(String projectid) {
-		// for(i : getProjectsManagingService().getProjectList()
-		// return new Project(null, projectid, null, null);
-		// TODO: mocked for the demo
-		return this.runningProjects.get(projectid);
-	}
-
-	@Override
-	@Transactional
-	public void getTags(JakeObject jo) {
-		db.getLogEntryDao(jo).getCurrentTags(jo);
-	}
-
-	/**
-	 * This is a expensive operation as it recalculates all hashes <br>
-	 * Do it once on start, and then use a listener
-	 */
-	@Override
-	@Transactional
-	public AvailableLaterObject<List<FileObject>> getFiles(final Project p)
-			throws IOException {
-		log.debug("get files for project " + p);
-
-		return new AvailableLaterObject<List<FileObject>>() {
-
-			@Override
-			public List<FileObject> calculate() throws Exception {
-				IFSService fss = getFSS(p);
-
-				List<String> files = fss.recursiveListFiles();
-
-				//contains method should only check the relpath
-				SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject.getRelpathComparator());
-
-				for (FileObject fo : db.getFileObjectDao(p).getAll()) {
-					sortedFiles.add(fo);
-				}
-
-				for (String relpath : files) {
-					FileObject fo = new FileObject(p, relpath);
-					if ( !sortedFiles.contains(fo) )
-						sortedFiles.add(fo);
-				}
-				
-				// TODO: add deleted (from logEntries)
-				
-				return new LinkedList<FileObject>(sortedFiles);
-			}
-		};
-	}
-
-	public void setICSManager(ICSManager ics) {
-		this.icsManager = ics;
-	}
-
-	public ICSManager getICSManager() {
-		return icsManager;
-	}
-
 
 
 }
