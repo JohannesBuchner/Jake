@@ -78,6 +78,7 @@
 
     <bean id="coreProjectInvitationListener" class="com.jakeapp.core.services.ProjectInvitationListener">
         <constructor-arg index="0" ref="projectDao" />
+        <constructor-arg index="1" ref="applicationContextFactory" />
     </bean>
 
 

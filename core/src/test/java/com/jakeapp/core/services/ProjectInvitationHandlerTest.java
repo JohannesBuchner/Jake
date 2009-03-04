@@ -102,7 +102,7 @@ public class ProjectInvitationHandlerTest {
 		XmppUserId xmppUserId = new XmppUserId(
 				user.getUserId() +
 						"/" + project.getProjectId().toString());
-
+		                            
 		when(msg.getIcsManager()).thenReturn(icsManager);
 		when(icsManager.getFrontendUserId(project, xmppUserId)).thenReturn(user);
 

@@ -3,8 +3,10 @@ package com.jakeapp.core.services;
 import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 public class ProjectInvitationListener implements com.jakeapp.core.services.IProjectInvitationListener {
 //	private final com.jakeapp.core.services.ProjectsManagingServiceImpl projectsManagingServiceImpl;
@@ -12,11 +14,12 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 
 	private IProjectDao projectDao;
+    private ProjectApplicationContextFactory contextFactory;
 
-
-	public ProjectInvitationListener(IProjectDao projectDao)
+	public ProjectInvitationListener(IProjectDao projectDao, ProjectApplicationContextFactory contextFactory)
 	{
 		this.projectDao = projectDao;
+		this.contextFactory = contextFactory;
 	}
 
 
@@ -38,7 +41,8 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	@Override
 	public void accepted(UserId user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " accepted ");
-
+		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(p,  user);
+		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
 
 //		if (this.invitationListener != null)
 //			this.invitationListener.accepted(user, p);

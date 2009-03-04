@@ -5,18 +5,23 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertThat;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import junit.framework.Assert;
 
@@ -25,14 +30,18 @@ import java.util.UUID;
 
 public class ProjectInvitationListenerTest {
 
-	/*
-	@Mock private IProjectInvitationListener projectInvitationListener;
 
-	@Mock private XMPPMsgService msg;
+	private IProjectInvitationListener projectInvitationListener;
 
-	@Mock private ICSManager icsManager;
 
-	@Mock private IProjectDao projectDao;
+	@Mock
+	private IProjectDao projectDao;
+
+	@Mock
+	private ProjectApplicationContextFactory contextFactory;
+
+	@Mock
+	private ILogEntryDao logEntryDao;
 
 	private ProjectInvitationHandler projectInvitationHandler;
 	private ServiceCredentials credentials = new ServiceCredentials("user", "pass", ProtocolType.XMPP);
@@ -42,24 +51,20 @@ public class ProjectInvitationListenerTest {
 	Project project;
 
 
-
 	@Before
-	public void setup()
-	{
+	public void setup() {
 		MockitoAnnotations.initMocks(this);
 
-		when(msg.getIcsManager()).thenReturn(icsManager);
-//		when(msg.getServiceCredentials()).thenReturn(credentials);
-		
-		project = new Project("testproject1", UUID.fromString("8a488840-cbdc-43d2-9c52-3bca07bcead2"), msg, null);
+		projectInvitationListener = new ProjectInvitationListener(projectDao, contextFactory);
+
+		project = new Project("testproject1", UUID.fromString("8a488840-cbdc-43d2-9c52-3bca07bcead2"), null, null);
 
 //		projectInvitationHandler = new ProjectInvitationHandler(msg);
 //		projectInvitationHandler.setInvitationListener(projectInvitationListener);
 	}
 
 	@After
-	public void tearDown()
-	{
+	public void tearDown() {
 
 	}
 
@@ -69,46 +74,80 @@ public class ProjectInvitationListenerTest {
 
 	@Test
 	public void testIncomingInviteMessage() throws Exception {
-//		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
-//		MsgService msg = frontend.addAccount(sessionId, cred);
-
-		when(msg.getIcsManager().getFrontendUserId(null, null)).thenReturn(user);
-//		when(msg.getProtocolType()).thenReturn(ProtocolType.XMPP);
 
 
-		projectInvitationHandler.receivedMessage(new XmppUserId( user.getUserId() +
-				"/" + project.getProjectId().toString()),
-				"<invite/>"+ project.getProjectId().toString() + project.getName() );
-		verify(projectInvitationListener, times(1)).invited(user,project);
+		projectInvitationListener.invited(user, project);
+		verify(projectDao, times(1)).create(project);
 	}
+
+	ProjectJoinedLogEntry resultLogEntry;
+
 	@Test
 	public void testIncomingAcceptMessage() throws Exception {
 
-		when(msg.getIcsManager().getFrontendUserId(null, null)).thenReturn(user);
-		when(msg.getProtocolType()).thenReturn(ProtocolType.XMPP);
+		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(project, user);
 
 
-		projectInvitationHandler.receivedMessage(new XmppUserId( user.getUserId() +
-				"/" + project.getProjectId().toString()),
-				"<accept/>"+ project.getProjectId().toString() + project.getName() );
+		when(contextFactory.getUnprocessedAwareLogEntryDao(project)).thenReturn(logEntryDao);
 
 
-		verify(projectInvitationListener, times(1)).accepted(user,project);
+//		stubVoid(logEntryDao).toAnswer(new Answer(){
+//			@Override
+//			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+//				System.out.println("ANWERING!");
+//				ProjectInvitationListenerTest.resultLogEntry = (ProjectJoinedLogEntry) invocationOnMock.getArguments()[0];
+//				for(Object o : invocationOnMock.getArguments())
+//				{
+//					System.out.println("o = " + o);
+//				}
+//				return null;
+//			}))
+//
+//
+//			;
 
+		doAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+				resultLogEntry = (ProjectJoinedLogEntry) invocationOnMock.getArguments()[0];
+				return null;
+			}
+		}).when(logEntryDao).create((LogEntry) anyObject());
+		projectInvitationListener.accepted(user, project);
+
+		System.out.println("resultLogEntry = " + resultLogEntry);
+
+		verify(logEntryDao, times(1)).create(resultLogEntry);
+
+		Assert.assertEquals(logEntry.getProject(), resultLogEntry.getProject());
+		Assert.assertEquals(logEntry.getLogAction(), resultLogEntry.getLogAction());
+		Assert.assertEquals(logEntry.getBelongsTo(), resultLogEntry.getBelongsTo());
+		Assert.assertEquals(logEntry.getChecksum(), resultLogEntry.getChecksum());
+		Assert.assertEquals(logEntry.getMember(), resultLogEntry.getMember());
+		Assert.assertEquals(logEntry.getObjectuuid(), resultLogEntry.getObjectuuid());
+		Assert.assertEquals(logEntry.isProcessed(), resultLogEntry.isProcessed());
+
+// this cannot be predicted!
+//		Assert.assertEquals(logEntry.getUuid(), resultLogEntry.getUuid());
+//		Assert.assertEquals(logEntry.getTimestamp(), resultLogEntry.getTimestamp());
 	}
+
 	@Test
 	public void testIncomingRejectMessage() throws Exception {
 
-		when(msg.getIcsManager().getFrontendUserId(null, null)).thenReturn(user);
-		when(msg.getProtocolType()).thenReturn(ProtocolType.XMPP);
 
-		projectInvitationHandler.receivedMessage(new XmppUserId(user.getUserId() +
-				"/" + project.getProjectId().toString()),
-				"<reject/>" + project.getProjectId().toString() + project.getName());
+		projectInvitationListener.rejected(user, project);
+		// TODO
 
-
-		verify(projectInvitationListener, times(1)).rejected(user,project);
+//		when(msg.getIcsManager().getFrontendUserId(null, null)).thenReturn(user);
+//		when(msg.getProtocolType()).thenReturn(ProtocolType.XMPP);
+//
+//		projectInvitationHandler.receivedMessage(new XmppUserId(user.getUserId() +
+//				"/" + project.getProjectId().toString()),
+//				"<reject/>" + project.getProjectId().toString() + project.getName());
+//
+//
+//		verify(projectInvitationListener, times(1)).rejected(user,project);
 	}
 
-	*/
 }
