@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 
@@ -24,6 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * The Status Service. There's a main one  + one for every project.
+ */
 public class XmppStatusService implements IStatusService {
 
 	private static final Logger log = Logger.getLogger(XmppStatusService.class);
@@ -130,8 +134,10 @@ public class XmppStatusService implements IStatusService {
 		if (!xuid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 
-		if (isLoggedIn())
+		if (isLoggedIn()) {
+			log.warn("A XMPP Service was logged in which wasn't expected. I'll log it out...");
 			logout();
+		}
 
 		this.con.setConnection(null);
 
@@ -142,7 +148,10 @@ public class XmppStatusService implements IStatusService {
 			connection = XmppCommons.login(xuid.getUserId(), pw, xuid.getResource());
 			connection.addConnectionListener(connectionListener);
 		} catch (IOException e) {
-			log.debug("connecting failed");
+			log.debug("connecting failed (network problems?)", e);
+			throw new NetworkException(e);
+		}catch (XMPPException e) {
+			log.debug("connecting failed (wrong credientals, generic xmpp error)", e);
 			throw new NetworkException(e);
 		}
 
@@ -197,8 +206,7 @@ public class XmppStatusService implements IStatusService {
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		if (lsll.size()>0) {
-			//HACK to counter ConcurrentModificationException
-			for (ILoginStateListener lsl : new LinkedList<ILoginStateListener>(lsll)) {
+			for (ILoginStateListener lsl : lsll) {
 				lsl.connectionStateChanged(state,null);
 			}
 		}	
@@ -230,6 +238,13 @@ public class XmppStatusService implements IStatusService {
 		log.debug("Adding LoginStateListener");
 		lsll.add(lsl);
 	}
+
+	@Override
+	public void removeLoginStateListener(ILoginStateListener lsl) {
+		log.debug("Removing LoginStateListener");
+		lsll.remove(lsl);
+	}
+
 
 
 	/**

@@ -1,13 +1,12 @@
 package com.jakeapp.core.services;
 
-import java.util.Collection;
-
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
+
+import java.util.Collection;
 
 
 /**
@@ -16,6 +15,15 @@ import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
  * @author johannes
  */
 public interface ICSManager {
+
+
+	/**
+	 * Checks if a transferservice exists for the project.
+	 * @param p
+	 * @return
+	 */
+	public boolean hasTransferService(Project p);
+
 
 	/**
 	 * get the ICS for the project

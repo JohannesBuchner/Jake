@@ -95,7 +95,7 @@ public abstract class MsgService<T extends UserId> {
 			return false;
 
 		log.debug("before doLogin: " + this.getVisibilityStatus());
-	  this.doLogin();
+		this.doLogin();
 		log.debug("plain login has happened " + this.getVisibilityStatus());
 		updateActiveSubsystems();
 
@@ -258,12 +258,22 @@ public abstract class MsgService<T extends UserId> {
 
 	/**
 	 * Get the main ICService (Namespace "Jake")
+	 *
 	 * @return
 	 */
 	abstract protected ICService getMainIcs();
 
 	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
 
+	/**
+	 * Updates the Subsystems of our main ICService.
+	 * Thus, if we go offline in the main Namespance (Jake), then all projects
+	 * need to go offline. And reverse.
+	 * <p/>
+	 * This is called on login/logout.
+	 *
+	 * @throws NetworkException
+	 */
 	private void updateActiveSubsystems() throws NetworkException {
 		log.debug("main ics is logged in? " + getVisibilityStatus());
 		for (Entry<ICService, ICData> el : this.activeSubsystems.entrySet()) {
@@ -272,6 +282,17 @@ public abstract class MsgService<T extends UserId> {
 		log.debug("main ics is logged in? " + getVisibilityStatus());
 	}
 
+	/**
+	 * Activates a specific subsystem (=project)
+	 * Caled via startServing (start a project)
+	 *
+	 * @param ics
+	 * @param receiveListener
+	 * @param lsl
+	 * @param onlineStatusListener
+	 * @param name
+	 * @throws NetworkException
+	 */
 	public void activateSubsystem(ICService ics,
 					IMessageReceiveListener receiveListener, ILoginStateListener lsl,
 					IOnlineStatusListener onlineStatusListener, String name)
@@ -279,29 +300,39 @@ public abstract class MsgService<T extends UserId> {
 
 		ICData listeners = new ICData(name, lsl, onlineStatusListener, receiveListener);
 		this.activeSubsystems.put(ics, listeners);
+
 		log.debug("before updateSubSystemStatus: " + this.getVisibilityStatus());
 		updateSubsystemStatus(ics, listeners);
 		log.debug("after updateSubSystemStatus: " + this.getVisibilityStatus());
 	}
 
+	/**
+	 * Updates the specific subsystem
+	 *
+	 * @param ics
+	 * @param listeners
+	 * @throws NetworkException
+	 */
 	private void updateSubsystemStatus(ICService ics, ICData listeners)
 					throws NetworkException {
-		log.warn("updating status of " + ics + " to match " + this
+		log.info("updating status of " + ics + " to match " + this
 						.getVisibilityStatus());
 		if (this.getVisibilityStatus() == VisibilityStatus.ONLINE) {
 			com.jakeapp.jake.ics.UserId user = this.getIcsUser(ics, listeners);
 			log.debug("logging in " + user);
+
 			ics.getMsgService().registerReceiveMessageListener(listeners.receiveListener);
 			ics.getUsersService()
 							.registerOnlineStatusListener(listeners.onlineStatusListener);
 			ics.getStatusService()
 							.login(user, this.getServiceCredentials().getPlainTextPassword());
-			ics.getStatusService()
-							.addLoginStateListener(listeners.loginStateListener);
+			ics.getStatusService().addLoginStateListener(listeners.loginStateListener);
 		} else {
 			if (ics.getStatusService().isLoggedIn()) {
 				log.debug("logging out " + ics.getStatusService().getUserid());
 				ics.getStatusService().logout();
+				ics.getStatusService()
+								.removeLoginStateListener(listeners.loginStateListener);
 			}
 		}
 	}

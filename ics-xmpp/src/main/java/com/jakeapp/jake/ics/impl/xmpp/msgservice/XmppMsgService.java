@@ -16,7 +16,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.Base64;
 
 /**
- * The Xmpp Message Service.
+ * The Xmpp Message Service. There's only one per User.
  */
 public class XmppMsgService implements IMsgService, ILoginStateListener {
 
@@ -109,7 +109,7 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 			this.initialized = false;
 		}
 
-		// forward event to gui
+		// forward event to gui (only master has a reference)
 		if(loginListener != null) {
 			loginListener.connectionStateChanged(le, null);
 		}

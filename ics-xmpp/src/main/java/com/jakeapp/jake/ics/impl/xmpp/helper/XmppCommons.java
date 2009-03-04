@@ -33,14 +33,19 @@ public class XmppCommons {
 	 *      return value
 	 */
 	public static XMPPConnection login(String xmppid, String pw, String resource)
-			throws IOException {
+			throws IOException, XMPPException {
 
 		String hostname = xmppid.replaceAll("^.*@", "").replaceAll("/.*$", "");
 		String username = xmppid.replaceAll("@.*$", "");
 
 		log.debug("connecting/logging in with full xmppid (gmail et al) [may fail]");
-		XMPPConnection connection = XmppCommons.login(xmppid, pw, hostname,
-				resource);
+		XMPPConnection connection = null;
+
+		try {
+			connection = XmppCommons.login(xmppid, pw, hostname, resource);
+		}catch(XMPPException e) {
+			log.info("Received XMPPException while trying to log in with full hostname: " + e.getMessage());
+		}
 
 		if (connection == null) {
 			log.info("ignore the exception above, it was expected");
@@ -91,9 +96,11 @@ public class XmppCommons {
 	 * @return open connection or null on failure
 	 * @throws IOException
 	 *             on connect failure
+	 * @throws org.jivesoftware.smack.XMPPException
+	 *             general XMPP error
 	 */
 	public static XMPPConnection login(String username, String pw,
-			String hostname, String resource) throws IOException {
+			String hostname, String resource) throws IOException, XMPPException {
 
 		log.debug("connecting to host: '" + hostname + "'");
 		XMPPConnection connection = new XMPPConnection(hostname);
@@ -118,7 +125,7 @@ public class XmppCommons {
 		} catch (XMPPException e) {
 			log.debug("login not ok: " + e.getMessage());
 			connection.disconnect();
-			return null;
+			throw e;
 		}
 	}
 

@@ -58,7 +58,7 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 		} catch (Exception e) {
 			log.warn("Login failed: " + e);
 			//ExceptionUtilities.showError("Log In did not succeed.", e);
-			JakeStatusBar.showMessage("Login unsuccessful: " + e.getMessage(), 100);
+			JakeStatusBar.showMessage("Login failed.", 100);
 		}
 
 		// update the statusbar!

@@ -1,12 +1,11 @@
 package local.xmpp;
 
-import java.io.IOException;
-
+import com.jakeapp.jake.ics.impl.xmpp.helper.XmppCommons;
 import org.apache.log4j.Logger;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
-import com.jakeapp.jake.ics.impl.xmpp.helper.XmppCommons;
+import java.io.IOException;
 
 
 public class XmppUserTool {
@@ -47,7 +46,11 @@ public class XmppUserTool {
 
 		if (action.equals("login") || action.equals("delete")) {
 			try {
-				connection = XmppCommons.login(xmppid, xmpppw, resourcename);
+				try {
+					connection = XmppCommons.login(xmppid, xmpppw, resourcename);
+				} catch (XMPPException e) {
+					// ignore
+				}
 				if (connection == null) {
 					log.error("login wasn't successful.");
 					return;

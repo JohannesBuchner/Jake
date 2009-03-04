@@ -284,6 +284,9 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 		lsll.add(lsl);
 	}
 
+	@Override public void removeLoginStateListener(ILoginStateListener lsl) {
+	}
+
 	@Override
 	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener) {
 		// TODO Auto-generated method stub

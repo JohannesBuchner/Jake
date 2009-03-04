@@ -102,4 +102,6 @@ public interface IStatusService {
 	 */
 	public void addLoginStateListener(ILoginStateListener lsl);
 
+  public void removeLoginStateListener(ILoginStateListener lsl);
+
 }

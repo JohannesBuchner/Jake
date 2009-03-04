@@ -37,6 +37,10 @@ public class FailoverICSManager implements ICSManager {
 
 	private Map<String, ICService> activeServices = new HashMap<String, ICService>();
 
+	@Override public boolean hasTransferService(Project p) {
+		return this.transfer.containsKey(p.getProjectId());
+	}
+
 	@Override
 	public ICService getICService(Project p) {
 		ICService ics = null;

@@ -33,9 +33,9 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-public class ProjectRequestListener implements IMessageReceiveListener,
-		IOnlineStatusListener, ILoginStateListener, IncomingTransferListener,
-		FileRequestFileMapper {
+public class ProjectRequestListener
+				implements IMessageReceiveListener, IOnlineStatusListener,
+				ILoginStateListener, IncomingTransferListener, FileRequestFileMapper {
 
 	private static final String BEGIN_LOGENTRY = "<le>";
 
@@ -69,8 +69,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 
 
 	public ProjectRequestListener(Project p, ICSManager icsManager,
-			ProjectApplicationContextFactory db, IInternalSyncService syncService,
-			MessageMarshaller messageMarshaller) {
+					ProjectApplicationContextFactory db, IInternalSyncService syncService,
+					MessageMarshaller messageMarshaller) {
 		this.p = p;
 		this.ICSManager = icsManager;
 		this.db = db;
@@ -106,9 +106,9 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		return content.substring(begin, end);
 	}
 
-	@Override
-	@Transactional
-	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid, String content) {
+	@Override @Transactional
+	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
+					String content) {
 
 
 		String projectUUID = getProjectUUID(content);
@@ -121,8 +121,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 
 		log.debug("Message is for this project!");
 
-		String message = content.substring(BEGIN_PROJECT_UUID.length()
-				+ projectUUID.length() + END_PROJECT_UUID.length());
+		String message = content.substring(BEGIN_PROJECT_UUID.length() + projectUUID
+						.length() + END_PROJECT_UUID.length());
 		log.debug("Message content: \"" + message + "\"");
 
 		if (message.startsWith(POKE_MESSAGE)) {
@@ -135,8 +135,7 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 				syncService.startLogSync(p, user);
 			} catch (IllegalProtocolException e) {
 				// This should neeeeeeeeever happen
-				log
-						.fatal(
+				log.fatal(
 								"Received an unexpected IllegalProtocolException while trying to perform logsync",
 								e);
 			}
@@ -153,17 +152,16 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		if (message.startsWith(LOGENTRIES_MESSAGE)) {
 			log.info("Received serialized logentries from " + from_userid.getUserId());
 
-			String les = message.substring(LOGENTRIES_MESSAGE.length()
-					+ BEGIN_LOGENTRY.length(), message.length() - END_LOGENTRY.length());
+			String les = message.substring(LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY
+							.length(), message.length() - END_LOGENTRY.length());
 
-			List<LogEntry<? extends ILogable>> logEntries = this.messageMarshaller
-					.unpackLogEntries(les);
+			List<LogEntry<? extends ILogable>> logEntries =
+							this.messageMarshaller.unpackLogEntries(les);
 
 			for (LogEntry<? extends ILogable> entry : logEntries) {
 				try {
-					log.debug("Deserialized successfully, it is a "
-							+ entry.getLogAction() + " for object UUID "
-							+ entry.getObjectuuid());
+					log.debug("Deserialized successfully, it is a " + entry
+									.getLogAction() + " for object UUID " + entry.getObjectuuid());
 					db.getLogEntryDao(p).create(entry);
 				} catch (Throwable t) {
 					log.debug("Failed to deserialize and/or save", t);
@@ -186,9 +184,9 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			db.getNoteObjectDao(p).persist(no);
 			log.debug("calling other user: " + from_userid);
 			try {
-				p.getMessageService().getIcsManager().getTransferService(p).request(
-						new FileRequest("N" + uuid, false, from_userid),
-						cl.beganRequest(no));
+				p.getMessageService().getIcsManager().getTransferService(p)
+								.request(new FileRequest("N" + uuid, false, from_userid),
+												cl.beganRequest(no));
 			} catch (NotLoggedInException e) {
 				log.error("Not logged in");
 			}
@@ -202,9 +200,9 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			db.getFileObjectDao(p).persist(fo);
 			log.debug("calling other user: " + from_userid);
 			try {
-				p.getMessageService().getIcsManager().getTransferService(p).request(
-						new FileRequest("F" + relpath, false, from_userid),
-						cl.beganRequest(fo));
+				p.getMessageService().getIcsManager().getTransferService(p)
+								.request(new FileRequest("F" + relpath, false, from_userid),
+												cl.beganRequest(fo));
 			} catch (NotLoggedInException e) {
 				log.error("Not logged in");
 			}
@@ -214,8 +212,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 	@Override
 	public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
 		// TODO Auto-generated method stub
-		log.info("Online status of " + userid.getUserId() + " changed... (Project " + p
-				+ ")");
+		log.info("Online status of " + userid
+						.getUserId() + " changed... (Project " + p + ")");
 	}
 
 	public void loginHappened() {
@@ -229,30 +227,34 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 
 	public void logoutHappened() {
 		log.info("We logged out with project " + this.p);
-		// maybe this isn't needed.
+
 		try {
-			getICSManager().getTransferService(p).stopServing();
+			// only stop the transfer service if it exists.
+			if (getICSManager().hasTransferService(p)) {
+				getICSManager().getTransferService(p).stopServing();
+			}
 		} catch (NotLoggedInException e) {
 			// ignore
 		}
 	}
 
 	@Override public void connectionStateChanged(ConnectionState le, Exception ex) {
-		if(ConnectionState.LOGGED_IN == le) {
+		if (ConnectionState.LOGGED_IN == le) {
 			loginHappened();
-		}else if(ConnectionState.LOGGED_OUT == le) {
+		} else if (ConnectionState.LOGGED_OUT == le) {
 			logoutHappened();
 		}
 	}
 
 	private FileObject getFileObjectForRequest(String filerequest) {
-		if (!p.getProjectId().equals(
-				this.messageMarshaller.getProjectUUIDFromRequestMessage(filerequest))) {
+		if (!p.getProjectId()
+						.equals(this.messageMarshaller.getProjectUUIDFromRequestMessage(
+										filerequest))) {
 			log.debug("got request for a different project");
 			return null; // not our project
 		}
-		UUID leuuid = this.messageMarshaller
-				.getLogEntryUUIDFromRequestMessage(filerequest);
+		UUID leuuid =
+						this.messageMarshaller.getLogEntryUUIDFromRequestMessage(filerequest);
 		LogEntry<? extends ILogable> le;
 		try {
 			le = db.getLogEntryDao(p).get(leuuid);
@@ -344,11 +346,11 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			log.info("original file at " + origfile);
 			File tempfile = new File(getDeliveryDirectory(), req.getFileName());
 
-			FSService.writeFileStreamAbs(tempfile.getAbsolutePath(), FSService
-					.readFileStreamAbs(origfile.getAbsolutePath()));
+			FSService.writeFileStreamAbs(tempfile.getAbsolutePath(),
+							FSService.readFileStreamAbs(origfile.getAbsolutePath()));
 
 			log.info("we accept the request and provided the file at " + tempfile);
-			
+
 			return tempfile;
 		} catch (Exception e) {
 			log.warn("unexpected Exception", e);

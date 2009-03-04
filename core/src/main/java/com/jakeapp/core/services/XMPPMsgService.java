@@ -12,7 +12,8 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
- * Implementation of the MessageService for the XMPP Messaging Protocol
+ * Implementation of the MessageService for the XMPP Messaging Protocol.
+ * One per User.
  */
 public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 
