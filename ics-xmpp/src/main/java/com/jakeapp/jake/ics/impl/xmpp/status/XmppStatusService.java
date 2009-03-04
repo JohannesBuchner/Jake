@@ -196,9 +196,12 @@ public class XmppStatusService implements IStatusService {
 	 * @param state
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
-		for (ILoginStateListener lsl : lsll) {
-			lsl.connectionStateChanged(state, null);
-		}
+		if (lsll.size()>0) {
+			//HACK to counter ConcurrentModificationException
+			for (ILoginStateListener lsl : new LinkedList<ILoginStateListener>(lsll)) {
+				lsl.connectionStateChanged(state,null);
+			}
+		}	
 	}
 
 	@Override
