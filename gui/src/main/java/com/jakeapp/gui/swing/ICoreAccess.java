@@ -525,7 +525,7 @@ public interface ICoreAccess {
 	 * @return
 	 * @throws PeopleOperationFailedException raised if the operations fails.
 	 */
-	public List<UserInfo> getUser(Project project)
+	public List<UserInfo> getAllProjectMembers(Project project)
 					throws PeopleOperationFailedException;
 
 	/**

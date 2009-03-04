@@ -54,7 +54,7 @@ public class PeopleListModel extends AbstractListModel
 		if(!JakeMainApp.isCoreInitialized()) return;
 
 		try {
-			this.people = JakeMainApp.getCore().getUser(getProject());
+			this.people = JakeMainApp.getCore().getAllProjectMembers(getProject());
 		} catch (PeopleOperationFailedException e) {
 			this.people = new ArrayList<UserInfo>();
 			ExceptionUtilities.showError(e);

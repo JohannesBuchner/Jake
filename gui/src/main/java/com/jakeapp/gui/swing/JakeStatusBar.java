@@ -392,7 +392,7 @@ public class JakeStatusBar extends JakeGuiComponent
 				if (getProject() != null) {
 					int peopleCount;
 					try {
-						peopleCount = JakeMainApp.getCore().getUser(getProject()).size();
+						peopleCount = JakeMainApp.getCore().getAllProjectMembers(getProject()).size();
 					} catch (PeopleOperationFailedException e) {
 						peopleCount = 0;
 						ExceptionUtilities.showError(e);

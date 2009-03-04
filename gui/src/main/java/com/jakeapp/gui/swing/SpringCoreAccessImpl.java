@@ -509,7 +509,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 * @param project : project that should be evaluated
 	 * @return list of people in this project OR empty list.
 	 */
-	public List<UserInfo> getUser(Project project)
+	public List<UserInfo> getAllProjectMembers(Project project)
 					throws PeopleOperationFailedException {
 		log.info("getUser from project " + project);
 
