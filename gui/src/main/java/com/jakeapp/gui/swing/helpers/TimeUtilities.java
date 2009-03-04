@@ -12,12 +12,12 @@ public class TimeUtilities {
 	private static final Logger log = Logger.getLogger(TimeUtilities.class);
 
 	// Date & Time constants - just in case they change anytime soon ;)
-	public static int SECOND = 1;
-	public static int MINUTE = 60 * SECOND;
-	public static int HOUR = 60 * MINUTE;
-	public static int DAY = 24 * HOUR;
-	public static int MONTH = 30 * DAY;
-	public static int YEAR = 365 * MONTH;
+	public final static int SECOND = 1;
+	public final static int MINUTE = 60 * SECOND;
+	public final static int HOUR = 60 * MINUTE;
+	public final static int DAY = 24 * HOUR;
+	public final static int MONTH = 30 * DAY;
+	public final static int YEAR = 365 * MONTH;
 
 	/**
 	 * Makes a fancy relative time description from a date object (e.g.

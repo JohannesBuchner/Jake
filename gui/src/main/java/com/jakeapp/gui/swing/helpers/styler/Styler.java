@@ -14,7 +14,7 @@ public interface Styler {
 	 *
 	 * @param btn
 	 */
-	public void MakeWhiteRecessedButton(JButton btn);
+	public void makeWhiteRecessedButton(JButton btn);
 
 	/**
 	 * Styles the Toolbar Buttons depending on the PF

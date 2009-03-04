@@ -10,6 +10,7 @@ import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 import java.util.Collection;
 import java.util.List;
@@ -163,13 +164,13 @@ public interface IFrontendService {
 	 * Logs a Messageservice in and sets the password
 	 * @param session
 	 * @param service
-	 * @param password new password to be stored, or null to use the stored one. 
-	 * @param rememberPassword 
+	 * @param password new password to be stored, or null to use the stored one.
+	 * @param rememberPassword
 	 * @return
-	 * @internally throws Exception 
+	 * @internally throws Exception
 	 */
 	AvailableLaterObject<Boolean> login(String session, MsgService service, String password,
-			boolean rememberPassword);
+			boolean rememberPassword, final ILoginStateListener loginListener);
 
 
 	/**
@@ -177,8 +178,9 @@ public interface IFrontendService {
 	 * @param session
 	 * @param service
 	 * @return
-	 * @internally throws Exception 
+	 * @internally throws Exception
 	 */
-	AvailableLaterObject<Boolean> login(String session, MsgService service);
+	AvailableLaterObject<Boolean> login(String session, MsgService service,
+					final ILoginStateListener loginListener);
 
 }

@@ -1,11 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
@@ -19,8 +13,16 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFa
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import org.apache.log4j.Logger;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
+/**
+ * fixme: damn, document your classes! this's all so fuckin' bogus
+ */
 public class FailoverICSManager implements ICSManager {
 
 	private static final boolean SOCKETS_ENABLED = false;

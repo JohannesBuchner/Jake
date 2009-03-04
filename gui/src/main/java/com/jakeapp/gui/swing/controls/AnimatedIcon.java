@@ -16,11 +16,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -154,7 +151,7 @@ public class AnimatedIcon implements Icon {
     }
     
     /** Object to encapsulate an area on a component to be repainted. */
-    private class RepaintArea {
+    private static class RepaintArea {
         public int x, y, w, h;
         public Component component;
         private int hashCode;

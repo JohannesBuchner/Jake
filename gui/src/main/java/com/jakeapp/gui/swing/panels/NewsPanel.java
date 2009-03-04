@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.panels;
 
-import com.explodingpixels.macwidgets.SourceListControlBar;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.InvitePeopleAction;
@@ -15,7 +14,6 @@ import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;

@@ -1,6 +1,7 @@
 package com.jakeapp.jake.ics.msgservice;
 
 import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -61,6 +62,9 @@ public interface IMsgService {
 	 */
 	public void registerReceiveMessageListener(IMessageReceiveListener receiveListener);
 
+
+	public void registerLoginStateListener(ILoginStateListener loginListener);
+
 	/**
 	 * get a MsgService that can only send and receive from the UserIds in
 	 * {@link IUsersService}
@@ -74,4 +78,7 @@ public interface IMsgService {
 	 * 	previously registered callback.
 	 */
 	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener);
+
+
+	public void unRegisterLoginStateListener(ILoginStateListener loginListener);
 }

@@ -102,7 +102,7 @@ public class ActiveTasks extends JXPanel {
 		}
 	}
 
-	private class TaskListCellRenderer extends DefaultListCellRenderer {
+	private static class TaskListCellRenderer extends DefaultListCellRenderer {
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 						// value to display

@@ -20,6 +20,7 @@ import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 import java.io.File;
 import java.util.Date;
@@ -73,10 +74,11 @@ public interface ICoreAccess {
 	 *                         If password is null it is tried to authenticate without password.
 	 * @param rememberPassword Indicates if the password should be stored with the
 	 *                         service credentials that will be generated.
+	 * @param connectionListener
 	 * @return An object reporting the progress of the login
 	 */
 	AvailableLaterObject<Boolean> login(MsgService service, String password,
-					boolean rememberPassword);
+					boolean rememberPassword, ILoginStateListener connectionListener);
 
 
 	/******************* User functions ********************/

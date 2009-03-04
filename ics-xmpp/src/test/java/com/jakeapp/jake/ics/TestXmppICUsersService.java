@@ -1,18 +1,5 @@
 package com.jakeapp.jake.ics;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -24,6 +11,17 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
 import com.jakeapp.jake.ics.users.IUsersService;
 import com.jakeapp.jake.test.XmppTestEnvironment;
+import junit.framework.Assert;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppICUsersService {
@@ -56,8 +54,8 @@ public class TestXmppICUsersService {
 		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
-		Assert.assertTrue(this.ics.getStatusService().login(testUser1,
-				testUser1Passwd));
+		this.ics.getStatusService().login(testUser1,
+				testUser1Passwd);
 	}
 
 	@After
@@ -118,8 +116,8 @@ public class TestXmppICUsersService {
 					}
 				});
 		this.ics2 = new XmppICService(testnamespace, testgroupname);
-		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd));
+		this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd);
 		this.ics.getUsersService().requestOnlineNotification(testUser2);
 		Assert.assertTrue(s.tryAcquire(5, TimeUnit.SECONDS));
 	}

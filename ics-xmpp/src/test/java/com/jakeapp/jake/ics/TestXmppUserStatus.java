@@ -45,7 +45,7 @@ public class TestXmppUserStatus {
 		XmppTestEnvironment.assureUserIdExistsAndConnect(offlineUserId, testUser1Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
-		Assert.assertTrue(ics.getStatusService().login(shortUserid1, testUser1Passwd));
+		ics.getStatusService().login(shortUserid1, testUser1Passwd);
 		// }
 	}
 
@@ -72,5 +72,4 @@ public class TestXmppUserStatus {
 	 * Assert.assertFalse(ics.getStatusService().isLoggedIn(offlineUserId));
 	 * Assert.assertTrue(ics.getStatusService().isLoggedIn(onlineUserId)); }
 	 */
-
 }

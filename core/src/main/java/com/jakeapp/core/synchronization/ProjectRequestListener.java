@@ -1,41 +1,37 @@
 package com.jakeapp.core.synchronization;
 
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.services.ICSManager;
+import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
-import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAFileException;
-import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
-import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
-import com.jakeapp.jake.ics.status.ILoginStateListener;
+import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
-import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.test.FSTestCommons;
-import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.services.ICSManager;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
-import org.springframework.transaction.annotation.Transactional;
+import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
+import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import junit.framework.Assert;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.UUID;
 import java.util.List;
-
-import junit.framework.Assert;
+import java.util.UUID;
 
 public class ProjectRequestListener implements IMessageReceiveListener,
 		IOnlineStatusListener, ILoginStateListener, IncomingTransferListener,
@@ -56,7 +52,6 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 	private static final String NEW_FILE = "<newfile/>";
 
 	private static final String POKE_MESSAGE = "<poke/>"; // dup
-
 
 	private static final String NEW_NOTE = "<newnote/>";
 
@@ -223,7 +218,6 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 				+ ")");
 	}
 
-	@Override
 	public void loginHappened() {
 		log.info("We logged in with project " + this.p);
 		try {
@@ -233,13 +227,21 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		}
 	}
 
-	@Override
 	public void logoutHappened() {
 		log.info("We logged out with project " + this.p);
 		// maybe this isn't needed.
 		try {
 			getICSManager().getTransferService(p).stopServing();
 		} catch (NotLoggedInException e) {
+			// ignore
+		}
+	}
+
+	@Override public void connectionStateChanged(ConnectionState le) {
+		if(ConnectionState.LOGGED_IN == le) {
+			loginHappened();
+		}else if(ConnectionState.LOGGED_OUT == le) {
+			logoutHappened();
 		}
 	}
 

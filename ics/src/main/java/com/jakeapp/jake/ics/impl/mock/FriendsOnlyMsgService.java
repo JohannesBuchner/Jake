@@ -4,6 +4,7 @@
 package com.jakeapp.jake.ics.impl.mock;
 
 import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -12,6 +13,9 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.users.IUsersService;
 
+/**
+ * FIXME: document this!!
+ */
 public class FriendsOnlyMsgService implements IMsgService {
 
 	private IUsersService users;
@@ -34,6 +38,9 @@ public class FriendsOnlyMsgService implements IMsgService {
 		new FriendsOnlyReceiveFilter(receiveListener, this.users);
 	}
 
+	@Override public void registerLoginStateListener(ILoginStateListener loginListener) {
+	}
+
 	@Override
 	public Boolean sendMessage(UserId to_userid, String content)
 			throws NetworkException, TimeoutException,
@@ -44,5 +51,8 @@ public class FriendsOnlyMsgService implements IMsgService {
 	@Override
 	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener) {
 		//empty implementation
+	}
+
+	@Override public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
 	}
 }

@@ -1,14 +1,11 @@
 package com.jakeapp.jake.ics;
 
-import junit.framework.TestCase;
-
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.impl.mock.MockICService;
 import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import junit.framework.TestCase;
 
 public class TestMockICStatusService extends TestCase {
 	private ICService ics = null; 
@@ -55,14 +52,14 @@ public class TestMockICStatusService extends TestCase {
 			fail();
 		}catch (NoSuchUseridException e) {
 		}
-		assertTrue(ics.getStatusService().login(shortUserid1, shortUserid1.getUserId()));
+		ics.getStatusService().login(shortUserid1, shortUserid1.getUserId());
 		assertTrue(ics.getStatusService().isLoggedIn(shortUserid1));
 		assertFalse(ics.getStatusService().isLoggedIn(offlineUserId));
 		assertTrue(ics.getStatusService().isLoggedIn(onlineUserId));
 		ics.getStatusService().logout();
 		assertFalse(ics.getStatusService().isLoggedIn());
 		
-		assertTrue(ics.getStatusService().login(offlineUserId, offlineUserId.getUserId()));
+		ics.getStatusService().login(offlineUserId, offlineUserId.getUserId());
 		ics.getStatusService().logout();
 	}
 	
@@ -91,7 +88,7 @@ public class TestMockICStatusService extends TestCase {
 		};
 		
 		ics.getMsgService().registerReceiveMessageListener(mymsglistener);
-		assertTrue(ics.getStatusService().login(shortUserid1, shortUserid1.getUserId()));
+		ics.getStatusService().login(shortUserid1, shortUserid1.getUserId());
 		ics.getMsgService().sendMessage(shortUserid1, "hello I");
 		ics.getMsgService().sendMessage(new MockUserId("bar@host"), "hello you!");
 		ics.getMsgService().sendMessage(new MockUserId("baz@host"), "What's up?");

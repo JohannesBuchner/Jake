@@ -13,8 +13,10 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -31,7 +33,6 @@ public class EventCore {
 	private final ProjectsChangeListener projectsChangeListener =
 					new ProjectsChangeListener();
 
-	private final List<ConnectionStatus> connectionStatus;
 	private final List<ProjectChanged> projectChanged;
 	private final Stack<ProjectChanged.ProjectChangedEvent> projectEvents =
 					new Stack<ProjectChanged.ProjectChangedEvent>();
@@ -56,13 +57,28 @@ public class EventCore {
 	private final List<TaskChanged> taskChangedListeners =
 					new ArrayList<TaskChanged>();
 
+	private final List<ILoginStateListener> loginStateListeners =
+					new ArrayList<ILoginStateListener>();
+
+	// forward this event into our gui thread
+	private final ILoginStateListener loginStateListener = new ILoginStateListener() {
+		@Override public void connectionStateChanged(final ConnectionState le) {
+			Runnable runner = new Runnable() {
+				@Override public void run() {
+					for (ILoginStateListener lsl : loginStateListeners) {
+						lsl.connectionStateChanged(le);
+					}
+				}
+			};
+			SwingUtilities.invokeLater(runner);
+		}
+	};
+
 	static {
 		instance = new EventCore();
 	}
 
 	public EventCore() {
-		connectionStatus = new ArrayList<ConnectionStatus>();
-		//registrationStatus = new ArrayList<RegistrationStatus>();
 		projectChanged = new ArrayList<ProjectChanged>();
 		dataChanged = new ArrayList<DataChanged>();
 
@@ -115,21 +131,12 @@ public class EventCore {
 		}
 	}
 
-	public void addConnectionStatusCallbackListener(ConnectionStatus cb) {
-		connectionStatus.add(cb);
+	public void addConnectionStatusCallbackListener(ILoginStateListener cb) {
+		loginStateListeners.add(cb);
 	}
 
-	public void removeConnectionStatusCallbackListener(ConnectionStatus cb) {
-		connectionStatus.remove(cb);
-	}
-
-
-	public void fireConnectionStatus(ConnectionStatus.ConnectionStati state,
-					String str) {
-		log.trace("spead callback event...");
-		for (ConnectionStatus callback : connectionStatus) {
-			callback.setConnectionStatus(state, str);
-		}
+	public void removeConnectionStatusCallbackListener(ILoginStateListener cb) {
+		loginStateListeners.remove(cb);
 	}
 
 	public void addDataChangedCallbackListener(DataChanged cb) {
@@ -227,8 +234,7 @@ public class EventCore {
 		taskChangedListeners.remove(callback);
 	}
 
-	public void fireTasksChangedListener(IJakeTask task,
-					TaskChanged.TaskOps op) {
+	public void fireTasksChangedListener(IJakeTask task, TaskChanged.TaskOps op) {
 		for (TaskChanged callback : taskChangedListeners) {
 			switch (op) {
 				case Started:
@@ -241,6 +247,15 @@ public class EventCore {
 					callback.taskFinished(task);
 			}
 		}
+	}
+
+	/**
+	 * Returns the Login State Listener, that acts as the callback for the core.
+	 * If you want this event in the gui, register for it!
+	 * @return
+	 */
+	public ILoginStateListener getLoginStateListener() {
+		return loginStateListener;
 	}
 
 

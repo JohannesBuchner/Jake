@@ -32,7 +32,7 @@ public class MacStyler extends AbstractStyler {
 	}
 
 	@Override
-	public void MakeWhiteRecessedButton(JButton btn) {
+	public void makeWhiteRecessedButton(JButton btn) {
 		btn.setForeground(Color.WHITE);
 		btn.putClientProperty("JButton.buttonType", "recessed");
 	}

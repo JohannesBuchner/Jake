@@ -16,7 +16,7 @@ public interface IStatusService {
 	 * @throws NetworkException if the network connection is down
 	 * @throws TimeoutException if a timeout is received
 	 */
-	public Boolean login(UserId userid, String pw) throws NetworkException;
+	public void login(UserId userid, String pw) throws NetworkException;
 
 	/**
 	 * Logs out and disconnects from the used network service.
@@ -100,6 +100,6 @@ public interface IStatusService {
 	 *
 	 * @param lsl
 	 */
-	public void registerLoginStateListener(ILoginStateListener lsl);
+	public void addLoginStateListener(ILoginStateListener lsl);
 
 }

@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.controls;
 
+import com.jakeapp.gui.swing.JakeMainApp;
+
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -126,7 +128,7 @@ public class JXTrayIcon extends TrayIcon {
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				JakeMainApp.getApp().saveQuit();
 			}
 		});
 		m.add(exitItem);

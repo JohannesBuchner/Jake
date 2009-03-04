@@ -1,14 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
@@ -19,10 +10,19 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
-import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -92,7 +92,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
 	 *
 	 * @throws IllegalArgumentException
-	 * @see IFrontendService#authenticate(java.util.Map
 	 */
 	private void checkCredentials(Map<String, String> credentials)
 			  throws IllegalArgumentException, InvalidCredentialsException {
@@ -296,15 +295,18 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
-			final boolean rememberPassword) {
+			final boolean rememberPassword, final ILoginStateListener loginListener) {
 
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override
-			public Boolean calculate() throws NetworkException  {
+			public Boolean calculate() throws NetworkException {
 				boolean result;
 				checkSession(session);
-				
+
+				// register login event prior logging in (we don't wanna miss the party!)
+				service.getMainIcs().getMsgService().registerLoginStateListener(loginListener);
+
 				/* login */
 				if (password == null) {
 					result = service.login();
@@ -314,11 +316,12 @@ public class FrontendServiceImpl implements IFrontendService {
 				ProjectInvitationHandler invitesHandler = new ProjectInvitationHandler(service);
 				invitesHandler
 						.setInvitationListener(FrontendServiceImpl.this.internalInvitationListener);
+
 				service.getMainIcs().getMsgService().registerReceiveMessageListener(invitesHandler);
 				return result;
 			}
 		};
-		
+
 		return ret;
 	}
 
@@ -326,7 +329,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session,
-			final MsgService service) {
-		return login(session, service, null, true);
+			final MsgService service, final ILoginStateListener loginListener) {
+		return login(session, service, null, true, loginListener);
 	}
 }

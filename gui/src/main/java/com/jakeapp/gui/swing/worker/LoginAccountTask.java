@@ -4,6 +4,7 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,16 +20,18 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 	private MsgService msg;
 	private String password;
 	private boolean rememberPassword;
+	private ILoginStateListener loginListener;
 
-	public LoginAccountTask(MsgService msg) {
-		this(msg, null, false);
+	public LoginAccountTask(MsgService msg, ILoginStateListener loginListener) {
+		this(msg, null, false, loginListener);
 	}
 
 	public LoginAccountTask(MsgService msg, String password,
-					boolean rememberPassword) {
+					boolean rememberPassword, ILoginStateListener loginListener) {
 		this.msg = msg;
 		this.password = password;
 		this.rememberPassword = rememberPassword;
+		this.loginListener = loginListener;
 
 		log.debug("Login Account Worker: " + msg + " pw: " + password + " remember: " + rememberPassword);
 	}
@@ -36,7 +39,7 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 	@Override
 	protected AvailableLaterObject<Boolean> calculateFunction() {
 		//JakeStatusBar.showMessage("Logging in...", 1);
-		return JakeMainApp.getCore().login(msg, password, rememberPassword);
+		return JakeMainApp.getCore().login(msg, password, rememberPassword, loginListener);
 	}
 
 	@Override

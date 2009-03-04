@@ -5,11 +5,17 @@ import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectDeleteLogEntry;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
+import com.jakeapp.core.domain.logentries.JakeObjectDeleteLogEntry;
+import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -28,24 +34,15 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
-import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This class should be active whenever you want to use files <p/> On

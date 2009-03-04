@@ -17,7 +17,7 @@ import java.awt.*;
 public abstract class AbstractStyler implements Styler {
 
 	@Override
-	public void MakeWhiteRecessedButton(JButton btn) {
+	public void makeWhiteRecessedButton(JButton btn) {
 	}
 
 	public void styleToolbarButton(JToggleButton jToggleButton) {

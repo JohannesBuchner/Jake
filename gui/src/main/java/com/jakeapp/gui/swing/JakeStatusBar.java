@@ -4,21 +4,26 @@ import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.services.VisibilityStatus;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.MsgServiceHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -33,7 +38,7 @@ import java.util.concurrent.ExecutionException;
  * As you see, Statusbar is very curious about ALL the events going on...
  */
 public class JakeStatusBar extends JakeGuiComponent
-				implements ConnectionStatus, ProjectSelectionChanged, ProjectChanged,
+				implements ILoginStateListener, ProjectSelectionChanged, ProjectChanged,
 				ProjectViewChanged, ContextViewChanged, DataChanged, PropertyChanged,
 				TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
@@ -44,6 +49,8 @@ public class JakeStatusBar extends JakeGuiComponent
 	private TriAreaComponent statusBar;
 	private JakeMainView.ProjectView projectViewPanel;
 	private JakeMainView.ContextPanelEnum contextViewPanel;
+
+	private ConnectionState lastConnectionState = ConnectionState.LOGGED_OUT;
 
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
@@ -86,6 +93,11 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	@Override public void taskFinished(IJakeTask task) {
 		updateTaskDisplay();
+	}
+
+	@Override public void connectionStateChanged(ConnectionState le) {
+		lastConnectionState = le;
+		updateConnectionDisplay();
 	}
 
 	enum IconEnum {
@@ -245,11 +257,6 @@ public class JakeStatusBar extends JakeGuiComponent
 		return statusBar.getComponent();
 	}
 
-
-	public void setConnectionStatus(ConnectionStati status, String msg) {
-		updateConnectionDisplay();
-	}
-
 	/**
 	 * Updates the connection Button with new credentals informations.
 	 */
@@ -257,20 +264,19 @@ public class JakeStatusBar extends JakeGuiComponent
 		String msg;
 		IconEnum icon = IconEnum.Offline;
 
-		// TODO: neet online/offline info!
 		if (JakeMainApp.getMsgService() != null) {
 			String user = JakeMainApp.getMsgService().getUserId().getUserId();
-			VisibilityStatus visibility =
-							JakeMainApp.getMsgService().getVisibilityStatus();
-			msg = visibility + " - " + user;
+
+			msg = lastConnectionState + " - " + user;
 			icon = IconEnum.LoggingIn;
 
-			if (visibility == VisibilityStatus.ONLINE) {
+			if (lastConnectionState == ConnectionState.LOGGED_IN) {
 				icon = IconEnum.Online;
 			}
-
+			connectionButton.setVisible(true);
 		} else {
 			msg = getResourceMap().getString("statusLoginNotSignedIn");
+			connectionButton.setVisible(false);
 		}
 
 		connectionButton.setText(msg);
@@ -417,11 +423,13 @@ public class JakeStatusBar extends JakeGuiComponent
 			if (JakeMainApp.getMsgService() != null) {
 				// user chosen
 
+				/*
 				if (MsgServiceHelper.isCurrentUserLoggedIn()) {
 					statusLabel.setText(getResourceMap().getString("showLoggedInSuccess"));
 				} else {
 					statusLabel.setText(getResourceMap().getString("showLoggedInFailed"));
 				}
+				*/
 			} else {
 				statusLabel.setText("");
 			}
@@ -508,7 +516,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		//showProgressAnimation(progress > 0 && progress < 100);
 	}
 
-	// TODO: should use tasks framework
+
 	public static void showMessage(final String msg) {
 		Runnable runner = new Runnable() {
 			@Override

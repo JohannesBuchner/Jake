@@ -8,7 +8,14 @@ package com.jakeapp.jake.ics.status;
  */
 public interface ILoginStateListener {
 
-	public void loginHappened();
+	public enum ConnectionState {
+		LOGGED_OUT, CONNECTING, LOGGED_IN, RECONNECTING
+	}
 
-	public void logoutHappened();
+	/**
+	 * Fired when the connection state changes.
+	 * 
+	 * @param le
+	 */
+	public void connectionStateChanged(ConnectionState le);
 }

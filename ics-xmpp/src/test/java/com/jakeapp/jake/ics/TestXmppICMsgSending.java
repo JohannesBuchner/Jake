@@ -1,22 +1,20 @@
 package com.jakeapp.jake.ics;
 
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-import local.test.Counter;
-
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.test.XmppTestEnvironment;
+import junit.framework.Assert;
+import local.test.Counter;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 @RunWith(PrerequisiteAwareClassRunner.class)
 public class TestXmppICMsgSending {
@@ -49,8 +47,8 @@ public class TestXmppICMsgSending {
 		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
-		Assert.assertTrue(this.ics.getStatusService().login(testUser1,
-				testUser1Passwd));
+		this.ics.getStatusService().login(testUser1,
+				testUser1Passwd);
 		this.ics2 = new XmppICService(testnamespace, testgroupname);
 	}
 
@@ -95,8 +93,8 @@ public class TestXmppICMsgSending {
 					}
 
 				});
-		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd));
+		this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd);
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent2);
 		Assert.assertTrue(c.await(2, 7, TimeUnit.SECONDS));
 	}
@@ -109,8 +107,8 @@ public class TestXmppICMsgSending {
 		final String testmsgcontent3 = testmsgcontent2 + " >> yeah, srsly!";
 		final Counter c = new Counter();
 
-		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd));
+		this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd);
 		this.ics2.getMsgService().registerReceiveMessageListener(
 				new IMessageReceiveListener() {
 
@@ -168,8 +166,8 @@ public class TestXmppICMsgSending {
 		final String testmsgcontent = "<msg>hello</msg>";
 		final Counter c = new Counter();
 
-		Assert.assertTrue(this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd));
+		this.ics2.getStatusService().login(testUser2,
+				testUser2Passwd);
 		this.ics2.getMsgService().registerReceiveMessageListener(
 				new IMessageReceiveListener() {
 

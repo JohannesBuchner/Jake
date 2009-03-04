@@ -1,24 +1,15 @@
 package com.jakeapp.core.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
-import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.msgservice.IMsgService;
 
 /**
  * Implementation of the MessageService for the XMPP Messaging Protocol
@@ -47,16 +38,12 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	}
 
 	@Override
-	protected boolean doLogin() throws NetworkException {
+	protected void doLogin() throws NetworkException {
 		String pass = this.getServiceCredentials().getPlainTextPassword();
 		log.debug("got credentials: " + this.getServiceCredentials().getUserId()
 				+ " pwl: " + pass.length());
-		boolean success = this.mainIcs.getStatusService().login(this.getMainUserId(),
+		this.mainIcs.getStatusService().login(this.getMainUserId(),
 				pass);
-
-		log.debug("login success: " + success);
-
-		return success;
 	}
 
 	@Override

@@ -1,7 +1,11 @@
 package com.jakeapp.jake.ics.impl.mock;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.*;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.msgservice.IObjectReceiveListener;
@@ -107,7 +111,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	/**
 	 * Login is successful, if userid == pw
 	 */
-	public Boolean login(UserId userid, String pw) throws NetworkException {
+	public void login(UserId userid, String pw) throws NetworkException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (loggedinstatus)
@@ -116,19 +120,23 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 			myuserid = userid;
 			loggedinstatus = true;
 			log.info("login was successful!!! set loggedinstatus: " + loggedinstatus);
-			for (ILoginStateListener lsl : lsll) {
-				lsl.loginHappened();
-			}
-			return true;
-		} else
-			return false;
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_IN);
+		}
 	}
 
 	public void logout() {
 		myuserid = null;
 		loggedinstatus = false;
+		fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_IN);
+	}
+
+	/**
+	 * Fires the new Connection state to all registered listeners.
+	 * @param state
+	 */
+	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		for (ILoginStateListener lsl : lsll) {
-			lsl.logoutHappened();
+			lsl.connectionStateChanged(state);
 		}
 	}
 
@@ -142,6 +150,10 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	public void registerReceiveMessageListener(IMessageReceiveListener rl) {
 		log.info("Message receive listener registered");
 		msgreceivers.add(rl);
+	}
+
+	@Override public void registerLoginStateListener(ILoginStateListener loginListener) {
+  	// fixme: not mocked
 	}
 
 	public void registerReceiveObjectListener(IObjectReceiveListener rl) {
@@ -268,7 +280,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	}
 
 	@Override
-	public void registerLoginStateListener(ILoginStateListener lsl) {
+	public void addLoginStateListener(ILoginStateListener lsl) {
 		lsll.add(lsl);
 	}
 
@@ -276,6 +288,10 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	public void unRegisterReceiveMessageListener(IMessageReceiveListener receiveListener) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
+		// fixme: not mocked
 	}
 
 	@Override

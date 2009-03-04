@@ -6,7 +6,6 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
-import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
@@ -47,6 +46,7 @@ import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -881,10 +881,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.removeModificationListener(fileModificationListener);
 	}
 
-	private void handleProjectNotLoaded(ProjectNotLoadedException e) {
-		log.error("got ProjectNotLoadedException with message " + e.getMessage());
-		e.printStackTrace();
-	}
 
 	@Override
 	public long getLocalFileSize(FileObject fo) {
@@ -952,10 +948,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Boolean> login(MsgService service, String password,
-					boolean rememberPassword) {
+					boolean rememberPassword, ILoginStateListener connectionListener) {
 
 		return this.getFrontendService()
-						.login(getSessionId(), service, password, rememberPassword);
+						.login(getSessionId(), service, password, rememberPassword, connectionListener);
 	}
 
 

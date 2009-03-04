@@ -12,14 +12,14 @@
  */
 package com.jakeapp.gui.swing.controls;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
-import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,11 +27,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
-import javax.swing.RootPaneContainer;
-import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
 
 /** Provide a method for consistently augmenting the appearance of a given 
  * component by painting something on it <i>after</i> the component itself
@@ -192,7 +187,7 @@ public abstract class AbstractComponentDecorator {
                 layerRoot = layeredChild;
                 layerRoot.addPropertyChangeListener(listener);
             }
-            lp.add(painter, new Integer(layer), position);
+            lp.add(painter, layer, position);
         }
         else {
             // Always detach when the target component's window is null
@@ -504,7 +499,7 @@ public abstract class AbstractComponentDecorator {
                 return 0;
             int value = c.getComponentCount();
             try {
-                nComponents.set(c, new Integer(0));
+                nComponents.set(c, 0);
             }
             catch(Exception e) {
                 return c.getComponentCount();
@@ -515,9 +510,10 @@ public abstract class AbstractComponentDecorator {
         private void restoreChildren(Container c, int count) {
             if (c != null) {
                 try {
-                    nComponents.set(c, new Integer(count));
+                    nComponents.set(c, count);
                 }
                 catch(Exception e) {
+									// ignore
                 }        
             }
         }

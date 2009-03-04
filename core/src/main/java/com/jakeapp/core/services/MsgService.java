@@ -86,8 +86,6 @@ public abstract class MsgService<T extends UserId> {
 	 * @throws TimeoutException
 	 */
 	public final boolean login() throws NetworkException {
-		boolean result;
-
 		log.debug("calling plain login");
 
 		if (this.getServiceCredentials() == null)
@@ -97,12 +95,11 @@ public abstract class MsgService<T extends UserId> {
 			return false;
 
 		log.debug("before doLogin: " + this.getVisibilityStatus());
-		result = this.doLogin();
+	  this.doLogin();
 		log.debug("plain login has happened " + this.getVisibilityStatus());
 		updateActiveSubsystems();
 
-
-		return result;
+		return true;
 	}
 
 	@Transactional
@@ -167,7 +164,7 @@ public abstract class MsgService<T extends UserId> {
 
 	protected abstract boolean doCredentialsCheck();
 
-	protected abstract boolean doLogin() throws NetworkException;
+	protected abstract void doLogin() throws NetworkException;
 
 	/**
 	 * idempotent
@@ -259,6 +256,10 @@ public abstract class MsgService<T extends UserId> {
 		MsgService.serviceCredentialsDao = serviceCredentialsDao;
 	}
 
+	/**
+	 * Get the main ICService (Namespace "Jake")
+	 * @return
+	 */
 	abstract protected ICService getMainIcs();
 
 	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
@@ -296,7 +297,7 @@ public abstract class MsgService<T extends UserId> {
 			ics.getStatusService()
 							.login(user, this.getServiceCredentials().getPlainTextPassword());
 			ics.getStatusService()
-							.registerLoginStateListener(listeners.loginStateListener);
+							.addLoginStateListener(listeners.loginStateListener);
 		} else {
 			if (ics.getStatusService().isLoggedIn()) {
 				log.debug("logging out " + ics.getStatusService().getUserid());

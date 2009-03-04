@@ -1,22 +1,5 @@
 package com.jakeapp.jake.ics;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-import local.test.Tracer;
-
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -26,7 +9,6 @@ import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
-import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
@@ -36,6 +18,21 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFa
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.test.XmppTestEnvironment;
+import junit.framework.Assert;
+import local.test.Tracer;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
@@ -82,9 +79,8 @@ public class TestFailoverTransfers {
 		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.user1 = new XmppICService(testnamespace, testgroupname);
-		Assert
-				.assertTrue(this.user1.getStatusService().login(testUser1,
-						testUser1Passwd));
+		this.user1.getStatusService().login(testUser1,
+						testUser1Passwd);
 
 		this.xmppTransfer1 = this.user1.getTransferMethodFactory();
 		Assert.assertNotNull(this.xmppTransfer1);
@@ -92,9 +88,8 @@ public class TestFailoverTransfers {
 		this.failover1 = new FailoverCapableFileTransferService();
 
 		this.user2 = new XmppICService(testnamespace, testgroupname);
-		Assert
-				.assertTrue(this.user2.getStatusService().login(testUser2,
-						testUser2Passwd));
+		this.user2.getStatusService().login(testUser2,
+						testUser2Passwd);
 		this.xmppTransfer2 = this.user2.getTransferMethodFactory();
 		Assert.assertNotNull(this.xmppTransfer2);
 		Assert.assertTrue(this.user2.getStatusService().isLoggedIn());

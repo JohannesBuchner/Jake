@@ -1,22 +1,5 @@
 package com.jakeapp.jake.ics;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-import local.test.Tracer;
-
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -34,6 +17,21 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.test.XmppTestEnvironment;
+import junit.framework.Assert;
+import local.test.Tracer;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
@@ -74,9 +72,8 @@ public class TestFiletransfers {
 		XmppTestEnvironment.assureUserIdExists(testUser2, testUser2Passwd);
 
 		this.user1 = new XmppICService(testnamespace, testgroupname);
-		Assert
-				.assertTrue(this.user1.getStatusService().login(testUser1,
-						testUser1Passwd));
+		this.user1.getStatusService().login(testUser1,
+						testUser1Passwd);
 
 		ITransferMethodFactory t1 = this.user1.getTransferMethodFactory();
 		Assert.assertNotNull(t1);
@@ -84,9 +81,8 @@ public class TestFiletransfers {
 		this.transfers1 = t1.getTransferMethod(this.user1.getMsgService(), testUser1);
 
 		this.user2 = new XmppICService(testnamespace, testgroupname);
-		Assert
-				.assertTrue(this.user2.getStatusService().login(testUser2,
-						testUser2Passwd));
+		this.user2.getStatusService().login(testUser2,
+						testUser2Passwd);
 		ITransferMethodFactory t2 = this.user2.getTransferMethodFactory();
 		Assert.assertNotNull(t2);
 		Assert.assertTrue(this.user2.getStatusService().isLoggedIn());

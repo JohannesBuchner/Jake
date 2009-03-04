@@ -1,7 +1,11 @@
 package com.jakeapp.jake.ics.impl.xmpp.status;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.*;
+import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
+import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.impl.xmpp.helper.RosterPresenceChangeListener;
@@ -9,6 +13,7 @@ import com.jakeapp.jake.ics.impl.xmpp.helper.XmppCommons;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IStatusService;
 import org.apache.log4j.Logger;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
@@ -26,6 +31,8 @@ public class XmppStatusService implements IStatusService {
 	private XmppConnectionData con;
 
 	private List<ILoginStateListener> lsll = new LinkedList<ILoginStateListener>();
+
+	private ConnectionListener connectionListener = new XmppConnectionListener();
 
 	public XmppStatusService(XmppConnectionData connection) {
 		this.con = connection;
@@ -118,35 +125,36 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public Boolean login(UserId userid, String pw) throws NetworkException {
+	public void login(UserId userid, String pw) throws NetworkException {
 		XmppUserId xuid = new XmppUserId(userid);
 		if (!xuid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
+
 		if (isLoggedIn())
 			logout();
+
 		this.con.setConnection(null);
 
 		XMPPConnection connection;
+		fireConnectionStateChanged(ILoginStateListener.ConnectionState.CONNECTING);
+
 		try {
 			connection = XmppCommons.login(xuid.getUserId(), pw, xuid.getResource());
+			connection.addConnectionListener(connectionListener);
 		} catch (IOException e) {
 			log.debug("connecting failed");
 			throw new NetworkException(e);
 		}
-		if (connection == null) {
-			return false;
-		}
+
 		connection.sendPacket(new Presence(Presence.Type.available));
 		this.con.setConnection(connection);
 		addDiscoveryFeature();
 		registerForEvents();
 
 		getRoster().setSubscriptionMode(Roster.SubscriptionMode.accept_all);
-		for (ILoginStateListener lsl : lsll) {
-			lsl.loginHappened();
-		}
-		return true;
+		fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_IN);
 	}
+
 
 	private void registerForEvents() throws NotLoggedInException {
 		getRoster().addRosterListener(new RosterPresenceChangeListener() {
@@ -167,7 +175,6 @@ public class XmppStatusService implements IStatusService {
 				} else {
 					// skip. We don't want notifications after we logout.
 				}
-
 			}
 		});
 	}
@@ -176,9 +183,21 @@ public class XmppStatusService implements IStatusService {
 	@Override
 	public void logout() throws NetworkException {
 		XmppCommons.logout(this.con.getConnection());
+		if(this.con.getConnection() != null) {
+			this.con.getConnection().removeConnectionListener(connectionListener);
+		}
 		this.con.setConnection(null);
+		fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT);
+	}
+
+
+	/**
+	 * Fires the new Connection state to all registered listeners.
+	 * @param state
+	 */
+	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		for (ILoginStateListener lsl : lsll) {
-			lsl.logoutHappened();
+			lsl.connectionStateChanged(state);
 		}
 	}
 
@@ -204,8 +223,34 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public void registerLoginStateListener(ILoginStateListener lsl) {
+	public void addLoginStateListener(ILoginStateListener lsl) {
+		log.debug("Adding LoginStateListener");
 		lsll.add(lsl);
 	}
 
+
+	/**
+	 * Inner class to translate smack's connection events to our common interface
+	 */
+	private class XmppConnectionListener implements ConnectionListener {
+		@Override public void connectionClosed() {
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT);
+		}
+
+		@Override public void connectionClosedOnError(Exception e) {
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT);
+		}
+
+		@Override public void reconnectingIn(int i) {
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.RECONNECTING);
+		}
+
+		@Override public void reconnectionSuccessful() {
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_IN);
+		}
+
+		@Override public void reconnectionFailed(Exception e) {
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT);
+		}
+	}
 }

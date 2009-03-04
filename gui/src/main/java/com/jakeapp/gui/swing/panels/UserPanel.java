@@ -11,7 +11,6 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.callbacks.ConnectionStatus;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.callbacks.PropertyChanged;
@@ -53,11 +52,10 @@ import java.util.EnumSet;
 /**
  * The Userpanel creates accouts for Jake.
  *
- * @author: studpete
+ * @author studpete
  */
 public class UserPanel extends JXPanel
-				implements RegistrationStatus, ConnectionStatus,
-				CoreChanged, PropertyChanged {
+				implements RegistrationStatus, CoreChanged, PropertyChanged {
 	private ResourceMap resourceMap;
 	private static final Logger log = Logger.getLogger(UserPanel.class);
 
@@ -127,7 +125,7 @@ public class UserPanel extends JXPanel
 		JakeMainApp.getInstance().addCoreChangedListener(this);
 
 		// register the connection & reg status callback!
-		EventCore.get().addConnectionStatusCallbackListener(this);
+		//EventCore.get().addConnectionStatusCallbackListener(this);
 		//EventCore.get().addRegistrationStatusCallbackListener(this);
 
 		// device which panel to show!
@@ -427,7 +425,7 @@ public class UserPanel extends JXPanel
 					JakeMainApp.setMsgService(msg);
 					JakeExecutor.exec(new LoginAccountTask(msg,
 									loginUserDataPanel.getPassword(),
-									loginUserDataPanel.isSetRememberPassword()));
+									loginUserDataPanel.isSetRememberPassword(), EventCore.get().getLoginStateListener()));
 
 				} catch (Exception e) {
 					log.warn(e);
@@ -867,6 +865,7 @@ public class UserPanel extends JXPanel
 	}
 
 
+	/*
 	public void setConnectionStatus(final ConnectionStati status, final String msg) {
 		log.info("got connection status update: " + status);
 
@@ -885,7 +884,7 @@ public class UserPanel extends JXPanel
 		};
 
 		SwingUtilities.invokeLater(runner);
-	}
+	}*/
 
 	/**
 	 * Create User Panel
@@ -912,11 +911,11 @@ public class UserPanel extends JXPanel
 						JakeMainApp.setMsgService(msg);
 
 						if (isMagicToken()) {
-							JakeExecutor.exec(new LoginAccountTask(msg));
+							JakeExecutor.exec(new LoginAccountTask(msg, EventCore.get().getLoginStateListener()));
 						} else {
 							JakeExecutor.exec(new LoginAccountTask(msg,
 											getPassword(),
-											isRememberPassword()));
+											isRememberPassword(), EventCore.get().getLoginStateListener()));
 						}
 
 						updateView();

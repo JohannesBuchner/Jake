@@ -1,19 +1,18 @@
 package com.jakeapp.jake.ics;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
+import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 public class SimpleFakeMessageExchanger {
@@ -29,6 +28,9 @@ public class SimpleFakeMessageExchanger {
 		return spitter;
 	}
 
+	/**
+	 * FIXME: document this!
+	 */
 	private class Spitter implements IMsgService {
 
 		private List<IMessageReceiveListener> listener = new LinkedList<IMessageReceiveListener>();
@@ -43,6 +45,9 @@ public class SimpleFakeMessageExchanger {
 		public void registerReceiveMessageListener(IMessageReceiveListener receiveListener) {
 			log.debug("registering MessageReceiveListener on " + user);
 			listener.add(receiveListener);
+		}
+
+		@Override public void registerLoginStateListener(ILoginStateListener loginListener) {
 		}
 
 		@Override
@@ -77,6 +82,9 @@ public class SimpleFakeMessageExchanger {
 				IMessageReceiveListener receiveListener) {
 			// TODO Auto-generated method stub
 			
+		}
+
+		@Override public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
 		}
 	}
 }

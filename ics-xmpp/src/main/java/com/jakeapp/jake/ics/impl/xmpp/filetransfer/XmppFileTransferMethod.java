@@ -43,7 +43,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 // TODO: timeouts for negotiations
 public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveListener,
-		ILoginStateListener {
+				ILoginStateListener {
 
 
 	private static Logger log = Logger.getLogger(XmppFileTransferMethod.class);
@@ -80,7 +80,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		this.connection = con.getConnection();
 		this.negotiationService = negotiationService;
 		this.negotiationService.registerReceiveMessageListener(this);
-		this.con.getService().getStatusService().registerLoginStateListener(this);
+		this.con.getService().getStatusService().addLoginStateListener(this);
 		startReceiving();
 	}
 
@@ -312,12 +312,11 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		});
 	}
 
-	@Override
-	public void loginHappened() {
-		this.startReceiving();
-	}
 
 	@Override
-	public void logoutHappened() {
+	public void connectionStateChanged(ConnectionState le) {
+		if(ConnectionState.LOGGED_IN == le) {
+			this.startReceiving();
+		}
 	}
 }
