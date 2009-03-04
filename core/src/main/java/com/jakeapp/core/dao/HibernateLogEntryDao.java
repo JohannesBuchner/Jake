@@ -521,7 +521,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				people.get(who).remove(whom);
 			}
 			else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
-				people.get(who).remove(whom);
+				people.get(who).add(whom);
 			}
 		}
 		return people;
