@@ -547,17 +547,21 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 * @return the ProjectMember added
 	 */
 	private UserId addUserToProject(Project project, UserId userId) {
-		
+		log.debug("adding " + userId + " to " + project);
 			try {
+				TrustState currentState = this.getLogEntryDao(project).trustsHow(project.getUserId(), userId);
+				log.debug("current state is "+currentState);
 				//check if this person is already a trusted project member
-				if (this.getLogEntryDao(project).trustsHow(project.getUserId(), userId)==TrustState.NO_TRUST) {
+				if (currentState==TrustState.NO_TRUST) {
 					//add logentry stating that we now trust this member
 					this.setTrust(project, userId, TrustState.TRUST);
 				}
 			} catch (IllegalArgumentException e) {
 				//empty handling, as only a non-fulfilled precondition of this method was violated.
+				log.debug(e);
 			} catch (IllegalAccessException e) {
 				//empty handling, as only a non-fulfilled precondition of this method was violated.
+				log.debug(e);
 			}
 		return userId;
 	}
@@ -568,11 +572,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void setTrust(Project project, UserId userId, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException {
 		LogEntry<UserId> le;
+		
+		log.debug("setting trust for " + userId + " to " + trust); 
 
 		//check preconditions
 		if (project==null) throw new IllegalArgumentException("Project may not be null");
 		else if (userId==null)  throw new IllegalArgumentException("UserId may not be null");
 		else if (project.getUserId()==null) throw new IllegalAccessException("Project must have a valid UserId");
+		
+		log.debug("passed preconditions-check."); 
 		
 		//determine action
 		if (trust == TrustState.NO_TRUST) {
