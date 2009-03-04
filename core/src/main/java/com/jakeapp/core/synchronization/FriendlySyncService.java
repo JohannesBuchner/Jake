@@ -41,6 +41,7 @@ public abstract class FriendlySyncService implements IFriendlySyncService {
 	 */
 	public void poke(Project project) throws NoSuchProjectException {
 		for (UserId pm : getProjectMembers(project)) {
+			if(project.getUserId().equals(pm)) continue;
 			this.poke(project, pm);
 		}
 	}
