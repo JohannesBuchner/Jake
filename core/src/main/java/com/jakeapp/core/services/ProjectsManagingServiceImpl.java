@@ -326,7 +326,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (project == null)
 			throw new IllegalArgumentException("project is null!");
 		if (!project.isOpen() || project.isStarted()) {
-			log.warn("Attemted to start a project that's not open/already started: "
+			log.warn("Attemted to start a project that's not open or that is already started: "
 					+ project);
 			return false;
 		}
@@ -340,6 +340,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			this.setActive(project);
 			this.getProjectDao().update(project);
 		} catch (Exception e) {
+			log.debug("starting failed",e);
 			throw new ProjectException(e);
 		}
 		return true;

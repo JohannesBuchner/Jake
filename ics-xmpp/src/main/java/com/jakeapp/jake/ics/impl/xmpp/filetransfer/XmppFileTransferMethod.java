@@ -264,6 +264,21 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 			log.debug(myUserId + ": not logged in");
 			return;
 		}
+		
+		/*
+		 * The connection may have been closed or may not be open yet.
+		 * In this case, adding a FileTransferListener would cause an evil
+		 * exception. To prevent this, we must make sure, that there is a running
+		 * connection to the server.
+		 */
+		if (!this.connection.isConnected())
+			try {
+				log.debug("we are not connected...connect now!");
+				this.connection.connect();
+			} catch (XMPPException e1) {
+				log.warn(e1);
+			}
+		
 		// Create the file transfer manager
 		final FileTransferManager manager = new FileTransferManager(this.connection);
 
