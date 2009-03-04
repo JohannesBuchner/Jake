@@ -27,6 +27,9 @@ import java.util.List;
 
 /**
  * The main class of the application.
+ *
+ * Configuration properties (Add to VM propertes)
+ *  -Dcom.jakeapp.gui.ignoresingleinstance=true  	  	Disable single instance checking
  */
 public class JakeMainApp extends SingleFrameApplication
 				implements ProjectSelectionChanged {
@@ -46,24 +49,27 @@ public class JakeMainApp extends SingleFrameApplication
 	public JakeMainApp() {
 		app = this;
 
-		if (!ApplicationInstanceManager.registerInstance()) {
-			// instance already running.
-			log.error("Another instance of Jake is already running.  Exiting.");
-			System.exit(0);
+		if (System.getProperty("com.jakeapp.gui.ignoresingleinstance") == null) {
+			if (!ApplicationInstanceManager.registerInstance()) {
+				// instance already running.
+				log.error("Another instance of Jake is already running.  Exiting.");
+				System.exit(0);
+			}
+
+			ApplicationInstanceManager
+							.setApplicationInstanceListener(new ApplicationInstanceListener() {
+
+								public void newInstanceCreated() {
+									log.info("New Jake instance detected, showing current!");
+
+									// User tried to load jake a second time.
+									// so open first instane!
+									JakeMainView.setMainWindowVisible(true);
+								}
+							});
 		}
-
-		ApplicationInstanceManager
-						.setApplicationInstanceListener(new ApplicationInstanceListener() {
-
-							public void newInstanceCreated() {
-								log.info("New Jake instance detected, showing current!");
-
-								// User tried to load jake a second time.
-								// so open first instane!
-								JakeMainView.setMainWindowVisible(true);
-							}
-						});
 	}
+
 
 	/**
 	 * At startup create and show the main frame of the application. (Called
@@ -89,6 +95,7 @@ public class JakeMainApp extends SingleFrameApplication
 	 *
 	 * @return the instance of JakeMock2App
 	 */
+
 	public static JakeMainApp getInstance() {
 		return Application.getInstance(JakeMainApp.class);
 	}
@@ -123,7 +130,7 @@ public class JakeMainApp extends SingleFrameApplication
 										"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 
 					} catch (Exception r) {
-						
+
 						// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
 						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					}
@@ -253,7 +260,8 @@ public class JakeMainApp extends SingleFrameApplication
 		getApp().msgService = msg;
 
 		// inform the event core for this change
-		EventCore.get().firePropertyChanged(PropertyChanged.Reason.MsgService, null, msg);
+		EventCore.get()
+						.firePropertyChanged(PropertyChanged.Reason.MsgService, null, msg);
 	}
 
 	/**
