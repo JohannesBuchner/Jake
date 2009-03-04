@@ -99,12 +99,7 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	@Override public void connectionStateChanged(ConnectionState le, Exception ex) {
 		lastConnectionState = le;
-
-		if (ex != null) {
-			lastConnectionMsg = ex.getMessage();
-		} else {
-			lastConnectionMsg = "";
-		}
+		lastConnectionMsg = ex != null ? ex.getMessage() : null;
 		updateConnectionDisplay();
 	}
 
@@ -432,7 +427,7 @@ public class JakeStatusBar extends JakeGuiComponent
 					}
 
 					// nobody there...
-					if (peopleCount == 0) {
+					if (peopleCount == 1) {
 						String aloneStr = getResourceMap().getString("projectAddPeopleToStart");
 						statusLabel.setText(aloneStr);
 					} else {
