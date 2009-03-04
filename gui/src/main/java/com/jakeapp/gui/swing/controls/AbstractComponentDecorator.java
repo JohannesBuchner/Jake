@@ -420,7 +420,7 @@ public abstract class AbstractComponentDecorator {
             setFocusable(false);
         }
         public boolean isShowing() {
-            return getComponent().isShowing();
+            return getComponent() != null && getComponent().isShowing();
         }
         public JComponent getComponent() {
             return AbstractComponentDecorator.this.getComponent();

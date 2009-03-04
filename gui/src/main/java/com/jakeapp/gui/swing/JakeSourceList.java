@@ -363,7 +363,7 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
     private static void setWaiting(JComponent c, boolean on) {
-			log.debug("SourceList-setWaiting: " + on);
+			log.trace("SourceList-setWaiting: " + on);
         WaitIndicator w = (WaitIndicator)c.getClientProperty("waiter");
         if (w == null) {
             if (on) {
