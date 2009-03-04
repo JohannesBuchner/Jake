@@ -45,14 +45,14 @@ public abstract class PeopleListAction extends ProjectAction {
     protected void actionOnSelectedPeople(TrustState trust) {
         // support multiselect
         for (Object oMember : getList().getSelectedValues()) {
-            UserId member = (UserId) oMember;
+            UserInfo member = (UserInfo) oMember;
 
             if (member == null) {
                 log.warn("Action TrustNoPeopleAction failed for " + oMember);
                 return;
             } else {
                 JakeMainApp.getCore().setTrustState(
-                        getProject(), member, trust);
+                        getProject(), member.getUser(), trust);
             }
         }
     }
