@@ -102,7 +102,7 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 	}
 
 	@Override
-	public void connectionStateChanged(ConnectionState le) {
+	public void connectionStateChanged(ConnectionState le, Exception ex) {
 		if (ConnectionState.LOGGED_IN == le) {
 			initialize();
 		} else if (ConnectionState.LOGGED_OUT == le) {
@@ -111,7 +111,7 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 
 		// forward event to gui
 		if(loginListener != null) {
-			loginListener.connectionStateChanged(le);
+			loginListener.connectionStateChanged(le, null);
 		}
 	}
 }

@@ -377,7 +377,7 @@ public class JakeCommander extends Commander {
 			}
 			try {
 				System.out.println("logging in ...");
-				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg));
+				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg, null));
 				if (result) {
 					System.out.println("logged in");
 				} else {

@@ -136,7 +136,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		for (ILoginStateListener lsl : lsll) {
-			lsl.connectionStateChanged(state);
+			lsl.connectionStateChanged(state, null);
 		}
 	}
 

@@ -26,8 +26,8 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 		this(msg, null, false, loginListener);
 	}
 
-	public LoginAccountTask(MsgService msg, String password,
-					boolean rememberPassword, ILoginStateListener loginListener) {
+	public LoginAccountTask(MsgService msg, String password, boolean rememberPassword,
+					ILoginStateListener loginListener) {
 		this.msg = msg;
 		this.password = password;
 		this.rememberPassword = rememberPassword;
@@ -39,14 +39,14 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 	@Override
 	protected AvailableLaterObject<Boolean> calculateFunction() {
 		//JakeStatusBar.showMessage("Logging in...", 1);
-		return JakeMainApp.getCore().login(msg, password, rememberPassword, loginListener);
+		return JakeMainApp.getCore()
+						.login(msg, password, rememberPassword, loginListener);
 	}
 
 	@Override
 	protected void done() {
 		super.done();
-		
-		//JakeStatusBar.showProgressAnimation(false);
+
 		try {
 			if (!this.get()) {
 				log.warn("Wrong User/Password");

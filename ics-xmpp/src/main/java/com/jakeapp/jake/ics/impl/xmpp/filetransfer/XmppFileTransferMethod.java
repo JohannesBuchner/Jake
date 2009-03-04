@@ -314,7 +314,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 
 
 	@Override
-	public void connectionStateChanged(ConnectionState le) {
+	public void connectionStateChanged(ConnectionState le, Exception ex) {
 		if(ConnectionState.LOGGED_IN == le) {
 			this.startReceiving();
 		}

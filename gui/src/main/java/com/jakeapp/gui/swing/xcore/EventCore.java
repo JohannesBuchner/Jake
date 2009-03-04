@@ -62,11 +62,12 @@ public class EventCore {
 
 	// forward this event into our gui thread
 	private final ILoginStateListener loginStateListener = new ILoginStateListener() {
-		@Override public void connectionStateChanged(final ConnectionState le) {
+		@Override public void connectionStateChanged(final ConnectionState le,
+						Exception ex) {
 			Runnable runner = new Runnable() {
 				@Override public void run() {
 					for (ILoginStateListener lsl : loginStateListeners) {
-						lsl.connectionStateChanged(le);
+						lsl.connectionStateChanged(le, null);
 					}
 				}
 			};

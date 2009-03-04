@@ -21,6 +21,7 @@ public class SwitchLoginProjectContextAction extends SwitchProjectContextAction 
 
 	@Override
 	public void updateAction() {
+		// fixme: this is a bug, userpanel has to many states, extract "your current user-state"
 		this.setEnabled(JakeMainView.getMainView().getContextViewPanel() != JakeMainView.ContextPanelEnum.Login);
 	}
 }

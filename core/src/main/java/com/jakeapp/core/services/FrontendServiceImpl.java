@@ -308,10 +308,15 @@ public class FrontendServiceImpl implements IFrontendService {
 				service.getMainIcs().getMsgService().registerLoginStateListener(loginListener);
 
 				/* login */
+				try {
 				if (password == null) {
 					result = service.login();
 				} else {
 					result = service.login(password, rememberPassword);
+				}
+				}catch(NetworkException ex) {
+					loginListener.connectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT, ex);
+					throw ex;
 				}
 				ProjectInvitationHandler invitesHandler = new ProjectInvitationHandler(service);
 				invitesHandler

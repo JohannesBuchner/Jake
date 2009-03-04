@@ -51,6 +51,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	private JakeMainView.ContextPanelEnum contextViewPanel;
 
 	private ConnectionState lastConnectionState = ConnectionState.LOGGED_OUT;
+	private String lastConnectionMsg = "";
 
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
@@ -74,14 +75,15 @@ public class JakeStatusBar extends JakeGuiComponent
 	}
 
 	private void updateTaskDisplay() {
-		if(JakeExecutor.hasTasksRunning()) {
-		this.showProgressAnimation(true);
+		if (JakeExecutor.hasTasksRunning()) {
+			this.showProgressAnimation(true);
 			String moreTasks = "";
-			if(JakeExecutor.countTasksRunning() > 1) {
+			if (JakeExecutor.countTasksRunning() > 1) {
 				moreTasks = String.format(" (%d)", JakeExecutor.countTasksRunning());
 			}
-		this.progressMsg.setText(JakeExecutor.getLatestTask().getClass().getSimpleName() + moreTasks);
-		}else {
+			this.progressMsg.setText(JakeExecutor.getLatestTask().getClass()
+							.getSimpleName() + moreTasks);
+		} else {
 			this.showProgressAnimation(false);
 			this.progressMsg.setText("");
 		}
@@ -95,8 +97,14 @@ public class JakeStatusBar extends JakeGuiComponent
 		updateTaskDisplay();
 	}
 
-	@Override public void connectionStateChanged(ConnectionState le) {
+	@Override public void connectionStateChanged(ConnectionState le, Exception ex) {
 		lastConnectionState = le;
+
+		if (ex != null) {
+			lastConnectionMsg = ex.getMessage();
+		} else {
+			lastConnectionMsg = "";
+		}
 		updateConnectionDisplay();
 	}
 
@@ -267,10 +275,11 @@ public class JakeStatusBar extends JakeGuiComponent
 		if (JakeMainApp.getMsgService() != null) {
 			String user = JakeMainApp.getMsgService().getUserId().getUserId();
 
-			msg = lastConnectionState + " - " + user;
-			icon = IconEnum.LoggingIn;
+			msg = getPrettyConnectionState() + " - " + user;
 
-			if (lastConnectionState == ConnectionState.LOGGED_IN) {
+			if (lastConnectionState == ConnectionState.CONNECTING) {
+				icon = IconEnum.LoggingIn;
+			} else if (lastConnectionState == ConnectionState.LOGGED_IN) {
 				icon = IconEnum.Online;
 			}
 			connectionButton.setVisible(true);
@@ -281,6 +290,23 @@ public class JakeStatusBar extends JakeGuiComponent
 
 		connectionButton.setText(msg);
 		connectionButton.setIcon(getConnectionIcon(icon));
+
+		connectionButton.setToolTipText(lastConnectionMsg);
+	}
+
+	private String getPrettyConnectionState() {
+		switch (lastConnectionState) {
+			case LOGGED_IN:
+				return "Connected";
+			case LOGGED_OUT:
+				return "Offline";
+			case CONNECTING:
+				return "Connecting";
+			case INVALID_CREDENTIALS:
+				return "Invalid User/Pass";
+			default:
+				return "Unknown Error";
+		}
 	}
 
 	/**
@@ -398,7 +424,8 @@ public class JakeStatusBar extends JakeGuiComponent
 				if (getProject() != null) {
 					int peopleCount;
 					try {
-						peopleCount = JakeMainApp.getCore().getAllProjectMembers(getProject()).size();
+						peopleCount =
+										JakeMainApp.getCore().getAllProjectMembers(getProject()).size();
 					} catch (PeopleOperationFailedException e) {
 						peopleCount = 0;
 						ExceptionUtilities.showError(e);

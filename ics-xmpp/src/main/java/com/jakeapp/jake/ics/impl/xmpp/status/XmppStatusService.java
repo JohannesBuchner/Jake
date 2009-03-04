@@ -197,7 +197,7 @@ public class XmppStatusService implements IStatusService {
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		for (ILoginStateListener lsl : lsll) {
-			lsl.connectionStateChanged(state);
+			lsl.connectionStateChanged(state, null);
 		}
 	}
 
@@ -242,7 +242,7 @@ public class XmppStatusService implements IStatusService {
 		}
 
 		@Override public void reconnectingIn(int i) {
-			fireConnectionStateChanged(ILoginStateListener.ConnectionState.RECONNECTING);
+			fireConnectionStateChanged(ILoginStateListener.ConnectionState.CONNECTING);
 		}
 
 		@Override public void reconnectionSuccessful() {

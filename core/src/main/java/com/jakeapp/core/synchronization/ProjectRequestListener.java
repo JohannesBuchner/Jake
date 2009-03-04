@@ -237,7 +237,7 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		}
 	}
 
-	@Override public void connectionStateChanged(ConnectionState le) {
+	@Override public void connectionStateChanged(ConnectionState le, Exception ex) {
 		if(ConnectionState.LOGGED_IN == le) {
 			loginHappened();
 		}else if(ConnectionState.LOGGED_OUT == le) {
