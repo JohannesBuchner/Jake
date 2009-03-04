@@ -211,7 +211,7 @@ public class ProjectRequestListener
 
 	@Override
 	public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
-		// TODO Auto-generated method stub
+
 		log.info("Online status of " + userid
 						.getUserId() + " changed... (Project " + p + ")");
 	}

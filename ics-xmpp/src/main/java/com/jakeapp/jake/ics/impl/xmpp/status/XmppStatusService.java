@@ -21,6 +21,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -205,8 +206,10 @@ public class XmppStatusService implements IStatusService {
 	 * @param state
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
-		if (lsll.size()>0) {
-			for (ILoginStateListener lsl : lsll) {
+		if (lsll.size() > 0) {
+			// we have to copy our current listeners cause e.g. XmppFileTransferMethod may
+			// registrate on our listener just as we are spreading the event...
+			for (ILoginStateListener lsl : new ArrayList<ILoginStateListener>(lsll)) {
 				lsl.connectionStateChanged(state,null);
 			}
 		}	
