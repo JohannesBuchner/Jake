@@ -75,7 +75,13 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	}
 
 	public static boolean isTaskRunning(Class aclass) {
-		return getInstance().runningTasks.containsKey(aclass.toString().hashCode());
+		for(IJakeTask task : getInstance().runningTasks.values()) {
+			if(task.getClass().equals(aclass)) {
+				return true;
+			}
+		}
+		//return getInstance().runningTasks.containsKey(aclass.toString().hashCode());
+		return false;
 	}
 
 	public static boolean hasTasksRunning() {

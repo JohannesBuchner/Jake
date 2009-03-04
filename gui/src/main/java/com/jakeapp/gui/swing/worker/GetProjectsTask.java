@@ -52,4 +52,9 @@ public class GetProjectsTask extends AbstractTask<List<Project>> {
 	public void error(Exception e) {
 		ExceptionUtilities.showError(e);
 	}
+
+	@Override
+	public int hashCode() {
+		return this.filter.hashCode() * super.hashCode();
+	}
 }

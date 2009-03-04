@@ -238,16 +238,15 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public void addLoginStateListener(ILoginStateListener lsl) {
-		log.debug("Adding LoginStateListener");
+		log.trace("Adding LoginStateListener");
 		lsll.add(lsl);
 	}
 
 	@Override
 	public void removeLoginStateListener(ILoginStateListener lsl) {
-		log.debug("Removing LoginStateListener");
+		log.trace("Removing LoginStateListener");
 		lsll.remove(lsl);
 	}
-
 
 
 	/**
