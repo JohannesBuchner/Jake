@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.actions;
 
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
@@ -8,12 +9,15 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.worker.AnnounceJakeObjectTask;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 import javax.swing.*;
 
 import org.apache.log4j.Logger;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 /**
  * Note Action that commits the selected notes. Batch enabled!
@@ -33,15 +37,23 @@ public class CommitNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		try {
+			/*
 			for (Attributed<NoteObject> attributedNote : this.getSelectedNotes()) {
 
 				JakeMainApp.getCore().announceJakeObject(attributedNote.getJakeObject(), null);
-			}
-			this.refreshNotesPanel();
-		} catch (FileOperationFailedException e1) {
-			ExceptionUtilities.showError(e1);
-		}
+			}*/
+			//this.refreshNotesPanel();
+			
+		JakeExecutor.exec(
+			new AnnounceJakeObjectTask(
+				new ArrayList<JakeObject>(
+					Attributed.castDownCollection(
+						Attributed.extract(this.getSelectedNotes())
+					)
+				),
+				null
+			)
+		);
 	}
 
 	@Override
@@ -54,11 +66,7 @@ public class CommitNoteAction extends NoteAction {
 					break;
 				}
 			}
-			if (isLocal) {
-				this.setEnabled(true);
-			} else {
-				this.setEnabled(false);
-			}
+			this.setEnabled(isLocal);
 		} else {
 			this.setEnabled(false);
 		}

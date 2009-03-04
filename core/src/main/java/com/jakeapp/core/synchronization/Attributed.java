@@ -1,5 +1,8 @@
 package com.jakeapp.core.synchronization;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
@@ -65,5 +68,48 @@ public class Attributed<T extends JakeObject> extends JakeObjectStatus {
 	public String toString() {
 		return getClass().getSimpleName() + "[" + getJakeObject() + "] "
 				+ super.toString();
+	}
+
+	/**
+	 * Transforms a Collection of attributed JakeObjects to a Collection of
+	 * plain JakeObjects
+	 * @param <T> a concrete JakeObject-subclass.
+	 * @param collection The collection to transform.
+	 * @return A copy of collection with exactly the same elements as collection,
+	 * or null, if collection was null.
+	 */
+	public static <T extends JakeObject> Collection<T> extract(Collection<Attributed<T>> collection) {
+		Collection<T> result;
+		
+		if (collection==null) return null;
+		
+		result = new ArrayList<T>();
+		
+		for (Attributed<T> attributed : collection)
+			result.add(attributed.getJakeObject());
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * TODO refactor - move method
+	 * Transforms a Collection of specialized JakeObjects to a Collection of
+	 * plain JakeObjects
+	 * @param <T> a concrete JakeObject-subclass.
+	 * @param collection The collection to transform.
+	 * @return A copy of collection with exactly the same elements as collection,
+	 * or null, if collection was null.
+	 */
+	public static <T extends JakeObject> Collection<JakeObject> castDownCollection(Collection<T> collection) {
+		Collection<JakeObject> result;
+		
+		if (collection==null) return null;
+		
+		result = new ArrayList<JakeObject>();
+		for (T jo : collection)
+			result.add(jo);
+		
+		return result;
 	}
 }

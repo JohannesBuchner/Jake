@@ -807,7 +807,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			throw new FileOperationFailedException(e);
 		}
 
-		return result.start();
+		return result;
 	}
 
 	@Override

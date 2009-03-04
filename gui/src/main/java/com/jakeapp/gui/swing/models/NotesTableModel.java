@@ -123,7 +123,6 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		}
 		log.debug("update done.");
 		
-		
 		//select the row that was previously selected
 		if (oldSelectionNote!=null) {
 			newSelection = 0;
@@ -134,9 +133,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 				}
 				newSelection++;
 			}
-				NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
 		}
-		
 
 		this.fireTableDataChanged();
 	}
