@@ -179,6 +179,19 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.notifyNoteSelectionListeners(new ArrayList<Attributed<NoteObject>>());
 		} else {
 			String text;
+			
+			//store old selected rows
+			//FIXME not needed, since there is a (user-unfriendly) SAVE-Button.
+			//to be fixed in a later version
+			/*
+			for (int i = e.getFirstIndex();i<=e.getLastIndex();i++) {
+				if (i!=this.getNotesTable().getSelectedRow()) {
+					//this row was just de-selected
+					this.notesTableModel.getNoteAtRow(i).getJakeObject().setContent(this.getNoteReaderText());
+					
+				}
+			}*/
+			//handle new selection
 			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow())
 							.getJakeObject().getContent();
 			this.noteReader.setText(text);

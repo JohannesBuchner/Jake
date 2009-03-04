@@ -6,6 +6,7 @@ import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
@@ -98,6 +99,18 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	}
 
 	public void updateNotes(Project p) {
+		//assumption: there is only one selected note
+		int oldSelection,newSelection;
+		Attributed<NoteObject> oldSelectionNote = null;
+		try {
+			oldSelection = NotesPanel.getInstance().getNotesTable().getSelectedRow();
+			oldSelectionNote = this.getNoteAtRow(oldSelection);
+		}
+		catch (Exception ex) {
+			//empty handling, since we might just initialize the whole panel/model
+		}
+
+		
 		// FIXME: cache better!?
 		log.debug("updating notes from core and merge with attributes...");
 		List<NoteObject> rawNotes = ObjectCache.get().getNotes(p);
@@ -109,6 +122,21 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 			}
 		}
 		log.debug("update done.");
+		
+		
+		//select the row that was previously selected
+		if (oldSelectionNote!=null) {
+			newSelection = 0;
+			for (Attributed<NoteObject> attributed : this.attributedNotes) {
+				if (attributed.getJakeObject().equals(oldSelectionNote)) {
+					//found the previously selected note!
+					NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
+				}
+				newSelection++;
+			}
+				NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
+		}
+		
 
 		this.fireTableDataChanged();
 	}
@@ -196,7 +224,8 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		return row;
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
+	@Override
+	public void dataChanged(EnumSet<Reason> reason, Project p) {
 		if (reason.contains(Reason.Notes)) {
 			updateNotes(p);
 		}
