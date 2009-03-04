@@ -299,6 +299,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		
 		projectChangeListeners.put(p.getProjectId(), cl);
 		runningProjects.put(p.getProjectId(), p);
+
+		 // registering the listener with the ics
+		getICS(p).getMsgService().registerReceiveMessageListener(prl);
 	}
 
 
@@ -309,6 +312,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		runningProjects.remove(p.getProjectId());
 		projectChangeListeners.remove(p.getProjectId());
 
+		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
+		if(prl != null)
+		{
+			getICS(p).getMsgService().unRegisterReceiveMessageListener(prl);
+			projectRequestListeners.remove(p.getProjectId());
+		}
 		try {
 			p.getMessageService().deactivateSubsystem(getICS(p));
 		} catch (TimeoutException e) {

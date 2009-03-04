@@ -40,6 +40,8 @@ public abstract class MsgService<T extends UserId> {
 
 	protected ICSManager icsManager;
 
+	protected ProtocolType protocolType;
+
 	static protected class ICData {
 
 		public ICData(String name, ILoginStateListener loginStateListener,
@@ -229,8 +231,8 @@ public abstract class MsgService<T extends UserId> {
 	 *
 	 * @return The <code>ProtocolType</code> of this MessageService
 	 */
-	public final ProtocolType getProtocolType() {
-		return this.getServiceCredentials().getProtocol();
+	public ProtocolType getProtocolType() {
+		return this.protocolType;
 	}
 
 	/**

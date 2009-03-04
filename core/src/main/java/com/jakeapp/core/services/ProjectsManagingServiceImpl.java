@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
-		IProjectsManagingService, IProjectInvitationListener {
+		IProjectsManagingService {
 
 	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
 
@@ -1116,30 +1116,4 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return this.invitationListener;
 	}
 
-	@Override
-	public void invited(UserId user, Project project) {
-		log.info("got invited to Project " + project + " by " + user);
-		// add Project to the global database
-		try {
-			project = this.getProjectDao().create(project);
-		} catch (InvalidProjectException e) {
-			log.error("Creating the project we were invited to failed: Project was invalid");
-			throw new IllegalArgumentException(e);
-		}
-		
-		if (this.invitationListener != null)
-			this.invitationListener.invited(user, project);
-	}
-
-	@Override
-	public void accepted(UserId user, Project p) {
-		if (this.invitationListener != null)
-			this.invitationListener.accepted(user, p);
-	}
-
-	@Override
-	public void rejected(UserId user, Project p) {
-		if (this.invitationListener != null)
-			this.invitationListener.rejected(user, p);
-	}
 }

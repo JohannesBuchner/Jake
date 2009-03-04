@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jakeapp.TestingConstants;
 import com.jakeapp.core.domain.Project;
@@ -129,37 +130,5 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 	}
 
 
-	@Test
-	public void testIncomingInviteMessage() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
-		MsgService msg = frontend.addAccount(sessionId, cred);
 
-		ProjectInvitationHandler pih = new ProjectInvitationHandler(msg);
-		pih.setInvitationListener((IProjectInvitationListener) pms);
-		pih.receivedMessage(new XmppUserId(
-				"testuser1@localhost/8a488840-cbdc-43d2-9c52-3bca07bcead2"),
-				"<invite/>8a488840-cbdc-43d2-9c52-3bca07bcead2testproject1");
-	}
-	@Test
-	public void testIncomingAcceptMessage() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
-		MsgService msg = frontend.addAccount(sessionId, cred);
-
-		ProjectInvitationHandler pih = new ProjectInvitationHandler(msg);
-		pih.setInvitationListener((IProjectInvitationListener) pms);
-		pih.receivedMessage(new XmppUserId(
-				"testuser1@localhost/8a488840-cbdc-43d2-9c52-3bca07bcead2"),
-				"<accept/>8a488840-cbdc-43d2-9c52-3bca07bcead2testproject1");
-	}
-	@Test
-	public void testIncomingRejectMessage() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
-		MsgService msg = frontend.addAccount(sessionId, cred);
-
-		ProjectInvitationHandler pih = new ProjectInvitationHandler(msg);
-		pih.setInvitationListener((IProjectInvitationListener) pms);
-		pih.receivedMessage(new XmppUserId(
-				"testuser1@localhost/8a488840-cbdc-43d2-9c52-3bca07bcead2"),
-				"<reject/>8a488840-cbdc-43d2-9c52-3bca07bcead2testproject1");
-	}
 }

@@ -24,7 +24,7 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	private XmppICService mainIcs = new XmppICService(namespace, "Jake");
 
 	public XMPPMsgService() {
-
+		this.protocolType = ProtocolType.XMPP;
 	}
 
 	@Override

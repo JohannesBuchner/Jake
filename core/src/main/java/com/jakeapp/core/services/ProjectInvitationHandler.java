@@ -8,7 +8,9 @@ import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -75,7 +77,10 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 				p.setInvitationState(InvitationState.INVITED);
 
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
-
+				
+//				user.setProtocolType(msg.getProtocolType());
+				user.setProtocolType(ProtocolType.XMPP);
+				
 				log.info("got invited to Project " + p + " by " + from_userid);
 				if (this.invitationListener == null) {
 					log.warn("no invitationListener registered! ignoring invite!");
@@ -92,6 +97,8 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 				Project p = getProject(innercontent, uuidstr);
 
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+				user.setProtocolType(msg.getProtocolType());
+
 
 				log.info("got invited to Project " + p + " by " + from_userid);
 				if (this.invitationListener == null) {
@@ -109,6 +116,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 					Project p = getProject(innercontent, uuidstr);
 
 					UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+					user.setProtocolType(msg.getProtocolType());
 
 					log.info("got invited to Project " + p + " by " + from_userid);
 					if (this.invitationListener == null) {
@@ -129,7 +137,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 		String projectname = innercontent.substring(uuidlen);
 
 		Project p = new Project(projectname, uuid, msg, null);
-		p.setRootPath("");
+//		p.setRootPath("");
 		p.setCredentials(msg.getServiceCredentials());
 		return p;
 	}
