@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -235,6 +237,52 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 		LogEntry<? extends ILogable> actual = logEntryDao.get(uuid, true);
 		Assert.assertEquals(projectLogEntry, actual);
 		
+	}
+	
+	/**
+	 * @return
+	 */
+	private void initProjectAndMembers(UserId projectMember,UserId invitedProjectMember) {
+		MsgService msgService = new XMPPMsgService();
+		File file = new File(System.getProperty("user.dir"));
+		Project testProject = new Project("test", UUID
+				.fromString("e0cd2322-6766-40a0-82c5-bcc0fe7a67c2"), msgService, file);
+		
+		//create Project
+		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, projectMember);
+		UUID uuid = new UUID(31,312);
+		projectLogEntry.setUuid(uuid);
+		logEntryDao.create(projectLogEntry);
+		
+		StartTrustingProjectMemberLogEntry trustingEntry =
+			new StartTrustingProjectMemberLogEntry(invitedProjectMember,projectMember);	
+		logEntryDao.create(trustingEntry);
+	}
+	
+	@Transactional
+	@Test
+	public void getCurrentProjectMembers_shouldReturnProjectUser() {
+		UserId projectMember = new UserId(ProtocolType.XMPP, "me");
+		UserId invitedProjectMember = new UserId(ProtocolType.XMPP, "you");
+		this.initProjectAndMembers(projectMember,invitedProjectMember);
+		
+		//get user
+		List<UserId> members = logEntryDao.getCurrentProjectMembers();
+		Assert.assertThat(members.size(), CoreMatchers.not(0));
+		Assert.assertThat(members,JUnitMatchers.hasItem(projectMember));
+	}
+
+	@Transactional
+	@Test
+	public void getCurrentProjectMembers_shouldReturnInvitedUser() {
+		UserId projectMember = new UserId(ProtocolType.XMPP, "projectFounder@projects.org");
+		UserId invitedProjectMember = new UserId(ProtocolType.XMPP, "jake@jake.at");
+		this.initProjectAndMembers(projectMember,invitedProjectMember);
+		
+		//get user
+		List<UserId> members = logEntryDao.getCurrentProjectMembers();
+		Assert.assertThat(members.size(), CoreMatchers.not(0));
+		Assert.assertThat(members, JUnitMatchers.hasItem(invitedProjectMember));
 	}
 
 }

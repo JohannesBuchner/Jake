@@ -1,11 +1,14 @@
 package com.jakeapp.core.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -445,29 +448,29 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		Map<UserId, List<UserId>> people = getTrustGraph();
 		pce = getProjectCreatedEntry();
 		UserId creator;
-		List<UserId> trusted = new LinkedList<UserId>();
+		SortedSet<UserId> trusted = new TreeSet<UserId>();
 
 		if (pce != null) {
 			creator = pce.getMember();
+			//creator MUST be the first item in the result
+			trusted.add(creator);
 
-			trusted = new LinkedList<UserId>();
+			//TODO? run more often, until trusted does not change any more?
 			for (UserId member : people.keySet()) {
-				if (people.get(member).size() > 0) {
-					// member isn't trusted by someone -> ok
-					trusted.add(member);
+				if (trusted.contains(member)) {
+					for (UserId trustedMember : people.get(member)) {
+						trusted.add(trustedMember);
+					}
 				}
-			}
-			if (!trusted.contains(creator)) {
-				trusted.add(creator);
 			}
 		}
 
-		return trusted;
+		log.debug("len="+trusted.size());
+		return new ArrayList<UserId>(trusted);
 	}
 
 	@Override
 	public boolean trusts(UserId a, UserId b) {
-		log.debug("check trust " + a + " against " + b);
 		List<UserId> trusted = getTrustGraph().get(a);
 		return trusted != null && trusted.contains(b);
 	}
@@ -503,7 +506,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		} else {
 			log.error("Invalid database: no ProjectCreatedEntry!");
 		}
-
+		
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<UserId> le : entries) {
 			UserId who = le.getMember();
@@ -511,7 +514,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			if (people.get(who) == null) {
 				people.put(who, new LinkedList<UserId>());
 			}
-			
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
 				people.get(who).add(whom);
 			}
@@ -535,7 +537,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		} else {
 			log.error("Invalid database: no ProjectCreatedEntry!");
 		}
-
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<UserId> le : entries) {
 			UserId who = le.getMember();
@@ -546,10 +547,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
 				people.get(who).put(whom, TrustState.TRUST);
 			}
-			if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
+			else if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
 				people.get(who).put(whom, TrustState.NO_TRUST);
 			}
-			if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
+			else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
 				people.get(who).put(whom, TrustState.AUTO_ADD_REMOVE);
 			}
 		}

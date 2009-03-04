@@ -11,7 +11,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 /**
  * Identifies a user
  */
-public class UserId implements ILogable {
+public class UserId implements ILogable, Comparable<UserId> {
 	private static final long serialVersionUID = 3356457614479149943L;
 
 	public UserId() {
@@ -87,5 +87,12 @@ public class UserId implements ILogable {
 		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(UserId o) {
+		if (this.equals(o)) return 0;
+		else if (o==null) return 1;
+		else return this.getUserId().compareTo(o.getUserId());
 	}
 }
