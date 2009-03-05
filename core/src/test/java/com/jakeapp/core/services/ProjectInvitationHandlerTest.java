@@ -14,12 +14,6 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 import java.util.UUID;
-import java.io.File;
-
-import org.mockito.Matchers.*;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.argThat;
-import junit.framework.Assert;
 
 
 public class ProjectInvitationHandlerTest {
@@ -52,7 +46,7 @@ public class ProjectInvitationHandlerTest {
 		project = new Project("testproject1", UUID.fromString("8a488840-cbdc-43d2-9c52-3bca07bcead2"), msg, null);
 
 		projectInvitationHandler = new ProjectInvitationHandler(msg);
-		projectInvitationHandler.setInvitationListener(projectInvitationListener);
+		projectInvitationHandler.registerInvitationListener(projectInvitationListener);
 	}
 
 	@After

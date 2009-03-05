@@ -53,8 +53,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private MsgServiceManager msgServiceFactory;
 
-	private IProjectInvitationListener invitationListener;
-
 	private ChangeListener changeListener;
 
 	// initialized projects are saved here.
@@ -1104,16 +1102,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	public IServiceCredentialsDao getServiceCredentialsDao() {
 		return serviceCredentialsDao;
-	}
-
-	@Override
-	public void setInvitationListener(IProjectInvitationListener il) {
-		log.debug("set invitation listener to " + il);
-		this.invitationListener = il;
-	}
-	
-	public IProjectInvitationListener getInvitationListener() {
-		return this.invitationListener;
 	}
 
 }

@@ -35,9 +35,6 @@ public class FrontendServiceImpl implements IFrontendService {
 	private IProjectsManagingService projectsManagingService;
 
 	@Injected
-	private IProjectInvitationListener internalInvitationListener;
-	
-	@Injected
 	private MsgServiceManager msgServiceFactory;
 
 	private Map<String, FrontendSession> sessions;
@@ -48,6 +45,12 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Injected
 	private IFriendlySyncService sync;
 
+
+	/*= new ProjectInvitationHandler(service);
+				projectInvitationHandler
+						.registerInvitationListener(FrontendServiceImpl.this.coreInvitationListener);
+	*/
+
 	/**
 	 * Constructor
 	 *
@@ -55,19 +58,16 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @param msgServiceFactory
 	 * @param sync
 	 * @param serviceCredentialsDao
-	 * @param invitationListener
 	 */
 	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
 										MsgServiceManager msgServiceFactory, IFriendlySyncService sync,
-										IServiceCredentialsDao serviceCredentialsDao,
-										IProjectInvitationListener invitationListener
+										IServiceCredentialsDao serviceCredentialsDao
 		) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.msgServiceFactory = msgServiceFactory;
 		this.sync = sync;
 		this.serviceCredentialsDao = serviceCredentialsDao;
-		this.internalInvitationListener = invitationListener;
 		this.setSessions(new HashMap<String, FrontendSession>());
 	}
 
@@ -325,11 +325,14 @@ public class FrontendServiceImpl implements IFrontendService {
 					loginListener.connectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT, ex);
 					throw ex;
 				}
-				ProjectInvitationHandler invitesHandler = new ProjectInvitationHandler(service);
-				invitesHandler
-						.setInvitationListener(FrontendServiceImpl.this.internalInvitationListener);
+//				projectInvitationHandler = new ProjectInvitationHandler(service);
+//				projectInvitationHandler
+//						.registerInvitationListener(FrontendServiceImpl.this.coreInvitationListener);
 
-				service.getMainIcs().getMsgService().registerReceiveMessageListener(invitesHandler);
+
+
+//				service.getMainIcs().getMsgService().registerReceiveMessageListener(projectInvitationHandler);
+
 				return result;
 			}
 		};

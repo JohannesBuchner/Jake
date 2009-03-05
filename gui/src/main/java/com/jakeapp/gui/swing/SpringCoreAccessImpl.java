@@ -107,8 +107,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		// also cache the pms
 		pms = frontendService.getProjectsManagingService(this.sessionId);
 
+
+
 		// set the invitation listener
-		pms.setInvitationListener(EventCore.get().getInvitiationListener());
+//		pms.setInvitationListener(EventCore.get().getInvitationListener());
 	}
 
 	@Override
@@ -971,6 +973,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public AvailableLaterObject<Boolean> login(MsgService service,
 					ServiceCredentials credentials, ILoginStateListener connectionListener) {
 
+		service.registerInvitationListener(EventCore.get().getInvitationListener()); // TODO DIRTY!
 		return this.getFrontendService()
 						.login(getSessionId(), service, credentials, connectionListener);
 	}

@@ -2,6 +2,8 @@ package com.jakeapp.core.services;
 
 import java.io.File;
 import java.util.UUID;
+import java.util.List;
+import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
@@ -19,7 +21,7 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 
 
-public class ProjectInvitationHandler implements IMessageReceiveListener {
+public class ProjectInvitationHandler implements IMessageReceiveListener, IInvitationHandler {
 
 	private static final Logger log = Logger.getLogger(ProjectInvitationHandler.class);
 
@@ -29,7 +31,8 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 
 	private static final String REJECTMSG = "<reject/>";
 
-	private IProjectInvitationListener invitationListener;
+	private List<IProjectInvitationListener> invitationListeners = new LinkedList<IProjectInvitationListener>();
+
 
 	private int uuidlen = UUID.randomUUID().toString().length();
 
@@ -41,27 +44,39 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 
 	/**
 	 * Invites a User to a project by sending a invite packet.
-	 * 
-	 * @param project
-	 *            The project to invite the user to.
-	 * @param userId
-	 *            The userId of the User. There is already a corresponding
-	 *            ProjectMember-Object stored in the project-local database.
+	 *
+	 * @param project The project to invite the user to.
+	 * @param userId  The userId of the User. There is already a corresponding
+	 *                ProjectMember-Object stored in the project-local database.
 	 * @return if the packet could be sent.
 	 */
 	public static boolean invite(Project project, UserId userId) {
 		ICService ics = project.getMessageService().getIcsManager().getICService(project);
 		com.jakeapp.jake.ics.UserId bu = project.getMessageService().getIcsManager()
 				.getBackendUserId(project, userId);
+
+		bu = new XmppUserId(userId.getUserId() + "/Jake");
+
+//		project.getMessageService().getMainIcs().getMsgService().
 		String msg = createInviteMessage(project);
 
 		try {
-			return ics.getMsgService().sendMessage(bu, msg);
+			boolean result = ics.getMsgService().sendMessage(bu, msg);
+			if (result) {
+				log.debug("message " + msg + " sent successfully");
+			} else
+				log.warn("message " + msg + " could not be sent!");
+
 		} catch (NotLoggedInException e) {
+			e.printStackTrace();
 		} catch (TimeoutException e) {
+			e.printStackTrace();
 		} catch (NoSuchUseridException e) {
+			e.printStackTrace();
 		} catch (NetworkException e) {
+			e.printStackTrace();
 		} catch (OtherUserOfflineException e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -77,20 +92,27 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 				p.setInvitationState(InvitationState.INVITED);
 
 				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
-				
+
 //				user.setProtocolType(msg.getProtocolType());
 				user.setProtocolType(ProtocolType.XMPP);
-				
+
 				log.info("got invited to Project " + p + " by " + from_userid);
-				if (this.invitationListener == null) {
-					log.warn("no invitationListener registered! ignoring invite!");
-				} else {
-					this.invitationListener.invited(user, p);
+				for (IProjectInvitationListener listener : invitationListeners) {
+					try
+					{
+					listener.invited(user, p);
+					}
+					catch (Exception e)
+					{
+						// TODO
+						e.printStackTrace();
+					}
 				}
+
 			} catch (Exception e) {
 				log.warn("error decoding invite message", e);
 			}
-		}else if (content.startsWith(ACCEPTMSG)) {
+		} else if (content.startsWith(ACCEPTMSG)) {
 			try {
 				String innercontent = content.substring(ACCEPTMSG.length());
 				String uuidstr = innercontent.substring(0, uuidlen);
@@ -101,33 +123,29 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 
 
 				log.info("got invited to Project " + p + " by " + from_userid);
-				if (this.invitationListener == null) {
-					log.warn("no invitationListener registered! ignoring invite!");
-				} else {
-					this.invitationListener.accepted(user, p);
+				for (IProjectInvitationListener listener : invitationListeners) {
+					listener.accepted(user, p);
 				}
 			} catch (Exception e) {
 				log.warn("error decoding accept message", e);
 			}
-		}else if (content.startsWith(REJECTMSG)) {
-				try {
-					String innercontent = content.substring(REJECTMSG.length());
-					String uuidstr = innercontent.substring(0, uuidlen);
-					Project p = getProject(innercontent, uuidstr);
+		} else if (content.startsWith(REJECTMSG)) {
+			try {
+				String innercontent = content.substring(REJECTMSG.length());
+				String uuidstr = innercontent.substring(0, uuidlen);
+				Project p = getProject(innercontent, uuidstr);
 
-					UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
-					user.setProtocolType(msg.getProtocolType());
+				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+				user.setProtocolType(msg.getProtocolType());
 
-					log.info("got invited to Project " + p + " by " + from_userid);
-					if (this.invitationListener == null) {
-						log.warn("no invitationListener registered! ignoring invite!");
-					} else {
-						this.invitationListener.rejected(user, p);
-					}
-				} catch (Exception e) {
-					log.warn("error decoding reject message", e);
+				log.info("got invited to Project " + p + " by " + from_userid);
+				for (IProjectInvitationListener listener : invitationListeners) {
+					listener.rejected(user, p);
 				}
-		}else{
+			} catch (Exception e) {
+				log.warn("error decoding reject message", e);
+			}
+		} else {
 			log.info("ignoring unknown message: " + content);
 		}
 	}
@@ -149,7 +167,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 	/**
 	 * Informs the person who invited us to a project that we accept the
 	 * invitation.
-	 * 
+	 *
 	 * @param project
 	 * @param inviter
 	 */
@@ -168,7 +186,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 	/**
 	 * Informs the person who invited us to a project that we reject the
 	 * invitation.
-	 * 
+	 *
 	 * @param project
 	 * @param inviter
 	 */
@@ -185,11 +203,23 @@ public class ProjectInvitationHandler implements IMessageReceiveListener {
 	}
 
 	/**
-	 *
 	 * @param il
 	 */
-	public void setInvitationListener(IProjectInvitationListener il) {
-		log.debug("set invitationlistener to " + il);
-		this.invitationListener = il;
+	public void registerInvitationListener(IProjectInvitationListener il) {
+		log.debug("add invitationlistener to " + il);
+		if(il != null){
+			this.invitationListeners.add(il);
+		}
+		else
+		{
+			log.debug("OOOOOOOOOOOH NO!");
+		}
+	}
+
+
+	public void unregisterInvitationListener(IProjectInvitationListener il)
+	{
+		if(il != null)
+			this.invitationListeners.remove(il);
 	}
 }

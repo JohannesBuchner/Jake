@@ -85,6 +85,7 @@ public class JakeCommander extends Commander {
 			pms = frontend.getProjectsManagingService(sessionId);
 			sync = frontend.getSyncService(sessionId);
 			
+			/*
 			pms.setInvitationListener(new IProjectInvitationListener(){
 
 				@Override
@@ -105,7 +106,7 @@ public class JakeCommander extends Commander {
 				}
 				
 			});
-			
+			*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

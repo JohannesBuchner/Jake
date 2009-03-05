@@ -37,6 +37,9 @@ public class MsgServiceManager {
 	@Injected
 	private ICSManager icsManager;
 
+	@Injected
+	private ProjectInvitationListener coreProjectInvitationListener;
+
 	public void setICSManager(ICSManager icsManager) {
 		this.icsManager = icsManager;
 	}
@@ -49,6 +52,14 @@ public class MsgServiceManager {
 		this.serviceCredentialsDao = serviceCredentialsDao;
 	}
 
+
+	public ProjectInvitationListener getCoreProjectInvitationListener() {
+		return coreProjectInvitationListener;
+	}
+
+	public void setCoreProjectInvitationListener(ProjectInvitationListener coreProjectInvitationListener) {
+		this.coreProjectInvitationListener = coreProjectInvitationListener;
+	}
 
 	/**
 	 * Creates a new MessageService if one for the specified credentials does
@@ -90,10 +101,13 @@ public class MsgServiceManager {
 			msgService = new XMPPMsgService();
 			msgService.setIcsManager(this.icsManager);
 			msgService.setServiceCredentials(credentials);
+			msgService.registerInvitationListener(coreProjectInvitationListener);
 			this.msgServices.put(credentials.getUuid(), msgService);
 			msgService.setUserId(createUserforMsgService(credentials));
 
 			log.debug("resulting MsgService is " + msgService);
+
+
 			return msgService;
 		} else {
 			log.warn("Currently unsupported protocol given");

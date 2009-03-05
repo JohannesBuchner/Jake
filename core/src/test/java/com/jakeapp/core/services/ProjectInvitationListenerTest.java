@@ -1,8 +1,5 @@
 package com.jakeapp.core.services;
 
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -22,7 +19,6 @@ import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import junit.framework.Assert;
 
 import java.util.UUID;
@@ -60,7 +56,7 @@ public class ProjectInvitationListenerTest {
 		project = new Project("testproject1", UUID.fromString("8a488840-cbdc-43d2-9c52-3bca07bcead2"), null, null);
 
 //		projectInvitationHandler = new ProjectInvitationHandler(msg);
-//		projectInvitationHandler.setInvitationListener(projectInvitationListener);
+//		projectInvitationHandler.registerInvitationListener(projectInvitationListener);
 	}
 
 	@After

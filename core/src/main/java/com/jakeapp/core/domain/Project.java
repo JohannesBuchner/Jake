@@ -132,13 +132,16 @@ public class Project implements ILogable {
 	 *
 	 * @return the root path of the project, i.e. the path of the project folder
 	 */
-	@Column(name = "ROOTPATH", nullable = false)
+	@Column(name = "ROOTPATH", nullable = true)
 	public String getRootPath() {
 		return this.rootPath != null ? this.rootPath.toString() : null;
 	}
 
 	public void setRootPath(final String rootPath) {
-		this.rootPath = new File(rootPath);
+		if(rootPath != null && !rootPath.isEmpty())
+			this.rootPath = new File(rootPath);
+		else
+			this.rootPath = null;
 	}
 
 	public void setRootPath(final File rootPath) {

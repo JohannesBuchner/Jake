@@ -218,7 +218,7 @@ public class JakeMenuBar extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EventCore.get().getInvitiationListener().invited(null, new Project());
+				EventCore.get().getInvitationListener().invited(null, new Project());
 			}
 		});
 		debugMenu.add(testInvitationDebugItem);

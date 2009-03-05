@@ -202,9 +202,7 @@ public class EventCore {
 		return projectsChangeListener;
 	}
 
-	public IProjectInvitationListener getInvitiationListener() {
-		return invitationListener;
-	}
+
 
 	public void fireNotesChanged(Project p) {
 		ObjectCache.get().updateNotes(p);
@@ -316,11 +314,20 @@ public class EventCore {
 
 
 	private class ProjectInvitationListener implements IProjectInvitationListener {
+
+		public ProjectInvitationListener(){
+			log.debug("Created ProjectInvitationListener in GUI ");
+		}
+
+
 		@Override public void invited(UserId user, Project p) {
 			log.debug("received invitation from " + user + " for project: " + p);
 
 			// save in InvitationManager
 			InvitationManager.get().saveInvitationSource(p, user);
+
+			// FIXME!
+			ObjectCache.get().updateProjects();
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
 							ProjectChanged.ProjectChangedEvent.Reason.Invited));
@@ -342,4 +349,10 @@ public class EventCore {
 							"User " + user + " rejected your Invitation to " + p);
 		}
 	}
+
+
+	public IProjectInvitationListener getInvitationListener() {
+		return invitationListener;
+	}
+
 }

@@ -42,6 +42,11 @@ public abstract class MsgService<T extends UserId> {
 
 	protected ProtocolType protocolType;
 
+	protected ProjectInvitationHandler invitationHandler = new ProjectInvitationHandler(this);
+	{
+		
+	}
+
 	static protected class ICData {
 
 		public ICData(String name, ILoginStateListener loginStateListener,
@@ -376,5 +381,14 @@ public abstract class MsgService<T extends UserId> {
 	public String toString() {
 		return this.getProtocolType() + " - user: " + getMainUserId() + " - " + this
 						.getVisibilityStatus();
+	}
+
+	public void registerInvitationListener(IProjectInvitationListener il) {
+		log.debug("Registering InvitationListener " + il);
+		this.invitationHandler.registerInvitationListener(il);
+	}
+
+	public void unregisterInvitationListener(IProjectInvitationListener il) {
+		invitationHandler.unregisterInvitationListener(il);
 	}
 }

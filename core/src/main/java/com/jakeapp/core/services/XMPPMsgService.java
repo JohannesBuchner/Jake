@@ -46,6 +46,8 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 		log.debug("got credentials: " + this.getServiceCredentials());
 		this.mainIcs.getStatusService().login(this.getMainUserId(),
 				pass, host, port);
+
+		this.mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
 	}
 
 	@Override
