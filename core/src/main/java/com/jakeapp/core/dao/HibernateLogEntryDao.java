@@ -89,7 +89,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				}
 				break;
 		}
-		sess().persist(logEntry);
+		try {
+			get(logEntry.getUuid(), true);
+			throw new IllegalArgumentException("UUID already exists!");
+		} catch (NoSuchLogEntryException e) {
+			sess().persist(logEntry);
+		}
 		debugDump();
 	}
 

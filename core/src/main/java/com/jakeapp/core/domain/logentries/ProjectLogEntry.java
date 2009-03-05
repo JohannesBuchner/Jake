@@ -39,7 +39,7 @@ public abstract class ProjectLogEntry extends LogEntry<Project> implements Seria
 
     public String toString()
     {
-        return "";
+        return "Project: " + this.project + " " + super.toString();
     }
 
 

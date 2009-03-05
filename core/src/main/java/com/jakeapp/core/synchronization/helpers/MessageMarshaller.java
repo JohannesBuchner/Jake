@@ -83,13 +83,15 @@ public class MessageMarshaller {
 	}
 
 	public List<LogEntry<? extends ILogable>> unpackLogEntries(String les) {
+		log.debug("unpacking string " + les);
 		List<LogEntry<? extends ILogable>> results = new ArrayList<LogEntry<? extends ILogable>>();
 		String[] logentries = les.split(END_LOGENTRY + BEGIN_LOGENTRY);
 
 		for (String l : logentries) {
 			try {
+				log.debug("unpacking substring " + l);
 				LogEntry<? extends ILogable> logentry = this.logEntrySerializer.deserialize(l);
-				log.debug("got logentry: " + logentry);
+				log.debug("got logentry: " + logentry.toString());
 				results.add(logentry);
 			} catch (Throwable t) {
 				log.warn("Failed to deserialize and/or save", t);

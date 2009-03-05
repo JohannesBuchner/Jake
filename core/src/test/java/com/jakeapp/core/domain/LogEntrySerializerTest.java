@@ -93,6 +93,28 @@ public class LogEntrySerializerTest {
 	}
 
 	@Test
+	public void testDeSerializeProjectCreatedLog() throws NoSuchProjectException, InvalidTagNameException {
+		String str =  "XXAAAXXX970eb9a8-5ff2-4ffb-84f2-2d98466c4715XXAAAXXX1235941151365XXAAAXXX0XXAAAXXX0XXAAAXXXjohn@localhostXXAAAXXXa501bc91-a0e4-4b5a-993e-ed13d23ff2fdXXAAAXXXjohnXXAAAXXX";
+		sampleProject1.setProjectId("970eb9a8-5ff2-4ffb-84f2-2d98466c4715");
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+		LogEntry result = serializer.deserialize(str);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectLogEntry);
+
+		ProjectLogEntry logEntry = (ProjectLogEntry) result;
+		System.out.println("resulting le: " + result.toString());
+		Assert.assertEquals(logEntry.getLogAction(), LogAction.PROJECT_CREATED);
+		Assert.assertEquals(logEntry.getTimestamp().getTime(), 1235941151365L);
+		Assert.assertNull(logEntry.getObjectuuid());
+		Assert.assertEquals("970eb9a8-5ff2-4ffb-84f2-2d98466c4715", logEntry.getProject().getProjectId());
+		Assert.assertEquals("a501bc91-a0e4-4b5a-993e-ed13d23ff2fd", logEntry.getUuid().toString());
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+	@Test
 	public void testProjectCreatedLogEntry_projectNotExisting() throws NoSuchProjectException, InvalidTagNameException {
 
 		ProjectCreatedLogEntry logEntry = new ProjectCreatedLogEntry(sampleProject1, sampleUserId1);
