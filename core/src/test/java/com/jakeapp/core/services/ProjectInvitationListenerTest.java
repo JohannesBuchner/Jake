@@ -123,6 +123,9 @@ public class ProjectInvitationListenerTest {
 		Assert.assertEquals(logEntry.getObjectuuid(), resultLogEntry.getObjectuuid());
 		Assert.assertEquals(logEntry.isProcessed(), resultLogEntry.isProcessed());
 
+		// TODO domdorn: check other logentries as well
+
+
 // this cannot be predicted!
 //		Assert.assertEquals(logEntry.getUuid(), resultLogEntry.getUuid());
 //		Assert.assertEquals(logEntry.getTimestamp(), resultLogEntry.getTimestamp());

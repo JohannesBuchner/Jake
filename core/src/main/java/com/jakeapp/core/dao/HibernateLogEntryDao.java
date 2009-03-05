@@ -510,7 +510,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			people.put(first.getMember(), new LinkedList<UserId>());
 		} else {
 			log.error("Invalid database: no ProjectCreatedEntry!");
-			throw new IllegalStateException("No ProjectCreatedEntry");
+//			throw new IllegalStateException("No ProjectCreatedEntry");
 		}
 		
 		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();

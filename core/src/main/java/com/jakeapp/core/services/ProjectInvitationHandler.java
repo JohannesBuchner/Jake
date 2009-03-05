@@ -155,6 +155,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 		String projectname = innercontent.substring(uuidlen);
 
 		Project p = new Project(projectname, uuid, msg, null);
+
 //		p.setRootPath("");
 		p.setCredentials(msg.getServiceCredentials());
 		return p;

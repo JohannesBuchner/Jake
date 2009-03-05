@@ -276,7 +276,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 									project,
 									ProjectChanged.ProjectChangedEvent.Reason.Joined));
-
+				  // TODO domdorn
+				 //getFrontendService().getProjectsManagingService(getSessionId()).joinProject(project, new File(path), null);
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {

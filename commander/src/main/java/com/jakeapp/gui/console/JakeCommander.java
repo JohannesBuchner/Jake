@@ -84,8 +84,11 @@ public class JakeCommander extends Commander {
 			sessionId = frontend.authenticate(new HashMap<String, String>(), new PrintingChangeListener());
 			pms = frontend.getProjectsManagingService(sessionId);
 			sync = frontend.getSyncService(sessionId);
-			
-			/*
+
+
+			/* // TODO InvitationListeners are now registered with the corresponding messageService directly.
+			// the core msgServiceManager automatically adds the correct one for the core. the gui adds its
+			 // own after login. do however you want it here..
 			pms.setInvitationListener(new IProjectInvitationListener(){
 
 				@Override
@@ -107,6 +110,7 @@ public class JakeCommander extends Commander {
 				
 			});
 			*/
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -43,6 +44,11 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " accepted ");
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(p,  user);
 		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
+		StartTrustingProjectMemberLogEntry logEntry_other = new StartTrustingProjectMemberLogEntry(user, p.getUserId());
+		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_other);
+
+		StartTrustingProjectMemberLogEntry logEntry_me = new StartTrustingProjectMemberLogEntry(p.getUserId(), p.getUserId());
+		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_me);
 
 //		if (this.invitationListener != null)
 //			this.invitationListener.accepted(user, p);
