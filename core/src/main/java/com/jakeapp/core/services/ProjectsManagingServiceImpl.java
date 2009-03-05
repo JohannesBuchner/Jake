@@ -139,6 +139,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	private void checkProjects(List<Project> result) {
+		List<Project> invalidProjects = new LinkedList<Project>();
 		for (Project p : result) {
 			log.debug("getProjectList gave us a project with credentials:"
 					+ p.getCredentials());
@@ -146,18 +147,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 				initProject(p);
 			} catch (NoSuchProjectException e) {
 				log.error("invalid project: ", e);
-				result.remove(p);
+				invalidProjects.add(p);
 			} catch (NotADirectoryException e) {
 				log.error("invalid project: ", e);
-				result.remove(p);
+				invalidProjects.add(p);
 			} catch (FileNotFoundException e) {
 				log.error("invalid project (error on start): ", e);
-				result.remove(p);
+				invalidProjects.add(p);
 			} catch (ProjectException e) {
 				log.error("invalid project (error on start): ", e);
-				result.remove(p);
+				invalidProjects.add(p);
 			}
 		}
+		result.removeAll(invalidProjects);
 	}
 
 	@Transactional
