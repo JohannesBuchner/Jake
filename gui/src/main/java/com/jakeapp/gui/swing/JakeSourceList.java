@@ -162,11 +162,12 @@ public class JakeSourceList extends JakeGuiComponent
 
 					JakeMainApp.getApp().setProject(project);
 				} else {
-					JakeMainApp.getApp().setProject(null);
+					// fixme: i'm dead tired
+					//JakeMainApp.getApp().setProject(null);
 
 					// show the login context panel
-					JakeMainView.getMainView()
-									.setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
+					//JakeMainView.getMainView()
+					//				.setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
 				}
 			}
 		};

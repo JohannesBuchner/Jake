@@ -70,6 +70,10 @@ public class PeopleListModel extends AbstractListModel
 	public void setProject(Project pr) {
 		this.project = pr;
 
+		if(pr == null || pr.isInvitation()) {
+			return;
+		}
+
 		updateModel();
 	}
 
