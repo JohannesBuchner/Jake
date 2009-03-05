@@ -377,7 +377,10 @@ public class JakeCommander extends Commander {
 			}
 			try {
 				System.out.println("logging in ...");
-				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg, null));
+				ServiceCredentials credentials = new ServiceCredentials();
+				credentials.setProtocol(ProtocolType.XMPP);
+				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg,
+								credentials, null));
 				if (result) {
 					System.out.println("logged in");
 				} else {

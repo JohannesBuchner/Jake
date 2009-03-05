@@ -2,13 +2,12 @@ package com.jakeapp.core.domain;
 
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 
-import java.util.UUID;
-import java.io.Serializable;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Column;
 import javax.persistence.Transient;
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * A representation of the users credentials. It consists of a
@@ -19,9 +18,7 @@ public class ServiceCredentials implements Serializable {
 
 	private static final String JAKE_RESOURCE = "JakeApp";
 
-
 	private static final long serialVersionUID = -3550631428630088119L;
-
 
 	private UUID uuid;
 

@@ -47,7 +47,7 @@ public class XmppUserTool {
 		if (action.equals("login") || action.equals("delete")) {
 			try {
 				try {
-					connection = XmppCommons.login(xmppid, xmpppw, resourcename);
+					connection = XmppCommons.login(xmppid, xmpppw, null, 0, resourcename);
 				} catch (XMPPException e) {
 					// ignore
 				}

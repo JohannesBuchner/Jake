@@ -312,9 +312,9 @@ public class JakeStatusBar extends JakeGuiComponent
 	private TriAreaComponent createStatusBar() {
 		log.trace("creating status bar...");
 
-		// only draw the 'fat' statusbar if we are in a mac. does not look good on win/linux
+		// only draw the 'small' statusbar if we are in on win. mac and linux want it fat! ;o)
 		BottomBarSize bottombarSize =
-						Platform.isMac() ? BottomBarSize.LARGE : BottomBarSize.SMALL;
+						Platform.isWin() ? BottomBarSize.SMALL : BottomBarSize.LARGE;
 
 		TriAreaComponent bottomBar = MacWidgetFactory.createBottomBar(bottombarSize);
 		statusLabel = MacWidgetFactory.createEmphasizedLabel("");

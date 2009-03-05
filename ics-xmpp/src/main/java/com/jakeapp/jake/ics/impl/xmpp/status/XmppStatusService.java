@@ -130,7 +130,7 @@ public class XmppStatusService implements IStatusService {
 	}
 
 	@Override
-	public void login(UserId userid, String pw) throws NetworkException {
+	public void login(UserId userid, String pw, String host, long port) throws NetworkException {
 		XmppUserId xuid = new XmppUserId(userid);
 		if (!xuid.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
@@ -146,7 +146,7 @@ public class XmppStatusService implements IStatusService {
 		fireConnectionStateChanged(ILoginStateListener.ConnectionState.CONNECTING);
 
 		try {
-			connection = XmppCommons.login(xuid.getUserId(), pw, xuid.getResource());
+			connection = XmppCommons.login(xuid.getUserId(), pw, host, port, xuid.getResource());
 			connection.addConnectionListener(connectionListener);
 		} catch (IOException e) {
 			log.debug("connecting failed (network problems?)", e);

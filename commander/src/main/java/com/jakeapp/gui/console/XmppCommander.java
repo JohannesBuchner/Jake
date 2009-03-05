@@ -1,8 +1,6 @@
 package com.jakeapp.gui.console;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
 
 import com.jakeapp.core.services.XMPPMsgService;
 import com.jakeapp.gui.console.commandline.LazyCommand;
@@ -64,7 +62,7 @@ public class XmppCommander extends Commander {
             XmppUserId id = new XmppUserId(args[1]);
             XmppCommander.this.ics = new XmppICService(XMPPMsgService.namespace, args[3]);
             try {
-                XmppCommander.this.ics.getStatusService().login(id, args[2]);
+                XmppCommander.this.ics.getStatusService().login(id, args[2], null, 0);
                 XmppCommander.this.ics.getMsgService().registerReceiveMessageListener(
 
                         new IMessageReceiveListener() {

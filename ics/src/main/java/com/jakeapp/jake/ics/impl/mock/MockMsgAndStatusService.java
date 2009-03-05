@@ -111,7 +111,7 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	/**
 	 * Login is successful, if userid == pw
 	 */
-	public void login(UserId userid, String pw) throws NetworkException {
+	public void login(UserId userid, String pw, String host, long port) throws NetworkException {
 		if (!new MockUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (loggedinstatus)

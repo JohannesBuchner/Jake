@@ -55,7 +55,7 @@ public class TestXmppICUsersService {
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
 		this.ics.getStatusService().login(testUser1,
-				testUser1Passwd);
+				testUser1Passwd, null, 0);
 	}
 
 	@After
@@ -117,7 +117,7 @@ public class TestXmppICUsersService {
 				});
 		this.ics2 = new XmppICService(testnamespace, testgroupname);
 		this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd);
+				testUser2Passwd, null, 0);
 		this.ics.getUsersService().requestOnlineNotification(testUser2);
 		Assert.assertTrue(s.tryAcquire(5, TimeUnit.SECONDS));
 	}

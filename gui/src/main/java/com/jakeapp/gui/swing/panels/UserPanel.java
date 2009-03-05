@@ -1,9 +1,8 @@
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
@@ -12,8 +11,8 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
-import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
 import com.jakeapp.gui.swing.helpers.Colors;
@@ -22,9 +21,9 @@ import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
+import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.LoginAccountTask;
-import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import net.miginfocom.swing.MigLayout;
@@ -46,8 +45,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Userpanel creates accouts for Jake.
@@ -70,7 +71,8 @@ public class UserPanel extends JXPanel
 	private UserDataPanel registerUserDataPanel;
 	private JComboBox loginServiceCheckBox;
 	private SpinningWheelComponent workingAnimation;
-	private ServiceCredentials cred;
+	private Map<SupportedServices, ServiceCredentials> creds =
+					new HashMap<SupportedServices, ServiceCredentials>();
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
 	private JPanel loadingAppPanel;
@@ -84,12 +86,18 @@ public class UserPanel extends JXPanel
 
 	@Override public void coreChanged() {
 		// called after statup, when core init is done.
+
+		// one-time-init of predefined credentials
+		if (JakeMainApp.isCoreInitialized() && creds.size() == 0) {
+			initPredefinedCredentials();
+		}
+
 		updateView();
 	}
 
 	@Override public void propertyChanged(EnumSet<Reason> reason, Project p,
 					Object data) {
-		if(reason.contains(Reason.MsgService)) {
+		if (reason.contains(Reason.MsgService)) {
 			updateView();
 		}
 	}
@@ -116,20 +124,20 @@ public class UserPanel extends JXPanel
 						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
 						.getContext().getResourceMap(UserPanel.class));
 
-		// only support xmpp - for the moment
-		cred = new ServiceCredentials();
-		cred.setProtocol(ProtocolType.XMPP);
-
 		initComponents();
 
 		JakeMainApp.getInstance().addCoreChangedListener(this);
 
-		// register the connection & reg status callback!
-		//EventCore.get().addConnectionStatusCallbackListener(this);
-		//EventCore.get().addRegistrationStatusCallbackListener(this);
-
 		// device which panel to show!
 		updateView();
+	}
+
+	private void initPredefinedCredentials() {
+		for (SupportedServices service : SupportedServices.values()) {
+			creds.put(service,
+							JakeMainApp
+											.getCore().getPredefinedServiceCredential(service.toString()));
+		}
 	}
 
 	public ResourceMap getResourceMap() {
@@ -398,14 +406,17 @@ public class UserPanel extends JXPanel
 	 * @return
 	 */
 	private ServiceCredentials getCredientals() {
-		if (isModeSignIn()) {
-			cred.setUserId(loginUserDataPanel.getUserName());
-			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
-		} else {
-			cred.setUserId(loginUserDataPanel.getUserName());
-			cred.setPlainTextPassword(loginUserDataPanel.getPassword());
-		}
+		ServiceCredentials cred;
 
+		if (!isModeSignIn()) {
+			// return the default set
+			cred = creds.get(SupportedServices.Jabber);
+		} else {
+			cred = creds.get(SupportedServices.values()[loginServiceCheckBox
+							.getSelectedIndex()]);
+		}
+		cred.setUserId(loginUserDataPanel.getUserName());
+		cred.setPlainTextPassword(loginUserDataPanel.getPassword());
 		return cred;
 	}
 
@@ -423,9 +434,15 @@ public class UserPanel extends JXPanel
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
 					JakeMainApp.setMsgService(msg);
+
+					// prepare the servicecredentials (prefilled?)
+					ServiceCredentials creds = getCredientals();
+					creds.setAutologin(loginUserDataPanel.isSetRememberPassword());
+					//creds.setPlainTextPassword(loginUserDataPanel.getPassword());
+
 					JakeExecutor.exec(new LoginAccountTask(msg,
-									loginUserDataPanel.getPassword(),
-									loginUserDataPanel.isSetRememberPassword(), EventCore.get().getLoginStateListener()));
+									creds,
+									EventCore.get().getLoginStateListener()));
 
 				} catch (Exception e) {
 					log.warn(e);
@@ -436,7 +453,7 @@ public class UserPanel extends JXPanel
 			} else {
 				JakeExecutor.exec(new RegisterAccountTask(getCredientals()));
 				updateView();
-				// TODO
+				// fixme: what do do? events?
 			}
 		} else {
 			log.warn("Sign In tried while button was not enabled!");
@@ -447,8 +464,7 @@ public class UserPanel extends JXPanel
 	/**
 	 * Private inner worker for account registration.
 	 */
-	private class RegisterAccountTask
-					extends AbstractTask<Void> {
+	private class RegisterAccountTask extends AbstractTask<Void> {
 		private ServiceCredentials cred;
 
 		private RegisterAccountTask(ServiceCredentials cred) {
@@ -615,6 +631,8 @@ public class UserPanel extends JXPanel
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						AdvancedAccountSettingsDialog.showDialog(getCredientals());
+						log.debug("credentials now: " + getCredientals()
+										.getServerAddress() + getCredientals().getServerPort());
 					}
 				});
 				this.add(loginAdvancedBtn, "wrap");
@@ -910,24 +928,37 @@ public class UserPanel extends JXPanel
 						signInBtn.setEnabled(false);
 						JakeMainApp.setMsgService(msg);
 
+						// prepare the servicecredentials (prefilled?)
+						ServiceCredentials creds = getCredientals();
+						creds.setAutologin(isRememberPassword());
 						if (isMagicToken()) {
-							JakeExecutor.exec(new LoginAccountTask(msg, EventCore.get().getLoginStateListener()));
+							creds.setPlainTextPassword(null);
 						} else {
-							JakeExecutor.exec(new LoginAccountTask(msg,
-											getPassword(),
-											isRememberPassword(), EventCore.get().getLoginStateListener()));
+							creds.setPlainTextPassword(getPassword());
 						}
 
+						JakeExecutor.exec(new LoginAccountTask(msg,
+										creds,
+										EventCore.get().getLoginStateListener()));
+
 						updateView();
-					} catch (Exception e1) {
+					}
+
+					catch (Exception e1)
+
+					{
 						ExceptionUtilities.showError(e1);
 					}
 				}
 			};
 
-			this.setLayout(new MigLayout("wrap 2, fill"));
+			this.setLayout(new MigLayout("wrap 2, fill")
 
-			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(), 1));
+			);
+
+			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(),
+
+							1));
 			this.setOpaque(false);
 
 			String msgUserId = msg.getUserId().getUserId();
@@ -939,52 +970,72 @@ public class UserPanel extends JXPanel
 			JLabel passLabel =
 							new JLabel(getResourceMap().getString("passwordLabel") + ":");
 			this.add(passLabel, "left");
+
 			passField = new JPasswordField();
+
 			passField.addActionListener(loginAction);
 			this.add(passField, "w 200!");
 
 			rememberPassCheckBox =
-							new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox"));
+							new JCheckBox(getResourceMap().getString("rememberPasswordCheckBox")
+
+							);
 			rememberPassCheckBox.setSelected(true);
 			rememberPassCheckBox.setOpaque(false);
-			rememberPassCheckBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					updateUserPanel();
-				}
-			});
+			rememberPassCheckBox.addActionListener(new
+
+							ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									updateUserPanel();
+								}
+							}
+
+			);
 			this.add(rememberPassCheckBox, "span 2");
 
 			JButton deleteUserBtn = new JButton(getResourceMap().getString("deleteUser"));
 			deleteUserBtn.putClientProperty("JButton.buttonType", "textured");
-			deleteUserBtn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						JakeMainApp.getCore().removeAccount(msg);
-						updateView();
-					} catch (Exception e1) {
-						ExceptionUtilities.showError(e1);
-					}
-				}
-			});
-			this.add(deleteUserBtn, "left, bottom");
+			deleteUserBtn.addActionListener(new
 
-			signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
+							ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									try {
+										JakeMainApp.getCore().removeAccount(msg);
+										updateView();
+									} catch (Exception e1) {
+										ExceptionUtilities.showError(e1);
+									}
+								}
+							}
+
+			);
+			this.add(deleteUserBtn, "left, bottom");
+			signInBtn = new JButton(getResourceMap().getString("loginSignInOnly")
+
+			);
 			signInBtn.putClientProperty("JButton.buttonType", "textured");
 			signInBtn.addActionListener(loginAction);
-			this.add(signInBtn, "right, bottom");
+			this.
+
+							add(signInBtn, "right, bottom");
 
 			// if a password is set, write a magic token into password field
 			// to represent the "not changed" state
 			log.info("msg.isPasswordSaved: " + msg.isPasswordSaved() + " for " + msg
 							.getUserId());
-			if (msg.isPasswordSaved()) {
+			if (msg.isPasswordSaved())
+
+			{
 				passField.setText(MagicPassToken);
-			} else {
+			} else
+
+			{
 				// else clear field
 				passField.setText("");
 			}
+
 			rememberPassCheckBox.setSelected(msg.isPasswordSaved());
 		}
 

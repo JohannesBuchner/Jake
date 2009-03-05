@@ -109,18 +109,18 @@ public class TestXmppLogin {
 		}
 
 		try {
-			ics.getStatusService().login(wrongUserid1, somePassword);
+			ics.getStatusService().login(wrongUserid1, somePassword, null, 0);
 			Assert.fail();
 		} catch (NoSuchUseridException e) {
 		}
 		ics.getStatusService().login(shortUserid1,
-				testUser1Passwd);
+				testUser1Passwd, null, 0);
 		Assert.assertTrue(ics.getStatusService().isLoggedIn());
 		ics.getStatusService().logout();
 		Assert.assertFalse(ics.getStatusService().isLoggedIn());
 
 		ics.getStatusService().login(offlineUserId,
-				testUser1Passwd);
+				testUser1Passwd, null, 0);
 		ics.getStatusService().logout();
 	}
 }

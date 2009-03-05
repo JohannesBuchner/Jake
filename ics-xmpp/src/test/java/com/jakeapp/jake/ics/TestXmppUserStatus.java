@@ -45,7 +45,7 @@ public class TestXmppUserStatus {
 		XmppTestEnvironment.assureUserIdExistsAndConnect(offlineUserId, testUser1Passwd);
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
-		ics.getStatusService().login(shortUserid1, testUser1Passwd);
+		ics.getStatusService().login(shortUserid1, testUser1Passwd, null, 0);
 		// }
 	}
 

@@ -83,18 +83,47 @@ public abstract class MsgService<T extends UserId> {
 	/**
 	 * This method gets called by clients to login on this message service.
 	 *
+	 * @param newCreds the new Credentials (password et al)
 	 * @return true on success, false on wrong password
 	 * @throws NetworkException
 	 * @throws TimeoutException
 	 */
-	public final boolean login() throws NetworkException {
+	@Transactional
+	public final boolean login(ServiceCredentials newCreds) throws NetworkException {
 		log.debug("calling plain login");
 
 		if (this.getServiceCredentials() == null)
 			throw new InvalidCredentialsException("serviceCredentials are null");
 
-		if (!checkCredentials())
-			return false;
+		// use the saved password?
+		if (newCreds.getPlainTextPassword() == null) {
+			// no further modifications are possible on credentials
+			if (!checkCredentials())
+				return false;
+		} else {
+			// set password + shouldSave-flag
+			this.getServiceCredentials()
+							.setPlainTextPassword(newCreds.getPlainTextPassword());
+			this.getServiceCredentials().setSavePassword(newCreds.isSavePassword());
+
+			// check if port is set. 0 is invalid
+			if(newCreds.getServerPort() > 0) {
+				log.debug("Set Server Port to " + newCreds.getServerPort());
+				this.getServiceCredentials().setServerPort(newCreds.getServerPort());
+			}
+			// check if server address is set
+			if(newCreds.getServerAddress() != null) {
+				log.debug("Set Server Address to " + newCreds.getServerAddress());
+				this.getServiceCredentials().setServerAddress(newCreds.getServerAddress());
+			}
+
+			// update and store the credentials
+			try {
+				MsgService.serviceCredentialsDao.update(getServiceCredentials());
+			} catch (NoSuchServiceCredentialsException e) {
+				MsgService.serviceCredentialsDao.create(getServiceCredentials());
+			}
+		}
 
 		log.debug("before doLogin: " + this.getVisibilityStatus());
 		this.doLogin();
@@ -104,37 +133,6 @@ public abstract class MsgService<T extends UserId> {
 		return true;
 	}
 
-	@Transactional
-	public final boolean login(String newPassword, boolean shouldSavePassword)
-					throws NetworkException {
-		boolean result = false;
-
-		log.debug("calling login with newPwd-Size: " + newPassword
-						.length() + ", shouldSave: " + shouldSavePassword);
-
-		if (this.getServiceCredentials() == null)
-			throw new InvalidCredentialsException("serviceCredentials are null");
-
-		this.getServiceCredentials().setPlainTextPassword(newPassword);
-		this.getServiceCredentials().setSavePassword(shouldSavePassword);
-
-		result = this.login();
-
-		/* store */
-		// get Service credentials
-		if (this.getServiceCredentials() != null) {
-			this.getServiceCredentials().setPlainTextPassword(newPassword);
-			this.getServiceCredentials().setSavePassword(shouldSavePassword);
-			// update and store the credentials
-			try {
-				MsgService.serviceCredentialsDao.update(getServiceCredentials());
-			} catch (NoSuchServiceCredentialsException e) {
-				MsgService.serviceCredentialsDao.create(getServiceCredentials());
-			}
-		}
-
-		return result;
-	}
 
 	/**
 	 * Checks whether the ServiceCredentials in <code>serviceCredentials</code>
@@ -327,7 +325,8 @@ public abstract class MsgService<T extends UserId> {
 			ics.getUsersService()
 							.registerOnlineStatusListener(listeners.onlineStatusListener);
 			ics.getStatusService()
-							.login(user, this.getServiceCredentials().getPlainTextPassword());
+							.login(user, this.getServiceCredentials().getPlainTextPassword(),
+											null, 0);
 			ics.getStatusService().addLoginStateListener(listeners.loginStateListener);
 		} else {
 			if (ics.getStatusService().isLoggedIn()) {
@@ -378,5 +377,4 @@ public abstract class MsgService<T extends UserId> {
 		return this.getProtocolType() + " - user: " + getMainUserId() + " - " + this
 						.getVisibilityStatus();
 	}
-
 }

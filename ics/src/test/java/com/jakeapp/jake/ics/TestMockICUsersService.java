@@ -19,7 +19,7 @@ public class TestMockICUsersService {
 	@Before
 	public void setUp() throws Exception {
 		this.ics = new MockICService();
-		this.ics.getStatusService().login(shortUserid1, shortUserid1.getUserId());
+		this.ics.getStatusService().login(shortUserid1, shortUserid1.getUserId(), null, 0);
 	}
 
 	@Test

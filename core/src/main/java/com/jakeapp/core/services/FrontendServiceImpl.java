@@ -296,7 +296,17 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
 			final boolean rememberPassword, final ILoginStateListener loginListener) {
+		ServiceCredentials credentials = new ServiceCredentials();
+		credentials.setPlainTextPassword(password);
+		credentials.setAutologin(rememberPassword);
+		return login(session, service, credentials, loginListener);
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public AvailableLaterObject<Boolean> login(final String session, final MsgService service,
+					final ServiceCredentials credentials, final ILoginStateListener loginListener) {
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override
@@ -309,11 +319,8 @@ public class FrontendServiceImpl implements IFrontendService {
 
 				/* login */
 				try {
-				if (password == null) {
-					result = service.login();
-				} else {
-					result = service.login(password, rememberPassword);
-				}
+					result = service.login(credentials);
+
 				}catch(NetworkException ex) {
 					loginListener.connectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT, ex);
 					throw ex;
@@ -328,13 +335,5 @@ public class FrontendServiceImpl implements IFrontendService {
 		};
 
 		return ret;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional
-	public AvailableLaterObject<Boolean> login(final String session,
-			final MsgService service, final ILoginStateListener loginListener) {
-		return login(session, service, null, true, loginListener);
 	}
 }

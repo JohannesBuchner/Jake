@@ -48,18 +48,18 @@ public class TestMockICStatusService extends TestCase {
 		}
 		
 		try{
-			ics.getStatusService().login(wrongUserid1, somePassword);
+			ics.getStatusService().login(wrongUserid1, somePassword, null, 0);
 			fail();
 		}catch (NoSuchUseridException e) {
 		}
-		ics.getStatusService().login(shortUserid1, shortUserid1.getUserId());
+		ics.getStatusService().login(shortUserid1, shortUserid1.getUserId(), null, 0);
 		assertTrue(ics.getStatusService().isLoggedIn(shortUserid1));
 		assertFalse(ics.getStatusService().isLoggedIn(offlineUserId));
 		assertTrue(ics.getStatusService().isLoggedIn(onlineUserId));
 		ics.getStatusService().logout();
 		assertFalse(ics.getStatusService().isLoggedIn());
 		
-		ics.getStatusService().login(offlineUserId, offlineUserId.getUserId());
+		ics.getStatusService().login(offlineUserId, offlineUserId.getUserId(), null, 0);
 		ics.getStatusService().logout();
 	}
 	
@@ -88,7 +88,7 @@ public class TestMockICStatusService extends TestCase {
 		};
 		
 		ics.getMsgService().registerReceiveMessageListener(mymsglistener);
-		ics.getStatusService().login(shortUserid1, shortUserid1.getUserId());
+		ics.getStatusService().login(shortUserid1, shortUserid1.getUserId(), null, 0);
 		ics.getMsgService().sendMessage(shortUserid1, "hello I");
 		ics.getMsgService().sendMessage(new MockUserId("bar@host"), "hello you!");
 		ics.getMsgService().sendMessage(new MockUserId("baz@host"), "What's up?");

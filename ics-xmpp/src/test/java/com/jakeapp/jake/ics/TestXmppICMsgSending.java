@@ -48,7 +48,7 @@ public class TestXmppICMsgSending {
 
 		this.ics = new XmppICService(testnamespace, testgroupname);
 		this.ics.getStatusService().login(testUser1,
-				testUser1Passwd);
+				testUser1Passwd, null, 0);
 		this.ics2 = new XmppICService(testnamespace, testgroupname);
 	}
 
@@ -94,7 +94,7 @@ public class TestXmppICMsgSending {
 
 				});
 		this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd);
+				testUser2Passwd, null, 0);
 		this.ics.getMsgService().sendMessage(testUser2, testmsgcontent2);
 		Assert.assertTrue(c.await(2, 7, TimeUnit.SECONDS));
 	}
@@ -108,7 +108,7 @@ public class TestXmppICMsgSending {
 		final Counter c = new Counter();
 
 		this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd);
+				testUser2Passwd, null, 0);
 		this.ics2.getMsgService().registerReceiveMessageListener(
 				new IMessageReceiveListener() {
 
@@ -167,7 +167,7 @@ public class TestXmppICMsgSending {
 		final Counter c = new Counter();
 
 		this.ics2.getStatusService().login(testUser2,
-				testUser2Passwd);
+				testUser2Passwd, null, 0);
 		this.ics2.getMsgService().registerReceiveMessageListener(
 				new IMessageReceiveListener() {
 

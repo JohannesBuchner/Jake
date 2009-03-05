@@ -80,7 +80,7 @@ public class TestFailoverTransfers {
 
 		this.user1 = new XmppICService(testnamespace, testgroupname);
 		this.user1.getStatusService().login(testUser1,
-						testUser1Passwd);
+						testUser1Passwd, null, 0);
 
 		this.xmppTransfer1 = this.user1.getTransferMethodFactory();
 		Assert.assertNotNull(this.xmppTransfer1);
@@ -89,7 +89,7 @@ public class TestFailoverTransfers {
 
 		this.user2 = new XmppICService(testnamespace, testgroupname);
 		this.user2.getStatusService().login(testUser2,
-						testUser2Passwd);
+						testUser2Passwd, null, 0);
 		this.xmppTransfer2 = this.user2.getTransferMethodFactory();
 		Assert.assertNotNull(this.xmppTransfer2);
 		Assert.assertTrue(this.user2.getStatusService().isLoggedIn());

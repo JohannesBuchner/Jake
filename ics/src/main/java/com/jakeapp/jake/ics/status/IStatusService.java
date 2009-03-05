@@ -12,11 +12,12 @@ public interface IStatusService {
 	 *
 	 * @param userid the network user id to be logged in
 	 * @param pw	  password
-	 * @return whether the login was successful
+	 * @param host
+	 *@param port @return whether the login was successful
 	 * @throws NetworkException if the network connection is down
 	 * @throws TimeoutException if a timeout is received
 	 */
-	public void login(UserId userid, String pw) throws NetworkException;
+	public void login(UserId userid, String pw, String host, long port) throws NetworkException;
 
 	/**
 	 * Logs out and disconnects from the used network service.

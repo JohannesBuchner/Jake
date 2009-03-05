@@ -69,16 +69,14 @@ public interface ICoreAccess {
 	/**
 	 * Logs a user in
 	 *
-	 * @param service					The message service to log in
-	 * @param password				 password needed to authenticate.
-	 *                         If password is null it is tried to authenticate without password.
-	 * @param rememberPassword Indicates if the password should be stored with the
-	 *                         service credentials that will be generated.
+	 * @param service						The message service to log in
+	 * @param creds					     ServiceCredentials needed to authenticate.
+	 *                           If password is null it is tried to authenticate without password.
 	 * @param connectionListener
 	 * @return An object reporting the progress of the login
 	 */
-	AvailableLaterObject<Boolean> login(MsgService service, String password,
-					boolean rememberPassword, ILoginStateListener connectionListener);
+	AvailableLaterObject<Boolean> login(MsgService service, ServiceCredentials creds,
+					ILoginStateListener connectionListener);
 
 
 	/******************* User functions ********************/
@@ -589,4 +587,12 @@ public interface ICoreAccess {
 	 */
 	public List<LogEntry<? extends ILogable>> getLog(Project project,
 					JakeObject jakeObject, int entries);
+
+	/**
+	 * Tries to get predefined ServiceCredentials for certail services.
+	 * Returns an empty ServiceCredential if Service is not known.
+	 * @param s
+	 * @return
+	 */
+	ServiceCredentials getPredefinedServiceCredential(String s);
 }

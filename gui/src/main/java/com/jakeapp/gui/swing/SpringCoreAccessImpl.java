@@ -154,7 +154,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	// only start from StartStopProjectTask
-	public AvailableLaterObject<Void> startStopProject(Project project, boolean start) {
+	public AvailableLaterObject<Void> startStopProject(Project project,
+					boolean start) {
 		log.info("Starting project: " + project);
 		return new StartStopProjectFuture(pms, project, start).start();
 	}
@@ -633,6 +634,26 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
+	@Override public ServiceCredentials getPredefinedServiceCredential(String s) {
+		log.debug("Fetch predefined ServiceCredentials for " + s);
+
+		// only support xmpp - for the moment
+		ServiceCredentials cred = new ServiceCredentials();
+		cred.setProtocol(ProtocolType.XMPP);
+
+		if (s.compareToIgnoreCase("google") == 0) {
+			log.debug("Returning special google credentials");
+			cred.setServerPort(5222);
+			cred.setServerAddress("talk.google.com");
+		}
+		else if(s.compareToIgnoreCase("unitedinternet") == 0) {
+			// fixme: insert data!
+		}
+
+		return cred;
+	}
+
+
 	public void createProject(final String name, final String path,
 					final MsgService msg) throws ProjectCreationException {
 		log.info("Create project: " + name + " path: " + path + " msg: " + msg);
@@ -681,7 +702,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-
 	@Override
 	public AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) {
 		try {
@@ -692,7 +712,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo, boolean trash) {
+	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fo,
+					boolean trash) {
 		return this.pms.deleteFiles(fo, trash);
 	}
 
@@ -947,11 +968,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public AvailableLaterObject<Boolean> login(MsgService service, String password,
-					boolean rememberPassword, ILoginStateListener connectionListener) {
+	public AvailableLaterObject<Boolean> login(MsgService service,
+					ServiceCredentials credentials, ILoginStateListener connectionListener) {
 
 		return this.getFrontendService()
-						.login(getSessionId(), service, password, rememberPassword, connectionListener);
+						.login(getSessionId(), service, credentials, connectionListener);
 	}
 
 

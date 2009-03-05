@@ -177,10 +177,11 @@ public interface IFrontendService {
 	 * Logs a Messageservice in with the stored password
 	 * @param session
 	 * @param service
+	 * @param credentials
 	 * @return
 	 * @internally throws Exception
 	 */
 	AvailableLaterObject<Boolean> login(String session, MsgService service,
-					final ILoginStateListener loginListener);
+					ServiceCredentials credentials, final ILoginStateListener loginListener);
 
 }
