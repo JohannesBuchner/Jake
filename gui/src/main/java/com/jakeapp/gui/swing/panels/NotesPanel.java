@@ -246,6 +246,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 */
 	@Override
 	public void projectChanged(ProjectChangedEvent e) {
+
+		// don't update if project is null OR an invitation.
+		if (e.getProject() == null || e.getProject().isInvitation()) {
+			return;
+		}
+
 		ObjectCache.get().updateNotes(e.getProject());
 	}
 

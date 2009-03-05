@@ -408,34 +408,41 @@ public class JakeStatusBar extends JakeGuiComponent
 	public void updateMessageInt() {
 
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
-			if (getProjectViewPanel() == JakeMainView.ProjectView.Files) {
-				// update the status bar label
-				JakeExecutor.exec(new ProjectFileCountTask());
-				JakeExecutor.exec(new ProjectSizeTotalTask());
-			} else if (getProjectViewPanel() == JakeMainView.ProjectView.Notes) {
-				JakeExecutor.exec(new NoteCountTask());
+			if (JakeMainApp.getProject() != null && JakeMainApp.getProject()
+							.isInvitation()) {
+				statusLabel.setText("Woohoo, that's an Invitation! You better join!");
 			} else {
-				// project view
-				if (getProject() != null) {
-					int peopleCount;
-					try {
-						peopleCount =
-										JakeMainApp.getCore().getAllProjectMembers(getProject()).size();
-					} catch (PeopleOperationFailedException e) {
-						peopleCount = 0;
-						ExceptionUtilities.showError(e);
-					}
 
-					// nobody there...
-					if (peopleCount == 1) {
-						String aloneStr = getResourceMap().getString("projectAddPeopleToStart");
-						statusLabel.setText(aloneStr);
-					} else {
-						String peopleCountStr = getResourceMap().getString("projectPeople");
-						statusLabel.setText(peopleCount + " " + peopleCountStr);
-					}
+				if (getProjectViewPanel() == JakeMainView.ProjectView.Files) {
+					// update the status bar label
+					JakeExecutor.exec(new ProjectFileCountTask());
+					JakeExecutor.exec(new ProjectSizeTotalTask());
+				} else if (getProjectViewPanel() == JakeMainView.ProjectView.Notes) {
+					JakeExecutor.exec(new NoteCountTask());
 				} else {
-					statusLabel.setText("");
+					// project view
+					if (getProject() != null) {
+						int peopleCount;
+						try {
+							peopleCount = JakeMainApp.getCore().getAllProjectMembers(getProject())
+											.size();
+						} catch (PeopleOperationFailedException e) {
+							peopleCount = 0;
+							ExceptionUtilities.showError(e);
+						}
+
+						// nobody there...
+						if (peopleCount == 1) {
+							String aloneStr =
+											getResourceMap().getString("projectAddPeopleToStart");
+							statusLabel.setText(aloneStr);
+						} else {
+							String peopleCountStr = getResourceMap().getString("projectPeople");
+							statusLabel.setText(peopleCount + " " + peopleCountStr);
+						}
+					} else {
+						statusLabel.setText("");
+					}
 				}
 			}
 		} else if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Invitation) {

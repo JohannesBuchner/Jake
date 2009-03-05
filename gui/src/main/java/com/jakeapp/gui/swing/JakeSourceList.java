@@ -44,7 +44,8 @@ import java.util.Map;
  * Manages the Source List for projects.
  */
 public class JakeSourceList extends JakeGuiComponent
-				implements ProjectSelectionChanged, ProjectChanged, DataChanged, TaskChanged {
+				implements ProjectSelectionChanged, ProjectChanged, DataChanged,
+				TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap;
@@ -264,7 +265,7 @@ public class JakeSourceList extends JakeGuiComponent
 	 * Updates the SourceList (project list)
 	 */
 	private void updateSourceList() {
-	  setWaiting(sourceList.getComponent(), 
+		setWaiting(sourceList.getComponent(),
 						JakeExecutor.isTaskRunning(GetProjectsTask.class));
 
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
@@ -341,7 +342,8 @@ public class JakeSourceList extends JakeGuiComponent
 			sourceListProjectMap.put(sli, project);
 
 			// check if project was selected, save this SourceListItem.
-			if (selectedProject != null && selectedProject.getRootPath()
+			if (selectedProject != null && selectedProject
+							.getRootPath() != null && selectedProject.getRootPath()
 							.compareTo(project.getRootPath()) == 0) {
 				projectSLI = sli;
 			}
@@ -362,20 +364,19 @@ public class JakeSourceList extends JakeGuiComponent
 		}
 	}
 
-    private static void setWaiting(JComponent c, boolean on) {
-			log.trace("SourceList-setWaiting: " + on);
-        WaitIndicator w = (WaitIndicator)c.getClientProperty("waiter");
-        if (w == null) {
-            if (on) {
-                w = new SpinningDialWaitIndicator(c);
-            }
-        }
-        else if (!on) {
-            w.dispose();
-            w = null;
-        }
-        c.putClientProperty("waiter", w);
-    }	
+	private static void setWaiting(JComponent c, boolean on) {
+		log.trace("SourceList-setWaiting: " + on);
+		WaitIndicator w = (WaitIndicator) c.getClientProperty("waiter");
+		if (w == null) {
+			if (on) {
+				w = new SpinningDialWaitIndicator(c);
+			}
+		} else if (!on) {
+			w.dispose();
+			w = null;
+		}
+		c.putClientProperty("waiter", w);
+	}
 
 	private SourceListItem createSourceListItem(Project project) {
 		Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
@@ -486,7 +487,7 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void taskStarted(IJakeTask worker) {
-		if(worker instanceof GetProjectsTask) {
+		if (worker instanceof GetProjectsTask) {
 			updateSourceList();
 		}
 	}
@@ -495,7 +496,7 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void taskFinished(IJakeTask worker) {
-		if(worker instanceof GetProjectsTask) {
+		if (worker instanceof GetProjectsTask) {
 			updateSourceList();
 		}
 	}

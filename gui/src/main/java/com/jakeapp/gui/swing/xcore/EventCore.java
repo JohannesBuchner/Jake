@@ -7,7 +7,13 @@ import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.*;
+import com.jakeapp.gui.swing.callbacks.CoreChanged;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
@@ -112,12 +118,17 @@ public class EventCore {
 		}
 	}
 
-	public void fireProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
-		lastProjectEvents.put(ev.getProject(), ev);
+	public void fireProjectChanged(final ProjectChanged.ProjectChangedEvent ev) {
+		Runnable runner = new Runnable() {
+			@Override public void run() {
+				lastProjectEvents.put(ev.getProject(), ev);
 
-		// save event in the stack, until new data has arrived from db
-		projectEvents.add(ev);
-		ObjectCache.get().updateProjects();
+				// save event in the stack, until new data has arrived from db
+				projectEvents.add(ev);
+				ObjectCache.get().updateProjects();
+			}
+		};
+		SwingUtilities.invokeLater(runner);
 	}
 
 	private void spreadProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
@@ -203,7 +214,6 @@ public class EventCore {
 	}
 
 
-
 	public void fireNotesChanged(Project p) {
 		ObjectCache.get().updateNotes(p);
 		fireLogChanged(p);
@@ -251,6 +261,7 @@ public class EventCore {
 	/**
 	 * Returns the Login State Listener, that acts as the callback for the core.
 	 * If you want this event in the gui, register for it!
+	 *
 	 * @return
 	 */
 	public ILoginStateListener getLoginStateListener() {
@@ -315,7 +326,7 @@ public class EventCore {
 
 	private class ProjectInvitationListener implements IProjectInvitationListener {
 
-		public ProjectInvitationListener(){
+		public ProjectInvitationListener() {
 			log.debug("Created ProjectInvitationListener in GUI ");
 		}
 

@@ -226,8 +226,9 @@ public class FilePanel extends javax.swing.JPanel
 
 	@Override
 	public void projectChanged(ProjectChangedEvent ev) {
-
+		this.updatePanel();
 	}
+
 
 	private class FileTreeTableKeyListener extends KeyAdapter {
 		private FilePanel panel;
@@ -480,7 +481,15 @@ public class FilePanel extends javax.swing.JPanel
 	public void setProject(Project project) {
 		this.project = project;
 
-		// FIXME: right place to call update?
+		updatePanel();
+	}
+
+	private void updatePanel() {
+		// don't update if project is null OR an invitation.
+		if (getProject() == null || getProject().isInvitation()) {
+			return;
+		}
+
 		if (project != null) {
 			ObjectCache.get().updateFiles(project);
 		}

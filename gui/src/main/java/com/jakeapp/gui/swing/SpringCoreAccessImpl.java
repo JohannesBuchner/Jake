@@ -973,6 +973,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public AvailableLaterObject<Boolean> login(MsgService service,
 					ServiceCredentials credentials, ILoginStateListener connectionListener) {
 
+		////fixme unregister
 		service.registerInvitationListener(EventCore.get().getInvitationListener()); // TODO DIRTY!
 		return this.getFrontendService()
 						.login(getSessionId(), service, credentials, connectionListener);

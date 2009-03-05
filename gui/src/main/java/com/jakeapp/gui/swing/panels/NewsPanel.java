@@ -262,8 +262,8 @@ public class NewsPanel extends javax.swing.JPanel
 	private void updatePanel() {
 		log.trace("updating panel with " + getProject());
 
-		// don't update if project is null
-		if (getProject() == null) {
+		// don't update if project is null OR an invitation.
+		if (getProject() == null || getProject().isInvitation()) {
 			return;
 		}
 
