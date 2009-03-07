@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import java.util.UUID;
 import java.util.List;
-
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
 

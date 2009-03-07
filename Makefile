@@ -99,10 +99,13 @@ up:
 	@oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
 
 generateDaos:
+	# use SpringThreadBroker.getInstance() for global dao's
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateConfigurationDao.java      "SpringThreadBroker.getInstance()"
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateProjectDao.java            "SpringThreadBroker.getInstance()"
-	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateServiceCredentialsDao.java "SpringThreadBroker.getInstance()"
-	
+	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateAccountDao.java "SpringThreadBroker.getInstance()"
+	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateInvitationDao.java "SpringThreadBroker.getInstance()"
+
+	#use SpringThreadBroker.getThreadForObject(this) for local (per project) daos
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateFileObjectDao.java         "SpringThreadBroker.getThreadForObject(this)"
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateLogEntryDao.java           "SpringThreadBroker.getThreadForObject(this)"
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateNoteObjectDao.java         "SpringThreadBroker.getThreadForObject(this)"
@@ -115,5 +118,4 @@ generateDaos:
 # The dependency system does only work with the coreutils package, i.e., only on 
 # Linux. 
 # 
-
 .PHONY: install gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up

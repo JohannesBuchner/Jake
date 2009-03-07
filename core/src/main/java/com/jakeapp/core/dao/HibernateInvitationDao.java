@@ -38,12 +38,16 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 		try
 		{
 			results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery("FROM invitation").list();
-
+			if(results == null) return new ArrayList<Invitation>();
 			return results;
 		}
 		catch (DataAccessException e)
 		{
 			return new ArrayList<Invitation>();
+		}
+		catch(Exception e)
+		{
+			return new ArrayList<Invitation>();			   
 		}
 	}
 

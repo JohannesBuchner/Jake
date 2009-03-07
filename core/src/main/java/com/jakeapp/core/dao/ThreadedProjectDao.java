@@ -1,8 +1,6 @@
 package com.jakeapp.core.dao;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.hibernate.LockMode;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;

@@ -3,8 +3,10 @@ import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import java.util.List;
+import java.util.ArrayList;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
+import org.springframework.transaction.annotation.Transactional;
 
 public class ThreadedInvitationDao implements IInvitationDao {
 
@@ -20,10 +22,11 @@ public class ThreadedInvitationDao implements IInvitationDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
+	@Transactional
 	public Invitation create(final Invitation invitation) throws InvalidProjectException {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Invitation>() {
+			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Invitation>() {
 
 				@Override
 				public Invitation calculate() throws Exception {
@@ -44,10 +47,11 @@ public class ThreadedInvitationDao implements IInvitationDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Invitation> getAll() {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<Invitation>>() {
+			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<Invitation>>() {
 
 				@Override
 				public List<Invitation> calculate() throws Exception {
@@ -69,7 +73,7 @@ public class ThreadedInvitationDao implements IInvitationDao {
 	public Project accept(final Invitation invitation) {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Project>() {
+			return SpringThreadBroker.getInstance().doTask(new InjectableTask<Project>() {
 
 				@Override
 				public Project calculate() throws Exception {
@@ -91,7 +95,7 @@ public class ThreadedInvitationDao implements IInvitationDao {
 	public void reject(final Invitation invitation) {
 		
 		try {
-			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
+			SpringThreadBroker.getInstance().doTask(new InjectableTask<Void>() {
 
 				@Override
 				public Void calculate() throws Exception {
