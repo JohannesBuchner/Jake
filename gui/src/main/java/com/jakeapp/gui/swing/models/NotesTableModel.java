@@ -31,6 +31,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	private List<String> columnNames;
 	private List<Attributed<NoteObject>> attributedNotes =
 					new ArrayList<Attributed<NoteObject>>();
+	private NoteObject noteToSelectLater = null;
 	private ResourceMap resourceMap;
 	private Icon padlock, shared_note;
 
@@ -98,17 +99,75 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		ObjectCache.get().updateNotes(project);
 	}
 
-	public void updateNotes(Project p) {
+	/**
+	 * @return the first currently selected note or  - if assigned - 
+	 * {@link #getNoteToSelectLater}
+	 */
+	private NoteObject getNoteSelection() {
 		//assumption: there is only one selected note
-		int oldSelection,newSelection;
+		/* get old selection */
+		int oldSelection;
 		Attributed<NoteObject> oldSelectionNote = null;
-		try {
-			oldSelection = NotesPanel.getInstance().getNotesTable().getSelectedRow();
-			oldSelectionNote = this.getNoteAtRow(oldSelection);
+		NoteObject result = null;
+		
+		result = this.getNoteToSelectLater();
+		if (result==null) {
+			try {
+				oldSelection = NotesPanel.getInstance().getNotesTable().getSelectedRow();
+				oldSelectionNote = this.getNoteAtRow(oldSelection);
+				result = (oldSelectionNote==null)?null:oldSelectionNote.getJakeObject();
+			}
+			catch (Exception ex) {
+				//empty handling, since we might just initialize the whole panel/model
+			}
 		}
-		catch (Exception ex) {
-			//empty handling, since we might just initialize the whole panel/model
+		
+		return result;
+	}
+	
+	/**
+	 * Sets the selection of the NotesPanel to a specific note.
+	 * @param toSelect The note to select in the NotesPanel. If null, nothing happens.
+	 */
+	private void setSelectedNote(NoteObject toSelect) {
+		int newSelection;
+		//select the row that was previously selected
+		if (toSelect!=null) {
+			newSelection = 0;
+			for (Attributed<NoteObject> attributed : this.attributedNotes) {
+				if (attributed.getJakeObject().equals(toSelect)) {
+					//found the previously selected note!
+					NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
+				}
+				newSelection++;
+			}
 		}
+	}
+	
+	/**
+	 * Gets the note that should be selected when the next note-update happens.
+	 * Clears this note, so that further calls to this method will return null,
+	 * if no {@link #setNoteSelectLater} happens.
+	 */
+	private synchronized NoteObject getNoteToSelectLater() {
+		NoteObject result = noteToSelectLater;
+		
+		this.noteToSelectLater = null;
+		
+		return result;
+	}
+	
+	/**
+	 * Sets a note that should be selected when the notes are updated the next time.
+	 * the NoteObject might not exist in the model yet.
+	 * @param toSelect
+	 */
+	public void setNoteToSelectLater(NoteObject toSelect) {
+		this.noteToSelectLater = toSelect;
+	}
+	
+	public void updateNotes(Project p) {
+		NoteObject oldSelectionNote = this.getNoteSelection();
 
 		
 		// FIXME: cache better!?
@@ -122,20 +181,9 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 			}
 		}
 		log.debug("update done.");
-		
-		//select the row that was previously selected
-		if (oldSelectionNote!=null) {
-			newSelection = 0;
-			for (Attributed<NoteObject> attributed : this.attributedNotes) {
-				if (attributed.getJakeObject().equals(oldSelectionNote)) {
-					//found the previously selected note!
-					NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
-				}
-				newSelection++;
-			}
-		}
 
 		this.fireTableDataChanged();
+		this.setSelectedNote(oldSelectionNote);
 	}
 
 	@Override
@@ -179,7 +227,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 
 			default:
 				value = "illegal column count!";
-				log.warn("column count out of range. Range is 0-2, actually was :" + Integer
+				log.warn("column count out of range. Range is 0-4, actually was :" + Integer
 								.toString(row));
 		}
 		return value;

@@ -160,7 +160,7 @@ public class EventCore {
 	}
 
 	public void fireDataChanged(EnumSet<DataChanged.Reason> reason, Project p) {
-		log.trace("spead callback event data changed: " + reason);
+		log.trace("spread callback event data changed: " + reason);
 		for (DataChanged callback : dataChanged) {
 			callback.dataChanged(reason, p);
 		}

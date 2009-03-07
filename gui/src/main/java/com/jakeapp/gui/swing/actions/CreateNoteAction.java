@@ -35,12 +35,16 @@ public class CreateNoteAction extends NoteAction {
 					NotesPanel.getInstance().getCurrentProject(),
 					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent"));
 			
+			NotesPanel.getInstance().getNotesTableModel().setNoteToSelectLater(newNote);
+			
 			JakeMainApp.getCore().createNote(newNote);
 			//this.refreshNotesPanel();
+			/*
 			int row = NotesPanel.getInstance().getNotesTableModel().getRow(newNote);
 			if (row > -1) {
 				NotesPanel.getInstance().getNotesTable().changeSelection(row, 0, false, false);	
 			}
+			*/
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);
 		}

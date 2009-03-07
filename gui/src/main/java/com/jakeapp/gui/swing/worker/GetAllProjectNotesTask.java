@@ -35,7 +35,7 @@ public class GetAllProjectNotesTask extends AbstractTask<List<NoteObject>> {
 		
 		log.trace("Done GetAllProjectNotesTask");
 
-		// done! so lets update the filetree
+		// done! so lets update the note-panel
 		try {
 			ObjectCache.get().setNotes(project, get());
 		} catch (InterruptedException e) {
