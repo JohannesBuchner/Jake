@@ -4,6 +4,8 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
+import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;

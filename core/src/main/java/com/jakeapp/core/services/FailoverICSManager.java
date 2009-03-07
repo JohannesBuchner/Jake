@@ -21,7 +21,10 @@ import java.util.Map;
 
 
 /**
- * fixme: damn, document your classes! this's all so fuckin' bogus
+ * FailoverICSManager tries Socket-Transfers first, then XMPP-Inband-Transfers.
+ * 
+ * 
+ * @see ICSManager
  */
 public class FailoverICSManager implements ICSManager {
 
@@ -37,7 +40,8 @@ public class FailoverICSManager implements ICSManager {
 
 	private Map<String, ICService> activeServices = new HashMap<String, ICService>();
 
-	@Override public boolean hasTransferService(Project p) {
+	@Override
+	public boolean hasTransferService(Project p) {
 		return this.transfer.containsKey(p.getProjectId());
 	}
 
@@ -57,7 +61,7 @@ public class FailoverICSManager implements ICSManager {
 
 	@Override
 	public FailoverCapableFileTransferService getTransferService(Project p)
-		 throws NotLoggedInException {
+			throws NotLoggedInException {
 		ICService ics = getICService(p);
 		IMsgService msg = ics.getMsgService();
 		FailoverCapableFileTransferService fcfts = null;
@@ -74,13 +78,13 @@ public class FailoverICSManager implements ICSManager {
 	}
 
 	private FailoverCapableFileTransferService createTransferService(
-		 com.jakeapp.jake.ics.UserId user, ICService ics, IMsgService msg)
-		 throws NotLoggedInException {
+			com.jakeapp.jake.ics.UserId user, ICService ics, IMsgService msg)
+			throws NotLoggedInException {
 		FailoverCapableFileTransferService fcfts;
 		fcfts = new FailoverCapableFileTransferService();
 		if (SOCKETS_ENABLED)
 			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(
-				 SOCKET_TIMEOUT_SECONDS), msg, user);
+					SOCKET_TIMEOUT_SECONDS), msg, user);
 
 		ITransferMethodFactory inbandMethod = ics.getTransferMethodFactory();
 		if (inbandMethod == null) {

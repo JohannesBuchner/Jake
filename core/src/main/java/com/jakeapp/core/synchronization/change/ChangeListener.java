@@ -1,4 +1,4 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.change;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;

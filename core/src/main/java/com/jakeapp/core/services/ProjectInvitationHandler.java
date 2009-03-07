@@ -121,7 +121,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 				user.setProtocolType(msg.getProtocolType());
 
 
-				log.info("got invited to Project " + p + " by " + from_userid);
+				log.info("got accept to Project " + p + " from " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
 					listener.accepted(user, p);
 				}
@@ -137,7 +137,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 				User user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 				user.setProtocolType(msg.getProtocolType());
 
-				log.info("got invited to Project " + p + " by " + from_userid);
+				log.info("got reject to Project " + p + " from " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
 					listener.rejected(user, p);
 				}

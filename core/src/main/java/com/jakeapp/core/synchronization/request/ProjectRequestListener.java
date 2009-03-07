@@ -1,4 +1,4 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.request;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
@@ -11,6 +11,9 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
+import com.jakeapp.core.synchronization.IInternalSyncService;
+import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;

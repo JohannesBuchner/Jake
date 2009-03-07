@@ -1,4 +1,4 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.pull;
 
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
@@ -10,6 +10,7 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.PullFailedException;
 import com.jakeapp.core.services.IProjectsFileServices;
 import org.springframework.transaction.annotation.Transactional;

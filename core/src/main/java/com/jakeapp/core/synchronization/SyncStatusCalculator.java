@@ -1,6 +1,7 @@
 package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.synchronization.attributes.SyncStatus;
 
 /**
  * struct for giving over to the gui

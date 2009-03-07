@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.request;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

@@ -1,9 +1,11 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.pull;
 
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
+import com.jakeapp.core.synchronization.change.ChangeListener;
+import com.jakeapp.core.synchronization.change.ChangeListenerProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.domain.JakeObject;
@@ -12,19 +14,28 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
-class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements INegotiationSuccessListener {
+public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> implements
+		INegotiationSuccessListener {
+
 	private IFileTransferService ts;
+
 	private FileRequest request;
+
 	private Semaphore sem;
+
 	private ChangeListener cl;
+
 	private JakeObject jo;
+
 	private Throwable innerException;
+
 	private ProjectApplicationContextFactory db;
 
-	private static Logger log = Logger.getLogger(FileRequestObject.class);
+	private static Logger log = Logger.getLogger(FileRequestFuture.class);
 
 
-	protected class FileProgressChangeListener extends ChangeListenerWrapper {
+	protected class FileProgressChangeListener extends ChangeListenerProxy {
+
 		public FileProgressChangeListener(ChangeListener cl) {
 			super(cl);
 		}
@@ -43,18 +54,12 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 
 	@Override
 	public String toString() {
-		return "FileRequestObject{" +
-				"ts=" + ts +
-				", request=" + request +
-				", jo=" + jo +
-				'}';
+		return "FileRequestObject{" + "ts=" + ts + ", request=" + request + ", jo=" + jo
+				+ '}';
 	}
 
-	public FileRequestObject(JakeObject jo,
-							 IFileTransferService ts,
-							 FileRequest request,
-							 ChangeListener cl,
-							 ProjectApplicationContextFactory db) {
+	public FileRequestFuture(JakeObject jo, IFileTransferService ts, FileRequest request,
+			ChangeListener cl, ProjectApplicationContextFactory db) {
 		super();
 		this.ts = ts;
 		this.request = request;
@@ -70,7 +75,7 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 	public IFileTransfer calculate() throws Exception {
 		INegotiationSuccessListener listener = new PullListener(this.jo, cl, db);
 		ts.request(request, this);
-		//wait for negotiation-success-listener
+		// wait for negotiation-success-listener
 		sem.acquire();
 
 		if (this.innerException != null && innerException instanceof Exception) {
@@ -80,11 +85,11 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 
 		listener.succeeded(getInnercontent());
 
-		//wait for FileProressChangeListener
+		// wait for FileProgressChangeListener
 		sem.acquire();
 		if (this.innerException != null && innerException instanceof Exception) {
+			// this exception came from the listener!
 			throw (Exception) innerException;
-			//this exception came from the listener!
 		}
 
 		return this.getInnercontent();
@@ -102,4 +107,3 @@ class FileRequestObject extends AvailableLaterObject<IFileTransfer> implements I
 		sem.release();
 	}
 }
-

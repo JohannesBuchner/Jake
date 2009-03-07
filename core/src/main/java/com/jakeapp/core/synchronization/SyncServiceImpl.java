@@ -1,5 +1,20 @@
 package com.jakeapp.core.synchronization;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -18,8 +33,13 @@ import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
+import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
+import com.jakeapp.core.synchronization.pull.FileRequestFuture;
+import com.jakeapp.core.synchronization.request.ProjectRequestListener;
+import com.jakeapp.core.synchronization.request.RequestHandlePolicy;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -36,13 +56,6 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -678,13 +691,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		IFileTransfer result = null;
 		FileRequest fr;
 		String relpath = fo.getRelPath();
-		ICService ics = this.icsManager.getICService(p);
 		Iterable<LogEntry> potentialProviders = this.getRequestHandlePolicy()
 				.getPotentialJakeObjectProviders(fo);
-		IFileTransferService fts = p.getMessageService().getIcsManager()
-				.getTransferService(p);
 
-		User remotePeer;
 		com.jakeapp.jake.ics.UserId remoteBackendPeer;
 		ChangeListener cl = this.getProjectChangeListener(p);
 		LogEntry realProvider = null;
@@ -697,7 +706,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				remoteBackendPeer = this.icsManager.getBackendUserId(p, potentialProvider
 						.getMember());
 
-				ts = icsManager.getTransferService(p);
+				ts = this.icsManager.getTransferService(p);
 
 				fr = new FileRequest(relpath, false, remoteBackendPeer);
 
@@ -706,17 +715,25 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 					// watches the Filetransfer and returns after the
 					// filetransfer has
 					// either returned successfully or not successfully
-					result = AvailableLaterWaiter.await(new FileRequestObject(fo, ts, fr,
+					result = AvailableLaterWaiter.await(new FileRequestFuture(fo, ts, fr,
 							cl, db));
 					// Save potentialProvider for later usage.
 					realProvider = potentialProvider;
 					break;
 				} catch (Exception ignored) {
-					// ignore Exception, continue with next potentialProvider
+					log.warn("pull from " + potentialProvider + " failed", ignored);
+					log.info("trying next provider");
+					continue;
 				}
+			} else {
+				log.warn("got invalid potentialProvider: " + potentialProvider);
 			}
 		}
-
+		
+		if(realProvider == null) {
+			log.debug("no provider found. ");
+		}
+		
 		// handle result
 		// second  part must be true after await returned
 		if (result != null && result.isDone() && realProvider != null)

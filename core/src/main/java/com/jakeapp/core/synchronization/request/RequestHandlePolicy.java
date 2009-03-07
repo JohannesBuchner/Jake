@@ -1,4 +1,4 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.request;
 
 import java.io.InputStream;
 

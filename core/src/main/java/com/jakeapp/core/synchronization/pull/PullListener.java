@@ -1,9 +1,10 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.pull;
 
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import org.apache.log4j.Logger;
 

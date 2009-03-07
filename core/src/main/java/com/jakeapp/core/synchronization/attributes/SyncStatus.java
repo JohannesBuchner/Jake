@@ -1,9 +1,10 @@
 /**
  * 
  */
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.attributes;
 
 import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.synchronization.SyncStatusCalculator;
 
 public enum SyncStatus {
 	/** no difference **/

@@ -5,8 +5,9 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.VisibilityStatus;
 
 /**
- * Detailed Infos about the User
- *
+ * Detailed information about the user
+ * 
+ * @see User
  */
 public class UserInfo {
 

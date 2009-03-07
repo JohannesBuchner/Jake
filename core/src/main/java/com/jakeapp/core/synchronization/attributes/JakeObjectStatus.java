@@ -1,4 +1,4 @@
-package com.jakeapp.core.synchronization;
+package com.jakeapp.core.synchronization.attributes;
 
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.LogAction;
@@ -29,10 +29,10 @@ public class JakeObjectStatus {
 	 * @param objectExistsLocally
 	 * @param checksumDifferentFromLastNewVersionLogEntry
 	 * @param hasUnprocessedLogEntries
-	 * @param lastProcessedLogAction		 @see {@link com.jakeapp.core.synchronization.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
+	 * @param lastProcessedLogAction		 @see {@link com.jakeapp.core.synchronization.attributes.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
 	 *      ,
-	 *      {@link com.jakeapp.core.synchronization.Existence#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
-	 *      {@link com.jakeapp.core.synchronization.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
+	 *      {@link com.jakeapp.core.synchronization.attributes.Existence#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
+	 *      {@link com.jakeapp.core.synchronization.attributes.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}
 	 */
 	public JakeObjectStatus(LogEntry<? extends ILogable> lastVersionLogEntry, LogEntry<? extends ILogable> lastLockLogEntry,
 					boolean objectExistsLocally, boolean checksumDifferentFromLastNewVersionLogEntry,
