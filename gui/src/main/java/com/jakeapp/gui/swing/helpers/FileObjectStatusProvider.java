@@ -30,25 +30,23 @@ public class FileObjectStatusProvider {
 	private static Icon unlocked = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 					FileObjectStatusProvider.class.getResource("/locked/unlocked.png")));
 
-	private static Icon local_is_up_to_date = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									FileObjectStatusProvider.class.getResource(
-													"/status/local_is_up_to_date.png")));
+	private static Icon local_is_up_to_date = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
+					"/status/local_is_up_to_date.png")));
 
-	private static Icon local_is_modified = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									FileObjectStatusProvider.class.getResource(
-													"/status/local_is_modified.png")));
+	private static Icon local_is_modified = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
+					"/status/local_is_modified.png")));
 
-	private static Icon local_is_out_of_date = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									FileObjectStatusProvider.class.getResource(
-													"/status/local_is_out_of_date.png")));
+	private static Icon local_is_out_of_date = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
+					"/status/local_is_out_of_date.png")));
 
-	private static Icon local_has_conflict = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									FileObjectStatusProvider.class.getResource(
-													"/status/local_has_conflict.png")));
+	private static Icon local_has_conflict = new ImageIcon(Toolkit
+					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
+					"/status/local_has_conflict.png")));
+
+	private static Icon spinner = new SpinningDial(16, 16);
 
 	private static JLabel getLabelComponent() {
 		JLabel result = new JLabel();
@@ -61,35 +59,42 @@ public class FileObjectStatusProvider {
 
 	public static Component getStatusRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
+		Icon icon = getStatusIcon(obj);
+		label.setIcon(icon);
+		return label;
+	}
 
-		Attributed<FileObject> status = JakeMainApp.getCore().getAttributed(JakeMainApp.getProject(), obj);
+	public static Icon getStatusIcon(FileObject obj) {
+		Attributed<FileObject> status =
+						JakeMainApp.getCore().getAttributed(JakeMainApp.getProject(), obj);
+
+		// hack
+		//if(true)
+		//	return spinner;
 
 		if (status == null) {
 			log.warn("Got NULL for sync status of: " + obj);
 		} else {
 
 			if (status.isOnlyLocal() || status.isOnlyRemote()) {
-				label.setText("");
+				return null;
 			} else if (status.isLocalLatest()) {
-				label.setIcon(local_is_up_to_date);
+				return local_is_up_to_date;
 			} else if (status.isInConflict()) {
-				label.setIcon(local_has_conflict);
+				return local_has_conflict;
 			} else if (status.isModifiedLocally()) {
-				label.setIcon(local_is_modified);
+				return local_is_modified;
 			} else if (status.isModifiedRemote()) {
-				label.setIcon(local_is_out_of_date);
+				return local_is_out_of_date;
 			}
 		}
-
-		// hack
-		label.setIcon(new SpinningDial());
-
-		return label;
+	return null;
 	}
 
 	public static Component getLockedRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
-		Attributed<FileObject> fo = JakeMainApp.getCore().getAttributed(obj.getProject(), obj);
+		Attributed<FileObject> fo =
+						JakeMainApp.getCore().getAttributed(obj.getProject(), obj);
 		label.setIcon(fo.isLocked() ? locked : unlocked);
 		return label;
 	}

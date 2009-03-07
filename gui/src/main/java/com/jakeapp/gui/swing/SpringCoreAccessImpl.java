@@ -396,7 +396,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		Attributed<T> result = null;
 		
 		try {
-			log.trace("jakeObject" + jakeObject);
+			//log.trace("jakeObject" + jakeObject);
 
 			// sanity check - hey, we don't wanna mess with the core!
 			if (jakeObject == null) {

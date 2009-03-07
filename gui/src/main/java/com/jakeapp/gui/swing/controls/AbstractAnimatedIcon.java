@@ -12,24 +12,11 @@
  */
 package com.jakeapp.gui.swing.controls;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import javax.swing.CellRendererPane;
-import javax.swing.Icon;
-import javax.swing.JList;
-import javax.swing.JTable;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 /** Provide animation of auto-generated animations.  Makes use of the repaint
  * tracking structure established by {@link AnimatedIcon}. 
@@ -117,17 +104,31 @@ public abstract class AbstractAnimatedIcon extends AnimatedIcon {
         }
         super.registerRepaintArea(c, x, y, w, h);
     }
-    
-    private static class AnimationUpdater implements ActionListener {
-        private WeakReference ref;
+
+	private class AnimationUpdater implements ActionListener {
+        private WeakReference<AbstractAnimatedIcon> ref;
         public AnimationUpdater(AbstractAnimatedIcon icon) {
-            this.ref = new WeakReference(icon);
+            this.ref = new WeakReference<AbstractAnimatedIcon>(icon);
         }
         public void actionPerformed(ActionEvent e) {
-            AbstractAnimatedIcon icon = (AbstractAnimatedIcon)ref.get();
+            AbstractAnimatedIcon icon = ref.get();
             if (icon != null) {
                 icon.nextFrame();
+
+							if(atc != null) {
+								atc.animationTimed();
+							}
             }
         }
     }
+
+	public void addTimerCallback(AnimationTimerCallback atc) {
+		this.atc = atc;
+	}
+
+	private AnimationTimerCallback atc;
+
+	public interface AnimationTimerCallback {
+		public void animationTimed();
+	}
 }

@@ -53,7 +53,7 @@ public class JakeSourceList extends JakeGuiComponent
 
 	private Map<SourceListItem, Project> sourceListProjectMap =
 					new HashMap<SourceListItem, Project>();
-	;
+
 	private Map<SourceListItem, Invitation> sourceListInvitationMap =
 					new HashMap<SourceListItem, Invitation>();
 	private Icon projectStartedIcon;

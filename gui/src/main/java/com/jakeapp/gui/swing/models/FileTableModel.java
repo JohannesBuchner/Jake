@@ -22,10 +22,10 @@ import java.util.List;
 /**
  * Flat representation of FolderObjectTreeTableModel
  */
-public class FileObjectsTableModel extends AbstractTableModel
+public class FileTableModel extends AbstractTableModel
 				implements ProjectSelectionChanged, DataChanged {
 	private static final Logger log =
-					Logger.getLogger(FolderObjectsTreeTableModel.class);
+					Logger.getLogger(FolderTreeTableModel.class);
 
 	private List<FileObject> files;
 
@@ -39,17 +39,17 @@ public class FileObjectsTableModel extends AbstractTableModel
 
 	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
 		// fixme react on specific project only
-		if(reason.contains(Reason.Files)) {
+		if (reason.contains(Reason.Files)) {
 			fireUpdate();
 		}
 	}
 
-	enum Columns {
-		FLock, FState, Name, Path, Size, LastMod, Tags
+	public enum Columns {
+		FState, Name, Path, Size, LastMod, Tags, FLock
 	}
 
-	public FileObjectsTableModel() {
-		log.trace("Created FileObjectsTableModel");
+	public FileTableModel() {
+		log.trace("Created FileTableModel");
 
 		// register for selection changes
 		EventCore.get().addDataChangedCallbackListener(this);
@@ -58,16 +58,14 @@ public class FileObjectsTableModel extends AbstractTableModel
 		updateData();
 	}
 
-		public void fireUpdate() {
-			updateData();
-			this.fireTableDataChanged();
-		}
+	public void fireUpdate() {
+		updateData();
+		this.fireTableDataChanged();
+	}
 
 	@Override
 	public String getColumnName(int column) {
 		switch (Columns.values()[column]) {
-			case FLock:
-				return "";
 			case FState:
 				return "";
 			case Name:
@@ -80,6 +78,8 @@ public class FileObjectsTableModel extends AbstractTableModel
 				return "Last Modified";
 			case Tags:
 				return "Tags";
+			case FLock:
+				return "";
 			default:
 				return null;
 		}
@@ -88,8 +88,6 @@ public class FileObjectsTableModel extends AbstractTableModel
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (Columns.values()[columnIndex]) {
-			case FLock:
-				return FileObjectLockedCell.class;
 			case FState:
 				return FileObjectStatusCell.class;
 			case Name:
@@ -102,6 +100,8 @@ public class FileObjectsTableModel extends AbstractTableModel
 				return String.class;
 			case Tags:
 				return String.class;
+			case FLock:
+				return FileObjectLockedCell.class;			
 			default:
 				return null;
 		}
@@ -119,7 +119,7 @@ public class FileObjectsTableModel extends AbstractTableModel
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(files == null || rowIndex >= files.size() || rowIndex<0) {
+		if (files == null || rowIndex >= files.size() || rowIndex < 0) {
 			log.warn("Attemt to get value for invalid row " + rowIndex);
 			return null;
 		}
@@ -127,9 +127,8 @@ public class FileObjectsTableModel extends AbstractTableModel
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 
 		// FIXME cache!! get async?
-		Attributed<FileObject> fileInfo = JakeMainApp.getCore().getAttributed(
-						JakeMainApp.getProject(),
-						ournode.getFileObject());
+		Attributed<FileObject> fileInfo = JakeMainApp.getCore()
+						.getAttributed(JakeMainApp.getProject(), ournode.getFileObject());
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:

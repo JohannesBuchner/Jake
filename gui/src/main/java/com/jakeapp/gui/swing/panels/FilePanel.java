@@ -16,7 +16,7 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
 import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.helpers.*;
-import com.jakeapp.gui.swing.models.FileObjectsTableModel;
+import com.jakeapp.gui.swing.models.FileTableModel;
 import com.jakeapp.gui.swing.renderer.FileLockedTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.FileStatusTreeCellRenderer;
 import com.jakeapp.gui.swing.renderer.ProjectFilesTableCellRenderer;
@@ -48,8 +48,7 @@ public class FilePanel extends javax.swing.JPanel
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 	private static FilePanel instance;
 
-	public static final int FILETREETABLE_NODECOLUMN = 2;
-	public static final int FILETABLE_NODECOLUMN = 2;
+	public static final int FILETREETABLE_NODECOLUMN = 1;
 
 	private Project project;
 	private ResourceMap resourceMap;
@@ -112,7 +111,7 @@ public class FilePanel extends javax.swing.JPanel
 						FILETREETABLE_NODECOLUMN));
 		this.fileTable.addMouseListener(new FileContainerMouseListener(this,
 						fileTable,
-						FILETABLE_NODECOLUMN));
+						FileTableModel.Columns.Name.ordinal()));
 
 		this.fileTreeTable.addKeyListener(new FileTreeTableKeyListener(this));
 
@@ -217,7 +216,7 @@ public class FilePanel extends javax.swing.JPanel
 			ProjectFilesTreeNode node = (ProjectFilesTreeNode) this.fileTreeTable
 							.getValueAt(row,
 											(this.treeViewActive ? FILETREETABLE_NODECOLUMN :
-															FILETABLE_NODECOLUMN));
+															FileTableModel.Columns.FState.ordinal()));
 			nodeObjs.add(node);
 		}
 
@@ -245,7 +244,7 @@ public class FilePanel extends javax.swing.JPanel
 			for (int row : fileTreeTable.getSelectedRows()) {
 				ProjectFilesTreeNode node = (ProjectFilesTreeNode) fileTreeTable.getValueAt(
 								row,
-								(treeViewActive ? FILETREETABLE_NODECOLUMN : FILETABLE_NODECOLUMN));
+								(treeViewActive ? FILETREETABLE_NODECOLUMN : FileTableModel.Columns.FState.ordinal()));
 				if (node.isFile()) {
 					fileObjs.add(node.getFileObject());
 				}
@@ -457,7 +456,7 @@ public class FilePanel extends javax.swing.JPanel
 		// add file table
 		this.fileTable = new ITunesTable();
 		this.fileTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		this.fileTable.setModel(new FileObjectsTableModel());
+		this.fileTable.setModel(new FileTableModel());
 
 		int vColIndex = 2;
 		TableColumn col = this.fileTable.getColumnModel().getColumn(vColIndex);

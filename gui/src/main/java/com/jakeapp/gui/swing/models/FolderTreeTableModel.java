@@ -6,7 +6,6 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
-import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.TagHelper;
@@ -14,6 +13,7 @@ import com.jakeapp.jake.fss.IModificationListener;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
+import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
@@ -21,14 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged {
-	private static final Logger log = Logger.getLogger(FolderObjectsTreeTableModel.class);
+public class FolderTreeTableModel implements TreeTableModel, FilesChanged {
+	private static final Logger log = Logger.getLogger(FolderTreeTableModel.class);
 
 	private ProjectFilesTreeNode root;
 
 	private List<TreeModelListener> listeners = new ArrayList<TreeModelListener>();
 
-	public FolderObjectsTreeTableModel(ProjectFilesTreeNode root) {
+	public FolderTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
 		JakeMainApp.getCore().addFilesChangedListener(this, JakeMainApp.getProject());
 	}
@@ -53,7 +53,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 			case 0:
 				return FileObjectLockedCell.class;
 			case 1:
-				return FileObjectStatusCell.class;
+				return Icon.class;
 			case 2:
 				return ProjectFilesTreeNode.class;
 			case 3:
@@ -109,7 +109,7 @@ public class FolderObjectsTreeTableModel implements TreeTableModel, FilesChanged
 				case 0:
 					return new FileObjectLockedCell(ournode.getFileObject());
 				case 1:
-					return new FileObjectStatusCell(ournode.getFileObject());
+				//	return new FileObjectStatusCell(ournode.getFileObject());
 				case 2:
 					return ournode;
 				case 3:
