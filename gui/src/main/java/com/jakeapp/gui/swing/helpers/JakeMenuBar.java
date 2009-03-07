@@ -56,7 +56,7 @@ public class JakeMenuBar extends JMenuBar {
 		projectMenu.add(new JMenuItem(new RenameProjectAction()));
 		projectMenu.add(new JMenuItem(new DeleteProjectAction()));
 		projectMenu.addSeparator();
-		projectMenu.add(new JMenuItem(new InvitePeopleAction(true)));
+		projectMenu.add(new JMenuItem(new InviteUsersAction(true)));
 		projectMenu.addSeparator();
 		// TODO: sign in action
 

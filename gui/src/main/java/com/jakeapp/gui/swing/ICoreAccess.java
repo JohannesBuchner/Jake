@@ -237,8 +237,9 @@ public interface ICoreAccess {
 	 * Get/Sends all log entries, etc
 	 *
 	 * @param project
+	 * @param user
 	 */
-	void syncProject(Project project);
+	void syncProject(Project project, User user);
 
 
 	/**

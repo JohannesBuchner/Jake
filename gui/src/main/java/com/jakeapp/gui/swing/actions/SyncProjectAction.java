@@ -36,7 +36,7 @@ public class SyncProjectAction extends ProjectAction {
 		}
 
 		try {
-			JakeMainApp.getCore().syncProject(getProject());
+			JakeMainApp.getCore().syncProject(getProject(), null);
 		} catch (Exception e) {
 			ExceptionUtilities.showError(e);
 		}

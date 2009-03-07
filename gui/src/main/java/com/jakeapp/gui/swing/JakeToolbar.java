@@ -7,7 +7,7 @@ import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
 import com.jakeapp.gui.swing.actions.ImportFileAction;
-import com.jakeapp.gui.swing.actions.InvitePeopleAction;
+import com.jakeapp.gui.swing.actions.InviteUsersAction;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
@@ -97,7 +97,7 @@ public class JakeToolbar {
 
 		// Add People
 
-		JButton invitePeopleJButton = new JButton(new InvitePeopleAction(false));
+		JButton invitePeopleJButton = new JButton(new InviteUsersAction(false));
 		invitePeopleButton = MacButtonFactory.makeUnifiedToolBarButton(invitePeopleJButton);
 		invitePeopleButton.setBorder(new LineBorder(Color.BLACK, 0));
 		toolBar.addComponentToLeft(invitePeopleButton, 10);

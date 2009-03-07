@@ -2,9 +2,10 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.actions.InvitePeopleAction;
-import com.jakeapp.gui.swing.actions.RenamePeopleAction;
+import com.jakeapp.gui.swing.actions.InviteUsersAction;
+import com.jakeapp.gui.swing.actions.RenameUsersAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.SyncUsersAction;
 import com.jakeapp.gui.swing.actions.TrustFullPeopleAction;
 import com.jakeapp.gui.swing.actions.TrustNoPeopleAction;
 import com.jakeapp.gui.swing.actions.TrustPeopleAction;
@@ -67,7 +68,7 @@ public class NewsPanel extends javax.swing.JPanel
 	private javax.swing.JLabel optionsLabel;
 	private javax.swing.JPanel optionsPanel;
 	private javax.swing.JLabel peopleLabel;
-	private org.jdesktop.swingx.JXList peopleList;
+	private org.jdesktop.swingx.JXList usersList;
 	private javax.swing.JScrollPane peopleScrollPanel;
 	private org.jdesktop.swingx.JXHyperlink projectFolderHyperlink;
 	private javax.swing.JLabel projectIconLabel;
@@ -128,13 +129,13 @@ public class NewsPanel extends javax.swing.JPanel
 		});
 
 		// configure the people list
-		this.peopleList.setHighlighters(HighlighterFactory.createSimpleStriping());
-		this.peopleList.setModel(new PeopleListModel());
-		this.peopleList.setCellRenderer(new PeopleListCellRenderer());
-		((JListMutable) this.peopleList)
+		this.usersList.setHighlighters(HighlighterFactory.createSimpleStriping());
+		this.usersList.setModel(new PeopleListModel());
+		this.usersList.setCellRenderer(new PeopleListCellRenderer());
+		((JListMutable) this.usersList)
 						.setListCellEditor(new PeopleListCellEditor(new JTextField()));
 
-		this.peopleList.addMouseListener(new PeopleListMouseListener());
+		this.usersList.addMouseListener(new UsersListMouseListener());
 
 		// config the recent events table
 		this.eventTableModel = new EventsTableModel(getProject());
@@ -192,59 +193,60 @@ public class NewsPanel extends javax.swing.JPanel
 		}
 	}
 
-	private class PeopleListMouseListener implements MouseListener {
+	private class UsersListMouseListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent me) {
 			if (SwingUtilities.isRightMouseButton(me)) {
-				log.debug("right clicked");
+				log.trace("right clicked");
 				// get the coordinates of the mouse click
 				Point p = me.getPoint();
 
 				// get the row index that contains that coordinate
-				int rowNumber = peopleList.locationToIndex(p);
+				int rowNumber = usersList.locationToIndex(p);
 
 				// Get the ListSelectionModel of the JTable
-				ListSelectionModel model = peopleList.getSelectionModel();
+				ListSelectionModel model = usersList.getSelectionModel();
 
 				// set the selected interval of rows. Using the "rowNumber"
 				// variable for the beginning and end selects only that one
 				// row.
 				// ONLY select new item if we didn't select multiple items.
-				if (peopleList.getSelectedValues().length <= 1) {
+				if (usersList.getSelectedValues().length <= 1) {
 					model.setSelectionInterval(rowNumber, rowNumber);
 				}
-
-				showMenu(me);
+				showUsersMenu(me);
 			}
 		}
 
-		private void showMenu(MouseEvent me) {
-			log.info("triggered popup event");
+		private void showUsersMenu(MouseEvent me) {
+			log.trace("triggered popup event");
 
 			JPopupMenu pm = new JakePopupMenu();
 
-			pm.add(new JMenuItem(new InvitePeopleAction(true)));
+			pm.add(new JMenuItem(new InviteUsersAction(true)));
 			pm.add(new JSeparator());
-			pm.add(new JMenuItem(new RenamePeopleAction((JListMutable) peopleList)));
+			pm.add(new JMenuItem(new RenameUsersAction((JListMutable) usersList)));
 			pm.add(new JSeparator());
-			pm.add(new JCheckBoxMenuItem(new TrustFullPeopleAction(peopleList)));
-			pm.add(new JCheckBoxMenuItem(new TrustPeopleAction(peopleList)));
-			pm.add(new JCheckBoxMenuItem(new TrustNoPeopleAction(peopleList)));
+			pm.add(new JMenuItem(new SyncUsersAction(usersList)));
+			pm.add(new JSeparator());
+			pm.add(new JCheckBoxMenuItem(new TrustFullPeopleAction(usersList)));
+			pm.add(new JCheckBoxMenuItem(new TrustPeopleAction(usersList)));
+			pm.add(new JCheckBoxMenuItem(new TrustNoPeopleAction(usersList)));
 
-			pm.show(peopleList, (int) me.getPoint().getX(), (int) me.getPoint().getY());
+			pm.show(usersList, (int) me.getPoint().getX(), (int) me.getPoint().getY());
 		}
 
 		@Override
 		public void mousePressed(MouseEvent mouseEvent) {
 			log.trace("mousePressed");
-			//showMenu(mouseEvent);
+			//showUsersMenu(mouseEvent);
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent mouseEvent) {
 			log.trace("mouseReleased");
-			//showMenu(mouseEvent);
+			//showUsersMenu(mouseEvent);
 		}
 
 		@Override
@@ -308,7 +310,7 @@ public class NewsPanel extends javax.swing.JPanel
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JSheet.showMessageSheet(peopleList, "Bla");
+				JSheet.showMessageSheet(usersList, "Bla");
 			}
 		});
 
@@ -342,7 +344,7 @@ public class NewsPanel extends javax.swing.JPanel
 		this.eventsTable = new ITunesTable();
 
 		this.peopleScrollPanel = new javax.swing.JScrollPane();
-		this.peopleList = new JListMutable();
+		this.usersList = new JListMutable();
 		this.peopleLabel = new javax.swing.JLabel();
 		this.optionsPanel = new javax.swing.JPanel();
 		this.autoUploadCB = new javax.swing.JCheckBox();
@@ -473,11 +475,11 @@ public class NewsPanel extends javax.swing.JPanel
 
 		this.peopleScrollPanel.setName("peopleScrollPanel"); // NOI18N
 
-		this.peopleList.setDoubleBuffered(true);
-		this.peopleList.setDragEnabled(true);
-		this.peopleList.setName("peopleList"); // NOI18N
-		this.peopleList.setRolloverEnabled(true);
-		this.peopleScrollPanel.setViewportView(this.peopleList);
+		this.usersList.setDoubleBuffered(true);
+		this.usersList.setDragEnabled(true);
+		this.usersList.setName("usersList"); // NOI18N
+		this.usersList.setRolloverEnabled(true);
+		this.peopleScrollPanel.setViewportView(this.usersList);
 
 		this.peopleLabel.setFont(resourceMap.getFont("peopleLabel.font")); // NOI18N
 		this.peopleLabel

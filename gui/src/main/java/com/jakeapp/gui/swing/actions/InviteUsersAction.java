@@ -14,15 +14,15 @@ import java.awt.event.ActionEvent;
  * Opens a Dialog that let you add people to the project.
  * They get an invitation and can join/refuse the project.
  */
-public class InvitePeopleAction extends ProjectAction {
-	private static final Logger log = Logger.getLogger(InvitePeopleAction.class);
+public class InviteUsersAction extends ProjectAction {
+	private static final Logger log = Logger.getLogger(InviteUsersAction.class);
 
 	/**
 	 * Create a new <code>InvitePeopleAction</code>.
 	 * @param ellipsis if <code>true</code> the <code>Action.NAME</code> ends with an ellipsis (...), if
 	 * <code>false</code> the dots are omitted.
 	 */
-	public InvitePeopleAction(boolean ellipsis) {
+	public InviteUsersAction(boolean ellipsis) {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
