@@ -69,8 +69,8 @@ public class FileObjectStatusProvider {
 						JakeMainApp.getCore().getAttributed(JakeMainApp.getProject(), obj);
 
 		// hack
-		//if(true)
-		//	return spinner;
+		if(true)
+			return spinner;
 
 		if (status == null) {
 			log.warn("Got NULL for sync status of: " + obj);
