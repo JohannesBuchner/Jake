@@ -89,4 +89,32 @@ public class Invitation {
 		return new Project(projectName, projectUUID, null, null);
 	}
 
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Invitation that = (Invitation) o;
+
+		if (creation != null ? !creation.equals(that.creation) : that.creation != null) return false;
+		if (invitedOn != null ? !invitedOn.equals(that.invitedOn) : that.invitedOn != null) return false;
+		if (inviter != null ? !inviter.equals(that.inviter) : that.inviter != null) return false;
+		if (message != null ? !message.equals(that.message) : that.message != null) return false;
+		if (projectName != null ? !projectName.equals(that.projectName) : that.projectName != null) return false;
+		if (projectUUID != null ? !projectUUID.equals(that.projectUUID) : that.projectUUID != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = projectUUID != null ? projectUUID.hashCode() : 0;
+		result = 31 * result + (projectName != null ? projectName.hashCode() : 0);
+		result = 31 * result + (creation != null ? creation.hashCode() : 0);
+		result = 31 * result + (invitedOn != null ? invitedOn.hashCode() : 0);
+		result = 31 * result + (inviter != null ? inviter.hashCode() : 0);
+		result = 31 * result + (message != null ? message.hashCode() : 0);
+		return result;
+	}
 }

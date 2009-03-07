@@ -169,10 +169,10 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		Assert.assertEquals(1, this.getProjectDao().getAll().size());
 
 		// Account credentials =
-		// this.getServiceCredentialsDao().create(credentials1);
+		// this.getAccountDao().create(credentials1);
 		// Assert.assertEquals(credentials, credentials1);
 		// Assert.assertEquals(1,
-		// this.getServiceCredentialsDao().getAll().size());
+		// this.getAccountDao().getAll().size());
 
 		project.setCredentials(credentials1);
 		project = this.getProjectDao().update(project);
@@ -192,7 +192,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		sc.setUuid(project_1_uuid);
 		
 		// don't do this, the project's create saves it for us
-		// this.getServiceCredentialsDao().create(sc);
+		// this.getAccountDao().create(sc);
 		
 		// create Project
 		p = new Project("lol", UUID.fromString(project_1_uuid), new XMPPMsgService(),

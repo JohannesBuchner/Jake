@@ -44,11 +44,11 @@ public class MsgServiceManager {
 		this.icsManager = icsManager;
 	}
 
-	private IAccountDao getServiceCredentialsDao() {
+	private IAccountDao getAccountDao() {
 		return this.accountDao;
 	}
 
-	public void setServiceCredentialsDao(IAccountDao accountDao) {
+	public void setAccountDao(IAccountDao accountDao) {
 		this.accountDao = accountDao;
 	}
 
@@ -66,7 +66,7 @@ public class MsgServiceManager {
 	 * not exist yet.
 	 * 
 	 * @param credentials
-	 *            The ServiceCredentials to create a MsgService for.
+	 *            The AccountDao to create a MsgService for.
 	 * @throws ProtocolNotSupportedException
 	 *             if the protocol specified in the credentials is not
 	 *             supported.
@@ -84,7 +84,7 @@ public class MsgServiceManager {
 			credentials.setUuid(UUID.randomUUID().toString());
 		}
 
-		MsgService.setServiceCredentialsDao(getServiceCredentialsDao());
+		MsgService.setServiceCredentialsDao(getAccountDao());
 
 		log.debug("creating MsgService with crendentials: " + credentials);
 		log.debug("User="
@@ -199,10 +199,10 @@ public class MsgServiceManager {
 
 		// persist the Account!
 		try {
-			this.getServiceCredentialsDao().read(UUID.fromString(credentials.getUuid()));
-			this.getServiceCredentialsDao().update(credentials);
+			this.getAccountDao().read(UUID.fromString(credentials.getUuid()));
+			this.getAccountDao().update(credentials);
 		} catch (NoSuchServiceCredentialsException e) {
-			this.getServiceCredentialsDao().create(credentials);
+			this.getAccountDao().create(credentials);
 		}
 		getAll();
 		return getOrCreate(credentials);

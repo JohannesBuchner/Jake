@@ -105,7 +105,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.HibernateAccountDao">
+    <bean id="accountDao" class="com.jakeapp.core.dao.HibernateAccountDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 

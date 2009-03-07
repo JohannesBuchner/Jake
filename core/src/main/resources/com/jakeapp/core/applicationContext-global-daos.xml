@@ -13,12 +13,12 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!-- ========================= GENERAL DEFINITIONS ========================= -->
 
-    <bean id="backendServiceCredentialsDao" class="com.jakeapp.core.dao.HibernateAccountDao">
+    <bean id="backendAccountDao" class="com.jakeapp.core.dao.HibernateAccountDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
-    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.ThreadedAccountDao">
-        <constructor-arg index="0" ref="backendServiceCredentialsDao" type="com.jakeapp.core.dao.IAccountDao"/>
+    <bean id="accountDao" class="com.jakeapp.core.dao.ThreadedAccountDao">
+        <constructor-arg index="0" ref="backendAccountDao" type="com.jakeapp.core.dao.IAccountDao"/>
     </bean>
 
     <bean id="backendProjectDao" class="com.jakeapp.core.dao.HibernateProjectDao">

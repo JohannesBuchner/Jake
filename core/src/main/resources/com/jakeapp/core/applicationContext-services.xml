@@ -26,7 +26,7 @@
     </bean>
 
     <bean id="msgServiceManager" class="com.jakeapp.core.services.MsgServiceManager">
-        <property name="serviceCredentialsDao" ref="serviceCredentialsDao"/>
+        <property name="accountDao" ref="accountDao"/>
         <property name="ICSManager" ref="icsManager"/>
         <property name="coreProjectInvitationListener" ref="coreProjectInvitationListener" />
     </bean>
@@ -56,7 +56,7 @@
                          type="com.jakeapp.core.services.MsgServiceManager"/>
 
         <property name="projectDao" ref="projectDao"/>
-        <property name="serviceCredentialsDao" ref="serviceCredentialsDao"/>
+        <property name="accountDao" ref="accountDao"/>
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
         <property name="syncService" ref="syncService"/>
         <property name="projectsFileServices" ref="projectsFileServices"/>
@@ -71,7 +71,7 @@
                          type="com.jakeapp.core.services.MsgServiceManager"/>
         <constructor-arg index="2" ref="syncService" 
                          type="com.jakeapp.core.synchronization.IFriendlySyncService" />
-        <constructor-arg index="3" ref="serviceCredentialsDao"
+        <constructor-arg index="3" ref="accountDao"
                          type="com.jakeapp.core.dao.IAccountDao" />
     </bean>
 

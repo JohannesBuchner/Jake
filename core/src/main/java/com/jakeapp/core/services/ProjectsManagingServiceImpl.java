@@ -1113,11 +1113,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		
 	}
 
-	public void setServiceCredentialsDao(IAccountDao accountDao) {
+	public void setAccountDao(IAccountDao accountDao) {
 		this.accountDao = accountDao;
 	}
 
-	public IAccountDao getServiceCredentialsDao() {
+	public IAccountDao getAccountDao() {
 		return accountDao;
 	}
 

@@ -44,7 +44,7 @@
 
 
     <bean id="msgServiceFactory" class="com.jakeapp.core.services.MsgServiceFactory">
-        <constructor-arg index="0" ref="serviceCredentialsDao"
+        <constructor-arg index="0" ref="accountDao"
                          type="com.jakeapp.core.dao.IAccountDao" />
     </bean>
 
@@ -55,7 +55,7 @@
         <constructor-arg ref="msgServiceFactory" index="1"
                          type="com.jakeapp.core.services.MsgServiceFactory"/>
         <constructor-arg ref="syncService" index="2" type="com.jakeapp.core.synchronization.IFriendlySyncService" />
-	<constructor-arg index="3" ref="serviceCredentialsDao"
+	<constructor-arg index="3" ref="accountDao"
                          type="com.jakeapp.core.dao.IAccountDao" />
     </bean>
 

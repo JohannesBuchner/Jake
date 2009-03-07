@@ -27,14 +27,14 @@ public class HibernateAccountDaoTest extends AbstractJUnit4SpringContextTests {
 
     Account validCredentials;
 
-	public static void setServiceCredentialsDao(IAccountDao accountDao) {
+	public static void setAccountDao(IAccountDao accountDao) {
         HibernateAccountDaoTest.accountDao = accountDao;
     }
 
 
     @Before
     public void setUp() throws UnknownHostException, InvalidCredentialsException {
-        setServiceCredentialsDao((IAccountDao) applicationContext.getBean("serviceCredentialsDao"));
+        setAccountDao((IAccountDao) applicationContext.getBean("accountDao"));
 
 
         validCredentials = new Account();

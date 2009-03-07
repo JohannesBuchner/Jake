@@ -13,10 +13,7 @@ import static org.junit.Assert.assertThat;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.IInvitationDao;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
@@ -24,6 +21,7 @@ import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import junit.framework.Assert;
 
 import java.util.UUID;
+import java.util.Date;
 
 
 public class ProjectInvitationListenerTest {
@@ -74,12 +72,26 @@ public class ProjectInvitationListenerTest {
 
 	}
 
+
+	private Date current;
+
 	@Test
 	public void testIncomingInviteMessage() throws Exception {
+		Invitation invitation = new Invitation(project, user);
 
+		Answer answer = new Answer(){
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+				current = ((Invitation) invocationOnMock.getArguments()[0]).getCreation();
+				return null;
+			}
+		};
+
+		doAnswer(answer).when(invitationDao).create((Invitation) anyObject());
 
 		projectInvitationListener.invited(user, project);
-		verify(projectDao, times(1)).create(project);
+		invitation.setCreation(current);
+		verify(invitationDao, times(1)).create(invitation);
 	}
 
 	ProjectJoinedLogEntry resultProjectJoinedLogEntry;
