@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.callbacks;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.attributes.Attributed;
 
 import java.util.List;
 

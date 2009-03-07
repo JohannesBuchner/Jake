@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.SpringCoreAccessImpl;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.jake.fss.IModificationListener;

@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;

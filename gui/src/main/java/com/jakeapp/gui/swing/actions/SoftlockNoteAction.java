@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;

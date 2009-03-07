@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import org.apache.log4j.Logger;

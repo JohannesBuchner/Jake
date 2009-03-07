@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
-import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;

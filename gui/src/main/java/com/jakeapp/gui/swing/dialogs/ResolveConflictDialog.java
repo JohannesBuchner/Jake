@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.dialogs;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.core.synchronization.Attributed;
+import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.abstracts.JakeAction;

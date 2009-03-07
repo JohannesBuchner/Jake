@@ -6,7 +6,7 @@ package com.jakeapp.gui.console;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.synchronization.ChangeListener;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
