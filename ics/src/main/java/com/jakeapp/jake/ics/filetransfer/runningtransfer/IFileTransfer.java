@@ -7,7 +7,8 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 
 
 /**
- * for javadoc, see Smacks FileTransfer.
+ * for javadoc, see Smacks FileTransfer
+ * (org.jivesoftware.smackx.filetransfer.FileTransfer).
  * 
  * @author johannes
  */
@@ -18,7 +19,7 @@ public interface IFileTransfer {
 	public long getAmountWritten();
 
 	/**
-	 * @return null if no error occured, the error description otherwise 
+	 * @return null if no error occured, the error description otherwise
 	 */
 	public String getError();
 
@@ -35,8 +36,8 @@ public interface IFileTransfer {
 	public Status getStatus();
 
 	public boolean isDone();
-	
+
 	public FileRequest getFileRequest();
-	
+
 	public Boolean isReceiving();
 }

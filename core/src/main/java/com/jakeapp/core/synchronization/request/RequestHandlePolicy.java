@@ -20,7 +20,7 @@ public interface RequestHandlePolicy {
 	 * {@link com.jakeapp.core.domain.logentries.LogEntry#getMember()}
 	 * 
 	 * @param jo
-	 * @return the Logentries with the UserIds to try, null if noone could be found
+	 * @return the Logentries with the UserIds to try, a empty list if noone could be found
 	 */
 	/*
 	 * Notes for implementation: Provide the last editor as first, then maybe

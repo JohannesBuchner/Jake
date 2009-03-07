@@ -1,5 +1,6 @@
-package com.jakeapp.jake.ics;
+package com.jakeapp.jake.test;
 
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -29,7 +30,9 @@ public class SimpleFakeMessageExchanger {
 	}
 
 	/**
-	 * FIXME: document this!
+	 * a simple messaging broker for mocking.
+	 * 
+	 * @see IMsgService
 	 */
 	private class Spitter implements IMsgService {
 
@@ -47,13 +50,14 @@ public class SimpleFakeMessageExchanger {
 			listener.add(receiveListener);
 		}
 
-		@Override public void registerLoginStateListener(ILoginStateListener loginListener) {
+		@Override
+		public void registerLoginStateListener(ILoginStateListener loginListener) {
 		}
 
 		@Override
 		public Boolean sendMessage(UserId to_userid, String content)
-				throws NetworkException, TimeoutException,
-				NoSuchUseridException, OtherUserOfflineException {
+				throws NetworkException, TimeoutException, NoSuchUseridException,
+				OtherUserOfflineException {
 			log.debug(user + " -> " + to_userid + " : " + content);
 			users.get(to_userid).notify(user, content);
 			return true;
@@ -81,10 +85,11 @@ public class SimpleFakeMessageExchanger {
 		public void unRegisterReceiveMessageListener(
 				IMessageReceiveListener receiveListener) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
-		@Override public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
+		@Override
+		public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
 		}
 	}
 }

@@ -109,7 +109,8 @@ public class ProjectRequestListener
 		return content.substring(begin, end);
 	}
 
-	@Override @Transactional
+	@Override 
+	@Transactional
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
 					String content) {
 
@@ -170,46 +171,9 @@ public class ProjectRequestListener
 					log.debug("Failed to deserialize and/or save", t);
 				}
 			}
+			return;
 		}
-
-		// TODO: The stuff below here could use some refactoring
-		// (e.g. redeclaring parameter content)
-		int uuidlen = UUID.randomUUID().toString().length();
-		String projectid = message.substring(0, uuidlen);
-		message = message.substring(uuidlen);
-		Project p = syncService.getProjectById(projectid);
-		ChangeListener cl = syncService.getProjectChangeListener(projectid);
-		if (message.startsWith(NEW_NOTE)) {
-			log.debug("requesting note");
-			UUID uuid = UUID.fromString(message.substring(NEW_NOTE.length()));
-			log.debug("persisting object");
-			NoteObject no = new NoteObject(uuid, p, "loading ...");
-			db.getNoteObjectDao(p).persist(no);
-			log.debug("calling other user: " + from_userid);
-			try {
-				p.getMessageService().getIcsManager().getTransferService(p)
-								.request(new FileRequest("N" + uuid, false, from_userid),
-												cl.beganRequest(no));
-			} catch (NotLoggedInException e) {
-				log.error("Not logged in");
-			}
-		}
-
-		if (message.startsWith(NEW_FILE)) {
-			log.debug("requesting file");
-			String relpath = message.substring(NEW_FILE.length());
-			FileObject fo = new FileObject(p, relpath);
-			log.debug("persisting object");
-			db.getFileObjectDao(p).persist(fo);
-			log.debug("calling other user: " + from_userid);
-			try {
-				p.getMessageService().getIcsManager().getTransferService(p)
-								.request(new FileRequest("F" + relpath, false, from_userid),
-												cl.beganRequest(fo));
-			} catch (NotLoggedInException e) {
-				log.error("Not logged in");
-			}
-		}
+		log.warn("We got a unknown/unhandled Message: " + message);
 	}
 
 	@Override

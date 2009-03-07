@@ -39,7 +39,7 @@ public class PullWatcher implements ITransferListener {
 		this.projectsFileServices = projectsFileServices;
 	}
 
-	IFSService getFSS(Project p) {
+	private IFSService getFSS(Project p) {
 		return this.getProjectsFileServices().getProjectFSService(p);
 	}
 
@@ -65,56 +65,47 @@ public class PullWatcher implements ITransferListener {
 
 	@Override
 	public void onFailure(AdditionalFileTransferData transfer, String error) {
-		changeListener.pullFailed(jakeObject, new PullFailedException(error));
 		log.error("transfer for " + jakeObject + " failed: " + error);
+		changeListener.pullFailed(jakeObject, new PullFailedException(error));
 	}
 
 	@Override
 	@Transactional
 	public void onSuccess(AdditionalFileTransferData transfer) {
-		log.info("transfer for " + jakeObject + " succeeded");
+		log.info("transfer for " + jakeObject + " succeeded: " + transfer);
+		try {
+			checkPulledFile(transfer);
+			changeListener.pullDone(jakeObject);
+		}catch (Exception reason) {
+			log.error(reason.getMessage(), reason.getCause());
+			changeListener.pullFailed(jakeObject, reason);
+		}
+	}
+
+	private boolean checkPulledFile(AdditionalFileTransferData transfer) throws Exception {
 		FileInputStream data;
 		try {
 			data = new FileInputStream(transfer.getDataFile());
 		} catch (FileNotFoundException e2) {
-			log.error("opening file failed:", e2);
-			return;
-		}
-		if (jakeObject instanceof NoteObject) {
-			NoteObject no;
-			try {
-				no = applicationContextFactory.getNoteObjectDao(jakeObject.getProject()).get(jakeObject.getUuid());
-			} catch (Exception e1) {
-				log.error("404", e1);
-				return;
-			}
-
-			BufferedReader bis = new BufferedReader(new InputStreamReader(data));
-			String content;
-			try {
-				content = bis.readLine(); // TODO: read whole thing
-				bis.close();
-			} catch (IOException e) {
-				content = "foo";
-			}
-			no.setContent(content);
-			changeListener.pullDone(jakeObject);
+			throw new Exception("opening file failed:", e2);
 		}
 		if (jakeObject instanceof FileObject) {
 			String target = ((FileObject) jakeObject).getRelPath();
 			try {
 				getFSS(jakeObject.getProject()).writeFileStream(target, data);
 			} catch (Exception e) {
-				log.error("writing file failed:", e);
-				return;
+				throw new Exception("writing file failed:", e);
 			}
 			changeListener.pullDone(jakeObject);
+		}else{
+			throw new IllegalStateException("unexpected type of JakeObject");
 		}
 		try {
 			data.close();
 		} catch (IOException ignored) {
 			log.debug("We don't care 'bout this exception");
 		}
+		return true;
 	}
 
 	@Override

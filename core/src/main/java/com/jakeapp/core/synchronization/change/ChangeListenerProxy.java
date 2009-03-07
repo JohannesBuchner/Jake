@@ -40,11 +40,13 @@ abstract public class ChangeListenerProxy implements ChangeListener {
 	}
 
 	protected void setInnercl(ChangeListener innercl) {
+		if(innercl == null) 
+			throw new NullPointerException();
 		this.innercl = innercl;
 	}
 
 	protected ChangeListener getInnercl() {
-		return innercl;
+		return this.innercl;
 	}
 
 }

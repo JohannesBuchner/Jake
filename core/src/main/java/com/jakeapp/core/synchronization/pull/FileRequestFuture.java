@@ -17,13 +17,13 @@ import org.apache.log4j.Logger;
 public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> implements
 		INegotiationSuccessListener {
 
-	private IFileTransferService ts;
+	private IFileTransferService transferService;
 
 	private FileRequest request;
 
 	private Semaphore sem;
 
-	private ChangeListener cl;
+	private ChangeListener changeListener;
 
 	private JakeObject jo;
 
@@ -42,11 +42,13 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 
 		@Override
 		public void pullDone(JakeObject jo) {
+			log.debug("pull done for " + jo);
 			sem.release();
 		}
 
 		@Override
 		public void pullFailed(JakeObject jo, Exception reason) {
+			log.debug("pull failed for " + jo);
 			sem.release();
 			innerException = reason;
 		}
@@ -54,28 +56,30 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 
 	@Override
 	public String toString() {
-		return "FileRequestObject{" + "ts=" + ts + ", request=" + request + ", jo=" + jo
-				+ '}';
+		return getClass().getSimpleName() + "]" + "transferService=" + transferService + ", request="
+				+ request + ", jo=" + jo + "]";
 	}
 
 	public FileRequestFuture(JakeObject jo, IFileTransferService ts, FileRequest request,
-			ChangeListener cl, ProjectApplicationContextFactory db) {
+			ChangeListener changeListener, ProjectApplicationContextFactory db) {
 		super();
-		this.ts = ts;
+		this.transferService = ts;
 		this.request = request;
-		this.cl = new FileProgressChangeListener(cl);
+		this.changeListener = new FileProgressChangeListener(changeListener);
 		this.jo = jo;
-		sem = new Semaphore(0);
+		this.sem = new Semaphore(0);
 		this.db = db;
-		innerException = null;
+		this.innerException = null;
 		log.debug(this.toString());
 	}
 
 	@Override
 	public IFileTransfer calculate() throws Exception {
-		INegotiationSuccessListener listener = new PullListener(this.jo, cl, db);
-		ts.request(request, this);
-		// wait for negotiation-success-listener
+		INegotiationSuccessListener listener = new PullListener(this.jo, changeListener,
+				db);
+		transferService.request(request, this);
+		log.debug("waiting for negotiation-success-listener");
+
 		sem.acquire();
 
 		if (this.innerException != null && innerException instanceof Exception) {
@@ -85,10 +89,10 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 
 		listener.succeeded(getInnercontent());
 
-		// wait for FileProgressChangeListener
+		log.debug("waiting for PullListener");
 		sem.acquire();
 		if (this.innerException != null && innerException instanceof Exception) {
-			// this exception came from the listener!
+			log.debug("listener threw Exception: " + innerException);
 			throw (Exception) innerException;
 		}
 

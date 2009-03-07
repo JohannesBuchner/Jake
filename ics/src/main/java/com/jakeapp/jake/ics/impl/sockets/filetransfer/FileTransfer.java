@@ -10,6 +10,11 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
+/**
+ * @author johannes
+ * 
+ * @see IFileTransfer
+ */
 public abstract class FileTransfer implements IFileTransfer {
 
 	private static Logger log = Logger.getLogger(FileTransfer.class);

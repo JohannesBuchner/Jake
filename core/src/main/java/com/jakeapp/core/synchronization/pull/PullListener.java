@@ -9,15 +9,18 @@ import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import org.apache.log4j.Logger;
 
 public class PullListener implements INegotiationSuccessListener {
+
 	private static Logger log = Logger.getLogger(PullListener.class);
+
 	private ProjectApplicationContextFactory db;
 
-	private ChangeListener cl;
+	private ChangeListener changeListener;
 
 	private JakeObject jo;
 
-	public PullListener(JakeObject jo, ChangeListener cl, ProjectApplicationContextFactory db) {
-		this.cl = cl;
+	public PullListener(JakeObject jo, ChangeListener changeListener,
+			ProjectApplicationContextFactory db) {
+		this.changeListener = changeListener;
 		this.jo = jo;
 		this.db = db;
 	}
@@ -30,8 +33,9 @@ public class PullListener implements INegotiationSuccessListener {
 	@Override
 	public void succeeded(IFileTransfer ft) {
 		log.info("pulling negotiation succeeded");
-		cl.pullNegotiationDone(jo);
-		new TransferWatcherThread(ft, new PullWatcher(jo, cl, ft, db));
+		changeListener.pullNegotiationDone(jo);
+		new Thread(new TransferWatcherThread(ft, new PullWatcher(jo, changeListener, ft,
+				db))).start();
 	}
 
 }

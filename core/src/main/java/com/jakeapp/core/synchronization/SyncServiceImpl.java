@@ -215,18 +215,16 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			} catch (NoSuchJakeObjectException e) {
 				throw new IllegalArgumentException(e);
 			}
-			log.debug("");
+			log.debug("deleted.");
 			return jo;
 		} else if (isNoteObject(le.getBelongsTo())) {
 			log.debug("Pulling a noteobject...");
 			return (T) pullNoteObject(jo.getProject(), le);
 		}
-		else if (isFileObject(le.getBelongsTo())) {
+		else {
 			log.debug("Pulling a fileobject...");
 			return (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
 		}
-
-		throw new IllegalStateException();
 
 		// TODO: call ChangeListener, PullWatcher, PullListener
 	}
@@ -387,14 +385,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	public Project getProjectById(String projectid) {
-		// for(i : getProjectsManagingService().getProjectList()
-		// return new Project(null, projectid, null, null);
-		// TODO: mocked for the demo
 		return this.runningProjects.get(projectid);
 	}
 
 	public ChangeListener getProjectChangeListener(String projectId) {
-		return projectChangeListeners.get(projectId);
+		return this.projectChangeListeners.get(projectId);
 	}
 
 
@@ -665,7 +660,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 *            The Project the fileobject should belong to
 	 * @param fo
 	 *            The File to pull
-	 * @return fo
+	 * @return fo null if pull was not successful
 	 * @throws NotLoggedInException
 	 *             if there is not logged in MsgService for p
 	 * @throws NoSuchLogEntryException
@@ -689,7 +684,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		IFileTransferService ts;
 		IFileTransfer result = null;
 		FileRequest fr;
-		String relpath = fo.getRelPath();
 		Iterable<LogEntry> potentialProviders = this.getRequestHandlePolicy()
 				.getPotentialJakeObjectProviders(fo);
 
@@ -707,13 +701,17 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 				ts = this.icsManager.getTransferService(p);
 
-				fr = new FileRequest(relpath, false, remoteBackendPeer);
+				String contentname = this.messageMarshaller.requestFile(fo.getProject(),
+						potentialProvider);
+				log.debug("content addressed with: " + contentname);
+				fr = new FileRequest(contentname, false, remoteBackendPeer);
 
 				try {
 					// this also reports to the corresponding ChangeListener and
-					// watches the Filetransfer and returns after the
-					// filetransfer has
+					// watches the FileTransfer and returns after the
+					// FileTransfer has
 					// either returned successfully or not successfully
+					log.debug("requesting " + fr);
 					result = AvailableLaterWaiter.await(new FileRequestFuture(fo, ts, fr,
 							cl, db));
 					// Save potentialProvider for later usage.
@@ -731,6 +729,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		
 		if(realProvider == null) {
 			log.debug("no provider found. ");
+			return null;
 		}
 		
 		// handle result
@@ -784,10 +783,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		return jo instanceof NoteObject;
 	}
 
-	public boolean isFileObject(JakeObject jo) {
-		return jo instanceof NoteObject;
-	}
-
 	/**
 	 * Sets a LogEntry and all previously happened LogEntries, that have the
 	 * same 'belongsTo' to processed.
@@ -827,7 +822,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	/**
-	 * NullSave getter for {@link LogEntry#getMember()}
+	 * NullSafe getter for {@link LogEntry#getMember()}
 	 * 
 	 * @param lastle
 	 * @return ProjectMember or null, if LogEntry is null.

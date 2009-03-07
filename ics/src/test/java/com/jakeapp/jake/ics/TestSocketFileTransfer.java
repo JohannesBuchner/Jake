@@ -13,6 +13,8 @@ import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.test.SimpleFakeMessageExchanger;
+
 import junit.framework.Assert;
 import local.test.Tracer;
 import org.apache.log4j.Logger;
