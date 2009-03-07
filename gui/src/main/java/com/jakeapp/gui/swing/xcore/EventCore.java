@@ -327,7 +327,7 @@ public class EventCore {
 	private class ProjectInvitationListener implements IProjectInvitationListener {
 
 		public ProjectInvitationListener() {
-			log.debug("Created ProjectInvitationListener in GUI ");
+			log.trace("Created ProjectInvitationListener in GUI ");
 		}
 
 
@@ -337,8 +337,7 @@ public class EventCore {
 			// save in InvitationManager
 			InvitationManager.get().saveInvitationSource(p, user);
 
-			// FIXME!
-			ObjectCache.get().updateProjects();
+			//ObjectCache.get().updateProjects();
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
 							ProjectChanged.ProjectChangedEvent.Reason.Invited));

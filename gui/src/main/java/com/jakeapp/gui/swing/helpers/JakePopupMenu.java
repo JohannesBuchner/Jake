@@ -30,7 +30,7 @@ public class JakePopupMenu extends JPopupMenu {
      */
     @Override
     public void show(Component invoker, int x, int y) {
-        log.info("Show JakePopupMenu: x:" + x + " y:" + y);
+        log.trace("Show JakePopupMenu: x:" + x + " y:" + y);
 
         /**
          * This is sort of a hack.

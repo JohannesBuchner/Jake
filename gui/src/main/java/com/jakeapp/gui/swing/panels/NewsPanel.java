@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 /**
+ * First Panel in Project View. Shows recent evetns and people list.
  * @author studpete
  */
 public class NewsPanel extends javax.swing.JPanel
