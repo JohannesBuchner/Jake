@@ -148,7 +148,7 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 
 				// FIXME: Eventually, this should import to a subfolder if we drop it above one
 				// For now, drag and drop always goes to root folder
-				String destFolder = project.getRootPath();
+				String destFolder = "/";
 				
 				log.debug("HELLO MY NAME IS BUG: add file to project: " + project + ", in folder: " + destFolder);
 

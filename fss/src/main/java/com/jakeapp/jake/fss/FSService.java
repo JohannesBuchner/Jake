@@ -553,11 +553,13 @@ public class FSService implements IFSService, IModificationListener {
 		checkIsValidRelPath(destFolderRelPath);
 
 		if (file.isFile()) {
-			importFileInternal(file, new File(destFolderRelPath, file.getName()));
+			File dest = new File(this.getFullpath(destFolderRelPath), file.getName());
+			importFileInternal(file, dest);
 		} else if (file.isDirectory()) {
 			// woohoo - copy whole directory and all subdirs within!
 			for (File afile : file.listFiles()) {
-				importFileInternal(afile, new File(destFolderRelPath, file.getName()));
+				File dest = new File(this.getFullpath(destFolderRelPath), afile.getName());
+				importFileInternal(afile, dest);
 			}
 		}
 	}
@@ -580,8 +582,8 @@ public class FSService implements IFSService, IModificationListener {
 		checkFileNotExists(fileTo);
 
 		// TODO this should be atomic
-		this.writeFileStream(fileTo.getAbsolutePath(),
-						this.readFileStreamAbs(fileFrom.getAbsolutePath()));
+		writeFileStreamAbs(fileTo.getAbsolutePath(),
+						readFileStreamAbs(fileFrom.getAbsolutePath()));
 	}
 
 

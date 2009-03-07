@@ -60,7 +60,7 @@ public class FileDropHandler extends TransferHandler {
 			List<File> fileList = (List<File>) data;
 
 			// get destination folder. Project root if nothing selected.
-			String destFolder = JakeMainApp.getProject().getRootPath();
+			String destFolder = "/";
 
 			JakeExecutor.exec(new ImportFileFolderTask(JakeMainApp.getProject(), fileList, destFolder));
 
@@ -73,4 +73,3 @@ public class FileDropHandler extends TransferHandler {
 		return true;
 	}
 }
- 
