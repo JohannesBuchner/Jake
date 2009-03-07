@@ -664,7 +664,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			IllegalArgumentException {
 		log.debug("Calling getAllProjectFiles for " + project);
 
-		return getApplicationContextFactory().getAllProjectFilesFuture(project);
+		return getApplicationContextFactory().getAllProjectFilesFuture(project,getFileServices(project));
 	}
 
 

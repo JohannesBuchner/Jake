@@ -20,6 +20,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
+import com.jakeapp.jake.fss.IFSService;
 
 /**
  * A factory that creates and configures spring application contexts.
@@ -142,8 +143,8 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	 *            The Project in question
 	 * @return an AllProjectFilesFuture
 	 */
-	public AllProjectFilesFuture getAllProjectFilesFuture(Project project) {
-		return new AllProjectFilesFuture(this.getFileObjectDao(project));
+	public AllProjectFilesFuture getAllProjectFilesFuture(Project project,IFSService fss) {
+		return new AllProjectFilesFuture(project,this.getFileObjectDao(project),fss);
 	}
 
 	/**
