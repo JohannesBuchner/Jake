@@ -5,6 +5,8 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
+import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.FileObjectHelper;
 import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
 import org.apache.log4j.Logger;
 
@@ -142,11 +144,15 @@ public class JakeSourceListTransferHandler extends TransferHandler {
 					}
 				}
 			} else if (isAddToProject(dl, files)) {
-				// FIXME:
 				Project project = JakeMainApp.getProject();
-				log.info("add to project: " + project);
 
-				JakeExecutor.exec(new ImportFileFolderTask(project, files, "/"));
+				// FIXME: Eventually, this should import to a subfolder if we drop it above one
+				// For now, drag and drop always goes to root folder
+				String destFolder = project.getRootPath();
+				
+				log.debug("HELLO MY NAME IS BUG: add file to project: " + project + ", in folder: " + destFolder);
+
+				JakeExecutor.exec(new ImportFileFolderTask(project, files, destFolder));
 			}
 
 

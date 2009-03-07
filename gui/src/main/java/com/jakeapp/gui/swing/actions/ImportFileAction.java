@@ -52,8 +52,8 @@ public class ImportFileAction extends FileAction {
 
 		log.info("number files selected: " + dialog.getSelectedFiles().length);
 
-		// get destination folder. root if nothing selected.
-		String destFolder = "/";
+		// get destination folder. Project root if nothing selected.
+		String destFolder = JakeMainApp.getProject().getRootPath();
 
 		if (getSelectedRowCount() > 0) {
 			ProjectFilesTreeNode node = getSingleNode();
