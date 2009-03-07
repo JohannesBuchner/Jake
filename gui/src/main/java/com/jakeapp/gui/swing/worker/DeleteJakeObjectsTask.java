@@ -8,6 +8,7 @@ import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -108,6 +109,7 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 			}
 			//inform the EventCore about the change
 			EventCore.get().fireNotesChanged(this.project);
+			JakeStatusBar.updateMessage();
 		}
 	}
 }
