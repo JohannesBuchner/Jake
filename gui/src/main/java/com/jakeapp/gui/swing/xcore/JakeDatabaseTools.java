@@ -18,6 +18,8 @@ public class JakeDatabaseTools {
 	 */
 	public static void checkKeysResetDatabase() {
 		Toolkit kit = Toolkit.getDefaultToolkit();
+		try {
+		// fixme: change key to someting more reasonable
 		if (kit.getLockingKeyState(KeyEvent.VK_CAPS_LOCK)) {
 			// ask to delete database
 			if (JOptionPane.showConfirmDialog(null,
@@ -34,6 +36,9 @@ public class JakeDatabaseTools {
 					log.warn("Failed resetting database.", ex);
 				}
 			}
+		}
+		}catch(Exception ex){
+			// this may fail silently
 		}
 	}
 
