@@ -16,8 +16,6 @@ import java.util.UUID;
 @Entity(name = "servicecredentials")
 public class Account implements Serializable {
 
-	private static final String JAKE_RESOURCE = "JakeApp";
-
 	private static final long serialVersionUID = -3550631428630088119L;
 
 	private UUID uuid;
@@ -35,15 +33,13 @@ public class Account implements Serializable {
 
 	private boolean encryptionUsed;
 
-	private String resourceName;
-
 	private ProtocolType protocol;
 
 
 	private boolean savePassword = false;
 
 	public Account() {
-		this.resourceName = JAKE_RESOURCE;
+
 		this.uuid = UUID.randomUUID();
 	}
 
@@ -62,7 +58,6 @@ public class Account implements Serializable {
 	public Account(String userId, String plainTextPassword, ProtocolType protocolType) {
 		this.userId = userId;
 		this.plainTextPassword = plainTextPassword;
-		this.resourceName = JAKE_RESOURCE;
 		this.setProtocol(protocolType);
 	}
 
@@ -156,16 +151,6 @@ public class Account implements Serializable {
 		this.encryptionUsed = encryptionUsed;
 	}
 
-	@Column(name = "resourcename", nullable = false)
-	public String getResourceName() {
-		return this.resourceName;
-	}
-
-	public void setResourceName(String resourceName) {
-		this.resourceName = resourceName;
-	}
-
-
 	@Column(name = "autologin")
 	public boolean isAutologin() {
 		return autologin;
@@ -221,8 +206,6 @@ public class Account implements Serializable {
 		if (plainTextPassword != null ? !plainTextPassword.equals(that.plainTextPassword)
 				: that.plainTextPassword != null)
 			return false;
-		if ( (resourceName!=null)?(!resourceName.equals(that.resourceName)):that.resourceName!=null)
-			return false;
 		if ( (serverAddress!=null)?(!serverAddress.equals(that.serverAddress)):that.serverAddress!=null)
 			return false;
 		if ( (userId!=null)?( !userId.equals(that.userId) ):that.userId!=null)
@@ -240,7 +223,6 @@ public class Account implements Serializable {
 		result = 31 * result + ((serverAddress==null)?0:serverAddress.hashCode());
 		result = 31 * result + (int) (serverPort ^ (serverPort >>> 32));
 		result = 31 * result + (encryptionUsed ? 1 : 0);
-		result = 31 * result + ((resourceName==null)?0:resourceName.hashCode());
 		return result;
 	}
 	

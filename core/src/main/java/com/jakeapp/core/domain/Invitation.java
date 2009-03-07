@@ -35,6 +35,11 @@ public class Invitation {
 		this.creation = new Date();	
 	}
 
+	public Invitation() {
+
+	}
+
+
 	public UUID getProjectUUID() {
 		return projectUUID;
 	}

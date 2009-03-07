@@ -11,6 +11,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 
 
 public class HibernateInvitationDao  extends HibernateDaoSupport implements IInvitationDao {
@@ -18,21 +19,21 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 	private static Logger log = Logger.getLogger(HibernateInvitationDao.class);
 
 	@Override
-	@Transactional
 	public Invitation create(Invitation invitation) throws InvalidProjectException {
-	    try
+		log.debug("persisting invitation " + invitation);
+		try
 		{
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(invitation);
+			log.debug(" should be persisted now");
+//			this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
 			return invitation;
 		}
-		catch (DataAccessException e)
-		{
-			throw new InvalidProjectException();
+		catch(Exception e) {
+			throw new InvalidProjectException(e.getMessage());
 		}
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Invitation> getAll() {
 		List<Invitation> results;
 		try
@@ -43,10 +44,12 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 		}
 		catch (DataAccessException e)
 		{
+			e.printStackTrace();
 			return new ArrayList<Invitation>();
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			return new ArrayList<Invitation>();			   
 		}
 	}

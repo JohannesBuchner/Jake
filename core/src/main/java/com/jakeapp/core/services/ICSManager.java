@@ -51,6 +51,14 @@ public interface ICSManager {
 	 */
 	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, User u);
 
+
+	/**
+	 * Returns the "main" Backend-UserId 
+	 * @param u
+	 * @return
+	 */
+	public com.jakeapp.jake.ics.UserId getBackendUserId(User u);
+
 	/**
 	 * translate an ICS userId to something the "real world" can work with
 	 *
@@ -59,6 +67,8 @@ public interface ICSManager {
 	 * @return
 	 */
 	public User getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u);
+
+
 
 	/**
 	 * get your own userId

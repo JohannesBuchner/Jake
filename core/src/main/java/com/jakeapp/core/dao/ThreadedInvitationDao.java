@@ -4,9 +4,9 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import java.util.List;
 import java.util.ArrayList;
+import org.hibernate.HibernateException;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
-import org.springframework.transaction.annotation.Transactional;
 
 public class ThreadedInvitationDao implements IInvitationDao {
 
@@ -22,7 +22,6 @@ public class ThreadedInvitationDao implements IInvitationDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	@Transactional
 	public Invitation create(final Invitation invitation) throws InvalidProjectException {
 		
 		try {
@@ -47,7 +46,6 @@ public class ThreadedInvitationDao implements IInvitationDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	@Transactional(readOnly = true)
 	public List<Invitation> getAll() {
 		
 		try {

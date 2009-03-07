@@ -1,6 +1,7 @@
 package com.jakeapp.core.services;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Invitation;
@@ -10,6 +11,8 @@ import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IInvitationDao;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
+
+import java.util.List;
 
 public class ProjectInvitationListener implements com.jakeapp.core.services.IProjectInvitationListener {
 //	private final com.jakeapp.core.services.ProjectsManagingServiceImpl projectsManagingServiceImpl;
@@ -23,6 +26,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 	public ProjectInvitationListener(IInvitationDao invitationDao, ProjectApplicationContextFactory contextFactory)
 	{
+		System.out.println("Creating ProjectInvitationListener for Core");
 		this.invitationDao = invitationDao;
 //		this.projectDao = projectDao;
 		this.contextFactory = contextFactory;
@@ -35,7 +39,23 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 		// add Project to the global database
 		try {
 			Invitation invitation = new Invitation(project,  user);
-			invitationDao.create(invitation);
+			Invitation result = invitationDao.create(invitation);
+
+
+			if(invitation.equals(result))
+			{
+				System.out.println("true");
+				List<Invitation> invitations = invitationDao.getAll();
+				System.out.println("Thats stored:");
+				for(Invitation inv : invitations)
+				{
+					System.out.println("inv = " + inv);
+				}
+			}
+			else
+			{
+				System.out.println("false");
+			}
 
 //			project = projectDao.create(project);
 		} catch (InvalidProjectException e) {

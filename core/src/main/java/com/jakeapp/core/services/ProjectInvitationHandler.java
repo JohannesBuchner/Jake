@@ -45,18 +45,14 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * Invites a User to a project by sending a invite packet.
 	 *
 	 * @param project The project to invite the user to.
-	 * @param user  The userId of the User. There is already a corresponding
+	 * @param user	The userId of the User. There is already a corresponding
 	 *                ProjectMember-Object stored in the project-local database.
 	 * @return if the packet could be sent.
 	 */
 	public static boolean invite(Project project, User user) {
 		ICService ics = project.getMessageService().getIcsManager().getICService(project);
-		com.jakeapp.jake.ics.UserId bu = project.getMessageService().getIcsManager()
-				.getBackendUserId(project, user);
+		com.jakeapp.jake.ics.UserId bu = project.getMessageService().getIcsManager().getBackendUserId(user);
 
-		bu = new XmppUserId(user.getUserId() + "/Jake");
-
-//		project.getMessageService().getMainIcs().getMsgService().
 		String msg = createInviteMessage(project);
 
 		try {
@@ -92,17 +88,12 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 				User user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 
-//				user.setProtocolType(msg.getProtocolType());
-				user.setProtocolType(ProtocolType.XMPP);
-
 				log.info("got invited to Project " + p + " by " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
-					try
-					{
-					listener.invited(user, p);
+					try {
+						listener.invited(user, p);
 					}
-					catch (Exception e)
-					{
+					catch (Exception e) {
 						// TODO
 						e.printStackTrace();
 					}
@@ -207,19 +198,16 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 */
 	public void registerInvitationListener(IProjectInvitationListener il) {
 		log.debug("add invitationlistener to " + il);
-		if(il != null){
+		if (il != null) {
 			this.invitationListeners.add(il);
-		}
-		else
-		{
+		} else {
 			log.debug("OOOOOOOOOOOH NO!");
 		}
 	}
 
 
-	public void unregisterInvitationListener(IProjectInvitationListener il)
-	{
-		if(il != null)
+	public void unregisterInvitationListener(IProjectInvitationListener il) {
+		if (il != null)
 			this.invitationListeners.remove(il);
 	}
 }

@@ -43,11 +43,11 @@ public class HibernateInvitationDaoTest extends AbstractJUnit4SpringContextTests
 	@After
 	public void tearDown() {
 		// Add your code here
-		hibernateTemplate.getSessionFactory().getCurrentSession().getTransaction().rollback();
+		hibernateTemplate.getSessionFactory().getCurrentSession().getTransaction().commit();
 	}
 
 	@Test
-	@Transactional(readOnly = false)
+	@Transactional
 	public void testCreate() throws InvalidProjectException {
 		// Add your code here
 
@@ -69,6 +69,8 @@ public class HibernateInvitationDaoTest extends AbstractJUnit4SpringContextTests
 		assertNotNull(result);
 		assertEquals(result.size(), 1);
 		assertTrue(result.contains(invite));
+		assertEquals(invitationResult, invite);
+		assertTrue(result.contains(invitationResult));
 
 	}
 

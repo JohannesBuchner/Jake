@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
@@ -103,6 +104,12 @@ public class FailoverICSManager implements ICSManager {
 			log.fatal("Currently unsupported protocol given");
 			throw new IllegalArgumentException(new ProtocolNotSupportedException());
 		}
+	}
+
+
+	@Override
+	public UserId getBackendUserId(User u) {
+		return new XmppUserId(u.getUserId() + "/Jake");
 	}
 
 	@Override
