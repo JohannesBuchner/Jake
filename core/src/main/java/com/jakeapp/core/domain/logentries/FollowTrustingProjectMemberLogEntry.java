@@ -1,19 +1,18 @@
 package com.jakeapp.core.domain.logentries;
 
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ILogable;
 
 import javax.persistence.Entity;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 
 @Entity
 @DiscriminatorValue(value = "FOLLOW_TRUSTING_PROJECTMEMBER")
 public class FollowTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
-	public FollowTrustingProjectMemberLogEntry(UserId userId, UserId me)
+	public FollowTrustingProjectMemberLogEntry(User user, User me)
 	{
-		super(LogAction.FOLLOW_TRUSTING_PROJECTMEMBER, userId, me);
+		super(LogAction.FOLLOW_TRUSTING_PROJECTMEMBER, user, me);
 	}
 
 
@@ -22,7 +21,7 @@ public class FollowTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
 	}
 
 	public static FollowTrustingProjectMemberLogEntry parse(LogEntry<? extends ILogable> logEntry) {
-		FollowTrustingProjectMemberLogEntry le = new FollowTrustingProjectMemberLogEntry((UserId) logEntry.getBelongsTo(), logEntry.getMember());
+		FollowTrustingProjectMemberLogEntry le = new FollowTrustingProjectMemberLogEntry((User) logEntry.getBelongsTo(), logEntry.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
 		return le;
 	}

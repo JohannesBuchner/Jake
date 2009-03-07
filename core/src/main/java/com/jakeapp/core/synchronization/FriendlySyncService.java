@@ -9,7 +9,7 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 
@@ -21,12 +21,12 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
  */
 public abstract class FriendlySyncService implements IFriendlySyncService {
 
-	abstract protected Iterable<UserId> getProjectMembers(Project project) throws NoSuchProjectException;
+	abstract protected Iterable<User> getProjectMembers(Project project) throws NoSuchProjectException;
 
-	public Map<UserId, Iterable<LogEntry<ILogable>>> startLogSync(Project project)
+	public Map<User, Iterable<LogEntry<ILogable>>> startLogSync(Project project)
 			throws IllegalArgumentException, IllegalProtocolException, NoSuchProjectException {
-		Map<UserId, Iterable<LogEntry<ILogable>>> lm = new HashMap<UserId, Iterable<LogEntry<ILogable>>>();
-		for (UserId pm : getProjectMembers(project)) {
+		Map<User, Iterable<LogEntry<ILogable>>> lm = new HashMap<User, Iterable<LogEntry<ILogable>>>();
+		for (User pm : getProjectMembers(project)) {
 			lm.put(pm, this.startLogSync(project, pm));
 		}
 		return lm;
@@ -40,7 +40,7 @@ public abstract class FriendlySyncService implements IFriendlySyncService {
 	 * .core.domain.Project)
 	 */
 	public void poke(Project project) throws NoSuchProjectException {
-		for (UserId pm : getProjectMembers(project)) {
+		for (User pm : getProjectMembers(project)) {
 			if(project.getUserId().equals(pm)) continue;
 			this.poke(project, pm);
 		}

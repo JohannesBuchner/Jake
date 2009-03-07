@@ -216,7 +216,7 @@ public class Project implements ILogable {
 	 * @return the userId that is associated with the project.
 	 */
 	@Transient
-	public UserId getUserId() {
+	public User getUserId() {
 		return (this.getMessageService()==null)?
 					null:
 					this.getMessageService().getUserId();

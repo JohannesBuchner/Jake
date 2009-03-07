@@ -4,13 +4,8 @@ import com.googlecode.junit.ext.Prerequisite;
 import com.googlecode.junit.ext.PrerequisiteAwareClassRunner;
 import com.jakeapp.core.AllowSlowChecker;
 import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
@@ -67,7 +62,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 	private NoteObject note;
 
-	private UserId me;
+	private User me;
 
 	private ILogEntryDao logEntryDao;
 

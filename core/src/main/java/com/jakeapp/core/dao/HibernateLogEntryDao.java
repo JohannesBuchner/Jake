@@ -17,14 +17,9 @@ import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 
 public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEntryDao {
 
@@ -360,7 +355,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private Collection<LogEntry<UserId>> getAllProjectMemberLogEntries() {
+	private Collection<LogEntry<User>> getAllProjectMemberLogEntries() {
 		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ?)")
 				.setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
 				.setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal())
@@ -448,12 +443,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public List<UserId> getCurrentProjectMembers() {
+	public List<User> getCurrentProjectMembers() {
 		LogEntry<? extends ILogable> pce;
-		Map<UserId, List<UserId>> people = getTrustGraph();
+		Map<User, List<User>> people = getTrustGraph();
 		pce = getProjectCreatedEntry();
-		UserId creator;
-		SortedSet<UserId> trusted = new TreeSet<UserId>();
+		User creator;
+		SortedSet<User> trusted = new TreeSet<User>();
 
 		if (pce != null) {
 			creator = pce.getMember();
@@ -461,9 +456,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			trusted.add(creator);
 
 			//TODO? run more often, until trusted does not change any more?
-			for (UserId member : people.keySet()) {
+			for (User member : people.keySet()) {
 				if (trusted.contains(member)) {
-					for (UserId trustedMember : people.get(member)) {
+					for (User trustedMember : people.get(member)) {
 						trusted.add(trustedMember);
 					}
 				}
@@ -471,18 +466,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		}
 
 		log.debug("len="+trusted.size());
-		return new ArrayList<UserId>(trusted);
+		return new ArrayList<User>(trusted);
 	}
 
 	@Override
-	public boolean trusts(UserId a, UserId b) {
-		List<UserId> trusted = getTrustGraph().get(a);
+	public boolean trusts(User a, User b) {
+		List<User> trusted = getTrustGraph().get(a);
 		return trusted != null && trusted.contains(b);
 	}
 
 	@Override
-	public TrustState trustsHow(UserId a, UserId b) {
-		Map<UserId, TrustState> trusted = getExtendedTrustGraph().get(a);
+	public TrustState trustsHow(User a, User b) {
+		Map<User, TrustState> trusted = getExtendedTrustGraph().get(a);
 		TrustState trustState;
 		if (trusted != null) {
 			trustState = trusted.get(b);
@@ -493,32 +488,32 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public Collection<UserId> trusts(UserId a) {
+	public Collection<User> trusts(User a) {
 		return getTrustGraph().get(a);
 	}
 
 	@Override
-	public Map<UserId, TrustState> trustsHow(UserId a) {
+	public Map<User, TrustState> trustsHow(User a) {
 		return getExtendedTrustGraph().get(a);
 	}
 
 	@Override
-	public Map<UserId, List<UserId>> getTrustGraph() {
-		Map<UserId, List<UserId>> people = new HashMap<UserId, List<UserId>>();
+	public Map<User, List<User>> getTrustGraph() {
+		Map<User, List<User>> people = new HashMap<User, List<User>>();
 		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
 		if (first != null) {
-			people.put(first.getMember(), new LinkedList<UserId>());
+			people.put(first.getMember(), new LinkedList<User>());
 		} else {
 			log.error("Invalid database: no ProjectCreatedEntry!");
 //			throw new IllegalStateException("No ProjectCreatedEntry");
 		}
 		
-		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
-		for (LogEntry<UserId> le : entries) {
-			UserId who = le.getMember();
-			UserId whom = le.getBelongsTo();
+		Collection<LogEntry<User>> entries = getAllProjectMemberLogEntries();
+		for (LogEntry<User> le : entries) {
+			User who = le.getMember();
+			User whom = le.getBelongsTo();
 			if (people.get(who) == null) {
-				people.put(who, new LinkedList<UserId>());
+				people.put(who, new LinkedList<User>());
 			}
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
 				people.get(who).add(whom);
@@ -535,21 +530,21 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 
 	@Override
-	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph() {
-		Map<UserId, Map<UserId, TrustState>> people = new HashMap<UserId, Map<UserId, TrustState>>();
+	public Map<User, Map<User, TrustState>> getExtendedTrustGraph() {
+		Map<User, Map<User, TrustState>> people = new HashMap<User, Map<User, TrustState>>();
 		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
 		if (first != null) {
-			people.put(first.getMember(), new HashMap<UserId, TrustState>());
+			people.put(first.getMember(), new HashMap<User, TrustState>());
 		} else {
 			log.error("Invalid database: no ProjectCreatedEntry!");
 			throw new IllegalStateException("No ProjectCreatedEntry");
 		}
-		Collection<LogEntry<UserId>> entries = getAllProjectMemberLogEntries();
-		for (LogEntry<UserId> le : entries) {
-			UserId who = le.getMember();
-			UserId whom = le.getBelongsTo();
+		Collection<LogEntry<User>> entries = getAllProjectMemberLogEntries();
+		for (LogEntry<User> le : entries) {
+			User who = le.getMember();
+			User whom = le.getBelongsTo();
 			if (people.get(who) == null) {
-				people.put(who, new HashMap<UserId, TrustState>());
+				people.put(who, new HashMap<User, TrustState>());
 			}
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
 				people.get(who).put(whom, TrustState.TRUST);

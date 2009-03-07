@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -53,7 +53,7 @@ public class DeleteFileAction extends FileAction {
 
 		final List<FileObject> files = new ArrayList<FileObject>();
 
-		UserId currentUser = JakeMainApp.getProject().getUserId();
+		User currentUser = JakeMainApp.getProject().getUserId();
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
 		String[] options =

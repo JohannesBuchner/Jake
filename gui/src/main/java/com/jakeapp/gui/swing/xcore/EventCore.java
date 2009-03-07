@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.xcore;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -331,7 +331,7 @@ public class EventCore {
 		}
 
 
-		@Override public void invited(UserId user, Project p) {
+		@Override public void invited(User user, Project p) {
 			log.debug("received invitation from " + user + " for project: " + p);
 
 			// save in InvitationManager
@@ -344,7 +344,7 @@ public class EventCore {
 							ProjectChanged.ProjectChangedEvent.Reason.Invited));
 		}
 
-		@Override public void accepted(UserId user, Project p) {
+		@Override public void accepted(User user, Project p) {
 			log.debug("accepted: " + user + ", project" + p);
 
 			// TODO: find a better place for that
@@ -352,7 +352,7 @@ public class EventCore {
 							"User " + user + " accepted your Invitation to " + p);
 		}
 
-		@Override public void rejected(UserId user, Project p) {
+		@Override public void rejected(User user, Project p) {
 			log.debug("rejected" + user + ", project" + p);
 
 			// TODO: find a better place for that			

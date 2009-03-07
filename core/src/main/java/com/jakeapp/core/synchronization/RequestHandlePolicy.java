@@ -5,7 +5,7 @@ import java.io.InputStream;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 
 /**
  * implement trust or whatever over this
@@ -35,7 +35,7 @@ public interface RequestHandlePolicy {
 	 * @param jo
 	 * @return null if not allowed, the content otherwise
 	 */
-	public InputStream handleJakeObjectRequest(UserId from, JakeObject jo);
+	public InputStream handleJakeObjectRequest(User from, JakeObject jo);
 
 
 	/**
@@ -46,5 +46,5 @@ public interface RequestHandlePolicy {
 	 * @param project
 	 * @param from
 	 */
-	public boolean handleLogSyncRequest(Project project, UserId from);
+	public boolean handleLogSyncRequest(Project project, User from);
 }

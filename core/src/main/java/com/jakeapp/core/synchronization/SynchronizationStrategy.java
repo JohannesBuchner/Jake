@@ -1,7 +1,7 @@
 package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 
@@ -34,7 +34,7 @@ public interface SynchronizationStrategy {
      * @param users  a list of users which to synchronize with
      * @throws IllegalArgumentException
      */
-    void synchronize(JakeObject object, List<UserId> users)
+    void synchronize(JakeObject object, List<User> users)
             throws IllegalArgumentException;
 
 
@@ -57,7 +57,7 @@ public interface SynchronizationStrategy {
      * @throws IllegalProtocolException if the supplied users
      *                                  correspond to the wrong protocol
      */
-    void synchronize(Project project, List<UserId> users)
+    void synchronize(Project project, List<User> users)
             throws IllegalArgumentException,
             IllegalProtocolException;
 

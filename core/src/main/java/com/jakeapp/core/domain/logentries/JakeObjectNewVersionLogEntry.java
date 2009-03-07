@@ -1,7 +1,7 @@
 package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ILogable;
 
@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue(value = "JAKE_OBJECT_NEW_VERSION")
 public class JakeObjectNewVersionLogEntry extends JakeObjectLogEntry {
-    public JakeObjectNewVersionLogEntry(JakeObject belongsTo, UserId member, String comment, String checksum, Boolean processed) {
+    public JakeObjectNewVersionLogEntry(JakeObject belongsTo, User member, String comment, String checksum, Boolean processed) {
         super(LogAction.JAKE_OBJECT_NEW_VERSION, belongsTo, member, comment, checksum, processed);
     }
 

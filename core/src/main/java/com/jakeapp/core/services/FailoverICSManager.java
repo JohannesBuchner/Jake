@@ -3,7 +3,7 @@ package com.jakeapp.core.services;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -92,7 +92,7 @@ public class FailoverICSManager implements ICSManager {
 	}
 
 	@Override
-	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u) {
+	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, User u) {
 		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
 			return new XmppUserId(u.getUserId() + "/" + p.getProjectId());
 		} else {
@@ -102,9 +102,9 @@ public class FailoverICSManager implements ICSManager {
 	}
 
 	@Override
-	public UserId getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u) {
+	public User getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u) {
 		if (p.getMessageService().getProtocolType().equals(ProtocolType.XMPP)) {
-			return new UserId(ProtocolType.XMPP, u.getUserId());
+			return new User(ProtocolType.XMPP, u.getUserId());
 		} else {
 			log.fatal("Currently unsupported protocol given");
 			throw new IllegalArgumentException(new ProtocolNotSupportedException());

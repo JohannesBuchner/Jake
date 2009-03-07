@@ -3,7 +3,7 @@ package com.jakeapp.core.synchronization;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import org.apache.log4j.Logger;
 
 /**
@@ -66,7 +66,7 @@ public class JakeObjectStatus {
 		}
 	}
 	
-	private UserId getNullsafeMember(LogEntry<? extends ILogable> le) {
+	private User getNullsafeMember(LogEntry<? extends ILogable> le) {
 		if(le == null) {
 			return null;
 		}else{
@@ -84,7 +84,7 @@ public class JakeObjectStatus {
 	 * Failsafe variant.
 	 * @return returns null of no LogEntry
 	 */
-	public UserId getLastVersionEditor() {
+	public User getLastVersionEditor() {
 		return getNullsafeMember(getLastVersionLogEntry());
 	}
 

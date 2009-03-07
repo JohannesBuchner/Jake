@@ -1,7 +1,7 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
@@ -73,7 +73,7 @@ public interface IFrontendService {
 	 *                                  if no such session existed
 	 * @throws IllegalStateException	 if no MessageServices are configured for this component
 	 */
-	public List<MsgService<UserId>> getMsgServices(String sessionId) throws FrontendNotLoggedInException;
+	public List<MsgService<User>> getMsgServices(String sessionId) throws FrontendNotLoggedInException;
 
 	/**
 	 * Gets the SyncService

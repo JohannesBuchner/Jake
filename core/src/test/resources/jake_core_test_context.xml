@@ -26,7 +26,7 @@
         <property name="annotatedClasses">
             <list>
             	<value>com.jakeapp.core.domain.Project</value>
-                <value>com.jakeapp.core.domain.UserId</value>
+                <value>com.jakeapp.core.domain.User</value>
                 <value>com.jakeapp.core.domain.FileObject</value>
                 <value>com.jakeapp.core.domain.JakeMessage</value>
                 <value>com.jakeapp.core.domain.JakeObject</value>

@@ -266,7 +266,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	private void createFirstLogEntry(Project project) {
 		// create the project's first logentry
 		if (project.getMessageService() != null) {
-			UserId user = project.getMessageService().getUserId();
+			User user = project.getMessageService().getUserId();
 			this.getLogEntryDao(project).create(new ProjectCreatedLogEntry(project, user));
 		}
 	}
@@ -517,7 +517,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	/*
 	 * @Transactional
 	 * 
-	 * @Override public void assignUserToProject(Project project, UserId userId)
+	 * @Override public void assignUserToProject(Project project, User userId)
 	 * throws IllegalArgumentException, IllegalAccessException {
 	 * 
 	 * // Check preconditions if (project == null) throw new
@@ -533,7 +533,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 * catch (NoSuchProjectException e) { throw new IllegalArgumentException(e);
 	 * }
 	 * 
-	 * // set UserId as ProjectMember this.addUserToProject(project, userId);
+	 * // set User as ProjectMember this.addUserToProject(project, userId);
 	 * this.setTrust(project, userId, TrustState.AUTO_ADD_REMOVE); }
 	 */
 
@@ -543,19 +543,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	 * 
 	 * @param project
 	 *            Project to add a member to. Must not be null.
-	 * @param userId
+	 * @param user
 	 *            Member to add. Must not be null.
 	 * @return the ProjectMember added
 	 */
-	private UserId addUserToProject(Project project, UserId userId) {
-		log.debug("adding " + userId + " to " + project);
+	private User addUserToProject(Project project, User user) {
+		log.debug("adding " + user + " to " + project);
 			try {
-				TrustState currentState = this.getLogEntryDao(project).trustsHow(project.getUserId(), userId);
+				TrustState currentState = this.getLogEntryDao(project).trustsHow(project.getUserId(), user);
 				log.debug("current state is "+currentState);
 				//check if this person is already a trusted project member
 				if (currentState==TrustState.NO_TRUST) {
 					//add logentry stating that we now trust this member
-					this.setTrust(project, userId, TrustState.TRUST);
+					this.setTrust(project, user, TrustState.TRUST);
 				}
 			} catch (IllegalArgumentException e) {
 				//empty handling, as only a non-fulfilled precondition of this method was violated.
@@ -564,34 +564,34 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 				//empty handling, as only a non-fulfilled precondition of this method was violated.
 				log.debug(e);
 			}
-		return userId;
+		return user;
 	}
 
 
 	@Override
 	@Transactional
-	public void setTrust(Project project, UserId userId, TrustState trust)
+	public void setTrust(Project project, User user, TrustState trust)
 			throws IllegalArgumentException, IllegalAccessException {
-		LogEntry<UserId> le;
+		LogEntry<User> le;
 		
-		log.debug("setting trust for " + userId + " to " + trust); 
+		log.debug("setting trust for " + user + " to " + trust);
 
 		//check preconditions
 		if (project==null) throw new IllegalArgumentException("Project may not be null");
-		else if (userId==null)  throw new IllegalArgumentException("UserId may not be null");
-		else if (project.getUserId()==null) throw new IllegalAccessException("Project must have a valid UserId");
+		else if (user ==null)  throw new IllegalArgumentException("User may not be null");
+		else if (project.getUserId()==null) throw new IllegalAccessException("Project must have a valid User");
 		
 		log.debug("passed preconditions-check."); 
 		
 		//determine action
 		if (trust == TrustState.NO_TRUST) {
-			le = new StopTrustingProjectMemberLogEntry(userId, project.getUserId());
+			le = new StopTrustingProjectMemberLogEntry(user, project.getUserId());
 		}
 		else if (trust == TrustState.TRUST) {
-			le = new StartTrustingProjectMemberLogEntry(userId, project.getUserId());
+			le = new StartTrustingProjectMemberLogEntry(user, project.getUserId());
 		}
 		else {
-			le = new FollowTrustingProjectMemberLogEntry(userId, project.getUserId());
+			le = new FollowTrustingProjectMemberLogEntry(user, project.getUserId());
 		}
 
 		//insert logentry
@@ -664,7 +664,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public void joinProject(Project project, File rootPath, UserId inviter)
+	public void joinProject(Project project, File rootPath, User inviter)
 			throws IllegalStateException, NoSuchProjectException {
 
 		// preconditions
@@ -698,7 +698,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	@Override
-	public void rejectProject(Project project, UserId inviter)
+	public void rejectProject(Project project, User inviter)
 			throws IllegalStateException, NoSuchProjectException {
 		// preconditions
 		if (project == null)
@@ -753,10 +753,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	// TODO: think we can delete those...
-	public UserId getLastEditor(JakeObject jo) throws NoSuchProjectException,
+	public User getLastEditor(JakeObject jo) throws NoSuchProjectException,
 			IllegalArgumentException {
 		LogEntry<? extends ILogable> logentry;
-		UserId result;
+		User result;
 
 		// get the most recent logentry for the JakeObject
 		try {
@@ -789,7 +789,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public List<UserId> getProjectUsers(Project project) throws NoSuchProjectException {
+	public List<User> getProjectUsers(Project project) throws NoSuchProjectException {
 		if (project == null)
 			throw new NoSuchProjectException();
 
@@ -804,12 +804,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (project == null)
 			throw new NoSuchProjectException();
 
-		Collection<UserId> users = this.getLogEntryDao(project)
+		Collection<User> users = this.getLogEntryDao(project)
 				.getCurrentProjectMembers();
 
 		List<UserInfo> userInfos = new LinkedList<UserInfo>();
 
-		for (UserId user : users) {
+		for (User user : users) {
 			UserInfo userInfo = getProjectUserInfo(project, user);
 			userInfos.add(userInfo);
 		}
@@ -819,7 +819,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public UserInfo getProjectUserInfo(Project project, UserId user) {
+	public UserInfo getProjectUserInfo(Project project, User user) {
 		TrustState state;
 		com.jakeapp.jake.ics.UserId backendUser;
 		MsgService msgService;
@@ -870,7 +870,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public UserId getLastModifier(JakeObject jakeObject) {
+	public User getLastModifier(JakeObject jakeObject) {
 		try {
 			return this.getLogEntryDao(jakeObject.getProject())
 					.getLastVersionOfJakeObject(jakeObject).getMember();
@@ -881,9 +881,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public UserId invite(Project project, String userid) throws UserIdFormatException {
-		UserId member;
-		UserId id;
+	public User invite(Project project, String userid) throws UserIdFormatException {
+		User member;
+		User id;
 
 		log.info("invite project: " + project + " userid: " + userid + " msgservice: "
 				+ project.getMessageService());
@@ -900,7 +900,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<UserId> getSuggestedPeopleForInvite(Project project)
+	public List<User> getSuggestedPeopleForInvite(Project project)
 			throws IllegalArgumentException, NoSuchProjectException {
 
 		if (project == null || project.getMessageService() == null)
@@ -910,9 +910,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		ICService ics;
 		IUsersService usersService;
 		Iterable<com.jakeapp.jake.ics.UserId> possibleBackendUsers;
-		Collection<UserId> possibleUsers;
-		UserId possibleUser;
-		List<UserId> result = new LinkedList<UserId>();
+		Collection<User> possibleUsers;
+		User possibleUser;
+		List<User> result = new LinkedList<User>();
 
 		msgService = project.getMessageService();
 		// backendUser = msgService.getIcsManager()
@@ -926,7 +926,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			possibleBackendUsers = usersService.getAllUsers();
 
 			// convert them to 'frontend-users'
-			possibleUsers = new LinkedList<UserId>();
+			possibleUsers = new LinkedList<User>();
 			for (com.jakeapp.jake.ics.UserId possibleBackendUser : possibleBackendUsers) {
 				possibleUser = msgService.getIcsManager().getFrontendUserId(
 						project, possibleBackendUser);
@@ -1076,7 +1076,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	public void lock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
-        UserId me = p.getUserId();
+        User me = p.getUserId();
         LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
@@ -1085,13 +1085,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Transactional
 	public void unlock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
-        UserId me = p.getUserId();
+        User me = p.getUserId();
         LogEntry<JakeObject> le = new JakeObjectUnlockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
 	@Override
-	public void setUserNickname(Project project, UserId userId, String nick) {
+	public void setUserNickname(Project project, User user, String nick) {
 		// TODO: implement!
 		// TODO christopher: I think that this function is not supported
 		// by the current database structure

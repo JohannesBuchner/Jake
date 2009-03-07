@@ -1,7 +1,7 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
@@ -49,7 +49,7 @@ public interface ICSManager {
 	 * @param p
 	 * @return
 	 */
-	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, UserId u);
+	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, User u);
 
 	/**
 	 * translate an ICS userId to something the "real world" can work with
@@ -58,7 +58,7 @@ public interface ICSManager {
 	 * @param u
 	 * @return
 	 */
-	public UserId getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u);
+	public User getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u);
 
 	/**
 	 * get your own userId

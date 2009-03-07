@@ -1,7 +1,6 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import org.apache.log4j.Logger;

@@ -1,22 +1,13 @@
 package com.jakeapp.core.dao;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
+
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
-import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
 
@@ -460,13 +451,13 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public List<UserId> getCurrentProjectMembers() {
+	public List<User> getCurrentProjectMembers() {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<UserId>>() {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<User>>() {
 
 				@Override
-				public List<UserId> calculate() throws Exception {
+				public List<User> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getCurrentProjectMembers();
 				}
 			});
@@ -482,7 +473,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public boolean trusts(final UserId a, final UserId b) {
+	public boolean trusts(final User a, final User b) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Boolean>() {
@@ -504,7 +495,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public TrustState trustsHow(final UserId a, final UserId b) {
+	public TrustState trustsHow(final User a, final User b) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<TrustState>() {
@@ -526,13 +517,13 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public Collection<UserId> trusts(final UserId a) {
+	public Collection<User> trusts(final User a) {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Collection<UserId>>() {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Collection<User>>() {
 
 				@Override
-				public Collection<UserId> calculate() throws Exception {
+				public Collection<User> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.trusts(a);
 				}
 			});
@@ -548,13 +539,13 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public Map<UserId, TrustState> trustsHow(final UserId a) {
+	public Map<User, TrustState> trustsHow(final User a) {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<UserId, TrustState>>() {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<User, TrustState>>() {
 
 				@Override
-				public Map<UserId, TrustState> calculate() throws Exception {
+				public Map<User, TrustState> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.trustsHow(a);
 				}
 			});
@@ -570,13 +561,13 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public Map<UserId, List<UserId>> getTrustGraph() {
+	public Map<User, List<User>> getTrustGraph() {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<UserId, List<UserId>>>() {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<User, List<User>>>() {
 
 				@Override
-				public Map<UserId, List<UserId>> calculate() throws Exception {
+				public Map<User, List<User>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getTrustGraph();
 				}
 			});
@@ -592,13 +583,13 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph() {
+	public Map<User, Map<User, TrustState>> getExtendedTrustGraph() {
 		
 		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<UserId, Map<UserId, TrustState>>>() {
+			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Map<User, Map<User, TrustState>>>() {
 
 				@Override
-				public Map<UserId, Map<UserId, TrustState>> calculate() throws Exception {
+				public Map<User, Map<User, TrustState>> calculate() throws Exception {
 					return ThreadedLogEntryDao.this.dao.getExtendedTrustGraph();
 				}
 			});

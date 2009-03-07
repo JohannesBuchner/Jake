@@ -10,12 +10,8 @@ import java.util.UUID;
 
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 
 public final class UnprocessedBlindLogEntryDaoProxy {
@@ -81,7 +77,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 * @see ILogEntryDao#getCurrentProjectMembers()
 	 * @return
 	 */
-	public List<UserId> getCurrentProjectMembers() {
+	public List<User> getCurrentProjectMembers() {
 		return this.innerDao.getCurrentProjectMembers();
 	}
 
@@ -163,7 +159,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 * @see ILogEntryDao#getTrustGraph()
 	 * @return
 	 */
-	public Map<UserId, List<UserId>> getTrustGraph() {
+	public Map<User, List<User>> getTrustGraph() {
 		return this.innerDao.getTrustGraph();
 	}
 
@@ -173,7 +169,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 * @see ILogEntryDao#trusts(ProjectMember, ProjectMember)
 	 * @return
 	 */
-	public Boolean trusts(UserId a, UserId b) {
+	public Boolean trusts(User a, User b) {
 		return this.innerDao.trusts(a, b);
 	}
 
@@ -183,7 +179,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 * @param b
 	 * @return
 	 */
-	public TrustState trustsHow(UserId a, UserId b) {
+	public TrustState trustsHow(User a, User b) {
 		return this.innerDao.trustsHow(a, b);
 	}
 
@@ -193,7 +189,7 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	 * @return
 	 */
 	@Deprecated
-	public Collection<UserId> trusts(UserId a) {
+	public Collection<User> trusts(User a) {
 		return this.innerDao.trusts(a);
 	}
 

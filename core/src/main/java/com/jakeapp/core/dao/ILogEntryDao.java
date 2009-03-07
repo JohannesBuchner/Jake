@@ -6,13 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 
 /**
@@ -247,8 +242,8 @@ public interface ILogEntryDao {
 	 * Iterates in time through all
 	 * {@link LogAction#START_TRUSTING_PROJECTMEMBER} and
 	 * {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}. <br>
-	 * Keeps a map of who trusts a {@link UserId}. returns all
-	 * {@link UserId} that at the end of the time have people that trust
+	 * Keeps a map of who trusts a {@link com.jakeapp.core.domain.User}. returns all
+	 * {@link com.jakeapp.core.domain.User} that at the end of the time have people that trust
 	 * them. Also looks at the {@value LogAction#PROJECT_CREATED} at the
 	 * beginning.
 	 * 
@@ -256,7 +251,7 @@ public interface ILogEntryDao {
 	 * @return an empty collection if no projectmembers (not null) or the tags
 	 *         otherwise
 	 */
-	public List<UserId> getCurrentProjectMembers();
+	public List<User> getCurrentProjectMembers();
 
 	/**
 	 * Does a trust b?
@@ -266,7 +261,7 @@ public interface ILogEntryDao {
 	 * @return false if no logentries found or last was
 	 *         {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}
 	 */
-	public boolean trusts(UserId a, UserId b);
+	public boolean trusts(User a, User b);
 
 	/**
 	 * Does a trust b?
@@ -275,7 +270,7 @@ public interface ILogEntryDao {
 	 * @param b
 	 * @return
 	 */
-	public TrustState trustsHow(UserId a, UserId b);
+	public TrustState trustsHow(User a, User b);
 
 	/**
 	 * Whom does a trust?
@@ -285,7 +280,7 @@ public interface ILogEntryDao {
 	 * @return
 	 */
 	@Deprecated
-	public Map<UserId, TrustState> trustsHow(UserId a);
+	public Map<User, TrustState> trustsHow(User a);
 
 
 	/**
@@ -294,23 +289,23 @@ public interface ILogEntryDao {
 	 * @param a
 	 * @deprecated don't know if needed
 	 * @return an empty Collection if no logentries found (not null) or the
-	 *         {@link UserId}s that have
+	 *         {@link com.jakeapp.core.domain.User}s that have
 	 *         {@link LogAction#START_TRUSTING_PROJECTMEMBER} as last action
 	 */
 	@Deprecated
-	public Collection<UserId> trusts(UserId a);
+	public Collection<User> trusts(User a);
 
 	/**
 	 * @return a mapping of the trusted users for each user (A trusts [B, C, D])
 	 *         must not be null
 	 */
-	public Map<UserId, List<UserId>> getTrustGraph();
+	public Map<User, List<User>> getTrustGraph();
 
 
 	/**
 	 * @return a mapping of truststate to user for each user (A trusts [B full, C not, D normal])
 	 */
-	public Map<UserId, Map<UserId, TrustState>> getExtendedTrustGraph();
+	public Map<User, Map<User, TrustState>> getExtendedTrustGraph();
 
 
 	/**

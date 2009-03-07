@@ -4,7 +4,7 @@ import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
@@ -209,13 +209,13 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	@Override
-	public List<MsgService<UserId>> getMsgServices(String sessionId)
+	public List<MsgService<User>> getMsgServices(String sessionId)
 			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
 		this.checkSession(sessionId);
 		return this.getMsgServices();
 	}
 
-	private List<MsgService<UserId>> getMsgServices() throws IllegalStateException {
+	private List<MsgService<User>> getMsgServices() throws IllegalStateException {
 		return this.msgServiceFactory.getAll();
 	}
 

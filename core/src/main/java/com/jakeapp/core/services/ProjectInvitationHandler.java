@@ -1,6 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.io.File;
 import java.util.UUID;
 import java.util.List;
 import java.util.LinkedList;
@@ -9,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
@@ -46,16 +45,16 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * Invites a User to a project by sending a invite packet.
 	 *
 	 * @param project The project to invite the user to.
-	 * @param userId  The userId of the User. There is already a corresponding
+	 * @param user  The userId of the User. There is already a corresponding
 	 *                ProjectMember-Object stored in the project-local database.
 	 * @return if the packet could be sent.
 	 */
-	public static boolean invite(Project project, UserId userId) {
+	public static boolean invite(Project project, User user) {
 		ICService ics = project.getMessageService().getIcsManager().getICService(project);
 		com.jakeapp.jake.ics.UserId bu = project.getMessageService().getIcsManager()
-				.getBackendUserId(project, userId);
+				.getBackendUserId(project, user);
 
-		bu = new XmppUserId(userId.getUserId() + "/Jake");
+		bu = new XmppUserId(user.getUserId() + "/Jake");
 
 //		project.getMessageService().getMainIcs().getMsgService().
 		String msg = createInviteMessage(project);
@@ -91,7 +90,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 				Project p = getProject(innercontent, uuidstr);
 				p.setInvitationState(InvitationState.INVITED);
 
-				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+				User user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 
 //				user.setProtocolType(msg.getProtocolType());
 				user.setProtocolType(ProtocolType.XMPP);
@@ -118,7 +117,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 				String uuidstr = innercontent.substring(0, uuidlen);
 				Project p = getProject(innercontent, uuidstr);
 
-				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+				User user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 				user.setProtocolType(msg.getProtocolType());
 
 
@@ -135,7 +134,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 				String uuidstr = innercontent.substring(0, uuidlen);
 				Project p = getProject(innercontent, uuidstr);
 
-				UserId user = msg.getIcsManager().getFrontendUserId(p, from_userid);
+				User user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 				user.setProtocolType(msg.getProtocolType());
 
 				log.info("got invited to Project " + p + " by " + from_userid);
@@ -172,7 +171,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param project
 	 * @param inviter
 	 */
-	public static void notifyInvitationAccepted(Project project, UserId inviter) {
+	public static void notifyInvitationAccepted(Project project, User inviter) {
 		ICSManager icsManager = project.getMessageService().getIcsManager();
 		ICService ics = icsManager.getICService(project);
 		com.jakeapp.jake.ics.UserId backendUser = icsManager.getBackendUserId(project,
@@ -191,7 +190,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param project
 	 * @param inviter
 	 */
-	public static void notifyInvitationRejected(Project project, UserId inviter) {
+	public static void notifyInvitationRejected(Project project, User inviter) {
 		ICSManager icsManager = project.getMessageService().getIcsManager();
 		ICService ics = icsManager.getICService(project);
 		com.jakeapp.jake.ics.UserId backendUser = icsManager.getBackendUserId(project,

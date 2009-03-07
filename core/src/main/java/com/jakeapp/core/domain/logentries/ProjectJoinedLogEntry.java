@@ -1,7 +1,7 @@
 package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ILogable;
 
@@ -12,7 +12,7 @@ import javax.persistence.DiscriminatorValue;
 @DiscriminatorValue(value = "PROJECT_JOINED")
 public class ProjectJoinedLogEntry extends ProjectLogEntry {
 
-	public ProjectJoinedLogEntry(Project project, UserId member) {
+	public ProjectJoinedLogEntry(Project project, User member) {
 		super(LogAction.PROJECT_JOINED, project, member);
 	}
 

@@ -1,7 +1,7 @@
 package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ILogable;
 
@@ -12,7 +12,7 @@ import javax.persistence.DiscriminatorValue;
 @Entity
 @DiscriminatorValue(value = "JAKE_OBJECT_LOCK")
 public class JakeObjectLockLogEntry extends JakeObjectLogEntry {
-    public JakeObjectLockLogEntry(JakeObject belongsTo, UserId member, String comment, Boolean processed) {
+    public JakeObjectLockLogEntry(JakeObject belongsTo, User member, String comment, Boolean processed) {
         super(LogAction.JAKE_OBJECT_LOCK, belongsTo, member, comment, null, processed);
     }
 

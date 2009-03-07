@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.services.IFrontendService;
-import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.Attributed;
@@ -72,7 +71,7 @@ public class JakeCommander extends Commander {
 	private MsgService msg;
 
 	public Project project;
-	public UserId invitingUser;
+	public User invitingUser;
 
 	private void startupCore() {
 		SpringThreadBroker.getInstance().loadSpring(
@@ -92,19 +91,19 @@ public class JakeCommander extends Commander {
 			pms.setInvitationListener(new IProjectInvitationListener(){
 
 				@Override
-				public void invited(UserId user, Project p) {
+				public void invited(User user, Project p) {
 					System.out.println("got invitation from " + user + " to " + p);
 					JakeCommander.this.project = p;
 					JakeCommander.this.invitingUser = user;
 				}
 
 				@Override
-				public void accepted(UserId user, Project p) {
+				public void accepted(User user, Project p) {
 					System.out.println("got accept from " + user + " to " + p);
 				}
 
 				@Override
-				public void rejected(UserId user, Project p) {
+				public void rejected(User user, Project p) {
 					System.out.println("got reject from " + user + " to " + p);
 				}
 				
@@ -637,7 +636,7 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("listing ...");
-				for(UserId p : pms.getSuggestedPeopleForInvite(project)) {
+				for(User p : pms.getSuggestedPeopleForInvite(project)) {
 					System.out.println("\t" + p);
 				}
 				System.out.println("listing done");
@@ -867,7 +866,7 @@ public class JakeCommander extends Commander {
 		@Override
 		public void handleArguments(String userid) {
 			System.out.println("Poking " + userid + "...");
-			sync.poke(project, new UserId(ProtocolType.XMPP, userid));
+			sync.poke(project, new User(ProtocolType.XMPP, userid));
 		}
 	}
 

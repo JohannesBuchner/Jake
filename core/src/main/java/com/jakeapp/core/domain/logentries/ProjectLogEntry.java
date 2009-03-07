@@ -1,7 +1,7 @@
 package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.LogAction;
 
 import javax.persistence.Entity;
@@ -16,7 +16,7 @@ public abstract class ProjectLogEntry extends LogEntry<Project> implements Seria
     @Transient
     private Project project;
 
-    public ProjectLogEntry(LogAction logAction, Project project, UserId member) {
+    public ProjectLogEntry(LogAction logAction, Project project, User member) {
         super(UUID.randomUUID(),
 				logAction, getTime(), project, member, null,
 				null, true);

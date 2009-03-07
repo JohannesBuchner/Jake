@@ -39,7 +39,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 
 	private NoteObject note1;
 
-	private UserId me = new UserId(ProtocolType.XMPP, "me");
+	private User me = new User(ProtocolType.XMPP, "me");
 
 	private Project project;
 
@@ -291,9 +291,9 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 	@Transactional
 	@Test
 	public void testProjectMembers() throws Exception {
-		UserId member1 = new UserId(ProtocolType.XMPP, "max");
-		UserId member2 = new UserId(ProtocolType.XMPP, "jack");
-		UserId member3 = new UserId(ProtocolType.XMPP, "rick");
+		User member1 = new User(ProtocolType.XMPP, "max");
+		User member2 = new User(ProtocolType.XMPP, "jack");
+		User member3 = new User(ProtocolType.XMPP, "rick");
 		logEntryDao.create(new StartTrustingProjectMemberLogEntry(me, me));
 		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member2, me));
 		logEntryDao.create(new StartTrustingProjectMemberLogEntry(member2, member1));

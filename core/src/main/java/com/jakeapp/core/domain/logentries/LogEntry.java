@@ -2,7 +2,7 @@ package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -43,7 +43,7 @@ public abstract class LogEntry<T extends ILogable> implements Serializable {
 
 	private T belongsTo;
 
-	private UserId member;
+	private User member;
 
 	private String comment;
 
@@ -73,7 +73,7 @@ public abstract class LogEntry<T extends ILogable> implements Serializable {
 	 */
 	@Deprecated
 	LogEntry(UUID uuid, LogAction logAction, Date timestamp, 
-			T belongsTo, UserId member, String comment, String checksum,
+			T belongsTo, User member, String comment, String checksum,
 			Boolean processed) {
 		this.setUuid(uuid);
 		this.setLogAction(logAction);
@@ -221,11 +221,11 @@ public abstract class LogEntry<T extends ILogable> implements Serializable {
 
 	@Lob
 	@Column(name = "issuer", nullable = true)
-	public UserId getMember() {
+	public User getMember() {
 		return member;
 	}
 
-	public void setMember(UserId member) {
+	public void setMember(User member) {
 		this.member = member;
 	}
 

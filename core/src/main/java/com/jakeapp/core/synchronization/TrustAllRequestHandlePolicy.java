@@ -12,12 +12,9 @@ import org.apache.log4j.Logger;
 import org.hsqldb.lib.StringInputStream;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
@@ -48,7 +45,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 	}
 
 	@Override
-	public InputStream handleJakeObjectRequest(UserId from, JakeObject jo) {
+	public InputStream handleJakeObjectRequest(User from, JakeObject jo) {
 		try {
 			if (jo instanceof NoteObject) {
 				NoteObject no = db.getNoteObjectDao(jo.getProject()).complete(
@@ -67,7 +64,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 	}
 
 	@Override
-	public boolean handleLogSyncRequest(Project project, UserId from) {
+	public boolean handleLogSyncRequest(Project project, User from) {
 		return true;
 	}
 

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.when;
-import org.springframework.test.annotation.ExpectedException;
 
 
 import java.util.UUID;
@@ -46,8 +45,8 @@ public class LogEntrySerializerTest {
 	static final Project sampleProject1 = new Project("sampleProjectName1",
 			UUID.fromString("9ffbce4c-9352-46bb-a1e2-2547404241e1"), null, null);
 
-	static final UserId sampleUserId1 = new UserId(ProtocolType.XMPP, "test1@jabber.jakeapp.com");
-	static final UserId sampleUserId2 = new UserId(ProtocolType.XMPP, "test2@jabber.jakeapp.com");
+	static final User sampleUserId1 = new User(ProtocolType.XMPP, "test1@jabber.jakeapp.com");
+	static final User sampleUserId2 = new User(ProtocolType.XMPP, "test2@jabber.jakeapp.com");
 
 	static final FileObject sampleFileObject1 = new FileObject(sampleProject1, "/sampleFileObject1");
 	static final NoteObject sampleNoteObject1 = new NoteObject(sampleProject1, "this is simpleNoteObject1 and a \n test");

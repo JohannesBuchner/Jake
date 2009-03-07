@@ -1,7 +1,7 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 
 
 public interface IProjectInvitationListener {
@@ -12,7 +12,7 @@ public interface IProjectInvitationListener {
 	 * @param user
 	 * @param p
 	 */
-	public void invited(UserId user, Project p);
+	public void invited(User user, Project p);
 
 	/**
 	 * the user has accepted the invitation
@@ -20,7 +20,7 @@ public interface IProjectInvitationListener {
 	 * @param user
 	 * @param p
 	 */
-	public void accepted(UserId user, Project p);
+	public void accepted(User user, Project p);
 
 	/**
 	 * the user has rejected the invitation
@@ -28,6 +28,6 @@ public interface IProjectInvitationListener {
 	 * @param user
 	 * @param p
 	 */
-	public void rejected(UserId user, Project p);
+	public void rejected(User user, Project p);
 
 }

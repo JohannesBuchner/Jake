@@ -5,27 +5,25 @@ package com.jakeapp.core.domain;
 
 import org.apache.log4j.Logger;
 
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-
 
 /**
  * Identifies a user
  */
-public class UserId implements ILogable, Comparable<UserId> {
+public class User implements ILogable, Comparable<User> {
 	private static final long serialVersionUID = 3356457614479149943L;
 
-	public UserId() {
+	public User() {
 		super();
 	}
 
-	public UserId(ProtocolType protocolType, String userId) {
+	public User(ProtocolType protocolType, String userId) {
 		super();
 		this.protocolType = protocolType;
 		this.userId = userId;
 	}
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger(UserId.class);
+	private static final Logger log = Logger.getLogger(User.class);
 
 	private String userId;
 
@@ -75,7 +73,7 @@ public class UserId implements ILogable, Comparable<UserId> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserId other = (UserId) obj;
+		User other = (User) obj;
 		if (protocolType == null) {
 			if (other.protocolType != null)
 				return false;
@@ -90,7 +88,7 @@ public class UserId implements ILogable, Comparable<UserId> {
 	}
 
 	@Override
-	public int compareTo(UserId o) {
+	public int compareTo(User o) {
 		if (this.equals(o)) return 0;
 		else if (o==null) return 1;
 		else return this.getUserId().compareTo(o.getUserId());

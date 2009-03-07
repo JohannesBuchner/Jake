@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
@@ -32,7 +31,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 
 	private ILogEntryDao logEntryDao;
 
-	private UserId projectMember = new UserId(ProtocolType.XMPP, "me");
+	private User projectMember = new User(ProtocolType.XMPP, "me");
 	
 	public HibernateTemplate getHibernateTemplate() {
 		return hibernateTemplate;
@@ -82,7 +81,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 				.fromString("e0cd2322-6766-40a0-82c5-bcc0fe7a67c2"), msgService, file);
 
 
-		UserId projectMember = new UserId(ProtocolType.XMPP, "me");
+		User projectMember = new User(ProtocolType.XMPP, "me");
 
 		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, projectMember);
 
@@ -226,7 +225,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 		Project testProject = new Project("test", UUID
 				.fromString("e0cd2322-6766-40a0-82c5-bcc0fe7a67c2"), msgService, file);
 
-		UserId projectMember = new UserId(ProtocolType.XMPP, "me");
+		User projectMember = new User(ProtocolType.XMPP, "me");
 
 		ProjectCreatedLogEntry projectLogEntry = new ProjectCreatedLogEntry(testProject, projectMember);
 		UUID uuid = new UUID(31,312);
@@ -242,7 +241,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	/**
 	 * @return
 	 */
-	private void initProjectAndMembers(UserId projectMember,UserId invitedProjectMember) {
+	private void initProjectAndMembers(User projectMember, User invitedProjectMember) {
 		MsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 		Project testProject = new Project("test", UUID
@@ -262,12 +261,12 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void getCurrentProjectMembers_shouldReturnProjectUser() {
-		UserId projectMember = new UserId(ProtocolType.XMPP, "me");
-		UserId invitedProjectMember = new UserId(ProtocolType.XMPP, "you");
+		User projectMember = new User(ProtocolType.XMPP, "me");
+		User invitedProjectMember = new User(ProtocolType.XMPP, "you");
 		this.initProjectAndMembers(projectMember,invitedProjectMember);
 		
 		//get user
-		List<UserId> members = logEntryDao.getCurrentProjectMembers();
+		List<User> members = logEntryDao.getCurrentProjectMembers();
 		Assert.assertThat(members.size(), CoreMatchers.not(0));
 		Assert.assertThat(members,JUnitMatchers.hasItem(projectMember));
 	}
@@ -275,12 +274,12 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void getCurrentProjectMembers_shouldReturnInvitedUser() {
-		UserId projectMember = new UserId(ProtocolType.XMPP, "projectFounder@projects.org");
-		UserId invitedProjectMember = new UserId(ProtocolType.XMPP, "jake@jake.at");
+		User projectMember = new User(ProtocolType.XMPP, "projectFounder@projects.org");
+		User invitedProjectMember = new User(ProtocolType.XMPP, "jake@jake.at");
 		this.initProjectAndMembers(projectMember,invitedProjectMember);
 		
 		//get user
-		List<UserId> members = logEntryDao.getCurrentProjectMembers();
+		List<User> members = logEntryDao.getCurrentProjectMembers();
 		Assert.assertThat(members.size(), CoreMatchers.not(0));
 		Assert.assertThat(members, JUnitMatchers.hasItem(invitedProjectMember));
 	}

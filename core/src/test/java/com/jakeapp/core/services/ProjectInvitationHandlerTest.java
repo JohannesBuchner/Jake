@@ -35,7 +35,7 @@ public class ProjectInvitationHandlerTest {
 	private ServiceCredentials credentials = new ServiceCredentials("user", "pass", ProtocolType.XMPP);
 
 
-	UserId user = new UserId(ProtocolType.XMPP, "testuser1@localhost");
+	User user = new User(ProtocolType.XMPP, "testuser1@localhost");
 	Project project;
 
 

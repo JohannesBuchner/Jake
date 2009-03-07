@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.panels.NewsPanel;
@@ -26,7 +26,7 @@ public class UserHelper {
 	 * @param user: the user to evaluate
 	 * @return nickname or full name, if nn not set.
 	 */
-	public static String getNickOrFullName(UserId user) {
+	public static String getNickOrFullName(User user) {
 		return getNickOrFullName(JakeMainApp.getCore().getUserInfo(user));
 	}
 
@@ -53,7 +53,7 @@ public class UserHelper {
 	 * @param member: the member to evaluate
 	 * @return nick/fullname or "you" localized
 	 */
-	public static String getLocalizedUserNick(UserId member) {
+	public static String getLocalizedUserNick(User member) {
 		if (isCurrentProjectMember(member)) {
 			return newsResourceMap.getString("eventsYourself");
 		} else {
@@ -61,12 +61,12 @@ public class UserHelper {
 		}
 	}
 
-	public static boolean isCurrentProjectMember(UserId member) {
+	public static boolean isCurrentProjectMember(User member) {
 		return member == JakeMainApp.getCurrentUser();
 	}
 
 
-	public static String getNickOrFullName(UserId member, int maxlen) {
+	public static String getNickOrFullName(User member, int maxlen) {
 		return StringUtilities.maxLen(getNickOrFullName(member), maxlen);
 	}
 }

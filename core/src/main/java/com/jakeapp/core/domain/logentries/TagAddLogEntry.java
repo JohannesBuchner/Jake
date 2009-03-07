@@ -9,7 +9,7 @@ import javax.persistence.DiscriminatorValue;
 @DiscriminatorValue(value = "TAG_ADD")
 public class TagAddLogEntry extends TagLogEntry {
 
-	public TagAddLogEntry(Tag belongsTo, UserId member) {
+	public TagAddLogEntry(Tag belongsTo, User member) {
 		super(LogAction.TAG_ADD, belongsTo, member);
 	}
 

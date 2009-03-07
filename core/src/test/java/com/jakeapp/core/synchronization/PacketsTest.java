@@ -9,12 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntrySerializer;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
@@ -35,7 +34,7 @@ public class PacketsTest {
 	public void setup() {
 		FileObject fo = new FileObject(new UUID(12, 34), project, "/my/file");
 
-		le = new JakeObjectNewVersionLogEntry(fo, new UserId(ProtocolType.XMPP, "u@h"),
+		le = new JakeObjectNewVersionLogEntry(fo, new User(ProtocolType.XMPP, "u@h"),
 				null, "bar", true);
 		le.setUuid(new UUID(42, 21));
 	}

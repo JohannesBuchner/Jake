@@ -2,7 +2,7 @@ package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 
 import javax.persistence.Entity;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public abstract class TagLogEntry extends LogEntry<Tag> implements Serializable 
 
 	private static final long serialVersionUID = -7799185912611559431L;
 
-	public TagLogEntry(LogAction logAction, Tag belongsTo, UserId member) {
+	public TagLogEntry(LogAction logAction, Tag belongsTo, User member) {
 		super(UUID.randomUUID(), logAction, getTime(), belongsTo, member, null, null,
 				true);
 		if (logAction != LogAction.TAG_ADD && logAction != LogAction.TAG_REMOVE)

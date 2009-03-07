@@ -2,7 +2,7 @@ package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 
 import javax.persistence.Entity;
 import java.util.UUID;
@@ -15,13 +15,13 @@ public abstract class JakeObjectLogEntry extends LogEntry<JakeObject> implements
 	private static final long serialVersionUID = 3507342231350901911L;
 
 	public JakeObjectLogEntry(LogAction logAction, JakeObject belongsTo,
-			UserId member, String comment, String checksum, Boolean processed) {
+			User member, String comment, String checksum, Boolean processed) {
 		this(UUID.randomUUID(), logAction, getTime(), belongsTo, member, comment,
 				checksum, processed);
 	}
 
 	public JakeObjectLogEntry(UUID uuid, LogAction logAction, Date timestamp,
-			JakeObject belongsTo, UserId member, String comment, String checksum,
+			JakeObject belongsTo, User member, String comment, String checksum,
 			Boolean processed) {
 		super(uuid, logAction, timestamp, belongsTo, member, comment, checksum, processed);
 		if (logAction != LogAction.JAKE_OBJECT_DELETE

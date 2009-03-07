@@ -125,7 +125,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<MsgService<UserId>> getMsgServices()
+	public List<MsgService<User>> getMsgServices()
 					throws FrontendNotLoggedInException {
 		return this.frontendService.getMsgServices(this.sessionId);
 	}
@@ -532,20 +532,20 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public UserInfo getUserInfo(UserId user) {
+	public UserInfo getUserInfo(User user) {
 		return pms.getProjectUserInfo(JakeMainApp.getProject(), user);
 	}
 
 	@Override
-	public boolean setUserNick(Project project, UserId userId, String nick) {
-		log.info("setUserNick: project: " + project + " ProjectMember: " + userId + " Nick: " + nick);
+	public boolean setUserNick(Project project, User user, String nick) {
+		log.info("setUserNick: project: " + project + " ProjectMember: " + user + " Nick: " + nick);
 
 		// FIXME: AS OF 1.3.09, this seems broken?
 		// TODO: ignore this and create a regex for checking!
 		if (nick.indexOf("<") != -1) {
 			return false;
 		} else {
-			pms.setUserNickname(project, userId, nick);
+			pms.setUserNickname(project, user, nick);
 
 			EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 							project,
@@ -556,9 +556,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void setTrustState(Project project, UserId userId, TrustState trust) {
+	public void setTrustState(Project project, User user, TrustState trust) {
 		try {
-			pms.setTrust(project, userId, trust);
+			pms.setTrust(project, user, trust);
 		} catch (IllegalArgumentException e) {
 			ExceptionUtilities.showError(e);
 		} catch (IllegalAccessException e) {
@@ -594,8 +594,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public List<UserId> getSuggestedUser(Project project) {
-		List<UserId> members = null;
+	public List<User> getSuggestedUser(Project project) {
+		List<User> members = null;
 
 		try {
 			members = this.getFrontendService().getProjectsManagingService(getSessionId())
@@ -611,7 +611,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		//never return null
-		return (members == null) ? new ArrayList<UserId>() : members;
+		return (members == null) ? new ArrayList<User>() : members;
 	}
 
 

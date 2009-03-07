@@ -1,7 +1,7 @@
 package com.jakeapp.core.services;
 
 import org.apache.log4j.Logger;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
@@ -25,7 +25,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 
 	@Override
-	public void invited(UserId user, Project project) {
+	public void invited(User user, Project project) {
 		log.info("got invited to Project " + project + " by " + user);
 		// add Project to the global database
 		try {
@@ -40,10 +40,11 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	}
 
 	@Override
-	public void accepted(UserId user, Project p) {
+	public void accepted(User user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " accepted ");
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(p,  user);
 		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
+		
 		StartTrustingProjectMemberLogEntry logEntry_other = new StartTrustingProjectMemberLogEntry(user, p.getUserId());
 		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_other);
 
@@ -55,7 +56,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	}
 
 	@Override
-	public void rejected(UserId user, Project p) {
+	public void rejected(User user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " rejected ");
 
 //		if (this.invitationListener != null)

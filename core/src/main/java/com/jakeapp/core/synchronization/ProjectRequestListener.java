@@ -7,7 +7,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
@@ -130,7 +130,7 @@ public class ProjectRequestListener
 			log.debug("This means we should sync logs!");
 
 			// Eventually, this should consider things such as trust
-			UserId user = getICSManager().getFrontendUserId(p, from_userid);
+			User user = getICSManager().getFrontendUserId(p, from_userid);
 			try {
 				syncService.startLogSync(p, user);
 			} catch (IllegalProtocolException e) {

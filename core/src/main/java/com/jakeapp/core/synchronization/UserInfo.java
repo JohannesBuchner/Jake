@@ -1,7 +1,7 @@
 package com.jakeapp.core.synchronization;
 
 import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.VisibilityStatus;
 
 /**
@@ -15,16 +15,16 @@ public class UserInfo {
 	private String nickName;
 	private String firstName;
 	private String lastName;
-	private UserId userId;
+	private User user;
 
 	public UserInfo(TrustState trust, VisibilityStatus status, String nickName,
-					String firstName, String lastName, UserId userId) {
+					String firstName, String lastName, User user) {
 		this.trust = trust;
 		this.status = status;
 		this.nickName = nickName;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.userId = userId;
+		this.user = user;
 	}
 
 	public TrustState getTrust() {
@@ -47,8 +47,8 @@ public class UserInfo {
 		return lastName;
 	}
 
-	public UserId getUser() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
 	public boolean isOnline() {

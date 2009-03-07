@@ -29,7 +29,7 @@
             <list>
                 <value>com.jakeapp.core.domain.Project</value>
                 <value>com.jakeapp.core.domain.ServiceCredentials</value>
-                <value>com.jakeapp.core.domain.UserId</value>
+                <value>com.jakeapp.core.domain.User</value>
 
                 <value>com.jakeapp.core.domain.JakeObject</value>
                 <value>com.jakeapp.core.domain.NoteObject</value>

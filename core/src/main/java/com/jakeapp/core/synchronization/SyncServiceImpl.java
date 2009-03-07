@@ -11,7 +11,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.logentries.JakeObjectDeleteLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
@@ -99,7 +99,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/* DAO stuff */
 
 	@Override
-	protected Iterable<UserId> getProjectMembers(Project project)
+	protected Iterable<User> getProjectMembers(Project project)
 			throws NoSuchProjectException {
 		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
 	}
@@ -168,7 +168,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 	@Override
-	public void poke(Project project, UserId pm) {
+	public void poke(Project project, User pm) {
 		log.info("Poking user " + pm.getUserId());
 		ICService ics = getICS(project);
 		log.debug("ICS is logged in? " + ics.getStatusService().isLoggedIn());
@@ -221,7 +221,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	@Override
-	public Iterable<LogEntry<ILogable>> startLogSync(Project project, UserId pm)
+	public Iterable<LogEntry<ILogable>> startLogSync(Project project, User pm)
 			throws IllegalArgumentException, IllegalProtocolException {
 		log.info("Requesting log sync from user " + pm.getUserId());
 
@@ -598,7 +598,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	@Transactional
-	private UserId getMyProjectMember(Project p) {
+	private User getMyProjectMember(Project p) {
 		return p.getUserId();
 	}
 
@@ -684,7 +684,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		IFileTransferService fts = p.getMessageService().getIcsManager()
 				.getTransferService(p);
 
-		UserId remotePeer;
+		User remotePeer;
 		com.jakeapp.jake.ics.UserId remoteBackendPeer;
 		ChangeListener cl = this.getProjectChangeListener(p);
 		LogEntry realProvider = null;
@@ -816,7 +816,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 * @param lastle
 	 * @return ProjectMember or null, if LogEntry is null.
 	 */
-	private UserId getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
+	private User getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
 		if (lastle != null)
 			return lastle.getMember();
 		else
@@ -835,9 +835,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 */
 	@Transactional
 	private void syncProjectMembers(Project project) {
-		Collection<UserId> members = db.getLogEntryDao(project)
+		Collection<User> members = db.getLogEntryDao(project)
 				.getCurrentProjectMembers();
-		for (UserId member : members) {
+		for (User member : members) {
 			com.jakeapp.jake.ics.UserId userid = getICSManager().getBackendUserId(project, member); 
 			try {
 				getICS(project).getUsersService().addUser(userid, userid.getUserId());
@@ -850,7 +850,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	private boolean isReachable(Project p, UserId u) {
+	private boolean isReachable(Project p, User u) {
 		ICService ics = getICS(p);
 		if (ics == null)
 			return false;

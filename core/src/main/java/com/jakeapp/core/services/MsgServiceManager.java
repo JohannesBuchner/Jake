@@ -14,7 +14,7 @@ import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 
@@ -29,7 +29,7 @@ public class MsgServiceManager {
 	/**
 	 * Key is the Credentials UUID
 	 */
-	private Map<String, MsgService<UserId>> msgServices = new HashMap<String, MsgService<UserId>>();
+	private Map<String, MsgService<User>> msgServices = new HashMap<String, MsgService<User>>();
 
 	@Injected
 	private IServiceCredentialsDao serviceCredentialsDao;
@@ -71,10 +71,10 @@ public class MsgServiceManager {
 	 *             if the protocol specified in the credentials is not
 	 *             supported.
 	 */
-	private MsgService<UserId> create(ServiceCredentials credentials)
+	private MsgService<User> create(ServiceCredentials credentials)
 			throws ProtocolNotSupportedException {
 		log.info("Creating MsgService for " + credentials);
-		MsgService<UserId> msgService;
+		MsgService<User> msgService;
 
 		if (credentials == null) {
 			throw new InvalidCredentialsException("Credentials cannot be null!");
@@ -87,7 +87,7 @@ public class MsgServiceManager {
 		MsgService.setServiceCredentialsDao(getServiceCredentialsDao());
 
 		log.debug("creating MsgService with crendentials: " + credentials);
-		log.debug("UserId="
+		log.debug("User="
 				+ credentials.getUserId()
 				+ " pwl = "
 				+ ((credentials.getPlainTextPassword() == null) ? "null" : ""
@@ -124,7 +124,7 @@ public class MsgServiceManager {
 	 * @return
 	 * @throws ProtocolNotSupportedException
 	 */
-	private UserId createUserforMsgService(ServiceCredentials credentials)
+	private User createUserforMsgService(ServiceCredentials credentials)
 			throws ProtocolNotSupportedException {
 
 		// switch through the supported protocols and create the user
@@ -138,22 +138,22 @@ public class MsgServiceManager {
 					res = UUID.randomUUID();
 				credentials.setUuid(res);
 
-				return new UserId(ProtocolType.XMPP, credentials.getUserId());
+				return new User(ProtocolType.XMPP, credentials.getUserId());
 
 			default:
 				throw new ProtocolNotSupportedException("Backend not yet implemented");
 		}
 	}
 
-	public List<MsgService<UserId>> getLoaded() {
-		List<MsgService<UserId>> result = new ArrayList<MsgService<UserId>>();
+	public List<MsgService<User>> getLoaded() {
+		List<MsgService<User>> result = new ArrayList<MsgService<User>>();
 		result.addAll(this.msgServices.values());
 		log.debug("got " + result.size() + " messageservices");
 		return result;
 	}
 
 	@Transactional
-	public List<MsgService<UserId>> getAll() {
+	public List<MsgService<User>> getAll() {
 		log.debug("calling getAll");
 
 		List<ServiceCredentials> credentialsList = this.serviceCredentialsDao.getAll();
@@ -164,7 +164,7 @@ public class MsgServiceManager {
 		for (ServiceCredentials credentials : credentialsList) {
 			if (!this.msgServices.containsKey(credentials.getUuid())) {
 				try {
-					MsgService<UserId> service = this.create(credentials);
+					MsgService<User> service = this.create(credentials);
 					if (credentials.getUuid() == null) {
 						throw new IllegalStateException(
 								"createMsgService didn't fill uuid");
@@ -220,7 +220,7 @@ public class MsgServiceManager {
 	public MsgService getOrCreate(ServiceCredentials credentials) {
 		log.debug("Get MsgService by credentials: " + credentials);
 
-		MsgService<UserId> msg = find(credentials);
+		MsgService<User> msg = find(credentials);
 		if (msg != null) {
 			log.debug("reused already-loaded msgservice");
 			return msg;
@@ -236,17 +236,17 @@ public class MsgServiceManager {
 	}
 
 
-	private MsgService<UserId> find(ServiceCredentials credentials) {
+	private MsgService<User> find(ServiceCredentials credentials) {
 		if (this.msgServices.containsKey(credentials.getUuid())) {
 			return this.msgServices.get(credentials.getUuid());
 		}
-		List<MsgService<UserId>> list = getAll();
+		List<MsgService<User>> list = getAll();
 		if (this.msgServices.containsKey(credentials.getUuid())) {
 			return this.msgServices.get(credentials.getUuid());
 		}
 
 		// find a similar one
-		for (MsgService<UserId> m : list) {
+		for (MsgService<User> m : list) {
 			ServiceCredentials c = m.getServiceCredentials();
 			if (credentials.getProtocol() == c.getProtocol()
 					&& credentials.getUserId().equals(c.getUserId())) {

@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -15,7 +15,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
  * Implementation of the MessageService for the XMPP Messaging Protocol.
  * One per User.
  */
-public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
+public class XMPPMsgService extends MsgService<User> {
 
 	private static Logger log = Logger.getLogger(XMPPMsgService.class);
 
@@ -58,12 +58,12 @@ public class XMPPMsgService extends MsgService<com.jakeapp.core.domain.UserId> {
 	}
 
 	@Override
-	public UserId getUserId(String userId) throws UserIdFormatException {
-		return new UserId(ProtocolType.XMPP, userId);
+	public User getUserId(String userId) throws UserIdFormatException {
+		return new User(ProtocolType.XMPP, userId);
 	}
 
 	@Override
-	public UserId getUserId() {
+	public User getUserId() {
 		return this.userId;
 	}
 

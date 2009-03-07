@@ -18,7 +18,7 @@ import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 
 /**
@@ -126,11 +126,11 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 		return getOrCreateFileObjectDao(p);
 	}
 
-	public Collection<UserId> getProjectMembers(Project p) {
+	public Collection<User> getProjectMembers(Project p) {
 		return getLogEntryDao(p).getCurrentProjectMembers();
 	}
 
-	public List<UserId> getTrustedProjectMembers(Project p) {
+	public List<User> getTrustedProjectMembers(Project p) {
 		return getLogEntryDao(p).getTrustGraph().get(p.getUserId());
 	}
 

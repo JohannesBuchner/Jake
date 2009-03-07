@@ -13,11 +13,12 @@ import static org.junit.Assert.assertThat;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import junit.framework.Assert;
 
@@ -43,7 +44,7 @@ public class ProjectInvitationListenerTest {
 	private ServiceCredentials credentials = new ServiceCredentials("user", "pass", ProtocolType.XMPP);
 
 
-	UserId user = new UserId(ProtocolType.XMPP, "testuser1@localhost");
+	User user = new User(ProtocolType.XMPP, "testuser1@localhost");
 	Project project;
 
 
@@ -76,8 +77,10 @@ public class ProjectInvitationListenerTest {
 		verify(projectDao, times(1)).create(project);
 	}
 
-	ProjectJoinedLogEntry resultLogEntry;
-
+	ProjectJoinedLogEntry resultProjectJoinedLogEntry;
+	StartTrustingProjectMemberLogEntry resultStartTrustingProjectMemberLogEntryOther;
+	StartTrustingProjectMemberLogEntry resultStartTrustingProjectMemberLogEntryMe;
+	int teststate = 0;
 	@Test
 	public void testIncomingAcceptMessage() throws Exception {
 
@@ -91,7 +94,7 @@ public class ProjectInvitationListenerTest {
 //			@Override
 //			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
 //				System.out.println("ANWERING!");
-//				ProjectInvitationListenerTest.resultLogEntry = (ProjectJoinedLogEntry) invocationOnMock.getArguments()[0];
+//				ProjectInvitationListenerTest.resultProjectJoinedLogEntry = (ProjectJoinedLogEntry) invocationOnMock.getArguments()[0];
 //				for(Object o : invocationOnMock.getArguments())
 //				{
 //					System.out.println("o = " + o);
@@ -105,30 +108,49 @@ public class ProjectInvitationListenerTest {
 		doAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				resultLogEntry = (ProjectJoinedLogEntry) invocationOnMock.getArguments()[0];
+				System.out.println("invocation");
+				if(teststate == 0)
+				{
+					resultProjectJoinedLogEntry = (ProjectJoinedLogEntry) invocationOnMock.getArguments()[0];
+					teststate++;
+				}
+				else if(teststate == 1)
+				{
+					resultStartTrustingProjectMemberLogEntryOther = (StartTrustingProjectMemberLogEntry) invocationOnMock.getArguments()[0];
+					teststate++;
+				}
+				else if(teststate == 2)
+				{
+					resultStartTrustingProjectMemberLogEntryMe = (StartTrustingProjectMemberLogEntry) invocationOnMock.getArguments()[0];
+					teststate++;
+				}
+				else
+				{
+					teststate = 0;
+				}
 				return null;
 			}
 		}).when(logEntryDao).create((LogEntry) anyObject());
 		projectInvitationListener.accepted(user, project);
 
-		System.out.println("resultLogEntry = " + resultLogEntry);
+		System.out.println("resultProjectJoinedLogEntry = " + resultProjectJoinedLogEntry);
 
-		verify(logEntryDao, times(1)).create(resultLogEntry);
+		verify(logEntryDao, times(1)).create(resultProjectJoinedLogEntry);
 
-		Assert.assertEquals(logEntry.getProject(), resultLogEntry.getProject());
-		Assert.assertEquals(logEntry.getLogAction(), resultLogEntry.getLogAction());
-		Assert.assertEquals(logEntry.getBelongsTo(), resultLogEntry.getBelongsTo());
-		Assert.assertEquals(logEntry.getChecksum(), resultLogEntry.getChecksum());
-		Assert.assertEquals(logEntry.getMember(), resultLogEntry.getMember());
-		Assert.assertEquals(logEntry.getObjectuuid(), resultLogEntry.getObjectuuid());
-		Assert.assertEquals(logEntry.isProcessed(), resultLogEntry.isProcessed());
+		Assert.assertEquals(logEntry.getProject(), resultProjectJoinedLogEntry.getProject());
+		Assert.assertEquals(logEntry.getLogAction(), resultProjectJoinedLogEntry.getLogAction());
+		Assert.assertEquals(logEntry.getBelongsTo(), resultProjectJoinedLogEntry.getBelongsTo());
+		Assert.assertEquals(logEntry.getChecksum(), resultProjectJoinedLogEntry.getChecksum());
+		Assert.assertEquals(logEntry.getMember(), resultProjectJoinedLogEntry.getMember());
+		Assert.assertEquals(logEntry.getObjectuuid(), resultProjectJoinedLogEntry.getObjectuuid());
+		Assert.assertEquals(logEntry.isProcessed(), resultProjectJoinedLogEntry.isProcessed());
 
 		// TODO domdorn: check other logentries as well
 
 
 // this cannot be predicted!
-//		Assert.assertEquals(logEntry.getUuid(), resultLogEntry.getUuid());
-//		Assert.assertEquals(logEntry.getTimestamp(), resultLogEntry.getTimestamp());
+//		Assert.assertEquals(logEntry.getUuid(), resultProjectJoinedLogEntry.getUuid());
+//		Assert.assertEquals(logEntry.getTimestamp(), resultProjectJoinedLogEntry.getTimestamp());
 	}
 
 	@Test

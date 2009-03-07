@@ -1,7 +1,7 @@
 package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.ILogable;
 
@@ -12,7 +12,7 @@ import javax.persistence.DiscriminatorValue;
 @DiscriminatorValue(value = "TAG_REMOVE")
 public class TagRemoveLogEntry extends TagLogEntry {
 
-    public TagRemoveLogEntry(Tag belongsTo, UserId member) {
+    public TagRemoveLogEntry(Tag belongsTo, User member) {
         super(LogAction.TAG_REMOVE, belongsTo, member);
     }
 

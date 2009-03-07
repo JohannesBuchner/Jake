@@ -1,9 +1,8 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.UserHelper;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -21,11 +20,11 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 	}
 
 	private static List<UserIdProxy> convertToProxyMemberProjectList(
-					List<UserId> members) {
+					List<User> members) {
 		// proxy
 		List<UserIdProxy> list = new ArrayList<UserIdProxy>();
 
-		for (UserId m : members) {
+		for (User m : members) {
 			list.add(new UserIdProxy(m));
 		}
 		return list;
@@ -33,9 +32,9 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 
 
 	private static class UserIdProxy {
-		private UserId user;
+		private User user;
 
-		public UserIdProxy(UserId user) {
+		public UserIdProxy(User user) {
 			this.setUser(user);
 		}
 
@@ -46,11 +45,11 @@ public class InvitePeopleComboBoxModel extends DefaultComboBoxModel {
 							.getNickOrFullName(getUser(), 30) + ")"*/;
 		}
 
-		public UserId getUser() {
+		public User getUser() {
 			return user;
 		}
 
-		public void setUser(UserId user) {
+		public void setUser(User user) {
 			this.user = user;
 		}
 	}

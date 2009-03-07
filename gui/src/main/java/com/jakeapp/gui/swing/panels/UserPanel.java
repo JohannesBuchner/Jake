@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.MsgService;
@@ -250,10 +250,10 @@ public class UserPanel extends JXPanel
 
 		if (JakeMainApp.isCoreInitialized()) {
 			try {
-				List<MsgService<UserId>> msgs = JakeMainApp.getCore().getMsgServices();
+				List<MsgService<User>> msgs = JakeMainApp.getCore().getMsgServices();
 
 				if (msgs != null) {
-					for (MsgService<UserId> msg : msgs) {
+					for (MsgService<User> msg : msgs) {
 						UserControlPanel userPanel = new UserControlPanel(msg);
 						JXLayer userLayer = new JXLayer(userPanel);
 						//userLayer.setBackground(Color.WHITE);

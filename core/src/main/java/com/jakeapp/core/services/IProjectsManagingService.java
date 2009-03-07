@@ -178,7 +178,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalAccessException	if the project already has a userId set
 	 */
 	/*
-	void assignUserToProject(Project project, UserId userId)
+	void assignUserToProject(Project project, User userId)
 			  throws IllegalArgumentException, IllegalAccessException;
 	*/
 
@@ -187,12 +187,12 @@ public interface IProjectsManagingService {
 	 * not exist yet in the <code>Project</code> the user is invited.
 	 *
 	 * @param project The <code>Project</code> to apply the new level of trust to.
-	 * @param userId  The user whose trustlevel gets changed.
+	 * @param user  The user whose trustlevel gets changed.
 	 * @param trust	The new level of trust for the specified user.
 	 * @throws IllegalArgumentException if project or userId are null
 	 * @throws IllegalAccessException	if the project has no userId set yet.
 	 */
-	void setTrust(Project project, UserId userId, TrustState trust)
+	void setTrust(Project project, User user, TrustState trust)
 			  throws IllegalArgumentException, IllegalAccessException;
 
 	/**
@@ -244,7 +244,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
-	void joinProject(Project project, File rootPath, UserId inviter)
+	void joinProject(Project project, File rootPath, User inviter)
 			  throws IllegalStateException, NoSuchProjectException;
 
 
@@ -257,7 +257,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
-	void rejectProject(Project project, UserId inviter)
+	void rejectProject(Project project, User inviter)
 			  throws IllegalStateException, NoSuchProjectException;
 
 	/**
@@ -288,7 +288,7 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchProjectException	if the JakeObject's Project does not exist.
 	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
 	 */
-	UserId getLastEditor(JakeObject jo) throws NoSuchProjectException,
+	User getLastEditor(JakeObject jo) throws NoSuchProjectException,
 			  IllegalArgumentException;
 
 	/**
@@ -309,7 +309,7 @@ public interface IProjectsManagingService {
 	 *                                not exist or is null.
 	 * @return
 	 */
-		List<UserId> getProjectUsers(Project project) throws NoSuchProjectException;
+		List<User> getProjectUsers(Project project) throws NoSuchProjectException;
 
 
 	/**
@@ -330,14 +330,14 @@ public interface IProjectsManagingService {
 	 * @param user
 	 * @return
 	 */
-	public UserInfo getProjectUserInfo(Project project, UserId user);
+	public UserInfo getProjectUserInfo(Project project, User user);
 
 
 	/**
 	 * @param jakeObject
 	 * @return The ProjectMember who last modified the JakeObject (according to the log)
 	 */
-	UserId getLastModifier(JakeObject jakeObject);
+	User getLastModifier(JakeObject jakeObject);
 
 
 	/**
@@ -346,10 +346,10 @@ public interface IProjectsManagingService {
 	 *
 	 * @param project Project to add the ProjectMember for
 	 * @param userid  The UserId (nick+protocol) of the other user.
-	 * @return The new {@link UserId}
+	 * @return The new {@link com.jakeapp.core.domain.User}
 	 * @throws UserIdFormatException if the userid did not have the correct format
 	 */
-	UserId invite(Project project, String userid)
+	User invite(Project project, String userid)
 			  throws UserIdFormatException;
 
 	/**
@@ -360,7 +360,7 @@ public interface IProjectsManagingService {
 	 * @throws NoSuchProjectException project is null or has no MsgService set.
 	 * @throws IllegalArgumentException
 	 */
-	List<UserId> getSuggestedPeopleForInvite(Project project) throws IllegalArgumentException, NoSuchProjectException;
+	List<User> getSuggestedPeopleForInvite(Project project) throws IllegalArgumentException, NoSuchProjectException;
 
 
 	/**
@@ -433,9 +433,9 @@ public interface IProjectsManagingService {
 	/**
 	 * 
 	 * @param project
-	 * @param userId
+	 * @param user
 	 * @param nick
 	 */
-	void setUserNickname(Project project, UserId userId, String nick);	
+	void setUserNickname(Project project, User user, String nick);
 
 }

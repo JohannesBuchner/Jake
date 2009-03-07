@@ -4,7 +4,7 @@ import com.jakeapp.core.dao.IServiceCredentialsDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
@@ -28,7 +28,7 @@ import java.util.Map.Entry;
  *
  * @author dominik
  */
-public abstract class MsgService<T extends UserId> {
+public abstract class MsgService<T extends User> {
 
 	private static final Logger log = Logger.getLogger(MsgService.class);
 

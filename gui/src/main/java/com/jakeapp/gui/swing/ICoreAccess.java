@@ -145,7 +145,7 @@ public interface ICoreAccess {
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 *          if the frontend has no session on the core
 	 */
-	public List<MsgService<UserId>> getMsgServices()
+	public List<MsgService<User>> getMsgServices()
 					throws FrontendNotLoggedInException;
 
 	/******************* Project functions ********************/
@@ -534,26 +534,26 @@ public interface ICoreAccess {
 	 * @param member
 	 * @return
 	 */
-	UserInfo getUserInfo(UserId member);
+	UserInfo getUserInfo(User member);
 
 	/**
 	 * Sets the nickname of people. Checks for error
 	 *
 	 * @param project
-	 * @param userId
+	 * @param user
 	 * @param nick
 	 * @return
 	 */
-	public boolean setUserNick(Project project, UserId userId, String nick);
+	public boolean setUserNick(Project project, User user, String nick);
 
 	/**
 	 * Set the Trust State of people.
 	 *
 	 * @param project
-	 * @param userId
+	 * @param user
 	 * @param trust
 	 */
-	public void setTrustState(Project project, UserId userId, TrustState trust);
+	public void setTrustState(Project project, User user, TrustState trust);
 
 
 	/**
@@ -571,7 +571,7 @@ public interface ICoreAccess {
 	 * @param project : current project
 	 * @return list of Projectmembers which have only their usernames set (people-xmpp-ids)
 	 */
-	public List<UserId> getSuggestedUser(Project project);
+	public List<User> getSuggestedUser(Project project);
 
 
 	/******************* Log functions ********************/

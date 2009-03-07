@@ -233,7 +233,7 @@ public class LogEntrySerializer {
 		ProtocolType protocolType = ProtocolType.values()[new Integer(parts[4])];
 		String userId = parts[5];
 
-		UserId remoteUser = new UserId(protocolType, userId);
+		User remoteUser = new User(protocolType, userId);
 		UUID logEntryUUID = UUID.fromString(parts[6]);
 
 
@@ -456,7 +456,7 @@ public class LogEntrySerializer {
 				ProtocolType protocolTypeOther = ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
-				UserId other = new UserId(protocolTypeOther, userIdOther);
+				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new FollowTrustingProjectMemberLogEntry(other, remoteUser);
 				result.setTimestamp(date);
@@ -476,7 +476,7 @@ public class LogEntrySerializer {
 				ProtocolType protocolTypeOther = ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
-				UserId other = new UserId(protocolTypeOther, userIdOther);
+				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new StartTrustingProjectMemberLogEntry(other, remoteUser);
 				result.setTimestamp(date);
@@ -496,7 +496,7 @@ public class LogEntrySerializer {
 				ProtocolType protocolTypeOther = ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
-				UserId other = new UserId(protocolTypeOther, userIdOther);
+				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new StopTrustingProjectMemberLogEntry(other, remoteUser);
 				result.setTimestamp(date);

@@ -8,7 +8,7 @@ import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 
@@ -19,17 +19,17 @@ public interface IFriendlySyncService extends ISyncService {
 	 * @param project
 	 * @throws IllegalProtocolException
 	 * @throws NoSuchProjectException 
-	 * @see ISyncService#startLogSync(Project, UserId)
+	 * @see ISyncService#startLogSync(Project, com.jakeapp.core.domain.User)
 	 * @throws IllegalArgumentException
 	 * @return
 	 */
-	public Map<UserId, Iterable<LogEntry<ILogable>>> startLogSync(Project project)
+	public Map<User, Iterable<LogEntry<ILogable>>> startLogSync(Project project)
 			throws IllegalArgumentException, IllegalProtocolException, NoSuchProjectException;
 
 	/**
 	 * @param project
 	 * @throws NoSuchProjectException
-	 * @see ISyncService#poke(Project, UserId)
+	 * @see ISyncService#poke(Project, com.jakeapp.core.domain.User)
 	 */
 	public void poke(Project project) throws NoSuchProjectException;
 

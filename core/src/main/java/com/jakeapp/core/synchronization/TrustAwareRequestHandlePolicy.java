@@ -12,14 +12,9 @@ import org.apache.log4j.Logger;
 import org.hsqldb.lib.StringInputStream;
 
 import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
@@ -56,13 +51,13 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 
 	@Override
 	public Iterable<LogEntry> getPotentialJakeObjectProviders(JakeObject jo) {
-		List<UserId> providers = new LinkedList<UserId>();
+		List<User> providers = new LinkedList<User>();
 		List<LogEntry> entries = new LinkedList<LogEntry>();
 
 		List<LogEntry<JakeObject>> allVersions = db.getLogEntryDao(jo)
 				.getAllVersionsOfJakeObject(jo);
 
-		List<UserId> members = db.getTrustedProjectMembers(jo.getProject());
+		List<User> members = db.getTrustedProjectMembers(jo.getProject());
 
 		for (LogEntry<? extends ILogable> entry : allVersions) {
 			if (members.contains(entry.getMember())
@@ -76,7 +71,7 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 	}
 
 	@Override
-	public InputStream handleJakeObjectRequest(UserId from, JakeObject jo) {
+	public InputStream handleJakeObjectRequest(User from, JakeObject jo) {
 		InputStream result = null;
 		
 		if ( this.getTrustLevelBetween(jo.getProject(), from) != TrustState.NO_TRUST) {
@@ -100,7 +95,7 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 	}
 
 	@Override
-	public boolean handleLogSyncRequest(Project project, UserId from) {
+	public boolean handleLogSyncRequest(Project project, User from) {
 		try {
 			return getTrustLevelBetween(project, from) != TrustState.NO_TRUST;
 		}
@@ -116,8 +111,8 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 	 * @throws IllegalArgumentException
 	 * 	if project, from or project.getUserId were not valid (e.g. null).
 	 */
-	private TrustState getTrustLevelBetween(Project project, UserId from) {
-		UserId thisUser;
+	private TrustState getTrustLevelBetween(Project project, User from) {
+		User thisUser;
 		ILogEntryDao dao;
 		TrustState lvl;
 		

@@ -5,7 +5,7 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.UserId;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
@@ -298,7 +298,7 @@ public class JakeMainApp extends SingleFrameApplication
 	 *
 	 * @return current user
 	 */
-	public static UserId getCurrentUser() {
+	public static User getCurrentUser() {
 		return getProject().getMessageService().getUserId();
 	}
 
