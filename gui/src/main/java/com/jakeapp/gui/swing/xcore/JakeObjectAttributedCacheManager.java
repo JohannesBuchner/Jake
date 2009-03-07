@@ -39,6 +39,15 @@ public class JakeObjectAttributedCacheManager {
 
 	public <T extends JakeObject> Attributed<T> getCached(T jakeObject) {
 		return (Attributed<T>) cacheHash.get(jakeObject);
+	} 
+	
+	/**
+	 * deletes the corresponding cached Atrributed to a given jakeObject from the cache 
+	 * @param <T>
+	 * @param jakeObject
+	 */
+	public <T extends JakeObject> void invalidateCache(T jakeObject) {
+		cacheHash.remove(jakeObject);
 	}
 
 	/**

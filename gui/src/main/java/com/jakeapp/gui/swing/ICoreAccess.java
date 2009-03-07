@@ -288,7 +288,7 @@ public interface ICoreAccess {
 	 *
 	 * @param project
 	 * @param jakeObject The jakeObject for which the status should be determined
-	 * @return The file's status as int (defined here)
+	 * @return The file's status, wrapped by an Attributed.
 	 */
 	public <T extends JakeObject> Attributed<T> getAttributed(Project project,
 					T jakeObject);

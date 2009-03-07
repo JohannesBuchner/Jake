@@ -393,6 +393,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public <T extends JakeObject> Attributed<T> getAttributed(Project project,
 					T jakeObject) {
+		Attributed<T> result = null;
+		
 		try {
 			log.trace("jakeObject" + jakeObject);
 
@@ -405,16 +407,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			// FIXME: the cache does not respect the attributes of a jake object. If somehow only the 
 			// attributes are changed (e.g. commit note) but note the jake object itself, the cache
 			// returnes the outdated attributes!!!
-			if (attributedCacheMan.isCached(jakeObject)) {
-				return attributedCacheMan.getCached(jakeObject);
-			}
-
-			Attributed<T> syncStatus =
+			// TODO fix the bug described above by calling {@link AttributedCacheManager#invalidateCache}
+			// for every JakeObject that changes
+			result = attributedCacheMan.getCached(jakeObject);
+			
+			if (result==null) {
+				Attributed<T> syncStatus =
 							this.getFrontendService().getSyncService(getSessionId())
 											.getJakeObjectSyncStatus(jakeObject);
 
-			return attributedCacheMan.cacheObject(jakeObject, syncStatus);
-
+				result = attributedCacheMan.cacheObject(jakeObject, syncStatus);
+			}
 		} catch (NotAFileException e) {
 			ExceptionUtilities.showError(e);
 		} catch (FileNotFoundException e) {
@@ -432,7 +435,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.showError("Catched generic exception while getting sync status", e);
 		}
 
-		return null;
+		return result;
 	}
 
 
@@ -498,6 +501,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Integer> deleteNotes(final List<NoteObject> notes) {
+		for (NoteObject no : notes)
+			this.attributedCacheMan.invalidateCache(no);
+		
 		return new AvailableLaterObject<Integer>() {
 			@Override
 			public Integer calculate() throws Exception {
@@ -511,6 +517,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void saveNote(NoteObject note) throws NoteOperationFailedException {
 		pms.saveNote(note);
+		this.attributedCacheMan.invalidateCache(note);
 		EventCore.get().fireNotesChanged(note.getProject());
 	}
 
@@ -831,6 +838,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		try {
 			result = new AnnounceFuture(iss, jos, commitMsg);
+			for (JakeObject jo : jos)
+				this.attributedCacheMan.invalidateCache(jo);
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 			throw new FileOperationFailedException(e);
