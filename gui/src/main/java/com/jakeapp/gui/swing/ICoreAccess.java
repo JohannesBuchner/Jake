@@ -493,7 +493,7 @@ public interface ICoreAccess {
 	 *
 	 * @param note the not that is to saved.
 	 * @throws NoteOperationFailedException raised if the operation can not be completed, i.e. if the
-	 *                                      note couldn not be saved.
+	 *                                      note could not be saved.
 	 */
 	public void saveNote(NoteObject note) throws NoteOperationFailedException;
 

@@ -9,16 +9,17 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Collection;
 
 
 public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 	Project project;
-	List<JakeObject> jos;
+	Collection<JakeObject> jos;
 
 	private Project getProject() {
 		return project;
@@ -28,15 +29,15 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 		this.project = project;
 	}
 
-	private List<JakeObject> getJos() {
+	private Collection<JakeObject> getJos() {
 		return jos;
 	}
 
-	private void setJos(List<JakeObject> jos) {
+	private void setJos(Collection<JakeObject> jos) {
 		this.jos = jos;
 	}
 
-	public DeleteJakeObjectsTask(Project project, List<JakeObject> jos) {
+	public DeleteJakeObjectsTask(Project project, Collection<JakeObject> jos) {
 		super();
 		this.setProject(project);
 		this.setJos(jos);
@@ -47,13 +48,13 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 		if (this.jos==null || this.jos.size()==0) {
 			return new AvailableNowObject<Integer>(0);
 		}
-		else if (this.jos.get(0) instanceof NoteObject) {
+		else if (containsNoteObjects()) {
 			ArrayList<NoteObject> notes = new ArrayList<NoteObject>(); //this is bogus...check
 			for (JakeObject jo : jos)
 				notes.add((NoteObject)jo);
 			return JakeMainApp.getCore().deleteNotes(notes);
 		}
-		else if (this.jos.get(0) instanceof FileObject) {
+		else if (containsFileObjects()) {
 			ArrayList<FileObject> files = new ArrayList<FileObject>(); //this is bogus...check
 			for (JakeObject jo : jos)
 				files.add((FileObject)jo);
@@ -65,6 +66,20 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 			);
 		}
 	}
+
+	/**
+	 * @return true, if the FIRST element of jos contains a NoteObject.
+	 */
+	private boolean containsNoteObjects() {
+		return this.jos.iterator().hasNext() && this.jos.iterator().next() instanceof NoteObject;
+	}
+
+	/**
+	 * @return true, if the FIRST element of jos contains a FileObject.
+	 */
+	private boolean containsFileObjects() {
+		return this.jos.iterator().hasNext() && this.jos.iterator().next() instanceof FileObject;
+	}
 	
 	@Override
 	public void done() {
@@ -72,9 +87,13 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 
 		// inform the core that there are new log entries available.
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), null);
-		if ((this.jos.get(0)) instanceof FileObject)
+		if (containsFileObjects())
 			EventCore.get().fireFilesChanged(this.project);
-		else
+		else if (containsNoteObjects()) {
+			//select a note to be selected after the deletion
+			
+			//inform the EventCore about the change
 			EventCore.get().fireNotesChanged(this.project);
+		}
 	}
 }

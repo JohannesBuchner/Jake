@@ -38,6 +38,7 @@ public class SaveNoteAction extends NoteAction {
 		
 		log.debug("saving note with new content: " + newContent);
 		try {
+			NotesPanel.getInstance().getNotesTableModel().setNoteToSelectLater(cachedNote);
 			JakeMainApp.getCore().saveNote(cachedNote);
 		} catch (NoteOperationFailedException e) {
 			ExceptionUtilities.showError(e);

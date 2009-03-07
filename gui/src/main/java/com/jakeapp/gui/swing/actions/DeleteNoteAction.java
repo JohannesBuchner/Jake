@@ -23,6 +23,7 @@ import org.jdesktop.application.ResourceMap;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -80,20 +81,17 @@ public class DeleteNoteAction extends NoteAction {
 			}
 		}
 		
-		
 		JSheet.showOptionSheet(NotesPanel.getInstance(), text,
 				  JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0], new SheetListener() {
 			@Override
 			public void optionSelected(SheetEvent evt) {
-				final List<JakeObject> notes = new ArrayList<JakeObject>();
+				Collection<JakeObject> notes;
 				Project project = null;
 				
-				
 				if (evt.getOption() == 0) {
-					for (Attributed<NoteObject> note : cache)
-						notes.add(note.getJakeObject());
+					notes = Attributed.castDownCollection(Attributed.extract(cache));
 					if (notes.size()>0) {
-						project = notes.get(0).getProject();
+						project = notes.iterator().next().getProject();
 						JakeExecutor.exec(new DeleteJakeObjectsTask(project,notes));
 					}
 				}
