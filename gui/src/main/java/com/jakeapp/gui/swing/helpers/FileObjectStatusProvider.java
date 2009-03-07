@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.controls.SpinningDial;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -79,6 +80,9 @@ public class FileObjectStatusProvider {
 				label.setIcon(local_is_out_of_date);
 			}
 		}
+
+		// hack
+		label.setIcon(new SpinningDial());
 
 		return label;
 	}

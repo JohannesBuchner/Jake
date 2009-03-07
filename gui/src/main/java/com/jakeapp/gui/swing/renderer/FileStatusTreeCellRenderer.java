@@ -13,7 +13,8 @@ public class FileStatusTreeCellRenderer extends DefaultJakeTableCellRenderer {
 		table.getColumnModel().getColumn(column).setMaxWidth(25);
 		table.getColumnModel().getColumn(column).setMinWidth(25);
 
-		Component comp = (value == null) ? FileObjectStatusProvider.getEmptyComponent() : FileObjectStatusProvider.getStatusRendererComponent(((FileObjectStatusCell) value).getFileObject());
+		Component comp = (value == null) ? FileObjectStatusProvider.getEmptyComponent() :
+						FileObjectStatusProvider.getStatusRendererComponent(((FileObjectStatusCell) value).getFileObject());
 
 		if (isSelected) {
 			comp.setBackground(table.getSelectionBackground());

@@ -1,7 +1,6 @@
 package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
@@ -17,8 +16,6 @@ import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
-import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
@@ -268,34 +265,6 @@ public class EventCore {
 		return loginStateListener;
 	}
 
-
-	private class ProjectsChangeListener implements ChangeListener {
-		public ProjectsChangeListener() {
-		}
-
-		@Override public INegotiationSuccessListener beganRequest(JakeObject jo) {
-			log.debug("beganRequest for " + jo);
-			return null;
-		}
-
-		@Override public void pullNegotiationDone(JakeObject jo) {
-			log.debug("pullNegitiationDone: " + jo);
-		}
-
-		@Override public void pullDone(JakeObject jo) {
-			log.debug("pullDone: " + jo);
-		}
-
-		@Override public void pullProgressUpdate(JakeObject jo, Status status,
-						double progress) {
-			log.debug("pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
-		}
-
-		@Override
-		public void pullFailed(JakeObject jo, Exception reason) {
-			log.debug("pullFailed: " + jo, reason);
-		}
-	}
 
 	/**
 	 * Returns the last event for a project

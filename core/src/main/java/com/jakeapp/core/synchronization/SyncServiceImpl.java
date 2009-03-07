@@ -66,7 +66,6 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
  * @author johannes
  */
 public class SyncServiceImpl extends FriendlySyncService implements IInternalSyncService {
-
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	/**

@@ -32,7 +32,7 @@
     </bean>
     
     <!-- TODO later: change to TrustAware -->
-    <bean id="requestHandlePolicy" class="com.jakeapp.core.synchronization.TrustAllRequestHandlePolicy">
+    <bean id="requestHandlePolicy" class="com.jakeapp.core.synchronization.request.TrustAllRequestHandlePolicy">
         <constructor-arg index="0" ref="applicationContextFactory"
                          type="com.jakeapp.core.util.ProjectApplicationContextFactory"/>
         <constructor-arg index="1" ref="projectsFileServices"
