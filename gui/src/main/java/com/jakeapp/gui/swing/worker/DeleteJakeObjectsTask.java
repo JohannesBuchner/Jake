@@ -20,6 +20,7 @@ import java.util.Collection;
 public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 	Project project;
 	Collection<JakeObject> jos;
+	JakeObject toSelectAfter;
 
 	private Project getProject() {
 		return project;
@@ -36,11 +37,20 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 	private void setJos(Collection<JakeObject> jos) {
 		this.jos = jos;
 	}
+	
+	private JakeObject getToSelectAfter() {
+		return this.toSelectAfter;
+	}
+	
+	private void setToSelectAfter(JakeObject toSelectAfter) {
+		this.toSelectAfter = toSelectAfter;
+	}
 
-	public DeleteJakeObjectsTask(Project project, Collection<JakeObject> jos) {
+	public DeleteJakeObjectsTask(Project project, Collection<JakeObject> jos, JakeObject toSelectAfter) {
 		super();
 		this.setProject(project);
 		this.setJos(jos);
+		this.setToSelectAfter(toSelectAfter);
 	}
 
 	@Override
@@ -91,7 +101,11 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 			EventCore.get().fireFilesChanged(this.project);
 		else if (containsNoteObjects()) {
 			//select a note to be selected after the deletion
-			
+			try {
+				NotesPanel.getInstance().getNotesTableModel().setNoteToSelectLater((NoteObject) this.getToSelectAfter());
+			} catch (Exception ex) {
+				//empty handling: changing the selection is just a convenience feature
+			}
 			//inform the EventCore about the change
 			EventCore.get().fireNotesChanged(this.project);
 		}

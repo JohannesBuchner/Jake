@@ -113,30 +113,23 @@ public class DeleteFileAction extends FileAction {
 		log.debug("User-interaction text is: " + text);
 
 		//ask user and do the real work with a Worker!
-		JSheet.showOptionSheet(FilePanel.getInstance(),
-						text,
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						options,
-						options[0],
-						new SheetListener() {
+		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0],
+				new SheetListener() {
 
-							@Override
-							public void optionSelected(SheetEvent evt) {
-								if (evt.getOption() == 0) {
-									log.debug("Deleting now!!!");
-									JakeExecutor
-													.exec(new DeleteJakeObjectsTask(JakeMainApp.getProject(),
-																	new ArrayList<JakeObject>(files)));
-									/*for (String item : cache) {
-										JakeMainApp.getCore()
-														.deleteToTrash(JakeMainApp.getProject(), item);
-									}
-									*/
-								}
+					@Override
+					public void optionSelected(SheetEvent evt) {
+						if (evt.getOption() == 0) {
+							log.debug("Deleting now!!!");
+							JakeExecutor.exec(new DeleteJakeObjectsTask(JakeMainApp
+									.getProject(), new ArrayList<JakeObject>(files),null));
+							/*
+							 * for (String item : cache) { JakeMainApp.getCore()
+							 * .deleteToTrash(JakeMainApp.getProject(), item); }
+							 */
+						}
 
-							}
-						});
+					}
+				});
 	}
 }

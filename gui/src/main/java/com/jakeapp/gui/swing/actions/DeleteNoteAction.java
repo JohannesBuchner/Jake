@@ -1,10 +1,20 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.core.domain.NoteObject;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.List;
+
+import javax.swing.Action;
+import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.application.ResourceMap;
+
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
@@ -14,20 +24,11 @@ import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NotesPanel;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 /**
- * DeleteNote Action, that deletes the selected Note from the given <code>notesTable.
+ * DeleteNote Action, that deletes the selected Note from the given <code>notesTable</code>.
  *
  * @author Simon
  */
@@ -87,16 +88,42 @@ public class DeleteNoteAction extends NoteAction {
 			public void optionSelected(SheetEvent evt) {
 				Collection<JakeObject> notes;
 				Project project = null;
+				NoteObject toSelectAfter = getUndeletedNoteToSelectLater(cache);
 				
 				if (evt.getOption() == 0) {
 					notes = Attributed.castDownCollection(Attributed.extract(cache));
 					if (notes.size()>0) {
 						project = notes.iterator().next().getProject();
-						JakeExecutor.exec(new DeleteJakeObjectsTask(project,notes));
+						JakeExecutor.exec(new DeleteJakeObjectsTask(project,notes,toSelectAfter));
 					}
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Returns a note that is not in the notes to be deleted and will be still in the
+	 * Notespanel after the delete operation has deleted.
+	 * @param cache
+	 */
+	private NoteObject getUndeletedNoteToSelectLater(
+			final List<Attributed<NoteObject>> cache) {
+		NoteObject toSelectAfter = null;
+
+		try {
+			for (int i = NotesPanel.getInstance().getNotesTableModel().getRowCount()-1; i >= 0; i--) {
+				if (!cache.contains(NotesPanel.getInstance().getNotesTableModel()
+						.getNoteAtRow(i))) {
+					toSelectAfter = NotesPanel.getInstance().getNotesTableModel()
+							.getNoteAtRow(i).getJakeObject();
+					break;
+				}
+			}
+		} catch (Exception e) {
+			//empty handling: toSelectAfter remains null
+		}
+
+		return toSelectAfter;
 	}
 
 	@Override
