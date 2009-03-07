@@ -39,25 +39,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 		// add Project to the global database
 		try {
 			Invitation invitation = new Invitation(project,  user);
-			Invitation result = invitationDao.create(invitation);
-
-
-			if(invitation.equals(result))
-			{
-				System.out.println("true");
-				List<Invitation> invitations = invitationDao.getAll();
-				System.out.println("Thats stored:");
-				for(Invitation inv : invitations)
-				{
-					System.out.println("inv = " + inv);
-				}
-			}
-			else
-			{
-				System.out.println("false");
-			}
-
-//			project = projectDao.create(project);
+			invitationDao.create(invitation);
 		} catch (InvalidProjectException e) {
 			log.error("Creating the project we were invited to failed: Project was invalid");
 			throw new IllegalArgumentException(e);

@@ -691,11 +691,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		// update join state
 		project.setInvitationState(InvitationState.ACCEPTED);
 		project.setRootPath(rootPath);
-		this.getProjectDao().update(project); // may throw a
-		// NoSuchProjectException if
-		// project does not exist
 
 		try {
+			this.getProjectDao().create(project); // may throw a
+			// NoSuchProjectException if
+			// project does not exist
+			this.getInvitationDao().accept(new Invitation(project,  inviter));
 			initProject(project);
 		} catch (Exception e) {
 			log.warn("Something weird happened while trying to init project!", e);

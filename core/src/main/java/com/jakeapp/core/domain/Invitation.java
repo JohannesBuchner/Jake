@@ -31,6 +31,7 @@ public class Invitation {
 		this.projectUUID = UUID.fromString(project.getProjectId());
 		this.projectName = project.getName();
 		this.inviter = inviter;
+		this.invitedOn = project.getUserId();
 //		this.invitedOn =
 		this.creation = new Date();	
 	}

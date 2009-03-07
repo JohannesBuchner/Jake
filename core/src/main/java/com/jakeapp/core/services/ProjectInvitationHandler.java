@@ -11,6 +11,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
@@ -165,8 +166,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	public static void notifyInvitationAccepted(Project project, User inviter) {
 		ICSManager icsManager = project.getMessageService().getIcsManager();
 		ICService ics = icsManager.getICService(project);
-		com.jakeapp.jake.ics.UserId backendUser = icsManager.getBackendUserId(project,
-				inviter);
+		UserId backendUser = icsManager.getBackendUserId(project, inviter);
 		try {
 			ics.getMsgService().sendMessage(backendUser, ACCEPTMSG);
 		} catch (Exception e) {
@@ -184,8 +184,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	public static void notifyInvitationRejected(Project project, User inviter) {
 		ICSManager icsManager = project.getMessageService().getIcsManager();
 		ICService ics = icsManager.getICService(project);
-		com.jakeapp.jake.ics.UserId backendUser = icsManager.getBackendUserId(project,
-				inviter);
+		UserId backendUser = icsManager.getBackendUserId(project, inviter);
 		try {
 			ics.getMsgService().sendMessage(backendUser, REJECTMSG);
 		} catch (Exception e) {
@@ -197,12 +196,8 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param il
 	 */
 	public void registerInvitationListener(IProjectInvitationListener il) {
-		log.debug("add invitationlistener to " + il);
-		if (il != null) {
+		if (il != null)
 			this.invitationListeners.add(il);
-		} else {
-			log.debug("OOOOOOOOOOOH NO!");
-		}
 	}
 
 
