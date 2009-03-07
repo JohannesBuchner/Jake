@@ -78,7 +78,6 @@ public class Project implements ILogable {
 	 * A public ctor with no arguments is needed for hibernate.
 	 */
 	public Project() {
-
 	}
 
 	/**

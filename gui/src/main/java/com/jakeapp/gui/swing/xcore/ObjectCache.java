@@ -1,7 +1,6 @@
 package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -10,7 +9,7 @@ import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesTask;
 import com.jakeapp.gui.swing.worker.GetAllProjectNotesTask;
-import com.jakeapp.gui.swing.worker.GetProjectsTask;
+import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
@@ -30,7 +29,6 @@ public class ObjectCache implements PropertyChanged {
 	private static ObjectCache instance = new ObjectCache();
 
 	private List<Project> myProjects = new ArrayList<Project>();
-	private List<Project> invitedProjects = new ArrayList<Project>();
 	private HashMap<Project, List<FileObject>> files =
 					new HashMap<Project, List<FileObject>>();
 	private HashMap<Project, List<NoteObject>> notes =
@@ -65,15 +63,6 @@ public class ObjectCache implements PropertyChanged {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Projects), null);
 	}
 
-	public List<Project> getInvitedProjects() {
-		return invitedProjects;
-	}
-
-	public void setInvitedProjects(List<Project> invitedProjects) {
-		this.invitedProjects = invitedProjects;
-		fireProjectDataChanged();
-	}
-
 	public List<FileObject> getFiles(Project p) {
 		return files.get(p);
 	}
@@ -106,8 +95,7 @@ public class ObjectCache implements PropertyChanged {
 	 */
 	public void updateProjects() {
 		if (JakeMainApp.isCoreInitialized() && JakeMainApp.getMsgService() != null) {
-			JakeExecutor.exec(new GetProjectsTask(EnumSet.of(InvitationState.ACCEPTED)));
-			JakeExecutor.exec(new GetProjectsTask(EnumSet.of(InvitationState.INVITED)));
+			JakeExecutor.exec(new GetMyProjectsTask());
 		}
 	}
 

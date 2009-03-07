@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.worker;
 
-import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -8,15 +7,12 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class GetProjectsTask extends AbstractTask<List<Project>> {
-	private EnumSet<InvitationState> filter;
+public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 
-	public GetProjectsTask(EnumSet<InvitationState> filter) {
-		this.filter = filter;
+	public GetMyProjectsTask() {
 	}
 
 	@Override
@@ -35,11 +31,7 @@ public class GetProjectsTask extends AbstractTask<List<Project>> {
 		super.done();
 
 		try {
-			if (filter.contains(InvitationState.ACCEPTED)) {
-				ObjectCache.get().setMyProjects(get());
-			} else if (filter.contains(InvitationState.INVITED)) {
-				ObjectCache.get().setInvitedProjects(get());
-			}
+			ObjectCache.get().setMyProjects(get());
 		} catch (InterruptedException e) {
 			ExceptionUtilities.showError(e);
 		} catch (ExecutionException e) {
@@ -51,10 +43,5 @@ public class GetProjectsTask extends AbstractTask<List<Project>> {
 	@Override
 	public void error(Exception e) {
 		ExceptionUtilities.showError(e);
-	}
-
-	@Override
-	public int hashCode() {
-		return this.filter.hashCode() * super.hashCode();
 	}
 }

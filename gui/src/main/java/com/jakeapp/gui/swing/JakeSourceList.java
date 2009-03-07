@@ -7,6 +7,7 @@ import com.explodingpixels.macwidgets.SourceListContextMenuProvider;
 import com.explodingpixels.macwidgets.SourceListItem;
 import com.explodingpixels.macwidgets.SourceListModel;
 import com.explodingpixels.macwidgets.SourceListSelectionListener;
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.gui.swing.actions.CreateProjectAction;
@@ -27,7 +28,7 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
-import com.jakeapp.gui.swing.worker.GetProjectsTask;
+import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -36,8 +37,10 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +51,11 @@ public class JakeSourceList extends JakeGuiComponent
 				TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
-	private Map<SourceListItem, Project> sourceListProjectMap;
+	private Map<SourceListItem, Project> sourceListProjectMap =
+					new HashMap<SourceListItem, Project>();
+	;
+	private Map<SourceListItem, Invitation> sourceListInvitationMap =
+					new HashMap<SourceListItem, Invitation>();
 	private Icon projectStartedIcon;
 	private Icon projectStoppedIcon;
 	private Icon projectInvitedIcon;
@@ -114,9 +121,6 @@ public class JakeSourceList extends JakeGuiComponent
 						16,
 						Image.SCALE_SMOOTH));
 		projectWorkingIcon = new SpinningDial(16, 16);
-
-		// init the project <-> sourcelistitem - map
-		sourceListProjectMap = new HashMap<SourceListItem, Project>();
 
 		// inits the main data model
 		projectSourceListModel = new SourceListModel();
@@ -267,7 +271,7 @@ public class JakeSourceList extends JakeGuiComponent
 	 */
 	private void updateSourceList() {
 		setWaiting(sourceList.getComponent(),
-						JakeExecutor.isTaskRunning(GetProjectsTask.class));
+						JakeExecutor.isTaskRunning(GetMyProjectsTask.class));
 
 		//log.info("updating source list. current selection: " + sourceList.getSelectedItem());
 		sourceList.removeSourceListSelectionListener(projectSelectionListener);
@@ -277,7 +281,7 @@ public class JakeSourceList extends JakeGuiComponent
 
 		// clear our old mapped data!
 		sourceListProjectMap.clear();
-
+		sourceListInvitationMap.clear();
 
 		// clear & update 'invited projects'
 		if (!projectSourceListModel.getCategories().contains(invitedProjectsCategory)) {
@@ -290,22 +294,24 @@ public class JakeSourceList extends JakeGuiComponent
 			projectSourceListModel
 							.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
 		}
-		java.util.List<Project> iprojects = null;
-		try {
-			iprojects = ObjectCache.get().getInvitedProjects();
-		} catch (FrontendNotLoggedInException e) {
-			e.printStackTrace();
+		List<Invitation> invitations = new ArrayList<Invitation>();
+		if (JakeMainApp.isCoreInitialized()) {
+			try {
+				invitations = JakeMainApp.getCore().getInvitations();
+			} catch (FrontendNotLoggedInException e) {
+				e.printStackTrace();
+			}
 		}
-		for (Project project : iprojects) {
+		for (Invitation invitation : invitations) {
 			Icon prIcon = projectInvitedIcon;
-			SourceListItem sli = new SourceListItem(project.getName(), prIcon);
+			SourceListItem sli = new SourceListItem(invitation.getProjectName(), prIcon);
 
 			projectSourceListModel.addItemToCategory(sli, invitedProjectsCategory);
-			sourceListProjectMap.put(sli, project);
+			sourceListInvitationMap.put(sli, invitation);
 
-			// check if project was selected, save this SourceListItem.
+			// check if invitation was selected, save this SourceListItem.
 			if (selectedProject != null && selectedProject.getProjectId()
-							.compareTo(project.getProjectId()) == 0) {
+							.compareTo(invitation.getProjectUUID().toString()) == 0) {
 				projectSLI = sli;
 			}
 		}
@@ -488,7 +494,7 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void taskStarted(IJakeTask worker) {
-		if (worker instanceof GetProjectsTask) {
+		if (worker instanceof GetMyProjectsTask) {
 			updateSourceList();
 		}
 	}
@@ -497,7 +503,7 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void taskFinished(IJakeTask worker) {
-		if (worker instanceof GetProjectsTask) {
+		if (worker instanceof GetMyProjectsTask) {
 			updateSourceList();
 		}
 	}

@@ -91,7 +91,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<Invitation> getInvitations() {
-		return this.frontendService.getProjectsManagingService(sessionId).getInvitations();
+		return this.pms.getInvitations();
 	}
 
 	@Override
