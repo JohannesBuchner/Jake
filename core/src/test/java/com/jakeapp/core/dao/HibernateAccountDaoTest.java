@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.After;
 import org.apache.log4j.Logger;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
@@ -21,23 +21,23 @@ import static junit.framework.Assert.assertFalse;
 
 
 @ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
-public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringContextTests {
-    private static Logger log = Logger.getLogger(HibernateServiceCredentialsDaoTest.class);
-    private static IServiceCredentialsDao serviceCredentialsDao;
+public class HibernateAccountDaoTest extends AbstractJUnit4SpringContextTests {
+    private static Logger log = Logger.getLogger(HibernateAccountDaoTest.class);
+    private static IAccountDao accountDao;
 
-    ServiceCredentials validCredentials;
+    Account validCredentials;
 
-    public static void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
-        HibernateServiceCredentialsDaoTest.serviceCredentialsDao = serviceCredentialsDao;
+	public static void setServiceCredentialsDao(IAccountDao accountDao) {
+        HibernateAccountDaoTest.accountDao = accountDao;
     }
 
 
     @Before
     public void setUp() throws UnknownHostException, InvalidCredentialsException {
-        setServiceCredentialsDao((IServiceCredentialsDao) applicationContext.getBean("serviceCredentialsDao"));
+        setServiceCredentialsDao((IAccountDao) applicationContext.getBean("serviceCredentialsDao"));
 
 
-        validCredentials = new ServiceCredentials();
+        validCredentials = new Account();
         validCredentials.setUuid("6c8b815b-c50c-4b49-a74a-3eefe9fa2977");
         validCredentials.setUserId("domdorn@jabber.fsinf.at");
         validCredentials.setPlainTextPassword("somePassword");
@@ -76,7 +76,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     @Test(expected = InvalidCredentialsException.class)
     @Transactional
     public final void create_shouldFailPersistNull() throws InvalidCredentialsException {
-        serviceCredentialsDao.create(null);
+        accountDao.create(null);
     }
 
 
@@ -87,9 +87,9 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     @Test(expected = InvalidCredentialsException.class)
     @Transactional
     public final void create_persistEmptyCredentials() throws InvalidCredentialsException {
-        ServiceCredentials credentials = new ServiceCredentials();
+        Account credentials = new Account();
 
-        serviceCredentialsDao.create(credentials);
+        accountDao.create(credentials);
     }
 
 
@@ -103,7 +103,7 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     @Test
     @Transactional
     public final void basicSetCredentialsTest() throws InvalidCredentialsException, UnknownHostException {
-        ServiceCredentials credentials = new ServiceCredentials();
+        Account credentials = new Account();
         //credentials.setUuid("6c8b815b-c50c-4b49-a74a-3eefe9fa2977");
         credentials.setUuid("57e81674-03a1-4422-b05e-c9c9b6eeeb2a");
         credentials.setUserId("domdorn@jabber.fsinf.at");
@@ -127,17 +127,17 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     public final void create_persistBasicCredentialsTest() throws InvalidCredentialsException, UnknownHostException {
 
 
-        serviceCredentialsDao.create(validCredentials);
+        accountDao.create(validCredentials);
     }
 
     @Test
     @Transactional
     public final void createRead_testWithPasswordSaving() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
-        ServiceCredentials result;
+        Account result;
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b3");
         validCredentials.setSavePassword(true);
-        serviceCredentialsDao.create(validCredentials);
-        result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
+        accountDao.create(validCredentials);
+        result = accountDao.read(UUID.fromString(validCredentials.getUuid()));
 
         assertEquals(validCredentials, result);
     }
@@ -145,11 +145,11 @@ public class HibernateServiceCredentialsDaoTest extends AbstractJUnit4SpringCont
     @Test
     @Transactional
     public final void createRead_testNoPasswordSaving() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
-        ServiceCredentials result;
+        Account result;
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b4");
-        serviceCredentialsDao.create(validCredentials);
+        accountDao.create(validCredentials);
         validCredentials.setSavePassword(false);
-        result = serviceCredentialsDao.read(UUID.fromString(validCredentials.getUuid()));
+        result = accountDao.read(UUID.fromString(validCredentials.getUuid()));
         assertFalse("not the same with password in",validCredentials.equals(result));
         validCredentials.setPlainTextPassword("");
         assertEquals("the same with no password", validCredentials, result);

@@ -13,12 +13,12 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!-- ========================= GENERAL DEFINITIONS ========================= -->
 
-    <bean id="backendServiceCredentialsDao" class="com.jakeapp.core.dao.HibernateServiceCredentialsDao">
+    <bean id="backendServiceCredentialsDao" class="com.jakeapp.core.dao.HibernateAccountDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
-    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.ThreadedServiceCredentialsDao">
-        <constructor-arg index="0" ref="backendServiceCredentialsDao" type="com.jakeapp.core.dao.IServiceCredentialsDao"/>
+    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.ThreadedAccountDao">
+        <constructor-arg index="0" ref="backendServiceCredentialsDao" type="com.jakeapp.core.dao.IAccountDao"/>
     </bean>
 
     <bean id="backendProjectDao" class="com.jakeapp.core.dao.HibernateProjectDao">
@@ -35,6 +35,14 @@
 
     <bean id="configurationDao" class="com.jakeapp.core.dao.ThreadedConfigurationDao">
         <constructor-arg index="0" ref="backendConfigurationDao" type="com.jakeapp.core.dao.IConfigurationDao"/>
+    </bean>
+
+
+    <bean id="backendInvitationDao" class="com.jakeapp.core.dao.HibernateInvitationDao" />
+
+
+    <bean id="invitationDao" class="com.jakeapp.core.dao.ThreadedInvitationDao">
+        <constructor-arg index="0" ref="backendInvitationDao" type="com.jakeapp.core.dao.IInvitationDao" />
     </bean>
 
 </beans>

@@ -75,7 +75,7 @@ public interface ICoreAccess {
 	 * @param connectionListener
 	 * @return An object reporting the progress of the login
 	 */
-	AvailableLaterObject<Boolean> login(MsgService service, ServiceCredentials creds,
+	AvailableLaterObject<Boolean> login(MsgService service, Account creds,
 					ILoginStateListener connectionListener);
 
 
@@ -96,7 +96,7 @@ public interface ICoreAccess {
 	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
 	 *
 	 */
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(Account credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
 					ProtocolNotSupportedException, NetworkException;
 
@@ -116,7 +116,7 @@ public interface ICoreAccess {
 	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
 	 *
 	 */
-	public MsgService addAccount(ServiceCredentials credentials)
+	public MsgService addAccount(Account credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
 					ProtocolNotSupportedException, NetworkException;
 
@@ -594,5 +594,5 @@ public interface ICoreAccess {
 	 * @param s
 	 * @return
 	 */
-	ServiceCredentials getPredefinedServiceCredential(String s);
+	Account getPredefinedServiceCredential(String s);
 }

@@ -37,7 +37,7 @@ public class Project implements ILogable {
 	private String name;
 	private UUID projectId;
 	private File rootPath;
-	private ServiceCredentials credentials;
+	private Account credentials;
 
 	private transient MsgService messageService;
 	
@@ -259,7 +259,7 @@ public class Project implements ILogable {
 	/**
 	 * @param credentials the credentials to set
 	 */
-	public void setCredentials(ServiceCredentials credentials) {
+	public void setCredentials(Account credentials) {
 		this.credentials = credentials;
 	}
 
@@ -268,9 +268,9 @@ public class Project implements ILogable {
 	 */
 	//@Column(name="USERID", nullable = false)
 	// Do not set to lazy, otherwise it is loaded in the wrong thread.
-	@ManyToOne(targetEntity = ServiceCredentials.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = Account.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid", nullable = true)
-	public ServiceCredentials getCredentials() {
+	public Account getCredentials() {
 		return credentials;
 	}
 

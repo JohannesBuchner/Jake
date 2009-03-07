@@ -10,10 +10,10 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.Injected;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.IAccountDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
@@ -32,7 +32,7 @@ public class MsgServiceManager {
 	private Map<String, MsgService<User>> msgServices = new HashMap<String, MsgService<User>>();
 
 	@Injected
-	private IServiceCredentialsDao serviceCredentialsDao;
+	private IAccountDao accountDao;
 
 	@Injected
 	private ICSManager icsManager;
@@ -44,12 +44,12 @@ public class MsgServiceManager {
 		this.icsManager = icsManager;
 	}
 
-	private IServiceCredentialsDao getServiceCredentialsDao() {
-		return this.serviceCredentialsDao;
+	private IAccountDao getServiceCredentialsDao() {
+		return this.accountDao;
 	}
 
-	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
-		this.serviceCredentialsDao = serviceCredentialsDao;
+	public void setServiceCredentialsDao(IAccountDao accountDao) {
+		this.accountDao = accountDao;
 	}
 
 
@@ -71,7 +71,7 @@ public class MsgServiceManager {
 	 *             if the protocol specified in the credentials is not
 	 *             supported.
 	 */
-	private MsgService<User> create(ServiceCredentials credentials)
+	private MsgService<User> create(Account credentials)
 			throws ProtocolNotSupportedException {
 		log.info("Creating MsgService for " + credentials);
 		MsgService<User> msgService;
@@ -124,7 +124,7 @@ public class MsgServiceManager {
 	 * @return
 	 * @throws ProtocolNotSupportedException
 	 */
-	private User createUserforMsgService(ServiceCredentials credentials)
+	private User createUserforMsgService(Account credentials)
 			throws ProtocolNotSupportedException {
 
 		// switch through the supported protocols and create the user
@@ -156,12 +156,12 @@ public class MsgServiceManager {
 	public List<MsgService<User>> getAll() {
 		log.debug("calling getAll");
 
-		List<ServiceCredentials> credentialsList = this.serviceCredentialsDao.getAll();
+		List<Account> credentialsList = this.accountDao.getAll();
 		log.debug("Found " + credentialsList.size() + " Credentials in the DB");
 		log.debug("Found " + this.msgServices.size() + " Credentials in the Cache");
 
 
-		for (ServiceCredentials credentials : credentialsList) {
+		for (Account credentials : credentialsList) {
 			if (!this.msgServices.containsKey(credentials.getUuid())) {
 				try {
 					MsgService<User> service = this.create(credentials);
@@ -188,7 +188,7 @@ public class MsgServiceManager {
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 */
-	private MsgService add(ServiceCredentials credentials)
+	private MsgService add(Account credentials)
 			throws InvalidCredentialsException, ProtocolNotSupportedException {
 		log.debug("calling addMsgService");
 
@@ -197,7 +197,7 @@ public class MsgServiceManager {
 			credentials.setUuid(UUID.randomUUID());
 		}
 
-		// persist the ServiceCredentials!
+		// persist the Account!
 		try {
 			this.getServiceCredentialsDao().read(UUID.fromString(credentials.getUuid()));
 			this.getServiceCredentialsDao().update(credentials);
@@ -217,7 +217,7 @@ public class MsgServiceManager {
 	 * @param credentials
 	 * @return the MsgService or null.
 	 */
-	public MsgService getOrCreate(ServiceCredentials credentials) {
+	public MsgService getOrCreate(Account credentials) {
 		log.debug("Get MsgService by credentials: " + credentials);
 
 		MsgService<User> msg = find(credentials);
@@ -236,7 +236,7 @@ public class MsgServiceManager {
 	}
 
 
-	private MsgService<User> find(ServiceCredentials credentials) {
+	private MsgService<User> find(Account credentials) {
 		if (this.msgServices.containsKey(credentials.getUuid())) {
 			return this.msgServices.get(credentials.getUuid());
 		}
@@ -247,7 +247,7 @@ public class MsgServiceManager {
 
 		// find a similar one
 		for (MsgService<User> m : list) {
-			ServiceCredentials c = m.getServiceCredentials();
+			Account c = m.getServiceCredentials();
 			if (credentials.getProtocol() == c.getProtocol()
 					&& credentials.getUserId().equals(c.getUserId())) {
 				credentials.setUuid(c.getUuid());

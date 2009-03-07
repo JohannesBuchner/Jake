@@ -8,13 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jakeapp.TestingConstants;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 
@@ -48,7 +46,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	@Test
 	public void testCreateProject() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
+		Account cred = new Account(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
@@ -75,7 +73,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 				null);
 		Assert.assertNull(project.getMessageService());
 
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
+		Account cred = new Account(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		project.setMessageService(msg);
@@ -93,7 +91,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	@Test
 	public void testProjectRoundtrip() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
+		Account cred = new Account(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 		int projectCount;
 

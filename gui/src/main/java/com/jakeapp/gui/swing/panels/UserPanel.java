@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -71,8 +71,8 @@ public class UserPanel extends JXPanel
 	private UserDataPanel registerUserDataPanel;
 	private JComboBox loginServiceCheckBox;
 	private SpinningWheelComponent workingAnimation;
-	private Map<SupportedServices, ServiceCredentials> creds =
-					new HashMap<SupportedServices, ServiceCredentials>();
+	private Map<SupportedServices, Account> creds =
+					new HashMap<SupportedServices, Account>();
 	private JPanel addUserPanel;
 	private JPanel loginUserPanel;
 	private JPanel loadingAppPanel;
@@ -405,8 +405,8 @@ public class UserPanel extends JXPanel
 	 *
 	 * @return
 	 */
-	private ServiceCredentials getCredientals() {
-		ServiceCredentials cred;
+	private Account getCredientals() {
+		Account cred;
 
 		if (!isModeSignIn()) {
 			// return the default set
@@ -436,7 +436,7 @@ public class UserPanel extends JXPanel
 					JakeMainApp.setMsgService(msg);
 
 					// prepare the servicecredentials (prefilled?)
-					ServiceCredentials creds = getCredientals();
+					Account creds = getCredientals();
 					creds.setAutologin(loginUserDataPanel.isSetRememberPassword());
 					//creds.setPlainTextPassword(loginUserDataPanel.getPassword());
 
@@ -465,9 +465,9 @@ public class UserPanel extends JXPanel
 	 * Private inner worker for account registration.
 	 */
 	private class RegisterAccountTask extends AbstractTask<Void> {
-		private ServiceCredentials cred;
+		private Account cred;
 
-		private RegisterAccountTask(ServiceCredentials cred) {
+		private RegisterAccountTask(Account cred) {
 			this.cred = cred;
 		}
 
@@ -929,7 +929,7 @@ public class UserPanel extends JXPanel
 						JakeMainApp.setMsgService(msg);
 
 						// prepare the servicecredentials (prefilled?)
-						ServiceCredentials creds = getCredientals();
+						Account creds = getCredientals();
 						creds.setAutologin(isRememberPassword());
 						if (isMagicToken()) {
 							creds.setPlainTextPassword(null);

@@ -1,9 +1,9 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.IAccountDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
@@ -34,15 +34,16 @@ public abstract class MsgService<T extends User> {
 
 	protected T userId;
 
-	private ServiceCredentials serviceCredentials;
+	private Account account;
 
-	private static IServiceCredentialsDao serviceCredentialsDao;
+	private static IAccountDao accountDao;
 
 	protected ICSManager icsManager;
 
 	protected ProtocolType protocolType;
 
 	protected ProjectInvitationHandler invitationHandler = new ProjectInvitationHandler(this);
+
 	{
 		
 	}
@@ -79,10 +80,10 @@ public abstract class MsgService<T extends User> {
 	}
 
 	/**
-	 * @return {@link ServiceCredentials} if they are already set.
+	 * @return {@link com.jakeapp.core.domain.Account} if they are already set.
 	 */
-	protected ServiceCredentials getServiceCredentials() {
-		return this.serviceCredentials;
+	protected Account getServiceCredentials() {
+		return this.account;
 	}
 
 	/**
@@ -94,11 +95,11 @@ public abstract class MsgService<T extends User> {
 	 * @throws TimeoutException
 	 */
 	@Transactional
-	public final boolean login(ServiceCredentials newCreds) throws NetworkException {
+	public final boolean login(Account newCreds) throws NetworkException {
 		log.debug("calling plain login");
 
 		if (this.getServiceCredentials() == null)
-			throw new InvalidCredentialsException("serviceCredentials are null");
+			throw new InvalidCredentialsException("account are null");
 
 		// use the saved password?
 		if (newCreds.getPlainTextPassword() == null) {
@@ -124,9 +125,9 @@ public abstract class MsgService<T extends User> {
 
 			// update and store the credentials
 			try {
-				MsgService.serviceCredentialsDao.update(getServiceCredentials());
+				MsgService.accountDao.update(getServiceCredentials());
 			} catch (NoSuchServiceCredentialsException e) {
-				MsgService.serviceCredentialsDao.create(getServiceCredentials());
+				MsgService.accountDao.create(getServiceCredentials());
 			}
 		}
 
@@ -148,19 +149,19 @@ public abstract class MsgService<T extends User> {
 	 *                                     insufficiently specified (e.g. they are null)
 	 */
 	protected boolean checkCredentials() throws InvalidCredentialsException {
-		ServiceCredentials serviceCredentials = this.getServiceCredentials();
-		if (serviceCredentials == null) {
+		Account account = this.getServiceCredentials();
+		if (account == null) {
 			throw new InvalidCredentialsException("credentials must not be null");
 		}
-		if (serviceCredentials.getUserId() == null)
+		if (account.getUserId() == null)
 			throw new InvalidCredentialsException("credentials.userId must not be null");
 
-		if (serviceCredentials.getPlainTextPassword() == null)
+		if (account.getPlainTextPassword() == null)
 			throw new InvalidCredentialsException(
 							"credentials.plainTextPassword must not be null");
 
 
-		if (serviceCredentials.getServerAddress() == null)
+		if (account.getServerAddress() == null)
 			throw new InvalidCredentialsException(
 							"credentials.serverAddress must not be null");
 
@@ -194,10 +195,10 @@ public abstract class MsgService<T extends User> {
 	 */
 	protected abstract void doLogout() throws NetworkException;
 
-	public void setServiceCredentials(ServiceCredentials credentials) {
+	public void setServiceCredentials(Account credentials) {
 		log.debug("setting service credentials to " + credentials
 						.getUserId() + " pwl: " + credentials.getPlainTextPassword().length());
-		this.serviceCredentials = credentials;
+		this.account = credentials;
 	}
 
 	//  A GETTER SHOULD *never ever* to lengthy tasks when run in gui-thread.
@@ -252,13 +253,13 @@ public abstract class MsgService<T extends User> {
 						.getPlainTextPassword().isEmpty());
 	}
 
-	protected static IServiceCredentialsDao getServiceCredentialsDao() {
-		return serviceCredentialsDao;
+	protected static IAccountDao getServiceCredentialsDao() {
+		return accountDao;
 	}
 
 	protected static void setServiceCredentialsDao(
-					IServiceCredentialsDao serviceCredentialsDao) {
-		MsgService.serviceCredentialsDao = serviceCredentialsDao;
+					IAccountDao accountDao) {
+		MsgService.accountDao = accountDao;
 	}
 
 	/**
@@ -355,8 +356,8 @@ public abstract class MsgService<T extends User> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((serviceCredentials == null) ? 0 :
-						serviceCredentials.hashCode());
+		result = prime * result + ((account == null) ? 0 :
+						account.hashCode());
 		return result;
 	}
 
@@ -369,10 +370,10 @@ public abstract class MsgService<T extends User> {
 		if (getClass() != obj.getClass())
 			return false;
 		MsgService other = (MsgService) obj;
-		if (serviceCredentials == null) {
-			if (other.serviceCredentials != null)
+		if (account == null) {
+			if (other.account != null)
 				return false;
-		} else if (!serviceCredentials.equals(other.serviceCredentials))
+		} else if (!account.equals(other.account))
 			return false;
 		return true;
 	}

@@ -2,27 +2,24 @@ package com.jakeapp.core.services.futures;
 
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 
-import java.util.Properties;
 import java.util.UUID;
 import java.util.List;
 import java.io.File;
 
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IFileObjectDao;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.IAccountDao;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
 import javax.sql.DataSource;
@@ -39,7 +36,7 @@ public class AllProjectFilesFutureTest extends AbstractJUnit4SpringContextTests 
     private IProjectDao projectDao;
 
     @Autowired
-    private IServiceCredentialsDao serviceCredentialsDao;
+    private IAccountDao accountDao;
 
     @Autowired
     private IFileObjectDao fileObjectDao;
@@ -48,7 +45,7 @@ public class AllProjectFilesFutureTest extends AbstractJUnit4SpringContextTests 
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Before
+	@Before
     public void setUp() {
         log.debug("calling setUP");
 
@@ -70,9 +67,9 @@ public class AllProjectFilesFutureTest extends AbstractJUnit4SpringContextTests 
 
         Project project = new Project("testProject", UUID.fromString("6662b7bc-188f-424d-a2cc-aba6cadd931c"), null, new File("/tmp/"));
         
-        project.setCredentials(new ServiceCredentials("foo@bar", "", ProtocolType.XMPP));
+        project.setCredentials(new Account("foo@bar", "", ProtocolType.XMPP));
         
-        serviceCredentialsDao.create(project.getCredentials());
+        accountDao.create(project.getCredentials());
         projectDao.create(project);
 
         System.out.println("success");

@@ -3,7 +3,6 @@ package com.jakeapp.core.dao;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.List;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -17,14 +16,12 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
 
-import com.jakeapp.TestingConstants;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;
 
 
@@ -36,7 +33,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 
 	private static final String PROJECT_DAO_BEAN_ID = "projectDao";
 
-	private static final String SERVICE_CREDENTIALS_DAO_BEAN_ID = "serviceCredentialsDao";
+	private static final String SERVICE_CREDENTIALS_DAO_BEAN_ID = "accountDao";
 
 	private static final String TEMPLATE_BEAN_ID = "hibernateTemplate";
 
@@ -44,7 +41,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 
 	private IProjectDao projectDao;
 
-	private IServiceCredentialsDao serviceCredentialsDao;
+	private IAccountDao accountDao;
 
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
@@ -52,7 +49,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 
 	private String project_1_uuid = "480f3166-06f5-40db-93b7-a69789d1fcd2";
 
-	ServiceCredentials credentials1;
+	Account credentials1;
 
 	Project project1 = new Project("someName", UUID.fromString(project_1_uuid), null,
 			systemTmpDir);
@@ -72,12 +69,12 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		this.projectDao = projectDao;
 	}
 
-	private void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
-		this.serviceCredentialsDao = serviceCredentialsDao;
+	private void setServiceCredentialsDao(IAccountDao accountDao) {
+		this.accountDao = accountDao;
 	}
 
-	private IServiceCredentialsDao getServiceCredentialsDao() {
-		return serviceCredentialsDao;
+	private IAccountDao getServiceCredentialsDao() {
+		return accountDao;
 	}
 
 	/**
@@ -99,12 +96,12 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	public void setUp() {
 		this.setProjectDao((IProjectDao) this.applicationContext
 				.getBean(PROJECT_DAO_BEAN_ID));
-		this.setServiceCredentialsDao(((IServiceCredentialsDao) applicationContext
+		this.setServiceCredentialsDao(((IAccountDao) applicationContext
 				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
 		this.setTemplate((HibernateTemplate) applicationContext
 				.getBean(HibernateProjectCredentialsTest.TEMPLATE_BEAN_ID));
 
-		credentials1 = new ServiceCredentials("me@localhost", "mypasswd", ProtocolType.XMPP);
+		credentials1 = new Account("me@localhost", "mypasswd", ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);
 		credentials1.setSavePassword(true);
 		project1.setCredentials(credentials1);
@@ -131,7 +128,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	public final void testProjectDao() throws InvalidProjectException,
 			NoSuchProjectException {
 		Project actual;
-		ServiceCredentials credentials = this.getServiceCredentialsDao().create(
+		Account credentials = this.getServiceCredentialsDao().create(
 				credentials1);
 		actual = this.getProjectDao().create(project1);
 		Assert.assertEquals(project1, actual);
@@ -152,7 +149,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		}
 		
 		int before = this.getServiceCredentialsDao().getAll().size();
-		ServiceCredentials credentials = this.getServiceCredentialsDao().create(
+		Account credentials = this.getServiceCredentialsDao().create(
 				credentials1);
 		Assert.assertEquals(credentials.getUuid(), credentials1.getUuid());
 		Assert.assertEquals(credentials.getPlainTextPassword(), credentials1.getPlainTextPassword());
@@ -171,7 +168,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		Assert.assertEquals(project1, project);
 		Assert.assertEquals(1, this.getProjectDao().getAll().size());
 
-		// ServiceCredentials credentials =
+		// Account credentials =
 		// this.getServiceCredentialsDao().create(credentials1);
 		// Assert.assertEquals(credentials, credentials1);
 		// Assert.assertEquals(1,
@@ -191,7 +188,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	@Test
 	public final void testProjectWithMsgServiceDao() throws Exception {
 		Project p;
-		ServiceCredentials sc = new ServiceCredentials("username", "password", ProtocolType.XMPP);
+		Account sc = new Account("username", "password", ProtocolType.XMPP);
 		sc.setUuid(project_1_uuid);
 		
 		// don't do this, the project's create saves it for us
@@ -222,27 +219,27 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	@Test(expected = InvalidCredentialsException.class)
 	public final void testDoubleCreateShouldFail() throws Exception {
 		UUID uuid = UUID.randomUUID();
-		ServiceCredentials sc1 = new ServiceCredentials("username", "password",
+		Account sc1 = new Account("username", "password",
 				ProtocolType.XMPP);
 		sc1.setUuid(uuid);
 		sc1.setSavePassword(true);
 
 
-		ServiceCredentials sc2 = new ServiceCredentials("username2", "password2",
+		Account sc2 = new Account("username2", "password2",
 				ProtocolType.XMPP);
 		sc2.setUuid(uuid);
 		sc2.setSavePassword(true);
 
 		try
 		{
-			this.serviceCredentialsDao.create(sc1);
+			this.accountDao.create(sc1);
 		}
 		catch(InvalidCredentialsException e)
 		{
 			Assert.fail();
 		}
 		
-		this.serviceCredentialsDao.create(sc2);
+		this.accountDao.create(sc2);
 		Assert.fail();
 	}
 	
@@ -250,18 +247,18 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	@Test
 	public final void testSilentUpdateCredentials() throws Exception {
 		UUID uuid = UUID.randomUUID();
-		ServiceCredentials sc1 = new ServiceCredentials("username", "password", ProtocolType.XMPP);
+		Account sc1 = new Account("username", "password", ProtocolType.XMPP);
 		sc1.setUuid(uuid);
 		sc1.setSavePassword(true);
 		
-		ServiceCredentials sc2 = new ServiceCredentials("username2", "password2", ProtocolType.XMPP);
+		Account sc2 = new Account("username2", "password2", ProtocolType.XMPP);
 		sc2.setUuid(uuid);
 		sc2.setSavePassword(true);
 		
-		int origsize = this.serviceCredentialsDao.getAll().size();
+		int origsize = this.accountDao.getAll().size();
 		
-		this.serviceCredentialsDao.create(sc1);
-		ServiceCredentials entry = this.serviceCredentialsDao.update(sc2);
+		this.accountDao.create(sc1);
+		Account entry = this.accountDao.update(sc2);
 		
 		Assert.assertEquals(sc2.getUserId(), entry.getUserId());
 		Assert.assertEquals(sc2.getUuid(), entry.getUuid());
@@ -274,19 +271,19 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 	public final void testSilentReplaceCredentials() throws Exception {
 		UUID uuid = UUID.randomUUID();
 
-		int origsize = this.serviceCredentialsDao.getAll().size();
-		ServiceCredentials sc1 = new ServiceCredentials("username", "password", ProtocolType.XMPP);
+		int origsize = this.accountDao.getAll().size();
+		Account sc1 = new Account("username", "password", ProtocolType.XMPP);
 		sc1.setUuid(uuid);
 		sc1.setSavePassword(true);
-		this.serviceCredentialsDao.create(sc1);
+		this.accountDao.create(sc1);
 		
-		sc1 = this.serviceCredentialsDao.read(UUID.fromString(sc1.getUuid())); 
+		sc1 = this.accountDao.read(UUID.fromString(sc1.getUuid()));
 		
-		ServiceCredentials sc2 = new ServiceCredentials("username2", "password2", ProtocolType.XMPP);
+		Account sc2 = new Account("username2", "password2", ProtocolType.XMPP);
 		sc2.setUuid(UUID.fromString(uuid.toString()));
 		sc2.setSavePassword(true);
 		
-		ServiceCredentials entry = this.serviceCredentialsDao.update(sc2);
+		Account entry = this.accountDao.update(sc2);
 	
 		Assert.assertEquals(sc2.getUserId(), entry.getUserId());
 		Assert.assertEquals(sc2.getUuid(), entry.getUuid());

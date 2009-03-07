@@ -1,6 +1,6 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 /**
  * DAO Interface for User Credentials.
  */
-public interface IServiceCredentialsDao {
+public interface IAccountDao {
 
     /**
      * Puts new ServiceCredentials into the database.
@@ -21,7 +21,7 @@ public interface IServiceCredentialsDao {
      * @throws SQLException if a database error occured
 		 * @throws com.jakeapp.core.domain.exceptions.InvalidCredentialsException
      */
-    public ServiceCredentials create(ServiceCredentials credentials) throws InvalidCredentialsException;
+    public Account create(Account credentials) throws InvalidCredentialsException;
 
 
     /**
@@ -32,11 +32,11 @@ public interface IServiceCredentialsDao {
      * @throws NoSuchServiceCredentialsException
      *          if no credentials by the given UUID exist
      */
-    public ServiceCredentials read(UUID uuid) throws NoSuchServiceCredentialsException;
+    public Account read(UUID uuid) throws NoSuchServiceCredentialsException;
 
 
     
-    public List<ServiceCredentials> getAll();
+    public List<Account> getAll();
 
 
     /**
@@ -48,7 +48,7 @@ public interface IServiceCredentialsDao {
      *          if no credentials by the uuid of this credentials where in the
      *          database
      */
-    public ServiceCredentials update(ServiceCredentials credentials) throws NoSuchServiceCredentialsException;
+    public Account update(Account credentials) throws NoSuchServiceCredentialsException;
 
 
     /**
@@ -59,7 +59,7 @@ public interface IServiceCredentialsDao {
      *          if no credentials by the uuid of this credentials where in the
      *          database
      */
-    public void delete(ServiceCredentials credentials) throws NoSuchServiceCredentialsException;
+    public void delete(Account credentials) throws NoSuchServiceCredentialsException;
 
 
 }

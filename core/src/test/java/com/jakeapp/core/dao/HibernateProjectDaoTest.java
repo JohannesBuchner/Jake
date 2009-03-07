@@ -20,10 +20,8 @@ import com.jakeapp.TestingConstants;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.services.XMPPMsgService;
 
 
 /**
@@ -38,13 +36,13 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
 	private static final String TEMPLATE_BEAN_ID = "hibernateTemplate";
 
-	private static final String SERVICE_CREDENTIALS_DAO_BEAN_ID = "serviceCredentialsDao";
+	private static final String SERVICE_CREDENTIALS_DAO_BEAN_ID = "accountDao";
 
 	private static Logger log = Logger.getLogger(HibernateProjectDaoTest.class);
 
 	private IProjectDao projectDao;
 
-	private IServiceCredentialsDao serviceCredentialsDao;
+	private IAccountDao accountDao;
 
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
@@ -65,7 +63,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	Project project2 = new Project("someName", UUID.fromString(project_2_uuid), null,
 			systemTmpDir);
 
-	private ServiceCredentials cred;
+	private Account cred;
 
 	/**
 	 * @return the projectDao
@@ -100,7 +98,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	@Before
 	public void setUp() {
 		this.setProjectDao((IProjectDao) this.applicationContext.getBean(DAO_BEAN_ID));
-		this.setServiceCredentialsDao(((IServiceCredentialsDao) applicationContext
+		this.setServiceCredentialsDao(((IAccountDao) applicationContext
 				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
 		this.setTemplate((HibernateTemplate) applicationContext
 				.getBean(HibernateProjectDaoTest.TEMPLATE_BEAN_ID));
@@ -119,7 +117,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
 				.begin();
 
-		cred = new ServiceCredentials("foo@bar", "", ProtocolType.XMPP);
+		cred = new Account("foo@bar", "", ProtocolType.XMPP);
 		cred.setUuid(UUID.randomUUID());
 		getServiceCredentialsDao().create(cred);
 		
@@ -392,11 +390,11 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 	// }
 	// }
 
-	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
-		this.serviceCredentialsDao = serviceCredentialsDao;
+	public void setServiceCredentialsDao(IAccountDao accountDao) {
+		this.accountDao = accountDao;
 	}
 
-	public IServiceCredentialsDao getServiceCredentialsDao() {
-		return serviceCredentialsDao;
+	public IAccountDao getServiceCredentialsDao() {
+		return accountDao;
 	}
 }

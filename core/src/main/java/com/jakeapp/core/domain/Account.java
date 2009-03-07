@@ -14,7 +14,7 @@ import java.util.UUID;
  * <code>userId</code> and a <code>plainTextPassword</code>.
  */
 @Entity(name = "servicecredentials")
-public class ServiceCredentials implements Serializable {
+public class Account implements Serializable {
 
 	private static final String JAKE_RESOURCE = "JakeApp";
 
@@ -42,7 +42,7 @@ public class ServiceCredentials implements Serializable {
 
 	private boolean savePassword = false;
 
-	public ServiceCredentials() {
+	public Account() {
 		this.resourceName = JAKE_RESOURCE;
 		this.uuid = UUID.randomUUID();
 	}
@@ -59,7 +59,7 @@ public class ServiceCredentials implements Serializable {
 	 * @param protocolType
 	 *            The Protocol the credentials are bound to.
 	 */
-	public ServiceCredentials(String userId, String plainTextPassword, ProtocolType protocolType) {
+	public Account(String userId, String plainTextPassword, ProtocolType protocolType) {
 		this.userId = userId;
 		this.plainTextPassword = plainTextPassword;
 		this.resourceName = JAKE_RESOURCE;
@@ -209,10 +209,10 @@ public class ServiceCredentials implements Serializable {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof ServiceCredentials))
+		if (!(o instanceof Account))
 			return false;
 
-		ServiceCredentials that = (ServiceCredentials) o;
+		Account that = (Account) o;
 
 		if (encryptionUsed != that.encryptionUsed)
 			return false;

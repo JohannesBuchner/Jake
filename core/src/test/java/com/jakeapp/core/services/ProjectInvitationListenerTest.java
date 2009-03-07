@@ -12,10 +12,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.IInvitationDao;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
@@ -35,13 +36,17 @@ public class ProjectInvitationListenerTest {
 	private IProjectDao projectDao;
 
 	@Mock
+	private IInvitationDao invitationDao;
+
+
+	@Mock
 	private ProjectApplicationContextFactory contextFactory;
 
 	@Mock
 	private ILogEntryDao logEntryDao;
 
 	private ProjectInvitationHandler projectInvitationHandler;
-	private ServiceCredentials credentials = new ServiceCredentials("user", "pass", ProtocolType.XMPP);
+	private Account credentials = new Account("user", "pass", ProtocolType.XMPP);
 
 
 	User user = new User(ProtocolType.XMPP, "testuser1@localhost");

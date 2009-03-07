@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.dialogs;
 
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -18,11 +18,11 @@ import java.awt.event.ActionListener;
  */
 public class AdvancedAccountSettingsDialog extends JakeDialog {
 	private static final Logger log = Logger.getLogger(AdvancedAccountSettingsDialog.class);
-	private static ServiceCredentials creds;
+	private static Account creds;
 	private JTextField serverText;
 	private JTextField portText;
 
-	public AdvancedAccountSettingsDialog(ServiceCredentials creds) {
+	public AdvancedAccountSettingsDialog(Account creds) {
 		super(JakeMainApp.getProject());
 		setCreds(creds);
 
@@ -102,16 +102,16 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 	 *
 	 * @param creds: ServiceCredentials
 	 */
-	public static void showDialog(ServiceCredentials creds) {
+	public static void showDialog(Account creds) {
 		AdvancedAccountSettingsDialog dlg = new AdvancedAccountSettingsDialog(creds);
 		dlg.showDialogSized(400, 255);
 	}
 
-	public static ServiceCredentials getCreds() {
+	public static Account getCreds() {
 		return creds;
 	}
 
-	public static void setCreds(ServiceCredentials creds) {
+	public static void setCreds(Account creds) {
 		AdvancedAccountSettingsDialog.creds = creds;
 	}
 }

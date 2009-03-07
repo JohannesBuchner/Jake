@@ -49,7 +49,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.jakeapp.core.domain.Project</value>
-                <value>com.jakeapp.core.domain.ServiceCredentials</value>
+                <value>com.jakeapp.core.domain.Account</value>
                 <!--<value>com.jakeapp.core.domain.Uservalue>-->
                 <value>com.jakeapp.core.domain.User</value>
                 <value>com.jakeapp.core.domain.Configuration</value>
@@ -104,7 +104,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.HibernateServiceCredentialsDao">
+    <bean id="serviceCredentialsDao" class="com.jakeapp.core.dao.HibernateAccountDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 

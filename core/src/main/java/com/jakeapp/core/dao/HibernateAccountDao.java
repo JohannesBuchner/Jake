@@ -1,6 +1,6 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
@@ -9,21 +9,19 @@ import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
-import org.hibernate.LockMode;
 
 /**
  * Hibernate implementation of the ServiceCredentialsDao.
  */
-public class HibernateServiceCredentialsDao extends HibernateDaoSupport implements
-		IServiceCredentialsDao {
+public class HibernateAccountDao extends HibernateDaoSupport implements
+		IAccountDao {
 
-	private static Logger log = Logger.getLogger(HibernateServiceCredentialsDao.class);
+	private static Logger log = Logger.getLogger(HibernateAccountDao.class);
 
 
 	@Override
-	public ServiceCredentials create(ServiceCredentials credentials)
+	public Account create(Account credentials)
 			throws InvalidCredentialsException {
 		if (credentials == null)
 			throw new InvalidCredentialsException();
@@ -44,7 +42,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 		}
 
 
-		log.debug("persisting ServiceCredentials with uuid " + credentials.getUuid());
+		log.debug("persisting Account with uuid " + credentials.getUuid());
 		
 		// TODO: beautify. 
 		try {
@@ -57,14 +55,14 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 	}
 
 	@Override
-	public ServiceCredentials read(UUID uuid) throws NoSuchServiceCredentialsException {
+	public Account read(UUID uuid) throws NoSuchServiceCredentialsException {
 		String s = uuid.toString();
 		return read(s);
 	}
 
-	private ServiceCredentials read(String s) throws NoSuchServiceCredentialsException {
-		ServiceCredentials result = (ServiceCredentials) getHibernateTemplate().get(
-				ServiceCredentials.class, s);
+	private Account read(String s) throws NoSuchServiceCredentialsException {
+		Account result = (Account) getHibernateTemplate().get(
+				Account.class, s);
 		if (result == null)
 			throw new NoSuchServiceCredentialsException();
 
@@ -73,9 +71,9 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ServiceCredentials> getAll() {
+	public List<Account> getAll() {
 
-		List<ServiceCredentials> results = this.getHibernateTemplate()
+		List<Account> results = this.getHibernateTemplate()
 				.getSessionFactory().getCurrentSession().createQuery(
 						"FROM servicecredentials").list();
 
@@ -83,7 +81,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 	}
 
 	@Override
-	public ServiceCredentials update(ServiceCredentials credentials)
+	public Account update(Account credentials)
 			throws NoSuchServiceCredentialsException {
 		if (credentials == null)
 			throw new InvalidCredentialsException();
@@ -115,7 +113,7 @@ public class HibernateServiceCredentialsDao extends HibernateDaoSupport implemen
 	}
 
 	@Override
-	public void delete(ServiceCredentials credentials)
+	public void delete(Account credentials)
 			throws NoSuchServiceCredentialsException {
 		try {
 			getHibernateTemplate().delete(credentials/* , LockMode.WRITE */);

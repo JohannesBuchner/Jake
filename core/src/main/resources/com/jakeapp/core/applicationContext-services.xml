@@ -71,12 +71,12 @@
         <constructor-arg index="2" ref="syncService" 
                          type="com.jakeapp.core.synchronization.IFriendlySyncService" />
         <constructor-arg index="3" ref="serviceCredentialsDao"
-                         type="com.jakeapp.core.dao.IServiceCredentialsDao" />
+                         type="com.jakeapp.core.dao.IAccountDao" />
     </bean>
 
 
     <bean id="coreProjectInvitationListener" class="com.jakeapp.core.services.ProjectInvitationListener">
-        <constructor-arg index="0" ref="projectDao" />
+        <constructor-arg index="0" ref="invitationDao" />
         <constructor-arg index="1" ref="applicationContextFactory" />
     </bean>
 

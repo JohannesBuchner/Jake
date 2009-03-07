@@ -2,7 +2,7 @@ package com.jakeapp.core.services;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.jake.ics.ICService;
@@ -118,7 +118,7 @@ public class FailoverICSManager implements ICSManager {
 
 	private ICService createICService(Project p) {
 		log.debug("creating ICS");
-		ServiceCredentials cred = p.getCredentials();
+		Account cred = p.getCredentials();
 		ICService ics = null;
 
 		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {

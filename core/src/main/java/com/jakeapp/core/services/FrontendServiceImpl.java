@@ -1,9 +1,9 @@
 package com.jakeapp.core.services;
 
 import com.jakeapp.core.Injected;
-import com.jakeapp.core.dao.IServiceCredentialsDao;
+import com.jakeapp.core.dao.IAccountDao;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -40,7 +40,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	private Map<String, FrontendSession> sessions;
 	
 	@Injected
-	private IServiceCredentialsDao serviceCredentialsDao;
+	private IAccountDao accountDao;
 
 	@Injected
 	private IFriendlySyncService sync;
@@ -57,17 +57,17 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @param projectsManagingService
 	 * @param msgServiceFactory
 	 * @param sync
-	 * @param serviceCredentialsDao
+	 * @param accountDao
 	 */
 	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
 										MsgServiceManager msgServiceFactory, IFriendlySyncService sync,
-										IServiceCredentialsDao serviceCredentialsDao
+										IAccountDao accountDao
 		) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.msgServiceFactory = msgServiceFactory;
 		this.sync = sync;
-		this.serviceCredentialsDao = serviceCredentialsDao;
+		this.accountDao = accountDao;
 		this.setSessions(new HashMap<String, FrontendSession>());
 	}
 
@@ -75,8 +75,8 @@ public class FrontendServiceImpl implements IFrontendService {
 		return projectsManagingService;
 	}
 
-	private IServiceCredentialsDao getServiceCredentialsDao() {
-		return this.serviceCredentialsDao;
+	private IAccountDao getServiceCredentialsDao() {
+		return this.accountDao;
 	}
 
 	private void setProjectsManagingService(
@@ -221,7 +221,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(String sessionId, Account credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
@@ -232,7 +232,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
+	public MsgService addAccount(String sessionId, Account credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException {
 		checkSession(sessionId);
@@ -287,7 +287,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@Override
 	@Transactional
-	public Collection<ServiceCredentials> getLastLogins() {
+	public Collection<Account> getLastLogins() {
 		return this.getServiceCredentialsDao().getAll();
 	}
 
@@ -296,7 +296,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
 			final boolean rememberPassword, final ILoginStateListener loginListener) {
-		ServiceCredentials credentials = new ServiceCredentials();
+		Account credentials = new Account();
 		credentials.setPlainTextPassword(password);
 		credentials.setAutologin(rememberPassword);
 		return login(session, service, credentials, loginListener);
@@ -306,7 +306,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service,
-					final ServiceCredentials credentials, final ILoginStateListener loginListener) {
+					final Account credentials, final ILoginStateListener loginListener) {
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override

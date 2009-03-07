@@ -3,10 +3,12 @@ package com.jakeapp.core.services;
 import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.IInvitationDao;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
 public class ProjectInvitationListener implements com.jakeapp.core.services.IProjectInvitationListener {
@@ -15,11 +17,14 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 
 	private IProjectDao projectDao;
+	private IInvitationDao invitationDao;
+
     private ProjectApplicationContextFactory contextFactory;
 
-	public ProjectInvitationListener(IProjectDao projectDao, ProjectApplicationContextFactory contextFactory)
+	public ProjectInvitationListener(IInvitationDao invitationDao, ProjectApplicationContextFactory contextFactory)
 	{
-		this.projectDao = projectDao;
+		this.invitationDao = invitationDao;
+//		this.projectDao = projectDao;
 		this.contextFactory = contextFactory;
 	}
 
@@ -29,7 +34,10 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 		log.info("got invited to Project " + project + " by " + user);
 		// add Project to the global database
 		try {
-			project = projectDao.create(project);
+			Invitation invitation = new Invitation(project,  user);
+			invitationDao.create(invitation);
+
+//			project = projectDao.create(project);
 		} catch (InvalidProjectException e) {
 			log.error("Creating the project we were invited to failed: Project was invalid");
 			throw new IllegalArgumentException(e);

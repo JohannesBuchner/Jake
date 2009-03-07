@@ -297,7 +297,7 @@ public class JakeCommander extends Commander {
 				return false;
 			String id = args[1];
 			String password = args[2];
-			ServiceCredentials cred = new ServiceCredentials(id, password,
+			Account cred = new Account(id, password,
 					ProtocolType.XMPP);
 			try {
 				frontend.createAccount(sessionId, cred).setListener(this);
@@ -338,7 +338,7 @@ public class JakeCommander extends Commander {
 
 			String id = args[1];
 			String password = args[2];
-			ServiceCredentials cred = new ServiceCredentials(id, password,
+			Account cred = new Account(id, password,
 					ProtocolType.XMPP);
 			try {
 				msg = frontend.addAccount(sessionId, cred);
@@ -381,7 +381,7 @@ public class JakeCommander extends Commander {
 			}
 			try {
 				System.out.println("logging in ...");
-				ServiceCredentials credentials = new ServiceCredentials();
+				Account credentials = new Account();
 				credentials.setProtocol(ProtocolType.XMPP);
 				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg,
 								credentials, null));

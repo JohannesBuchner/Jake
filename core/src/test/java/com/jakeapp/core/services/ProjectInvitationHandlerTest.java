@@ -32,7 +32,7 @@ public class ProjectInvitationHandlerTest {
 	private IProjectDao projectDao;
 
 	private ProjectInvitationHandler projectInvitationHandler;
-	private ServiceCredentials credentials = new ServiceCredentials("user", "pass", ProtocolType.XMPP);
+	private Account credentials = new Account("user", "pass", ProtocolType.XMPP);
 
 
 	User user = new User(ProtocolType.XMPP, "testuser1@localhost");

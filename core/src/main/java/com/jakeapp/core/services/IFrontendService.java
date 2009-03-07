@@ -1,6 +1,6 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -101,7 +101,7 @@ public interface IFrontendService {
 	 * @throws Exception							the creation failed for another reason
 	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
 	 */
-	public AvailableLaterObject<Void> createAccount(String sessionId, ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(String sessionId, Account credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException, NetworkException;
 
@@ -117,7 +117,7 @@ public interface IFrontendService {
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
 	 */
-	public MsgService addAccount(String sessionId, ServiceCredentials credentials)
+	public MsgService addAccount(String sessionId, Account credentials)
 			  throws FrontendNotLoggedInException, InvalidCredentialsException,
 			  ProtocolNotSupportedException;
 
@@ -158,7 +158,7 @@ public interface IFrontendService {
 	 * @return All stored Service-credentials that were 'recently' used.
 	 *         A definition of recently is pending.
 	 */
-	Collection<ServiceCredentials> getLastLogins();
+	Collection<Account> getLastLogins();
 
 	/**
 	 * Logs a Messageservice in and sets the password
@@ -182,6 +182,6 @@ public interface IFrontendService {
 	 * @internally throws Exception
 	 */
 	AvailableLaterObject<Boolean> login(String session, MsgService service,
-					ServiceCredentials credentials, final ILoginStateListener loginListener);
+					Account credentials, final ILoginStateListener loginListener);
 
 }

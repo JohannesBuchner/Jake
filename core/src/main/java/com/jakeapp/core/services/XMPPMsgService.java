@@ -3,7 +3,7 @@ package com.jakeapp.core.services;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.jake.ics.ICService;
@@ -29,7 +29,7 @@ public class XMPPMsgService extends MsgService<User> {
 
 	@Override
 	protected boolean doCredentialsCheck() {
-		ServiceCredentials cred = this.getServiceCredentials();
+		Account cred = this.getServiceCredentials();
 		log.debug("got credentials: " + cred.getUserId() + " pwl: "
 				+ cred.getPlainTextPassword().length());
 		if (!this.getMainUserId().isOfCorrectUseridFormat()) {

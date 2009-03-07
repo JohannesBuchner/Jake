@@ -45,7 +45,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private IProjectDao projectDao;
 
-	private IServiceCredentialsDao serviceCredentialsDao;
+	private IAccountDao accountDao;
 
 	private IFriendlySyncService syncService;
 
@@ -1098,12 +1098,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		
 	}
 
-	public void setServiceCredentialsDao(IServiceCredentialsDao serviceCredentialsDao) {
-		this.serviceCredentialsDao = serviceCredentialsDao;
+	public void setServiceCredentialsDao(IAccountDao accountDao) {
+		this.accountDao = accountDao;
 	}
 
-	public IServiceCredentialsDao getServiceCredentialsDao() {
-		return serviceCredentialsDao;
+	public IAccountDao getServiceCredentialsDao() {
+		return accountDao;
 	}
 
 }

@@ -132,14 +132,14 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public AvailableLaterObject<Void> createAccount(ServiceCredentials credentials)
+	public AvailableLaterObject<Void> createAccount(Account credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
 					ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.createAccount(this.sessionId, credentials).start();
 	}
 
 	@Override
-	public MsgService addAccount(ServiceCredentials credentials)
+	public MsgService addAccount(Account credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
 					ProtocolNotSupportedException, NetworkException {
 		return this.frontendService.addAccount(this.sessionId, credentials);
@@ -637,11 +637,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	@Override public ServiceCredentials getPredefinedServiceCredential(String s) {
-		log.debug("Fetch predefined ServiceCredentials for " + s);
+	@Override public Account getPredefinedServiceCredential(String s) {
+		log.debug("Fetch predefined Account for " + s);
 
 		// only support xmpp - for the moment
-		ServiceCredentials cred = new ServiceCredentials();
+		Account cred = new Account();
 		cred.setProtocol(ProtocolType.XMPP);
 
 		if (s.compareToIgnoreCase("google") == 0) {
@@ -972,7 +972,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<Boolean> login(MsgService service,
-					ServiceCredentials credentials, ILoginStateListener connectionListener) {
+					Account credentials, ILoginStateListener connectionListener) {
 
 		////fixme unregister
 		service.registerInvitationListener(EventCore.get().getInvitationListener()); // TODO DIRTY!

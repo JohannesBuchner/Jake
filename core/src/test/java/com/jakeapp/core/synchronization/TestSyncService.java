@@ -89,7 +89,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 	@Transactional
 	public void createProject() throws Exception {
-		ServiceCredentials cred = new ServiceCredentials(id, password, ProtocolType.XMPP);
+		Account cred = new Account(id, password, ProtocolType.XMPP);
 		MsgService msg = frontend.addAccount(sessionId, cred);
 
 		project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(), msg);

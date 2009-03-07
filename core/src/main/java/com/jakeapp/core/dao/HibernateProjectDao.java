@@ -1,14 +1,11 @@
 package com.jakeapp.core.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.LockMode;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.InvitationState;
@@ -33,7 +30,7 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 
 		if (project.getCredentials() == null) {
 			throw new InvalidProjectException(
-					"A project's ServiceCredentials may not be null.");
+					"A project's Account may not be null.");
 		}
 
 		if (project.getProjectId() == null)

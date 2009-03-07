@@ -71,9 +71,10 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.jakeapp.core.domain.Project</value>
-                <value>com.jakeapp.core.domain.ServiceCredentials</value>
+                <value>com.jakeapp.core.domain.Account</value>
                 <value>com.jakeapp.core.domain.User</value>
                 <value>com.jakeapp.core.domain.Configuration</value>
+                <value>com.jakeapp.core.domain.Invitation</value>
             </list>
         </property>
         <property name="configurationClass"

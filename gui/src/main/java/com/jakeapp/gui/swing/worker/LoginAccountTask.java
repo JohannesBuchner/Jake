@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.domain.ServiceCredentials;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
@@ -20,9 +20,9 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 
 	private MsgService msg;
 	private ILoginStateListener loginListener;
-	private ServiceCredentials creds;
+	private Account creds;
 
-	public LoginAccountTask(MsgService msg, ServiceCredentials creds,
+	public LoginAccountTask(MsgService msg, Account creds,
 					ILoginStateListener loginListener) {
 		this.msg = msg;
 		this.creds = creds;
