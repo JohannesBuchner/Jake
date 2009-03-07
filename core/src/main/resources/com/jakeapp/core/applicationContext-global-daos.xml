@@ -8,7 +8,7 @@
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
-       >
+        >
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <!-- ========================= GENERAL DEFINITIONS ========================= -->
@@ -38,11 +38,13 @@
     </bean>
 
 
-    <bean id="backendInvitationDao" class="com.jakeapp.core.dao.HibernateInvitationDao" />
+    <bean id="backendInvitationDao" class="com.jakeapp.core.dao.HibernateInvitationDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
 
 
     <bean id="invitationDao" class="com.jakeapp.core.dao.ThreadedInvitationDao">
-        <constructor-arg index="0" ref="backendInvitationDao" type="com.jakeapp.core.dao.IInvitationDao" />
+        <constructor-arg index="0" ref="backendInvitationDao" type="com.jakeapp.core.dao.IInvitationDao"/>
     </bean>
 
 </beans>

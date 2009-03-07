@@ -151,14 +151,19 @@ public interface ICoreAccess {
 	/******************* Project functions ********************/
 
 	/**
-	 * Get  projects(started/stopped/invited - depends on the filter.
+	 * Get  projects(started/stopped)
 	 * List is alphabetically sorted. (TODO: is it?)
 	 *
-	 * @param filter EnumSet of the InvitationState
 	 * @return list of projects.
 	 */
 	public AvailableLaterObject<List<Project>> getProjects(
-					EnumSet<InvitationState> filter);
+	);
+
+	/**
+	 * Gets a list of invitations
+	 * @return
+	 */
+	public List<Invitation> getInvitations();
 
 	/**
 	 * Starts or Stops a given project

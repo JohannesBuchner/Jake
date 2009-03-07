@@ -18,30 +18,13 @@ public class GetProjectsFuture extends AvailableLaterObject<List<Project>> {
 	private IProjectsManagingService pms;
 	private EnumSet<InvitationState> inv;
 
-	public GetProjectsFuture(IProjectsManagingService pms,
-					EnumSet<InvitationState> inv) {
+	public GetProjectsFuture(IProjectsManagingService pms) {
 		this.pms = pms;
-		this.inv = inv;
+
 	}
 
 	@Override
 	public List<Project> calculate() throws Exception {
-		double progress,step;
-		
-		progress = 0d;
-		step = 1.0d;
-		if (this.inv.size()>0)
-			step /= this.inv.size();
-		
-		List<Project> ret = new ArrayList<Project>();
-		log.debug("Getting projects for n states,n=" + this.inv.size());
-		for (InvitationState is : inv) {
-			log.debug("before addall for "+is);
-			ret.addAll(pms.getProjectList(is));
-			log.debug("after addall for "+is);
-			progress+=step;
-			this.getListener().statusUpdate(progress, "");
-		}
-		return ret;
+		return pms.getProjectList();
 	}
 }

@@ -15,13 +15,14 @@ public interface IInvitationDao {
 	 * Stores a new Invitation into the Database
 	 * @param invitation The Invitation to be stored
 	 * @return the stored Invitation
+	 * @throws InvalidProjectException if invalid data is passed
 	 */
 	public Invitation create(Invitation invitation) throws InvalidProjectException;
 
 
 	/**
 	 * Returns a list containing all unanswered Invitations
-	 * @return
+	 * @return a (empty) List<Invitation>
 	 */
 	public List<Invitation> getAll();
 

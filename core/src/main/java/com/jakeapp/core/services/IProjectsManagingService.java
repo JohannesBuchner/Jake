@@ -46,6 +46,10 @@ public interface IProjectsManagingService {
 	 */
 	List<Project> getProjectList(InvitationState state);
 
+
+	public List<Invitation> getInvitations();
+
+
 	/**
 	 * Creates a new <code>Project</code> given the supplied name and rootPath
 	 *

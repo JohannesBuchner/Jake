@@ -1,29 +1,27 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.IInvitationDao;
-import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
-import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import junit.framework.Assert;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import static org.mockito.Mockito.*;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import static org.mockito.Mockito.anyObject;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import static org.junit.Assert.assertThat;
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.IInvitationDao;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
+import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import junit.framework.Assert;
 
 import java.util.UUID;
 
@@ -59,7 +57,7 @@ public class ProjectInvitationListenerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 
-		//projectInvitationListener = new ProjectInvitationListener(projectDao, contextFactory);
+		projectInvitationListener = new ProjectInvitationListener(invitationDao, contextFactory);
 
 		project = new Project("testproject1", UUID.fromString("8a488840-cbdc-43d2-9c52-3bca07bcead2"), null, null);
 

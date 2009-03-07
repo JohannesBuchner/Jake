@@ -85,8 +85,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<List<Project>> getProjects(
-					EnumSet<InvitationState> filter) {
-		return new GetProjectsFuture(pms, filter);
+	) {
+		return new GetProjectsFuture(pms);
+	}
+
+	@Override
+	public List<Invitation> getInvitations() {
+		return this.frontendService.getProjectsManagingService(sessionId).getInvitations();
 	}
 
 	@Override

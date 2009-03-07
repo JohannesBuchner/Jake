@@ -45,6 +45,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private IProjectDao projectDao;
 
+	private IInvitationDao invitationDao;
+
 	private IAccountDao accountDao;
 
 	private IFriendlySyncService syncService;
@@ -106,17 +108,25 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return this.getApplicationContextFactory().getFileObjectDao(project);
 	}
 
+	public IInvitationDao getInvitationDao() {
+		return invitationDao;
+	}
+
+	public void setInvitationDao(IInvitationDao invitationDao) {
+		this.invitationDao = invitationDao;
+	}
+
 	/*
-	 * @SuppressWarnings("unchecked") private IJakeObjectDao<JakeObject>
-	 * getJakeObjectDao(final Project project, final JakeObject jo) {
-	 * IJakeObjectDao result = null;
-	 * 
-	 * if (jo != null) { if (jo instanceof FileObject) result =
-	 * this.getFileObjectDao(project); else if (jo instanceof NoteObject) result
-	 * = this.getNoteObjectDao(project); }
-	 * 
-	 * return result; }
-	 */
+		 * @SuppressWarnings("unchecked") private IJakeObjectDao<JakeObject>
+		 * getJakeObjectDao(final Project project, final JakeObject jo) {
+		 * IJakeObjectDao result = null;
+		 *
+		 * if (jo != null) { if (jo instanceof FileObject) result =
+		 * this.getFileObjectDao(project); else if (jo instanceof NoteObject) result
+		 * = this.getNoteObjectDao(project); }
+		 *
+		 * return result; }
+		 */
 
 	/*
 	 * ***** STARTING IMPLEMENTATIONS *************
@@ -169,6 +179,11 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		List<Project> result = this.getProjectDao().getAll(state);
 		checkProjects(result);
 		return result;
+	}
+
+	@Override
+	public List<Invitation> getInvitations() {
+		return this.invitationDao.getAll();
 	}
 
 	private void initProject(Project p) throws NoSuchProjectException,

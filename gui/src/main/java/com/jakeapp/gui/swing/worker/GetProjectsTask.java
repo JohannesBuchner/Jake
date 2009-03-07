@@ -23,7 +23,7 @@ public class GetProjectsTask extends AbstractTask<List<Project>> {
 	protected AvailableLaterObject<List<Project>> calculateFunction() {
 
 		if (JakeMainApp.isCoreInitialized()) {
-			return JakeMainApp.getCore().getProjects(filter);
+			return JakeMainApp.getCore().getProjects();
 		} else {
 			// return an error, but fail silently (core just needs more time for init)
 			return new AvailableErrorObject<List<Project>>(null);

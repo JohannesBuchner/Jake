@@ -60,6 +60,7 @@
         <property name="applicationContextFactory" ref="applicationContextFactory"/>
         <property name="syncService" ref="syncService"/>
         <property name="projectsFileServices" ref="projectsFileServices"/>
+        <property name="invitationDao" ref="invitationDao" />
     </bean>
 
 

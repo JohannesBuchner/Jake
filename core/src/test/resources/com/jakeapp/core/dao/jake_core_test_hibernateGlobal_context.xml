@@ -53,6 +53,7 @@
                 <!--<value>com.jakeapp.core.domain.Uservalue>-->
                 <value>com.jakeapp.core.domain.User</value>
                 <value>com.jakeapp.core.domain.Configuration</value>
+                <value>com.jakeapp.core.domain.Invitation</value>
 
             </list>
         </property>
@@ -115,6 +116,10 @@
 
     <bean id="configurationDao" class="com.jakeapp.core.dao.HibernateConfigurationDao">
         <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+
+    <bean id="invitationDao" class="com.jakeapp.core.dao.HibernateInvitationDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 
 
