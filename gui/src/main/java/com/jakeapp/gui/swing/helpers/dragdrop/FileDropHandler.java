@@ -73,3 +73,4 @@ public class FileDropHandler extends TransferHandler {
 		return true;
 	}
 }
+ 

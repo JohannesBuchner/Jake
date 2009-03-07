@@ -22,13 +22,13 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 	 * attached. Because of triviality of this function, no license assumed
 	 * (Public Domain). Please contact us if this is not the case and we will
 	 * remove this function.
-	 * 
+	 *
 	 * This function will copy files or directories from one location to
 	 * another. note that the source and the destination must be mutually
 	 * exclusive. This function can not be used to copy a directory to a sub
 	 * directory of itself. The function will also have problems if the
 	 * destination files already exist.
-	 * 
+	 *
 	 * @param src
 	 *            -- A File object that represents the source for the copy
 	 * @param dest
@@ -131,6 +131,7 @@ abstract public class TestDBEnabledTestCase extends TmpdirEnabledTestCase {
 		FSTestCommons.recursiveDelete(new File(".jake"));
 		File workdir = new File(".");
 		copyFiles(templatedir, workdir, ".svn");
+		
 		
 		File dbdir = new File(".jake");
 		dbdir.mkdir();		
