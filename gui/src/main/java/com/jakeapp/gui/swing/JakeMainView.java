@@ -29,6 +29,7 @@ import com.jakeapp.gui.swing.panels.UserPanel;
 import com.jakeapp.gui.swing.worker.InitCoreWorker;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.JakeDatabaseTools;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -226,6 +227,12 @@ public class JakeMainView extends FrameView
 		setContextViewPanel(ContextPanelEnum.Login);
 
 		updateTitle();
+
+		/**
+		 * Check if the CAPS_LOCK key is pressed at startup.
+		 * If so, ask the User if he wants to reset the Database.
+		 */
+		JakeDatabaseTools.checkKeysResetDatabase();
 
 		JakeExecutor.exec(new InitCoreWorker());
 
@@ -740,10 +747,6 @@ public class JakeMainView extends FrameView
 		JakeHelper.showJakeWebsite();
 	}
 
-
-	private ICoreAccess getCore() {
-		return JakeMainApp.getCore();
-	}
 
 	public Project getProject() {
 		return project;
