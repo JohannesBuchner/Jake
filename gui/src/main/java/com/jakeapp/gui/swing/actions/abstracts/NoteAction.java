@@ -27,7 +27,6 @@ public abstract class NoteAction extends ProjectAction implements NoteSelectionC
 	 */
 	public NoteAction() {
 		super();
-		setSelectedNotes(NotesPanel.getInstance().getSelectedNotes());
 
 		NotesPanel.getInstance().addNoteSelectionListener(this);
 	}
@@ -38,17 +37,11 @@ public abstract class NoteAction extends ProjectAction implements NoteSelectionC
 	 * @param event
 	 */
 	public void noteSelectionChanged(NoteSelectedEvent event) {
-
-		setSelectedNotes(event.getNotes());
 		updateAction();
 	}
 
 	public List<Attributed<NoteObject>> getSelectedNotes() {
-		return this.selectedNotes;
-	}
-
-	public void setSelectedNotes(List<Attributed<NoteObject>> notes) {
-		this.selectedNotes = notes;
+		return NotesPanel.getInstance().getSelectedNotes();
 	}
 
 	@Override

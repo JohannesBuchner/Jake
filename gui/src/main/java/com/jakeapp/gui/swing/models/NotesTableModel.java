@@ -114,7 +114,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		if (result==null) {
 			try {
 				oldSelection = NotesPanel.getInstance().getNotesTable().getSelectedRow();
-				oldSelectionNote = this.getNoteAtRow(oldSelection);
+				oldSelectionNote = this.getNoteAtRow(NotesPanel.getInstance().getNotesTable().convertRowIndexToModel(oldSelection));
 				result = (oldSelectionNote==null)?null:oldSelectionNote.getJakeObject();
 			}
 			catch (Exception ex) {
@@ -137,6 +137,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 			for (Attributed<NoteObject> attributed : this.attributedNotes) {
 				if (attributed.getJakeObject().equals(toSelect)) {
 					//found the previously selected note!
+					newSelection = NotesPanel.getInstance().getNotesTable().convertRowIndexToView(newSelection);
 					NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
 				}
 				newSelection++;

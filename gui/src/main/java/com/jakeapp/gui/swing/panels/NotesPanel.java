@@ -192,7 +192,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 				}
 			}*/
 			//handle new selection
-			text = this.notesTableModel.getNoteAtRow(this.notesTable.getSelectedRow())
+			text = this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(this.notesTable.getSelectedRow()))
 							.getJakeObject().getContent();
 			this.noteReader.setText(text);
 
@@ -201,7 +201,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		List<Attributed<NoteObject>> selectedNotes = new ArrayList<Attributed<NoteObject>>();
 		for (int row : this.notesTable.getSelectedRows()) {
-			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(row)));
 		}
 		this.notifyNoteSelectionListeners(selectedNotes);
 	}
@@ -390,9 +390,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			return selectedNotes;
 		}
 
-		//log.debug("selcted notes count: " + notesTable.getSelectedRowCount());
+		//log.debug("selected notes count: " + notesTable.getSelectedRowCount());
 		for (int row : this.notesTable.getSelectedRows()) {
-			selectedNotes.add(this.notesTableModel.getNoteAtRow(row));
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(row)));
 		}
 		return selectedNotes;
 	}
