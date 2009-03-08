@@ -349,7 +349,7 @@ public class NotesPanel extends javax.swing.JPanel
 		noteReaderScrollPane.getViewport().setOpaque(false);
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
 
-		this.noteReaderPanel.add(noteReaderScrollPane, "grow");
+		this.noteReaderPanel.add(noteReaderScrollPane, "grow, push");
 
 		// set the background painter
 		MattePainter mp = new MattePainter(Colors.Yellow.alpha(0.5f));

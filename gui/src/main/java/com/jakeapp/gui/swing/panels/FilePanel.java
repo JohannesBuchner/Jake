@@ -373,7 +373,6 @@ public class FilePanel extends javax.swing.JPanel
 	 * initialize the form.
 	 */
 	private void initComponents() {
-
 		this.setLayout(new MigLayout("wrap 1, ins 0, fill, gap 0! 0!"));
 		this.setBackground(Color.WHITE);
 
@@ -381,6 +380,7 @@ public class FilePanel extends javax.swing.JPanel
 		final JPanel controlPanel =
 						new JPanel(new MigLayout("wrap 2, ins 2, fill, gap 0! 0!"));
 		controlPanel.setBackground(Platform.getStyler().getFilterPaneColor(true));
+		controlPanel.setSize(400, 25);
 
 		// change color on window loose/gain focus
 		WindowUtils.installWindowFocusListener(new WindowFocusListener() {
@@ -472,7 +472,7 @@ public class FilePanel extends javax.swing.JPanel
 		// Default display (first): TreeTable
 		this.fileTreeTableScrollPane.setViewportView(this.fileTreeTable);
 
-		this.add(this.fileTreeTableScrollPane, "grow");
+		this.add(this.fileTreeTableScrollPane, "grow, push");
 	}
 
 	private void updatePanel() {
