@@ -240,7 +240,8 @@ public interface IProjectsManagingService {
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
 
 	/**
-	 * Joins the Project and notifies the inviter.
+	 * This method accepts an Invitation, adds the Project belonging to the invitation to
+	 * the database and informs the inviter that we accepted the invitation.
 	 *
 	 * @param invitation
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.

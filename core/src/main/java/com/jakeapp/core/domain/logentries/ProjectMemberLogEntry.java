@@ -18,7 +18,11 @@ public class ProjectMemberLogEntry extends LogEntry<User> implements Serializabl
 				true);
 		if (logAction != LogAction.START_TRUSTING_PROJECTMEMBER
 				&& logAction != LogAction.STOP_TRUSTING_PROJECTMEMBER
-				&& logAction != LogAction.FOLLOW_TRUSTING_PROJECTMEMBER)
+				&& logAction != LogAction.FOLLOW_TRUSTING_PROJECTMEMBER
+				&& logAction != LogAction.PROJECTMEMBER_INVITED
+				&& logAction != LogAction.PROJECT_REJECTED
+				&& logAction != LogAction.PROJECT_JOINED		
+				)
 			throw new IllegalArgumentException("invalid logaction for logentry");
 	}
 

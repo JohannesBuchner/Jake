@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.logentries.ProjectMemberInvitationRejectedLogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IInvitationDao;
@@ -34,6 +35,9 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 
 	@Override
+	/**
+	 * This method gets called on the client who gets invited
+	 */
 	public void invited(User user, Project project) {
 		log.info("got invited to Project " + project + " by " + user);
 		// add Project to the global database
@@ -50,19 +54,23 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	}
 
 	@Override
+	/* this is on the side of the client sending the invitation */
 	public void accepted(User user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " accepted ");
-		// TODO add some security
+		// TODO add some security checks
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(p,  user);
 		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
+
+		StartTrustingProjectMemberLogEntry logEntry2 = new StartTrustingProjectMemberLogEntry(p.getUserId(), user);
+		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry2);
 		
-		StartTrustingProjectMemberLogEntry logEntry_other = new StartTrustingProjectMemberLogEntry(user, p.getUserId());
-		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_other);
+//		StartTrustingProjectMemberLogEntry logEntry_other = new StartTrustingProjectMemberLogEntry(user, p.getUserId());
+//		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_other);
 
-		StartTrustingProjectMemberLogEntry logEntry_me = new StartTrustingProjectMemberLogEntry(p.getUserId(), p.getUserId());
-		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_me);
+//		StartTrustingProjectMemberLogEntry logEntry_me = new StartTrustingProjectMemberLogEntry(p.getUserId(), p.getUserId());
+//		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_me);
 
-		log.debug("finished completing invitation.");
+//		log.debug("finished completing invitation.");
 
 //		if (this.invitationListener != null)
 //			this.invitationListener.accepted(user, p);
@@ -72,6 +80,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	public void rejected(User user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " rejected ");
 
+//		ProjectMemberInvitationRejectedLogEntry logEntry = new ProjectMemberInvitationRejectedLogEntry(user, p.getUserId());
 //		if (this.invitationListener != null)
 //			this.invitationListener.rejected(user, p);
 	}

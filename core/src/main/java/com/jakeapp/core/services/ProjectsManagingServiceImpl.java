@@ -733,6 +733,29 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
+	public User invite(Project project, String userid) throws UserIdFormatException {
+		User member;
+		User id;
+
+		log.info("invite project: " + project + " userid: " + userid + " msgservice: "
+				+ project.getMessageService());
+
+		id = project.getMessageService().getUserId(userid);
+		log.debug("extracted the userid to invite: " + userid);
+
+		ProjectMemberInvitedLogEntry logEntry =  new ProjectMemberInvitedLogEntry(id, project.getUserId());
+		this.getLogEntryDao(project).create(logEntry);
+
+//		member = this.addUserToProject(project, id);
+		ProjectInvitationHandler.invite(project, id);
+		return id;
+
+//		return member;
+	}
+
+
+	@Override
+	@Transactional
 	public void updateProjectName(Project project, String newName)
 			throws NoSuchProjectException {
 
@@ -891,23 +914,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		}
 	}
 
-	@Override
-	@Transactional
-	public User invite(Project project, String userid) throws UserIdFormatException {
-		User member;
-		User id;
 
-		log.info("invite project: " + project + " userid: " + userid + " msgservice: "
-				+ project.getMessageService());
-
-		id = project.getMessageService().getUserId(userid);
-		log.debug("extracted the userid to invite: " + userid);
-
-		member = this.addUserToProject(project, id);
-		ProjectInvitationHandler.invite(project, id);
-
-		return member;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override

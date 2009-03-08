@@ -360,10 +360,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<User>> getAllProjectMemberLogEntries() {
-		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ?)")
+		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ? OR action = ?)")
 				.setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
 				.setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal())
-				.setInteger(2, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal()).list();
+				.setInteger(2, LogAction.FOLLOW_TRUSTING_PROJECTMEMBER.ordinal())
+				.setInteger(3, LogAction.PROJECTMEMBER_INVITED.ordinal())
+				.list();
 	}
 
 	/**
@@ -574,17 +576,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
+	/* this is on the side of the client accepting the invitation */
 	public void acceptInvitation(Invitation invitation) {
 		Project project = invitation.createProject();
 
 		// TODO: remove this one as soon as we know how 
-//		ProjectCreatedLogEntry projectCreatedLogEntry = new ProjectCreatedLogEntry(project, invitation.getInvitedOn());
-//		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectCreatedLogEntry);
+		ProjectCreatedLogEntry projectCreatedLogEntry = new ProjectCreatedLogEntry(project, invitation.getInvitedOn());
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectCreatedLogEntry);
 
-		ProjectJoinedLogEntry projectJoinedLogEntry = new ProjectJoinedLogEntry(project, invitation.getInvitedOn());
+//		ProjectJoinedLogEntry projectJoinedLogEntry = new ProjectJoinedLogEntry(project, invitation.getInvitedOn());
 		StartTrustingProjectMemberLogEntry startTrustingProjectMemberLogEntry =
 				new StartTrustingProjectMemberLogEntry(invitation.getInviter(), invitation.getInvitedOn());
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectJoinedLogEntry);
+//		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectJoinedLogEntry);
 		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(startTrustingProjectMemberLogEntry);
 	}
 }

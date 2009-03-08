@@ -85,7 +85,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 				String innercontent = content.substring(INVITEMSG.length());
 				String uuidstr = innercontent.substring(0, uuidlen);
 				Project p = getProject(innercontent, uuidstr);
-				p.setInvitationState(InvitationState.INVITED);
+
 
 				User user = msg.getIcsManager().getFrontendUserId(p, from_userid);
 
@@ -116,7 +116,13 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 				log.info("got accept to Project " + p + " from " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
-					listener.accepted(user, p);
+					try{
+						listener.accepted(user, p);
+					}
+					catch(Exception e)
+					{
+						log.warn("A listener throw an exception in the accepted method");
+					}
 				}
 			} catch (Exception e) {
 				log.warn("error decoding accept message", e);
@@ -132,7 +138,13 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 				log.info("got reject to Project " + p + " from " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
-					listener.rejected(user, p);
+					try{
+						listener.rejected(user, p);
+					}
+					catch(Exception e)
+					{
+						log.warn("A listener throw an exception in the accepted method");
+					}
 				}
 			} catch (Exception e) {
 				log.warn("error decoding reject message", e);

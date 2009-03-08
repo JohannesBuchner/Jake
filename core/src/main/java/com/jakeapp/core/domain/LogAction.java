@@ -24,8 +24,7 @@ public enum LogAction implements Serializable {
 	PROJECT_CREATED,
 
 	/**
-	 * A user starts to use this project and wants to tell others (invitation
-	 * accepted)<br />
+	 * A user has accepted our invitation and now starts to use this project.<br />
 	 * belongsTo: null<br />
 	 */
 	PROJECT_JOINED,
@@ -99,7 +98,18 @@ public enum LogAction implements Serializable {
 	 */
 	JAKE_OBJECT_LOCK,
 
-    /**
+	/**
+	 * the user has been invited to this project
+	 */
+	PROJECTMEMBER_INVITED,
+
+
+	/**
+	 * the user rejected the invitation to this project
+	 */
+	PROJECT_REJECTED,
+
+	/**
 	 * the object has been soft locked. <br/>
 	 * belongsTo: {@link JakeObject} <br/>
 	 * important LogEntry attributes: commitmsg
