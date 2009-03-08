@@ -796,7 +796,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			return;
 
 
-		db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
+		try {
+			db.getUnprocessedAwareLogEntryDao(jo).setProcessed((LogEntry<JakeObject>) le);
+		} catch (NoSuchLogEntryException e) {
+			throw new IllegalArgumentException(e);
+		}
 		db.getUnprocessedAwareLogEntryDao(jo).setAllPreviousProcessed(le);
 	}
 
