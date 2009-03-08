@@ -157,6 +157,18 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 		return INVITEMSG + project.getProjectId() + project.getName();
 	}
 
+
+	private static String createInviteAcceptedMessage(Project project){
+		return ACCEPTMSG + project.getProjectId() + project.getName();
+	}
+
+	private static String createInviteRejectedMessage(Project project){
+		return REJECTMSG + project.getProjectId() + project.getName(); 
+	}
+
+
+
+
 	/**
 	 * Informs the person who invited us to a project that we accept the
 	 * invitation.
@@ -165,19 +177,11 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param inviter
 	 */
 	public static void notifyInvitationAccepted(Project project, User inviter) {
-//		ICSManager icsManager = project.getMessageService().getIcsManager();
-//		ICService ics = icsManager.getICService(project);
-//		UserId backendUser = icsManager.getBackendUserId(project, inviter);
 		UserId backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
-//		backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
-		System.out.println("SENDING ACCEPT TO " + backendUser);
-//		UserId backendUser = project.getMessageService()
 
+		String msg = createInviteAcceptedMessage(project);
 		try {
-//			ics.getMsgService().sendMessage(backendUser, ACCEPTMSG);
-			
-			project.getMessageService().getMainIcs().getMsgService().sendMessage(backendUser, ACCEPTMSG);
-
+			project.getMessageService().getMainIcs().getMsgService().sendMessage(backendUser, msg);
 		} catch (Exception e) {
 			log.warn("sending accept failed", e);
 		}
@@ -191,11 +195,10 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param inviter
 	 */
 	public static void notifyInvitationRejected(Project project, User inviter) {
-		ICSManager icsManager = project.getMessageService().getIcsManager();
-		ICService ics = icsManager.getICService(project);
-		UserId backendUser = icsManager.getBackendUserId(project, inviter);
+		UserId backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
+		String msg = createInviteRejectedMessage(project);
 		try {
-			ics.getMsgService().sendMessage(backendUser, REJECTMSG);
+			project.getMessageService().getMainIcs().getMsgService().sendMessage(backendUser, msg);
 		} catch (Exception e) {
 			log.warn("sending reject failed", e);
 		}
