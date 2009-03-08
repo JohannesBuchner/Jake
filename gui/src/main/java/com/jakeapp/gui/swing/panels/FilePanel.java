@@ -2,7 +2,6 @@ package com.jakeapp.gui.swing.panels;
 
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
@@ -44,21 +43,24 @@ import java.util.List;
  */
 public class FilePanel extends javax.swing.JPanel
 				implements ContextChanged, ProjectChanged {
-
 	private static final long serialVersionUID = -3419475619689818265L;
-
 	private static final Logger log = Logger.getLogger(FilePanel.class);
+
 	private static FilePanel instance;
 
+	// fixme: deprecated!
 	public static final int FILETREETABLE_NODECOLUMN = 1;
 
-	private Project project;
 	private ResourceMap resourceMap;
 	private JToggleButton treeBtn;
 	private JToggleButton flatBtn;
 	private JToggleButton allBtn;
 	private JToggleButton newBtn;
 	private JToggleButton conflictsBtn;
+
+	private org.jdesktop.swingx.JXTreeTable fileTreeTable;
+	private org.jdesktop.swingx.JXTable fileTable;
+	private javax.swing.JScrollPane fileTreeTableScrollPane;	
 
 	// use tree (true) or flat (false)
 	// TODO: set to false for debug only
@@ -70,7 +72,6 @@ public class FilePanel extends javax.swing.JPanel
 	 * Creates new form FilePanel
 	 */
 	public FilePanel() {
-
 		// save for instance access
 		instance = this;
 
@@ -78,7 +79,6 @@ public class FilePanel extends javax.swing.JPanel
 		setResourceMap(org.jdesktop.application.Application
 						.getInstance(JakeMainApp.class)
 						.getContext().getResourceMap(FilePanel.class));
-
 
 		initComponents();
 
@@ -475,19 +475,14 @@ public class FilePanel extends javax.swing.JPanel
 		this.add(this.fileTreeTableScrollPane, "grow");
 	}
 
-	private org.jdesktop.swingx.JXTreeTable fileTreeTable;
-	private org.jdesktop.swingx.JXTable fileTable;
-	private javax.swing.JScrollPane fileTreeTableScrollPane;
-
-
 	private void updatePanel() {
 		// don't update if project is null OR an invitation.
-		if (JakeContext.getProject() == null || JakeContext.getProject().isInvitation()) {
+		if (JakeContext.getProject() == null) {
 			return;
 		}
 
-		if (project != null) {
-			ObjectCache.get().updateFiles(project);
+		if (JakeContext.getProject() != null) {
+			ObjectCache.get().updateFiles(JakeContext.getProject());
 		}
 	}
 }

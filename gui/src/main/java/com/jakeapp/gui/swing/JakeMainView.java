@@ -4,6 +4,7 @@ import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.explodingpixels.widgets.WindowUtils;
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
@@ -687,13 +688,12 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	private void updateView() {
 		log.trace("updating view");
 		Project pr = JakeContext.getProject();
+		Invitation invite = JakeContext.getInvitation();
 
-		boolean needsInvite =
-						pr != null && pr.getInvitationState() == InvitationState.INVITED;
 		// determine what to show
-		if (pr == null) {
+		if (pr == null && invite == null) {
 			setContextViewPanel(ContextPanelEnum.Login);
-		} else if (needsInvite) {
+		} else if (invite != null) {
 			setContextViewPanel(ContextPanelEnum.Invitation);
 		} else {
 			setContextViewPanel(ContextPanelEnum.Project);
