@@ -14,24 +14,32 @@ import java.awt.event.ActionEvent;
  * They get an invitation and can join/refuse the project.
  */
 public class TrustNoUsersAction extends UserAction {
-    private static final Logger log = Logger.getLogger(TrustNoUsersAction.class);
-    private static final TrustState actionTrustState = TrustState.NO_TRUST;
+	private static final Logger log = Logger.getLogger(TrustNoUsersAction.class);
+	private static final TrustState actionTrustState = TrustState.NO_TRUST;
 
-    public TrustNoUsersAction(JList list) {
-        super(list);
+	public TrustNoUsersAction(JList list) {
+		super(list);
 
-        String actionStr = JakeMainView.getMainView().getResourceMap().
-                getString("notTrustedPeopleMenuItem.text");
+		String actionStr = JakeMainView.getMainView().getResourceMap().
+						getString("notTrustedPeopleMenuItem.text");
 
-        putValue(Action.NAME, actionStr);
+		putValue(Action.NAME, actionStr);
 
-        // update state
-        putValue(Action.SELECTED_KEY, checkUserStatus(actionTrustState));
-    }
+		// update state
+		updateAction();
+	}
 
 
 	public void actionPerformed(ActionEvent actionEvent) {
-        log.info("Don't trust ProjectMember " + getList() + " from" + getProject());
-        setUserTrustState(actionTrustState);
-    }
+		log.info("Don't trust ProjectMember " + getList() + " from" + getProject());
+		setUserTrustState(actionTrustState);
+	}
+
+	@Override
+	public void updateAction() {
+		super.updateAction();
+
+		// update state
+		putValue(Action.SELECTED_KEY, checkUserStatus(actionTrustState));
+	}
 }

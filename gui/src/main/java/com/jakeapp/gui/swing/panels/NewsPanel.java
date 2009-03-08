@@ -8,6 +8,7 @@ import com.jakeapp.gui.swing.actions.users.RenameUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustFullUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustNoUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustUsersAction;
+import com.jakeapp.gui.swing.actions.users.SyncUsersAction;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -267,7 +268,7 @@ public class NewsPanel extends javax.swing.JPanel
 		pm.add(new JSeparator());
 		pm.add(new JMenuItem(new RenameUsersAction((JListMutable) usersList)));
 		pm.add(new JSeparator());
-		pm.add(new JMenuItem(new RenameUsersAction.SyncUsersAction(usersList)));
+		pm.add(new JMenuItem(new SyncUsersAction(usersList)));
 		pm.add(new JSeparator());
 		pm.add(new JCheckBoxMenuItem(new TrustFullUsersAction(usersList)));
 		pm.add(new JCheckBoxMenuItem(new TrustUsersAction(usersList)));

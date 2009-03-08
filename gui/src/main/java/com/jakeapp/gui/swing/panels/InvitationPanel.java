@@ -122,8 +122,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 
 		joinButton = new JButton("Join");
 		joinButton.putClientProperty("JButton.buttonType", "textured");
-		joinProjectAction = new JoinProjectAction();
-		joinButton.setAction(joinProjectAction);
+		joinButton.setAction( new JoinProjectAction());
 
 		JButton rejectButton = new JButton("Reject");
 		rejectButton.putClientProperty("JButton.buttonType", "textured");
@@ -133,7 +132,6 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		btnPanel.add(rejectButton, "tag cancel");
 
 		this.add(btnPanel, "al center");
-
 
 		generateNewFolderLabel = new JLabel();
 		this.add(generateNewFolderLabel, "al center");

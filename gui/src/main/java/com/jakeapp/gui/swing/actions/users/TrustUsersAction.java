@@ -26,12 +26,20 @@ public class TrustUsersAction extends UserAction {
 		putValue(Action.NAME, actionStr);
 
 		// update state
-		putValue(Action.SELECTED_KEY, checkUserStatus(actionTrustState));
+		updateAction();
 	}
 
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.info("Trust ProjectMember " + getList() + " from" + getProject());
 		setUserTrustState(actionTrustState);
+	}
+
+	@Override
+	public void updateAction() {
+		super.updateAction();
+
+		// update state
+		putValue(Action.SELECTED_KEY, checkUserStatus(actionTrustState));
 	}
 }
