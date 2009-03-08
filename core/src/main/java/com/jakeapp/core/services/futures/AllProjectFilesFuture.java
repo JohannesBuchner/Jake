@@ -12,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>> {
 
@@ -96,14 +99,23 @@ public class AllProjectFilesFuture extends AvailableLaterObject<List<FileObject>
 	@Override
 	@Transactional
 	public List<FileObject> calculate() {
-		List<FileObject> result = fileObjectDao.getAll();
-		Collection<FileObject> localfiles;
-		
-		//get *only local* files
-		localfiles = this.getLocalFiles("", result);
-		result.addAll(localfiles);
+		// contains method should only check the relpath
+		SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject
+				.getRelpathComparator());
+		Collection<FileObject> onlyLocalFiles;
+		List<FileObject> result;
+
+		for (FileObject fo : this.fileObjectDao.getAll()) {
+			sortedFiles.add(fo);
+		}
+
+		onlyLocalFiles = this.getLocalFiles("", sortedFiles);
 		
 		//TODO get remote files
+		//TODO get deleted files (from logentries)
+		
+		result = new LinkedList<FileObject>(sortedFiles);
+		result.addAll(onlyLocalFiles);
 
 		return result;
 	}

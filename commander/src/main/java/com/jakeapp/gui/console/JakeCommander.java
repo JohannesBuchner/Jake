@@ -13,6 +13,7 @@ import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import org.apache.log4j.Logger;
@@ -223,8 +224,6 @@ public class JakeCommander extends Commander {
 		
 		@Override
 		final public boolean handleArguments(String[] args) {
-			AvailableLaterObject<List<FileObject>> avail;
-			
 			if (args.length != 2)
 				return false;
 			UUID uuid;
@@ -237,7 +236,7 @@ public class JakeCommander extends Commander {
 				System.out.println("no project");
 				return true;
 			}
-			JakeObject jo = null;
+			
 			try {
 				for (NoteObject f : sync.getNotes(project)) {
 					if (uuid.equals(f.getUuid())) {
@@ -246,14 +245,14 @@ public class JakeCommander extends Commander {
 					}
 				}
 
-				for (FileObject f : AvailableLaterWaiter.await(sync.getFiles(project))) {
+				for (FileObject f : AvailableLaterWaiter.await(pms.getAllProjectFiles(project))) {
 					if (uuid.equals(f.getUuid())) {
 						handleArguments(f);
 						return true;
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace(System.err);  //To change body of catch statement use File | Settings | File Templates.
+				e.printStackTrace(System.err);
 			}
 
 			return true;
@@ -765,12 +764,16 @@ public class JakeCommander extends Commander {
 				for (NoteObject f : sync.getNotes(project)) {
 					System.out.println("\t" + f);
 				}
-				avail = sync.getFiles(project);
+				avail = pms.getAllProjectFiles(project);
 				avail.setListener(new GetFileListener());
 				avail.start();
 			} catch (FrontendNotLoggedInException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (NoSuchProjectException e) {
 				e.printStackTrace();
 			}
 		}

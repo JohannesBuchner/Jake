@@ -145,15 +145,6 @@ public interface ISyncService {
 	public void stopServing(Project p);
 
 	/**
-	 * gets the files and their information
-	 *
-	 * @param p
-	 * @return
-	 * @throws IOException
-	 */
-	public AvailableLaterObject<List<FileObject>> getFiles(Project p) throws IOException;
-
-	/**
 	 * Gets the Tags for the object
 	 *
 	 * @param jo

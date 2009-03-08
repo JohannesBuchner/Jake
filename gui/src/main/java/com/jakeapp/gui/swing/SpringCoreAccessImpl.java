@@ -375,9 +375,17 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		Exception ex = null;
 
 		try {
-			result = this.frontendService.getSyncService(this.sessionId).getFiles(project);
+			result = this.frontendService.getProjectsManagingService(this.sessionId).getAllProjectFiles(project);
 		} catch (IOException e) {
 			ex = new FileOperationFailedException(e);
+		} catch (IllegalArgumentException e) {
+			ex = e;
+		} catch (FrontendNotLoggedInException e) {
+			ex = e;
+		} catch (IllegalStateException e) {
+			ex = e;
+		} catch (NoSuchProjectException e) {
+			ex = e;
 		}
 
 		if (result == null) {

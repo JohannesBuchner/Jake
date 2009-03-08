@@ -344,46 +344,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		db.getLogEntryDao(jo).getCurrentTags(jo);
 	}
 
-	/**
-	 * This is a expensive operation as it recalculates all hashes <br>
-	 * Do it once on start, and then use a listener
-	 */
-	@Override
-	@Transactional
-	public AvailableLaterObject<List<FileObject>> getFiles(final Project p)
-			throws IOException {
-		log.debug("get files for project " + p);
-
-		return new AvailableLaterObject<List<FileObject>>() {
-
-			@Override
-			public List<FileObject> calculate() throws Exception {
-				IFSService fss = getFSS(p);
-
-				List<String> files = fss.recursiveListFiles();
-
-				// contains method should only check the relpath
-				SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject
-						.getRelpathComparator());
-
-				for (FileObject fo : db.getFileObjectDao(p).getAll()) {
-					sortedFiles.add(fo);
-				}
-
-				for (String relpath : files) {
-					FileObject fo = new FileObject(p, relpath);
-					if (!sortedFiles.contains(fo))
-						sortedFiles.add(fo);
-				}
-
-				// TODO: add deleted (from logEntries)
-
-				return new LinkedList<FileObject>(sortedFiles);
-			}
-		};
-	}
-
-
 	public Project getProjectById(String projectid) {
 		return this.runningProjects.get(projectid);
 	}
