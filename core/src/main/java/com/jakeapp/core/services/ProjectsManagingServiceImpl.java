@@ -710,6 +710,10 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	public void rejectInvitation(Invitation invitation)
 			throws IllegalStateException, NoSuchProjectException {
+
+		Project project = invitation.createProject();
+		User inviter = invitation.getInviter();
+		
 		// preconditions
 		if (project == null)
 			throw new NoSuchProjectException();

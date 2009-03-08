@@ -715,7 +715,7 @@ public class JakeCommander extends Commander {
 			}
 			try {
 				System.out.println("joining ...");
-				pms.rejectInvitation(new Invitation(project, invitingUser);
+				pms.rejectInvitation(new Invitation(project, invitingUser));
 			
 				System.out.println("joining done");
 			} catch (Exception e) {
