@@ -51,9 +51,12 @@ public class NewsPanel extends javax.swing.JPanel
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
 	private Project project;
 	private ResourceMap resourceMap;
-	private Icon startIcon;
-	private Icon stopIcon;
-	private Icon invalidIcon;
+	private Icon startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+					getClass().getResource("/icons/folder-open.png")));
+	private Icon stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+					getClass().getResource("/icons/folder.png")));
+	private Icon invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+					getClass().getResource("/icons/folder_invalid.png")));
 	private StartStopProjectAction startStopProjectAction =
 					new StartStopProjectAction();
 	private Timer eventsTableUpdateTimer;
@@ -107,13 +110,6 @@ public class NewsPanel extends javax.swing.JPanel
 		this.newsContentPanel.setBackgroundPainter(
 						Platform.getStyler().getContentPanelBackgroundPainter());
 
-		this.startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-open.png")));
-		this.stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder.png")));
-		this.invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder_invalid.png")));
-
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				JakeMainApp.getCore().setProjectSettings(JakeContext.getProject(),
@@ -149,7 +145,8 @@ public class NewsPanel extends javax.swing.JPanel
 		this.eventsTable.setModel(this.eventTableModel);
 		ConfigControlsHelper.configEventsTable(this.eventsTable);
 
-		this.eventsTable.getColumnModel().getColumn(1).setWidth(130);
+		// fixme: doesn't work
+		this.eventsTable.getColumnModel().getColumn(1).setMaxWidth(120);
 
 		//eventsTable.setBorder(BorderFactory.createEtchedBorder());
 		this.eventsTable.addMouseListener(new EventsTableMouseListener());

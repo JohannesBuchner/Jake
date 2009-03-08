@@ -5,15 +5,19 @@ import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
+import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
@@ -22,10 +26,6 @@ import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
-import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
-import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
@@ -41,9 +41,8 @@ import java.util.concurrent.ExecutionException;
  * As you see, Statusbar is very curious about ALL the events going on...
  */
 public class JakeStatusBar extends JakeGuiComponent
-				implements ILoginStateListener, ProjectChanged,
-				ProjectViewChanged, ContextViewChanged, DataChanged, ContextChanged,
-				TaskChanged {
+				implements ILoginStateListener, ProjectChanged, ProjectViewChanged,
+				ContextViewChanged, DataChanged, ContextChanged, TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
 	private static JakeStatusBar instance;
@@ -61,14 +60,15 @@ public class JakeStatusBar extends JakeGuiComponent
 	private SpinningWheelComponent progressDrawer;
 	//	private JLabel progressMessage;
 
-	Icon chooseUserIcon =
-					new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(
-									"/icons/login.png")));
+	Icon chooseUserIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+					getClass().getResource("/icons/login.png")));
 
-	Icon spinningDial = new SpinningDial(12, 12);
+	Icon spinningDial = new SpinningDial(16, 16);
 	private JLabel progressMsg;
+	private JPopupMenu connectionMenu;
 
-	@Override public void contextChanged(EnumSet<ContextChanged.Reason> reason, Object context) {
+	@Override public void contextChanged(EnumSet<ContextChanged.Reason> reason,
+					Object context) {
 		updateConnectionDisplay();
 	}
 
@@ -83,8 +83,8 @@ public class JakeStatusBar extends JakeGuiComponent
 			if (JakeExecutor.countTasksRunning() > 1) {
 				moreTasks = String.format(" (%d)", JakeExecutor.countTasksRunning());
 			}
-			this.progressMsg.setText(JakeExecutor.getLatestTask().getClass()
-							.getSimpleName() + moreTasks);
+			this.progressMsg.setText(
+							JakeExecutor.getLatestTask().getClass().getSimpleName() + moreTasks);
 		} else {
 			this.showProgressAnimation(false);
 			this.progressMsg.setText("");
@@ -320,8 +320,8 @@ public class JakeStatusBar extends JakeGuiComponent
 		statusLabel = MacWidgetFactory.createEmphasizedLabel("");
 
 		// make status label 2 px smaller
-		statusLabel.setFont(statusLabel.getFont().deriveFont(statusLabel.getFont()
-						.getSize() - 2f));
+		statusLabel.setFont(
+						statusLabel.getFont().deriveFont(statusLabel.getFont().getSize() - 2f));
 
 		bottomBar.addComponentToCenter(statusLabel);
 		bottomBar.installWindowDraggerOnWindow(JakeMainView.getMainView().getFrame());
@@ -332,53 +332,28 @@ public class JakeStatusBar extends JakeGuiComponent
 
 		// FIXME: remove after release
 		progressMsg = MacWidgetFactory.createEmphasizedLabel("");
-		progressMsg.setFont(progressMsg.getFont().deriveFont(progressMsg.getFont()
-						.getSize() - 2f));
+		progressMsg.setFont(
+						progressMsg.getFont().deriveFont(progressMsg.getFont().getSize() - 2f));
 		bottomBar.addComponentToLeft(progressMsg, 3);
 
 		// connection info
 		connectionButton = new JButton();
 		connectionButton.setIcon(chooseUserIcon);
 		connectionButton.setHorizontalTextPosition(SwingConstants.LEFT);
-
-		connectionButton.putClientProperty("JButton.buttonType", "textured");
 		connectionButton.putClientProperty("JComponent.sizeVariant", "small");
+		connectionButton.putClientProperty("JButton.buttonType", "textured");
 		if (!Platform.isMac()) {
-			connectionButton.setFont(connectionButton.getFont().deriveFont(connectionButton
-							.getFont().getSize() - 2f));
+			connectionButton.setFont(connectionButton.getFont().deriveFont(
+							connectionButton.getFont().getSize() - 2f));
 		}
 
 		connectionButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent event) {
-				JPopupMenu menu = new JakePopupMenu();
-				JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
-								(JakeContext.getMsgService() != null) ? "menuSignOut" :
-												"menuSignIn"));
-
-				signInOut.addActionListener(new ActionListener() {
-
-					public void actionPerformed(ActionEvent actionEvent) {
-						if (JakeContext.getMsgService() == null) {
-						} else {
-							try {
-								JakeMainApp.logoutUser();
-							} catch (Exception e) {
-								log.warn(e);
-								ExceptionUtilities.showError(e);
-							}
-						}
-
-						JakeMainView.getMainView()
-										.setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
-					}
-				});
-
-				menu.add(signInOut);
+				JPopupMenu menu = createConnectionMenu();
 
 				// calculate contextmenu directly above signin-status button
-				menu.show((JButton) event.getSource(),
-								((JButton) event.getSource()).getX(),
+				menu.show((JButton) event.getSource(), ((JButton) event.getSource()).getX(),
 								((JButton) event.getSource()).getY() - 20);
 			}
 		});
@@ -386,6 +361,41 @@ public class JakeStatusBar extends JakeGuiComponent
 		bottomBar.addComponentToRight(connectionButton);
 
 		return bottomBar;
+	}
+
+	/**
+	 * One-Time-Init of the Connection Menu
+	 *
+	 * @return
+	 */
+	private JPopupMenu createConnectionMenu() {
+		connectionMenu = new JakePopupMenu();
+		JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
+						(JakeContext.getMsgService() != null) ? "menuSignOut" : "menuSignIn"));
+
+		signInOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				// fixme: login, logout!
+			}
+		});
+		connectionMenu.add(signInOut);
+
+		JMenuItem chooseUser = new JMenuItem("Choose User...");
+		chooseUser.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
+				try {
+					JakeMainApp.logoutUser();
+				} catch (Exception ex) {
+					ExceptionUtilities.showError(ex);
+				}
+
+				JakeMainView.getMainView()
+								.setContextViewPanel(JakeMainView.ContextPanelEnum.Login);
+			}
+		});
+
+		connectionMenu.add(chooseUser);
+		return connectionMenu;
 	}
 
 

@@ -30,11 +30,22 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	private JLabel userNameLabel;
 	private JoinProjectAction joinProjectAction;
 	private JLabel generateNewFolderLabel;
+	private Timer tableUpdateTimer;
+	private int TableUpdateDelay = 60000;
 
 	public InvitationPanel() {
 		EventCore.get().addContextChangedListener(this);
 
 		initComponents();
+
+		// install event table update timer
+		this.tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				updatePanel();
+			}
+		});
+		this.tableUpdateTimer.start();
 	}
 
 
@@ -122,10 +133,9 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 			projectNameLabel.setText("> " + invite.getProjectName() + " <");
 
 			String userId = UserHelper.cleanUserId(invite.getInviter().getUserId());
-			userNameLabel.setText(String.format("%s %s, %s",
-							JakeMainView.getMainView().getResourceMap().getString(
-											"projectInvitedBy"), userId,
-							TimeUtilities.getRelativeTime(invite.getCreation())));
+			userNameLabel.setText(String.format("%s %s by %s",
+							JakeMainView.getMainView().getResourceMap().getString("projectInvited"),
+							TimeUtilities.getRelativeTime(invite.getCreation()), userId));
 
 			boolean createNewFolder =
 							!FileUtilities.checkDirectoryExistence(folderTextField.getText());

@@ -2,11 +2,9 @@ package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
@@ -14,7 +12,6 @@ import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
@@ -288,38 +285,6 @@ public class EventCore {
 		log.trace("notify property changed listeners");
 		for (ContextChanged c : contextChangedListeners) {
 			c.contextChanged(EnumSet.of(reason), context);
-		}
-	}
-
-
-	private class ProjectInvitationListener implements IProjectInvitationListener {
-
-		public ProjectInvitationListener() {
-			log.trace("Created ProjectInvitationListener in GUI ");
-		}
-
-
-		@Override public void invited(User user, Project p) {
-			log.debug("received invitation from " + user + " for project: " + p);
-
-			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
-							ProjectChanged.ProjectChangedEvent.Reason.Invited));
-		}
-
-		@Override public void accepted(User user, Project p) {
-			log.debug("accepted: " + user + ", project" + p);
-
-			// TODO: find a better place for that
-			JSheet.showMessageSheet(JakeContext.getFrame(),
-							"User " + user + " accepted your Invitation to " + p);
-		}
-
-		@Override public void rejected(User user, Project p) {
-			log.debug("rejected" + user + ", project" + p);
-
-			// TODO: find a better place for that			
-			JSheet.showMessageSheet(JakeContext.getFrame(),
-							"User " + user + " rejected your Invitation to " + p);
 		}
 	}
 
