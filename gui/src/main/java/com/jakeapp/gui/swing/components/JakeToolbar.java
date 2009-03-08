@@ -11,6 +11,7 @@ import com.jakeapp.gui.swing.actions.users.InviteUsersAction;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
+import com.jakeapp.gui.swing.filters.NoteObjectFilter;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.JakeMainView;
@@ -190,7 +191,7 @@ public class JakeToolbar {
 				} else {
 					try {
 						PatternFilter fileFilter = new FileObjectNameFilter(e.getActionCommand());
-						PatternFilter notesFilter = new PatternFilter(e.getActionCommand(), 0, 2);
+						PatternFilter notesFilter = new NoteObjectFilter(e.getActionCommand());
 
 						FilterPipeline filePipeline = new FilterPipeline(fileFilter);
 						FilterPipeline notesPipeline = new FilterPipeline(notesFilter);
