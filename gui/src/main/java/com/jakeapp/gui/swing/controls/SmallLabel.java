@@ -1,9 +1,7 @@
-package com.jakeapp.gui.swing.panels;
+package com.jakeapp.gui.swing.controls;
 
-import java.awt.Font;
-
-import javax.swing.JLabel;
-import javax.swing.UIManager;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Just a small class with slightly smaller font.

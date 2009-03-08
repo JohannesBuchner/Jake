@@ -13,6 +13,7 @@ import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.controls.SmallLabel;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;

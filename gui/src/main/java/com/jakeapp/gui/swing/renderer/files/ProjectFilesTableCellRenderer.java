@@ -1,7 +1,8 @@
-package com.jakeapp.gui.swing.renderer;
+package com.jakeapp.gui.swing.renderer.files;
 
 import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.renderer.DefaultJakeTableCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;

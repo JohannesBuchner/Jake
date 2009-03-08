@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.renderer;
+package com.jakeapp.gui.swing.renderer.files;
 
 import org.jdesktop.swingx.JXPanel;
 

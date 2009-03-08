@@ -1,7 +1,8 @@
-package com.jakeapp.gui.swing.renderer;
+package com.jakeapp.gui.swing.renderer.files;
 
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
+import com.jakeapp.gui.swing.renderer.DefaultJakeTableCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
