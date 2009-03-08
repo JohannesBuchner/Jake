@@ -26,7 +26,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 	public ProjectInvitationListener(IInvitationDao invitationDao, ProjectApplicationContextFactory contextFactory)
 	{
-		System.out.println("Creating ProjectInvitationListener for Core");
+		log.debug("Creating ProjectInvitationListener for Core");
 		this.invitationDao = invitationDao;
 //		this.projectDao = projectDao;
 		this.contextFactory = contextFactory;
