@@ -145,8 +145,8 @@ public class NewsPanel extends javax.swing.JPanel
 		this.eventsTable.setModel(this.eventTableModel);
 		ConfigControlsHelper.configEventsTable(this.eventsTable);
 
-		// fixme: doesn't work
-		this.eventsTable.getColumnModel().getColumn(1).setMaxWidth(120);
+		this.eventsTable.getColumnModel().getColumn(1).setMaxWidth(180);
+		this.eventsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
 		//eventsTable.setBorder(BorderFactory.createEtchedBorder());
 		this.eventsTable.addMouseListener(new EventsTableMouseListener());

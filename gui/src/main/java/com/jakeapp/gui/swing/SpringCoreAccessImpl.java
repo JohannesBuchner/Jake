@@ -270,6 +270,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		if(invitation == null)
 			throw new IllegalArgumentException("Invitation may not be null");
+
+		// check if we need to create the path!
+		
+
 		
 		log.info("Joining project "+ invitation.getProjectName() + " with path: " + path);
 

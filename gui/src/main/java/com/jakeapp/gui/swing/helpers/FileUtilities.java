@@ -125,9 +125,9 @@ public class FileUtilities {
 		if (!proposedDirectory.exists()) {
 			return false;
 		} else if (!proposedDirectory.isDirectory()) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**

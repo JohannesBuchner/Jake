@@ -155,8 +155,7 @@ public interface ICoreAccess {
 	 *
 	 * @return list of projects.
 	 */
-	public AvailableLaterObject<List<Project>> getProjects(
-	);
+	public AvailableLaterObject<List<Project>> getProjects();
 
 	/**
 	 * Gets a list of invitations
