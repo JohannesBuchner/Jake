@@ -102,10 +102,10 @@ generateDaos:
 	# use SpringThreadBroker.getInstance() for global dao's
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateConfigurationDao.java      "SpringThreadBroker.getInstance()"
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateProjectDao.java            "SpringThreadBroker.getInstance()"
-	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateAccountDao.java "SpringThreadBroker.getInstance()"
-	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateInvitationDao.java "SpringThreadBroker.getInstance()"
+	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateAccountDao.java            "SpringThreadBroker.getInstance()"
+	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateInvitationDao.java         "SpringThreadBroker.getInstance()"
 
-	#use SpringThreadBroker.getThreadForObject(this) for local (per project) daos
+	# use SpringThreadBroker.getThreadForObject(this) for local (per project) daos
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateFileObjectDao.java         "SpringThreadBroker.getThreadForObject(this)"
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateLogEntryDao.java           "SpringThreadBroker.getThreadForObject(this)"
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateNoteObjectDao.java         "SpringThreadBroker.getThreadForObject(this)"
