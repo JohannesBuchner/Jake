@@ -52,7 +52,7 @@ public class FileTableModel extends AbstractTableModel
 	}
 
 	public FileTableModel() {
-		log.trace("Created FileTableModel");
+		log.trace("created FileTableModel");
 
 		// register for selection changes
 		EventCore.get().addDataChangedCallbackListener(this);

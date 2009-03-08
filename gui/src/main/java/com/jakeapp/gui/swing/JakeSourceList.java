@@ -201,9 +201,8 @@ public class JakeSourceList extends JakeGuiComponent
 							 * @return
 							 */
 							public JPopupMenu createContextMenu() {
-								log.debug("public JPopupMenu createContextMenu() {");
-//								JPopupMenu popupMenu = new JakePopupMenu();
-								JPopupMenu popupMenu = new JPopupMenu();
+								log.trace("public JPopupMenu createContextMenu() {");
+								JPopupMenu popupMenu = new JakePopupMenu();
 								popupMenu.add(new JMenuItem(new CreateProjectAction(true)));
 								return popupMenu;
 							}
@@ -215,7 +214,7 @@ public class JakeSourceList extends JakeGuiComponent
 							 * @return
 							 */
 							public JPopupMenu createContextMenu(SourceListItem item) {
-								log.debug("\t\t\t\t\t\t\tpublic JPopupMenu createContextMenu(SourceListItem item) {");
+								log.trace("public JPopupMenu createContextMenu(SourceListItem item) {");
 								if(item == null)
 									return createContextMenu();
 

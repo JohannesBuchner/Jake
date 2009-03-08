@@ -36,6 +36,11 @@ public class JakeContext {
 		if (JakeContext.project != project) {
 			JakeContext.project = project;
 
+			// xor: project <-> invitation
+			if(project != null && getInvitation() != null) {
+				setInvitation(null);
+			}
+
 			// fire the event and relay to all items/components/actions/panels
 			EventCore.get().fireContextChanged(ContextChanged.Reason.Project, project);
 		}
@@ -79,6 +84,11 @@ public class JakeContext {
 
 	public static void setInvitation(Invitation invitation) {
 		JakeContext.invitation = invitation;
+
+			// xor: project <-> invitation
+			if(invitation != null && getProject() != null) {
+				setProject(null);
+			}
 
 		EventCore.get().fireContextChanged(ContextChanged.Reason.Invitation, invitation);
 	}

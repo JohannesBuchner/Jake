@@ -70,7 +70,7 @@ public class FileObjectStatusProvider {
 						JakeMainApp.getCore().getAttributed(JakeContext.getProject(), obj);
 
 		// hack
-		if(true)
+		if(false)
 			return spinner;
 
 		if (status == null) {
