@@ -1,7 +1,6 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.users.InviteUsersAction;
@@ -15,7 +14,9 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
@@ -57,6 +58,7 @@ public class NewsPanel extends javax.swing.JPanel
 					getClass().getResource("/icons/folder.png")));
 	private Icon invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 					getClass().getResource("/icons/folder_invalid.png")));
+	
 	private StartStopProjectAction startStopProjectAction =
 					new StartStopProjectAction();
 	private Timer eventsTableUpdateTimer;
@@ -288,19 +290,15 @@ public class NewsPanel extends javax.swing.JPanel
 		// set model project
 		this.eventTableModel.setProject(getProject());
 
-
-		/*
-//TODO: find better way !
-		try {
-			FolderObject rootPath = JakeMainApp.getApp().getCore().getProjectRootFolder(getProject());
-		} catch (ProjectFolderMissingException e) {
+		// sad folder icon
+		String rootPath = getProject().getRootPath();
+		if(!FileUtilities.checkDirectoryExistence(rootPath)) {
 			log.warn("Project root path " + getProject().getRootPath() + " is invalid.");
 			projectStatusLabel.setText("ERROR: Project folder does not exist");
 			projectStatusLabel.setForeground(Color.RED);
 			projectIconLabel.setIcon(invalidIcon);
-
 			return;
-		}*/
+		}
 
 		this.projectStatusLabel.setForeground(Color.BLACK);
 
