@@ -52,6 +52,7 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	@Override
 	public void accepted(User user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " accepted ");
+		// TODO add some security
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(p,  user);
 		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
 		
@@ -60,6 +61,8 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 
 		StartTrustingProjectMemberLogEntry logEntry_me = new StartTrustingProjectMemberLogEntry(p.getUserId(), p.getUserId());
 		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_me);
+
+		log.debug("finished completing invitation.");
 
 //		if (this.invitationListener != null)
 //			this.invitationListener.accepted(user, p);

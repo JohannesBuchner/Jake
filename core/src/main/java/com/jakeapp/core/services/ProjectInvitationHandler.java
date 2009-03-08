@@ -105,6 +105,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 			}
 		} else if (content.startsWith(ACCEPTMSG)) {
 			try {
+				log.debug("it seems to be an accept-invitation message");
 				String innercontent = content.substring(ACCEPTMSG.length());
 				String uuidstr = innercontent.substring(0, uuidlen);
 				Project p = getProject(innercontent, uuidstr);
@@ -164,11 +165,19 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param inviter
 	 */
 	public static void notifyInvitationAccepted(Project project, User inviter) {
-		ICSManager icsManager = project.getMessageService().getIcsManager();
-		ICService ics = icsManager.getICService(project);
-		UserId backendUser = icsManager.getBackendUserId(project, inviter);
+//		ICSManager icsManager = project.getMessageService().getIcsManager();
+//		ICService ics = icsManager.getICService(project);
+//		UserId backendUser = icsManager.getBackendUserId(project, inviter);
+		UserId backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
+//		backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
+		System.out.println("SENDING ACCEPT TO " + backendUser);
+//		UserId backendUser = project.getMessageService()
+
 		try {
-			ics.getMsgService().sendMessage(backendUser, ACCEPTMSG);
+//			ics.getMsgService().sendMessage(backendUser, ACCEPTMSG);
+			
+			project.getMessageService().getMainIcs().getMsgService().sendMessage(backendUser, ACCEPTMSG);
+
 		} catch (Exception e) {
 			log.warn("sending accept failed", e);
 		}

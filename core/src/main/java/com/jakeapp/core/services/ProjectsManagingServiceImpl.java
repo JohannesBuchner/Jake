@@ -13,6 +13,7 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
+import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -24,6 +25,7 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -186,7 +188,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		return this.invitationDao.getAll();
 	}
 
-	private void initProject(Project p) throws NoSuchProjectException,
+	private Project initProject(Project p) throws NoSuchProjectException,
 			NotADirectoryException, FileNotFoundException, ProjectException {
 		log.debug("initialising project " + p);
 
@@ -223,6 +225,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		}
 
 		log.debug("initialising project done for " + p);
+		return p;
 	}
 
 
@@ -689,7 +692,8 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			// project does not exist
 			Project project = this.getInvitationDao().accept(invitation);
 			this.getLogEntryDao(project).acceptInvitation(invitation);
-			initProject(project);
+			project = initProject(project);
+			ProjectInvitationHandler.notifyInvitationAccepted(project,  invitation.getInviter());
 		} catch (Exception e) {
 			log.warn("Something weird happened while trying to init project!", e);
 		}

@@ -14,8 +14,8 @@ public class User implements ILogable, Comparable<User> {
 
 	public User(ProtocolType protocolType, String userId) {
 		super();
-		this.protocolType = protocolType;
-		this.userId = userId;
+		setProtocolType(protocolType);
+		setUserId(userId);
 	}
 
 	@SuppressWarnings("unused")
@@ -25,7 +25,15 @@ public class User implements ILogable, Comparable<User> {
 	private ProtocolType protocolType;
 
 	public void setUserId(String userId) {
-		this.userId = userId;
+		if(userId.contains("/")) // dirty hack for xmpp
+		{
+			String[] parts = userId.split("/");
+			this.userId = parts[0];
+		}
+		else
+		{
+			this.userId = userId;
+		}
 	}
 
 	public String getUserId() {
