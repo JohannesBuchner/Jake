@@ -48,18 +48,5 @@ public class SyncProjectAction extends ProjectAction {
 		setEnabled(getProject() != null && getProject().isStarted());
 
 		// TODO: change name to syncronizing while in process, and disable while working!
-		// LABEL = projectTreeSyncActiveProject
-
-/*
-		log.debug("update startstopprojectaction with " + getProject());
-		String oldName = (String) getValue(Action.NAME);
-		String newName = ProjectHelper.getProjectStartStopString(getProject());
-		setEnabled(getProject() != null);
-
-		log.debug("old: " + oldName + " new: " + newName);
-
-		putValue(Action.NAME, newName);
-		firePropertyChange(Action.NAME, oldName, newName);
-		*/
 	}
 }

@@ -10,9 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * User: studpete
- * Date: Dec 29, 2008
- * Time: 12:20:54 AM
+ * Starts or stops a project
  */
 public class StartStopProjectAction extends ProjectAction {
 	private static final Logger log = Logger.getLogger(StartStopProjectAction.class);
@@ -24,10 +22,11 @@ public class StartStopProjectAction extends ProjectAction {
 	}
 
 	public void actionPerformed(ActionEvent actionEvent) {
-		//log.info("Start/Stop Project: " + getProject());
+		log.trace("Start/Stop Project: " + getProject());
 
 		// do nothing if we don't have a project
 		if (getProject() == null) {
+			log.warn("Attemted to Start/Stop without a project");
 			return;
 		}
 
@@ -37,12 +36,10 @@ public class StartStopProjectAction extends ProjectAction {
 
 	@Override
 	public void updateAction() {
-		//log.debug("update startstopprojectaction with " + getProject());
+		log.trace("update startstopprojectaction with " + getProject());
 		String oldName = (String) getValue(Action.NAME);
 		String newName = ProjectHelper.getProjectStartStopString(getProject());
 		setEnabled(getProject() != null);
-
-		//log.debug("old: " + oldName + " new: " + newName);
 
 		putValue(Action.NAME, newName);
 		firePropertyChange(Action.NAME, oldName, newName);

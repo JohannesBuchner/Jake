@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.components.JakeStatusBar;
 import org.apache.log4j.Logger;
 
 /**
@@ -32,11 +33,7 @@ class ProjectInvitationListener implements IProjectInvitationListener {
 
 		EventCore.get().fireLogChanged(p);
 
-		// TODO: find a better place for that
-		//JSheet.showMessageSheet(JakeContext.getFrame(),
-		//					"User " + user + " accepted your Invitation to " + p);
-
-
+		JakeStatusBar.showMessage("User " + user + " accepted your Invitation to " + p);
 	}
 
 	@Override public void rejected(User user, Project p) {
@@ -44,8 +41,6 @@ class ProjectInvitationListener implements IProjectInvitationListener {
 
 		EventCore.get().fireLogChanged(p);
 
-		// TODO: find a better place for that
-		//JSheet.showMessageSheet(JakeContext.getFrame(),
-		//				"User " + user + " rejected your Invitation to " + p);
+		JakeStatusBar.showMessage("User " + user + " rejected your Invitation to " + p);
 	}
 }

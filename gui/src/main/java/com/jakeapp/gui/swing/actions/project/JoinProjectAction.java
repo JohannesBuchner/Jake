@@ -28,10 +28,13 @@ public class JoinProjectAction extends ProjectAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.info("Joining Project: " + getProject());
 
-		// fixme: add sanity check! (no C:\Windows e.g.)
+		// fixme: add sanity check! (no C:\Windows e.g.) OR if much to many files...
 
 		JakeMainApp.getCore()
 						.joinProject(getProjectLocation(), JakeContext.getInvitation());
+
+		// clear current invite
+		JakeContext.setInvitation(null);
 	}
 
 

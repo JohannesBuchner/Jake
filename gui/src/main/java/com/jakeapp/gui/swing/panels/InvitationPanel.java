@@ -30,14 +30,16 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	private JTextField folderTextField;
 	private JLabel projectNameLabel;
 	private JLabel userNameLabel;
-	private JoinProjectAction joinProjectAction;
 	private JLabel generateNewFolderLabel;
 	private Timer tableUpdateTimer;
-	private int TableUpdateDelay = 60000;
+	private final static int TableUpdateDelay = 60000;
 	private JButton joinButton;
+	private JoinProjectAction joinProjectAction;
 
 	public InvitationPanel() {
 		EventCore.get().addContextChangedListener(this);
+
+		joinProjectAction = new JoinProjectAction();
 
 		initComponents();
 
@@ -122,7 +124,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 
 		joinButton = new JButton("Join");
 		joinButton.putClientProperty("JButton.buttonType", "textured");
-		joinButton.setAction( new JoinProjectAction());
+		joinButton.setAction(joinProjectAction);
 
 		JButton rejectButton = new JButton("Reject");
 		rejectButton.putClientProperty("JButton.buttonType", "textured");
