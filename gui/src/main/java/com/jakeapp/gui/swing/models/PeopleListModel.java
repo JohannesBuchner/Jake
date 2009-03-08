@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.models;
 
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -10,6 +9,7 @@ import com.jakeapp.gui.swing.controls.MutableListModel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
@@ -26,7 +26,6 @@ public class PeopleListModel extends AbstractListModel
 	private static final Logger log = Logger.getLogger(PeopleListModel.class);
 
 	private List<UserInfo> people;
-	private Project project;
 
 	public PeopleListModel() {
 
@@ -69,7 +68,7 @@ public class PeopleListModel extends AbstractListModel
 	@Override
 	public boolean isCellEditable(int index) {
 		// we are not editable!
-		return index > 0;
+		return UserHelper.isCurrentProjectMember(people.get(index).getUser());
 	}
 
 	@Override

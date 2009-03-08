@@ -563,7 +563,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public boolean setUserNick(Project project, User user, String nick) {
-		log.info("setUserNick: project: " + project + " ProjectMember: " + user + " Nick: " + nick);
+		log.debug("setUserNick: project: " + project + " ProjectMember: " + user + " Nick: " + nick);
 
 		// FIXME: AS OF 1.3.09, this seems broken?
 		// TODO: ignore this and create a regex for checking!

@@ -929,7 +929,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		usersService = ics.getUsersService();
 
 		try {
-			// get all possible people
+			// get all possible users
 			log.debug("before usersService.getUsers;status is: " + msgService.getVisibilityStatus());
 			possibleBackendUsers = usersService.getAllUsers();
 
@@ -942,13 +942,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 					possibleUsers.add(possibleUser);
 			}
 
-			// subtract all people that are already in the project
+			// subtract all users that are already in the project
 			possibleUsers.removeAll(this.getLogEntryDao(project)
 					.getCurrentProjectMembers());
 			result.addAll(possibleUsers);
 		} catch (NotLoggedInException e) {
 			// empty handling
-			log.debug("Must be online to get uninvited people.",e);
+			log.debug("Must be online to get uninvited users.",e);
 		}
 
 		log.info("getUninvitedPeople returns " + result.size() + " results");

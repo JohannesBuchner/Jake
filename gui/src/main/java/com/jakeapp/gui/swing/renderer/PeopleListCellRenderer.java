@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.renderer;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import org.apache.log4j.Logger;
 
@@ -17,28 +16,28 @@ import java.awt.*;
 // TODO: localize
 public class PeopleListCellRenderer extends DefaultListCellRenderer {
 	private static final Logger log = Logger.getLogger(PeopleListCellRenderer.class);
-	final static ImageIcon projectMemberIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-online-projectmember.png")));
+	final static ImageIcon projectMemberIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+									"/icons/user-online-projectmember.png")));
 	// TODO: offline projectmember!
-	final static ImageIcon onlineFullTrustIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-online-fulltrust.png")));
-	final static ImageIcon onlineTrustIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-online-trust.png")));
-	final static ImageIcon onlineNoTrustIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-online-notrust.png")));
-	final static ImageIcon offlineFullTrustIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-offline-fulltrust.png")));
-	final static ImageIcon offlineTrustIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-offline-trust.png")));
-	final static ImageIcon offlineNoTrustIcon = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-					"/icons/user-offline-notrust.png")));
+	final static ImageIcon onlineFullTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+									"/icons/user-online-fulltrust.png")));
+	final static ImageIcon onlineTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-online-trust.png")));
+	final static ImageIcon onlineNoTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
+	final static ImageIcon offlineFullTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
+									"/icons/user-offline-fulltrust.png")));
+	final static ImageIcon offlineTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-offline-trust.png")));
+	final static ImageIcon offlineNoTrustIcon = new ImageIcon(
+					Toolkit.getDefaultToolkit().getImage(
+									JakeMainApp.class.getResource("/icons/user-offline-notrust.png")));
 
 
 	/* This is the only method defined by ListCellRenderer.  We just
@@ -53,7 +52,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 	{
 
 		UserInfo user = (UserInfo) value;
-		boolean isYou = user.getUser().getUserId().equals(JakeContext.getProject().getUserId().getUserId());
+		boolean isYou = UserHelper.isCurrentProjectMember(user.getUser());
 
 
 		String nickOrFullName = UserHelper.getNickOrFullName(user);
@@ -67,12 +66,12 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		String valStr;
 
 		if (!isYou) {
-			valStr =
-							"<html><b>" + nickOrFullName + "</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+			valStr = String.format("<html><b>%s</b><br><font color=%s>%s</font></html>",
+							nickOrFullName, subColor, shortStatusStr);
 		} else {
 			// TODO: localize!
-			valStr =
-							"<html><b>You</b><br><font color=" + subColor + ">" + shortStatusStr + "</font></html>";
+			valStr = String.format("<html><b>You</b><br><font color=%s>%s</font></html>",
+							subColor, shortStatusStr);
 		}
 
 		/* The DefaultListCellRenderer class will take care of
@@ -128,7 +127,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		// TODO: localize + change labels
 		switch (memberTrust) {
 			case AUTO_ADD_REMOVE: {
-				statusStr += "Trusted + Trusting new people";
+				statusStr += "Trusted + Trusting new users";
 			}
 			break;
 			case TRUST: {
@@ -140,9 +139,8 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			}
 		}
 
-		setToolTipText("<html><b>" + user.getFirstName() + " " + user
-						.getLastName() + "</b><br><b>'" + user
-						.getNickName() + "'</b><br>" + statusStr + "</html>");
+		setToolTipText(String.format("<html><b>%s %s</b><br><b>'%s'</b><br>%s</html>",
+						user.getFirstName(), user.getLastName(), user.getNickName(), statusStr));
 
 		return this;
 	}

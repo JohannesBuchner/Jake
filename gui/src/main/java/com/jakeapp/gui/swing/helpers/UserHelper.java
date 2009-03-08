@@ -63,7 +63,7 @@ public class UserHelper {
 	}
 
 	public static boolean isCurrentProjectMember(User member) {
-		return member == JakeContext.getCurrentUser();
+		return member.equals(JakeContext.getCurrentUser());
 	}
 
 

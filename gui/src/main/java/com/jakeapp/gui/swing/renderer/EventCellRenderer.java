@@ -47,7 +47,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 					Toolkit.getDefaultToolkit().getImage(
 									JakeMainApp.class.getResource("/icons/" + "project-created.png")));
 
-	// people actions
+	// users actions
 	private final static ImageIcon peopleAddIcon = new ImageIcon(
 					Toolkit.getDefaultToolkit().getImage(
 									JakeMainApp.class.getResource("/icons/user-add.png")));

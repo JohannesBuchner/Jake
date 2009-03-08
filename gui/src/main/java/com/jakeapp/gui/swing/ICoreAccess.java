@@ -24,7 +24,6 @@ import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 import java.io.File;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -233,7 +232,7 @@ public interface ICoreAccess {
 
 
 	/**
-	 * Manually starts a project syncronize.
+	 * Manually starts a project synchronize.
 	 * Get/Sends all log entries, etc
 	 *
 	 * @param project

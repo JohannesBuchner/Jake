@@ -3,17 +3,19 @@ package com.jakeapp.gui.swing.actions.abstracts;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * PeopleListActions - extends the ProjectAction to save the PeopleList
  * (needed to determine the people that are selected)
  */
-public abstract class UserAction extends ProjectAction {
+public abstract class UserAction extends ProjectAction implements ContextChanged {
 	private static final Logger log = Logger.getLogger(UserAction.class);
 	private JList list;
 
@@ -50,7 +52,7 @@ public abstract class UserAction extends ProjectAction {
 			UserInfo member = (UserInfo) oMember;
 
 			if (member == null) {
-				log.warn("Action TrustNoPeopleAction failed for " + oMember);
+				log.warn("Action TrustNoUsersAction failed for " + oMember);
 				return;
 			} else {
 				JakeMainApp.getCore().setTrustState(getProject(), member.getUser(), trust);
@@ -60,6 +62,7 @@ public abstract class UserAction extends ProjectAction {
 
 	/**
 	 * Checks if a user is selected in the list
+	 *
 	 * @return
 	 */
 	protected boolean hasSelectedUser() {
@@ -68,6 +71,7 @@ public abstract class UserAction extends ProjectAction {
 
 	/**
 	 * Checks if at least one user is selected in the list
+	 *
 	 * @return
 	 */
 	protected boolean hasSelectedUsers() {
@@ -77,11 +81,12 @@ public abstract class UserAction extends ProjectAction {
 	/**
 	 * Returns the UserInfo of the selected User.
 	 * Returns null if more than one user are selected.
+	 *
 	 * @return
 	 */
 	protected UserInfo getSelectedUser() {
-		UserInfo userInfo = (UserInfo)getList().getSelectedValue();
-		if(userInfo != null) {
+		UserInfo userInfo = (UserInfo) getList().getSelectedValue();
+		if (userInfo != null) {
 			return userInfo;
 		} else {
 			return null;
@@ -91,13 +96,14 @@ public abstract class UserAction extends ProjectAction {
 	/**
 	 * Returns a List of selected users.
 	 * Returns empty list if no users were selected.
+	 *
 	 * @return
 	 */
 	protected List<UserInfo> getSelectedUsers() {
 		List<UserInfo> userInfos = new ArrayList<UserInfo>();
 		Object[] usersRaw = getList().getSelectedValues();
-		for(Object userRaw : usersRaw) {
-			userInfos.add((UserInfo)userRaw);
+		for (Object userRaw : usersRaw) {
+			userInfos.add((UserInfo) userRaw);
 		}
 		return userInfos;
 	}
@@ -109,5 +115,11 @@ public abstract class UserAction extends ProjectAction {
 
 	public void setList(JList list) {
 		this.list = list;
+	}
+
+	public void contextChanged(EnumSet<Reason> reason, Object context) {
+		if (reason.contains(Reason.UserSelectionChanged)) {
+			updateAction();
+		}
 	}
 }

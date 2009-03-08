@@ -2,8 +2,8 @@ package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.actions.JoinProjectAction;
-import com.jakeapp.gui.swing.actions.RejectProjectAction;
+import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
+import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
