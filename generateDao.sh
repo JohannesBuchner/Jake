@@ -122,6 +122,7 @@ PARAMETRTYPE0='\([^ ]\{1,\}\)'
 {
 cat $INFILE |grep -E '^(package|import)'|
 	grep -v 'spring' |
+	grep -v 'hibernate' |
 	grep -v 'apache'
 echo "import com.jakeapp.core.util.InjectableTask;"
 echo "import com.jakeapp.core.util.SpringThreadBroker;"

@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import java.util.List;
 import java.util.ArrayList;
-import org.hibernate.HibernateException;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
 
