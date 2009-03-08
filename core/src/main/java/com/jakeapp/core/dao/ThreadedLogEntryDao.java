@@ -12,9 +12,14 @@ import java.util.UUID;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
 
@@ -77,7 +82,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public void setProcessed(final LogEntry<JakeObject> logEntry) {
+	public void setProcessed(final LogEntry<JakeObject> logEntry) throws NoSuchLogEntryException {
 		
 		try {
 			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
@@ -88,6 +93,8 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return null;
 				}
 			});
+		} catch (NoSuchLogEntryException  e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

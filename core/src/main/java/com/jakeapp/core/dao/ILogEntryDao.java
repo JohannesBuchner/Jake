@@ -36,8 +36,9 @@ public interface ILogEntryDao {
 	 * change the &quot;processed&quot; field of a logEntry
 	 * 
 	 * @param logEntry
+	 * @throws NoSuchLogEntryException 
 	 */
-	public void setProcessed(LogEntry<JakeObject> logEntry);
+	public void setProcessed(LogEntry<JakeObject> logEntry) throws NoSuchLogEntryException;
 
 
 	/**

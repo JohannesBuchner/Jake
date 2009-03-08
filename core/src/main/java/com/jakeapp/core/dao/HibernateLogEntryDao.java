@@ -17,9 +17,14 @@ import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.LogEntry;
 
 public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEntryDao {
 
@@ -108,12 +113,14 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void setProcessed(LogEntry<JakeObject> logEntry) {
+	public void setProcessed(LogEntry<JakeObject> logEntry) throws NoSuchLogEntryException {
 		debugDump();
 		log.debug("setProcessed:" + logEntry);
-		logEntry.setProcessed(true);
-		sess().update(logEntry);
+		LogEntry<JakeObject> le = (LogEntry<JakeObject>) get(logEntry.getUuid(), true);
+		le.setProcessed(true);
+		sess().update(le);
 		debugDump();
 	}
 
@@ -568,6 +575,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		List<LogEntry<JakeObject>> versions = this.getAllVersionsOfJakeObject(jo, true);
 		for (LogEntry<JakeObject> version : versions)
 			if (!version.isProcessed() && version.getTimestamp().before(logEntry.getTimestamp()))
-				this.setProcessed(version);
+				try {
+					this.setProcessed(version);
+				} catch (NoSuchLogEntryException e) {
+				}
 	}
 }
