@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.renderer;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import org.apache.log4j.Logger;
 
@@ -51,9 +52,9 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 					boolean chf)	 // the list and the cell have the focus
 	{
 
-		boolean isYou = index == 0;
-
 		UserInfo user = (UserInfo) value;
+		boolean isYou = user.getUser().getUserId().equals(JakeContext.getProject().getUserId().getUserId());
+
 
 		String nickOrFullName = UserHelper.getNickOrFullName(user);
 

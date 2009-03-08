@@ -27,8 +27,10 @@ public interface IInvitationDao {
 	public List<Invitation> getAll();
 
 	/**
-	 * Accepts an invitation. Transforms the invitation into a Project and stores it into the database.
+	 * Accepts an invitation: Transforms the invitation into a Project and stores it into the database.
 	 * Then return the stored project and remove the Invitation from the database.
+	 * LogEntries and other <i>per project</i> things cannot be done within this method, as they require
+	 * the project specific database.
 	 * @param invitation The Invitation to accept
 	 * @return the Project corresponding to this Invitation
 	 */

@@ -1,6 +1,9 @@
 package com.jakeapp.core.dao;
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import java.util.List;
 import java.util.ArrayList;

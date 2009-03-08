@@ -74,11 +74,6 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 			project.setRootPath(invitation.getRootPath());
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(project);
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(invitation);
-
-//			ProjectJoinedLogEntry logEntry1 = new ProjectJoinedLogEntry(project, invitation.getInvitedOn());
-//			StartTrustingProjectMemberLogEntry logEntry2 = new StartTrustingProjectMemberLogEntry(invitation.getInviter(), invitation.getInvitedOn());
-//			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(logEntry1);
-//			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(logEntry2);
 		}
 		else
 		{

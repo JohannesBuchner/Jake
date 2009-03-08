@@ -17,14 +17,11 @@ import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry;
 
 public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEntryDao {
 
@@ -495,11 +492,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	@Override
-	public Collection<User> trusts(User a) {
-		return getTrustGraph().get(a);
-	}
-
-	@Override
 	public Map<User, TrustState> trustsHow(User a) {
 		return getExtendedTrustGraph().get(a);
 	}
@@ -544,7 +536,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			people.put(first.getMember(), new HashMap<User, TrustState>());
 		} else {
 			log.error("Invalid database: no ProjectCreatedEntry!");
-			throw new IllegalStateException("No ProjectCreatedEntry");
+//			throw new IllegalStateException("No ProjectCreatedEntry");
 		}
 		Collection<LogEntry<User>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<User> le : entries) {
@@ -579,5 +571,20 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 					this.setProcessed(version);
 				} catch (NoSuchLogEntryException e) {
 				}
+	}
+
+	@Override
+	public void acceptInvitation(Invitation invitation) {
+		Project project = invitation.createProject();
+
+		// TODO: remove this one as soon as we know how 
+		ProjectCreatedLogEntry projectCreatedLogEntry = new ProjectCreatedLogEntry(project, invitation.getInvitedOn());
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectCreatedLogEntry);
+
+		ProjectJoinedLogEntry projectJoinedLogEntry = new ProjectJoinedLogEntry(project, invitation.getInvitedOn());
+		StartTrustingProjectMemberLogEntry startTrustingProjectMemberLogEntry =
+				new StartTrustingProjectMemberLogEntry(invitation.getInviter(), invitation.getInvitedOn());
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectJoinedLogEntry);
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(startTrustingProjectMemberLogEntry);
 	}
 }

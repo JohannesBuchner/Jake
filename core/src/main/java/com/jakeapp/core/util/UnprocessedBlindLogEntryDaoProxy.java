@@ -183,14 +183,14 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 		return this.innerDao.trustsHow(a, b);
 	}
 
+
 	/**
-	 * @param a
-	 * @see ILogEntryDao#trusts(ProjectMember)
-	 * @return
+	 * @see com.jakeapp.core.dao.ILogEntryDao#acceptInvitation(com.jakeapp.core.domain.Invitation) 
+	 * @param invitation
 	 */
-	@Deprecated
-	public Collection<User> trusts(User a) {
-		return this.innerDao.trusts(a);
+	public void acceptInvitation(Invitation invitation)
+	{
+		this.innerDao.acceptInvitation(invitation);
 	}
 
 }

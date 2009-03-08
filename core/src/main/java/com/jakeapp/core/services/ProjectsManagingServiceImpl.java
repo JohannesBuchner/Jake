@@ -201,14 +201,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			this.getProjectDao().update(p);
 		}
 
-		if(p.getInvitationState() != InvitationState.INVITED) {
-			// make sure the projects have fileservices
-			try {
-				this.getProjectsFileServices().startForProject(p);
-			} catch (IOException e) {
-				log.debug("starting fss failed", e);
-			}
+		try {
+			this.getProjectsFileServices().startForProject(p);
+		} catch (IOException e) {
+			log.debug("starting fss failed", e);
 		}
+		
 
 		if (!p.getUserId().equals(p.getMessageService().getUserId()))
 			throw new IllegalStateException();
@@ -690,6 +688,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			// NoSuchProjectException if
 			// project does not exist
 			Project project = this.getInvitationDao().accept(invitation);
+			this.getLogEntryDao(project).acceptInvitation(invitation);
 			initProject(project);
 		} catch (Exception e) {
 			log.warn("Something weird happened while trying to init project!", e);

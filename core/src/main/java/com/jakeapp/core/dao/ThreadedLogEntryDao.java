@@ -10,13 +10,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
@@ -529,28 +523,6 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public Collection<User> trusts(final User a) {
-		
-		try {
-			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Collection<User>>() {
-
-				@Override
-				public Collection<User> calculate() throws Exception {
-					return ThreadedLogEntryDao.this.dao.trusts(a);
-				}
-			});
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
 	public Map<User, TrustState> trustsHow(final User a) {
 		
 		try {
@@ -625,6 +597,29 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 				@Override
 				public Void calculate() throws Exception {
 					ThreadedLogEntryDao.this.dao.setAllPreviousProcessed(logEntry);
+					return null;
+				}
+			});
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */	
+	@Override
+	public void acceptInvitation(final Invitation invitation) {
+		
+		try {
+			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
+
+				@Override
+				public Void calculate() throws Exception {
+					ThreadedLogEntryDao.this.dao.acceptInvitation(invitation);
 					return null;
 				}
 			});

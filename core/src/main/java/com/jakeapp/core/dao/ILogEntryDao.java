@@ -283,19 +283,6 @@ public interface ILogEntryDao {
 	@Deprecated
 	public Map<User, TrustState> trustsHow(User a);
 
-
-	/**
-	 * Whom does a trust?
-	 * 
-	 * @param a
-	 * @deprecated don't know if needed
-	 * @return an empty Collection if no logentries found (not null) or the
-	 *         {@link com.jakeapp.core.domain.User}s that have
-	 *         {@link LogAction#START_TRUSTING_PROJECTMEMBER} as last action
-	 */
-	@Deprecated
-	public Collection<User> trusts(User a);
-
 	/**
 	 * @return a mapping of the trusted users for each user (A trusts [B, C, D])
 	 *         must not be null
@@ -316,5 +303,9 @@ public interface ILogEntryDao {
 	 */
 	public void setAllPreviousProcessed(LogEntry<? extends ILogable> logEntry);
 
-
+	/**
+	 * This method creates the required logentries when accepting an invitation.
+	 * @param invitation The Invitation to be accepted
+	 */
+	public void acceptInvitation(Invitation invitation);
 }
