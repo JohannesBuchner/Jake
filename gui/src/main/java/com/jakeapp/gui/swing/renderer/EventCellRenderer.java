@@ -68,7 +68,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 	private final static ImageIcon tagAddIcon = new ImageIcon(
 					Toolkit.getDefaultToolkit().getImage(
 									JakeMainApp.class.getResource("/icons/" + "tags-add.png")));
-	private final static ImageIcon tagRemovecon = new ImageIcon(
+	private final static ImageIcon tagRemoveIcon = new ImageIcon(
 					Toolkit.getDefaultToolkit().getImage(
 									JakeMainApp.class.getResource("/icons/" + "tags-remove.png")));
 
@@ -168,10 +168,16 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			}
 			break;
 
-			// TODO: POSSIBLE???
 			case STOP_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleRemoveIcon);
-				msg += Translator.get(newsResourceMap, "eventsProjectMemberRemoved",
+				msg += Translator.get(newsResourceMap, "eventsProjectMemberStopTrust",
+								loge.getBelongsTo().toString());
+			}
+			break;
+
+			case PROJECTMEMBER_INVITED: {
+				setIcon(peopleInviteIcon);
+				msg += Translator.get(newsResourceMap, "eventsProjectMemberInvited",
 								loge.getBelongsTo().toString());
 			}
 			break;
@@ -184,7 +190,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			break;
 
 			case TAG_REMOVE: {
-				setIcon(tagRemovecon);
+				setIcon(tagRemoveIcon);
 				msg += Translator.get(newsResourceMap, "eventsTagsRemove",
 								loge.getBelongsTo().toString());
 			}
