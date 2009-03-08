@@ -23,26 +23,19 @@ public class PullWatcher implements ITransferListener {
 
 	private static Logger log = Logger.getLogger(PullWatcher.class);
 
-
-	@Autowired
 	private IProjectsFileServices projectsFileServices;
 
-	@Autowired
-	private ProjectApplicationContextFactory applicationContextFactory;
-
-
-	public IProjectsFileServices getProjectsFileServices() {
-		return projectsFileServices;
+	private IProjectsFileServices getProjectsFileServices() {
+		return this.projectsFileServices;
 	}
 
-	public void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
+	private void setProjectsFileServices(IProjectsFileServices projectsFileServices) {
 		this.projectsFileServices = projectsFileServices;
 	}
 
 	private IFSService getFSS(Project p) {
 		return this.getProjectsFileServices().getProjectFSService(p);
 	}
-
 
 	private ChangeListener changeListener;
 
@@ -55,12 +48,12 @@ public class PullWatcher implements ITransferListener {
 			JakeObject jo,
 			ChangeListener cl,
 			IFileTransfer ft,
-			ProjectApplicationContextFactory applicationContextFactory
+			IProjectsFileServices projectsFileServices
 	) {
 		this.changeListener = cl;
 		this.ft = ft;
 		this.jakeObject = jo;
-		this.applicationContextFactory = applicationContextFactory;
+		this.setProjectsFileServices(projectsFileServices);
 	}
 
 	@Override

@@ -713,7 +713,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 					// either returned successfully or not successfully
 					log.debug("requesting " + fr);
 					result = AvailableLaterWaiter.await(new FileRequestFuture(fo, ts, fr,
-							cl, db));
+							cl, getProjectsFileServices()));
 					// Save potentialProvider for later usage.
 					realProvider = potentialProvider;
 					break;

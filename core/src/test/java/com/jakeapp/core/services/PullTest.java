@@ -33,6 +33,7 @@ import com.jakeapp.core.synchronization.request.TrustAllRequestHandlePolicy;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.jake.fss.FSService;
+import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -154,6 +155,12 @@ public class PullTest extends TmpdirEnabledTestCase {
 				.thenReturn(logEntryDao);
 		when(projectApplicationContextFactory.getUnprocessedAwareLogEntryDao(project))
 				.thenReturn(logEntryDao);
+		
+		
+		IFSService fss = new FSService();
+		fss.setRootPath(tmpdir.getAbsolutePath());
+		when(projectsFileServices.getProjectFSService(project)).thenReturn(
+				fss);
 
 		when(logEntryDao.getLastVersion(fo, true)).thenReturn(le);
 		when(logEntryDao.getLastVersion(fo, false)).thenReturn(le);
@@ -248,11 +255,12 @@ public class PullTest extends TmpdirEnabledTestCase {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void pull() throws Exception {
-		File file = new File(PullTest.this.tmpdir, "fileDoesntExist");
+		File file = new File(PullTest.this.tmpdir, "myOutputFile");
 		StringBufferInputStream sbis = new StringBufferInputStream("Foo bar");
 		FSService.writeFileStreamAbs(file.getAbsolutePath(), sbis);
+		Assert.assertTrue(file.length() > 6);
 		
-		responderSetup(new File(PullTest.this.tmpdir, "fileDoesntExist"));
+		responderSetup(file);
 		
 		
 		Assert.assertNotNull(projectApplicationContextFactory.getLogEntryDao(fo)

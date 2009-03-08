@@ -4,6 +4,7 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
+import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.change.ChangeListenerProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
@@ -29,7 +30,7 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 
 	private Throwable innerException;
 
-	private ProjectApplicationContextFactory db;
+	private IProjectsFileServices projectsFileServices;
 
 	private static Logger log = Logger.getLogger(FileRequestFuture.class);
 
@@ -56,27 +57,27 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "]" + "transferService=" + transferService + ", request="
-				+ request + ", jo=" + jo + "]";
+		return getClass().getSimpleName() + "]" + "transferService=" + transferService
+				+ ", request=" + request + ", jo=" + jo + "]";
 	}
 
 	public FileRequestFuture(JakeObject jo, IFileTransferService ts, FileRequest request,
-			ChangeListener changeListener, ProjectApplicationContextFactory db) {
+			ChangeListener changeListener, IProjectsFileServices projectsFileServices) {
 		super();
 		this.transferService = ts;
 		this.request = request;
 		this.changeListener = new FileProgressChangeListener(changeListener);
 		this.jo = jo;
 		this.sem = new Semaphore(0);
-		this.db = db;
 		this.innerException = null;
+		this.projectsFileServices = projectsFileServices;
 		log.debug(this.toString());
 	}
 
 	@Override
 	public IFileTransfer calculate() throws Exception {
 		INegotiationSuccessListener listener = new PullListener(this.jo, changeListener,
-				db);
+				this.projectsFileServices);
 		transferService.request(request, this);
 		log.debug("waiting for negotiation-success-listener");
 
