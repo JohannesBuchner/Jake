@@ -105,21 +105,32 @@ public class JakeMainApp extends SingleFrameApplication {
 		 * Laf detection code - get the best for every system!
 		 */
 		try {
+
+			// find all available lafs
+			UIManager.LookAndFeelInfo nimbusLaf = null;
+			UIManager.LookAndFeelInfo gtkLaf = null;
+			StringBuilder availableLafs = new StringBuilder();
+			for (UIManager.LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+				availableLafs.append(laf.getName()).append(" ");
+				if (laf.getName().toLowerCase().contains("gtk")) {
+					gtkLaf = laf;
+				} else if (laf.getName().toLowerCase().contains("nimbus")) {
+					nimbusLaf = laf;
+				}
+			}
+			log.debug("Found LAFs: " + availableLafs);
+
+			// override default laf if argument is given
+			// fixme: proper argument check!
+			if (args.length > 0 && nimbusLaf != null) {
+				UIManager.setLookAndFeel(nimbusLaf.getClassName());
+			}
+
 			// on windows & mac, use the native laf
 			if (Platform.isWin() || Platform.isMac()) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} else {
 				// linux - it's a bit more tricky here
-				UIManager.LookAndFeelInfo nimbusLaf = null;
-				UIManager.LookAndFeelInfo gtkLaf = null;
-				for (UIManager.LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-					log.debug("Found LAF: " + laf);
-					if (laf.getClassName().toLowerCase().contains("gtk")) {
-						gtkLaf = laf;
-					} else if (laf.getClassName().toLowerCase().contains("nimbus")) {
-						nimbusLaf = laf;
-					}
-				}
 				try {
 					if (gtkLaf != null) {
 						UIManager.setLookAndFeel(gtkLaf.getClassName());
@@ -130,18 +141,17 @@ public class JakeMainApp extends SingleFrameApplication {
 					log.warn("Error setting laf: " + r.getMessage());
 				}
 			}
-		}
-		catch (Exception e)	{
+		} catch (Exception e) {
 			log.warn("LAF Exception: ", e);
 		}
 
-		if (Platform.isMac())	{
+		if (Platform.isMac()) {
 			// MacOSX specific: set menu name to 'Jake'
 			// has to be called VERY early to succeed (prior to any gui stuff, later
 			// calls will be ignored)
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
 
-		} else if (Platform.isLin()){
+		} else if (Platform.isLin()) {
 			Platform.fixWmClass();
 		}
 
