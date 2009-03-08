@@ -446,4 +446,8 @@ public class FileUtilities {
 			e.printStackTrace();
 		}
 	}
+
+	public static boolean createDirectory(String path) {
+		return new File(path).mkdirs();
+	}
 }

@@ -20,7 +20,9 @@ class ProjectInvitationListener implements IProjectInvitationListener {
 	@Override public void invited(User user, Project p) {
 		log.debug("received invitation from " + user + " for project: " + p);
 
-		//EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
+		ObjectCache.get().updateProjects();
+
+		//EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(null,
 		//				ProjectChanged.ProjectChangedEvent.Reason.Invited));
 	}
 
