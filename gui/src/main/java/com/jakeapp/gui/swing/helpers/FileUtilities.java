@@ -115,19 +115,18 @@ public class FileUtilities {
 
 
 	/**
-	 * Checks that a name exists and is a directory. Returns null if it does, an error suitable for a UI
-	 * if not.
+	 * Checks that a name exists and is a directory.
 	 * @param name
 	 * @return
 	 */
-	public static String checkDirectoryExistence(String name) {
+	public static boolean checkDirectoryExistence(String name) {
 		File proposedDirectory = FileUtilities.fileFromString(name);
 		if (!proposedDirectory.exists()) {
-			return "Directory \"" + name + "\" does not exist.";
+			return false;
 		} else if (!proposedDirectory.isDirectory()) {
-			return "The path \"" + name + "\" exists but does not refer to a directory.";
+			return true;
 		}
-		return null;
+		return false;
 	}
 
 	/**

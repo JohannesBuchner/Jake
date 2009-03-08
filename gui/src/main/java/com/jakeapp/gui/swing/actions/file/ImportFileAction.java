@@ -1,15 +1,15 @@
 package com.jakeapp.gui.swing.actions.file;
 
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
 import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -24,7 +24,7 @@ public class ImportFileAction extends FileAction {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-				  getString("importMenuItem.text");
+						getString("importMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
@@ -67,6 +67,6 @@ public class ImportFileAction extends FileAction {
 
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
 		JakeExecutor.exec(new ImportFileFolderTask(JakeContext.getProject(),
-				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
+						Arrays.asList(dialog.getSelectedFiles()), destFolder));
 	}
 }

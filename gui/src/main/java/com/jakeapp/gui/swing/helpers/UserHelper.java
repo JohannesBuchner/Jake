@@ -39,11 +39,12 @@ public class UserHelper {
 	 * @return nickname or full name, if nn not set.
 	 */
 	public static String getNickOrFullName(UserInfo user) {
-		if(user.getNickName().length() > 0) {
+		if (user.getNickName().length() > 0) {
 			return user.getNickName();
-		}if(user.getFirstName().length() > 0) {
+		}
+		if (user.getFirstName().length() > 0) {
 			return user.getFirstName();
-		}else {
+		} else {
 			return user.getUser().getUserId();
 		}
 	}
@@ -69,5 +70,18 @@ public class UserHelper {
 
 	public static String getNickOrFullName(User member, int maxlen) {
 		return StringUtilities.maxLen(getNickOrFullName(member), maxlen);
+	}
+
+	/**
+	 * Cleans the User id in form of xx@yy.com / 8885ca-... into xx@yy.com
+	 * @param userId
+	 * @return
+	 */
+	public static String cleanUserId(String userId) {
+		int slashPos = userId.lastIndexOf('/');
+		if (slashPos <= 0)
+			slashPos = userId.length();
+
+		return userId.substring(0, slashPos);
 	}
 }

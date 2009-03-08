@@ -8,6 +8,8 @@ import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXPanel;
@@ -27,6 +29,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	private JLabel projectNameLabel;
 	private JLabel userNameLabel;
 	private JoinProjectAction joinProjectAction;
+	private JLabel generateNewFolderLabel;
 
 	public InvitationPanel() {
 		EventCore.get().addContextChangedListener(this);
@@ -37,8 +40,8 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 
 	private void initComponents() {
 		// set the background painter
-		this.setBackgroundPainter(Platform
-						.getStyler().getContentPanelBackgroundPainter());
+		this.setBackgroundPainter(
+						Platform.getStyler().getContentPanelBackgroundPainter());
 
 		MigLayout layout = new MigLayout("wrap 1, fillx");
 		this.setLayout(layout);
@@ -53,9 +56,8 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		this.add(projectNameLabel, "span 1 ,al center, wrap");
 
 		JLabel icon = new JLabel();
-		icon.setIcon(new ImageIcon(Toolkit
-						.getDefaultToolkit().getImage(getClass().getResource(
-						"/icons/folder-new-large.png"))));
+		icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource("/icons/folder-new-large.png"))));
 
 		this.add(icon, "span 1, al center, wrap");
 
@@ -66,11 +68,11 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
 		folderSelectPanel.setOpaque(false);
 
-		folderTextField =	new JTextField();
+		folderTextField = new JTextField();
 		generateProjectDefaultLocation();
 
 		folderTextField.setEditable(false);
-		folderSelectPanel.add(folderTextField);
+		folderSelectPanel.add(folderTextField, "wmin 400");
 
 		JButton folderChooserButton = new JButton("...");
 		folderChooserButton.addActionListener(new ActionListener() {
@@ -79,6 +81,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 				if (folder != null) {
 					folderTextField.setText(folder);
 					joinProjectAction.setProjectLocation(folder);
+					updatePanel();
 				}
 			}
 		});
@@ -86,6 +89,9 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 
 		// fixme: make larger!?
 		this.add(folderSelectPanel, "span 2, al center, wrap");
+
+		generateNewFolderLabel = new JLabel("We'll create a new folder for you.");
+		this.add(generateNewFolderLabel, "al center");
 
 		JPanel btnPanel = new JPanel(new MigLayout("nogrid"));
 		btnPanel.setOpaque(false);
@@ -106,7 +112,8 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	}
 
 	private void generateProjectDefaultLocation() {
-		folderTextField.setText(FileUtilities.getDefaultProjectLocation(JakeContext.getInvitation()));
+		folderTextField.setText(
+						FileUtilities.getDefaultProjectLocation(JakeContext.getInvitation()));
 	}
 
 	private void updatePanel() {
@@ -114,9 +121,15 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		if (invite != null) {
 			projectNameLabel.setText("> " + invite.getProjectName() + " <");
 
-			String userId = invite.getInviter().getUserId();
-			userNameLabel.setText(JakeMainView.getMainView().getResourceMap()
-							.getString("projectInvitedFrom") + " " + userId);
+			String userId = UserHelper.cleanUserId(invite.getInviter().getUserId());
+			userNameLabel.setText(String.format("%s %s, %s",
+							JakeMainView.getMainView().getResourceMap().getString(
+											"projectInvitedBy"), userId,
+							TimeUtilities.getRelativeTime(invite.getCreation())));
+
+			boolean createNewFolder =
+							!FileUtilities.checkDirectoryExistence(folderTextField.getText());
+			generateNewFolderLabel.setVisible(createNewFolder);
 		}
 	}
 
