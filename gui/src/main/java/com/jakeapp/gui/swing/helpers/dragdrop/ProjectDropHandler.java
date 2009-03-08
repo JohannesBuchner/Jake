@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.helpers.dragdrop;
 
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import org.apache.log4j.Logger;
@@ -60,7 +61,7 @@ public class ProjectDropHandler extends TransferHandler {
 				File newProjectFile = files.get(0);
 				JakeMainApp.getCore().createProject(
 						  ProjectHelper.createDefaultPath(newProjectFile.getAbsolutePath()),
-						  newProjectFile.getAbsolutePath(), JakeMainApp.getMsgService());
+						  newProjectFile.getAbsolutePath(), JakeContext.getMsgService());
 			} else {
 				JakeHelper.showInfoMsg("Cannot create project. Drop in one folder.");
 			}

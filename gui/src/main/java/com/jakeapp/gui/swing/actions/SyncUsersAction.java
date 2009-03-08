@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.actions;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.UserAction;
 import org.apache.log4j.Logger;
 
@@ -28,7 +29,7 @@ public class SyncUsersAction extends UserAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		for (UserInfo userInfo : getSelectedUsers()) {
 			JakeMainApp.getCore()
-							.syncProject(JakeMainApp.getProject(), userInfo.getUser());
+							.syncProject(JakeContext.getProject(), userInfo.getUser());
 		}
 	}
 }

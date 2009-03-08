@@ -1,9 +1,7 @@
 package com.jakeapp.gui.swing.helpers.dragdrop;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.helpers.FileObjectHelper;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
 import org.apache.log4j.Logger;
@@ -37,7 +35,7 @@ public class FileDropHandler extends TransferHandler {
 
 		boolean copySupported = (COPY & supp.getSourceDropActions()) == COPY;
 
-		Project pr = JakeMainApp.getProject();
+		Project pr = JakeContext.getProject();
 
 		return copySupported && pr != null && !pr.isInvitation();
 
@@ -62,7 +60,7 @@ public class FileDropHandler extends TransferHandler {
 			// get destination folder. Project root if nothing selected.
 			String destFolder = "/";
 
-			JakeExecutor.exec(new ImportFileFolderTask(JakeMainApp.getProject(), fileList, destFolder));
+			JakeExecutor.exec(new ImportFileFolderTask(JakeContext.getProject(), fileList, destFolder));
 
 		} catch (UnsupportedFlavorException e) {
 			return false;

@@ -6,11 +6,10 @@ import com.explodingpixels.macwidgets.TriAreaComponent;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.GuiUtilities;
@@ -22,9 +21,9 @@ import com.jakeapp.gui.swing.helpers.SegmentButtonCreator;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.InspectorPanel;
+import com.jakeapp.gui.swing.panels.InvitationPanel;
 import com.jakeapp.gui.swing.panels.NewsPanel;
 import com.jakeapp.gui.swing.panels.NotesPanel;
-import com.jakeapp.gui.swing.panels.ProjectInvitationPanel;
 import com.jakeapp.gui.swing.panels.UserPanel;
 import com.jakeapp.gui.swing.worker.InitCoreWorker;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
@@ -52,19 +51,17 @@ import java.util.List;
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView
-				implements ProjectSelectionChanged, PropertyChanged {
+public class JakeMainView extends FrameView implements ContextChanged {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
 	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
-	private Project project;
 	private boolean inspectorEnabled;
 
 	// all the ui panels
 	private NewsPanel newsPanel;
 	private FilePanel filePanel;
 	private NotesPanel notesPanel;
-	private ProjectInvitationPanel invitationPanel;
+	private InvitationPanel invitationPanel;
 	private UserPanel loginPanel;
 	private List<JToggleButton> contextSwitcherButtons;
 	private JPanel contextSwitcherPane = createContextSwitcherPanel();
@@ -93,6 +90,7 @@ public class JakeMainView extends FrameView
 	private Image IconAppLarge;
 	private final JakeToolbar jakeToolbar;
 
+
 	public boolean isInspectorEnabled() {
 		return inspectorEnabled;
 	}
@@ -112,8 +110,7 @@ public class JakeMainView extends FrameView
 		return IconAppLarge;
 	}
 
-	@Override public void propertyChanged(EnumSet<Reason> reason, Project p,
-					Object data) {
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
 		updateAll();
 	}
 
@@ -157,7 +154,7 @@ public class JakeMainView extends FrameView
 		filePanel = new FilePanel();
 		notesPanel = new NotesPanel();
 		inspectorPanel = new InspectorPanel();
-		invitationPanel = new ProjectInvitationPanel();
+		invitationPanel = new InvitationPanel();
 
 
 		// initialize helper code
@@ -264,7 +261,7 @@ public class JakeMainView extends FrameView
 		return notesPanel;
 	}
 
-	public ProjectInvitationPanel getInvitationPanel() {
+	public InvitationPanel getInvitationPanel() {
 		return invitationPanel;
 	}
 
@@ -339,9 +336,8 @@ public class JakeMainView extends FrameView
 	 * for status bar / source list.
 	 */
 	private class ProjectChangedCallback implements ProjectChanged {
-
 		public void projectChanged(ProjectChangedEvent ev) {
-			log.info("Received project changed callback.");
+			log.trace("Received project changed callback.");
 
 			Runnable runner = new Runnable() {
 				public void run() {
@@ -357,11 +353,8 @@ public class JakeMainView extends FrameView
 	 * Registers the callbacks with the core
 	 */
 	private void registerCallbacks() {
-		// register for project selection changes
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-
 		EventCore.get().addProjectChangedCallbackListener(new ProjectChangedCallback());
-		EventCore.get().addPropertyListener(this);
+		EventCore.get().addContextChangedListener(this);
 	}
 
 
@@ -381,15 +374,15 @@ public class JakeMainView extends FrameView
 	private void updateTitle() {
 		String jakeStr = AppUtilities.getAppName();
 
-		if (getProject() != null && getProject()
+		if(JakeContext.getProject() != null && JakeContext.getProject()
 						.getInvitationState() == InvitationState.ACCEPTED) {
-			String projectPath = getProject().getRootPath();
+			String projectPath = JakeContext.getProject().getRootPath();
 			getFrame().setTitle(projectPath + " - " + jakeStr);
 
 			// mac only
 			if (Platform.isMac()) {
 				getFrame().getRootPane().putClientProperty("Window.documentFile",
-								new File(getProject().getRootPath()));
+								new File(JakeContext.getProject().getRootPath()));
 			}
 		} else {
 			getFrame().setTitle(jakeStr);
@@ -408,7 +401,7 @@ public class JakeMainView extends FrameView
 	 * @return true if CAN be displayed with current content.
 	 */
 	protected boolean isInspectorAllowed() {
-		boolean hasProject = getProject() != null;
+		boolean hasProject = JakeContext.getProject() != null;
 		boolean isFilePaneOpen =
 						getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Files;
 		boolean isNotePaneOpen =
@@ -657,10 +650,10 @@ public class JakeMainView extends FrameView
 	}
 
 	private void updateSourceListVisibility() {
-		log.trace("update sourcelist visible state: visible=" + JakeMainApp
+		log.trace("update sourcelist visible state: visible=" + JakeContext
 						.getMsgService());
 
-		if (JakeMainApp.getMsgService() == null) {
+		if (JakeContext.getMsgService() == null) {
 			this.mainSplitPane.getLeftComponent().setVisible(false);
 		} else {
 			this.mainSplitPane.getLeftComponent().setVisible(true);
@@ -692,8 +685,8 @@ public class JakeMainView extends FrameView
 	 * Called automatically on setProject()
 	 */
 	private void updateView() {
-		//log.debug("updating view");
-		Project pr = getProject();
+		log.trace("updating view");
+		Project pr = JakeContext.getProject();
 
 		boolean needsInvite =
 						pr != null && pr.getInvitationState() == InvitationState.INVITED;
@@ -747,21 +740,6 @@ public class JakeMainView extends FrameView
 		JakeHelper.showJakeWebsite();
 	}
 
-
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * Called from the event interface
-	 *
-	 * @param project
-	 */
-	public void setProject(Project project) {
-		this.project = project;
-
-		updateAll();
-	}
 
 	public void addProjectViewChangedListener(ProjectViewChanged pvc) {
 		projectViewChanged.add(pvc);

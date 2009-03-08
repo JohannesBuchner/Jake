@@ -3,10 +3,11 @@ package com.jakeapp.gui.swing.panels;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.*;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.GreenHudButtonUI;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTreeTable;
@@ -35,13 +36,14 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
  * @author studpete, csutter
  */
 public class FilePanel extends javax.swing.JPanel
-				implements ProjectSelectionChanged, ProjectChanged {
+				implements ContextChanged, ProjectChanged {
 
 	private static final long serialVersionUID = -3419475619689818265L;
 
@@ -80,7 +82,7 @@ public class FilePanel extends javax.swing.JPanel
 
 		initComponents();
 
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+		EventCore.get().addContextChangedListener(this);
 
 		this.fileTreeTable.setScrollsOnExpand(true);
 		this.fileTreeTable.setSortable(true);
@@ -226,6 +228,10 @@ public class FilePanel extends javax.swing.JPanel
 	@Override
 	public void projectChanged(ProjectChangedEvent ev) {
 		this.updatePanel();
+	}
+
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		updatePanel();
 	}
 
 
@@ -473,19 +479,10 @@ public class FilePanel extends javax.swing.JPanel
 	private org.jdesktop.swingx.JXTable fileTable;
 	private javax.swing.JScrollPane fileTreeTableScrollPane;
 
-	public Project getProject() {
-		return this.project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-
-		updatePanel();
-	}
 
 	private void updatePanel() {
 		// don't update if project is null OR an invitation.
-		if (getProject() == null || getProject().isInvitation()) {
+		if (JakeContext.getProject() == null || JakeContext.getProject().isInvitation()) {
 			return;
 		}
 

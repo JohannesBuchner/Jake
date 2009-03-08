@@ -3,9 +3,10 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
@@ -23,24 +24,26 @@ import java.util.List;
  * Flat representation of FolderObjectTreeTableModel
  */
 public class FileTableModel extends AbstractTableModel
-				implements ProjectSelectionChanged, DataChanged {
+				implements ContextChanged, DataChanged {
 	private static final Logger log =
 					Logger.getLogger(FolderTreeTableModel.class);
 
 	private List<FileObject> files;
 
-	@Override public void setProject(Project pr) {
-		updateData();
-	}
-
 	private void updateData() {
-		this.files = ObjectCache.get().getFiles(JakeMainApp.getProject());
+		this.files = ObjectCache.get().getFiles(JakeContext.getProject());
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
+	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
 		// fixme react on specific project only
-		if (reason.contains(Reason.Files)) {
+		if (dataReason.contains(DataReason.Files)) {
 			fireUpdate();
+		}
+	}
+
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		if(reason.contains(Reason.Project)) {
+			updateData();
 		}
 	}
 
@@ -53,7 +56,7 @@ public class FileTableModel extends AbstractTableModel
 
 		// register for selection changes
 		EventCore.get().addDataChangedCallbackListener(this);
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+		EventCore.get().addContextChangedListener(this);
 
 		updateData();
 	}
@@ -128,7 +131,7 @@ public class FileTableModel extends AbstractTableModel
 
 		// FIXME cache!! get async?
 		Attributed<FileObject> fileInfo = JakeMainApp.getCore()
-						.getAttributed(JakeMainApp.getProject(), ournode.getFileObject());
+						.getAttributed(JakeContext.getProject(), ournode.getFileObject());
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:

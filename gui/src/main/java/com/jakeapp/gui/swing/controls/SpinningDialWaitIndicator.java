@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2007 Timothy Wall, All Rights Reserved
+/* Copyright (c) 2006-2007 Timothy Wall, ALL Rights Reserved
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,10 +21,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.Timer;
 

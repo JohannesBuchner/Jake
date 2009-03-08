@@ -3,15 +3,16 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.CreateNoteAction;
 import com.jakeapp.gui.swing.actions.DeleteNoteAction;
 import com.jakeapp.gui.swing.actions.SaveNoteAction;
 import com.jakeapp.gui.swing.actions.SoftlockNoteAction;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
@@ -43,6 +44,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -50,14 +52,17 @@ import java.util.List;
  *
  * @author studpete, simon
  */
-public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionChanged, ProjectChanged, ListSelectionListener {
+public class NotesPanel extends javax.swing.JPanel
+				implements ContextChanged, ProjectChanged, ListSelectionListener {
 
 	private static final long serialVersionUID = -7703570005631651276L;
 	private static NotesPanel instance;
 	private static Logger log = Logger.getLogger(NotesPanel.class);
-	private final static int TableUpdateDelay = 20000; // 20 sec 	//FIXME magic number, make property
+	private final static int TableUpdateDelay = 20000;
+					// 20 sec 	//FIXME magic number, make property
 	private Timer tableUpdateTimer;
-	private List<NoteSelectionChanged> noteSelectionListeners = new ArrayList<NoteSelectionChanged>();
+	private List<NoteSelectionChanged> noteSelectionListeners =
+					new ArrayList<NoteSelectionChanged>();
 	private NotesTableModel notesTableModel;
 	private JScrollPane notesTableScrollPane;
 	private JSplitPane mainSplitPane;
@@ -65,12 +70,12 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	private JXTable notesTable;
 	private ResourceMap resourceMap;
 	private JTextArea noteReader;
-	private Project currentProject;
 	private JButton createBtn;
 	private JButton announceBtn;
 	private JButton softLockBtn;
 	private JButton deleteBtn;
 	private JButton saveBtn;
+
 
 	private class NoteContainerMouseListener extends MouseAdapter {
 		private NotesPanel panel;
@@ -124,7 +129,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 
 		private void showMenu(MouseEvent me) {
-			this.popupMenu.show(this.table, (int) me.getPoint().getX(),
+			this.popupMenu.show(this.table,
+							(int) me.getPoint().getX(),
 							(int) me.getPoint().getY());
 		}
 	}
@@ -140,14 +146,15 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		instance = this;
 
 		// get resource map
-		this.setResourceMap(org.jdesktop.application.Application.getInstance(JakeMainApp.class)
-										.getContext().getResourceMap(NotesPanel.class));
+		this.setResourceMap(org.jdesktop.application.Application
+						.getInstance(JakeMainApp.class)
+						.getContext().getResourceMap(NotesPanel.class));
 
 		// init components
 		initComponents();
 
 		// register the callbacks
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+		EventCore.get().addContextChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
 		this.notesTable.getSelectionModel().addListSelectionListener(this);
 
@@ -157,7 +164,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		}
 		//final JPopupMenu notesPopupMenu = new JakePopupMenu();
 
-		this.notesTable.addMouseListener(new NoteContainerMouseListener(this, this.notesTable));
+		this.notesTable
+						.addMouseListener(new NoteContainerMouseListener(this, this.notesTable));
 
 		// install event table update timer
 		this.tableUpdateTimer = new Timer(TableUpdateDelay, new ActionListener() {
@@ -179,7 +187,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 			this.notifyNoteSelectionListeners(new ArrayList<Attributed<NoteObject>>());
 		} else {
 			String text;
-			
+
 			//store old selected rows
 			//FIXME not needed, since there is a (user-unfriendly) SAVE-Button.
 			//to be fixed in a later version
@@ -192,16 +200,20 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 				}
 			}*/
 			//handle new selection
-			text = this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(this.notesTable.getSelectedRow()))
+			text = this.notesTableModel
+							.getNoteAtRow(this.notesTable.convertRowIndexToModel(this.notesTable.getSelectedRow()))
 							.getJakeObject().getContent();
 			this.noteReader.setText(text);
 
 			this.noteReader.setEditable(JakeHelper.isEditable(getSelectedNote()));
 		}
 
-		List<Attributed<NoteObject>> selectedNotes = new ArrayList<Attributed<NoteObject>>();
+		List<Attributed<NoteObject>> selectedNotes =
+						new ArrayList<Attributed<NoteObject>>();
 		for (int row : this.notesTable.getSelectedRows()) {
-			selectedNotes.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(row)));
+			selectedNotes
+							.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(
+											row)));
 		}
 		this.notifyNoteSelectionListeners(selectedNotes);
 	}
@@ -209,6 +221,7 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	/**
 	 * Get the first of the selected notes. if no notes are selected, <code>null</code> is returned
 	 * instead.
+	 *
 	 * @return the first note of the selectedNotes, if notes are selected, <code>null</code>instead.
 	 */
 	private Attributed<NoteObject> getSelectedNote() {
@@ -226,22 +239,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.resourceMap = resourceMap;
 	}
 
-	public Project getCurrentProject() {
-		return this.currentProject;
-	}
-
-	/**
-	 * Set the current Project.
-	 *
-	 * @param currentProject
-	 */
-	private void setCurrentProject(Project currentProject) {
-		this.currentProject = currentProject;
+	public Project getProject() {
+		return JakeContext.getProject();
 	}
 
 
 	/**
 	 * When we receive a ProjectChanged-Event, go and get new notes.
+	 *
 	 * @param e
 	 */
 	@Override
@@ -255,11 +260,11 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		ObjectCache.get().updateNotes(e.getProject());
 	}
 
-	@Override
-	public void setProject(Project pr) {
-		this.setCurrentProject(pr);
-		this.notesTableModel.update(this.getCurrentProject());
+
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		this.notesTableModel.update(this.getProject());		
 	}
+
 
 	private void initComponents() {
 		this.setLayout(new MigLayout("wrap 1, fill, ins 0"));
@@ -336,10 +341,10 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteReader.setMargin(new Insets(8, 8, 8, 8));
 
 		JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
-		noteReaderScrollPane.setHorizontalScrollBarPolicy(
-						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		noteReaderScrollPane.setVerticalScrollBarPolicy(
-						ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		noteReaderScrollPane
+						.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		noteReaderScrollPane
+						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		noteReaderScrollPane.setOpaque(false);
 		noteReaderScrollPane.getViewport().setOpaque(false);
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
@@ -368,12 +373,14 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 		this.noteSelectionListeners.remove(listener);
 	}
 
-	public void notifyNoteSelectionListeners(List<Attributed<NoteObject>> selectedNotes) {
+	public void notifyNoteSelectionListeners(
+					List<Attributed<NoteObject>> selectedNotes) {
 
 		log.debug("notify note selection listeners");
 
 		for (NoteSelectionChanged listener : this.noteSelectionListeners) {
-			listener.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(selectedNotes));
+			listener.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(
+							selectedNotes));
 		}
 	}
 
@@ -384,7 +391,8 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 	 */
 	public List<Attributed<NoteObject>> getSelectedNotes() {
 		//log.debug("get selected notes...");
-		List<Attributed<NoteObject>> selectedNotes = new ArrayList<Attributed<NoteObject>>();
+		List<Attributed<NoteObject>> selectedNotes =
+						new ArrayList<Attributed<NoteObject>>();
 
 		if (this.notesTable.getSelectedRow() == -1) {
 			return selectedNotes;
@@ -392,7 +400,9 @@ public class NotesPanel extends javax.swing.JPanel implements ProjectSelectionCh
 
 		//log.debug("selected notes count: " + notesTable.getSelectedRowCount());
 		for (int row : this.notesTable.getSelectedRows()) {
-			selectedNotes.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(row)));
+			selectedNotes
+							.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(
+											row)));
 		}
 		return selectedNotes;
 	}

@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2007 Timothy Wall, All Rights Reserved
+/* Copyright (c) 2006-2007 Timothy Wall, ALL Rights Reserved
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,18 +12,13 @@
  */
 package com.jakeapp.gui.swing.controls;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 
 /** Provides a scaled version of a given icon.  Aspect ratio
  * is optionally preserved; the icon will be centered in any extra space

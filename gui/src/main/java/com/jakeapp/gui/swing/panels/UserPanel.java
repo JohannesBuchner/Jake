@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -10,8 +9,9 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
@@ -56,7 +56,7 @@ import java.util.Map;
  * @author studpete
  */
 public class UserPanel extends JXPanel
-				implements RegistrationStatus, CoreChanged, PropertyChanged {
+				implements RegistrationStatus, CoreChanged, ContextChanged {
 	private ResourceMap resourceMap;
 	private static final Logger log = Logger.getLogger(UserPanel.class);
 
@@ -88,15 +88,14 @@ public class UserPanel extends JXPanel
 		// called after statup, when core init is done.
 
 		// one-time-init of predefined credentials
-		if (JakeMainApp.isCoreInitialized() && creds.size() == 0) {
+		if (JakeContext.isCoreInitialized() && creds.size() == 0) {
 			initPredefinedCredentials();
 		}
 
 		updateView();
 	}
 
-	@Override public void propertyChanged(EnumSet<Reason> reason, Project p,
-					Object data) {
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
 		if (reason.contains(Reason.MsgService)) {
 			updateView();
 		}
@@ -162,7 +161,7 @@ public class UserPanel extends JXPanel
 		this.setBackgroundPainter(Platform
 						.getStyler().getContentPanelBackgroundPainter());
 
-		EventCore.get().addPropertyListener(this);
+		EventCore.get().addContextChangedListener(this);
 	}
 
 	private JPanel createLoadingAppPanel() {
@@ -248,7 +247,7 @@ public class UserPanel extends JXPanel
 	private void updateChooseUserPanel() {
 		userListPanel.removeAll();
 
-		if (JakeMainApp.isCoreInitialized()) {
+		if (JakeContext.isCoreInitialized()) {
 			try {
 				List<MsgService<User>> msgs = JakeMainApp.getCore().getMsgServices();
 
@@ -433,7 +432,7 @@ public class UserPanel extends JXPanel
 				try {
 					// sync call
 					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
-					JakeMainApp.setMsgService(msg);
+					JakeContext.setMsgService(msg);
 
 					// prepare the servicecredentials (prefilled?)
 					Account creds = getCredientals();
@@ -758,9 +757,9 @@ public class UserPanel extends JXPanel
 	}
 
 	private void updateSignInSuccessPanel() {
-		if (JakeMainApp.getMsgService() != null) {
+		if (JakeContext.getMsgService() != null) {
 			userLabelLoginSuccess
-							.setText(JakeMainApp.getMsgService().getUserId().getUserId());
+							.setText(JakeContext.getMsgService().getUserId().getUserId());
 		}
 	}
 
@@ -781,7 +780,7 @@ public class UserPanel extends JXPanel
 
 	private void updateSignInRegisterMode() {
 		signInRegisterBackBtn
-						.setVisible(JakeMainApp.isCoreInitialized() && JakeMainApp.getCore()
+						.setVisible(JakeContext.isCoreInitialized() && JakeMainApp.getCore()
 										.getMsgServices().size() > 0);
 
 		loginUserDataPanel.setVisible(isModeSignIn());
@@ -807,7 +806,7 @@ public class UserPanel extends JXPanel
 	 * If not, show the add user screen.
 	 */
 	private void updateView() {
-		log.trace("updating login view. selected user: " + JakeMainApp.getMsgService());
+		log.trace("updating login view. selected user: " + JakeContext.getMsgService());
 
 		// always update everything
 		updateSignInSuccessPanel();
@@ -815,8 +814,8 @@ public class UserPanel extends JXPanel
 		updateSignInRegisterMode();
 
 		// update the view (maybe already logged in)
-		if (JakeMainApp.isCoreInitialized()) {
-			if (JakeMainApp.getMsgService() != null) {
+		if (JakeContext.isCoreInitialized()) {
+			if (JakeContext.getMsgService() != null) {
 				showPanel(UserPanels.LoggedIn);
 			} else {
 				if (JakeMainApp.getCore().getMsgServices().size() > 0) {
@@ -926,7 +925,7 @@ public class UserPanel extends JXPanel
 						log.info("Sign In with " + msg
 										.getUserId() + " useSavedPassword: " + isMagicToken());
 						signInBtn.setEnabled(false);
-						JakeMainApp.setMsgService(msg);
+						JakeContext.setMsgService(msg);
 
 						// prepare the servicecredentials (prefilled?)
 						Account creds = getCredientals();

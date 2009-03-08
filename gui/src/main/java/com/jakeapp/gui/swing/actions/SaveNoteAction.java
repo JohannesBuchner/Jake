@@ -1,9 +1,9 @@
 package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -51,7 +51,7 @@ public class SaveNoteAction extends NoteAction {
 			this.setEnabled(true);
 			
 			if(this.getSelectedNote().isLocked()) { // the file is locked
-				if (getSelectedNote().getLockLogEntry().getMember().equals(JakeMainApp.getCurrentUser())) {
+				if (getSelectedNote().getLockLogEntry().getMember().equals(JakeContext.getCurrentUser())) {
 					// local user has lock
 					this.setEnabled(true);
 				} else {

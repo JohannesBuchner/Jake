@@ -3,10 +3,10 @@ package com.jakeapp.gui.swing.xcore;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeStatusBar;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesTask;
 import com.jakeapp.gui.swing.worker.GetAllProjectNotesTask;
 import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author studpete
  */
-public class ObjectCache implements PropertyChanged {
+public class ObjectCache implements ContextChanged {
 	private static final Logger log = Logger.getLogger(ObjectCache.class);
 	private static ObjectCache instance = new ObjectCache();
 
@@ -38,7 +38,7 @@ public class ObjectCache implements PropertyChanged {
 
 	// do not construct
 	private ObjectCache() {
-		EventCore.get().addPropertyListener(this);
+		EventCore.get().addContextChangedListener(this);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class ObjectCache implements PropertyChanged {
 	}
 
 	private void fireProjectDataChanged() {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Projects), null);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Projects), null);
 	}
 
 	public List<FileObject> getFiles(Project p) {
@@ -73,7 +73,7 @@ public class ObjectCache implements PropertyChanged {
 	}
 
 	private void fireFilesDataChanged(Project project) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Files), project);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), project);
 	}
 
 	public List<NoteObject> getNotes(Project p) {
@@ -86,7 +86,7 @@ public class ObjectCache implements PropertyChanged {
 	}
 
 	private void fireNotesDataChanged(Project project) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.Reason.Notes), project);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Notes), project);
 	}
 
 	/**
@@ -94,20 +94,20 @@ public class ObjectCache implements PropertyChanged {
 	 * and a user(=MsgService) is selected.
 	 */
 	public void updateProjects() {
-		if (JakeMainApp.isCoreInitialized() && JakeMainApp.getMsgService() != null) {
+		if (JakeContext.isCoreInitialized() && JakeContext.getMsgService() != null) {
 			JakeExecutor.exec(new GetMyProjectsTask());
 		}
 	}
 
 	public void updateFiles(Project p) {
-		if (JakeMainApp.isCoreInitialized()) {
+		if (JakeContext.isCoreInitialized()) {
 			JakeExecutor.exec(new GetAllProjectFilesTask(p));
 			JakeStatusBar.updateMessage();
 		}
 	}
 
 	public void updateNotes(Project p) {
-		if (JakeMainApp.isCoreInitialized()) {
+		if (JakeContext.isCoreInitialized()) {
 			JakeExecutor.exec(new GetAllProjectNotesTask(p));
 		}
 	}
@@ -145,11 +145,9 @@ public class ObjectCache implements PropertyChanged {
 	 * Catch the PropertyChange - Event.
 	 * We may have to update some data of some app properties change.
 	 * @param reason
-	 * @param p optional variable
-	 * @param data optional poperty
+	 * @param context
 	 */
-	@Override public void propertyChanged(EnumSet<Reason> reason, Project p,
-					Object data) {
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
 
 		// update the projects when the MsgService is selected
 		// (thus the user logged in)

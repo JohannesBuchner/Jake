@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.filters;
 
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import org.apache.log4j.Logger;
@@ -24,7 +25,7 @@ public class FileObjectConflictStatusFilter extends PatternFilter {
 						.getValueAt(row, FilePanel.FILETREETABLE_NODECOLUMN);
 
 		return node.isFile() && JakeMainApp.getCore()
-						.getAttributed(JakeMainApp.getProject(), node.getFileObject())
+						.getAttributed(JakeContext.getProject(), node.getFileObject())
 						.isInConflict();
 	}
 }

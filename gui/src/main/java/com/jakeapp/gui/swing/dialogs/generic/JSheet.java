@@ -5,7 +5,7 @@ package com.jakeapp.gui.swing.dialogs.generic;
  *
  * Copyright (c) 1996-2008 by the original authors of JHotDraw
  * and all its contributors.
- * All rights reserved.
+ * ALL rights reserved.
  *
  * The copyright of this software is owned by the authors and
  * contributors of the JHotDraw project ("the copyright holders").

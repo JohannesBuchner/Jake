@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ public class JoinProjectAction extends ProjectAction {
 
     @Override
     public void updateAction() {
-        setProjectLocation(FileUtilities.getDefaultProjectLocation(getProject()));
+        setProjectLocation(FileUtilities.getDefaultProjectLocation(JakeContext.getInvitation()));
     }
 
     public String getProjectLocation() {

@@ -8,9 +8,8 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
@@ -38,8 +37,8 @@ import java.util.concurrent.ExecutionException;
  * As you see, Statusbar is very curious about ALL the events going on...
  */
 public class JakeStatusBar extends JakeGuiComponent
-				implements ILoginStateListener, ProjectSelectionChanged, ProjectChanged,
-				ProjectViewChanged, ContextViewChanged, DataChanged, PropertyChanged,
+				implements ILoginStateListener, ProjectChanged,
+				ProjectViewChanged, ContextViewChanged, DataChanged, ContextChanged,
 				TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
@@ -65,8 +64,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	Icon spinningDial = new SpinningDial(12, 12);
 	private JLabel progressMsg;
 
-	@Override public void propertyChanged(EnumSet<PropertyChanged.Reason> reason,
-					Project p, Object data) {
+	@Override public void contextChanged(EnumSet<ContextChanged.Reason> reason, Object context) {
 		updateConnectionDisplay();
 	}
 
@@ -138,7 +136,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 	}
 
-	@Override public void dataChanged(EnumSet<DataChanged.Reason> reason, Project p) {
+	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
 		updateMessage();
 	}
 
@@ -204,7 +202,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	protected class NoteCountTask extends AbstractTask<Integer> {
 		@Override
 		protected AvailableLaterObject<Integer> calculateFunction() {
-			return JakeMainApp.getCore().getNoteCount(JakeMainApp.getProject());
+			return JakeMainApp.getCore().getNoteCount(JakeContext.getProject());
 		}
 
 		@Override
@@ -238,15 +236,13 @@ public class JakeStatusBar extends JakeGuiComponent
 		super();
 		instance = this;
 
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
+		EventCore.get().addContextChangedListener(this);
+		EventCore.get().addTasksChangedListener(this);
+		EventCore.get().addConnectionStatusCallbackListener(this);
+
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
 		JakeMainView.getMainView().addContextViewChangedListener(this);
-		EventCore.get().addPropertyListener(this);
-		EventCore.get().addTasksChangedListener(this);
-
-		// registering the connection status callback
-		EventCore.get().addConnectionStatusCallbackListener(this);
 
 		statusBar = createStatusBar();
 	}
@@ -267,8 +263,8 @@ public class JakeStatusBar extends JakeGuiComponent
 		String msg;
 		IconEnum icon = IconEnum.Offline;
 
-		if (JakeMainApp.getMsgService() != null) {
-			String user = JakeMainApp.getMsgService().getUserId().getUserId();
+		if (JakeContext.getMsgService() != null) {
+			String user = JakeContext.getMsgService().getUserId().getUserId();
 
 			msg = getPrettyConnectionState() + " - " + user;
 
@@ -353,13 +349,13 @@ public class JakeStatusBar extends JakeGuiComponent
 			public void actionPerformed(ActionEvent event) {
 				JPopupMenu menu = new JakePopupMenu();
 				JMenuItem signInOut = new JMenuItem(getResourceMap().getString(
-								(JakeMainApp.getMsgService() != null) ? "menuSignOut" :
+								(JakeContext.getMsgService() != null) ? "menuSignOut" :
 												"menuSignIn"));
 
 				signInOut.addActionListener(new ActionListener() {
 
 					public void actionPerformed(ActionEvent actionEvent) {
-						if (JakeMainApp.getMsgService() == null) {
+						if (JakeContext.getMsgService() == null) {
 						} else {
 							try {
 								JakeMainApp.logoutUser();
@@ -408,7 +404,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	public void updateMessageInt() {
 
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
-			if (JakeMainApp.getProject() != null && JakeMainApp.getProject()
+			if (JakeContext.getProject() != null && JakeContext.getProject()
 							.isInvitation()) {
 				statusLabel.setText("Woohoo, that's an Invitation! You better join!");
 			} else {
@@ -449,7 +445,7 @@ public class JakeStatusBar extends JakeGuiComponent
 			statusLabel.setText("");
 		} else if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Login) {
 
-			if (JakeMainApp.getMsgService() != null) {
+			if (JakeContext.getMsgService() != null) {
 				// user chosen
 
 				/*

@@ -4,6 +4,7 @@ import ch.randelshofer.quaqua.JSheet;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.*;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.dialogs.debugging.JakeDebugger;
@@ -241,7 +242,7 @@ public class JakeMenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				log.info("called: core().getFiles()");
-				JakeMainApp.getCore().getFiles(JakeMainApp.getProject());
+				JakeMainApp.getCore().getFiles(JakeContext.getProject());
 			}
 		});
 		debugMenu.add(cureGetFilesDebugViewItem);

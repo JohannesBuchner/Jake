@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2007 Timothy Wall, All Rights Reserved
+/* Copyright (c) 2006-2007 Timothy Wall, ALL Rights Reserved
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,8 +22,6 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 /** Provides a spinning disk of hash marks. */
 public class SpinningDial extends AbstractAnimatedIcon {

@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.InviteUsersAction;
 import com.jakeapp.gui.swing.actions.RenameUsersAction;
@@ -9,9 +10,9 @@ import com.jakeapp.gui.swing.actions.SyncUsersAction;
 import com.jakeapp.gui.swing.actions.TrustFullPeopleAction;
 import com.jakeapp.gui.swing.actions.TrustNoPeopleAction;
 import com.jakeapp.gui.swing.actions.TrustPeopleAction;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
@@ -39,10 +40,11 @@ import java.util.EnumSet;
 
 /**
  * First Panel in Project View. Shows recent evetns and people list.
+ *
  * @author studpete
  */
 public class NewsPanel extends javax.swing.JPanel
-				implements ProjectSelectionChanged, ProjectChanged, DataChanged {
+				implements ProjectChanged, DataChanged, ContextChanged {
 
 	private static final long serialVersionUID = -6867091182930736758L;
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
@@ -89,8 +91,8 @@ public class NewsPanel extends javax.swing.JPanel
 						.getContext().getResourceMap(NewsPanel.class));
 
 		// register the callbacks
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
+		EventCore.get().addContextChangedListener(this);
 
 		// init actions!
 		this.projectRunningButton.setAction(this.startStopProjectAction);
@@ -114,7 +116,7 @@ public class NewsPanel extends javax.swing.JPanel
 
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(),
+				JakeMainApp.getCore().setProjectSettings(JakeContext.getProject(),
 								autoDownloadCB.isSelected(),
 								null);
 			}
@@ -122,7 +124,7 @@ public class NewsPanel extends javax.swing.JPanel
 
 		this.autoUploadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				JakeMainApp.getCore().setProjectSettings(JakeMainApp.getProject(),
+				JakeMainApp.getCore().setProjectSettings(JakeContext.getProject(),
 								null,
 								autoUploadCB.isSelected());
 			}
@@ -159,10 +161,16 @@ public class NewsPanel extends javax.swing.JPanel
 		this.eventsTableUpdateTimer.start();
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
-		if (reason.contains(Reason.LogEntries)) {
+	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
+		if (dataReason.contains(DataReason.LogEntries)) {
 			this.updatePanel();
 		}
+	}
+
+
+	@Override public void contextChanged(EnumSet<ContextChanged.Reason> reason,
+		Object context) {
+		this.updatePanel();
 	}
 
 
@@ -600,17 +608,9 @@ public class NewsPanel extends javax.swing.JPanel
 	}
 
 	public Project getProject() {
-		return this.project;
+		return JakeContext.getProject();
 	}
 
-	public void setProject(Project project) {
-		this.project = project;
-
-		// relay to actions
-		this.startStopProjectAction.setProject(getProject());
-
-		updatePanel();
-	}
 
 	public ResourceMap getResourceMap() {
 		return this.resourceMap;

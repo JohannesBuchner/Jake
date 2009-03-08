@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
@@ -28,7 +29,7 @@ public class ImportFileFolderTask extends AbstractTask<Void> {
 	@Override
 	protected AvailableLaterObject<Void> calculateFunction() {
 		return JakeMainApp.getCore()
-						.importExternalFileFolderIntoProject(JakeMainApp.getProject(),
+						.importExternalFileFolderIntoProject(JakeContext.getProject(),
 										files,
 										destFolderRelPath);
 	}

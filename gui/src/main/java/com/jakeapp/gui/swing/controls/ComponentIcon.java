@@ -1,4 +1,4 @@
-/* Copyright (c) 20006-2007 Timothy Wall, All Rights Reserved
+/* Copyright (c) 20006-2007 Timothy Wall, ALL Rights Reserved
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,23 +12,12 @@
  */
 package com.jakeapp.gui.swing.controls;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
 import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /** Provides the contents of a {@link Component} in Icon form.  Use this in
  * conjunction with {@link ScaledIcon} to provide component thumbnails.<p>

@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.Account;
-import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import net.miginfocom.swing.MigLayout;
@@ -23,7 +23,7 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 	private JTextField portText;
 
 	public AdvancedAccountSettingsDialog(Account creds) {
-		super(JakeMainApp.getProject());
+		super(JakeContext.getProject());
 		setCreds(creds);
 
 		setResourceMap(org.jdesktop.application.Application.getInstance(

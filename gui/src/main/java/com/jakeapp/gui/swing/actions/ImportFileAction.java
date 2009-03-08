@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions;
 
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
@@ -43,7 +43,7 @@ public class ImportFileAction extends FileAction {
 		dialog.setMultiSelectionEnabled(true);
 		dialog.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-		JSheet.showOpenSheet(dialog, JakeMainApp.getFrame(), new SheetListener() {
+		JSheet.showOpenSheet(dialog, JakeContext.getFrame(), new SheetListener() {
 			@Override
 			public void optionSelected(SheetEvent evt) {
 			}
@@ -66,7 +66,7 @@ public class ImportFileAction extends FileAction {
 		}
 
 		log.info("calling core: importExternalFileFolderIntoProject: to " + destFolder);
-		JakeExecutor.exec(new ImportFileFolderTask(JakeMainApp.getProject(),
+		JakeExecutor.exec(new ImportFileFolderTask(JakeContext.getProject(),
 				  Arrays.asList(dialog.getSelectedFiles()), destFolder));
 	}
 }

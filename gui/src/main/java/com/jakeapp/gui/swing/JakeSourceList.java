@@ -19,7 +19,6 @@ import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.SyncProjectAction;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
@@ -47,8 +46,7 @@ import java.util.Map;
  * Manages the Source List for projects.
  */
 public class JakeSourceList extends JakeGuiComponent
-				implements ProjectSelectionChanged, ProjectChanged, DataChanged,
-				TaskChanged {
+				implements ProjectChanged, DataChanged, TaskChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap =
@@ -69,10 +67,12 @@ public class JakeSourceList extends JakeGuiComponent
 
 	private SourceListSelectionListener projectSelectionListener;
 
+	/**
+	 * Constructor
+	 */
 	public JakeSourceList() {
 		super();
 
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
 		EventCore.get().addDataChangedCallbackListener(this);
 		EventCore.get().addTasksChangedListener(this);
@@ -155,16 +155,19 @@ public class JakeSourceList extends JakeGuiComponent
 						};
 
 
+		// selection controller
 		projectSelectionListener = new SourceListSelectionListener() {
 
 			public void sourceListItemSelected(SourceListItem item) {
-				//log.info("Source List Selection: " + item);
+				log.trace("Source List Selection: " + item);
 
 				if (item != null) {
 					// get the project from the hashmap
 					Project project = sourceListProjectMap.get(item);
+					JakeContext.setProject(project);
 
-					JakeMainApp.getApp().setProject(project);
+					Invitation invite = sourceListInvitationMap.get(item);
+					JakeContext.setInvitation(invite);
 				} else {
 					// fixme: i'm dead tired
 					//JakeMainApp.getApp().setProject(null);
@@ -295,7 +298,7 @@ public class JakeSourceList extends JakeGuiComponent
 							.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
 		}
 		List<Invitation> invitations = new ArrayList<Invitation>();
-		if (JakeMainApp.isCoreInitialized()) {
+		if (JakeContext.isCoreInitialized()) {
 			try {
 				invitations = JakeMainApp.getCore().getInvitations();
 			} catch (FrontendNotLoggedInException e) {
@@ -367,7 +370,7 @@ public class JakeSourceList extends JakeGuiComponent
 
 		if (projectSLI == null) {
 			log.info("selected project not found, selecting null");
-			JakeMainApp.getApp().setProject(null);
+			JakeContext.setProject(null);
 		}
 	}
 
@@ -395,8 +398,7 @@ public class JakeSourceList extends JakeGuiComponent
 			prIcon = projectWorkingIcon;
 		}
 
-		SourceListItem sli = new SourceListItem(project.getName(), prIcon);
-		return sli;
+		return new SourceListItem(project.getName(), prIcon);
 	}
 
 	/**
@@ -487,8 +489,8 @@ public class JakeSourceList extends JakeGuiComponent
 		SwingUtilities.invokeLater(runner);
 	}
 
-	@Override public void dataChanged(EnumSet<Reason> reason, Project p) {
-		if (reason.contains(DataChanged.Reason.Projects)) {
+	@Override public void dataChanged(EnumSet<DataReason> reason, Project p) {
+		if (reason.contains(DataReason.Projects)) {
 			updateSourceList();
 		}
 	}

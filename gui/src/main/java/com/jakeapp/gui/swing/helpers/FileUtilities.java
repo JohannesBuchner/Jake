@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -9,11 +9,16 @@ import net.roydesign.ui.FolderDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.io.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.awt.*;
 
 /**
  * Collection of Utilities for working with files.
@@ -93,19 +98,19 @@ public class FileUtilities {
 	/**
 	 * Returns a default location for the new project.
 	 *
-	 * @param project
+	 * @param invitation
 	 * @return
 	 */
-	public static String getDefaultProjectLocation(Project project) {
-		if (project == null) {
+	public static String getDefaultProjectLocation(Invitation invitation) {
+		if (invitation == null) {
 			return "";
 		}
 
 		JFileChooser fr = new JFileChooser();
 		javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
 
-		// TODO: make customizeable, cleanup project name
-		return fw.getDefaultDirectory() + getPathSeparator() + project.getName();
+		// TODO: make customizeable, cleanup invitation name
+		return fw.getDefaultDirectory() + getPathSeparator() + invitation.getProjectName();
 	}
 
 

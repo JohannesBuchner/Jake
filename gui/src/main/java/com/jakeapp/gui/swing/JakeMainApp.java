@@ -4,25 +4,18 @@
 
 package com.jakeapp.gui.swing;
 
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -31,18 +24,10 @@ import java.util.List;
  * Configuration properties (Add to VM propertes)
  *  -Dcom.jakeapp.gui.ignoresingleinstance=true  	  	Disable single instance checking
  */
-public class JakeMainApp extends SingleFrameApplication
-				implements ProjectSelectionChanged {
+public class JakeMainApp extends SingleFrameApplication {
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
 	private static JakeMainApp app;
 	private ICoreAccess core;
-	private Project project = null;
-
-	// this is the message service the user chooses (one per application)
-	private MsgService msgService = null;
-
-	private final List<ProjectSelectionChanged> projectSelectionChanged =
-					new LinkedList<ProjectSelectionChanged>();
 
 	private final List<CoreChanged> coreChanged = new ArrayList<CoreChanged>();
 
@@ -190,55 +175,6 @@ public class JakeMainApp extends SingleFrameApplication
 		}
 	}
 
-	/**
-	 * Convenience call to get the main gui frame faster.
-	 *
-	 * @return
-	 */
-	public static JFrame getFrame() {
-		return JakeMainView.getMainView().getFrame();
-	}
-
-	public static Project getProject() {
-		return getApp().project;
-	}
-
-
-	public void setProject(Project project) {
-
-		if (this.project != project) {
-			this.project = project;
-
-			// fire the event and relay to all items/components/actions/panels
-			fireProjectSelectionChanged();
-		}
-	}
-
-	/**
-	 * Fires a project selection change event, calling all registered members of
-	 * the event.
-	 */
-	private void fireProjectSelectionChanged() {
-		for (ProjectSelectionChanged psc : projectSelectionChanged) {
-			try {
-				psc.setProject(getProject());
-			} catch (RuntimeException ex) {
-				log.error("Catched an exception while setting the new project: ", ex);
-				ExceptionUtilities.showError(ex);
-			}
-		}
-	}
-
-	public void addProjectSelectionChangedListener(ProjectSelectionChanged psc) {
-		projectSelectionChanged.add(psc);
-	}
-
-	public void removeProjectSelectionChangedListener(ProjectSelectionChanged psc) {
-		if (projectSelectionChanged.contains(psc)) {
-			projectSelectionChanged.remove(psc);
-		}
-	}
-
 
 	public void saveQuit() {
 		log.trace("Calling saveQuit");
@@ -252,58 +188,23 @@ public class JakeMainApp extends SingleFrameApplication
 	}
 
 	/**
-	 * Set a new Msg Service.
-	 *
-	 * @param msg
-	 */
-	public static void setMsgService(MsgService msg) {
-		getApp().msgService = msg;
-
-		// inform the event core for this change
-		EventCore.get()
-						.firePropertyChanged(PropertyChanged.Reason.MsgService, null, msg);
-	}
-
-	/**
-	 * Returns the global Message Service (if a user was chosen)
-	 *
-	 * @return
-	 */
-	public static MsgService getMsgService() {
-		return getApp().msgService;
-	}
-
-	/**
 	 * Logs the current user out of the system, deselects current user.
 	 */
 	public static void logoutUser() {
-		log.info("Logging out: " + JakeMainApp.getMsgService());
+		log.info("Logging out: " + JakeContext.getMsgService());
 
-		if (getMsgService() == null) {
+		if (JakeContext.getMsgService() == null) {
 			log.warn("tried to sign out with no user active!");
 		}
 
 		try {
-			getMsgService().logout();
+			JakeContext.getMsgService().logout();
 
 		} catch (Exception e) {
 			log.warn(e);
 			ExceptionUtilities.showError(e);
 		}
-		setMsgService(null);
-	}
-
-	/**
-	 * Returns the one and only project user that is within app (and project) context.
-	 *
-	 * @return current user
-	 */
-	public static User getCurrentUser() {
-		return getProject().getMessageService().getUserId();
-	}
-
-	public static boolean isCoreInitialized() {
-		return getCore() != null;
+		JakeContext.setMsgService(null);
 	}
 
 	public void addCoreChangedListener(CoreChanged coreCallback) {

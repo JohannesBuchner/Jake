@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions;
 
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
@@ -50,13 +51,13 @@ public class CreateProjectAction extends ProjectAction {
 		if (path != null) {
 			JakeMainApp.getCore().createProject(ProjectHelper.createDefaultPath(path),
 							path,
-							JakeMainApp.getMsgService());
+							JakeContext.getMsgService());
 		}
 	}
 
 
 	@Override
 	public void updateAction() {
-		setEnabled(JakeMainApp.getMsgService() != null);
+		setEnabled(JakeContext.getMsgService() != null);
 	}
 }

@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 
@@ -18,7 +19,7 @@ public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 	@Override
 	protected AvailableLaterObject<List<Project>> calculateFunction() {
 
-		if (JakeMainApp.isCoreInitialized()) {
+		if (JakeContext.isCoreInitialized()) {
 			return JakeMainApp.getCore().getProjects();
 		} else {
 			// return an error, but fail silently (core just needs more time for init)

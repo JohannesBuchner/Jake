@@ -9,14 +9,14 @@ import java.util.EnumSet;
  * Get the data from the core, this is just a message that there's new stuff around.
  */
 public interface DataChanged {
-	public enum Reason {Projects, User, Files, Notes, LogEntries}
+	public enum DataReason {Projects, User, Files, Notes, LogEntries}
 
-	public static EnumSet<Reason> All = EnumSet.allOf(Reason.class);
+	public static EnumSet<DataReason> ALL = EnumSet.allOf(DataReason.class);
 
 	/**
 	 * Callback when new data is in the object cache
-	 * @param reason
+	 * @param dataReason
 	 * @param p optional variable
 	 */
-	public void dataChanged(EnumSet<DataChanged.Reason> reason, Project p);
+	public void dataChanged(EnumSet<DataReason> dataReason, Project p);
 }

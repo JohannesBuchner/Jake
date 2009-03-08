@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.models.InvitePeopleComboBoxModel;
 import org.apache.log4j.Logger;
@@ -60,7 +61,7 @@ public class InvitePeopleDialog extends JakeDialog {
 			}
 		});
 		peopleComboBox.setEditable(true);
-		peopleComboBox.setModel(new InvitePeopleComboBoxModel(JakeMainApp.getProject()));
+		peopleComboBox.setModel(new InvitePeopleComboBoxModel(JakeContext.getProject()));
 		AutoCompleteDecorator.decorate(peopleComboBox);
 		this.add(peopleComboBox, "growx");
 

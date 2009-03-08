@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
 
@@ -58,14 +58,14 @@ public class ExceptionUtilities {
 		e.printStackTrace();
 
 		if (msg == null) {
-			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+			JSheet.showMessageSheet(JakeContext.getFrame(),
 							"<html><h2>" + e.getClass().getName() + "</h2><br><b>" + e
 											.getMessage() + "</b><br><br> + " + DebugHelper
 											.arrayToString(e.getStackTrace(),
 															DebugHelper.DebugFormat.BRACES, 12) + "</html>",
 							JOptionPane.ERROR_MESSAGE, null);
 		} else {
-			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+			JSheet.showMessageSheet(JakeContext.getFrame(),
 							"<html><h2>" + msg + "</h2><br><b>" + e.getClass().getName() + ": " + e
 											.getMessage() + "</b><br><br> + " + DebugHelper
 											.arrayToString(e.getStackTrace(),

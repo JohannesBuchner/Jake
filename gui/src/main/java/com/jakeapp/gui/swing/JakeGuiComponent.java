@@ -1,10 +1,12 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import org.jdesktop.application.ResourceMap;
 
-public abstract class JakeGuiComponent implements ProjectSelectionChanged {
+import java.util.EnumSet;
+
+public abstract class JakeGuiComponent implements ContextChanged {
 	private Project project;
 
     public JakeGuiComponent() {
@@ -15,16 +17,17 @@ public abstract class JakeGuiComponent implements ProjectSelectionChanged {
     }
 
     public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-        projectUpdated();
+        return JakeContext.getProject();
     }
 
     /**
      * Called when project is changed.
      */
     protected abstract void projectUpdated();
+
+		public void contextChanged(EnumSet<Reason> reason, Object context) {
+			if(reason.contains(Reason.Project)) {
+				projectUpdated();
+			}
+		}
 }

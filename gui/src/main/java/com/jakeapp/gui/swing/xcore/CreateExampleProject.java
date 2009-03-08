@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 
@@ -35,7 +36,7 @@ public class CreateExampleProject {
 			writer.close();
 
 			JakeMainApp.getCore().createProject("JakeShared", newDir.getAbsolutePath(),
-							JakeMainApp.getMsgService());
+							JakeContext.getMsgService());
 		} catch (Exception e) {
 			ExceptionUtilities.showError(e);
 		}

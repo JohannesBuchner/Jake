@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.panels.NewsPanel;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
@@ -62,7 +63,7 @@ public class UserHelper {
 	}
 
 	public static boolean isCurrentProjectMember(User member) {
-		return member == JakeMainApp.getCurrentUser();
+		return member == JakeContext.getCurrentUser();
 	}
 
 

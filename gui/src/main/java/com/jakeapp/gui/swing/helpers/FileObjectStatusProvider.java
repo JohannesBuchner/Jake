@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import org.apache.log4j.Logger;
 
@@ -66,10 +67,10 @@ public class FileObjectStatusProvider {
 
 	public static Icon getStatusIcon(FileObject obj) {
 		Attributed<FileObject> status =
-						JakeMainApp.getCore().getAttributed(JakeMainApp.getProject(), obj);
+						JakeMainApp.getCore().getAttributed(JakeContext.getProject(), obj);
 
 		// hack
-		if(false)
+		if(true)
 			return spinner;
 
 		if (status == null) {

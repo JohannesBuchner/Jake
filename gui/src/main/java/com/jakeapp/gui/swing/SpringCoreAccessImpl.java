@@ -556,7 +556,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public UserInfo getUserInfo(User user) {
-		return pms.getProjectUserInfo(JakeMainApp.getProject(), user);
+		return pms.getProjectUserInfo(JakeContext.getProject(), user);
 	}
 
 	@Override

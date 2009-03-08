@@ -1,10 +1,9 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 import java.util.EnumSet;
@@ -15,39 +14,29 @@ import java.util.EnumSet;
  * Implements the changed and selection interface.
  */
 public abstract class ProjectAction extends JakeAction
-		  implements ProjectSelectionChanged, ProjectChanged, PropertyChanged {
+		  implements ProjectChanged, ContextChanged {
 	//private static final Logger log = Logger.getLogger(ProjectAction.class);
 
 	private Project project;
 
 	public ProjectAction() {
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
 		EventCore.get().addProjectChangedCallbackListener(this);
-		EventCore.get().addPropertyListener(this);
-
-		// initial load
-		setProject(JakeMainApp.getProject());
+		EventCore.get().addContextChangedListener(this);
 	}
 
 	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-
-		updateAction();
+		return JakeContext.getProject();
 	}
 
 	public void updateAction() {
-		setEnabled(this.isEnabled() && JakeMainApp.getMsgService() != null);		
+		setEnabled(this.isEnabled() && JakeContext.getMsgService() != null);
 	}
 
 	public void projectChanged(final ProjectChangedEvent ev) {
 		updateAction();
 	}
 
-	public void propertyChanged(EnumSet<Reason> reason, Project p, Object data) {
+	public void contextChanged(EnumSet<Reason> reason, Object context) {
 		updateAction();
 	}
 }

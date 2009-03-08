@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
@@ -30,7 +31,7 @@ public class FolderTreeTableModel implements TreeTableModel, FilesChanged {
 
 	public FolderTreeTableModel(ProjectFilesTreeNode root) {
 		this.root = root;
-		JakeMainApp.getCore().addFilesChangedListener(this, JakeMainApp.getProject());
+		JakeMainApp.getCore().addFilesChangedListener(this, JakeContext.getProject());
 	}
 
 	public void setRoot(ProjectFilesTreeNode node) {
@@ -202,7 +203,7 @@ public class FolderTreeTableModel implements TreeTableModel, FilesChanged {
 
 	@Override
 	public boolean isLeaf(Object node) {
-		// All leaves must be files and all files must be leaves
+		// ALL leaves must be files and all files must be leaves
 		if (!(node instanceof ProjectFilesTreeNode)) throw new IllegalArgumentException("Not a ProjectFilesTreeNode");
 		ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
 		return ournode.isFile();

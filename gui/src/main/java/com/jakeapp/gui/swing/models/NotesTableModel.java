@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
@@ -83,7 +84,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	 * Update the contents of the table model. It tries to update with the current project.
 	 */
 	public void update() {
-		this.update(JakeMainApp.getProject());
+		this.update(JakeContext.getProject());
 	}
 
 	/**
@@ -271,8 +272,8 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	}
 
 	@Override
-	public void dataChanged(EnumSet<Reason> reason, Project p) {
-		if (reason.contains(Reason.Notes)) {
+	public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
+		if (dataReason.contains(DataReason.Notes)) {
 			updateNotes(p);
 		}
 	}

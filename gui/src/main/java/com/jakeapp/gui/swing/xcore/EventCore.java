@@ -6,12 +6,13 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.PropertyChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
@@ -54,8 +55,8 @@ public class EventCore {
 	private IProjectInvitationListener invitationListener =
 					new ProjectInvitationListener();
 
-	private final List<PropertyChanged> propertyChangedListeners =
-					new ArrayList<PropertyChanged>();
+	private final List<ContextChanged> contextChangedListeners =
+					new ArrayList<ContextChanged>();
 
 	private final List<TaskChanged> taskChangedListeners =
 					new ArrayList<TaskChanged>();
@@ -96,7 +97,7 @@ public class EventCore {
 
 	private void fireAllChanged() {
 		ObjectCache.get().updateAll();
-		fireDataChanged(DataChanged.All, null);
+		fireDataChanged(DataChanged.ALL, null);
 	}
 
 	public static EventCore get() {
@@ -156,10 +157,10 @@ public class EventCore {
 		dataChanged.remove(cb);
 	}
 
-	public void fireDataChanged(EnumSet<DataChanged.Reason> reason, Project p) {
-		log.trace("spread callback event data changed: " + reason);
+	public void fireDataChanged(EnumSet<DataChanged.DataReason> dataReason, Project p) {
+		log.trace("spread callback event data changed: " + dataReason);
 		for (DataChanged callback : dataChanged) {
-			callback.dataChanged(reason, p);
+			callback.dataChanged(dataReason, p);
 		}
 
 		// any stalled events?
@@ -182,12 +183,12 @@ public class EventCore {
 		nodeSelectionListeners.remove(listener);
 	}
 
-	public void addPropertyListener(PropertyChanged listener) {
-		propertyChangedListeners.add(listener);
+	public void addContextChangedListener(ContextChanged listener) {
+		contextChangedListeners.add(listener);
 	}
 
-	public void removePropertyListener(PropertyChanged listener) {
-		propertyChangedListeners.remove(listener);
+	public void removeContextChangedListener(ContextChanged listener) {
+		contextChangedListeners.remove(listener);
 	}
 
 
@@ -229,7 +230,7 @@ public class EventCore {
 	// FIXME: need conversion to AvailableLater?
 	public void fireLogChanged(Project p) {
 		//ObjectCache.get().updateLog(p);
-		fireDataChanged(EnumSet.of(DataChanged.Reason.Files), p);
+		fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), p);
 	}
 
 	public void addTasksChangedListener(TaskChanged callback) {
@@ -278,17 +279,15 @@ public class EventCore {
 
 
 	/**
-	 * Fire Event that a property has changed.
+	 * Fire Event that a context has changed.
 	 *
 	 * @param reason
-	 * @param project
-	 * @param obj
+	 * @param context
 	 */
-	public void firePropertyChanged(PropertyChanged.Reason reason, Project project,
-					Object obj) {
+	public void fireContextChanged(ContextChanged.Reason reason, Object context) {
 		log.trace("notify property changed listeners");
-		for (PropertyChanged c : propertyChangedListeners) {
-			c.propertyChanged(EnumSet.of(reason), project, obj);
+		for (ContextChanged c : contextChangedListeners) {
+			c.contextChanged(EnumSet.of(reason), context);
 		}
 	}
 
@@ -316,7 +315,7 @@ public class EventCore {
 			log.debug("accepted: " + user + ", project" + p);
 
 			// TODO: find a better place for that
-			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+			JSheet.showMessageSheet(JakeContext.getFrame(),
 							"User " + user + " accepted your Invitation to " + p);
 		}
 
@@ -324,7 +323,7 @@ public class EventCore {
 			log.debug("rejected" + user + ", project" + p);
 
 			// TODO: find a better place for that			
-			JSheet.showMessageSheet(JakeMainApp.getFrame(),
+			JSheet.showMessageSheet(JakeContext.getFrame(),
 							"User " + user + " rejected your Invitation to " + p);
 		}
 	}

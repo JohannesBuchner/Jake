@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
@@ -53,7 +54,7 @@ public class DeleteFileAction extends FileAction {
 
 		final List<FileObject> files = new ArrayList<FileObject>();
 
-		User currentUser = JakeMainApp.getProject().getUserId();
+		User currentUser = JakeContext.getProject().getUserId();
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
 		String[] options =
@@ -61,7 +62,7 @@ public class DeleteFileAction extends FileAction {
 		String text;
 		LogEntry<? extends ILogable> lockEntry = null;
 		Attributed<FileObject> af;
-		Project p = JakeMainApp.getProject();
+		Project p = JakeContext.getProject();
 
 		log.debug("getting files to delete");
 
@@ -121,8 +122,7 @@ public class DeleteFileAction extends FileAction {
 					public void optionSelected(SheetEvent evt) {
 						if (evt.getOption() == 0) {
 							log.debug("Deleting now!!!");
-							JakeExecutor.exec(new DeleteJakeObjectsTask(JakeMainApp
-									.getProject(), new ArrayList<JakeObject>(files),null));
+							JakeExecutor.exec(new DeleteJakeObjectsTask(JakeContext.getProject(), new ArrayList<JakeObject>(files),null));
 							/*
 							 * for (String item : cache) { JakeMainApp.getCore()
 							 * .deleteToTrash(JakeMainApp.getProject(), item); }

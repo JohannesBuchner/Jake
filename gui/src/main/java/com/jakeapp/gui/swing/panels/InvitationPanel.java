@@ -1,12 +1,10 @@
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.JoinProjectAction;
 import com.jakeapp.gui.swing.actions.RejectProjectAction;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -17,25 +15,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EnumSet;
 
 /**
  * The Project Invitation Panel.
  * A Unjoined project is displayed here, the user can join or reject.
- * User: studpete
- * Date: Dec 23, 2008
- * Time: 5:35:46 PM
  */
-public class ProjectInvitationPanel extends JXPanel implements
-				ProjectSelectionChanged, ProjectChanged {
-	private Project project;
+public class InvitationPanel extends JXPanel implements ContextChanged {
 	private JTextField folderTextField;
 	private JLabel projectNameLabel;
 	private JLabel userNameLabel;
 	private JoinProjectAction joinProjectAction;
 
-	public ProjectInvitationPanel() {
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
-		EventCore.get().addProjectChangedCallbackListener(this);
+	public InvitationPanel() {
+		EventCore.get().addContextChangedListener(this);
 
 		initComponents();
 	}
@@ -43,8 +36,8 @@ public class ProjectInvitationPanel extends JXPanel implements
 
 	private void initComponents() {
 		// set the background painter
-		this.setBackgroundPainter(
-						Platform.getStyler().getContentPanelBackgroundPainter());
+		this.setBackgroundPainter(Platform
+						.getStyler().getContentPanelBackgroundPainter());
 
 		MigLayout layout = new MigLayout("wrap 1, fillx");
 		this.setLayout(layout);
@@ -59,8 +52,9 @@ public class ProjectInvitationPanel extends JXPanel implements
 		this.add(projectNameLabel, "span 1 ,al center, wrap");
 
 		JLabel icon = new JLabel();
-		icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-new-large.png"))));
+		icon.setIcon(new ImageIcon(Toolkit
+						.getDefaultToolkit().getImage(getClass().getResource(
+						"/icons/folder-new-large.png"))));
 
 		this.add(icon, "span 1, al center, wrap");
 
@@ -71,8 +65,9 @@ public class ProjectInvitationPanel extends JXPanel implements
 		JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
 		folderSelectPanel.setOpaque(false);
 
-		folderTextField =
-						new JTextField(FileUtilities.getDefaultProjectLocation(getProject()));
+		folderTextField =	new JTextField();
+		generateProjectDefaultLocation();
+
 		folderTextField.setEditable(false);
 		folderSelectPanel.add(folderTextField);
 
@@ -106,33 +101,26 @@ public class ProjectInvitationPanel extends JXPanel implements
 		this.add(btnPanel, "al center");
 	}
 
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project pr) {
-		this.project = pr;
-		updatePanel();
-		setProjectDefaultLocation();
-	}
-
-	private void setProjectDefaultLocation() {
-		folderTextField.setText(FileUtilities.getDefaultProjectLocation(getProject()));
-	}
-
-	public void projectChanged(ProjectChangedEvent ev) {
-		updatePanel();
+	private void generateProjectDefaultLocation() {
+		folderTextField.setText(FileUtilities.getDefaultProjectLocation(JakeContext.getInvitation()));
 	}
 
 	private void updatePanel() {
-		if (getProject() != null) {
-			projectNameLabel.setText(getProject().getName());
+		if (JakeContext.getInvitation() != null) {
+			projectNameLabel.setText(JakeContext.getInvitation().getProjectName());
 
 			// TODO: is this user id the id from the inviter?
 			// TODO: enable when this works without mock!
 			String userId = "<needs real impl>"; //getProject().getUser().toString();
 			userNameLabel.setText(JakeMainView.getMainView().getResourceMap()
 							.getString("projectInvitedFrom") + " " + userId);
+		}
+	}
+
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		if (reason.contains(Reason.Invitation)) {
+			updatePanel();
+			generateProjectDefaultLocation();
 		}
 	}
 }

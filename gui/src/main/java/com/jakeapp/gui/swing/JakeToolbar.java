@@ -181,7 +181,7 @@ public class JakeToolbar {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				log.debug("Search field: " + e.getActionCommand());
+				log.trace("Search field: " + e.getActionCommand());
 				if (e.getActionCommand().equals("")) {
 					filePanelp.resetFilter();
 					NotesPanel.getInstance().resetFilter();
@@ -214,11 +214,11 @@ public class JakeToolbar {
 	 * Enables/disables the toolbar depending on current dataset
 	 */
 	public void updateToolBar() {
-		boolean hasProject = jakeMainView.getProject() != null;
-		boolean isInvite = jakeMainView.getProject() != null && jakeMainView.getProject()
+		boolean hasProject = JakeContext.getProject() != null;
+		boolean isInvite = JakeContext.getProject() != null && JakeContext.getProject()
 						.getInvitationState() == InvitationState.INVITED;
 		boolean isProjectContext = jakeMainView.getContextViewPanel() == JakeMainView.ContextPanelEnum.Project;
-		boolean hasUser = JakeMainApp.getMsgService() != null;
+		boolean hasUser = JakeContext.getMsgService() != null;
 
 		createProjectButton.setEnabled(hasUser);
 		addFilesButton.setEnabled(hasProject && !isInvite);

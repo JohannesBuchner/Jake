@@ -33,7 +33,7 @@ public class CreateNoteAction extends NoteAction {
 	public void actionPerformed(ActionEvent event) {
 		try {
 			NoteObject newNote = new NoteObject(
-					NotesPanel.getInstance().getCurrentProject(),
+					NotesPanel.getInstance().getProject(),
 					JakeMainView.getMainView().getResourceMap().getString("NewNoteDefaultContent"));
 			
 			NotesPanel.getInstance().getNotesTableModel().setNoteToSelectLater(newNote);

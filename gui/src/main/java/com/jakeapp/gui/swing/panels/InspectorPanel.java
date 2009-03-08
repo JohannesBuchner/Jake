@@ -4,12 +4,13 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -31,6 +32,7 @@ import org.jdesktop.swingx.JXTable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.EnumSet;
 
 /**
  * Inspector Panel Shows extended File/Notes Info: For File: Icon, Name, , Size,
@@ -39,13 +41,12 @@ import java.io.File;
  * @author studpete, simon
  */
 public class InspectorPanel extends JXPanel
-				implements ProjectChanged, ProjectSelectionChanged, FileSelectionChanged,
+				implements ProjectChanged, ContextChanged, FileSelectionChanged,
 				ProjectViewChanged, NoteSelectionChanged {
 
 	private static final long serialVersionUID = 7743765581263700424L;
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
 	public static final int INSPECTOR_SIZE = 250;
-	private Project project;
 	private ResourceMap resourceMap;
 	private Attributed<FileObject> attributedFileObject;
 	private Attributed<NoteObject> attributedNoteObject;
@@ -92,7 +93,7 @@ public class InspectorPanel extends JXPanel
 
 		// register for events
 		EventCore.get().addProjectChangedCallbackListener(this);
-		JakeMainApp.getApp().addProjectSelectionChangedListener(this);
+		EventCore.get().addContextChangedListener(this);
 		EventCore.get().addFileSelectionListener(this);
 		NotesPanel.getInstance().addNoteSelectionListener(this);
 		JakeMainView.getMainView().addProjectViewChangedListener(this);
@@ -176,7 +177,7 @@ public class InspectorPanel extends JXPanel
 		this.setLayout(new MigLayout("wrap 1, fill, ins 0"));
 		this.add(this.noteFileInspector, "hidemode 2");
 		this.add(this.emptyInspector, "hidemode 2");
-		
+
 
 		this.add(this.eventsTableScrollPane, "dock south, grow");
 
@@ -200,8 +201,7 @@ public class InspectorPanel extends JXPanel
 		log.trace("mode: " + this.mode);
 
 		// HACK: quick fix
-		if((mode == Mode.FILE && attributedFileObject == null)
-						|| (mode == Mode.NOTE && attributedNoteObject == null)) {
+		if ((mode == Mode.FILE && attributedFileObject == null) || (mode == Mode.NOTE && attributedNoteObject == null)) {
 			mode = Mode.NONE;
 		}
 
@@ -297,24 +297,22 @@ public class InspectorPanel extends JXPanel
 		updatePanel();
 	}
 
-	@Override
-	public void setProject(Project project) {
-		this.project = project;
-		this.getEventsTableModel().setProject(project);
-
-		updatePanel();
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		if (reason.contains(Reason.Project)) {
+			this.getEventsTableModel().setProject(this.getProject());
+			updatePanel();
+		}
 	}
 
 	public Project getProject() {
-		return this.project;
+		return JakeContext.getProject();
 	}
 
 	@Override
 	public void fileSelectionChanged(FileSelectedEvent event) {
 		log.debug("received a fileSelectedEvent from the EventCore");
 		if (event.isSingleFileSelected()) {
-			this.setFileObject(JakeMainApp
-							.getCore().getAttributed(this.getProject(),
+			this.setFileObject(JakeMainApp.getCore().getAttributed(this.getProject(),
 							event.getSingleFile()));
 		} else {
 			this.clear();
@@ -342,7 +340,7 @@ public class InspectorPanel extends JXPanel
 
 	@Override
 	public void setProjectViewPanel(JakeMainView.ProjectView projectViewPanel) {
-		
+
 		if (projectViewPanel == JakeMainView.ProjectView.Files)
 			this.mode = Mode.FILE;
 		else if (projectViewPanel == JakeMainView.ProjectView.Notes)

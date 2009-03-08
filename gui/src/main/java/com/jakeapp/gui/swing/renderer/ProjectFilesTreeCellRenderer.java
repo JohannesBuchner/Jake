@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.renderer;
 
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;
@@ -38,7 +39,7 @@ public class ProjectFilesTreeCellRenderer implements TreeCellRenderer {
 				log.warn("Some data in note is null: " + node);
 				file = null;
 			} else {
-				file = new File(JakeMainApp.getProject().getRootPath() + node.getFolderObject().getRelPath());
+				file = new File(JakeContext.getProject().getRootPath() + node.getFolderObject().getRelPath());
 			}
 		}
 

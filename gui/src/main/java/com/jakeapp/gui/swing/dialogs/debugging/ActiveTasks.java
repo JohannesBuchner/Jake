@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.dialogs.debugging;
 
-import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeContext;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import net.miginfocom.swing.MigLayout;
@@ -68,7 +68,7 @@ public class ActiveTasks extends JXPanel {
 	}
 
 	public static void createDialog() {
-		JDialog dlg = new JDialog(JakeMainApp.getFrame(), "Jake Background Tasks");
+		JDialog dlg = new JDialog(JakeContext.getFrame(), "Jake Background Tasks");
 		dlg.add(new ActiveTasks());
 		dlg.setMinimumSize(new Dimension(250, 400));
 		dlg.pack();
