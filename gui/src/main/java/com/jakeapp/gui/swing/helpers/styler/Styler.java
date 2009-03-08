@@ -33,9 +33,16 @@ public interface Styler {
 
 	/**
 	 * Returns the Font for Bold large fonts.
+	 *
 	 * @return
 	 */
 	Font getH1Font();
+
+	/**
+	 * Returns the Font for Bold medium fonts.
+	 * @return
+	 */
+	Font getH2Font();
 
 	/**
 	 * Returns the large font used in sheets/dialogs

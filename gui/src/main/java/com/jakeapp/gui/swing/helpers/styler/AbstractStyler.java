@@ -29,6 +29,12 @@ public abstract class AbstractStyler implements Styler {
 		return new Font("Lucida Grande", Font.BOLD, 18);
 	}
 
+	public Font getH2Font() {
+		// TODO: search nicer font for windows? do they have lucida??
+		// TODO: cache font.
+		return new Font("Lucida Grande", Font.BOLD, 15);
+	}
+
 	public Painter getContentPanelBackgroundPainter() {
 
 		MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.6f));

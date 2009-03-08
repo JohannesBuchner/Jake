@@ -48,7 +48,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		this.add(title, "span 1, al center, wrap");
 
 		projectNameLabel = new JLabel();
-		projectNameLabel.setFont(projectNameLabel.getFont().deriveFont(Font.BOLD));
+		projectNameLabel.setFont(Platform.getStyler().getH2Font());
 		this.add(projectNameLabel, "span 1 ,al center, wrap");
 
 		JLabel icon = new JLabel();

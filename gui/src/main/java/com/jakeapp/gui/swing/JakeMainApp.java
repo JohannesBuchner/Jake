@@ -20,9 +20,9 @@ import java.util.List;
 
 /**
  * The main class of the application.
- *
+ * <p/>
  * Configuration properties (Add to VM propertes)
- *  -Dcom.jakeapp.gui.ignoresingleinstance=true  	  	Disable single instance checking
+ * -Dcom.jakeapp.gui.ignoresingleinstance=true  	  	Disable single instance checking
  */
 public class JakeMainApp extends SingleFrameApplication {
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
@@ -100,48 +100,50 @@ public class JakeMainApp extends SingleFrameApplication {
 	 * @param args
 	 */
 	private static void startGui(String[] args) {
-		// we use the system laf everywhere except linux.
-		// gtk is ugly here - we us nimbus (when available)
+
+		/**
+		 * Laf detection code - get the best for every system!
+		 */
 		try {
+			// on windows & mac, use the native laf
 			if (Platform.isWin() || Platform.isMac()) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} else {
-				// try to use nimbus (available starting j6u10)
-
-				// FIXME: detect <= j6u10
-				if (false) {
-					try {
-						UIManager.setLookAndFeel(
-										"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-
-					} catch (Exception r) {
-
-						// and stick to the system laf if nimbus fails (may be gtk on linux pre j6u10)
-						UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				// linux - it's a bit more tricky here
+				UIManager.LookAndFeelInfo nimbusLaf = null;
+				UIManager.LookAndFeelInfo gtkLaf = null;
+				for (UIManager.LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+					log.debug("Found LAF: " + laf);
+					if (laf.getClassName().toLowerCase().contains("gtk")) {
+						gtkLaf = laf;
+					} else if (laf.getClassName().toLowerCase().contains("nimbus")) {
+						nimbusLaf = laf;
 					}
-				} else {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				}
+				try {
+					if (gtkLaf != null) {
+						UIManager.setLookAndFeel(gtkLaf.getClassName());
+					} else if (nimbusLaf != null) {
+						UIManager.setLookAndFeel(nimbusLaf.getClassName());
+					}
+				} catch (Exception r) {
+					log.warn("Error setting laf: " + r.getMessage());
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)	{
 			log.warn("LAF Exception: ", e);
 		}
 
-		if (Platform.isMac()) {
+		if (Platform.isMac())	{
 			// MacOSX specific: set menu name to 'Jake'
 			// has to be called VERY early to succeed (prior to any gui stuff, later
 			// calls will be ignored)
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
 
-			// TODO: also not working as expected, see macwidgets issue 48
-			//System.setProperty("apple.awt.draggableWindowBackground", "true");
-
-			// TODO: broken? has no use on mac java 6?
-			System.setProperty("apple.awt.brushMetalRounded", "true");
-		} else if (Platform.isLin()) {
+		} else if (Platform.isLin()){
 			Platform.fixWmClass();
 		}
-
 
 		launch(JakeMainApp.class, args);
 	}
@@ -207,6 +209,7 @@ public class JakeMainApp extends SingleFrameApplication {
 		JakeContext.setMsgService(null);
 	}
 
+	// there is no remove because the core is never unloaded...
 	public void addCoreChangedListener(CoreChanged coreCallback) {
 		coreChanged.add(coreCallback);
 	}
