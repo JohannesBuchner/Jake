@@ -10,32 +10,32 @@ import com.explodingpixels.macwidgets.SourceListSelectionListener;
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
-import com.jakeapp.gui.swing.actions.project.DeleteProjectAction;
-import com.jakeapp.gui.swing.actions.project.SyncProjectAction;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.project.CreateProjectAction;
-import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.project.DeleteProjectAction;
+import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
+import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
 import com.jakeapp.gui.swing.actions.project.RenameProjectAction;
-import com.jakeapp.gui.swing.actions.project.*;
+import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.project.SyncProjectAction;
 import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
+import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
 import com.jakeapp.gui.swing.controls.WaitIndicator;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
 import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
-import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
-import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.JakeMainView;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -192,9 +192,9 @@ public class JakeSourceList extends JakeGuiComponent
 		sourceList.addSourceListSelectionListener(projectSelectionListener);
 
 		// use the fancy scrollbars on mac
-		if (Platform.isMac()) {
-			sourceList.useIAppStyleScrollBars();
-		}
+		//if (Platform.isMac()) {
+		//	sourceList.useIAppStyleScrollBars();
+		//}
 
 		final SourceListContextMenuProvider menuProvider =
 						new SourceListContextMenuProvider() {

@@ -6,11 +6,11 @@ package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -125,6 +125,7 @@ public class JakeMainApp extends SingleFrameApplication {
 			// fixme: proper argument check!
 			if (args.length > 0 && nimbusLaf != null) {
 				UIManager.setLookAndFeel(nimbusLaf.getClassName());
+				installMacScrollbars();
 			} else {
 
 				// on windows & mac, use the native laf
@@ -152,12 +153,18 @@ public class JakeMainApp extends SingleFrameApplication {
 			// has to be called VERY early to succeed (prior to any gui stuff, later
 			// calls will be ignored)
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+			installMacScrollbars();
 
 		} else if (Platform.isLin()) {
 			Platform.fixWmClass();
 		}
 
 		launch(JakeMainApp.class, args);
+	}
+
+	private static void installMacScrollbars() {// install the cool scrollbars!
+		UIManager.put("ScrollBarUI",
+							com.explodingpixels.macwidgets.plaf.IAppScrollBarUI.class.getName());
 	}
 
 

@@ -5,10 +5,10 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.users.InviteUsersAction;
 import com.jakeapp.gui.swing.actions.users.RenameUsersAction;
+import com.jakeapp.gui.swing.actions.users.SyncUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustFullUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustNoUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustUsersAction;
-import com.jakeapp.gui.swing.actions.users.SyncUsersAction;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
@@ -19,7 +19,6 @@ import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
-import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
@@ -109,9 +108,11 @@ public class NewsPanel extends javax.swing.JPanel
 		this.autoUploadCB.setOpaque(false);
 		this.autoDownloadCB.setOpaque(false);
 
+		// fixme
+		this.newsContentPanel.setBackground(new Color(137, 149, 171)); //Platform.getStyler().getContentBackgroundColor()
 		// set the background painter
-		this.newsContentPanel.setBackgroundPainter(
-						Platform.getStyler().getContentPanelBackgroundPainter());
+		//this.newsContentPanel.setBackgroundPainter(
+		//				Platform.getStyler().getContentPanelBackgroundPainter());
 
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
