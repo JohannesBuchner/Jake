@@ -101,6 +101,7 @@ public class FileUtilities {
 	 * @param invitation
 	 * @return
 	 */
+	// fixme: do something when folder already exists!
 	public static String getDefaultProjectLocation(Invitation invitation) {
 		if (invitation == null) {
 			return "";

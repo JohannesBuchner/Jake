@@ -15,6 +15,8 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXPanel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +34,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	private JLabel generateNewFolderLabel;
 	private Timer tableUpdateTimer;
 	private int TableUpdateDelay = 60000;
+	private JButton joinButton;
 
 	public InvitationPanel() {
 		EventCore.get().addContextChangedListener(this);
@@ -80,9 +83,22 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		folderSelectPanel.setOpaque(false);
 
 		folderTextField = new JTextField();
-		generateProjectDefaultLocation();
 
-		folderTextField.setEditable(false);
+		folderTextField.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				updatePanel();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				updatePanel();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				updatePanel();
+			}
+		});
+
+		generateProjectDefaultLocation();
 		folderSelectPanel.add(folderTextField, "wmin 400");
 
 		JButton folderChooserButton = new JButton("...");
@@ -101,13 +117,10 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		// fixme: make larger!?
 		this.add(folderSelectPanel, "span 2, al center, wrap");
 
-		generateNewFolderLabel = new JLabel("We'll create a new folder for you.");
-		this.add(generateNewFolderLabel, "al center");
-
 		JPanel btnPanel = new JPanel(new MigLayout("nogrid"));
 		btnPanel.setOpaque(false);
 
-		JButton joinButton = new JButton("Join");
+		joinButton = new JButton("Join");
 		joinButton.putClientProperty("JButton.buttonType", "textured");
 		joinProjectAction = new JoinProjectAction();
 		joinButton.setAction(joinProjectAction);
@@ -120,6 +133,10 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		btnPanel.add(rejectButton, "tag cancel");
 
 		this.add(btnPanel, "al center");
+
+
+		generateNewFolderLabel = new JLabel();
+		this.add(generateNewFolderLabel, "al center");
 	}
 
 	private void generateProjectDefaultLocation() {
@@ -134,12 +151,20 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 
 			String userId = UserHelper.cleanUserId(invite.getInviter().getUserId());
 			userNameLabel.setText(String.format("%s %s by %s",
-							JakeMainView.getMainView().getResourceMap().getString("projectInvited"),
+							JakeMainView.getMainView().getResourceMap().getString(
+											"projectInvited"),
 							TimeUtilities.getRelativeTime(invite.getCreation()), userId));
 
 			boolean createNewFolder =
 							!FileUtilities.checkDirectoryExistence(folderTextField.getText());
-			generateNewFolderLabel.setVisible(createNewFolder);
+
+			if (createNewFolder) {
+				generateNewFolderLabel.setText("We'll create a new folder for you.");
+			}else {
+				generateNewFolderLabel.setText("Folder exists.");
+			}
+
+			joinButton.setEnabled(folderTextField.getText().length() > 0);
 		}
 	}
 
