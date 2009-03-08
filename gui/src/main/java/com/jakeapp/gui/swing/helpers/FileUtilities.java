@@ -466,7 +466,7 @@ public class FileUtilities {
 	}
 
 	public static boolean createDirectory(String path) {
-		if (createDirectory(path))
+		if (checkDirectoryExistence(path))
 			return true;
 		else
 			return new File(path).mkdirs();
