@@ -13,7 +13,6 @@ import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
-import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
@@ -25,7 +24,6 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -680,7 +678,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional(readOnly = false)
-	public void joinProject(Invitation invitation, File rootPath)
+	public void acceptInvitation(Invitation invitation, File rootPath)
 			throws IllegalStateException, NoSuchProjectException {
 
 		log.debug("joining a project ");
@@ -710,7 +708,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	@Override
-	public void rejectProject(Project project, User inviter)
+	public void rejectInvitation(Invitation invitation)
 			throws IllegalStateException, NoSuchProjectException {
 		// preconditions
 		if (project == null)

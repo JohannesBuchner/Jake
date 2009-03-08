@@ -80,7 +80,8 @@ public class ProjectInvitationListener implements com.jakeapp.core.services.IPro
 	public void rejected(User user, Project p) {
 		log.debug("Invitation for/from user " + user  + " to Project " + p  + " rejected ");
 
-//		ProjectMemberInvitationRejectedLogEntry logEntry = new ProjectMemberInvitationRejectedLogEntry(user, p.getUserId());
+		ProjectMemberInvitationRejectedLogEntry logEntry = new ProjectMemberInvitationRejectedLogEntry(user, p.getUserId());
+		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
 //		if (this.invitationListener != null)
 //			this.invitationListener.rejected(user, p);
 	}

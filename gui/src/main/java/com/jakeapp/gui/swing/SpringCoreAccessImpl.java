@@ -294,7 +294,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 			public void run() {
 				try {
-					pms.joinProject(invitation, new File(path));
+					pms.acceptInvitation(invitation, new File(path));
 
 					Project project = invitation.createProject();
 
@@ -324,7 +324,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			public void run() {
 				try {
 					getFrontendService().getProjectsManagingService(getSessionId())
-									.rejectProject(project, project.getUserId());
+									.rejectInvitation(JakeContext.getInvitation());
 
 					EventCore.get().fireProjectChanged(
 									new ProjectChanged.ProjectChangedEvent(project,

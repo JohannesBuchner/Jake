@@ -247,20 +247,18 @@ public interface IProjectsManagingService {
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
-	void joinProject(Invitation invitation, File rootPath)
+	void acceptInvitation(Invitation invitation, File rootPath)
 			  throws IllegalStateException, NoSuchProjectException;
 
 
 	/**
 	 * Rejects joining of a invited project and notifies the inviter.
 	 *
-	 * @param project The project not to join.
-	 * @param inviter The user that invited us to join the project.
-	 *                She is notified that we rejected joining the project.
+	 * @param invitation
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
-	void rejectProject(Project project, User inviter)
+	public void rejectInvitation(Invitation invitation)
 			  throws IllegalStateException, NoSuchProjectException;
 
 	/**
