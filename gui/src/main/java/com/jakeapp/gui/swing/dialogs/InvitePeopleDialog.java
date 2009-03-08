@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.models.InvitePeopleComboBoxModel;
 import org.apache.log4j.Logger;

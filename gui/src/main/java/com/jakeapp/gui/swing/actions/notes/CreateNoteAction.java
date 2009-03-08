@@ -7,7 +7,7 @@ import javax.swing.Action;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.JakeStatusBar;
+import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;

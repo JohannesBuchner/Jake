@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing;
+package com.jakeapp.gui.swing.components;
 
 import com.explodingpixels.macwidgets.LabeledComponentGroup;
 import com.explodingpixels.macwidgets.MacButtonFactory;
@@ -13,6 +13,8 @@ import com.jakeapp.gui.swing.controls.SearchField;
 import com.jakeapp.gui.swing.filters.FileObjectNameFilter;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.NotesPanel;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.PatternFilter;
 import org.apache.log4j.Logger;

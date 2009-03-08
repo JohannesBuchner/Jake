@@ -1,8 +1,4 @@
 package com.jakeapp.core.domain;
-
-//import org.hibernate.annotations.Entity;
-//import org.hibernate.type.DiscriminatorType;
-
 import org.apache.log4j.Logger;
 
 
@@ -26,7 +22,6 @@ public class User implements ILogable, Comparable<User> {
 	private static final Logger log = Logger.getLogger(User.class);
 
 	private String userId;
-
 	private ProtocolType protocolType;
 
 	public void setUserId(String userId) {

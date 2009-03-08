@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing;
+package com.jakeapp.gui.swing.components;
 
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
@@ -22,6 +22,10 @@ import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 

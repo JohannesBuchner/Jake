@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.helpers.dragdrop;
 
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
 import org.apache.log4j.Logger;

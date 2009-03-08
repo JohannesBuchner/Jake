@@ -1,10 +1,11 @@
 package com.jakeapp.gui.swing.panels;
 
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
 import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -42,7 +43,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		MigLayout layout = new MigLayout("wrap 1, fillx");
 		this.setLayout(layout);
 
-		JLabel title = new JLabel("You have been invited to a new project.");
+		JLabel title = new JLabel("You have been invited to a new project!");
 		title.setFont(Platform.getStyler().getH1Font());
 
 		this.add(title, "span 1, al center, wrap");
@@ -60,7 +61,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 
 		userNameLabel = new JLabel();
 		userNameLabel.setFont(userNameLabel.getFont().deriveFont(Font.BOLD));
-		this.add(userNameLabel, "span 1 ,al center, wrap");
+		this.add(userNameLabel, "span 1, al center, wrap");
 
 		JPanel folderSelectPanel = new JPanel(new MigLayout("nogrid, fillx"));
 		folderSelectPanel.setOpaque(false);
@@ -83,16 +84,19 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		});
 		folderSelectPanel.add(folderChooserButton, "");
 
+		// fixme: make larger!?
 		this.add(folderSelectPanel, "span 2, al center, wrap");
 
 		JPanel btnPanel = new JPanel(new MigLayout("nogrid"));
 		btnPanel.setOpaque(false);
 
 		JButton joinButton = new JButton("Join");
+		joinButton.putClientProperty("JButton.buttonType", "textured");
 		joinProjectAction = new JoinProjectAction();
 		joinButton.setAction(joinProjectAction);
 
 		JButton rejectButton = new JButton("Reject");
+		rejectButton.putClientProperty("JButton.buttonType", "textured");
 		rejectButton.setAction(new RejectProjectAction());
 
 		btnPanel.add(joinButton, "tag ok");
@@ -106,12 +110,11 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	}
 
 	private void updatePanel() {
-		if (JakeContext.getInvitation() != null) {
-			projectNameLabel.setText(JakeContext.getInvitation().getProjectName());
+		Invitation invite = JakeContext.getInvitation();
+		if (invite != null) {
+			projectNameLabel.setText("> " + invite.getProjectName() + " <");
 
-			// TODO: is this user id the id from the inviter?
-			// TODO: enable when this works without mock!
-			String userId = "<needs real impl>"; //getProject().getUser().toString();
+			String userId = invite.getInviter().getUserId();
 			userNameLabel.setText(JakeMainView.getMainView().getResourceMap()
 							.getString("projectInvitedFrom") + " " + userId);
 		}

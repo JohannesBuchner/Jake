@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.renderer.files;
 
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileIconLabelHelper;

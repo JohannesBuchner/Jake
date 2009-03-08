@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.synchronization.UserInfo;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;

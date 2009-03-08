@@ -36,6 +36,7 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.JakeObjectAttributedCacheManager;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.jake.fss.IFileModificationListener;
 import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
@@ -558,6 +559,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public UserInfo getUserInfo(User user) {
+		if(user == null) return null;
+
 		return pms.getProjectUserInfo(JakeContext.getProject(), user);
 	}
 

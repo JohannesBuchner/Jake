@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing;
+package com.jakeapp.gui.swing.globals;
 
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
@@ -6,6 +6,8 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.JakeMainApp;
 
 import javax.swing.*;
 

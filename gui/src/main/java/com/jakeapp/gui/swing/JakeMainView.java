@@ -30,6 +30,10 @@ import com.jakeapp.gui.swing.worker.InitCoreWorker;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.JakeDatabaseTools;
+import com.jakeapp.gui.swing.components.JakeSourceList;
+import com.jakeapp.gui.swing.components.JakeToolbar;
+import com.jakeapp.gui.swing.components.JakeStatusBar;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -401,7 +405,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	 *
 	 * @return true if CAN be displayed with current content.
 	 */
-	protected boolean isInspectorAllowed() {
+	public boolean isInspectorAllowed() {
 		boolean hasProject = JakeContext.getProject() != null;
 		boolean isFilePaneOpen =
 						getContextViewPanel() == ContextPanelEnum.Project && getProjectViewPanel() == ProjectView.Files;

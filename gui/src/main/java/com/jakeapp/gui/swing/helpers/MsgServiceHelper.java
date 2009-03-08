@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.helpers;
 
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.VisibilityStatus;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import org.apache.log4j.Logger;
 
 /**

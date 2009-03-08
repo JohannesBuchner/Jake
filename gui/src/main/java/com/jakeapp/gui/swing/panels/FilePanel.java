@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.panels;
 
 import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.file.*;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;

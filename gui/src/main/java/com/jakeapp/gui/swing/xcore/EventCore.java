@@ -6,7 +6,7 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
@@ -301,11 +301,6 @@ public class EventCore {
 
 		@Override public void invited(User user, Project p) {
 			log.debug("received invitation from " + user + " for project: " + p);
-
-			// save in InvitationManager
-			InvitationManager.get().saveInvitationSource(p, user);
-
-			//ObjectCache.get().updateProjects();
 
 			fireProjectChanged(new ProjectChanged.ProjectChangedEvent(p,
 							ProjectChanged.ProjectChangedEvent.Reason.Invited));

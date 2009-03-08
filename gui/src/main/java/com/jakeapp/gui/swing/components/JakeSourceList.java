@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing;
+package com.jakeapp.gui.swing.components;
 
 import com.explodingpixels.macwidgets.SourceList;
 import com.explodingpixels.macwidgets.SourceListCategory;
@@ -32,6 +32,10 @@ import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
+import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
+import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.JakeMainView;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

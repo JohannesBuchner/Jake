@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.dialogs.debugging;
 
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import net.miginfocom.swing.MigLayout;

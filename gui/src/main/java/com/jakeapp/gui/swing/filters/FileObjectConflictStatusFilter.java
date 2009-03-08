@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.filters;
 
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.JakeContext;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import org.apache.log4j.Logger;

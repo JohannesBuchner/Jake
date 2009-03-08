@@ -1,7 +1,9 @@
-package com.jakeapp.gui.swing;
+package com.jakeapp.gui.swing.components.componenthelper;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.JakeMainView;
 import org.jdesktop.application.ResourceMap;
 
 import java.util.EnumSet;
