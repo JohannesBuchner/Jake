@@ -513,17 +513,30 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		for (LogEntry<User> le : entries) {
 			User who = le.getMember();
 			User whom = le.getBelongsTo();
-			if (people.get(who) == null) {
+
+			// initialize list
+			if (!people.containsKey(who)) {
 				people.put(who, new LinkedList<User>());
 			}
+
+
 			if (le.getLogAction() == LogAction.START_TRUSTING_PROJECTMEMBER) {
 				people.get(who).add(whom);
 			}
+
 			else if (le.getLogAction() == LogAction.STOP_TRUSTING_PROJECTMEMBER) {
 				people.get(who).remove(whom);
 			}
 			else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
 				people.get(who).add(whom);
+			}
+			else if (le.getLogAction() == LogAction.PROJECTMEMBER_INVITED)
+			{
+				people.get(who).add(whom);
+			}
+			else
+			{
+				log.debug("got an unknown logentry for creating the people list: " + le);
 			}
 		}
 		return people;
