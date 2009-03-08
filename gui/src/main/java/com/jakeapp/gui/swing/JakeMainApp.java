@@ -111,7 +111,7 @@ public class JakeMainApp extends SingleFrameApplication {
 			UIManager.LookAndFeelInfo gtkLaf = null;
 			StringBuilder availableLafs = new StringBuilder();
 			for (UIManager.LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-				availableLafs.append(laf.getName()).append(" ");
+				availableLafs.append(laf.getName()).append(", ");
 				if (laf.getName().toLowerCase().contains("gtk")) {
 					gtkLaf = laf;
 				} else if (laf.getName().toLowerCase().contains("nimbus")) {
@@ -124,21 +124,22 @@ public class JakeMainApp extends SingleFrameApplication {
 			// fixme: proper argument check!
 			if (args.length > 0 && nimbusLaf != null) {
 				UIManager.setLookAndFeel(nimbusLaf.getClassName());
-			}
-
-			// on windows & mac, use the native laf
-			if (Platform.isWin() || Platform.isMac()) {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} else {
-				// linux - it's a bit more tricky here
-				try {
-					if (gtkLaf != null) {
-						UIManager.setLookAndFeel(gtkLaf.getClassName());
-					} else if (nimbusLaf != null) {
-						UIManager.setLookAndFeel(nimbusLaf.getClassName());
+
+				// on windows & mac, use the native laf
+				if (Platform.isWin() || Platform.isMac()) {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} else {
+					// linux - it's a bit more tricky here
+					try {
+						if (gtkLaf != null) {
+							UIManager.setLookAndFeel(gtkLaf.getClassName());
+						} else if (nimbusLaf != null) {
+							UIManager.setLookAndFeel(nimbusLaf.getClassName());
+						}
+					} catch (Exception r) {
+						log.warn("Error setting laf: " + r.getMessage());
 					}
-				} catch (Exception r) {
-					log.warn("Error setting laf: " + r.getMessage());
 				}
 			}
 		} catch (Exception e) {
