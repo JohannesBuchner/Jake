@@ -47,7 +47,7 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	public abstract T calculate() throws Exception;
 	
 	public void run() {
-	log.debug("Running " + this.getClass().getSimpleName());
+		log.debug("Running " + this.getClass().getSimpleName());
 		try {
 			this.set(this.calculate());
 		} catch (Exception e) {

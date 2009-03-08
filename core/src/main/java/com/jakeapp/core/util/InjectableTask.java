@@ -18,7 +18,7 @@ public abstract class InjectableTask<T> implements Runnable {
 	private static final Logger log = Logger.getLogger(InjectableTask.class);
 
 	private String name;
-
+	
 	/**
 	 * perefer {@link InjectableTask#InjectableTask(String)}
 	 */
