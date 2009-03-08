@@ -17,6 +17,7 @@ import com.jakeapp.gui.swing.actions.RejectProjectAction;
 import com.jakeapp.gui.swing.actions.RenameProjectAction;
 import com.jakeapp.gui.swing.actions.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.SyncProjectAction;
+import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
@@ -46,7 +47,7 @@ import java.util.Map;
  * Manages the Source List for projects.
  */
 public class JakeSourceList extends JakeGuiComponent
-				implements ProjectChanged, DataChanged, TaskChanged {
+				implements ProjectChanged, DataChanged, TaskChanged, ContextViewChanged {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap =
@@ -429,7 +430,7 @@ public class JakeSourceList extends JakeGuiComponent
 		sourceList.addSourceListSelectionListener(projectSelectionListener);
 
 		if (projectSLI == null) {
-			log.info("selected project not found, selecting null");
+			log.trace("selected project not found, selecting null");
 			JakeContext.setProject(null);
 		}
 	}
@@ -482,7 +483,7 @@ public class JakeSourceList extends JakeGuiComponent
 	 *
 	 * @param project: the project that will be selected.
 	 */
-	public void selectProject(Project project) {
+	private void selectProject(Project project) {
 		log.trace("selectProject in SourceList: " + project);
 		SourceListItem sli = getListItemForProject(project);
 		if (sli != null) {
@@ -492,6 +493,18 @@ public class JakeSourceList extends JakeGuiComponent
 			log.trace("Project Selection: null");
 		}
 	}
+
+
+	/**
+	 *
+	 */
+	private void syncSelection() {
+		Project p = JakeContext.getProject();
+		Invitation i = JakeContext.getInvitation();
+
+
+	}
+
 
 	/**
 	 * Removes the current selection (if any)
@@ -570,6 +583,13 @@ public class JakeSourceList extends JakeGuiComponent
 		}
 	}
 
+	@Override public void setContextViewPanel(JakeMainView.ContextPanelEnum panel) {
+		if(panel == JakeMainView.ContextPanelEnum.Login) {
+			removeSelection();
+		}else {
+			syncSelection();
+		}
+	}
 
 	/**
 	 * The Project Busy state.

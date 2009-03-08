@@ -630,11 +630,6 @@ public class JakeMainView extends FrameView implements ContextChanged {
 		// only set if project panels are shown!
 		boolean show = getContextViewPanel() == ContextPanelEnum.Project;
 
-		// remote the selection from the sourcelist
-		if (!show) {
-			sourceList.selectProject(null);
-		}
-
 		showContentPanel(newsPanel, show && view == ProjectView.News);
 		showContentPanel(filePanel, show && view == ProjectView.Files);
 		showContentPanel(notesPanel, show && view == ProjectView.Notes);
