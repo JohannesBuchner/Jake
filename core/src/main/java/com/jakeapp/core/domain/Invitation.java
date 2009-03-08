@@ -5,6 +5,7 @@ import javax.persistence.Transient;
 import javax.persistence.Id;
 import java.util.UUID;
 import java.util.Date;
+import java.io.File;
 
 @Entity(name = "invitation")
 public class Invitation {
@@ -16,6 +17,7 @@ public class Invitation {
 	private User invitedOn;
 	private User inviter;
 	private String message;
+	transient private File rootPath;
 
 	public Invitation(UUID projectUUID, String projectName, Date creation, User invitedOn, User inviter, String message) {
 		this.projectUUID = projectUUID;
@@ -34,6 +36,12 @@ public class Invitation {
 		this.invitedOn = project.getUserId();
 //		this.invitedOn =
 		this.creation = new Date();	
+	}
+
+	public Invitation(Project project, User inviter, File rootPath)
+	{
+		this(project,  inviter);
+		setRootPath(rootPath);
 	}
 
 	public Invitation() {
@@ -87,6 +95,15 @@ public class Invitation {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	@Transient
+	public File getRootPath() {
+		return rootPath;
+	}
+
+	public void setRootPath(File rootPath) {
+		this.rootPath = rootPath;
 	}
 
 	@Transient

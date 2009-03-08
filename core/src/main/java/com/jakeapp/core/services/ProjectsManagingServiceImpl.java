@@ -678,25 +678,18 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	@Override
-	@Transactional
-	public void joinProject(Project project, File rootPath, User inviter)
+	@Transactional(readOnly = false)
+	public void joinProject(Invitation invitation, File rootPath)
 			throws IllegalStateException, NoSuchProjectException {
 
-		// preconditions
-		if (project == null)
-			throw new NoSuchProjectException();
-		if (!project.isInvitation())
-			throw new IllegalStateException();
-
-		// update join state
-		project.setInvitationState(InvitationState.ACCEPTED);
-		project.setRootPath(rootPath);
+		log.debug("joining a project ");
+		invitation.setRootPath(rootPath);
 
 		try {
-			this.getProjectDao().create(project); // may throw a
+//			this.getProjectDao().create(project); // may throw a
 			// NoSuchProjectException if
 			// project does not exist
-			this.getInvitationDao().accept(new Invitation(project,  inviter));
+			Project project = this.getInvitationDao().accept(invitation);
 			initProject(project);
 		} catch (Exception e) {
 			log.warn("Something weird happened while trying to init project!", e);

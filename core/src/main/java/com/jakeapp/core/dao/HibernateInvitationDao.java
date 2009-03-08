@@ -2,6 +2,9 @@ package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
 import java.util.List;
@@ -56,7 +59,34 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 
 	@Override
 	public Project accept(Invitation invitation) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+		Project project = invitation.createProject();
+
+		List<Account> accounts = this.getHibernateTemplate().getSessionFactory().
+				getCurrentSession().createQuery(
+				"FROM servicecredentials WHERE protocol = ? AND username = ?").
+				setString(0, invitation.getInvitedOn().getProtocolType().toString()).
+				setString(1, invitation.getInvitedOn().getUserId()).list();
+
+		if(accounts.size() > 0)
+		{
+		    project.setCredentials(accounts.get(0));
+			project.setRootPath(invitation.getRootPath());
+			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(project);
+			this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(invitation);
+
+//			ProjectJoinedLogEntry logEntry1 = new ProjectJoinedLogEntry(project, invitation.getInvitedOn());
+//			StartTrustingProjectMemberLogEntry logEntry2 = new StartTrustingProjectMemberLogEntry(invitation.getInviter(), invitation.getInvitedOn());
+//			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(logEntry1);
+//			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(logEntry2);
+		}
+		else
+		{
+			log.fatal("credentials not found!");
+			throw new RuntimeException();
+		}
+
+		return project;
 	}
 
 	@Override

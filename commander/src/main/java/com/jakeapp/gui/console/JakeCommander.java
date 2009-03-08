@@ -688,7 +688,7 @@ public class JakeCommander extends Commander {
 			project.setRootPath(projectFolder);
 			try {
 				System.out.println("joining ...");
-				pms.joinProject(project, projectFolder, invitingUser);
+				pms.joinProject(new Invitation(project, null), projectFolder); // TODO insert real inviter here. 
 				System.out.println("joining done");
 			} catch (Exception e) {
 				System.out.println("joining failed");

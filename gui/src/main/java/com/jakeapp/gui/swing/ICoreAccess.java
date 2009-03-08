@@ -219,9 +219,9 @@ public interface ICoreAccess {
 	 * Joins into a invited project
 	 *
 	 * @param loc
-	 * @param project
+	 * @param invitation
 	 */
-	public void joinProject(String loc, Project project);
+	public void joinProject(String loc, Invitation invitation);
 
 
 	/**

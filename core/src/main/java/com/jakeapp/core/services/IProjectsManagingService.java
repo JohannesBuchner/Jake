@@ -242,13 +242,11 @@ public interface IProjectsManagingService {
 	/**
 	 * Joins the Project and notifies the inviter.
 	 *
-	 * @param project The project to join.
-	 * @param inviter The user that invited us to join the project.
-	 *                She is notified that we accepted joining the project.
+	 * @param invitation
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
-	void joinProject(Project project, File rootPath, User inviter)
+	void joinProject(Invitation invitation, File rootPath)
 			  throws IllegalStateException, NoSuchProjectException;
 
 

@@ -31,7 +31,8 @@ public class JoinProjectAction extends ProjectAction {
         log.info("Joining Project: " + getProject());
 
         JakeMainApp.getCore().joinProject(
-                getProjectLocation(), getProject());
+                getProjectLocation(),
+				JakeContext.getInvitation());
     }
 
 

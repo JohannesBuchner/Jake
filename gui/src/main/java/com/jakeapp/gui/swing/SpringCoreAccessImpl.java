@@ -263,25 +263,27 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		new Thread(runner).start();
 	}
 
-	public void joinProject(final String path, final Project project) {
-		log.info("Join project: " + project + " path: " + path);
-
+	public void joinProject(final String path,final Invitation invitation) {
 		if (path == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Path may not be null");
+
+		if(invitation == null)
+			throw new IllegalArgumentException("Invitation may not be null");
+		
+		log.info("Joining project "+ invitation.getProjectName() + " with path: " + path);
 
 		Runnable runner = new Runnable() {
 
 			public void run() {
 				try {
-					project.setRootPath(path);
-					getFrontendService().getProjectsManagingService(getSessionId())
-									.joinProject(project, new File(path), project.getUserId());
+					getFrontendService().getProjectsManagingService(getSessionId()).joinProject(invitation, new File(path));
+
+					Project project = invitation.createProject();
 
 					EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(
 									project,
 									ProjectChanged.ProjectChangedEvent.Reason.Joined));
-					// TODO domdorn
-					//getFrontendService().getProjectsManagingService(getSessionId()).joinProject(project, new File(path), null);
+
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
