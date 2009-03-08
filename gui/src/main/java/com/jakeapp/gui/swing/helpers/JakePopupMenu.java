@@ -20,6 +20,9 @@ public class JakePopupMenu extends JPopupMenu {
     private static final Logger log = Logger.getLogger(JakePopupMenu.class);
     private PopupMenu pm = null;
 
+
+	public JakePopupMenu(){}
+
     /**
      * Override the show.
      * Construct a awt menu if looks nicer on the platform.

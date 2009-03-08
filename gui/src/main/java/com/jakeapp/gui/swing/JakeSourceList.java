@@ -164,10 +164,13 @@ public class JakeSourceList extends JakeGuiComponent
 				if (item != null) {
 					// get the project from the hashmap
 					Project project = sourceListProjectMap.get(item);
-					JakeContext.setProject(project);
+					if(project != null)
+						JakeContext.setProject(project);
 
 					Invitation invite = sourceListInvitationMap.get(item);
-					JakeContext.setInvitation(invite);
+					if(invite != null)
+						JakeContext.setInvitation(invite);
+					
 				} else {
 					// fixme: i'm dead tired
 					//JakeMainApp.getApp().setProject(null);
@@ -192,22 +195,79 @@ public class JakeSourceList extends JakeGuiComponent
 		final SourceListContextMenuProvider menuProvider =
 						new SourceListContextMenuProvider() {
 
+							/**
+							 * Popupmenu to be created when no item is selected
+							 * @return
+							 */
 							public JPopupMenu createContextMenu() {
-								JPopupMenu popupMenu = new JakePopupMenu();
+								log.debug("public JPopupMenu createContextMenu() {");
+//								JPopupMenu popupMenu = new JakePopupMenu();
+								JPopupMenu popupMenu = new JPopupMenu();
 								popupMenu.add(new JMenuItem(new CreateProjectAction(true)));
 								return popupMenu;
 							}
 
+							/**
+							 * Popupmenu to be created when a specific &quot;SourceListItem&quot; is
+							 * selected.
+							 * @param item
+							 * @return
+							 */
 							public JPopupMenu createContextMenu(SourceListItem item) {
-								Project project = sourceListProjectMap.get(item);
+								log.debug("\t\t\t\t\t\t\tpublic JPopupMenu createContextMenu(SourceListItem item) {");
+								if(item == null)
+									return createContextMenu();
 
-								if (project.isInvitation()) {
-									return sourceListInvitiationContextMenu;
-								} else {
-									return sourceListContextMenu;
+								if(sourceListProjectMap.containsKey(item))
+								{
+									if(sourceListContextMenu != null)
+										return sourceListContextMenu;
+									else
+									{
+										log.error("sourceListContextMenu is null");
+										return null;
+									}
 								}
+								else if(sourceListInvitationMap.containsKey(item))
+								{
+									if(sourceListInvitiationContextMenu != null)
+										return sourceListInvitiationContextMenu;
+									else
+									{
+										log.error("sourceListInvitiationContextMenu is null");
+										return null;
+									}
+								}
+								else
+								{
+									return createContextMenu();
+								}
+
+//								Project project = sourceListProjectMap.get(item);
+//								if(project == null)
+//								{
+//									// item is probably a invitation
+//									Invitation invite = sourceListInvitationMap.get(item);
+//									if(invite == null)
+//									{
+//										// no it isn't. don't do anything
+//										return createContextMenu();
+//									}
+//									else
+//									{
+//									}
+//								}
+//								else
+//								{
+//								}
 							}
 
+							/**
+							 * Contextmenu to be created when a specific &quot;Category&quot; like
+							 * &quot;Projects&quot; or &quot;Invitations&quot; are clicked.
+							 * @param category
+							 * @return
+							 */
 							public JPopupMenu createContextMenu(SourceListCategory category) {
 								JPopupMenu popupMenu = new JakePopupMenu();
 								//popupMenu.add(new JMenuItem("Menu for " + category.getText()));
