@@ -55,7 +55,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 		boolean isYou = UserHelper.isCurrentProjectMember(user.getUser());
 
 
-		String nickOrFullName = UserHelper.getNickOrFullName(user);
+		String nickOrFullName = UserHelper.cleanUserId(UserHelper.getNickOrFullName(user));
 
 		// change color on selection
 		String subColor = iss ? "White" : "Gray";

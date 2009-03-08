@@ -29,7 +29,7 @@ public abstract class ProjectAction extends JakeAction
 	}
 
 	public void updateAction() {
-		setEnabled(this.isEnabled() && JakeContext.getMsgService() != null);
+		setEnabled(JakeContext.getMsgService() != null);
 	}
 
 	public void projectChanged(final ProjectChangedEvent ev) {

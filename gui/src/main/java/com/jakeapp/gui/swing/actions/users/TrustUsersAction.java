@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions.users;
 
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.actions.abstracts.UserAction;
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
  * Opens a Dialog that let you add people to the project.
  * They get an invitation and can join/refuse the project.
  */
+// fixme: make abstact trust user class
 public class TrustUsersAction extends UserAction {
 	private static final Logger log = Logger.getLogger(TrustUsersAction.class);
 	private static final TrustState actionTrustState = TrustState.TRUST;
@@ -38,6 +40,7 @@ public class TrustUsersAction extends UserAction {
 	@Override
 	public void updateAction() {
 		super.updateAction();
+		setEnabled(this.isEnabled() && !UserHelper.isCurrentProjectMember(getSelectedUser().getUser()));
 
 		// update state
 		putValue(Action.SELECTED_KEY, checkUserStatus(actionTrustState));

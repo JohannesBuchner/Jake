@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions.users;
 
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.actions.abstracts.UserAction;
 import org.apache.log4j.Logger;
 
@@ -38,6 +39,7 @@ public class TrustNoUsersAction extends UserAction {
 	@Override
 	public void updateAction() {
 		super.updateAction();
+		setEnabled(this.isEnabled() && !UserHelper.isCurrentProjectMember(getSelectedUser().getUser()));
 
 		// update state
 		putValue(Action.SELECTED_KEY, checkUserStatus(actionTrustState));
