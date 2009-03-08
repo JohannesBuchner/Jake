@@ -34,8 +34,7 @@ public class FileUtilities {
 	 */
 	public static String getLastFolderFromPath(String path) {
 		if (path.indexOf(getPathSeparator()) != -1) {
-			return path.substring(path.lastIndexOf(getPathSeparator()) + 1,
-					  path.length());
+			return path.substring(path.lastIndexOf(getPathSeparator()) + 1, path.length());
 		} else {
 			return path;
 		}
@@ -53,7 +52,8 @@ public class FileUtilities {
 		// uses the awt native folder dialog on mac
 		if (Platform.isMac()) {
 			// TODO: can we put that into a sheet?
-			FolderDialog fod = new FolderDialog(JakeMainView.getMainView().getFrame(), "Choose Directory");
+			FolderDialog fod = new FolderDialog(JakeMainView.getMainView().getFrame(),
+							"Choose Directory");
 			if (defaultFolder != null) {
 				fod.setFile(defaultFolder);
 			}
@@ -88,6 +88,7 @@ public class FileUtilities {
 	/**
 	 * Returns a new File for the given filename, coping with "~/".
 	 * Try not to ever use "new File(String)": use this instead.
+	 *
 	 * @param filename
 	 * @return
 	 */
@@ -111,12 +112,14 @@ public class FileUtilities {
 		javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
 
 		// TODO: make customizeable, cleanup invitation name
-		return fw.getDefaultDirectory() + getPathSeparator() + invitation.getProjectName();
+		return fw.getDefaultDirectory() + getPathSeparator() + invitation
+						.getProjectName();
 	}
 
 
 	/**
 	 * Checks that a name exists and is a directory.
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -135,6 +138,7 @@ public class FileUtilities {
 	 * who's set $HOME wants it to override Windows' notion of the home
 	 * directory, which is what the "user.home" system property gets you.
 	 * Removes any trailing File.separators.
+	 *
 	 * @return
 	 */
 	public static String getUserHomeDirectory() {
@@ -151,27 +155,31 @@ public class FileUtilities {
 
 	/**
 	 * Get the Desktop directory
+	 *
 	 * @return
 	 */
 	public static String getUserDesktopDirectory() {
 		return new File(getUserHomeDirectory(), "Desktop").getAbsolutePath();
-	}	
+	}
 
 	/**
 	 * Returns a new File for the given filename, coping with "~/".
 	 * Try not to ever use "new File(String, String)": use this instead.
+	 *
 	 * @param parent
 	 * @param filename
 	 * @return
 	 */
 	public static File fileFromParentAndString(String parent, String filename) {
-		return fileFromString(FileUtilities.parseUserFriendlyName(parent) + File.separator + filename);
+		return fileFromString(
+						FileUtilities.parseUserFriendlyName(parent) + File.separator + filename);
 	}
 
 	/**
 	 * Converts paths of the form ~/src to /Users/elliotth/src (or
 	 * whatever the user's home directory is). Also copes with the
 	 * special case of ~ on its own, and with ~someone-else/tmp.
+	 *
 	 * @param filename
 	 * @return
 	 */
@@ -184,7 +192,8 @@ public class FileUtilities {
 			}
 		} else if (filename.startsWith("~")) {
 			// Assume that "~user/bin/vi" is equivalent to "~/../user/bin/vi".
-			Pattern pattern = Pattern.compile("^~([^" + Pattern.quote(File.separator) + "]+)(.*)$");
+			Pattern pattern =
+							Pattern.compile("^~([^" + Pattern.quote(File.separator) + "]+)(.*)$");
 			Matcher matcher = pattern.matcher(filename);
 			if (matcher.find()) {
 				String user = matcher.group(1);
@@ -204,6 +213,7 @@ public class FileUtilities {
 	 * home directories too, but I can't think of a pure Java way to do
 	 * that.
 	 * Also adds a trailing separator to the name of a directory.
+	 *
 	 * @param filename
 	 * @return
 	 */
@@ -232,6 +242,7 @@ public class FileUtilities {
 	 * Returns a temporary file whose name begins with 'prefix'.
 	 * The file will be deleted on exit.
 	 * On error, a RuntimeException is thrown which will refer to the file using 'humanReadableName'.
+	 *
 	 * @param prefix
 	 * @param humanReadableName
 	 * @return
@@ -242,7 +253,8 @@ public class FileUtilities {
 			file.deleteOnExit();
 			return file;
 		} catch (IOException ex) {
-			throw new RuntimeException("Couldn't create " + humanReadableName + ": " + ex.getMessage());
+			throw new RuntimeException(
+							"Couldn't create " + humanReadableName + ": " + ex.getMessage());
 		}
 	}
 
@@ -251,20 +263,24 @@ public class FileUtilities {
 	 * The file will be deleted on exit.
 	 * Returns the name of the temporary file.
 	 * On error, a RuntimeException is thrown which will refer to the file using 'humanReadableName'.
+	 *
 	 * @param prefix
 	 * @param humanReadableName
 	 * @param content
 	 * @return
 	 */
-	public static String createTemporaryFile(String prefix, String humanReadableName, String content) {
+	public static String createTemporaryFile(String prefix, String humanReadableName,
+					String content) {
 		try {
 			File file = createTemporaryFile(prefix, humanReadableName);
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+			PrintWriter out = new PrintWriter(
+							new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 			out.print(content);
 			out.close();
 			return file.toString();
 		} catch (IOException ex) {
-			throw new RuntimeException("Couldn't write " + humanReadableName + ": " + ex.getMessage());
+			throw new RuntimeException(
+							"Couldn't write " + humanReadableName + ": " + ex.getMessage());
 		}
 	}
 
@@ -284,7 +300,9 @@ public class FileUtilities {
 			fileInputStream.close();
 			fileOutputStream.close();
 		} catch (IOException ex) {
-			throw new RuntimeException("Couldn't copy " + source + " to " + destination + ": " + ex.getMessage());
+			throw new RuntimeException(
+							"Couldn't copy " + source + " to " + destination + ": " + ex
+											.getMessage());
 		}
 	}
 
@@ -325,19 +343,19 @@ public class FileUtilities {
 	/**
 	 * Get the human-readable size for an amount of bytes
 	 *
-	 * @param size		: the number of bytes to be converted
+	 * @param size			: the number of bytes to be converted
 	 * @param precision : number of decimal places to round to;
 	 *                  optional - defaults to 2
-	 * @param longName  : whether or not the returned size tag
+	 * @param longName	: whether or not the returned size tag
 	 *                  should be unabbreviated (ie "Gigabytes"
 	 *                  or "GB"); optional - defaults to true
-	 * @param realSize  : whether or not to use the real (base
+	 * @param realSize	: whether or not to use the real (base
 	 *                  1024) or commercial (base 1000) size;
 	 *                  optional - defaults to true
-	 * @return String			  : the converted size
+	 * @return String				: the converted size
 	 */
-	static public String getSize(long size, int precision,
-										  boolean longName, boolean realSize) {
+	static public String getSize(long size, int precision, boolean longName,
+					boolean realSize) {
 		int base = realSize ? 1024 : 1000;
 		int pos = 0;
 		double decSize = (double) size;
@@ -448,6 +466,9 @@ public class FileUtilities {
 	}
 
 	public static boolean createDirectory(String path) {
-		return new File(path).mkdirs();
+		if (createDirectory(path))
+			return true;
+		else
+			return new File(path).mkdirs();
 	}
 }
