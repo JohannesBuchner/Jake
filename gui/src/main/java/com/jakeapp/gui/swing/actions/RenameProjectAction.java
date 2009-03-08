@@ -50,6 +50,6 @@ public class RenameProjectAction extends ProjectAction {
 
 	@Override
 	public void updateAction() {
-		this.setEnabled(getProject() != null && !getProject().isInvitation());
+		this.setEnabled(getProject() != null);
 	}
 }

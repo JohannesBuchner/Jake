@@ -37,7 +37,7 @@ public class FileDropHandler extends TransferHandler {
 
 		Project pr = JakeContext.getProject();
 
-		return copySupported && pr != null && !pr.isInvitation();
+		return copySupported && pr != null;
 
 	}
 

@@ -49,6 +49,6 @@ public class DeleteOrRejectProjectAction extends CompoundProjectAction {
 	}
 
 	private boolean isNormalAction() {
-		return getProject() == null || !getProject().isInvitation();
+		return getProject() == null;
 	}
 }

@@ -5,12 +5,14 @@ import org.apache.log4j.Logger;
 import java.awt.event.ActionEvent;
 
 /**
- * @author: studpete
+ * @author studpete
  */
 public class StartStopOrJoinProjectAction extends CompoundProjectAction {
-	private final StartStopProjectAction startStopAction = new StartStopProjectAction();
+	private final StartStopProjectAction startStopAction =
+					new StartStopProjectAction();
 	private final JoinProjectAction joinAction = new JoinProjectAction();
-	private static final Logger log = Logger.getLogger(StartStopOrJoinProjectAction.class);
+	private static final Logger log =
+					Logger.getLogger(StartStopOrJoinProjectAction.class);
 
 
 	public StartStopOrJoinProjectAction() {
@@ -28,20 +30,22 @@ public class StartStopOrJoinProjectAction extends CompoundProjectAction {
 		log.debug("action performed.");
 		// use either on of the two actions within
 		if (isNormalAction()) {
-			log.debug("isNormalAction");
+			log.trace("isNormalAction");
 			startStopAction.actionPerformed(e);
 		} else {
-			log.debug("joinAction");
+			log.trace("joinAction");
 			joinAction.actionPerformed(e);
 		}
 	}
 
 	@Override
 	public void updateAction() {
-		log.debug("updating combined action with proj " + getProject());
+		log.trace("updating combined action with proj " + getProject());
 		// wait for full initialize
-		if (startStopAction == null) return;
-		log.debug("updating combined action: do it");
+		if (startStopAction == null)
+			return;
+
+		log.trace("updating combined action: do it");
 
 		// use either on of the two actions within
 		if (isNormalAction()) {
@@ -52,6 +56,6 @@ public class StartStopOrJoinProjectAction extends CompoundProjectAction {
 	}
 
 	private boolean isNormalAction() {
-		return getProject() == null || !getProject().isInvitation();
+		return getProject() != null;
 	}
 }

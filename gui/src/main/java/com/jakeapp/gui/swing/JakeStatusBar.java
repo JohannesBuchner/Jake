@@ -404,8 +404,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	public void updateMessageInt() {
 
 		if (getContextViewPanel() == JakeMainView.ContextPanelEnum.Project) {
-			if (JakeContext.getProject() != null && JakeContext.getProject()
-							.isInvitation()) {
+			if (JakeContext.getInvitation() != null) {
 				statusLabel.setText("Woohoo, that's an Invitation! You better join!");
 			} else {
 

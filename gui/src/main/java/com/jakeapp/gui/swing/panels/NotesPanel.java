@@ -252,8 +252,8 @@ public class NotesPanel extends javax.swing.JPanel
 	@Override
 	public void projectChanged(ProjectChangedEvent e) {
 
-		// don't update if project is null OR an invitation.
-		if (e.getProject() == null || e.getProject().isInvitation()) {
+		// don't update if project is null
+		if (e.getProject() == null) {
 			return;
 		}
 
