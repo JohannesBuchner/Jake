@@ -80,7 +80,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		} catch (NoSuchLogEntryException e) {
 			sess().persist(logEntry);
 		}
-		debugDump();
+		//debugDump();
 	}
 
 	@SuppressWarnings("unchecked")
