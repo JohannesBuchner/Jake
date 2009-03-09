@@ -3,10 +3,13 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.DataChanged.DataReason;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
@@ -36,17 +39,32 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 
 	@Override
 	protected void done() {
+		EnumSet<DataReason> reason = null;
+		Project project = null;
+
 		super.done();
 
 		// inform the core that there are new log entries available.
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), null);
-		if (this.jos.size()>0) {
-			if ((this.jos.get(0)) instanceof FileObject)
-				EventCore.get().fireFilesChanged(this.jos.get(0).getProject());
-			else if ((this.jos.get(0)) instanceof NoteObject) {
-				NotesPanel.getInstance().getNotesTableModel().setNoteToSelectLater((NoteObject) (this.jos.get(0)));
-				EventCore.get().fireNotesChanged(this.jos.get(0).getProject());
+		EventCore.get().fireDataChanged(
+				EnumSet.of(DataChanged.DataReason.Files), null);
+		if (this.jos.size() > 0) {
+			project = this.jos.get(0).getProject();
+			if ((this.jos.get(0)) instanceof FileObject) {
+				EventCore.get().fireFilesChanged(project);
+				reason = EnumSet.of(DataChanged.DataReason.Files);
+			} else if ((this.jos.get(0)) instanceof NoteObject) {
+				NotesPanel.getInstance().getNotesTableModel()
+						.setNoteToSelectLater((NoteObject) (this.jos.get(0)));
+				EventCore.get().fireNotesChanged(project);
+				reason = EnumSet.of(DataChanged.DataReason.Notes);
 			}
+
+			if (reason != null)
+				EventCore.get().fireDataChanged(reason, null);
+			
+			EventCore.get().fireProjectChanged(
+					new ProjectChanged.ProjectChangedEvent(project,
+									ProjectChanged.ProjectChangedEvent.Reason.People));
 		}
 	}
 
