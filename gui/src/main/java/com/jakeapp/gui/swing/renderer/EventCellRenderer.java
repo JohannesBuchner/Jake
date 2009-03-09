@@ -60,7 +60,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 	private final static ImageIcon peopleAcceptInvitationIcon = new ImageIcon(
 					Toolkit.getDefaultToolkit().getImage(
 									JakeMainApp.class.getResource("/icons/user-inviteok.png")));
-	private final static ImageIcon peopleChangeTrustIcon = new ImageIcon(
+	private final static ImageIcon peopleAddFullIcon = new ImageIcon(
 					Toolkit.getDefaultToolkit().getImage(
 									JakeMainApp.class.getResource("/icons/user-trust.png")));
 
@@ -154,13 +154,6 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			}
 			break;
 
-			case START_TRUSTING_PROJECTMEMBER: {
-				setIcon(peopleAddIcon);
-				msg += Translator.get(newsResourceMap, "eventsProjectMemberAdded",
-								loge.getBelongsTo().toString());
-			}
-			break;
-
 			case PROJECT_JOINED: {
 				setIcon(peopleAcceptInvitationIcon);
 				msg += Translator
@@ -168,9 +161,23 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			}
 			break;
 
+			case START_TRUSTING_PROJECTMEMBER: {
+				setIcon(peopleAddIcon);
+				msg += Translator.get(newsResourceMap, "eventsProjectMemberTrust",
+								loge.getBelongsTo().toString());
+			}
+			break;
+
 			case STOP_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleRemoveIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberStopTrust",
+								loge.getBelongsTo().toString());
+			}
+			break;
+
+			case FOLLOW_TRUSTING_PROJECTMEMBER: {
+				setIcon(peopleAddFullIcon);
+				msg += Translator.get(newsResourceMap, "eventsProjectMemberFullTrust",
 								loge.getBelongsTo().toString());
 			}
 			break;
