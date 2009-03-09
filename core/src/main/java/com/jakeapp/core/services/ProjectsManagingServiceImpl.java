@@ -144,7 +144,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		List<Project> result;
 		log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
 
-		result = this.getProjectDao().getAll();
+		result = this.getProjectDao().getAll(msg.getServiceCredentials());
 		if (result != null) {
 			checkProjects(result);
 			log.debug("found " + result.size() + " projects to return");

@@ -2,6 +2,7 @@ package com.jakeapp.core.dao;
 import java.util.List;
 import java.util.UUID;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
@@ -149,6 +150,28 @@ public class ThreadedProjectDao implements IProjectDao {
 				@Override
 				public List<Project> calculate() throws Exception {
 					return ThreadedProjectDao.this.dao.getAll(state);
+				}
+			});
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */	
+	@Override
+	public List<Project> getAll(final Account account) {
+		
+		try {
+			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<Project>>() {
+
+				@Override
+				public List<Project> calculate() throws Exception {
+					return ThreadedProjectDao.this.dao.getAll(account);
 				}
 			});
 		} catch (RuntimeException e) {

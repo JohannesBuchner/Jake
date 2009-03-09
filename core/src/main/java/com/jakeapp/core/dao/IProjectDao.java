@@ -1,6 +1,7 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
@@ -45,6 +46,12 @@ public interface IProjectDao {
      * @return all projects.
      */
     List<Project> getAll();
+    
+    /**
+     * @param account
+     * @return all Projects that belong to the user specified via <code>account</code>.
+     */
+    List<Project> getAll(Account account);
     
     /**
      * Get all projects with a certain invitation state

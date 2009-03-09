@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
@@ -126,6 +127,16 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 				.getCurrentSession()
 				.createQuery("FROM Project WHERE invitationstate = ?").setInteger(0,
 						state.ordinal()).list();
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Project> getAll(Account account) {
+		List<Project> result = this.getHibernateTemplate().getSessionFactory()
+		.getCurrentSession()
+		.createQuery("FROM Project WHERE userid = ?").setString(0,account.getUuid()).list();
+		
 		return result;
 	}
 }
