@@ -568,12 +568,10 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	 * init app
 	 */
 	private void initComponents() {
-
 		menuBar = new JakeMenuBar();
 		setMenuBar(menuBar);
 
 		statusPanel = new JPanel();
-		statusPanel.setName("statusPanel"); // NOI18N
 		statusPanel.setLayout(new java.awt.BorderLayout());
 		setStatusBar(statusPanel);
 	}
@@ -689,8 +687,10 @@ public class JakeMainView extends FrameView implements ContextChanged {
 		Project pr = JakeContext.getProject();
 		Invitation invite = JakeContext.getInvitation();
 
+		boolean showLogin = pr == null && invite == null;
+
 		// determine what to show
-		if (pr == null && invite == null) {
+		if (showLogin) {
 			setContextViewPanel(ContextPanelEnum.Login);
 		} else if (invite != null) {
 			setContextViewPanel(ContextPanelEnum.Invitation);

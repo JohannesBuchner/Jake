@@ -9,13 +9,12 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
-import com.jakeapp.gui.swing.helpers.Colors;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
@@ -35,6 +34,7 @@ import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.hyperlink.LinkAction;
+import org.jdesktop.swingx.painter.CapsulePainter;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -77,8 +77,9 @@ public class UserPanel extends JXPanel
 	private JPanel loginUserPanel;
 	private JPanel loadingAppPanel;
 
-	private ImageIcon jakeWelcomeIcon = new ImageIcon(JakeMainView.getMainView()
-					.getLargeAppImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH));
+	private ImageIcon jakeWelcomeIcon = new ImageIcon(
+					JakeMainView.getMainView().getLargeAppImage().getScaledInstance(90, 90,
+									Image.SCALE_SMOOTH));
 	private JLabel userLabelLoginSuccess;
 	private JPanel userListPanel;
 	private JButton signInRegisterBackBtn;
@@ -133,9 +134,8 @@ public class UserPanel extends JXPanel
 
 	private void initPredefinedCredentials() {
 		for (SupportedServices service : SupportedServices.values()) {
-			creds.put(service,
-							JakeMainApp
-											.getCore().getPredefinedServiceCredential(service.toString()));
+			creds.put(service, JakeMainApp.getCore().getPredefinedServiceCredential(
+							service.toString()));
 		}
 	}
 
@@ -158,8 +158,8 @@ public class UserPanel extends JXPanel
 		loadingAppPanel = createLoadingAppPanel();
 
 		// set the background painter
-		this.setBackgroundPainter(Platform
-						.getStyler().getContentPanelBackgroundPainter());
+		this.setBackgroundPainter(
+						Platform.getStyler().getLoginBackgroundPainter());
 
 		EventCore.get().addContextChangedListener(this);
 	}
@@ -321,20 +321,15 @@ public class UserPanel extends JXPanel
 						new String[]{"Google Talk", "Jabber", "United Internet (GMX, Web.de)"};
 		Integer[] indexes = new Integer[]{0, 1, 2};
 		ImageIcon[] images = new ImageIcon[3];
-		images[0] = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/service-google.png")).getScaledInstance(
-						16,
-						16,
-						Image.SCALE_SMOOTH));
-		images[1] = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/service-jabber.png")).getScaledInstance(
-						16,
-						16,
-						Image.SCALE_SMOOTH));
-		images[2] = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/service-unitedinternet.png")).getScaledInstance(
-						16,
-						16,
+		images[0] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource("/icons/service-google.png")).getScaledInstance(
+						16, 16, Image.SCALE_SMOOTH));
+		images[1] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource("/icons/service-jabber.png")).getScaledInstance(
+						16, 16, Image.SCALE_SMOOTH));
+		images[2] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource(
+										"/icons/service-unitedinternet.png")).getScaledInstance(16, 16,
 						Image.SCALE_SMOOTH));
 		loginServiceCheckBox = new JComboBox();
 		loginServiceCheckBox.setModel(new DefaultComboBoxModel(indexes));
@@ -411,8 +406,8 @@ public class UserPanel extends JXPanel
 			// return the default set
 			cred = creds.get(SupportedServices.Jabber);
 		} else {
-			cred = creds.get(SupportedServices.values()[loginServiceCheckBox
-							.getSelectedIndex()]);
+			cred = creds.get(
+							SupportedServices.values()[loginServiceCheckBox.getSelectedIndex()]);
 		}
 		cred.setUserId(loginUserDataPanel.getUserName());
 		cred.setPlainTextPassword(loginUserDataPanel.getPassword());
@@ -439,8 +434,7 @@ public class UserPanel extends JXPanel
 					creds.setAutologin(loginUserDataPanel.isSetRememberPassword());
 					//creds.setPlainTextPassword(loginUserDataPanel.getPassword());
 
-					JakeExecutor.exec(new LoginAccountTask(msg,
-									creds,
+					JakeExecutor.exec(new LoginAccountTask(msg, creds,
 									EventCore.get().getLoginStateListener()));
 
 				} catch (Exception e) {
@@ -568,10 +562,9 @@ public class UserPanel extends JXPanel
 				JLabel serverLabel = new JLabel(getResourceMap().getString("serverLabel"));
 				serverLabel.setForeground(Color.DARK_GRAY);
 				serverComboBox = new JComboBox();
-				serverComboBox
-								.setModel(new DefaultComboBoxModel(new String[]{"jabber.fsinf.at",
-												"jabber.org", "jabber.ccc.de", "macjabber.de",
-												"swissjabber.ch", "binaryfreedom.info"}));
+				serverComboBox.setModel(new DefaultComboBoxModel(
+								new String[]{"jabber.fsinf.at", "jabber.org", "jabber.ccc.de",
+												"macjabber.de", "swissjabber.ch", "binaryfreedom.info"}));
 				serverComboBox.setEditable(true);
 
 				this.add(serverLabel, "");
@@ -703,7 +696,7 @@ public class UserPanel extends JXPanel
 		JLabel headerLoginSuccess =
 						new JLabel(getResourceMap().getString("signInSuccessHeader"));
 		headerLoginSuccess.setFont(Platform.getStyler().getH1Font());
-		headerLoginSuccess.setForeground(Color.DARK_GRAY);
+		headerLoginSuccess.setForeground(Color.WHITE);
 		loginSuccessPanel.add(headerLoginSuccess, "top, center, wrap");
 
 		userLabelLoginSuccess = new JLabel();
@@ -735,9 +728,8 @@ public class UserPanel extends JXPanel
 		loginSuccessPanel.add(signOutButton, "wrap, top, center, gapbottom 25");
 
 		JLabel iconSuccess = new JLabel();
-		iconSuccess.setIcon(new ImageIcon(Toolkit
-						.getDefaultToolkit().getImage(getClass().getResource(
-						"/icons/dropfolder.png"))));
+		iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+						getClass().getResource("/icons/dropfolder.png"))));
 
 		loginSuccessPanel.add(iconSuccess, "wrap, al center");
 
@@ -779,9 +771,9 @@ public class UserPanel extends JXPanel
 	}
 
 	private void updateSignInRegisterMode() {
-		signInRegisterBackBtn
-						.setVisible(JakeContext.isCoreInitialized() && JakeMainApp.getCore()
-										.getMsgServices().size() > 0);
+		signInRegisterBackBtn.setVisible(
+						JakeContext.isCoreInitialized() && JakeMainApp.getCore().getMsgServices()
+										.size() > 0);
 
 		loginUserDataPanel.setVisible(isModeSignIn());
 		registerUserDataPanel.setVisible(!isModeSignIn());
@@ -936,8 +928,7 @@ public class UserPanel extends JXPanel
 							creds.setPlainTextPassword(getPassword());
 						}
 
-						JakeExecutor.exec(new LoginAccountTask(msg,
-										creds,
+						JakeExecutor.exec(new LoginAccountTask(msg, creds,
 										EventCore.get().getLoginStateListener()));
 
 						updateView();
@@ -951,13 +942,13 @@ public class UserPanel extends JXPanel
 				}
 			};
 
-			this.setLayout(new MigLayout("wrap 2, fill")
+			CapsulePainter capsulePainter = new CapsulePainter();
+			Color c1 = new Color(100, 100, 100);
+			Color c2 = new Color(130, 130, 130);
+			capsulePainter.setFillPaint(new GradientPaint(0f, 0f, c2, 0f, 50f, c1));
+			this.setBackgroundPainter(capsulePainter);
 
-			);
-
-			this.setBorder(BorderFactory.createLineBorder(Colors.LightBlue.color(),
-
-							1));
+			this.setLayout(new MigLayout("wrap 2, fill"));
 			this.setOpaque(false);
 
 			String msgUserId = msg.getUserId().getUserId();

@@ -19,6 +19,7 @@ import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
+import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.models.EventsTableModel;
 import com.jakeapp.gui.swing.models.PeopleListModel;
@@ -109,10 +110,10 @@ public class NewsPanel extends javax.swing.JPanel
 		this.autoDownloadCB.setOpaque(false);
 
 		// fixme
-		this.newsContentPanel.setBackground(new Color(137, 149, 171)); //Platform.getStyler().getContentBackgroundColor()
+		//this.newsContentPanel.setBackground(new Color(137, 149, 171)); //Platform.getStyler().getContentBackgroundColor()
 		// set the background painter
-		//this.newsContentPanel.setBackgroundPainter(
-		//				Platform.getStyler().getContentPanelBackgroundPainter());
+		this.newsContentPanel.setBackgroundPainter(
+						Platform.getStyler().getContentBackgroundPainter());
 
 		this.autoDownloadCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {

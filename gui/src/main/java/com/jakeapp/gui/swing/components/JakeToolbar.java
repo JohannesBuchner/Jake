@@ -175,6 +175,7 @@ public class JakeToolbar {
 
 
 		searchField = new SearchField();
+		searchField.setSize(searchField.getHeight(), 30);
 		searchField.putClientProperty("JTextField.variant", "search");
 		searchField.setSendsNotificationForEachKeystroke(true);
 		toolBar.addComponentToRight(new LabeledComponentGroup("Search", searchField).getComponent());
