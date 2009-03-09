@@ -579,16 +579,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	/* this is on the side of the client accepting the invitation */
 	public void acceptInvitation(Invitation invitation) {
-		Project project = invitation.createProject();
 
-		// TODO: remove this one as soon as we know how 
-//		ProjectCreatedLogEntry projectCreatedLogEntry = new ProjectCreatedLogEntry(project, invitation.getInvitedOn());
-//		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectCreatedLogEntry);
-
-//		ProjectJoinedLogEntry projectJoinedLogEntry = new ProjectJoinedLogEntry(project, invitation.getInvitedOn());
 		FollowTrustingProjectMemberLogEntry startTrustingProjectMemberLogEntry =
 				new FollowTrustingProjectMemberLogEntry(invitation.getInviter(), invitation.getInvitedOn());
-//		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(projectJoinedLogEntry);
 		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(startTrustingProjectMemberLogEntry);
 	}
 }
