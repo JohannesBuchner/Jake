@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.helpers.styler;
 
 import org.jdesktop.swingx.painter.Painter;
+import org.jdesktop.swingx.painter.CapsulePainter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,8 +14,8 @@ public abstract class AbstractStyler implements Styler {
 	private static final Font h2Font = new Font("Lucida Grande", Font.BOLD, 15);
 
 	private Painter loginBackgroundPainter;
-
 	private Painter contentBackgroundPainter;
+	private CapsulePainter userBackgroundPainter;
 
 	public AbstractStyler() {
 		
@@ -24,6 +25,10 @@ public abstract class AbstractStyler implements Styler {
 		contentBackgroundPainter = new SwingXGradientPainter(new Color(137, 149, 171),
 						new Color(157, 172, 201));
 
+		userBackgroundPainter =  new CapsulePainter();
+		Color c1 = new Color(100, 100, 100);
+		Color c2 = new Color(130, 130, 130);
+		userBackgroundPainter.setFillPaint(new GradientPaint(0f, 0f, c2, 0f, 50f, c1));
 	}
 
 	@Override
@@ -57,6 +62,9 @@ public abstract class AbstractStyler implements Styler {
 		return contentBackgroundPainter;
 	}
 
+	public Painter getUserBackgroundPainter() {
+		return userBackgroundPainter;
+	}
 
 	public Font getSheetLargeFont() {
 		return new JLabel().getFont().deriveFont(Font.BOLD, 14);

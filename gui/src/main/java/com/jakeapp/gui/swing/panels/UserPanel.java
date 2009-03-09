@@ -34,7 +34,6 @@ import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.hyperlink.LinkAction;
-import org.jdesktop.swingx.painter.CapsulePainter;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -219,6 +218,7 @@ public class UserPanel extends JXPanel
 		// create the user list
 		userListPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
 		userListPanel.setOpaque(false);
+		userListPanel.setBorder(null);	
 		JScrollPane usersScrollPanel = new JScrollPane(userListPanel);
 		usersScrollPanel.setOpaque(false);
 		usersScrollPanel.getViewport().setOpaque(false);
@@ -254,10 +254,7 @@ public class UserPanel extends JXPanel
 				if (msgs != null) {
 					for (MsgService<User> msg : msgs) {
 						UserControlPanel userPanel = new UserControlPanel(msg);
-						JXLayer userLayer = new JXLayer(userPanel);
-						//userLayer.setBackground(Color.WHITE);
-						//userLayer.set(new Color(0, 128, 0, 128));
-						//userLayer.setOpaque(true);
+						JXLayer<UserControlPanel> userLayer = new JXLayer<UserControlPanel>(userPanel);
 						userListPanel.add(userLayer);
 					}
 				}
@@ -899,13 +896,13 @@ public class UserPanel extends JXPanel
 	 * Create User Panel
 	 */
 	private class UserControlPanel extends JXPanel {
-		private final MsgService msg;
+		private final MsgService<User> msg;
 		private JPasswordField passField;
 		private JCheckBox rememberPassCheckBox;
 		private final static String MagicPassToken = "%MAGIC%";
 		private JButton signInBtn;
 
-		public UserControlPanel(final MsgService msg) {
+		public UserControlPanel(final MsgService<User> msg) {
 			log.info("creating UserControlPanel with " + msg + ", userID: " + msg
 							.getUserId());
 			this.msg = msg;
@@ -942,11 +939,7 @@ public class UserPanel extends JXPanel
 				}
 			};
 
-			CapsulePainter capsulePainter = new CapsulePainter();
-			Color c1 = new Color(100, 100, 100);
-			Color c2 = new Color(130, 130, 130);
-			capsulePainter.setFillPaint(new GradientPaint(0f, 0f, c2, 0f, 50f, c1));
-			this.setBackgroundPainter(capsulePainter);
+			this.setBackgroundPainter(Platform.getStyler().getUserBackgroundPainter());
 
 			this.setLayout(new MigLayout("wrap 2, fill"));
 			this.setOpaque(false);

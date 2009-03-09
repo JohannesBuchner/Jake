@@ -34,6 +34,8 @@ public interface Styler {
 
 	Painter getContentBackgroundPainter();
 
+	Painter getUserBackgroundPainter();
+
 	/**
 	 * Returns the Font for Bold large fonts.
 	 *
