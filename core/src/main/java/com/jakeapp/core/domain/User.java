@@ -1,21 +1,30 @@
 package com.jakeapp.core.domain;
+
 import org.apache.log4j.Logger;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 
 /**
  * Identifies a user
  */
 public class User implements ILogable, Comparable<User> {
-	private static final long serialVersionUID = 3356457614479149943L;
+	private static final long serialVersionUID = 3356457614479155943L;
+	private static Pattern XMPPpattern = Pattern.compile("(.*)(/(.*))?");
 
+	/*
+ dominik.dorn@jabber.fsinf.at/jake
+ __thecerial@jabber.fsinf.at/jake
+ -myimagination@jabber.fsinf.at
+ */
 	public User() {
-		super();
 	}
 
 	public User(ProtocolType protocolType, String userId) {
 		super();
-		setProtocolType(protocolType);
-		setUserId(userId);
+		this.setProtocolType(protocolType);
+		this.setUserId(userId);
 	}
 
 	@SuppressWarnings("unused")
@@ -24,19 +33,22 @@ public class User implements ILogable, Comparable<User> {
 	private String userId;
 	private ProtocolType protocolType;
 
-	public void setUserId(String userId) {
-		if(userId.contains("/")) // dirty hack for xmpp
-		{
-			String[] parts = userId.split("/");
-			this.userId = parts[0];
-		}
-		else
-		{
+	public final void setUserId(String userId) {
+//		log.fatal("calling setUserId with userId: " + userId);
+
+		int idx = userId.indexOf('/');
+		if (idx > 0) {
+			this.userId = userId.substring(0, idx);
+		} else {
 			this.userId = userId;
 		}
+
+//		log.fatal("userid is now" + this.userId);
+
 	}
 
-	public String getUserId() {
+	public final String getUserId() {
+//		log.fatal("calling getUserId with userid: " + userId);
 		return this.userId;
 	}
 
@@ -47,7 +59,7 @@ public class User implements ILogable, Comparable<User> {
 	public ProtocolType getProtocolType() {
 		return this.protocolType;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.protocolType + ":" + getUserId();
@@ -93,7 +105,7 @@ public class User implements ILogable, Comparable<User> {
 	@Override
 	public int compareTo(User o) {
 		if (this.equals(o)) return 0;
-		else if (o==null) return 1;
+		else if (o == null) return 1;
 		else return this.getUserId().compareTo(o.getUserId());
 	}
 }
