@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ public abstract class UserAction extends ProjectAction implements ContextChanged
 
 	public UserAction(JList list) {
 		setList(list);
+		EventCore.get().addContextChangedListener(this);
 	}
 
 	/**

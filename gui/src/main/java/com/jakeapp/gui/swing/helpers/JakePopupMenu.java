@@ -12,140 +12,140 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * User: studpete
- * Date: Jan 4, 2009
- * Time: 9:51:07 PM
+ * Wrapper for JPopupMenu, that uses a native awt menu on the mac.
+ * The Swing PopupMenu-Implementation is so ugly on mac...
  */
 public class JakePopupMenu extends JPopupMenu {
-    private static final Logger log = Logger.getLogger(JakePopupMenu.class);
-    private PopupMenu pm = null;
+	private static final Logger log = Logger.getLogger(JakePopupMenu.class);
+	private PopupMenu pm = null;
 
 
-	public JakePopupMenu(){}
+	public JakePopupMenu() {}
 
-    /**
-     * Override the show.
-     * Construct a awt menu if looks nicer on the platform.
-     *
-     * @param invoker
-     * @param x
-     * @param y
-     */
-    @Override
-    public void show(Component invoker, int x, int y) {
-        log.trace("Show JakePopupMenu: x:" + x + " y:" + y);
+	/**
+	 * Override the show.
+	 * Construct a awt menu if looks nicer on the platform.
+	 *
+	 * @param invoker
+	 * @param x
+	 * @param y
+	 */
+	@Override
+	public void show(Component invoker, int x, int y) {
+		log.trace("Show JakePopupMenu: x:" + x + " y:" + y);
 
-        /**
-         * This is sort of a hack.
-         * JPopupMenu is really ugly on mac.
-         * This wraps the JPopupMenu and creates the awt-pendant
-         * on the fly.
-         */
-        if (Platform.isMac()) {
-            // awt
-            PopupMenu pm = getAWTMenu();
+		/**
+		 * This is sort of a hack.
+		 * JPopupMenu is really ugly on mac.
+		 * This wraps the JPopupMenu and creates the awt-pendant
+		 * on the fly.
+		 */
+		if (Platform.isMac()) {
+			// awt
+			PopupMenu pm = getAWTMenu();
 
-            // TODO: cleaner add/remove
-            // invoker.remove(pm);
-            invoker.add(pm);
-            pm.show(invoker, x, y);
+			// TODO: cleaner add/remove
+			// invoker.remove(pm);
+			invoker.add(pm);
+			pm.show(invoker, x, y);
 
-        } else {
-            super.show(invoker, x, y);
-        }
-    }
+		} else {
+			super.show(invoker, x, y);
+		}
+	}
 
-    private PopupMenu getAWTMenu() {
-        if (pm == null) {
-            log.info("Wrapping JPopupMenu into PopupMenu");
-            pm = new PopupMenu();
+	private PopupMenu getAWTMenu() {
+		if (pm == null || true) { // hack because checkbox items were not updated.
+			log.debug("Wrapping JPopupMenu into PopupMenu");
+			pm = new PopupMenu();
 
-            for (int i = 0; i < this.getComponentCount(); i++) {
-                final Component co = this.getComponent(i);
+			for (int i = 0; i < this.getComponentCount(); i++) {
+				final Component co = this.getComponent(i);
 
-                if (JMenuItem.class.isInstance(co)) {
-                    final JMenuItem mi = (JMenuItem) co;
+				if (JMenuItem.class.isInstance(co)) {
+					final JMenuItem mi = (JMenuItem) co;
 
-                    final MenuItem ami;
+					final MenuItem ami;
 
-                    if (JCheckBoxMenuItem.class.isInstance(co)) {
-                        CheckboxMenuItem cami = new CheckboxMenuItem(mi.getText(), ((JCheckBoxMenuItem) co).getState());
+					if (JCheckBoxMenuItem.class.isInstance(co)) {
+						CheckboxMenuItem cami = new CheckboxMenuItem(mi.getText(),
+										((JCheckBoxMenuItem) co).getState());
 
-                        // relay item state changed events
-                        cami.addItemListener(new ItemListener() {
+						// relay item state changed events
+						cami.addItemListener(new ItemListener() {
 
-                            @Override
-                            public void itemStateChanged(ItemEvent itemEvent) {
-                                for (ItemListener il : ((JCheckBoxMenuItem) co).getItemListeners()) {
-                                    il.itemStateChanged(itemEvent);
-                                }
+							@Override
+							public void itemStateChanged(ItemEvent itemEvent) {
+								for (ItemListener il : ((JCheckBoxMenuItem) co).getItemListeners()) {
+									il.itemStateChanged(itemEvent);
+								}
 
-                                // emulate actionPerfomed-event that would be sended from JMenuItem.
-                                if (mi.getAction() != null) {
-                                    mi.getAction().actionPerformed(new ActionEvent(mi, 0, null));
-                                } else {
-                                    for (ActionListener al : mi.getActionListeners()) {
-                                        al.actionPerformed(new ActionEvent(mi, 0, null));
-                                    }
-                                }
-                            }
-                        });
-                        ami = cami;
-                    }
-                    // Disabeld code because it's not used currently.
-                    /*
-                    else if(JRadioButtonMenuItem.class.isInstance(co)){
-                        CheckboxMenuItem cami = new CheckboxMenuItem(mi.getText(), ((JRadioButtonMenuItem) co).isSelected());
+								// emulate actionPerfomed-event that would be sended from JMenuItem.
+								if (mi.getAction() != null) {
+									mi.getAction().actionPerformed(new ActionEvent(mi, 0, null));
+								} else {
+									for (ActionListener al : mi.getActionListeners()) {
+										al.actionPerformed(new ActionEvent(mi, 0, null));
+									}
+								}
+							}
+						});
+						ami = cami;
+					}
+					// Disabeld code because it's not used currently.
+					/*
+															else if(JRadioButtonMenuItem.class.isInstance(co)){
+																	CheckboxMenuItem cami = new CheckboxMenuItem(mi.getText(), ((JRadioButtonMenuItem) co).isSelected());
 
-                        // relay item state changed events
-                        cami.addItemListener(new ItemListener() {
+																	// relay item state changed events
+																	cami.addItemListener(new ItemListener() {
 
-                            @Override
-                            public void itemStateChanged(ItemEvent itemEvent) {
-                                for (ItemListener il : ((JRadioButtonMenuItem) co).getItemListeners()) {
-                                    il.itemStateChanged(itemEvent);
-                                }
-                            }
-                        });
-                        ami = cami;
-                    } */
-                    else {
-                        ami = new MenuItem(mi.getText());
-                    }
+																			@Override
+																			public void itemStateChanged(ItemEvent itemEvent) {
+																					for (ItemListener il : ((JRadioButtonMenuItem) co).getItemListeners()) {
+																							il.itemStateChanged(itemEvent);
+																					}
+																			}
+																	});
+																	ami = cami;
+															} */
+					else {
+						ami = new MenuItem(mi.getText());
+					}
 
-                    ami.setEnabled(mi.isEnabled());
-                    // listen for action event changes.
-                    if (mi.getAction() != null) {
-                        mi.getAction().addPropertyChangeListener(new PropertyChangeListener() {
-                            @Override
-                            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                                ami.setLabel(mi.getText());
-                                ami.setEnabled(mi.isEnabled());
-                            }
-                        });
-                    }
+					ami.setEnabled(mi.isEnabled());
+					// listen for action event changes.
+					if (mi.getAction() != null) {
+						mi.getAction().addPropertyChangeListener(new PropertyChangeListener() {
+							@Override
+							public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+								ami.setLabel(mi.getText());
+								ami.setEnabled(mi.isEnabled());
+							}
+						});
+					}
 
-                    ami.addActionListener(new ActionListener() {
+					ami.addActionListener(new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent actionEvent) {
-                            //log.debug("referring action to JMenuItem... " + actionEvent);
-                            if (mi.getAction() != null) {
-                                mi.getAction().actionPerformed(actionEvent);
-                            } else {
-                                for (ActionListener al : mi.getActionListeners()) {
-                                    al.actionPerformed(actionEvent);
-                                }
-                            }
-                        }
-                    });
-                    pm.add(ami);
+						@Override
+						public void actionPerformed(ActionEvent actionEvent) {
+							//log.debug("referring action to JMenuItem... " + actionEvent);
+							if (mi.getAction() != null) {
+								mi.getAction().actionPerformed(actionEvent);
+							} else {
+								for (ActionListener al : mi.getActionListeners()) {
+									al.actionPerformed(actionEvent);
+								}
+							}
+						}
+					});
+					pm.add(ami);
 
-                } else if (JSeparator.class.isInstance(co)) {
-                    pm.addSeparator();
-                }
-            }
-        }
-        return pm;
-    }
+				} else if (JSeparator.class.isInstance(co)) {
+					pm.addSeparator();
+				}
+			}
+		}
+		return pm;
+	}
 }

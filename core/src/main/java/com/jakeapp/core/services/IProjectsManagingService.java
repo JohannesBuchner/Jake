@@ -39,10 +39,10 @@ public interface IProjectsManagingService {
 	/**
 	 * Get a list of all Projects known to jake
 	 *
+	 * @param msg The MsgService to get the projects for
 	 * @return a list of all known jake projects
 	 */
 	List<Project> getProjectList(MsgService msg);
-
 
 	/**
 	 * Get a list of all Projects known to Jake matching the given
@@ -55,7 +55,14 @@ public interface IProjectsManagingService {
 	List<Project> getProjectList(InvitationState state);
 
 
-	List<Invitation> getInvitations(MsgService user);
+	/**
+	 * Get the List of invitations
+	 * @param msg The MsgService to get the projects for
+	 * @return
+	 */
+	// fixme - isn't this obsolete?
+	@Deprecated
+	List<Invitation> getInvitations(MsgService msg);
 
 
 	/**
