@@ -198,6 +198,7 @@ public class UserPanel extends JXPanel
 		// create the user login panel
 		JPanel loginUserPanel = new JPanel(new MigLayout("wrap 1, fill, center, ins 0"));
 		loginUserPanel.setOpaque(false);
+		loginUserPanel.setBorder(null);
 
 		// the say hello heading
 		JPanel titlePanel =
