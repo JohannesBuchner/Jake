@@ -28,12 +28,20 @@ import java.util.Set;
  * @author dominik, ..., johannes
  */
 public interface IProjectsManagingService {
+	
+	/**
+	 * Retrieves a list of all Projects for the specified user.
+	 * @param user
+	 * @return
+	 */
+	AvailableLaterObject<List<Project>> getProjects(MsgService user);
+	
 	/**
 	 * Get a list of all Projects known to jake
 	 *
 	 * @return a list of all known jake projects
 	 */
-	List<Project> getProjectList();
+	List<Project> getProjectList(MsgService msg);
 
 
 	/**
@@ -47,7 +55,7 @@ public interface IProjectsManagingService {
 	List<Project> getProjectList(InvitationState state);
 
 
-	public List<Invitation> getInvitations();
+	List<Invitation> getInvitations(MsgService user);
 
 
 	/**

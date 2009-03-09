@@ -87,12 +87,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public AvailableLaterObject<List<Project>> getProjects() {
-		return new GetProjectsFuture(pms);
+		return pms.getProjects(JakeContext.getMsgService());
 	}
 
 	@Override
 	public List<Invitation> getInvitations() {
-		return this.pms.getInvitations();
+		return this.pms.getInvitations(JakeContext.getMsgService());
 	}
 
 	@Override

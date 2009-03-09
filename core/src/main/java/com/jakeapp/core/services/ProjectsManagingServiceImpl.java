@@ -9,6 +9,7 @@ import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
 import com.jakeapp.core.services.futures.DeleteFilesFuture;
+import com.jakeapp.core.services.futures.GetProjectsFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
 import com.jakeapp.core.services.futures.ProjectSizeTotalFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
@@ -131,9 +132,15 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	/*
 	 * ***** STARTING IMPLEMENTATIONS *************
 	 */
+	
+	@Override
+	public AvailableLaterObject<List<Project>> getProjects(MsgService user) {
+		return new GetProjectsFuture(this,user);
+	}
+	
 	@Transactional
 	@Override
-	public List<Project> getProjectList() {
+	public List<Project> getProjectList(MsgService msg) {
 		List<Project> result;
 		log.debug("calling ProjectsManagingServiceImpl.getProjectList() ");
 
@@ -182,7 +189,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	}
 
 	@Override
-	public List<Invitation> getInvitations() {
+	public List<Invitation> getInvitations(MsgService user) {
 		return this.invitationDao.getAll();
 	}
 
@@ -1126,5 +1133,4 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public IAccountDao getAccountDao() {
 		return accountDao;
 	}
-
 }
