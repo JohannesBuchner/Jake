@@ -4,6 +4,7 @@ import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
@@ -35,7 +36,8 @@ public abstract class UserAction extends ProjectAction implements ContextChanged
 		boolean selected;
 		if (getList().getSelectedValue() != null) {
 			UserInfo userInfo = (UserInfo) getList().getSelectedValue();
-			selected = userInfo.getTrust() == trust;
+			selected = userInfo.getTrust() == trust && !UserHelper
+							.isCurrentProjectMember(getSelectedUser().getUser());
 		} else {
 			selected = false;
 		}

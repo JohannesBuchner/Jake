@@ -1,7 +1,11 @@
 package com.jakeapp.gui.swing.helpers.styler;
 
-import org.jdesktop.swingx.painter.Painter;
+import com.jakeapp.gui.swing.helpers.Colors;
 import org.jdesktop.swingx.painter.CapsulePainter;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+import org.jdesktop.swingx.painter.Painter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +20,7 @@ public abstract class AbstractStyler implements Styler {
 	private Painter loginBackgroundPainter;
 	private Painter contentBackgroundPainter;
 	private CapsulePainter userBackgroundPainter;
+	private Painter invitationBackgroundPainter;
 
 	public AbstractStyler() {
 		
@@ -29,6 +34,11 @@ public abstract class AbstractStyler implements Styler {
 		Color c1 = new Color(100, 100, 100);
 		Color c2 = new Color(130, 130, 130);
 		userBackgroundPainter.setFillPaint(new GradientPaint(0f, 0f, c2, 0f, 50f, c1));
+
+		MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.6f));
+		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.5f),
+					GlossPainter.GlossPosition.TOP);
+		invitationBackgroundPainter = new CompoundPainter(mp, gp);
 	}
 
 	@Override
@@ -50,12 +60,6 @@ public abstract class AbstractStyler implements Styler {
 
 	public Painter getLoginBackgroundPainter() {
 		return loginBackgroundPainter;
-		/*
-		MattePainter mp = new MattePainter(Colors.LightBlue.alpha(0.6f));
-		GlossPainter gp = new GlossPainter(Colors.White.alpha(0.5f),
-					GlossPainter.GlossPosition.TOP);
-		return new CompoundPainter(mp, gp);
-		*/
 	}
 
 	public Painter getContentBackgroundPainter() {
@@ -64,6 +68,10 @@ public abstract class AbstractStyler implements Styler {
 
 	public Painter getUserBackgroundPainter() {
 		return userBackgroundPainter;
+	}
+
+	public Painter getInvitationBackgroundPainter() {
+		return invitationBackgroundPainter;
 	}
 
 	public Font getSheetLargeFont() {

@@ -57,7 +57,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 	private void initComponents() {
 		// set the background painter
 		this.setBackgroundPainter(
-						Platform.getStyler().getLoginBackgroundPainter());
+						Platform.getStyler().getInvitationBackgroundPainter());
 
 		MigLayout layout = new MigLayout("wrap 1, fillx");
 		this.setLayout(layout);

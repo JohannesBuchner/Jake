@@ -40,12 +40,12 @@ public class UserHelper {
 	 */
 	public static String getNickOrFullName(UserInfo user) {
 		if (user.getNickName().length() > 0) {
-			return user.getNickName();
+			return cleanUserId(user.getNickName());
 		}
 		if (user.getFirstName().length() > 0) {
-			return user.getFirstName();
+			return cleanUserId(user.getFirstName());
 		} else {
-			return user.getUser().getUserId();
+			return cleanUserId(user.getUser().getUserId());
 		}
 	}
 

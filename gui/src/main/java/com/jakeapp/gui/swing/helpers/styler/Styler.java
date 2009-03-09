@@ -30,11 +30,9 @@ public interface Styler {
 	 * @return
 	 */
 	Painter getLoginBackgroundPainter();
-
-
 	Painter getContentBackgroundPainter();
-
 	Painter getUserBackgroundPainter();
+	Painter getInvitationBackgroundPainter();
 
 	/**
 	 * Returns the Font for Bold large fonts.
