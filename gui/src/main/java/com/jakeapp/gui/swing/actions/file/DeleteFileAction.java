@@ -9,12 +9,10 @@ import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
-import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
+import com.jakeapp.gui.swing.helpers.SheetHelper;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
@@ -57,8 +55,6 @@ public class DeleteFileAction extends FileAction {
 		User currentUser = JakeContext.getProject().getUserId();
 
 		ResourceMap map = FilePanel.getInstance().getResourceMap();
-		String[] options =
-						{map.getString("confirmDeleteFile.ok"), map.getString("genericCancel")};
 		String text;
 		LogEntry<? extends ILogable> lockEntry = null;
 		Attributed<FileObject> af;
@@ -93,11 +89,10 @@ public class DeleteFileAction extends FileAction {
 				 * decide, which user-interaction is appropriate
 				 * There are different confirm-messages for different lock-counts
 				 */
-		text = "";
+
 		if (files.size() == 1) {
 			if (lockEntry != null) {
-				text = Translator.get(map,
-								"confirmDeleteLockedFile.text",
+				text = Translator.get(map, "confirmDeleteLockedFile.text",
 								lockEntry.getMember().getUserId());
 			} else {
 				text = map.getString("confirmDeleteFile.text");
@@ -113,23 +108,10 @@ public class DeleteFileAction extends FileAction {
 
 		log.debug("User-interaction text is: " + text);
 
-		//ask user and do the real work with a Worker!
-		JSheet.showOptionSheet(FilePanel.getInstance(), text, JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, options[0],
-				new SheetListener() {
-
-					@Override
-					public void optionSelected(SheetEvent evt) {
-						if (evt.getOption() == 0) {
-							log.debug("Deleting now!!!");
-							JakeExecutor.exec(new DeleteJakeObjectsTask(JakeContext.getProject(), new ArrayList<JakeObject>(files),null));
-							/*
-							 * for (String item : cache) { JakeMainApp.getCore()
-							 * .deleteToTrash(JakeMainApp.getProject(), item); }
-							 */
-						}
-
-					}
-				});
+		if (SheetHelper.showConfirm(text, map.getString("confirmDeleteFile.ok"))) {
+			log.debug("Deleting now...");
+			JakeExecutor.exec(new DeleteJakeObjectsTask(JakeContext.getProject(),
+							new ArrayList<JakeObject>(files), null));
+		}
 	}
 }

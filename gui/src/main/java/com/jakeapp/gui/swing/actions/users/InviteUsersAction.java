@@ -4,13 +4,8 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.dialogs.InvitePeopleDialog;
-import com.jakeapp.gui.swing.dialogs.generic.JSheet;
-import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
-import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
-import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.helpers.SheetHelper;
 import org.apache.log4j.Logger;
-import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,22 +54,11 @@ public class InviteUsersAction extends ProjectAction {
 		log.debug("Invite People to: " + getProject());
 
 		if (!getProject().isStarted()) {
-			ResourceMap map = FilePanel.getInstance().getResourceMap();
-			String[] options = {"Start Project", map.getString("genericCancel")};
-			
-			//ask user and do the real work with a Worker!
-			JSheet.showOptionSheet(JakeContext.getFrame(),
-							"You need to start the project first.", JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE, null, options, options[0],
-							new SheetListener() {
-								@Override
-								public void optionSelected(SheetEvent evt) {
-									if (evt.getOption() == 0) {
-										StartStopProjectAction.perform(getProject());
-										showInviteDialog();
-									}
-								}
-							});
+			if (SheetHelper.showConfirm("You have to start the project first.",
+							"Start Project")) {
+				StartStopProjectAction.perform(getProject());
+				showInviteDialog();
+			}
 		} else {
 			showInviteDialog();
 		}
