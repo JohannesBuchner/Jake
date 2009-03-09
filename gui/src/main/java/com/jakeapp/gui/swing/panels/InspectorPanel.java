@@ -18,7 +18,7 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
-import com.jakeapp.gui.swing.helpers.NoteObjectHelper;
+import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -231,7 +231,7 @@ public class InspectorPanel extends JXPanel
 				break;
 			case NOTE:
 				this.iconLabel.setIcon(this.notesIcon);
-				this.nameValue.setText(StringUtilities.htmlize(NoteObjectHelper.getTitle(
+				this.nameValue.setText(StringUtilities.htmlize(NotesHelper.getTitle(
 								getAttributedNoteObject().getJakeObject())));
 				this.sizeValue.setVisible(false);
 				if (this.getAttributedNoteObject().getLastVersionEditor() != null) {

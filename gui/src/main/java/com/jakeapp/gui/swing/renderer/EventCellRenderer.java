@@ -1,10 +1,14 @@
 package com.jakeapp.gui.swing.renderer;
 
 import com.explodingpixels.macwidgets.MacFontUtils;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.helpers.UserHelper;
@@ -122,14 +126,14 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			case JAKE_OBJECT_DELETE: {
 				setIcon((isNote ? noteRemoveIcon : fileRemoveIcon));
 				msg += Translator.get(newsResourceMap, "eventsRemoved" + type,
-								loge.getBelongsTo().toString());
+								getJakeObjectTitle(loge.getBelongsTo()));
 			}
 			break;
 
 			case JAKE_OBJECT_NEW_VERSION: {
 				setIcon((isNote ? noteUpdateIcon : fileUpdateIcon));
 				msg += Translator.get(newsResourceMap, "eventsUpdated" + type,
-								loge.getBelongsTo().toString());
+								getJakeObjectTitle(loge.getBelongsTo()));
 			}
 			break;
 
@@ -143,14 +147,14 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			case JAKE_OBJECT_LOCK: {
 				setIcon(fileLockIcon);
 				msg += Translator.get(newsResourceMap, "eventsObjectLock",
-								loge.getBelongsTo().toString());
+								getJakeObjectTitle(loge.getBelongsTo()));
 			}
 			break;
 
 			case JAKE_OBJECT_UNLOCK: {
 				setIcon(fileUnlockIcon);
 				msg += Translator.get(newsResourceMap, "eventsObjectUnlock",
-								loge.getBelongsTo().toString());
+								getJakeObjectTitle(loge.getBelongsTo()));
 			}
 			break;
 
@@ -164,42 +168,42 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			case START_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleAddIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberTrust",
-								loge.getBelongsTo().toString());
+								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case STOP_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleRemoveIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberStopTrust",
-								loge.getBelongsTo().toString());
+								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case FOLLOW_TRUSTING_PROJECTMEMBER: {
 				setIcon(peopleAddFullIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberFullTrust",
-								loge.getBelongsTo().toString());
+								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case PROJECTMEMBER_INVITED: {
 				setIcon(peopleInviteIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberInvited",
-								loge.getBelongsTo().toString());
+								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case TAG_ADD: {
 				setIcon(tagAddIcon);
 				msg += Translator.get(newsResourceMap, "eventsTagsAdd",
-								loge.getBelongsTo().toString());
+								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case TAG_REMOVE: {
 				setIcon(tagRemoveIcon);
 				msg += Translator.get(newsResourceMap, "eventsTagsRemove",
-								loge.getBelongsTo().toString());
+								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
@@ -233,5 +237,18 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 										.getTimestamp().toGMTString() + ")" + comment + "</html>");
 
 		return this;
+	}
+
+	private String getJakeObjectTitle(ILogable belongsTo) {
+		if (belongsTo instanceof NoteObject) {
+			NoteObject note = (NoteObject) belongsTo;
+			return NotesHelper.getTitle(note);
+		} else if (belongsTo instanceof FileObject) {
+			FileObject file = (FileObject) belongsTo;
+			// fixme: only get name?
+			return file.getRelPath();
+		}
+		// fallback
+		return belongsTo.toString();
 	}
 }

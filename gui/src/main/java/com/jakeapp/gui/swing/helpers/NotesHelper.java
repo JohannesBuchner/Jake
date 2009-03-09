@@ -3,9 +3,9 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.core.domain.NoteObject;
 
 /**
- * @author: studpete
+ * @author studpete
  */
-public class NoteObjectHelper {
+public class NotesHelper {
 
 	/**
 	 * Get the first 100 Chars of the Note.
