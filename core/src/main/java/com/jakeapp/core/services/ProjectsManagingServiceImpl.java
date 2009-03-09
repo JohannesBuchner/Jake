@@ -837,7 +837,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (project == null)
 			throw new NoSuchProjectException();
 
-		return this.getLogEntryDao(project).getCurrentProjectMembers();
+		return this.getLogEntryDao(project).getCurrentProjectMembers(project.getUserId());
 	}
 
 
@@ -849,7 +849,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			throw new NoSuchProjectException();
 
 		Collection<User> users = this.getLogEntryDao(project)
-				.getCurrentProjectMembers();
+				.getCurrentProjectMembers(project.getUserId());
 
 		List<UserInfo> userInfos = new LinkedList<UserInfo>();
 
@@ -964,7 +964,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 			// subtract all users that are already in the project
 			possibleUsers.removeAll(this.getLogEntryDao(project)
-					.getCurrentProjectMembers());
+					.getCurrentProjectMembers(project.getUserId()));
 			result.addAll(possibleUsers);
 		} catch (NotLoggedInException e) {
 			// empty handling

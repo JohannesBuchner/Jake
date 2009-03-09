@@ -266,7 +266,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 		this.initProjectAndMembers(projectMember,invitedProjectMember);
 		
 		//get user
-		List<User> members = logEntryDao.getCurrentProjectMembers();
+		List<User> members = logEntryDao.getCurrentProjectMembers(TODO);
 		Assert.assertThat(members.size(), CoreMatchers.not(0));
 		Assert.assertThat(members,JUnitMatchers.hasItem(projectMember));
 	}
@@ -279,7 +279,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 		this.initProjectAndMembers(projectMember,invitedProjectMember);
 		
 		//get user
-		List<User> members = logEntryDao.getCurrentProjectMembers();
+		List<User> members = logEntryDao.getCurrentProjectMembers(TODO);
 		Assert.assertThat(members.size(), CoreMatchers.not(0));
 		Assert.assertThat(members, JUnitMatchers.hasItem(invitedProjectMember));
 	}

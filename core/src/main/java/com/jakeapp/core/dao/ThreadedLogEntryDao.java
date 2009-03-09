@@ -1,13 +1,7 @@
 package com.jakeapp.core.dao;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.UUID;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
@@ -455,16 +449,17 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 
 	/**
 	 * {@inheritDoc}
+	 * @param correspondingTo
 	 */	
 	@Override
-	public List<User> getCurrentProjectMembers() {
+	public List<User> getCurrentProjectMembers(final User correspondingTo) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<User>>() {
 
 				@Override
 				public List<User> calculate() throws Exception {
-					return ThreadedLogEntryDao.this.dao.getCurrentProjectMembers();
+					return ThreadedLogEntryDao.this.dao.getCurrentProjectMembers(correspondingTo);
 				}
 			});
 		} catch (RuntimeException e) {

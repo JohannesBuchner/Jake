@@ -128,7 +128,7 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	}
 
 	public Collection<User> getProjectMembers(Project p) {
-		return getLogEntryDao(p).getCurrentProjectMembers();
+		return getLogEntryDao(p).getCurrentProjectMembers(p.getUserId());
 	}
 
 	public List<User> getTrustedProjectMembers(Project p) {

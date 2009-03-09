@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -42,7 +40,6 @@ import com.jakeapp.core.synchronization.request.ProjectRequestListener;
 import com.jakeapp.core.synchronization.request.RequestHandlePolicy;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
@@ -113,7 +110,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@Override
 	protected Iterable<User> getProjectMembers(Project project)
 			throws NoSuchProjectException {
-		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers());
+		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers(project.getUserId()));
 	}
 
 
@@ -811,7 +808,10 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@Transactional
 	private void syncProjectMembers(Project project) {
 		Collection<User> members = db.getLogEntryDao(project)
-				.getCurrentProjectMembers();
+				.getCurrentProjectMembers(project.getUserId());
+
+		members.remove(project.getUserId()); // dont sync with ourself
+		
 		for (User member : members) {
 			com.jakeapp.jake.ics.UserId userid = getICSManager().getBackendUserId(project, member); 
 			try {

@@ -74,11 +74,12 @@ public final class UnprocessedBlindLogEntryDaoProxy {
 	}
 
 	/**
-	 * @see ILogEntryDao#getCurrentProjectMembers()
+	 * @see ILogEntryDao#getCurrentProjectMembers(com.jakeapp.core.domain.User)
 	 * @return
+	 * @param correspondingTo
 	 */
-	public List<User> getCurrentProjectMembers() {
-		return this.innerDao.getCurrentProjectMembers();
+	public List<User> getCurrentProjectMembers(User correspondingTo) {
+		return this.innerDao.getCurrentProjectMembers(correspondingTo);
 	}
 
 	/**

@@ -248,11 +248,11 @@ public interface ILogEntryDao {
 	 * them. Also looks at the {@value LogAction#PROJECT_CREATED} at the
 	 * beginning.
 	 * 
-	 * @param belongsTo
+	 * @param correspondingTo
 	 * @return an empty collection if no projectmembers (not null) or the tags
 	 *         otherwise
 	 */
-	public List<User> getCurrentProjectMembers();
+	public List<User> getCurrentProjectMembers(User correspondingTo);
 
 	/**
 	 * Does a trust b?
