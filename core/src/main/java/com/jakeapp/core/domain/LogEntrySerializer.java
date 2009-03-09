@@ -1,34 +1,18 @@
 package com.jakeapp.core.domain;
 
-import java.util.Date;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectDeleteLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.StopTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.TagAddLogEntry;
-import com.jakeapp.core.domain.logentries.TagLogEntry;
-import com.jakeapp.core.domain.logentries.TagRemoveLogEntry;
+import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import org.apache.log4j.Logger;
+
+import java.util.Date;
+import java.util.UUID;
 
 
 public class LogEntrySerializer {
@@ -53,7 +37,7 @@ public class LogEntrySerializer {
 	}
 
 	public void setApplicationContextFactory(
-			ProjectApplicationContextFactory applicationContextFactory) {
+					ProjectApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
 	}
 
@@ -76,7 +60,8 @@ public class LogEntrySerializer {
 	public LogEntrySerializer() {
 	}
 
-	public LogEntrySerializer(ProjectApplicationContextFactory applicationContextFactory) {
+	public LogEntrySerializer(
+					ProjectApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
 	}
 
@@ -105,12 +90,12 @@ public class LogEntrySerializer {
 		sb.append(SEPERATOR);
 		if (logEntry.getBelongsTo() instanceof FileObject) {
 			sb.append("F");
-			sb.append(SEPERATOR).append(
-					((FileObject) logEntry.getBelongsTo()).getRelPath());
+			sb.append(SEPERATOR)
+							.append(((FileObject) logEntry.getBelongsTo()).getRelPath());
 		} else if (logEntry.getBelongsTo() instanceof NoteObject) {
 			sb.append("N");
-			sb.append(SEPERATOR).append(
-					((NoteObject) logEntry.getBelongsTo()).getContent());
+			sb.append(SEPERATOR)
+							.append(((NoteObject) logEntry.getBelongsTo()).getContent());
 		} else
 			throw new UnsupportedOperationException();
 
@@ -158,8 +143,8 @@ public class LogEntrySerializer {
 
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getName());
 
-		sb.append(SEPERATOR).append(
-				logEntry.getBelongsTo().getObject().getUuid().toString());
+		sb.append(SEPERATOR)
+						.append(logEntry.getBelongsTo().getObject().getUuid().toString());
 		sb.append(SEPERATOR);
 		return sb.toString();
 	}
@@ -177,9 +162,7 @@ public class LogEntrySerializer {
 		sb.append(SEPERATOR).append(logEntry.getMember().getUserId());
 		sb.append(SEPERATOR).append(logEntry.getUuid().toString());
 
-
 		sb.append(SEPERATOR).append(project.getName());
-
 
 		sb.append(SEPERATOR);
 
@@ -194,15 +177,22 @@ public class LogEntrySerializer {
 		return this.serialize((ProjectLogEntry) logEntry);
 	}
 
-	public String serialize(StartTrustingProjectMemberLogEntry logEntry, Project project) {
+	public String serialize(StartTrustingProjectMemberLogEntry logEntry,
+					Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
-	public String serialize(StopTrustingProjectMemberLogEntry logEntry, Project project) {
+	public String serialize(StopTrustingProjectMemberLogEntry logEntry,
+					Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
-	public String serialize(FollowTrustingProjectMemberLogEntry logEntry, Project project) {
+	public String serialize(FollowTrustingProjectMemberLogEntry logEntry,
+					Project project) {
+		return this.serialize((ProjectMemberLogEntry) logEntry, project);
+	}
+
+	public String serialize(ProjectMemberInvitedLogEntry logEntry, Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
@@ -211,10 +201,7 @@ public class LogEntrySerializer {
 		StringBuffer sb = prepareSerializedString(logEntry, project);
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getProtocolType().ordinal());
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUserId());
-
-
 		sb.append(SEPERATOR);
-
 		return sb.toString();
 	}
 
@@ -233,15 +220,19 @@ public class LogEntrySerializer {
 				return serialize(ProjectJoinedLogEntry.parse(logEntry));
 			case PROJECT_CREATED:
 				return serialize(ProjectCreatedLogEntry.parse(logEntry));
+			case PROJECTMEMBER_INVITED:
+				return serialize(ProjectMemberInvitedLogEntry.parse(logEntry), project);
+			case PROJECT_REJECTED:
+				return serialize(ProjectMemberInvitationRejectedLogEntry.parse(logEntry),
+								project);
 			case START_TRUSTING_PROJECTMEMBER:
 				return serialize(StartTrustingProjectMemberLogEntry.parse(logEntry),
-						project);
+								project);
 			case STOP_TRUSTING_PROJECTMEMBER:
-				return serialize(StopTrustingProjectMemberLogEntry.parse(logEntry),
-						project);
+				return serialize(StopTrustingProjectMemberLogEntry.parse(logEntry), project);
 			case FOLLOW_TRUSTING_PROJECTMEMBER:
 				return serialize(FollowTrustingProjectMemberLogEntry.parse(logEntry),
-						project);
+								project);
 			case TAG_ADD:
 				return serialize(TagAddLogEntry.parse(logEntry), project);
 			case TAG_REMOVE:
@@ -251,43 +242,63 @@ public class LogEntrySerializer {
 	}
 
 
+	/**
+	 * Deserialize Component.
+	 *
+	 * @param input
+	 * @return
+	 * @throws InvalidDeserializerCallException
+	 *
+	 */
+	// fixme: oh please, i wanna be cleaned up so badly!
 	public LogEntry<? extends ILogable> deserialize(String input)
-			throws InvalidDeserializerCallException {
+					throws InvalidDeserializerCallException {
+		LogEntry result;
+
+		// get message parts
 		String[] parts = input.split(SEPERATOR_REGEX);
 
-		if (parts.length < 6)
-			throw new InvalidDeserializerCallException();
+		for (String part : parts) {
+			log.trace("part = " + part);
+		}
 
+		// stop on error
+		if (parts.length < 6)
+			throw new InvalidDeserializerCallException(
+							"Invalid format: need at least 6 parts.");
+
+		// first parts of message are equal
 		UUID projectUUID = UUID.fromString(parts[1]);
 		Date date = new Date(new Long(parts[2]));
 		LogAction logAction = LogAction.values()[new Integer(parts[3])];
 		ProtocolType protocolType = ProtocolType.values()[new Integer(parts[4])];
 		String userId = parts[5];
-
-		User remoteUser = new User(protocolType, userId);
 		UUID logEntryUUID = UUID.fromString(parts[6]);
 
+		User remoteUser = new User(protocolType, userId);
 
-		log.debug("projectUUID = " + projectUUID);
-		log.debug("date = " + date);
-		log.debug("logAction = " + logAction);
+		log.trace("projectUUID = " + projectUUID);
+		log.trace("date = " + date);
+		log.trace("logAction = " + logAction);
 
-		for (String part : parts) {
-			log.debug("part = " + part);
+		// check that project exists locally
+		Project p;
+		try {
+			p = getProjectDao().read(projectUUID);
+		} catch (NoSuchProjectException e) {
+
+			// we have to process two log entries special and create logEntries for them...
+			if (logAction == LogAction.PROJECT_CREATED || logAction == LogAction.PROJECT_JOINED) {
+				String projectName = parts[7];
+				p = new Project(projectName, projectUUID, null, null);
+			} else {
+				throw new InvalidDeserializerCallException(
+								"Project does not exist locally: " + projectUUID);
+			}
 		}
 
 		switch (logAction) {
 			case JAKE_OBJECT_DELETE: {
-				Project p = null;
-				JakeObjectDeleteLogEntry result;
-
-				try {
-					p = getProjectDao().read(projectUUID); // throws
-					// NoSuchProjectException
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-
 				String type = parts[7];
 
 				JakeObject jakeObject;
@@ -297,38 +308,19 @@ public class LogEntrySerializer {
 				} else if (type.equals("N")) {
 					String content = parts[8];
 					jakeObject = new NoteObject(p, content);
-
-
 				} else
 					throw new InvalidDeserializerCallException();
 
 				jakeObject.setUuid(UUID.fromString(parts[9]));
 
-
 				String comment = parts[10];
 				String checksum = parts[11];
 
-
-				result = new JakeObjectDeleteLogEntry(jakeObject, remoteUser, comment,
-						false);
-
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-			}
+				result =
+								new JakeObjectDeleteLogEntry(jakeObject, remoteUser, comment, false);
+			}break;
+			
 			case JAKE_OBJECT_LOCK: {
-				Project p = null;
-				JakeObjectLockLogEntry result;
-
-				try {
-					p = getProjectDao().read(projectUUID); // throws
-					// NoSuchProjectException
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-
 				String type = parts[7];
 
 				JakeObject jakeObject;
@@ -338,38 +330,18 @@ public class LogEntrySerializer {
 				} else if (type.equals("N")) {
 					String content = parts[8];
 					jakeObject = new NoteObject(p, content);
-
-
 				} else
 					throw new InvalidDeserializerCallException();
 
 				jakeObject.setUuid(UUID.fromString(parts[9]));
 
-
 				String comment = parts[10];
 				String checksum = parts[11];
 
+				result = new JakeObjectLockLogEntry(jakeObject, remoteUser, comment, false);
+			}break;
 
-				result = new JakeObjectLockLogEntry(jakeObject, remoteUser, comment,
-						false);
-
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-			}
 			case JAKE_OBJECT_NEW_VERSION: {
-				Project p = null;
-				JakeObjectNewVersionLogEntry result;
-
-				try {
-					p = getProjectDao().read(projectUUID); // throws
-					// NoSuchProjectException
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-
 				String type = parts[7];
 
 				JakeObject jakeObject;
@@ -379,40 +351,19 @@ public class LogEntrySerializer {
 				} else if (type.equals("N")) {
 					String content = parts[8];
 					jakeObject = new NoteObject(p, content);
-
-
 				} else
 					throw new InvalidDeserializerCallException();
 
 				jakeObject.setUuid(UUID.fromString(parts[9]));
 
-
 				String comment = parts[10];
 				String checksum = parts[11];
 
-
-				result = new JakeObjectNewVersionLogEntry(jakeObject, remoteUser,
-						comment, checksum, false);
-
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-
-			}
+				result = new JakeObjectNewVersionLogEntry(jakeObject, remoteUser, comment,
+								checksum, false);
+			}break;
 
 			case JAKE_OBJECT_UNLOCK: {
-				Project p = null;
-				JakeObjectUnlockLogEntry result;
-
-				try {
-					p = getProjectDao().read(projectUUID); // throws
-					// NoSuchProjectException
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-
 				String type = parts[7];
 
 				JakeObject jakeObject;
@@ -422,138 +373,88 @@ public class LogEntrySerializer {
 				} else if (type.equals("N")) {
 					String content = parts[8];
 					jakeObject = new NoteObject(p, content);
-
-
 				} else
 					throw new InvalidDeserializerCallException();
 
 				jakeObject.setUuid(UUID.fromString(parts[9]));
 
-
 				String comment = parts[10];
 				String checksum = parts[11];
 
+				result =
+								new JakeObjectUnlockLogEntry(jakeObject, remoteUser, comment, false);
+			}break;
 
-				result = new JakeObjectUnlockLogEntry(jakeObject, remoteUser, comment,
-						false);
-
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-			}
 			case PROJECT_CREATED: {
-				ProjectCreatedLogEntry result;
-				String projectName = parts[7];
-				Project p = null;
-				try {
-					p = getProjectDao().read(projectUUID);
-					// project already exists
-				} catch (NoSuchProjectException e) {
-					p = new Project(projectName, projectUUID, null, null);
-					// project object created
-				}
+				ProjectCreatedLogEntry res;
+				res = new ProjectCreatedLogEntry(p, remoteUser);
+				res.setProject(p);
+				result = res;
+			}break;
 
-				result = new ProjectCreatedLogEntry(p, remoteUser);
-				result.setProject(p);
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-			}
 			case PROJECT_JOINED: {
-				ProjectJoinedLogEntry result;
-				String projectName = parts[7];
-				Project p = null;
-				try {
-					p = getProjectDao().read(projectUUID);
-					// project already exists
-				} catch (NoSuchProjectException e) {
-					p = new Project(projectName, projectUUID, null, null);
-					// project object created
-				}
+				ProjectJoinedLogEntry res;
 
-				result = new ProjectJoinedLogEntry(p, remoteUser);
-				result.setProject(p);
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
+				res = new ProjectJoinedLogEntry(p, remoteUser);
+				res.setProject(p);
+				result = res;
 			}
+			break;
+
 			case FOLLOW_TRUSTING_PROJECTMEMBER: {
-				FollowTrustingProjectMemberLogEntry result;
-				Project p = null;
-				try {
-					p = getProjectDao().read(projectUUID);
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-				ProtocolType protocolTypeOther = ProtocolType.values()[new Integer(
-						parts[7])];
+				ProtocolType protocolTypeOther =
+								ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new FollowTrustingProjectMemberLogEntry(other, remoteUser);
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-
 			}
+			break;
+
 			case START_TRUSTING_PROJECTMEMBER: {
-				StartTrustingProjectMemberLogEntry result;
-				Project p = null;
-				try {
-					p = getProjectDao().read(projectUUID);
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-				ProtocolType protocolTypeOther = ProtocolType.values()[new Integer(
-						parts[7])];
+				ProtocolType protocolTypeOther =
+								ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new StartTrustingProjectMemberLogEntry(other, remoteUser);
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-
 			}
+			break;
+
 			case STOP_TRUSTING_PROJECTMEMBER: {
-				StopTrustingProjectMemberLogEntry result;
-				Project p = null;
-				try {
-					p = getProjectDao().read(projectUUID);
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-				ProtocolType protocolTypeOther = ProtocolType.values()[new Integer(
-						parts[7])];
+				ProtocolType protocolTypeOther =
+								ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new StopTrustingProjectMemberLogEntry(other, remoteUser);
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
 			}
+			break;
+
+			case PROJECTMEMBER_INVITED: {
+				ProtocolType protocolTypeOther =
+								ProtocolType.values()[new Integer(parts[7])];
+				String userIdOther = parts[8];
+
+				User other = new User(protocolTypeOther, userIdOther);
+
+				result = new ProjectMemberInvitedLogEntry(other, remoteUser);
+			}break;
+
+			case PROJECT_REJECTED: {
+				ProtocolType protocolTypeOther =
+								ProtocolType.values()[new Integer(parts[7])];
+				String userIdOther = parts[8];
+
+				User other = new User(protocolTypeOther, userIdOther);
+
+				result = new ProjectMemberInvitationRejectedLogEntry(other, remoteUser);
+			}break;
+
 			case TAG_ADD: {
-				Project p = null;
-				TagAddLogEntry result;
-
-				try {
-					p = getProjectDao().read(projectUUID); // throws
-					// NoSuchProjectException
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-
-
 				String type = parts[7];
 				JakeObject jakeObject;
 				Tag tag = null;
@@ -575,30 +476,13 @@ public class LogEntrySerializer {
 				tag.setObject(jakeObject);
 
 				result = new TagAddLogEntry(tag, remoteUser);
-
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-
-
 			}
+			break;
+
 			case TAG_REMOVE: {
-				Project p = null;
-				TagRemoveLogEntry result;
-
-				try {
-					p = getProjectDao().read(projectUUID); // throws
-					// NoSuchProjectException
-				} catch (NoSuchProjectException e) {
-					throw new InvalidDeserializerCallException();
-				}
-
-
 				String type = parts[7];
 				JakeObject jakeObject;
-				Tag tag = null;
+				Tag tag;
 				try {
 					if (type.equals("F")) {
 						jakeObject = getFileObjectDao(p).get(UUID.fromString(parts[9]));
@@ -617,19 +501,18 @@ public class LogEntrySerializer {
 				tag.setObject(jakeObject);
 
 				result = new TagRemoveLogEntry(tag, remoteUser);
+			}
+			break;
 
-
-				// / always do this
-				result.setTimestamp(date);
-				result.setUuid(logEntryUUID);
-				return result;
-
-
+			default: {
+				throw new UnsupportedOperationException("Unknown logAction: " + logAction);
 			}
 		}
 
-
-		throw new UnsupportedOperationException();
+		// / always do this
+		result.setTimestamp(date);
+		result.setUuid(logEntryUUID);
+		return result;
 	}
 
 	private IProjectDao getProjectDao() {

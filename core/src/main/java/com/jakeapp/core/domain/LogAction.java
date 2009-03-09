@@ -117,8 +117,4 @@ public enum LogAction implements Serializable {
 	 */
 	JAKE_OBJECT_UNLOCK
 
-
-
-
-
 }

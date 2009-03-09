@@ -1,25 +1,23 @@
 package com.jakeapp.core.domain;
 
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.when;
-
-
-import java.util.UUID;
-
-import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.INoteObjectDao;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.synchronization.exceptions.InvalidDeserializerCallException;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+
+import java.util.UUID;
 
 /**
  * This tests the correct function of the
@@ -130,7 +128,6 @@ public class LogEntrySerializerTest {
 
 		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
 		Assert.assertEquals(logEntry, result);
-
 	}
 
 
@@ -495,6 +492,45 @@ public class LogEntrySerializerTest {
 
 		serializer.deserialize(serializedString);
 		Assert.fail(); // exception should be thrown
+	}
+
+
+	@Test
+	public void testProjectMemberInvitedLogEntry_existingProject() throws NoSuchProjectException {
+
+		ProjectMemberInvitedLogEntry logEntry = new ProjectMemberInvitedLogEntry(sampleUserId1, sampleUserId2);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+		
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectMemberInvitedLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
+	}
+
+	@Test
+	public void testProjectMemberInvitationRejectedLogEntry_existingProject() throws NoSuchProjectException {
+
+		ProjectMemberInvitationRejectedLogEntry logEntry = new ProjectMemberInvitationRejectedLogEntry(sampleUserId1, sampleUserId2);
+		String serializedString = serializer.serialize(logEntry, sampleProject1);
+
+		when(projectDao.read(UUID.fromString(sampleProject1.getProjectId()))).thenReturn(sampleProject1);
+
+		LogEntry result = serializer.deserialize(serializedString);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result instanceof ProjectMemberInvitationRejectedLogEntry);
+
+		Assert.assertTrue(logEntry.equals(result));
+		Assert.assertTrue(result.equals(logEntry));
+
+		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
+		Assert.assertEquals(logEntry, result);
 	}
 
 

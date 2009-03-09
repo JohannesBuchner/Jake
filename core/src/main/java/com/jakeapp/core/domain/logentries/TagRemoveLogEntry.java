@@ -30,5 +30,4 @@ public class TagRemoveLogEntry extends TagLogEntry {
 		le.setTimestamp(logEntry.getTimestamp());
 		return le;
     }
-
 }

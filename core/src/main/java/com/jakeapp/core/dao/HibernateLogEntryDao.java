@@ -1,24 +1,15 @@
 package com.jakeapp.core.dao;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.*;
+import java.util.*;
 
 public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEntryDao {
 
@@ -51,8 +42,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public void create(LogEntry<? extends ILogable> logEntry) {
-		log.debug("create:" + logEntry);
-		debugDump();
+		log.trace("create:" + logEntry);
+		//debugDump();
 		if (!logEntry.isProcessed()) {
 			switch (logEntry.getLogAction()) {
 				case JAKE_OBJECT_DELETE:
