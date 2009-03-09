@@ -84,4 +84,8 @@ public class UserHelper {
 
 		return userId.substring(0, slashPos);
 	}
+
+	public static String cleanUserId(User user) {
+		return cleanUserId(user.getUserId());
+	}
 }

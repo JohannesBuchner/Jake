@@ -1,8 +1,9 @@
 package com.jakeapp.gui.swing.actions.project;
 
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.StartStopProjectTask;
 import org.apache.log4j.Logger;
 
@@ -21,7 +22,7 @@ public class StartStopProjectAction extends ProjectAction {
 		updateAction();
 	}
 
-	public void actionPerformed(ActionEvent actionEvent) {
+	public void actionPerformed(ActionEvent ignored) {
 		log.trace("Start/Stop Project: " + getProject());
 
 		// do nothing if we don't have a project
@@ -29,8 +30,15 @@ public class StartStopProjectAction extends ProjectAction {
 			log.warn("Attemted to Start/Stop without a project");
 			return;
 		}
+		perform(getProject());
+	}
 
-		JakeExecutor.exec(new StartStopProjectTask(getProject(), !getProject().isStarted()));
+	/**
+	 * Actially performs the action
+	 * @param p
+	 */
+	public static void perform(Project p) {
+		JakeExecutor.exec(new StartStopProjectTask(p, !p.isStarted()));
 	}
 
 

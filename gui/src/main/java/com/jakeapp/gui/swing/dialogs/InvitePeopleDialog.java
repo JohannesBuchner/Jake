@@ -2,9 +2,11 @@ package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.models.InvitePeopleComboBoxModel;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
@@ -16,22 +18,24 @@ import java.awt.event.KeyEvent;
 /**
  * People Invitation Dialog. Opens modal dialog to add ProjectMembers
  *
- * @author: studpete
+ * @author studpete
  */
 // TODO: enable add multiple
 // TODO: enable add by name (for already known)
-public class InvitePeopleDialog extends JakeDialog {
+public class InvitePeopleDialog extends JakeDialog implements ProjectChanged {
 	private static final Logger log = Logger.getLogger(InvitePeopleDialog.class);
 	private JComboBox peopleComboBox;
 
 	public InvitePeopleDialog(Project project) {
 		super(project);
 
-		setResourceMap(org.jdesktop.application.Application.getInstance(
-				  com.jakeapp.gui.swing.JakeMainApp.class).getContext()
-				  .getResourceMap(InvitePeopleDialog.class));
+		setResourceMap(org.jdesktop.application.Application
+						.getInstance(com.jakeapp.gui.swing.JakeMainApp.class)
+						.getContext().getResourceMap(InvitePeopleDialog.class));
 
 		initDialog();
+
+		EventCore.get().addProjectChangedCallbackListener(this);
 
 		// set custom properties
 		setDialogTitle(getResourceMap().getString("inviteTitle"));
@@ -82,8 +86,8 @@ public class InvitePeopleDialog extends JakeDialog {
 	 */
 	private void invitePeopleAction() {
 		if (peopleComboBox.getSelectedItem() != null)
-			JakeMainApp.getCore().inviteUser(getProject(),
-					peopleComboBox.getSelectedItem().toString());
+			JakeMainApp.getCore()
+							.inviteUser(getProject(), peopleComboBox.getSelectedItem().toString());
 		closeDialog();
 	}
 
@@ -95,5 +99,20 @@ public class InvitePeopleDialog extends JakeDialog {
 	public static void showDialog(Project project) {
 		InvitePeopleDialog dlg = new InvitePeopleDialog(project);
 		dlg.showDialogSized(400, 220);
+
+		log.debug("cleaning up...");
+		EventCore.get().removeProjectChangedCallbackListener(dlg);
+	}
+
+
+	@Override public void projectChanged(ProjectChangedEvent ev) {
+		if (ev.getReason() == ProjectChangedEvent.Reason.StartStopStateChanged) {
+			updateDialog();
+		}
+	}
+
+	private void updateDialog() {
+		log.debug("Updating PeopleModel");
+		peopleComboBox.setModel(new InvitePeopleComboBoxModel(JakeContext.getProject()));
 	}
 }

@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import org.apache.log4j.Logger;
 
 /**
@@ -35,10 +36,12 @@ class ProjectInvitationListener implements IProjectInvitationListener {
 
 		EventCore.get().fireLogChanged(p);
 
-		JakeStatusBar.showMessage("User " + user + " accepted your Invitation to " + p);
+		JakeStatusBar.showMessage("User " + UserHelper
+						.cleanUserId(user) + " accepted your Invitation to " + p.getName());
 
 		//debug
-		JSheet.showMessageSheet(JakeContext.getFrame(), "User " + user + " accepted your Invitation to " + p);
+		JSheet.showMessageSheet(JakeContext.getFrame(),
+						"User " + user + " accepted your Invitation to " + p);
 	}
 
 	@Override public void rejected(User user, Project p) {
@@ -46,9 +49,11 @@ class ProjectInvitationListener implements IProjectInvitationListener {
 
 		EventCore.get().fireLogChanged(p);
 
-		JakeStatusBar.showMessage("User " + user + " rejected your Invitation to " + p);
+		JakeStatusBar.showMessage("User " + UserHelper
+						.cleanUserId(user) + " rejected your Invitation to " + p.getName());
 
 		//debug
-		JSheet.showMessageSheet(JakeContext.getFrame(), "User " + user + " rejected your Invitation to " + p);		
+		JSheet.showMessageSheet(JakeContext.getFrame(),
+						"User " + user + " rejected your Invitation to " + p);
 	}
 }

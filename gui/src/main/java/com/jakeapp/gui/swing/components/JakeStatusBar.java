@@ -22,6 +22,7 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
@@ -559,7 +560,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		Runnable runner = new Runnable() {
 			@Override
 			public void run() {
-				JakeStatusBar.getInstance().statusLabel.setText(msg);
+				JakeStatusBar.getInstance().statusLabel.setText(StringUtilities.htmlize(msg));
 			}
 		};
 

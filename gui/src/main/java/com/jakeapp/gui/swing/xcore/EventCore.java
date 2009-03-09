@@ -5,12 +5,12 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.CoreChanged;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
@@ -154,7 +154,8 @@ public class EventCore {
 		dataChanged.remove(cb);
 	}
 
-	public void fireDataChanged(EnumSet<DataChanged.DataReason> dataReason, Project p) {
+	public void fireDataChanged(EnumSet<DataChanged.DataReason> dataReason,
+					Project p) {
 		log.trace("spread callback event data changed: " + dataReason);
 		for (DataChanged callback : dataChanged) {
 			callback.dataChanged(dataReason, p);
@@ -192,7 +193,8 @@ public class EventCore {
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
 		log.debug("notify selection listeners");
 		for (FileSelectionChanged listener : fileSelectionListeners) {
-			listener.fileSelectionChanged(new FileSelectionChanged.FileSelectedEvent(objs));
+			listener.fileSelectionChanged(
+							new FileSelectionChanged.FileSelectedEvent(objs));
 		}
 	}
 
@@ -224,10 +226,8 @@ public class EventCore {
 		fireLogChanged(p);
 	}
 
-	// FIXME: need conversion to AvailableLater?
 	public void fireLogChanged(Project p) {
-		//ObjectCache.get().updateLog(p);
-		fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), p);
+		fireDataChanged(DataChanged.ALL, p);
 	}
 
 	public void addTasksChangedListener(TaskChanged callback) {
