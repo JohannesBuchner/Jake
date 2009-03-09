@@ -527,13 +527,17 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public Map<User, Map<User, TrustState>> getExtendedTrustGraph() {
 		Map<User, Map<User, TrustState>> people = new HashMap<User, Map<User, TrustState>>();
-		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-		if (first != null) {
-			people.put(first.getMember(), new HashMap<User, TrustState>());
-		} else {
-			log.error("Invalid database: no ProjectCreatedEntry!");
+
+//		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
+//		if (first != null) {
+//			people.put(first.getMember(), new HashMap<User, TrustState>());
+//		} else {
+//			log.error("Invalid database: no ProjectCreatedEntry!");
 //			throw new IllegalStateException("No ProjectCreatedEntry");
-		}
+//		}
+
+
+
 		Collection<LogEntry<User>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<User> le : entries) {
 			User who = le.getMember();
@@ -547,7 +551,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				people.get(who).put(whom, TrustState.NO_TRUST);
 			} else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
 				people.get(who).put(whom, TrustState.AUTO_ADD_REMOVE);
+			} else if (le.getLogAction() == LogAction.PROJECTMEMBER_INVITED) {
+				people.get(who).put(whom, TrustState.TRUST);
+			} else if (le.getLogAction() == LogAction.PROJECT_REJECTED) {
+				people.get(who).remove(whom);
 			}
+
 		}
 		return people;
 	}

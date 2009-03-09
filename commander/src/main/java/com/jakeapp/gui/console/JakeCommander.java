@@ -519,7 +519,7 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("listing projects:");
-				for (Project p : pms.getProjectList()) {
+				for (Project p : pms.getProjectList(msg)) {
 					System.out.println("\t" + p);
 				}
 				System.out.println("listing projects done");
@@ -539,7 +539,7 @@ public class JakeCommander extends Commander {
 		@Override
 		public void handleArguments() {
 			try {
-				for (Project p : pms.getProjectList()) {
+				for (Project p : pms.getProjectList(msg)) {
 					project = p;
 					break;
 				}

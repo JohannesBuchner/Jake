@@ -100,7 +100,7 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 		Assert.assertEquals(cred.getUserId(), msg.getServiceCredentials().getUserId());
 		Assert.assertEquals(cred.getUuid(), msg.getServiceCredentials().getUuid());
 
-		projectCount = pms.getProjectList().size();
+		projectCount = pms.getProjectList(msg).size();
 
 		Project project = pms.createProject(tmpdir.getName(), tmpdir.getAbsolutePath(),
 				msg);
@@ -112,21 +112,21 @@ public class TestFrontendUsage extends TmpdirEnabledTestCase {
 				.get(0).getUserId());
 
 		Assert.assertEquals(msg.getUserId(), project.getUserId());
-		Assert.assertEquals(projectCount + 1, pms.getProjectList().size());
+		Assert.assertEquals(projectCount + 1, pms.getProjectList(msg).size());
 
 		// Assert.assertEquals(project, pms.openProject(project));
-		Assert.assertTrue(pms.getProjectList().contains(project));
+		Assert.assertTrue(pms.getProjectList(msg).contains(project));
 
 		pms.closeProject(project);
-		Assert.assertFalse(pms.getProjectList().contains(project));
+		Assert.assertFalse(pms.getProjectList(msg).contains(project));
 
 		Assert.assertEquals(project, pms.openProject(project));
-		Assert.assertTrue(pms.getProjectList().contains(project));
+		Assert.assertTrue(pms.getProjectList(msg).contains(project));
 
 		Assert.assertTrue(pms.deleteProject(project, true));
-		Assert.assertFalse(pms.getProjectList().contains(project));
+		Assert.assertFalse(pms.getProjectList(msg).contains(project));
 	}
 
 
-
+	                                             
 }

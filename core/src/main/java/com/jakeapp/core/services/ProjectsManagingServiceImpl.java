@@ -874,6 +874,9 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		IStatusService statusService;
 		IUsersService usersService;
 
+
+
+		//FIXME! do this calculation only after logsync and store it somewhere. 
 		msgService = project.getMessageService();
 		backendUser = msgService.getIcsManager()
 				.getBackendUserId(project, user);
