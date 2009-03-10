@@ -24,6 +24,7 @@ public class ProjectJoinedLogEntry extends ProjectLogEntry {
 		ProjectJoinedLogEntry le = new ProjectJoinedLogEntry((Project) logEntry
 				.getBelongsTo(), logEntry.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
 	}
 }

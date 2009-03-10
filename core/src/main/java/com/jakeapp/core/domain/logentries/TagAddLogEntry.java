@@ -26,6 +26,7 @@ public class TagAddLogEntry extends TagLogEntry {
 		TagAddLogEntry le = new TagAddLogEntry((Tag) logEntry.getBelongsTo(), logEntry
 				.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
 	}
 

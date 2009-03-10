@@ -30,6 +30,7 @@ public class ProjectMemberInvitedLogEntry extends ProjectMemberLogEntry {
 		ProjectMemberInvitedLogEntry le = new ProjectMemberInvitedLogEntry((User) logEntry.getBelongsTo(),
 						logEntry.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
 	}
 }

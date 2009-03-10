@@ -28,6 +28,7 @@ public class TagRemoveLogEntry extends TagLogEntry {
 
         TagRemoveLogEntry le = new TagRemoveLogEntry((Tag) logEntry.getBelongsTo(), logEntry.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
     }
 }

@@ -31,6 +31,7 @@ public class JakeObjectDeleteLogEntry extends JakeObjectLogEntry {
 		JakeObjectDeleteLogEntry le = new JakeObjectDeleteLogEntry((JakeObject) logEntry
 				.getBelongsTo(), logEntry.getMember(), logEntry.getComment(), logEntry.isProcessed());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
 
 	}

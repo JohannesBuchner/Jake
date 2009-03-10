@@ -34,6 +34,7 @@ public class JakeObjectLockLogEntry extends JakeObjectLogEntry {
                     logEntry.isProcessed()
             );
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
     }
 }

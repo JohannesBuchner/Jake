@@ -11,9 +11,7 @@ import javax.persistence.Entity;
 public class ProjectMemberInvitationRejectedLogEntry extends ProjectMemberLogEntry {
 
 	public ProjectMemberInvitationRejectedLogEntry(User user, User me) {
-		this.setMember(me);
-		this.setBelongsTo(user);
-		this.setLogAction(LogAction.PROJECT_REJECTED);
+		super(LogAction.PROJECT_REJECTED, user, me);
 	}
 
 	public ProjectMemberInvitationRejectedLogEntry() {
@@ -30,6 +28,7 @@ public class ProjectMemberInvitationRejectedLogEntry extends ProjectMemberLogEnt
 						new ProjectMemberInvitationRejectedLogEntry(
 										(User) logEntry.getBelongsTo(), logEntry.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
 	}
 }

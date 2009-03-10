@@ -25,6 +25,7 @@ public class StartTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
 		StartTrustingProjectMemberLogEntry le = new StartTrustingProjectMemberLogEntry(
 				(User) logEntry.getBelongsTo(), logEntry.getMember());
 		le.setTimestamp(logEntry.getTimestamp());
+		le.setUuid(logEntry.getUuid());
 		return le;
 	}
 }
