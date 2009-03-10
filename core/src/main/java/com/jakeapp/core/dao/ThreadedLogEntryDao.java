@@ -344,7 +344,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 		}
 	
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */	

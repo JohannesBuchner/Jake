@@ -148,7 +148,7 @@ sed 's/^[^\t]/XXXXX/g' |grep -v XXXXX | # only stuff in class
 	#	sed 's,/\*\*[\n^/]*\*/,,g' |
 	grep -v 'private ' |
 	grep -v '/\*' |
-	grep -v ' \* ' |
+	grep -v ' \*' |
 	grep -v '\*/' |
 	grep -v '@SuppressWarnings(' |
 	grep -v 'else' |
