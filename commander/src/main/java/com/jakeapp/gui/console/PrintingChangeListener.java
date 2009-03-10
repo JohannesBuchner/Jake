@@ -6,6 +6,7 @@ package com.jakeapp.gui.console;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
@@ -32,6 +33,12 @@ public class PrintingChangeListener implements ChangeListener {
 	@Override
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
 		log.info(jo + " - " + progress + " - " + status);
+	}
+
+	@Override public void onlineStatusChanged(Project p) {
+	}
+
+	@Override public void syncStateChanged(Project p, SyncState state) {
 	}
 
 	@Override
