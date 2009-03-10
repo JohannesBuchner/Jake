@@ -91,7 +91,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<Invitation> getInvitations() {
-		return this.pms.getInvitations(JakeContext.getMsgService());
+        if(JakeContext.getMsgService() != null) {
+		    return this.pms.getInvitations(JakeContext.getMsgService());
+        }else {
+            return new ArrayList<Invitation>();
+        }
 	}
 
 	@Override
