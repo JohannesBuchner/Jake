@@ -243,14 +243,14 @@ public interface ILogEntryDao {
 	 * Iterates in time through all
 	 * {@link LogAction#START_TRUSTING_PROJECTMEMBER} and
 	 * {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}. <br>
-	 * Keeps a map of who trusts a {@link com.jakeapp.core.domain.User}. returns all
-	 * {@link com.jakeapp.core.domain.User} that at the end of the time have people that trust
-	 * them. Also looks at the {@value LogAction#PROJECT_CREATED} at the
-	 * beginning.
+	 * Keeps a map of who trusts a {@link com.jakeapp.core.domain.User}. returns
+	 * all {@link com.jakeapp.core.domain.User} that at the end of the time have
+	 * people that trust them. Also looks at the
+	 * {@value LogAction#PROJECT_CREATED} at the beginning.
 	 * 
 	 * @param correspondingTo
-	 * @return an empty collection if no projectmembers (not null) or the tags
-	 *         otherwise
+	 * @return an empty collection if no project members (not null) or the
+	 *         project members otherwise
 	 */
 	public List<User> getCurrentProjectMembers(User correspondingTo);
 
