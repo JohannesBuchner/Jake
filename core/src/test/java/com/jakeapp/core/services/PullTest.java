@@ -52,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class PullTest extends TmpdirEnabledTestCase {
+
 	private final class TracingChangeListener implements ChangeListener {
 
 		@Override
@@ -129,14 +130,17 @@ public class PullTest extends TmpdirEnabledTestCase {
 	private ITransferMethod mockTransferMethod;
 
 	private Tracer tracer;
-	
+
+	private IFSService fss;
+
 	@Before
 	public void setup() throws Exception {
 		super.setup();
 		MockitoAnnotations.initMocks(this);
 		SyncServiceImpl sync = new SyncServiceImpl();
 		sync.setICSManager(icsmanager);
-		sync.setMessageMarshaller(new MessageMarshaller(new LogEntrySerializer(projectApplicationContextFactory)));
+		sync.setMessageMarshaller(new MessageMarshaller(new LogEntrySerializer(
+				projectApplicationContextFactory)));
 		sync.setApplicationContextFactory(projectApplicationContextFactory);
 		sync.setProjectsFileServices(projectsFileServices);
 		sync.setRequestHandlePolicy(new TrustAllRequestHandlePolicy(
@@ -146,7 +150,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		when(msgService.getIcsManager()).thenReturn(icsmanager);
 
 		ublogEntryDao = new UnprocessedBlindLogEntryDaoProxy(logEntryDao);
-		le.setUuid(new UUID(432,3214));
+		le.setUuid(new UUID(432, 3214));
 		project.setMessageService(msgService);
 		fo.setProject(project);
 
@@ -158,12 +162,11 @@ public class PullTest extends TmpdirEnabledTestCase {
 				.thenReturn(logEntryDao);
 		when(projectApplicationContextFactory.getUnprocessedAwareLogEntryDao(project))
 				.thenReturn(logEntryDao);
-		
-		
-		IFSService fss = new FSService();
+
+
+		fss = new FSService();
 		fss.setRootPath(tmpdir.getAbsolutePath());
-		when(projectsFileServices.getProjectFSService(project)).thenReturn(
-				fss);
+		when(projectsFileServices.getProjectFSService(project)).thenReturn(fss);
 
 		when(logEntryDao.getLastVersion(fo, true)).thenReturn(le);
 		when(logEntryDao.getLastVersion(fo, false)).thenReturn(le);
@@ -178,13 +181,14 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 	private void responderSetup(final File file) throws NotLoggedInException {
 		mockTransferMethod = new ITransferMethod() {
+
 			private final Logger log = Logger.getLogger("Mocked ITransferMethod");
 
 			@Override
 			public void request(final FileRequest inrequest,
 					INegotiationSuccessListener nsl) {
 				log.debug("request: " + inrequest);
-				
+
 				log.debug("declaring success");
 				FileTransfer ft = new FileTransfer() {
 
@@ -242,8 +246,8 @@ public class PullTest extends TmpdirEnabledTestCase {
 	@Test
 	public void pull_noIncomingFile() throws Exception {
 		responderSetup(new File(PullTest.this.tmpdir, "fileDoesntExist"));
-		
-		
+
+
 		Assert.assertNotNull(projectApplicationContextFactory.getLogEntryDao(fo)
 				.getLastVersion(fo));
 		Assert.assertTrue(projectApplicationContextFactory.getLogEntryDao(fo)
@@ -253,19 +257,21 @@ public class PullTest extends TmpdirEnabledTestCase {
 		Assert.assertNull(sync.pullObject(fo));
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
+		Assert.assertFalse(fss.fileExists(fo.getRelPath()));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void pull() throws Exception {
-		File file = new File(PullTest.this.tmpdir, "myOutputFile");
+		File tmpfile = new File(PullTest.this.tmpdir, "myOutputFile");
+
+		@SuppressWarnings("deprecation")
 		StringBufferInputStream sbis = new StringBufferInputStream("Foo bar");
-		FSService.writeFileStreamAbs(file.getAbsolutePath(), sbis);
-		Assert.assertTrue(file.length() > 6);
-		
-		responderSetup(file);
-		
-		
+
+		FSService.writeFileStreamAbs(tmpfile.getAbsolutePath(), sbis);
+		Assert.assertTrue(tmpfile.length() > 6);
+
+		responderSetup(tmpfile);
+
 		Assert.assertNotNull(projectApplicationContextFactory.getLogEntryDao(fo)
 				.getLastVersion(fo));
 		Assert.assertTrue(projectApplicationContextFactory.getLogEntryDao(fo)
@@ -275,6 +281,10 @@ public class PullTest extends TmpdirEnabledTestCase {
 		Assert.assertEquals(fo, sync.pullObject(fo));
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10, TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
+
+		Assert.assertTrue(fss.fileExists(fo.getRelPath()));
+		Assert.assertEquals(tmpfile.length(), fss.getFileSize(fo.getRelPath()));
+
 	}
 
 }
