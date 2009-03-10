@@ -526,11 +526,10 @@ public class LogEntrySerializerTest {
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof ProjectMemberInvitationRejectedLogEntry);
 
-		Assert.assertTrue(logEntry.equals(result));
-		Assert.assertTrue(result.equals(logEntry));
+		Assert.assertEquals(logEntry, result);
+		Assert.assertEquals(result, logEntry);
 
 		Assert.assertEquals(logEntry.hashCode(), result.hashCode());
-		Assert.assertEquals(logEntry, result);
 	}
 
 
