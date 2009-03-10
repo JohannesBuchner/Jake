@@ -11,7 +11,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.*;
 
-public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEntryDao {
+public class HibernateLogEntryDao extends HibernateDaoSupport
+				implements ILogEntryDao {
 
 	private static Logger log = Logger.getLogger(HibernateLogEntryDao.class);
 
@@ -31,13 +32,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@SuppressWarnings("unchecked")
 	private void debugDump() {
-//		log.debug("Current LogEntries: ");
-//		for (LogEntry le : (List<LogEntry<? extends
-//				ILogable>>) sess().createQuery
-//				("FROM logentries ORDER by timestamp asc, id asc").list()) {
-//			log.debug(le);
-//		}
-//		log.debug("Current LogEntries done ");
+		//		log.debug("Current LogEntries: ");
+		//		for (LogEntry le : (List<LogEntry<? extends
+		//				ILogable>>) sess().createQuery
+		//				("FROM logentries ORDER by timestamp asc, id asc").list()) {
+		//			log.debug(le);
+		//		}
+		//		log.debug("Current LogEntries done ");
 	}
 
 	@Override
@@ -69,8 +70,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				if (logEntry.getObjectuuid() != null) {
 					// other types are very very seldom, and we need the object
 					// anyway. so no index there.
-					throw new IllegalArgumentException(
-							"ObjectUUID index should not be set!");
+					throw new IllegalArgumentException("ObjectUUID index should not be set!");
 				}
 				break;
 		}
@@ -83,12 +83,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		//debugDump();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public LogEntry<? extends ILogable> get(UUID uuid, boolean includeUnprocessed)
-			throws NoSuchLogEntryException {
-		List<LogEntry<? extends ILogable>> result = processedAwareLogEntryQuery(
-				"AND id = ?", includeUnprocessed).setString(0, uuid.toString()).list();
+					throws NoSuchLogEntryException {
+		List<LogEntry<? extends ILogable>> result =
+						processedAwareLogEntryQuery("AND id = ?", includeUnprocessed)
+										.setString(0, uuid.toString()).list();
 
 		if (result.size() > 0) {
 			return result.get(0);
@@ -98,9 +98,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void setProcessed(LogEntry<JakeObject> logEntry) throws NoSuchLogEntryException {
+	@SuppressWarnings("unchecked") @Override
+	public void setProcessed(LogEntry<JakeObject> logEntry)
+					throws NoSuchLogEntryException {
 		debugDump();
 		log.debug("setProcessed:" + logEntry);
 		LogEntry<JakeObject> le = (LogEntry<JakeObject>) get(logEntry.getUuid(), true);
@@ -114,17 +114,15 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return getUnprocessed(jakeObject).size() > 0;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public List<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject) {
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<JakeObject>>();
 		return query("FROM logentries WHERE processed = false AND objectuuid = ?")
-				.setString(0, jakeObject.getUuid().toString()).list();
+						.setString(0, jakeObject.getUuid().toString()).list();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public List<LogEntry<JakeObject>> getUnprocessed() {
 		return query("FROM logentries WHERE processed = false").list();
 	}
@@ -135,7 +133,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 	private Query processedAwareLogEntryQuery(String whereclause,
-											  boolean includeUnprocessed) {
+					boolean includeUnprocessed) {
 		String query;
 		if (!includeUnprocessed)
 			query = "FROM logentries WHERE processed = true ";
@@ -144,58 +142,54 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return query(query + whereclause);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public List<LogEntry<? extends ILogable>> getAll(boolean includeUnprocessed) {
 		return processedAwareLogEntryQuery("", includeUnprocessed).list();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject,
-																	   boolean includeUnprocessed) {
+					boolean includeUnprocessed) {
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
 		return processedAwareLogEntryQuery("AND objectuuid = ?", includeUnprocessed)
-				.setString(0, jakeObject.getUuid().toString()).list();
+						.setString(0, jakeObject.getUuid().toString()).list();
 	}
 
 	@Override
 	public LogEntry<JakeObject> getLastOfJakeObject(JakeObject jakeObject,
-													boolean includeUnprocessed) throws NoSuchLogEntryException {
+					boolean includeUnprocessed) throws NoSuchLogEntryException {
 		return lastLogEntry(getAllOfJakeObject(jakeObject, includeUnprocessed));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(
-			boolean includeUnprocessed) {
+					boolean includeUnprocessed) {
 		return processedAwareLogEntryQuery("AND (action = ? OR action = ?)",
-				includeUnprocessed).setInteger(0,
-				LogAction.JAKE_OBJECT_NEW_VERSION.ordinal()).setInteger(1,
-				LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
+						includeUnprocessed)
+						.setInteger(0, LogAction.JAKE_OBJECT_NEW_VERSION.ordinal())
+						.setInteger(1, LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(
-			T jakeObject, boolean includeUnprocessed) {
+					T jakeObject, boolean includeUnprocessed) {
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
 		return processedAwareLogEntryQuery("AND objectuuid = ? AND action = ?",
-				includeUnprocessed).setString(0, jakeObject.getUuid().toString())
-				.setInteger(1, LogAction.JAKE_OBJECT_NEW_VERSION.ordinal()).list();
+						includeUnprocessed).setString(0, jakeObject.getUuid().toString())
+						.setInteger(1, LogAction.JAKE_OBJECT_NEW_VERSION.ordinal()).list();
 	}
 
 
 	@SuppressWarnings("unchecked")
 	private <T extends JakeObject> List<LogEntry<T>> getAllDeletesOfJakeObject(
-			T jakeObject, boolean includeUnprocessed) {
+					T jakeObject, boolean includeUnprocessed) {
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
 		return processedAwareLogEntryQuery("AND objectuuid = ? AND action = ?",
-				includeUnprocessed).setString(0, jakeObject.getUuid().toString())
-				.setInteger(1, LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
+						includeUnprocessed).setString(0, jakeObject.getUuid().toString())
+						.setInteger(1, LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
 	}
 
 	/**
@@ -204,7 +198,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	private <T extends ILogable> LogEntry<T> topLogEntry(List<LogEntry<T>> list)
-			throws NoSuchLogEntryException {
+					throws NoSuchLogEntryException {
 		if (list.size() == 0)
 			throw new NoSuchLogEntryException();
 		return list.get(0);
@@ -217,7 +211,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	@SuppressWarnings("unused")
 	private LogEntry<? extends ILogable> topLogEntryMixed(
-			List<LogEntry<? extends ILogable>> list) throws NoSuchLogEntryException {
+					List<LogEntry<? extends ILogable>> list) throws NoSuchLogEntryException {
 		if (list.size() == 0)
 			throw new NoSuchLogEntryException();
 		return list.get(0);
@@ -229,7 +223,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	private LogEntry<? extends ILogable> lastLogEntryMixed(
-			List<LogEntry<? extends ILogable>> list) throws NoSuchLogEntryException {
+					List<LogEntry<? extends ILogable>> list) throws NoSuchLogEntryException {
 		if (list.size() == 0)
 			throw new NoSuchLogEntryException();
 		return list.get(list.size() - 1);
@@ -241,7 +235,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	private <T extends ILogable> LogEntry<T> lastLogEntry(List<LogEntry<T>> list)
-			throws NoSuchLogEntryException {
+					throws NoSuchLogEntryException {
 		if (list.size() == 0)
 			throw new NoSuchLogEntryException();
 		return list.get(list.size() - 1);
@@ -251,7 +245,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * @param list
 	 * @return the last of the list, or null if empty
 	 */
-	private <T extends ILogable> LogEntry<T> lastLogEntryOrNull(List<LogEntry<T>> list) {
+	private <T extends ILogable> LogEntry<T> lastLogEntryOrNull(
+					List<LogEntry<T>> list) {
 		if (list.size() == 0)
 			return null;
 		return list.get(list.size() - 1);
@@ -259,23 +254,23 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public LogEntry<JakeObject> getLastVersionOfJakeObject(JakeObject jakeObject,
-														   boolean includeUnprocessed) throws NoSuchLogEntryException {
+					boolean includeUnprocessed) throws NoSuchLogEntryException {
 		return lastLogEntry(getAllVersionsOfJakeObject(jakeObject, includeUnprocessed));
 	}
 
 
 	@Override
 	public Boolean getDeleteState(JakeObject belongsTo, boolean includeUnprocessed) {
-		LogEntry<JakeObject> leNew = lastLogEntryOrNull(getAllVersionsOfJakeObject(
-				belongsTo, includeUnprocessed));
-		LogEntry<JakeObject> leDel = lastLogEntryOrNull(getAllDeletesOfJakeObject(
-				belongsTo, includeUnprocessed));
+		LogEntry<JakeObject> leNew = lastLogEntryOrNull(
+						getAllVersionsOfJakeObject(belongsTo, includeUnprocessed));
+		LogEntry<JakeObject> leDel = lastLogEntryOrNull(
+						getAllDeletesOfJakeObject(belongsTo, includeUnprocessed));
 		if (leNew == null && leDel == null) {
 			return null;
 		}
 		if (leNew == null) { // weird, but we support it
-			log.info("There is a delete LogEntry but no new_version Entry for "
-					+ belongsTo + ". No problem, just saying.");
+			log.info(
+							"There is a delete LogEntry but no new_version Entry for " + belongsTo + ". No problem, just saying.");
 			return true;
 		}
 		if (leDel == null) {
@@ -287,17 +282,17 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public LogEntry<JakeObject> getLastVersion(JakeObject belongsTo,
-											   boolean includeUnprocessed) {
-		LogEntry<JakeObject> leNew = lastLogEntryOrNull(getAllVersionsOfJakeObject(
-				belongsTo, includeUnprocessed));
-		LogEntry<JakeObject> leDel = lastLogEntryOrNull(getAllDeletesOfJakeObject(
-				belongsTo, includeUnprocessed));
+					boolean includeUnprocessed) {
+		LogEntry<JakeObject> leNew = lastLogEntryOrNull(
+						getAllVersionsOfJakeObject(belongsTo, includeUnprocessed));
+		LogEntry<JakeObject> leDel = lastLogEntryOrNull(
+						getAllDeletesOfJakeObject(belongsTo, includeUnprocessed));
 		if (leNew == null && leDel == null) {
 			return null;
 		}
 		if (leNew == null) { // weird, but we support it
-			log.info("There is a delete LogEntry but no new_version Entry for "
-					+ belongsTo + ". No problem, just saying.");
+			log.info(
+							"There is a delete LogEntry but no new_version Entry for " + belongsTo + ". No problem, just saying.");
 			return null;
 		}
 		if (leDel == null) {
@@ -317,12 +312,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		Map<FileObject, Boolean> existState = new HashMap<FileObject, Boolean>();
 		for (LogEntry<JakeObject> entry : all) {
 			JakeObject jo = entry.getBelongsTo();
-			if (jo instanceof FileObject
-					&& entry.getLogAction() == LogAction.JAKE_OBJECT_NEW_VERSION) {
+			if (jo instanceof FileObject && entry
+							.getLogAction() == LogAction.JAKE_OBJECT_NEW_VERSION) {
 				existState.put((FileObject) jo, true);
 			}
-			if (jo instanceof FileObject
-					&& entry.getLogAction() == LogAction.JAKE_OBJECT_DELETE) {
+			if (jo instanceof FileObject && entry
+							.getLogAction() == LogAction.JAKE_OBJECT_DELETE) {
 				existState.put((FileObject) jo, false);
 			}
 		}
@@ -343,13 +338,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 */
 	@SuppressWarnings("unchecked")
 	private Collection<LogEntry<User>> getAllProjectMemberLogEntries() {
-		return query("FROM logentries WHERE (action = ? OR action = ? OR action = ? OR action = ? OR action = ?)")
-				.setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
-				.setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal())
-				.setInteger(2, LogAction.FOLLOW_TRUSTING_PROJECTMEMBER.ordinal())
-				.setInteger(3, LogAction.PROJECTMEMBER_INVITED.ordinal())
-				.setInteger(4, LogAction.PROJECT_REJECTED.ordinal())
-				.list();
+		return query(
+						"FROM logentries WHERE (action = ? OR action = ? OR action = ? OR action = ? OR action = ?)")
+						.setInteger(0, LogAction.START_TRUSTING_PROJECTMEMBER.ordinal())
+						.setInteger(1, LogAction.STOP_TRUSTING_PROJECTMEMBER.ordinal())
+						.setInteger(2, LogAction.FOLLOW_TRUSTING_PROJECTMEMBER.ordinal())
+						.setInteger(3, LogAction.PROJECTMEMBER_INVITED.ordinal())
+						.setInteger(4, LogAction.PROJECT_REJECTED.ordinal()).list();
 	}
 
 	/**
@@ -365,10 +360,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (belongsTo.getUuid() == null)
 			return new HashSet<LogEntry<Tag>>();
 		return query(
-				"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?)")
-				.setString(0, belongsTo.getUuid().toString()).setInteger(1,
-						LogAction.TAG_ADD.ordinal()).setInteger(2,
-						LogAction.TAG_REMOVE.ordinal()).list();
+						"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?)")
+						.setString(0, belongsTo.getUuid().toString())
+						.setInteger(1, LogAction.TAG_ADD.ordinal())
+						.setInteger(2, LogAction.TAG_REMOVE.ordinal()).list();
 	}
 
 	/**
@@ -384,10 +379,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		if (belongsTo.getUuid() == null)
 			return new HashSet<LogEntry<JakeObject>>();
 		return query(
-				"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?)")
-				.setString(0, belongsTo.getUuid().toString()).setInteger(1,
-						LogAction.JAKE_OBJECT_LOCK.ordinal()).setInteger(2,
-						LogAction.JAKE_OBJECT_UNLOCK.ordinal()).list();
+						"FROM logentries WHERE objectuuid = ? AND (action = ? OR action = ?)")
+						.setString(0, belongsTo.getUuid().toString())
+						.setInteger(1, LogAction.JAKE_OBJECT_LOCK.ordinal())
+						.setInteger(2, LogAction.JAKE_OBJECT_UNLOCK.ordinal()).list();
 	}
 
 
@@ -420,17 +415,30 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return tags;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
 		try {
-			return (LogEntry<? extends ILogable>) sess().createQuery(
-					"FROM logentries WHERE action = ?").setInteger(0,
-					LogAction.PROJECT_CREATED.ordinal()).list().get(0);
+			return (LogEntry<? extends ILogable>) sess()
+							.createQuery("FROM logentries WHERE action = ?")
+							.setInteger(0, LogAction.PROJECT_CREATED.ordinal()).list().get(0);
 		} catch (IndexOutOfBoundsException ioobe) {
 			return null;
 		}
 	}
+
+	// fixme: add override and add to interface?
+	// fixme: had no luck with generateDao.sh. DOCUMENT THIS GENERATOR !!!!!!!!!!!!!!!
+	@SuppressWarnings("unchecked")
+	public LogEntry<? extends ILogable> getProjectJoinedEntry() {
+		try {
+			return (LogEntry<? extends ILogable>) sess()
+							.createQuery("FROM logentries WHERE action = ?")
+							.setInteger(0, LogAction.PROJECT_JOINED.ordinal()).list().get(0);
+		} catch (IndexOutOfBoundsException ioobe) {
+			return null;
+		}
+	}
+
 
 	@Override
 	public List<User> getCurrentProjectMembers(User correspondingTo) {
@@ -449,7 +457,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			}
 		}
 
-//		log.debug("len=" + trusted.size());
+		//		log.debug("len=" + trusted.size());
 		return new ArrayList<User>(trusted);
 	}
 
@@ -478,17 +486,21 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public Map<User, List<User>> getTrustGraph() {
 		Map<User, List<User>> people = new HashMap<User, List<User>>();
-		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-		if (first != null) {
-			people.put(first.getMember(), new LinkedList<User>());
+		LogEntry<? extends ILogable> createdEntry = getProjectCreatedEntry();
+		LogEntry<? extends ILogable> joinedEntry = getProjectJoinedEntry();
+		if (createdEntry != null) {
+			people.put(createdEntry.getMember(), new LinkedList<User>());
+		} else if (joinedEntry != null) {
+			people.put(joinedEntry.getMember(), new LinkedList<User>());
 		} else {
-			log.error("Invalid database: no ProjectCreatedEntry!");
-//			throw new IllegalStateException("No ProjectCreatedEntry");
+			log.warn("Invalid database: no ProjectCreatedEntry AND no ProjectJoinedEntry!");
+			// fixme: why joinEntry doesn't work?
+			//throw new IllegalStateException("No ProjectCreatedEntry");
 		}
 
 		Collection<LogEntry<User>> entries = getAllProjectMemberLogEntries();
 		for (LogEntry<User> le : entries) {
-			User who = (User) le.getMember();
+			User who = le.getMember();
 			User whom = le.getBelongsTo();
 
 			// initialize list
@@ -517,16 +529,16 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@Override
 	public Map<User, Map<User, TrustState>> getExtendedTrustGraph() {
-		Map<User, Map<User, TrustState>> people = new HashMap<User, Map<User, TrustState>>();
+		Map<User, Map<User, TrustState>> people =
+						new HashMap<User, Map<User, TrustState>>();
 
-//		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
-//		if (first != null) {
-//			people.put(first.getMember(), new HashMap<User, TrustState>());
-//		} else {
-//			log.error("Invalid database: no ProjectCreatedEntry!");
-//			throw new IllegalStateException("No ProjectCreatedEntry");
-//		}
-
+		//		LogEntry<? extends ILogable> first = getProjectCreatedEntry();
+		//		if (first != null) {
+		//			people.put(first.getMember(), new HashMap<User, TrustState>());
+		//		} else {
+		//			log.error("Invalid database: no ProjectCreatedEntry!");
+		//			throw new IllegalStateException("No ProjectCreatedEntry");
+		//		}
 
 
 		Collection<LogEntry<User>> entries = getAllProjectMemberLogEntries();
@@ -560,7 +572,8 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 		List<LogEntry<JakeObject>> versions = this.getAllVersionsOfJakeObject(jo, true);
 		for (LogEntry<JakeObject> version : versions)
-			if (!version.isProcessed() && version.getTimestamp().before(logEntry.getTimestamp()))
+			if (!version.isProcessed() && version.getTimestamp()
+							.before(logEntry.getTimestamp()))
 				try {
 					this.setProcessed(version);
 				} catch (NoSuchLogEntryException e) {
@@ -572,7 +585,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	public void acceptInvitation(Invitation invitation) {
 
 		FollowTrustingProjectMemberLogEntry startTrustingProjectMemberLogEntry =
-				new FollowTrustingProjectMemberLogEntry(invitation.getInviter(), invitation.getInvitedOn());
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(startTrustingProjectMemberLogEntry);
+						new FollowTrustingProjectMemberLogEntry(invitation.getInviter(),
+										invitation.getInvitedOn());
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession()
+						.persist(startTrustingProjectMemberLogEntry);
 	}
 }

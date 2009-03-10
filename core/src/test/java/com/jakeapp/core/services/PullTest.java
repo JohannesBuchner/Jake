@@ -1,21 +1,5 @@
 package com.jakeapp.core.services;
 
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.StringBufferInputStream;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-import local.test.Tracer;
-
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
@@ -52,6 +36,19 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.test.SimpleFakeMessageExchanger;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
+import junit.framework.Assert;
+import local.test.Tracer;
+import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+
+import java.io.File;
+import java.io.StringBufferInputStream;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 public class PullTest extends TmpdirEnabledTestCase {
@@ -81,6 +78,10 @@ public class PullTest extends TmpdirEnabledTestCase {
 		@Override
 		public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
 			tracer.step("pullProgressUpdate");
+		}
+
+		@Override public void onlineStatusChanged(Project p) {
+			tracer.step("onlineStatusChanged");
 		}
 
 		@Override public void syncStateChanged(Project p, SyncState state) {

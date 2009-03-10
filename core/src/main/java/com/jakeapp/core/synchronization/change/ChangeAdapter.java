@@ -12,6 +12,7 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
  * @author djinn
  *
  */
+// fixme: nedded where??
 public class ChangeAdapter implements ChangeListener {
 
 	@Override
@@ -44,6 +45,9 @@ public class ChangeAdapter implements ChangeListener {
 	@Override
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
 		// empty implementation
+	}
+
+	@Override public void onlineStatusChanged(Project p) {
 	}
 
 	@Override public void syncStateChanged(Project p, SyncState state) {

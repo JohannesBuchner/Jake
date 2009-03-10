@@ -31,6 +31,12 @@ public class ProjectsChangeListener implements ChangeListener {
 		log.debug("pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
 	}
 
+	@Override public void onlineStatusChanged(Project p) {
+		log.debug("GUI received online status changed... updating");
+
+		EventCore.get().fireUserChanged(p);
+	}
+
 	@Override public void syncStateChanged(Project p, SyncState state) {
 		log.debug("Sync State Changed for " + p.getName() + " to " + state);
 

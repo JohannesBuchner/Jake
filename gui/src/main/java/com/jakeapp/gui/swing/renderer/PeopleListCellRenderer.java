@@ -51,6 +51,11 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 					boolean chf)	 // the list and the cell have the focus
 	{
 
+		// fix for empty user
+		if(value == null) {
+			return new JLabel();
+		}
+
 		UserInfo user = (UserInfo) value;
 		boolean isYou = UserHelper.isCurrentProjectMember(user.getUser());
 

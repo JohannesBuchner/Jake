@@ -122,7 +122,7 @@ public abstract class UserAction extends ProjectAction implements ContextChanged
 	}
 
 	public void contextChanged(EnumSet<Reason> reason, Object context) {
-		if (reason.contains(Reason.UserSelectionChanged)) {
+		if (reason.contains(Reason.UserSelectionChanged) || reason.contains(Reason.Project)) {
 			updateAction();
 		}
 	}

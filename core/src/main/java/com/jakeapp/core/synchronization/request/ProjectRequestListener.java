@@ -169,9 +169,12 @@ public class ProjectRequestListener
 
 	@Override
 	public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
-
-		log.debug("Online status of " + userid
+		log.trace("Online status of " + userid
 						.getUserId() + " changed... (Project " + p + ")");
+		// fixme: send this event up to gui!
+
+		// fixme: causes infinite loop - only send events up if there's really a change!!
+		//this.syncService.getProjectChangeListener().onlineStatusChanged(p);
 	}
 
 	public void loginHappened() {

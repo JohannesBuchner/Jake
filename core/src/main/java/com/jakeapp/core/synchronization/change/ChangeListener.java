@@ -20,6 +20,9 @@ public interface ChangeListener {
 
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress);
 
+	// fixme: add user that did change!
+	void onlineStatusChanged(Project p);
+
 	public enum SyncState { NOOP, SYNCING, DONE }
 
 	public void syncStateChanged(Project p, SyncState state);

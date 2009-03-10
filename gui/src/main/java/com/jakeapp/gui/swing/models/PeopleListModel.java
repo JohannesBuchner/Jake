@@ -1,8 +1,10 @@
 package com.jakeapp.gui.swing.models;
 
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.controls.MutableListModel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
@@ -22,7 +24,7 @@ import java.util.List;
  * Capsulates UserId into a ListModel.
  */
 public class PeopleListModel extends AbstractListModel
-				implements MutableListModel, ContextChanged, ProjectChanged {
+				implements MutableListModel, ContextChanged, ProjectChanged, DataChanged {
 	private static final Logger log = Logger.getLogger(PeopleListModel.class);
 
 	private List<UserInfo> people;
@@ -34,6 +36,7 @@ public class PeopleListModel extends AbstractListModel
 		// register for events
 		EventCore.get().addProjectChangedCallbackListener(this);
 		EventCore.get().addContextChangedListener(this);
+		EventCore.get().addDataChangedCallbackListener(this);
 
 		updateModel();
 	}
@@ -43,7 +46,7 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	public Object getElementAt(int i) {
-		if (this.people.size() <= i) {
+		if (this.people.size() > i) {
 			return this.people.get(i);
 		} else {
 			log.warn("Tried to get Element on invalid index " + i + " size=" + this.people
@@ -60,6 +63,8 @@ public class PeopleListModel extends AbstractListModel
 	private void updateModel() {
 		if (!JakeContext.isCoreInitialized())
 			return;
+
+		log.debug("updating people model...");
 
 		try {
 			this.people =
@@ -94,6 +99,12 @@ public class PeopleListModel extends AbstractListModel
 
 	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
 		if (reason.contains(Reason.Project)) {
+			updateModel();
+		}
+	}
+
+	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
+		if (dataReason.contains(DataReason.User)) {
 			updateModel();
 		}
 	}

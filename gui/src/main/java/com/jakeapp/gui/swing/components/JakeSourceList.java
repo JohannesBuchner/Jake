@@ -406,10 +406,14 @@ public class JakeSourceList extends JakeGuiComponent
 			SourceListItem sli = createSourceListItem(project);
 
 			// TODO: we need a new event source like project.getTotalNewEventCount()
-			int newEventsCount = 0;
-			if (newEventsCount > 0) {
-				sli.setCounterValue(newEventsCount);
-			}
+			//int newEventsCount = 0;
+			//if (newEventsCount > 0) {
+			//	sli.setCounterValue(newEventsCount);
+			//}
+
+			// fixme: should only show *new* eventlogs
+			// fixme: need counter-only or some sort of caching...
+			sli.setCounterValue(JakeMainApp.getCore().getLog(project, null, 0).size());
 
 			projectSourceListModel.addItemToCategory(sli, myProjectsCategory);
 			sourceListProjectMap.put(sli, project);
@@ -565,7 +569,7 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void dataChanged(EnumSet<DataReason> reason, Project p) {
-		if (reason.contains(DataReason.Projects)) {
+		if (reason.contains(DataReason.Projects) || reason.contains(DataReason.LogEntries)) {
 			updateSourceList();
 		}
 	}
@@ -610,7 +614,7 @@ public class JakeSourceList extends JakeGuiComponent
 		// TODO: VERY basic; what we want is an animation...
 		SourceListItem sli = getListItemForProject(project);
 		if (sli != null) {
-			sli.setCounterValue((busy.contains(BusyState.Idle) ? 0 : 1));
+		//	sli.setCounterValue((busy.contains(BusyState.Idle) ? 0 : 1));
 		}
 	}
 }

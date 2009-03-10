@@ -293,4 +293,7 @@ public class EventCore {
 		return invitationListener;
 	}
 
+	public void fireUserChanged(Project p) {
+		fireDataChanged(EnumSet.of(DataChanged.DataReason.User), p);
+	}
 }

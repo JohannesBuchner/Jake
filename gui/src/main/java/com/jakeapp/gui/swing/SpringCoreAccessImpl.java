@@ -679,7 +679,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		// filter log list?
-		if (logs.size() > entries) {
+		if (entries != 0 && logs.size() > entries) {
 			return logs.subList(0, entries);
 		} else {
 			return logs;

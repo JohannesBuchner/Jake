@@ -53,6 +53,9 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 			innerException = reason;
 		}
 
+		@Override public void onlineStatusChanged(Project p) {
+		}
+
 		@Override public void syncStateChanged(Project p, SyncState state) {
 		}
 	}

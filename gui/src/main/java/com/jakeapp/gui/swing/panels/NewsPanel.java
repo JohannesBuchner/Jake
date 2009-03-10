@@ -59,7 +59,7 @@ public class NewsPanel extends javax.swing.JPanel
 					getClass().getResource("/icons/folder.png")));
 	private Icon invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
 					getClass().getResource("/icons/folder_invalid.png")));
-	
+
 	private StartStopProjectAction startStopProjectAction =
 					new StartStopProjectAction();
 	private Timer eventsTableUpdateTimer;
@@ -174,7 +174,10 @@ public class NewsPanel extends javax.swing.JPanel
 
 	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
 		if (dataReason.contains(DataReason.LogEntries)) {
-				this.updatePanel();
+			this.updatePanel();
+
+			// fixme: need update on people change? 
+			//|| dataReason.contains(DataReason.User)
 		}
 	}
 
@@ -296,7 +299,7 @@ public class NewsPanel extends javax.swing.JPanel
 
 		// sad folder icon
 		String rootPath = getProject().getRootPath();
-		if(!FileUtilities.checkDirectoryExistence(rootPath)) {
+		if (!FileUtilities.checkDirectoryExistence(rootPath)) {
 			log.warn("Project root path " + getProject().getRootPath() + " is invalid.");
 			projectStatusLabel.setText("ERROR: Project folder does not exist");
 			projectStatusLabel.setForeground(Color.RED);
