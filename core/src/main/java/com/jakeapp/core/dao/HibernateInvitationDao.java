@@ -1,21 +1,16 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
-import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.dao.DataAccessException;
-import org.springframework.transaction.annotation.Transactional;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HibernateInvitationDao  extends HibernateDaoSupport implements IInvitationDao {
@@ -66,8 +61,8 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 			// TODO hopefully user.getUserId is really to column to join to...
 			results = this.getHibernateTemplate().getSessionFactory()
 					.getCurrentSession().createQuery(
-							"FROM invitation WHERE invitedOn = ?").setString(0,
-							user.getUserId()).list();
+							"FROM invitation WHERE invitedOn = ?").setSerializable(0,
+							user).list();
 			if (results == null)
 				return new ArrayList<Invitation>();
 			return results;
