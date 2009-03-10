@@ -44,10 +44,6 @@ public abstract class MsgService<T extends User> {
 
 	protected ProjectInvitationHandler invitationHandler = new ProjectInvitationHandler(this);
 
-	{
-		
-	}
-
 	static protected class ICData {
 
 		public ICData(String name, ILoginStateListener loginStateListener,
@@ -390,6 +386,6 @@ public abstract class MsgService<T extends User> {
 	}
 
 	public void unregisterInvitationListener(IProjectInvitationListener il) {
-		invitationHandler.unregisterInvitationListener(il);
+		this.invitationHandler.unregisterInvitationListener(il);
 	}
 }

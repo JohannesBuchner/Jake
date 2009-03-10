@@ -1,9 +1,31 @@
 package com.jakeapp.gui.console;
 
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.InvitationState;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
+import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
@@ -12,19 +34,8 @@ import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Test client accepting cli input
@@ -88,8 +99,8 @@ public class JakeCommander extends Commander {
 
 			/* // TODO InvitationListeners are now registered with the corresponding messageService directly.
 			// the core msgServiceManager automatically adds the correct one for the core. the gui adds its
-			 // own after login. do however you want it here..
-			pms.setInvitationListener(new IProjectInvitationListener(){
+			 // own after login. do however you want it here..*/
+			/*msg.registerInvitationListener(new IProjectInvitationListener(){
 
 				@Override
 				public void invited(User user, Project p) {
