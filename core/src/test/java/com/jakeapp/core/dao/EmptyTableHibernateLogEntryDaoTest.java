@@ -19,10 +19,12 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.XMPPMsgService;
 
@@ -157,8 +159,11 @@ public class EmptyTableHibernateLogEntryDaoTest extends AbstractJUnit4SpringCont
 
 	@Transactional
 	@Test
-	public void testProjectMembers_invalid_empty() throws Exception {
-		Assert.assertEquals(0, logEntryDao.getCurrentProjectMembers(null).size());
+	public void testProjectMembers_empty() throws Exception {
+		User user = new User(ProtocolType.XMPP, "I don't exist");
+		List<User> members = logEntryDao.getCurrentProjectMembers(user);
+		Assert.assertEquals(1, members.size());
+		Assert.assertEquals(user, members.get(0));
 		Assert.assertEquals(0, logEntryDao.getTrustGraph().size());
 	}
 	
