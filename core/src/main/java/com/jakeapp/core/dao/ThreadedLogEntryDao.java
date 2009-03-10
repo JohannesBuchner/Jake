@@ -1,14 +1,9 @@
 package com.jakeapp.core.dao;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry;
+import java.util.*;
 import com.jakeapp.core.util.InjectableTask;
 import com.jakeapp.core.util.SpringThreadBroker;
 
@@ -45,11 +40,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
-	public LogEntry<? extends ILogable> get(final UUID uuid, final boolean includeUnprocessed) 			throws NoSuchLogEntryException {
+	public LogEntry<? extends ILogable> get(final UUID uuid, final boolean includeUnprocessed) 					throws NoSuchLogEntryException {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<? extends ILogable>>() {
@@ -67,11 +58,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
-	public void setProcessed(final LogEntry<JakeObject> logEntry) throws NoSuchLogEntryException {
+	public void setProcessed(final LogEntry<JakeObject> logEntry) 					throws NoSuchLogEntryException {
 		
 		try {
 			SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<Void>() {
@@ -82,8 +69,6 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 					return null;
 				}
 			});
-		} catch (NoSuchLogEntryException  e) {
-			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -114,10 +99,6 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed(final JakeObject jakeObject) {
 		
 		try {
@@ -136,10 +117,6 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed() {
 		
 		try {
@@ -182,10 +159,6 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
 	public List<LogEntry<? extends ILogable>> getAll(final boolean includeUnprocessed) {
 		
 		try {
@@ -204,11 +177,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
-	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(final T jakeObject, final 			boolean includeUnprocessed) {
+	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(final T jakeObject, final 					boolean includeUnprocessed) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<T>>>() {
@@ -230,7 +199,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public LogEntry<JakeObject> getLastOfJakeObject(final JakeObject jakeObject, final 			boolean includeUnprocessed) throws NoSuchLogEntryException {
+	public LogEntry<JakeObject> getLastOfJakeObject(final JakeObject jakeObject, final 					boolean includeUnprocessed) throws NoSuchLogEntryException {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
@@ -250,11 +219,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
-	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(final  			boolean includeUnprocessed) {
+	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(final  					boolean includeUnprocessed) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<T>>>() {
@@ -272,11 +237,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
-	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(final  			T jakeObject, final boolean includeUnprocessed) {
+	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(final  					T jakeObject, final boolean includeUnprocessed) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<List<LogEntry<T>>>() {
@@ -298,7 +259,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public LogEntry<JakeObject> getLastVersionOfJakeObject(final JakeObject jakeObject, final 			boolean includeUnprocessed) throws NoSuchLogEntryException {
+	public LogEntry<JakeObject> getLastVersionOfJakeObject(final JakeObject jakeObject, final 					boolean includeUnprocessed) throws NoSuchLogEntryException {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
@@ -344,7 +305,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	 * {@inheritDoc}
 	 */	
 	@Override
-	public LogEntry<JakeObject> getLastVersion(final JakeObject belongsTo, final 			boolean includeUnprocessed) {
+	public LogEntry<JakeObject> getLastVersion(final JakeObject belongsTo, final 					boolean includeUnprocessed) {
 		
 		try {
 			return SpringThreadBroker.getThreadForObject(this).doTask(new InjectableTask<LogEntry<JakeObject>>() {
@@ -383,7 +344,7 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 		}
 	
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */	
@@ -428,10 +389,6 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */	
-	@Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
 		
 		try {
@@ -450,9 +407,10 @@ public class ThreadedLogEntryDao implements ILogEntryDao {
 	
 	}
 
+	// fixme: add override and add to interface?
+	// fixme: had no luck with generateDao.sh. DOCUMENT THIS GENERATOR !!!!!!!!!!!!!!!
 	/**
 	 * {@inheritDoc}
-	 * @param correspondingTo
 	 */	
 	@Override
 	public List<User> getCurrentProjectMembers(final User correspondingTo) {

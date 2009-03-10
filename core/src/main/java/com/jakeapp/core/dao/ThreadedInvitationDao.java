@@ -1,5 +1,6 @@
 package com.jakeapp.core.dao;
 import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
@@ -56,6 +57,28 @@ public class ThreadedInvitationDao implements IInvitationDao {
 				@Override
 				public List<Invitation> calculate() throws Exception {
 					return ThreadedInvitationDao.this.dao.getAll();
+				}
+			});
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */	
+	@Override
+	public List<Invitation> getAll(final User user) {
+		
+		try {
+			return SpringThreadBroker.getInstance().doTask(new InjectableTask<List<Invitation>>() {
+
+				@Override
+				public List<Invitation> calculate() throws Exception {
+					return ThreadedInvitationDao.this.dao.getAll(user);
 				}
 			});
 		} catch (RuntimeException e) {

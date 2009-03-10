@@ -2,6 +2,7 @@ package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 
 import java.util.List;
@@ -25,6 +26,12 @@ public interface IInvitationDao {
 	 * @return a (empty) List<Invitation>
 	 */
 	public List<Invitation> getAll();
+	
+	/**
+	 * Returns a list containing all unanswered Invitations for the specified user
+	 * @return a (empty) List<Invitation>
+	 */
+	public List<Invitation> getAll(User user);
 
 	/**
 	 * Accepts an invitation: Transforms the invitation into a Project and stores it into the database.

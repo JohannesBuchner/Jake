@@ -190,7 +190,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	public List<Invitation> getInvitations(MsgService user) {
-		return this.invitationDao.getAll();
+		return this.invitationDao.getAll(user.getUserId());
 	}
 
 	private Project initProject(Project p) throws NoSuchProjectException,

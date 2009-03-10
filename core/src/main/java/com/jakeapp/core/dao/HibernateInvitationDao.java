@@ -1,6 +1,7 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
@@ -56,12 +57,36 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 			return new ArrayList<Invitation>();			   
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Invitation> getAll(User user) {
+		List<Invitation> results;
+		try {
+			// TODO hopefully user.getUserId is really to column to join to...
+			results = this.getHibernateTemplate().getSessionFactory()
+					.getCurrentSession().createQuery(
+							"FROM invitation WHERE invitedOn = ?").setString(0,
+							user.getUserId()).list();
+			if (results == null)
+				return new ArrayList<Invitation>();
+			return results;
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			return new ArrayList<Invitation>();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<Invitation>();
+		}
+	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Project accept(Invitation invitation) {
 
 		Project project = invitation.createProject();
 
+		//TODO this is hackish...make it better, dont use the 0th account
 		List<Account> accounts = this.getHibernateTemplate().getSessionFactory().
 				getCurrentSession().createQuery(
 				"FROM servicecredentials WHERE protocol = ? AND username = ?").

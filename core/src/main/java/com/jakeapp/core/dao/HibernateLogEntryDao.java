@@ -429,7 +429,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport
 	// fixme: add override and add to interface?
 	// fixme: had no luck with generateDao.sh. DOCUMENT THIS GENERATOR !!!!!!!!!!!!!!!
 	@SuppressWarnings("unchecked")
-	public LogEntry<? extends ILogable> getProjectJoinedEntry() {
+	private LogEntry<? extends ILogable> getProjectJoinedEntry() {
 		try {
 			return (LogEntry<? extends ILogable>) sess()
 							.createQuery("FROM logentries WHERE action = ?")
