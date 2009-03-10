@@ -86,7 +86,6 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 
 		Project project = invitation.createProject();
 
-		//TODO this is hackish...make it better, dont use the 0th account
 		List<Account> accounts = this.getHibernateTemplate().getSessionFactory().
 				getCurrentSession().createQuery(
 				"FROM servicecredentials WHERE protocol = ? AND username = ?").
