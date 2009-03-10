@@ -4,6 +4,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.dialogs.InvitePeopleDialog;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.SheetHelper;
 import org.apache.log4j.Logger;
 
@@ -42,9 +43,7 @@ public class InviteUsersAction extends ProjectAction {
 
 
 		// add large icon (for toolbar only)
-		Icon invitePeopleIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/people.png")).getScaledInstance(
-						32, 32, Image.SCALE_SMOOTH));
+		Icon invitePeopleIcon = ImageLoader.getScaled(getClass(), "/icons/people.png", 32);
 
 		this.putValue(Action.LARGE_ICON_KEY, invitePeopleIcon);
 	}

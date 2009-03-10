@@ -1,12 +1,14 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
 import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.UserHelper;
@@ -72,8 +74,7 @@ public class InvitationPanel extends JXPanel implements ContextChanged {
 		this.add(projectNameLabel, "span 1 ,al center, wrap");
 
 		JLabel icon = new JLabel();
-		icon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/folder-new-large.png"))));
+		icon.setIcon(ImageLoader.get(getClass(), "/icons/folder-new-large.png"));
 
 		this.add(icon, "span 1, al center, wrap");
 
