@@ -192,8 +192,11 @@ public abstract class MsgService<T extends User> {
 	protected abstract void doLogout() throws NetworkException;
 
 	public void setServiceCredentials(Account credentials) {
-		log.debug("setting service credentials to " + credentials
-						.getUserId() + " pwl: " + credentials.getPlainTextPassword().length());
+		log.debug("setting service credentials to "
+				+ credentials.getUserId()
+				+ " pwl: "
+				+ (credentials.getPlainTextPassword() == null ? null : credentials
+						.getPlainTextPassword().length()));
 		this.account = credentials;
 	}
 
