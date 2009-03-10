@@ -6,6 +6,7 @@ import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -47,12 +48,8 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEdit"));
 		this.columnNames.add(this.getResourceMap().getString("tableHeaderLastEditor"));
 
-		this.padlock = new ImageIcon(Toolkit
-						.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-						"/icons/file-lock.png")));
-		this.shared_note = new ImageIcon(Toolkit
-						.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-						"/icons/shared_note.png")));
+		this.padlock = ImageLoader.get(JakeMainApp.class, "/icons/file-lock.png");
+		this.shared_note = ImageLoader.get(JakeMainApp.class, "/icons/shared_note.png");
 
 		EventCore.get().addDataChangedCallbackListener(this);
 	}

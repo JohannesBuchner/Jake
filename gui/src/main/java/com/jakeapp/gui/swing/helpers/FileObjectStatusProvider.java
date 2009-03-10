@@ -25,27 +25,23 @@ import java.awt.*;
 public class FileObjectStatusProvider {
 	private static final Logger log = Logger.getLogger(FileObjectStatusProvider.class);
 
-	private static Icon locked = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					FileObjectStatusProvider.class.getResource("/locked/locked.png")));
+	private static Icon locked = ImageLoader.get(FileObjectStatusProvider.class,
+			"/locked/locked.png");
 
-	private static Icon unlocked = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					FileObjectStatusProvider.class.getResource("/locked/unlocked.png")));
+	private static Icon unlocked = ImageLoader.get(FileObjectStatusProvider.class,
+			"/locked/unlocked.png");
 
-	private static Icon local_is_up_to_date = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
-					"/status/local_is_up_to_date.png")));
+	private static Icon local_is_up_to_date = ImageLoader.get(
+			FileObjectStatusProvider.class, "/status/local_is_up_to_date.png");
 
-	private static Icon local_is_modified = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
-					"/status/local_is_modified.png")));
+	private static Icon local_is_modified = ImageLoader.get(
+			FileObjectStatusProvider.class, "/status/local_is_modified.png");
 
-	private static Icon local_is_out_of_date = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
-					"/status/local_is_out_of_date.png")));
+	private static Icon local_is_out_of_date = ImageLoader.get(
+			FileObjectStatusProvider.class, "/status/local_is_out_of_date.png");
 
-	private static Icon local_has_conflict = new ImageIcon(Toolkit
-					.getDefaultToolkit().getImage(FileObjectStatusProvider.class.getResource(
-					"/status/local_has_conflict.png")));
+	private static Icon local_has_conflict = ImageLoader.get(
+			FileObjectStatusProvider.class, "/status/local_has_conflict.png");
 
 	private static Icon spinner = new SpinningDial(16, 16);
 

@@ -14,6 +14,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.GuiUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.JakeMenuBar;
 import com.jakeapp.gui.swing.helpers.JakeTrayIcon;
@@ -138,31 +139,35 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	public JakeMainView(JakeMainApp app) {
 		super(app);
 
-		IconAppSmall = new ImageIcon(Toolkit
-						.getDefaultToolkit().getImage(getClass().getResource("/icons/jakeapp.png")))
-						.getImage();
-
-		IconAppLarge = new ImageIcon(Toolkit
-						.getDefaultToolkit().getImage(getClass().getResource(
-						"/icons/jakeapp-large.png"))).getImage();
+		IconAppSmall = ImageLoader.get(getClass(), "/icons/jakeapp.png").getImage();
+		IconAppLarge = ImageLoader.get(getClass(), "/icons/jakeapp-large.png").getImage();
 
 		setMainView(this);
 		this.app = app;
 
+		log.debug("tray icon ...");
 		tray = new JakeTrayIcon();
+		log.debug("toolbar ...");
 		jakeToolbar = new JakeToolbar(this);
 
 		// init the panels
 		// FIXME: lazy loading!
+		log.debug("user panel ...");
 		loginPanel = new UserPanel();
+		log.debug("news panel ...");
 		newsPanel = new NewsPanel();
+		log.debug("files panel ...");
 		filePanel = new FilePanel();
+		log.debug("notes panel ...");
 		notesPanel = new NotesPanel();
+		log.debug("inspector panel ...");
 		inspectorPanel = new InspectorPanel();
+		log.debug("invitation panel ...");
 		invitationPanel = new InvitationPanel();
 
 
 		// initialize helper code
+		log.debug("helpers ...");
 		JakeHelper.initializeJakeMainHelper();
 
 		// macify-window
@@ -173,6 +178,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 
 		// set window icon (small, large)
 		// large icon may be shown e.g. on big icon tab switch on vista
+		log.debug("icons ...");
 		this.getFrame().setIconImage(IconAppSmall);
 		this.getFrame().setIconImages(Arrays.asList(IconAppSmall, IconAppLarge));
 
@@ -181,6 +187,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 		this.getFrame().setSize(new Dimension(800, 800));
 
 		// initialize the mantisse gui components (menu)
+		log.debug("setting up components ...");
 		initComponents();
 
 		// adapt the menu if we live on a mac
@@ -218,14 +225,18 @@ public class JakeMainView extends FrameView implements ContextChanged {
 		statusPanel.add(jakeStatusBar.getComponent());
 
 		// set default window behaviour
+		log.debug("setting up window behaviour ...");
 		WindowUtils.createAndInstallRepaintWindowFocusListener(this.getFrame());
 		this.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// register dragdrop handler
+		log.debug("setting up drag and drop ...");
 		this.getFrame().setTransferHandler(new FileDropHandler());
 
+		log.debug("callbacks ...");
 		registerCallbacks();
 
+		log.debug("selecting login ...");
 		setContextViewPanel(ContextPanelEnum.Login);
 
 		updateTitle();
@@ -236,6 +247,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 		 */
 		JakeDatabaseTools.checkKeysResetDatabase();
 
+		log.debug("launching ...");
 		JakeExecutor.exec(new InitCoreWorker());
 
 		// debug property

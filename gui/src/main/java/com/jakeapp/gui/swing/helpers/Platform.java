@@ -5,6 +5,7 @@
 
 package com.jakeapp.gui.swing.helpers;
 
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.helpers.pftools.AbstractPfTools;
 import com.jakeapp.gui.swing.helpers.pftools.MacPfTools;
 import com.jakeapp.gui.swing.helpers.pftools.NullPfTools;
@@ -173,9 +174,7 @@ public class Platform {
 	 */
 	public static void setEventCounter(int num) {
 		log.debug("set event count to: " + num);
-		java.awt.Image originalIcon = Toolkit.getDefaultToolkit()
-						.getImage(Platform.class.getResource("/icons/jakeapp-large.png"));
-		ImageIcon ico = new ImageIcon(originalIcon);
+		ImageIcon ico = ImageLoader.get(Platform.class, "/icons/jakeapp-large.png");
 
 		BufferedImage newIcon = new BufferedImage(ico.getIconWidth(),
 						ico.getIconHeight(),
@@ -187,7 +186,7 @@ public class Platform {
 						RenderingHints.VALUE_ANTIALIAS_ON);
 		graphics.setColor(Color.decode("#E40000"));
 
-		graphics.drawImage(originalIcon, 0, 0, null);
+		graphics.drawImage(ico.getImage(), 0, 0, null);
 
 		graphics.fillOval(ico.getIconWidth() - 40, 0, 35, 35);
 

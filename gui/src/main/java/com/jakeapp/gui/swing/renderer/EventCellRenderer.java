@@ -8,6 +8,8 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
@@ -27,24 +29,23 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 	private static final Logger log = Logger.getLogger(EventCellRenderer.class);
 
 	// file actions
-	private final static ImageIcon fileAddIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/file-add.png")));
-	private final static ImageIcon fileRemoveIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/file-remove.png")));
-	private final static ImageIcon fileMoveIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/file-moved.png")));
-	private final static ImageIcon fileUpdateIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/file-updated.png")));
-	private final static ImageIcon fileLockIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/file-lock.png")));
-	private final static ImageIcon fileUnlockIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/file-unlock.png")));
+	private final static ImageIcon fileAddIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/file-add.png");
+
+	private final static ImageIcon fileRemoveIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/file-remove.png");
+
+	private final static ImageIcon fileMoveIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/file-moved.png");
+
+	private final static ImageIcon fileUpdateIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/file-updated.png");
+
+	private final static ImageIcon fileLockIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/file-lock.png");
+
+	private final static ImageIcon fileUnlockIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/file-unlock.png");
 
 	// project actions
 	private final static ImageIcon projectCreatedIcon = new ImageIcon(
@@ -52,40 +53,37 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 									JakeMainApp.class.getResource("/icons/" + "project-created.png")));
 
 	// users actions
-	private final static ImageIcon peopleAddIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-add.png")));
-	private final static ImageIcon peopleRemoveIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-remove.png")));
-	private final static ImageIcon peopleInviteIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-invited.png")));
-	private final static ImageIcon peopleAcceptInvitationIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-inviteok.png")));
-	private final static ImageIcon peopleAddFullIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-trust.png")));
+	private final static ImageIcon peopleAddIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-add.png");
+
+	private final static ImageIcon peopleRemoveIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-remove.png");
+
+	private final static ImageIcon peopleInviteIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-invited.png");
+
+	private final static ImageIcon peopleAcceptInvitationIcon = ImageLoader.get(
+			JakeMainApp.class, "/icons/user-inviteok.png");
+
+	private final static ImageIcon peopleAddFullIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-trust.png");
 
 	// tag actions
-	private final static ImageIcon tagAddIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/" + "tags-add.png")));
-	private final static ImageIcon tagRemoveIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/" + "tags-remove.png")));
+	private final static ImageIcon tagAddIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/" + "tags-add.png");
+
+	private final static ImageIcon tagRemoveIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/" + "tags-remove.png");
 
 	// note actions
-	private final static ImageIcon noteAddIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/" + "note-add.png")));
-	private final static ImageIcon noteRemoveIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/" + "note-remove.png")));
-	private final static ImageIcon noteUpdateIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/" + "note-updated.png")));
+	private final static ImageIcon noteAddIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/" + "note-add.png");
+
+	private final static ImageIcon noteRemoveIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/" + "note-remove.png");
+
+	private final static ImageIcon noteUpdateIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/" + "note-updated.png");
 
 	// get notes resource map
 	private static final ResourceMap newsResourceMap =

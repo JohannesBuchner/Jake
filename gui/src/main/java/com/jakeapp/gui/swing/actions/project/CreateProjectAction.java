@@ -5,6 +5,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import org.apache.log4j.Logger;
 
@@ -30,11 +31,8 @@ public class CreateProjectAction extends ProjectAction {
 		putValue(Action.NAME, JakeMainView.getMainView().getResourceMap().
 						getString("createProjectMenuItem.text") + (ellipsis ? "..." : ""));
 
-		Icon createProjectIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/createproject.png")).getScaledInstance(
-						32,
-						32,
-						Image.SCALE_SMOOTH));
+		Icon createProjectIcon = ImageLoader.getScaled(getClass(),
+				"/icons/createproject.png", 32);
 		putValue(Action.LARGE_ICON_KEY, createProjectIcon);
 	}
 

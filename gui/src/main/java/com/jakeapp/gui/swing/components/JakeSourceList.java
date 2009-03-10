@@ -29,6 +29,7 @@ import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
 import com.jakeapp.gui.swing.controls.WaitIndicator;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
 import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
@@ -109,21 +110,11 @@ public class JakeSourceList extends JakeGuiComponent
 	private SourceList createSourceList() {
 
 		// init the icons
-		projectStartedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/folder-open.png")).getScaledInstance(
-						16,
-						16,
-						Image.SCALE_SMOOTH));
-		projectStoppedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/folder.png")).getScaledInstance(
-						16,
-						16,
-						Image.SCALE_SMOOTH));
-		projectInvitedIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-						.getImage(getClass().getResource("/icons/folder-new.png")).getScaledInstance(
-						16,
-						16,
-						Image.SCALE_SMOOTH));
+		projectStartedIcon = ImageLoader.getScaled(getClass(), "/icons/folder-open.png",
+				16);
+		projectStoppedIcon = ImageLoader.getScaled(getClass(), "/icons/folder.png", 16);
+		projectInvitedIcon = ImageLoader.getScaled(getClass(), "/icons/folder-new.png",
+				16);
 		projectWorkingIcon = new SpinningDial(16, 16);
 
 		// inits the main data model

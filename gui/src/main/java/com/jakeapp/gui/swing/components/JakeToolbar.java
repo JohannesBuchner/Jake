@@ -16,6 +16,8 @@ import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
+
 import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.PatternFilter;
 import org.apache.log4j.Logger;
@@ -62,8 +64,8 @@ public class JakeToolbar {
 		toolBar.addComponentToLeft(createProjectButton, 10);
 
 		// Add Files
-		Icon addFilesIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(jakeMainView.getClass().getResource(
-						"/icons/toolbar-addfiles.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+		Icon addFilesIcon = ImageLoader.getScaled(jakeMainView.getClass(), 
+						"/icons/toolbar-addfiles.png", 32);
 		JButton jCreateAddFilesButton = new JButton(jakeMainView.getResourceMap().getString("toolbarAddFiles"),
 						addFilesIcon);
 
@@ -145,9 +147,8 @@ public class JakeToolbar {
 					toolBar.addComponentToRight(lockButton, 10);
 	*/
 
-		Icon inspectorIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(jakeMainView
-						.getClass().getResource("/icons/inspector.png")).getScaledInstance(32, 32,
-						Image.SCALE_SMOOTH));
+		Icon inspectorIcon = ImageLoader.getScaled(jakeMainView.getClass(),
+				"/icons/inspector.png", 32);
 		JButton inspectorJButton = new JButton("Inspector", inspectorIcon);
 		inspectorJButton.addActionListener(new ActionListener() {
 

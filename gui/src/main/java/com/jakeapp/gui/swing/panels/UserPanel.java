@@ -16,6 +16,7 @@ import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
@@ -171,8 +172,7 @@ public class UserPanel extends JXPanel
 		JXPanel jakeLogoContainer =
 						new JXPanel(new MigLayout("wrap 1, fill, center, ins 0"));
 		JLabel jakeLogo = new JLabel();
-		ImageIcon jakeLogoImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/jakeapp-large.png")));
+		ImageIcon jakeLogoImage = ImageLoader.get(getClass(), "/icons/jakeapp-large.png");
 		jakeLogo.setIcon(jakeLogoImage);
 		jakeLogoContainer.setOpaque(false);
 		jakeLogoContainer.add(jakeLogo, "center");
@@ -319,16 +319,10 @@ public class UserPanel extends JXPanel
 						new String[]{"Google Talk", "Jabber", "United Internet (GMX, Web.de)"};
 		Integer[] indexes = new Integer[]{0, 1, 2};
 		ImageIcon[] images = new ImageIcon[3];
-		images[0] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/service-google.png")).getScaledInstance(
-						16, 16, Image.SCALE_SMOOTH));
-		images[1] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/service-jabber.png")).getScaledInstance(
-						16, 16, Image.SCALE_SMOOTH));
-		images[2] = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource(
-										"/icons/service-unitedinternet.png")).getScaledInstance(16, 16,
-						Image.SCALE_SMOOTH));
+		images[0] = ImageLoader.getScaled(getClass(), "/icons/service-google.png", 16);
+		images[1] = ImageLoader.getScaled(getClass(), "/icons/service-jabber.png", 16);
+		images[2] = ImageLoader
+				.getScaled(getClass(), "/icons/service-unitedinternet.png", 16);
 		loginServiceCheckBox = new JComboBox();
 		loginServiceCheckBox.setModel(new DefaultComboBoxModel(indexes));
 		IconComboBoxRenderer renderer = new IconComboBoxRenderer(images, loginServices);
@@ -726,8 +720,7 @@ public class UserPanel extends JXPanel
 		loginSuccessPanel.add(signOutButton, "wrap, top, center, gapbottom 25");
 
 		JLabel iconSuccess = new JLabel();
-		iconSuccess.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-						getClass().getResource("/icons/dropfolder.png"))));
+		iconSuccess.setIcon(ImageLoader.get(getClass(),"/icons/dropfolder.png"));
 
 		loginSuccessPanel.add(iconSuccess, "wrap, al center");
 

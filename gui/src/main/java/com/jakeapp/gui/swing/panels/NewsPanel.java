@@ -18,6 +18,7 @@ import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
@@ -53,12 +54,9 @@ public class NewsPanel extends javax.swing.JPanel
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
 	private Project project;
 	private ResourceMap resourceMap;
-	private Icon startIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					getClass().getResource("/icons/folder-open.png")));
-	private Icon stopIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					getClass().getResource("/icons/folder.png")));
-	private Icon invalidIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					getClass().getResource("/icons/folder_invalid.png")));
+	private Icon startIcon = ImageLoader.get(getClass(), "/icons/folder-open.png");
+	private Icon stopIcon = ImageLoader.get(getClass(), "/icons/folder.png");
+	private Icon invalidIcon = ImageLoader.get(getClass(), "/icons/folder_invalid.png");
 
 	private StartStopProjectAction startStopProjectAction =
 					new StartStopProjectAction();

@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.dialogs.generic;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.Platform;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
@@ -154,8 +155,7 @@ public abstract class JakeDialog extends EscapeDialog {
 	 * @param path: icon path ("/icons/icon.png")
 	 */
 	protected void setPicture(String path) {
-		pictureLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				  getClass().getResource(path)).getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+		pictureLabel.setIcon(ImageLoader.getScaled(getClass(), path, 60));
 	}
 
 	/**

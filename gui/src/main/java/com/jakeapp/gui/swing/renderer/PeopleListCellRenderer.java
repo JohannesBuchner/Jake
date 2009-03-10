@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.renderer;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import org.apache.log4j.Logger;
 
@@ -20,24 +21,23 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
 									"/icons/user-online-projectmember.png")));
 	// TODO: offline projectmember!
-	final static ImageIcon onlineFullTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-									"/icons/user-online-fulltrust.png")));
-	final static ImageIcon onlineTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-online-trust.png")));
-	final static ImageIcon onlineNoTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-online-notrust.png")));
-	final static ImageIcon offlineFullTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(JakeMainApp.class.getResource(
-									"/icons/user-offline-fulltrust.png")));
-	final static ImageIcon offlineTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-offline-trust.png")));
-	final static ImageIcon offlineNoTrustIcon = new ImageIcon(
-					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/user-offline-notrust.png")));
+	final static ImageIcon onlineFullTrustIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-online-fulltrust.png");
+
+	final static ImageIcon onlineTrustIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-online-trust.png");
+
+	final static ImageIcon onlineNoTrustIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-online-notrust.png");
+
+	final static ImageIcon offlineFullTrustIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-offline-fulltrust.png");
+
+	final static ImageIcon offlineTrustIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-offline-trust.png");
+
+	final static ImageIcon offlineNoTrustIcon = ImageLoader.get(JakeMainApp.class,
+			"/icons/user-offline-notrust.png");
 
 
 	/* This is the only method defined by ListCellRenderer.  We just

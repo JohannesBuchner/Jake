@@ -23,6 +23,7 @@ import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
@@ -61,8 +62,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	private SpinningWheelComponent progressDrawer;
 	//	private JLabel progressMessage;
 
-	Icon chooseUserIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					getClass().getResource("/icons/login.png")));
+	Icon chooseUserIcon = ImageLoader.get(getClass(),"/icons/login.png");
 
 	Icon spinningDial = new SpinningDial(16, 16);
 	private JLabel progressMsg;

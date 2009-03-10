@@ -18,6 +18,7 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
@@ -67,10 +68,7 @@ public class InspectorPanel extends JXPanel
 	private JLabel fullPathValue;
 	private EventsTableModel eventsTableModel;
 	private JPanel headerPanel;
-	private final Icon notesIcon = new ImageIcon(Toolkit.getDefaultToolkit()
-					.getImage(getClass().getResource("/icons/notes.png")).getScaledInstance(64,
-					64,
-					Image.SCALE_SMOOTH));
+	private final Icon notesIcon = ImageLoader.getScaled(getClass(), "/icons/notes.png", 64);
 
 	private JPanel metaPanel;
 	private JLabel lastEditedLabel;
