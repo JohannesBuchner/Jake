@@ -52,14 +52,17 @@ install:
 # gui: build gui component
 gui: core
 	@bash .build.sh ${VERSION} $@ "$^"
+	rm -f .rebuild* */.rebuild
 
 # commander: build commander component
 commander: core
 	@bash .build.sh ${VERSION} $@ "$^"
+	rm -f .rebuild* */.rebuild
 
 # core: build core component
 core: fss ics ics-xmpp
 	@bash .build.sh ${VERSION} $@ "$^"
+	rm -f .rebuild_ics_dependent .rebuild_ics-xmpp_dependent
 
 # fss: build fss component
 fss:
@@ -84,6 +87,7 @@ clean:
 mrproper: clean
 	rm -rf ~/.m2/repository/com/{jakeapp,doublesignal}/
 	rm -f target/*-${VERSION}.jar
+	rm -f .rebuild* */.rebuild
 
 # lazyclean: clean build environment, but keep fss
 lazyclean:
