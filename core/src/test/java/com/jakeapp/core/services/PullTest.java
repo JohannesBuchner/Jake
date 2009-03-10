@@ -4,7 +4,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +49,6 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.impl.mock.MockICService;
 import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
-import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferMethod.ClientHandler;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.test.SimpleFakeMessageExchanger;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
@@ -83,6 +81,10 @@ public class PullTest extends TmpdirEnabledTestCase {
 		@Override
 		public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
 			tracer.step("pullProgressUpdate");
+		}
+
+		@Override public void syncStateChanged(Project p, SyncState state) {
+			tracer.step("syncStateChanged");
 		}
 	}
 

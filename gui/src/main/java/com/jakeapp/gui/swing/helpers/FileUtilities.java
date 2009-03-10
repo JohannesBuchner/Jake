@@ -111,9 +111,8 @@ public class FileUtilities {
 		JFileChooser fr = new JFileChooser();
 		javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
 
-		// TODO: make customizeable, cleanup invitation name
-		return fw.getDefaultDirectory() + getPathSeparator() + invitation
-						.getProjectName();
+		return new File(new File(fw.getDefaultDirectory(), "Jake Projects"),
+						invitation.getProjectName()).getAbsolutePath();
 	}
 
 

@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.xcore;
 
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
@@ -28,6 +29,13 @@ public class ProjectsChangeListener implements ChangeListener {
 	@Override public void pullProgressUpdate(JakeObject jo, Status status,
 					double progress) {
 		log.debug("pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
+	}
+
+	@Override public void syncStateChanged(Project p, SyncState state) {
+		log.debug("Sync State Changed for " + p.getName() + " to " + state);
+
+		// fixme: only update on success
+		EventCore.get().fireLogChanged(p);
 	}
 
 	@Override

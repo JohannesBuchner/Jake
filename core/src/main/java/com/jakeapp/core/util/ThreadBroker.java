@@ -1,12 +1,11 @@
 package com.jakeapp.core.util;
 
+import com.jakeapp.core.DarkMagic;
+import org.apache.log4j.Logger;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-
-import org.apache.log4j.Logger;
-
-import com.jakeapp.core.DarkMagic;
 
 /**
  * This class allows submitting tasks to the thread for later execution within
@@ -53,7 +52,7 @@ public class ThreadBroker implements Runnable {
 	}
 
 	public void run() {
-		log.info("running");
+		log.trace("running");
 		while (this.running) {
 			try {
 				this.s.acquire();
@@ -71,11 +70,10 @@ public class ThreadBroker implements Runnable {
 			}
 			log.debug("task done");
 		}
-		log.info("quitting broker");
+		log.trace("quitting broker");
 	}
 
 	protected void runTask(InjectableTask<?> task) {
 		task.run();
 	}
-
 }

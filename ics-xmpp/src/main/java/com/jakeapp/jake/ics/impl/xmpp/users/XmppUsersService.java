@@ -149,9 +149,9 @@ public class XmppUsersService implements IUsersService {
 
 		public void run() {
 			Thread.currentThread().setName("Discovering " + this.xmppid);
-			this.log.debug(Thread.currentThread() + " starting ... ");
+			this.log.trace(Thread.currentThread() + " starting ... ");
 
-			this.log.info("trying to discover capabilities for user ...");
+			this.log.trace("trying to discover capabilities for user ...");
 			int tries = 2;
 			while (tries > 0
 					  && XmppUsersService.this.con.getService()
@@ -165,7 +165,8 @@ public class XmppUsersService implements IUsersService {
 					}
 					break;
 				} catch (IOException e) {
-					this.log.error("discovering capabilities failed!", e);
+					// fixme: why is this fired that often?
+					this.log.debug("discovering capabilities failed!" + e.getMessage());
 					tries--;
 					try {
 						Thread.sleep(1000);
@@ -173,7 +174,7 @@ public class XmppUsersService implements IUsersService {
 						// not important, don't care, best effort
 					}
 				} catch (NotLoggedInException e) {
-					this.log.debug("We got logged out somehow", e);
+					this.log.warn("We got logged out somehow", e);
 				}
 			this.log.debug(Thread.currentThread() + " done");
 		}
@@ -188,25 +189,25 @@ public class XmppUsersService implements IUsersService {
 	private boolean isCapable(String xmppid) throws IOException {
 		ServiceDiscoveryManager discoManager = ServiceDiscoveryManager
 				  .getInstanceFor(this.con.getConnection());
-		log.debug("discovering user " + xmppid);
+		log.trace("discovering user " + xmppid);
 		DiscoverInfo discoInfo;
 		try {
 			discoInfo = discoManager.discoverInfo(xmppid);
 		} catch (XMPPException e) {
-			log.debug("Something weird happened", e);
+			log.debug("Something weird happened (mostly just no response)" + e.getMessage());
 			throw new IOException(e);
 		}
-		log.debug("discovery returned: " + discoInfo.getExtensions().size()
+		log.trace("discovery returned: " + discoInfo.getExtensions().size()
 				  + " features");
 		for (PacketExtension i : discoInfo.getExtensions()) {
 			log.debug("discovery returned: namespace: " + i.getNamespace());
 		}
 
 		if (discoInfo.containsFeature(this.con.getNamespace())) {
-			log.info("user came online with our feature");
+			log.trace("user came online with our feature");
 			return true;
 		} else {
-			log.info("user came online withOUT our feature");
+			log.trace("user came online withOUT our feature");
 			return false;
 		}
 	}
@@ -221,7 +222,7 @@ public class XmppUsersService implements IUsersService {
 			  throws NotLoggedInException {
 		Presence presence = getRoster().getPresence(userid.getUserId());
 		String xmppid = userid.getUserId();
-		log.debug("presenceChanged: " + xmppid + " - " + presence);
+		log.trace("presenceChanged: " + xmppid + " - " + presence);
 		if (presence.isAvailable()) {
 			new Thread(new DiscoveryThread(xmppid)).start();
 		} else {

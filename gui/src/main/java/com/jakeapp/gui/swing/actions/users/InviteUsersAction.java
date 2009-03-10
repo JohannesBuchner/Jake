@@ -53,7 +53,8 @@ public class InviteUsersAction extends ProjectAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		log.debug("Invite People to: " + getProject());
 
-		if (!getProject().isStarted()) {
+		// fixme: refactor and add to syncronize too!
+		if (!getProject().isStarted()) { // fixme: add isBeingStarted-state!
 			if (SheetHelper.showConfirm("You have to start the project first.",
 							"Start Project")) {
 				StartStopProjectAction.perform(getProject());

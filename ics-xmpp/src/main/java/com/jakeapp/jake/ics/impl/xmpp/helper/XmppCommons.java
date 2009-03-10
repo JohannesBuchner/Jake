@@ -10,7 +10,6 @@ import java.io.IOException;
 
 
 public class XmppCommons {
-
 	static private Logger log = Logger.getLogger(XmppCommons.class);
 
 	private static void setupEncryption() {
@@ -38,19 +37,19 @@ public class XmppCommons {
 		String usernameWithDomain = xmppid.replaceAll("/.*$", "");
 		String username = xmppid.replaceAll("@.*$", "");
 
-		log.debug("connecting/logging in with full xmppid (gmail et al) [may fail]");
+		log.trace("connecting/logging in with full xmppid (gmail et al) [may fail]");
 		XMPPConnection connection = null;
 
 		try {
 			connection = XmppCommons.doLogin(usernameWithDomain, pw, hostname, port, resource);
 		} catch (XMPPException e) {
-			log.info("Received XMPPException while trying to log in with full hostname: " + e
+			log.trace("Received XMPPException while trying to log in with full hostname: " + e
 							.getMessage());
 		}
 
 		if (connection == null) {
-			log.info("ignore the exception above, it was expected");
-			log.debug("connecting/logging in normally");
+			log.trace("ignore the exception above, it was expected");
+			log.trace("connecting/logging in normally");
 			connection = XmppCommons.doLogin(username, pw, hostname, port, resource);
 		}
 		return connection;
@@ -201,7 +200,7 @@ public class XmppCommons {
 			return false;
 		}
 
-		log.debug(connection.getUser() + " - auth: " + connection.isAuthenticated());
+		log.trace	(connection.getUser() + " - auth: " + connection.isAuthenticated());
 		return connection.isAuthenticated();
 	}
 

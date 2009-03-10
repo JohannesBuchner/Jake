@@ -2,7 +2,6 @@ package com.jakeapp.core.dao;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Tag;
 import org.apache.log4j.Logger;
 import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -70,7 +69,7 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	 */
 	@Transactional
 	public List<T> getAll() {
-		log.debug("getAll()  ========================================");
+		log.trace("getAll()");
 
 		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
 				.getGenericSuperclass();

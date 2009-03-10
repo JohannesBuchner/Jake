@@ -1,6 +1,7 @@
 package com.jakeapp.core.synchronization.change;
 
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
@@ -43,6 +44,9 @@ public class ChangeAdapter implements ChangeListener {
 	@Override
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
 		// empty implementation
+	}
+
+	@Override public void syncStateChanged(Project p, SyncState state) {
 	}
 
 	@Override

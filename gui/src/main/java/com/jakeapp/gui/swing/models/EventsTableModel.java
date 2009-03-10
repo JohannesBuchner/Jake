@@ -75,6 +75,8 @@ public class EventsTableModel extends AbstractTableModel {
 											getAttributedJakeObject().getJakeObject() : null,
 							MaxLogEntriesShown);
 		}
+		
+		this.fireTableDataChanged();
 	}
 
 	public Project getProject() {

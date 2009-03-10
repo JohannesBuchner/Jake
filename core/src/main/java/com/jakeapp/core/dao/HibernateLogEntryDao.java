@@ -31,13 +31,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 
 	@SuppressWarnings("unchecked")
 	private void debugDump() {
-		log.debug("Current LogEntries: ");
-		for (LogEntry le : (List<LogEntry<? extends
-				ILogable>>) sess().createQuery
-				("FROM logentries ORDER by timestamp asc, id asc").list()) {
-			log.debug(le);
-		}
-		log.debug("Current LogEntries done ");
+//		log.debug("Current LogEntries: ");
+//		for (LogEntry le : (List<LogEntry<? extends
+//				ILogable>>) sess().createQuery
+//				("FROM logentries ORDER by timestamp asc, id asc").list()) {
+//			log.debug(le);
+//		}
+//		log.debug("Current LogEntries done ");
 	}
 
 	@Override

@@ -1,22 +1,21 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.Injected;
+import com.jakeapp.core.dao.IAccountDao;
+import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.jakeapp.core.Injected;
-import com.jakeapp.core.dao.IAccountDao;
-import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 
 /**
  * Manager that creates and stores MsgServices
@@ -73,7 +72,7 @@ public class MsgServiceManager {
 	 */
 	private MsgService<User> create(Account credentials)
 			throws ProtocolNotSupportedException {
-		log.info("Creating MsgService for " + credentials);
+		log.trace("Creating MsgService for " + credentials);
 		MsgService<User> msgService;
 
 		if (credentials == null) {
@@ -86,8 +85,8 @@ public class MsgServiceManager {
 
 		MsgService.setServiceCredentialsDao(getAccountDao());
 
-		log.debug("creating MsgService with crendentials: " + credentials);
-		log.debug("User="
+		log.trace("creating MsgService with crendentials: " + credentials);
+		log.trace("User="
 				+ credentials.getUserId()
 				+ " pwl = "
 				+ ((credentials.getPlainTextPassword() == null) ? "null" : ""
@@ -105,7 +104,7 @@ public class MsgServiceManager {
 			this.msgServices.put(credentials.getUuid(), msgService);
 			msgService.setUserId(createUserforMsgService(credentials));
 
-			log.debug("resulting MsgService is " + msgService);
+			log.trace("resulting MsgService is " + msgService);
 
 
 			return msgService;
@@ -154,11 +153,11 @@ public class MsgServiceManager {
 
 	@Transactional
 	public List<MsgService<User>> getAll() {
-		log.debug("calling getAll");
+		log.trace("calling getAll");
 
 		List<Account> credentialsList = this.accountDao.getAll();
-		log.debug("Found " + credentialsList.size() + " Credentials in the DB");
-		log.debug("Found " + this.msgServices.size() + " Credentials in the Cache");
+		log.trace("Found " + credentialsList.size() + " Credentials in the DB");
+		log.trace("Found " + this.msgServices.size() + " Credentials in the Cache");
 
 
 		for (Account credentials : credentialsList) {
@@ -190,10 +189,10 @@ public class MsgServiceManager {
 	 */
 	private MsgService add(Account credentials)
 			throws InvalidCredentialsException, ProtocolNotSupportedException {
-		log.debug("calling addMsgService");
+		log.trace("calling addMsgService");
 
 		if (credentials.getUuid() == null) {
-			log.debug("no UUID in credentials. fixing ...");
+			log.info("no UUID in credentials. fixing ...");
 			credentials.setUuid(UUID.randomUUID());
 		}
 
@@ -218,14 +217,14 @@ public class MsgServiceManager {
 	 * @return the MsgService or null.
 	 */
 	public MsgService getOrCreate(Account credentials) {
-		log.debug("Get MsgService by credentials: " + credentials);
+		log.trace("Get MsgService by credentials: " + credentials);
 
 		MsgService<User> msg = find(credentials);
 		if (msg != null) {
-			log.debug("reused already-loaded msgservice");
+			log.trace("reused already-loaded msgservice");
 			return msg;
 		}
-		log.info("not found in cache");
+		log.trace("not found in cache");
 
 		try {
 			return this.add(credentials);
@@ -251,12 +250,12 @@ public class MsgServiceManager {
 			if (credentials.getProtocol() == c.getProtocol()
 					&& credentials.getUserId().equals(c.getUserId())) {
 				credentials.setUuid(c.getUuid());
-				log.debug("found a similar one");
+				log.trace("found a similar one");
 				break;
 			}
 		}
 		if (this.msgServices.containsKey(credentials.getUuid())) {
-			log.debug("found after adjusting UUID");
+			log.trace("found after adjusting UUID");
 			return this.msgServices.get(credentials.getUuid());
 		}
 		return null;

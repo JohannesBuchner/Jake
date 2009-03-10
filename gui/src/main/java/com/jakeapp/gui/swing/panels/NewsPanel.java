@@ -101,6 +101,7 @@ public class NewsPanel extends javax.swing.JPanel
 		// register the callbacks
 		EventCore.get().addProjectChangedCallbackListener(this);
 		EventCore.get().addContextChangedListener(this);
+		EventCore.get().addDataChangedCallbackListener(this);
 
 		// init actions!
 		this.projectRunningButton.setAction(this.startStopProjectAction);
@@ -173,7 +174,7 @@ public class NewsPanel extends javax.swing.JPanel
 
 	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
 		if (dataReason.contains(DataReason.LogEntries)) {
-			this.updatePanel();
+				this.updatePanel();
 		}
 	}
 

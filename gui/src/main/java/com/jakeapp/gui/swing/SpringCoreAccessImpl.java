@@ -13,7 +13,6 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.AnnounceFuture;
-import com.jakeapp.core.services.futures.GetProjectsFuture;
 import com.jakeapp.core.services.futures.ImportFilesFuture;
 import com.jakeapp.core.services.futures.ProjectNoteCountFuture;
 import com.jakeapp.core.services.futures.PullFuture;
@@ -347,6 +346,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	// TODO: should be a running later ?
 	public void syncProject(Project project, User user) {
+		log.debug("syncin' project " + project.getName() + " with user " + user);
+
 		try {
 			if (user != null) {
 				iss.poke(project, user);

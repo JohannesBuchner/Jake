@@ -1,18 +1,5 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -45,6 +32,7 @@ import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -53,6 +41,18 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -68,7 +68,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/**
 	 * key is the UUID
 	 */
-	private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
+	//private Map<String, ChangeListener> projectChangeListeners = new HashMap<String, ChangeListener>();
+	private ChangeListener projectChangeListener = null;
 
 	/**
 	 * key is the UUID
@@ -78,9 +79,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@Injected
 	private IProjectsFileServices projectsFileServices;
 
-	private ChangeListener getProjectChangeListener(Project p) {
-		return (p == null) ? null : projectChangeListeners.get(p.getProjectId());
-	}
+//	private ChangeListener getProjectChangeListener(Project p) {
+//		return (p == null) ? null : projectChangeListeners.get(p.getProjectId());
+//	}
 
 	@Injected
 	private RequestHandlePolicy rhp;
@@ -105,12 +106,16 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		this.messageMarshaller = messageMarshaller;
 	}
 
+	public ChangeListener getProjectChangeListener() {
+		return projectChangeListener;
+	}
+
 	/* DAO stuff */
 
 	@Override
 	protected Iterable<User> getProjectMembers(Project project)
 			throws NoSuchProjectException {
-		return new LinkedList(db.getLogEntryDao(project).getCurrentProjectMembers(project.getUserId()));
+		return new LinkedList<User>(db.getLogEntryDao(project).getCurrentProjectMembers(project.getUserId()));
 	}
 
 
@@ -181,18 +186,34 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		log.info("Poking user " + pm.getUserId());
 		ICService ics = getICS(project);
 		log.debug("ICS is logged in? " + ics.getStatusService().isLoggedIn());
-		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
+		UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
 			String message;
 			message = messageMarshaller.pokeProject(project);
 			log.debug("Sending message: \"" + message + "\"");
 			ics.getMsgService().sendMessage(uid, message);
 		} catch (NetworkException e) {
-			log.debug("Could not poke user " + pm.getUserId(), e);
+			log.warn("Could not poke user " + pm.getUserId(), e);
 		} catch (OtherUserOfflineException e) {
-			log.debug("Could not poke user " + pm.getUserId(), e);
+			log.warn("Could not poke user " + pm.getUserId(), e);
 		}
 	}
+
+
+	public void sendLogs(Project project, UserId user) {
+		ICService ics = getICS(project);
+
+		try {
+			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
+			String message = messageMarshaller.packLogEntries(project, logs);
+			ics.getMsgService().sendMessage(user, message);
+		} catch (NetworkException e) {
+			log.warn("Could not sync logs", e);
+		} catch (OtherUserOfflineException e) {
+			log.warn("Could not sync logs", e);
+		}
+	}
+
 
 
 	@SuppressWarnings("unchecked")
@@ -233,7 +254,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		log.info("Requesting log sync from user " + pm.getUserId());
 
 		ICService ics = getICS(project);
-		com.jakeapp.jake.ics.UserId uid = getICSManager().getBackendUserId(project, pm);
+		UserId uid = getICSManager().getBackendUserId(project, pm);
 		try {
 			String msg = messageMarshaller.requestLogs(project);
 			ics.getMsgService().sendMessage(uid, msg);
@@ -243,10 +264,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			log.debug("Could not request logs from user " + pm.getUserId(), e);
 		}
 
-		// TODO: request log & fetch answer
+		// try to send logs back to requester!
+		sendLogs(project, uid);
+
 		// TODO: make this an async operation (e.g. with an
 		// AvailableLaterObject)
-
 
 		return null;
 	}
@@ -303,8 +325,10 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		// activate icsManager.getITransferServiceic
 		
 		log.debug("Project " + p + " activated");
-		
-		projectChangeListeners.put(p.getProjectId(), cl);
+
+		// fixme: there's only one change listener for everything now!
+		projectChangeListener = cl;
+//		projectChangeListeners.put(p.getProjectId(), cl);
 		runningProjects.put(p.getProjectId(), p);
 
 		 // registering the listener with the ics
@@ -317,7 +341,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		log.debug("stopping project " + p);
 
 		runningProjects.remove(p.getProjectId());
-		projectChangeListeners.remove(p.getProjectId());
+		//projectChangeListeners.remove(p.getProjectId());
 
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if(prl != null)
@@ -345,9 +369,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		return this.runningProjects.get(projectid);
 	}
 
-	public ChangeListener getProjectChangeListener(String projectId) {
-		return this.projectChangeListeners.get(projectId);
-	}
 
 
 	// ////////// PUT ALL LOCAL HELPERS BEYOND THIS LINE
@@ -644,8 +665,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		Iterable<LogEntry> potentialProviders = this.getRequestHandlePolicy()
 				.getPotentialJakeObjectProviders(fo);
 
-		com.jakeapp.jake.ics.UserId remoteBackendPeer;
-		ChangeListener cl = this.getProjectChangeListener(p);
+		UserId remoteBackendPeer;
+		ChangeListener cl = projectChangeListener;
 		LogEntry realProvider = null;
 
 		if (potentialProviders == null)
@@ -677,7 +698,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				} catch (Exception ignored) {
 					log.warn("pull from " + potentialProvider + " failed", ignored);
 					log.info("trying next provider");
-					continue;
+					//continue;
 				}
 			} else {
 				log.warn("got invalid potentialProvider: " + potentialProvider);
@@ -782,18 +803,10 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	// IT
 
 
-	/**
-	 * NullSafe getter for {@link LogEntry#getMember()}
-	 * 
-	 * @param lastle
-	 * @return ProjectMember or null, if LogEntry is null.
-	 */
-	private User getProjectMemberNullSafe(LogEntry<? extends ILogable> lastle) {
-		if (lastle != null)
-			return lastle.getMember();
-		else
-			return null;
-	}
+//	public ChangeListener getProjectChangeListener(String projectId) {
+//		return this.projectChangeListeners.get(projectId);
+//	}
+
 
 	/**
 	 * We keep track of the Project members
@@ -813,7 +826,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		members.remove(project.getUserId()); // dont sync with ourself
 		
 		for (User member : members) {
-			com.jakeapp.jake.ics.UserId userid = getICSManager().getBackendUserId(project, member); 
+			UserId userid = getICSManager().getBackendUserId(project, member);
 			try {
 				getICS(project).getUsersService().addUser(userid, userid.getUserId());
 			} catch (NoSuchUseridException e) { 
@@ -851,6 +864,4 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			throws NotLoggedInException {
 		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
-
-
 }

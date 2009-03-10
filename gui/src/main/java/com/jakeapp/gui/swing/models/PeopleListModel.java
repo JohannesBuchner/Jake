@@ -1,12 +1,12 @@
 package com.jakeapp.gui.swing.models;
 
 import com.jakeapp.core.synchronization.UserInfo;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.controls.MutableListModel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.UserHelper;
@@ -43,7 +43,13 @@ public class PeopleListModel extends AbstractListModel
 	}
 
 	public Object getElementAt(int i) {
-		return this.people.get(i);
+		if (this.people.size() <= i) {
+			return this.people.get(i);
+		} else {
+			log.warn("Tried to get Element on invalid index " + i + " size=" + this.people
+							.size());
+			return null;
+		}
 	}
 
 
@@ -56,7 +62,8 @@ public class PeopleListModel extends AbstractListModel
 			return;
 
 		try {
-			this.people = JakeMainApp.getCore().getAllProjectMembers(JakeContext.getProject());
+			this.people =
+							JakeMainApp.getCore().getAllProjectMembers(JakeContext.getProject());
 		} catch (PeopleOperationFailedException e) {
 			this.people = new ArrayList<UserInfo>();
 			ExceptionUtilities.showError(e);
@@ -73,9 +80,9 @@ public class PeopleListModel extends AbstractListModel
 
 	@Override
 	public void setValueAt(Object value, int index) {
-		if (!JakeMainApp.getCore().setUserNick(JakeContext.getProject(),
-						people.get(index).getUser(),
-						(String) value)) {
+		if (!JakeMainApp.getCore()
+						.setUserNick(JakeContext.getProject(), people.get(index).getUser(),
+										(String) value)) {
 
 			JakeHelper.showMsgTranslated("PeopleListRenameNicknameInvalid",
 							JOptionPane.WARNING_MESSAGE);

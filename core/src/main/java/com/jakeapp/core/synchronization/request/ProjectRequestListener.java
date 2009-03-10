@@ -5,7 +5,6 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
@@ -17,10 +16,7 @@ import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
-import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
@@ -60,7 +56,7 @@ public class ProjectRequestListener
 
 	private Project p;
 
-	private ICSManager ICSManager;
+	private ICSManager ICSManager; // fixme: bogus name
 
 	private ProjectApplicationContextFactory db;
 
@@ -87,21 +83,6 @@ public class ProjectRequestListener
 	}
 
 
-	private void sendLogs(Project project, com.jakeapp.jake.ics.UserId user) {
-		ICService ics = ICSManager.getICService(project);
-
-		try {
-			List<LogEntry<? extends ILogable>> logs = db.getLogEntryDao(project).getAll();
-			String message = messageMarshaller.packLogEntries(project, logs);
-			ics.getMsgService().sendMessage(user, message);
-		} catch (NetworkException e) {
-			log.warn("Could not sync logs", e);
-		} catch (OtherUserOfflineException e) {
-			log.warn("Could not sync logs", e);
-		}
-	}
-
-
 	private String getProjectUUID(String content) {
 		int begin = content.indexOf(BEGIN_PROJECT_UUID) + BEGIN_PROJECT_UUID.length();
 		int end = content.indexOf(END_PROJECT_UUID);
@@ -109,8 +90,7 @@ public class ProjectRequestListener
 		return content.substring(begin, end);
 	}
 
-	@Override 
-	@Transactional
+	@Override @Transactional
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
 					String content) {
 
@@ -125,8 +105,9 @@ public class ProjectRequestListener
 
 		log.debug("Message is for this project!");
 
-		String message = content.substring(BEGIN_PROJECT_UUID.length() + projectUUID
-						.length() + END_PROJECT_UUID.length());
+		String message = content.substring(
+						BEGIN_PROJECT_UUID.length() + projectUUID.length() + END_PROJECT_UUID
+										.length());
 		log.debug("Message content: \"" + message + "\"");
 
 		if (message.startsWith(POKE_MESSAGE)) {
@@ -143,21 +124,27 @@ public class ProjectRequestListener
 								"Received an unexpected IllegalProtocolException while trying to perform logsync",
 								e);
 			}
+
+			// inform the gui that we have new data
+			this.syncService.getProjectChangeListener()
+							.syncStateChanged(this.p, ChangeListener.SyncState.SYNCING);
+			
 			return;
 		}
 
 		if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
 			log.info("Received logs request from " + from_userid.getUserId());
 
-			sendLogs(p, from_userid);
+			syncService.sendLogs(p, from_userid);
 			return;
 		}
 
 		if (message.startsWith(LOGENTRIES_MESSAGE)) {
 			log.info("Received serialized logentries from " + from_userid.getUserId());
 
-			String les = message.substring(LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY
-							.length(), message.length() - END_LOGENTRY.length());
+			String les = message.substring(
+							LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(),
+							message.length() - END_LOGENTRY.length());
 
 			List<LogEntry<? extends ILogable>> logEntries =
 							this.messageMarshaller.unpackLogEntries(les);
@@ -171,6 +158,10 @@ public class ProjectRequestListener
 					log.debug("Failed to deserialize and/or save", t);
 				}
 			}
+			// inform the gui that we have new data
+			this.syncService.getProjectChangeListener()
+							.syncStateChanged(this.p, ChangeListener.SyncState.DONE);
+
 			return;
 		}
 		log.warn("We got a unknown/unhandled Message: " + message);
@@ -179,7 +170,7 @@ public class ProjectRequestListener
 	@Override
 	public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
 
-		log.info("Online status of " + userid
+		log.debug("Online status of " + userid
 						.getUserId() + " changed... (Project " + p + ")");
 	}
 
