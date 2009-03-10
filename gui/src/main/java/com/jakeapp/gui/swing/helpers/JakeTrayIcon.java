@@ -4,6 +4,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,14 +25,11 @@ public class JakeTrayIcon {
 		if (SystemTray.isSupported()) {
 
 			SystemTray tray = SystemTray.getSystemTray();
-			Image image = Toolkit.getDefaultToolkit()
-							.getImage(getClass().getResource("/icons/jakeapp.png"));
+			ImageIcon image = ImageLoader.get(getClass(), "/icons/jakeapp.png");
 
 			MouseListener mouseListener = new MouseListener() {
 
 				public void mouseClicked(MouseEvent e) {
-					System.out.println("Tray Icon - Mouse clicked!");
-
 					if (e.getClickCount() == 2 && SwingUtilities
 									.isLeftMouseButton(e) && !Platform.isMac()) {
 						JakeMainView.toggleShowHideMainWindow();
@@ -51,7 +49,6 @@ public class JakeTrayIcon {
 				}
 
 				public void mouseReleased(MouseEvent e) {
-					System.out.println("Tray Icon - Mouse released!");
 				}
 			};
 
@@ -76,7 +73,7 @@ public class JakeTrayIcon {
 			popup.add(showHideJakeTrayMenuItem);
 			popup.add(defaultItem);
 
-			trayIcon = new TrayIcon(image, "Jake", popup);
+			trayIcon = new TrayIcon(image.getImage(), "Jake", popup);
 
 
 			/*  ActionListener actionListener = new ActionListener() {
