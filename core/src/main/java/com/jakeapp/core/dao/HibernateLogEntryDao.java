@@ -447,8 +447,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport
 
 		trusted.add(correspondingTo);
 
-		//TODO? run more often, until trusted does not change any more? // why? -- dominik
-
+		// TODO? run more often, until trusted does not change any more? 
+		// why? -- dominik
+		// because 'indirectly' trusted members aren't detected by this -- johannes 
+		// actually, while thinking about it, we don't want indirectly trusted members. 
+		// If we wanted them, we'd have the other user as following-trust. -- johannes 
+		
 		for (User member : people.keySet()) {
 			if (trusted.contains(member)) {
 				for (User trustedMember : people.get(member)) {
@@ -457,7 +461,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport
 			}
 		}
 
-		//		log.debug("len=" + trusted.size());
 		return new ArrayList<User>(trusted);
 	}
 
