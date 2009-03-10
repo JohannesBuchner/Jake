@@ -518,10 +518,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport
 				people.get(who).remove(whom);
 			} else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
 				people.get(who).add(whom);
-			} else if (le.getLogAction() == LogAction.PROJECTMEMBER_INVITED) {
-				people.get(who).add(whom);
-			} else if (le.getLogAction() == LogAction.PROJECT_REJECTED) {
-				people.get(who).remove(whom);
 			} else {
 				log.debug("got an unknown logentry for creating the people list: " + le);
 			}
@@ -557,10 +553,6 @@ public class HibernateLogEntryDao extends HibernateDaoSupport
 				people.get(who).put(whom, TrustState.NO_TRUST);
 			} else if (le.getLogAction() == LogAction.FOLLOW_TRUSTING_PROJECTMEMBER) {
 				people.get(who).put(whom, TrustState.AUTO_ADD_REMOVE);
-			} else if (le.getLogAction() == LogAction.PROJECTMEMBER_INVITED) {
-				people.get(who).put(whom, TrustState.TRUST);
-			} else if (le.getLogAction() == LogAction.PROJECT_REJECTED) {
-				people.get(who).remove(whom);
 			}
 
 		}

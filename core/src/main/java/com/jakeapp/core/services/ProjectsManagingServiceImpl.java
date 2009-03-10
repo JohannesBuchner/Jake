@@ -755,7 +755,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		ProjectMemberInvitedLogEntry logEntry =  new ProjectMemberInvitedLogEntry(id, project.getUserId());
 		this.getLogEntryDao(project).create(logEntry);
 
-//		member = this.addUserToProject(project, id);
+		member = this.addUserToProject(project, id);
 		ProjectInvitationHandler.invite(project, id);
 		return id;
 
