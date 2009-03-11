@@ -26,8 +26,12 @@ import java.util.List;
  * -Dcom.jakeapp.gui.ignoresingleinstance=true  	  	Disable single instance checking
  */
 public class JakeMainApp extends SingleFrameApplication {
+	private static final String ALLOW_MULTIPLE_INSTANCES_PROPERTY = "com.jakeapp.gui.ignoresingleinstance";
+
 	private static final Logger log = Logger.getLogger(JakeMainApp.class);
+
 	private static JakeMainApp app;
+
 	private ICoreAccess core;
 
 	private final List<CoreChanged> coreChanged = new ArrayList<CoreChanged>();
@@ -35,7 +39,10 @@ public class JakeMainApp extends SingleFrameApplication {
 	public JakeMainApp() {
 		app = this;
 
-		if (System.getProperty("com.jakeapp.gui.ignoresingleinstance") == null) {
+		if (System.getProperty(ALLOW_MULTIPLE_INSTANCES_PROPERTY) == null) {
+			log.debug("checking that this is the only instances");
+			log.info("You can allow multiple instances by setting -D"
+					+ ALLOW_MULTIPLE_INSTANCES_PROPERTY);
 			if (!ApplicationInstanceManager.registerInstance()) {
 				// instance already running.
 				log.error("Another instance of Jake is already running.  Exiting.");
@@ -81,7 +88,6 @@ public class JakeMainApp extends SingleFrameApplication {
 	 *
 	 * @return the instance of JakeMock2App
 	 */
-
 	public static JakeMainApp getInstance() {
 		return Application.getInstance(JakeMainApp.class);
 	}
