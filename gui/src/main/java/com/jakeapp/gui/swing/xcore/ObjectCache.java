@@ -1,22 +1,25 @@
 package com.jakeapp.gui.swing.xcore;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.callbacks.DataChanged;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesTask;
 import com.jakeapp.gui.swing.worker.GetAllProjectNotesTask;
 import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * This is a generic cache that saves data from the core.
@@ -29,10 +32,10 @@ public class ObjectCache implements ContextChanged {
 	private static ObjectCache instance = new ObjectCache();
 
 	private List<Project> myProjects = new ArrayList<Project>();
-	private HashMap<Project, List<FileObject>> files =
-					new HashMap<Project, List<FileObject>>();
-	private HashMap<Project, List<NoteObject>> notes =
-					new HashMap<Project, List<NoteObject>>();
+	private HashMap<Project, Collection<FileObject>> files =
+					new HashMap<Project, Collection<FileObject>>();
+	private HashMap<Project, Collection<NoteObject>> notes =
+					new HashMap<Project, Collection<NoteObject>>();
 	//private HashMap<Project, List<LogEntry>> logEntries =
 	//				new HashMap<Project, List<LogEntry>>();
 
@@ -51,7 +54,7 @@ public class ObjectCache implements ContextChanged {
 	}
 
 	public List<Project> getMyProjects() {
-		return myProjects;
+		return this.myProjects;
 	}
 
 	public void setMyProjects(List<Project> myProjects) {
@@ -63,11 +66,15 @@ public class ObjectCache implements ContextChanged {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Projects), null);
 	}
 
-	public List<FileObject> getFiles(Project p) {
-		return files.get(p);
+	public Collection<FileObject> getFiles(Project p) {
+		if(!this.files.containsKey(p)) {
+			log.warn("notes requested, but not available yet");
+			return new LinkedList<FileObject>();
+		}
+		return this.files.get(p);
 	}
 
-	public void setFiles(Project project, List<FileObject> files) {
+	public void setFiles(Project project, Collection<FileObject> files) {
 		this.files.put(project, files);
 		fireFilesDataChanged(project);
 	}
@@ -76,11 +83,15 @@ public class ObjectCache implements ContextChanged {
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), project);
 	}
 
-	public List<NoteObject> getNotes(Project p) {
-		return notes.get(p);
+	public Collection<NoteObject> getNotes(Project p) {
+		if(!this.files.containsKey(p)) {
+			log.warn("notes requested, but not available yet");
+			return new LinkedList<NoteObject>();
+		}
+		return this.notes.get(p);
 	}
 
-	public void setNotes(Project project, List<NoteObject> notes) {
+	public void setNotes(Project project, Collection<NoteObject> notes) {
 		this.notes.put(project, notes);
 		fireNotesDataChanged(project);
 	}
@@ -123,8 +134,8 @@ public class ObjectCache implements ContextChanged {
 	 * @param project
 	 * @return
 	 */
-	public List<FileObject> getFilesSave(Project project) {
-		List<FileObject> files = getFiles(project);
+	public Collection<FileObject> getFilesSave(Project project) {
+		Collection<FileObject> files = getFiles(project);
 		if (files != null) {
 			return files;
 		} else {

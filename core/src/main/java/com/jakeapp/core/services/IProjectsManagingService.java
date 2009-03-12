@@ -16,6 +16,7 @@ import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -243,7 +244,7 @@ public interface IProjectsManagingService {
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
 
 	/**
-	 * Retrieves all Files that exist in a <code>Project</code>
+	 * Retrieves all Files that exist (or existed) in a <code>Project</code>
 	 *
 	 * @param project
 	 * @return A List of all files.
@@ -251,8 +252,19 @@ public interface IProjectsManagingService {
 	 * @throws FileNotFoundException	 If the root path of the specified Project is not found.
 	 * @throws IllegalArgumentException If project is null.
 	 */
-	AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
+	AvailableLaterObject<Collection<FileObject>> getAllProjectFiles(Project project)
 			  throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
+	
+	/**
+	 * Retrieves all Notes that exist (or existed) in a <code>Project</code>
+	 *
+	 * @param project
+	 * @return A List of all files.
+	 * @throws NoSuchProjectException	If the specified Project does not exist.
+	 * @throws IllegalArgumentException If project is null.
+	 */
+	AvailableLaterObject<Collection<NoteObject>> getAllProjectNotes(Project project)
+			throws NoSuchProjectException, IllegalArgumentException;
 
 	/**
 	 * This method accepts an Invitation, adds the Project belonging to the invitation to
@@ -453,5 +465,6 @@ public interface IProjectsManagingService {
 	 * @param nick
 	 */
 	void setUserNickname(Project project, User user, String nick);
+
 
 }

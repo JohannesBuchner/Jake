@@ -7,11 +7,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * provides a method of providing the result later. The
- * {@link AvailableLaterObject} is returned immediately.
- * <p/>
- * The supplied listener tells you when the result is done or had an error.
- * <p/>
- * In {@link #run()}, implement the method that takes time. call
+ * {@link AvailableLaterObject} is returned immediately. <p/> The supplied
+ * listener tells you when the result is done or had an error. <p/> In
+ * {@link #run()}, implement the method that takes time. call
  * {@link #set(Object)}() when your done or the methods of
  * {@link AvailabilityListener} to notify the progress.
  * 

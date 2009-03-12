@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  *
  * @author studpete
  */
-public class GetAllProjectNotesTask extends AbstractTask<List<NoteObject>> {
+public class GetAllProjectNotesTask extends AbstractTask<Collection<NoteObject>> {
 	private static final Logger log = Logger.getLogger(GetAllProjectNotesTask.class);
 	private Project project;
 
@@ -24,7 +25,7 @@ public class GetAllProjectNotesTask extends AbstractTask<List<NoteObject>> {
 	}
 
 	@Override
-	protected AvailableLaterObject<List<NoteObject>> calculateFunction() {
+	protected AvailableLaterObject<Collection<NoteObject>> calculateFunction() {
 		log.debug("calling GetAllProjectNotesTask:calculateFunction");
 		return JakeMainApp.getCore().getNotes(project);
 	}

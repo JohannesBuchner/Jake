@@ -1,27 +1,37 @@
 package com.jakeapp.core.services;
 
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
+
+import java.util.Date;
+import java.util.UUID;
+
+import junit.framework.Assert;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.dao.ILogEntryDao;
+
 import com.jakeapp.core.dao.IInvitationDao;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
+import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.logentries.ProjectJoinedLogEntry;
 import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import junit.framework.Assert;
-
-import java.util.UUID;
-import java.util.Date;
 
 
 public class ProjectInvitationListenerTest {
@@ -171,6 +181,7 @@ public class ProjectInvitationListenerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testIncomingRejectMessage() throws Exception {
 
 

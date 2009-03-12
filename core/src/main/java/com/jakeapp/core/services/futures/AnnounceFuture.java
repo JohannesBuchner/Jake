@@ -1,15 +1,13 @@
 package com.jakeapp.core.services.futures;
 
-import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import java.io.FileNotFoundException;
+import java.util.List;
+
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
-
-import java.io.FileNotFoundException;
-import java.util.List;
 
 public class AnnounceFuture extends AvailableLaterObject<Void> {
 	private ISyncService iss;
@@ -30,11 +28,11 @@ public class AnnounceFuture extends AvailableLaterObject<Void> {
 		double progress,step;
 		String status;
 		progress = 0d;
-		step = 1.0d / jos.size();
+		step = 1.0d / this.jos.size();
 		
-		for (JakeObject jo : jos) {
+		for (JakeObject jo : this.jos) {
 			try {
-				iss.announce(jo, action, commitMsg);
+				this.iss.announce(jo, this.action, this.commitMsg);
 			} catch (FileNotFoundException e) {
 				//skip this file
 			} catch (NotAReadableFileException e) {

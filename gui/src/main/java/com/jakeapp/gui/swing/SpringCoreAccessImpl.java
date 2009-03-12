@@ -22,7 +22,6 @@ import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.gui.swing.callbacks.FilesChanged;
 import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -72,9 +71,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private Map<FilesChanged, IFileModificationListener> fileListeners =
 					new HashMap<FilesChanged, IFileModificationListener>();
 
-
-	public SpringCoreAccessImpl() {
-	}
 
 	private IFrontendService getFrontendService() {
 		return this.frontendService;
@@ -144,7 +140,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	public AvailableLaterObject<Void> createAccount(Account credentials)
 					throws FrontendNotLoggedInException, InvalidCredentialsException,
 					ProtocolNotSupportedException, NetworkException {
-		return this.frontendService.createAccount(this.sessionId, credentials).start();
+		return this.frontendService.createAccount(this.sessionId, credentials);
 	}
 
 	@Override
@@ -193,8 +189,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		if (result == null)
-			result = new AvailableErrorObject<Integer>(ex);
-		return result.start();
+			result = new AvailableErrorObject<Integer>(ex).start();
+		return result;
 	}
 
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project) {
@@ -213,7 +209,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		if (result == null)
-			result = new AvailableErrorObject<Long>(ex);
+			result = new AvailableErrorObject<Long>(ex).start();
 		return result.start();
 	}
 
@@ -393,9 +389,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public AvailableLaterObject<List<FileObject>> getFiles(Project project) {
+	public AvailableLaterObject<Collection<FileObject>> getFiles(Project project) {
 		log.debug("Calling getFiles");
-		AvailableLaterObject<List<FileObject>> result = null;
+		AvailableLaterObject<Collection<FileObject>> result = null;
 		Exception ex = null;
 
 		try {
@@ -415,7 +411,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 		if (result == null) {
 			log.debug("getFiles failed, returning error", ex);
-			result = new AvailableErrorObject<List<FileObject>>(ex);
+			result = new AvailableErrorObject<Collection<FileObject>>(ex);
 		}
 
 		log.debug("getFiles - start AvailableLaterObject");
@@ -472,30 +468,36 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public AvailableLaterObject<List<NoteObject>> getNotes(final Project project) {
+	public AvailableLaterObject<Collection<NoteObject>> getNotes(final Project project) {
+		log.debug("starting");
+		AvailableLaterObject<Collection<NoteObject>> result = null;
+		Exception ex = null;
 
-		// FIXME: exception handling?
-		return new AvailableLaterObject<List<NoteObject>>() {
-			@Override public List<NoteObject> calculate() throws Exception {
-				try {
-					return frontendService.getSyncService(sessionId).getNotes(project);
-				} catch (Exception e) {
-					throw new NoteOperationFailedException(e);
-				}
-			}
-		}.start();
+		try {
+			result = this.frontendService.getProjectsManagingService(this.sessionId)
+							.getAllProjectNotes(project);
+		} catch (IllegalArgumentException e) {
+			ex = e;
+		} catch (FrontendNotLoggedInException e) {
+			ex = e;
+		} catch (IllegalStateException e) {
+			ex = e;
+		} catch (NoSuchProjectException e) {
+			ex = e;
+		}
+
+		if (result == null) {
+			log.debug("failed, returning error", ex);
+			result = new AvailableErrorObject<Collection<NoteObject>>(ex);
+		}
+
+		log.debug("start AvailableLaterObject");
+		return result;
 	}
 
 	@Override
 	public AvailableLaterObject<Integer> getNoteCount(final Project project) {
-		AvailableLaterWrapperObject<Integer, List<NoteObject>> sizeFuture;
-		AvailableLaterObject<List<NoteObject>> notesFuture;
-
-		notesFuture = this.getNotes(project);
-		sizeFuture = new ProjectNoteCountFuture();
-		sizeFuture.setSource(notesFuture);
-
-		return sizeFuture;
+		return new ProjectNoteCountFuture(this.getNotes(project));
 	}
 
 	@Override public void setProjectSettings(Project p, Boolean autoPull,

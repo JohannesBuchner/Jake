@@ -152,15 +152,6 @@ public interface ISyncService {
 	void getTags(JakeObject jo);
 
 	/**
-	 * gets all Notes and their state
-	 *
-	 * @param p
-	 * @return
-	 * @throws IOException
-	 */
-	public List<NoteObject> getNotes(Project p) throws IOException;
-
-	/**
 	 * gets the SyncStatus for a specific JakeObject
 	 *
 	 * @param fo

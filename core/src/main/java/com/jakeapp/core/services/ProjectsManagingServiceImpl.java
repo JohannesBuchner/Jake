@@ -1,13 +1,54 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.dao.IAccountDao;
+import com.jakeapp.core.dao.IFileObjectDao;
+import com.jakeapp.core.dao.IInvitationDao;
+import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.INoteObjectDao;
+import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.*;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.InvitationState;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry;
+import com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry;
+import com.jakeapp.core.domain.logentries.ProjectMemberInvitedLogEntry;
+import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.logentries.StopTrustingProjectMemberLogEntry;
+import com.jakeapp.core.domain.logentries.TagAddLogEntry;
+import com.jakeapp.core.domain.logentries.TagRemoveLogEntry;
 import com.jakeapp.core.services.futures.DeleteFilesFuture;
 import com.jakeapp.core.services.futures.GetProjectsFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
@@ -31,13 +72,6 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
 
 public class ProjectsManagingServiceImpl extends JakeService implements
 		IProjectsManagingService {
@@ -135,7 +169,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	
 	@Override
 	public AvailableLaterObject<List<Project>> getProjects(MsgService user) {
-		return new GetProjectsFuture(this,user);
+		return new GetProjectsFuture(this,user).start();
 	}
 	
 	@Transactional
@@ -635,42 +669,33 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			IllegalArgumentException {
 
 		log.debug("Calling getProjectFileCount");
-
-		AvailableLaterWrapperObject<Integer, List<FileObject>> sizeFuture;
-		AvailableLaterObject<List<FileObject>> filesFuture;
-
-		filesFuture = this.getAllProjectFiles(project);
-		sizeFuture = new ProjectFileCountFuture();
-		sizeFuture.setSource(filesFuture);
-
-		return sizeFuture;
+		return new ProjectFileCountFuture(this.getAllProjectFiles(project)).start();
 	}
 
 	@Override
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			throws NoSuchProjectException, FileNotFoundException,
 			IllegalArgumentException {
-
 		log.debug("Calling getProjectSizeTotal");
-
-
-		AvailableLaterWrapperObject<Long, List<FileObject>> sizeFuture;
-		AvailableLaterObject<List<FileObject>> filesFuture;
-
-		filesFuture = this.getAllProjectFiles(project);
-		sizeFuture = new ProjectSizeTotalFuture(getFileServices(project));
-		sizeFuture.setSource(filesFuture);
-
-		return sizeFuture;
+		return new ProjectSizeTotalFuture(getFileServices(project), this
+				.getAllProjectFiles(project));
 	}
 
 	@Override
-	public AvailableLaterObject<List<FileObject>> getAllProjectFiles(Project project)
-			throws NoSuchProjectException, FileNotFoundException,
-			IllegalArgumentException {
+	public AvailableLaterObject<Collection<FileObject>> getAllProjectFiles(Project project)
+			throws NoSuchProjectException, IllegalArgumentException {
 		log.debug("Calling getAllProjectFiles for " + project);
 
-		return getApplicationContextFactory().getAllProjectFilesFuture(project,getFileServices(project));
+		return getApplicationContextFactory().getAllProjectFilesFuture(project,
+				getFileServices(project)).start();
+	}
+
+	@Override
+	public AvailableLaterObject<Collection<NoteObject>> getAllProjectNotes(Project project)
+			throws NoSuchProjectException, IllegalArgumentException {
+		log.debug("Calling getAllProjectNotes for " + project);
+
+		return getApplicationContextFactory().getAllProjectNotesFuture(project).start();
 	}
 
 
@@ -1073,16 +1098,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) {
 		List<FileObject> fos = new ArrayList<FileObject>();
 		fos.add(fo);
-		AvailableLaterWrapperObject<Void,Integer> result = 
-			new AvailableLaterWrapperObject<Void,Integer>() {
-				@Override
-				public Void calculate() throws Exception {
-					return null; //the entire calculation is done by the source
-				}
-			};
-		result.setSource(this.deleteFiles(fos, trash));
 		
-		return result;
+		// this hides the inner return value
+		AvailableLaterWrapperObject<Void, Integer> result = new AvailableLaterWrapperObject<Void, Integer>(
+				this.deleteFiles(fos, trash)) {
+
+			@Override
+			public Void calculate() throws Exception {
+				// the entire calculation is done by the source
+				return null;
+			}
+		};
+		
+		return result.start();
 	}
 	
 	@Override
@@ -1091,7 +1119,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		Project project;
 		
 		if (fos.size()<0)
-			return new AvailableNowObject<Integer>(0);
+			return new AvailableNowObject<Integer>(0).start();
 		else {
 			project = fos.get(0).getProject(); 
 				
@@ -1099,7 +1127,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 				this.getFileObjectDao(project),
 				this.getProjectsFileServices().getProjectFSService(project),
 				fos,trash
-			);
+			).start();
 		}
 	}
    

@@ -16,10 +16,14 @@ import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.INoteObjectDao;
 import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
+import com.jakeapp.core.services.futures.AllProjectNotesFuture;
+import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 
 /**
@@ -136,15 +140,27 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	}
 
 	/**
-	 * Returns a new instance of an AllProjectsFilesFuture belonging to the
+	 * Returns a new unstarted instance of an AllProjectsFilesFuture belonging to the
 	 * corresponding project.
 	 * 
 	 * @param project
 	 *            The Project in question
 	 * @return an AllProjectFilesFuture
 	 */
-	public AllProjectFilesFuture getAllProjectFilesFuture(Project project,IFSService fss) {
-		return new AllProjectFilesFuture(project,this.getFileObjectDao(project),fss);
+	public AvailableLaterObject<Collection<FileObject>> getAllProjectFilesFuture(Project project,IFSService fss) {
+		return new AllProjectFilesFuture(this, project, fss);
+	}
+	
+	/**
+	 * Returns a new unstarted instance of an AllProjectsFilesFuture belonging to the
+	 * corresponding project.
+	 * 
+	 * @param project
+	 *            The Project in question
+	 * @return an AllProjectFilesFuture
+	 */
+	public AvailableLaterObject<Collection<NoteObject>> getAllProjectNotesFuture(Project project) {
+		return new AllProjectNotesFuture(this, project);
 	}
 
 	/**

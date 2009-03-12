@@ -232,7 +232,7 @@ public class FrontendServiceImpl implements IFrontendService {
 		checkSession(sessionId);
 		MsgService svc = msgServiceFactory.getOrCreate(credentials);
 
-		return new CreateAccountFuture(svc);
+		return new CreateAccountFuture(svc).start();
 	}
 
 	@SuppressWarnings("unchecked")

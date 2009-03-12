@@ -171,7 +171,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 		
 		// FIXME: cache better!?
 		log.debug("updating notes from core and merge with attributes...");
-		List<NoteObject> rawNotes = ObjectCache.get().getNotes(p);
+		List<NoteObject> rawNotes = new ArrayList<NoteObject>(ObjectCache.get().getNotes(p));
 		this.attributedNotes.clear();
 		if (rawNotes != null) {
 			for (NoteObject note : rawNotes) {

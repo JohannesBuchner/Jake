@@ -285,16 +285,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			return (Attributed<T>) getJakeObjectSyncStatus((FileObject) jo);
 	}
 
-	/**
-	 * This is a expensive operation as it recalculates all hashes <br>
-	 * Do it once on start, and then use a listener
-	 */
-	@Override
-	@Transactional
-	public List<NoteObject> getNotes(Project p) {
-		return this.db.getNoteObjectDao(p).getAll();
-	}
-
 	@Override
 	public File getFile(FileObject fo) throws IOException {
 		IFSService fss = getFSS(fo.getProject());

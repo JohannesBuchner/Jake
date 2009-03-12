@@ -10,13 +10,17 @@ package com.jakeapp.core.util.availablelater;
  * 
  * @author christopher
  * 
- * @param <T>
- * @param <S>
+ * @param <T> result type
+ * @param <S> result type of source
  */
 public abstract class AvailableLaterWrapperObject<T, S> extends AvailableLaterObject<T> implements
 		AvailabilityListener<S> {
 
-	private AvailableLaterObject<S> source = null;
+	private AvailableLaterObject<S> source;
+	
+	public AvailableLaterWrapperObject(AvailableLaterObject<S> source) {
+		this.setSource(source);
+	}
 
 	/**
 	 * Sets the AvailableLaterObject that calculates the intermediate results
@@ -26,7 +30,7 @@ public abstract class AvailableLaterWrapperObject<T, S> extends AvailableLaterOb
 	 *            the source to set. Must been created with this Object as
 	 *            AvailabilityListener.
 	 */
-	public void setSource(AvailableLaterObject<S> source) {
+	protected void setSource(AvailableLaterObject<S> source) {
 		this.source = source;
 		source.setListener(this);
 	}

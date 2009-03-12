@@ -47,14 +47,13 @@ public class AvailableLaterObjectTest {
 
 		public static AvailableLaterObject<String> provideLaterWrap() {
 			AvailableLaterObject<String> parent = new AvailableNowObject<String>("bar");
-			AvailableLaterWrapperObject<String, String> avl = new AvailableLaterWrapperObject<String, String>() {
+			AvailableLaterObject<String> avl = new AvailableLaterWrapperObject<String, String>(parent) {
 
 				@Override
 				public String calculate() throws Exception {
 					return "foo" + this.getSource().get();
 				}
 			};
-			avl.setSource(parent);
 			avl.start();
 			return avl;
 		}
@@ -70,16 +69,15 @@ public class AvailableLaterObjectTest {
 				
 			};
 
-			AvailableLaterWrapperObject<String, String> avl1;
+			AvailableLaterObject<String> avl1;
 			for (final String word : words) {
-				avl1 = new AvailableLaterWrapperObject<String, String>() {
+				avl1 = new AvailableLaterWrapperObject<String, String>(lastavl) {
 
 					@Override
 					public String calculate() throws Exception {
 						return getSource().get() + " " + word;
 					}
 				};
-				avl1.setSource(lastavl);
 				lastavl = avl1;
 			}
 			return lastavl.start();

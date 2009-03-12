@@ -23,6 +23,7 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -279,7 +280,7 @@ public interface ICoreAccess {
 	 * @param project The project in question
 	 * @return A collection of all FileObjects in the project
 	 */
-	public AvailableLaterObject<List<FileObject>> getFiles(Project project);
+	public AvailableLaterObject<Collection<FileObject>> getFiles(Project project);
 
 	/**
 	 * Gets the sync status of a file
@@ -458,7 +459,7 @@ public interface ICoreAccess {
 	 * @return list of attibuted note objects
 	 * @throws NoteOperationFailedException raised if fetching the list of notes failed.
 	 */
-	public AvailableLaterObject<List<NoteObject>> getNotes(Project project);
+	public AvailableLaterObject<Collection<NoteObject>> getNotes(Project project);
 
 	/**
 	 * Deletes the given note, no matter if it is a local or shared note.
