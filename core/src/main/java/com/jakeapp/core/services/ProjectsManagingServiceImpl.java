@@ -264,7 +264,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		try {
 			this.openProject(project);
 		} catch (InvalidProjectException e) {
-			throw new IllegalStateException("we created a illegal project", e);
+			throw new IllegalStateException("we created an illegal project", e);
 		}
 
 		try {

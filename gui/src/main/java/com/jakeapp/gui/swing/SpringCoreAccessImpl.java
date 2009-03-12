@@ -160,7 +160,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					ProtocolNotSupportedException, NetworkException,
 					NoSuchMsgServiceException {
 
-		log.warn("removeAccount: " + msg + " NOT IMPLEMENTED YET");
 		this.frontendService.removeAccount(this.sessionId, msg);
 	}
 

@@ -1,9 +1,21 @@
 package com.jakeapp.core.services;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IAccountDao;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -13,16 +25,9 @@ import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Implementation of the FrontendServiceInterface
@@ -242,17 +247,44 @@ public class FrontendServiceImpl implements IFrontendService {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@Transactional
 	public void removeAccount(String sessionId, MsgService msg)
 					throws FrontendNotLoggedInException, NoSuchMsgServiceException {
+		List<Project> projectsOfUser;
+		Account toDelete;
 		checkSession(sessionId);
 		
 		if (msg==null) throw new NoSuchMsgServiceException();
 		if (msg.getServiceCredentials()==null) throw new NoSuchMsgServiceException();
 		
 		try {
-			this.getServiceCredentialsDao().delete(msg.getServiceCredentials());
+			toDelete = msg.getServiceCredentials();
+			//delete all projects that belong to that Account
+			//TODO implement this on a lower level (e.g. ON DELETE CASCADE in DB)
+			projectsOfUser = this.getProjectsManagingService().getProjectList(msg);
+			for (Project p : projectsOfUser)
+				this.getProjectsManagingService().deleteProject(p, false);
+			
+			this.getServiceCredentialsDao().delete(toDelete);
+			
+			//remove the MsgService from the cache.
+			this.msgServiceFactory.remove(toDelete);
 		} catch (NoSuchServiceCredentialsException e) {
 			throw new NoSuchMsgServiceException(e);
+		} catch (IllegalArgumentException e) {
+			throw new NoSuchMsgServiceException(e);
+		} catch (SecurityException e) {
+			//empty handling
+			log.warn(e);
+		} catch (IOException e) {
+			//empty handling
+			log.warn(e);
+		} catch (NotADirectoryException e) {
+			//empty handling
+			log.warn(e);
+		} catch (NoSuchProjectException e) {
+			//empty handling
+			log.warn(e);
 		}
 	}
 

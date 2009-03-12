@@ -247,12 +247,14 @@ public class UserPanel extends JXPanel
 
 	private void updateChooseUserPanel() {
 		userListPanel.removeAll();
+		log.debug("updateChooseUserPanel removed all!");
 
 		if (JakeContext.isCoreInitialized()) {
 			try {
 				List<MsgService<User>> msgs = JakeMainApp.getCore().getMsgServices();
 
 				if (msgs != null) {
+					log.debug("updateChooseUserPanel will display n MsgServices, n=" +  msgs.size());
 					for (MsgService<User> msg : msgs) {
 						UserControlPanel userPanel = new UserControlPanel(msg);
 						JXLayer<UserControlPanel> userLayer = new JXLayer<UserControlPanel>(userPanel);

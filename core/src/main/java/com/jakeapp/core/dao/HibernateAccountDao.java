@@ -12,7 +12,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.apache.log4j.Logger;
 
 /**
- * Hibernate implementation of the ServiceCredentialsDao.
+ * Hibernate implementation of the IAccountDao.
  */
 public class HibernateAccountDao extends HibernateDaoSupport implements
 		IAccountDao {

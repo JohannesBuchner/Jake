@@ -260,6 +260,20 @@ public class MsgServiceManager {
 		}
 		return null;
 	}
+	
+	/**
+	 * Removes a MsgService from the cache.
+	 * @param owner The Account that owns the MsgService to be removed
+	 * @return true, if a MsgService was removed from the cache, false if nothing was removed.
+	 */
+	public boolean remove(Account owner) {
+		boolean result;
+		
+		log.debug("removing for user "+ owner);
+		result = this.msgServices.remove(owner.getUuid())!=null;
+		log.debug("removed="+result);
+		return result;
+	}
 
 	/**
 	 * releases all stored MessageServices
