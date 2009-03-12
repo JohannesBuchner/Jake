@@ -23,7 +23,7 @@ public class AllProjectNotesFuture extends
 	private AvailableLaterObject<Collection<NoteObject>> localNotesFuture;
 
 	public AllProjectNotesFuture(ProjectApplicationContextFactory context, Project p) {
-		super(new AllJakeObjectsFuture(context.getLogEntryDao(p)));
+		super(new AllJakeObjectsFuture(context, p));
 		this.localNotesFuture = new AllLocalProjectNotesFuture(context, p);
 	}
 

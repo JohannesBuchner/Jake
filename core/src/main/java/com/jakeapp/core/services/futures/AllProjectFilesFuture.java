@@ -32,6 +32,10 @@ public class AllProjectFilesFuture extends AvailableLaterObject<Collection<FileO
 
 	@Override
 	public Collection<FileObject> calculate() throws Exception {
+		// this does parallelization!
+		this.jakeObjectsFuture.start();
+		this.localFilesFuture.start();
+		
 		Collection<JakeObject> all = AvailableLaterWaiter.await(this.jakeObjectsFuture);
 		log.debug("all objects in log: " + all.size());
 		Collection<FileObject> local = AvailableLaterWaiter.await(this.localFilesFuture);

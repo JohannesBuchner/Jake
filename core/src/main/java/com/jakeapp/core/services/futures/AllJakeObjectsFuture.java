@@ -7,11 +7,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 
 /**
@@ -23,27 +23,27 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 
 	private static Logger log = Logger.getLogger(AllJakeObjectsFuture.class);
 
-	private UnprocessedBlindLogEntryDaoProxy logEntryDao;
+	private ILogEntryDao logEntryDao;
 
-	private void setLogEntryDao(UnprocessedBlindLogEntryDaoProxy logEntryDao) {
+	private void setLogEntryDao(ILogEntryDao logEntryDao) {
 		this.logEntryDao = logEntryDao;
 	}
 	
-	public AllJakeObjectsFuture(UnprocessedBlindLogEntryDaoProxy logEntryDao) {
+	public AllJakeObjectsFuture(ILogEntryDao logEntryDao) {
 		super();
 		this.setLogEntryDao(logEntryDao);
 	}
 
 
 	public AllJakeObjectsFuture(
-					ProjectApplicationContextFactory applicationContextFactory,
+					ProjectApplicationContextFactory context,
 					Project project) {
 		super();
 
 		log.debug("Creating a " + getClass().getSimpleName() + " with "
-				+ applicationContextFactory + "on project " + project);
+				+ context + "on project " + project);
 
-		this.setLogEntryDao(applicationContextFactory.getLogEntryDao(project));
+		this.setLogEntryDao(context.getUnprocessedAwareLogEntryDao(project));
 	}
 
 	
@@ -52,7 +52,7 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 	public Collection<JakeObject> calculate() {
 		Set<JakeObject> objects = new HashSet<JakeObject>(); 
 		
-		for(LogEntry<JakeObject> le : this.logEntryDao.getAllVersions() ){
+		for(LogEntry<JakeObject> le : this.logEntryDao.getAllVersions(true) ){
 			objects.add(le.getBelongsTo());
 		}
 		return objects;
