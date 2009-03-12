@@ -244,6 +244,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 		} else if (belongsTo instanceof FileObject) {
 			FileObject file = (FileObject) belongsTo;
 			// fixme: only get name?
+			// ok in my opinion. -- johannes
 			return file.getRelPath();
 		}
 		// fallback
