@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Invitation;
@@ -22,17 +21,14 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
-import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.SpringThreadBroker;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
@@ -125,23 +121,6 @@ public class JakeCommander extends Commander {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private abstract class LazyAvailabilityCommand<T> extends LazyCommand implements
-			AvailabilityListener<T> {
-
-		public LazyAvailabilityCommand(String command, String syntax, String help) {
-			super(command, syntax, help);
-		}
-
-		public LazyAvailabilityCommand(String command, String syntax) {
-			super(command, syntax);
-		}
-
-		public LazyAvailabilityCommand(String command) {
-			super(command);
-		}
-
 	}
 
 	private abstract class LazyOtherUserCommand extends LazyCommand {
@@ -249,7 +228,7 @@ public class JakeCommander extends Commander {
 			}
 			
 			try {
-				for (NoteObject f : sync.getNotes(project)) {
+				for (NoteObject f : AvailableLaterWaiter.await(pms.getAllProjectNotes(project))) {
 					if (uuid.equals(f.getUuid())) {
 						handleArguments(f);
 						return true;
@@ -294,7 +273,7 @@ public class JakeCommander extends Commander {
 
 	}
 
-	class CreateAccountCommand extends LazyAvailabilityCommand<Void> {
+	class CreateAccountCommand extends LazyCommand {
 
 		public CreateAccountCommand() {
 			super("createAccount", "createAccount <xmppid> <password>",
@@ -310,29 +289,13 @@ public class JakeCommander extends Commander {
 			Account cred = new Account(id, password,
 					ProtocolType.XMPP);
 			try {
-				frontend.createAccount(sessionId, cred).setListener(this);
+				AvailableLaterWaiter.await(frontend.createAccount(sessionId, cred));
 				System.out.println("got the MsgService");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return true;
 		}
-
-		@Override
-		public void error(Exception t) {
-			System.out.println(t.getMessage());
-		}
-
-		@Override
-		public void finished(Void o) {
-			System.out.println("done.");
-		}
-
-		@Override
-		public void statusUpdate(double progress, String status) {
-			System.out.println("status: " + status + " - " + progress);
-		}
-
 	}
 
 	class CoreLoginCommand extends LazyCommand {
@@ -742,50 +705,25 @@ public class JakeCommander extends Commander {
 			super("listObjects", "needs Project");
 		}
 		
-		protected class GetFileListener implements AvailabilityListener<List<FileObject>> {
-			public GetFileListener() {
-				super();
-			}
-			
-			@Override
-			public void error(Exception t) {
-				t.printStackTrace();
-			}
-
-			@Override
-			public void finished(List<FileObject> o) {
-				for (FileObject f : o)
-					System.out.println("\t" + f);
-			}
-
-			@Override
-			public void statusUpdate(double progress, String status) {
-				//empty implementation
-			}
-		}
-
 		@Override
 		public void handleArguments() {
-			AvailableLaterObject<List<FileObject>> avail;
+			AvailableLaterObject<Collection<FileObject>> avail;
 			
 			if (project == null) {
 				System.out.println("no project");
 				return;
 			}
 			try {
-				for (NoteObject f : sync.getNotes(project)) {
+				System.out.println("listing objects ...");
+				for (NoteObject f : AvailableLaterWaiter.await(pms.getAllProjectNotes(project))) {
 					System.out.println("\t" + f);
 				}
-				avail = pms.getAllProjectFiles(project);
-				avail.setListener(new GetFileListener());
-				avail.start();
-			} catch (FrontendNotLoggedInException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (NoSuchProjectException e) {
+				for (FileObject f : AvailableLaterWaiter.await(pms.getAllProjectFiles(project))){
+					System.out.println("\t" + f);
+				}
+				System.out.println("listing objects done");
+			} catch (Exception e) {
+				System.out.println("listing objects failed");
 				e.printStackTrace();
 			}
 		}
