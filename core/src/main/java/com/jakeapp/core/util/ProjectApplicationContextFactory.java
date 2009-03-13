@@ -111,8 +111,7 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	}
 
 	public ILogEntryDao getUnprocessedAwareLogEntryDao(JakeObject jo) {
-		return (ILogEntryDao) getApplicationContextThread(jo.getProject()).getBean(
-				"logEntryDao");
+		return getUnprocessedAwareLogEntryDao(jo.getProject());
 	}
 
 	public UnprocessedBlindLogEntryDaoProxy getLogEntryDao(Project p) {
@@ -120,7 +119,7 @@ public class ProjectApplicationContextFactory extends ApplicationContextFactory 
 	}
 
 	public UnprocessedBlindLogEntryDaoProxy getLogEntryDao(JakeObject jo) {
-		return new UnprocessedBlindLogEntryDaoProxy(getUnprocessedAwareLogEntryDao(jo));
+		return getLogEntryDao(jo.getProject());
 	}
 
 	public INoteObjectDao getNoteObjectDao(Project p) {

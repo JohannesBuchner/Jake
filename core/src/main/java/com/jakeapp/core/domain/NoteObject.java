@@ -2,6 +2,8 @@ package com.jakeapp.core.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
+import java.util.Comparator;
 import java.util.UUID;
 
 /**

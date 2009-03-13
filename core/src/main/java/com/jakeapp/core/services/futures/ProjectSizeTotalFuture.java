@@ -48,7 +48,7 @@ public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, Co
 				try {
 					result += this.fss.getFileSize(file.getRelPath());
 				} catch (FileNotFoundException e) {
-					log.warn("unexpected exception", e);
+					// no size because only-remote or deleted.
 				} catch (NotAFileException e) {
 					log.warn("unexpected exception", e);
 				} catch (InvalidFilenameException e) {

@@ -39,6 +39,7 @@ public class TrustAllRequestHandlePolicy implements RequestHandlePolicy {
 		List<LogEntry> providers = new LinkedList<LogEntry>();
 		try {
 			providers.add(db.getLogEntryDao(jo).getLastOfJakeObject(jo)/*.getMember()*/);
+			log.debug("first-hand provider: " + providers.get(0));
 		} catch (NoSuchLogEntryException e) {
 		}
 		return providers;

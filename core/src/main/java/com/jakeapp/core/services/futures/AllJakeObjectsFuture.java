@@ -54,6 +54,7 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 		
 		for(LogEntry<JakeObject> le : this.logEntryDao.getAllVersions(true) ){
 			objects.add(le.getBelongsTo());
+			log.debug("we have " + le.getBelongsTo());
 		}
 		return objects;
 	}

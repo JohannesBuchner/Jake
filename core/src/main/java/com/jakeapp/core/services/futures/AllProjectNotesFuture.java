@@ -34,14 +34,17 @@ public class AllProjectNotesFuture extends
 		Collection<NoteObject> local = AvailableLaterWaiter.await(this.localNotesFuture);
 		log.debug("local-only notes: " + local.size());
 
-		Set<NoteObject> sortedNotes = new HashSet<NoteObject>();
-		sortedNotes.addAll(local);
+		Set<NoteObject> result = new HashSet<NoteObject>();
+		result.addAll(local);
 
 		for (JakeObject jo : all) {
 			if (jo instanceof NoteObject)
-				sortedNotes.add((NoteObject) jo);
+				result.add((NoteObject) jo);
 		}
-		log.debug("in total: " + sortedNotes.size());
-		return sortedNotes;
+		for(NoteObject no : result) {
+			log.debug("got " + no);
+		}
+		log.debug("in total: " + result.size());
+		return result;
 	}
 }

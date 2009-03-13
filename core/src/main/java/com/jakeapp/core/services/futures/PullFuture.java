@@ -2,11 +2,14 @@ package com.jakeapp.core.services.futures;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 
 public class PullFuture extends AvailableLaterObject<Void> {
+	private static final Logger log = Logger.getLogger(PullFuture.class);
 	private ISyncService iss;
 	private List<JakeObject> jakeObjects;
 
@@ -21,6 +24,7 @@ public class PullFuture extends AvailableLaterObject<Void> {
 			try {
 				this.iss.pullObject(jakeObject);
 			} catch (Exception ignored) {
+				log.warn("pulling failed, skipping " + jakeObject, ignored);
 				// ignore the exception, and skip this object
 				// oh how I hate it...
 			}

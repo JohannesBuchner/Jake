@@ -123,7 +123,7 @@ public class Project implements ILogable {
 	 * @param messageService	the MsgService connected with the project.
 	 */
 	public void setMessageService(MsgService messageService) {
-		this.messageService = messageService;	
+		this.messageService = messageService;
 	}
 
 	/**

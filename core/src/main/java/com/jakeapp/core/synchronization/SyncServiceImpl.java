@@ -222,7 +222,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException,
 			NotLoggedInException, IllegalArgumentException {
 
-		LogEntry<JakeObject> le = db.getLogEntryDao(jo).getLastVersion(jo);
+		LogEntry<JakeObject> le = db.getUnprocessedAwareLogEntryDao(jo).getLastVersion(
+				jo, true);
 		log.debug("got logentry: " + le);
 		if (le == null) { // delete
 			log.debug("lets delete it");
@@ -407,7 +408,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 					.getRelPath());
 		}
 	}
-
+	
 	private LogAction getLogActionNullSafe(LogEntry<? extends ILogable> lock) {
 		if (lock == null)
 			return null;
@@ -664,43 +665,48 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			throw new NoSuchLogEntryException();
 
 		for (LogEntry potentialProvider : potentialProviders) {
-			if (potentialProvider != null && potentialProvider.getMember() != null) {
-				remoteBackendPeer = this.icsManager.getBackendUserId(p, potentialProvider
-						.getMember());
+			log.debug("looking at possible provider " + potentialProvider.getMember());
+			if (potentialProvider == null || potentialProvider.getMember() == null) {
+				throw new IllegalStateException("getPotentialJakeObjectProviders " +
+						"returned invalid Logentries");
+			}
+			remoteBackendPeer = this.icsManager.getBackendUserId(p, potentialProvider
+					.getMember());
+			log.debug("remoteBackendPeer: " + remoteBackendPeer);
 
-				ts = this.icsManager.getTransferService(p);
+			log.debug("getting transferService");
+			ts = this.icsManager.getTransferService(p);
 
-				String contentname = this.messageMarshaller.requestFile(fo.getProject(),
-						potentialProvider);
-				log.debug("content addressed with: " + contentname);
-				fr = new FileRequest(contentname, false, remoteBackendPeer);
+			String contentname = this.messageMarshaller.requestFile(fo.getProject(),
+					potentialProvider);
+			log.debug("content addressed with: " + contentname);
+			fr = new FileRequest(contentname, false, remoteBackendPeer);
 
-				try {
-					// this also reports to the corresponding ChangeListener and
-					// watches the FileTransfer and returns after the
-					// FileTransfer has
-					// either returned successfully or not successfully
-					log.debug("requesting " + fr);
-					result = AvailableLaterWaiter.await(new FileRequestFuture(fo, ts, fr,
-							cl, getProjectsFileServices()));
-					// Save potentialProvider for later usage.
-					realProvider = potentialProvider;
-					break;
-				} catch (Exception ignored) {
-					log.warn("pull from " + potentialProvider + " failed", ignored);
-					log.info("trying next provider");
-					//continue;
-				}
-			} else {
-				log.warn("got invalid potentialProvider: " + potentialProvider);
+			try {
+				// this also reports to the corresponding ChangeListener and
+				// watches the FileTransfer and returns after the
+				// FileTransfer has
+				// either returned successfully or not successfully
+				log.debug("requesting " + fr);
+				result = AvailableLaterWaiter.await(new FileRequestFuture(fo, ts, fr, cl,
+						getProjectsFileServices()));
+				// Save potentialProvider for later usage.
+				realProvider = potentialProvider;
+				break;
+			} catch (Exception ignored) {
+				log.warn("pull from " + potentialProvider + " failed", ignored);
+				log.info("trying next provider");
+				continue;
 			}
 		}
-		
-		if(realProvider == null) {
+
+		if (realProvider == null) {
 			log.debug("no provider found. ");
 			return null;
 		}
-		
+
+		log.debug("pull was tried.");
+
 		// handle result
 		// second  part must be true after await returned
 		if (result != null && result.isDone() && realProvider != null)

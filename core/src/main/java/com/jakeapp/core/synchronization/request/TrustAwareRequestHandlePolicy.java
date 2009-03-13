@@ -19,6 +19,10 @@ import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
 
+/*
+ * Note: this is not used at the moment. We want to test everything with TrustAll first
+ * to avoid complications. later (very much later) we will activate this.
+ */
 public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 
 	public TrustAwareRequestHandlePolicy(ProjectApplicationContextFactory db,
@@ -54,8 +58,8 @@ public class TrustAwareRequestHandlePolicy implements RequestHandlePolicy {
 		List<User> providers = new LinkedList<User>();
 		List<LogEntry> entries = new LinkedList<LogEntry>();
 
-		List<LogEntry<JakeObject>> allVersions = db.getLogEntryDao(jo)
-				.getAllVersionsOfJakeObject(jo);
+		List<LogEntry<JakeObject>> allVersions = db.getUnprocessedAwareLogEntryDao(jo)
+				.getAllVersionsOfJakeObject(jo, true);
 
 		List<User> members = db.getTrustedProjectMembers(jo.getProject());
 
