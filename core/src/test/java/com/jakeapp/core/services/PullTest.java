@@ -148,6 +148,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		this.sync = sync;
 		when(msgService.getIcsManager()).thenReturn(icsmanager);
+		when(msgService.getVisibilityStatus()).thenReturn(VisibilityStatus.ONLINE);
 
 		ublogEntryDao = new UnprocessedBlindLogEntryDaoProxy(logEntryDao);
 		le.setUuid(new UUID(432, 3214));
@@ -174,12 +175,11 @@ public class PullTest extends TmpdirEnabledTestCase {
 		when(logEntryDao.getLastOfJakeObject(fo, false)).thenReturn(le);
 
 		when(icsmanager.getICService(project)).thenReturn(icservice);
-
 		tracer = new Tracer();
 
 	}
 
-	private void responderSetup(final File file) throws NotLoggedInException {
+	private void responderSetup(final File file) throws Exception {
 		mockTransferMethod = new ITransferMethod() {
 
 			private final Logger log = Logger.getLogger("Mocked ITransferMethod");
@@ -236,6 +236,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		};
 		SimpleFakeMessageExchanger sfme = new SimpleFakeMessageExchanger();
 		MockUserId backendUser = new MockUserId(member.getUserId());
+		icservice.getStatusService().login(backendUser, backendUser.getUserId(), null, 0);
 		IMsgService msg = sfme.addUser(backendUser);
 		fileTransferService = new FailoverCapableFileTransferService();
 		fileTransferService.addTransferMethod(transferMethodFactory, msg, backendUser);
