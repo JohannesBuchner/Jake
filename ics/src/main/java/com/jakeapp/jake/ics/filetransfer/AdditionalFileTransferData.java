@@ -6,6 +6,8 @@ import java.io.File;
  * contains additional data the filetransfer or user of the filetransfer might
  * want to store
  * 
+ * At the moment, only the local file. 
+ * 
  * @author johannes
  * 
  */
