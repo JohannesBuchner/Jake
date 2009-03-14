@@ -43,7 +43,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author johannes
  * 
  */
-// TODO: timeouts for negotiations
 public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveListener,
 				ILoginStateListener, IOutgoingRequestManager {
 
