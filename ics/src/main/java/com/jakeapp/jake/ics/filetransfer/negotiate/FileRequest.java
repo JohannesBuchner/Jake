@@ -19,7 +19,7 @@ public class FileRequest {
 	public FileRequest(String fileName, boolean incoming, UserId peer,
 			AdditionalFileTransferData data) {
 		this(fileName, incoming, peer);
-		this.data = data;
+		this.setData(data);
 	}
 
 	public FileRequest(String fileName, boolean incoming, UserId peer) {
