@@ -18,6 +18,7 @@ import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectsFileServices;
+import com.jakeapp.core.services.VisibilityStatus;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -653,8 +654,13 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			throw new IllegalArgumentException("Project may not be null");
 		if (fo == null)
 			throw new IllegalArgumentException("FileObject may not be null");
-		if (p.getMessageService() == null)
+		if (p.getMessageService() == null || p.getMessageService().getVisibilityStatus() != VisibilityStatus.ONLINE)
 			throw new NotLoggedInException();
+		if (!getICS(p).getStatusService().isLoggedIn()) {
+			log.warn("Project not online");
+			throw new NotLoggedInException();
+		}
+		
 
 		IFileTransferService ts;
 		IFileTransfer result = null;
