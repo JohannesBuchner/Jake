@@ -37,7 +37,7 @@ public abstract class AbstractTask<T> extends
 	private String status;
 
 	@Override
-	protected T doInBackground() throws Exception {
+	final protected T doInBackground() throws Exception {
 		try {
 			this.value = calculateFunction();
 		} catch (Exception e) {
@@ -56,25 +56,30 @@ public abstract class AbstractTask<T> extends
 	abstract protected AvailableLaterObject<T> calculateFunction() throws RuntimeException;
 
 	@Override
-	public void error(Exception t) {
+	final public void error(Exception t) {
 		this.exception = t;
 		s.release();
 
 		JakeExecutor.removeTask(this);
 	}
-
+	
 	@Override
-	public void finished(T o) {
+	final public void finished(T o) {
 		s.release();
 	}
 
 	@Override
-	protected void done() {
+	final protected void done() {
+		onDone();
 		JakeExecutor.removeTask(this);
 	}
 
+	protected void onDone() {
+		
+	}
+
 	@Override
-	public void statusUpdate(double progress, String status) {
+	final public void statusUpdate(double progress, String status) {
 		this.progress = progress;
 		this.status = status;
 		publish(new StatusUpdate(progress, status));
@@ -83,11 +88,11 @@ public abstract class AbstractTask<T> extends
 		ActiveTasks.tasksUpdated();
 	}
 
-	protected void handleInterruption(InterruptedException e) {
+	final protected void handleInterruption(InterruptedException e) {
 		log.warn("Swingworker has been interrupted: " + e.getMessage(), e);
 	}
 
-	protected void handleExecutionError(ExecutionException e) {
+	final protected void handleExecutionError(ExecutionException e) {
 		log.warn("Swingworker execution failed: " + e.getMessage(), e);
 	}
 
@@ -100,5 +105,10 @@ public abstract class AbstractTask<T> extends
 	public int hashCode() {
 		// Fixme: is this a good idea?
 		return getClass().toString().hashCode();
+	}
+	
+	@Override
+	final public Exception getException() {
+		return this.exception;
 	}
 }

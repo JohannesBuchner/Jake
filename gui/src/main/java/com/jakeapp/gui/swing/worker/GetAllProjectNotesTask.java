@@ -31,9 +31,7 @@ public class GetAllProjectNotesTask extends AbstractTask<Collection<NoteObject>>
 	}
 
 	@Override
-	protected void done() {
-		super.done();
-		
+	protected void onDone() {
 		log.trace("Done GetAllProjectNotesTask");
 
 		// done! so lets update the note-panel

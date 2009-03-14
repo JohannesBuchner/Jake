@@ -28,16 +28,10 @@ public class StartStopProjectTask extends AbstractTask<Void> {
 	}
 
 	@Override
-	protected void done() {
-		super.done();
+	protected void onDone() {
 		// generate event
 		EventCore.get()
 						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
 										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanged));
-	}
-
-	@Override
-	public void error(Exception e) {
-		ExceptionUtilities.showError(e);
 	}
 }

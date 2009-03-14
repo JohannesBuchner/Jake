@@ -483,7 +483,7 @@ public class UserPanel extends JXPanel
 		}
 
 		@Override
-		protected void done() {
+		protected void onDone() {
 			workingAnimation.stopAnimation();
 
 			updateView();

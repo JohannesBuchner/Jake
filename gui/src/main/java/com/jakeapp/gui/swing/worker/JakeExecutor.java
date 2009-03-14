@@ -35,7 +35,7 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	/**
 	 * Calls ThreadPoolExecutor.execute.
 	 *
-	 * @param task Commaand that should be executed.
+	 * @param task Command that should be executed.
 	 */
 	public static void exec(IJakeTask task) {
 		getInstance().execute(task);
@@ -94,9 +94,9 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	 */
 	public static IJakeTask getLatestTask() {
 		IJakeTask last = null;
-			for(Map.Entry<Integer, IJakeTask> entry : getInstance().runningTasks.entrySet()) {
-				last = entry.getValue();
-			}
+		for (Map.Entry<Integer, IJakeTask> entry : getInstance().runningTasks.entrySet()) {
+			last = entry.getValue();
+		}
 		return last;
 	}
 

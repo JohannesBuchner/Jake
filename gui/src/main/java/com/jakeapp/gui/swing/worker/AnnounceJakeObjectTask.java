@@ -38,11 +38,9 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 
 
 	@Override
-	protected void done() {
+	protected void onDone() {
 		EnumSet<DataReason> reason = null;
 		Project project = null;
-
-		super.done();
 
 		// inform the core that there are new log entries available.
 		EventCore.get().fireDataChanged(
@@ -68,9 +66,4 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 		}
 	}
 
-
-	@Override
-	public void error(Exception e) {
-		ExceptionUtilities.showError(e);
-	}
 }

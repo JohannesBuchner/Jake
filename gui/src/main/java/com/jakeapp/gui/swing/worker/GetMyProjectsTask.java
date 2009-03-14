@@ -13,9 +13,6 @@ import java.util.concurrent.ExecutionException;
 
 public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 
-	public GetMyProjectsTask() {
-	}
-
 	@Override
 	protected AvailableLaterObject<List<Project>> calculateFunction() {
 
@@ -28,9 +25,7 @@ public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 	}
 
 	@Override
-	protected void done() {
-		super.done();
-
+	protected void onDone() {
 		try {
 			ObjectCache.get().setMyProjects(get());
 		} catch (InterruptedException e) {
@@ -38,11 +33,5 @@ public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 		} catch (ExecutionException e) {
 			ExceptionUtilities.showError(e);
 		}
-	}
-
-
-	@Override
-	public void error(Exception e) {
-		ExceptionUtilities.showError(e);
 	}
 }

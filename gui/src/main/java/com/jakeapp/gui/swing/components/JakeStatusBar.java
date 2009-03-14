@@ -1,8 +1,11 @@
 package com.jakeapp.gui.swing.components;
 
+import ch.randelshofer.quaqua.JSheet;
+
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
+import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -20,6 +23,7 @@ import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
+import com.jakeapp.gui.swing.helpers.JakeMenuBar;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
@@ -97,6 +101,9 @@ public class JakeStatusBar extends JakeGuiComponent
 	}
 
 	@Override public void taskFinished(IJakeTask task) {
+		if(task.getException() != null) {
+			ExceptionUtilities.showError(task.getException());
+		}
 		updateTaskDisplay();
 	}
 
@@ -153,8 +160,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 
 		@Override
-		protected void done() {
-			super.done();
+		protected void onDone() {
 			long projectSizeTotal = 0;
 			try {
 				projectSizeTotal = this.get();
@@ -184,8 +190,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 
 		@Override
-		protected void done() {
-			super.done();
+		protected void onDone() {
 			// update the status bar label
 			int projectFileCount = 0;
 
@@ -211,14 +216,7 @@ public class JakeStatusBar extends JakeGuiComponent
 		}
 
 		@Override
-		public void error(Exception e) {
-			log.warn(e);
-			this.finished(0);
-		}
-
-		@Override
-		protected void done() {
-			super.done();
+		protected void onDone() {
 			Integer objNoteCount = 0;
 			int notesCount = 0;
 

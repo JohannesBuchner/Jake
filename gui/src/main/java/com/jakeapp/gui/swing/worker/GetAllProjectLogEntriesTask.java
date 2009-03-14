@@ -30,9 +30,7 @@ public class GetAllProjectLogEntriesTask extends AbstractTask<List<FileObject>> 
 	}
 
 	@Override
-	protected void done() {
-		super.done();
-
+	protected void onDone() {
 		log.info("Done GetAllProjectFilesTask");
 
 		// done! save into object cache

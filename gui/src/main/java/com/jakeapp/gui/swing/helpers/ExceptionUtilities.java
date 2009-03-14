@@ -46,32 +46,39 @@ public class ExceptionUtilities {
 	 * @param e
 	 */
 	private static void internalShowError(Exception e) {
-		internalShowError(null, e);
+		internalShowError(e.getMessage(), e);
 	}
 
+	private static String getExceptionText(Throwable e, String newline) {
+		StringBuilder sb = new StringBuilder(e.getMessage()).append(newline + newline);
+        StackTraceElement[] trace = e.getStackTrace();
+        for (int i=0; i < trace.length; i++)
+            sb.append("\tat ").append(trace[i]).append(newline);
+
+        Throwable ourCause = e;
+        while (e.getCause() != null) {
+        	ourCause = e;
+            sb.append("caused by: " + newline);
+            sb.append(getExceptionText(ourCause, newline));
+        }
+		return sb.toString();
+	}
+	
 	private static void internalShowError(String msg, Exception e) {
 		if(e == null) {
 			log.info("Tried to show empty exception");
 		}
 
-		//log.warn("showing error", e);
+		// log.warn("showing error", e);
 		e.printStackTrace();
 
 		if (msg == null) {
-			JSheet.showMessageSheet(JakeContext.getFrame(),
-							"<html><h2>" + e.getClass().getName() + "</h2><br><b>" + e
-											.getMessage() + "</b><br><br> + " + DebugHelper
-											.arrayToString(e.getStackTrace(),
-															DebugHelper.DebugFormat.BRACES, 12) + "</html>",
-							JOptionPane.ERROR_MESSAGE, null);
-		} else {
-			JSheet.showMessageSheet(JakeContext.getFrame(),
-							"<html><h2>" + msg + "</h2><br><b>" + e.getClass().getName() + ": " + e
-											.getMessage() + "</b><br><br> + " + DebugHelper
-											.arrayToString(e.getStackTrace(),
-															DebugHelper.DebugFormat.BRACES, 12) + "</html>",
-							JOptionPane.ERROR_MESSAGE, null);
+			msg = e.getClass().getName();
 		}
+		JSheet.showMessageSheet(JakeContext.getFrame(), "<html><h2>" + msg
+				+ "</h2><br><b>" + e.getMessage() + "</b><br><br> + "
+				+ getExceptionText(e, "<br>") + "<br><br>Sorry.</html>",
+				JOptionPane.ERROR_MESSAGE, null);
 	}
 
 	/**

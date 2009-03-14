@@ -38,9 +38,7 @@ public class LoginAccountTask extends AbstractTask<Boolean> {
 	}
 
 	@Override
-	protected void done() {
-		super.done();
-
+	protected void onDone() {
 		try {
 			if (!this.get()) {
 				log.warn("Wrong User/Password");

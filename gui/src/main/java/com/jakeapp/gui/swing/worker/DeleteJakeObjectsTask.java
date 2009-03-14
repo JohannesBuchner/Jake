@@ -93,9 +93,7 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 	}
 	
 	@Override
-	public void done() {
-		super.done();		
-
+	public void onDone() {
 		// inform the core that there are new log entries available.
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), null);
 		if (containsFileObjects())

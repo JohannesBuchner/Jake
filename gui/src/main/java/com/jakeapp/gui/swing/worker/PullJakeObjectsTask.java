@@ -32,9 +32,7 @@ public class PullJakeObjectsTask extends AbstractTask<Void> {
 	}
 
 	@Override
-	protected void done() {
-		super.done();
-		
+	protected void onDone() {
 		// inform the core that there are new log entries available.
 		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), null);
 		if (this.jakeObjects.size() > 0) {
@@ -45,9 +43,4 @@ public class PullJakeObjectsTask extends AbstractTask<Void> {
 		}
 	}
 
-
-	@Override
-	public void error(Exception e) {
-		ExceptionUtilities.showError(e);
-	}
 }

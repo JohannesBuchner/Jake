@@ -63,4 +63,9 @@ public class InitCoreWorker extends SwingWorker<ICoreAccess, Void>
 			ExceptionUtilities.showError(msg);
 		}
 	}
+
+	@Override
+	public Exception getException() {
+		return null;
+	}
 }

@@ -35,13 +35,7 @@ public class ImportFileFolderTask extends AbstractTask<Void> {
 	}
 
 	@Override
-	protected void done() {
-		super.done();
+	protected void onDone() {
 		EventCore.get().fireFilesChanged(p);
-	}
-
-	@Override
-	public void error(Exception e) {
-		ExceptionUtilities.showError(e);
 	}
 }
