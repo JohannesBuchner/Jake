@@ -14,6 +14,8 @@ import com.jakeapp.gui.swing.callbacks.ProjectChanged;
 import com.jakeapp.gui.swing.callbacks.TaskChanged;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.jake.fss.IFileModificationListener;
+import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 
@@ -60,6 +62,9 @@ public class EventCore {
 
 	private final List<ILoginStateListener> loginStateListeners =
 					new ArrayList<ILoginStateListener>();
+
+	private HashMap<Project, IFileModificationListener> fileModificationListener;
+
 
 	// forward this event into our gui thread
 	private final ILoginStateListener loginStateListener = new ILoginStateListener() {
@@ -127,7 +132,8 @@ public class EventCore {
 			}
 		};
 		SwingUtilities.invokeLater(runner);
-	}
+		
+		
 
 	private void spreadProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
 		for (ProjectChanged callback : projectChanged) {
@@ -289,6 +295,7 @@ public class EventCore {
 		for (ContextChanged c : contextChangedListeners) {
 			c.contextChanged(EnumSet.of(reason), context);
 		}
+		
 	}
 
 

@@ -18,6 +18,7 @@ import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
+import com.jakeapp.jake.fss.IFileModificationListener;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
@@ -600,4 +601,11 @@ public interface ICoreAccess {
 	 * @return
 	 */
 	Account getPredefinedServiceCredential(String s);
+	
+	/**
+	 * register a file modification listener for a certain project.
+	 * @param project the project to listen to
+	 * @param listener the listener that is to be registered
+	 */
+	public void registerFileWatcher(Project project, IFileModificationListener listener);
 }
