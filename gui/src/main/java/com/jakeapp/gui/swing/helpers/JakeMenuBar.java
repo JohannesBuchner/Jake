@@ -148,7 +148,7 @@ public class JakeMenuBar extends JMenuBar {
 				aboutFrame
 								.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
 				aboutFrame.setBuildVersion("001");
-				aboutFrame.setCopyright("Copyright 2007-2009, Best ASE Team TU Vienna");
+				aboutFrame.setCopyright("Copyright 2007-2009, Slowest ASE Team TU Vienna");
 				aboutFrame.setCredits(
 								"<html><body>Jake<br>" + "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>" + "<br>We are proud to present you Jake." + "<b></b><br>" + "Send your Feedback to: " + "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>" + "</body></html>",
 								"text/html");

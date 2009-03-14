@@ -314,7 +314,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			throw new ProjectException(e);
 		}
 
-		// activate icsManager.getITransferServiceic
+		try {
+			this.icsManager.getTransferService(p).startServing(prl, prl);
+		} catch (NotLoggedInException e) {
+			log.error("starting to serve failed", e);
+			// TODO: retry some time?
+		}
 		
 		log.debug("Project " + p + " activated");
 

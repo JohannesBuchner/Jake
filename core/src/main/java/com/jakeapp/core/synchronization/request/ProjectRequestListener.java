@@ -86,7 +86,8 @@ public class ProjectRequestListener
 	private String getProjectUUID(String content) {
 		int begin = content.indexOf(BEGIN_PROJECT_UUID) + BEGIN_PROJECT_UUID.length();
 		int end = content.indexOf(END_PROJECT_UUID);
-
+		if(end == -1 || begin == -1)
+			return null;
 		return content.substring(begin, end);
 	}
 
@@ -94,77 +95,80 @@ public class ProjectRequestListener
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
 					String content) {
 
-
-		String projectUUID = getProjectUUID(content);
-		log.debug("Received a message for project " + projectUUID);
-
-		if (!projectUUID.equals(p.getProjectId())) {
-			log.debug("Discarding message because it's not for this project");
-			return;
-		}
-
-		log.debug("Message is for this project!");
-
-		String message = content.substring(
-						BEGIN_PROJECT_UUID.length() + projectUUID.length() + END_PROJECT_UUID
-										.length());
-		log.debug("Message content: \"" + message + "\"");
-
-		if (message.startsWith(POKE_MESSAGE)) {
-			log.info("Received poke from " + from_userid.getUserId());
-			log.debug("This means we should sync logs!");
-
-			// Eventually, this should consider things such as trust
-			User user = getICSManager().getFrontendUserId(p, from_userid);
-			try {
-				syncService.startLogSync(p, user);
-			} catch (IllegalProtocolException e) {
-				// This should neeeeeeeeever happen
-				log.fatal(
-								"Received an unexpected IllegalProtocolException while trying to perform logsync",
-								e);
+		try{
+			String projectUUID = getProjectUUID(content);
+			log.debug("Received a message for project " + projectUUID);
+	
+			if (projectUUID == null || !projectUUID.equals(p.getProjectId())) {
+				log.debug("Discarding message because it's not for this project");
+				return;
 			}
-
-			// inform the gui that we have new data
-			this.syncService.getProjectChangeListener()
-							.syncStateChanged(this.p, ChangeListener.SyncState.SYNCING);
-			
-			return;
-		}
-
-		if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
-			log.info("Received logs request from " + from_userid.getUserId());
-
-			syncService.sendLogs(p, from_userid);
-			return;
-		}
-
-		if (message.startsWith(LOGENTRIES_MESSAGE)) {
-			log.info("Received serialized logentries from " + from_userid.getUserId());
-
-			String les = message.substring(
-							LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(),
-							message.length() - END_LOGENTRY.length());
-
-			List<LogEntry<? extends ILogable>> logEntries =
-							this.messageMarshaller.unpackLogEntries(les);
-
-			for (LogEntry<? extends ILogable> entry : logEntries) {
+	
+			log.debug("Message is for this project!");
+	
+			String message = content.substring(
+							BEGIN_PROJECT_UUID.length() + projectUUID.length() + END_PROJECT_UUID
+											.length());
+			log.debug("Message content: \"" + message + "\"");
+	
+			if (message.startsWith(POKE_MESSAGE)) {
+				log.info("Received poke from " + from_userid.getUserId());
+				log.debug("This means we should sync logs!");
+	
+				// Eventually, this should consider things such as trust
+				User user = getICSManager().getFrontendUserId(p, from_userid);
 				try {
-					log.debug("Deserialized successfully, it is a " + entry
-									.getLogAction() + " for object UUID " + entry.getObjectuuid());
-					db.getLogEntryDao(p).create(entry);
-				} catch (Throwable t) {
-					log.debug("Failed to deserialize and/or save", t);
+					syncService.startLogSync(p, user);
+				} catch (IllegalProtocolException e) {
+					// This should neeeeeeeeever happen
+					log.fatal(
+									"Received an unexpected IllegalProtocolException while trying to perform logsync",
+									e);
 				}
+	
+				// inform the gui that we have new data
+				this.syncService.getProjectChangeListener()
+								.syncStateChanged(this.p, ChangeListener.SyncState.SYNCING);
+				
+				return;
 			}
-			// inform the gui that we have new data
-			this.syncService.getProjectChangeListener()
-							.syncStateChanged(this.p, ChangeListener.SyncState.DONE);
-
-			return;
+	
+			if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
+				log.info("Received logs request from " + from_userid.getUserId());
+	
+				syncService.sendLogs(p, from_userid);
+				return;
+			}
+	
+			if (message.startsWith(LOGENTRIES_MESSAGE)) {
+				log.info("Received serialized logentries from " + from_userid.getUserId());
+	
+				String les = message.substring(
+								LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(),
+								message.length() - END_LOGENTRY.length());
+	
+				List<LogEntry<? extends ILogable>> logEntries =
+								this.messageMarshaller.unpackLogEntries(les);
+	
+				for (LogEntry<? extends ILogable> entry : logEntries) {
+					try {
+						log.debug("Deserialized successfully, it is a " + entry
+										.getLogAction() + " for object UUID " + entry.getObjectuuid());
+						db.getLogEntryDao(p).create(entry);
+					} catch (Throwable t) {
+						log.debug("Failed to deserialize and/or save", t);
+					}
+				}
+				// inform the gui that we have new data
+				this.syncService.getProjectChangeListener()
+								.syncStateChanged(this.p, ChangeListener.SyncState.DONE);
+	
+				return;
+			}
+			log.warn("We got a unknown/unhandled Message: " + message);
+		}catch(Exception e) {
+			log.error("handling message failed: " + content, e);
 		}
-		log.warn("We got a unknown/unhandled Message: " + message);
 	}
 
 	@Override

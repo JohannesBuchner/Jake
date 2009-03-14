@@ -25,16 +25,12 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 
 	private ILogEntryDao logEntryDao;
 
+	private Project project;
+
 	private void setLogEntryDao(ILogEntryDao logEntryDao) {
 		this.logEntryDao = logEntryDao;
 	}
 	
-	public AllJakeObjectsFuture(ILogEntryDao logEntryDao) {
-		super();
-		this.setLogEntryDao(logEntryDao);
-	}
-
-
 	public AllJakeObjectsFuture(
 					ProjectApplicationContextFactory context,
 					Project project) {
@@ -43,6 +39,7 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 		log.debug("Creating a " + getClass().getSimpleName() + " with "
 				+ context + "on project " + project);
 
+		this.project = project;
 		this.setLogEntryDao(context.getUnprocessedAwareLogEntryDao(project));
 	}
 
@@ -53,8 +50,10 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 		Set<JakeObject> objects = new HashSet<JakeObject>(); 
 		
 		for(LogEntry<JakeObject> le : this.logEntryDao.getAllVersions(true) ){
-			objects.add(le.getBelongsTo());
-			log.debug("we have " + le.getBelongsTo());
+			JakeObject jo = le.getBelongsTo();
+			jo.setProject(project);
+			objects.add(jo);
+			log.debug("we have " + jo);
 		}
 		return objects;
 	}
