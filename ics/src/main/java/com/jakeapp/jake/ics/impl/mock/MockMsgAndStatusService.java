@@ -136,7 +136,10 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		for (ILoginStateListener lsl : lsll) {
-			lsl.connectionStateChanged(state, null);
+			try {
+				lsl.connectionStateChanged(state, null);
+			} catch (Exception ignored) {
+			}
 		}
 	}
 
@@ -167,8 +170,11 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 	public Boolean sendMessage(UserId to_userid, String content) throws NetworkException,
 																																			TimeoutException, NoSuchUseridException,
 			  OtherUserOfflineException {
-		log.info("Sending message to " + to_userid + " with content \"" + content + "\"");
+		UserId userTo;
+		String contentString;
 		UserId to = new MockUserId(to_userid);
+		
+		log.info("Sending message to " + to_userid + " with content \"" + content + "\"");
 		if (!to.isOfCorrectUseridFormat()) {
 			log.warn("Couldn't send message: Recipient invalid");
 			throw new NoSuchUseridException();
@@ -180,17 +186,22 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 		}
 
 		if (!to_userid.equals(myuserid)) {
-			/* autoreply feature */
-			for (IMessageReceiveListener rl : msgreceivers) {
-				log.info("Propagating message to a listener...");
-				rl.receivedMessage(to, content + " to you too");
-			}
+			userTo = to;
+			contentString = content + " to you too";
 		} else {
-			for (IMessageReceiveListener rl : msgreceivers) {
+			userTo = myuserid;
+			contentString = content;			
+		}
+		
+		/* autoreply feature */
+		for (IMessageReceiveListener rl : msgreceivers) {
+			try {
 				log.info("Propagating message to a listener...");
-				rl.receivedMessage(myuserid, content);
+				rl.receivedMessage(userTo, contentString);
+			} catch (Exception ignored) {
 			}
 		}
+		
 		return true;
 	}
 
@@ -217,7 +228,10 @@ public class MockMsgAndStatusService implements IMsgService, IStatusService,
 			throw new OtherUserOfflineException();
 		if (to.equals(myuserid)) {
 			for (IObjectReceiveListener rl : objreceivers) {
-				rl.receivedObject(to, objectidentifier, content);
+				try {
+					rl.receivedObject(to, objectidentifier, content);
+				} catch (Exception ignored) {
+				}
 			}
 			return true;
 		} else {

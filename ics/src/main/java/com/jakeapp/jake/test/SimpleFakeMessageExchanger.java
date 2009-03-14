@@ -71,8 +71,11 @@ public class SimpleFakeMessageExchanger {
 		 */
 		public void notify(UserId sender, String content) {
 			for (IMessageReceiveListener l : listener) {
-				log.debug("notifying a listener");
-				l.receivedMessage(sender, content);
+				try {
+					log.debug("notifying a listener");
+					l.receivedMessage(sender, content);
+				} catch (Exception ignored) {
+				}
 			}
 		}
 
@@ -84,7 +87,10 @@ public class SimpleFakeMessageExchanger {
 		@Override
 		public void unRegisterReceiveMessageListener(
 				IMessageReceiveListener receiveListener) {
-			// TODO Auto-generated method stub
+			try {
+				listener.remove(receiveListener);
+			} catch (Exception ignored) {
+			}
 
 		}
 

@@ -68,7 +68,10 @@ public class EventCore {
 			Runnable runner = new Runnable() {
 				@Override public void run() {
 					for (ILoginStateListener lsl : loginStateListeners) {
-						lsl.connectionStateChanged(le, ex);
+						try {
+							lsl.connectionStateChanged(le, ex);
+						} catch (Exception ignored) {
+						}
 					}
 				}
 			};

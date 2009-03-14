@@ -118,8 +118,11 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 							SimpleSocketFileTransferMethod.this.requestAge.remove(key);
 							SimpleSocketFileTransferMethod.this.outgoingRequests
 									.remove(key);
-							SimpleSocketFileTransferMethod.this.listeners.remove(key)
+							try {
+								SimpleSocketFileTransferMethod.this.listeners.remove(key)
 									.failed(new TimeoutException());
+							} catch (Exception ignored) {
+							}
 						}
 					}
 				}
@@ -149,7 +152,10 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 			this.negotiationService.sendMessage(r.getPeer(), request);
 		} catch (Exception e) {
 			SimpleSocketFileTransferFactory.log.info("negotiation failed", e);
-			nsl.failed(e);
+			try {
+				nsl.failed(e);
+			} catch (Exception ignored) {
+			}
 			removeOutgoing(r);
 		}
 	}
@@ -178,7 +184,10 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 			// we are the client, server doesn't have it
 			for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
 				INegotiationSuccessListener nsl = this.listeners.get(r);
-				nsl.failed(new OtherUserDoesntHaveRequestedContentException());
+				try {
+					nsl.failed(new OtherUserDoesntHaveRequestedContentException());
+				} catch (Exception ignored) {
+				}
 				removeOutgoing(r);
 			}
 		} else if (inner.startsWith(GOT_REQUESTED_FILE)) {
@@ -242,14 +251,20 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 							transferKey, maximalRequestAgeSeconds);
 					new Thread(ft).start();
 					log.info("negotiation with " + from_userid + " succeeded");
-					nsl.succeeded(ft);
+					try {
+						nsl.succeeded(ft);
+					} catch (Exception ignored) {
+					}
 					removeOutgoing(r);
 				}
 			} catch (Exception e) {
 				log.info("negotiation with " + from_userid + " failed: ", e);
 				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
 					INegotiationSuccessListener nsl = this.listeners.get(r);
-					nsl.failed(e);
+					try {
+						nsl.failed(e);
+					} catch (Exception ignored) {
+					}
 					removeOutgoing(r);
 				}
 			}

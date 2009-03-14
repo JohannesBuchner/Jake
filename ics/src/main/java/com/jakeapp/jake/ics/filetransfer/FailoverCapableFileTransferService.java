@@ -79,14 +79,20 @@ public class FailoverCapableFileTransferService implements IFileTransferService 
 				return;
 			}
 			log.info("no methods left, failure");
-			this.parentListener.failed(reason);
+			try {
+				this.parentListener.failed(reason);
+			} catch (Exception ignored) {
+			}
 			// }
 		}
 
 		@Override
 		public void succeeded(IFileTransfer ft) {
 			log.info("success with method#" + this.counter);
-			this.parentListener.succeeded(ft);
+			try {
+				this.parentListener.succeeded(ft);
+			} catch (Exception ignored) {
+			}
 		}
 
 	}

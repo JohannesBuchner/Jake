@@ -89,12 +89,18 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 		sem.acquire();
 
 		if (this.innerException != null && innerException instanceof Exception) {
-			listener.failed(this.innerException);
+			try {
+				listener.failed(this.innerException);
+			} catch (Exception ignored) {
+			}
 			throw (Exception) innerException;
 		}
 
-		listener.succeeded(getInnercontent());
-
+		try {
+			listener.succeeded(getInnercontent());
+		} catch (Exception ignored) {
+		}
+		
 		log.debug("waiting for PullListener");
 		sem.acquire();
 		if (this.innerException != null && innerException instanceof Exception) {

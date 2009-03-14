@@ -208,9 +208,12 @@ public class XmppStatusService implements IStatusService {
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
 		if (lsll.size() > 0) {
 			// we have to copy our current listeners cause e.g. XmppFileTransferMethod may
-			// registrate on our listener just as we are spreading the event...
+			// register on our listener just as we are spreading the event...
 			for (ILoginStateListener lsl : new ArrayList<ILoginStateListener>(lsll)) {
-				lsl.connectionStateChanged(state,null);
+				try {
+					lsl.connectionStateChanged(state,null);
+				} catch (Exception ignored) {
+				}
 			}
 		}	
 	}

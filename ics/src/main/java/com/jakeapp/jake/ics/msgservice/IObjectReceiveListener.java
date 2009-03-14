@@ -10,6 +10,7 @@ import com.jakeapp.jake.ics.UserId;
  * @author johannes
  */
 
+@Deprecated
 public interface IObjectReceiveListener {
 
     /**
@@ -22,7 +23,4 @@ public interface IObjectReceiveListener {
      */
     public void receivedObject(UserId from, String identifier,
 			byte[] content);
-	
-	
-	
 }

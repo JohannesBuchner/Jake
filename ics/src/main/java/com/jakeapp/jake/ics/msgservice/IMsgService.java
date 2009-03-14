@@ -49,8 +49,8 @@ public interface IMsgService {
 	 * @throws com.jakeapp.jake.ics.exceptions.NoSuchUseridException
 	 * @throws com.jakeapp.jake.ics.exceptions.OtherUserOfflineException
 	 */
-	public Boolean sendMessage(UserId to_userid, String content) throws NetworkException,
-																																			TimeoutException, NoSuchUseridException,
+	public Boolean sendMessage(UserId to_userid, String content)
+			throws NetworkException, TimeoutException, NoSuchUseridException,
 			OtherUserOfflineException;
 
 	/**

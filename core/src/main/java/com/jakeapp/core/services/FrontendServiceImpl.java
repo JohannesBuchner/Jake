@@ -354,7 +354,11 @@ public class FrontendServiceImpl implements IFrontendService {
 					result = service.login(credentials);
 
 				}catch(NetworkException ex) {
-					loginListener.connectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT, ex);
+					try {
+						loginListener.connectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT, ex);
+					} catch (Exception ignored) {
+					}
+					
 					throw ex;
 				}
 //				projectInvitationHandler = new ProjectInvitationHandler(service);

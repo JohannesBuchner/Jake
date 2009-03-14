@@ -111,7 +111,10 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 
 		// forward event to gui (only master has a reference)
 		if(loginListener != null) {
-			loginListener.connectionStateChanged(le, null);
+			try {
+				loginListener.connectionStateChanged(le, null);
+			} catch (Exception ignored) {
+			}
 		}
 	}
 }

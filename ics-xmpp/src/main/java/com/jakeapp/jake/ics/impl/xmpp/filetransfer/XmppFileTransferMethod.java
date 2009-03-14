@@ -126,7 +126,10 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 			this.negotiationService.sendMessage(r.getPeer(), request);
 		} catch (Exception e) {
 			XmppFileTransferFactory.log.info("negotiation failed", e);
-			nsl.failed(e);
+			try {
+				nsl.failed(e);
+			} catch (Exception ignored) {
+			}
 			removeOutgoing(r);
 		}
 	}
@@ -157,7 +160,10 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 			// we are the client, server doesn't have it
 			for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
 				INegotiationSuccessListener nsl = this.listeners.get(r);
-				nsl.failed(new OtherUserDoesntHaveRequestedContentException());
+				try {
+					nsl.failed(new OtherUserDoesntHaveRequestedContentException());
+				} catch (Exception ignored) {
+				}
 				removeOutgoing(r);
 			}
 		} else {
@@ -332,17 +338,23 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 						} catch (IOException e) {
 							log.debug(e);
 							log.error("creating temporary file failed.");
-							return;
+							break;
 						}
 						try {
 							transfer.recieveFile(tempFile);
 							IFileTransfer ft = new XmppFileTransfer(transfer, r, tempFile);
-							nsl.succeeded(ft);
-							removeOutgoing(r);
+							try {
+								nsl.succeeded(ft);
+							} catch (Exception ignored) {
+								removeOutgoing(r);
+							}
 						} catch (XMPPException e) {
-							nsl.failed(new CommunicationProblemException(e.getCause()));
+							try {
+								nsl.failed(new CommunicationProblemException(e.getCause()));
+							} catch (Exception ignored) {
+							}
 						}
-						return;
+						break;
 					}
 				}
 

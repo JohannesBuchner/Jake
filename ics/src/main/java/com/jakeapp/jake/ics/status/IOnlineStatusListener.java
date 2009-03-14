@@ -19,5 +19,4 @@ public interface IOnlineStatusListener {
      * @param userid the userid which changed its status
      */
     public void onlineStatusChanged(UserId userid);
-
 }

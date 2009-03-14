@@ -57,8 +57,11 @@ public class TimeoutTask extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		this.getNsl().failed(new TimeoutException());
-		this.getRequestManager().removeOutgoing(this.getRequest());
+		try {
+			this.getNsl().failed(new TimeoutException());
+		} finally {
+			this.getRequestManager().removeOutgoing(this.getRequest());
+		}
 
 	}
 }

@@ -56,7 +56,13 @@ public class IncomingGenericPacketListener implements PacketListener, PacketFilt
 
 	public void notifyOthersAboutNewPacket(XmppUserId xmppUserId, String content) {
 		for (IMessageReceiveListener imrl : listeners) {
-			imrl.receivedMessage(xmppUserId, content);
+			try {
+				imrl.receivedMessage(xmppUserId, content);
+			}
+			catch (Exception ignored) {
+				//empty implementation
+			}
+			
 		}
 	}
 }

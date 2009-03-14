@@ -182,7 +182,11 @@ public class XmppUsersService implements IUsersService {
 
 	public void notifyAboutPresenceChange(String xmppid) {
 		for (IOnlineStatusListener osl : this.onlinereceivers) {
-			osl.onlineStatusChanged(new XmppUserId(xmppid));
+			try {
+				osl.onlineStatusChanged(new XmppUserId(xmppid));
+			} catch (Exception ignored) {
+				// empty implementation
+			}
 		}
 	}
 

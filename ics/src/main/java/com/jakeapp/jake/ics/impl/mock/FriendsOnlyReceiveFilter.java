@@ -24,7 +24,10 @@ public class FriendsOnlyReceiveFilter implements IMessageReceiveListener {
 	public void receivedMessage(UserId from_userid, String content) {
 		try {
 			if (this.users.isFriend(from_userid)) {
-				this.innerListener.receivedMessage(from_userid, content);
+				try {
+					this.innerListener.receivedMessage(from_userid, content);
+				} catch (Exception ignored) {
+				}
 			}
 		} catch (NotLoggedInException e) {
 			MockMsgAndStatusService.log.debug("should never happen", e);
