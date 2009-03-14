@@ -20,16 +20,20 @@ public class PullFuture extends AvailableLaterObject<Void> {
 
 	@Override
 	public Void calculate() throws Exception {
+		Exception lastException = null; 
+		int i = 0;
 		for (JakeObject jakeObject : this.jakeObjects) {
 			try {
 				this.iss.pullObject(jakeObject);
-			} catch (Exception ignored) {
-				log.warn("pulling failed, skipping " + jakeObject, ignored);
-				// ignore the exception, and skip this object
-				// oh how I hate it...
+			} catch (Exception e) {
+				log.warn("pulling failed, skipping " + jakeObject, e);
+				lastException = e;
 			}
+			i++;
+			this.getListener().statusUpdate(i / this.jakeObjects.size(), "");
 		}
-		//TODO: maybe, sometime add progress and status features...
+		if(lastException != null)
+			throw lastException;
 		return null;
 	}
 }
