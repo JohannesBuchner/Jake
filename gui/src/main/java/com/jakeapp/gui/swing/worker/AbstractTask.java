@@ -57,10 +57,13 @@ public abstract class AbstractTask<T> extends
 
 	@Override
 	final public void error(Exception t) {
-		this.exception = t;
-		s.release();
-
-		JakeExecutor.removeTask(this);
+		try {
+			this.exception = t;
+			s.release();
+		}
+		finally {
+			JakeExecutor.removeTask(this);
+		}
 	}
 	
 	@Override
@@ -70,8 +73,12 @@ public abstract class AbstractTask<T> extends
 
 	@Override
 	final protected void done() {
-		onDone();
-		JakeExecutor.removeTask(this);
+		try {
+			onDone();
+		}
+		finally {
+			JakeExecutor.removeTask(this);
+		}	
 	}
 
 	protected void onDone() {

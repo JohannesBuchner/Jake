@@ -56,8 +56,8 @@ public class ExceptionUtilities {
             sb.append("\tat ").append(trace[i]).append(newline);
 
         Throwable ourCause = e;
-        while (e.getCause() != null) {
-        	ourCause = e;
+        if (ourCause.getCause() != null) {
+        	ourCause = ourCause.getCause();
             sb.append("caused by: " + newline);
             sb.append(getExceptionText(ourCause, newline));
         }
