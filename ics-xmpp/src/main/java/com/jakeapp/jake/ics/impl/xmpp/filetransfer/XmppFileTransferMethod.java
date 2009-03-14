@@ -57,7 +57,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	 * How long we wait for a response from a server after we have sent
 	 * a request to this server, in milliseconds
 	 */
-	private static final long REQUEST_TIMEOUT = 5000;
+	private static final long REQUEST_TIMEOUT = 6000;
 
 	private IMsgService negotiationService;
 

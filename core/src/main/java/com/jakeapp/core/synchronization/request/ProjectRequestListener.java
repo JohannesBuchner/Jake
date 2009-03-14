@@ -154,7 +154,11 @@ public class ProjectRequestListener
 					try {
 						log.debug("Deserialized successfully, it is a " + entry
 										.getLogAction() + " for object UUID " + entry.getObjectuuid());
-						db.getLogEntryDao(p).create(entry);
+						try {
+							db.getLogEntryDao(p).create(entry);
+						} catch (IllegalArgumentException ignored) {
+							//duplicate entry: we already have this entry
+						}
 					} catch (Throwable t) {
 						log.debug("Failed to deserialize and/or save", t);
 					}
