@@ -3,6 +3,7 @@ package com.jakeapp.core.services.futures;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
@@ -34,7 +35,7 @@ public class AllProjectNotesFuture extends
 		Collection<NoteObject> local = AvailableLaterWaiter.await(this.localNotesFuture);
 		log.debug("local-only notes: " + local.size());
 
-		Set<NoteObject> result = new HashSet<NoteObject>();
+		Set<NoteObject> result = new TreeSet<NoteObject>(NoteObject.getUUIDComparator());
 		result.addAll(local);
 
 		for (JakeObject jo : all) {

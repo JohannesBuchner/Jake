@@ -97,4 +97,19 @@ public class NoteObject extends JakeObject {
 			shortContent = content.substring(0, 10) + "...";
 		return "Note [" + super.toString() + "]:" + shortContent;
 	}
+
+	public static Comparator<NoteObject> getUUIDComparator() {
+		return new Comparator<NoteObject>() {
+			@Override
+			public int compare(NoteObject arg0, NoteObject arg1) {
+				if (arg0==null) return (arg1==null)?0:-1;
+				if (arg1==null) return 1;
+				
+				if (arg0.getUuid()==null) return (arg1.getUuid()==null)?0:-1;
+				if (arg1.getUuid()==null) return 1;
+				
+				return arg0.getUuid().compareTo(arg1.getUuid());
+			}
+		};
+	}
 }
