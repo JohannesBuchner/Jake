@@ -217,6 +217,8 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public void createAccount(UserId userid, String pw) throws NetworkException {
+		log.warn(userid);
+		
 		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (isLoggedIn())

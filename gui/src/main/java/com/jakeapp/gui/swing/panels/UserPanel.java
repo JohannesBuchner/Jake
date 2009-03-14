@@ -393,18 +393,26 @@ public class UserPanel extends JXPanel
 	 *
 	 * @return
 	 */
-	private Account getCredientals() {
+	private Account getCredentials() {
 		Account cred;
+		String user,password;
 
 		if (!isModeSignIn()) {
 			// return the default set
 			cred = creds.get(SupportedServices.Jabber);
+			cred.setServerAddress(registerUserDataPanel.getServer());
+			user = registerUserDataPanel.getUserName() + '@' +registerUserDataPanel.getServer(); 
+			password = registerUserDataPanel.getPassword();
 		} else {
 			cred = creds.get(
 							SupportedServices.values()[loginServiceCheckBox.getSelectedIndex()]);
+			user = loginUserDataPanel.getUserName();
+			password = loginUserDataPanel.getPassword();
 		}
-		cred.setUserId(loginUserDataPanel.getUserName());
-		cred.setPlainTextPassword(loginUserDataPanel.getPassword());
+				
+		cred.setUserId(user);
+		cred.setPlainTextPassword(password);
+		
 		return cred;
 	}
 
@@ -420,11 +428,11 @@ public class UserPanel extends JXPanel
 				signInRegisterButton.setEnabled(false);
 				try {
 					// sync call
-					MsgService msg = JakeMainApp.getCore().addAccount(getCredientals());
+					MsgService msg = JakeMainApp.getCore().addAccount(getCredentials());
 					JakeContext.setMsgService(msg);
 
 					// prepare the servicecredentials (prefilled?)
-					Account creds = getCredientals();
+					Account creds = getCredentials();
 					creds.setAutologin(loginUserDataPanel.isSetRememberPassword());
 					//creds.setPlainTextPassword(loginUserDataPanel.getPassword());
 
@@ -438,7 +446,7 @@ public class UserPanel extends JXPanel
 					updateView();
 				}
 			} else {
-				JakeExecutor.exec(new RegisterAccountTask(getCredientals()));
+				JakeExecutor.exec(new RegisterAccountTask(getCredentials()));
 				updateView();
 				// fixme: what do do? events?
 			}
@@ -485,7 +493,6 @@ public class UserPanel extends JXPanel
 		@Override
 		protected void onDone() {
 			workingAnimation.stopAnimation();
-
 			updateView();
 		}
 	}
@@ -508,7 +515,7 @@ public class UserPanel extends JXPanel
 
 
 	/**
-	 * Creates User/Password Field for entering credientals
+	 * Creates User/Password Field for entering credentials
 	 *
 	 * @return
 	 */
@@ -616,9 +623,9 @@ public class UserPanel extends JXPanel
 				loginAdvancedBtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						AdvancedAccountSettingsDialog.showDialog(getCredientals());
-						log.debug("credentials now: " + getCredientals()
-										.getServerAddress() + getCredientals().getServerPort());
+						AdvancedAccountSettingsDialog.showDialog(getCredentials());
+						log.debug("credentials now: " + getCredentials()
+										.getServerAddress() + getCredentials().getServerPort());
 					}
 				});
 				this.add(loginAdvancedBtn, "wrap");
@@ -913,7 +920,7 @@ public class UserPanel extends JXPanel
 						JakeContext.setMsgService(msg);
 
 						// prepare the servicecredentials (prefilled?)
-						Account creds = getCredientals();
+						Account creds = getCredentials();
 						creds.setAutologin(isRememberPassword());
 						if (isMagicToken()) {
 							creds.setPlainTextPassword(null);
