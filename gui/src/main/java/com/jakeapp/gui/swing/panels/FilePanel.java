@@ -475,7 +475,10 @@ public class FilePanel extends javax.swing.JPanel
 		this.add(this.fileTreeTableScrollPane, "grow, push");
 	}
 
-	private void updatePanel() {
+	/**
+	 * update the panel.
+	 */
+	public void updatePanel() {
 		// don't update if project is null OR an invitation.
 		if (JakeContext.getProject() == null) {
 			return;

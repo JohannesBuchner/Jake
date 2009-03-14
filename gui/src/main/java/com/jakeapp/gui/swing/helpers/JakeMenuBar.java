@@ -244,6 +244,7 @@ public class JakeMenuBar extends JMenuBar {
 			public void actionPerformed(ActionEvent e) {
 				log.info("called: reload file view");
 				FilePanel.getInstance().resetFilter();
+				FilePanel.getInstance().updatePanel();
 			}
 		});
 		debugMenu.add(reloadFileDebugItem);
