@@ -75,8 +75,6 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 
 	private IncomingTransferListener incomingTransferListener;
 
-	private XMPPConnection connection;
-
 	private XmppConnectionData con;
 
 	public XmppFileTransferMethod(XmppConnectionData con, IMsgService negotiationService,
@@ -84,7 +82,6 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		log.debug("creating XmppFileTransferMethod for user " + user);
 		this.myUserId = user;
 		this.con = con;
-		this.connection = con.getConnection();
 		this.negotiationService = negotiationService;
 		this.negotiationService.registerReceiveMessageListener(this);
 		this.con.getService().getStatusService().addLoginStateListener(this);
@@ -127,7 +124,8 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 			XmppFileTransferFactory.log.info("negotiation failed", e);
 			try {
 				nsl.failed(e);
-			} catch (Exception ignored) {
+			} catch (Exception e1) {
+				log.error("bad listener", e1);
 			}
 			removeOutgoing(r);
 		}
@@ -135,38 +133,42 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 
 	@Override
 	public void receivedMessage(UserId from, String content) {
-		XmppUserId from_userid = new XmppUserId(from.getUserId());
-		if (!content.startsWith(XmppFileTransferFactory.START)
-				|| !content.endsWith(XmppFileTransferFactory.END))
-			return;
-
-		String inner = content.substring(XmppFileTransferFactory.START.length(), content
-				.length()
-				- XmppFileTransferFactory.END.length());
-
-		log.debug(myUserId + ": receivedMessage : " + from_userid + " : " + inner);
-
-		if (inner.startsWith(FILE_REQUEST)) {
-			handleFileRequest(from_userid, inner);
-			/*
-			 * ADDRESS_RESPONSE:
-			 * [GOT_REQUESTED_FILE<uuid><filename>]ADDRESS_RESPONSE[<address>]
-			 */
-		} else if (inner.equals(FILE_RESPONSE_DONT_HAVE)) {
-			/*
-			 * third step, client receives no ok from server
-			 */
-			// we are the client, server doesn't have it
-			for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
-				INegotiationSuccessListener nsl = this.listeners.get(r);
-				try {
-					nsl.failed(new OtherUserDoesntHaveRequestedContentException());
-				} catch (Exception ignored) {
+		try {
+			XmppUserId from_userid = new XmppUserId(from.getUserId());
+			if (!content.startsWith(XmppFileTransferFactory.START)
+					|| !content.endsWith(XmppFileTransferFactory.END))
+				return;
+	
+			String inner = content.substring(XmppFileTransferFactory.START.length(), content
+					.length()
+					- XmppFileTransferFactory.END.length());
+	
+			log.debug(myUserId + ": receivedMessage : " + from_userid + " : " + inner);
+	
+			if (inner.startsWith(FILE_REQUEST)) {
+				handleFileRequest(from_userid, inner);
+				/*
+				 * ADDRESS_RESPONSE:
+				 * [GOT_REQUESTED_FILE<uuid><filename>]ADDRESS_RESPONSE[<address>]
+				 */
+			} else if (inner.equals(FILE_RESPONSE_DONT_HAVE)) {
+				/*
+				 * third step, client receives no ok from server
+				 */
+				// we are the client, server doesn't have it
+				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
+					INegotiationSuccessListener nsl = this.listeners.get(r);
+					try {
+						nsl.failed(new OtherUserDoesntHaveRequestedContentException());
+					} catch (Exception ignored) {
+					}
+					removeOutgoing(r);
 				}
-				removeOutgoing(r);
+			} else {
+				log.warn("unknown request from " + from_userid + ": " + content);
 			}
-		} else {
-			log.warn("unknown request from " + from_userid + ": " + content);
+		}catch(Exception e) {
+			log.error("error handling request " + content, e);
 		}
 	}
 
@@ -225,7 +227,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	public IFileTransfer sendFile(File f, String to, String filename, FileRequest request) {
 		log.debug(this.myUserId + " : Sending file " + f.getAbsolutePath() + " to " + to);
 		// Create the file transfer manager
-		FileTransferManager manager = new FileTransferManager(this.connection);
+		FileTransferManager manager = new FileTransferManager(this.con.getConnection());
 
 		// Create the outgoing file transfer
 		OutgoingFileTransfer ft = manager.createOutgoingFileTransfer(to);
@@ -291,7 +293,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	public void startReceiving() {
 		log.debug(myUserId);
 
-		if (this.connection == null) {
+		if (this.con.getConnection() == null) {
 			log.debug(myUserId + ": not logged in");
 			return;
 		}
@@ -302,16 +304,16 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		 * exception. To prevent this, we must make sure, that there is a running
 		 * connection to the server.
 		 */
-		if (!this.connection.isConnected())
+		if (!this.con.getConnection().isConnected())
 			try {
 				log.debug("we are not connected...connect now!");
-				this.connection.connect();
+				this.con.getConnection().connect();
 			} catch (XMPPException e1) {
 				log.warn(e1);
 			}
 		
 		// Create the file transfer manager
-		final FileTransferManager manager = new FileTransferManager(this.connection);
+		final FileTransferManager manager = new FileTransferManager(this.con.getConnection());
 
 		log.debug(myUserId + ": adding receiver hook");
 		// Create the listener
