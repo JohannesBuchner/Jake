@@ -39,7 +39,6 @@ public class PullWatcher implements ITransferListener {
 
 	private ChangeListener changeListener;
 
-	@SuppressWarnings("unused")
 	private IFileTransfer ft;
 
 	private JakeObject jakeObject;
@@ -64,35 +63,36 @@ public class PullWatcher implements ITransferListener {
 
 	@Override
 	@Transactional
-	public void onSuccess(AdditionalFileTransferData transfer) {
-		log.info("transfer for " + jakeObject + " succeeded: " + transfer);
+	public void onSuccess(AdditionalFileTransferData data) {
+		log.info("transfer for " + jakeObject + " succeeded. (additionalData:" + data + ")");
 		try {
-			checkPulledFile(transfer);
+			checkPulledFile();
 			changeListener.pullDone(jakeObject);
 		}catch (Exception reason) {
-			log.error(reason.getMessage(), reason.getCause());
+			log.error("unexpected failure", reason);
 			changeListener.pullFailed(jakeObject, reason);
 		}
 	}
 
-	private boolean checkPulledFile(AdditionalFileTransferData transfer) throws Exception {
+	private boolean checkPulledFile() throws Exception {
+		log.debug("checking file " + this.ft.getLocalFile());
 		FileInputStream data;
 		try {
-			data = new FileInputStream(transfer.getDataFile());
+			data = new FileInputStream(this.ft.getLocalFile());
 		} catch (FileNotFoundException e2) {
 			throw new Exception("opening file failed:", e2);
 		}
-		if (jakeObject instanceof FileObject) {
-			String target = ((FileObject) jakeObject).getRelPath();
-			try {
-				getFSS(jakeObject.getProject()).writeFileStream(target, data);
-			} catch (Exception e) {
-				throw new Exception("writing file failed:", e);
-			}
-			changeListener.pullDone(jakeObject);
-		}else{
+		
+		if (!(jakeObject instanceof FileObject)) 
 			throw new IllegalStateException("unexpected type of JakeObject");
+		
+		String target = ((FileObject) jakeObject).getRelPath();
+		try {
+			getFSS(jakeObject.getProject()).writeFileStream(target, data);
+		} catch (Exception e) {
+			throw new Exception("writing file failed:", e);
 		}
+		changeListener.pullDone(jakeObject);
 		try {
 			data.close();
 		} catch (IOException ignored) {

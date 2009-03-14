@@ -39,6 +39,7 @@ import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
+import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;

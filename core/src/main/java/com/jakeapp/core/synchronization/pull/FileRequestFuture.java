@@ -14,8 +14,7 @@ import org.apache.log4j.Logger;
 
 import java.util.concurrent.Semaphore;
 
-public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> implements
-		INegotiationSuccessListener {
+public class FileRequestFuture extends AvailableLaterObject<IFileTransfer>  {
 
 	private IFileTransferService transferService;
 
@@ -83,17 +82,29 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 	public IFileTransfer calculate() throws Exception {
 		INegotiationSuccessListener listener = new PullListener(this.jo, changeListener,
 				this.projectsFileServices);
-		transferService.request(request, this);
+		this.transferService.request(this.request, new INegotiationSuccessListener() {
+			@Override
+			public void failed(Throwable reason) {
+				FileRequestFuture.this.innerException = reason;
+				FileRequestFuture.this.sem.release();
+			}
+
+			@Override
+			public void succeeded(IFileTransfer ft) {
+				FileRequestFuture.this.setInnercontent(ft);
+				FileRequestFuture.this.sem.release();
+			}
+		});
 		log.debug("waiting for negotiation-success-listener");
 
 		sem.acquire();
 
-		if (this.innerException != null && innerException instanceof Exception) {
+		if (this.innerException != null) {
 			try {
 				listener.failed(this.innerException);
 			} catch (Exception ignored) {
 			}
-			throw (Exception) innerException;
+			throw (Exception) this.innerException;
 		}
 
 		try {
@@ -103,23 +114,11 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> imple
 		
 		log.debug("waiting for PullListener");
 		sem.acquire();
-		if (this.innerException != null && innerException instanceof Exception) {
-			log.debug("listener threw Exception: " + innerException);
-			throw (Exception) innerException;
+		if (this.innerException != null) {
+			log.debug("listener threw Exception: " + this.innerException);
+			throw (Exception) this.innerException;
 		}
 
 		return this.getInnercontent();
-	}
-
-	@Override
-	public void failed(Throwable reason) {
-		this.innerException = reason;
-		sem.release();
-	}
-
-	@Override
-	public void succeeded(IFileTransfer ft) {
-		this.setInnercontent(ft);
-		sem.release();
 	}
 }

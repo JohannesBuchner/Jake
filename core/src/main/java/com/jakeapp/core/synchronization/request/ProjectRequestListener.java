@@ -24,7 +24,6 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
-import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +96,9 @@ public class ProjectRequestListener
 
 		try{
 			String projectUUID = getProjectUUID(content);
+			if(content == null)
+				return;
+			
 			log.debug("Received a message for project " + projectUUID);
 	
 			if (projectUUID == null || !projectUUID.equals(p.getProjectId())) {
@@ -177,8 +179,8 @@ public class ProjectRequestListener
 
 	@Override
 	public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
-		log.trace("Online status of " + userid
-						.getUserId() + " changed... (Project " + p + ")");
+		// log.trace("Online status of " + userid
+		// 				.getUserId() + " possibly changed... (Project " + p + ")");
 		// fixme: send this event up to gui!
 
 		// fixme: causes infinite loop - only send events up if there's really a change!!
@@ -218,7 +220,7 @@ public class ProjectRequestListener
 	private FileObject getFileObjectForRequest(String filerequest) {
 		if (!p.getProjectId()
 						.equals(this.messageMarshaller.getProjectUUIDFromRequestMessage(
-										filerequest))) {
+										filerequest).toString())) {
 			log.debug("got request for a different project");
 			return null; // not our project
 		}
@@ -295,10 +297,9 @@ public class ProjectRequestListener
 		if (!systmpdir.endsWith(File.separator))
 			systmpdir = systmpdir + File.separator;
 
-		File f = new File(systmpdir);
-		Assert.assertEquals("tmpdir", systmpdir, f.getAbsolutePath() + File.separator);
-
-		return new File(systmpdir + File.separator + "jakeDelivery");
+		File f = new File(systmpdir, "jakeDelivery");
+		f.mkdir();
+		return f;
 	}
 
 	@Override
