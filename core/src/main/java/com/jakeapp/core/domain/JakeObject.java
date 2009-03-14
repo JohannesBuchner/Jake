@@ -119,7 +119,8 @@ public abstract class JakeObject implements ILogable, Serializable {
 
 	@Override
 	public String toString() {
-		return "JakeObject:" + this.getUuid() + this.hashCode();
+		return "JakeObject:" + this.getUuid() + ":" + this.hashCode() + ", modified: " 
+				+ this.modified + ", deleted: " + this.deleted;
 	}
 
 	@Override
