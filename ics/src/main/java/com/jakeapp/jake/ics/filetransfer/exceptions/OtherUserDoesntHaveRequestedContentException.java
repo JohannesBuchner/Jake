@@ -7,6 +7,6 @@ package com.jakeapp.jake.ics.filetransfer.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class OtherUserDoesntHaveRequestedContentException extends Throwable {
+public class OtherUserDoesntHaveRequestedContentException extends Exception {
 
 }

@@ -6,14 +6,21 @@ package com.jakeapp.jake.ics.filetransfer.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class CommunicationProblemException extends Throwable {
+public class CommunicationProblemException extends Exception {
 
 	public CommunicationProblemException() {
 		super();
 	}
 
+	public CommunicationProblemException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public CommunicationProblemException(String message) {
+		super(message);
+	}
+
 	public CommunicationProblemException(Throwable cause) {
 		super(cause);
 	}
-
 }

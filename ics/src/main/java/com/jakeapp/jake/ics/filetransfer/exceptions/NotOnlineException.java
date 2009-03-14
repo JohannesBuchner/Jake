@@ -6,6 +6,6 @@ package com.jakeapp.jake.ics.filetransfer.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class NotOnlineException extends Throwable {
+public class NotOnlineException extends Exception {
 
 }
