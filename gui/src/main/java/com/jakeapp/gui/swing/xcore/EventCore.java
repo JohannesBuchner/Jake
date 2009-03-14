@@ -132,6 +132,7 @@ public class EventCore {
 			}
 		};
 		SwingUtilities.invokeLater(runner);
+	}
 		
 		
 
