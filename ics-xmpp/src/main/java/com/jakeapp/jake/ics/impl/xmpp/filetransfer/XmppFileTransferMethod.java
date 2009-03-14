@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -43,7 +45,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 // TODO: timeouts for negotiations
 public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveListener,
-				ILoginStateListener {
+				ILoginStateListener, IOutgoingRequestManager {
 
 
 	private static Logger log = Logger.getLogger(XmppFileTransferMethod.class);
@@ -51,22 +53,28 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	private static final String FILE_REQUEST = "<filerequest/>";
 
 	private static final Object FILE_RESPONSE_DONT_HAVE = "<fileresponseno/>";
+	
+	/**
+	 * How long we wait for a response from a server after we have sent
+	 * a request to this server, in milliseconds
+	 */
+	private static final long REQUEST_TIMEOUT = 5000;
 
 	private IMsgService negotiationService;
 
 	private Map<FileRequest, INegotiationSuccessListener> listeners = new HashMap<FileRequest, INegotiationSuccessListener>();
 
 	private Queue<FileRequest> outgoingRequests = new LinkedBlockingQueue<FileRequest>();
+	
+	private Map<FileRequest, TimerTask> outgoingRequestTimeoutTasks = new HashMap<FileRequest, TimerTask>();
 
-	private Map<UUID, FileRequest> incomingRequests = new HashMap<UUID, FileRequest>();
+	private Timer timeoutTimer;
 
 	private FileRequestFileMapper mapper;
 
 	private UserId myUserId;
 
 	private IncomingTransferListener incomingTransferListener;
-
-	private static final int UUID_LENGTH = UUID.randomUUID().toString().length();
 
 	private XMPPConnection connection;
 
@@ -81,7 +89,16 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		this.negotiationService = negotiationService;
 		this.negotiationService.registerReceiveMessageListener(this);
 		this.con.getService().getStatusService().addLoginStateListener(this);
+		this.setTimeoutTimer(new Timer());
 		startReceiving();
+	}
+	
+	private void setTimeoutTimer(Timer timeoutTimer) {
+		this.timeoutTimer = timeoutTimer;
+	}
+
+	private Timer getTimeoutTimer() {
+		return timeoutTimer;
 	}
 
 	/*
@@ -89,12 +106,18 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	 */
 	@Override
 	public void request(FileRequest r, INegotiationSuccessListener nsl) {
+		TimerTask timeoutTask;
+		
 		log.debug(myUserId + ": We request " + r);
 		String request = XmppFileTransferFactory.START + FILE_REQUEST + r.getFileName()
 				+ XmppFileTransferFactory.END;
 
 		this.listeners.put(r, nsl);
 		this.outgoingRequests.add(r);
+		//add timer and schedule it for execution
+		timeoutTask = new TimeoutTask(this,nsl,r);
+		this.outgoingRequestTimeoutTasks.put(r, timeoutTask);
+		this.getTimeoutTimer().schedule(timeoutTask, XmppFileTransferMethod.REQUEST_TIMEOUT);
 
 		log.debug("requests I have to " + r.getPeer() + " : "
 				+ this.outgoingRequests.size() + " : " + this.outgoingRequests);
@@ -230,8 +253,12 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		return rq;
 	}
 
-	private void removeOutgoing(FileRequest r) {
+	@Override
+	public void removeOutgoing(FileRequest r) {
 		log.debug("I'm done with outgoing request " + r + " (one way or the other)");
+		TimerTask task = this.outgoingRequestTimeoutTasks.remove(r);
+		if (task != null)
+			task.cancel();
 		this.outgoingRequests.remove(r);
 		this.listeners.remove(r);
 	}
@@ -252,7 +279,6 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 	public void stopServing() {
 		this.incomingTransferListener = null;
 	}
-
 
 	/**
 	 * registers the filetransfer hook
@@ -312,6 +338,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 							transfer.recieveFile(tempFile);
 							IFileTransfer ft = new XmppFileTransfer(transfer, r, tempFile);
 							nsl.succeeded(ft);
+							removeOutgoing(r);
 						} catch (XMPPException e) {
 							nsl.failed(new CommunicationProblemException(e.getCause()));
 						}
