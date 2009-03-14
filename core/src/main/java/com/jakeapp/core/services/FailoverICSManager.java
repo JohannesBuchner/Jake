@@ -65,17 +65,14 @@ public class FailoverICSManager implements ICSManager {
 			throws NotLoggedInException {
 		ICService ics = getICService(p);
 		IMsgService msg = ics.getMsgService();
-		FailoverCapableFileTransferService fcfts = null;
+		FailoverCapableFileTransferService fcfts;
 
-		if (this.transfer.containsKey(p.getProjectId())) {
-			fcfts = this.transfer.get(p.getProjectId());
-		} else {
+		if (!this.transfer.containsKey(p.getProjectId())) {
 			fcfts = createTransferService(this.getBackendUserId(p), ics, msg);
-
 			this.transfer.put(p.getProjectId(), fcfts);
 		}
 
-		return fcfts;
+		return this.transfer.get(p.getProjectId());
 	}
 
 	private FailoverCapableFileTransferService createTransferService(
