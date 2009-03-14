@@ -39,6 +39,22 @@ public class XmppStatusService implements IStatusService {
 
 	private ConnectionListener connectionListener = new XmppConnectionListener();
 
+	private ILoginStateListener.ConnectionState lastState;
+	
+	/**
+	 * sets the new ConnectionState
+	 * @param state
+	 * @return true if state changed.
+	 */
+	private boolean setLastState(ILoginStateListener.ConnectionState state) {
+		if (state == lastState) {
+			return false;
+		} else {
+			lastState = state;
+			return true;
+		}
+	}
+	
 	public XmppStatusService(XmppConnectionData connection) {
 		this.con = connection;
 	}
@@ -206,16 +222,17 @@ public class XmppStatusService implements IStatusService {
 	 * @param state
 	 */
 	private void fireConnectionStateChanged(ILoginStateListener.ConnectionState state) {
-		if (lsll.size() > 0) {
-			// we have to copy our current listeners cause e.g. XmppFileTransferMethod may
-			// register on our listener just as we are spreading the event...
+		// we have to copy our current listeners cause e.g. XmppFileTransferMethod may
+		// register on our listener just as we are spreading the event...
+		if (setLastState(state)) {
 			for (ILoginStateListener lsl : new ArrayList<ILoginStateListener>(lsll)) {
 				try {
 					lsl.connectionStateChanged(state,null);
-				} catch (Exception ignored) {
+				} catch (Exception e) {
+					log.error("bad listener", e);
 				}
 			}
-		}	
+		}
 	}
 
 	@Override
