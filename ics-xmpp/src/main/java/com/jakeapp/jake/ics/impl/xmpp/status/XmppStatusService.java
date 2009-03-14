@@ -217,9 +217,9 @@ public class XmppStatusService implements IStatusService {
 
 	@Override
 	public void createAccount(UserId userid, String pw) throws NetworkException {
-		log.warn(userid);
+		XmppUserId xmppUserId = new XmppUserId(userid);
 		
-		if (!new XmppUserId(userid).isOfCorrectUseridFormat())
+		if (!xmppUserId.isOfCorrectUseridFormat())
 			throw new NoSuchUseridException();
 		if (isLoggedIn())
 			logout();
@@ -227,7 +227,8 @@ public class XmppStatusService implements IStatusService {
 
 		XMPPConnection connection;
 		try {
-			connection = XmppCommons.createAccount(userid.getUserId(), pw);
+			log.warn("creating account with:"+xmppUserId.getUserIdWithOutResource());
+			connection = XmppCommons.createAccount(xmppUserId.getUserIdWithOutResource(), pw);
 		} catch (IOException e) {
 			log.debug("create failed: " + e.getMessage());
 			throw new NetworkException(e);
