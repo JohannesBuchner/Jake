@@ -50,7 +50,10 @@ public class ExceptionUtilities {
 	}
 
 	private static String getExceptionText(Throwable e, String newline) {
-		StringBuilder sb = new StringBuilder(e.getMessage()).append(newline + newline);
+		StringBuilder sb = new StringBuilder();
+		if(e.getMessage() != null) {
+			sb.append(e.getMessage()).append(newline + newline);
+		}
         StackTraceElement[] trace = e.getStackTrace();
         for (int i=0; i < trace.length; i++)
             sb.append("\tat ").append(trace[i]).append(newline);
