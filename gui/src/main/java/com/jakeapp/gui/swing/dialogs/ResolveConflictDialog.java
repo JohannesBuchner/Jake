@@ -87,7 +87,7 @@ public class ResolveConflictDialog extends JakeDialog {
 			}
 		});
 		// surround with html to wrap text
-		path.setText(FileUtilities.getAbsPath(fo.getJakeObject()));
+		path.setText(fo.getJakeObject().getRelPath());
 
 		//TODO: works on windows only?
 		path.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

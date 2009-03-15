@@ -347,7 +347,7 @@ public class FilePanel extends javax.swing.JPanel
 
 				if (me.getClickCount() == 2 && fileObjs.size() == 1) {
 					try {
-						FileUtilities.launchFile(JakeMainApp.getCore().getFile(fileObjs.get(0)));
+						FileUtilities.launchFile(fileObjs.get(0));
 					} catch (FileOperationFailedException e) {
 						ExceptionUtilities.showError("Unable to open File", e);
 					}

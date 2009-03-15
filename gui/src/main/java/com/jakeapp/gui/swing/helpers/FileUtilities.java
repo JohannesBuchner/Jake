@@ -408,8 +408,6 @@ public class FileUtilities {
 
 	/**
 	 * Returns the Path separator.
-	 *
-	 * @return pf specific path separator
 	 */
 	public static String getPathSeparator() {
 		return System.getProperty("file.separator");
@@ -420,7 +418,9 @@ public class FileUtilities {
 	 *
 	 * @param path
 	 * @return
+	 * @deprecated move functionality to fss
 	 */
+	@Deprecated
 	public static String getPathFromPathWithFile(String path) {
 		log.debug("in: " + path);
 		if (path == null || path.length() == 0) {
@@ -439,30 +439,14 @@ public class FileUtilities {
 		return path.substring(0, sepPosLast);
 	}
 
-	/**
-	 * Get the absolute Path for a FileObject
-	 * Does error handling, may return "" for the file.
-	 *
-	 * @param fo : The File Object
-	 * @return		: FileString or "". File may not exist on harddisk.
-	 */
-	public static String getAbsPath(FileObject fo) {
+	public static void launchFile(FileObject fo) throws FileOperationFailedException {
 		try {
-			return JakeMainApp.getCore().getFile(fo).getAbsolutePath();
-		} catch (FileOperationFailedException e) {
-			ExceptionUtilities.showError(e);
-			return "";
+			JakeMainApp.getCore().launch(fo);
+		} catch (Exception e) {
+			throw new FileOperationFailedException(e);
 		}
 	}
 
-	// FIXME: remove and us FSSservice:lauchFile
-	public static void launchFile(File file) {
-		try {
-			Desktop.getDesktop().open(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static boolean createDirectory(String path) {
 		if (checkDirectoryExistence(path))

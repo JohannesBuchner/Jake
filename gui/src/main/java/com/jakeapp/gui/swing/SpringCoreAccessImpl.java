@@ -41,6 +41,7 @@ import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.fss.exceptions.CreatingSubDirectoriesFailedException;
 import com.jakeapp.jake.fss.exceptions.FileAlreadyExistsException;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.LaunchException;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
@@ -1052,5 +1053,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public void registerFileWatcher(Project project, IFileModificationListener listener) {
 		this.pms.getFileServices(project).addModificationListener(listener);
+	}
+
+	@Override
+	public void launch(FileObject fo) throws IllegalArgumentException, InvalidFilenameException, LaunchException, IOException {
+		this.pms.getFileServices(fo.getProject()).launchFile(fo.getRelPath());
 	}
 }

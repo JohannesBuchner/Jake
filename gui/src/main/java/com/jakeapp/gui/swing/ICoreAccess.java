@@ -19,11 +19,14 @@ import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.jake.fss.IFileModificationListener;
+import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
+import com.jakeapp.jake.fss.exceptions.LaunchException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -608,4 +611,14 @@ public interface ICoreAccess {
 	 * @param listener the listener that is to be registered
 	 */
 	public void registerFileWatcher(Project project, IFileModificationListener listener);
+
+	/**
+	 * launch the file
+	 * @param fo
+	 * @throws IOException 
+	 * @throws LaunchException 
+	 * @throws InvalidFilenameException 
+	 * @throws IllegalArgumentException 
+	 */
+	public void launch(FileObject fo) throws IllegalArgumentException, InvalidFilenameException, LaunchException, IOException;
 }
