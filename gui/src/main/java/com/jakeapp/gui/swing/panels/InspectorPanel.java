@@ -52,8 +52,6 @@ public class InspectorPanel extends JXPanel
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);
 	public static final int INSPECTOR_SIZE = 250;
 	private ResourceMap resourceMap;
-	private Attributed<FileObject> attributedFileObject;
-	private Attributed<NoteObject> attributedNoteObject;
 	private JScrollPane eventsTableScrollPane;
 
 	private enum Mode {
@@ -201,11 +199,6 @@ public class InspectorPanel extends JXPanel
 	public void updatePanel() {
 		log.trace("mode: " + this.mode);
 
-		// HACK: quick fix
-		if ((mode == Mode.FILE && attributedFileObject == null) || (mode == Mode.NOTE && attributedNoteObject == null)) {
-			mode = Mode.NONE;
-		}
-
 		switch (this.mode) {
 			case FILE:
 				this.fullPathValue.setVisible(true);
@@ -238,12 +231,7 @@ public class InspectorPanel extends JXPanel
 		this.resourceMap = resourceMap;
 	}
 
-	public Attributed<FileObject> getAttributedFileObject() {
-		return this.attributedFileObject;
-	}
-
 	public void setFileObject(Attributed<FileObject> attributedFileObject) {
-		this.attributedFileObject = attributedFileObject;
 		if (attributedFileObject != null) {
 			this.mode = Mode.FILE;
 			this.getEventsTableModel().setJakeObject(attributedFileObject);
@@ -253,16 +241,16 @@ public class InspectorPanel extends JXPanel
 			
 			File file = null;
 			try {
-				file = JakeMainApp.getCore().getFile(getAttributedFileObject().getJakeObject());
+				file = JakeMainApp.getCore().getFile(attributedFileObject.getJakeObject());
 			} catch (FileOperationFailedException e) {
 				ExceptionUtilities.showError(e);
 			}
 			this.icon.setIcon(Platform.getToolkit().getFileIcon(file, 64));
 			this.nameValue.setText(StringUtilities.htmlize(StringUtilities.bold(
-							FileObjectHelper.getName(getAttributedFileObject()
+							FileObjectHelper.getName(attributedFileObject
 											.getJakeObject().getRelPath()))));
 
-			this.fullPathValue.setText(FileObjectHelper.getPath(getAttributedFileObject()
+			this.fullPathValue.setText(FileObjectHelper.getPath(attributedFileObject
 							.getJakeObject().getRelPath()));
 		} else {
 			this.mode = Mode.NONE;
@@ -303,12 +291,7 @@ public class InspectorPanel extends JXPanel
 		this.mode = Mode.NONE;
 	}
 
-	public Attributed<NoteObject> getAttributedNoteObject() {
-		return this.attributedNoteObject;
-	}
-
 	public void setNoteObject(Attributed<NoteObject> attributedNoteObject) {
-		this.attributedNoteObject = attributedNoteObject;
 		if (attributedNoteObject != null) {
 			this.mode = Mode.NOTE;
 			this.getEventsTableModel().setJakeObject(attributedNoteObject);
@@ -317,14 +300,14 @@ public class InspectorPanel extends JXPanel
 			this.updateCommonFields(attributedNoteObject);
 			this.icon.setIcon(this.notesIcon);
 			this.nameValue.setText(StringUtilities.htmlize(NotesHelper.getTitle(
-							getAttributedNoteObject().getJakeObject())));
+					attributedNoteObject.getJakeObject())));
 		} else {
 			this.mode = Mode.NONE;
 		}
 	}
 	
 	private void updateCommonFields(Attributed<? extends JakeObject> attributedJakeObject) {
-		if (this.getAttributedNoteObject().getLastVersionEditor() != null) {
+		if (attributedJakeObject.getLastVersionEditor() != null) {
 			this.lastEditorValue.setText(attributedJakeObject.getLastVersionEditor().toString());
 		} else {
 			this.lastEditorValue.setText("local"); //FIXME: elaborate, i18n
@@ -335,7 +318,7 @@ public class InspectorPanel extends JXPanel
 		
 		this.sharedValue.setText(Boolean.toString((attributedJakeObject.isOnlyLocal())));
 
-		if (this.getAttributedNoteObject().isLocked()) {
+		if (attributedJakeObject.isLocked()) {
 			this.lockedByValue.setText(attributedJakeObject.getLockLogEntry()
 							.getMember().toString());
 		} else {
