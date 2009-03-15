@@ -341,7 +341,7 @@ public class InspectorPanel extends JXPanel
 		} else {
 			this.lockedByValue.setText("-");
 		}
-		this.uuidValue.setText(attributedJakeObject.getJakeObject().getUuid().toString());
+		this.uuidValue.setText("" + attributedJakeObject.getJakeObject().getUuid());
 	}
 	
 	@Override
