@@ -1,11 +1,12 @@
-package com.jakeapp.core.synchronization.change;
+package com.jakeapp.core.synchronization.pull;
 
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
 
-abstract public class ChangeListenerProxy implements ChangeListener {
+abstract class ChangeListenerProxy implements ChangeListener {
 	
 	private ChangeListener innercl;
 	

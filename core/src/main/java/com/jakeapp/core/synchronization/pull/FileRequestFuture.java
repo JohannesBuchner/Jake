@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.synchronization.change.ChangeListenerProxy;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
