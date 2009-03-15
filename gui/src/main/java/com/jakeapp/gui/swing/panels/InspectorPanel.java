@@ -20,6 +20,7 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
@@ -63,6 +64,7 @@ public class InspectorPanel extends JXPanel
 	private JLabel icon;
 	private JLabel nameValue;
 	private JLabel sizeValue;
+	private JLabel fullPathLabel;
 	private JLabel fullPathValue;
 	private JLabel lastEditedLabel;
 	private JLabel lastEditedValue;
@@ -109,22 +111,23 @@ public class InspectorPanel extends JXPanel
 		this.headerPanel.setOpaque(false);
 		
 		this.icon = new JLabel();
-		this.headerPanel.add(this.icon, "w 64!, h 64!, span 2");
+		this.headerPanel.add(this.icon, "w 64!, h 64!");
 		
 		this.nameValue = new JLabel();
 		this.headerPanel.add(this.nameValue, "top");
 		
 		this.sizeValue = new JLabel();
-		this.headerPanel.add(this.sizeValue, "growx, wrap, top");
-		
-		this.fullPathValue = new SmallShortenedLabel();
-		this.headerPanel.add(this.fullPathValue);
-		
+		this.headerPanel.add(this.sizeValue, "growx, top");		
 
 		// meta panel
 		this.metaPanel = new JPanel(new MigLayout("fill, wrap 2"));
 		this.metaPanel.setOpaque(false);
 
+		this.fullPathLabel = new SmallLabel(getResourceMap().getString("fullPathLabel"));
+		this.metaPanel.add(this.fullPathLabel, "right, hidemode 2");
+		this.fullPathValue = new SmallShortenedLabel();
+		this.metaPanel.add(this.fullPathValue, "growx, hidemode 2");
+		
 		this.lastEditedLabel = new SmallLabel(getResourceMap().getString("lastEditedLabel"));
 		this.metaPanel.add(this.lastEditedLabel, "right");
 		this.lastEditedValue = new SmallLabel();
@@ -163,7 +166,7 @@ public class InspectorPanel extends JXPanel
 		this.noteFileInspector = new JPanel(new MigLayout("wrap 1, fill, ins 0"));
 		this.noteFileInspector.setOpaque(false);
 		this.noteFileInspector.add(this.headerPanel, "growx");
-		this.noteFileInspector.add(this.metaPanel, "growx");
+		this.noteFileInspector.add(this.metaPanel, "growx, pad 0");
 		this.noteFileInspector.setVisible(false);
 
 		this.emptyInspector = new JPanel();
@@ -201,6 +204,7 @@ public class InspectorPanel extends JXPanel
 
 		switch (this.mode) {
 			case FILE:
+				this.fullPathLabel.setVisible(true);
 				this.fullPathValue.setVisible(true);
 				this.sizeValue.setVisible(true);
 				
@@ -209,6 +213,7 @@ public class InspectorPanel extends JXPanel
 				break;
 			case NOTE:
 				this.sizeValue.setVisible(false);
+				this.fullPathLabel.setVisible(false);
 				this.fullPathValue.setVisible(false);
 								
 				this.emptyInspector.setVisible(false);
@@ -249,9 +254,15 @@ public class InspectorPanel extends JXPanel
 			this.nameValue.setText(StringUtilities.htmlize(StringUtilities.bold(
 							FileObjectHelper.getName(attributedFileObject
 											.getJakeObject().getRelPath()))));
-
-			this.fullPathValue.setText(FileObjectHelper.getPath(attributedFileObject
-							.getJakeObject().getRelPath()));
+			if (!attributedFileObject.isOnlyRemote()) {
+				this.sizeValue.setText(FileObjectHelper.getLocalSizeHR(attributedFileObject.getJakeObject()));
+				this.fullPathValue.setText(System.getProperty("file.separator") + FileObjectHelper.getPath(attributedFileObject
+						.getJakeObject().getRelPath()));
+			} else {
+				this.sizeValue.setText("-");
+				this.fullPathValue.setText("-");
+			}
+			log.debug("full path value: " + this.fullPathValue.getText());
 		} else {
 			this.mode = Mode.NONE;
 		}
@@ -299,8 +310,8 @@ public class InspectorPanel extends JXPanel
 			// update fields
 			this.updateCommonFields(attributedNoteObject);
 			this.icon.setIcon(this.notesIcon);
-			this.nameValue.setText(StringUtilities.htmlize(NotesHelper.getTitle(
-					attributedNoteObject.getJakeObject())));
+			this.nameValue.setText(StringUtilities.htmlize(StringUtilities.bold(NotesHelper.getTitle(
+					attributedNoteObject.getJakeObject()))));
 		} else {
 			this.mode = Mode.NONE;
 		}
