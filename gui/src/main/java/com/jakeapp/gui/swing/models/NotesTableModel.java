@@ -78,18 +78,12 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 	}
 
 	/**
-	 * Update the contents of the table model. It tries to update with the current project.
-	 */
-	public void update() {
-		this.update(JakeContext.getProject());
-	}
-
-	/**
 	 * Update the contents of the table model for a given project.
 	 *
 	 * @param project the project from which the notes should be loaded.
 	 */
 	public void update(Project project) {
+		log.info("Updating note table model");
 		if (project == null) {
 			return;
 		}
@@ -270,6 +264,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChanged {
 
 	@Override
 	public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
+
 		if (dataReason.contains(DataReason.Notes)) {
 			updateNotes(p);
 		}

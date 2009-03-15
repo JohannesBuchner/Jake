@@ -23,8 +23,10 @@ import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.dialogs.debugging.JakeDebugger;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.panels.FilePanel;
+import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.CreateExampleProject;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 import net.roydesign.app.AboutJMenuItem;
 import net.roydesign.app.Application;
 import net.roydesign.app.QuitJMenuItem;
@@ -248,6 +250,18 @@ public class JakeMenuBar extends JMenuBar {
 			}
 		});
 		debugMenu.add(reloadFileDebugItem);
+
+		JMenuItem reloadNotesDebugItem = new JMenuItem("Reload Notes View");
+		reloadNotesDebugItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				log.info("called: reload note view");
+				NotesPanel.getInstance().resetFilter();
+				ObjectCache.get().updateNotes(JakeContext.getProject());
+			}
+		});
+		debugMenu.add(reloadNotesDebugItem);
 
 		JMenuItem cureGetFilesDebugViewItem = new JMenuItem("core().getFiles()");
 		cureGetFilesDebugViewItem.addActionListener(new ActionListener() {
