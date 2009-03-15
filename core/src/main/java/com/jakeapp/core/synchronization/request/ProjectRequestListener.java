@@ -1,22 +1,35 @@
 package com.jakeapp.core.synchronization.request;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.core.DarkMagic;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
+import com.jakeapp.core.services.futures.AllJakeObjectsFuture;
 import com.jakeapp.core.synchronization.IInternalSyncService;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
+import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
-import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
@@ -29,12 +42,6 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.util.List;
-import java.util.UUID;
 
 public class ProjectRequestListener
 				implements IMessageReceiveListener, IOnlineStatusListener,
@@ -156,8 +163,21 @@ public class ProjectRequestListener
 				List<LogEntry<? extends ILogable>> logEntries =
 								this.messageMarshaller.unpackLogEntries(les);
 	
+				Map<String, FileObject> fileObjects = getAllFileObjects();
+				
+				
 				for (LogEntry<? extends ILogable> entry : logEntries) {
 					try {
+						if (entry.getBelongsTo() instanceof FileObject) {
+							FileObject fo = (FileObject) entry.getBelongsTo();
+							adjustUUID(fileObjects, entry, fo);
+						}
+						if (entry.getBelongsTo() instanceof Tag) {
+							FileObject fo = (FileObject) ((Tag) entry
+									.getBelongsTo()).getObject();
+							adjustUUID(fileObjects, entry, fo);
+						}
+						// TODO: do the same with tags.
 						log.debug("Deserialized successfully, it is a " + entry
 										.getLogAction() + " for object UUID " + entry.getObjectuuid());
 						try {
@@ -179,6 +199,56 @@ public class ProjectRequestListener
 		}catch(Exception e) {
 			log.error("handling message failed: " + content, e);
 		}
+	}
+
+	/**
+	 * We do not want local files and remote files with the same relpath to have
+	 * different UUIDs. So we check if we already have a file with that relpath
+	 * and adjust incoming LogEntries accordingly.
+	 * 
+	 * @param fileObjects
+	 * @param entry
+	 * @param fo
+	 */
+	@DarkMagic
+	private void adjustUUID(Map<String, FileObject> fileObjects,
+			LogEntry<? extends ILogable> entry, FileObject fo) {
+		if (entry.getBelongsTo() instanceof FileObject) {
+			if (fileObjects.containsKey(fo.getRelPath())) {
+				UUID localuuid = fileObjects.get(fo.getRelPath()).getUuid();
+				log.info("adjusting uuid of incoming fileObject Entry: "
+						+ fo.getUuid() + " --> " + localuuid);
+				fo = new FileObject(localuuid, fo.getProject(), fo.getRelPath());
+				((LogEntry<FileObject>) entry).setBelongsTo(fo);
+			}
+			if (entry.getObjectuuid() == null || ((LogEntry<FileObject>)entry).getBelongsTo().getUuid() == null)
+				throw new IllegalArgumentException("logentry has null uuid for FileObject");
+		}
+		if (entry.getBelongsTo() instanceof Tag) {
+			if (fileObjects.containsKey(fo.getRelPath())) {
+				UUID localuuid = fileObjects.get(fo.getRelPath()).getUuid();
+				log.info("adjusting uuid of incoming fileObject Entry: "
+						+ fo.getUuid() + " --> " + localuuid);
+				fo = new FileObject(localuuid, fo.getProject(), fo.getRelPath());
+				((Tag)entry.getBelongsTo()).setObject(fo);
+				((LogEntry<Tag>) entry).setBelongsTo((Tag)entry.getBelongsTo());
+			}
+			if (entry.getObjectuuid() == null || ((LogEntry<FileObject>)entry).getBelongsTo().getUuid() == null)
+				throw new IllegalArgumentException("logentry has null uuid for FileObject");
+		}
+	}
+
+
+	private Map<String, FileObject> getAllFileObjects() throws Exception {
+		Collection<JakeObject> allObjects = AvailableLaterWaiter.await(new AllJakeObjectsFuture(db, p));
+		Map<String, FileObject> fileObjects = new HashMap<String, FileObject>();
+		for(JakeObject jo : allObjects) {
+			if(jo instanceof FileObject) {
+				FileObject fo = (FileObject) jo;
+				fileObjects.put(fo.getRelPath(), fo);
+			}
+		}
+		return fileObjects;
 	}
 
 	@Override

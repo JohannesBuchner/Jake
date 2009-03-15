@@ -43,12 +43,14 @@ public class AllProjectFilesFuture extends AvailableLaterObject<Collection<FileO
 
 		SortedSet<FileObject> sortedFiles = new TreeSet<FileObject>(FileObject
 				.getRelpathComparator());
-		sortedFiles.addAll(local);
 
 		for (JakeObject jo : all) {
 			if (jo instanceof FileObject)
 				sortedFiles.add((FileObject) jo);
 		}
+		// this is afterwards, because local files don't necessarily have IDs yet. 
+		sortedFiles.addAll(local);
+
 		log.debug("in total: " + sortedFiles.size());
 		return sortedFiles;
 	}

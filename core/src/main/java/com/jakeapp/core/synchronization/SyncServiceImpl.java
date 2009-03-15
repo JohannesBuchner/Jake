@@ -220,9 +220,15 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
-	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException,
+	public <T extends JakeObject> T pullObject(T join) throws NoSuchLogEntryException,
 			NotLoggedInException, IllegalArgumentException {
-
+		T jo;
+		try {
+			jo = completeIncomingObject(join);
+		} catch (NoSuchJakeObjectException e1) {
+			throw new IllegalArgumentException(e1);
+		}
+		
 		LogEntry<JakeObject> le = db.getUnprocessedAwareLogEntryDao(jo).getLastVersion(
 				jo, true);
 		log.debug("got logentry: " + le);
@@ -411,8 +417,24 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		if (isNoteObject(join)) {
 			return (T) db.getNoteObjectDao(join.getProject()).get(join.getUuid());
 		} else {
-			return (T) getFileObjectByRelpath(join.getProject(), ((FileObject) join)
+			try {
+				return (T) getFileObjectByRelpath(join.getProject(), ((FileObject) join)
 					.getRelPath());
+			}catch(NoSuchJakeObjectException e) {
+				if(join.getUuid() != null) {
+					log.debug("logentry dump:  -------");
+					for(LogEntry<? extends ILogable> le : db.getUnprocessedAwareLogEntryDao(join).getAll(true)) {
+						log.debug(le);
+					}
+					log.debug("logentry dump done ----");
+					if(db.getUnprocessedAwareLogEntryDao(join).getDeleteState(join, true) != null) {
+						// log.debug("found " + join + " in the log. accepting the uuid");
+						return join;
+					}
+				}
+				log.debug("we don't have " + join + " in the JakeObject table nor in the log.");
+				throw e;
+			}
 		}
 	}
 	
@@ -444,6 +466,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		try {
 			fo = completeIncomingObject(foin);
 		} catch (NoSuchJakeObjectException e) {
+			log.debug("FileObject is not in database. nulling uuid");
 			fo = new FileObject(p, foin.getRelPath());
 		}
 		// 1 exists?
@@ -533,6 +556,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			no = completeIncomingObject(noin);
 			objectExistsLocally = true;
 		} catch (NoSuchJakeObjectException e) {
+			log.debug("NoteObject is not in database");
 			no = noin;
 			objectExistsLocally = false;
 		}
