@@ -24,6 +24,11 @@
           scope="singleton">
 
     </bean>
+    
+    <bean id="coreProjectInvitationListener" class="com.jakeapp.core.services.ProjectInvitationListener">
+        <constructor-arg index="0" ref="invitationDao" />
+        <constructor-arg index="1" ref="applicationContextFactory" />
+    </bean>
 
     <bean id="msgServiceManager" class="com.jakeapp.core.services.MsgServiceManager">
         <property name="accountDao" ref="accountDao"/>
@@ -74,13 +79,5 @@
         <constructor-arg index="3" ref="accountDao"
                          type="com.jakeapp.core.dao.IAccountDao" />
     </bean>
-
-
-    <bean id="coreProjectInvitationListener" class="com.jakeapp.core.services.ProjectInvitationListener">
-        <constructor-arg index="0" ref="invitationDao" />
-        <constructor-arg index="1" ref="applicationContextFactory" />
-    </bean>
-
-
 
 </beans>
