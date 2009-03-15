@@ -1,8 +1,12 @@
 package com.jakeapp.gui.swing.xcore;
 
+import java.util.EnumSet;
+
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.change.ChangeListener;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback.DataReason;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
@@ -24,6 +28,8 @@ public class ProjectsChangeListener implements ChangeListener {
 
 	@Override public void pullDone(JakeObject jo) {
 		log.debug("pullDone: " + jo);
+
+		EventCore.get().fireDataChanged(EnumSet.of(DataReason.Files, DataReason.Notes), jo.getProject());
 	}
 
 	@Override public void pullProgressUpdate(JakeObject jo, Status status,

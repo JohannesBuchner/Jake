@@ -242,17 +242,20 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				throw new IllegalArgumentException(e);
 			}
 			log.debug("deleted.");
+			this.projectChangeListener.pullDone(jo);
 			return jo;
 		} else if (isNoteObject(le.getBelongsTo())) {
 			log.debug("Pulling a noteobject...");
-			return (T) pullNoteObject(jo.getProject(), le);
+			jo = (T) pullNoteObject(jo.getProject(), le);
+			this.projectChangeListener.pullDone(jo);
+			return jo;
 		}
 		else {
 			log.debug("Pulling a fileobject...");
-			return (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
+			jo = (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
+			this.projectChangeListener.pullDone(jo);
+			return jo;
 		}
-
-		// TODO: call ChangeListener, PullWatcher, PullListener
 	}
 	
 
