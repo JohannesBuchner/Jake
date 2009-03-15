@@ -71,7 +71,7 @@ public class ObjectCache implements ContextChanged {
 		// FIXME: UltraFAIL
 		// this.updateFiles(p);
 		if(!this.files.containsKey(p)) {
-			log.warn("notes requested, but not available yet");
+			log.warn("files requested, but not available yet");
 			return new LinkedList<FileObject>();
 		}
 		return this.files.get(p);
