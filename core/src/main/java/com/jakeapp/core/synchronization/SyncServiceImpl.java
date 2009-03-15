@@ -331,6 +331,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		 // registering the listener with the ics
 		getICS(p).getMsgService().registerReceiveMessageListener(prl);
+		syncProjectMembers(p);
 	}
 
 
