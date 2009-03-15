@@ -97,7 +97,7 @@ public class ExceptionUtilities {
 				"Please accept our apologies",
 				"Smack the developer in the face.",
 		};
-		return apologies[new Random(apologies.length).nextInt()];
+		return apologies[new Random().nextInt(apologies.length)];
 	}
 
 	/**
