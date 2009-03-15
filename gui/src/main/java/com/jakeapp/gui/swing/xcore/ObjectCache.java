@@ -78,6 +78,10 @@ public class ObjectCache implements ContextChangedCallback {
 	}
 
 	public void setFiles(Project project, Collection<FileObject> files) {
+		log.debug("got " + files.size() + "files");
+		for(FileObject file : files) {
+			log.debug("got " + file);
+		}
 		this.files.put(project, files);
 		fireFilesDataChanged(project);
 	}

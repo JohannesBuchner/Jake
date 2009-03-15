@@ -59,8 +59,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private IProjectsManagingService pms;
 	private IFriendlySyncService iss;
 
-	private final JakeObjectAttributedCacheManager attributedCacheMan =
-					new JakeObjectAttributedCacheManager(this);
+	private final JakeObjectAttributedCacheManager attributedCacheMan = new JakeObjectAttributedCacheManager();
 
 	/**
 	 * SessionId returned by the authentication Method of
@@ -441,9 +440,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			result = attributedCacheMan.getCached(jakeObject);
 
 			if (result == null) {
-				Attributed<T> syncStatus =
-								this.getFrontendService().getSyncService(getSessionId())
-												.getJakeObjectSyncStatus(jakeObject);
+				Attributed<T> syncStatus = this.iss.getJakeObjectSyncStatus(jakeObject);
 
 				result = attributedCacheMan.cacheObject(jakeObject, syncStatus);
 			}
@@ -463,7 +460,6 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			ExceptionUtilities
 							.showError("Catched generic exception while getting sync status", e);
 		}
-
 		return result;
 	}
 
