@@ -1,14 +1,20 @@
 package com.jakeapp.gui.swing.xcore;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
-import com.jakeapp.gui.swing.SpringCoreAccessImpl;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.jake.fss.IModificationListener;
 
-import java.util.HashMap;
-
-public class JakeObjectAttributedCacheManager {
+public class JakeObjectAttributedCacheManager implements DataChangedCallback {
+	private static final Logger log = Logger
+			.getLogger(JakeObjectAttributedCacheManager.class);
 	private static boolean enabled = true;
 
 	private final HashMap<JakeObject, Attributed<JakeObject>> cacheHash =
@@ -17,6 +23,7 @@ public class JakeObjectAttributedCacheManager {
 	public JakeObjectAttributedCacheManager() {
 		// register for changes - this listener work per project.
 		//springCoreAccessImpl.addFilesChangedListener(new SyncCacheFileChangedListener(), null);
+		EventCore.get().addDataChangedCallbackListener(this);
 	}
 
 	public HashMap<JakeObject, Attributed<JakeObject>> getCacheHash() {
@@ -68,6 +75,15 @@ public class JakeObjectAttributedCacheManager {
 	private class SyncCacheFileChangedListener implements FilesChangedCallback {
 		@Override public void filesChanged(String relpath, IModificationListener.ModifyActions action) {
 
+		}
+	}
+
+
+	@Override
+	public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
+		if(dataReason.contains(DataReason.Files) || dataReason.contains(DataReason.Notes)){
+			log.info("Files/Notes changed. Clearing Attributed cache.");
+			clearCache();
 		}
 	}
 }
