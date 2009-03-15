@@ -27,6 +27,8 @@ public abstract class AvailableLaterObject<T> implements Runnable {
 	
 	private AtomicBoolean alreadyStarted = new AtomicBoolean(false);
 
+	private StackTraceElement[] callerStackTrace = new Throwable().getStackTrace();
+
 	/* server functions */
 	protected void set(T o) {
 		this.setInnercontent(o);

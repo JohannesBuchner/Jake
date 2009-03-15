@@ -17,6 +17,8 @@ public abstract class InjectableTask<T> implements Runnable {
 
 	private static final Logger log = Logger.getLogger(InjectableTask.class);
 
+	private StackTraceElement[] callerStackTrace = new Throwable().getStackTrace();
+	
 	private String name;
 	
 	/**

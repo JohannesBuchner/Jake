@@ -35,6 +35,8 @@ public abstract class AbstractTask<T> extends
 
 	private double progress;
 	private String status;
+	
+	private StackTraceElement[] callerStackTrace = new Throwable().getStackTrace();
 
 	@Override
 	final protected T doInBackground() throws Exception {
