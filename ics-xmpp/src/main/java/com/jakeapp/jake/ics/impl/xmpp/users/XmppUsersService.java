@@ -1,12 +1,9 @@
 package com.jakeapp.jake.ics.impl.xmpp.users;
 
-import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
-import com.jakeapp.jake.ics.users.IUsersService;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -17,19 +14,25 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
+import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.impl.xmpp.XmppConnectionData;
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
+import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import com.jakeapp.jake.ics.users.IUsersService;
 
 
 public class XmppUsersService implements IUsersService {
 
-	public static final Logger log = Logger.getLogger(XmppUsersService.class);
+	private static final Logger log = Logger.getLogger(XmppUsersService.class);
 
-	public XmppConnectionData con;
+	private XmppConnectionData con;
 
-	public Set<IOnlineStatusListener> onlinereceivers = new HashSet<IOnlineStatusListener>();
+	private Set<IOnlineStatusListener> onlinereceivers = new HashSet<IOnlineStatusListener>();
 
+	private Set<String> runningDiscoveryThreads = new HashSet<String>();
+	
 	public XmppUsersService(XmppConnectionData connection) {
 		this.con = connection;
 	}
@@ -177,6 +180,7 @@ public class XmppUsersService implements IUsersService {
 					this.log.warn("We got logged out somehow", e);
 				}
 			this.log.debug(Thread.currentThread() + " done");
+			XmppUsersService.this.runningDiscoveryThreads.remove(this.xmppid);
 		}
 	}
 
@@ -184,8 +188,8 @@ public class XmppUsersService implements IUsersService {
 		for (IOnlineStatusListener osl : this.onlinereceivers) {
 			try {
 				osl.onlineStatusChanged(new XmppUserId(xmppid));
-			} catch (Exception ignored) {
-				// empty implementation
+			} catch (Exception e) {
+				log.error("bad listener", e);
 			}
 		}
 	}
@@ -228,11 +232,12 @@ public class XmppUsersService implements IUsersService {
 		String xmppid = userid.getUserId();
 		log.trace("presenceChanged: " + xmppid + " - " + presence);
 		if (presence.isAvailable()) {
-			new Thread(new DiscoveryThread(xmppid)).start();
+			if (this.runningDiscoveryThreads.add(xmppid)) {
+				new Thread(new DiscoveryThread(xmppid)).start();
+			}
 		} else {
 			notifyAboutPresenceChange(xmppid);
 		}
-		new Thread(new DiscoveryThread(xmppid)).start();
 	}
 
 	@Override
