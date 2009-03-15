@@ -9,15 +9,12 @@ import com.jakeapp.jake.fss.IModificationListener;
 import java.util.HashMap;
 
 public class JakeObjectAttributedCacheManager {
-	private final SpringCoreAccessImpl springCoreAccessImpl;
+	private static boolean enabled = true;
 
 	private final HashMap<JakeObject, Attributed<JakeObject>> cacheHash =
 					new HashMap<JakeObject, Attributed<JakeObject>>();
 
-	public JakeObjectAttributedCacheManager(
-					SpringCoreAccessImpl springCoreAccessImpl) {
-		this.springCoreAccessImpl = springCoreAccessImpl;
-
+	public JakeObjectAttributedCacheManager() {
 		// register for changes - this listener work per project.
 		//springCoreAccessImpl.addFilesChangedListener(new SyncCacheFileChangedListener(), null);
 	}
@@ -38,6 +35,8 @@ public class JakeObjectAttributedCacheManager {
 	}
 
 	public <T extends JakeObject> Attributed<T> getCached(T jakeObject) {
+		if(!enabled)
+			return null;
 		return (Attributed<T>) cacheHash.get(jakeObject);
 	} 
 	
@@ -60,7 +59,8 @@ public class JakeObjectAttributedCacheManager {
 	 */
 	public <T extends JakeObject> Attributed<T> cacheObject(T jakeObject,
 					Attributed<T> jakeObjectAttributed) {
-		getCacheHash().put(jakeObject, (Attributed<JakeObject>) jakeObjectAttributed);
+		if(enabled) 
+			getCacheHash().put(jakeObject, (Attributed<JakeObject>) jakeObjectAttributed);
 		return jakeObjectAttributed;
 	}
 
