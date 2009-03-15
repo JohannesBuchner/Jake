@@ -10,12 +10,12 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
-import com.jakeapp.gui.swing.callbacks.TaskChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ContextViewChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChangedCallback;
+import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
@@ -47,8 +47,8 @@ import java.util.concurrent.ExecutionException;
  * As you see, Statusbar is very curious about ALL the events going on...
  */
 public class JakeStatusBar extends JakeGuiComponent
-				implements ILoginStateListener, ProjectChanged, ProjectViewChanged,
-				ContextViewChanged, DataChanged, ContextChanged, TaskChanged {
+				implements ILoginStateListener, ProjectChangedCallback, ProjectViewChangedCallback,
+				ContextViewChangedCallback, DataChangedCallback, ContextChangedCallback, TaskChangedCallback {
 	private static final Logger log = Logger.getLogger(JakeStatusBar.class);
 
 	private static JakeStatusBar instance;
@@ -72,7 +72,7 @@ public class JakeStatusBar extends JakeGuiComponent
 	private JLabel progressMsg;
 	private JPopupMenu connectionMenu;
 
-	@Override public void contextChanged(EnumSet<ContextChanged.Reason> reason,
+	@Override public void contextChanged(EnumSet<ContextChangedCallback.Reason> reason,
 					Object context) {
 		updateConnectionDisplay();
 	}

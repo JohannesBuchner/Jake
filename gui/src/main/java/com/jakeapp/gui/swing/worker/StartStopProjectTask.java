@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
@@ -21,8 +21,8 @@ public class StartStopProjectTask extends AbstractTask<Void> {
 
 		// generate event
 		EventCore.get()
-						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanging));
+						.fireProjectChanged(new ProjectChangedCallback.ProjectChangedEvent(project,
+										ProjectChangedCallback.ProjectChangedEvent.Reason.StartStopStateChanging));
 
 		return JakeMainApp.getCore().startStopProject(project, start);
 	}
@@ -31,7 +31,7 @@ public class StartStopProjectTask extends AbstractTask<Void> {
 	protected void onDone() {
 		// generate event
 		EventCore.get()
-						.fireProjectChanged(new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.Reason.StartStopStateChanged));
+						.fireProjectChanged(new ProjectChangedCallback.ProjectChangedEvent(project,
+										ProjectChangedCallback.ProjectChangedEvent.Reason.StartStopStateChanged));
 	}
 }

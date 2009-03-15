@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -44,7 +44,7 @@ public class JakeContext {
 			}
 
 			// fire the event and relay to all items/components/actions/panels
-			EventCore.get().fireContextChanged(ContextChanged.Reason.Project, project);
+			EventCore.get().fireContextChanged(ContextChangedCallback.Reason.Project, project);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class JakeContext {
 		JakeContext.msgService = msg;
 
 		// inform the event core for this change
-		EventCore.get().fireContextChanged(ContextChanged.Reason.MsgService, msg);
+		EventCore.get().fireContextChanged(ContextChangedCallback.Reason.MsgService, msg);
 	}
 
 	/**
@@ -92,6 +92,6 @@ public class JakeContext {
 				setProject(null);
 			}
 
-		EventCore.get().fireContextChanged(ContextChanged.Reason.Invitation, invitation);
+		EventCore.get().fireContextChanged(ContextChangedCallback.Reason.Invitation, invitation);
 	}
 }

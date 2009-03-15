@@ -9,8 +9,8 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.CoreChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.CoreChangedCallback;
 import com.jakeapp.gui.swing.callbacks.RegistrationStatus;
 import com.jakeapp.gui.swing.controls.SpinningWheelComponent;
 import com.jakeapp.gui.swing.dialogs.AdvancedAccountSettingsDialog;
@@ -56,7 +56,7 @@ import java.util.Map;
  * @author studpete
  */
 public class UserPanel extends JXPanel
-				implements RegistrationStatus, CoreChanged, ContextChanged {
+				implements RegistrationStatus, CoreChangedCallback, ContextChangedCallback {
 	private ResourceMap resourceMap;
 	private static final Logger log = Logger.getLogger(UserPanel.class);
 

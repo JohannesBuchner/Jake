@@ -8,7 +8,7 @@ import com.jakeapp.core.domain.Project;
  * Every registrant get all events.
  * Project is saved as event source.
  */
-public interface ProjectChanged {
+public interface ProjectChangedCallback {
 
 	/**
 	 * Inner class that saves project & change reason

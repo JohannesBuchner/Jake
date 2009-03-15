@@ -12,8 +12,8 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
 import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
@@ -27,7 +27,7 @@ import com.jakeapp.gui.swing.xcore.ObjectCache;
  * Flat representation of FolderObjectTreeTableModel
  */
 public class FileTableModel extends AbstractTableModel
-				implements ContextChanged, DataChanged {
+				implements ContextChangedCallback, DataChangedCallback {
 	private static final Logger log =
 					Logger.getLogger(FolderTreeTableModel.class);
 

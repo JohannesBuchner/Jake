@@ -1,7 +1,7 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NodeSelectionChangedCallback;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.panels.FilePanel;
@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FileAction extends ProjectAction implements NodeSelectionChanged {
+public abstract class FileAction extends ProjectAction implements NodeSelectionChangedCallback {
 	private static final Logger log = Logger.getLogger(FileAction.class);
 
 	private List<ProjectFilesTreeNode> nodes;

@@ -9,7 +9,7 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
@@ -95,7 +95,7 @@ public class DeleteJakeObjectsTask extends AbstractTask<Integer> {
 	@Override
 	public void onDone() {
 		// inform the core that there are new log entries available.
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), null);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Files), null);
 		if (containsFileObjects())
 			EventCore.get().fireFilesChanged(this.project);
 		else if (containsNoteObjects()) {

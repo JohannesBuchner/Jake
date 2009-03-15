@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.worker;
 
-import com.jakeapp.gui.swing.callbacks.TaskChanged;
+import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
@@ -45,7 +45,7 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	private void addRunningTask(IJakeTask task) {
 		log.debug("Register Task: " + task.getClass().getSimpleName());
 		runningTasks.put(task.hashCode(), task);
-		fireTasksChanged(task, TaskChanged.TaskOps.Started);
+		fireTasksChanged(task, TaskChangedCallback.TaskOps.Started);
 	}
 
 	// private for singleton
@@ -55,10 +55,10 @@ public class JakeExecutor extends ThreadPoolExecutor {
 
 	public static void removeTask(IJakeTask task) {
 		getInstance().runningTasks.remove(task.hashCode());
-		fireTasksChanged(task, TaskChanged.TaskOps.Finished);
+		fireTasksChanged(task, TaskChangedCallback.TaskOps.Finished);
 	}
 
-	private static void fireTasksChanged(final IJakeTask task, final TaskChanged.TaskOps op) {
+	private static void fireTasksChanged(final IJakeTask task, final TaskChangedCallback.TaskOps op) {
 		// make call threadsave!
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

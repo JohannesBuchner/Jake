@@ -3,9 +3,9 @@ package com.jakeapp.gui.swing.models;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.controls.MutableListModel;
 import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.globals.JakeContext;
@@ -24,7 +24,7 @@ import java.util.List;
  * Capsulates UserId into a ListModel.
  */
 public class PeopleListModel extends AbstractListModel
-				implements MutableListModel, ContextChanged, ProjectChanged, DataChanged {
+				implements MutableListModel, ContextChangedCallback, ProjectChangedCallback, DataChangedCallback {
 	private static final Logger log = Logger.getLogger(PeopleListModel.class);
 
 	private List<UserInfo> people;

@@ -10,7 +10,7 @@ import java.util.List;
  * <p/>
  * Consumers include, for example, the main menu or the popup menu.
  */
-public interface NodeSelectionChanged {
+public interface NodeSelectionChangedCallback {
 	/**
 	 * Inner class that saves files and provides convenience methods
 	 * <p/>

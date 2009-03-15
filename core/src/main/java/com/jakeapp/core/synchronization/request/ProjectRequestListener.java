@@ -16,11 +16,16 @@ import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.FSService;
+import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
+import com.jakeapp.jake.ics.filetransfer.ITransferListener;
 import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
+import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
@@ -34,6 +39,8 @@ import java.util.UUID;
 public class ProjectRequestListener
 				implements IMessageReceiveListener, IOnlineStatusListener,
 				ILoginStateListener, IncomingTransferListener, FileRequestFileMapper {
+
+	private static Logger log = Logger.getLogger(ProjectRequestListener.class);
 
 	private static final String BEGIN_LOGENTRY = "<le>";
 
@@ -62,9 +69,6 @@ public class ProjectRequestListener
 	private IInternalSyncService syncService;
 
 	private MessageMarshaller messageMarshaller;
-
-	private static Logger log = Logger.getLogger(ProjectRequestListener.class);
-
 
 	public ProjectRequestListener(Project p, ICSManager icsManager,
 					ProjectApplicationContextFactory db, IInternalSyncService syncService,
@@ -289,7 +293,26 @@ public class ProjectRequestListener
 	@Override
 	public void started(IFileTransfer t) {
 		log.debug("we are transmitting." + t);
-		// TODO: maybe we want to watch. maybe we don't.
+		new TransferWatcherThread(t, new ITransferListener() {
+
+			@Override
+			public void onFailure(AdditionalFileTransferData transfer,
+					String error) {
+				log.warn("transmitting failed: " + error);
+			}
+
+			@Override
+			public void onSuccess(AdditionalFileTransferData transfer) {
+				log.info("transmitting was successful");
+			}
+
+			@Override
+			public void onUpdate(AdditionalFileTransferData transfer,
+					Status status, double progress) {
+				log.debug("transmitting update: " + progress + " - " + status);
+			}
+			
+		});
 	}
 
 	private File getDeliveryDirectory() {

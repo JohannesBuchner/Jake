@@ -12,8 +12,8 @@ import org.apache.log4j.Logger;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.worker.GetAllProjectFilesTask;
@@ -27,7 +27,7 @@ import com.jakeapp.gui.swing.worker.JakeExecutor;
  *
  * @author studpete
  */
-public class ObjectCache implements ContextChanged {
+public class ObjectCache implements ContextChangedCallback {
 	private static final Logger log = Logger.getLogger(ObjectCache.class);
 	private static ObjectCache instance = new ObjectCache();
 
@@ -63,7 +63,7 @@ public class ObjectCache implements ContextChanged {
 	}
 
 	private void fireProjectDataChanged() {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Projects), null);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Projects), null);
 	}
 
 	public Collection<FileObject> getFiles(Project p) {
@@ -83,7 +83,7 @@ public class ObjectCache implements ContextChanged {
 	}
 
 	private void fireFilesDataChanged(Project project) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), project);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Files), project);
 	}
 
 	public Collection<NoteObject> getNotes(Project p) {
@@ -104,7 +104,7 @@ public class ObjectCache implements ContextChanged {
 	}
 
 	private void fireNotesDataChanged(Project project) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Notes), project);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Notes), project);
 	}
 
 	/**

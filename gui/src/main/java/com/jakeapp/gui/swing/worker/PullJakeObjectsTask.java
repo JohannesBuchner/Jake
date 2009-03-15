@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -34,7 +34,7 @@ public class PullJakeObjectsTask extends AbstractTask<Void> {
 	@Override
 	protected void onDone() {
 		// inform the core that there are new log entries available.
-		EventCore.get().fireDataChanged(EnumSet.of(DataChanged.DataReason.Files), null);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Files), null);
 		if (this.jakeObjects.size() > 0) {
 			if ((this.jakeObjects.get(0)) instanceof FileObject)
 				EventCore.get().fireFilesChanged(this.jakeObjects.get(0).getProject());

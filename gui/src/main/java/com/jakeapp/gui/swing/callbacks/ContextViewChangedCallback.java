@@ -5,6 +5,6 @@ import com.jakeapp.gui.swing.JakeMainView;
 /**
  * Interface for context view changed callback.
  */
-public interface ContextViewChanged {
+public interface ContextViewChangedCallback {
 	public void setContextViewPanel(JakeMainView.ContextPanelEnum panel);
 }

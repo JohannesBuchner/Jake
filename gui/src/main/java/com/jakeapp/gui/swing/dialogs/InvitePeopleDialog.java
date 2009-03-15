@@ -2,7 +2,7 @@ package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.models.InvitePeopleComboBoxModel;
@@ -22,7 +22,7 @@ import java.awt.event.KeyEvent;
  */
 // TODO: enable add multiple
 // TODO: enable add by name (for already known)
-public class InvitePeopleDialog extends JakeDialog implements ProjectChanged {
+public class InvitePeopleDialog extends JakeDialog implements ProjectChangedCallback {
 	private static final Logger log = Logger.getLogger(InvitePeopleDialog.class);
 	private JComboBox peopleComboBox;
 

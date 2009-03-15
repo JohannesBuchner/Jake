@@ -5,8 +5,8 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.file.*;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.controls.cmacwidgets.GreenHudButtonUI;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTreeTable;
@@ -42,7 +42,7 @@ import java.util.List;
  * @author studpete, csutter
  */
 public class FilePanel extends javax.swing.JPanel
-				implements ContextChanged, ProjectChanged {
+				implements ContextChangedCallback, ProjectChangedCallback {
 	private static final long serialVersionUID = -3419475619689818265L;
 	private static final Logger log = Logger.getLogger(FilePanel.class);
 

@@ -7,11 +7,11 @@ import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.FileSelectionChangedCallback;
+import com.jakeapp.gui.swing.callbacks.NoteSelectionChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChangedCallback;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.controls.SmallLabel;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -43,8 +43,8 @@ import java.util.EnumSet;
  * @author studpete, simon
  */
 public class InspectorPanel extends JXPanel
-				implements ProjectChanged, ContextChanged, FileSelectionChanged,
-				ProjectViewChanged, NoteSelectionChanged {
+				implements ProjectChangedCallback, ContextChangedCallback, FileSelectionChangedCallback,
+				ProjectViewChangedCallback, NoteSelectionChangedCallback {
 
 	private static final long serialVersionUID = 7743765581263700424L;
 	private static final Logger log = Logger.getLogger(InspectorPanel.class);

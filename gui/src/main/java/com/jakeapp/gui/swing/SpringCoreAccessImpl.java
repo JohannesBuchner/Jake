@@ -22,8 +22,8 @@ import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.FilesChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -68,8 +68,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	 */
 	private String sessionId;
 
-	private Map<FilesChanged, IFileModificationListener> fileListeners =
-					new HashMap<FilesChanged, IFileModificationListener>();
+	private Map<FilesChangedCallback, IFileModificationListener> fileListeners =
+					new HashMap<FilesChangedCallback, IFileModificationListener>();
 
 
 	private IFrontendService getFrontendService() {
@@ -239,8 +239,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					}
 
 					EventCore.get().fireProjectChanged(
-									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.Reason.Deleted));
+									new ProjectChangedCallback.ProjectChangedEvent(project,
+													ProjectChangedCallback.ProjectChangedEvent.Reason.Deleted));
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -297,8 +297,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					Project project = invitation.createProject();
 
 					EventCore.get().fireProjectChanged(
-									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.Reason.Joined));
+									new ProjectChangedCallback.ProjectChangedEvent(project,
+													ProjectChangedCallback.ProjectChangedEvent.Reason.Joined));
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -325,8 +325,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 									.rejectInvitation(JakeContext.getInvitation());
 
 					EventCore.get().fireProjectChanged(
-									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.Reason.Rejected));
+									new ProjectChangedCallback.ProjectChangedEvent(project,
+													ProjectChangedCallback.ProjectChangedEvent.Reason.Rejected));
 
 				} catch (FrontendNotLoggedInException e) {
 					ExceptionUtilities.showError(e);
@@ -355,8 +355,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			}
 
 			EventCore.get().fireProjectChanged(
-							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.Reason.Syncing));
+							new ProjectChangedCallback.ProjectChangedEvent(project,
+											ProjectChangedCallback.ProjectChangedEvent.Reason.Syncing));
 
 		} catch (IllegalArgumentException e) {
 			ExceptionUtilities.showError(e);
@@ -375,8 +375,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.getFrontendService().getProjectsManagingService(this.getSessionId())
 							.updateProjectName(project, prName);
 			EventCore.get().fireProjectChanged(
-							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.Reason.Name));
+							new ProjectChangedCallback.ProjectChangedEvent(project,
+											ProjectChangedCallback.ProjectChangedEvent.Reason.Name));
 		} catch (IllegalArgumentException e) {
 			//empty implementation
 		} catch (IllegalStateException e) {
@@ -602,8 +602,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			pms.setUserNickname(project, user, nick);
 
 			EventCore.get().fireProjectChanged(
-							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.Reason.People));
+							new ProjectChangedCallback.ProjectChangedEvent(project,
+											ProjectChangedCallback.ProjectChangedEvent.Reason.People));
 
 			return true;
 		}
@@ -620,8 +620,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(project,
-										ProjectChanged.ProjectChangedEvent.Reason.People));
+						new ProjectChangedCallback.ProjectChangedEvent(project,
+										ProjectChangedCallback.ProjectChangedEvent.Reason.People));
 	}
 
 
@@ -632,8 +632,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 							.invite(project, userid);
 
 			EventCore.get().fireProjectChanged(
-							new ProjectChanged.ProjectChangedEvent(project,
-											ProjectChanged.ProjectChangedEvent.Reason.People));
+							new ProjectChangedCallback.ProjectChangedEvent(project,
+											ProjectChangedCallback.ProjectChangedEvent.Reason.People));
 		} catch (IllegalArgumentException e) {
 			ExceptionUtilities.showError(e);
 		} catch (FrontendNotLoggedInException e) {
@@ -730,8 +730,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					project = pms.createProject(name, path, msg);
 
 					EventCore.get().fireProjectChanged(
-									new ProjectChanged.ProjectChangedEvent(project,
-													ProjectChanged.ProjectChangedEvent.Reason.Created));
+									new ProjectChangedCallback.ProjectChangedEvent(project,
+													ProjectChangedCallback.ProjectChangedEvent.Reason.Created));
 
 				} catch (FrontendNotLoggedInException e) {
 					ExceptionUtilities.showError(
@@ -929,7 +929,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void addFilesChangedListener(final FilesChanged listener, Project project) {
+	public void addFilesChangedListener(final FilesChangedCallback listener, Project project) {
 		IFileModificationListener fileModificationListener =
 						new IFileModificationListener() {
 
@@ -945,7 +945,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void removeFilesChangedListener(FilesChanged listener, Project project) {
+	public void removeFilesChangedListener(FilesChangedCallback listener, Project project) {
 		IFileModificationListener fileModificationListener;
 
 		fileModificationListener = this.fileListeners.get(listener);
@@ -1017,8 +1017,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		}
 
 		EventCore.get().fireProjectChanged(
-						new ProjectChanged.ProjectChangedEvent(jakeObject.getProject(),
-										ProjectChanged.ProjectChangedEvent.Reason.Deleted));
+						new ProjectChangedCallback.ProjectChangedEvent(jakeObject.getProject(),
+										ProjectChangedCallback.ProjectChangedEvent.Reason.Deleted));
 	}
 
 

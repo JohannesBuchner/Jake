@@ -5,7 +5,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
 import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
@@ -28,7 +28,7 @@ import java.util.EnumSet;
  * The Project Invitation Panel.
  * A Unjoined project is displayed here, the user can join or reject.
  */
-public class InvitationPanel extends JXPanel implements ContextChanged {
+public class InvitationPanel extends JXPanel implements ContextChangedCallback {
 	private JTextField folderTextField;
 	private JLabel projectNameLabel;
 	private JLabel userNameLabel;

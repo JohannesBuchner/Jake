@@ -10,7 +10,7 @@ import java.util.List;
  * <p/>
  * Consumers include, for example, the inspector.
  */
-public interface FileSelectionChanged {
+public interface FileSelectionChangedCallback {
 	/**
 	 * Inner class that saves files and provides convenience methods
 	 * <p/>

@@ -10,9 +10,9 @@ import com.jakeapp.gui.swing.actions.notes.SoftlockNoteAction;
 import com.jakeapp.gui.swing.actions.notes.CreateNoteAction;
 import com.jakeapp.gui.swing.actions.notes.DeleteNoteAction;
 import com.jakeapp.gui.swing.actions.notes.SaveNoteAction;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.NoteSelectionChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
@@ -53,7 +53,7 @@ import java.util.List;
  * @author studpete, simon
  */
 public class NotesPanel extends javax.swing.JPanel
-				implements ContextChanged, ProjectChanged, ListSelectionListener {
+				implements ContextChangedCallback, ProjectChangedCallback, ListSelectionListener {
 
 	private static final long serialVersionUID = -7703570005631651276L;
 	private static NotesPanel instance;
@@ -61,8 +61,8 @@ public class NotesPanel extends javax.swing.JPanel
 	private final static int TableUpdateDelay = 20000;
 					// 20 sec 	//FIXME magic number, make property
 	private Timer tableUpdateTimer;
-	private List<NoteSelectionChanged> noteSelectionListeners =
-					new ArrayList<NoteSelectionChanged>();
+	private List<NoteSelectionChangedCallback> noteSelectionListeners =
+					new ArrayList<NoteSelectionChangedCallback>();
 	private NotesTableModel notesTableModel;
 	private JScrollPane notesTableScrollPane;
 	private JSplitPane mainSplitPane;
@@ -365,11 +365,11 @@ public class NotesPanel extends javax.swing.JPanel
 		return instance;
 	}
 
-	public void addNoteSelectionListener(NoteSelectionChanged listener) {
+	public void addNoteSelectionListener(NoteSelectionChangedCallback listener) {
 		this.noteSelectionListeners.add(listener);
 	}
 
-	public void removeNoteSelectionListener(NoteSelectionChanged listener) {
+	public void removeNoteSelectionListener(NoteSelectionChangedCallback listener) {
 		this.noteSelectionListeners.remove(listener);
 	}
 
@@ -378,8 +378,8 @@ public class NotesPanel extends javax.swing.JPanel
 
 		log.debug("notify note selection listeners");
 
-		for (NoteSelectionChanged listener : this.noteSelectionListeners) {
-			listener.noteSelectionChanged(new NoteSelectionChanged.NoteSelectedEvent(
+		for (NoteSelectionChangedCallback listener : this.noteSelectionListeners) {
+			listener.noteSelectionChanged(new NoteSelectionChangedCallback.NoteSelectedEvent(
 							selectedNotes));
 		}
 	}

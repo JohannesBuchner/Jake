@@ -10,7 +10,7 @@ import java.util.List;
  * <p/>
  * Consumers include, for example, the inspector.
  */
-public interface NoteSelectionChanged {
+public interface NoteSelectionChangedCallback {
 	/**
 	 * Inner class that saves notes and provides convenience methods
 	 */

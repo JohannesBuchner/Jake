@@ -7,10 +7,10 @@ import com.explodingpixels.widgets.WindowUtils;
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectViewChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ContextViewChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectViewChangedCallback;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
 import com.jakeapp.gui.swing.helpers.AppUtilities;
 import com.jakeapp.gui.swing.helpers.GuiUtilities;
@@ -57,7 +57,7 @@ import java.util.List;
 /**
  * The application's main frame.
  */
-public class JakeMainView extends FrameView implements ContextChanged {
+public class JakeMainView extends FrameView implements ContextChangedCallback {
 	private static final Logger log = Logger.getLogger(JakeMainView.class);
 	private static final int CONTENT_SPLITTERSIZE = 2;
 	private static JakeMainView mainView;
@@ -82,10 +82,10 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	private JakeStatusBar jakeStatusBar;
 	private JakeTrayIcon tray;
 
-	private List<ProjectViewChanged> projectViewChanged =
-					new ArrayList<ProjectViewChanged>();
-	private List<ContextViewChanged> contextViewChanged =
-					new ArrayList<ContextViewChanged>();
+	private List<ProjectViewChangedCallback> projectViewChanged =
+					new ArrayList<ProjectViewChangedCallback>();
+	private List<ContextViewChangedCallback> contextViewChanged =
+					new ArrayList<ContextViewChangedCallback>();
 	private JPanel statusPanel;
 
 	private JakeMainApp app;
@@ -352,7 +352,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	 * Inner class that handles the project changed events
 	 * for status bar / source list.
 	 */
-	private class ProjectChangedCallback implements ProjectChanged {
+	private class UpdateAllProjectChangedCallback implements ProjectChangedCallback {
 		public void projectChanged(ProjectChangedEvent ev) {
 			log.trace("Received project changed callback.");
 
@@ -370,7 +370,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	 * Registers the callbacks with the core
 	 */
 	private void registerCallbacks() {
-		EventCore.get().addProjectChangedCallbackListener(new ProjectChangedCallback());
+		EventCore.get().addProjectChangedCallbackListener(new UpdateAllProjectChangedCallback());
 		EventCore.get().addContextChangedListener(this);
 	}
 
@@ -752,11 +752,11 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	}
 
 
-	public void addProjectViewChangedListener(ProjectViewChanged pvc) {
+	public void addProjectViewChangedListener(ProjectViewChangedCallback pvc) {
 		projectViewChanged.add(pvc);
 	}
 
-	public void removeProjectViewChangedListener(ProjectViewChanged pvc) {
+	public void removeProjectViewChangedListener(ProjectViewChangedCallback pvc) {
 		projectViewChanged.remove(pvc);
 	}
 
@@ -765,17 +765,17 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	 * registered members of the event.
 	 */
 	private void fireProjectViewChanged() {
-		for (ProjectViewChanged psc : projectViewChanged) {
+		for (ProjectViewChangedCallback psc : projectViewChanged) {
 			psc.setProjectViewPanel(getProjectViewPanel());
 		}
 	}
 
 
-	public void addContextViewChangedListener(ContextViewChanged pvc) {
+	public void addContextViewChangedListener(ContextViewChangedCallback pvc) {
 		contextViewChanged.add(pvc);
 	}
 
-	public void removeContextViewChangedListener(ContextViewChanged pvc) {
+	public void removeContextViewChangedListener(ContextViewChangedCallback pvc) {
 		contextViewChanged.remove(pvc);
 	}
 
@@ -784,7 +784,7 @@ public class JakeMainView extends FrameView implements ContextChanged {
 	 * registered members of the event.
 	 */
 	private void fireContextViewChanged() {
-		for (ContextViewChanged psc : contextViewChanged) {
+		for (ContextViewChangedCallback psc : contextViewChanged) {
 			psc.setContextViewPanel(getContextViewPanel());
 		}
 	}

@@ -3,6 +3,6 @@ package com.jakeapp.gui.swing.callbacks;
 /**
  * @author studpete
  */
-public class NotesChanged {
+public class NotesChangedCallback {
 	// TODO: i'm tired...
 }

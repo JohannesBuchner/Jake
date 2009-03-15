@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.xcore;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.IProjectInvitationListener;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import org.apache.log4j.Logger;
@@ -25,8 +25,8 @@ class ProjectInvitationListener implements IProjectInvitationListener {
 
 		ObjectCache.get().updateProjects();
 
-		EventCore.get().fireProjectChanged(new ProjectChanged.ProjectChangedEvent(null,
-						ProjectChanged.ProjectChangedEvent.Reason.Invited));
+		EventCore.get().fireProjectChanged(new ProjectChangedCallback.ProjectChangedEvent(null,
+						ProjectChangedCallback.ProjectChangedEvent.Reason.Invited));
 	}
 
 	@Override public void accepted(User user, Project p) {

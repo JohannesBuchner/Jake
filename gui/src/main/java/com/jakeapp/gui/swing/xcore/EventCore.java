@@ -5,13 +5,13 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.CoreChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.FileSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.NodeSelectionChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.TaskChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.CoreChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.callbacks.FileSelectionChangedCallback;
+import com.jakeapp.gui.swing.callbacks.NodeSelectionChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
+import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.jake.fss.IFileModificationListener;
@@ -36,29 +36,29 @@ public class EventCore {
 	private final ProjectsChangeListener projectsChangeListener =
 					new ProjectsChangeListener();
 
-	private final List<ProjectChanged> projectChanged;
-	private final Stack<ProjectChanged.ProjectChangedEvent> projectEvents =
-					new Stack<ProjectChanged.ProjectChangedEvent>();
+	private final List<ProjectChangedCallback> projectChanged;
+	private final Stack<ProjectChangedCallback.ProjectChangedEvent> projectEvents =
+					new Stack<ProjectChangedCallback.ProjectChangedEvent>();
 
-	private final List<DataChanged> dataChanged;
-	private List<FileSelectionChanged> fileSelectionListeners =
-					new ArrayList<FileSelectionChanged>();
-	private List<NodeSelectionChanged> nodeSelectionListeners =
-					new ArrayList<NodeSelectionChanged>();
+	private final List<DataChangedCallback> dataChanged;
+	private List<FileSelectionChangedCallback> fileSelectionListeners =
+					new ArrayList<FileSelectionChangedCallback>();
+	private List<NodeSelectionChangedCallback> nodeSelectionListeners =
+					new ArrayList<NodeSelectionChangedCallback>();
 
 	// save the last project events in a list (check for ongoing operations)
-	private final HashMap<Project, ProjectChanged.ProjectChangedEvent>
+	private final HashMap<Project, ProjectChangedCallback.ProjectChangedEvent>
 					lastProjectEvents =
-					new HashMap<Project, ProjectChanged.ProjectChangedEvent>();
+					new HashMap<Project, ProjectChangedCallback.ProjectChangedEvent>();
 
 	private IProjectInvitationListener invitationListener =
 					new ProjectInvitationListener();
 
-	private final List<ContextChanged> contextChangedListeners =
-					new ArrayList<ContextChanged>();
+	private final List<ContextChangedCallback> contextChangedListeners =
+					new ArrayList<ContextChangedCallback>();
 
-	private final List<TaskChanged> taskChangedListeners =
-					new ArrayList<TaskChanged>();
+	private final List<TaskChangedCallback> taskChangedListeners =
+					new ArrayList<TaskChangedCallback>();
 
 	private final List<ILoginStateListener> loginStateListeners =
 					new ArrayList<ILoginStateListener>();
@@ -89,10 +89,10 @@ public class EventCore {
 	}
 
 	public EventCore() {
-		projectChanged = new ArrayList<ProjectChanged>();
-		dataChanged = new ArrayList<DataChanged>();
+		projectChanged = new ArrayList<ProjectChangedCallback>();
+		dataChanged = new ArrayList<DataChangedCallback>();
 
-		JakeMainApp.getInstance().addCoreChangedListener(new CoreChanged() {
+		JakeMainApp.getInstance().addCoreChangedListener(new CoreChangedCallback() {
 			@Override public void coreChanged() {
 				log.debug("received core change, rolling out updates...");
 				fireAllChanged();
@@ -102,18 +102,18 @@ public class EventCore {
 
 	private void fireAllChanged() {
 		ObjectCache.get().updateAll();
-		fireDataChanged(DataChanged.ALL, null);
+		fireDataChanged(DataChangedCallback.ALL, null);
 	}
 
 	public static EventCore get() {
 		return instance;
 	}
 
-	public void addProjectChangedCallbackListener(ProjectChanged cb) {
+	public void addProjectChangedCallbackListener(ProjectChangedCallback cb) {
 		projectChanged.add(cb);
 	}
 
-	public void removeProjectChangedCallbackListener(ProjectChanged cb) {
+	public void removeProjectChangedCallbackListener(ProjectChangedCallback cb) {
 		log.trace("Deregister project changed callback: " + cb);
 
 		if (projectChanged.contains(cb)) {
@@ -121,7 +121,7 @@ public class EventCore {
 		}
 	}
 
-	public void fireProjectChanged(final ProjectChanged.ProjectChangedEvent ev) {
+	public void fireProjectChanged(final ProjectChangedCallback.ProjectChangedEvent ev) {
 		Runnable runner = new Runnable() {
 			@Override public void run() {
 				lastProjectEvents.put(ev.getProject(), ev);
@@ -136,8 +136,8 @@ public class EventCore {
 		
 		
 
-	private void spreadProjectChanged(ProjectChanged.ProjectChangedEvent ev) {
-		for (ProjectChanged callback : projectChanged) {
+	private void spreadProjectChanged(ProjectChangedCallback.ProjectChangedEvent ev) {
+		for (ProjectChangedCallback callback : projectChanged) {
 			callback.projectChanged(ev);
 		}
 	}
@@ -156,18 +156,18 @@ public class EventCore {
 		loginStateListeners.remove(cb);
 	}
 
-	public void addDataChangedCallbackListener(DataChanged cb) {
+	public void addDataChangedCallbackListener(DataChangedCallback cb) {
 		dataChanged.add(cb);
 	}
 
-	public void removeDataChangedCallbackListener(DataChanged cb) {
+	public void removeDataChangedCallbackListener(DataChangedCallback cb) {
 		dataChanged.remove(cb);
 	}
 
-	public void fireDataChanged(EnumSet<DataChanged.DataReason> dataReason,
+	public void fireDataChanged(EnumSet<DataChangedCallback.DataReason> dataReason,
 					Project p) {
 		log.trace("spread callback event data changed: " + dataReason);
-		for (DataChanged callback : dataChanged) {
+		for (DataChangedCallback callback : dataChanged) {
 			callback.dataChanged(dataReason, p);
 		}
 
@@ -175,44 +175,44 @@ public class EventCore {
 		shootStalledProjectChangedEvents();
 	}
 
-	public void addFileSelectionListener(FileSelectionChanged listener) {
+	public void addFileSelectionListener(FileSelectionChangedCallback listener) {
 		fileSelectionListeners.add(listener);
 	}
 
-	public void removeFileSelectionListener(FileSelectionChanged listener) {
+	public void removeFileSelectionListener(FileSelectionChangedCallback listener) {
 		fileSelectionListeners.remove(listener);
 	}
 
-	public void addNodeSelectionListener(NodeSelectionChanged listener) {
+	public void addNodeSelectionListener(NodeSelectionChangedCallback listener) {
 		nodeSelectionListeners.add(listener);
 	}
 
-	public void removeNodeSelectionListener(NodeSelectionChanged listener) {
+	public void removeNodeSelectionListener(NodeSelectionChangedCallback listener) {
 		nodeSelectionListeners.remove(listener);
 	}
 
-	public void addContextChangedListener(ContextChanged listener) {
+	public void addContextChangedListener(ContextChangedCallback listener) {
 		contextChangedListeners.add(listener);
 	}
 
-	public void removeContextChangedListener(ContextChanged listener) {
+	public void removeContextChangedListener(ContextChangedCallback listener) {
 		contextChangedListeners.remove(listener);
 	}
 
 
 	public void notifyFileSelectionListeners(java.util.List<FileObject> objs) {
 		log.debug("notify selection listeners");
-		for (FileSelectionChanged listener : fileSelectionListeners) {
+		for (FileSelectionChangedCallback listener : fileSelectionListeners) {
 			listener.fileSelectionChanged(
-							new FileSelectionChanged.FileSelectedEvent(objs));
+							new FileSelectionChangedCallback.FileSelectedEvent(objs));
 		}
 	}
 
 	public void notifyNodeSelectionListeners(
 					java.util.List<ProjectFilesTreeNode> objs) {
 		log.trace("notify selection listeners");
-		for (NodeSelectionChanged c : nodeSelectionListeners) {
-			c.nodeSelectionChanged(new NodeSelectionChanged.NodeSelectedEvent(objs));
+		for (NodeSelectionChangedCallback c : nodeSelectionListeners) {
+			c.nodeSelectionChanged(new NodeSelectionChangedCallback.NodeSelectedEvent(objs));
 		}
 	}
 
@@ -238,24 +238,23 @@ public class EventCore {
 	}
 
 	public void fireLogChanged(Project p) {
-		System.err.println("!!!!! HELLO, THE LOG HAS CHANGED !!!!!");
+		log.error("!!!!! HELLO, THE LOG HAS CHANGED !!!!!");
 		
 		// TODO: UGLY HACK, change someday
 		ObjectCache.get().updateNotes(p);
-
-		fireDataChanged(DataChanged.ALL, p);
+		fireDataChanged(DataChangedCallback.ALL, p);
 	}
 
-	public void addTasksChangedListener(TaskChanged callback) {
+	public void addTasksChangedListener(TaskChangedCallback callback) {
 		taskChangedListeners.add(callback);
 	}
 
-	public void removeTasksChangedListener(TaskChanged callback) {
+	public void removeTasksChangedListener(TaskChangedCallback callback) {
 		taskChangedListeners.remove(callback);
 	}
 
-	public void fireTasksChangedListener(IJakeTask task, TaskChanged.TaskOps op) {
-		for (TaskChanged callback : taskChangedListeners) {
+	public void fireTasksChangedListener(IJakeTask task, TaskChangedCallback.TaskOps op) {
+		for (TaskChangedCallback callback : taskChangedListeners) {
 			switch (op) {
 				case Started:
 					callback.taskStarted(task);
@@ -286,7 +285,7 @@ public class EventCore {
 	 * @param project
 	 * @return
 	 */
-	public ProjectChanged.ProjectChangedEvent getLastProjectEvent(Project project) {
+	public ProjectChangedCallback.ProjectChangedEvent getLastProjectEvent(Project project) {
 		return lastProjectEvents.get(project);
 	}
 
@@ -297,9 +296,9 @@ public class EventCore {
 	 * @param reason
 	 * @param context
 	 */
-	public void fireContextChanged(ContextChanged.Reason reason, Object context) {
+	public void fireContextChanged(ContextChangedCallback.Reason reason, Object context) {
 		log.trace("notify property changed listeners");
-		for (ContextChanged c : contextChangedListeners) {
+		for (ContextChangedCallback c : contextChangedListeners) {
 			c.contextChanged(EnumSet.of(reason), context);
 		}
 		
@@ -311,6 +310,6 @@ public class EventCore {
 	}
 
 	public void fireUserChanged(Project p) {
-		fireDataChanged(EnumSet.of(DataChanged.DataReason.User), p);
+		fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.User), p);
 	}
 }

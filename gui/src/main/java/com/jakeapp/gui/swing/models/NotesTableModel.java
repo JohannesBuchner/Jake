@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Simon
  */
-public class NotesTableModel extends DefaultTableModel implements DataChanged {
+public class NotesTableModel extends DefaultTableModel implements DataChangedCallback {
 	private static final long serialVersionUID = -2745782032637383756L;
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 

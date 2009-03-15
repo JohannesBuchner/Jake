@@ -19,10 +19,10 @@ import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
 import com.jakeapp.gui.swing.actions.project.RenameProjectAction;
 import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.project.SyncProjectAction;
-import com.jakeapp.gui.swing.callbacks.ContextViewChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
-import com.jakeapp.gui.swing.callbacks.TaskChanged;
+import com.jakeapp.gui.swing.callbacks.ContextViewChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
+import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.components.componenthelper.JakeGuiComponent;
 import com.jakeapp.gui.swing.controls.SpinningDial;
 import com.jakeapp.gui.swing.controls.SpinningDialWaitIndicator;
@@ -51,7 +51,7 @@ import java.util.Map;
  * Manages the Source List for projects.
  */
 public class JakeSourceList extends JakeGuiComponent
-				implements ProjectChanged, DataChanged, TaskChanged, ContextViewChanged {
+				implements ProjectChangedCallback, DataChangedCallback, TaskChangedCallback, ContextViewChangedCallback {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap =
@@ -450,7 +450,7 @@ public class JakeSourceList extends JakeGuiComponent
 		Icon prIcon = project.isStarted() ? projectStartedIcon : projectStoppedIcon;
 
 		// override the icon if work is in process
-		ProjectChanged.ProjectChangedEvent pce =
+		ProjectChangedCallback.ProjectChangedEvent pce =
 						EventCore.get().getLastProjectEvent(project);
 		if (pce != null && pce.isWorking()) {
 			prIcon = projectWorkingIcon;

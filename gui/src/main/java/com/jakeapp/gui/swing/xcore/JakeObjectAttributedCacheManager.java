@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.xcore;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.SpringCoreAccessImpl;
-import com.jakeapp.gui.swing.callbacks.FilesChanged;
+import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.jake.fss.IModificationListener;
 
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class JakeObjectAttributedCacheManager {
 	}
 
 
-	private class SyncCacheFileChangedListener implements FilesChanged {
+	private class SyncCacheFileChangedListener implements FilesChangedCallback {
 		@Override public void filesChanged(String relpath, IModificationListener.ModifyActions action) {
 
 		}

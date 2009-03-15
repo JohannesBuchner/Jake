@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.actions.abstracts;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
@@ -17,7 +17,7 @@ import java.util.List;
  * PeopleListActions - extends the ProjectAction to save the PeopleList
  * (needed to determine the people that are selected)
  */
-public abstract class UserAction extends ProjectAction implements ContextChanged {
+public abstract class UserAction extends ProjectAction implements ContextChangedCallback {
 	private static final Logger log = Logger.getLogger(UserAction.class);
 	private JList list;
 

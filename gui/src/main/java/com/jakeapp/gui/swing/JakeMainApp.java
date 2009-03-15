@@ -5,7 +5,7 @@
 package com.jakeapp.gui.swing;
 
 import com.jakeapp.core.util.SpringThreadBroker;
-import com.jakeapp.gui.swing.callbacks.CoreChanged;
+import com.jakeapp.gui.swing.callbacks.CoreChangedCallback;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceListener;
 import com.jakeapp.gui.swing.helpers.ApplicationInstanceManager;
@@ -34,7 +34,7 @@ public class JakeMainApp extends SingleFrameApplication {
 
 	private ICoreAccess core;
 
-	private final List<CoreChanged> coreChanged = new ArrayList<CoreChanged>();
+	private final List<CoreChangedCallback> coreChanged = new ArrayList<CoreChangedCallback>();
 
 	public JakeMainApp() {
 		app = this;
@@ -197,7 +197,7 @@ public class JakeMainApp extends SingleFrameApplication {
 		this.core = core;
 
 		// shout out our core change!
-		for (CoreChanged callback : coreChanged) {
+		for (CoreChangedCallback callback : coreChanged) {
 			callback.coreChanged();
 		}
 	}
@@ -235,7 +235,7 @@ public class JakeMainApp extends SingleFrameApplication {
 	}
 
 	// there is no remove because the core is never unloaded...
-	public void addCoreChangedListener(CoreChanged coreCallback) {
+	public void addCoreChangedListener(CoreChangedCallback coreCallback) {
 		coreChanged.add(coreCallback);
 	}
 }

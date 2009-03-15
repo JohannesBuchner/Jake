@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Tag;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.callbacks.FilesChanged;
+import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.gui.swing.exceptions.InvalidTagStringFormatException;
 import com.jakeapp.gui.swing.helpers.FileObjectLockedCell;
 import com.jakeapp.gui.swing.helpers.FolderObject;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class FolderTreeTableModel implements TreeTableModel, FilesChanged {
+public class FolderTreeTableModel implements TreeTableModel, FilesChangedCallback {
 	private static final Logger log = Logger.getLogger(FolderTreeTableModel.class);
 
 	private ProjectFilesTreeNode root;

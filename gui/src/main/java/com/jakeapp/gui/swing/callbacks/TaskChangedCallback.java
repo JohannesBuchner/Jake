@@ -7,7 +7,7 @@ import com.jakeapp.gui.swing.worker.IJakeTask;
  *
  * @author studpete
  */
-public interface TaskChanged {
+public interface TaskChangedCallback {
 	enum TaskOps {Started, Updated, Finished}
 
 	public void taskStarted(IJakeTask task);

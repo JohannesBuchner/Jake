@@ -5,7 +5,7 @@ import java.util.EnumSet;
 /**
  * Callback that is fired when a Context changes.
  */
-public interface ContextChanged {
+public interface ContextChangedCallback {
 	public enum Reason { MsgService, Project, UserSelectionChanged, Invitation }
 
 	public static EnumSet<Reason> All = EnumSet.allOf(Reason.class);

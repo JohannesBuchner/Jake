@@ -12,7 +12,7 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.callbacks.FilesChanged;
+import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
 import com.jakeapp.gui.swing.exceptions.NoteOperationFailedException;
@@ -440,7 +440,7 @@ public interface ICoreAccess {
 	 * @param project
 	 */
 	// fixme: move to eventcore!
-	public void addFilesChangedListener(FilesChanged listener, Project project);
+	public void addFilesChangedListener(FilesChangedCallback listener, Project project);
 
 	/**
 	 * Unregister of FilesChanged listeners
@@ -448,7 +448,7 @@ public interface ICoreAccess {
 	 * @param listener
 	 * @param project
 	 */
-	public void removeFilesChangedListener(FilesChanged listener, Project project);
+	public void removeFilesChangedListener(FilesChangedCallback listener, Project project);
 
 
 	/******************* Notes functions ********************/

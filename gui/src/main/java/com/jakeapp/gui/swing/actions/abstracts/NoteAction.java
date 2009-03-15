@@ -3,7 +3,7 @@ package com.jakeapp.gui.swing.actions.abstracts;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.callbacks.NoteSelectionChanged;
+import com.jakeapp.gui.swing.callbacks.NoteSelectionChangedCallback;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import org.apache.log4j.Logger;
 
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Simon
  */
-public abstract class NoteAction extends ProjectAction implements NoteSelectionChanged {
+public abstract class NoteAction extends ProjectAction implements NoteSelectionChangedCallback {
 
 	private static final long serialVersionUID = 8541763489137302803L;
 	private static Logger log = Logger.getLogger(NoteAction.class);

@@ -8,6 +8,6 @@ import com.jakeapp.gui.swing.JakeMainView;
  * Date: Dec 30, 2008
  * Time: 8:44:22 PM
  */
-public interface ProjectViewChanged {
+public interface ProjectViewChangedCallback {
 	public void setProjectViewPanel(JakeMainView.ProjectView panel);
 }

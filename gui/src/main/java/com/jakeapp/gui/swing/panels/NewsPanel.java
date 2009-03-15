@@ -9,9 +9,9 @@ import com.jakeapp.gui.swing.actions.users.SyncUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustFullUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustNoUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustUsersAction;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.DataChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.controls.JListMutable;
 import com.jakeapp.gui.swing.controls.PeopleListCellEditor;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
@@ -48,7 +48,7 @@ import java.util.EnumSet;
  * @author studpete
  */
 public class NewsPanel extends javax.swing.JPanel
-				implements ProjectChanged, DataChanged, ContextChanged {
+				implements ProjectChangedCallback, DataChangedCallback, ContextChangedCallback {
 
 	private static final long serialVersionUID = -6867091182930736758L;
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
@@ -180,7 +180,7 @@ public class NewsPanel extends javax.swing.JPanel
 	}
 
 
-	@Override public void contextChanged(EnumSet<ContextChanged.Reason> reason,
+	@Override public void contextChanged(EnumSet<ContextChangedCallback.Reason> reason,
 					Object context) {
 		this.updatePanel();
 	}

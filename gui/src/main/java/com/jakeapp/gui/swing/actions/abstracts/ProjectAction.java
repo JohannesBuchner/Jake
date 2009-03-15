@@ -2,8 +2,8 @@ package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.callbacks.ContextChanged;
-import com.jakeapp.gui.swing.callbacks.ProjectChanged;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 import java.util.EnumSet;
@@ -14,7 +14,7 @@ import java.util.EnumSet;
  * Implements the changed and selection interface.
  */
 public abstract class ProjectAction extends JakeAction
-		  implements ProjectChanged, ContextChanged {
+		  implements ProjectChangedCallback, ContextChangedCallback {
 	//private static final Logger log = Logger.getLogger(ProjectAction.class);
 
 	private Project project;
