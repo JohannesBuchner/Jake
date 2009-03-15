@@ -1,5 +1,7 @@
 package com.jakeapp.gui.swing.helpers;
 
+import java.util.Random;
+
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import org.apache.log4j.Logger;
@@ -80,8 +82,22 @@ public class ExceptionUtilities {
 		}
 		JSheet.showMessageSheet(JakeContext.getFrame(), "<html><h2>" + msg
 				+ "</h2><br><b>" + e.getMessage() + "</b><br><br> + "
-				+ getExceptionText(e, "<br>") + "<br><br>Sorry.</html>",
+				+ getExceptionText(e, "<br>") + "<br><br>"+getApologyText()+"</html>",
 				JOptionPane.ERROR_MESSAGE, null);
+	}
+
+	private static String getApologyText() {
+		String[] apologies = {
+				"Sorry.",
+				"Haha!",
+				"Idiot.",
+				"We are deeply sorry.",
+				"We are so sorry. Really.",
+				"In your face, sucker!",
+				"Please accept our apologies",
+				"Smack the developer in the face.",
+		};
+		return apologies[new Random(apologies.length).nextInt()];
 	}
 
 	/**
