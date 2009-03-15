@@ -6,6 +6,20 @@ package com.jakeapp.gui.swing.helpers;
  * @author: studpete
  */
 public class StringUtilities {
+	
+	/**
+	 * shortens a string to maxlength characters = "..."
+	 * @param str input string
+	 * @param maxLength maxlength of output string without "..."
+	 * @return shortened string with "..."
+	 */
+	public static String shorten(String str, int maxLength) {
+		if (str.length() > maxLength) {
+			return str.substring(0, maxLength) + "...";
+		} else {
+			return str;
+		}
+	}
 
 	/**
 	 * Returns a string that is cut by maxlen

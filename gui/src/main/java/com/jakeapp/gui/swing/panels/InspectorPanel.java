@@ -1,6 +1,7 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
@@ -14,6 +15,7 @@ import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChangedCallback;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.controls.SmallLabel;
+import com.jakeapp.gui.swing.controls.SmallShortenedLabel;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
@@ -60,28 +62,28 @@ public class InspectorPanel extends JXPanel
 
 	private Mode mode;
 	private JXTable eventsTable;
-	private JLabel iconLabel;
+	private JLabel icon;
 	private JLabel nameValue;
 	private JLabel sizeValue;
-	private JLabel lastEditedValue;
-	private JLabel tagsValue;
 	private JLabel fullPathValue;
+	private JLabel lastEditedLabel;
+	private JLabel lastEditedValue;
+	private JLabel lastEditorLabel;
+	private JLabel lastEditorValue;
+	private JLabel uuidLabel;
+	private JLabel uuidValue;
+	private JLabel lockedByLabel;
+	private JLabel lockedByValue;
+	private JLabel sharedLabel;
+	private JLabel sharedValue;
+
 	private EventsTableModel eventsTableModel;
 	private JPanel headerPanel;
 	private final Icon notesIcon = ImageLoader.getScaled(getClass(), "/icons/notes.png", 64);
 
 	private JPanel metaPanel;
-	private JLabel lastEditedLabel;
-	private JLabel tagsLabel;
-	private JLabel fullPathLabel;
 	private JPanel noteFileInspector;
 	private JPanel emptyInspector;
-	private JLabel lastEditorLabel;
-	private JLabel lastEditorValue;
-	private SmallLabel lockedByLabel;
-	private SmallLabel lockedByValue;
-	private SmallLabel sharedLabel;
-	private JCheckBox sharedValue;
 
 	public InspectorPanel() {
 
@@ -107,48 +109,48 @@ public class InspectorPanel extends JXPanel
 		// header panel
 		this.headerPanel = new JPanel(new MigLayout("fill"));
 		this.headerPanel.setOpaque(false);
-		this.iconLabel = new JLabel();
-		this.headerPanel.add(this.iconLabel, "w 64!, h 64!");
+		
+		this.icon = new JLabel();
+		this.headerPanel.add(this.icon, "w 64!, h 64!, span 2");
+		
 		this.nameValue = new JLabel();
-		this.headerPanel.add(this.nameValue);
+		this.headerPanel.add(this.nameValue, "top");
+		
 		this.sizeValue = new JLabel();
-		this.headerPanel.add(this.sizeValue, "growx");
+		this.headerPanel.add(this.sizeValue, "growx, wrap, top");
+		
+		this.fullPathValue = new SmallShortenedLabel();
+		this.headerPanel.add(this.fullPathValue);
+		
 
 		// meta panel
 		this.metaPanel = new JPanel(new MigLayout("fill, wrap 2"));
 		this.metaPanel.setOpaque(false);
 
-		this.lastEditedLabel =
-						new SmallLabel(getResourceMap().getString("lastEditedLabel"));
+		this.lastEditedLabel = new SmallLabel(getResourceMap().getString("lastEditedLabel"));
 		this.metaPanel.add(this.lastEditedLabel, "right");
 		this.lastEditedValue = new SmallLabel();
 		this.metaPanel.add(this.lastEditedValue, "growx");
 
-		this.lastEditorLabel =
-						new SmallLabel(getResourceMap().getString("lastEditorLabel"));
+		this.lastEditorLabel = new SmallLabel(getResourceMap().getString("lastEditorLabel"));
 		this.metaPanel.add(this.lastEditorLabel, "right");
-		this.lastEditorValue = new SmallLabel();
+		this.lastEditorValue = new SmallShortenedLabel();
 		this.metaPanel.add(this.lastEditorValue, "growx");
-
-		this.tagsLabel = new SmallLabel(getResourceMap().getString("tagsLabel"));
-		this.metaPanel.add(this.tagsLabel, "right, hidemode 2");
-		this.tagsValue = new SmallLabel();
-		this.metaPanel.add(this.tagsValue, "growx, hidemode 2");
 
 		this.sharedLabel = new SmallLabel(getResourceMap().getString("sharedLabel"));
 		this.metaPanel.add(this.sharedLabel, "right");
-		this.sharedValue = new JCheckBox();
+		this.sharedValue = new SmallShortenedLabel();
 		this.metaPanel.add(this.sharedValue, "growx");
 
 		this.lockedByLabel = new SmallLabel(getResourceMap().getString("lockedByLabel"));
 		this.metaPanel.add(this.lockedByLabel, "right");
-		this.lockedByValue = new SmallLabel();
+		this.lockedByValue = new SmallShortenedLabel();
 		this.metaPanel.add(this.lockedByValue, "growx");
-
-		this.fullPathLabel = new SmallLabel(getResourceMap().getString("pathLabel"));
-		this.metaPanel.add(this.fullPathLabel, "right, hidemode 2");
-		this.fullPathValue = new SmallLabel();
-		this.metaPanel.add(this.fullPathValue, "grow, hidemode 2");
+		
+		this.uuidLabel = new SmallLabel(getResourceMap().getString("uuidLabel"));
+		this.metaPanel.add(this.uuidLabel, "right");
+		this.uuidValue = new SmallShortenedLabel();
+		this.metaPanel.add(this.uuidValue, "growx");
 
 		// events table
 		this.setEventsTableModel(new EventsTableModel(getProject()));
@@ -206,57 +208,18 @@ public class InspectorPanel extends JXPanel
 
 		switch (this.mode) {
 			case FILE:
-				File file = null;
-				try {
-					file = JakeMainApp.getCore()
-									.getFile(getAttributedFileObject().getJakeObject());
-				} catch (FileOperationFailedException e) {
-					ExceptionUtilities.showError(e);
-				}
-				this.iconLabel.setIcon(Platform.getToolkit().getFileIcon(file, 64));
-				this.nameValue.setText(StringUtilities.htmlize(StringUtilities.bold(
-								FileObjectHelper.getName(getAttributedFileObject()
-												.getJakeObject().getRelPath()))));
-
-				this.fullPathLabel.setText(FileObjectHelper.getPath(getAttributedFileObject()
-								.getJakeObject().getRelPath()));
-				log.debug(this.fullPathLabel.getText());
-				this.lastEditedValue.setText(TimeUtilities.getRelativeTime(this
-								.getAttributedFileObject().getLastModificationDate()));
-				this.getEventsTableModel().setJakeObject(getAttributedFileObject());
+				this.fullPathValue.setVisible(true);
+				this.sizeValue.setVisible(true);
+				
 				this.emptyInspector.setVisible(false);
 				this.noteFileInspector.setVisible(true);
 				break;
 			case NOTE:
-				this.iconLabel.setIcon(this.notesIcon);
-				this.nameValue.setText(StringUtilities.htmlize(NotesHelper.getTitle(
-								getAttributedNoteObject().getJakeObject())));
 				this.sizeValue.setVisible(false);
-				if (this.getAttributedNoteObject().getLastVersionEditor() != null) {
-					this.lastEditorValue.setText(this.getAttributedNoteObject()
-									.getLastVersionEditor().toString());
-				} else {
-					this.lastEditorValue.setText("local"); //FIXME: elaborate, i18n
-				}
-
-				this.fullPathLabel.setVisible(false);
 				this.fullPathValue.setVisible(false);
-				this.tagsLabel.setVisible(false);
-				this.tagsValue.setVisible(false);
-				this.lastEditedValue
-								.setText(TimeUtilities.getRelativeTime(getAttributedNoteObject().getLastModificationDate()));
-				this.sharedValue.setEnabled(getAttributedNoteObject().isOnlyLocal());
-				if (this.getAttributedNoteObject().isLocked()) {
-					this.lockedByValue.setText(this.getAttributedNoteObject().getLockLogEntry()
-									.getMember().toString());
-				} else {
-					this.lockedByValue.setVisible(false);
-					this.lockedByLabel.setVisible(false);
-				}
-
-				this.noteFileInspector.setVisible(true);
+								
 				this.emptyInspector.setVisible(false);
-
+				this.noteFileInspector.setVisible(true);
 				break;
 			case NONE:
 			default:
@@ -284,6 +247,23 @@ public class InspectorPanel extends JXPanel
 		if (attributedFileObject != null) {
 			this.mode = Mode.FILE;
 			this.getEventsTableModel().setJakeObject(attributedFileObject);
+			
+			//update fields...
+			this.updateCommonFields(attributedFileObject);
+			
+			File file = null;
+			try {
+				file = JakeMainApp.getCore().getFile(getAttributedFileObject().getJakeObject());
+			} catch (FileOperationFailedException e) {
+				ExceptionUtilities.showError(e);
+			}
+			this.icon.setIcon(Platform.getToolkit().getFileIcon(file, 64));
+			this.nameValue.setText(StringUtilities.htmlize(StringUtilities.bold(
+							FileObjectHelper.getName(getAttributedFileObject()
+											.getJakeObject().getRelPath()))));
+
+			this.fullPathValue.setText(FileObjectHelper.getPath(getAttributedFileObject()
+							.getJakeObject().getRelPath()));
 		} else {
 			this.mode = Mode.NONE;
 		}
@@ -332,11 +312,38 @@ public class InspectorPanel extends JXPanel
 		if (attributedNoteObject != null) {
 			this.mode = Mode.NOTE;
 			this.getEventsTableModel().setJakeObject(attributedNoteObject);
+			
+			// update fields
+			this.updateCommonFields(attributedNoteObject);
+			this.icon.setIcon(this.notesIcon);
+			this.nameValue.setText(StringUtilities.htmlize(NotesHelper.getTitle(
+							getAttributedNoteObject().getJakeObject())));
 		} else {
 			this.mode = Mode.NONE;
 		}
 	}
+	
+	private void updateCommonFields(Attributed<? extends JakeObject> attributedJakeObject) {
+		if (this.getAttributedNoteObject().getLastVersionEditor() != null) {
+			this.lastEditorValue.setText(attributedJakeObject.getLastVersionEditor().toString());
+		} else {
+			this.lastEditorValue.setText("local"); //FIXME: elaborate, i18n
+		}
+		
+		this.lastEditedValue	.setText(TimeUtilities.getRelativeTime(attributedJakeObject
+				.getLastModificationDate()));
+		
+		this.sharedValue.setText(Boolean.toString((attributedJakeObject.isOnlyLocal())));
 
+		if (this.getAttributedNoteObject().isLocked()) {
+			this.lockedByValue.setText(attributedJakeObject.getLockLogEntry()
+							.getMember().toString());
+		} else {
+			this.lockedByValue.setText("-");
+		}
+		this.uuidValue.setText(attributedJakeObject.getJakeObject().getUuid().toString());
+	}
+	
 	@Override
 	public void setProjectViewPanel(JakeMainView.ProjectView projectViewPanel) {
 
