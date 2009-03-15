@@ -6,6 +6,8 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.listener.FileWatcherListenerMultiton;
+import com.jakeapp.gui.swing.models.FileTableModel;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 
 import java.util.List;
@@ -27,6 +29,10 @@ public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 	@Override
 	protected void onDone() {
 		try {
+			for(Project p : get()) {
+				JakeMainApp.getCore().registerFileWatcher(p,
+						FileWatcherListenerMultiton.get(p));
+			}
 			ObjectCache.get().setMyProjects(get());
 		} catch (InterruptedException e) {
 			ExceptionUtilities.showError(e);

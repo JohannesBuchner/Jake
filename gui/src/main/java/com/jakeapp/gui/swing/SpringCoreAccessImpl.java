@@ -1052,6 +1052,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public void registerFileWatcher(Project project, IFileModificationListener listener) {
+		this.pms.getFileServices(project).removeModificationListener(listener);
 		this.pms.getFileServices(project).addModificationListener(listener);
 	}
 
