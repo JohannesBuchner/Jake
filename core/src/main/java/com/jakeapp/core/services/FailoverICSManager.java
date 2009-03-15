@@ -29,15 +29,13 @@ import java.util.Map;
  */
 public class FailoverICSManager implements ICSManager {
 
-	private static final boolean SOCKETS_ENABLED = false;
+	private static final boolean SOCKETS_ENABLED = true;
 
 	private static Logger log = Logger.getLogger(FailoverICSManager.class);
 
 	private Map<String, ICService> services = new HashMap<String, ICService>();
 
 	private Map<String, FailoverCapableFileTransferService> transfer = new HashMap<String, FailoverCapableFileTransferService>();
-
-	private int SOCKET_TIMEOUT_SECONDS;
 
 	private Map<String, ICService> activeServices = new HashMap<String, ICService>();
 
@@ -81,8 +79,7 @@ public class FailoverICSManager implements ICSManager {
 		FailoverCapableFileTransferService fcfts;
 		fcfts = new FailoverCapableFileTransferService();
 		if (SOCKETS_ENABLED)
-			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(
-					SOCKET_TIMEOUT_SECONDS), msg, user);
+			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(), msg, user);
 
 		ITransferMethodFactory inbandMethod = ics.getTransferMethodFactory();
 		if (inbandMethod == null) {
