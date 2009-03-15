@@ -67,6 +67,8 @@ public class ObjectCache implements ContextChanged {
 	}
 
 	public Collection<FileObject> getFiles(Project p) {
+		//XXX: FIXME: same hack as in getNotes(). DANGER! ZOMBIES AHEAD!
+		this.updateFiles(p);
 		if(!this.files.containsKey(p)) {
 			log.warn("notes requested, but not available yet");
 			return new LinkedList<FileObject>();
@@ -84,6 +86,9 @@ public class ObjectCache implements ContextChanged {
 	}
 
 	public Collection<NoteObject> getNotes(Project p) {
+		//XXX: FIXME: this hack renders the cache useless. It also causes some null pointer exceptions on
+		// startup. But hey, it works!!!
+		this.updateNotes(p);
 		if(!this.files.containsKey(p)) {
 			log.warn("notes requested, but not available yet");
 			return new LinkedList<NoteObject>();
