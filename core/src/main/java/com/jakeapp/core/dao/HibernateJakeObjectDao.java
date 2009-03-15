@@ -1,5 +1,6 @@
 package com.jakeapp.core.dao;
 
+import com.jakeapp.core.DarkMagic;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.JakeObject;
 import org.apache.log4j.Logger;
@@ -29,6 +30,10 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	 * {@inheritDoc}
 	 */
 	public T persist(final T jakeObject) {
+		if(jakeObject.getUuid() == null) {
+			// TODO: maybe we should generate it here?
+			throw new NullPointerException("JakeObject has to have UUID");
+		}
 		sess().saveOrUpdate(jakeObject);
 
 		return jakeObject;
@@ -44,15 +49,9 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public T get(final UUID objectId) throws NoSuchJakeObjectException {
-		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
-				.getGenericSuperclass();
-		String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0])
-				.getName();
-		log.debug("getting JakeObject by id from table " + parameterName);
 		if (objectId == null)
 			throw new NoSuchJakeObjectException();
-		String queryString = "FROM " + parameterName + " WHERE objectId = ? ";
-
+		String queryString = "FROM " + getTableByType() + " WHERE objectId = ? ";
 		List<T> results = sess().createQuery(queryString).setString(0,
 				objectId.toString()).list();
 
@@ -67,22 +66,20 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<T> getAll() {
 		log.trace("getAll()");
+		return sess().createQuery("FROM " + getTableByType()).list();
+	}
 
+	@DarkMagic
+	private String getTableByType() {
 		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
 				.getGenericSuperclass();
 		String parameterName = ((Class) parameterizedType.getActualTypeArguments()[0])
 				.getName();
-		log.debug("xxx: " + parameterName);
-
-
-		String queryString = "FROM " + parameterName + " ";
-
-		List<T> results = sess().createQuery(queryString).list();
-
-		return results;
+		return parameterName;
 	}
 
 	/**

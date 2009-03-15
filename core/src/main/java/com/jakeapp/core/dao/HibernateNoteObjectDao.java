@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Tag;
 
 /**
  * A hibernate noteObject DAO.

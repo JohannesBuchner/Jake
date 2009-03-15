@@ -22,7 +22,6 @@ public interface IJakeObjectDao<T extends JakeObject> {
      * @param jakeObject The <code>JakeObject</code>to be persisted
      * @return The <code>JakeObject</code> that has been persisted
      */
-		// fixme: what errors can you throw?
     public T persist(final T jakeObject);
 
 

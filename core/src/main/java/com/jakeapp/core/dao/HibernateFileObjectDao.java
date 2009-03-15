@@ -19,14 +19,13 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	@Override
 	public final FileObject persist(final FileObject foin) {
 		// we do not trust the UUID, because we don't want 2 FileObjects with
-		// the same
-		// relpath.
+		// the same relpath.
 		try {
 			return complete(foin);
 		} catch (NoSuchJakeObjectException e) {
 			FileObject fo;
 			if (foin.getUuid() == null)
-				fo = new FileObject(foin.getProject(), foin
+				fo = new FileObject(UUID.randomUUID(), foin.getProject(), foin
 						.getRelPath());
 			else
 				fo = foin;
@@ -78,6 +77,7 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	 * @throws NoSuchJakeObjectException
 	 *             if no object with that path was found in the database
 	 */
+	@SuppressWarnings("unchecked")
 	private FileObject getFileObjectByRelpath(String relPath)
 			throws NoSuchJakeObjectException {
 
