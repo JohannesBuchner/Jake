@@ -1,5 +1,6 @@
 package com.jakeapp.core.services;
 
+import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
@@ -116,6 +117,9 @@ public class PullTest extends TmpdirEnabledTestCase {
 	@Mock
 	private ILogEntryDao logEntryDao;
 
+	@Mock
+	private IFileObjectDao fileObjectDao;
+
 	private UnprocessedBlindLogEntryDaoProxy ublogEntryDao;
 
 	private User member = new User(ProtocolType.XMPP, "a@b");
@@ -154,15 +158,25 @@ public class PullTest extends TmpdirEnabledTestCase {
 		le.setUuid(new UUID(432, 3214));
 		project.setMessageService(msgService);
 		fo.setProject(project);
+		
+		// unfortunately, this doesn't work this way.
+		// we would need a whenSimilarTo instead of when(). TODO .
+		FileObject strippedFo = new FileObject(fo.getProject(), fo.getRelPath());
 
 		when(projectApplicationContextFactory.getLogEntryDao(fo)).thenReturn(
+				ublogEntryDao);
+		when(projectApplicationContextFactory.getLogEntryDao(strippedFo)).thenReturn(
 				ublogEntryDao);
 		when(projectApplicationContextFactory.getLogEntryDao(project)).thenReturn(
 				ublogEntryDao);
 		when(projectApplicationContextFactory.getUnprocessedAwareLogEntryDao(fo))
 				.thenReturn(logEntryDao);
+		when(projectApplicationContextFactory.getUnprocessedAwareLogEntryDao(strippedFo))
+		.thenReturn(logEntryDao);
 		when(projectApplicationContextFactory.getUnprocessedAwareLogEntryDao(project))
 				.thenReturn(logEntryDao);
+		when(projectApplicationContextFactory.getFileObjectDao(project)).thenReturn(
+				fileObjectDao);
 
 
 		fss = new FSService();
@@ -173,6 +187,11 @@ public class PullTest extends TmpdirEnabledTestCase {
 		when(logEntryDao.getLastVersion(fo, false)).thenReturn(le);
 		when(logEntryDao.getLastOfJakeObject(fo, true)).thenReturn(le);
 		when(logEntryDao.getLastOfJakeObject(fo, false)).thenReturn(le);
+		
+		when(logEntryDao.getLastVersion(strippedFo, true)).thenReturn(le);
+		when(logEntryDao.getLastVersion(strippedFo, false)).thenReturn(le);
+		when(logEntryDao.getLastOfJakeObject(strippedFo, true)).thenReturn(le);
+		when(logEntryDao.getLastOfJakeObject(strippedFo, false)).thenReturn(le);
 
 		when(icsmanager.getICService(project)).thenReturn(icservice);
 		tracer = new Tracer();
@@ -250,7 +269,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 
 		Assert.assertNotNull(projectApplicationContextFactory.getLogEntryDao(fo)
-				.getLastVersion(fo));
+				.getLastVersion(new FileObject(fo.getProject(), fo.getRelPath())));
 		Assert.assertTrue(projectApplicationContextFactory.getLogEntryDao(fo)
 				.getLastVersion(fo).getBelongsTo() instanceof FileObject);
 
