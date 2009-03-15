@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The main class of the application.
  * <p/>
- * Configuration properties (Add to VM propertes)
+ * Configuration properties (Add to VM properties)
  * -Dcom.jakeapp.gui.ignoresingleinstance=true  	  	Disable single instance checking
  */
 public class JakeMainApp extends SingleFrameApplication {
@@ -108,6 +108,28 @@ public class JakeMainApp extends SingleFrameApplication {
 	 */
 	private static void startGui(String[] args) {
 
+		lookAndFeelSetup(args);
+
+		if (Platform.isMac()) {
+			macMenuSetup();
+		} else if (Platform.isLin()) {
+			Platform.fixWmClass();
+		}
+
+		launch(JakeMainApp.class, args);
+	}
+
+
+	private static void macMenuSetup() {
+		// MacOSX specific: set menu name to 'Jake'
+		// has to be called VERY early to succeed (prior to any gui stuff, later
+		// calls will be ignored)
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
+		installMacScrollbars();
+	}
+
+
+	private static void lookAndFeelSetup(String[] args) {
 		/**
 		 * Laf detection code - get the best for every system!
 		 */
@@ -153,19 +175,6 @@ public class JakeMainApp extends SingleFrameApplication {
 		} catch (Exception e) {
 			log.warn("LAF Exception: ", e);
 		}
-
-		if (Platform.isMac()) {
-			// MacOSX specific: set menu name to 'Jake'
-			// has to be called VERY early to succeed (prior to any gui stuff, later
-			// calls will be ignored)
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
-			installMacScrollbars();
-
-		} else if (Platform.isLin()) {
-			Platform.fixWmClass();
-		}
-
-		launch(JakeMainApp.class, args);
 	}
 
 	private static void installMacScrollbars() {// install the cool scrollbars!
