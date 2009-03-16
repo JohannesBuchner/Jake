@@ -97,9 +97,10 @@ package-win: jar
 	@echo Winows Package ready: releases/Jake.exe
 	@echo TODO create installer with NULLSOFT or use other db path
 	
-package-linux: jar
+package-linux: 
 	@echo Creating Linux Package  or  just use the jar
-	tar cjvf releases/jake.tar.bz2 releases/jake-current.jar 
+	cat launcher/jake.sh releases/jake-current.jar > releases/jake.bin
+	tar cjvf releases/jake.tar.bz2 releases/jake.bin 
 	@echo Linux Package Ready: releases/Jake.tar.bz2
 
 

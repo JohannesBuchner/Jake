@@ -12,6 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
+  <customProcName>true</customProcName>
   <icon>jakeapp.ico</icon>
   <jre>
     <path></path>
