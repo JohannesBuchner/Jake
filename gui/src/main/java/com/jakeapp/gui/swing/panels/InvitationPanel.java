@@ -14,6 +14,8 @@ import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import net.miginfocom.swing.MigLayout;
+
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXPanel;
 
 import javax.swing.*;
@@ -37,6 +39,9 @@ public class InvitationPanel extends JXPanel implements ContextChangedCallback {
 	private final static int TableUpdateDelay = 60000;
 	private JButton joinButton;
 	private JoinProjectAction joinProjectAction;
+	
+	@SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger(InvitationPanel.class);
 
 	public InvitationPanel() {
 		EventCore.get().addContextChangedListener(this);
@@ -110,7 +115,7 @@ public class InvitationPanel extends JXPanel implements ContextChangedCallback {
 				String folder = FileUtilities.openDirectoryChooser(null, null);
 				if (folder != null) {
 					folderTextField.setText(folder);
-					joinProjectAction.setProjectLocation(folder);
+					//joinProjectAction.setProjectLocation(folder);
 					updatePanel();
 				}
 			}
@@ -166,6 +171,8 @@ public class InvitationPanel extends JXPanel implements ContextChangedCallback {
 			}
 
 			joinButton.setEnabled(folderTextField.getText().length() > 0);
+			
+			this.joinProjectAction.setProjectLocation(folderTextField.getText());
 		}
 	}
 
