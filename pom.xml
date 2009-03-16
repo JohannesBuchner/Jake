@@ -76,11 +76,16 @@
 		</developer>
 	</developers>
 	<pluginRepositories>
-		<pluginRepository>
+		<!--<pluginRepository>
 			<id>dstovall.org</id>
 			<url>http://dstovall.org/maven2/</url>
-		</pluginRepository>
+		</pluginRepository>-->
+                <pluginRepository>
+                        <id>onejar-maven-plugin.googlecode.com</id>
+                        <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+                </pluginRepository>
 	</pluginRepositories>
+
 	<scm>
 		<connection>scm:svn:svn://svn.jakeapp.com/trunk/</connection>
 		<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/</developerConnection>

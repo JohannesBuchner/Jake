@@ -51,6 +51,17 @@ xmpp-console: commander
 install: 
 	mvn -Dmaven.test.skip=true install
 
+# @jar       : deploy to a single jar file
+jar:
+	#${MVN} clean
+	${MVN} install
+	cd releases && rm -rf temp && mkdir -p temp 
+	cd releases/temp && unzip ../../gui/target/gui-swing-${VERSION}.one-jar.jar && cp -v ../../{core,ics,ics-xmpp,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && jar cvfm ../jake-current.jar meta-inf/manifest.mf .
+	cd releases; rm -rf temp
+	@echo release ready under releases/jake-current.jar
+	@echo run with java -jar releases/jake-current.jar
+
+
 
 # gui        : build gui component
 gui: core
@@ -123,4 +134,4 @@ generateDaos:
 # The dependency system does only work with the coreutils package, i.e., only on 
 #   Linux. 
 # 
-.PHONY: install gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
+.PHONY: install jar gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up

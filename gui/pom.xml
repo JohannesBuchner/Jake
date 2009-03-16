@@ -166,12 +166,24 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.doublesignal.sepm.jake.gui.StartJake
-                            </mainClass>
+                            <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+        <plugin>
+            <groupId>org.dstovall</groupId>
+                <artifactId>onejar-maven-plugin</artifactId>
+                <version>1.2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>one-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -195,6 +207,21 @@
                     <workingDirectory>target/classes</workingDirectory>
                 </configuration>
             </plugin>
+            
+	    <!-- doesn't work: http://forum.springframework.org/showthread.php?t=38208
+            <plugin>
+	        <artifactId>maven-assembly-plugin</artifactId>
+		<configuration>
+		    <descriptorRefs>
+		         <descriptorRef>jar-with-dependencies</descriptorRef>
+		    </descriptorRefs>
+		    <archive>
+		         <manifest>
+			      <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
+			 </manifest>
+		    </archive>
+		</configuration>
+	    </plugin>-->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
