@@ -63,7 +63,7 @@ jar:
 	@echo run with java -jar releases/jake-current.jar
 
 
-# @package-all	: create the packages for linux, mac and windows
+# @package-all   : create the packages for linux, mac and windows
 package-all: jar package-win package-mac package-linux
 
 package-mac: jar
