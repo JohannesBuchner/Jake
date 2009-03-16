@@ -66,7 +66,7 @@ jar:
 # @package-all   : create the packages for linux, mac and windows
 package-all: jar package-win package-mac package-linux
 
-package-mac:
+package-mac: jar
 	@echo Creating Mac Package...
 	# cleaning up
 	rm -rf releases/Jake.app releases/Jake.dmg releases/tmp.dmg releases/dmgtmp
