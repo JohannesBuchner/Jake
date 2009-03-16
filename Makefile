@@ -63,8 +63,8 @@ jar:
 	@echo run with java -jar releases/jake-current.jar
 
 
-# @package-all   : create the packages for linux, mac and windows
-package-all: jar package-win package-mac package-linux
+# @packages   : create the packages for linux, mac and windows
+packages: jar package-win package-mac package-linux
 
 package-mac: jar
 	@echo Creating Mac Package...
@@ -179,4 +179,4 @@ generateDaos:
 # The dependency system does only work with the coreutils package, i.e., only on 
 #   Linux. 
 # 
-.PHONY: install jar package-all package-win package-mac package-linux gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
+.PHONY: install jar packages package-win package-mac package-linux gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up

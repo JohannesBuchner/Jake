@@ -39,5 +39,5 @@ which $JAVA 2>&1 || {
 	exit 2
 }
  
-echo launching jar $0
-exec -a $appName $JAVA $JAVA_OPTS -jar $0
+echo exec -a $appName $JAVA $JAVA_OPTS -jar $0
+exec $JAVA $JAVA_OPTS -jar $0

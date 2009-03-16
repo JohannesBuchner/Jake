@@ -9,10 +9,9 @@
   <priority>normal</priority>
   <downloadUrl>http://java.com/download</downloadUrl>
   <supportUrl>http://jakeapp.com</supportUrl>
-  <customProcName>false</customProcName>
+  <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <customProcName>true</customProcName>
   <icon>jakeapp.ico</icon>
   <jre>
     <path></path>
