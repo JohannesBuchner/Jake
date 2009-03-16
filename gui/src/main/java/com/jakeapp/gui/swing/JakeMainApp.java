@@ -147,7 +147,7 @@ public class JakeMainApp extends SingleFrameApplication {
 					nimbusLaf = laf;
 				}
 			}
-			log.debug("Found LAFs: " + availableLafs);
+			log.info("Found LAFs: " + availableLafs);
 
 			// override default laf if argument is given
 			// fixme: proper argument check!
