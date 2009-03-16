@@ -116,7 +116,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.doublesignal.sepm.jake.gui.StartJake</mainClass>
+							<mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
