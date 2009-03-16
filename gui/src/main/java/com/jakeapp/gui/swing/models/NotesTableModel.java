@@ -83,7 +83,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 	 * @param project the project from which the notes should be loaded.
 	 */
 	public void update(Project project) {
-		log.info("Updating note table model");
+		log.info("Updating note table model for project "+project);
 		if (project == null) {
 			return;
 		}

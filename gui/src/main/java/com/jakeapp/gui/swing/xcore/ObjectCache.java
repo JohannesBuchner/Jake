@@ -95,7 +95,10 @@ public class ObjectCache implements ContextChangedCallback {
 		// startup. But hey, it works!!!
 		// FIXME: No, it doesn't :'(
 		// this.updateNotes(p);
-		if(!this.files.containsKey(p)) {
+		
+		//------------------------------
+		//this is the correct version:
+		if(!this.notes.containsKey(p)) {
 			log.warn("notes requested, but not available yet");
 			return new LinkedList<NoteObject>();
 		}
