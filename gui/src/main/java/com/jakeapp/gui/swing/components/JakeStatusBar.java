@@ -1,11 +1,8 @@
 package com.jakeapp.gui.swing.components;
 
-import ch.randelshofer.quaqua.JSheet;
-
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
-import com.jakeapp.core.domain.JakeMessage;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -23,11 +20,10 @@ import com.jakeapp.gui.swing.exceptions.PeopleOperationFailedException;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
-import com.jakeapp.gui.swing.helpers.JakeMenuBar;
+import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
-import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.worker.AbstractTask;
 import com.jakeapp.gui.swing.worker.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;

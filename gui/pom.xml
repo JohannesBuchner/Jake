@@ -30,13 +30,6 @@
             <url>http://dev.jakeapp.com/build/maven-repository/</url>
             <layout>default</layout>
         </repository>
-        <!--       <repository>
-            <id>mvnrepository.com</id>
-            <name>mvnrepository.com</name>
-            <url>http://mvnrepository.com/</url>
-            <layout>default</layout>
-        </repository>
--->
         <repository>
             <id>org.codehaus.mojo</id>
             <name>org.codehaus.mojo</name>
@@ -91,11 +84,11 @@
             <artifactId>mrjadapter</artifactId>
             <version>1.1</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>ch.randelshofer</groupId>
             <artifactId>quaqua</artifactId>
             <version>5.0.1</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
@@ -111,11 +104,11 @@
             <artifactId>timingframework</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.bushe.eventbus</groupId>
             <artifactId>eventbus</artifactId>
             <version>1.3-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
     <scm>
         <connection>scm:svn:svn://svn.jakeapp.com/trunk/gui</connection>
@@ -135,31 +128,6 @@
             </resource>
         </resources>
         <plugins>
-
-            <!--
-            DOES NOT WORK... :( :(
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>osxappbundle-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
-                            <bundleName>Jake</bundleName>
-                            <additionalClasspath>
-                                <path>/System/Library/Java/</path>
-                            </additionalClasspath>
-                            <vmOptions>-Xdock:icon=icons/jakeapp-large.png -Xdock:name="Jake"</vmOptions>
-                        </configuration>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -183,7 +151,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -207,21 +174,6 @@
                     <workingDirectory>target/classes</workingDirectory>
                 </configuration>
             </plugin>
-            
-	    <!-- doesn't work: http://forum.springframework.org/showthread.php?t=38208
-            <plugin>
-	        <artifactId>maven-assembly-plugin</artifactId>
-		<configuration>
-		    <descriptorRefs>
-		         <descriptorRef>jar-with-dependencies</descriptorRef>
-		    </descriptorRefs>
-		    <archive>
-		         <manifest>
-			      <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
-			 </manifest>
-		    </archive>
-		</configuration>
-	    </plugin>-->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>

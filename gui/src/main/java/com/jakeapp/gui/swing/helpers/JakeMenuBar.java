@@ -1,41 +1,8 @@
 package com.jakeapp.gui.swing.helpers;
 
-import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URI;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.UIManager;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-
-import net.roydesign.app.AboutJMenuItem;
-import net.roydesign.app.Application;
-import net.roydesign.app.QuitJMenuItem;
-import net.roydesign.mac.MRJAdapter;
-import net.roydesign.ui.StandardMacAboutFrame;
-
-import org.apache.log4j.Logger;
-import org.jivesoftware.smack.XMPPConnection;
-
-import ch.randelshofer.quaqua.JSheet;
-
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.actions.file.AnnounceFileAction;
-import com.jakeapp.gui.swing.actions.file.CreateFolderFileAction;
-import com.jakeapp.gui.swing.actions.file.DeleteFileAction;
-import com.jakeapp.gui.swing.actions.file.ImportFileAction;
-import com.jakeapp.gui.swing.actions.file.LockFileAction;
-import com.jakeapp.gui.swing.actions.file.OpenFileAction;
-import com.jakeapp.gui.swing.actions.file.PullFileAction;
-import com.jakeapp.gui.swing.actions.file.RenameFileAction;
-import com.jakeapp.gui.swing.actions.file.ResolveConflictFileAction;
+import com.jakeapp.gui.swing.actions.file.*;
 import com.jakeapp.gui.swing.actions.notes.CommitNoteAction;
 import com.jakeapp.gui.swing.actions.notes.CreateNoteAction;
 import com.jakeapp.gui.swing.actions.notes.DeleteNoteAction;
@@ -53,12 +20,28 @@ import com.jakeapp.gui.swing.actions.view.SwitchNotesProjectContextAction;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.dialogs.debugging.JakeDebugger;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.CreateExampleProject;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
+import net.roydesign.app.AboutJMenuItem;
+import net.roydesign.app.Application;
+import net.roydesign.app.QuitJMenuItem;
+import net.roydesign.mac.MRJAdapter;
+import net.roydesign.ui.StandardMacAboutFrame;
+import org.apache.log4j.Logger;
+import org.jivesoftware.smack.XMPPConnection;
+
+import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URI;
 
 /**
  * The Main Jake Menu Bar.

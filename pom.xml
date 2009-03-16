@@ -48,7 +48,7 @@
         <developer>
             <id>peter</id>
             <name>Peter Steinberger</name>
-            <email>mail@petersteinberger.com</email>
+            <email>peter.steinberger@student.tuwien.ac.at</email>
             <roles>
                 <role>second team coordinator</role>
             </roles>
@@ -179,8 +179,6 @@
         <jmock.version>2.5.1</jmock.version>
         <hsqldb.version>1.8.0.1</hsqldb.version>
     </properties>
-
-
 </project>
  
  

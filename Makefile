@@ -66,7 +66,8 @@ jar:
 # @package-all   : create the packages for linux, mac and windows
 package-all: jar package-win package-mac package-linux
 
-package-mac: jar
+package-mac:
+	@echo Creating Mac Package...
 	# cleaning up
 	rm -rf releases/Jake.app releases/Jake.dmg releases/tmp.dmg releases/dmgtmp
 	# generate the mac app
@@ -76,32 +77,34 @@ package-mac: jar
 	rm -rf releases/dmgtmp
 	mkdir releases/dmgtmp
 	cp -r releases/Jake.app releases/dmgtmp
-	cp launcher/resources/dot_background.jpg releases/dmgtmp/.background.jpg
+	cp launcher/resources/dot_background.png releases/dmgtmp/.background.png
+	cp launcher/resources/dot_VolumeIcon.icns releases/dmgtmp/.VolumeIcon.icns
 	cp launcher/resources/dot_DS_Store releases/dmgtmp/.DS_Store
 	ln -s /Applications releases/dmgtmp/Applications
-	hdiutil create -volname "Jake" -srcfolder releases/dmgtmp "releases/tmp.dmg" -scrub
+	hdiutil create -volname "Jake" -srcfolder releases/dmgtmp "releases/tmp.dmg" -noscrub
 	hdiutil convert -format UDBZ "releases/tmp.dmg" -o "releases/Jake.dmg"
 	hdiutil internet-enable -no "releases/Jake.dmg"
 	cd releases; rm -rf dmgtmp tmp.dmg Jake.app
-	#TODO: fix DS_STORE FUCK	
-	@echo Mac Package ready: Jake.dmg
+	@echo Mac Package: Jake.dmg
 
 
 package-win: jar
-	@echo Creating Windows Package with Launch4j: ${LAUNCH4J}
-	rm -rf Jake.exe
+	@echo Creating Windows Package with Launch4j: ${LAUNCH4J}...
+	rm -rf releases/Jake.exe releases/jakeapp.ico releases/jake.xml
 	cp launcher/resources/jake.xml releases/
 	cp launcher/resources/jakeapp.ico releases/
 	${LAUNCH4J} $(CURDIR)/releases/jake.xml
 	rm releases/jake.xml releases/jakeapp.ico
-	@echo Winows Package ready: releases/Jake.exe
+	@echo Winows Package: releases/Jake.exe
 	@echo TODO create installer with NULLSOFT or use other db path
 	
 package-linux: jar
-	@echo Creating Linux Package  or  just use the jar
+	@echo Creating Linux Package...
+	rm releases/Jake.bin
 	cat launcher/jake.sh releases/jake-current.jar > releases/jake.bin
-	tar cjvf releases/jake.tar.bz2 releases/jake.bin 
-	@echo Linux Package Ready: releases/Jake.tar.bz2
+	#tar cjvf releases/jake.tar.bz2 releases/jake.bin 
+
+	@echo Linux Package: releases/Jake.bin
 
 
 
