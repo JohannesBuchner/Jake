@@ -8,6 +8,7 @@ SHELL="bash"
 MVN=mvn ${MVNEXTRAARGS}
 GUITYPE="swing"
 DEBUGGUITYPE="console"
+LAUNCH4J=/Applications/launch4j/launch4j
 
 all: install
 
@@ -60,6 +61,46 @@ jar:
 	cd releases; rm -rf temp
 	@echo release ready under releases/jake-current.jar
 	@echo run with java -jar releases/jake-current.jar
+
+
+# @package-all	: create the packages for linux, mac and windows
+package-all: jar package-win package-mac package-linux
+
+package-mac: jar
+	# cleaning up
+	rm -rf releases/Jake.app releases/Jake.dmg releases/tmp.dmg releases/dmgtmp
+	# generate the mac app
+	cp -r launcher/Jake.app releases/
+	cp releases/jake-current.jar releases/Jake.app/Contents/Resources/Java
+	# generate the mac disk image
+	rm -rf releases/dmgtmp
+	mkdir releases/dmgtmp
+	cp -r releases/Jake.app releases/dmgtmp
+	cp launcher/resources/dot_background.jpg releases/dmgtmp/.background.jpg
+	cp launcher/resources/dot_DS_Store releases/dmgtmp/.DS_Store
+	ln -s /Applications releases/dmgtmp/Applications
+	hdiutil create -volname "Jake" -srcfolder releases/dmgtmp "releases/tmp.dmg" -scrub
+	hdiutil convert -format UDBZ "releases/tmp.dmg" -o "releases/Jake.dmg"
+	hdiutil internet-enable -no "releases/Jake.dmg"
+	cd releases; rm -rf dmgtmp tmp.dmg Jake.app
+	#TODO: fix DS_STORE FUCK	
+	@echo Mac Package ready: Jake.dmg
+
+
+package-win: jar
+	@echo Creating Windows Package with Launch4j: ${LAUNCH4J}
+	rm -rf Jake.exe
+	cp launcher/resources/jake.xml releases/
+	cp launcher/resources/jakeapp.ico releases/
+	${LAUNCH4J} $(CURDIR)/releases/jake.xml
+	rm releases/jake.xml releases/jakeapp.ico
+	@echo Winows Package ready: releases/Jake.exe
+	@echo TODO create installer with NULLSOFT or use other db path
+	
+package-linux: jar
+	@echo Creating Linux Package  or  just use the jar
+	tar cjvf releases/jake.tar.bz2 releases/jake-current.jar 
+	@echo Linux Package Ready: releases/Jake.tar.bz2
 
 
 
@@ -134,4 +175,4 @@ generateDaos:
 # The dependency system does only work with the coreutils package, i.e., only on 
 #   Linux. 
 # 
-.PHONY: install jar gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
+.PHONY: install jar package-all package-win package-mac package-linux gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
