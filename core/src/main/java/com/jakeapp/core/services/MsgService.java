@@ -42,7 +42,11 @@ public abstract class MsgService<T extends User> {
 
 	protected ProtocolType protocolType;
 
-	protected ProjectInvitationHandler invitationHandler = new ProjectInvitationHandler(this);
+	protected ProjectInvitationHandler invitationHandler;
+
+	protected MsgService() {
+		invitationHandler = new ProjectInvitationHandler(this);
+	}
 
 	static protected class ICData {
 
@@ -128,6 +132,7 @@ public abstract class MsgService<T extends User> {
 		}
 
 		log.debug("before doLogin: " + this.getVisibilityStatus());
+
 		this.doLogin();
 		log.debug("plain login has happened " + this.getVisibilityStatus());
 		updateActiveSubsystems();

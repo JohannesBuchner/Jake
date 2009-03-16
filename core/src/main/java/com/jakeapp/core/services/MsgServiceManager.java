@@ -37,9 +37,19 @@ public class MsgServiceManager {
 	private ICSManager icsManager;
 
 	@Injected
-	private ProjectInvitationListener coreProjectInvitationListener;
+	private IProjectInvitationListener coreProjectInvitationListener;
 
-	public void setICSManager(ICSManager icsManager) {
+	public MsgServiceManager(){}
+
+	public MsgServiceManager (ICSManager icsManager, IAccountDao accountDao, IProjectInvitationListener coreProjectInvitationListener)
+	{
+		this.setICSManager(icsManager);
+		this.setAccountDao(accountDao);
+		this.setCoreProjectInvitationListener(coreProjectInvitationListener);
+	}
+
+
+	private void setICSManager(ICSManager icsManager) {
 		this.icsManager = icsManager;
 	}
 
@@ -47,16 +57,16 @@ public class MsgServiceManager {
 		return this.accountDao;
 	}
 
-	public void setAccountDao(IAccountDao accountDao) {
+	private void setAccountDao(IAccountDao accountDao) {
 		this.accountDao = accountDao;
 	}
 
 
-	public ProjectInvitationListener getCoreProjectInvitationListener() {
+	private IProjectInvitationListener getCoreProjectInvitationListener() {
 		return coreProjectInvitationListener;
 	}
 
-	public void setCoreProjectInvitationListener(ProjectInvitationListener coreProjectInvitationListener) {
+	private void setCoreProjectInvitationListener(IProjectInvitationListener coreProjectInvitationListener) {
 		this.coreProjectInvitationListener = coreProjectInvitationListener;
 	}
 
@@ -98,9 +108,9 @@ public class MsgServiceManager {
 					.debug("Creating new XMPPMsgService for userId "
 							+ credentials.getUserId());
 			msgService = new XMPPMsgService();
+			msgService.registerInvitationListener(coreProjectInvitationListener);
 			msgService.setIcsManager(this.icsManager);
 			msgService.setServiceCredentials(credentials);
-			msgService.registerInvitationListener(coreProjectInvitationListener);
 			this.msgServices.put(credentials.getUuid(), msgService);
 			msgService.setUserId(createUserforMsgService(credentials));
 

@@ -16,6 +16,7 @@ public class IncomingGenericPacketListener implements PacketListener, PacketFilt
 					new LinkedList<IMessageReceiveListener>();
 
 	public boolean add(IMessageReceiveListener e) {
+		log.debug("adding IMessageReceiveListener to IncomingGenericPacketListener");
 		// fixme: why is this called more than once with the same object?
 		if (!listeners.contains(e)) {
 			return listeners.add(e);
@@ -55,11 +56,13 @@ public class IncomingGenericPacketListener implements PacketListener, PacketFilt
 	}
 
 	public void notifyOthersAboutNewPacket(XmppUserId xmppUserId, String content) {
+		log.debug("received packet");
 		for (IMessageReceiveListener imrl : listeners) {
 			try {
 				imrl.receivedMessage(xmppUserId, content);
 			}
 			catch (Exception ignored) {
+				ignored.printStackTrace();
 				//empty implementation
 			}
 			

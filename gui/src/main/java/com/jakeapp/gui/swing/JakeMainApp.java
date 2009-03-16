@@ -50,16 +50,16 @@ public class JakeMainApp extends SingleFrameApplication {
 			}
 
 			ApplicationInstanceManager
-							.setApplicationInstanceListener(new ApplicationInstanceListener() {
+					.setApplicationInstanceListener(new ApplicationInstanceListener() {
 
-								public void newInstanceCreated() {
-									log.info("New Jake instance detected, showing current!");
+						public void newInstanceCreated() {
+							log.info("New Jake instance detected, showing current!");
 
-									// User tried to load jake a second time.
-									// so open first instane!
-									JakeMainView.setMainWindowVisible(true);
-								}
-							});
+							// User tried to load jake a second time.
+							// so open first instane!
+							JakeMainView.setMainWindowVisible(true);
+						}
+					});
 		}
 	}
 
@@ -151,12 +151,12 @@ public class JakeMainApp extends SingleFrameApplication {
 
 			// override default laf if argument is given
 			// fixme: proper argument check!
-			if (args.length > 0 && nimbusLaf != null) {
+			if (false && args.length > 0 && nimbusLaf != null) {
 				UIManager.setLookAndFeel(nimbusLaf.getClassName());
 				installMacScrollbars();
 			} else {
 
-				// on windows & mac, use the native laf
+				/*// on windows & mac, use the native laf
 				if (Platform.isWin() || Platform.isMac()) {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} else {
@@ -170,7 +170,7 @@ public class JakeMainApp extends SingleFrameApplication {
 					} catch (Exception r) {
 						log.warn("Error setting laf: " + r.getMessage());
 					}
-				}
+				}*/
 			}
 		} catch (Exception e) {
 			log.warn("LAF Exception: ", e);
@@ -179,7 +179,7 @@ public class JakeMainApp extends SingleFrameApplication {
 
 	private static void installMacScrollbars() {// install the cool scrollbars!
 		UIManager.put("ScrollBarUI",
-							com.explodingpixels.macwidgets.plaf.IAppScrollBarUI.class.getName());
+				com.explodingpixels.macwidgets.plaf.IAppScrollBarUI.class.getName());
 	}
 
 

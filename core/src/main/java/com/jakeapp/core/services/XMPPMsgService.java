@@ -16,15 +16,21 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
  * One per User.
  */
 public class XMPPMsgService extends MsgService<User> {
-
 	private static Logger log = Logger.getLogger(XMPPMsgService.class);
 
 	public static final String namespace = "http://jakeapp.com/protocols/xmpp/versions/1";
 
-	private XmppICService mainIcs = new XmppICService(namespace, "Jake");
+	private XmppICService mainIcs;
 
 	public XMPPMsgService() {
+		super();
 		this.protocolType = ProtocolType.XMPP;
+		mainIcs = new XmppICService(namespace, "Jake");
+
+		log.debug("IN constructor of XMPPMsgService and now registering InvitationListener");
+		// the invitationhandler has to be registered before other things are done or the ics gets used
+		mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
+
 	}
 
 	@Override
@@ -44,10 +50,15 @@ public class XMPPMsgService extends MsgService<User> {
 		String host = this.getServiceCredentials().getServerAddress();
 		long   port = this.getServiceCredentials().getServerPort();
 		log.debug("got credentials: " + this.getServiceCredentials());
+
+		// this needs to be done before loging in.
+		this.mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
+
 		this.mainIcs.getStatusService().login(this.getMainUserId(),
 				pass, host, port);
 
-		this.mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
+				this.mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
+
 	}
 
 	@Override

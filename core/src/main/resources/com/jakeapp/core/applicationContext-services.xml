@@ -31,9 +31,12 @@
     </bean>
 
     <bean id="msgServiceManager" class="com.jakeapp.core.services.MsgServiceManager">
-        <property name="accountDao" ref="accountDao"/>
-        <property name="ICSManager" ref="icsManager"/>
-        <property name="coreProjectInvitationListener" ref="coreProjectInvitationListener" />
+        <constructor-arg index="0" type="com.jakeapp.core.services.ICSManager" ref="icsManager" />
+        <constructor-arg index="1" type="com.jakeapp.core.dao.IAccountDao" ref="accountDao" />
+        <constructor-arg index="2" type="com.jakeapp.core.services.IProjectInvitationListener" ref="coreProjectInvitationListener" />
+        <!--<property name="accountDao" ref="accountDao"/>-->
+        <!--<property name="ICSManager" ref="icsManager"/>-->
+        <!--<property name="coreProjectInvitationListener" ref="coreProjectInvitationListener" />-->
     </bean>
     
     <!-- TODO later: change to TrustAware -->

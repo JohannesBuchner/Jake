@@ -15,6 +15,8 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.Base64;
 
+import java.util.UUID;
+
 /**
  * The Xmpp Message Service. There's only one per User.
  */
@@ -35,12 +37,12 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 			return;
 
 		ProviderManager.getInstance().addExtensionProvider("custom",
-						this.con.getNamespace(),
-						new GenericPacketProvider(this.con.getNamespace()));
+				this.con.getNamespace(),
+				new GenericPacketProvider(this.con.getNamespace()));
 
 		this.con.getConnection()
-						.addPacketListener(this.packetListener, this.packetListener);
-		
+				.addPacketListener(this.packetListener, this.packetListener);
+
 
 		this.initialized = true;
 	}
@@ -54,12 +56,14 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 
 	@Override
 	public void registerReceiveMessageListener(
-					IMessageReceiveListener receiveListener) {
+			IMessageReceiveListener receiveListener) {
 		initialize();
+		log.debug("Adding receiveListener " + receiveListener);
 		this.packetListener.add(receiveListener);
 	}
 
-	@Override public void registerLoginStateListener(ILoginStateListener loginListener) {
+	@Override
+	public void registerLoginStateListener(ILoginStateListener loginListener) {
 		this.loginListener = loginListener;
 	}
 
@@ -69,7 +73,7 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 	 */
 	@Override
 	public Boolean sendMessage(UserId to_userid, String content)
-					throws NotLoggedInException, NoSuchUseridException {
+			throws NotLoggedInException, NoSuchUseridException {
 
 		if (!this.con.getService().getStatusService().isLoggedIn())
 			throw new NotLoggedInException();
@@ -77,7 +81,10 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 			throw new NoSuchUseridException();
 
 		String safecontent = Base64.encodeBytes(content.getBytes(), Base64.GZIP);
-		Message m = new Message(to_userid.getUserId());
+		Message m = new Message(to_userid.getUserId(), Message.Type.normal); // explicitly set the type of the message
+		m.setSubject("a"+ UUID.randomUUID().toString());
+		m.setBody("b"); // this somehow needs to be done for the message to be cached on the server
+		m.setFrom(this.con.getConnection().getUser());
 		m.addExtension(new GenericPacketExtension(this.con.getNamespace(), safecontent));
 		log.info("Sending message to " + to_userid.getUserId());
 		log.debug("Content:" + content);
@@ -93,11 +100,12 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 
 	@Override
 	public void unRegisterReceiveMessageListener(
-					IMessageReceiveListener receiveListener) {
+			IMessageReceiveListener receiveListener) {
 		this.packetListener.remove(receiveListener);
 	}
 
-	@Override public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
+	@Override
+	public void unRegisterLoginStateListener(ILoginStateListener loginListener) {
 		this.loginListener = null;
 	}
 
@@ -110,7 +118,7 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 		}
 
 		// forward event to gui (only master has a reference)
-		if(loginListener != null) {
+		if (loginListener != null) {
 			try {
 				loginListener.connectionStateChanged(le, null);
 			} catch (Exception ignored) {
