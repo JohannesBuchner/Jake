@@ -26,9 +26,9 @@ fi
  
 ###################################################################
 #Detect DE for future message showings
-if [ $KDE_FULL_SESSION = "true" ]; then
+if [ "$KDE_FULL_SESSION" = "true" ]; then
 DE=kde;
-elif [ $GNOME_DESKTOP_SESSION_ID != "" ]; then
+elif [ "$GNOME_DESKTOP_SESSION_ID" != "" ]; then
 DE=gnome;
 else
 DE=x;
@@ -44,13 +44,11 @@ if [ -z "$JAVA_OPTS" ]; then
 JAVA_OPTS=$defaultJAVA_OPTS
 fi
 echo 'Starting Jake...'
-if ( which $JAVA 2>&1> /dev/null ); then
-echo `which $JAVA`
-else
-echo 'Cannot find Java. Please install or correct your JAVA_HOME'
-showmessage "Cannot find Java.\nPlease install or correct your JAVA_HOME!"
-exit 2
-fi
+which $JAVA 2>&1 || {
+	echo 'Cannot find Java. Please install or correct your JAVA_HOME'; 
+	showmessage "Cannot find Java.\nPlease install or correct your JAVA_HOME!"; 
+	exit 2
+}
  
 echo ''
 #####################################################################
@@ -58,7 +56,7 @@ echo ''
 #create tmp file name
 tmpJavaVersion=mktemp
 # query complete version by java
-java -version 2>&1 | head -n 1> $tmpJavaVersion
+java -version 2>&1 | head -n 1 > $tmpJavaVersion
 # clean output
 javaVersion=`awk 'BEGIN {FS = "\""} {print $2}' $tmpJavaVersion`
 # split version parts
@@ -78,16 +76,16 @@ EOF
 # Print found java version
 echo "Found Java version:    $javaVersionMajor.$javaVersionMinor.$javaVersionPatch"
 echo "Required: $minJavaVersionMajor.$minJavaVersionMinor.$minJavaVersionPatch"
-if [ $javaVersionMajor -gt $minJavaVersionMajor ]; then
+if [ "$javaVersionMajor" -gt "$minJavaVersionMajor" ]; then
 echo -n ''
 else
-if [ $javaVersionMajor -eq $minJavaVersionMajor ] &&
-[ $javaVersionMinor -gt $minJavaVersionMinor ]; then
+if [ "$javaVersionMajor" -eq "$minJavaVersionMajor" ] &&
+[ "$javaVersionMinor" -gt "$minJavaVersionMinor" ]; then
 echo -n ''
 else
-if [ $javaVersionMajor -eq $minJavaVersionMajor ] &&
-[ $javaVersionMinor -eq $minJavaVersionMinor ] &&
-[ $javaVersionPatch -ge $minJavaVersionPatch ]; then
+if [ "$javaVersionMajor" -eq "$minJavaVersionMajor" ] &&
+[ "$javaVersionMinor" -eq "$minJavaVersionMinor" ] &&
+[ "$javaVersionPatch" -ge "$minJavaVersionPatch" ]; then
 echo -n ''
 else
 echo "Please update your Java to the required Java version $minJavaVersionMajor.$minJavaVersionMinor.$minJavaVersionPatch"
@@ -100,5 +98,7 @@ fi
  
 echo ''
 echo 'Java version is sufficient. Starting right now.'
+echo 
 ##########################################################################
+echo "exec -a $appName $JAVA $JAVA_OPTS -jar $0"
 exec -a $appName $JAVA $JAVA_OPTS -jar $0
