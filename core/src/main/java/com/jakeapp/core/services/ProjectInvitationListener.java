@@ -55,8 +55,8 @@ public class ProjectInvitationListener implements IProjectInvitationListener {
 		ProjectJoinedLogEntry logEntry = new ProjectJoinedLogEntry(p,  user);
 		this.contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry);
 
-		StartTrustingProjectMemberLogEntry logEntry2 = new StartTrustingProjectMemberLogEntry(p.getUserId(), user);
-		this.contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry2);
+//		StartTrustingProjectMemberLogEntry logEntry2 = new StartTrustingProjectMemberLogEntry(p.getUserId(), user);
+//		this.contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry2);
 		
 //		StartTrustingProjectMemberLogEntry logEntry_other = new StartTrustingProjectMemberLogEntry(user, p.getUserId());
 //		contextFactory.getUnprocessedAwareLogEntryDao(p).create(logEntry_other);

@@ -56,12 +56,13 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
 	@Override
 	public void stopForProject(Project project) {
-		if(project.getInvitationState() != InvitationState.INVITED) {
-			log.info("Stopping & removing project");
-			fileServices.get(project.getProjectId()).unsetRootPath();
-			fileServices.remove(project.getProjectId());
-		} else {
-			log.info("Project was never started, so it doesn't need to be removed");
-		}
+		if(project == null)
+			return;
+
+		if(!fileServices.containsKey(project.getProjectId()))
+			return;
+
+		fileServices.get(project.getProjectId()).unsetRootPath();
+		fileServices.remove(project.getProjectId());
 	}
 }
