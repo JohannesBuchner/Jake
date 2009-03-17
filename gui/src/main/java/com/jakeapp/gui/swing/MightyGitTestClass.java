@@ -7,5 +7,5 @@ package com.jakeapp.gui.swing;
  * 
  */
 public class MightyGitTestClass {
-	int ATEST=40000;
+	int ATEST=50000;
 }
