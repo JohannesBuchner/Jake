@@ -127,7 +127,7 @@ public class JakeMainApp extends SingleFrameApplication {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Jake");
 		installMacScrollbars();
 	}
-
+	
 
 	private static void lookAndFeelSetup(String[] args) {
 		/**
