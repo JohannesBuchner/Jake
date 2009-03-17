@@ -1,4 +1,4 @@
-# Makefile for Jake :)!!!!! :D
+# Makefile for Jake :)!!!!! :DDD
 #
 # 	provides a dependency system to avoid duplicate builds, tests 
 # 	and packaging.
