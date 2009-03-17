@@ -128,7 +128,6 @@ public class JakeMainApp extends SingleFrameApplication {
 		installMacScrollbars();
 	}
 
-
 	private static void lookAndFeelSetup(String[] args) {
 		/**
 		 * Laf detection code - get the best for every system!
