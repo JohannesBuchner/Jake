@@ -128,7 +128,6 @@ public class JakeMainApp extends SingleFrameApplication {
 		installMacScrollbars();
 	}
 	
-
 	private static void lookAndFeelSetup(String[] args) {
 		/**
 		 * Laf detection code - get the best for every system!
@@ -156,7 +155,7 @@ public class JakeMainApp extends SingleFrameApplication {
 				installMacScrollbars();
 			} else {
 
-				/*// on windows & mac, use the native laf
+				// on windows & mac, use the native laf
 				if (Platform.isWin() || Platform.isMac()) {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} else {
@@ -170,7 +169,7 @@ public class JakeMainApp extends SingleFrameApplication {
 					} catch (Exception r) {
 						log.warn("Error setting laf: " + r.getMessage());
 					}
-				}*/
+				}
 			}
 		} catch (Exception e) {
 			log.warn("LAF Exception: ", e);
