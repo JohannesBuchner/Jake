@@ -95,13 +95,13 @@ package-win: jar
 	cp launcher/resources/jake.xml releases/
 	cp launcher/resources/jakeapp.ico releases/
 	${LAUNCH4J} $(CURDIR)/releases/jake.xml
-	rm releases/jake.xml releases/jakeapp.ico
+	rm -f releases/jake.xml releases/jakeapp.ico
 	@echo Winows Package: releases/Jake.exe
 	@echo TODO create installer with NULLSOFT or use other db path
 	
 package-linux: jar
 	@echo Creating Linux Package...
-	rm releases/Jake.bin
+	rm -f releases/Jake.bin
 	cat launcher/jake.sh releases/jake-current.jar > releases/jake.bin
 	chmod +x releases/jake.bin
 	#tar cjvf releases/jake.tar.bz2 releases/jake.bin 
