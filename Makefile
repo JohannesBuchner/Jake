@@ -56,6 +56,7 @@ install:
 jar:
 	#${MVN} clean
 	${MVN} install -Dmaven.test.skip=true
+	mkdir -p releases
 	cd releases && rm -rf temp && mkdir -p temp 
 	cd releases/temp && unzip ../../gui/target/gui-swing-${VERSION}.one-jar.jar && cp -v ../../{core,ics,ics-xmpp,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && jar cvfm ../jake-current.jar meta-inf/manifest.mf .
 	cd releases; rm -rf temp
