@@ -51,6 +51,8 @@
     </bean>
 
 
+    <!--  TODO: don't forget to change the URL to user home directory!
+    jdbc:hsqldb:file:~/.jake/jakeDB;shutdown=false;create=true -->
     <bean id="mainDataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
@@ -58,11 +60,6 @@
                   value="jdbc:hsqldb:file:.jake/jakeDB;shutdown=false;create=true"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
-        <!--        <property name="connectionProperties">
-            <props>
-                <prop key="shutdown">true</prop>
-            </props>
-        </property>-->
     </bean>
 
 

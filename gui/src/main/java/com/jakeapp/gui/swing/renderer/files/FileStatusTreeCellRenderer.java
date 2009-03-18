@@ -9,7 +9,6 @@ import java.awt.*;
 
 
 public class FileStatusTreeCellRenderer extends DefaultJakeTableCellRenderer {
-
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 					boolean isSelected, boolean hasFocus, int row, int column) {
