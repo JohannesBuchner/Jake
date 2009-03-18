@@ -103,6 +103,7 @@ package-linux: jar
 	@echo Creating Linux Package...
 	rm releases/Jake.bin
 	cat launcher/jake.sh releases/jake-current.jar > releases/jake.bin
+	chmod +x releases/jake.bin
 	#tar cjvf releases/jake.tar.bz2 releases/jake.bin 
 
 	@echo Linux Package: releases/Jake.bin

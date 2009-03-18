@@ -56,7 +56,6 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	private ConnectionState lastConnectionState = ConnectionState.LOGGED_OUT;
 	private String lastConnectionMsg = "";
-
 	private String projectFileCount = "";
 	private String projectTotalSize = "";
 	private SpinningWheelComponent progressDrawer;

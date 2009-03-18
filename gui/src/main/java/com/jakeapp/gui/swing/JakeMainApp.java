@@ -107,7 +107,7 @@ public class JakeMainApp extends SingleFrameApplication {
 	 * @param args
 	 */
 	private static void startGui(String[] args) {
-
+		log.info("JakeDB: " + System.getProperty("user.dir"));
 		lookAndFeelSetup(args);
 
 		if (Platform.isMac()) {
