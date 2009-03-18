@@ -12,7 +12,6 @@ LAUNCH4J=/Applications/launch4j/launch4j
 
 all: install
 
-
 help:
 	@cat Makefile|grep '^# ' |sed 's/^# \([^: \t]* *\): \(.*\)/\t\1\t\2/g'|sed 's/#\(.*\)#/\n[1;34m\1[0m/g'|sed 's/#//g'|sed 's/\t@\([^: \t]*\)/     \*\t[1;32m\1[0m/g'
 	@svn info |grep '^Revision: '|sed 's/Revision: / Repository revision: /g'
@@ -57,6 +56,7 @@ install:
 jar:
 	#${MVN} clean
 	${MVN} install -Dmaven.test.skip=true
+	mkdir -p releases
 	cd releases && rm -rf temp && mkdir -p temp 
 	cd releases/temp && unzip ../../gui/target/gui-swing-${VERSION}.one-jar.jar && cp -v ../../{core,ics,ics-xmpp,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && jar cvfm ../jake-current.jar meta-inf/manifest.mf .
 	cd releases; rm -rf temp
