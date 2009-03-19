@@ -485,15 +485,6 @@ public class JakeMainView extends FrameView implements ContextChangedCallback {
 			flowButtons.add(button);
 		}
 
-		/*
-				  JButton resolveConflictBotton = new JButton("3 Conflicts");
-				  resolveConflictBotton.putClientProperty("JButton.buttonType", "textured");
-				  resolveConflictBotton.setForeground(Color.RED);
-				  //resolveConflictBotton.putClientProperty("JComponent.sizeVariant", "small");
-				  resolveConflictBotton.setOpaque(true);
-				  switcherPanel.add(resolveConflictBotton, BorderLayout.WEST);
-					*/
-
 		return switcherPanel;
 	}
 
