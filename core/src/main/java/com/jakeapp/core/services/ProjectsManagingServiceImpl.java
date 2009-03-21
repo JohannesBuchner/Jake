@@ -290,6 +290,16 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		if (msgService == null || msgService.userId == null)
 			throw new IllegalArgumentException("MsgService must not be null!!");
 
+		//test if folder exists and if not, create it
+		boolean success = false;
+		if (projectRoot.exists())
+			success = projectRoot.isDirectory();
+		else
+			success = projectRoot.mkdirs();		
+		
+		if (!success)
+			throw new NotADirectoryException(projectRoot.toString());
+		
 		// create a new, empty project
 		Project project = new Project(name, UUID.randomUUID(), msgService, projectRoot);
 		project.setCredentials(msgService.getServiceCredentials());

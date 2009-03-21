@@ -82,8 +82,8 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 
 		String safecontent = Base64.encodeBytes(content.getBytes(), Base64.GZIP);
 		Message m = new Message(to_userid.getUserId(), Message.Type.normal); // explicitly set the type of the message
-		m.setSubject("a"+ UUID.randomUUID().toString());
-		m.setBody("b"); // this somehow needs to be done for the message to be cached on the server
+//		m.setSubject("a"+ UUID.randomUUID().toString());
+//		m.setBody("b"); // this somehow needs to be done for the message to be cached on the server
 		m.setFrom(this.con.getConnection().getUser());
 		m.addExtension(new GenericPacketExtension(this.con.getNamespace(), safecontent));
 		log.info("Sending message to " + to_userid.getUserId());

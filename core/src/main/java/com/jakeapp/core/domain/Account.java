@@ -10,8 +10,17 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * A representation of the users credentials. It consists of a
- * <code>userId</code> and a <code>plainTextPassword</code>.
+ * A representation of the users credentials. It consists of <ul>
+ * <li> a <code>userId</code>,</li>
+ * <li>a <code>plainTextPassword</code>,</li>
+ * <li>the <code>serverAddress</code>,</li>
+ * <li>the long <code>serverPort</code>,</li>
+ * <li>a boolean indicating if <code>autoLogin</code> is wished,</li>
+ * <li>a boolean <code>encryptionUsed</code> indicating if
+ * encryption has to be used,</li>
+ * <li>a boolean <code>savePassword</code> indicating if the password should be saved or not, </li>
+ * <li> and the <code>{ProtocolType}</code> specifying which type of service this account belongs to.</li>
+ * </ul>
  */
 @Entity(name = "servicecredentials")
 public class Account implements Serializable {
@@ -61,6 +70,10 @@ public class Account implements Serializable {
 		this.setProtocol(protocolType);
 	}
 
+	/**
+	 * Returns the <code>String</code> representation of the accounts-UUID.
+	 * @return String representation of the accounts-UUID.
+	 */
 	@Id
 	@Column(name = "uuid", nullable = false)
 	public String getUuid() {
@@ -92,7 +105,7 @@ public class Account implements Serializable {
 	}
 
 	/**
-	 * Get the password
+	 * Get the password in plaintext
 	 * 
 	 * @return the <code>plainTextPassword</code>
 	 */
@@ -110,7 +123,7 @@ public class Account implements Serializable {
 	 * <code>ServiceCredentials</code> are registered. Both IPv4 or IPv6 should
 	 * work.
 	 * 
-	 * @return the ip address/hostname set.
+	 * @return the ip address/hostname currently set or an empty string, if not set.
 	 */
 	@Column(name = "server", nullable = false)
 	public String getServerAddress() {
@@ -151,6 +164,10 @@ public class Account implements Serializable {
 		this.encryptionUsed = encryptionUsed;
 	}
 
+	/**
+	 * Returns wheter autoLogin is
+	 * @return
+	 */
 	@Column(name = "autologin")
 	public boolean isAutologin() {
 		return autologin;
@@ -158,10 +175,6 @@ public class Account implements Serializable {
 
 	public void setAutologin(boolean autologin) {
 		this.autologin = autologin;
-	}
-
-	private void setProtocolType(String protocol) {
-		this.protocol = ProtocolType.getValue(protocol);
 	}
 
 	@Column(name = "protocol")
