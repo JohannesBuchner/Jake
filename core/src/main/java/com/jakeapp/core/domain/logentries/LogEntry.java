@@ -27,7 +27,6 @@ import javax.persistence.Transient;
  * 
  * @author Dominik, Simon, christopher
  */
-
 @Entity(name = "logentries")
 public abstract class LogEntry<T extends ILogable> implements Serializable {
 

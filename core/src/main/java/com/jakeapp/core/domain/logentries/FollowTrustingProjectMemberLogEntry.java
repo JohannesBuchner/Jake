@@ -7,9 +7,14 @@ import com.jakeapp.core.domain.ILogable;
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
+/**
+ * This LogEntry specifies that a <code>User</code> &quot;fully trusts&quot; another <code>User</code>
+ * and therefor also trusts all <code>User</code>s the other <code>User</code> trusts.
+ */
 @Entity
 @DiscriminatorValue(value = "FOLLOW_TRUSTING_PROJECTMEMBER")
 public class FollowTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {
+
 	public FollowTrustingProjectMemberLogEntry(User user, User me)
 	{
 		super(LogAction.FOLLOW_TRUSTING_PROJECTMEMBER, user, me);

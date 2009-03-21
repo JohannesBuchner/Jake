@@ -9,6 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
 
+/**
+ * This <code>LogEntry</code> specifies, that a certain <code>JakeObject</code> was <em>Softlocked</em> by
+ * the <code>User</code> creating this <code>LogEntry</code>. An additional <code>comment</code> can be added
+ * to the <code>Lock</code> specifying why the <code>Lock</code> was issued.
+ */
 @Entity
 @DiscriminatorValue(value = "JAKE_OBJECT_LOCK")
 public class JakeObjectLockLogEntry extends JakeObjectLogEntry {
