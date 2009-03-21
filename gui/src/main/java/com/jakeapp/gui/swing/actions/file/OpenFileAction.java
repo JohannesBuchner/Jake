@@ -7,7 +7,6 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.PullAndLaunchJakeObjectsTask;
@@ -59,6 +58,10 @@ public class OpenFileAction extends FileAction {
 	 */
 	public static void launchFile(FileObject fo) {
 
+		if(fo == null) {
+			log.warn("Cannot launch: fileObject is null");
+		}
+
 		// detect if there is a soft lock set
 		final Attributed<FileObject> aFo = JakeMainApp.getCore()
 						.getAttributed(fo);
@@ -69,10 +72,15 @@ public class OpenFileAction extends FileAction {
 							Arrays.asList((JakeObject) aFo.getJakeObject())));
 		}
 
+		launchFileDontTryPull(fo);
+	}
+
+	public static void launchFileDontTryPull(FileObject fo) {
 		try {
 			FileUtilities.launchFile(fo);
 		} catch (FileOperationFailedException e) {
-			ExceptionUtilities.showError("Failed launching " + fo.getRelPath(), e);
+			//ExceptionUtilities.showError("Failed launching " + fo.getRelPath(), e);
+			log.warn("Failed lauchning " + e.getMessage());
 		}
 	}
 }

@@ -1,12 +1,11 @@
 package com.jakeapp.core.synchronization.pull;
 
-import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import org.apache.log4j.Logger;
 
 public class PullListener implements INegotiationSuccessListener {
@@ -20,7 +19,7 @@ public class PullListener implements INegotiationSuccessListener {
 	private IProjectsFileServices projectsFileServices;
 
 	public PullListener(JakeObject jo, ChangeListener changeListener,
-			IProjectsFileServices projectsFileServices) {
+					IProjectsFileServices projectsFileServices) {
 		this.changeListener = changeListener;
 		this.jo = jo;
 		this.projectsFileServices = projectsFileServices;
@@ -29,6 +28,7 @@ public class PullListener implements INegotiationSuccessListener {
 	@Override
 	public void failed(Throwable reason) {
 		log.error("pulling failed.", reason);
+		changeListener.pullFailed(jo, reason);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class PullListener implements INegotiationSuccessListener {
 		log.info("pulling negotiation succeeded");
 		this.changeListener.pullNegotiationDone(this.jo);
 		PullWatcher pw = new PullWatcher(this.jo, this.changeListener, ft,
-				this.projectsFileServices);
+						this.projectsFileServices);
 
 		new Thread(new TransferWatcherThread(ft, pw)).start();
 	}

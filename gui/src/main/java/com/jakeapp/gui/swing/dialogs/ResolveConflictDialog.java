@@ -43,12 +43,11 @@ public class ResolveConflictDialog extends JakeDialog {
 	 * Private Constructor for ResolveConflictDialog.
 	 * Use showDialog.
 	 *
-	 * @param project
 	 * @param fileObject
 	 */
-	private ResolveConflictDialog(Project project, FileObject fileObject) {
-		super(project);
-		log.info("Opening ResolveConflictDialog on " + project + " with file: " + fileObject);
+	private ResolveConflictDialog(FileObject fileObject) {
+		super(fileObject.getProject());
+		log.info("Opening ResolveConflictDialog on " + fileObject.getProject() + " with file: " + fileObject);
 
 		// get attributed object
 		this.fo = JakeMainApp.getCore().getAttributed(fileObject);
@@ -258,8 +257,8 @@ public class ResolveConflictDialog extends JakeDialog {
 	 * @param project: project where people will be added.
 	 * @param fo:      file object
 	 */
-	public static void showDialog(Project project, FileObject fo) {
-		ResolveConflictDialog dlg = new ResolveConflictDialog(project, fo);
+	public static void showDialog(FileObject fo) {
+		ResolveConflictDialog dlg = new ResolveConflictDialog(fo);
 		dlg.showDialogSized(500, 280);
 	}
 }

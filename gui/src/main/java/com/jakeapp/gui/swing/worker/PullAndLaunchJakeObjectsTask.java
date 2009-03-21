@@ -18,7 +18,7 @@ public class PullAndLaunchJakeObjectsTask extends PullJakeObjectsTask {
 
 		// launch it!
 		for (JakeObject jo : jakeObjects) {
-			OpenFileAction.launchFile((FileObject) jo);
+			OpenFileAction.launchFileDontTryPull((FileObject) jo);
 		}
 	}
 }

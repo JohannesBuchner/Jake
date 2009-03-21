@@ -45,7 +45,7 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer>  {
 		}
 
 		@Override
-		public void pullFailed(JakeObject jo, Exception reason) {
+		public void pullFailed(JakeObject jo, Throwable reason) {
 			log.debug("pull failed for " + jo);
 			sem.release();
 			innerException = reason;

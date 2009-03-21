@@ -36,7 +36,7 @@ abstract class ChangeListenerProxy implements ChangeListener {
 	}
 	
 	@Override
-	public void pullFailed(JakeObject jo, Exception reason) {
+	public void pullFailed(JakeObject jo, Throwable reason) {
 		this.getInnercl().pullFailed(jo,reason);
 	}
 

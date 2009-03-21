@@ -68,7 +68,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		}
 
 		@Override
-		public void pullFailed(JakeObject jo, Exception reason) {
+		public void pullFailed(JakeObject jo, Throwable reason) {
 			tracer.step("pullFailed");
 		}
 

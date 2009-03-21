@@ -42,7 +42,7 @@ public class PrintingChangeListener implements ChangeListener {
 	}
 
 	@Override
-	public void pullFailed(JakeObject jo, Exception reason) {
+	public void pullFailed(JakeObject jo, Throwable reason) {
 		log.info(jo,reason);
 	}
 

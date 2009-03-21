@@ -11,6 +11,7 @@ import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTreeTable;
 import com.jakeapp.gui.swing.controls.cmacwidgets.JakeHudButtonUI;
 import com.jakeapp.gui.swing.controls.cmacwidgets.RedHudButtonUI;
+import com.jakeapp.gui.swing.dialogs.ResolveConflictDialog;
 import com.jakeapp.gui.swing.filters.FileObjectConflictStatusFilter;
 import com.jakeapp.gui.swing.filters.FileObjectDateFilter;
 import com.jakeapp.gui.swing.globals.JakeContext;
@@ -292,8 +293,6 @@ public class FilePanel extends javax.swing.JPanel
 				// variable for the beginning and end selects only that one
 				// row.
 				// ONLY select new item if we didn't select multiple items.
-
-
 				java.util.List<ProjectFilesTreeNode> nodeObjs =
 								new ArrayList<ProjectFilesTreeNode>();
 
@@ -314,7 +313,6 @@ public class FilePanel extends javax.swing.JPanel
 					} else {
 						EventCore.get().notifyFileSelectionListeners(null);
 					}
-
 				}
 
 				for (int currRow : container.getSelectedRows()) {
@@ -345,8 +343,20 @@ public class FilePanel extends javax.swing.JPanel
 				EventCore.get().notifyNodeSelectionListeners(nodeObjs);
 
 				if (me.getClickCount() == 2 && fileObjs.size() == 1) {
-					OpenFileAction.launchFile(fileObjs.get(0));
+					onDoubleClick(fileObjs.get(0));
 				}
+			}
+		}
+
+		/**
+		 * Processes the double click event
+		 * @param fo
+		 */
+		private void onDoubleClick(FileObject fo) {
+			if (JakeMainApp.getCore().getAttributed(fo).isInConflict()) {
+				ResolveConflictDialog.showDialog(fo);
+			} else {
+				OpenFileAction.launchFile(fo);
 			}
 		}
 
