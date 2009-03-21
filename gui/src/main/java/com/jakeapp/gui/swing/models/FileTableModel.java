@@ -131,8 +131,8 @@ public class FileTableModel extends AbstractTableModel
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 
 		// FIXME cache!! get async?
-		Attributed<FileObject> fileInfo = JakeMainApp.getCore()
-						.getAttributed(ournode.getFileObject());
+		Attributed<FileObject> fileInfo =
+						JakeMainApp.getCore().getAttributed(ournode.getFileObject());
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:
@@ -152,7 +152,7 @@ public class FileTableModel extends AbstractTableModel
 			case Size: {
 				if (fileInfo.isOnlyRemote()) {
 					return "";
-				}else {
+				} else {
 					return FileUtilities.getSize(fileInfo.getSize());
 				}
 			}
@@ -160,7 +160,11 @@ public class FileTableModel extends AbstractTableModel
 			case LastMod:
 				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
 			case LastModBy:
-				return fileInfo.getLastVersionEditor().getUserId();
+				if (fileInfo.getLastVersionEditor() != null) {
+					return fileInfo.getLastVersionEditor().getUserId();
+				} else {
+					return "";
+				}
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";
