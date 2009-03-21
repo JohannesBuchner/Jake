@@ -8,6 +8,10 @@ import com.jakeapp.core.domain.ILogable;
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
+/**
+ * This <code>LogEntry</code> specifies, that the <code>SoftLock</code> on the associated <code>JakeObject</code>
+ * was releaesed from the <code>User</code> with the given <code>comment message</code>.
+ */
 @Entity
 @DiscriminatorValue(value = "JAKE_OBJECT_UNLOCK")
 public class JakeObjectUnlockLogEntry extends JakeObjectLogEntry {

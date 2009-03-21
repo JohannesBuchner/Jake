@@ -8,6 +8,10 @@ import java.io.Serializable;
 import java.util.UUID;
 
 
+/**
+ * This is the superclass for all <code>LogEntry</code>s working with <code>User</code>
+ * objects in the <code>belongsTo</code> member of a <code>LogEntry</code>.
+ */
 @Entity
 public class ProjectMemberLogEntry extends LogEntry<User> implements Serializable {
 

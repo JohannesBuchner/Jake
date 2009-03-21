@@ -4,7 +4,8 @@ package com.jakeapp.core.domain;
  * An enumeration for possible protocol types, which are supported by Jake.
  */
 public enum ProtocolType {
-    XMPP("XMPP"),
+    XMPP("XMPP")
+	// ,
 	// MSN("MSN"),
 	// ICQ("ICQ")
 	;

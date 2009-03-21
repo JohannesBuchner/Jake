@@ -9,6 +9,12 @@ import javax.persistence.Transient;
 import java.util.UUID;
 import java.io.Serializable;
 
+
+/**
+ * This is the abstract superclass for all <code>Project</code> specific <code>LogEntry</code>s.
+ * Only <code>ProjectLogEntry</code> <code>LogEntry</code> are able to have a <code>Project</code> in the
+ * <code>belongsTo</code> member.
+ */
 @Entity
 public abstract class ProjectLogEntry extends LogEntry<Project> implements Serializable {
     private static final long serialVersionUID = -8773156028147182736L;
