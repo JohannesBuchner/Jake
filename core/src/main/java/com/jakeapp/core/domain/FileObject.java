@@ -69,11 +69,17 @@ public class FileObject extends JakeObject {
 		this.relPath = relPath;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return "File [" + super.toString() + "]:" + getRelPath();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -91,6 +97,9 @@ public class FileObject extends JakeObject {
 		return super.equals(o);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
@@ -98,6 +107,10 @@ public class FileObject extends JakeObject {
 		return result;
 	}
 	
+	/**
+	 * Compares the <code>relPath</code> in respect to the natural order.
+	 * @return a Comparator comparing the <code>relPath</code>   
+	 */
 	public static Comparator<FileObject> getRelpathComparator() {
 		return new Comparator<FileObject>() {
 			@Override

@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 
 /**
- * States for Projects. When creating a new <code>Project</code>, initialize
+ * <em>This is deprecated. Remove as soon as safe and possible</em><br />
+ * States for <code>Project</code>. When creating a new <code>Project</code>, initialize
  * it with the ACCEPTED-State; when receiving an invitation, create a <code>Project</code>
  * that is in INVITED-State.
  * @author Djinn
+ * @deprecated
  */
 public enum InvitationState implements Serializable {
 	/**
