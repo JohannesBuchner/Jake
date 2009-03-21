@@ -195,7 +195,8 @@ public class FSService implements IFSService, IModificationListener {
 		if (getRootPath() == null)
 			return null;
 		if (!isValidRelpath(relpath))
-			throw new InvalidFilenameException("File " + relpath + " is not a valid filename!");
+			throw new InvalidFilenameException(
+							"File " + relpath + " is not a valid filename!");
 		File f = new File(joinPath(getRootPath(), relpath));
 		return f.getAbsolutePath();
 	}
@@ -554,18 +555,25 @@ public class FSService implements IFSService, IModificationListener {
 
 		if (file.isFile()) {
 			File dest = new File(this.getFullpath(destFolderRelPath), file.getName());
-			importFileInternal(file, dest);
+
+			// TODO: save a list of success/fails and return to user
+			try {
+				importFileInternal(file, dest);
+			} catch (Exception ex) {
+				log.warn("Failed importing " + file, ex);
+			}
+
 		} else if (file.isDirectory()) {
 			// woohoo - copy whole directory and all subdirs within!
 			for (File afile : file.listFiles()) {
-				File dest = new File(this.getFullpath(destFolderRelPath), afile.getName());
-				importFileInternal(afile, dest);
+				importFile(afile, destFolderRelPath + "/" + file.getName());
 			}
 		}
 	}
 
 	/**
 	 * Internal helper that performs the copying
+	 *
 	 * @param fileFrom
 	 * @param fileTo
 	 * @throws NotAReadableFileException
@@ -573,9 +581,10 @@ public class FSService implements IFSService, IModificationListener {
 	 * @throws InvalidFilenameException
 	 * @throws IOException
 	 * @throws CreatingSubDirectoriesFailedException
+	 *
 	 */
-	private void importFileInternal(File fileFrom, File fileTo) throws
-					NotAReadableFileException, FileAlreadyExistsException,
+	private void importFileInternal(File fileFrom, File fileTo)
+					throws NotAReadableFileException, FileAlreadyExistsException,
 					InvalidFilenameException, IOException,
 					CreatingSubDirectoriesFailedException {
 		checkFileIsReadable(fileFrom);
@@ -594,8 +603,8 @@ public class FSService implements IFSService, IModificationListener {
 
 	private static void checkFileNotExists(File f) throws FileAlreadyExistsException {
 		if (f.exists()) {
-			throw new FileAlreadyExistsException("File already exists: " + f
-							.getAbsolutePath());
+			throw new FileAlreadyExistsException(
+							"File already exists: " + f.getAbsolutePath());
 		}
 	}
 

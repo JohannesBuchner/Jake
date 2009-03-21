@@ -94,6 +94,7 @@ public class JakeMenuBar extends JMenuBar {
 		fileMenu.setText(resourceMap.getString("fileMenu.text"));
 
 		fileMenu.add(new JMenuItem(new OpenFileAction()));
+		fileMenu.add(new JMenuItem(new ShowInBrowserFileAction()));				
 		fileMenu.add(new JMenuItem(new ResolveConflictFileAction()));
 		fileMenu.addSeparator();
 		fileMenu.add(new JMenuItem(new AnnounceFileAction()));
@@ -149,7 +150,7 @@ public class JakeMenuBar extends JMenuBar {
 				aboutFrame
 								.setApplicationIcon(UIManager.getIcon("OptionPane.informationIcon"));
 				aboutFrame.setBuildVersion("001");
-				aboutFrame.setCopyright("Copyright 2007-2009, Slowest ASE Team TU Vienna");
+				aboutFrame.setCopyright("Copyright 2007-2009, Slowest ASE Team in the known universe");
 				aboutFrame.setCredits(
 								"<html><body>Jake<br>" + "<a href=\"http://jakeapp.com/\">jakeapp.com</a><br>" + "<br>We are proud to present you Jake." + "<b></b><br>" + "Send your Feedback to: " + "<a href=\"mailto:jake@jakeapp.com\">jake@jakeapp.com</a>" + "</body></html>",
 								"text/html");

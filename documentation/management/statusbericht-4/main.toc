@@ -1,0 +1,10 @@
+\select@language {ngerman}
+\contentsline {section}{\numberline {1.1}Status}{2}{chapter*.1}
+\contentsline {section}{\numberline {1.2}Komponenten}{2}{chapter*.1}
+\contentsline {subsection}{\numberline {1.2.1}Domainobjects, Datenbank}{2}{section*.2}
+\contentsline {subsection}{\numberline {1.2.2}JakeCommander}{2}{section*.2}
+\contentsline {subsection}{\numberline {1.2.3}Core}{2}{section*.2}
+\contentsline {section}{\numberline {1.3}GUI}{2}{section*.2}
+\contentsline {section}{\numberline {1.4}Neuerungen}{2}{section*.2}
+\contentsline {section}{\numberline {1.5}Abschlie\IeC {\ss }ende Bemerkungen}{3}{section*.2}
+\contentsline {section}{\numberline {1.6}Anh\IeC {\"a}nge}{3}{section*.2}

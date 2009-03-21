@@ -8,6 +8,10 @@ import com.jakeapp.core.domain.ILogable;
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
+/**
+ * This <code>LogEntry</code> specifies that the <code>User</code> creating this <code>LogEntry</code> joined the
+ * given <code>Project</code>.
+ */
 @Entity
 @DiscriminatorValue(value = "PROJECT_JOINED")
 public class ProjectJoinedLogEntry extends ProjectLogEntry {

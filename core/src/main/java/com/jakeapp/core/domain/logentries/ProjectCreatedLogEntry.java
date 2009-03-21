@@ -9,6 +9,10 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 
+/**
+ * This <code>LogEntry</code> specifies that the given <code>Project</code> was created by the <code>User</code>
+ * creating this <code>LogEntry</code>. 
+ */
 @Entity
 @DiscriminatorValue(value = "PROJECT_CREATED")
 public class ProjectCreatedLogEntry extends ProjectLogEntry {

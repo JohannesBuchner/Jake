@@ -7,7 +7,12 @@ import com.jakeapp.core.domain.User;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-@Entity @DiscriminatorValue(value = "PROJECT_REJECTED")
+/**
+ * This <code>LogAction</code> specifies, that the given <code>User</code> rejected the
+ * <code>Invitation</code> issued by the <code>User</code> creating this <code>LogEntry</code>
+ */
+@Entity
+@DiscriminatorValue(value = "PROJECT_REJECTED")
 public class ProjectMemberInvitationRejectedLogEntry extends ProjectMemberLogEntry {
 
 	public ProjectMemberInvitationRejectedLogEntry(User user, User me) {

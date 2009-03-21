@@ -8,9 +8,11 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
- * This logentry states the the user was invited to the project
+ * This <code>LogEntry</code> specifies that the given <code>User</code> was invited to the <code>Project</code>
+ * by the <code>User</code> creating this <code>LogEntry</code>.
  */
-@Entity @DiscriminatorValue(value = "PROJECTMEMBER_INVITED")
+@Entity
+@DiscriminatorValue(value = "PROJECTMEMBER_INVITED")
 public class ProjectMemberInvitedLogEntry extends ProjectMemberLogEntry {
 	private static final long serialVersionUID = 4036902834880403137L;
 

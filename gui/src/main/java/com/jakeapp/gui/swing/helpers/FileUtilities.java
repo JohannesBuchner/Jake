@@ -9,7 +9,6 @@ import net.roydesign.ui.FolderDialog;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -453,5 +452,18 @@ public class FileUtilities {
 			return true;
 		else
 			return new File(path).mkdirs();
+	}
+
+	public static void selectFileInFileViewer(String fullPathname) {
+		log.debug("Select File " + fullPathname);
+
+		// FIXME: add GNOME support, if possible. See https://launchpad.net/distros/ubuntu/+source/nautilus/+bug/57537
+		// FIXME: make into an action that also supplies an appropriate name for the action on the current platform.
+		if (Platform.isMac()) {
+			ProcessUtilities.spawn(null, new String[]{"/usr/bin/osascript", "-e", "tell application \"Finder\" to select \"" + fullPathname + "\" as POSIX file", "-e", "tell application \"Finder\" to activate"});
+		} else if (Platform.isWin()) {
+			// See "Windows Explorer Command-Line Options", http://support.microsoft.com/default.aspx?scid=kb;EN-US;q152457
+			ProcessUtilities.spawn(null, new String[]{"Explorer", "/select," + fullPathname});
+		}
 	}
 }

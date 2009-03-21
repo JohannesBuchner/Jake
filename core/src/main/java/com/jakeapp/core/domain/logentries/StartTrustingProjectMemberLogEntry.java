@@ -7,7 +7,10 @@ import com.jakeapp.core.domain.ILogable;
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
-
+/**
+ * This <code>LogEntry</code> specifies that the <code>User</code> creating this <code>LogEntry</code>
+ * starts trusting the given <code>User</code>. 
+ */
 @Entity
 @DiscriminatorValue(value = "START_TRUSTING_PROJECTMEMBER")
 public class StartTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {

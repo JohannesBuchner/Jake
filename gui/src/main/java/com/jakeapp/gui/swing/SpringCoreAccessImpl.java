@@ -6,7 +6,11 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
+
+import com.jakeapp.core.domain.exceptions.UserFormatException;
+
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
+
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
@@ -639,6 +643,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		} catch (FrontendNotLoggedInException e) {
 			this.handleNotLoggedInException(e);
 		} catch (IllegalStateException e) {
+			ExceptionUtilities.showError(e);
+
+		} catch (UserFormatException e) {
 			ExceptionUtilities.showError(e);
 		} catch (Exception e) {
 			ExceptionUtilities.showError(e);

@@ -2,7 +2,6 @@ package com.jakeapp.gui.swing.dialogs;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
@@ -11,10 +10,10 @@ import com.jakeapp.gui.swing.dialogs.generic.JakeDialog;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
-import com.jakeapp.gui.swing.helpers.GuiUtilities;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.helpers.UserHelper;
+import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.worker.AnnounceJakeObjectTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.PullJakeObjectsTask;
@@ -82,7 +81,7 @@ public class ResolveConflictDialog extends JakeDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GuiUtilities.selectFileInFileViewer(FileObjectHelper.getPath(
+					FileUtilities.selectFileInFileViewer(FileObjectHelper.getPath(
 									JakeMainApp.getCore().getFile(fo.getJakeObject())));
 				} catch (FileOperationFailedException ex) {
 					ExceptionUtilities.showError(ex);

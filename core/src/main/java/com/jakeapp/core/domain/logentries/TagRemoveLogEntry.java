@@ -8,6 +8,12 @@ import com.jakeapp.core.domain.ILogable;
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
+/**
+ * This <code>LogEntry</code> specifies that the given <code>Tag</code> was removed from a <code>JakeObject</code>
+ * by the <code>User</code> creating this <code>LogEntry</code>
+ * The programmer has to make sure, that the corresponding <code>JakeObject</code> is set inside the <code>Tag</code>.
+ * TODO: This will be changed in the final version. 
+ */
 @Entity
 @DiscriminatorValue(value = "TAG_REMOVE")
 public class TagRemoveLogEntry extends TagLogEntry {

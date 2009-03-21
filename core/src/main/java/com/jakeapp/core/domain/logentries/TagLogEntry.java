@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import java.util.UUID;
 import java.io.Serializable;
 
+/**
+ * Superclass for all <code>LogEntries</code> able to store a <code>Tag</code> Object. 
+ */
 @Entity
 public abstract class TagLogEntry extends LogEntry<Tag> implements Serializable {
 

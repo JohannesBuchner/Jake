@@ -58,22 +58,26 @@ public class LockFileAction extends FileAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (!isSingleFileSelected()) {
-			log.warn("Action Lock failed: no single file selected.");
+			log.info("Action Lock failed: no single file selected.");
 		}
 
 		// detect if there is a soft lock set
-		final Attributed<FileObject> aFo = JakeMainApp.getCore()
+		final Attributed<FileObject> attributedFile = JakeMainApp.getCore()
 						.getAttributed(getSelectedFile());
 
 		String promptStr = this.resourceMap.getString("promptLockWithComment");
-
-		JSheet.showInputSheet(JakeContext.getFrame(), promptStr, null,
-						new SheetListener() {
-							@Override public void optionSelected(SheetEvent evt) {
-								JakeMainApp.getCore()
-												.setSoftLock(aFo.getJakeObject(), aFo.isLocked(),
-																(String) evt.getInputValue());
-							}
-						});
+		
+		if (!attributedFile.isLocked()) {
+			
+			JSheet.showInputSheet(JakeContext.getFrame(), promptStr, null,
+							new SheetListener() {
+								@Override public void optionSelected(SheetEvent evt) {
+									JakeMainApp.getCore().setSoftLock(attributedFile.getJakeObject(), true,
+																	(String) evt.getInputValue());
+								}
+							});
+		} else {
+			JakeMainApp.getCore().setSoftLock(attributedFile.getJakeObject(), false, "");
+		}
 	}
 }

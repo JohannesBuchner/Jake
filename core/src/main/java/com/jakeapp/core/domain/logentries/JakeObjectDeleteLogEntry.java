@@ -8,6 +8,12 @@ import com.jakeapp.core.domain.ILogable;
 import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
 
+/**
+ * This <code>LogEntry</code> specifies that the associated <code>JakeObject</code>, be it
+ * a <code>FileObject</code> or a <code>NoteObject</code> was deleted by the <code>User</code>
+ * specified in the user-field. Additionally the <code>User</code> can enter a message describing
+ * why the <code>JakeObject</code> was deleted. 
+ */
 @Entity
 @DiscriminatorValue(value = "JAKE_OBJECT_DELETE")
 public class JakeObjectDeleteLogEntry extends JakeObjectLogEntry {

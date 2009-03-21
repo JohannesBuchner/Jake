@@ -8,6 +8,10 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 
+/**
+ * This <code>LogEntry</code> specifies that the <code>User</code> creating this <code>LogEntry</code>
+ * stops trusting the given <code>User</code>. 
+ */
 @Entity
 @DiscriminatorValue(value = "STOP_TRUSTING_PROJECTMEMBER")
 public class StopTrustingProjectMemberLogEntry extends ProjectMemberLogEntry {

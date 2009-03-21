@@ -12,6 +12,7 @@ import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
@@ -131,8 +132,8 @@ public class FileTableModel extends AbstractTableModel
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 
 		// FIXME cache!! get async?
-		Attributed<FileObject> fileInfo = JakeMainApp.getCore()
-						.getAttributed(ournode.getFileObject());
+		Attributed<FileObject> fileInfo =
+						JakeMainApp.getCore().getAttributed(ournode.getFileObject());
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:
@@ -152,7 +153,7 @@ public class FileTableModel extends AbstractTableModel
 			case Size: {
 				if (fileInfo.isOnlyRemote()) {
 					return "";
-				}else {
+				} else {
 					return FileUtilities.getSize(fileInfo.getSize());
 				}
 			}
@@ -160,7 +161,7 @@ public class FileTableModel extends AbstractTableModel
 			case LastMod:
 				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
 			case LastModBy:
-				return fileInfo.getLastVersionEditor();
+				UserHelper.getLocalizedUserNick(fileInfo.getLastVersionEditor());
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";

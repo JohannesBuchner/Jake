@@ -196,6 +196,7 @@ public class FilePanel extends javax.swing.JPanel
 
 	private void initPopupMenu(JPopupMenu pm) {
 		pm.add(new JMenuItem(new OpenFileAction()));
+		pm.add(new JMenuItem(new ShowInBrowserFileAction()));
 		// TODO: show always? dynamically? (alwasy for now...while dev)
 		pm.add(new JMenuItem(new ResolveConflictFileAction()));
 		pm.add(new JSeparator());
@@ -279,13 +280,18 @@ public class FilePanel extends javax.swing.JPanel
 		@Override
 		public void mouseClicked(MouseEvent me) {
 			log.info("mouseClicked: " + me);
+
+			// get the coordinates of the mouse click
+			Point p = me.getPoint();
+
+			// get the row index that contains that coordinate
+			int rowNumber = container.rowAtPoint(p);
+
+			if (rowNumber == -1) { // click in empty area
+				EventCore.get().notifyFileSelectionListeners(null);
+				container.clearSelection();
+			}
 			if (SwingUtilities.isRightMouseButton(me)) {
-				// get the coordinates of the mouse click
-				Point p = me.getPoint();
-
-				// get the row index that contains that coordinate
-				int rowNumber = container.rowAtPoint(p);
-
 				// Get the ListSelectionModel of the JTable
 				ListSelectionModel model = container.getSelectionModel();
 
@@ -350,6 +356,7 @@ public class FilePanel extends javax.swing.JPanel
 
 		/**
 		 * Processes the double click event
+		 *
 		 * @param fo
 		 */
 		private void onDoubleClick(FileObject fo) {

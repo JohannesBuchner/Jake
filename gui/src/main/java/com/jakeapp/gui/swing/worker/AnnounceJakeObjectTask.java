@@ -14,6 +14,7 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -24,6 +25,10 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 	public AnnounceJakeObjectTask(List<JakeObject> jos, String commitMessage) {
 		this.jos = jos;
 		this.commitMessage = (commitMessage == null) ? "" : commitMessage;
+	}
+
+	public AnnounceJakeObjectTask(FileObject fo, String commitMessage) {
+		this(Arrays.asList((JakeObject)fo), commitMessage);
 	}
 
 	@Override
