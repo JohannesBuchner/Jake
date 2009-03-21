@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.actions.file;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.synchronization.attributes.Attributed;
@@ -59,7 +58,7 @@ public class DeleteFileAction extends FileAction {
 		String text;
 		LogEntry<? extends ILogable> lockEntry = null;
 		Attributed<FileObject> af;
-		Project p = JakeContext.getProject();
+		//Project p = JakeContext.getProject();
 
 		log.debug("getting files to delete");
 
