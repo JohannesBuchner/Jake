@@ -1,6 +1,9 @@
 package com.jakeapp.gui.swing.actions.abstracts;
 
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.NodeSelectionChangedCallback;
 import com.jakeapp.gui.swing.helpers.FolderObject;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
@@ -11,7 +14,8 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FileAction extends ProjectAction implements NodeSelectionChangedCallback {
+public abstract class FileAction extends ProjectAction
+				implements NodeSelectionChangedCallback {
 	private static final Logger log = Logger.getLogger(FileAction.class);
 
 	private List<ProjectFilesTreeNode> nodes;
@@ -52,6 +56,11 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 		return !isSingleFileSelected() ? null : nodes.get(0).getFileObject();
 	}
 
+	protected Attributed<FileObject> getSelectedFileAttributed() {
+		return !isSingleFileSelected() ? null :
+						JakeMainApp.getCore().getAttributed(nodes.get(0).getFileObject());
+	}
+
 	protected ArrayList<FileObject> getSelectedFiles() {
 		ArrayList<FileObject> files = new ArrayList<FileObject>();
 
@@ -64,6 +73,20 @@ public abstract class FileAction extends ProjectAction implements NodeSelectionC
 		}
 		return files;
 	}
+
+	protected ArrayList<JakeObject> getSelectedFilesAsJakeObjects() {
+		ArrayList<JakeObject> files = new ArrayList<JakeObject>();
+
+		for (ProjectFilesTreeNode pf : getNodes()) {
+			if (pf.isFile()) {
+				files.add(pf.getFileObject());
+			} else if (pf.isFolder()) {
+				files.addAll(recurseNodes(pf.getFolderObject()));
+			}
+		}
+		return files;
+	}
+
 
 	private List<FileObject> recurseNodes(FolderObject folder) {
 		ArrayList<FileObject> files = new ArrayList<FileObject>();

@@ -7,22 +7,25 @@ import java.util.regex.Matcher;
 
 
 /**
- * Identifies a user
+ * The <code>User</code> Object represents an User of a certain IM-Network.
+ * When more than just XMPP is available, this class will be subclassed and made abstract.
  */
 public class User implements ILogable, Comparable<User> {
 	private static final long serialVersionUID = 3356457614479155943L;
 	private static Pattern XMPPpattern = Pattern.compile("(.*)(/(.*))?");
 
-	/*
- dominik.dorn@jabber.fsinf.at/jake
- __thecerial@jabber.fsinf.at/jake
- -myimagination@jabber.fsinf.at
- */
-	public User() {
+	/**
+	 * Default Constructor, required for persistance framework.
+	 */
+	protected User() {
 	}
 
+	/**
+	 * Constructor specifying a certain <code>ProtocolType</code> and the corresponding UserId as a <code>String</code>
+	 * @param protocolType the <code>ProtocolType</code> this <code>User</code> belongs to.
+	 * @param userId a <code>String</code> representing the <code>User</code> on the service.
+	 */
 	public User(ProtocolType protocolType, String userId) {
-		super();
 		this.setProtocolType(protocolType);
 		this.setUserId(userId);
 	}
@@ -60,13 +63,16 @@ public class User implements ILogable, Comparable<User> {
 		return this.protocolType;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return this.protocolType + ":" + getUserId();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int hashCode() {
@@ -77,8 +83,8 @@ public class User implements ILogable, Comparable<User> {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -102,6 +108,9 @@ public class User implements ILogable, Comparable<User> {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int compareTo(User o) {
 		if (this.equals(o)) return 0;

@@ -132,7 +132,7 @@ public class FileTableModel extends AbstractTableModel
 
 		// FIXME cache!! get async?
 		Attributed<FileObject> fileInfo = JakeMainApp.getCore()
-						.getAttributed(JakeContext.getProject(), ournode.getFileObject());
+						.getAttributed(ournode.getFileObject());
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:

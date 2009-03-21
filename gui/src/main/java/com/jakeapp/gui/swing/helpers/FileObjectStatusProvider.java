@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.controls.SpinningDial;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -61,7 +60,7 @@ public class FileObjectStatusProvider {
 		JLabel label = getLabelComponent();
 
 		Attributed<FileObject> aFo =
-						JakeMainApp.getCore().getAttributed(JakeContext.getProject(), obj);
+						JakeMainApp.getCore().getAttributed(obj);
 
 		Icon icon = getStatusIcon(aFo);
 		label.setIcon(icon);
@@ -101,7 +100,7 @@ public class FileObjectStatusProvider {
 	public static Component getLockedRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
 		Attributed<FileObject> fo =
-						JakeMainApp.getCore().getAttributed(obj.getProject(), obj);
+						JakeMainApp.getCore().getAttributed(obj);
 		label.setIcon(fo.isLocked() ? locked : unlocked);
 		return label;
 	}

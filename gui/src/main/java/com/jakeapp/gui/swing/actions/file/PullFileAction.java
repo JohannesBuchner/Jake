@@ -30,11 +30,8 @@ public class PullFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ArrayList<JakeObject> jos = new ArrayList<JakeObject>(this.getSelectedFiles().size());
-		for(JakeObject jo : this.getSelectedFiles()) {
-			if(jo.getUuid() != null)
-				jos.add(jo);
-		}
+
+		ArrayList<JakeObject> jos = getSelectedFilesAsJakeObjects();
 		if(jos.size() > 0)
 			JakeExecutor.exec(new PullJakeObjectsTask(jos));
 		else

@@ -4,11 +4,6 @@ package com.jakeapp.core.domain;
  * The available trust states for projectmembers; the level of trust one
  * user has to another. Since each member of a project trusts
  * the others somehow, a web of trust is established.
- * User: Dominik
- * Date: Dec 10, 2008
- * Time: 1:39:39 AM
- * Module: ${MAVEN-MODULE-NAME}
- * Version: ${MAVEN-VERSION}
  */
 public enum TrustState {
 	/**

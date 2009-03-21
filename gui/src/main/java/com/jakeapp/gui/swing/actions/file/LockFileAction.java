@@ -20,13 +20,13 @@ import java.awt.event.ActionEvent;
  *
  * @author Simon
  */
-public class LockWithMessageFileAction extends FileAction {
+public class LockFileAction extends FileAction {
 	private static final Logger log =
-					Logger.getLogger(LockWithMessageFileAction.class);
+					Logger.getLogger(LockFileAction.class);
 	private static final long serialVersionUID = -7898650898881238796L;
 	private final ResourceMap resourceMap;
 
-	public LockWithMessageFileAction() {
+	public LockFileAction() {
 		super();
 		this.resourceMap = JakeMainView.getResouceMap();
 
@@ -43,14 +43,14 @@ public class LockWithMessageFileAction extends FileAction {
 
 		if (isSingleFileSelected()) {
 			aFo = JakeMainApp.getCore()
-							.getAttributed(getSelectedFile().getProject(), getSelectedFile());
+							.getAttributed(getSelectedFile());
 		}
 
 		String actionStr;
 		if (aFo != null && aFo.isLocked()) {
 			actionStr = this.resourceMap.getString("unlockMenuItem.text");
 		} else {
-			actionStr = this.resourceMap.getString("lockWithMessageMenuItem.text");
+			actionStr = this.resourceMap.getString("lockMenuItem.text");
 		}
 		putValue(Action.NAME, actionStr);
 	}
@@ -63,7 +63,7 @@ public class LockWithMessageFileAction extends FileAction {
 
 		// detect if there is a soft lock set
 		final Attributed<FileObject> aFo = JakeMainApp.getCore()
-						.getAttributed(getSelectedFile().getProject(), getSelectedFile());
+						.getAttributed(getSelectedFile());
 
 		String promptStr = this.resourceMap.getString("promptLockWithComment");
 
