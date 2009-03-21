@@ -8,7 +8,6 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.helpers.FileObjectStatusProvider;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -50,7 +49,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 	// project actions
 	private final static ImageIcon projectCreatedIcon = new ImageIcon(
 					Toolkit.getDefaultToolkit().getImage(
-									JakeMainApp.class.getResource("/icons/" + "project-created.png")));
+									JakeMainApp.class.getResource("/icons/project-created.png")));
 
 	// users actions
 	private final static ImageIcon peopleAddIcon = ImageLoader.get(JakeMainApp.class,

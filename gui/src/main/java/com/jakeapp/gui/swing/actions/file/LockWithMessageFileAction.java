@@ -1,28 +1,34 @@
 package com.jakeapp.gui.swing.actions.file;
 
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
+import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
+import com.jakeapp.gui.swing.globals.JakeContext;
+import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+
 /**
  * Action for locking files with a message. No batch processing.
- * @author Simon
  *
+ * @author Simon
  */
 public class LockWithMessageFileAction extends FileAction {
-
+	private static final Logger log =
+					Logger.getLogger(LockWithMessageFileAction.class);
 	private static final long serialVersionUID = -7898650898881238796L;
 	private final ResourceMap resourceMap;
 
 	public LockWithMessageFileAction() {
 		super();
-
 		this.resourceMap = JakeMainView.getResouceMap();
-		
-		String actionStr = this.resourceMap.getString("lockWithMessageMenuItem.text");
-		putValue(Action.NAME, actionStr);
 
 		updateAction();
 	}
@@ -31,16 +37,43 @@ public class LockWithMessageFileAction extends FileAction {
 	public void updateAction() {
 		// only enable if exact one element is selected AND that element is NOT a folder.
 		setEnabled(this.isSingleFileSelected());
+
+		// detect if there is a soft lock set
+		Attributed<FileObject> aFo = null;
+
+		if (isSingleFileSelected()) {
+			aFo = JakeMainApp.getCore()
+							.getAttributed(getSelectedFile().getProject(), getSelectedFile());
+		}
+
+		String actionStr;
+		if (aFo != null && aFo.isLocked()) {
+			actionStr = this.resourceMap.getString("unlockMenuItem.text");
+		} else {
+			actionStr = this.resourceMap.getString("lockWithMessageMenuItem.text");
+		}
+		putValue(Action.NAME, actionStr);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (!isSingleFileSelected()) {
+			log.warn("Action Lock failed: no single file selected.");
+		}
+
+		// detect if there is a soft lock set
+		final Attributed<FileObject> aFo = JakeMainApp.getCore()
+						.getAttributed(getSelectedFile().getProject(), getSelectedFile());
 
 		String promptStr = this.resourceMap.getString("promptLockWithComment");
-		// FIXME: sheet!
-		String comment = JOptionPane.showInputDialog(promptStr, null);
-		
-		//TODO lock with comment 
-		
+
+		JSheet.showInputSheet(JakeContext.getFrame(), promptStr, null,
+						new SheetListener() {
+							@Override public void optionSelected(SheetEvent evt) {
+								JakeMainApp.getCore()
+												.setSoftLock(aFo.getJakeObject(), aFo.isLocked(),
+																(String) evt.getInputValue());
+							}
+						});
 	}
 }

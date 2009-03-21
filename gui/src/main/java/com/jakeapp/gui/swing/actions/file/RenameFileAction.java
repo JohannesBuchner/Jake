@@ -3,6 +3,10 @@ package com.jakeapp.gui.swing.actions.file;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
+import com.jakeapp.gui.swing.dialogs.generic.JSheet;
+import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
+import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 
 import javax.swing.*;
@@ -13,7 +17,7 @@ public class RenameFileAction extends FileAction {
 		super();
 
 		String actionStr = JakeMainView.getMainView().getResourceMap().
-			 getString("renameMenuItem.text");
+						getString("renameMenuItem.text");
 
 		putValue(Action.NAME, actionStr);
 
@@ -28,7 +32,7 @@ public class RenameFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ProjectFilesTreeNode node = getSingleNode();
+		final ProjectFilesTreeNode node = getSingleNode();
 
 		String currentName = "";
 
@@ -40,16 +44,26 @@ public class RenameFileAction extends FileAction {
 			currentName = node.getFolderObject().getRelPath();
 		}
 
+		final String finalCurrentName = currentName;
+
 		String promptStr = JakeMainView.getMainView().getResourceMap().
-			 getString("promptRenameFile");
-		// FIXME: sheets
-		String newName = JOptionPane.showInputDialog(promptStr, currentName);
-		if (!newName.equals(currentName)) {
-			if (node.isFile()) {
-				JakeMainApp.getCore().rename(node.getFileObject(), newName);
-			} else if (node.isFolder()) {
-				JakeMainApp.getCore().rename(node.getFolderObject(), newName);
-			}
-		}
+						getString("promptRenameFile");
+
+		JSheet.showInputSheet(JakeContext.getFrame(), promptStr, currentName,
+						new SheetListener() {
+
+							@Override public void optionSelected(SheetEvent evt) {
+								String newName = (String) evt.getInputValue();
+
+								if (!newName.equals(finalCurrentName)) {
+									if (node.isFile()) {
+										JakeMainApp.getCore().rename(node.getFileObject(), newName);
+									} else if (node.isFolder()) {
+										JakeMainApp.getCore().rename(node.getFolderObject(), newName);
+									}
+
+								}
+							}
+						});
 	}
 }
