@@ -39,8 +39,9 @@ public class DeleteFileAction extends FileAction {
 
 	@Override
 	public void updateAction() {
-		setEnabled(getSelectedRowCount() > 0);
 		super.updateAction();
+		
+		setEnabled(isEnabled() && getSelectedRowCount() > 0);
 	}
 
 	//TODO replace core calls with ObjectCache-Calls

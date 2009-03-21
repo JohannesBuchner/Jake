@@ -94,6 +94,7 @@ public class JakeMenuBar extends JMenuBar {
 		fileMenu.setText(resourceMap.getString("fileMenu.text"));
 
 		fileMenu.add(new JMenuItem(new OpenFileAction()));
+		fileMenu.add(new JMenuItem(new ShowInBrowserFileAction()));				
 		fileMenu.add(new JMenuItem(new ResolveConflictFileAction()));
 		fileMenu.addSeparator();
 		fileMenu.add(new JMenuItem(new AnnounceFileAction()));

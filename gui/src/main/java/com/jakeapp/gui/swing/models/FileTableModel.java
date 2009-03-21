@@ -160,7 +160,7 @@ public class FileTableModel extends AbstractTableModel
 			case LastMod:
 				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
 			case LastModBy:
-				return fileInfo.getLastVersionEditor();
+				return fileInfo.getLastVersionEditor().getUserId();
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";
