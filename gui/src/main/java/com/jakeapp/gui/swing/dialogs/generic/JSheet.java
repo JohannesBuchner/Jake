@@ -982,6 +982,7 @@ public class JSheet extends JDialog {
 		JSheet sheet = createSheet(pane, parentComponent, style);
 		pane.selectInitialValue();
 		sheet.addSheetListener(listener);
+		sheet.setModalityType(ModalityType.DOCUMENT_MODAL);
 		sheet.show();
 		sheet.toFront();
 	}
