@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 
 /**
  * A Log entry. It consists of an <code> action, timestamp </code> and a
- * <code>comment</code>. It belongs to a LogEntryObject <code>T</code> and it
+ * <code>comment</code>. It belongs to a <code>LogEntry&lt;T&gt;</code> and it
  * may belong to a <code>ProjectMember</code>. A <code>LogEntry</code> is an
  * object that is synced with other clients. When receiving a
  * <code>LogEntry</code> from another client, it is marked as not processed.
