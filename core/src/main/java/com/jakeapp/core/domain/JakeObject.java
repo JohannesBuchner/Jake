@@ -13,7 +13,6 @@ import java.util.UUID;
  * The representation of the jakeObject. A JakeObject is anything that
  * can be shared among clients.
  */
-
 @Entity(name = "jakeobject")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class JakeObject implements ILogable, Serializable {
@@ -27,9 +26,9 @@ public abstract class JakeObject implements ILogable, Serializable {
 
 
     /**
-     * Default ctor.
+     * Default constructor.
      */
-    public JakeObject() {
+    protected JakeObject() {
     	// default ctor for hibernate
     }
 
@@ -97,7 +96,10 @@ public abstract class JakeObject implements ILogable, Serializable {
         this.project = project;
     }
 
-
+	/**
+	 * Boolean representing if this <code>JakeObject</code> is/was deleted.
+	 * @return true if the file is deleted, false if it still exists.
+	 */
     @Column(name = "deleted")
     public boolean isDeleted() {
         return deleted;
@@ -107,32 +109,46 @@ public abstract class JakeObject implements ILogable, Serializable {
         this.deleted = deleted;
     }
 
+	/**
+	 * deprecated - do not use!
+	 * @return true, if the jakeObject was modified, false otherwise.
+	 * @deprecated
+	 */
     @Column(name = "modified")
+	@Deprecated
     public boolean isModified() {
         return modified;
     }
 
+	@Deprecated
     public void setModified(boolean modified) {
         this.modified = modified;
     }
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return "JakeObject:" + this.getUuid() + ":" + this.hashCode() + ", modified: " 
 				+ this.modified + ", deleted: " + this.deleted;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (deleted ? 1231 : 1237);
-		result = prime * result + (modified ? 1231 : 1237);
 		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -143,8 +159,6 @@ public abstract class JakeObject implements ILogable, Serializable {
 			return false;
 		JakeObject other = (JakeObject) obj;
 		if (deleted != other.deleted)
-			return false;
-		if (modified != other.modified)
 			return false;
 		if (uuid == null) {
 			if (other.uuid != null)

@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author Djinn
  * @deprecated
  */
+@Deprecated
 public enum InvitationState implements Serializable {
 	/**
 	 * Invitation was accepted, the <code>Project</code> can be used.
