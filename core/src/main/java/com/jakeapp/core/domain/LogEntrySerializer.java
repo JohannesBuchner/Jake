@@ -14,7 +14,14 @@ import org.apache.log4j.Logger;
 import java.util.Date;
 import java.util.UUID;
 
-
+/**
+ * The <code>LogEntrySerializer</code> is there to &quot;serialize&quot; and
+ * &quot;deserialize&quot; <code>LogEntry</code>s to be sent over the network.<br />
+ * <em>This is no standard Java serialization!</em>.
+ * For deserialization the component needs an <code>ProjectApplicationContextFactory</code> where it gets
+ * out the specific DAO's to recreate <code>Project</code>, <code>JakeObject</code>, <code>FileObject</code>,
+ * <code>NoteObject</code>, etc.  
+ */
 public class LogEntrySerializer {
 
 	private static Logger log = Logger.getLogger(LogEntrySerializer.class);
@@ -37,7 +44,7 @@ public class LogEntrySerializer {
 	}
 
 	public void setApplicationContextFactory(
-					ProjectApplicationContextFactory applicationContextFactory) {
+			ProjectApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
 	}
 
@@ -54,30 +61,59 @@ public class LogEntrySerializer {
 	}
 
 
-	// FIXME: This is temporary. Remove it once someone tells me why we need a
-	// ProjectDAO
-	// if all we want to do is serialize...
+	/**
+	 * Default Constructor. One can use this, if he/she only wants to serialize <code>LogEntry</code>s.
+	 * If you want to deserialize <code>LogEntry</code>s, you either should use the other constructor
+	 * or set the <code>ProjectApplicationContextFactory</code> manually.
+	 */
 	public LogEntrySerializer() {
 	}
 
 	public LogEntrySerializer(
-					ProjectApplicationContextFactory applicationContextFactory) {
+			ProjectApplicationContextFactory applicationContextFactory) {
 		this.applicationContextFactory = applicationContextFactory;
 	}
 
-
+	/**
+	 * Serializes a <code>JakeObjectNewVersionLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(JakeObjectNewVersionLogEntry logEntry, Project project) {
 		return this.serialize((JakeObjectLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>JakeObjectLockLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(JakeObjectLockLogEntry logEntry, Project project) {
 		return this.serialize((JakeObjectLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>JakeObjectUnlockLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(JakeObjectUnlockLogEntry logEntry, Project project) {
 		return this.serialize((JakeObjectLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>JakeObjectDeleteLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(JakeObjectDeleteLogEntry logEntry, Project project) {
 		return this.serialize((JakeObjectLogEntry) logEntry, project);
 	}
@@ -91,11 +127,11 @@ public class LogEntrySerializer {
 		if (logEntry.getBelongsTo() instanceof FileObject) {
 			sb.append("F");
 			sb.append(SEPERATOR)
-							.append(((FileObject) logEntry.getBelongsTo()).getRelPath());
+					.append(((FileObject) logEntry.getBelongsTo()).getRelPath());
 		} else if (logEntry.getBelongsTo() instanceof NoteObject) {
 			sb.append("N");
 			sb.append(SEPERATOR)
-							.append(((NoteObject) logEntry.getBelongsTo()).getContent());
+					.append(((NoteObject) logEntry.getBelongsTo()).getContent());
 		} else
 			throw new UnsupportedOperationException();
 
@@ -122,10 +158,24 @@ public class LogEntrySerializer {
 	}
 
 
+	/**
+	 * Serializes a <code>TagAddLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation  
+	 */
 	public String serialize(TagAddLogEntry logEntry, Project project) {
 		return this.serialize((TagLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>TagRemoveLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation 
+	 */
 	public String serialize(TagRemoveLogEntry logEntry, Project project) {
 		return this.serialize((TagLogEntry) logEntry, project);
 	}
@@ -144,12 +194,13 @@ public class LogEntrySerializer {
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getName());
 
 		sb.append(SEPERATOR)
-						.append(logEntry.getBelongsTo().getObject().getUuid().toString());
+				.append(logEntry.getBelongsTo().getObject().getUuid().toString());
 		sb.append(SEPERATOR);
 		return sb.toString();
 	}
 
-	public String serialize(ProjectLogEntry logEntry) {
+
+	private String serialize(ProjectLogEntry logEntry) {
 
 		Project project = logEntry.getProject();
 
@@ -169,29 +220,69 @@ public class LogEntrySerializer {
 		return sb.toString();
 	}
 
+	/**
+	 * Serializes a <code>ProjectCreatedLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>ProjectCreatedLogEntry</code> belonging to a <code>Project</code> to be serialized
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(ProjectCreatedLogEntry logEntry) {
 		return this.serialize((ProjectLogEntry) logEntry);
 	}
 
+	/**
+	 * Serializes a <code>ProjectJoinedLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>ProjectJoinedLogEntry</code> belonging to a <code>Project</code> to be serialized
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(ProjectJoinedLogEntry logEntry) {
 		return this.serialize((ProjectLogEntry) logEntry);
 	}
 
+	/**
+	 * Serializes a <code>StartTrustingProjectMemberLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(StartTrustingProjectMemberLogEntry logEntry,
-					Project project) {
+							Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>StopTrustingProjectMemberLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(StopTrustingProjectMemberLogEntry logEntry,
-					Project project) {
+							Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>FollowTrustingProjectMemberLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(FollowTrustingProjectMemberLogEntry logEntry,
-					Project project) {
+							Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
 
+	/**
+	 * Serializes a <code>ProjectMemberInvitedLogEntry</code> belonging to a certain <code>Project</code>
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 */
 	public String serialize(ProjectMemberInvitedLogEntry logEntry, Project project) {
 		return this.serialize((ProjectMemberLogEntry) logEntry, project);
 	}
@@ -205,6 +296,17 @@ public class LogEntrySerializer {
 		return sb.toString();
 	}
 
+	/**
+	 * Serializes a generic <code>LogEntry</code> belonging to a certain <code>Project</code>.
+	 * This is mainly a convinience method to simplify working with the <code>LogEntrySerializer</code>, as
+	 * it delegates the serialization to the corresponding serialize() method.
+	 *
+	 * @param logEntry the <code>LogEntry</code> to be serialized
+	 * @param project The <code>Project</code> the <code>LogEntry</code> belongs to.
+	 * @return the <code>String</code> representation
+	 * @throws UnsupportedOperationException in case we try to serialize a <code>LogEntry</code>-Type unknown to the
+	 * <code>LogEntrySerializer</code>
+	 */
 	public String serialize(LogEntry<? extends ILogable> logEntry, Project project) {
 		LogAction action = logEntry.getLogAction();
 		switch (action) {
@@ -224,15 +326,15 @@ public class LogEntrySerializer {
 				return serialize(ProjectMemberInvitedLogEntry.parse(logEntry), project);
 			case PROJECT_REJECTED:
 				return serialize(ProjectMemberInvitationRejectedLogEntry.parse(logEntry),
-								project);
+						project);
 			case START_TRUSTING_PROJECTMEMBER:
 				return serialize(StartTrustingProjectMemberLogEntry.parse(logEntry),
-								project);
+						project);
 			case STOP_TRUSTING_PROJECTMEMBER:
 				return serialize(StopTrustingProjectMemberLogEntry.parse(logEntry), project);
 			case FOLLOW_TRUSTING_PROJECTMEMBER:
 				return serialize(FollowTrustingProjectMemberLogEntry.parse(logEntry),
-								project);
+						project);
 			case TAG_ADD:
 				return serialize(TagAddLogEntry.parse(logEntry), project);
 			case TAG_REMOVE:
@@ -243,29 +345,28 @@ public class LogEntrySerializer {
 
 
 	/**
-	 * Deserialize Component.
-	 *
-	 * @param input
-	 * @return
-	 * @throws InvalidDeserializerCallException
-	 *
+	 * Deserializes a given <code>String</code> to return the corresponding <code>LogEntry</code>-subclass.
+	 * @param input the <code>String<code> given by the ics.
+	 * @return a subclass of <code>LogEntry</code>
+	 * @throws InvalidDeserializerCallException  if the input <code>String</code> is malformed
+	 * @throws UnsupportedOperationException if the <code>LogAction</code> in the inputstring is currently not supported
 	 */
-	// fixme: oh please, i wanna be cleaned up so badly!
+	// FIXME: Bug 49 indicates that this method should be refactored.
 	public LogEntry<? extends ILogable> deserialize(String input)
-					throws InvalidDeserializerCallException {
+			throws InvalidDeserializerCallException {
 		LogEntry result;
 
 		// get message parts
 		String[] parts = input.split(SEPERATOR_REGEX);
 
-		for (String part : parts) {
-			log.trace("part = " + part);
-		}
+//		for (String part : parts) {
+//			log.trace("part = " + part);
+//		}
 
 		// stop on error
 		if (parts.length < 6)
 			throw new InvalidDeserializerCallException(
-							"Invalid format: need at least 6 parts.");
+					"Invalid format: need at least 6 parts.");
 
 		// first parts of message are equal
 		UUID projectUUID = UUID.fromString(parts[1]);
@@ -293,7 +394,7 @@ public class LogEntrySerializer {
 				p = new Project(projectName, projectUUID, null, null);
 			} else {
 				throw new InvalidDeserializerCallException(
-								"Project does not exist locally: " + projectUUID);
+						"Project does not exist locally: " + projectUUID);
 			}
 		}
 
@@ -317,9 +418,10 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 				result =
-								new JakeObjectDeleteLogEntry(jakeObject, remoteUser, comment, false);
-			}break;
-			
+						new JakeObjectDeleteLogEntry(jakeObject, remoteUser, comment, false);
+			}
+			break;
+
 			case JAKE_OBJECT_LOCK: {
 				String type = parts[7];
 
@@ -339,7 +441,8 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 				result = new JakeObjectLockLogEntry(jakeObject, remoteUser, comment, false);
-			}break;
+			}
+			break;
 
 			case JAKE_OBJECT_NEW_VERSION: {
 				String type = parts[7];
@@ -360,8 +463,9 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 				result = new JakeObjectNewVersionLogEntry(jakeObject, remoteUser, comment,
-								checksum, false);
-			}break;
+						checksum, false);
+			}
+			break;
 
 			case JAKE_OBJECT_UNLOCK: {
 				String type = parts[7];
@@ -382,15 +486,17 @@ public class LogEntrySerializer {
 				String checksum = parts[11];
 
 				result =
-								new JakeObjectUnlockLogEntry(jakeObject, remoteUser, comment, false);
-			}break;
+						new JakeObjectUnlockLogEntry(jakeObject, remoteUser, comment, false);
+			}
+			break;
 
 			case PROJECT_CREATED: {
 				ProjectCreatedLogEntry res;
 				res = new ProjectCreatedLogEntry(p, remoteUser);
 				res.setProject(p);
 				result = res;
-			}break;
+			}
+			break;
 
 			case PROJECT_JOINED: {
 				ProjectJoinedLogEntry res;
@@ -403,7 +509,7 @@ public class LogEntrySerializer {
 
 			case FOLLOW_TRUSTING_PROJECTMEMBER: {
 				ProtocolType protocolTypeOther =
-								ProtocolType.values()[new Integer(parts[7])];
+						ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
@@ -414,7 +520,7 @@ public class LogEntrySerializer {
 
 			case START_TRUSTING_PROJECTMEMBER: {
 				ProtocolType protocolTypeOther =
-								ProtocolType.values()[new Integer(parts[7])];
+						ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
@@ -425,7 +531,7 @@ public class LogEntrySerializer {
 
 			case STOP_TRUSTING_PROJECTMEMBER: {
 				ProtocolType protocolTypeOther =
-								ProtocolType.values()[new Integer(parts[7])];
+						ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
@@ -436,23 +542,25 @@ public class LogEntrySerializer {
 
 			case PROJECTMEMBER_INVITED: {
 				ProtocolType protocolTypeOther =
-								ProtocolType.values()[new Integer(parts[7])];
+						ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new ProjectMemberInvitedLogEntry(other, remoteUser);
-			}break;
+			}
+			break;
 
 			case PROJECT_REJECTED: {
 				ProtocolType protocolTypeOther =
-								ProtocolType.values()[new Integer(parts[7])];
+						ProtocolType.values()[new Integer(parts[7])];
 				String userIdOther = parts[8];
 
 				User other = new User(protocolTypeOther, userIdOther);
 
 				result = new ProjectMemberInvitationRejectedLogEntry(other, remoteUser);
-			}break;
+			}
+			break;
 
 			case TAG_ADD: {
 				String type = parts[7];

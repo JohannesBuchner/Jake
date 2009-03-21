@@ -164,9 +164,14 @@ public abstract class JakeDialog extends EscapeDialog {
 	 *
 	 * @param locmsg: message to show.
 	 */
-	protected void setMessage(String locmsg) {
+	protected void setMessageLocalized(String locmsg) {
 		explanationLabel.setText(getResourceMap().getString(locmsg));
 	}
+
+	protected void setMessage(String msg) {
+		explanationLabel.setText(msg);
+	}
+
 
 
 	/**

@@ -28,6 +28,7 @@ public class FileStatusTreeCellRenderer extends DefaultJakeTableCellRenderer {
 			comp.setBackground(table.getSelectionBackground());
 		}
 
+
 		return comp;
 	}
 }

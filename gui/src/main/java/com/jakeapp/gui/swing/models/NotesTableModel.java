@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
+import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
@@ -198,7 +199,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 					value = "";
 				break;
 			case 2: //content
-				value = (note.getJakeObject()).getContent();
+				value = NotesHelper.getTitle(note.getJakeObject());
 				break;
 			case 3: //last edit
 				// FIXME: it is unclear what the attributed<> returns as lastModificationDate if it is

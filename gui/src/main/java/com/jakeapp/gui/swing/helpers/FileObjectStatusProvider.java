@@ -3,8 +3,8 @@ package com.jakeapp.gui.swing.helpers;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.controls.SpinningDial;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -25,23 +25,26 @@ import java.awt.*;
 public class FileObjectStatusProvider {
 	private static final Logger log = Logger.getLogger(FileObjectStatusProvider.class);
 
-	private static Icon locked = ImageLoader.get(FileObjectStatusProvider.class,
-			"/locked/locked.png");
+	private static Icon locked =
+					ImageLoader.get(FileObjectStatusProvider.class, "/locked/locked.png");
 
-	private static Icon unlocked = ImageLoader.get(FileObjectStatusProvider.class,
-			"/locked/unlocked.png");
+	private static Icon unlocked =
+					ImageLoader.get(FileObjectStatusProvider.class, "/locked/unlocked.png");
 
-	private static Icon local_is_up_to_date = ImageLoader.get(
-			FileObjectStatusProvider.class, "/status/local_is_up_to_date.png");
+	private static Icon local_is_up_to_date = ImageLoader
+					.get(FileObjectStatusProvider.class, "/status/local_is_up_to_date.png");
 
-	private static Icon local_is_modified = ImageLoader.get(
-			FileObjectStatusProvider.class, "/status/local_is_modified.png");
+	private static Icon local_is_modified = ImageLoader
+					.get(FileObjectStatusProvider.class, "/status/local_is_modified.png");
 
-	private static Icon local_is_out_of_date = ImageLoader.get(
-			FileObjectStatusProvider.class, "/status/local_is_out_of_date.png");
+	private static Icon local_is_out_of_date = ImageLoader
+					.get(FileObjectStatusProvider.class, "/status/local_is_out_of_date.png");
 
-	private static Icon local_has_conflict = ImageLoader.get(
-			FileObjectStatusProvider.class, "/status/local_has_conflict.png");
+	private static Icon local_has_conflict = ImageLoader
+					.get(FileObjectStatusProvider.class, "/status/local_has_conflict.png");
+
+	private static Icon remote_only = ImageLoader
+					.get(FileObjectStatusProvider.class, "/status/remote_only.png");
 
 	private static Icon spinner = new SpinningDial(16, 16);
 
@@ -56,36 +59,43 @@ public class FileObjectStatusProvider {
 
 	public static Component getStatusRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
-		Icon icon = getStatusIcon(obj);
+
+		Attributed<FileObject> aFo =
+						JakeMainApp.getCore().getAttributed(JakeContext.getProject(), obj);
+
+		Icon icon = getStatusIcon(aFo);
 		label.setIcon(icon);
+
+		// set tooltip!
+		label.setToolTipText(aFo.getSyncStatus().toString());
+
 		return label;
 	}
 
-	public static Icon getStatusIcon(FileObject obj) {
-		Attributed<FileObject> status =
-						JakeMainApp.getCore().getAttributed(JakeContext.getProject(), obj);
-
+	public static Icon getStatusIcon(Attributed<FileObject> aFo) {
 		// hack
-		if(false)
+		if (false)
 			return spinner;
 
-		if (status == null) {
-			log.warn("Got NULL for sync status of: " + obj);
+		if (aFo == null) {
+			log.warn("Got NULL for sync aFo of: " + aFo);
 		} else {
 
-			if (status.isOnlyLocal() || status.isOnlyRemote()) {
+			if (aFo.isOnlyLocal()) {
 				return null;
-			} else if (status.isLocalLatest()) {
+			} else if (aFo.isOnlyRemote()) {
+				return remote_only;
+			} else if (aFo.isLocalLatest()) {
 				return local_is_up_to_date;
-			} else if (status.isInConflict()) {
+			} else if (aFo.isInConflict()) {
 				return local_has_conflict;
-			} else if (status.isModifiedLocally()) {
+			} else if (aFo.isModifiedLocally()) {
 				return local_is_modified;
-			} else if (status.isModifiedRemote()) {
+			} else if (aFo.isModifiedRemote()) {
 				return local_is_out_of_date;
 			}
 		}
-	return null;
+		return null;
 	}
 
 	public static Component getLockedRendererComponent(FileObject obj) {

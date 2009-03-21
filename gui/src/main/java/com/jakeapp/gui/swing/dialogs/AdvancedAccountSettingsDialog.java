@@ -34,7 +34,7 @@ public class AdvancedAccountSettingsDialog extends JakeDialog {
 
 		// set custom properties
 		setDialogTitle(getResourceMap().getString("advTitle"));
-		setMessage("advHeader");
+		setMessageLocalized("advHeader");
 		// use default picture
 
 		// load settings from credientals

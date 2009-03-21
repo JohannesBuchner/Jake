@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.UUID;
 
 /**
- * A Representation of a Note. The note consists of a <code>uuid</code>, <code>
- * content</code>
+ * A Representation of a Note. The note consists of a <code>uuid</code>,
+ * <code>content</code>
  * and is associated with one <code>Project</code>.
  */
 @Entity(name = "note")
@@ -65,6 +65,9 @@ public class NoteObject extends JakeObject {
 		this.content = content;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -73,6 +76,9 @@ public class NoteObject extends JakeObject {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -90,6 +96,9 @@ public class NoteObject extends JakeObject {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		String shortContent = content;
@@ -98,6 +107,10 @@ public class NoteObject extends JakeObject {
 		return "Note [" + super.toString() + "]:" + shortContent;
 	}
 
+	/**
+	 * Returns a <code>Comparator</code> thats aware of the semantics of a <code>NoteObject</code>.
+	 * @return a <code>NoteObject</code> aware <code>Comparator</code>
+	 */
 	public static Comparator<NoteObject> getUUIDComparator() {
 		return new Comparator<NoteObject>() {
 			@Override

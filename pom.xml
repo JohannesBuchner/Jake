@@ -13,11 +13,11 @@
     </description>
     <url>http://jakeapp.com/</url>
     <modules>
-        <module>core</module>
+    	<!-- fss is a seperate project now -->
         <module>ics</module>
         <module>ics-xmpp</module>
+        <module>core</module>
         <module>gui</module>
-        <module>fss</module>
         <module>commander</module>
     </modules>
     <developers>
@@ -172,6 +172,12 @@
             </plugin>
         </plugins>
     </reporting>
+	<distributionManagement>
+		<repository>
+			<id>repo</id>
+			<url>scp://johannes@dev.jakeapp.com/var/www/dev.jakeapp.com/htdocs/maven-repository/</url>
+		</repository>
+	</distributionManagement>
     <properties>
         <spring.version>2.5</spring.version>
         <spring-mock.version>2.0</spring-mock.version>

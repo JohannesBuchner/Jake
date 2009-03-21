@@ -1,13 +1,5 @@
 package com.jakeapp.gui.swing.models;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
@@ -22,19 +14,25 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
+import org.apache.log4j.Logger;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Flat representation of FolderObjectTreeTableModel
  */
 public class FileTableModel extends AbstractTableModel
 				implements ContextChangedCallback, DataChangedCallback {
-	private static final Logger log =
-					Logger.getLogger(FolderTreeTableModel.class);
+	private static final Logger log = Logger.getLogger(FolderTreeTableModel.class);
 
 	private List<FileObject> files;
 
 	private void updateData() {
-		this.files = new ArrayList<FileObject>(ObjectCache.get().getFiles(JakeContext.getProject()));
+		this.files = new ArrayList<FileObject>(
+						ObjectCache.get().getFiles(JakeContext.getProject()));
 	}
 
 	@Override public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
@@ -45,13 +43,13 @@ public class FileTableModel extends AbstractTableModel
 	}
 
 	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
-		if(reason.contains(Reason.Project)) {
+		if (reason.contains(Reason.Project)) {
 			updateData();
 		}
 	}
 
 	public enum Columns {
-		FState, Name, Path, Size, LastMod, Tags, FLock
+		FState, Name, Path, Size, LastMod, LastModBy, FLock
 	}
 
 	public FileTableModel() {
@@ -82,8 +80,8 @@ public class FileTableModel extends AbstractTableModel
 				return "Size";
 			case LastMod:
 				return "Last Modified";
-			case Tags:
-				return "Tags";
+			case LastModBy:
+				return "Modifier";
 			case FLock:
 				return "";
 			default:
@@ -104,10 +102,10 @@ public class FileTableModel extends AbstractTableModel
 				return String.class;
 			case LastMod:
 				return String.class;
-			case Tags:
+			case LastModBy:
 				return String.class;
 			case FLock:
-				return FileObjectLockedCell.class;			
+				return FileObjectLockedCell.class;
 			default:
 				return null;
 		}
@@ -151,12 +149,18 @@ public class FileTableModel extends AbstractTableModel
 				} else {
 					return System.getProperty("file.separator");
 				}
-			case Size:
-				return FileUtilities.getSize(fileInfo.getSize());
+			case Size: {
+				if (fileInfo.isOnlyRemote()) {
+					return "";
+				}else {
+					return FileUtilities.getSize(fileInfo.getSize());
+				}
+			}
+
 			case LastMod:
 				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
-			case Tags:
-				return ""; // FIXME
+			case LastModBy:
+				return fileInfo.getLastVersionEditor();
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";

@@ -29,7 +29,7 @@ public class DeleteProjectDialog extends JakeDialog {
 		// set custom properties
 		setDialogTitle(Translator.get(getResourceMap(), "deleteTitle", getProject().getName()));
 
-		setMessage("deleteHeader");
+		setMessageLocalized("deleteHeader");
 		// use default picture
 	}
 

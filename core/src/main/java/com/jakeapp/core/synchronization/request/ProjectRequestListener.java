@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jakeapp.core.DarkMagic;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
@@ -182,6 +183,18 @@ public class ProjectRequestListener
 										.getLogAction() + " for object UUID " + entry.getObjectuuid());
 						try {
 							db.getLogEntryDao(p).create(entry);
+							
+							/*
+							//TODO do it differently - implement conflict management!
+							if (entry.getBelongsTo() instanceof NoteObject) {
+								log.warn("persisting noteobject");
+								db.getNoteObjectDao(p).persist(
+									this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
+								);
+								log.warn("persisting noteobject done");
+								//TODO notify gui
+							}
+							*/
 						} catch (IllegalArgumentException ignored) {
 							//duplicate entry: we already have this entry
 						}
