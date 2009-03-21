@@ -15,8 +15,10 @@ public interface ChangeListener {
 	
 	/**
 	 * A pull-operation that has already begun failed.
+	 * @param jo
+	 * @param reason
 	 */
-	public void pullFailed(JakeObject jo, Exception reason);
+	public void pullFailed(JakeObject jo, Throwable reason);
 
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress);
 

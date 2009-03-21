@@ -1,12 +1,11 @@
 package com.jakeapp.core.synchronization.pull;
 
-import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
-import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
+import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import org.apache.log4j.Logger;
 
 public class PullListener implements INegotiationSuccessListener {
@@ -29,6 +28,7 @@ public class PullListener implements INegotiationSuccessListener {
 	@Override
 	public void failed(Throwable reason) {
 		log.error("pulling failed.", reason);
+		changeListener.pullFailed(jo, reason);
 	}
 
 	@Override

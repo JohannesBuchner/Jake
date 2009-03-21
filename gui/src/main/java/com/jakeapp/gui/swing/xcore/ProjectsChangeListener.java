@@ -1,15 +1,15 @@
 package com.jakeapp.gui.swing.xcore;
 
-import java.util.EnumSet;
-
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback.DataReason;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
+
+import java.util.EnumSet;
 
 public class ProjectsChangeListener implements ChangeListener {
 	private static final Logger log = Logger.getLogger(ProjectsChangeListener.class);
@@ -29,12 +29,16 @@ public class ProjectsChangeListener implements ChangeListener {
 	@Override public void pullDone(JakeObject jo) {
 		log.debug("pullDone: " + jo);
 
-		EventCore.get().fireDataChanged(EnumSet.of(DataReason.Files, DataReason.Notes), jo.getProject());
+		if (jo != null) {
+			EventCore.get().fireDataChanged(EnumSet.of(DataReason.Files, DataReason.Notes),
+							jo.getProject());
+		}
 	}
 
 	@Override public void pullProgressUpdate(JakeObject jo, Status status,
 					double progress) {
-		log.debug("pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
+		log.debug(
+						"pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
 	}
 
 	@Override public void onlineStatusChanged(Project p) {
@@ -51,7 +55,8 @@ public class ProjectsChangeListener implements ChangeListener {
 	}
 
 	@Override
-	public void pullFailed(JakeObject jo, Exception reason) {
+	public void pullFailed(JakeObject jo, Throwable reason) {
 		log.debug("pullFailed: " + jo, reason);
+		ExceptionUtilities.showError("Download File failed: " + reason.getMessage());
 	}
 }

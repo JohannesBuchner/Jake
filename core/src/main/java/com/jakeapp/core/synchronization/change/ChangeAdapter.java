@@ -54,7 +54,7 @@ public class ChangeAdapter implements ChangeListener {
 	}
 
 	@Override
-	public void pullFailed(JakeObject jo, Exception reason) {
+	public void pullFailed(JakeObject jo, Throwable reason) {
 		// empty implementation
 		
 	}
