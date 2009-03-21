@@ -1,17 +1,16 @@
 package com.jakeapp.gui.swing.worker;
 
-import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableErrorObject;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
-import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback.DataReason;
+import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
@@ -24,7 +23,7 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 
 	public AnnounceJakeObjectTask(List<JakeObject> jos, String commitMessage) {
 		this.jos = jos;
-		this.commitMessage = (commitMessage==null)?"":commitMessage;
+		this.commitMessage = (commitMessage == null) ? "" : commitMessage;
 	}
 
 	@Override
@@ -43,8 +42,8 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 		Project project = null;
 
 		// inform the core that there are new log entries available.
-		EventCore.get().fireDataChanged(
-				EnumSet.of(DataChangedCallback.DataReason.Files), null);
+		EventCore.get()
+						.fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Files), null);
 		if (this.jos.size() > 0) {
 			project = this.jos.get(0).getProject();
 			if ((this.jos.get(0)) instanceof FileObject) {
@@ -52,18 +51,22 @@ public class AnnounceJakeObjectTask extends AbstractTask<Void> {
 				reason = EnumSet.of(DataChangedCallback.DataReason.Files);
 			} else if ((this.jos.get(0)) instanceof NoteObject) {
 				NotesPanel.getInstance().getNotesTableModel()
-						.setNoteToSelectLater((NoteObject) (this.jos.get(0)));
+								.setNoteToSelectLater((NoteObject) (this.jos.get(0)));
 				EventCore.get().fireNotesChanged(project);
 				reason = EnumSet.of(DataChangedCallback.DataReason.Notes);
 			}
 
 			if (reason != null)
 				EventCore.get().fireDataChanged(reason, null);
-			
+
 			EventCore.get().fireProjectChanged(
-					new ProjectChangedCallback.ProjectChangedEvent(project,
-									ProjectChangedCallback.ProjectChangedEvent.Reason.People));
+							new ProjectChangedCallback.ProjectChangedEvent(project,
+											ProjectChangedCallback.ProjectChangedEvent.Reason.People));
+		}
+
+		// TODO: only poke?
+		if (project != null) {
+			JakeMainApp.getCore().syncProject(project, null);
 		}
 	}
-
 }

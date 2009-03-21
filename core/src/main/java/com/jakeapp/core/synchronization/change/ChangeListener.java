@@ -12,9 +12,10 @@ public interface ChangeListener {
 	public void pullNegotiationDone(JakeObject jo);
 
 	public void pullDone(JakeObject jo);
-	
+
 	/**
 	 * A pull-operation that has already begun failed.
+	 *
 	 * @param jo
 	 * @param reason
 	 */
@@ -25,7 +26,9 @@ public interface ChangeListener {
 	// fixme: add user that did change!
 	void onlineStatusChanged(Project p);
 
-	public enum SyncState { NOOP, SYNCING, DONE }
+	public enum SyncState {
+		NOOP, SYNCING, DONE
+	}
 
 	public void syncStateChanged(Project p, SyncState state);
 }

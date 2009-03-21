@@ -19,7 +19,7 @@ public class PullListener implements INegotiationSuccessListener {
 	private IProjectsFileServices projectsFileServices;
 
 	public PullListener(JakeObject jo, ChangeListener changeListener,
-			IProjectsFileServices projectsFileServices) {
+					IProjectsFileServices projectsFileServices) {
 		this.changeListener = changeListener;
 		this.jo = jo;
 		this.projectsFileServices = projectsFileServices;
@@ -36,7 +36,7 @@ public class PullListener implements INegotiationSuccessListener {
 		log.info("pulling negotiation succeeded");
 		this.changeListener.pullNegotiationDone(this.jo);
 		PullWatcher pw = new PullWatcher(this.jo, this.changeListener, ft,
-				this.projectsFileServices);
+						this.projectsFileServices);
 
 		new Thread(new TransferWatcherThread(ft, pw)).start();
 	}

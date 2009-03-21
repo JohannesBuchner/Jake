@@ -52,6 +52,10 @@ public class ProjectsChangeListener implements ChangeListener {
 
 		// fixme: only update on success
 		EventCore.get().fireLogChanged(p);
+
+		// update files & notes! (new log = probably new stuff :)
+		ObjectCache.get().updateFiles(p);
+		ObjectCache.get().updateNotes(p);
 	}
 
 	@Override

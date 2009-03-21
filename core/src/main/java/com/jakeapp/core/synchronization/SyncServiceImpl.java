@@ -277,7 +277,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		}
 
 		// try to send logs back to requester!
-		sendLogs(project, uid);
+		//sendLogs(project, uid);
 
 		// TODO: make this an async operation (e.g. with an
 		// AvailableLaterObject)

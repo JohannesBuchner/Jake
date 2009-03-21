@@ -6,6 +6,7 @@ import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
+import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
@@ -349,8 +350,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		try {
 			if (user != null) {
 				iss.poke(project, user);
+				iss.startLogSync(project, user);
 			} else {
 				iss.poke(project);
+				iss.startLogSync(project);
 			}
 
 			EventCore.get().fireProjectChanged(
@@ -365,6 +368,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 			this.handleNotLoggedInException(e);
 		} catch (NoSuchProjectException e) {
 			ExceptionUtilities.showError(e);
+		} catch (IllegalProtocolException e) {
+			e.printStackTrace();
 		}
 	}
 
