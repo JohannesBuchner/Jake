@@ -12,6 +12,7 @@ import com.jakeapp.gui.swing.helpers.FileObjectStatusCell;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
+import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
@@ -160,11 +161,7 @@ public class FileTableModel extends AbstractTableModel
 			case LastMod:
 				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
 			case LastModBy:
-				if (fileInfo.getLastVersionEditor() != null) {
-					return fileInfo.getLastVersionEditor().getUserId();
-				} else {
-					return "";
-				}
+				UserHelper.getLocalizedUserNick(fileInfo.getLastVersionEditor());
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";

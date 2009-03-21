@@ -56,7 +56,7 @@ public class UserHelper {
 	 * @return nick/fullname or "you" localized
 	 */
 	public static String getLocalizedUserNick(User member) {
-		if (isCurrentProjectMember(member)) {
+		if (member == null || isCurrentProjectMember(member)) {
 			return newsResourceMap.getString("eventsYourself");
 		} else {
 			return getNickOrFullName(member);

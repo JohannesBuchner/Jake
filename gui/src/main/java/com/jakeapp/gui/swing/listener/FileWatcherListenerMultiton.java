@@ -32,6 +32,7 @@ public class FileWatcherListenerMultiton {
 			public void fileModified(String relpath, ModifyActions action) {
 				EventCore.get().fireFilesChanged(p);
 
+				// auto announce! wohooo!
 				if (p.isAutoAnnounceEnabled()) {
 					FileObject fo = new FileObject(p, relpath);
 					Attributed<FileObject> aFo = JakeMainApp.getCore().getAttributed(fo);
