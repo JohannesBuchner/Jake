@@ -11,15 +11,12 @@ import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ContextViewChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectViewChangedCallback;
+import com.jakeapp.gui.swing.components.JakeSourceList;
+import com.jakeapp.gui.swing.components.JakeStatusBar;
+import com.jakeapp.gui.swing.components.JakeToolbar;
 import com.jakeapp.gui.swing.dialogs.JakeAboutDialog;
-import com.jakeapp.gui.swing.helpers.AppUtilities;
-import com.jakeapp.gui.swing.helpers.GuiUtilities;
-import com.jakeapp.gui.swing.helpers.ImageLoader;
-import com.jakeapp.gui.swing.helpers.JakeHelper;
-import com.jakeapp.gui.swing.helpers.JakeMenuBar;
-import com.jakeapp.gui.swing.helpers.JakeTrayIcon;
-import com.jakeapp.gui.swing.helpers.Platform;
-import com.jakeapp.gui.swing.helpers.SegmentButtonCreator;
+import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.helpers.*;
 import com.jakeapp.gui.swing.helpers.dragdrop.FileDropHandler;
 import com.jakeapp.gui.swing.panels.FilePanel;
 import com.jakeapp.gui.swing.panels.InspectorPanel;
@@ -31,10 +28,7 @@ import com.jakeapp.gui.swing.worker.InitCoreWorker;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.JakeDatabaseTools;
-import com.jakeapp.gui.swing.components.JakeSourceList;
-import com.jakeapp.gui.swing.components.JakeToolbar;
-import com.jakeapp.gui.swing.components.JakeStatusBar;
-import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.xcore.SyncUpdateTimer;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -254,6 +248,9 @@ public class JakeMainView extends FrameView implements ContextChangedCallback {
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
 			JakeMainApp.getApp().saveQuit();
 		}
+
+		// init auto syncer
+		new SyncUpdateTimer();
 	}
 
 

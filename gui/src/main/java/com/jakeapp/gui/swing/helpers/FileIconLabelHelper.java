@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.helpers;
 import com.explodingpixels.macwidgets.MacFontUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -31,9 +30,9 @@ public class FileIconLabelHelper {
 	public static Component getIconLabel(FileObject fo) {
 		try {
 			return getIconLabel(JakeMainApp.getCore().getFile(fo));
-		} catch (FileOperationFailedException e) {
+		} catch (Exception e) {
 			log.warn("Couldn't get Icon for " + fo);
-			return null;
+			return new JLabel();
 		}
 	}
 
