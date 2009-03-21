@@ -1146,8 +1146,22 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void lock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
         User me = p.getUserId();
+        ensureHasUUID(jo, p);
+         
         LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
+	}
+
+	private void ensureHasUUID(JakeObject jo, Project p) {
+		if (jo.getUuid() == null) {
+			if (jo instanceof NoteObject) {
+	        	this.getNoteObjectDao(p).persist((NoteObject) jo);
+			}
+	        else {
+	        	FileObject newFile = new FileObject(UUID.randomUUID(), p, ((FileObject)jo).getRelPath());
+	        	this.getFileObjectDao(p).persist(newFile);
+	        }
+		}
 	}
 
 	@Override
@@ -1155,6 +1169,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void unlock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
         User me = p.getUserId();
+        ensureHasUUID(jo, p);
         LogEntry<JakeObject> le = new JakeObjectUnlockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}

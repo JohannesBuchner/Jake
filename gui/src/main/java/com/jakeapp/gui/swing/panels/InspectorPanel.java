@@ -325,7 +325,7 @@ public class InspectorPanel extends JXPanel
 		this.lastEditedValue	.setText(TimeUtilities.getRelativeTime(attributedJakeObject
 				.getLastModificationDate()));
 		
-		this.sharedValue.setText(Boolean.toString((attributedJakeObject.isOnlyLocal())));
+		this.sharedValue.setText(Boolean.toString((!attributedJakeObject.isOnlyLocal())));
 
 		if (attributedJakeObject.isLocked()) {
 			this.lockedByValue.setText(attributedJakeObject.getLockLogEntry()
