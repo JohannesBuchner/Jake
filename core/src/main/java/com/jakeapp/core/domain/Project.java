@@ -7,25 +7,20 @@ import java.io.File;
 import java.util.UUID;
 
 /**
- * The Project Entity holds general information about a project in Jake.
+ * The <code>Project</code> Entity holds general information about a project in Jake.
  * It is also used to find the correct data for a project in all DAOs.
- * A project belongs to exactly one <code>UserId</code> but has
- * multiple members.
+ * A project belongs to exactly one <code>User</code> but has multiple members.
  * <p/>
- * It contains of <ul>
+ * It consists of <ul>
  * <li>a <code>rootPath</code> to specify where the root folder of the project
  * lies on the local filesystem</li>
- * <li>a <code>name</code> specifying the name of the project (the user
- * can change this)</li>
- * <li>a <code>projectId</code> used to internally identify the project</li>
- * <li>a boolean <code>isStarted</code>, specifying if the project is
- * currently running</li>
- * <li>a boolean <code>isAutoAnnounceEnabled</code>, specifying if automatical
- * announcement of changes is enabled</li>
+ * <li>a <code>name</code> specifying the name of the project (the user can change this)</li>
+ * <li>a <code>projectId</code> used to internally (and cross-instance) identify the <code>Project</code> </li>
+ * <li>a boolean <code>isStarted</code>, specifying if the project is currently running</li>
+ * <li>a boolean <code>isAutoAnnounceEnabled</code>, specifying if automatical announcement of changes is enabled</li>
  * <li>a boolean <code>isAutoPullEnabled</code>, specifying if automatical
  * pull of new changes (files) is enabled</li>
- * <li>a <code>UserId</code>-Object to which the project is bound. This
- * object also specifies on which instant
+ * <li>a <code>User</code>-Object to which the project is bound. This object also specifies on which instant
  * messaging network this project operates</li>
  * </ul>
  */
@@ -53,7 +48,7 @@ public class Project implements ILogable {
 	 *
 	 * @param name			 the name of the project
 	 * @param projectId	the unique projectId
-	 * @param msgService the <code>msgService</code> to be used
+	 * @param msgService the <code>MsgService</code> to be used
 	 * @param rootPath	 the root path of the project, i.e.
 	 *                   the  path of the project folder.
 	 */
@@ -75,7 +70,7 @@ public class Project implements ILogable {
 	}
 
 	/**
-	 * A public ctor with no arguments is needed for hibernate.
+	 * A public constructor with no arguments is needed for hibernate.
 	 */
 	public Project() {
 	}
@@ -92,9 +87,9 @@ public class Project implements ILogable {
 	}
 
 	/**
-	 * Get the name.
+	 * Get the name of the <code>Project</code>.
 	 *
-	 * @return the name of the project
+	 * @return the name of the Project
 	 */
 	@Column(name = "NAME", nullable = false)
 	public String getName() {
@@ -106,9 +101,11 @@ public class Project implements ILogable {
 	}
 
 	/**
-	 * Get the message service.
+	 * Get the <code>MsgService</code> of this Project.
+	 * If you manually create a <code>Project</code>, this is not initialized and
+	 * therefor may be null!
 	 *
-	 * @return the message service of the project
+	 * @return the message service of the <code>Project</code>, may be null.
 	 */
 	@Column(name = "PROTOCOL", nullable = false)
 	@Transient
@@ -234,15 +231,15 @@ public class Project implements ILogable {
 	}
 
 	/**
-	 * @param open the open to set
+	 * @param newState a boolean indicating if the <code>Project</code> is opended or not.
 	 */
-	public void setOpen(boolean open) {
-		this.open = open;
+	public void setOpen(boolean newState) {
+		this.open = newState;
 	}
 
 
 	/**
-	 * @return the open
+	 * @return true iff the <code>Project</code> is open
 	 */
 	@Column(name = "OPENED", nullable = false)
 	public boolean isOpen() {
@@ -276,6 +273,7 @@ public class Project implements ILogable {
 	/**
 	 * @param invitationState the invitationState to set
 	 */
+	@Deprecated
 	public void setInvitationState(InvitationState invitationState) {
 		this.invitationState = invitationState;
 	}
@@ -283,9 +281,11 @@ public class Project implements ILogable {
 
 	/**
 	 * @return the invitationState
+	 * @deprecated
 	 */
 	//    @Transient // TODO change here to save invitation state
 	@Column(name = "invitationstate")
+	@Deprecated
 	public InvitationState getInvitationState() {
 		return invitationState;
 	}
@@ -294,16 +294,16 @@ public class Project implements ILogable {
 	 * Convenicence Methode for getInvitationState.
 	 *
 	 * @return true if project is invited only.
+	 * @deprecated
 	 */
 	@Transient
+	@Deprecated
 	public boolean isInvitation() {
 		return getInvitationState() == InvitationState.INVITED;
 	}
 
 	/**
-	 * The toString-Representation for debugging.
-	 *
-	 * @return
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
@@ -316,6 +316,7 @@ public class Project implements ILogable {
 	 * @param obj The <code>Object</code> to compare this object to.
 	 * @return <code>true</code> iff the <code>name, projectId </code> and
 	 *         <code> rootPath</code> are equal.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -357,6 +358,7 @@ public class Project implements ILogable {
 	 * Generate the hash code using <code>name, projectId, rootPath</code>.
 	 *
 	 * @return hashCode
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int hashCode() {
