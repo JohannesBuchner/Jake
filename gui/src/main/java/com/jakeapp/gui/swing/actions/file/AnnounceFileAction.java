@@ -37,6 +37,6 @@ public class AnnounceFileAction extends FileAction {
 		ArrayList<FileObject> files = getSelectedFiles();
 		ArrayList<JakeObject> jos = new ArrayList<JakeObject>(files.size());
 		jos.addAll(files);
-		JakeExecutor.exec(new AnnounceJakeObjectTask(jos,null));
+		JakeExecutor.exec(new AnnounceJakeObjectTask(jos, null));
 	}
 }

@@ -87,7 +87,7 @@ public class FolderTreeTableModel implements TreeTableModel, FilesChangedCallbac
 			case 4:
 				return "Last Modified";
 			case 5:
-				return "Tags";
+				return "LastModBy";
 			default:
 				return null;
 		}
@@ -145,7 +145,7 @@ public class FolderTreeTableModel implements TreeTableModel, FilesChangedCallbac
 
 	@Override
 	public boolean isCellEditable(Object node, int column) {
-		// Tags are editable, but only for files
+		// LastModBy are editable, but only for files
 		ProjectFilesTreeNode ournode = (ProjectFilesTreeNode) node;
 		return column == 5 && ournode.isFile();
 	}
