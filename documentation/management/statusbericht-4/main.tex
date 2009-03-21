@@ -1,0 +1,23 @@
+\input{../../templates/latex-template/main.tex}
+\usepackage{pdflscape}
+
+% overwrite for each document:
+\def\sepmdocumentname{Projektendbericht}
+\def\sepmauthors{Johannes Buchner, Simon Wallner}
+\def\sepmreview{}
+\def\sepmexecutivesummary{Projectendbericht}
+% these are lines that are injected into the changelog table
+\def\sepmchangeloglines{
+1 & 21.3.2009 & Johannes Buchner & Dokument erstellt \\
+\hline
+% repeat
+}
+\def\subfileinclude{
+% your subsites
+\input{intro.tex}
+%\input{gantt.tex}
+% and more
+}
+
+\sepmstart
+

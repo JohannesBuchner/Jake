@@ -1,0 +1,40 @@
+\setcounter{chapter}{1}
+\section{Status}
+Das Projekt Jake ist konnte nach verlängerter Entwicklungszeit fertiggestellt werden.
+
+\section{Komponenten}
+An den Komponenten FSS, ICS, ICS-XMPP mussten lediglich kleine Änderungen und Bugfixes vorgenommen werden. 
+Die großen Arbeitspakete seit dem letzten Bericht betrafen Core und GUI.
+
+\subsection{Domainobjects, Datenbank}
+Sämtliche Domainobjekte wurden von Johannes im Februar reviewed und überarbeitet um eine darauf aufbauende Weiterentwicklung zu ermöglichen. Ebenso wurden die DAOs getestet und fertigimplementiert. 
+
+\subsection{JakeCommander}
+Zum Testen und für einen Servermodus wurde eine durch Kommandozeile ansprechbare Implementierung geschrieben, die die meisten Use-Cases abdeckt.
+
+
+\subsection{Core}
+Die Use-Cases wurden fertigimplementiert, und die Übertragungs- und Synchronisationslogik konnte fertiggestellt werden.
+
+
+\section{GUI}
+Am GUI mussten keine Konzepte geändert werden, lediglich die Implementierung der Use-Cases wurde vervollständigt und poliert.
+
+
+\section{Neuerungen}
+Noch zu notieren wäre, dass ein interessantes Hibernate-Problem, nämlich dass lediglich eine Hibernate-Datenbankverbindung an einen Thread gebunden werden kann. Daher wurden alle Datenbankaufrufe in einen Dispatcherthread ausgelagert, der alle Datenbankanfragen pro Datenbank ausführt.
+
+Zur Verbesserung der Performance wurde ein Cachingsystem entworfen, dass in verschiedenen Granularitäten Daten gecacht und aktualisiert werden können.
+
+
+\section{Abschließende Bemerkungen}
+Das Projekt Jake erreichte mit etwa 60.000 Codezeilen nach 2000 Arbeitsstunden mit den ausgereiften Projekten Checkstyle, Cobertura oder Log4J vergleichbare Größe.
+
+Obwohl uns das Projekt Strapazen abverlangte, sind wir doch mit dem produzierten Ergebnis zufrieden.
+
+\section{Anhänge}
+\begin{itemize}
+\item Gantt-Diagramm
+\end{itemize}
+
+
