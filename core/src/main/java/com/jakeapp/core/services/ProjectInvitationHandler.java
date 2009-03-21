@@ -20,7 +20,9 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 
-
+/**
+ * The <code>ProjectInvitationHandler</code> handles all incoming 
+ */
 public class ProjectInvitationHandler implements IMessageReceiveListener, IInvitationHandler {
 
 	private static final Logger log = Logger.getLogger(ProjectInvitationHandler.class);

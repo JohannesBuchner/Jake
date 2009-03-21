@@ -184,6 +184,10 @@ public class Account implements Serializable {
 		return this.protocol.toString();
 	}
 
+	private void setProtocolType(String protocol) {
+		this.protocol = ProtocolType.getValue(protocol);
+	}
+
 	@Transient
 	public ProtocolType getProtocol() {
 		return protocol;
