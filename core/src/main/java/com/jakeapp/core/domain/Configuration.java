@@ -5,9 +5,9 @@ import javax.persistence.Id;
 import javax.persistence.Column;
 
 /**
- * Simple key value representation of a config option.
+ * Simple key/value representation of a config option.
+ * Currently not used.
  * @author Simon
- *
  */
 @Entity(name = "configuration")
 public class Configuration {
@@ -16,10 +16,9 @@ public class Configuration {
 	private String value;
 	
 	/**
-	 * Default ctor.
+	 * Default constructor, needed for persistence frameworks.
 	 */
 	public Configuration() {
-		//default ctor for hibernate
 	}
 
     public Configuration(String name, String value) {
@@ -27,6 +26,11 @@ public class Configuration {
         this.value = value;
     }
 
+
+	/**
+	 * Get the key of this config option
+	 * @return the key of the config option
+	 */
     @Id
     @Column(name = "key")
 	public String getKey() {
@@ -43,13 +47,17 @@ public class Configuration {
 	}
 	
 	/**
-	 * Get the key.
+	 * Set the key of this config option.
 	 * @param key the key of this config option.
 	 */
 	public void setKey(final String key) {
 		this.key = key;
 	}
-	
+
+	/**
+	 * Set the value of this config option
+	 * @param value the value of this config option
+	 */
 	public void setValue(final String value) {
 		this.value = value;
 	}
