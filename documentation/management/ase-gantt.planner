@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<project name="Jake - ASE" company="TU Wien" manager="Johannes Buchner" phase="" project-start="20081009T000000Z" mrproject-version="2" calendar="1">
+  <properties/>
+  <phases/>
+  <calendars>
+    <day-types>
+      <day-type id="0" name="Working" description="A default working day"/>
+      <day-type id="1" name="Nonworking" description="A default non working day"/>
+      <day-type id="2" name="Use base" description="Use day from base calendar"/>
+    </day-types>
+    <calendar id="1" name="Ausbeutung">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="0" sun="0"/>
+      <overridden-day-types>
+        <overridden-day-type id="1">
+          <interval start="1500" end="1700"/>
+        </overridden-day-type>
+        <overridden-day-type id="0">
+          <interval start="1500" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+    <calendar id="2" name="Default">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" sun="1"/>
+      <overridden-day-types>
+        <overridden-day-type id="0">
+          <interval start="0800" end="1200"/>
+          <interval start="1300" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+  </calendars>
+  <tasks>
+    <task id="1" name="Code-Review" note="" work="540000" start="20081009T000000Z" end="20090101T170000Z" work-start="20081009T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="2" name="Teil I - Probleme &amp; Behebung" note="" work="129600" start="20081009T000000Z" end="20081026T170000Z" work-start="20081009T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="3" name="Teil II - Featureideen" note="" work="28800" start="20081026T170000Z" end="20081030T170000Z" work-start="20081027T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="2" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="4" name="Beginn Impl. Features" note="" work="237600" start="20081129T170000Z" end="20090101T170000Z" work-start="20081130T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="5" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="5" name="Beginn Behebungen" note="" work="144000" start="20081109T170000Z" end="20081129T170000Z" work-start="20081110T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="3" type="FS" lag="864000"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="6" name="GUI" note="" work="302400" start="20081117T170000Z" end="20081222T170000Z" work-start="20081118T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="7" name="Workflows/Prozesse&amp;Szenarien" note="" work="122400" start="20081117T170000Z" end="20081204T170000Z" work-start="20081118T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="13" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="8" name="Analyse derzeitige Impl., &#xC4;nderungsvorschl&#xE4;ge" note="" work="50400" start="20081204T170000Z" end="20081211T170000Z" work-start="20081205T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="7" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="9" name="Beginn Impl." note="" work="129600" start="20081204T170000Z" end="20081222T170000Z" work-start="20081205T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="7" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="10" name="Qualit&#xE4;t" note="" work="151200" start="20081009T000000Z" end="20081104T170000Z" work-start="20081009T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="11" name="Qualit&#xE4;tsreview" note="" work="122400" start="20081009T000000Z" end="20081025T170000Z" work-start="20081009T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="12" name="Dokument" note="" work="28800" start="20081031T170000Z" end="20081104T170000Z" work-start="20081101T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="11" type="FS" lag="518400"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="13" name="SRS" note="" work="129600" start="20081030T170000Z" end="20081117T170000Z" work-start="20081031T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="3" type="FS"/>
+      </predecessors>
+    </task>
+    <task id="14" name="XMPP" note="" work="273600" start="20081123T170000Z" end="20081231T170000Z" work-start="20081124T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="15" name="erster Impl.-Zyklus (Verbinden)" note="" work="115200" start="20081123T170000Z" end="20081209T170000Z" work-start="20081124T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <constraint type="start-no-earlier-than" time="20081030T000000Z"/>
+        <predecessors>
+          <predecessor id="1" predecessor-id="13" type="FS" lag="518400"/>
+        </predecessors>
+      </task>
+      <task id="16" name="zweiter Impl.-Zyklus" note="" work="158400" start="20081209T170000Z" end="20081231T170000Z" work-start="20081210T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="15" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="17" name="Technische Architektur" note="" work="496800" start="20081117T170000Z" end="20081210T170000Z" work-start="20081118T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="13" type="FS"/>
+      </predecessors>
+      <task id="18" name="Umsetzen Codereview" note="" work="165600" start="20081117T170000Z" end="20081210T170000Z" work-start="20081118T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="19" name="Definieren Schnittstellen" note="" work="165600" start="20081117T170000Z" end="20081210T170000Z" work-start="20081118T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="20" name="Klassen/Komponentendiagramm" note="" work="165600" start="20081117T170000Z" end="20081210T170000Z" work-start="20081118T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    </task>
+    <task id="21" name="Kickoff-Meeting" note="" work="0" start="20081009T000000Z" end="20081009T000000Z" work-start="20081009T150000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20081009T000000Z"/>
+    </task>
+    <task id="22" name="Kickoff mit Tutor" note="" work="0" start="20081021T000000Z" end="20081021T000000Z" work-start="20081021T150000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20081021T000000Z"/>
+    </task>
+    <task id="23" name="MR1" note="" work="0" start="20081028T000000Z" end="20081028T000000Z" work-start="20081028T150000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20081028T000000Z"/>
+    </task>
+    <task id="24" name="MR2" note="" work="0" start="20081211T000000Z" end="20081211T000000Z" work-start="20081211T150000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20081211T000000Z"/>
+    </task>
+    <task id="25" name="Sprints" note="" work="403200" start="20081125T000000Z" end="20090119T170000Z" work-start="20081125T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="26" name="Sprint 1" note="" work="50400" duration="50400" start="20081125T000000Z" end="20081201T170000Z" work-start="20081125T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20081125T000000Z"/>
+      </task>
+      <task id="27" name="Sprint 2" note="" work="50400" duration="50400" start="20081202T000000Z" end="20081208T170000Z" work-start="20081202T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20081202T000000Z"/>
+      </task>
+      <task id="28" name="Sprint 3" note="" work="50400" duration="50400" start="20081209T000000Z" end="20081215T170000Z" work-start="20081209T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20081209T000000Z"/>
+      </task>
+      <task id="29" name="Sprint 4" note="" work="50400" duration="50400" start="20081216T000000Z" end="20081222T170000Z" work-start="20081216T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20081216T000000Z"/>
+      </task>
+      <task id="30" name="Sprint 5" note="" work="50400" duration="50400" start="20081223T000000Z" end="20081229T170000Z" work-start="20081223T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20081223T000000Z"/>
+      </task>
+      <task id="31" name="Sprint 6" note="" work="50400" duration="50400" start="20081230T000000Z" end="20090105T170000Z" work-start="20081230T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20081230T000000Z"/>
+      </task>
+      <task id="32" name="Sprint 7" note="" work="50400" duration="50400" start="20090106T000000Z" end="20090112T170000Z" work-start="20090106T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20090106T000000Z"/>
+      </task>
+      <task id="33" name="Sprint 8" note="" work="50400" duration="50400" start="20090113T000000Z" end="20090119T170000Z" work-start="20090113T150000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-duration">
+        <constraint type="must-start-on" time="20090113T000000Z"/>
+      </task>
+    </task>
+    <task id="34" name="MR3" note="" work="0" duration="0" start="20090121T000000Z" end="20090121T000000Z" work-start="20090121T150000Z" percent-complete="0" priority="0" type="milestone" scheduling="fixed-duration">
+      <constraint type="must-start-on" time="20090121T000000Z"/>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources>
+    <resource id="1" name="Peter" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="2" name="Christopher" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="3" name="Chris" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="4" name="Simon" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="5" name="Dominik" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="6" name="Johannes" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+  </resources>
+  <allocations/>
+</project>
