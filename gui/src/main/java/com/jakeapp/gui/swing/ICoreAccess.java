@@ -289,12 +289,10 @@ public interface ICoreAccess {
 	/**
 	 * Gets the sync status of a file
 	 *
-	 * @param project
 	 * @param jakeObject The jakeObject for which the status should be determined
 	 * @return The file's status, wrapped by an Attributed.
 	 */
-	public <T extends JakeObject> Attributed<T> getAttributed(Project project,
-					T jakeObject);
+	public <T extends JakeObject> Attributed<T> getAttributed(T jakeObject);
 
 	/**
 	 * Get the file size for a local file copy (possibly modified)

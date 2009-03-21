@@ -51,7 +51,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		log.info("Opening ResolveConflictDialog on " + project + " with file: " + fileObject);
 
 		// get attributed object
-		this.fo = JakeMainApp.getCore().getAttributed(project, fileObject);
+		this.fo = JakeMainApp.getCore().getAttributed(fileObject);
 
 		// load the resource map
 		setResourceMap(

@@ -420,8 +420,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	@Override
-	public <T extends JakeObject> Attributed<T> getAttributed(Project project,
-					T jakeObject) {
+	public <T extends JakeObject> Attributed<T> getAttributed(T jakeObject) {
 		Attributed<T> result = null;
 
 		try {

@@ -24,7 +24,7 @@ public class ResolveConflictFileAction extends FileAction {
 	@Override
 	public void updateAction() {
 		setEnabled(isSingleFileSelected() && JakeMainApp.getCore()
-						.getAttributed(getSelectedFile().getProject(), getSelectedFile())
+						.getAttributed(getSelectedFile())
 						.getSyncStatus() == SyncStatus.CONFLICT);
 	}
 

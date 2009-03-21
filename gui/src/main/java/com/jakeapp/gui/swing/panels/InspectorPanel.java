@@ -20,7 +20,6 @@ import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.ConfigControlsHelper;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
-import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.Platform;
@@ -290,8 +289,7 @@ public class InspectorPanel extends JXPanel
 	public void fileSelectionChanged(FileSelectedEvent event) {
 		log.debug("received a fileSelectedEvent from the EventCore");
 		if (event.isSingleFileSelected()) {
-			this.setFileObject(JakeMainApp.getCore().getAttributed(this.getProject(),
-							event.getSingleFile()));
+			this.setFileObject(JakeMainApp.getCore().getAttributed(event.getSingleFile()));
 		} else {
 			this.clear();
 		}

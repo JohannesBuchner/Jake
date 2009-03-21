@@ -4,7 +4,6 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
@@ -17,7 +16,6 @@ import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -171,7 +169,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 		if (rawNotes != null) {
 			for (NoteObject note : rawNotes) {
 				this.attributedNotes
-								.add(JakeMainApp.getCore().<NoteObject>getAttributed(p, note));
+								.add(JakeMainApp.getCore().<NoteObject>getAttributed(note));
 			}
 		}
 		log.debug("update done.");

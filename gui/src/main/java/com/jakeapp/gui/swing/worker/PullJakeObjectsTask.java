@@ -7,7 +7,6 @@ import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 import java.util.EnumSet;
@@ -15,8 +14,7 @@ import java.util.List;
 
 
 public class PullJakeObjectsTask extends AbstractTask<Void> {
-
-	private List<JakeObject> jakeObjects;
+	protected List<JakeObject> jakeObjects;
 
 	public PullJakeObjectsTask(List<JakeObject> jakeObjects) {
 		this.jakeObjects = jakeObjects;
@@ -42,5 +40,4 @@ public class PullJakeObjectsTask extends AbstractTask<Void> {
 				EventCore.get().fireNotesChanged(this.jakeObjects.get(0).getProject());
 		}
 	}
-
 }

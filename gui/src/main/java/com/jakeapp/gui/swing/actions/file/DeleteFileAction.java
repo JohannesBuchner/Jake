@@ -75,7 +75,7 @@ public class DeleteFileAction extends FileAction {
 
 		//check locks
 		for (FileObject f : files) {
-			af = JakeMainApp.getCore().getAttributed(p, f);
+			af = JakeMainApp.getCore().getAttributed(f);
 			if (af.isLocked() && !af.getLockLogEntry().getMember().equals(currentUser)) {
 				log.debug("File " + f.getRelPath() + " is locked!");
 				lockEntry = af.getLockLogEntry();
