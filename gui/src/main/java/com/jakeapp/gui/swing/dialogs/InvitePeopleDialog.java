@@ -39,7 +39,7 @@ public class InvitePeopleDialog extends JakeDialog implements ProjectChangedCall
 
 		// set custom properties
 		setDialogTitle(getResourceMap().getString("inviteTitle"));
-		setMessage("inviteHeader");
+		setMessageLocalized("inviteHeader");
 		setPicture("/icons/user-large.png");
 	}
 

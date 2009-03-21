@@ -101,12 +101,12 @@ public class JakeMenuBar extends JMenuBar {
 		fileMenu.addSeparator();
 		fileMenu.add(new JMenuItem(new DeleteFileAction()));
 		fileMenu.add(new JMenuItem(new RenameFileAction()));
+		fileMenu.add(new JSeparator());
+		fileMenu.add(new JMenuItem(new LockFileAction()));
+		fileMenu.add(new JMenuItem(new LockWithMessageFileAction()));				
 		fileMenu.addSeparator();
 		fileMenu.add(new JMenuItem(new ImportFileAction()));
 		fileMenu.add(new JMenuItem(new CreateFolderFileAction()));
-		fileMenu.addSeparator();
-		fileMenu.add(new JMenuItem(new LockFileAction()));
-
 		this.add(fileMenu);
 
 		/****************************** Notes *******************************/

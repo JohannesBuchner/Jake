@@ -64,7 +64,7 @@ public class ResolveConflictDialog extends JakeDialog {
 		setDialogTitle(
 						getResourceMap().getString("resolveTitle") + " " + FileObjectHelper
 										.getName(fo.getJakeObject().getRelPath()));
-		setMessage("resolveHeader");
+		setMessage(Translator.get(getResourceMap(), "resolveHeader", fo.getLastVersionEditor().getUserId()));
 		setPicture("/icons/file-conflict-large.png");
 	}
 
@@ -260,6 +260,6 @@ public class ResolveConflictDialog extends JakeDialog {
 	 */
 	public static void showDialog(Project project, FileObject fo) {
 		ResolveConflictDialog dlg = new ResolveConflictDialog(project, fo);
-		dlg.showDialogSized(400, 280);
+		dlg.showDialogSized(500, 280);
 	}
 }

@@ -203,11 +203,11 @@ public class FilePanel extends javax.swing.JPanel
 		pm.add(new JSeparator());
 		pm.add(new JMenuItem(new InspectorFileAction()));
 		pm.add(new JSeparator());
-		pm.add(new JMenuItem(new ImportFileAction()));
-		pm.add(new JMenuItem(new CreateFolderFileAction()));
-		pm.add(new JSeparator());
 		pm.add(new JMenuItem(new LockFileAction()));
 		pm.add(new JMenuItem(new LockWithMessageFileAction()));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new ImportFileAction()));
+		pm.add(new JMenuItem(new CreateFolderFileAction()));
 	}
 
 
