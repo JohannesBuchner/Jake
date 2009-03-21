@@ -6,7 +6,7 @@ import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.exceptions.UserFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
@@ -224,10 +224,10 @@ public abstract class MsgService<T extends User> {
 	 *
 	 * @param userId the String representation of the userId
 	 * @return a &lt;T extends UserId&gt; Object
-	 * @throws UserIdFormatException if the format of the input is not valid for this
+	 * @throws com.jakeapp.core.domain.exceptions.UserFormatException if the format of the input is not valid for this
 	 *                               Messaging-Service
 	 */
-	public abstract T getUserId(String userId) throws UserIdFormatException;
+	public abstract T getUserId(String userId) throws UserFormatException;
 
 
 	protected void setUserId(T userId) {

@@ -38,7 +38,7 @@ import com.jakeapp.core.domain.Tag;
 import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.exceptions.UserFormatException;
 import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry;
@@ -777,7 +777,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	@Override
 	@Transactional
-	public User invite(Project project, String userid) throws UserIdFormatException {
+	public User invite(Project project, String userid) throws UserFormatException {
 		User member;
 		User id;
 

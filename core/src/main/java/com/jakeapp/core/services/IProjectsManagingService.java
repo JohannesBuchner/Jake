@@ -5,7 +5,7 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.UserIdFormatException;
+import com.jakeapp.core.domain.exceptions.UserFormatException;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
@@ -375,10 +375,10 @@ public interface IProjectsManagingService {
 	 * @param project Project to add the ProjectMember for
 	 * @param userid  The UserId (nick+protocol) of the other user.
 	 * @return The new {@link com.jakeapp.core.domain.User}
-	 * @throws UserIdFormatException if the userid did not have the correct format
+	 * @throws com.jakeapp.core.domain.exceptions.UserFormatException if the userid did not have the correct format
 	 */
 	User invite(Project project, String userid)
-			  throws UserIdFormatException;
+			  throws UserFormatException;
 
 	/**
 	 * @param project

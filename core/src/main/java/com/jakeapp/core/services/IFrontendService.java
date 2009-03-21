@@ -129,8 +129,7 @@ public interface IFrontendService {
 	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
 	 * @throws com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException
 	 */
-	void removeAccount(String sessionId, MsgService msg)  throws FrontendNotLoggedInException,
-																															 NoSuchMsgServiceException;
+	void removeAccount(String sessionId, MsgService msg)  throws FrontendNotLoggedInException,NoSuchMsgServiceException;
 
 	/**
 	 * Logs all Message services that are currently active out.

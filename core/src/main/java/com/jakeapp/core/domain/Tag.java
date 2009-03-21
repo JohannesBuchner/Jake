@@ -58,12 +58,18 @@ public class Tag implements ILogable, Serializable, Comparable<Tag> {
         this.name = name;
     }
 
+	/**
+	 * @return the <code>JakeObject</code> this Tag belongs to.
+	 */
     @Id
     public JakeObject getObject() {
         return this.jakeObject;
     }
 
-
+	/**
+	 * set the <code>JakeObject</code> this Tag belongs to.
+	 * @param object the <code>JakeObject</code> this Tag belongs to.
+	 */
     public void setObject(JakeObject object) {
         this.jakeObject = object;
     }
@@ -86,6 +92,9 @@ public class Tag implements ILogable, Serializable, Comparable<Tag> {
 
 		}
 
+	/**
+	 * {@inheritDoc}
+	 */
     @Override
     public int hashCode() {
         int result = jakeObject != null ? jakeObject.hashCode() : 0;
@@ -103,6 +112,9 @@ public class Tag implements ILogable, Serializable, Comparable<Tag> {
         return this.name;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int compareTo(Tag arg0) {
 		if (arg0==null) return 1;
