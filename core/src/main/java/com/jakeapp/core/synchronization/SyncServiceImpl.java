@@ -628,7 +628,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	private IFSService getFSS(Project p) {
-		return this.getProjectsFileServices().getProjectFSService(p);
+		try {
+			return this.getProjectsFileServices().getProjectFSService(p);
+		} catch (com.jakeapp.core.domain.exceptions.ProjectNotLoadedException e) {
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		}
 	}
 
 	public IProjectsFileServices getProjectsFileServices() {

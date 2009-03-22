@@ -2,7 +2,6 @@ package com.jakeapp.core.services;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.UUID;
 import java.security.NoSuchAlgorithmException;
 import java.io.IOException;
 
@@ -10,7 +9,6 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import org.apache.log4j.Logger;
 
@@ -45,11 +43,11 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 	}
 
 	@Override
-	public IFSService getProjectFSService(Project project) {
+	public IFSService getProjectFSService(Project project) throws ProjectNotLoadedException {
 		if (fileServices.containsKey(project.getProjectId())) {
 			return fileServices.get(project.getProjectId());
 		}
-		throw new IllegalStateException("Project with uuid " + project.getProjectId()
+		throw new ProjectNotLoadedException("Project with uuid " + project.getProjectId()
 				+ " has no fss");
 	}
 
