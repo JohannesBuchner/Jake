@@ -8,5 +8,10 @@ package com.jakeapp.jake.ics.exceptions;
  */
 @SuppressWarnings("serial")
 public class NoSuchUseridException extends NetworkException {
-	
+	public NoSuchUseridException() {
+	}
+
+	public NoSuchUseridException(String s) {
+		super(s);
+	}
 }

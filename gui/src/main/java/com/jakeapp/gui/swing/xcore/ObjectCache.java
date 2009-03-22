@@ -1,14 +1,5 @@
 package com.jakeapp.gui.swing.xcore;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
@@ -16,10 +7,18 @@ import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.globals.JakeContext;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.tasks.GetAllProjectFilesTask;
 import com.jakeapp.gui.swing.worker.tasks.GetAllProjectNotesTask;
 import com.jakeapp.gui.swing.worker.tasks.GetMyProjectsTask;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This is a generic cache that saves data from the core.
@@ -40,6 +39,7 @@ public class ObjectCache implements ContextChangedCallback {
 	//				new HashMap<Project, List<LogEntry>>();
 
 	// do not construct
+
 	private ObjectCache() {
 		EventCore.get().addContextChangedListener(this);
 	}
@@ -63,15 +63,14 @@ public class ObjectCache implements ContextChangedCallback {
 	}
 
 	private void fireProjectDataChanged() {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Projects), null);
+		EventCore.get()
+						.fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Projects),
+										null);
 	}
 
 	public Collection<FileObject> getFiles(Project p) {
-		//XXX: FIXME: same hack as in getNotes(). DANGER! ZOMBIES AHEAD!
-		// FIXME: UltraFAIL
-		// this.updateFiles(p);
-		if(!this.files.containsKey(p)) {
-			log.warn("files requested, but not available yet");
+		if (!this.files.containsKey(p)) {
+			log.trace("files requested, but not available yet (no problem)");
 			return new LinkedList<FileObject>();
 		}
 		return this.files.get(p);
@@ -79,7 +78,7 @@ public class ObjectCache implements ContextChangedCallback {
 
 	public void setFiles(Project project, Collection<FileObject> files) {
 		log.debug("got " + files.size() + "files");
-		for(FileObject file : files) {
+		for (FileObject file : files) {
 			log.debug("got " + file);
 		}
 		this.files.put(project, files);
@@ -87,27 +86,24 @@ public class ObjectCache implements ContextChangedCallback {
 	}
 
 	private void fireFilesDataChanged(Project project) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Files), project);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Files),
+						project);
 	}
 
 	public Collection<NoteObject> getNotes(Project p) {
 		Collection<NoteObject> result;
-		
-		//XXX: FIXME: this hack renders the cache useless. It also causes some null pointer exceptions on
-		// startup. But hey, it works!!!
-		// FIXME: No, it doesn't :'(
-		// this.updateNotes(p);
-		
-		//------------------------------
-		//this is the correct version:
-		if(!this.notes.containsKey(p)) {
-			log.warn("notes requested, but not available yet");
+
+		if (!this.notes.containsKey(p)) {
+			log.trace("notes requested, but not available yet (no problem)");
 			return new LinkedList<NoteObject>();
 		}
-		 
+
 		result = this.notes.get(p);
+
+		// this is a bloddy hack - christopher, what's up?
 		for (NoteObject no : result)
 			no.setProject(p);
+
 		return result;
 	}
 
@@ -117,7 +113,8 @@ public class ObjectCache implements ContextChangedCallback {
 	}
 
 	private void fireNotesDataChanged(Project project) {
-		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Notes), project);
+		EventCore.get().fireDataChanged(EnumSet.of(DataChangedCallback.DataReason.Notes),
+						project);
 	}
 
 	/**
@@ -164,17 +161,10 @@ public class ObjectCache implements ContextChangedCallback {
 		}
 	}
 
-	/*
-	public void updateLog(Project p) {
-		if (JakeMainApp.isCoreInitialized()) {
-			JakeExecutor.exec(new GetAllProjectNotesTask(p));
-		}
-	}
-	*/
-
 	/**
 	 * Catch the PropertyChange - Event.
 	 * We may have to update some data of some app properties change.
+	 *
 	 * @param reason
 	 * @param context
 	 */
@@ -182,7 +172,7 @@ public class ObjectCache implements ContextChangedCallback {
 
 		// update the projects when the MsgService is selected
 		// (thus the user logged in)
-		if(reason.contains(Reason.MsgService)) {
+		if (reason.contains(Reason.MsgService)) {
 			this.updateProjects();
 		}
 	}

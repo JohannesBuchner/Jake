@@ -22,7 +22,7 @@ public class SyncUpdateTimer implements DataChangedCallback {
 	private final SyncUpdateTimer instance;
 	private Timer syncTimer;
 	private static final int JakeSyncProjectTime = 60000;
-	private static final int JakeInitialSyncProjectTime = 4000;
+	private static final int JakeInitialSyncProjectTime = 8000;
 	private static final int TimerSyncRate = 2000;
 
 	private Map<Project, Integer> projectsUpdateTime = new HashMap<Project, Integer>();
