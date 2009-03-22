@@ -30,7 +30,7 @@ import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 
 /**
- * Implementation of the FrontendServiceInterface
+ * Implementation of the <code>IFrontendService</code> Interface
  */
 public class FrontendServiceImpl implements IFrontendService {
 
@@ -43,18 +43,12 @@ public class FrontendServiceImpl implements IFrontendService {
 	private MsgServiceManager msgServiceFactory;
 
 	private Map<String, FrontendSession> sessions;
-	
+
 	@Injected
 	private IAccountDao accountDao;
 
 	@Injected
 	private IFriendlySyncService sync;
-
-
-	/*= new ProjectInvitationHandler(service);
-				projectInvitationHandler
-						.registerInvitationListener(FrontendServiceImpl.this.coreInvitationListener);
-	*/
 
 	/**
 	 * Constructor
@@ -66,9 +60,9 @@ public class FrontendServiceImpl implements IFrontendService {
 	 */
 	@Injected
 	public FrontendServiceImpl(IProjectsManagingService projectsManagingService,
-										MsgServiceManager msgServiceFactory, IFriendlySyncService sync,
-										IAccountDao accountDao
-		) {
+							   MsgServiceManager msgServiceFactory, IFriendlySyncService sync,
+							   IAccountDao accountDao
+	) {
 		this.setProjectsManagingService(projectsManagingService);
 		this.msgServiceFactory = msgServiceFactory;
 		this.sync = sync;
@@ -85,7 +79,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	}
 
 	private void setProjectsManagingService(
-			  IProjectsManagingService projectsManagingService) {
+			IProjectsManagingService projectsManagingService) {
 		this.projectsManagingService = projectsManagingService;
 	}
 
@@ -99,7 +93,7 @@ public class FrontendServiceImpl implements IFrontendService {
 	 * @throws IllegalArgumentException
 	 */
 	private void checkCredentials(Map<String, String> credentials)
-			  throws IllegalArgumentException, InvalidCredentialsException {
+			throws IllegalArgumentException, InvalidCredentialsException {
 
 		if (credentials == null)
 			throw new IllegalArgumentException();
@@ -130,31 +124,13 @@ public class FrontendServiceImpl implements IFrontendService {
 		return fes != null;
 	}
 
-	/**
-	 * @param sessionId The id associated with the session after it was created
-	 * @throws IllegalArgumentException if <code>sessionId</code> was null
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *                                  if no Session associated with <code>sessionId</code> exists.
-	 * @return
-	 */
-	@SuppressWarnings("unused")
-	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
-			  FrontendNotLoggedInException {
-		checkSession(sessionId);
-		return this.getSessions().get(sessionId);
-	}
 
 	/**
-	 * @return A sessionid for a new session
+	 * {@inheritDoc}
 	 */
-	private String makeSessionID() {
-		return UUID.randomUUID().toString();
-	}
-
-
 	@Override
 	public String authenticate(Map<String, String> credentials, ChangeListener changeListener)
-			  throws IllegalArgumentException, InvalidCredentialsException {
+			throws IllegalArgumentException, InvalidCredentialsException {
 		String sessid;
 
 		this.checkCredentials(credentials);
@@ -164,16 +140,19 @@ public class FrontendServiceImpl implements IFrontendService {
 		this.addSession(sessid, new FrontendSession());
 
 		// move data to projectmanaging service
-		if(changeListener != null) {
+		if (changeListener != null) {
 			this.getProjectsManagingService().setChangeListener(changeListener);
 		}
 
 		return sessid;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean logout(String sessionId) throws IllegalArgumentException,
-			  FrontendNotLoggedInException {
+			FrontendNotLoggedInException {
 		boolean successfullyRemoved;
 
 		if (sessionId == null)
@@ -186,77 +165,70 @@ public class FrontendServiceImpl implements IFrontendService {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IProjectsManagingService getProjectsManagingService(String sessionId)
-			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
+			throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
 		checkSession(sessionId);
 		// 3. return ProjectsManagingService
 		return this.getProjectsManagingService();
 	}
 
-	private void checkSession(String sessionId) throws FrontendNotLoggedInException {
 
-
-		// 1. check if session is null, if so throw IllegalArgumentException
-		if (sessionId == null || sessionId.isEmpty())
-			throw new IllegalArgumentException("invalid sessionid");
-
-		// 2. check session validity
-		if (!sessions.containsKey(sessionId)) {
-			log.debug("sessions dont contain ssesionid " + sessionId);
-			log.debug("this are the stored sessions ");
-			for (String entry : sessions.keySet()) {
-				log.debug(entry);
-			}
-			throw new FrontendNotLoggedInException("Invalid Session; Not logged in");
-		}
-
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<MsgService<User>> getMsgServices(String sessionId)
-			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
+			throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException {
 		this.checkSession(sessionId);
 		return this.getMsgServices();
 	}
 
-	private List<MsgService<User>> getMsgServices() throws IllegalStateException {
-		return this.msgServiceFactory.getAll();
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public AvailableLaterObject<Void> createAccount(String sessionId, Account credentials)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException {
+			throws FrontendNotLoggedInException, InvalidCredentialsException,
+			ProtocolNotSupportedException, NetworkException {
 		checkSession(sessionId);
 		MsgService svc = msgServiceFactory.getOrCreate(credentials);
 
 		return new CreateAccountFuture(svc).start();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public MsgService addAccount(String sessionId, Account credentials)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException {
+			throws FrontendNotLoggedInException, InvalidCredentialsException,
+			ProtocolNotSupportedException {
 		checkSession(sessionId);
 
 		return msgServiceFactory.getOrCreate(credentials);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public void removeAccount(String sessionId, MsgService msg)
-					throws FrontendNotLoggedInException, NoSuchMsgServiceException {
+			throws FrontendNotLoggedInException, NoSuchMsgServiceException {
 		List<Project> projectsOfUser;
 		Account toDelete;
 		checkSession(sessionId);
-		
-		if (msg==null) throw new NoSuchMsgServiceException();
-		if (msg.getServiceCredentials()==null) throw new NoSuchMsgServiceException();
-		
+
+		if (msg == null) throw new NoSuchMsgServiceException();
+		if (msg.getServiceCredentials() == null) throw new NoSuchMsgServiceException();
+
 		try {
 			toDelete = msg.getServiceCredentials();
 			//delete all projects that belong to that Account
@@ -264,9 +236,9 @@ public class FrontendServiceImpl implements IFrontendService {
 			projectsOfUser = this.getProjectsManagingService().getProjectList(msg);
 			for (Project p : projectsOfUser)
 				this.getProjectsManagingService().deleteProject(p, false);
-			
+
 			this.getServiceCredentialsDao().delete(toDelete);
-			
+
 			//remove the MsgService from the cache.
 			this.msgServiceFactory.remove(toDelete);
 		} catch (NoSuchServiceCredentialsException e) {
@@ -288,6 +260,9 @@ public class FrontendServiceImpl implements IFrontendService {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void signOut(String sessionId) throws FrontendNotLoggedInException {
 		this.checkSession(sessionId);
@@ -296,49 +271,49 @@ public class FrontendServiceImpl implements IFrontendService {
 		/* do not logout - other UIs may access the core */
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void ping(String sessionId) throws IllegalArgumentException,
-			  FrontendNotLoggedInException {
+			FrontendNotLoggedInException {
 		checkSession(sessionId);
 
-		// TODO
+		// TODO do session refresh
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IFriendlySyncService getSyncService(String sessionId)
-			  throws FrontendNotLoggedInException {
+			throws FrontendNotLoggedInException {
 		this.checkSession(sessionId);
 		return this.sync;
 	}
 
-
-	//	@Override
-	public IFriendlySyncService getSync() {
-		return this.sync;
-	}
-
-	@Override
-	@Transactional
-	public Collection<Account> getLastLogins() {
-		return this.getServiceCredentialsDao().getAll();
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service, final String password,
-			final boolean rememberPassword, final ILoginStateListener loginListener) {
+											   final boolean rememberPassword, final ILoginStateListener loginListener) {
 		Account credentials = new Account();
 		credentials.setPlainTextPassword(password);
 		credentials.setAutologin(rememberPassword);
 		return login(session, service, credentials, loginListener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public AvailableLaterObject<Boolean> login(final String session, final MsgService service,
-					final Account credentials, final ILoginStateListener loginListener) {
+											   final Account credentials, final ILoginStateListener loginListener) {
 		AvailableLaterObject<Boolean> ret = new AvailableLaterObject<Boolean>() {
 
 			@Override
@@ -353,18 +328,17 @@ public class FrontendServiceImpl implements IFrontendService {
 				try {
 					result = service.login(credentials);
 
-				}catch(NetworkException ex) {
+				} catch (NetworkException ex) {
 					try {
 						loginListener.connectionStateChanged(ILoginStateListener.ConnectionState.LOGGED_OUT, ex);
 					} catch (Exception ignored) {
 					}
-					
+
 					throw ex;
 				}
 //				projectInvitationHandler = new ProjectInvitationHandler(service);
 //				projectInvitationHandler
 //						.registerInvitationListener(FrontendServiceImpl.this.coreInvitationListener);
-
 
 
 //				service.getMainIcs().getMsgService().registerReceiveMessageListener(projectInvitationHandler);
@@ -375,4 +349,55 @@ public class FrontendServiceImpl implements IFrontendService {
 
 		return ret;
 	}
+
+
+	private void checkSession(String sessionId) throws FrontendNotLoggedInException {
+
+
+		// 1. check if session is null, if so throw IllegalArgumentException
+		if (sessionId == null || sessionId.isEmpty())
+			throw new IllegalArgumentException("invalid sessionid");
+
+		// 2. check session validity
+		if (!sessions.containsKey(sessionId)) {
+			log.debug("sessions dont contain ssesionid " + sessionId);
+			log.debug("this are the stored sessions ");
+			for (String entry : sessions.keySet()) {
+				log.debug(entry);
+			}
+			throw new FrontendNotLoggedInException("Invalid Session; Not logged in");
+		}
+
+	}
+
+	private List<MsgService<User>> getMsgServices() throws IllegalStateException {
+		return this.msgServiceFactory.getAll();
+	}
+
+	//	@Override
+	public IFriendlySyncService getSync() {
+		return this.sync;
+	}
+
+	/**
+	 * @param sessionId The id associated with the session after it was created
+	 * @return
+	 * @throws IllegalArgumentException if <code>sessionId</code> was null
+	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
+	 *                                  if no Session associated with <code>sessionId</code> exists.
+	 */
+	@SuppressWarnings("unused")
+	private FrontendSession getSession(String sessionId) throws IllegalArgumentException,
+			FrontendNotLoggedInException {
+		checkSession(sessionId);
+		return this.getSessions().get(sessionId);
+	}
+
+	/**
+	 * @return A sessionid for a new session
+	 */
+	private String makeSessionID() {
+		return UUID.randomUUID().toString();
+	}
+
 }

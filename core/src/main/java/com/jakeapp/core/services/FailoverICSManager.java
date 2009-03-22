@@ -9,6 +9,7 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
+import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
@@ -22,9 +23,7 @@ import java.util.Map;
 
 
 /**
- * FailoverICSManager tries Socket-Transfers first, then XMPP-Inband-Transfers.
- * 
- * 
+ * The <code>FailoverICSManager</code> tries Socket-Transfers first, then XMPP-Inband-Transfers.
  * @see ICSManager
  */
 public class FailoverICSManager implements ICSManager {
@@ -35,15 +34,24 @@ public class FailoverICSManager implements ICSManager {
 
 	private Map<String, ICService> services = new HashMap<String, ICService>();
 
-	private Map<String, FailoverCapableFileTransferService> transfer = new HashMap<String, FailoverCapableFileTransferService>();
+	/**
+	 * Map<Project.getProjectId(), IFileTransferService>
+	 */
+	private Map<String, IFileTransferService> transfer = new HashMap<String, IFileTransferService>();
 
 	private Map<String, ICService> activeServices = new HashMap<String, ICService>();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasTransferService(Project p) {
 		return this.transfer.containsKey(p.getProjectId());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ICService getICService(Project p) {
 		ICService ics = null;
@@ -58,25 +66,38 @@ public class FailoverICSManager implements ICSManager {
 		return ics;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public FailoverCapableFileTransferService getTransferService(Project p)
+	public IFileTransferService getTransferService(Project p)
 			throws NotLoggedInException {
 		ICService ics = getICService(p);
 		IMsgService msg = ics.getMsgService();
-		FailoverCapableFileTransferService fcfts;
+		IFileTransferService fcfts;
 
 		if (!this.transfer.containsKey(p.getProjectId())) {
-			fcfts = createTransferService(this.getBackendUserId(p), ics, msg);
+			fcfts = createTransferServices(this.getBackendUserId(p), ics, msg);
 			this.transfer.put(p.getProjectId(), fcfts);
 		}
 
 		return this.transfer.get(p.getProjectId());
 	}
 
-	private FailoverCapableFileTransferService createTransferService(
-			com.jakeapp.jake.ics.UserId user, ICService ics, IMsgService msg)
+	/**
+	 * This method creates the current supported <code>IFileTransferService</code>s in the correct order.
+	 *
+	 * @param user the <code>UserId</code> for which the <code>IFileTransferService</code> should work.
+	 * @param ics the <code>ICService</code> on which this <code>IFileTransferService</code> should work on.
+	 * @param msg the <code>IMsgService</code> used for negotiation, see:
+	 * {@link IFileTransferService#addTransferMethod(ITransferMethodFactory, IMsgService, UserId)}
+	 * @return a <code>FailoverCapableFileTransferService</code
+	 * @throws NotLoggedInException if the <code>ICService</code> is not logged in.
+	 */
+	private IFileTransferService createTransferServices(
+			UserId user, ICService ics, IMsgService msg)
 			throws NotLoggedInException {
-		FailoverCapableFileTransferService fcfts;
+		IFileTransferService fcfts;
 		fcfts = new FailoverCapableFileTransferService();
 		if (SOCKETS_ENABLED)
 			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(), msg, user);
@@ -90,8 +111,11 @@ public class FailoverICSManager implements ICSManager {
 		return fcfts;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p, User u) {
+	public UserId getBackendUserId(Project p, User u) {
 		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
 			return new XmppUserId(u.getUserId() + "/" + p.getProjectId());
 		} else {
@@ -100,12 +124,17 @@ public class FailoverICSManager implements ICSManager {
 		}
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public UserId getBackendUserId(User u) {
-		return new XmppUserId(u.getUserId() + "/Jake");
+		return new XmppUserId(u.getUserId() + "/Jake"); // todo: this is not network unspecific!
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public User getFrontendUserId(Project p, com.jakeapp.jake.ics.UserId u) {
 		if (p.getMessageService().getProtocolType().equals(ProtocolType.XMPP)) {
@@ -116,15 +145,19 @@ public class FailoverICSManager implements ICSManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public com.jakeapp.jake.ics.UserId getBackendUserId(Project p) {
+	public UserId getBackendUserId(Project p) {
 		return this.getBackendUserId(p, p.getUserId());
 	}
+
 
 	private ICService createICService(Project p) {
 		log.debug("creating ICS");
 		Account cred = p.getCredentials();
-		ICService ics = null;
+		ICService ics;
 
 		if (p.getCredentials().getProtocol().equals(ProtocolType.XMPP)) {
 			log.debug("Creating new XMPPICService for cred:  " + cred);

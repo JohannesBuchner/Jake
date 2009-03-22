@@ -5,7 +5,9 @@ package com.jakeapp.core.services;
  * accesses the core. The session contains references to all
  * Services needed by the frontend, that should be accessible to one frontend only.
  * @author christopher
+ * @deprecated
  */
+@Deprecated
 public class FrontendSession implements IFrontendSession {
 	
 }
