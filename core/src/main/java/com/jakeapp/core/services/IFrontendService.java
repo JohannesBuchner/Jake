@@ -26,16 +26,15 @@ public interface IFrontendService {
 	 * This method is used to authenticate a client accessing the jake-core. On
 	 * a successful authentication a Session-Identifier (sessionId) is returned
 	 *
-	 * @param credentials a Map of credentials // TODO to be specified. Has to be empty for
-	 * 		current implementation
-	 * @param changeListener						 the callback or JakeObject-changes
+	 * @param credentials	a <code>Map</code> of credentials,
+	 *                       will be replaced by a concrete <code>FrontendCredentials</code> obj.
+	 * @param changeListener the callback or JakeObject-changes
 	 * @return a Session-Identifier
-	 * @throws IllegalArgumentException	 if the supplied credentials are null or one of the entries is
-	 *                                     null
+	 * @throws IllegalArgumentException	if the supplied credentials are null or one of the entries is null
 	 * @throws InvalidCredentialsException if the supplied credentials are wrong
 	 */
 	public String authenticate(Map<String, String> credentials, ChangeListener changeListener)
-			  throws IllegalArgumentException, InvalidCredentialsException;
+			throws IllegalArgumentException, InvalidCredentialsException;
 
 	/**
 	 * This method logs a specific client out.
@@ -47,20 +46,20 @@ public interface IFrontendService {
 	 *                                  if no such session existed
 	 */
 	public boolean logout(String sessionId) throws IllegalArgumentException,
-			  FrontendNotLoggedInException;
+			FrontendNotLoggedInException;
 
 	/**
 	 * Gets an instance of a {@link IProjectsManagingService}
 	 *
 	 * @param sessionId a Session-Identifier
 	 * @return a ProjectService on success
-	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *                                  if no such session existed
-	 * @throws IllegalStateException	 if no ProjectService is available
+	 * @throws IllegalArgumentException	 if the supplied session is null
+	 * @throws FrontendNotLoggedInException If the supplied <code>sessionId</code> was invalid or
+	 *                                      the session already timed out.
+	 * @throws IllegalStateException		if no ProjectService is available
 	 */
 	public IProjectsManagingService getProjectsManagingService(String sessionId)
-			  throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException;
+			throws IllegalArgumentException, FrontendNotLoggedInException, IllegalStateException;
 
 
 	/**
@@ -68,10 +67,10 @@ public interface IFrontendService {
 	 *
 	 * @param sessionId a Session-Identifier
 	 * @return a List of MessageServices
-	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *                                  if no such session existed
-	 * @throws IllegalStateException	 if no MessageServices are configured for this component
+	 * @throws IllegalArgumentException	 if the supplied session is null
+	 * @throws FrontendNotLoggedInException If the supplied <code>sessionId</code> was invalid or
+	 *                                      the session already timed out.
+	 * @throws IllegalStateException		if no MessageServices are configured for this component
 	 */
 	public List<MsgService<User>> getMsgServices(String sessionId) throws FrontendNotLoggedInException;
 
@@ -79,11 +78,11 @@ public interface IFrontendService {
 	 * Gets the SyncService
 	 *
 	 * @param sessionId a Session-Identifier
-	 * @return
-	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *                                  if no such session existed
-	 * @throws IllegalStateException	 if no MessageServices are configured for this component
+	 * @return an instance of <code>IFriendlySyncService</code>
+	 * @throws IllegalArgumentException	 if the supplied session is null
+	 * @throws FrontendNotLoggedInException If the supplied <code>sessionId</code> was invalid or
+	 *                                      the session already timed out.
+	 * @throws IllegalStateException		if no MessageServices are configured for this component
 	 */
 	public IFriendlySyncService getSyncService(String sessionId) throws FrontendNotLoggedInException;
 
@@ -91,96 +90,99 @@ public interface IFrontendService {
 	/**
 	 * Method that creates an account by the IM-Provider
 	 *
-	 * @param sessionId
-	 * @param credentials
+	 * @param sessionId   a <code>String</code> identifying our Session
+	 * @param credentials the <code>Account</code>-Data for which a new User on the IM-Provider should be registered.
 	 * @return
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *
+	 * @throws FrontendNotLoggedInException  If the supplied <code>sessionId</code> was invalid or
+	 *                                       the session already timed out.
 	 * @throws InvalidCredentialsException
 	 * @throws ProtocolNotSupportedException
-	 * @throws Exception							the creation failed for another reason
+	 * @throws Exception					 the creation failed for another reason
 	 * @throws com.jakeapp.jake.ics.exceptions.NetworkException
+	 *
 	 */
 	public AvailableLaterObject<Void> createAccount(String sessionId, Account credentials)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException, NetworkException;
+			throws FrontendNotLoggedInException, InvalidCredentialsException,
+			ProtocolNotSupportedException, NetworkException;
 
 
 	/**
 	 * Provides and registers a new MsgService ready for login.
 	 *
-	 * @param sessionId
-	 * @param credentials
-	 * @return
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *
-	 * @throws InvalidCredentialsException
-	 * @throws ProtocolNotSupportedException
+	 * @param sessionId   a <code>String</code> identifying our Session
+	 * @param credentials an <code>Account</code> on which the new <code>MsgService</code> should be based on
+	 * @return the created <code>MsgService</code>, ready for login!
+	 * @throws FrontendNotLoggedInException  If the supplied <code>sessionId</code> was invalid or
+	 *                                       the session already timed out.
+	 * @throws InvalidCredentialsException   if the supplied <code>Account</code> contains invalid data
+	 * @throws ProtocolNotSupportedException if the supplied <code>Account</code> is specified for a
+	 *                                       <code>ProtocolType</code> currently not supported.
 	 */
 	public MsgService addAccount(String sessionId, Account credentials)
-			  throws FrontendNotLoggedInException, InvalidCredentialsException,
-			  ProtocolNotSupportedException;
+			throws FrontendNotLoggedInException, InvalidCredentialsException,
+			ProtocolNotSupportedException;
 
 	/**
 	 * Removes an account from the database registry
 	 *
-	 * @param sessionId
-	 * @param msg
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 * @throws com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException
+	 * @param sessionId  a <code>String</code> identifying our Session
+	 * @param msgService the <code>MsgService</code> to be removed from the system.
+	 * @throws FrontendNotLoggedInException If the supplied <code>sessionId</code> was invalid or
+	 *                                      the session already timed out.
+	 * @throws NoSuchMsgServiceException	if the MsgService specified does not exist.
 	 */
-	void removeAccount(String sessionId, MsgService msg)  throws FrontendNotLoggedInException,NoSuchMsgServiceException;
+	void removeAccount(String sessionId, MsgService msgService)
+			throws FrontendNotLoggedInException, NoSuchMsgServiceException;
 
 	/**
 	 * Logs all Message services that are currently active out.
 	 * After calling this method all MessageServices within the specified
 	 * Session are logged out.
 	 *
-	 * @param sessionId
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *          If <code>sessionId</code> is invalid.
+	 * @param sessionId a <code>String</code> identifying our Session
+	 * @throws FrontendNotLoggedInException If the supplied <code>sessionId</code> was invalid or
+	 *                                      the session already timed out.
 	 */
 	void signOut(String sessionId) throws FrontendNotLoggedInException;
 
 	/**
 	 * Pings the core to prevent session expiry
 	 *
-	 * @param sessionId a Session-Identifier
-	 * @throws IllegalArgumentException if the supplied session is null
-	 * @throws com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException
-	 *                                  if no such session existed
+	 * @param sessionId a <code>String</code> identifying our Session
+	 * @throws IllegalArgumentException	 if the supplied session is null
+	 * @throws FrontendNotLoggedInException If the supplied <code>sessionId</code> was invalid or
+	 *                                      the session already timed out.
 	 */
 	public void ping(String sessionId) throws IllegalArgumentException,
-			  FrontendNotLoggedInException;
+			FrontendNotLoggedInException;
 
 	/**
-	 * @return All stored Service-credentials that were 'recently' used.
-	 *         A definition of recently is pending.
-	 */
-	Collection<Account> getLastLogins();
-
-	/**
-	 * Logs a Messageservice in and sets the password
-	 * @param session
-	 * @param service
-	 * @param password new password to be stored, or null to use the stored one.
-	 * @param rememberPassword
-	 * @return
+	 * Logs a <code>MsgService</code> in and sets the password
+	 *
+	 * @param sessionId		a <code>String</code> identifying our Session
+	 * @param msgService	   the <code>MsgService</code> to login to.
+	 * @param password		 new password to be stored, or null to use the stored one.
+	 * @param rememberPassword a <code>boolean</code> indicating of the entered password should be saved or not
+	 * @return an <code>AvailableLaterObject</code> with param <code>Boolean</code> indicating if the login succeeded
+	 *         or not.
 	 * @internally throws Exception
 	 */
-	AvailableLaterObject<Boolean> login(String session, MsgService service, String password,
-			boolean rememberPassword, final ILoginStateListener loginListener);
+	AvailableLaterObject<Boolean> login(String sessionId, MsgService msgService, String password,
+										boolean rememberPassword, final ILoginStateListener loginListener);
 
 
 	/**
-	 * Logs a Messageservice in with the stored password
-	 * @param session
-	 * @param service
-	 * @param credentials
-	 * @return
+	 * Logs a <code>MsgService</code> in with the stored password
+	 *
+	 * @param sessionId	 a <code>String</code> identifying our Session
+	 * @param msgService	the <code>MsgService</code> to login to.
+	 * @param credentials   an <code>Account</code> object containing the changed credentials
+	 * @param loginListener a <code>ILoginStateListener</code> receiving &quot;Login State Events&quot;
+	 * @return an <code>AvailableLaterObject</code> with param <code>Boolean</code> indicating if the login succeeded
+	 *         or not.
 	 * @internally throws Exception
 	 */
-	AvailableLaterObject<Boolean> login(String session, MsgService service,
-					Account credentials, final ILoginStateListener loginListener);
+	AvailableLaterObject<Boolean> login(String sessionId, MsgService msgService,
+										Account credentials, final ILoginStateListener loginListener);
 
 }

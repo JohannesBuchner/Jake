@@ -22,13 +22,13 @@ public class GetAllProjectFilesTask extends AbstractTask<Collection<FileObject>>
 
 	@Override
 	protected AvailableLaterObject<Collection<FileObject>> calculateFunction() {
-		log.debug("calling GetAllProjectFilesTask:calculateFunction");
+		log.trace("calling GetAllProjectFilesTask:calculateFunction");
 		return JakeMainApp.getCore().getFiles(project);
 	}
 
 	@Override
 	protected void onDone() {
-		log.info("Done GetAllProjectFilesTask");
+		log.trace("Done GetAllProjectFilesTask");
 
 		// done! save into object cache
 		try {

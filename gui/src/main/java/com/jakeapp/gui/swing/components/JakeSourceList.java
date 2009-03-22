@@ -414,7 +414,7 @@ public class JakeSourceList extends JakeGuiComponent
 
 
 		if (getSourceList() != null && projectSLI != null) {
-			log.info("setting selected item: " + projectSLI);
+			log.trace("setting selected item: " + projectSLI);
 			getSourceList().setSelectedItem(projectSLI);
 		}
 

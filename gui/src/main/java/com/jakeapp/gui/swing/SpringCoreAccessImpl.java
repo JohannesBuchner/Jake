@@ -325,8 +325,18 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		Runnable runner = new Runnable() {
 			public void run() {
 				try {
+					Invitation invitation = JakeContext.getInvitation();
+
+					// TODO: This is the ugliest piece of code I have written in my life.
+					//       Testing only. Please forgive me, but I was out of ideas. --chris
+					if(invitation == null) {
+						log.fatal("JakeContext.getInvitation() is NULL");
+						throw new IllegalStateException("JakeContext.getInvitation() is NULL even though it can't be");
+					}
+					
 					getFrontendService().getProjectsManagingService(getSessionId())
-									.rejectInvitation(JakeContext.getInvitation());
+									.rejectInvitation(invitation);
+
 
 					// FIXME: One fine day, far far far away, make this prettier.
 					EventCore.get().fireProjectChanged(

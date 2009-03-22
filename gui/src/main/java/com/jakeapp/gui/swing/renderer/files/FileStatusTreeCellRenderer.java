@@ -24,9 +24,9 @@ public class FileStatusTreeCellRenderer extends DefaultJakeTableCellRenderer {
 		//}else {
 	//		comp = FileObjectStatusProvider.getEmptyComponent();
 		//}
-		if (isSelected) {
-			comp.setBackground(table.getSelectionBackground());
-		}
+		//if (isSelected) {
+		//	comp.setBackground(table.getSelectionBackground());
+		//}
 
 
 		return comp;
