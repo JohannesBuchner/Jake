@@ -11,30 +11,36 @@ import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
+/**
+ * Announces a <code>List</code> of <code>JakeObject</code>s. 
+ */
 public class AnnounceFuture extends AvailableLaterObject<Void> {
 	private ISyncService iss;
-	private List<? extends JakeObject> jos;
+	private List<? extends JakeObject> jakeObjects;
 	private LogAction action;
 	private String commitMsg;
 	
 	private static final Logger log = Logger.getLogger(AnnounceFuture.class);
 
-	public AnnounceFuture(ISyncService iss, List<? extends JakeObject> jos,
+	public AnnounceFuture(ISyncService iss, List<? extends JakeObject> jakeObjects,
 					String commitMsg) {
 		this.iss = iss;
-		this.jos = jos;
+		this.jakeObjects = jakeObjects;
 		this.commitMsg = commitMsg;
 		this.action = LogAction.JAKE_OBJECT_NEW_VERSION;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Void calculate() throws Exception {
 		double progress,step;
 		String status;
 		progress = 0d;
-		step = 1.0d / this.jos.size();
+		step = 1.0d / this.jakeObjects.size();
 		
-		for (JakeObject jo : this.jos) {
+		for (JakeObject jo : this.jakeObjects) {
 			try {
 				this.iss.announce(jo, this.action, this.commitMsg);
 			} catch (FileNotFoundException e) {

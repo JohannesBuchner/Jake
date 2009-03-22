@@ -88,6 +88,9 @@ public class AllLocalProjectFilesFuture extends
 		}
 	}
 
+		/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public Collection<FileObject> calculate() {

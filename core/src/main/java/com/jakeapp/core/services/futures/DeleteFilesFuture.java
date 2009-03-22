@@ -12,7 +12,9 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 
-
+/**
+ * <code>AvailableLaterObject</code> deleting some <code>FileObject</code>
+ */
 public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 
 	private static final Logger log = Logger.getLogger(ProjectSizeTotalFuture.class);
@@ -83,6 +85,10 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Integer calculate() throws Exception {
 		for (FileObject fo : this.getToDelete())
 			this.deleteFile(fo);

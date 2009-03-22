@@ -44,8 +44,11 @@ public class AllJakeObjectsFuture
 		this.setLogEntryDao(context.getUnprocessedAwareLogEntryDao(project));
 	}
 
-
-	@Override @Transactional
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
 	public Collection<JakeObject> calculate() {
 		Set<JakeObject> objects = new HashSet<JakeObject>();
 		List<LogEntry<JakeObject>> logs = this.logEntryDao.getAllVersions(true);
