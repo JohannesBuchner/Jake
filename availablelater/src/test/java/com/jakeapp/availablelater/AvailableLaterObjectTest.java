@@ -1,12 +1,12 @@
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import junit.framework.Assert;
 import local.test.Tracer;
+
+import org.junit.Test;
 
 
 public class AvailableLaterObjectTest {

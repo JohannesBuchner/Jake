@@ -10,11 +10,11 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 
 /**

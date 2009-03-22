@@ -1,16 +1,40 @@
 package com.jakeapp.gui.swing;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+
+import com.jakeapp.availablelater.AvailableErrorObject;
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
+import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
-
 import com.jakeapp.core.domain.exceptions.UserFormatException;
-
-import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.IFrontendService;
 import com.jakeapp.core.services.IProjectsManagingService;
@@ -24,8 +48,6 @@ import com.jakeapp.core.services.futures.StartStopProjectFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
-import com.jakeapp.core.util.availablelater.AvailableErrorObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -51,12 +73,6 @@ import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);

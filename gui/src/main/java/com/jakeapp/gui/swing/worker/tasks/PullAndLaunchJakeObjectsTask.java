@@ -1,11 +1,11 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.gui.swing.actions.file.OpenFileAction;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class PullAndLaunchJakeObjectsTask extends PullJakeObjectsTask {
 	public PullAndLaunchJakeObjectsTask(List<JakeObject> jakeObjects) {

@@ -1,9 +1,8 @@
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
-import org.junit.Assert;
+import junit.framework.Assert;
+
 import org.junit.Test;
-
-import com.jakeapp.core.util.AvailableLaterWaiter;
 
 
 public class AvailableLaterWaiterTest {

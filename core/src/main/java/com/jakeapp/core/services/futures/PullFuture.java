@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.synchronization.ISyncService;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 
 public class PullFuture extends AvailableLaterObject<Void> {
 	private static final Logger log = Logger.getLogger(PullFuture.class);

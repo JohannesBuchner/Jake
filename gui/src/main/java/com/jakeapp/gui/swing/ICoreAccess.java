@@ -1,7 +1,25 @@
 package com.jakeapp.gui.swing;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
@@ -11,7 +29,6 @@ import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.exceptions.InvalidNewFolderException;
@@ -24,14 +41,6 @@ import com.jakeapp.jake.fss.exceptions.LaunchException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**

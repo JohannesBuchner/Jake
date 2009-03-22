@@ -1,17 +1,18 @@
 package com.jakeapp.core.synchronization.pull;
 
+import java.util.concurrent.Semaphore;
+
+import org.apache.log4j.Logger;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.IProjectsFileServices;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import org.apache.log4j.Logger;
-
-import java.util.concurrent.Semaphore;
 
 public class FileRequestFuture extends AvailableLaterObject<IFileTransfer>  {
 

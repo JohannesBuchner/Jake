@@ -1,5 +1,19 @@
 package com.jakeapp.core.synchronization;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
@@ -26,7 +40,6 @@ import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
 import com.jakeapp.core.synchronization.pull.FileRequestFuture;
 import com.jakeapp.core.synchronization.request.ProjectRequestListener;
 import com.jakeapp.core.synchronization.request.RequestHandlePolicy;
-import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
@@ -42,18 +55,6 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On

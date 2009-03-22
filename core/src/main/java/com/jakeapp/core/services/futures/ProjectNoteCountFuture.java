@@ -3,12 +3,11 @@
  */
 package com.jakeapp.core.services.futures;
 
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
-
 import java.util.Collection;
-import java.util.List;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.AvailableLaterWrapperObject;
+import com.jakeapp.core.domain.NoteObject;
 
 
 /**

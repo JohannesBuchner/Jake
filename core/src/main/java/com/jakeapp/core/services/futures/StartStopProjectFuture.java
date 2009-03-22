@@ -1,12 +1,12 @@
 package com.jakeapp.core.services.futures;
 
+import java.io.FileNotFoundException;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-
-import java.io.FileNotFoundException;
 
 public class StartStopProjectFuture extends AvailableLaterObject<Void> {
 

@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
@@ -23,7 +24,6 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.services.futures.AllProjectFilesFuture;
 import com.jakeapp.core.services.futures.AllProjectNotesFuture;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 
 /**

@@ -1,21 +1,21 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+
+import com.jakeapp.availablelater.AvailableErrorObject;
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.AvailableNowObject;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableErrorObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableNowObject;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.xcore.EventCore;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Collection;
 
 
 public class DeleteJakeObjectsTask extends AbstractTask<Integer> {

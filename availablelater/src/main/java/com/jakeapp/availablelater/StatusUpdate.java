@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
 public class StatusUpdate {
 	public StatusUpdate(double progress, String status) {

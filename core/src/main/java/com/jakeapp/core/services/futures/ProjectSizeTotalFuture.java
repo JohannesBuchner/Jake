@@ -9,9 +9,9 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;

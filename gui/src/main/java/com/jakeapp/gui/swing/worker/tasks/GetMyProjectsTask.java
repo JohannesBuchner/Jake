@@ -1,16 +1,16 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import com.jakeapp.availablelater.AvailableErrorObject;
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableErrorObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.listener.FileWatcherListenerMultiton;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
-
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 

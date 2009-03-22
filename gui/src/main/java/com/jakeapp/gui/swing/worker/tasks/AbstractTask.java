@@ -3,16 +3,18 @@
  */
 package com.jakeapp.gui.swing.worker.tasks;
 
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.StatusUpdate;
-import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
-import org.apache.log4j.Logger;
-
-import javax.swing.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+
+import javax.swing.SwingWorker;
+
+import org.apache.log4j.Logger;
+
+import com.jakeapp.availablelater.AvailabilityListener;
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.StatusUpdate;
+import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 /**
  * So you wanted to make a SwingWorker, and your inner method gets back a

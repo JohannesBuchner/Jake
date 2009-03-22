@@ -1,4 +1,4 @@
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
 /**
  * The {@link AvailableLaterObject} reports its status updates using this

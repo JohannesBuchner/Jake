@@ -1,10 +1,27 @@
 package com.jakeapp.gui.swing.components;
 
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.EnumSet;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import org.apache.log4j.Logger;
+
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.TriAreaComponent;
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
@@ -24,19 +41,11 @@ import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.tasks.AbstractTask;
 import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
-import org.apache.log4j.Logger;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.EnumSet;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Statusbar-Controller

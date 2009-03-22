@@ -1,18 +1,19 @@
 package com.jakeapp.core.services.futures;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.ILogEntryDao;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Gets all JakeObject that ever were in the log (including remote-only, deleted, ...).

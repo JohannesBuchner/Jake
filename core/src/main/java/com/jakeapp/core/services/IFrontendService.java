@@ -1,5 +1,9 @@
 package com.jakeapp.core.services;
 
+import java.util.List;
+import java.util.Map;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -8,13 +12,8 @@ import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This is the only visible interface to other components accessing the jake

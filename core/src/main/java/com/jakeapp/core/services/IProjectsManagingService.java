@@ -1,25 +1,33 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.UserFormatException;
-import com.jakeapp.core.synchronization.UserInfo;
-import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.domain.exceptions.UserFormatException;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.synchronization.UserInfo;
+import com.jakeapp.core.synchronization.change.ChangeListener;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 /**
  * This handles the list of <code>Project</code>s currently managed
@@ -30,10 +38,10 @@ public interface IProjectsManagingService {
 	/**
 	 * Retrieves a list of all Projects for the specified user.
 	 *
-	 * @param user
+	 * @param userMsgService the <code>MsgService</code> for which the <code>Project</code>s should be loaded.
 	 * @return
 	 */
-	AvailableLaterObject<List<Project>> getProjects(MsgService user);
+	AvailableLaterObject<List<Project>> getProjects(MsgService userMsgService);
 
 	/**
 	 * Get a list of all Projects known to jake
@@ -47,8 +55,8 @@ public interface IProjectsManagingService {
 	/**
 	 * Get the List of invitations
 	 *
-	 * @param msg The MsgService to get the projects for
-	 * @return
+	 * @param msg The <code>MsgService</code> to get the <code>Project</code>s for
+	 * @return a (possible empty) <code>List</code> of <code>MsgService</code>s
 	 */
 	List<Invitation> getInvitations(MsgService msg);
 
@@ -64,8 +72,8 @@ public interface IProjectsManagingService {
 	 * @return the loaded instance of this <code>Project</code>
 	 * @throws FileNotFoundException	if the rootPath is invalid
 	 * @throws IllegalArgumentException if the supplied <code>name</code> is invalid
-	 * @throws NotADirectoryException gets thrown when the <code>rootPath</code> is not a directory
-	 * @throws IOException if some other exception in the file system occurred.
+	 * @throws NotADirectoryException   gets thrown when the <code>rootPath</code> is not a directory
+	 * @throws IOException			  if some other exception in the file system occurred.
 	 */
 	Project createProject(String name, String rootPath,
 						  MsgService msgService) throws IllegalArgumentException, IOException, NotADirectoryException;
@@ -96,7 +104,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException if the supplied <code>Project</code> is null
 	 * @throws FileNotFoundException	if the rootPath of the <code>Project</code> does not exist
 	 *                                  anymore
-	 * @throws NoSuchProjectException gets thrown, when the <code>Project</code> to be stopped does not exist (anymore)
+	 * @throws NoSuchProjectException   gets thrown, when the <code>Project</code> to be stopped does not exist (anymore)
 	 */
 	boolean stopProject(Project project) throws IllegalArgumentException, FileNotFoundException,
 			NoSuchProjectException;
@@ -104,22 +112,22 @@ public interface IProjectsManagingService {
 	/**
 	 * Adds a ChangeListener for <code>JakeObject</code> changes. Usually called when a frontend logs in.
 	 *
-	 * @param changeListener the <code>ChangeListener</code> to be added to the list. 
+	 * @param changeListener the <code>ChangeListener</code> to be added to the list.
 	 */
 	public void addChangeListener(ChangeListener changeListener);
 
 	/**
 	 * Loads the given project (load database)
 	 *
-	 * @param project
+	 * @param project the <code>Project</code> to be opened.
 	 * @return the opened, but not yet started, <code>Project</code>
 	 * @throws IllegalArgumentException if the supplied name is null
 	 * @throws FileNotFoundException	if the rootPath of the loaded <code>Project</code> does not
 	 *                                  exist anymore or it is not a readable directory or the
 	 *                                  database- file cannot be opened.
-	 * @throws InvalidProjectException
-	 * @throws NotADirectoryException
-	 * @throws IOException
+	 * @throws InvalidProjectException  if the given <code>Project</code> does not exist or is invalid
+	 * @throws NotADirectoryException   if the {@link Project#rootPath} is not a directory
+	 * @throws IOException			  if some other IO-Error occurred
 	 */
 	Project openProject(Project project)
 			throws IllegalArgumentException, InvalidProjectException, IOException, NotADirectoryException;
@@ -132,6 +140,7 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException if the supplied <code>Project</code> is null
 	 * @throws FileNotFoundException	if the rootPath of the <code>Project</code> does not exist
 	 *                                  anymore
+	 * @throws NoSuchProjectException   if the supplied <code>Project</code> does not exist (anymore)
 	 */
 	void closeProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException,
@@ -140,18 +149,20 @@ public interface IProjectsManagingService {
 
 	/**
 	 * @param project			the <code>Project</code> to be deleted
-	 * @param deleteProjectFiles
+	 * @param deleteProjectFiles <code>boolean</code> describing if the files within the Project-Folder should
+	 *                           be deleted as well
 	 * @return true on success, false on error
-	 * @throws IllegalArgumentException	  if the supplied <code>Project</code> is null
-	 * @throws SecurityException			 if the supplied <code>Project</code> could not be deleted due
-	 *                                       to filesystem permissons
-	 * @throws NotADirectoryException
-	 * @throws IOException
-	 * @throws java.io.FileNotFoundException
+	 * @throws IllegalArgumentException if the supplied <code>Project</code> is null
+	 * @throws SecurityException		if the supplied <code>Project</code> could not be deleted due
+	 *                                  to filesystem permissons
+	 * @throws NotADirectoryException   if the {@link Project#rootPath} is not a directory
+	 * @throws IOException			  if some other IO-Error occured
+	 * @throws FileNotFoundException	if the {@link Project#rootPath} does not exist
+	 * @throws NoSuchProjectException   if the supplied <code>Project</code> does not exist (maybe its already deleted)
 	 */
-	boolean deleteProject(Project project, boolean deleteProjectFiles) throws IllegalArgumentException, SecurityException, IOException,
-			NotADirectoryException,
-			NoSuchProjectException;
+	boolean deleteProject(Project project, boolean deleteProjectFiles)
+			throws IllegalArgumentException, SecurityException, IOException,
+			NotADirectoryException, NoSuchProjectException;
 
 	/**
 	 * Get all LogEntrys from the supplied project
@@ -177,19 +188,6 @@ public interface IProjectsManagingService {
 
 
 	/**
-	 * Assigns a UserId to a project if this project has no UserId set yet.
-	 *
-	 * @param project the Project to set the UserId
-	 * @param userId  the UserId to be set
-	 * @throws IllegalArgumentException if project or userId are null
-	 * @throws IllegalAccessException	if the project already has a userId set
-	 */
-	/*
-	void assignUserToProject(Project project, User userId)
-			  throws IllegalArgumentException, IllegalAccessException;
-	*/
-
-	/**
 	 * Sets the level of trust we have to the specified user. If the user does
 	 * not exist yet in the <code>Project</code> the user is invited.
 	 *
@@ -203,31 +201,34 @@ public interface IProjectsManagingService {
 			throws IllegalArgumentException, IllegalAccessException;
 
 	/**
-	 * @param p
-	 * @return a service for file-operations
+	 * Convinience method for getting the <code>IFSService</code> of a certain project.
+	 *
+	 * @param project the <code>Project</code> in question
+	 * @return an <code>IFSService</code> or null, if the <code>Project</code> is not started
 	 */
-	IFSService getFileServices(Project p);
+	IFSService getFileServices(Project project);
 
 	/**
-	 * @param project
-	 * @return The number of files in a Project
-	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
+	 * Get the number of <code>FileObject</code> in the given <code>Project</code>
 	 *
-	 * @throws java.io.FileNotFoundException
-	 * @throws IllegalArgumentException
-	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
+	 * @param project the <code>Project</code> for which to count the files
+	 * @return The number of files in a Project
+	 * @throws NoSuchProjectException if the <code>Project</code> given does not exist
+	 * @throws FileNotFoundException  if the rootPath of the <code>Project</code> does not exist
+	 * @see IProjectsManagingService#getAllProjectFiles(Project)
 	 */
 	AvailableLaterObject<Integer> getProjectFileCount(Project project)
-			throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
+			throws NoSuchProjectException, FileNotFoundException;
 
 	/**
-	 * @param project
-	 * @return The amount of bytes all files in a project take up.
-	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
+	 * Returns the cummulated filesize of all <code>FileObject</code>s of a given <code>Project</code>
 	 *
-	 * @throws java.io.FileNotFoundException
-	 * @throws IllegalArgumentException
-	 * @see #getAllProjectFiles(Project, AvailabiltyListener)
+	 * @param project the <code>Project</code> in question
+	 * @return The amount of bytes all files in a <code>Project</code> take up.
+	 * @throws NoSuchProjectException   if the given <code>Project</code> doesn't exist
+	 * @throws FileNotFoundException	If the root path of the specified Project is not found.
+	 * @throws IllegalArgumentException If project is null.
+	 * @see #getAllProjectFiles(Project)
 	 */
 	AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			throws NoSuchProjectException, FileNotFoundException, IllegalArgumentException;
@@ -235,8 +236,8 @@ public interface IProjectsManagingService {
 	/**
 	 * Retrieves all Files that exist (or existed) in a <code>Project</code>
 	 *
-	 * @param project
-	 * @return A List of all files.
+	 * @param project the <code>Project</code> for which to get the <code>FileObject</code>s
+	 * @return A <code>Collection</code> of all <code>FileObject</code>s.
 	 * @throws NoSuchProjectException   If the specified Project does not exist.
 	 * @throws FileNotFoundException	If the root path of the specified Project is not found.
 	 * @throws IllegalArgumentException If project is null.
@@ -247,7 +248,7 @@ public interface IProjectsManagingService {
 	/**
 	 * Retrieves all Notes that exist (or existed) in a <code>Project</code>
 	 *
-	 * @param project
+	 * @param project the <code>Project</code> for which to get the <code>NoteObject</code>s
 	 * @return A List of all files.
 	 * @throws NoSuchProjectException   If the specified Project does not exist.
 	 * @throws IllegalArgumentException If project is null.
@@ -256,10 +257,12 @@ public interface IProjectsManagingService {
 			throws NoSuchProjectException, IllegalArgumentException;
 
 	/**
-	 * This method accepts an Invitation, adds the Project belonging to the invitation to
-	 * the database and informs the inviter that we accepted the invitation.
+	 * This method accepts an <code>Invitation</code>, adds the <code>Project</code> belonging to the
+	 * <code>Invitation</code> to the database and informs the inviter that we accepted the invitation.
 	 *
-	 * @param invitation
+	 * @param invitation the <code>Invitation</code> we're accepting
+	 * @param rootPath   a <code>File</code> pointing to the {@link Project#rootPath} of the <code>Project</code>
+	 *                   we want to create.
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
@@ -270,7 +273,7 @@ public interface IProjectsManagingService {
 	/**
 	 * Rejects joining of a invited project and notifies the inviter.
 	 *
-	 * @param invitation
+	 * @param invitation the <code>Invitation</code> which was rejected.
 	 * @throws IllegalStateException  if <code>project</code> is not an invitation.
 	 * @throws NoSuchProjectException if <code>project</code> does not exist.
 	 */
@@ -288,31 +291,35 @@ public interface IProjectsManagingService {
 			throws NoSuchProjectException;
 
 	/**
-	 * @param jo
+	 * Returns the <code>Date</code> of the last modification for a given <code>JakeObject</code>
+	 *
+	 * @param jakeObject the <code>JakeObject</code> in question
 	 * @return The date and time when a {@link JakeObject} was last modified. If the JakeObject
 	 *         has never been modified, the current Date is returned.
 	 * @throws NoSuchProjectException   if the JakeObject's Project does not exist.
 	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
 	 */
-	Date getLastEdit(JakeObject jo)
+	Date getLastEdit(JakeObject jakeObject)
 			throws NoSuchProjectException, IllegalArgumentException;
 
 
 	/**
-	 * @param jo
-	 * @return The ProjectMember who last modified the JakeObject. If the JakeObject
+	 * Get the <code>User</code> who last edited the <code>JakeObject</code>.
+	 *
+	 * @param jakeObject the <code>JakeObject</code> in question
+	 * @return The <code>User</code> who last modified the <code>JakeObject</code>. If the <code>JakeObject</code>
 	 *         has never been modified, null is returned.
-	 * @throws NoSuchProjectException   if the JakeObject's Project does not exist.
-	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
+	 * @throws NoSuchProjectException   if the <code>JakeObject</code>s <code>Project</code> does not exist.
+	 * @throws IllegalArgumentException If the <code>JakeObject</code> does not exist/is null.
 	 */
-	User getLastEditor(JakeObject jo) throws NoSuchProjectException,
+	User getLastEditor(JakeObject jakeObject) throws NoSuchProjectException,
 			IllegalArgumentException;
 
 	/**
-	 * @param project The Project that Fileobject should be located in.
-	 * @param relpath The path where to look for a FileObject
-	 * @return A FileObject at the given relative path
-	 * @throws NoSuchJakeObjectException If no such FileObject exists.
+	 * @param project The <code>Project</code> that <code>Fileobject</code> should be located in.
+	 * @param relpath The path where to look for a <code>FileObject</code>
+	 * @return A <code>FileObject</code> at the given relative path
+	 * @throws NoSuchJakeObjectException If no such <code>FileObject</code> exists.
 	 */
 	FileObject getFileObjectByRelPath(Project project, String relpath)
 			throws NoSuchJakeObjectException;
@@ -321,8 +328,8 @@ public interface IProjectsManagingService {
 	/**
 	 * Returns all Users that are stored for a project.
 	 *
-	 * @param project
-	 * @return
+	 * @param project the <code>Project</code> for which we want to collect all <code>User</code>s
+	 * @return a <code>List</code> of <code>User</code>s belonging to this <code>Project</code>
 	 * @throws NoSuchProjectException If <code>project</code> does
 	 *                                not exist or is null.
 	 */
