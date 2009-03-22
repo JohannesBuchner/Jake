@@ -115,6 +115,11 @@ public class HibernateInvitationDao extends HibernateDaoSupport implements IInvi
 	 */
 	@Override
 	public void reject(Invitation invitation) {
-		// TODO implement
+		log.debug("Deleting invitation... :(");
+        try {
+            this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(invitation);
+        } catch(Exception e) {
+			log.fatal("Couldn't delete invitation");
+		}
 	}
 }

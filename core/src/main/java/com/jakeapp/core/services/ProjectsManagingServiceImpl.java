@@ -737,16 +737,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		} catch (Exception e) {
 			log.warn("Something weird happened while trying to init project!", e);
 		}
-
-		// notify the inviter
-		try {
-			// FIXME: WTF WHY DOESN'T THIS WORK:
-			// if(inviter != null)
-			// ProjectInvitationHandler.notifyInvitationAccepted(project, inviter);
-			// else log.warn("Inviter not notified because we don't know who it is?!");
-		} catch (Exception e) {
-			log.warn("Couldn't notify inviter for some reason");
-		}
 	}
 
 	@Override
@@ -755,7 +745,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		User invitee = invitation.getInvitedOn();
 
 		// remove the project
-        // TODO: How the hell can we remove the project from the list?
+        this.getInvitationDao().reject(invitation);
 
 		// notify the inviter
 		ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getForUserId(invitee));

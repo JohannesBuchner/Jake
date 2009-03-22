@@ -213,25 +213,16 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * Informs the person who invited us to a project that we reject the
 	 * invitation by sending a packet to the main ics of the other user.
 	 *
-	 * @param project The <code>Project</code> we where invited to
-	 * @param inviter The <code>User</code> who invited us.
+	 * @param invitation The <code>Invitation</code> we received
+	 * @param msgService Dirty stuff
 	 */
 	public static void notifyInvitationRejected(Invitation invitation, MsgService<User> msgService) {
-        /* OLD FAIL:
-		UserId backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
-		String msg = createInviteRejectedMessage(project);
-		try {
-			project.getMessageService().getMainIcs().getMsgService().sendMessage(backendUser, msg);
-		} catch (Exception e) {
-			log.warn("sending reject failed", e);
-		}
-		*/
         try {
-            msgService.getMainIcs().getMsgService().sendMessage(msgService.getIcsManager().getBackendUserId(invitation.getInviter()), "FUCKYOU");
-        } catch (NetworkException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (OtherUserOfflineException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            msgService.getMainIcs().getMsgService().
+                    sendMessage(msgService.getIcsManager().
+                            getBackendUserId(invitation.getInviter()), REJECTMSG + invitation.getProjectUUID());
+        } catch (Exception e) {
+            log.warn("sending reject failed", e);
         }
     }
 
