@@ -319,7 +319,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public void rejectProject() {
+	public void rejectInvitation() {
 		log.info("Reject invitation: " + JakeContext.getInvitation());
 
 		Runnable runner = new Runnable() {
@@ -328,6 +328,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					getFrontendService().getProjectsManagingService(getSessionId())
 									.rejectInvitation(JakeContext.getInvitation());
 
+					// FIXME: One fine day, far far far away, make this prettier.
 					EventCore.get().fireProjectChanged(
 									new ProjectChangedCallback.ProjectChangedEvent(null, ProjectChangedCallback.ProjectChangedEvent.Reason.Rejected));
 

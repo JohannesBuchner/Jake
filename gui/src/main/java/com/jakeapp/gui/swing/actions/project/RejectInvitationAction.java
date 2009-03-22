@@ -3,7 +3,6 @@ package com.jakeapp.gui.swing.actions.project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.actions.abstracts.JakeAction;
 import org.apache.log4j.Logger;
 
@@ -29,7 +28,7 @@ public class RejectInvitationAction extends JakeAction {
 	public void actionPerformed(ActionEvent actionEvent) {
         log.info("Rejecting Invitation: " + JakeContext.getInvitation());
 
-        JakeMainApp.getCore().rejectProject();
+        JakeMainApp.getCore().rejectInvitation();
 
 	    // Hide the damn thing
 	    JakeContext.setInvitation(null);
