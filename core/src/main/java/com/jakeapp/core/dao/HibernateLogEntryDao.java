@@ -41,6 +41,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		// log.debug("Current LogEntries done ");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void create(LogEntry<? extends ILogable> logEntry) {
 		log.trace("create:" + logEntry);
@@ -84,6 +87,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		// debugDump();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public LogEntry<? extends ILogable> get(UUID uuid, boolean includeUnprocessed)
@@ -99,6 +105,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setProcessed(LogEntry<JakeObject> logEntry)
@@ -111,11 +120,17 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		debugDump();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasUnprocessed(JakeObject jakeObject) {
 		return getUnprocessed(jakeObject).size() > 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject) {
@@ -125,19 +140,25 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				.setString(0, jakeObject.getUuid().toString()).list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogEntry<JakeObject>> getUnprocessed() {
 		return query("FROM logentries WHERE processed = false").list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LogEntry<JakeObject> getNextUnprocessed() throws NoSuchLogEntryException {
 		return topLogEntry(getUnprocessed());
 	}
 
 	private Query processedAwareLogEntryQuery(String whereclause,
-			boolean includeUnprocessed) {
+											  boolean includeUnprocessed) {
 		String query;
 		if (!includeUnprocessed)
 			query = "FROM logentries WHERE processed = true ";
@@ -146,28 +167,40 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return query(query + whereclause);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogEntry<? extends ILogable>> getAll(boolean includeUnprocessed) {
 		return processedAwareLogEntryQuery("", includeUnprocessed).list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllOfJakeObject(T jakeObject,
-			boolean includeUnprocessed) {
+																	   boolean includeUnprocessed) {
 		if (jakeObject.getUuid() == null)
 			return new LinkedList<LogEntry<T>>();
 		return processedAwareLogEntryQuery("AND objectuuid = ?", includeUnprocessed)
 				.setString(0, jakeObject.getUuid().toString()).list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LogEntry<JakeObject> getLastOfJakeObject(JakeObject jakeObject,
-			boolean includeUnprocessed) throws NoSuchLogEntryException {
+													boolean includeUnprocessed) throws NoSuchLogEntryException {
 		return lastLogEntry(getAllOfJakeObject(jakeObject, includeUnprocessed));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersions(
@@ -178,6 +211,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				LogAction.JAKE_OBJECT_DELETE.ordinal()).list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends JakeObject> List<LogEntry<T>> getAllVersionsOfJakeObject(
@@ -203,8 +239,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	/**
 	 * @param list
 	 * @return the last of the list
-	 * @throws NoSuchLogEntryException
-	 *             if the list is empty
+	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	private <T extends ILogable> LogEntry<T> topLogEntry(List<LogEntry<T>> list)
 			throws NoSuchLogEntryException {
@@ -216,8 +251,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	/**
 	 * @param list
 	 * @return the first of the list
-	 * @throws NoSuchLogEntryException
-	 *             if the list is empty
+	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	@SuppressWarnings("unused")
 	private LogEntry<? extends ILogable> topLogEntryMixed(
@@ -230,8 +264,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	/**
 	 * @param list
 	 * @return the last of the list
-	 * @throws NoSuchLogEntryException
-	 *             if the list is empty
+	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	private LogEntry<? extends ILogable> lastLogEntryMixed(
 			List<LogEntry<? extends ILogable>> list) throws NoSuchLogEntryException {
@@ -243,8 +276,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	/**
 	 * @param list
 	 * @return the last of the list
-	 * @throws NoSuchLogEntryException
-	 *             if the list is empty
+	 * @throws NoSuchLogEntryException if the list is empty
 	 */
 	private <T extends ILogable> LogEntry<T> lastLogEntry(List<LogEntry<T>> list)
 			throws NoSuchLogEntryException {
@@ -263,13 +295,19 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return list.get(list.size() - 1);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LogEntry<JakeObject> getLastVersionOfJakeObject(JakeObject jakeObject,
-			boolean includeUnprocessed) throws NoSuchLogEntryException {
+														   boolean includeUnprocessed) throws NoSuchLogEntryException {
 		return lastLogEntry(getAllVersionsOfJakeObject(jakeObject, includeUnprocessed));
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Boolean getDeleteState(JakeObject belongsTo, boolean includeUnprocessed) {
 		LogEntry<JakeObject> leNew = lastLogEntryOrNull(getAllVersionsOfJakeObject(
@@ -291,9 +329,12 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return leDel.getTimestamp().getTime() > leNew.getTimestamp().getTime();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LogEntry<JakeObject> getLastVersion(JakeObject belongsTo,
-			boolean includeUnprocessed) {
+											   boolean includeUnprocessed) {
 		LogEntry<JakeObject> leNew = lastLogEntryOrNull(getAllVersionsOfJakeObject(
 				belongsTo, includeUnprocessed));
 		LogEntry<JakeObject> leDel = lastLogEntryOrNull(getAllDeletesOfJakeObject(
@@ -317,6 +358,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<FileObject> getExistingFileObjects(boolean includeUnprocessed) {
 		Collection<LogEntry<JakeObject>> all = getAllVersions(includeUnprocessed);
@@ -344,7 +388,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * LogAction.START_TRUSTING_PROJECTMEMBER and
 	 * LogAction.STOP_TRUSTING_PROJECTMEMBER that belong to the given
 	 * JakeObject, sorted ascending by timestamp
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -362,7 +406,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * finds all that match any of the two LogActions LogAction.TAG_ADD and
 	 * LogAction.TAG_REMOVE that belong to the given JakeObject, sorted
 	 * ascending by timestamp
-	 * 
+	 *
 	 * @param belongsTo
 	 * @return
 	 */
@@ -381,7 +425,7 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	 * finds all that match any of the two LogActions LogAction.JAKE_OBJECT_LOCK
 	 * and LogAction.JAKE_OBJECT_UNLOCK that belong to the given JakeObject,
 	 * sorted ascending by timestamp
-	 * 
+	 *
 	 * @param belongsTo
 	 * @return
 	 */
@@ -397,6 +441,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public LogEntry<JakeObject> getLock(JakeObject jakeObject) {
 		Collection<LogEntry<JakeObject>> entries = getLockEntries(jakeObject);
@@ -412,6 +459,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return lockLogEntry;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<Tag> getTags(JakeObject jakeObject) {
 		List<Tag> tags = new LinkedList<Tag>();
@@ -426,6 +476,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return tags;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public LogEntry<? extends ILogable> getProjectCreatedEntry() {
@@ -451,7 +504,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		}
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<User> getCurrentProjectMembers(User correspondingTo) {
 		Map<User, List<User>> people = getTrustGraph();
@@ -479,12 +534,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return new ArrayList<User>(trusted);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean trusts(User a, User b) {
 		List<User> trusted = getTrustGraph().get(a);
 		return trusted != null && trusted.contains(b);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TrustState trustsHow(User a, User b) {
 		Map<User, TrustState> trusted = getExtendedTrustGraph().get(a);
@@ -496,11 +557,17 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 			return TrustState.NO_TRUST;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<User, TrustState> trustsHow(User a) {
 		return getExtendedTrustGraph().get(a);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<User, List<User>> getTrustGraph() {
 		Map<User, Map<User, TrustState>> extendedTrustGraph = getExtendedTrustGraph();
@@ -516,7 +583,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return trustGraph;
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<User, Map<User, TrustState>> getExtendedTrustGraph() {
 		/* if you fix something here, fix it in getTrustGraph too */
@@ -555,6 +624,9 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		return people;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setAllPreviousProcessed(LogEntry<? extends ILogable> logEntry) {
 		// TODO do this with sql, something like
@@ -573,8 +645,10 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 				}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	/* this is on the side of the client accepting the invitation */
 	public void acceptInvitation(Invitation invitation) {
 
 		FollowTrustingProjectMemberLogEntry startTrustingProjectMemberLogEntry = new FollowTrustingProjectMemberLogEntry(

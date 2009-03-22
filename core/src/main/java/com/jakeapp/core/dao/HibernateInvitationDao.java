@@ -13,46 +13,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HibernateInvitationDao  extends HibernateDaoSupport implements IInvitationDao {
+/**
+ * Hibernate Implementation of the InvitationDAO
+ */
+public class HibernateInvitationDao extends HibernateDaoSupport implements IInvitationDao {
 
 	private static Logger log = Logger.getLogger(HibernateInvitationDao.class);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Invitation create(Invitation invitation) throws InvalidProjectException {
 		log.debug("persisting invitation " + invitation);
-		try
-		{
+		try {
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(invitation);
 			log.debug(" should be persisted now");
-//			this.getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
 			return invitation;
 		}
-		catch(Exception e) {
+		catch (Exception e) {
 			throw new InvalidProjectException(e.getMessage());
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Invitation> getAll() {
 		List<Invitation> results;
-		try
-		{
+		try {
 			results = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery("FROM invitation").list();
-			if(results == null) return new ArrayList<Invitation>();
+			if (results == null) return new ArrayList<Invitation>();
 			return results;
 		}
-		catch (DataAccessException e)
-		{
+		catch (DataAccessException e) {
 			e.printStackTrace();
 			return new ArrayList<Invitation>();
 		}
-		catch(Exception e)
-		{
+		catch (Exception e) {
 			e.printStackTrace();
-			return new ArrayList<Invitation>();			   
+			return new ArrayList<Invitation>();
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Invitation> getAll(User user) {
@@ -75,6 +82,9 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Project accept(Invitation invitation) {
@@ -87,15 +97,12 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 				setString(0, invitation.getInvitedOn().getProtocolType().toString()).
 				setString(1, invitation.getInvitedOn().getUserId()).list();
 
-		if(accounts.size() > 0)
-		{
-		    project.setCredentials(accounts.get(0));
+		if (accounts.size() > 0) {
+			project.setCredentials(accounts.get(0));
 			project.setRootPath(invitation.getRootPath());
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession().persist(project);
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession().delete(invitation);
-		}
-		else
-		{
+		} else {
 			log.fatal("credentials not found!");
 			throw new RuntimeException();
 		}
@@ -103,8 +110,11 @@ public class HibernateInvitationDao  extends HibernateDaoSupport implements IInv
 		return project;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reject(Invitation invitation) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		// TODO implement
 	}
 }

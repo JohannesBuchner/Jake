@@ -25,6 +25,9 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
 		return super.persist(no);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NoteObject get(UUID objectId) throws NoSuchJakeObjectException {
 		return super.get(objectId);
@@ -47,6 +50,9 @@ public class HibernateNoteObjectDao extends HibernateJakeObjectDao<NoteObject> i
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public NoteObject complete(NoteObject jakeObject) throws NoSuchJakeObjectException {
 		return get(jakeObject.getUuid());

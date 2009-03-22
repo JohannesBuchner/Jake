@@ -306,6 +306,7 @@ public interface ILogEntryDao {
 	/**
 	 * This method creates the required logentries when accepting an invitation.
 	 * This is currently only the LogEntry stating that we trust the other member.
+	 * <em>this is on the side of the client accepting the invitation</em>
 	 * @param invitation The Invitation to be accepted
 	 */
 	public void acceptInvitation(Invitation invitation);

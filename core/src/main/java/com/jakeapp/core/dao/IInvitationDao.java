@@ -8,7 +8,7 @@ import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import java.util.List;
 
 /**
- * This DAO is here to manage invitations.
+ * This is the DAO-Interface to manage invitations.
  */
 public interface IInvitationDao {
 
@@ -28,7 +28,8 @@ public interface IInvitationDao {
 	public List<Invitation> getAll();
 	
 	/**
-	 * Returns a list containing all unanswered Invitations for the specified user
+	 * Returns a list containing all unanswered <code>Invitation</code>s for the specified <code>User</code>
+	 * @param user the <code>User</code> to get <code>Invitation</code>s for
 	 * @return a (empty) List<Invitation>
 	 */
 	public List<Invitation> getAll(User user);

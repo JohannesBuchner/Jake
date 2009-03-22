@@ -19,7 +19,9 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 
 	private static Logger log = Logger.getLogger(HibernateAccountDao.class);
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Account create(Account credentials)
 			throws InvalidCredentialsException {
@@ -29,7 +31,7 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		if (credentials.getUuid() == null) {
 			credentials.setUuid(UUID.randomUUID());
 		}
-		
+
 		if (credentials.getUserId() == null)
 			throw new InvalidCredentialsException();
 
@@ -43,7 +45,7 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 
 
 		log.debug("persisting Account with uuid " + credentials.getUuid());
-		
+
 		// TODO: beautify. 
 		try {
 			getHibernateTemplate().persist(credentials);
@@ -54,6 +56,9 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		return credentials;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Account read(UUID uuid) throws NoSuchServiceCredentialsException {
 		String s = uuid.toString();
@@ -69,6 +74,9 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Account> getAll() {
@@ -80,6 +88,9 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		return results;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Account update(Account credentials)
 			throws NoSuchServiceCredentialsException {
@@ -89,7 +100,7 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		if (credentials.getUuid() == null) {
 			credentials.setUuid(UUID.randomUUID());
 		}
-		
+
 		if (credentials.getUserId() == null)
 			throw new InvalidCredentialsException();
 
@@ -102,7 +113,7 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		}
 
 		try {
-			
+
 			getHibernateTemplate().update(credentials/* , LockMode.WRITE */);
 		} catch (DataAccessException e) {
 			throw new NoSuchServiceCredentialsException(e);
@@ -112,6 +123,9 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		return credentials;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void delete(Account credentials)
 			throws NoSuchServiceCredentialsException {
