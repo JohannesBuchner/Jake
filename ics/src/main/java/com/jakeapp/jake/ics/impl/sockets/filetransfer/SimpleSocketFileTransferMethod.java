@@ -232,22 +232,23 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 				if (!address.contains(":")) {
 					throw new OtherUserOfflineException();
 				}
+				log.debug("received address : " + address);
 				String[] add = address.split(":", 2);
 				if (add[0].charAt(0) == '/')
 					add[0] = add[0].substring(1);
 				log.debug("setting ip address ...");
-				InetSocketAddress other = new InetSocketAddress(add[0], Integer
+				InetSocketAddress otherSocketAddress = new InetSocketAddress(add[0], Integer
 						.parseInt(add[1]));
-				log.debug("setting ip address :" + other);
+				log.debug("setting ip address :" + otherSocketAddress);
 
-				this.serverAdresses.put(from_userid, other);
-				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
-					INegotiationSuccessListener nsl = this.listeners.get(r);
+				this.serverAdresses.put(from_userid, otherSocketAddress);
+				for (FileRequest fileRequest : getRequestsForUser(outgoingRequests, from_userid)) {
+					INegotiationSuccessListener nsl = this.listeners.get(fileRequest);
 
 					/*
 					 * fourth step, the client starts the out-of-band transfer
 					 */
-					SimpleSocketFileTransfer ft = new SimpleSocketFileTransfer(r, other,
+					SimpleSocketFileTransfer ft = new SimpleSocketFileTransfer(fileRequest, otherSocketAddress,
 							transferKey, maximalRequestAgeSeconds);
 					new Thread(ft).start();
 					log.info("negotiation with " + from_userid + " succeeded");
@@ -255,17 +256,17 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 						nsl.succeeded(ft);
 					} catch (Exception ignored) {
 					}
-					removeOutgoing(r);
+					removeOutgoing(fileRequest);
 				}
-			} catch (Exception e) {
-				log.info("negotiation with " + from_userid + " failed: ", e);
-				for (FileRequest r : getRequestsForUser(outgoingRequests, from_userid)) {
-					INegotiationSuccessListener nsl = this.listeners.get(r);
+			} catch (Exception exception) {
+				log.info("negotiation with " + from_userid + " failed: ", exception);
+				for (FileRequest fileRequest : getRequestsForUser(outgoingRequests, from_userid)) {
+					INegotiationSuccessListener nsl = this.listeners.get(fileRequest);
 					try {
-						nsl.failed(e);
+						nsl.failed(exception);
 					} catch (Exception ignored) {
 					}
-					removeOutgoing(r);
+					removeOutgoing(fileRequest);
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
