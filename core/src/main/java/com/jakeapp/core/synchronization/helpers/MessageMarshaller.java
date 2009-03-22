@@ -59,14 +59,23 @@ public class MessageMarshaller {
 
 		StringBuffer sb = new StringBuffer(getUUIDStringForProject(project))
 				.append(LOGENTRIES_MESSAGE);
+		StringBuffer partResult = new StringBuffer();
 
 		log.debug("Starting to process log entries...");
 		for (LogEntry<? extends ILogable> l : logs) {
 			try {
-				sb.append(BEGIN_LOGENTRY).append(
+				//clear partResult
+				partResult.delete(0, partResult.length());
+				
+				//build serialized version of l 
+				partResult.append(BEGIN_LOGENTRY).append(
 						this.logEntrySerializer.serialize(l, project)).append(
 						END_LOGENTRY);
-				log.debug("Serialised log entry, new sb content: " + sb.toString());
+				
+				log.debug("Serialised log entry " + partResult.toString());
+				//only if building succeeded, add the logEntry to sb
+				sb.append(partResult);
+				log.debug("New sb content: " + sb.toString());
 			} catch (Throwable e) {
 				log.info("Failed to serialize log entry: " + l.getLogAction().toString()
 						+ "(" + l.toString() + ")", e);
