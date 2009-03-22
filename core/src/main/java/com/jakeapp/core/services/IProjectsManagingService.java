@@ -299,20 +299,25 @@ public interface IProjectsManagingService {
 	 *         has never been modified, the current Date is returned.
 	 * @throws NoSuchProjectException   if the JakeObject's Project does not exist.
 	 * @throws IllegalArgumentException If the JakeObject does not exist/is null.
+	 * @deprecated
 	 */
+	@Deprecated
 	Date getLastEdit(JakeObject jakeObject)
 			throws NoSuchProjectException, IllegalArgumentException;
 
 
 	/**
 	 * Get the <code>User</code> who last edited the <code>JakeObject</code>.
+	 * TODO: Redmine Issue #94
 	 *
 	 * @param jakeObject the <code>JakeObject</code> in question
 	 * @return The <code>User</code> who last modified the <code>JakeObject</code>. If the <code>JakeObject</code>
 	 *         has never been modified, null is returned.
 	 * @throws NoSuchProjectException   if the <code>JakeObject</code>s <code>Project</code> does not exist.
 	 * @throws IllegalArgumentException If the <code>JakeObject</code> does not exist/is null.
+	 * @deprecated
 	 */
+	@Deprecated
 	User getLastEditor(JakeObject jakeObject) throws NoSuchProjectException,
 			IllegalArgumentException;
 

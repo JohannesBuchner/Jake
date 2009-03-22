@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The <code>ProjectInvitationHandler</code> handles all incoming Invitations from other clients, but also
- * encapsulates the logic needed to invite other <code>User</code>s to the project.
+ * The <code>ProjectInvitationHandler</code> handles all incoming <code>Invitation</code>s from other clients, but also
+ * encapsulates the logic needed to invite other <code>User</code>s to the <code>Project</code>.
  */
 public class ProjectInvitationHandler implements IMessageReceiveListener, IInvitationHandler {
 
@@ -38,6 +38,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 	/**
 	 * Creates the <code>ProjectInvitationHandler</code> listening on the specified <code>MsgService</code>
+	 *
 	 * @param msg The MsgService to work on.
 	 */
 	public ProjectInvitationHandler(MsgService msg) {
@@ -54,7 +55,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 */
 	public static boolean invite(Project project, User user) {
 		ICService ics = project.getMessageService().getIcsManager().getICService(project);
-		com.jakeapp.jake.ics.UserId bu = project.getMessageService().getIcsManager().getBackendUserId(user);
+		UserId bu = project.getMessageService().getIcsManager().getBackendUserId(user);
 
 		String msg = createInviteMessage(project);
 
@@ -82,8 +83,9 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 	/**
 	 * Method implemented from <code>IMessageReceiveListener</code>, to handle incoming packets.
+	 *
 	 * @param from_userid the user id which sent the message
-	 * @param content		 the content of the message
+	 * @param content	 the content of the message
 	 */
 	@Override
 	public void receivedMessage(UserId from_userid, String content) {
@@ -126,11 +128,10 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 				log.info("got accept to Project " + p + " from " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
-					try{
+					try {
 						listener.accepted(user, p);
 					}
-					catch(Exception e)
-					{
+					catch (Exception e) {
 						log.warn("A listener throw an exception in the accepted method");
 					}
 				}
@@ -148,11 +149,10 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 				log.info("got reject to Project " + p + " from " + from_userid);
 				for (IProjectInvitationListener listener : invitationListeners) {
-					try{
+					try {
 						listener.rejected(user, p);
 					}
-					catch(Exception e)
-					{
+					catch (Exception e) {
 						log.warn("A listener throw an exception in the accepted method");
 					}
 				}
@@ -180,15 +180,13 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	}
 
 
-	private static String createInviteAcceptedMessage(Project project){
+	private static String createInviteAcceptedMessage(Project project) {
 		return ACCEPTMSG + project.getProjectId() + project.getName();
 	}
 
-	private static String createInviteRejectedMessage(Project project){
-		return REJECTMSG + project.getProjectId() + project.getName(); 
+	private static String createInviteRejectedMessage(Project project) {
+		return REJECTMSG + project.getProjectId() + project.getName();
 	}
-
-
 
 
 	/**
@@ -217,18 +215,19 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param msgService Dirty stuff
 	 */
 	public static void notifyInvitationRejected(Invitation invitation, MsgService<User> msgService) {
-        try {
-            msgService.getMainIcs().getMsgService().
-                    sendMessage(msgService.getIcsManager().
-                            getBackendUserId(invitation.getInviter()), REJECTMSG + invitation.getProjectUUID());
-        } catch (Exception e) {
-            log.warn("sending reject failed", e);
-        }
-    }
+		try {
+			msgService.getMainIcs().getMsgService().
+					sendMessage(msgService.getIcsManager().
+							getBackendUserId(invitation.getInviter()), REJECTMSG + invitation.getProjectUUID());
+		} catch (Exception e) {
+			log.warn("sending reject failed", e);
+		}
+	}
 
 	/**
 	 * Adds an <code>IProjectInvitationListener</code> to the list of <code>IProjectInvitationListeners</code>
-	 * to get notified when an Invitation-Event occurs. 
+	 * to get notified when an Invitation-Event occurs.
+	 *
 	 * @param invitationListener the <code>IProjectInvitationListener</code> to be added to the list
 	 */
 	public void registerInvitationListener(IProjectInvitationListener invitationListener) {
@@ -238,6 +237,7 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 
 	/**
 	 * Removes this <code>IProjectInvitationListener</code> from the list of <code>IProjectInvitationListener</code>s.
+	 *
 	 * @param invitationListener the <code>IProjectInvitationListener</code> to be removed from the list
 	 */
 	public void unregisterInvitationListener(IProjectInvitationListener invitationListener) {
