@@ -25,13 +25,13 @@ public class GetAllProjectNotesTask extends AbstractTask<Collection<NoteObject>>
 
 	@Override
 	protected AvailableLaterObject<Collection<NoteObject>> calculateFunction() {
-		log.warn("calling GetAllProjectNotesTask:calculateFunction");
+		log.trace("calling GetAllProjectNotesTask:calculateFunction");
 		return JakeMainApp.getCore().getNotes(project);
 	}
 
 	@Override
 	protected void onDone() {
-		log.warn("Done GetAllProjectNotesTask");
+		log.trace("Done GetAllProjectNotesTask");
 
 		// done! so lets update the note-panel
 		try {

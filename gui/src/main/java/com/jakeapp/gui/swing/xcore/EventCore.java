@@ -237,7 +237,7 @@ public class EventCore {
 	}
 
 	public void fireLogChanged(Project p) {
-		log.error("!!!!! HELLO, THE LOG HAS CHANGED !!!!!");
+		//log.error("!!!!! HELLO, THE LOG HAS CHANGED !!!!!");
 		
 		// TODO: UGLY HACK, change someday
 		ObjectCache.get().updateNotes(p);

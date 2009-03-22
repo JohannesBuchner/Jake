@@ -24,9 +24,9 @@ public class ProjectFilesTableCellRenderer extends DefaultJakeTableCellRenderer 
 
 		Component c = FileIconLabelHelper.getIconLabel(node.getFileObject());
 
-		if (isSelected) {
-			c.setBackground(table.getSelectionBackground());
-		}
+		//if (isSelected) {
+		//	c.setBackground(table.getSelectionBackground());
+		//}
 
 		return c;
 	}

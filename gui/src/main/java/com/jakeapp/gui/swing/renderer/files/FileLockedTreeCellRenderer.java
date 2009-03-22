@@ -19,9 +19,9 @@ public class FileLockedTreeCellRenderer extends DefaultJakeTableCellRenderer {
 						FileObjectStatusProvider
 										.getLockedRendererComponent(((FileObjectLockedCell) value).getFileObject());
 
-		if (isSelected) {
-			comp.setBackground(table.getSelectionBackground());
-		}
+		//if (isSelected) {
+		//	comp.setBackground(table.getSelectionBackground());
+		//}
 
 		return comp;
 	}

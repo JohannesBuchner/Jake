@@ -1,16 +1,15 @@
 package com.jakeapp.gui.swing.xcore;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.jake.fss.IModificationListener;
+import org.apache.log4j.Logger;
+
+import java.util.EnumSet;
+import java.util.HashMap;
 
 public class JakeObjectAttributedCacheManager implements DataChangedCallback {
 	private static final Logger log = Logger
@@ -82,7 +81,7 @@ public class JakeObjectAttributedCacheManager implements DataChangedCallback {
 	@Override
 	public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
 		if(dataReason.contains(DataReason.Files) || dataReason.contains(DataReason.Notes)){
-			log.info("Files/Notes changed. Clearing Attributed cache.");
+			log.trace("Files/Notes changed. Clearing Attributed cache.");
 			clearCache();
 		}
 	}
