@@ -33,16 +33,19 @@ public class FileWatcherListenerMultiton {
 				EventCore.get().fireFilesChanged(p);
 
 				// auto announce! wohooo!
-				if (p.isAutoAnnounceEnabled()) {
-					FileObject fo = new FileObject(p, relpath);
-					Attributed<FileObject> aFo = JakeMainApp.getCore().getAttributed(fo);
-
-					if (aFo.getLastVersionLogEntry() == null) {
-						log.info("AutoAnnouncing " + relpath);
-						JakeExecutor.exec(new AnnounceJakeObjectTask(fo, null));
-					}
-				}
+				processAutoAnnounce(new FileObject(p, relpath));
 			}
 		};
+	}
+
+	private static void processAutoAnnounce(FileObject fo) {
+		if (fo.getProject().isAutoAnnounceEnabled()) {
+			Attributed<FileObject> aFo = JakeMainApp.getCore().getAttributed(fo);
+
+			if (aFo.getLastVersionLogEntry() == null) {
+				log.info("AutoAnnouncing " + fo);
+				JakeExecutor.exec(new AnnounceJakeObjectTask(fo, null));
+			}
+		}
 	}
 }
