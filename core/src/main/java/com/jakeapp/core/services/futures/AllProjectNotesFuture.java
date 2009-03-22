@@ -1,19 +1,18 @@
 package com.jakeapp.core.services.futures;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.AvailableLaterWaiter;
+import com.jakeapp.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailableLaterWrapperObject;
 
 public class AllProjectNotesFuture extends
 		AvailableLaterWrapperObject<Collection<NoteObject>, Collection<JakeObject>> {

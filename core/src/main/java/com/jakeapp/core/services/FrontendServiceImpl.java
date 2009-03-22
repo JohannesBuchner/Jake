@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.IAccountDao;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
@@ -23,7 +24,6 @@ import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import com.jakeapp.core.services.futures.CreateAccountFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;

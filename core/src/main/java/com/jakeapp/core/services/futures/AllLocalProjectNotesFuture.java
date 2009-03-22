@@ -2,10 +2,10 @@ package com.jakeapp.core.services.futures;
 
 import java.util.Collection;
 
+import com.jakeapp.availablelater.AvailableNowObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
-import com.jakeapp.core.util.availablelater.AvailableNowObject;
 
 /**
  * gets all notes that lie in the database

@@ -1,7 +1,5 @@
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
 
 public class AvailableLaterObjectExample {
 

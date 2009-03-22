@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
 import local.test.Tracer;
 

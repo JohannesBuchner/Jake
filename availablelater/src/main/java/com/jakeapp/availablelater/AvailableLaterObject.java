@@ -1,4 +1,4 @@
-package com.jakeapp.core.util.availablelater;
+package com.jakeapp.availablelater;
 
 import org.apache.log4j.Logger;
 

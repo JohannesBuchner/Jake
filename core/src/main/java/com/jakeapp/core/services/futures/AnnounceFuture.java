@@ -3,10 +3,10 @@ package com.jakeapp.core.services.futures;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.synchronization.ISyncService;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 
 public class AnnounceFuture extends AvailableLaterObject<Void> {

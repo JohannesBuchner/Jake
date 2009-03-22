@@ -1,9 +1,6 @@
-package com.jakeapp.core.util;
+package com.jakeapp.availablelater;
 
 import java.util.concurrent.Semaphore;
-
-import com.jakeapp.core.util.availablelater.AvailabilityListener;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 
 
 public class AvailableLaterWaiter<T>  {

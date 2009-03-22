@@ -1,7 +1,7 @@
 package com.jakeapp.core.services.futures;
 
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 
 public class CreateAccountFuture extends AvailableLaterObject<Void> {

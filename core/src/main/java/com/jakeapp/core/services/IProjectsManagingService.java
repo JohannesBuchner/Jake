@@ -1,25 +1,33 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.domain.exceptions.UserFormatException;
-import com.jakeapp.core.synchronization.UserInfo;
-import com.jakeapp.core.synchronization.change.ChangeListener;
-import com.jakeapp.core.synchronization.exceptions.ProjectException;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.domain.exceptions.UserFormatException;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.synchronization.UserInfo;
+import com.jakeapp.core.synchronization.change.ChangeListener;
+import com.jakeapp.core.synchronization.exceptions.ProjectException;
+import com.jakeapp.jake.fss.IFSService;
+import com.jakeapp.jake.fss.exceptions.NotADirectoryException;
 
 /**
  * This handles the list of <code>Project</code>s currently managed
