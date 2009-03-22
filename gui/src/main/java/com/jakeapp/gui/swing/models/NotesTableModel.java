@@ -161,7 +161,6 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 	public void updateNotes(Project p) {
 		NoteObject oldSelectionNote = this.getNoteSelection();
 
-		
 		// FIXME: cache better!?
 		log.debug("updating notes from core and merge with attributes...");
 		List<NoteObject> rawNotes = new ArrayList<NoteObject>(ObjectCache.get().getNotes(p));
