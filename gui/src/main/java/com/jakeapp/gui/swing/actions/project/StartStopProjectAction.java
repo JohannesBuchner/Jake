@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.StartStopProjectTask;
+import com.jakeapp.gui.swing.worker.tasks.StartStopProjectTask;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

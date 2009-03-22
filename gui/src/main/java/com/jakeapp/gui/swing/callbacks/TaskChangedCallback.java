@@ -1,6 +1,6 @@
 package com.jakeapp.gui.swing.callbacks;
 
-import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
 
 /**
  * Simple Interface that shows that there are tasks started.

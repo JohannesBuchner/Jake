@@ -279,7 +279,7 @@ public class FilePanel extends javax.swing.JPanel
 
 		@Override
 		public void mouseClicked(MouseEvent me) {
-			log.info("mouseClicked: " + me);
+			log.trace("mouseClicked: " + me);
 
 			// get the coordinates of the mouse click
 			Point p = me.getPoint();

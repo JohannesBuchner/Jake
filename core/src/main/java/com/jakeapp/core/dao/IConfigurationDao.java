@@ -5,66 +5,66 @@ import java.util.List;
 import com.jakeapp.core.domain.Configuration;
 
 /**
- * Serves as a frontend for database-independent Configuration management.
+ * Serves as a frontend for database/project-independent <code>Configuration</code> management.
  * 
  * @author Christopher
  */
 public interface IConfigurationDao {
 
 	/**
-	 * Retrieves a configuration value from a data source
+	 * Retrieves a <code>Configuration</code> value from a data source
 	 * 
 	 * @param name
-	 *            The name of the configuration option to be queried
-	 * @return The value corresponding to the given configuration option, or an
+	 *            The name of the <code>Configuration</code> option to be queried
+	 * @return The value corresponding to the given <code>Configuration</code> option, or an
 	 *         empty string if not set
 	 */
 	public String getConfigurationValue(String name);
 
 	/**
-	 * Sets a configuration option.
+	 * Sets a <code>Configuration</code> option.
 	 * 
 	 * @param name
-	 *            The name of the configuration option to be set
+	 *            The name of the <code>Configuration</code> option to be set
 	 * @param value
-	 *            The value to be assigned to the given configuration option
+	 *            The value to be assigned to the given <code>Configuration</code> option
 	 */
 	public void setConfigurationValue(String name, String value);
 
 	/**
-	 * Removes a configuration option entirely
+	 * Removes a <code>Configuration</code> option entirely
 	 * 
 	 * @param name
-	 *            The name of the configuration option to be removed (nothing
-	 *            will be done if there is no configuration option by that name)
+	 *            The name of the <code>Configuration</code> option to be removed (nothing
+	 *            will be done if there is no <code>Configuration</code> option by that name)
 	 */
 	public void deleteConfigurationValue(String name);
 
 	/**
-	 * Checks if a configuration option is set (i.e. if a configuration option
+	 * Checks if a <code>Configuration</code> option is set (i.e. if a <code>Configuration</code> option
 	 * by that name exists)
 	 * 
 	 * @param name
-	 *            The name of the configuration option to check
-	 * @return if the configuration option is set
+	 *            The name of the <code>Configuration</code> option to check
+	 * @return true, iff the <code>Configuration</code> option is set
 	 */
 	public boolean configurationValueExists(String name);
 
 	/**
-	 * Updates the given Configuration Object in the database. Create it if it
+	 * Updates the given <code>Configuration</code> Object in the database. Create it if it
 	 * doesn't exist.
 	 * 
 	 * @param configuration
-	 *            the configuration object to be updated/created
-	 * @return the configuration object
+	 *            the <code>Configuration</code> object to be updated/created
+	 * @return the <code>Configuration</code> object updated.
 	 */
 	public Configuration update(final Configuration configuration);
 
 
 	/**
-	 * Returns a List of all known configuration options
+	 * Returns a <code>List</code> of all known configuration options
 	 * 
-	 * @return a list of Configuration options
+	 * @return a <code>List</code> of Configuration options, empty <code>List</code> if no options are available
 	 */
 	public List<Configuration> getAll();
 }

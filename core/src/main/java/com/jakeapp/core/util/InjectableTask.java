@@ -3,9 +3,10 @@
  */
 package com.jakeapp.core.util;
 
-import java.util.concurrent.Semaphore;
-
 import org.apache.log4j.Logger;
+
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A task than can be scheduled for execution within another thread.
@@ -82,10 +83,11 @@ public abstract class InjectableTask<T> implements Runnable {
 	public T getResult() throws Exception {
 		while (true) {
 			try {
-				this.s.acquire();
+				// HACK TODO EVIL Timeout !?
+				this.s.tryAcquire(35, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
-				continue;
-				// what shall we do with the drunken sailor?
+				log.warn("Interrupted Task after Timeout!", e);
+				throw e;
 			}
 			if (this.exception != null) {
 				log.debug("returning exception of task " + this.name);

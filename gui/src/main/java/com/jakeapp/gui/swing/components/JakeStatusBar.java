@@ -24,8 +24,8 @@ import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
-import com.jakeapp.gui.swing.worker.AbstractTask;
-import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.gui.swing.worker.tasks.AbstractTask;
+import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
@@ -97,8 +97,10 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	@Override public void taskFinished(IJakeTask task) {
 		if(task.getException() != null) {
-			ExceptionUtilities.showError(task.getException());
+			log.warn("Error in a task" + task.getException().getMessage());
+			//ExceptionUtilities.showError(task.getException());
 		}
+
 		updateTaskDisplay();
 	}
 

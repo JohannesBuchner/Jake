@@ -33,6 +33,9 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FileObject get(UUID objectId) throws NoSuchJakeObjectException {
 		return super.get(objectId);
@@ -55,6 +58,9 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FileObject complete(FileObject jakeObject) throws NoSuchJakeObjectException {
 		// we do not mainly trust the UUID, because we don't want 2 FileObjects
@@ -70,12 +76,10 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 
 	/**
 	 * This method returns a FileObject with the given relPath.
-	 * 
-	 * @param relPath
-	 *            the relativ Path of this file
+	 *
+	 * @param relPath the relativ Path of this file
 	 * @return the FileObject requested
-	 * @throws NoSuchJakeObjectException
-	 *             if no object with that path was found in the database
+	 * @throws NoSuchJakeObjectException if no object with that path was found in the database
 	 */
 	@SuppressWarnings("unchecked")
 	private FileObject getFileObjectByRelpath(String relPath)
@@ -92,6 +96,9 @@ public class HibernateFileObjectDao extends HibernateJakeObjectDao<FileObject> i
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FileObject get(String relpath) throws NoSuchJakeObjectException {
 		return this.getFileObjectByRelpath(relpath);

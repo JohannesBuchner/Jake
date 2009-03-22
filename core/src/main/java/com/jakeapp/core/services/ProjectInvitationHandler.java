@@ -1,11 +1,6 @@
 package com.jakeapp.core.services;
 
-import java.util.UUID;
-import java.util.List;
-import java.util.LinkedList;
-
-import org.apache.log4j.Logger;
-
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.jake.ics.ICService;
@@ -16,6 +11,11 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import org.apache.log4j.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The <code>ProjectInvitationHandler</code> handles all incoming Invitations from other clients, but also
@@ -213,18 +213,18 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * Informs the person who invited us to a project that we reject the
 	 * invitation by sending a packet to the main ics of the other user.
 	 *
-	 * @param project The <code>Project</code> we where invited to
-	 * @param inviter The <code>User</code> who invited us.
+	 * @param invitation The <code>Invitation</code> we received
+	 * @param msgService Dirty stuff
 	 */
-	public static void notifyInvitationRejected(Project project, User inviter) {
-		UserId backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
-		String msg = createInviteRejectedMessage(project);
-		try {
-			project.getMessageService().getMainIcs().getMsgService().sendMessage(backendUser, msg);
-		} catch (Exception e) {
-			log.warn("sending reject failed", e);
-		}
-	}
+	public static void notifyInvitationRejected(Invitation invitation, MsgService<User> msgService) {
+        try {
+            msgService.getMainIcs().getMsgService().
+                    sendMessage(msgService.getIcsManager().
+                            getBackendUserId(invitation.getInviter()), REJECTMSG + invitation.getProjectUUID());
+        } catch (Exception e) {
+            log.warn("sending reject failed", e);
+        }
+    }
 
 	/**
 	 * Adds an <code>IProjectInvitationListener</code> to the list of <code>IProjectInvitationListeners</code>

@@ -9,6 +9,7 @@ public class NoSuchServiceCredentialsException extends Exception {
      * call to {@link #initCause}.
      */
     public NoSuchServiceCredentialsException() {
+		super();
     }
 
     /**

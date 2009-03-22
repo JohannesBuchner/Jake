@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.worker;
+package com.jakeapp.gui.swing.worker.tasks;
 
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;

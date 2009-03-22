@@ -132,36 +132,47 @@ public class FileTableModel extends AbstractTableModel
 		ProjectFilesTreeNode ournode = new ProjectFilesTreeNode(files.get(rowIndex));
 
 		// FIXME cache!! get async?
-		Attributed<FileObject> fileInfo =
-						JakeMainApp.getCore().getAttributed(ournode.getFileObject());
+		FileObject fo = ournode.getFileObject();
+		Attributed<FileObject> fileInfo = null;
+
+		try {
+			fileInfo = JakeMainApp.getCore().getAttributed(fo);
+		} catch (Exception ex) {
+			log.warn("Error trying get attributed informations for FileObject", ex);
+		}
 
 		switch (Columns.values()[columnIndex]) {
 			case FLock:
-				return new FileObjectLockedCell(ournode.getFileObject());
+				return new FileObjectLockedCell(fo);
 			case FState:
-				return new FileObjectStatusCell(ournode.getFileObject());
+				return new FileObjectStatusCell(fo);
 			case Name:
 				return ournode;
 			case Path:
-				String s = ournode.getFileObject().getRelPath();
-				if (s.contains(System.getProperty("file.separator"))) {
-					return System.getProperty("file.separator") + s
-									.substring(0, s.lastIndexOf(System.getProperty("file.separator")));
+				String s = fo.getRelPath();
+				String pathSep = FileUtilities.getPathSeparator();
+				if (s.contains(pathSep)) {
+					return pathSep + s.substring(0, s.lastIndexOf(pathSep));
 				} else {
-					return System.getProperty("file.separator");
+					return pathSep;
 				}
 			case Size: {
-				if (fileInfo.isOnlyRemote()) {
+				if (fileInfo == null || fileInfo.isOnlyRemote()) {
 					return "";
 				} else {
 					return FileUtilities.getSize(fileInfo.getSize());
 				}
 			}
-
 			case LastMod:
-				return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
+				if (fileInfo == null)
+					return "";
+				else
+					return TimeUtilities.getRelativeTime(fileInfo.getLastModificationDate());
 			case LastModBy:
-				return UserHelper.getLocalizedUserNick(fileInfo.getLastVersionEditor());
+				if (fileInfo == null)
+					return "";
+				else
+					return UserHelper.getLocalizedUserNick(fileInfo.getLastVersionEditor());
 			default:
 				log.warn("Accessed invalid column:" + columnIndex);
 				return "INVALIDCOLUMN";

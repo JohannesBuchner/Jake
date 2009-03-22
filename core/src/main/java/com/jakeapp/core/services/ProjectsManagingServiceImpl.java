@@ -737,42 +737,19 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 		} catch (Exception e) {
 			log.warn("Something weird happened while trying to init project!", e);
 		}
-
-		// notify the inviter
-		try {
-			// FIXME: WTF WHY DOESN'T THIS WORK:
-			// if(inviter != null)
-			// ProjectInvitationHandler.notifyInvitationAccepted(project, inviter);
-			// else log.warn("Inviter not notified because we don't know who it is?!");
-		} catch (Exception e) {
-			log.warn("Couldn't notify inviter for some reason");
-		}
 	}
 
 	@Override
 	public void rejectInvitation(Invitation invitation)
 			throws IllegalStateException, NoSuchProjectException {
-
-		Project project = invitation.createProject();
-		User inviter = invitation.getInviter();
-		
-		// preconditions
-		if (project == null)
-			throw new NoSuchProjectException();
-		if (!project.isInvitation())
-			throw new IllegalStateException();
+		log.debug("Rejecting invitation " + invitation);
+		User invitee = invitation.getInvitedOn();
 
 		// remove the project
-		try {
-			this.closeProject(project);
-		} catch (IllegalArgumentException e) {
-			throw new NoSuchProjectException();
-		} catch (FileNotFoundException e) {
-			// empty catch
-		}
+        this.getInvitationDao().reject(invitation);
 
 		// notify the inviter
-		ProjectInvitationHandler.notifyInvitationRejected(project, inviter);
+		ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getForUserId(invitee));
 	}
 
 	@Override
@@ -1146,13 +1123,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void lock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
         User me = p.getUserId();
-        ensureHasUUID(jo, p);
+        jo = ensureHasUUID(jo, p);
          
         LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
-	private void ensureHasUUID(JakeObject jo, Project p) {
+	private JakeObject ensureHasUUID(JakeObject jo, Project p) {
 		if (jo.getUuid() == null) {
 			if (jo instanceof NoteObject) {
 	        	this.getNoteObjectDao(p).persist((NoteObject) jo);
@@ -1160,8 +1137,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	        else {
 	        	FileObject newFile = new FileObject(UUID.randomUUID(), p, ((FileObject)jo).getRelPath());
 	        	this.getFileObjectDao(p).persist(newFile);
+	        	//FIXME: dirty hack, parameter assignment
+	        	jo = newFile;
 	        }
 		}
+		//FIXME: me don't like that. 
+		return jo;
 	}
 
 	@Override

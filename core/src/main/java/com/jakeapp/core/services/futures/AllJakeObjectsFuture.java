@@ -11,14 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Gets all JakeObject that ever were in the log (including remote-only, deleted, ...).
- * 
+ *
  * @author johannes
  */
-public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeObject>> {
+public class AllJakeObjectsFuture
+				extends AvailableLaterObject<Collection<JakeObject>> {
 
 	private static Logger log = Logger.getLogger(AllJakeObjectsFuture.class);
 
@@ -29,30 +31,30 @@ public class AllJakeObjectsFuture extends AvailableLaterObject<Collection<JakeOb
 	private void setLogEntryDao(ILogEntryDao logEntryDao) {
 		this.logEntryDao = logEntryDao;
 	}
-	
-	public AllJakeObjectsFuture(
-					ProjectApplicationContextFactory context,
+
+	public AllJakeObjectsFuture(ProjectApplicationContextFactory context,
 					Project project) {
 		super();
 
-		log.debug("Creating a " + getClass().getSimpleName() + " with "
-				+ context + "on project " + project);
+		log.debug("Creating a " + getClass()
+						.getSimpleName() + " with " + context + "on project " + project);
 
 		this.project = project;
 		this.setLogEntryDao(context.getUnprocessedAwareLogEntryDao(project));
 	}
 
-	
-	@Override
-	@Transactional
+
+	@Override @Transactional
 	public Collection<JakeObject> calculate() {
-		Set<JakeObject> objects = new HashSet<JakeObject>(); 
-		
-		for(LogEntry<JakeObject> le : this.logEntryDao.getAllVersions(true) ){
-			JakeObject jo = le.getBelongsTo();
-			jo.setProject(project);
-			objects.add(jo);
-			log.trace("we have " + jo);
+		Set<JakeObject> objects = new HashSet<JakeObject>();
+		List<LogEntry<JakeObject>> logs = this.logEntryDao.getAllVersions(true);
+		if (logs != null) {
+			for (LogEntry<JakeObject> le : logs) {
+				JakeObject jo = le.getBelongsTo();
+				jo.setProject(project);
+				objects.add(jo);
+				log.trace("we have " + jo);
+			}
 		}
 		return objects;
 	}

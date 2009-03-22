@@ -5,7 +5,7 @@ import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.PullJakeObjectsTask;
+import com.jakeapp.gui.swing.worker.tasks.PullJakeObjectsTask;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -32,15 +32,14 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
-import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
-import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.gui.swing.worker.tasks.GetMyProjectsTask;
+import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;

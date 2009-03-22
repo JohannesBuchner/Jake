@@ -28,7 +28,11 @@ public class ProjectsChangeListener implements ChangeListener {
 
 	@Override public void pullDone(JakeObject jo) {
 		log.debug("pullDone: " + jo);
+		fireChangeEvent(jo);
+	}
 
+
+	private void fireChangeEvent(JakeObject jo) {
 		if (jo != null) {
 			EventCore.get().fireDataChanged(EnumSet.of(DataReason.Files, DataReason.Notes),
 							jo.getProject());

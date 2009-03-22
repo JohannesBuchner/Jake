@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.NoteAction;
-import com.jakeapp.gui.swing.worker.AnnounceJakeObjectTask;
+import com.jakeapp.gui.swing.worker.tasks.AnnounceJakeObjectTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 import javax.swing.*;

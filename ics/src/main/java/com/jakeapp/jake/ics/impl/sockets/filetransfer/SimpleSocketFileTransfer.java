@@ -47,6 +47,7 @@ public class SimpleSocketFileTransfer extends FileTransfer implements Runnable {
 		this.transferKey = transferKey;
 		this.localFile = File.createTempFile("socket", "output");
 		this.s = new Socket();
+		log.debug("connecting to socket:  " + this.other );
 		this.s.connect(this.other, maximalRequestAgeSeconds * 1000);
 		this.status = Status.negotiated;
 	}

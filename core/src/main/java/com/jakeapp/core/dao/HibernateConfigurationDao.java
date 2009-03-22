@@ -11,7 +11,7 @@ import com.jakeapp.core.domain.Configuration;
 
 /**
  * Hibernate implementation of the IConfigurationInterface.
- * 
+ *
  * @author Simon
  */
 public class HibernateConfigurationDao extends HibernateDaoSupport implements
@@ -28,7 +28,7 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 		try {
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession()
 					.createQuery("DELETE FROM configuration WHERE key = ? ").setString(0,
-							name).executeUpdate();
+					name).executeUpdate();
 		} catch (DataAccessException e) {
 			log.debug("cought dataAccessException");
 		}
@@ -49,6 +49,9 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 		return (result.size() > 0);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Configuration update(final Configuration configuration) {
 		this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(
@@ -56,6 +59,9 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 		return configuration;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Configuration> getAll() {

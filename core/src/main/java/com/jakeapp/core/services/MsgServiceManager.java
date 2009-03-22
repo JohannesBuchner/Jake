@@ -161,6 +161,16 @@ public class MsgServiceManager {
 		return result;
 	}
 
+    public MsgService<User> getMsgServiceForUser(User user) {
+        List<MsgService<User>> msgservices = this.getAll();
+
+        for(MsgService<User> m: msgservices) {
+            if(m.getUserId() == user) return m;
+        }
+
+        throw new IllegalStateException("We really should have found a MsgService but haven't...");
+    }
+
 	@Transactional
 	public List<MsgService<User>> getAll() {
 		log.trace("calling getAll");
@@ -187,6 +197,17 @@ public class MsgServiceManager {
 		}
 		return getLoaded();
 	}
+
+    public MsgService<User> getForUserId(User userid) {
+        log.debug("Getting MsgService for user " + userid);
+        List<MsgService<User>> ms = this.getAll();
+        log.debug("We have " + ms.size() + " MsgServices");
+        for(MsgService<User> m: ms) {
+            log.debug("Comparing with " + m.getUserId());
+            if(m.getUserId().equals(userid)) return m;
+        }
+        throw new IllegalStateException("Expected to get a MsgService, but didn't. This means trouble.");
+    }
 
 	/**
 	 * creates and adds a msgservice for the right protocol This adds the

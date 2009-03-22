@@ -15,8 +15,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.Base64;
 
-import java.util.UUID;
-
 /**
  * The Xmpp Message Service. There's only one per User.
  */
@@ -78,7 +76,7 @@ public class XmppMsgService implements IMsgService, ILoginStateListener {
 		if (!this.con.getService().getStatusService().isLoggedIn())
 			throw new NotLoggedInException();
 		if (!new XmppUserId(to_userid).isOfCorrectUseridFormat())
-			throw new NoSuchUseridException();
+			throw new NoSuchUseridException("format is invalid");
 
 		String safecontent = Base64.encodeBytes(content.getBytes(), Base64.GZIP);
 		Message m = new Message(to_userid.getUserId(), Message.Type.normal); // explicitly set the type of the message

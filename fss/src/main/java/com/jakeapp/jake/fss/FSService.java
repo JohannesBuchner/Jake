@@ -286,11 +286,7 @@ public class FSService implements IFSService, IModificationListener {
 	}
 
 	public String getTempDir() throws IOException {
-		String tempdir;
-		File f = File.createTempFile("jakefss", "testfile");
-		tempdir = f.getParentFile().getAbsolutePath();
-		f.delete();
-		return tempdir;
+		return System.getProperty("java.io.tmpdir");
 	}
 
 	public String getTempFile() throws IOException {

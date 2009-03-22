@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.worker;
+package com.jakeapp.gui.swing.worker.tasks;
 
 /**
  * @author studpete

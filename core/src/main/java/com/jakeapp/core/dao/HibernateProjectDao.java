@@ -16,12 +16,13 @@ import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 /**
  * Hibernate implementation of the <code>IProjectDAO</code> Interface.
  */
-
 public class HibernateProjectDao extends HibernateDaoSupport implements IProjectDao {
 
 	private static Logger log = Logger.getLogger(HibernateProjectDao.class);
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Project create(Project project) throws InvalidProjectException {
 		if (project == null || project.getName() == null
@@ -52,6 +53,9 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 		return project;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Project read(UUID uuid) throws NoSuchProjectException {
 		List<Project> results;
@@ -77,6 +81,9 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Project update(Project project) throws NoSuchProjectException {
 		if (project == null || project.getProjectId() == null) {
@@ -94,6 +101,9 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 		return project;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Project> getAll() {
@@ -101,6 +111,9 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 				.createQuery("FROM Project").list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void delete(Project project) throws NoSuchProjectException {
 		if (project == null || project.getProjectId() == null) {
@@ -120,6 +133,9 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Project> getAll(InvitationState state) {
@@ -130,13 +146,16 @@ public class HibernateProjectDao extends HibernateDaoSupport implements IProject
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Project> getAll(Account account) {
 		List<Project> result = this.getHibernateTemplate().getSessionFactory()
-		.getCurrentSession()
-		.createQuery("FROM Project WHERE userid = ?").setString(0,account.getUuid()).list();
-		
+				.getCurrentSession()
+				.createQuery("FROM Project WHERE userid = ?").setString(0, account.getUuid()).list();
+
 		return result;
 	}
 }

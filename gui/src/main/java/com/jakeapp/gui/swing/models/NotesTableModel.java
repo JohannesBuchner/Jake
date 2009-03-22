@@ -182,6 +182,12 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 	public Object getValueAt(int row, int column) {
 		Object value;
 		Attributed<NoteObject> note = this.getAttributedNotes().get(row);
+
+		// failsave return empty string
+		if(note == null) {
+			return "";
+		}
+
 		switch (column) {
 			case 0: // soft lock
 				if (note.isLocked()) {

@@ -25,7 +25,7 @@ import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.NotesPanel;
-import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
+import com.jakeapp.gui.swing.worker.tasks.DeleteJakeObjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 /**

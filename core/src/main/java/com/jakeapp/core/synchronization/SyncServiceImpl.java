@@ -197,9 +197,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			log.debug("Sending message: \"" + message + "\"");
 			ics.getMsgService().sendMessage(uid, message);
 		} catch (NetworkException e) {
-			log.warn("Could not poke user " + pm.getUserId(), e);
+			log.warn("Could not poke user " + pm.getUserId() + ": " + e.getMessage());
 		} catch (OtherUserOfflineException e) {
-			log.warn("Could not poke user " + pm.getUserId(), e);
+			log.warn("Could not poke user " + pm.getUserId() + ": " + e.getMessage());
 		}
 	}
 
@@ -741,7 +741,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				realProvider = potentialProvider;
 				break;
 			} catch (Exception ignored) {
-				log.warn("pull from " + potentialProvider + " failed", ignored);
+				log.warn("pull from " + potentialProvider + " failed" + ignored.getMessage());
 				log.info("trying next provider");
 				continue;
 			}

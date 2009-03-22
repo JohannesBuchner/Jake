@@ -9,7 +9,7 @@ import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.PullAndLaunchJakeObjectsTask;
+import com.jakeapp.gui.swing.worker.tasks.PullAndLaunchJakeObjectsTask;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

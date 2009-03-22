@@ -24,7 +24,7 @@ import com.jakeapp.gui.swing.panels.InvitationPanel;
 import com.jakeapp.gui.swing.panels.NewsPanel;
 import com.jakeapp.gui.swing.panels.NotesPanel;
 import com.jakeapp.gui.swing.panels.UserPanel;
-import com.jakeapp.gui.swing.worker.InitCoreWorker;
+import com.jakeapp.gui.swing.worker.tasks.InitCoreTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.JakeDatabaseTools;
@@ -242,7 +242,7 @@ public class JakeMainView extends FrameView implements ContextChangedCallback {
 		JakeDatabaseTools.checkKeysResetDatabase();
 
 		log.debug("launching ...");
-		JakeExecutor.exec(new InitCoreWorker());
+		JakeExecutor.exec(new InitCoreTask());
 
 		// debug property
 		if (System.getProperty("com.jakeapp.gui.test.instantquit") != null) {
