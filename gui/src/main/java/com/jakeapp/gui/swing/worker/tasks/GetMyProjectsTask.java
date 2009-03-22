@@ -29,8 +29,13 @@ public class GetMyProjectsTask extends AbstractTask<List<Project>> {
 	protected void onDone() {
 		try {
 			for(Project p : get()) {
-				JakeMainApp.getCore().registerFileWatcher(p,
+				try {
+					JakeMainApp.getCore().registerFileWatcher(p,
 						FileWatcherListenerMultiton.get(p));
+				} catch (IllegalStateException ignored) {
+					//discard exception: since there is probably no fss for
+					//this project we do not need a listener.
+				}
 			}
 			ObjectCache.get().setMyProjects(get());
 		} catch (InterruptedException e) {
