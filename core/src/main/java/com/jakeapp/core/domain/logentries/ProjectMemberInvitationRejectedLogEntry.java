@@ -16,7 +16,7 @@ import javax.persistence.Entity;
 public class ProjectMemberInvitationRejectedLogEntry extends ProjectMemberLogEntry {
 
 	public ProjectMemberInvitationRejectedLogEntry(User user, User me) {
-		super(LogAction.PROJECT_REJECTED, user, me);
+		super(LogAction.PROJECT_REJECTED, me, user);
 	}
 
 	public ProjectMemberInvitationRejectedLogEntry() {
