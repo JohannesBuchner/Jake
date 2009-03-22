@@ -91,6 +91,8 @@ public class ObjectCache implements ContextChangedCallback {
 	}
 
 	public Collection<NoteObject> getNotes(Project p) {
+		Collection<NoteObject> result;
+		
 		//XXX: FIXME: this hack renders the cache useless. It also causes some null pointer exceptions on
 		// startup. But hey, it works!!!
 		// FIXME: No, it doesn't :'(
@@ -102,7 +104,11 @@ public class ObjectCache implements ContextChangedCallback {
 			log.warn("notes requested, but not available yet");
 			return new LinkedList<NoteObject>();
 		}
-		return this.notes.get(p);
+		 
+		result = this.notes.get(p);
+		for (NoteObject no : result)
+			no.setProject(p);
+		return result;
 	}
 
 	public void setNotes(Project project, Collection<NoteObject> notes) {
