@@ -18,11 +18,12 @@ import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.Platform;
+import com.jakeapp.gui.swing.helpers.SheetHelper;
 import com.jakeapp.gui.swing.helpers.StringUtilities;
 import com.jakeapp.gui.swing.helpers.dragdrop.ProjectDropHandler;
 import com.jakeapp.gui.swing.renderer.IconComboBoxRenderer;
-import com.jakeapp.gui.swing.worker.tasks.AbstractTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
+import com.jakeapp.gui.swing.worker.tasks.AbstractTask;
 import com.jakeapp.gui.swing.worker.tasks.LoginAccountTask;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -158,8 +159,7 @@ public class UserPanel extends JXPanel
 		loadingAppPanel = createLoadingAppPanel();
 
 		// set the background painter
-		this.setBackgroundPainter(
-						Platform.getStyler().getLoginBackgroundPainter());
+		this.setBackgroundPainter(Platform.getStyler().getLoginBackgroundPainter());
 
 		EventCore.get().addContextChangedListener(this);
 	}
@@ -172,7 +172,8 @@ public class UserPanel extends JXPanel
 		JXPanel jakeLogoContainer =
 						new JXPanel(new MigLayout("wrap 1, fill, center, ins 0"));
 		JLabel jakeLogo = new JLabel();
-		ImageIcon jakeLogoImage = ImageLoader.get(getClass(), "/icons/jakeapp-large.png");
+		ImageIcon jakeLogoImage =
+						ImageLoader.get(getClass(), "/icons/jakeapp-large.png");
 		jakeLogo.setIcon(jakeLogoImage);
 		jakeLogoContainer.setOpaque(false);
 		jakeLogoContainer.add(jakeLogo, "center");
@@ -219,7 +220,7 @@ public class UserPanel extends JXPanel
 		// create the user list
 		userListPanel = new JPanel(new MigLayout("wrap 1, filly, center, ins 0"));
 		userListPanel.setOpaque(false);
-		userListPanel.setBorder(null);	
+		userListPanel.setBorder(null);
 		JScrollPane usersScrollPanel = new JScrollPane(userListPanel);
 		usersScrollPanel.setOpaque(false);
 		usersScrollPanel.getViewport().setOpaque(false);
@@ -254,10 +255,12 @@ public class UserPanel extends JXPanel
 				List<MsgService<User>> msgs = JakeMainApp.getCore().getMsgServices();
 
 				if (msgs != null) {
-					log.debug("updateChooseUserPanel will display n MsgServices, n=" +  msgs.size());
+					log.debug("updateChooseUserPanel will display n MsgServices, n=" + msgs
+									.size());
 					for (MsgService<User> msg : msgs) {
 						UserControlPanel userPanel = new UserControlPanel(msg);
-						JXLayer<UserControlPanel> userLayer = new JXLayer<UserControlPanel>(userPanel);
+						JXLayer<UserControlPanel> userLayer =
+										new JXLayer<UserControlPanel>(userPanel);
 						userListPanel.add(userLayer);
 					}
 				}
@@ -324,7 +327,7 @@ public class UserPanel extends JXPanel
 		images[0] = ImageLoader.getScaled(getClass(), "/icons/service-google.png", 16);
 		images[1] = ImageLoader.getScaled(getClass(), "/icons/service-jabber.png", 16);
 		images[2] = ImageLoader
-				.getScaled(getClass(), "/icons/service-unitedinternet.png", 16);
+						.getScaled(getClass(), "/icons/service-unitedinternet.png", 16);
 		loginServiceCheckBox = new JComboBox();
 		loginServiceCheckBox.setModel(new DefaultComboBoxModel(indexes));
 		IconComboBoxRenderer renderer = new IconComboBoxRenderer(images, loginServices);
@@ -395,13 +398,14 @@ public class UserPanel extends JXPanel
 	 */
 	private Account getCredentials() {
 		Account cred;
-		String user,password;
+		String user, password;
 
 		if (!isModeSignIn()) {
 			// return the default set
 			cred = creds.get(SupportedServices.Jabber);
 			cred.setServerAddress(registerUserDataPanel.getServer());
-			user = registerUserDataPanel.getUserName() + '@' +registerUserDataPanel.getServer(); 
+			user = registerUserDataPanel.getUserName() + '@' + registerUserDataPanel
+							.getServer();
 			password = registerUserDataPanel.getPassword();
 		} else {
 			cred = creds.get(
@@ -409,10 +413,10 @@ public class UserPanel extends JXPanel
 			user = loginUserDataPanel.getUserName();
 			password = loginUserDataPanel.getPassword();
 		}
-				
+
 		cred.setUserId(user);
 		cred.setPlainTextPassword(password);
-		
+
 		return cred;
 	}
 
@@ -729,7 +733,7 @@ public class UserPanel extends JXPanel
 		loginSuccessPanel.add(signOutButton, "wrap, top, center, gapbottom 25");
 
 		JLabel iconSuccess = new JLabel();
-		iconSuccess.setIcon(ImageLoader.get(getClass(),"/icons/dropfolder.png"));
+		iconSuccess.setIcon(ImageLoader.get(getClass(), "/icons/dropfolder.png"));
 
 		loginSuccessPanel.add(iconSuccess, "wrap, al center");
 
@@ -934,9 +938,7 @@ public class UserPanel extends JXPanel
 						updateView();
 					}
 
-					catch (Exception e1)
-
-					{
+					catch (Exception e1){
 						ExceptionUtilities.showError(e1);
 					}
 				}
@@ -987,37 +989,32 @@ public class UserPanel extends JXPanel
 							ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									try {
-										JakeMainApp.getCore().removeAccount(msg);
-										updateView();
-									} catch (Exception e1) {
-										ExceptionUtilities.showError(e1);
+									if (SheetHelper.showConfirm(
+													"Really delete your Account? All your Projects will be deleted. " + "\n(But don't worry, we won't delete your Files)",
+													"Delete Account")) {
+										try {
+											JakeMainApp.getCore().removeAccount(msg);
+											updateView();
+										} catch (Exception ex) {
+											ExceptionUtilities.showError(ex);
+										}
 									}
 								}
-							}
-
-			);
+							});
 			this.add(deleteUserBtn, "left, bottom");
-			signInBtn = new JButton(getResourceMap().getString("loginSignInOnly")
 
-			);
+			signInBtn = new JButton(getResourceMap().getString("loginSignInOnly"));
 			signInBtn.putClientProperty("JButton.buttonType", "textured");
 			signInBtn.addActionListener(loginAction);
-			this.
-
-							add(signInBtn, "right, bottom");
+			this.add(signInBtn, "right, bottom");
 
 			// if a password is set, write a magic token into password field
 			// to represent the "not changed" state
 			log.info("msg.isPasswordSaved: " + msg.isPasswordSaved() + " for " + msg
 							.getUserId());
-			if (msg.isPasswordSaved())
-
-			{
+			if (msg.isPasswordSaved()) {
 				passField.setText(MagicPassToken);
-			} else
-
-			{
+			} else {
 				// else clear field
 				passField.setText("");
 			}
@@ -1029,6 +1026,7 @@ public class UserPanel extends JXPanel
 		/**
 		 * Disables the Password Field if Password is saved.
 		 */
+
 		private void updateUserPanel() {
 			if (isMagicToken() && isRememberPassword()) {
 				passField.setEditable(false);
