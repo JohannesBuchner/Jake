@@ -20,7 +20,6 @@ public class AllProjectNotesFuture extends
 
 	private static Logger log = Logger.getLogger(AllProjectNotesFuture.class);
 
-
 	private AvailableLaterObject<Collection<NoteObject>> localNotesFuture;
 
 	public AllProjectNotesFuture(ProjectApplicationContextFactory context, Project p) {
@@ -42,8 +41,9 @@ public class AllProjectNotesFuture extends
 			if (jo instanceof NoteObject)
 				result.add((NoteObject) jo);
 		}
+		
 		for(NoteObject no : result) {
-			log.debug("got " + no);
+			log.debug("got " + no + ":" + no.getProject());
 		}
 		log.debug("in total: " + result.size());
 		return result;

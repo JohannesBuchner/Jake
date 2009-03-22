@@ -131,6 +131,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		NoteObject note = null;
 		FileObject fo = null;
 		LogEntry<JakeObject> le;
+		User user;
 
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
@@ -144,6 +145,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
+				user = getMyProjectMember(jo.getProject());
+				
 				le = new JakeObjectNewVersionLogEntry(jo, getMyProjectMember(jo
 						.getProject()), commitMsg, null, true);
 				break;
@@ -548,6 +551,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	public Attributed<NoteObject> getJakeObjectSyncStatus(NoteObject noin) {
 		Project p = noin.getProject();
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
+		
+		log.debug("getting attributed note for " + noin + " in " + p);
 
 		// this is very similar, but slightly different to the FileObject code
 		// compare and edit them side-by-side
@@ -601,6 +606,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		// 6 lastprocessed
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
 
+		no.setProject(p);
+		
+		log.debug("got attributed note for " + noin + " in " + no.getProject());
 		return new Attributed<NoteObject>(no, lastle, led.getLock(no),
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,

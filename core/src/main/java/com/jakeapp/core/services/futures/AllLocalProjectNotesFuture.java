@@ -19,5 +19,5 @@ public class AllLocalProjectNotesFuture extends
 	public AllLocalProjectNotesFuture(ProjectApplicationContextFactory context, Project p) {
 		super(context.getNoteObjectDao(p).getAll());
 	}
-
+	
 }

@@ -184,17 +184,29 @@ public class ProjectRequestListener
 						try {
 							db.getLogEntryDao(p).create(entry);
 							
-							/*
 							//TODO do it differently - implement conflict management!
+							/*
 							if (entry.getBelongsTo() instanceof NoteObject) {
 								log.warn("persisting noteobject");
-								db.getNoteObjectDao(p).persist(
-									this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
-								);
+								try {
+									db.getNoteObjectDao(p).persist(
+											this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
+									);
+								} catch (IllegalArgumentException iaex) {
+									try {
+										log.fatal(p.getUserId());
+										db.getNoteObjectDao(p).persist((NoteObject)(entry.getBelongsTo()));
+									} catch (Exception ex) {
+										log.fatal("OMG");
+										log.fatal(ex);
+									}
+								} catch (Exception ex) {
+									log.fatal("storing note failed");
+									log.fatal(ex);
+								}
 								log.warn("persisting noteobject done");
 								//TODO notify gui
-							}
-							*/
+							}*/
 						} catch (IllegalArgumentException ignored) {
 							//duplicate entry: we already have this entry
 						}
