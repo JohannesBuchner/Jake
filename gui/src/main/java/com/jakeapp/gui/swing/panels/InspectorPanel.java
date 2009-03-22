@@ -224,7 +224,11 @@ public class InspectorPanel extends JXPanel
 				this.emptyInspector.setVisible(true);
 		}
 
-		this.eventsTable.updateUI();
+		try {
+			this.eventsTable.updateUI();
+		} catch (Exception ignored) {
+			log.warn(ignored);
+		}
 	}
 
 	protected ResourceMap getResourceMap() {
@@ -354,7 +358,11 @@ public class InspectorPanel extends JXPanel
 		log.info("Inspector: Note Selection Changed: " + event);
 
 		setNoteObject(event.getSingleNote());
-		updatePanel();
+		try {
+			updatePanel();
+		} catch (Exception ignored) {
+			//empty handling
+		}
 	}
 
 	private EventsTableModel getEventsTableModel() {

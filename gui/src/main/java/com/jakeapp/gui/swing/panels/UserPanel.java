@@ -102,6 +102,9 @@ public class UserPanel extends JXPanel
 	private JPanel userListPanel;
 	private JButton signInRegisterBackBtn;
 
+	// on first run, make a direct login!
+	private boolean autoLoginOnFirstRun = true;
+
 
 	@Override public void coreChanged() {
 		// called after statup, when core init is done.
@@ -841,8 +844,21 @@ public class UserPanel extends JXPanel
 			if (JakeContext.getMsgService() != null) {
 				showPanel(UserPanels.LoggedIn);
 			} else {
-				if (JakeMainApp.getCore().getMsgServices().size() > 0) {
+				List<MsgService<User>> msgs = JakeMainApp.getCore().getMsgServices();
+				if (msgs.size() > 0) {
 					showPanel(UserPanels.ManageUsers);
+
+					// do the autologin?
+					if (autoLoginOnFirstRun) {
+						autoLoginOnFirstRun = false;
+
+						// only if EXACTLY one msg service and pw is saved...
+						if (msgs.size() == 1 && msgs.get(0).isPasswordSaved()) {
+							Account acc = new Account();
+							acc.setAutologin(true);
+							performLogin(msgs.get(0), acc);
+						}
+					}
 				} else {
 					showPanel(UserPanels.AddUser);
 				}
@@ -850,6 +866,8 @@ public class UserPanel extends JXPanel
 		} else {
 			showPanel(UserPanels.LoadingApplication);
 		}
+
+
 	}
 
 	/**
@@ -864,6 +882,21 @@ public class UserPanel extends JXPanel
 		showContentPanel(loginUserPanel, panel == UserPanels.ManageUsers);
 		showContentPanel(loginSuccessPanel, panel == UserPanels.LoggedIn);
 		showContentPanel(loadingAppPanel, panel == UserPanels.LoadingApplication);
+	}
+
+
+	/**
+	 * Starts the Login process
+	 * @param account
+	 * @param msg
+	 */
+	private void performLogin(MsgService<User> msg, Account account) {
+		JakeContext.setMsgService(msg);
+		
+		JakeExecutor.exec(new LoginAccountTask(msg, account,
+						EventCore.get().getLoginStateListener()));
+
+		updateView();
 	}
 
 
@@ -948,7 +981,6 @@ public class UserPanel extends JXPanel
 						log.info("Sign In with " + msg
 										.getUserId() + " useSavedPassword: " + isMagicToken());
 						signInBtn.setEnabled(false);
-						JakeContext.setMsgService(msg);
 
 						// prepare the servicecredentials (prefilled?)
 						Account creds = getCredentials();
@@ -958,11 +990,7 @@ public class UserPanel extends JXPanel
 						} else {
 							creds.setPlainTextPassword(getPassword());
 						}
-
-						JakeExecutor.exec(new LoginAccountTask(msg, creds,
-										EventCore.get().getLoginStateListener()));
-
-						updateView();
+						performLogin(msg, creds);
 					}
 
 					catch (Exception e1) {
@@ -1017,9 +1045,8 @@ public class UserPanel extends JXPanel
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									if (SheetHelper.showConfirm(StringUtilities.htmlize(
-													"<b>Really delete " + msg
-																	.getUserId().getUserId() + "?</b><br><br>Connected Projects will be deleted. " +
-																	"<br>(But don't worry, we won't delete your Files)"),
+													"<b>Really delete " + msg.getUserId()
+																	.getUserId() + "?</b><br><br>Connected Projects will be deleted. " + "<br>(But don't worry, we won't delete your Files)"),
 													"Delete")) {
 										try {
 											JakeMainApp.getCore().removeAccount(msg);
@@ -1050,7 +1077,6 @@ public class UserPanel extends JXPanel
 
 			rememberPassCheckBox.setSelected(msg.isPasswordSaved());
 		}
-
 
 		/**
 		 * Disables the Password Field if Password is saved.
