@@ -58,7 +58,7 @@ jar:
 	${MVN} install -Dmaven.test.skip=true
 	mkdir -p releases
 	cd releases && rm -rf temp && mkdir -p temp 
-	cd releases/temp && unzip ../../gui/target/gui-swing-${VERSION}.one-jar.jar && cp -v ../../{core,ics,ics-xmpp,fss}/target/*-${VERSION}.jar main/ && rm -f ../jake-current.jar && jar cvfm ../jake-current.jar meta-inf/manifest.mf .
+	cd releases/temp && unzip ../../gui/target/gui-swing-${VERSION}.one-jar.jar && cp -v ../../{core,ics,ics-xmpp}/target/*.jar main/ && rm -f ../jake-current.jar && jar cvfm ../jake-current.jar meta-inf/manifest.mf .
 	cd releases; rm -rf temp
 	@echo release ready under releases/jake-current.jar
 	@echo run with java -jar releases/jake-current.jar
@@ -82,9 +82,9 @@ package-mac: jar
 	cp launcher/resources/dot_VolumeIcon.icns releases/dmgtmp/.VolumeIcon.icns
 	cp launcher/resources/dot_DS_Store releases/dmgtmp/.DS_Store
 	ln -s /Applications releases/dmgtmp/Applications
-	hdiutil create -volname "Jake" -srcfolder releases/dmgtmp "releases/tmp.dmg" -noscrub
-	hdiutil convert -format UDBZ "releases/tmp.dmg" -o "releases/Jake.dmg"
-	hdiutil internet-enable -no "releases/Jake.dmg"
+	which hdiutil 2>&1 && hdiutil create -volname "Jake" -srcfolder releases/dmgtmp "releases/tmp.dmg" -noscrub
+	which hdiutil 2>&1 && hdiutil convert -format UDBZ "releases/tmp.dmg" -o "releases/Jake.dmg"
+	which hdiutil 2>&1 && hdiutil internet-enable -no "releases/Jake.dmg"
 	cd releases; rm -rf dmgtmp tmp.dmg Jake.app
 	@echo Mac Package: Jake.dmg
 
