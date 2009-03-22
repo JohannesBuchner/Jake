@@ -515,11 +515,13 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 		result.add(correspondingTo);
 		for (int i = 0; i < result.size(); i++) {
 			User user = result.get(i);
-			for (User nextUser : people.get(user)) {
-				if (!result.contains(nextUser)) {
-					result.add(nextUser);
+			if (people.get(user) != null) {
+				for (User nextUser : people.get(user)) {
+					if (!result.contains(nextUser)) {
+						result.add(nextUser);
+					}
 				}
-			}
+			} 
 		}
 		return result;
 	}
