@@ -2,6 +2,7 @@ package com.jakeapp.gui.swing.actions.project;
 
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.actions.abstracts.ProjectAction;
 import org.apache.log4j.Logger;
 
@@ -28,6 +29,9 @@ public class RejectProjectAction extends ProjectAction {
         log.info("Reject Project: " + getProject());
 
         JakeMainApp.getCore().rejectProject(getProject());
+
+	    // Hide the damn thing
+	    JakeContext.setInvitation(null);
     }
 
 

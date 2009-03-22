@@ -202,4 +202,17 @@ public class Invitation {
 		result = 31 * result + (message != null ? message.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "Invitation{" +
+				"projectUUID=" + projectUUID +
+				", projectName='" + projectName + '\'' +
+				", creation=" + creation +
+				", invitedOn=" + invitedOn +
+				", inviter=" + inviter +
+				", message='" + message + '\'' +
+				", rootPath=" + rootPath +
+				'}';
+	}
 }
