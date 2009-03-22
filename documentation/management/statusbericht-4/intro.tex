@@ -1,10 +1,10 @@
 \setcounter{chapter}{1}
 \section{Status}
-Das Projekt Jake ist konnte nach verlängerter Entwicklungszeit fertiggestellt werden.
+Das Projekt Jake konnte nach verlängerter Entwicklungszeit fertiggestellt werden.
 
 \section{Komponenten}
-An den Komponenten FSS, ICS, ICS-XMPP mussten lediglich kleine Änderungen und Bugfixes vorgenommen werden. 
-Die großen Arbeitspakete seit dem letzten Bericht betrafen Core und GUI.
+An den Komponenten \emph{FSS, ICS, ICS-XMPP} mussten lediglich kleine Änderungen und Bugfixes vorgenommen werden. 
+Die großen Arbeitspakete seit dem letzten Bericht betrafen \emph{Core} und \emph{GUI}.
 
 \subsection{Domainobjects, Datenbank}
 Sämtliche Domainobjekte wurden von Johannes im Februar reviewed und überarbeitet um eine darauf aufbauende Weiterentwicklung zu ermöglichen. Ebenso wurden die DAOs getestet und fertigimplementiert. 
@@ -22,7 +22,7 @@ Am GUI mussten keine Konzepte geändert werden, lediglich die Implementierung de
 
 
 \section{Neuerungen}
-Noch zu notieren wäre, dass ein interessantes Hibernate-Problem, nämlich dass lediglich eine Hibernate-Datenbankverbindung an einen Thread gebunden werden kann. Daher wurden alle Datenbankaufrufe in einen Dispatcherthread ausgelagert, der alle Datenbankanfragen pro Datenbank ausführt.
+Noch zu notieren wäre, ein interessantes Hibernate-Problem, dass lediglich eine Hibernate-Datenbankverbindung an einen Thread gebunden werden kann. Daher wurden alle Datenbankaufrufe in einen Dispatcherthread ausgelagert, der alle Datenbankanfragen pro Datenbank ausführt.
 
 Zur Verbesserung der Performance wurde ein Cachingsystem entworfen, dass in verschiedenen Granularitäten Daten gecacht und aktualisiert werden können.
 
