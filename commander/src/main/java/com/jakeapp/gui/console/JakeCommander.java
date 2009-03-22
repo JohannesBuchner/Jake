@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.FileObject;
@@ -24,7 +25,6 @@ import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.services.MsgService;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.attributes.Attributed;
-import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
