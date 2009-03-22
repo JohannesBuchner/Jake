@@ -25,7 +25,7 @@ public class PeopleListCellRenderer extends DefaultListCellRenderer {
 			"/icons/user-online-fulltrust.png");
 
 	final static ImageIcon onlineTrustIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/user-online-trust.png");
+					"/icons/user-online-trust-full.png");
 
 	final static ImageIcon onlineNoTrustIcon = ImageLoader.get(JakeMainApp.class,
 			"/icons/user-online-notrust.png");

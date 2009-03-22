@@ -52,20 +52,23 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 									JakeMainApp.class.getResource("/icons/project-created.png")));
 
 	// users actions
-	private final static ImageIcon peopleAddIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/user-add.png");
+	private final static ImageIcon peopleTrustIcon = ImageLoader.get(JakeMainApp.class,
+					"/icons/user-trust.png");
 
-	private final static ImageIcon peopleRemoveIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/user-remove.png");
+	private final static ImageIcon peopleNoTrustIcon = ImageLoader.get(JakeMainApp.class,
+					"/icons/user-trust-no.png");
 
 	private final static ImageIcon peopleInviteIcon = ImageLoader.get(JakeMainApp.class,
 			"/icons/user-invited.png");
 
 	private final static ImageIcon peopleAcceptInvitationIcon = ImageLoader.get(
-			JakeMainApp.class, "/icons/user-inviteok.png");
+			JakeMainApp.class, "/icons/user-invite-ok.png");
 
-	private final static ImageIcon peopleAddFullIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/user-trust.png");
+	private final static ImageIcon peopleRejectInvitationIcon = ImageLoader.get(
+			JakeMainApp.class, "/icons/user-invite-rejected.png");
+
+	private final static ImageIcon peopleTrustFullIcon = ImageLoader.get(JakeMainApp.class,
+					"/icons/user-trust-full.png");
 
 	// tag actions
 	private final static ImageIcon tagAddIcon = ImageLoader.get(JakeMainApp.class,
@@ -162,22 +165,29 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			}
 			break;
 
+			case PROJECT_REJECTED: {
+				setIcon(peopleRejectInvitationIcon);
+				msg += Translator
+								.get(newsResourceMap, "eventsProjectMemberInvitationRejected");
+			}
+			break;
+
 			case START_TRUSTING_PROJECTMEMBER: {
-				setIcon(peopleAddIcon);
+				setIcon(peopleTrustIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberTrust",
 								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case STOP_TRUSTING_PROJECTMEMBER: {
-				setIcon(peopleRemoveIcon);
+				setIcon(peopleNoTrustIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberStopTrust",
 								((User) loge.getBelongsTo()).getUserId());
 			}
 			break;
 
 			case FOLLOW_TRUSTING_PROJECTMEMBER: {
-				setIcon(peopleAddFullIcon);
+				setIcon(peopleTrustFullIcon);
 				msg += Translator.get(newsResourceMap, "eventsProjectMemberFullTrust",
 								((User) loge.getBelongsTo()).getUserId());
 			}
