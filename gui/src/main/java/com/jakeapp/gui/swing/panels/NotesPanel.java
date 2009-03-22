@@ -3,22 +3,23 @@ package com.jakeapp.gui.swing.panels;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
-import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.notes.CommitNoteAction;
-import com.jakeapp.gui.swing.actions.notes.SoftlockNoteAction;
 import com.jakeapp.gui.swing.actions.notes.CreateNoteAction;
 import com.jakeapp.gui.swing.actions.notes.DeleteNoteAction;
 import com.jakeapp.gui.swing.actions.notes.SaveNoteAction;
+import com.jakeapp.gui.swing.actions.notes.SoftlockNoteAction;
 import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.callbacks.NoteSelectionChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.controls.cmacwidgets.ITunesTable;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.Colors;
 import com.jakeapp.gui.swing.helpers.JakeHelper;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.Platform;
 import com.jakeapp.gui.swing.models.NotesTableModel;
+import com.jakeapp.gui.swing.renderer.DefaultJakeTableCellRenderer;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import net.miginfocom.swing.MigLayout;
@@ -53,13 +54,14 @@ import java.util.List;
  * @author studpete, simon
  */
 public class NotesPanel extends javax.swing.JPanel
-				implements ContextChangedCallback, ProjectChangedCallback, ListSelectionListener {
+				implements ContextChangedCallback, ProjectChangedCallback,
+				ListSelectionListener {
 
 	private static final long serialVersionUID = -7703570005631651276L;
 	private static NotesPanel instance;
 	private static Logger log = Logger.getLogger(NotesPanel.class);
 	private final static int TableUpdateDelay = 20000;
-					// 20 sec 	//FIXME magic number, make property
+	// 20 sec 	//FIXME magic number, make property
 	private Timer tableUpdateTimer;
 	private List<NoteSelectionChangedCallback> noteSelectionListeners =
 					new ArrayList<NoteSelectionChangedCallback>();
@@ -129,8 +131,7 @@ public class NotesPanel extends javax.swing.JPanel
 		}
 
 		private void showMenu(MouseEvent me) {
-			this.popupMenu.show(this.table,
-							(int) me.getPoint().getX(),
+			this.popupMenu.show(this.table, (int) me.getPoint().getX(),
 							(int) me.getPoint().getY());
 		}
 	}
@@ -146,9 +147,9 @@ public class NotesPanel extends javax.swing.JPanel
 		instance = this;
 
 		// get resource map
-		this.setResourceMap(org.jdesktop.application.Application
-						.getInstance(JakeMainApp.class)
-						.getContext().getResourceMap(NotesPanel.class));
+		this.setResourceMap(
+						org.jdesktop.application.Application.getInstance(JakeMainApp.class)
+										.getContext().getResourceMap(NotesPanel.class));
 
 		// init components
 		initComponents();
@@ -200,9 +201,10 @@ public class NotesPanel extends javax.swing.JPanel
 				}
 			}*/
 			//handle new selection
-			text = this.notesTableModel
-							.getNoteAtRow(this.notesTable.convertRowIndexToModel(this.notesTable.getSelectedRow()))
-							.getJakeObject().getContent();
+			text = this.notesTableModel.getNoteAtRow(
+							this.notesTable.convertRowIndexToModel(
+											this.notesTable.getSelectedRow())).getJakeObject()
+							.getContent();
 			this.noteReader.setText(text);
 
 			this.noteReader.setEditable(JakeHelper.isEditable(getSelectedNote()));
@@ -211,9 +213,8 @@ public class NotesPanel extends javax.swing.JPanel
 		List<Attributed<NoteObject>> selectedNotes =
 						new ArrayList<Attributed<NoteObject>>();
 		for (int row : this.notesTable.getSelectedRows()) {
-			selectedNotes
-							.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(
-											row)));
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(
+							this.notesTable.convertRowIndexToModel(row)));
 		}
 		this.notifyNoteSelectionListeners(selectedNotes);
 	}
@@ -261,7 +262,7 @@ public class NotesPanel extends javax.swing.JPanel
 
 
 	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
-		this.notesTableModel.update(this.getProject());		
+		this.notesTableModel.update(this.getProject());
 	}
 
 
@@ -291,6 +292,11 @@ public class NotesPanel extends javax.swing.JPanel
 		this.notesTable.getColumnModel().getColumn(1).setResizable(false); // shared note
 		this.notesTable.getColumnModel().getColumn(1).setMaxWidth(20);
 		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+
+		for (int i = 0; i < this.notesTable.getColumnCount(); i++) {
+			this.notesTable.getColumn(i)
+							.setCellRenderer(new DefaultJakeTableCellRenderer());
+		}
 
 		this.notesTable.getSelectionModel().addListSelectionListener(this);
 
@@ -340,10 +346,10 @@ public class NotesPanel extends javax.swing.JPanel
 		this.noteReader.setMargin(new Insets(8, 8, 8, 8));
 
 		JScrollPane noteReaderScrollPane = new JScrollPane(this.noteReader);
-		noteReaderScrollPane
-						.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		noteReaderScrollPane
-						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		noteReaderScrollPane.setHorizontalScrollBarPolicy(
+						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		noteReaderScrollPane.setVerticalScrollBarPolicy(
+						ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		noteReaderScrollPane.setOpaque(false);
 		noteReaderScrollPane.getViewport().setOpaque(false);
 		noteReaderScrollPane.setBorder(new LineBorder(Color.BLACK, 0));
@@ -378,8 +384,8 @@ public class NotesPanel extends javax.swing.JPanel
 		log.debug("notify note selection listeners");
 
 		for (NoteSelectionChangedCallback listener : this.noteSelectionListeners) {
-			listener.noteSelectionChanged(new NoteSelectionChangedCallback.NoteSelectedEvent(
-							selectedNotes));
+			listener.noteSelectionChanged(
+							new NoteSelectionChangedCallback.NoteSelectedEvent(selectedNotes));
 		}
 	}
 
@@ -399,9 +405,8 @@ public class NotesPanel extends javax.swing.JPanel
 
 		//log.debug("selected notes count: " + notesTable.getSelectedRowCount());
 		for (int row : this.notesTable.getSelectedRows()) {
-			selectedNotes
-							.add(this.notesTableModel.getNoteAtRow(this.notesTable.convertRowIndexToModel(
-											row)));
+			selectedNotes.add(this.notesTableModel.getNoteAtRow(
+							this.notesTable.convertRowIndexToModel(row)));
 		}
 		return selectedNotes;
 	}
