@@ -1,6 +1,5 @@
 package com.jakeapp.gui.swing.renderer;
 
-import com.explodingpixels.macwidgets.MacFontUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.NoteObject;
@@ -14,6 +13,7 @@ import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.panels.NewsPanel;
+import com.explodingpixels.macwidgets.MacFontUtils;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -228,7 +228,6 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 				  * the JLabels text property, it's foreground and background
 				  * colors, and so on.
 				  */
-		setFont(MacFontUtils.ITUNES_FONT);
 		super.getTableCellRendererComponent(table, valStr, isSelected, hasFocus, row,
 						column);
 
@@ -243,6 +242,7 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 										.getRelativeTime(loge.getTimestamp()) + " (" + loge
 										.getTimestamp().toGMTString() + ")" + comment + "</html>");
 
+		setFont(MacFontUtils.ITUNES_FONT);		
 		return this;
 	}
 
@@ -252,8 +252,6 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 			return NotesHelper.getTitle(note);
 		} else if (belongsTo instanceof FileObject) {
 			FileObject file = (FileObject) belongsTo;
-			// fixme: only get name?
-			// ok in my opinion. -- johannes
 			return file.getRelPath();
 		}
 		// fallback

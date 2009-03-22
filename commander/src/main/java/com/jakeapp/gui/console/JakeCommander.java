@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -13,8 +12,6 @@ import org.apache.log4j.Logger;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.NoteObject;
@@ -29,7 +26,6 @@ import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.core.util.AvailableLaterWaiter;
 import com.jakeapp.core.util.SpringThreadBroker;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.console.commandline.LazyCommand;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 
@@ -642,6 +638,7 @@ public class JakeCommander extends Commander {
 		}
 	}
 
+/*
 	class AcceptInviteCommand extends LazyProjectDirectoryCommandThatDoesNotNeedProject {
 
 		public AcceptInviteCommand() {
@@ -728,7 +725,7 @@ public class JakeCommander extends Commander {
 			}
 		}
 	}
-
+*/
 	class AnnounceCommand extends LazyJakeObjectCommand {
 
 		public AnnounceCommand() {

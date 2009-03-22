@@ -15,14 +15,10 @@ public class FileLockedTreeCellRenderer extends DefaultJakeTableCellRenderer {
 		table.getColumnModel().getColumn(column).setMinWidth(25);
 		table.getColumnModel().getColumn(column).setMaxWidth(25);
 
-		Component comp = (value == null) ? FileObjectStatusProvider.getEmptyComponent() :
+		Component c = (value == null) ? FileObjectStatusProvider.getEmptyComponent() :
 						FileObjectStatusProvider
 										.getLockedRendererComponent(((FileObjectLockedCell) value).getFileObject());
 
-		//if (isSelected) {
-		//	comp.setBackground(table.getSelectionBackground());
-		//}
-
-		return comp;
+		return configComponent(table, isSelected, c);
 	}
 }

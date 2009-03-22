@@ -1,7 +1,6 @@
 package com.jakeapp.core.services;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +140,7 @@ public class FrontendServiceImpl implements IFrontendService {
 
 		// move data to projectmanaging service
 		if (changeListener != null) {
-			this.getProjectsManagingService().setChangeListener(changeListener);
+			this.getProjectsManagingService().addChangeListener(changeListener);
 		}
 
 		return sessid;

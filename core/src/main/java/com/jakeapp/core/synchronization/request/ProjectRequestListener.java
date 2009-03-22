@@ -102,7 +102,7 @@ public class ProjectRequestListener
 		return content.substring(begin, end);
 	}
 
-	@Override @Transactional
+	@Override
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
 					String content) {
 
@@ -144,86 +144,104 @@ public class ProjectRequestListener
 				this.syncService.getProjectChangeListener()
 								.syncStateChanged(this.p, ChangeListener.SyncState.SYNCING);
 				
-				return;
-			}
-	
-			if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
+			} else if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
 				log.info("Received logs request from " + from_userid.getUserId());
 	
 				syncService.sendLogs(p, from_userid);
-				return;
-			}
-	
-			if (message.startsWith(LOGENTRIES_MESSAGE)) {
-				log.info("Received serialized logentries from " + from_userid.getUserId());
-	
-				String les = message.substring(
-								LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(),
-								message.length() - END_LOGENTRY.length());
-	
-				List<LogEntry<? extends ILogable>> logEntries =
-								this.messageMarshaller.unpackLogEntries(les);
-	
-				Map<String, FileObject> fileObjects = getAllFileObjects();
-				
-				
-				for (LogEntry<? extends ILogable> entry : logEntries) {
-					try {
-						if (entry.getBelongsTo() instanceof FileObject) {
-							FileObject fo = (FileObject) entry.getBelongsTo();
-							adjustUUID(fileObjects, entry, fo);
-						}
-						if (entry.getBelongsTo() instanceof Tag) {
-							FileObject fo = (FileObject) ((Tag) entry
-									.getBelongsTo()).getObject();
-							adjustUUID(fileObjects, entry, fo);
-						}
-						// TODO: do the same with tags.
-						log.debug("Deserialized successfully, it is a " + entry
-										.getLogAction() + " for object UUID " + entry.getObjectuuid());
-						try {
-							db.getLogEntryDao(p).create(entry);
-							
-							//TODO do it differently - implement conflict management!
-							/*
-							if (entry.getBelongsTo() instanceof NoteObject) {
-								log.warn("persisting noteobject");
-								try {
-									db.getNoteObjectDao(p).persist(
-											this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
-									);
-								} catch (IllegalArgumentException iaex) {
-									try {
-										log.fatal(p.getUserId());
-										db.getNoteObjectDao(p).persist((NoteObject)(entry.getBelongsTo()));
-									} catch (Exception ex) {
-										log.fatal("OMG");
-										log.fatal(ex);
-									}
-								} catch (Exception ex) {
-									log.fatal("storing note failed");
-									log.fatal(ex);
-								}
-								log.warn("persisting noteobject done");
-								//TODO notify gui
-							}*/
-						} catch (IllegalArgumentException ignored) {
-							//duplicate entry: we already have this entry
-						}
-					} catch (Throwable t) {
-						log.debug("Failed to deserialize and/or save", t);
-					}
-				}
+			} else if (message.startsWith(LOGENTRIES_MESSAGE)) {
+				this.handleReceivedLogEntries(from_userid, message);
 				// inform the gui that we have new data
-				this.syncService.getProjectChangeListener()
-								.syncStateChanged(this.p, ChangeListener.SyncState.DONE);
-	
-				return;
+				try {
+					this.syncService.getProjectChangeListener()
+							.syncStateChanged(this.p, ChangeListener.SyncState.DONE);
+				} catch (Exception ex) {
+					log.warn("Notifying the gui about JakeObject-Changes failed:" + ex);
+				}
 			}
-			log.warn("We got a unknown/unhandled Message: " + message);
+			else
+				log.warn("We got a unknown/unhandled Message: " + message);
 		}catch(Exception e) {
 			log.error("handling message failed: " + content, e);
 		}
+	}
+
+
+	/**
+	 * @param from_userid
+	 * @param message
+	 * @throws Exception
+	 */
+	@Transactional
+	private void handleReceivedLogEntries(com.jakeapp.jake.ics.UserId from_userid,
+			String message) throws Exception {
+		log.info("Received serialized logentries from " + from_userid.getUserId());
+
+		String les = message.substring(
+						LOGENTRIES_MESSAGE.length() + BEGIN_LOGENTRY.length(),
+						message.length() - END_LOGENTRY.length());
+
+		List<LogEntry<? extends ILogable>> logEntries =
+						this.messageMarshaller.unpackLogEntries(les);
+
+		Map<String, FileObject> fileObjects = getAllFileObjects();
+		
+		
+		for (LogEntry<? extends ILogable> entry : logEntries) {
+			try {
+				if (entry.getBelongsTo() instanceof FileObject) {
+					FileObject fo = (FileObject) entry.getBelongsTo();
+					adjustUUID(fileObjects, entry, fo);
+				}
+				if (entry.getBelongsTo() instanceof Tag) {
+					FileObject fo = (FileObject) ((Tag) entry
+							.getBelongsTo()).getObject();
+					adjustUUID(fileObjects, entry, fo);
+				}
+				// TODO: do the same with tags.
+				log.debug("Deserialized successfully, it is a " + entry
+								.getLogAction() + " for object UUID " + entry.getObjectuuid());
+				try {
+					db.getLogEntryDao(p).create(entry);
+					
+					if (entry.getBelongsTo() instanceof NoteObject) {
+						//TODO do it differently - implement conflict management!
+						storeIncomingNote(entry);
+					}
+				} catch (IllegalArgumentException ignored) {
+					//duplicate entry: we already have this entry
+				}
+			} catch (Throwable t) {
+				log.debug("Failed to deserialize and/or save", t);
+			}
+		}
+	}
+
+
+	/**
+	 * @param entry
+	 */
+	@Transactional
+	private void storeIncomingNote(LogEntry<? extends ILogable> entry) {
+		//TODO process DELETE_NOTE
+		log.warn("persisting noteobject");
+		try {
+			db.getNoteObjectDao(p).persist(
+					this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
+			);
+		} catch (IllegalArgumentException iaex) {
+			try {
+				log.fatal(p.getUserId());
+				db.getNoteObjectDao(p).persist((NoteObject)(entry.getBelongsTo()));
+			} catch (Exception ex) {
+				log.fatal("OMG");
+				log.fatal(ex);
+			}
+		} catch (Exception ex) {
+			log.fatal("storing note failed");
+			log.fatal(ex);
+		}
+		log.warn("persisting noteobject done");
+		//TODO notify gui (later version)
 	}
 
 	/**

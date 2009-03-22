@@ -6,15 +6,12 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.core.synchronization.exceptions.PullFailedException;
 import com.jakeapp.core.services.IProjectsFileServices;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -34,7 +31,12 @@ public class PullWatcher implements ITransferListener {
 	}
 
 	private IFSService getFSS(Project p) {
-		return this.getProjectsFileServices().getProjectFSService(p);
+		try {
+			return this.getProjectsFileServices().getProjectFSService(p);
+		} catch (com.jakeapp.core.domain.exceptions.ProjectNotLoadedException e) {
+			log.warn("Project not loaded: ", e);
+			return null;
+		}
 	}
 
 	private ChangeListener changeListener;
