@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.worker.AnnounceJakeObjectTask;
+import com.jakeapp.gui.swing.worker.tasks.AnnounceJakeObjectTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.fss.IFileModificationListener;

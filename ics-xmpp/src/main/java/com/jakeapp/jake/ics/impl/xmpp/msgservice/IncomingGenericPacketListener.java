@@ -65,7 +65,6 @@ public class IncomingGenericPacketListener implements PacketListener, PacketFilt
 				ignored.printStackTrace();
 				//empty implementation
 			}
-			
 		}
 	}
 }

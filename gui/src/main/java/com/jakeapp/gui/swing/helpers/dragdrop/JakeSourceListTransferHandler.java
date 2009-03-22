@@ -6,7 +6,7 @@ import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.DebugHelper;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.helpers.ProjectHelper;
-import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
+import com.jakeapp.gui.swing.worker.tasks.ImportFileFolderTask;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

@@ -1,10 +1,9 @@
-package com.jakeapp.gui.swing.worker;
+package com.jakeapp.gui.swing.worker.tasks;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.availablelater.AvailableLaterObject;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
-import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.xcore.EventCore;
 
 public class StartStopProjectTask extends AbstractTask<Void> {

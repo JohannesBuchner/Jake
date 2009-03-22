@@ -14,7 +14,7 @@ import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
 import com.jakeapp.gui.swing.helpers.SheetHelper;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.panels.FilePanel;
-import com.jakeapp.gui.swing.worker.DeleteJakeObjectsTask;
+import com.jakeapp.gui.swing.worker.tasks.DeleteJakeObjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;

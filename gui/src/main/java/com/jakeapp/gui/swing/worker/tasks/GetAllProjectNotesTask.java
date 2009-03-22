@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.worker;
+package com.jakeapp.gui.swing.worker.tasks;
 
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
@@ -8,8 +8,6 @@ import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Get all Notes for a certain project
@@ -38,10 +36,8 @@ public class GetAllProjectNotesTask extends AbstractTask<Collection<NoteObject>>
 		// done! so lets update the note-panel
 		try {
 			ObjectCache.get().setNotes(project, get());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			log.warn("GetAllProjectNotesTask failed", ex);
 		}
 	}
 }

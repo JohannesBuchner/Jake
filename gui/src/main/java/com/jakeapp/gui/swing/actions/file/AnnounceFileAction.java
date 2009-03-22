@@ -5,7 +5,7 @@ import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
-import com.jakeapp.gui.swing.worker.AnnounceJakeObjectTask;
+import com.jakeapp.gui.swing.worker.tasks.AnnounceJakeObjectTask;
 
 import org.apache.log4j.Logger;
 

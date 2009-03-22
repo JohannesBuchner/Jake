@@ -1,9 +1,11 @@
-package com.jakeapp.gui.swing.worker;
+package com.jakeapp.gui.swing.worker.tasks;
 
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import org.apache.log4j.Logger;
@@ -13,11 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class InitCoreWorker extends SwingWorker<ICoreAccess, Void>
+public class InitCoreTask extends SwingWorker<ICoreAccess, Void>
 				implements IJakeTask {
-	private static final Logger log = Logger.getLogger(InitCoreWorker.class);
+	private static final Logger log = Logger.getLogger(InitCoreTask.class);
 
-	public InitCoreWorker() {
+	public InitCoreTask() {
 	}
 
 	@Override protected ICoreAccess doInBackground() throws Exception {

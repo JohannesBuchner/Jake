@@ -8,7 +8,7 @@ import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileObjectHelper;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.worker.ImportFileFolderTask;
+import com.jakeapp.gui.swing.worker.tasks.ImportFileFolderTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import org.apache.log4j.Logger;
 

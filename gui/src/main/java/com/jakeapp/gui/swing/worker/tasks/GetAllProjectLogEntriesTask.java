@@ -1,4 +1,4 @@
-package com.jakeapp.gui.swing.worker;
+package com.jakeapp.gui.swing.worker.tasks;
 
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;

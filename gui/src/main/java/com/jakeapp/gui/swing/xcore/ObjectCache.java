@@ -16,9 +16,9 @@ import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.gui.swing.globals.JakeContext;
-import com.jakeapp.gui.swing.worker.GetAllProjectFilesTask;
-import com.jakeapp.gui.swing.worker.GetAllProjectNotesTask;
-import com.jakeapp.gui.swing.worker.GetMyProjectsTask;
+import com.jakeapp.gui.swing.worker.tasks.GetAllProjectFilesTask;
+import com.jakeapp.gui.swing.worker.tasks.GetAllProjectNotesTask;
+import com.jakeapp.gui.swing.worker.tasks.GetMyProjectsTask;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 /**

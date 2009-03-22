@@ -13,9 +13,8 @@ import com.jakeapp.gui.swing.callbacks.NodeSelectionChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.helpers.ProjectFilesTreeNode;
-import com.jakeapp.gui.swing.worker.IJakeTask;
+import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
 import com.jakeapp.jake.fss.IFileModificationListener;
-import com.jakeapp.jake.fss.IModificationListener.ModifyActions;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
 

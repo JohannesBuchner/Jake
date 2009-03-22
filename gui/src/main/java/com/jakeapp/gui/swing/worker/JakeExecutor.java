@@ -3,6 +3,7 @@ package com.jakeapp.gui.swing.worker;
 import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
 import com.jakeapp.gui.swing.xcore.EventCore;
+import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
