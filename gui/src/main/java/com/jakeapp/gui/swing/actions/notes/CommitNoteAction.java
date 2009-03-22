@@ -48,7 +48,7 @@ public class CommitNoteAction extends NoteAction {
 						)
 					);
 		
-		log.error("I'm in your gui, with the user:"+this.getProject().getUserId());
+		//TODO this hack may not be neccessary at all...remove it and see if issue 35 still works.
 		for (JakeObject jo : notes)
 			jo.setProject(getProject());
 		

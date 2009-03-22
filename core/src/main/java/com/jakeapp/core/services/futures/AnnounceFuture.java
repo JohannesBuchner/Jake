@@ -36,7 +36,6 @@ public class AnnounceFuture extends AvailableLaterObject<Void> {
 		
 		for (JakeObject jo : this.jos) {
 			try {
-				log.info("announcing a jo with user " + jo.getProject().getUserId());
 				this.iss.announce(jo, this.action, this.commitMsg);
 			} catch (FileNotFoundException e) {
 				//skip this file
