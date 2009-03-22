@@ -111,7 +111,7 @@ public class ProjectRequestListener
 			if(content == null)
 				return;
 			
-			log.debug("Received a message for project " + projectUUID);
+			log.info("Received a message for project " + projectUUID);
 	
 			if (projectUUID == null || !projectUUID.equals(p.getProjectId())) {
 				log.debug("Discarding message because it's not for this project");
@@ -140,9 +140,13 @@ public class ProjectRequestListener
 									e);
 				}
 	
-				// inform the gui that we have new data
-				this.syncService.getProjectChangeListener()
-								.syncStateChanged(this.p, ChangeListener.SyncState.SYNCING);
+				try {
+					// inform the gui that we have new data
+					this.syncService.getProjectChangeListener()
+							.syncStateChanged(this.p, ChangeListener.SyncState.SYNCING);
+				} catch (Exception ex) {
+					log.warn("Notifying the gui about JakeObject-Changes failed:" + ex);
+				}
 				
 			} else if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
 				log.info("Received logs request from " + from_userid.getUserId());
@@ -226,11 +230,12 @@ public class ProjectRequestListener
 		log.warn("persisting noteobject");
 		try {
 			db.getNoteObjectDao(p).persist(
-					this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
+				//pull note that does already exist	
+				this.syncService.pullObject((NoteObject)(entry.getBelongsTo()))
 			);
 		} catch (IllegalArgumentException iaex) {
 			try {
-				log.fatal(p.getUserId());
+				log.warn(p.getUserId());
 				db.getNoteObjectDao(p).persist((NoteObject)(entry.getBelongsTo()));
 			} catch (Exception ex) {
 				log.fatal("OMG");
