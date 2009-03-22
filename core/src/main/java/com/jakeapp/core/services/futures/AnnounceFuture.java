@@ -3,6 +3,8 @@ package com.jakeapp.core.services.futures;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
@@ -14,6 +16,8 @@ public class AnnounceFuture extends AvailableLaterObject<Void> {
 	private List<? extends JakeObject> jos;
 	private LogAction action;
 	private String commitMsg;
+	
+	private static final Logger log = Logger.getLogger(AnnounceFuture.class);
 
 	public AnnounceFuture(ISyncService iss, List<? extends JakeObject> jos,
 					String commitMsg) {
@@ -32,6 +36,7 @@ public class AnnounceFuture extends AvailableLaterObject<Void> {
 		
 		for (JakeObject jo : this.jos) {
 			try {
+				log.info("announcing a jo with user " + jo.getProject().getUserId());
 				this.iss.announce(jo, this.action, this.commitMsg);
 			} catch (FileNotFoundException e) {
 				//skip this file

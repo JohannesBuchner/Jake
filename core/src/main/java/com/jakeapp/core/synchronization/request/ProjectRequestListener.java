@@ -189,6 +189,7 @@ public class ProjectRequestListener
 
 		Map<String, FileObject> fileObjects = getAllFileObjects();
 		
+		log.info("got " + logEntries.size() + " to add/process.");
 		
 		for (LogEntry<? extends ILogable> entry : logEntries) {
 			try {
