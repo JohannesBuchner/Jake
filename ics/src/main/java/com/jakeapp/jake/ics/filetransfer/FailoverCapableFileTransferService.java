@@ -24,79 +24,29 @@ public class FailoverCapableFileTransferService implements IFileTransferService 
 
 	private List<ITransferMethod> methods = new LinkedList<ITransferMethod>();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public synchronized void addTransferMethod(ITransferMethodFactory m,
-			IMsgService negotiationService, UserId user) throws NotLoggedInException {
+											   IMsgService negotiationService, UserId user) throws NotLoggedInException {
 		this.methods.add(m.getTransferMethod(negotiationService, user));
 	}
 
 	/**
-	 * returns null if index is out of range
-	 * 
-	 * @param index
-	 * @return
+	 * {@inheritDoc}
 	 */
-	private synchronized ITransferMethod getTransferMethod(int index) {
-		try {
-			return this.methods.get(index);
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-
 	@Override
-	public void request(FileRequest request, INegotiationSuccessListener nsl) {
+	public void request(FileRequest request, INegotiationSuccessListener negotiationSuccessListener) {
 		if (this.methods.size() == 0)
 			throw new NullPointerException("register methods first");
-		new FailoverRequest(request, nsl);
+		new FailoverRequest(request, negotiationSuccessListener, methods);
 	}
 
-	private class FailoverRequest implements INegotiationSuccessListener {
 
-		private int counter = 0;
-
-		private FileRequest request;
-
-		private INegotiationSuccessListener parentListener;
-
-		public FailoverRequest(FileRequest request, INegotiationSuccessListener nsl) {
-			this.request = request;
-			this.parentListener = nsl;
-			FailoverCapableFileTransferService.this.getTransferMethod(this.counter)
-					.request(this.request, this);
-		}
-
-		@Override
-		public void failed(Throwable reason) {
-			this.counter++;
-			// if
-			// (reason.getClass().equals(CommunicationProblemException.class)) {
-			ITransferMethod method = FailoverCapableFileTransferService.this
-					.getTransferMethod(this.counter);
-			if (method != null) {
-				log.info("failing over to method#" + this.counter + " : " + method);
-				method.request(this.request, this);
-				return;
-			}
-			log.info("no methods left, failure");
-			try {
-				this.parentListener.failed(reason);
-			} catch (Exception ignored) {
-			}
-			// }
-		}
-
-		@Override
-		public void succeeded(IFileTransfer ft) {
-			log.info("success with method#" + this.counter);
-			try {
-				this.parentListener.succeeded(ft);
-			} catch (Exception ignored) {
-			}
-		}
-
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void startServing(IncomingTransferListener l, FileRequestFileMapper mapper)
 			throws NotLoggedInException {
@@ -105,6 +55,9 @@ public class FailoverCapableFileTransferService implements IFileTransferService 
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void stopServing() {
 		for (ITransferMethod method : this.methods) {
