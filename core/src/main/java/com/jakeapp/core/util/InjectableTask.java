@@ -84,10 +84,10 @@ public abstract class InjectableTask<T> implements Runnable {
 		while (true) {
 			try {
 				// HACK TODO EVIL Timeout !?
-				this.s.tryAcquire(30, TimeUnit.SECONDS);
+				this.s.tryAcquire(35, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
-				continue;
-				// what shall we do with the drunken sailor?
+				log.warn("Interrupted Task after Timeout!", e);
+				throw e;
 			}
 			if (this.exception != null) {
 				log.debug("returning exception of task " + this.name);

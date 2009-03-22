@@ -741,7 +741,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				realProvider = potentialProvider;
 				break;
 			} catch (Exception ignored) {
-				log.warn("pull from " + potentialProvider + " failed", ignored);
+				log.warn("pull from " + potentialProvider + " failed" + ignored.getMessage());
 				log.info("trying next provider");
 				continue;
 			}
