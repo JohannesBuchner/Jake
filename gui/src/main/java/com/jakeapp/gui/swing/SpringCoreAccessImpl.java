@@ -677,7 +677,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	@Override
 	public List<LogEntry<? extends ILogable>> getLog(Project project,
 					JakeObject jakeObject, int entries) {
-		log.info(
+		log.trace(
 						"getLog pr:" + project + " jakeObject: " + jakeObject + " entries: " + entries);
 
 		List<LogEntry<? extends ILogable>> logs;

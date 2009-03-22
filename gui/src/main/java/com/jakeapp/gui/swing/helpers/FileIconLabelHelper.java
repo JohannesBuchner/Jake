@@ -14,7 +14,7 @@ import java.io.File;
  */
 public class FileIconLabelHelper {
 	private static final Logger log = Logger.getLogger(FileIconLabelHelper.class);
-
+	private static final JLabel emptyLabel = new JLabel();
 	private static JFileChooser fileChooser = new JFileChooser();
 
 	public static Icon getIcon(File file) {

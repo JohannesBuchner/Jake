@@ -97,7 +97,7 @@ public class JakeStatusBar extends JakeGuiComponent
 
 	@Override public void taskFinished(IJakeTask task) {
 		if(task.getException() != null) {
-			log.warn("Error in a task", task.getException());
+			log.warn("Error in a task" + task.getException().getMessage());
 			//ExceptionUtilities.showError(task.getException());
 		}
 
