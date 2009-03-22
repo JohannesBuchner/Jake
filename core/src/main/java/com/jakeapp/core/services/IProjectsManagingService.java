@@ -39,7 +39,8 @@ public interface IProjectsManagingService {
 	 * Retrieves a list of all Projects for the specified user.
 	 *
 	 * @param userMsgService the <code>MsgService</code> for which the <code>Project</code>s should be loaded.
-	 * @return
+	 * @return an <code>AvailableLaterObject</code> returning a <code>List</code> with <code>Project</code>s
+	 *         belonging to the given <code>MsgService</code>
 	 */
 	AvailableLaterObject<List<Project>> getProjects(MsgService userMsgService);
 
@@ -338,37 +339,40 @@ public interface IProjectsManagingService {
 
 	/**
 	 * Returns all Users (in UserInfo's) that are stored for a project.
+	 * This <code>List</code> cannot be empty because at least the current working <code>User</code> is contained
+	 * within.
 	 *
-	 * @param project
-	 * @return
-	 * @throws NoSuchProjectException If <code>project</code> does
-	 *                                not exist or is null.
+	 * @param project the <code>Project</code> for which we want <code>UserInfo</code>s
+	 * @return a (not empty) <code>List</code> of <code>UserInfo</code>s for a given <code>Project</code>
+	 * @throws NoSuchProjectException If the given <code>Project</code> does not exist or is null.
 	 */
 	List<UserInfo> getProjectUserInfos(Project project) throws NoSuchProjectException;
 
 
 	/**
-	 * Return a UserInfo for a User.
+	 * Return a <code>UserInfo</code> for a specific <code>User</code>.
 	 *
-	 * @param project
-	 * @param user
-	 * @return
+	 * @param project the <code>Project</code> this <code>User</code> belongs to.
+	 * @param user	the <code>User</code> in question
+	 * @return a <code>UserInfo</code>
 	 */
 	public UserInfo getProjectUserInfo(Project project, User user);
 
 
 	/**
-	 * @param jakeObject
-	 * @return The ProjectMember who last modified the JakeObject (according to the log)
+	 * Returns the <code>User</code> who last modified a specific <code>JakeObject</code>.
+	 *
+	 * @param jakeObject the <code>JakeObject</code> in question
+	 * @return The <code>User</code> who last modified the <code>JakeObject</code> (according to the log)
 	 */
 	User getLastModifier(JakeObject jakeObject);
 
 
 	/**
-	 * Adds a person as a ProjectMember for <code>project</code> and sends an
-	 * invitation request to that person.
+	 * Adds a person as a <code>User</code> for <code>Project</code> and sends an
+	 * <code>Invitation</code> request to that person.
 	 *
-	 * @param project Project to add the ProjectMember for
+	 * @param project the <code>Project</code> to add the <code>User</code> for
 	 * @param userid  The UserId (nick+protocol) of the other user.
 	 * @return The new {@link com.jakeapp.core.domain.User}
 	 * @throws com.jakeapp.core.domain.exceptions.UserFormatException
@@ -378,25 +382,27 @@ public interface IProjectsManagingService {
 			throws UserFormatException;
 
 	/**
-	 * @param project
+	 * Returns a <code>List</code> with possible candidates for an <code>Invitation</code>. Only <code>User</code>s
+	 * which are not already <code>User</code>s in the <code>Project</code> get returned.
+	 *
+	 * @param project the <code>Project</code> for which possible <code>Invitation</code>s should be provided
 	 * @return A list of people who are 'friends' irt. the Project's
 	 *         {@link MsgService}, are online and capable of running Projects
 	 *         but are currently not attached to <code>project</code>.
-	 * @throws NoSuchProjectException   project is null or has no MsgService set.
-	 * @throws IllegalArgumentException
+	 * @throws NoSuchProjectException project is null or has no MsgService set.
 	 */
-	List<User> getSuggestedPeopleForInvite(Project project) throws IllegalArgumentException, NoSuchProjectException;
+	List<User> getSuggestedPeopleForInvite(Project project) throws NoSuchProjectException;
 
 
 	/**
 	 * Retrieves all {@link Tag}s for a JakeObject
 	 *
-	 * @param jo The {@link JakeObject} to get {@link Tag}s for.
-	 * @return The empty set if there are not {@link Tag}s for the specified {@link JakeObject}, or a {@link Set} of {@link Tag}s otherwise.
-	 * @throws NoSuchJakeObjectException
-	 * @throws IllegalArgumentException
+	 * @param jakeObject The {@link JakeObject} to get {@link Tag}s for.
+	 * @return The empty set if there are not {@link Tag}s for the specified {@link JakeObject},
+	 *         or a {@link Set} of {@link Tag}s otherwise.
+	 * @throws NoSuchJakeObjectException if the given <code>JakeObject</code> does not exist.
 	 */
-	Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException, NoSuchJakeObjectException;
+	Set<Tag> getTagsForJakeObject(JakeObject jakeObject) throws NoSuchJakeObjectException;
 
 
 	/**
@@ -405,60 +411,68 @@ public interface IProjectsManagingService {
 	 * @param jo   The {@link JakeObject} to set {@link Tag}s for.
 	 * @param tags A {@link Set} of tags, may be empty. After this operation, the {@link JakeObject}
 	 *             will have only the {@link Tag}s specified in <code>tags</code> as {@link Tag}s.
-	 * @throws NoSuchJakeObjectException
+	 * @throws NoSuchJakeObjectException if the given <code>JakeObject</code> does not exist and therefor
+	 *                                   has no <code>Tag</code>s
 	 */
 	void setTagsForJakeObject(JakeObject jo, Set<Tag> tags) throws NoSuchJakeObjectException;
 
 
 	/**
-	 * Saves a new version of a NoteObject to the database, but does not announce it
+	 * Saves a new version of a <code>NoteObject</code> to the database, but does not announce it
 	 *
-	 * @param note
+	 * @param note the <code>NoteObject</code> to be saved
 	 */
 	void saveNote(NoteObject note);
 
 	/**
-	 * Deletes a NoteObject to the database, but does not announce the deletion
+	 * Deletes a <code>NoteObject</code> to the database, but does not announce the deletion
 	 *
-	 * @param note
-	 * @throws NoSuchJakeObjectException
-	 * @throws IllegalArgumentException
+	 * @param note the <code>NoteObject</code> to be deleted
+	 * @throws NoSuchJakeObjectException if the given <code>JakeObject</code> does not exist
 	 */
-	void deleteNote(NoteObject note) throws IllegalArgumentException;
+	void deleteNote(NoteObject note) throws NoSuchJakeObjectException;
 
 	/**
-	 * Deletes a FileObject, but does not announce the deletion
+	 * Deletes a <code>FileObject</code>, but does not announce the deletion
 	 *
-	 * @param fo
-	 * @param trash
-	 * @return TODO
-	 * @throws NoSuchJakeObjectException
+	 * @param fileObject the <code>FileObject</code> to be deleted
+	 * @param trash	  a <code>boolean</code> specifying if the <code>FileObject</code> should be
+	 *                   moved to the <code>Trash</code>
+	 * @return an <code>AvailableLaterObject</code> Object as callback.
+	 * @throws NoSuchJakeObjectException if the given <code>FileObject</code> does not exist
 	 */
-	AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) throws NoSuchJakeObjectException;
+	AvailableLaterObject<Void> deleteFile(FileObject fileObject, boolean trash) throws NoSuchJakeObjectException;
 
 	/**
-	 * @param fos
-	 * @param trash
-	 * @return number of deleted files
+	 * @param fileObjects a <code>List</code> of <code>FileObject</code>s
+	 * @param trash	   a <code>boolean</code> indicating if the <code>FileObject</code>s should be
+	 *                    moved to the <code>trash</code>
+	 * @return an <code>AvailableLaterObject&lt;Integer&gt;</code> indicating number of deleted files
 	 */
-	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos, boolean trash);
+	AvailableLaterObject<Integer> deleteFiles(List<FileObject> fileObjects, boolean trash);
 
 	/**
-	 * @param jo
-	 * @param comment can be null
+	 * Lock a specific <code>JakeObject</code> with a given <code>comment</code>
+	 *
+	 * @param jakeObject the <code>JakeObject</code> to be locked.
+	 * @param comment	A comment (e.g. the purpose of the lock), can be null
 	 */
-	void lock(JakeObject jo, String comment);
+	void lock(JakeObject jakeObject, String comment);
 
 	/**
-	 * @param jo
-	 * @param comment can be null
+	 * Remove the lock of a specific <code>JakeObject</code> with a given <code>comment</code>
+	 *
+	 * @param jakeObject the <code>JakeObject</code> for which the Lock should be removed
+	 * @param comment	A comment (e.g. why the Lock was removed), can be null
 	 */
-	void unlock(JakeObject jo, String comment);
+	void unlock(JakeObject jakeObject, String comment);
 
 	/**
-	 * @param project
-	 * @param user
-	 * @param nick
+	 * Set the Nickname of a <code>User</code> participating in a given <code>Project</code>
+	 *
+	 * @param project the <code>Project</code> in which the <code>User</code> is participating
+	 * @param user	the <code>User</code> for which the nickname should be set.
+	 * @param nick	a <code>String</code> specifying what the new Nickname should be.
 	 */
 	void setUserNickname(Project project, User user, String nick);
 
