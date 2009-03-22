@@ -1,14 +1,8 @@
 package com.jakeapp.core.services;
 
-import java.util.UUID;
-import java.util.List;
-import java.util.LinkedList;
-
-import org.apache.log4j.Logger;
-
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -17,7 +11,11 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import sun.plugin.dom.exception.InvalidStateException;
+import org.apache.log4j.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The <code>ProjectInvitationHandler</code> handles all incoming Invitations from other clients, but also
