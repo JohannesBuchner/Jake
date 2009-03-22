@@ -1,9 +1,13 @@
 package com.jakeapp.gui.swing.helpers;
 
+import com.explodingpixels.macwidgets.MacFontUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.core.synchronization.attributes.SyncStatus;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.controls.SpinningDial;
+import com.jakeapp.gui.swing.worker.DownloadInfo;
+import com.jakeapp.gui.swing.worker.JakeDownloadMgr;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -42,8 +46,8 @@ public class FileObjectStatusProvider {
 	private static Icon local_has_conflict = ImageLoader
 					.get(FileObjectStatusProvider.class, "/status/local_has_conflict.png");
 
-	private static Icon remote_only = ImageLoader
-					.get(FileObjectStatusProvider.class, "/status/remote_only.png");
+	private static Icon remote_only =
+					ImageLoader.get(FileObjectStatusProvider.class, "/status/remote_only.png");
 
 	private static Icon spinner = new SpinningDial(16, 16);
 
@@ -56,17 +60,60 @@ public class FileObjectStatusProvider {
 		return result;
 	}
 
-	public static Component getStatusRendererComponent(FileObject obj) {
+	/**
+	 * Make the Sync Status String nicer.
+	 * @param sync
+	 * @return
+	 */
+	public static String getSyncStatusString(SyncStatus sync) {
+		switch(sync) {
+			case CONFLICT:
+				return "Conflict";
+			case MODIFIED_LOCALLY:
+				return "Modified locally";
+			case MODIFIED_REMOTELY:
+				return "Modified remote";
+			case SYNC:
+				return "Sync";
+			default:
+				log.warn("No translation for " + sync);
+				return sync.toString();
+		}
+	}
+
+	public static Component getStatusRendererComponent(FileObject fo) {
 		JLabel label = getLabelComponent();
 
-		Attributed<FileObject> aFo =
-						JakeMainApp.getCore().getAttributed(obj);
+		Attributed<FileObject> aFo = JakeMainApp.getCore().getAttributed(fo);
 
 		Icon icon = getStatusIcon(aFo);
 		label.setIcon(icon);
 
-		// set tooltip!
-		label.setToolTipText(aFo.getSyncStatus().toString());
+		label.setFont(MacFontUtils.ITUNES_FONT);
+
+		// DEBUG
+		String msg = getSyncStatusString(aFo.getSyncStatus());
+
+		if (JakeDownloadMgr.getInstance().isQueued(fo)) {
+			DownloadInfo info = JakeDownloadMgr.getInstance().getInfo(fo);
+
+			if (info.getOptions().contains(JakeDownloadMgr.DlOptions.AutoAdded)) {
+				msg = "Auto-Queued";
+			} else if (info.getOptions()
+							.contains(JakeDownloadMgr.DlOptions.StartAfterDownload)) {
+				msg = "Starting";
+			} else if (info.getOptions().contains(JakeDownloadMgr.DlOptions.None)) {
+				msg = "Queued";
+			}
+
+			if (info.getTask() != null) {
+				msg = info.getStatus().toString() + " ";
+				msg += info.getProgress() + "%";
+			}
+		}
+
+		label.setText(msg);
+		label.setToolTipText(msg);
 
 		return label;
 	}
@@ -99,8 +146,7 @@ public class FileObjectStatusProvider {
 
 	public static Component getLockedRendererComponent(FileObject obj) {
 		JLabel label = getLabelComponent();
-		Attributed<FileObject> fo =
-						JakeMainApp.getCore().getAttributed(obj);
+		Attributed<FileObject> fo = JakeMainApp.getCore().getAttributed(obj);
 		label.setIcon(fo.isLocked() ? locked : unlocked);
 		return label;
 	}

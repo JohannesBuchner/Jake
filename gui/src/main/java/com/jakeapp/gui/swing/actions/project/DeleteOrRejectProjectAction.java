@@ -11,7 +11,7 @@ import com.jakeapp.gui.swing.actions.project.CompoundProjectAction;
  */
 public class DeleteOrRejectProjectAction extends CompoundProjectAction {
 	private final DeleteProjectAction deleteAction = new DeleteProjectAction();
-	private final RejectProjectAction rejectAction = new RejectProjectAction();
+	private final RejectInvitationAction rejectAction = new RejectInvitationAction();
 	private static final Logger log = Logger.getLogger(DeleteOrRejectProjectAction.class);
 
 

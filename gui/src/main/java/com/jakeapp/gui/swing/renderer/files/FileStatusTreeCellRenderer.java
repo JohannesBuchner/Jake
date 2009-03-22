@@ -12,7 +12,7 @@ public class FileStatusTreeCellRenderer extends DefaultJakeTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 					boolean isSelected, boolean hasFocus, int row, int column) {
-		table.getColumnModel().getColumn(column).setMaxWidth(25);
+		table.getColumnModel().getColumn(column).setMaxWidth(125);
 		table.getColumnModel().getColumn(column).setMinWidth(25);
 
 		Component comp;

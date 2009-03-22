@@ -319,8 +319,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public void rejectProject(final Project project) {
-		log.info("Reject project: " + project);
+	public void rejectInvitation() {
+		log.info("Reject invitation: " + JakeContext.getInvitation());
 
 		Runnable runner = new Runnable() {
 			public void run() {
@@ -328,9 +328,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					getFrontendService().getProjectsManagingService(getSessionId())
 									.rejectInvitation(JakeContext.getInvitation());
 
+					// FIXME: One fine day, far far far away, make this prettier.
 					EventCore.get().fireProjectChanged(
-									new ProjectChangedCallback.ProjectChangedEvent(project,
-													ProjectChangedCallback.ProjectChangedEvent.Reason.Rejected));
+									new ProjectChangedCallback.ProjectChangedEvent(null, ProjectChangedCallback.ProjectChangedEvent.Reason.Rejected));
 
 				} catch (FrontendNotLoggedInException e) {
 					ExceptionUtilities.showError(e);

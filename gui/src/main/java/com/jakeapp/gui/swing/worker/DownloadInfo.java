@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.worker;
 
+import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 
@@ -11,6 +12,7 @@ import java.util.EnumSet;
  * @author studpete
  */
 public class DownloadInfo {
+	private FileObject fileObject;
 	private boolean started = false;
 	private double progress = 0;
 	private Status status = Status.initial;
@@ -18,8 +20,14 @@ public class DownloadInfo {
 	private EnumSet<JakeDownloadMgr.DlOptions> options =
 					EnumSet.of(JakeDownloadMgr.DlOptions.None);
 
-	public DownloadInfo(IJakeTask task, EnumSet<JakeDownloadMgr.DlOptions> options) {
+	public DownloadInfo(FileObject fileObject, IJakeTask task, EnumSet<JakeDownloadMgr.DlOptions> options) {
+		this.fileObject = fileObject;
 		this.task = task;
+		this.options = options;
+	}
+
+	public DownloadInfo(FileObject fileObject, EnumSet<JakeDownloadMgr.DlOptions> options) {
+		this.fileObject = fileObject;
 		this.options = options;
 	}
 
@@ -61,5 +69,13 @@ public class DownloadInfo {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public FileObject getFileObject() {
+		return fileObject;
+	}
+
+	public void setFileObject(FileObject fileObject) {
+		this.fileObject = fileObject;
 	}
 }

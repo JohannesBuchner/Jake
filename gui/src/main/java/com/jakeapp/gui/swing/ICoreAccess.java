@@ -229,10 +229,8 @@ public interface ICoreAccess {
 
 	/**
 	 * Rejects join of a invited project.
-	 *
-	 * @param project
 	 */
-	public void rejectProject(Project project);
+	public void rejectInvitation();
 
 
 	/**

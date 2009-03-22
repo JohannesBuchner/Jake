@@ -1,10 +1,9 @@
 package com.jakeapp.gui.swing.panels;
 
 import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
-import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
+import com.jakeapp.gui.swing.actions.project.RejectInvitationAction;
 import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
@@ -134,7 +133,7 @@ public class InvitationPanel extends JXPanel implements ContextChangedCallback {
 
 		JButton rejectButton = new JButton("Reject");
 		rejectButton.putClientProperty("JButton.buttonType", "textured");
-		rejectButton.setAction(new RejectProjectAction());
+		rejectButton.setAction(new RejectInvitationAction());
 
 		btnPanel.add(joinButton, "tag ok");
 		btnPanel.add(rejectButton, "tag cancel");

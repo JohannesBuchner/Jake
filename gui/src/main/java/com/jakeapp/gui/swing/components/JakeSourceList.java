@@ -12,13 +12,8 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.actions.project.CreateProjectAction;
-import com.jakeapp.gui.swing.actions.project.DeleteProjectAction;
-import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
-import com.jakeapp.gui.swing.actions.project.RejectProjectAction;
-import com.jakeapp.gui.swing.actions.project.RenameProjectAction;
-import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
-import com.jakeapp.gui.swing.actions.project.SyncProjectAction;
+import com.jakeapp.gui.swing.actions.project.RejectInvitationAction;
+import com.jakeapp.gui.swing.actions.project.*;
 import com.jakeapp.gui.swing.callbacks.ContextViewChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
@@ -316,7 +311,7 @@ public class JakeSourceList extends JakeGuiComponent
 		popupMenu.add(joinMenuItem);
 
 		JMenuItem rejectMenuItem = new JMenuItem();
-		rejectMenuItem.setAction(new RejectProjectAction());
+		rejectMenuItem.setAction(new RejectInvitationAction());
 		popupMenu.add(rejectMenuItem);
 
 		return popupMenu;

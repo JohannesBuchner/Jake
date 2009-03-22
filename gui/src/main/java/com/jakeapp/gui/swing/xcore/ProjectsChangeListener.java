@@ -5,6 +5,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.change.ChangeListener;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback.DataReason;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
+import com.jakeapp.gui.swing.worker.JakeDownloadMgr;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import org.apache.log4j.Logger;
@@ -43,6 +44,9 @@ public class ProjectsChangeListener implements ChangeListener {
 					double progress) {
 		log.debug(
 						"pullProgressUpdate: " + jo + ", status: " + status + ", progress: " + progress);
+
+		// relay the event to someone who can use it!
+		JakeDownloadMgr.getInstance().pullProgressUpdate(jo, status, progress);
 	}
 
 	@Override public void onlineStatusChanged(Project p) {
