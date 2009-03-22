@@ -42,6 +42,7 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserFormatException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry;
@@ -747,7 +748,11 @@ public class ProjectsManagingServiceImpl implements
 		this.getInvitationDao().reject(invitation);
 
 		// notify the inviter
-		ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getForUserId(invitee));
+		try {
+			ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getMsgServiceForUser(invitee));
+		} catch (NoSuchMsgServiceException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

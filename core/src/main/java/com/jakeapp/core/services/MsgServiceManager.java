@@ -7,6 +7,7 @@ import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.services.exceptions.ProtocolNotSupportedException;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,10 +40,18 @@ public class MsgServiceManager {
 	@Injected
 	private IProjectInvitationListener coreProjectInvitationListener;
 
-	public MsgServiceManager(){}
+	/**
+	 * Default Constructor for <code>MsgServiceManager</code>
+	 * irt. Bug #91 this method should be removed if possible. Dont use it
+	 *
+	 * @Deprecated
+	 */
+	@Deprecated
+	public MsgServiceManager() {
+	}
 
-	public MsgServiceManager (ICSManager icsManager, IAccountDao accountDao, IProjectInvitationListener coreProjectInvitationListener)
-	{
+
+	public MsgServiceManager(ICSManager icsManager, IAccountDao accountDao, IProjectInvitationListener coreProjectInvitationListener) {
 		this.setICSManager(icsManager);
 		this.setAccountDao(accountDao);
 		this.setCoreProjectInvitationListener(coreProjectInvitationListener);
@@ -73,12 +82,10 @@ public class MsgServiceManager {
 	/**
 	 * Creates a new MessageService if one for the specified credentials does
 	 * not exist yet.
-	 * 
-	 * @param credentials
-	 *            The AccountDao to create a MsgService for.
-	 * @throws ProtocolNotSupportedException
-	 *             if the protocol specified in the credentials is not
-	 *             supported.
+	 *
+	 * @param credentials The AccountDao to create a MsgService for.
+	 * @throws ProtocolNotSupportedException if the protocol specified in the credentials is not
+	 *                                       supported.
 	 */
 	private MsgService<User> create(Account credentials)
 			throws ProtocolNotSupportedException {
@@ -100,7 +107,7 @@ public class MsgServiceManager {
 				+ credentials.getUserId()
 				+ " pwl = "
 				+ ((credentials.getPlainTextPassword() == null) ? "null" : ""
-						+ credentials.getPlainTextPassword().length()));
+				+ credentials.getPlainTextPassword().length()));
 
 		if (credentials.getProtocol() != null
 				&& credentials.getProtocol().equals(ProtocolType.XMPP)) {
@@ -127,11 +134,10 @@ public class MsgServiceManager {
 	/**
 	 * Every MsgService has a UserId connected. This creates the UserId from the
 	 * ServiceCredentals.
-	 * 
-	 * @param credentials
-	 *            ServiceCredentials that are used to create the UserId
-	 * @return
-	 * @throws ProtocolNotSupportedException
+	 *
+	 * @param credentials ServiceCredentials that are used to create the UserId
+	 * @return the <code>User</code> created for this <code>MsgService</code>
+	 * @throws ProtocolNotSupportedException if the given <code>ProtocolType</code> is currently not supported.
 	 */
 	private User createUserforMsgService(Account credentials)
 			throws ProtocolNotSupportedException {
@@ -154,6 +160,11 @@ public class MsgServiceManager {
 		}
 	}
 
+	/**
+	 * Returns a <code>List</code> of loaded <code>MsgService</code>s.
+	 *
+	 * @return a (possible empty) <code>List</code> of <code>MsgService</code>s
+	 */
 	public List<MsgService<User>> getLoaded() {
 		List<MsgService<User>> result = new ArrayList<MsgService<User>>();
 		result.addAll(this.msgServices.values());
@@ -161,23 +172,19 @@ public class MsgServiceManager {
 		return result;
 	}
 
-    public MsgService<User> getMsgServiceForUser(User user) {
-        List<MsgService<User>> msgservices = this.getAll();
 
-        for(MsgService<User> m: msgservices) {
-            if(m.getUserId() == user) return m;
-        }
-
-        throw new IllegalStateException("We really should have found a MsgService but haven't...");
-    }
-
+	/**
+	 * Returns a <code>List</code> of all <code>MsgService</code>s
+	 *
+	 * @return a (possible empty) <code>List</code> of <code>MsgService</code>
+	 */
 	@Transactional
 	public List<MsgService<User>> getAll() {
-		log.trace("calling getAll");
+		log.debug("calling getAll");
 
 		List<Account> credentialsList = this.accountDao.getAll();
-		log.trace("Found " + credentialsList.size() + " Credentials in the DB");
-		log.trace("Found " + this.msgServices.size() + " Credentials in the Cache");
+		log.debug("Found " + credentialsList.size() + " Credentials in the DB");
+		log.debug("Found " + this.msgServices.size() + " Credentials in the Cache");
 
 
 		for (Account credentials : credentialsList) {
@@ -198,25 +205,31 @@ public class MsgServiceManager {
 		return getLoaded();
 	}
 
-    public MsgService<User> getForUserId(User userid) {
-        log.debug("Getting MsgService for user " + userid);
-        List<MsgService<User>> ms = this.getAll();
-        log.debug("We have " + ms.size() + " MsgServices");
-        for(MsgService<User> m: ms) {
-            log.debug("Comparing with " + m.getUserId());
-            if(m.getUserId().equals(userid)) return m;
-        }
-        throw new IllegalStateException("Expected to get a MsgService, but didn't. This means trouble.");
-    }
+	/**
+	 * Returns the <code>MsgService</code> for a given <code>User</code>
+	 *
+	 * @param user the <code>User</code> in question
+	 * @return the <code>MsgService</code> belonging to that <code>User</code>
+	 * @throws NoSuchMsgServiceException if the <code>User</code> belongs to no <code>MsgService</code>
+	 */
+	public MsgService<User> getMsgServiceForUser(User user) throws NoSuchMsgServiceException {
+		List<MsgService<User>> msgservices = this.getAll();
+
+		for (MsgService<User> m : msgservices) {
+			if (m.getUserId() == user) return m;
+		}
+
+		throw new NoSuchMsgServiceException("The supplied User belongs to no MsgService");
+	}
 
 	/**
-	 * creates and adds a msgservice for the right protocol This adds the
-	 * ServiceCrenentials from the MsgService into the database.
-	 * 
-	 * @param credentials
-	 * @return the service
-	 * @throws InvalidCredentialsException
-	 * @throws ProtocolNotSupportedException
+	 * Creates and Adds a <code>MsgService</code> for the right <code>ProtocolType</code> This adds the
+	 * <code>Account</code> from the <code>MsgService</code> into the database.
+	 *
+	 * @param credentials the <code>Account</code>
+	 * @return the <code>MsgService</code> created
+	 * @throws InvalidCredentialsException   if the <code>Account</code> is invalid
+	 * @throws ProtocolNotSupportedException if the given <code>ProtocolType</code> is not yet supported
 	 */
 	private MsgService add(Account credentials)
 			throws InvalidCredentialsException, ProtocolNotSupportedException {
@@ -239,15 +252,16 @@ public class MsgServiceManager {
 	}
 
 	/**
-	 * Tries to return the MsgService that is associated with
-	 * ServiceCredentials. ServiceCredentials is saved in the DB,
-	 * MsgServiccreateMsgServicee not. If no MsgService was created until now,
+	 * Tries to return the <code>MsgService</code> that is associated with the
+	 * <code>Account</code>. The <code>Account</code> is saved in the DB, while
+	 * the <code>MsgService</code> is not. If no <code>MsgService</code> was created until now,
 	 * we try to created it.
-	 * 
-	 * @param credentials
+	 *
+	 * @param credentials the <code>Account</code> on which the <code>MsgService</code> is based
 	 * @return the MsgService or null.
+	 * @throws InvalidCredentialsException when the <code>Account</code> is not valid
 	 */
-	public MsgService getOrCreate(Account credentials) {
+	public MsgService getOrCreate(Account credentials) throws InvalidCredentialsException {
 		log.trace("Get MsgService by credentials: " + credentials);
 
 		MsgService<User> msg = find(credentials);
@@ -261,9 +275,11 @@ public class MsgServiceManager {
 			return this.add(credentials);
 		} catch (Exception e) {
 			log.error("Unable to create MessageService:", e);
-			return null;
+			throw new InvalidCredentialsException();
+//			return null;
 		}
 	}
+
 
 
 	private MsgService<User> find(Account credentials) {
@@ -291,18 +307,19 @@ public class MsgServiceManager {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Removes a MsgService from the cache.
-	 * @param owner The Account that owns the MsgService to be removed
-	 * @return true, if a MsgService was removed from the cache, false if nothing was removed.
+	 *
+	 * @param owner The <code>Account</code> that owns the <code>MsgService</code> to be removed
+	 * @return true, if a <code>MsgService</code> was removed from the cache, false if nothing was removed.
 	 */
 	public boolean remove(Account owner) {
 		boolean result;
-		
-		log.debug("removing for user "+ owner);
-		result = this.msgServices.remove(owner.getUuid())!=null;
-		log.debug("removed="+result);
+
+		log.debug("removing for user " + owner);
+		result = this.msgServices.remove(owner.getUuid()) != null;
+		log.debug("removed=" + result);
 		return result;
 	}
 
