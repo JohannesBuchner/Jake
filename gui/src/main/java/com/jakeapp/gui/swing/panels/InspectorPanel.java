@@ -355,7 +355,7 @@ public class InspectorPanel extends JXPanel
 
 	@Override
 	public void noteSelectionChanged(NoteSelectedEvent event) {
-		log.info("Inspector: Note Selection Changed: " + event);
+		log.trace("Inspector: Note Selection Changed: " + event);
 
 		setNoteObject(event.getSingleNote());
 		try {

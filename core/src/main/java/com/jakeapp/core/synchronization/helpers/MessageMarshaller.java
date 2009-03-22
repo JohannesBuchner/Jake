@@ -1,17 +1,15 @@
 package com.jakeapp.core.synchronization.helpers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
-import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogEntrySerializer;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.logentries.LogEntry;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class is used to marshal and unmarshal (build and analyze) messages sent
@@ -77,7 +75,7 @@ public class MessageMarshaller {
 				sb.append(partResult);
 				log.debug("New sb content: " + sb.toString());
 			} catch (Throwable e) {
-				log.info("Failed to serialize log entry: " + l.getLogAction().toString()
+				log.warn("Failed to serialize log entry: " + l.getLogAction().toString()
 						+ "(" + l.toString() + ")", e);
 			}
 		}
