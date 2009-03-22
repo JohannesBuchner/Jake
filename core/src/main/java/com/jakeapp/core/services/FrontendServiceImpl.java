@@ -335,13 +335,6 @@ public class FrontendServiceImpl implements IFrontendService {
 
 					throw ex;
 				}
-//				projectInvitationHandler = new ProjectInvitationHandler(service);
-//				projectInvitationHandler
-//						.registerInvitationListener(FrontendServiceImpl.this.coreInvitationListener);
-
-
-//				service.getMainIcs().getMsgService().registerReceiveMessageListener(projectInvitationHandler);
-
 				return result;
 			}
 		};
