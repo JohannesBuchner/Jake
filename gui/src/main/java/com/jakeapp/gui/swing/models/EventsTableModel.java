@@ -110,8 +110,8 @@ public class EventsTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-
-		LogEntry logEntry = logEntries.get(rowIndex);
+		// reverse index!
+		LogEntry logEntry = logEntries.get(logEntries.size() - rowIndex - 1);
 
 		LogColumns col = LogColumns.values()[columnIndex];
 		switch (col) {
