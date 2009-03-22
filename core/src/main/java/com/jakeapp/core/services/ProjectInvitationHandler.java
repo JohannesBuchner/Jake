@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
@@ -16,6 +17,7 @@ import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
+import sun.plugin.dom.exception.InvalidStateException;
 
 /**
  * The <code>ProjectInvitationHandler</code> handles all incoming Invitations from other clients, but also
@@ -216,7 +218,8 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 	 * @param project The <code>Project</code> we where invited to
 	 * @param inviter The <code>User</code> who invited us.
 	 */
-	public static void notifyInvitationRejected(Project project, User inviter) {
+	public static void notifyInvitationRejected(Invitation invitation, MsgService<User> msgService) {
+        /* OLD FAIL:
 		UserId backendUser = project.getMessageService().getIcsManager().getBackendUserId(inviter);
 		String msg = createInviteRejectedMessage(project);
 		try {
@@ -224,7 +227,15 @@ public class ProjectInvitationHandler implements IMessageReceiveListener, IInvit
 		} catch (Exception e) {
 			log.warn("sending reject failed", e);
 		}
-	}
+		*/
+        try {
+            msgService.getMainIcs().getMsgService().sendMessage(msgService.getIcsManager().getBackendUserId(invitation.getInviter()), "FUCKYOU");
+        } catch (NetworkException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OtherUserOfflineException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 	/**
 	 * Adds an <code>IProjectInvitationListener</code> to the list of <code>IProjectInvitationListeners</code>

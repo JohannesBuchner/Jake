@@ -96,6 +96,14 @@ public class ExceptionUtilities {
 				"In your face, sucker!",
 				"Please accept our apologies",
 				"Smack the developer in the face.",
+                "Simon says: Jump in the air and cry!",
+                "Cold and dead Jake lies\namidst many exceptions!\non the stony ground.",
+                "Somebody set up us the exception!",
+                "All your crash are belong to us.",
+                "oMGfZ ePIC FaIL!!!!!1111oneeleven",
+                "O RLY? I CAN HAS EXCEPTION?",
+                "Try again tomorrow. Or the day after. Or how about: NEVER!",
+                "Oh what a ******** piece of *********** *****! ****** this **** *********** is ******!!!!"
 		};
 		return apologies[new Random().nextInt(apologies.length)];
 	}

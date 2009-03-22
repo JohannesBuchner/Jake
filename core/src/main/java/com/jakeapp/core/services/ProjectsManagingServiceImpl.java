@@ -752,27 +752,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	@Override
 	public void rejectInvitation(Invitation invitation)
 			throws IllegalStateException, NoSuchProjectException {
-
-		Project project = invitation.createProject();
-		User inviter = invitation.getInviter();
-		
-		// preconditions
-		if (project == null)
-			throw new NoSuchProjectException();
-		if (!project.isInvitation())
-			throw new IllegalStateException();
+		User invitee = invitation.getInvitedOn();
 
 		// remove the project
-		try {
-			this.closeProject(project);
-		} catch (IllegalArgumentException e) {
-			throw new NoSuchProjectException();
-		} catch (FileNotFoundException e) {
-			// empty catch
-		}
+        // TODO: How the hell can we remove the project from the list?
 
 		// notify the inviter
-		ProjectInvitationHandler.notifyInvitationRejected(project, inviter);
+		ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getForUserId(invitee));
 	}
 
 	@Override
