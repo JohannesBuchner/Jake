@@ -240,17 +240,11 @@ public interface ILogEntryDao {
 
 
 	/**
-	 * Iterates in time through all
-	 * {@link LogAction#START_TRUSTING_PROJECTMEMBER} and
-	 * {@link LogAction#STOP_TRUSTING_PROJECTMEMBER}. <br>
-	 * Keeps a map of who trusts a {@link com.jakeapp.core.domain.User}. returns
-	 * all {@link com.jakeapp.core.domain.User} that at the end of the time have
-	 * people that trust them. Also looks at the
-	 * {@value LogAction#PROJECT_CREATED} at the beginning.
+	 * Computes a list of current project members starting at the user <code>correspondingTo</code>.
+	 * That is, all users that are reachable form the <code>correspondingTo</code> user.
 	 * 
-	 * @param correspondingTo
-	 * @return an empty collection if no project members (not null) or the
-	 *         project members otherwise
+	 * @param correspondingTo the starting point
+	 * @return a list of all connected users, at least the <code>correspondingTo</code> user
 	 */
 	public List<User> getCurrentProjectMembers(User correspondingTo);
 
