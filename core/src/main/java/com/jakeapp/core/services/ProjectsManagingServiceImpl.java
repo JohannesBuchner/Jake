@@ -73,7 +73,7 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 
-public class ProjectsManagingServiceImpl extends JakeService implements
+public class ProjectsManagingServiceImpl implements
 		IProjectsManagingService {
 
 	private static final Logger log = Logger.getLogger(ProjectsManagingServiceImpl.class);
@@ -92,8 +92,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 
 	private ChangeListener changeListener;
 
+	public ProjectApplicationContextFactory getApplicationContextFactory() {
+		return applicationContextFactory;
+	}
+
 	// initialized projects are saved here.
 	private HashMap<Project, Boolean> activeProjects = new HashMap<Project, Boolean>();
+	private ProjectApplicationContextFactory applicationContextFactory;
 
 	public void addChangeListener(ChangeListener changeListener) {
 		this.changeListener = changeListener;
@@ -102,7 +107,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public ProjectsManagingServiceImpl(
 			ProjectApplicationContextFactory applicationContextFactory,
 			MsgServiceManager msgServiceFactory) {
-		super(applicationContextFactory);
+		this.applicationContextFactory = applicationContextFactory;
 		this.msgServiceFactory = msgServiceFactory;
 	}
 
