@@ -510,28 +510,18 @@ public class HibernateLogEntryDao extends HibernateDaoSupport implements ILogEnt
 	@Override
 	public List<User> getCurrentProjectMembers(User correspondingTo) {
 		Map<User, List<User>> people = getTrustGraph();
-		SortedSet<User> trusted = new TreeSet<User>();
+		List<User> result = new ArrayList<User>();
 
-		trusted.add(correspondingTo);
-
-		// TODO? run more often, until trusted does not change any more?
-		// why? -- dominik
-		// because 'indirectly' trusted members aren't detected by this --
-		// johannes
-		// actually, while thinking about it, we don't want indirectly trusted
-		// members.
-		// If we wanted them, we'd have the other user as following-trust. --
-		// johannes
-
-		for (User member : people.keySet()) {
-			if (trusted.contains(member)) {
-				for (User trustedMember : people.get(member)) {
-					trusted.add(trustedMember);
+		result.add(correspondingTo);
+		for (int i = 0; i < result.size(); i++) {
+			User user = result.get(i);
+			for (User nextUser : people.get(user)) {
+				if (!result.contains(nextUser)) {
+					result.add(nextUser);
 				}
 			}
 		}
-
-		return new ArrayList<User>(trusted);
+		return result;
 	}
 
 	/**
