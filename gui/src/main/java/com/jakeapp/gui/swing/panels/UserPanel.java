@@ -444,7 +444,7 @@ public class UserPanel extends JXPanel
 	 * Action that is called when Button Sign In / Register is pressed.
 	 */
 	public void signInRegisterButtonPressed() {
-		log.info("Sign In / Registering (isSignIn=" + isModeSignIn());
+		log.trace("Sign In / Registering (isSignIn=" + isModeSignIn());
 
 		if (isSignInRegisterButtonEnabled()) {
 
