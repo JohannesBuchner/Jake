@@ -1,12 +1,13 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
+import org.apache.log4j.Logger;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.services.MsgService;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.components.JakeStatusBar;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
-import org.apache.log4j.Logger;
 
 /**
  * @author: studpete

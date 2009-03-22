@@ -1,19 +1,20 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
+
+import org.apache.log4j.Logger;
+
 import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.swing.ICoreAccess;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
-import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
-import org.apache.log4j.Logger;
-
-import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 
 public class InitCoreTask extends SwingWorker<ICoreAccess, Void>
 				implements IJakeTask {

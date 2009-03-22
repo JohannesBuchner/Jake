@@ -1,13 +1,14 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.xcore.ObjectCache;
-import org.apache.log4j.Logger;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.log4j.Logger;
+
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 
 /**
  * @author studpete

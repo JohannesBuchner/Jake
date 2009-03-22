@@ -1,13 +1,14 @@
 package com.jakeapp.gui.swing.worker.tasks;
 
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.util.availablelater.AvailableLaterObject;
-import com.jakeapp.gui.swing.JakeMainApp;
-import com.jakeapp.gui.swing.xcore.ObjectCache;
+import java.util.Collection;
+
 import org.apache.log4j.Logger;
 
-import java.util.Collection;
+import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.core.domain.NoteObject;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.xcore.ObjectCache;
 
 /**
  * Get all Notes for a certain project
