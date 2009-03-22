@@ -30,7 +30,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.core.domain.InvitationState;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
@@ -217,15 +216,6 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 			}
 		}
 		result.removeAll(invalidProjects);
-	}
-
-	@Transactional
-	@Override
-	public List<Project> getProjectList(InvitationState state) {
-		log.debug("calling getProjectList");
-		List<Project> result = this.getProjectDao().getAll(state);
-		checkProjects(result);
-		return result;
 	}
 
 	@Override
