@@ -7,7 +7,13 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.IFileObjectDao;
+import com.jakeapp.core.dao.ILogEntryDao;
+import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.logentries.JakeObjectDeleteLogEntry;
+import com.jakeapp.core.domain.logentries.LogEntry;
+import com.jakeapp.core.util.UnprocessedBlindLogEntryDaoProxy;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
@@ -20,9 +26,11 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 	private static final Logger log = Logger.getLogger(ProjectSizeTotalFuture.class);
 
 	private IFileObjectDao dao;
+	private UnprocessedBlindLogEntryDaoProxy ledao;
 	private IFSService fsService;
 	List<FileObject> toDelete;
 	boolean trash;
+	private User self;
 
 	private IFileObjectDao getDao() {
 		return dao;
@@ -51,10 +59,13 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 	}
 
 
-	public DeleteFilesFuture(IFileObjectDao dao, IFSService fsService,
+	// TODO: UnprocessedBlindLogEntryDAO sucks! Fix this!
+	public DeleteFilesFuture(IFileObjectDao dao, UnprocessedBlindLogEntryDaoProxy ledao, User self, IFSService fsService,
 					List<FileObject> toDelete, boolean trash) {
 		super();
+		this.self = self;
 		this.setDao(dao);
+		this.setLedao(ledao);
 		this.setFsService(fsService);
 		this.setToDelete(toDelete);
 		this.trash = trash;
@@ -65,8 +76,19 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 
 		// update database if object has entry (uuid is true)
 		if (fo.getUuid() != null) {
-			fo.setDeleted(true);
-			this.getDao().persist(fo);
+			log.info("We have a UUID to delete: " + fo.getUuid());
+
+			// // OLD CRAP
+			// fo.setDeleted(true);
+			// this.getDao().persist(fo);
+			try {
+				log.info("Deleting object " + fo + " from DAO!");
+				this.getLedao().create(new JakeObjectDeleteLogEntry(fo, self, "", true));
+				this.getDao().delete(fo);
+			} catch (NoSuchJakeObjectException e) {
+				log.fatal("Couldn't delete object because it didn't exist", e);
+				throw new IllegalStateException("Expected JakeObject but it wasn't there", e);
+			}
 		}
 
 		// delete physical file
@@ -94,5 +116,13 @@ public class DeleteFilesFuture extends AvailableLaterObject<Integer> {
 			this.deleteFile(fo);
 
 		return this.getToDelete().size();
+	}
+
+	public UnprocessedBlindLogEntryDaoProxy getLedao() {
+		return ledao;
+	}
+
+	public void setLedao(UnprocessedBlindLogEntryDaoProxy ledao) {
+		this.ledao = ledao;
 	}
 }

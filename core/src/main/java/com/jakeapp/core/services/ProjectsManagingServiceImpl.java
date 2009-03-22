@@ -1201,7 +1201,7 @@ public class ProjectsManagingServiceImpl implements
 
 			try {
 				return new DeleteFilesFuture(
-						this.getFileObjectDao(project),
+						this.getFileObjectDao(project), this.getLogEntryDao(project), project.getUserId(),
 						this.getProjectsFileServices().getProjectFSService(project),
 						fos, trash
 				).start();

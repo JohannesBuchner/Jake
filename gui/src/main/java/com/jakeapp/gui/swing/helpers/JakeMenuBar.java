@@ -273,6 +273,16 @@ public class JakeMenuBar extends JMenuBar {
 		});
 		debugMenu.add(reloadDebugItem);
 
+		JMenuItem forceObjectCacheRefresh = new JMenuItem("Force cache refresh");
+		forceObjectCacheRefresh.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ObjectCache.get().updateAll();
+			}
+		});
+		debugMenu.add(forceObjectCacheRefresh);
+
 
 		final JCheckBoxMenuItem xmppDebugViewItem =
 						new JCheckBoxMenuItem("XMPP Debug Window (activates on new connection)");
