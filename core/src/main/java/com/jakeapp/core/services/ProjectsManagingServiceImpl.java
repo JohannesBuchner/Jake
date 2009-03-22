@@ -1132,13 +1132,13 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	public void lock(JakeObject jo, String comment) {
 		Project p = jo.getProject();
         User me = p.getUserId();
-        ensureHasUUID(jo, p);
+        jo = ensureHasUUID(jo, p);
          
         LogEntry<JakeObject> le = new JakeObjectLockLogEntry(jo, me, comment, true);
         this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
-	private void ensureHasUUID(JakeObject jo, Project p) {
+	private JakeObject ensureHasUUID(JakeObject jo, Project p) {
 		if (jo.getUuid() == null) {
 			if (jo instanceof NoteObject) {
 	        	this.getNoteObjectDao(p).persist((NoteObject) jo);
@@ -1146,8 +1146,12 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	        else {
 	        	FileObject newFile = new FileObject(UUID.randomUUID(), p, ((FileObject)jo).getRelPath());
 	        	this.getFileObjectDao(p).persist(newFile);
+	        	//FIXME: dirty hack, parameter assignment
+	        	jo = newFile;
 	        }
 		}
+		//FIXME: me don't like that. 
+		return jo;
 	}
 
 	@Override

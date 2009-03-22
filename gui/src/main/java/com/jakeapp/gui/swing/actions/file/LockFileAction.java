@@ -57,8 +57,10 @@ public class LockFileAction extends FileAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		log.debug("lock file action. start the lockdown...");
 		if (!isSingleFileSelected()) {
 			log.info("Action Lock failed: no single file selected.");
+			return;
 		}
 
 		// detect if there is a soft lock set
@@ -72,12 +74,16 @@ public class LockFileAction extends FileAction {
 			JSheet.showInputSheet(JakeContext.getFrame(), promptStr, null,
 							new SheetListener() {
 								@Override public void optionSelected(SheetEvent evt) {
+									log.debug("jSheet, option selected");
 									JakeMainApp.getCore().setSoftLock(attributedFile.getJakeObject(), true,
 																	(String) evt.getInputValue());
+									log.debug("locking done!");
 								}
 							});
 		} else {
+			log.debug("unlocking file...");
 			JakeMainApp.getCore().setSoftLock(attributedFile.getJakeObject(), false, "");
+			log.debug("unlocking done!");
 		}
 	}
 }
