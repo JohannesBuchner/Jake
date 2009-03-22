@@ -451,12 +451,17 @@ public class UserPanel extends JXPanel
 				}
 			} else {
 				JakeExecutor.exec(new RegisterAccountTask(getCredentials()));
+				cleanView();
 				updateView();
-				// fixme: what do do? events?
 			}
 		} else {
 			log.warn("Sign In tried while button was not enabled!");
 		}
+	}
+
+	private void cleanView() {
+		loginUserDataPanel.cleanPanel();
+		registerUserDataPanel.cleanPanel();
 	}
 
 
@@ -681,6 +686,11 @@ public class UserPanel extends JXPanel
 		 */
 		public void setUserLabel(String str) {
 			userLabel.setText(getResourceMap().getString(str));
+		}
+
+		public void cleanPanel() {
+			userName.setText("");
+			passName.setText("");
 		}
 	}
 
@@ -938,7 +948,7 @@ public class UserPanel extends JXPanel
 						updateView();
 					}
 
-					catch (Exception e1){
+					catch (Exception e1) {
 						ExceptionUtilities.showError(e1);
 					}
 				}
@@ -989,9 +999,11 @@ public class UserPanel extends JXPanel
 							ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									if (SheetHelper.showConfirm(
-													"Really delete your Account? All your Projects will be deleted. " + "\n(But don't worry, we won't delete your Files)",
-													"Delete Account")) {
+									if (SheetHelper.showConfirm(StringUtilities.htmlize(
+													"<b>Really delete " + msg
+																	.getUserId().getUserId() + "?</b><br><br>Connected Projects will be deleted. " +
+																	"<br>(But don't worry, we won't delete your Files)"),
+													"Delete")) {
 										try {
 											JakeMainApp.getCore().removeAccount(msg);
 											updateView();
