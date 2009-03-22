@@ -142,6 +142,12 @@ public class ObjectCache implements ContextChangedCallback {
 
 	public void updateAll() {
 		updateProjects();
+
+		// get file & notes data!
+		if (JakeContext.getProject() != null) {
+			updateFiles(JakeContext.getProject());
+			updateNotes(JakeContext.getProject());
+		}
 	}
 
 	/**

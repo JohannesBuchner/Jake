@@ -12,8 +12,13 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
+import com.jakeapp.gui.swing.actions.project.CreateProjectAction;
+import com.jakeapp.gui.swing.actions.project.DeleteProjectAction;
+import com.jakeapp.gui.swing.actions.project.JoinProjectAction;
 import com.jakeapp.gui.swing.actions.project.RejectInvitationAction;
-import com.jakeapp.gui.swing.actions.project.*;
+import com.jakeapp.gui.swing.actions.project.RenameProjectAction;
+import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
+import com.jakeapp.gui.swing.actions.project.SyncProjectAction;
 import com.jakeapp.gui.swing.callbacks.ContextViewChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
@@ -27,9 +32,9 @@ import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.JakePopupMenu;
 import com.jakeapp.gui.swing.helpers.dragdrop.JakeSourceListTransferHandler;
+import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.tasks.GetMyProjectsTask;
 import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
-import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.xcore.ObjectCache;
 import org.apache.log4j.Logger;
@@ -45,7 +50,8 @@ import java.util.Map;
  * Manages the Source List for projects.
  */
 public class JakeSourceList extends JakeGuiComponent
-				implements ProjectChangedCallback, DataChangedCallback, TaskChangedCallback, ContextViewChangedCallback {
+				implements ProjectChangedCallback, DataChangedCallback, TaskChangedCallback,
+				ContextViewChangedCallback {
 	private static final Logger log = Logger.getLogger(JakeSourceList.class);
 
 	private Map<SourceListItem, Project> sourceListProjectMap =
@@ -104,20 +110,20 @@ public class JakeSourceList extends JakeGuiComponent
 	private SourceList createSourceList() {
 
 		// init the icons
-		projectStartedIcon = ImageLoader.getScaled(getClass(), "/icons/folder-open.png",
-				16);
+		projectStartedIcon =
+						ImageLoader.getScaled(getClass(), "/icons/folder-open.png", 16);
 		projectStoppedIcon = ImageLoader.getScaled(getClass(), "/icons/folder.png", 16);
-		projectInvitedIcon = ImageLoader.getScaled(getClass(), "/icons/folder-new.png",
-				16);
+		projectInvitedIcon =
+						ImageLoader.getScaled(getClass(), "/icons/folder-new.png", 16);
 		projectWorkingIcon = new SpinningDial(16, 16);
 
 		// inits the main data model
 		projectSourceListModel = new SourceListModel();
 
-		myProjectsCategory =
-						new SourceListCategory(getResourceMap().getString("projectTreeMyProjects"));
-		invitedProjectsCategory = new SourceListCategory(getResourceMap().getString(
-						"projectTreeInvitedProjects"));
+		myProjectsCategory = new SourceListCategory(
+						getResourceMap().getString("projectTreeMyProjects"));
+		invitedProjectsCategory = new SourceListCategory(
+						getResourceMap().getString("projectTreeInvitedProjects"));
 		projectSourceListModel.addCategory(myProjectsCategory);
 		projectSourceListModel.addCategory(invitedProjectsCategory);
 
@@ -153,13 +159,13 @@ public class JakeSourceList extends JakeGuiComponent
 				if (item != null) {
 					// get the project from the hashmap
 					Project project = sourceListProjectMap.get(item);
-					if(project != null)
+					if (project != null)
 						JakeContext.setProject(project);
 
 					Invitation invite = sourceListInvitationMap.get(item);
-					if(invite != null)
+					if (invite != null)
 						JakeContext.setInvitation(invite);
-					
+
 				} else {
 					// fixme: i'm dead tired
 					//JakeMainApp.getApp().setProject(null);
@@ -202,52 +208,46 @@ public class JakeSourceList extends JakeGuiComponent
 							 * @return
 							 */
 							public JPopupMenu createContextMenu(SourceListItem item) {
-								log.trace("public JPopupMenu createContextMenu(SourceListItem item) {");
-								if(item == null)
+								log.trace(
+												"public JPopupMenu createContextMenu(SourceListItem item) {");
+								if (item == null)
 									return createContextMenu();
 
-								if(sourceListProjectMap.containsKey(item))
-								{
-									if(sourceListContextMenu != null)
+								if (sourceListProjectMap.containsKey(item)) {
+									if (sourceListContextMenu != null)
 										return sourceListContextMenu;
-									else
-									{
+									else {
 										log.error("sourceListContextMenu is null");
 										return null;
 									}
-								}
-								else if(sourceListInvitationMap.containsKey(item))
-								{
-									if(sourceListInvitiationContextMenu != null)
+								} else if (sourceListInvitationMap.containsKey(item)) {
+									if (sourceListInvitiationContextMenu != null)
 										return sourceListInvitiationContextMenu;
-									else
-									{
+									else {
 										log.error("sourceListInvitiationContextMenu is null");
 										return null;
 									}
-								}
-								else
-								{
+								} else {
 									return createContextMenu();
 								}
 
-//								Project project = sourceListProjectMap.get(item);
-//								if(project == null)
-//								{
-//									// item is probably a invitation
-//									Invitation invite = sourceListInvitationMap.get(item);
-//									if(invite == null)
-//									{
-//										// no it isn't. don't do anything
-//										return createContextMenu();
-//									}
-//									else
-//									{
-//									}
-//								}
-//								else
-//								{
-//								}
+								//								Project project = sourceListProjectMap.get(item);
+								//								if(project == null)
+								//								{
+								//									// item is probably a invitation
+								//									Invitation invite = sourceListInvitationMap.get(item);
+								//									if(invite == null)
+								//									{
+								//										// no it isn't. don't do anything
+								//										return createContextMenu();
+								//									}
+								//									else
+								//									{
+								//									}
+								//								}
+								//								else
+								//								{
+								//								}
 							}
 
 							/**
@@ -398,7 +398,16 @@ public class JakeSourceList extends JakeGuiComponent
 
 			// fixme: should only show *new* eventlogs
 			// fixme: need counter-only or some sort of caching...
-			sli.setCounterValue(JakeMainApp.getCore().getLog(project, null, 0).size());
+
+			int logSize = 0;
+			
+			try {
+				logSize = JakeMainApp.getCore().getLog(project, null, 0).size();
+			} catch (Exception ex) {
+				log.warn("Error fetching log entries!", ex);
+			}
+
+			sli.setCounterValue(logSize);
 
 			projectSourceListModel.addItemToCategory(sli, myProjectsCategory);
 			sourceListProjectMap.put(sli, project);
@@ -554,7 +563,8 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void dataChanged(EnumSet<DataReason> reason, Project p) {
-		if (reason.contains(DataReason.Projects) || reason.contains(DataReason.LogEntries)) {
+		if (reason.contains(DataReason.Projects) || reason
+						.contains(DataReason.LogEntries)) {
 			updateSourceList();
 		}
 	}
@@ -575,9 +585,9 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void setContextViewPanel(JakeMainView.ContextPanelEnum panel) {
-		if(panel == JakeMainView.ContextPanelEnum.Login) {
+		if (panel == JakeMainView.ContextPanelEnum.Login) {
 			removeSelection();
-		}else {
+		} else {
 			syncSelection();
 		}
 	}
@@ -599,7 +609,7 @@ public class JakeSourceList extends JakeGuiComponent
 		// TODO: VERY basic; what we want is an animation...
 		SourceListItem sli = getListItemForProject(project);
 		if (sli != null) {
-		//	sli.setCounterValue((busy.contains(BusyState.Idle) ? 0 : 1));
+			//	sli.setCounterValue((busy.contains(BusyState.Idle) ? 0 : 1));
 		}
 	}
 }

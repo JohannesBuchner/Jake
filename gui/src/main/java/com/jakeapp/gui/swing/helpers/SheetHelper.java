@@ -1,13 +1,10 @@
 package com.jakeapp.gui.swing.helpers;
 
-import com.jakeapp.gui.swing.actions.users.InviteUsersAction;
 import com.jakeapp.gui.swing.dialogs.generic.JSheet;
 import com.jakeapp.gui.swing.dialogs.generic.SheetEvent;
 import com.jakeapp.gui.swing.dialogs.generic.SheetListener;
 import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.panels.FilePanel;
-
-import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
 import javax.swing.*;
