@@ -64,8 +64,8 @@ public interface IProjectsManagingService {
 	 * @return the loaded instance of this <code>Project</code>
 	 * @throws FileNotFoundException	if the rootPath is invalid
 	 * @throws IllegalArgumentException if the supplied <code>name</code> is invalid
-	 * @throws NotADirectoryException
-	 * @throws IOException
+	 * @throws NotADirectoryException gets thrown when the <code>rootPath</code> is not a directory
+	 * @throws IOException if some other exception in the file system occurred.
 	 */
 	Project createProject(String name, String rootPath,
 						  MsgService msgService) throws IllegalArgumentException, IOException, NotADirectoryException;
@@ -96,17 +96,17 @@ public interface IProjectsManagingService {
 	 * @throws IllegalArgumentException if the supplied <code>Project</code> is null
 	 * @throws FileNotFoundException	if the rootPath of the <code>Project</code> does not exist
 	 *                                  anymore
+	 * @throws NoSuchProjectException gets thrown, when the <code>Project</code> to be stopped does not exist (anymore)
 	 */
 	boolean stopProject(Project project) throws IllegalArgumentException, FileNotFoundException,
 			NoSuchProjectException;
 
 	/**
-	 * Set the ChangeListener for JakeObject - Changes.
-	 * Called from backend-logon.
+	 * Adds a ChangeListener for <code>JakeObject</code> changes. Usually called when a frontend logs in.
 	 *
-	 * @param changeListener
+	 * @param changeListener the <code>ChangeListener</code> to be added to the list. 
 	 */
-	public void setChangeListener(ChangeListener changeListener);
+	public void addChangeListener(ChangeListener changeListener);
 
 	/**
 	 * Loads the given project (load database)

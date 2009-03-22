@@ -95,7 +95,7 @@ public class ProjectsManagingServiceImpl extends JakeService implements
 	// initialized projects are saved here.
 	private HashMap<Project, Boolean> activeProjects = new HashMap<Project, Boolean>();
 
-	public void setChangeListener(ChangeListener changeListener) {
+	public void addChangeListener(ChangeListener changeListener) {
 		this.changeListener = changeListener;
 	}
 
