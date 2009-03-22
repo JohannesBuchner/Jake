@@ -137,7 +137,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
 
-		jo = completeIncomingObjectSafe(jo);
+		//TODO this call is not neccessary
+		//it deletes jo.getProject.getUser() and prevents the JakeObject
+		//from being written to the log.
+		//jo = completeIncomingObjectSafe(jo);
+		
 		/*
 		 * if (isNoteObject(jo)) { note =
 		 * completeIncomingObjectOrNew((NoteObject) jo); } else { fo =
@@ -148,8 +152,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			case JAKE_OBJECT_NEW_VERSION:
 				user = getMyProjectMember(jo.getProject());
 				
-				le = new JakeObjectNewVersionLogEntry(jo, getMyProjectMember(jo
-						.getProject()), commitMsg, null, true);
+				le = new JakeObjectNewVersionLogEntry(jo, user, commitMsg, null, true);
 				break;
 
 			case JAKE_OBJECT_DELETE:

@@ -42,6 +42,7 @@ import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserFormatException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry;
 import com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry;
@@ -73,6 +74,9 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 
+/**
+ * Implementation of the <code>IProjectsManagingService</code> interface.
+ */
 public class ProjectsManagingServiceImpl implements
 		IProjectsManagingService {
 
@@ -100,6 +104,9 @@ public class ProjectsManagingServiceImpl implements
 	private HashMap<Project, Boolean> activeProjects = new HashMap<Project, Boolean>();
 	private ProjectApplicationContextFactory applicationContextFactory;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void addChangeListener(ChangeListener changeListener) {
 		this.changeListener = changeListener;
 	}
@@ -131,6 +138,9 @@ public class ProjectsManagingServiceImpl implements
 		this.projectDao = projectDao;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IFSService getFileServices(Project p) {
 		try {
@@ -177,11 +187,18 @@ public class ProjectsManagingServiceImpl implements
 	 * ***** STARTING IMPLEMENTATIONS *************
 	 */
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AvailableLaterObject<List<Project>> getProjects(MsgService user) {
 		return new GetProjectsFuture(this, user).start();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Transactional
 	@Override
 	public List<Project> getProjectList(MsgService msg) {
@@ -223,6 +240,9 @@ public class ProjectsManagingServiceImpl implements
 		result.removeAll(invalidProjects);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Invitation> getInvitations(MsgService user) {
 		return this.invitationDao.getAll(user.getUserId());
@@ -279,7 +299,9 @@ public class ProjectsManagingServiceImpl implements
 		return b != null ? b : false;
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
@@ -383,7 +405,9 @@ public class ProjectsManagingServiceImpl implements
 		this.getApplicationContextFactory().getApplicationContextThread(p);
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean startProject(Project project)
 			throws IllegalArgumentException, FileNotFoundException, ProjectException {
@@ -413,6 +437,9 @@ public class ProjectsManagingServiceImpl implements
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean stopProject(Project project) throws IllegalArgumentException,
 			FileNotFoundException,
@@ -435,6 +462,9 @@ public class ProjectsManagingServiceImpl implements
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void closeProject(Project project) throws IllegalArgumentException,
@@ -463,6 +493,9 @@ public class ProjectsManagingServiceImpl implements
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public Project openProject(Project project) throws IllegalArgumentException,
@@ -486,6 +519,9 @@ public class ProjectsManagingServiceImpl implements
 		return project;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean deleteProject(Project project, boolean deleteProjectFiles) throws IllegalArgumentException, SecurityException, IOException,
 			NotADirectoryException,
@@ -525,6 +561,9 @@ public class ProjectsManagingServiceImpl implements
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(Project project)
@@ -543,6 +582,9 @@ public class ProjectsManagingServiceImpl implements
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public List<LogEntry<? extends ILogable>> getLog(JakeObject jakeObject)
@@ -570,39 +612,7 @@ public class ProjectsManagingServiceImpl implements
 		return result;
 	}
 
-	/**
-	 * Assigns a User Id to the Project. Called only once, to bind user and
-	 * project. It's not supposed to change an already bound user id.
-	 *
-	 * @param project
-	 *            the Project to set the UserId
-	 * @param userId
-	 *            the UserId to be set
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
-	/*
-	 * @Transactional
-	 * 
-	 * @Override public void assignUserToProject(Project project, User userId)
-	 * throws IllegalArgumentException, IllegalAccessException {
-	 * 
-	 * // Check preconditions if (project == null) throw new
-	 * IllegalArgumentException("Project is null"); if (userId == null) throw
-	 * new IllegalArgumentException("User ID is null"); if (project.getUserId()
-	 * != null) throw new
-	 * IllegalStateException("Project already has a user Id: " +
-	 * project.getUserId());
-	 * 
-	 * // connect userId and project project.setUserId(userId);
-	 * 
-	 * // persist Project-changes try { this.getProjectDao().update(project); }
-	 * catch (NoSuchProjectException e) { throw new IllegalArgumentException(e);
-	 * }
-	 * 
-	 * // set User as ProjectMember this.addUserToProject(project, userId);
-	 * this.setTrust(project, userId, TrustState.AUTO_ADD_REMOVE); }
-	 */
+
 
 	/**
 	 * Adds a new Projectmember to a Project. It may not exist in the Project
@@ -632,7 +642,9 @@ public class ProjectsManagingServiceImpl implements
 		return user;
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void setTrust(Project project, User user, TrustState trust)
@@ -671,6 +683,9 @@ public class ProjectsManagingServiceImpl implements
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AvailableLaterObject<Integer> getProjectFileCount(Project project)
 			throws NoSuchProjectException, FileNotFoundException,
@@ -680,6 +695,9 @@ public class ProjectsManagingServiceImpl implements
 		return new ProjectFileCountFuture(this.getAllProjectFiles(project)).start();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AvailableLaterObject<Long> getProjectSizeTotal(Project project)
 			throws NoSuchProjectException, FileNotFoundException,
@@ -689,6 +707,9 @@ public class ProjectsManagingServiceImpl implements
 				.getAllProjectFiles(project));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AvailableLaterObject<Collection<FileObject>> getAllProjectFiles(Project project)
 			throws NoSuchProjectException, IllegalArgumentException {
@@ -698,6 +719,9 @@ public class ProjectsManagingServiceImpl implements
 				getFileServices(project)).start();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AvailableLaterObject<Collection<NoteObject>> getAllProjectNotes(Project project)
 			throws NoSuchProjectException, IllegalArgumentException {
@@ -707,6 +731,9 @@ public class ProjectsManagingServiceImpl implements
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public FileObject getFileObjectByRelPath(Project project, String relpath)
@@ -716,6 +743,9 @@ public class ProjectsManagingServiceImpl implements
 		return dao.get(relpath);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional(readOnly = false)
 	public void acceptInvitation(Invitation invitation, File rootPath)
@@ -737,6 +767,9 @@ public class ProjectsManagingServiceImpl implements
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void rejectInvitation(Invitation invitation)
 			throws IllegalStateException, NoSuchProjectException {
@@ -747,9 +780,16 @@ public class ProjectsManagingServiceImpl implements
 		this.getInvitationDao().reject(invitation);
 
 		// notify the inviter
-		ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getForUserId(invitee));
+		try {
+			ProjectInvitationHandler.notifyInvitationRejected(invitation, msgServiceFactory.getMsgServiceForUser(invitee));
+		} catch (NoSuchMsgServiceException e) {
+			e.printStackTrace();
+		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public User invite(Project project, String userid) throws UserFormatException {
@@ -772,7 +812,9 @@ public class ProjectsManagingServiceImpl implements
 //		return member;
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void updateProjectName(Project project, String newName)
@@ -787,8 +829,11 @@ public class ProjectsManagingServiceImpl implements
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	// TODO: think we can delete those...
+	@Deprecated
 	public Date getLastEdit(JakeObject jo) throws NoSuchProjectException,
 			IllegalArgumentException {
 		LogEntry<? extends ILogable> logentry;
@@ -805,8 +850,11 @@ public class ProjectsManagingServiceImpl implements
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	// TODO: think we can delete those...
+	@Deprecated
 	public User getLastEditor(JakeObject jo) throws NoSuchProjectException,
 			IllegalArgumentException {
 		LogEntry<? extends ILogable> logentry;
@@ -824,6 +872,7 @@ public class ProjectsManagingServiceImpl implements
 	}
 
 	@Transactional
+	@Deprecated
 	private LogEntry<? extends ILogable> getMostRecentFor(JakeObject jo)
 			throws NoSuchProjectException, IllegalArgumentException,
 			NoSuchLogEntryException {
@@ -841,6 +890,9 @@ public class ProjectsManagingServiceImpl implements
 		return logentry;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public List<User> getProjectUsers(Project project) throws NoSuchProjectException {
@@ -851,6 +903,9 @@ public class ProjectsManagingServiceImpl implements
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public List<UserInfo> getProjectUserInfos(Project project)
@@ -871,6 +926,9 @@ public class ProjectsManagingServiceImpl implements
 		return userInfos;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public UserInfo getProjectUserInfo(Project project, User user) {
@@ -923,7 +981,9 @@ public class ProjectsManagingServiceImpl implements
 		return result;
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public User getLastModifier(JakeObject jakeObject) {
@@ -935,7 +995,9 @@ public class ProjectsManagingServiceImpl implements
 		}
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
@@ -987,12 +1049,15 @@ public class ProjectsManagingServiceImpl implements
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
-	public Set<Tag> getTagsForJakeObject(JakeObject jo) throws IllegalArgumentException,
+	public Set<Tag> getTagsForJakeObject(JakeObject jakeObject) throws IllegalArgumentException,
 			NoSuchJakeObjectException {
 		try {
-			return new TreeSet<Tag>(getTagsListFor(jo));
+			return new TreeSet<Tag>(getTagsListFor(jakeObject));
 		} catch (NullPointerException npex) {
 			throw new NoSuchJakeObjectException(npex);
 		}
@@ -1003,6 +1068,9 @@ public class ProjectsManagingServiceImpl implements
 				.getCurrentTags(jo));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void setTagsForJakeObject(JakeObject jo, Set<Tag> tags)
@@ -1055,12 +1123,18 @@ public class ProjectsManagingServiceImpl implements
 		this.projectsFileServices = projectsFileServices;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void saveNote(NoteObject no) {
 		this.getNoteObjectDao(no.getProject()).persist(no);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void deleteNote(NoteObject no) throws NoSuchJakeObjectException {
@@ -1074,6 +1148,9 @@ public class ProjectsManagingServiceImpl implements
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public AvailableLaterObject<Void> deleteFile(FileObject fo, boolean trash) {
@@ -1094,11 +1171,15 @@ public class ProjectsManagingServiceImpl implements
 		return result.start();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public AvailableLaterObject<Integer> deleteFiles(List<FileObject> fos, boolean trash) {
 		Project project;
 		/* // TODO if someone has time for correct implementation (and thinking about it!) this was the old code.
+		// TODO: assigned redmine bug #95
 		if (fos.size() >= 0) {
 			project = fos.get(0).getProject();
 
@@ -1134,6 +1215,9 @@ public class ProjectsManagingServiceImpl implements
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void lock(JakeObject jo, String comment) {
@@ -1160,6 +1244,9 @@ public class ProjectsManagingServiceImpl implements
 		return jo;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional
 	public void unlock(JakeObject jo, String comment) {
@@ -1170,12 +1257,14 @@ public class ProjectsManagingServiceImpl implements
 		this.getApplicationContextFactory().getLogEntryDao(p).create(le);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setUserNickname(Project project, User user, String nick) {
-		// TODO: implement!
+		// TODO: implement! assigned redmine bug #96 to this issue
 		// TODO christopher: I think that this function is not supported
 		// by the current database structure
-
 	}
 
 	public void setAccountDao(IAccountDao accountDao) {

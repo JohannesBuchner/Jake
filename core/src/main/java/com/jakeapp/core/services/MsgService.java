@@ -25,8 +25,6 @@ import java.util.Map.Entry;
  * instant-messaging protocols (XMPP, ICQ, etc.) need to implement.
  * <p/>
  * Does not know anything about Projects.
- *
- * @author dominik
  */
 public abstract class MsgService<T extends User> {
 
@@ -169,16 +167,25 @@ public abstract class MsgService<T extends User> {
 		return this.doCredentialsCheck();
 	}
 
+	/**
+	 * concrete implementations have to implement this method for checking if the
+	 * given <code>Account</code>s credentials are well formed
+	 * @return true, if the credentials are ok, false otherwise
+	 */
 	protected abstract boolean doCredentialsCheck();
 
+	/**
+	 * concrete implementations have to implement this method for loging in
+	 * @throws NetworkException if something with the network went wrong
+	 */
 	protected abstract void doLogin() throws NetworkException;
 
 	/**
-	 * idempotent
+	 * Doing real logout();
+	 * idempotent, meaning behaviour does not change, no matter how often one calls this.
 	 *
-	 * @throws NetworkException
-	 * @throws TimeoutException
-	 * @throws Exception
+	 * @throws NetworkException a problem with the network occurred
+	 * @throws TimeoutException if a Timeout occurred 
 	 */
 	public final void logout() throws NetworkException {
 		log.debug("MsgService -> logout");
@@ -188,7 +195,7 @@ public abstract class MsgService<T extends User> {
 	}
 
 	/**
-	 * has to be idempotent
+	 * Logout method that has to be overriden by an concrete implementation.
 	 *
 	 * @throws NetworkException
 	 * @throws TimeoutException

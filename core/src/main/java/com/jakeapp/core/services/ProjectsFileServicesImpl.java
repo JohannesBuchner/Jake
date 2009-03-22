@@ -13,6 +13,9 @@ import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import org.apache.log4j.Logger;
 
 
+/**
+ * Implementation of the <code>IProjectsFileServices</code> Interface, providing <code>IFSService</code>s
+ */
 public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
 	private static Logger log = Logger.getLogger(ProjectsFileServicesImpl.class);
@@ -20,9 +23,15 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 
 	private Map<String, IFSService> fileServices = new HashMap<String, IFSService>();
 
+	/**
+	 * Default Constructor used to create the component.
+	 */
 	public ProjectsFileServicesImpl() {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IFSService startForProject(Project project) throws IOException,
 			NotADirectoryException {
@@ -42,6 +51,9 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 		return fss;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IFSService getProjectFSService(Project project) throws ProjectNotLoadedException {
 		if (fileServices.containsKey(project.getProjectId())) {
@@ -51,7 +63,9 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 				+ " has no fss");
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void stopForProject(Project project) {
 		if(project == null)

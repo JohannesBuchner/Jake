@@ -33,6 +33,8 @@ public class CommitNoteAction extends NoteAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		ArrayList<JakeObject> notes;
+		
 			/*
 			for (Attributed<NoteObject> attributedNote : this.getSelectedNotes()) {
 
@@ -40,13 +42,19 @@ public class CommitNoteAction extends NoteAction {
 			}*/
 			//this.refreshNotesPanel();
 			
+		notes =	new ArrayList<JakeObject>(
+						Attributed.castDownCollection(
+							Attributed.extract(this.getSelectedNotes())
+						)
+					);
+		
+		//TODO this hack may not be neccessary at all...remove it and see if issue 35 still works.
+		for (JakeObject jo : notes)
+			jo.setProject(getProject());
+		
 		JakeExecutor.exec(
 			new AnnounceJakeObjectTask(
-				new ArrayList<JakeObject>(
-					Attributed.castDownCollection(
-						Attributed.extract(this.getSelectedNotes())
-					)
-				),
+				notes,
 				null
 			)
 		);
