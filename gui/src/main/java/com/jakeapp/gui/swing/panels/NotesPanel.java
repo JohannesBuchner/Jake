@@ -293,7 +293,7 @@ public class NotesPanel extends javax.swing.JPanel
 		this.notesTable.getColumnModel().getColumn(1).setMaxWidth(20);
 		this.notesTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
-		for (int i = 0; i < this.notesTable.getColumnCount(); i++) {
+		for (int i = 2; i < this.notesTable.getColumnCount(); i++) {
 			this.notesTable.getColumn(i)
 							.setCellRenderer(new DefaultJakeTableCellRenderer());
 		}

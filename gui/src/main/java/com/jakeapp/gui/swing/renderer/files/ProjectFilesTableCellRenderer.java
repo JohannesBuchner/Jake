@@ -23,11 +23,6 @@ public class ProjectFilesTableCellRenderer extends DefaultJakeTableCellRenderer 
 		ProjectFilesTreeNode node = (ProjectFilesTreeNode) value;
 
 		Component c = FileIconLabelHelper.getIconLabel(node.getFileObject());
-
-		//if (isSelected) {
-		//	c.setBackground(table.getSelectionBackground());
-		//}
-
-		return c;
+		return configComponent(table, isSelected, c);
 	}
 }
