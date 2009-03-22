@@ -14,6 +14,9 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.fss.IFSService;
 
+/**
+ * <code>AvailableLaterObject</code> that returns all <code>Project</code>s <code>FileObject</code>
+ */
 public class AllProjectFilesFuture extends AvailableLaterObject<Collection<FileObject>> {
 
 	@SuppressWarnings("unused")
@@ -29,6 +32,9 @@ public class AllProjectFilesFuture extends AvailableLaterObject<Collection<FileO
 		this.localFilesFuture = new AllLocalProjectFilesFuture(context, p, fss);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<FileObject> calculate() throws Exception {
 		// this does parallelization!

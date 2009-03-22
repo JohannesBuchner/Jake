@@ -8,6 +8,10 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 
+/**
+ * <code>AvailableLaterObject</code> importing a <code>List</code> of <code>{@link java.io.File}</code>s to
+ * a certain <code>relPath</code> within a specific <code>IFSService</code>
+ */
 public class ImportFilesFuture extends AvailableLaterObject<Void> {
 	private static final Logger log = Logger.getLogger(ImportFilesFuture.class);
 	

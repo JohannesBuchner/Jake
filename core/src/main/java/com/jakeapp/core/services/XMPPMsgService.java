@@ -12,7 +12,7 @@ import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 /**
- * Implementation of the MessageService for the XMPP Messaging Protocol.
+ * Concrete implementation of the <code>MessageService</code> for the XMPP Messaging Protocol.
  * One per User.
  */
 public class XMPPMsgService extends MsgService<User> {
@@ -33,6 +33,9 @@ public class XMPPMsgService extends MsgService<User> {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected boolean doCredentialsCheck() {
 		Account cred = this.getServiceCredentials();
@@ -44,11 +47,14 @@ public class XMPPMsgService extends MsgService<User> {
 		return !cred.getPlainTextPassword().isEmpty();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void doLogin() throws NetworkException {
 		String pass = this.getServiceCredentials().getPlainTextPassword();
 		String host = this.getServiceCredentials().getServerAddress();
-		long   port = this.getServiceCredentials().getServerPort();
+		long port = this.getServiceCredentials().getServerPort();
 		log.debug("got credentials: " + this.getServiceCredentials());
 
 		// this needs to be done before loging in.
@@ -57,10 +63,13 @@ public class XMPPMsgService extends MsgService<User> {
 		this.mainIcs.getStatusService().login(this.getMainUserId(),
 				pass, host, port);
 
-				this.mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
+		this.mainIcs.getMsgService().registerReceiveMessageListener(this.invitationHandler);
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void doLogout() throws NetworkException {
 		log.debug("XMPPMsgService -> logout");
@@ -68,27 +77,42 @@ public class XMPPMsgService extends MsgService<User> {
 		this.mainIcs.getStatusService().logout();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public User getUserId(String userId) throws UserFormatException {
 		return new User(ProtocolType.XMPP, userId);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public User getUserId() {
 		return this.userId;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void createAccount() throws NetworkException {
 		this.mainIcs.getStatusService().createAccount(getMainUserId(),
 				this.getServiceCredentials().getPlainTextPassword());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected ICService getMainIcs() {
 		return this.mainIcs;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected XmppUserId getMainUserId() {
 		return new XmppUserId(new XmppUserId(this.getServiceCredentials().getUserId())
@@ -96,9 +120,12 @@ public class XMPPMsgService extends MsgService<User> {
 				+ "/Jake");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected com.jakeapp.jake.ics.UserId getIcsUser(ICService ics,
-			com.jakeapp.core.services.MsgService.ICData listeners) {
+													 com.jakeapp.core.services.MsgService.ICData listeners) {
 		return new XmppUserId(this.getMainUserId().getUserIdWithOutResource() + "/"
 				+ listeners.name);
 	}

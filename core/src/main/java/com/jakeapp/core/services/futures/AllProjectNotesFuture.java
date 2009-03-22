@@ -14,6 +14,10 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 
+/**
+ * <code>AvailableLaterObject</code> returning all the <code>NoteObject</code>s belonging
+ * to a certain <code>Project</code>.
+ */
 public class AllProjectNotesFuture extends
 		AvailableLaterWrapperObject<Collection<NoteObject>, Collection<JakeObject>> {
 
@@ -26,6 +30,10 @@ public class AllProjectNotesFuture extends
 		this.localNotesFuture = new AllLocalProjectNotesFuture(context, p);
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<NoteObject> calculate() throws Exception {
 		Collection<JakeObject> all = this.getSource().get();
