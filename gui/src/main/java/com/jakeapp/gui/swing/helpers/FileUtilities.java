@@ -237,7 +237,7 @@ public class FileUtilities {
 	}
 
 	/**
-	 * Returns a temporary file whose name begins with 'prefix'.
+	 * Returns a temporary file whose name begins with <code>prefix</code>.
 	 * The file will be deleted on exit.
 	 * On error, a RuntimeException is thrown which will refer to the file using 'humanReadableName'.
 	 *

@@ -65,7 +65,6 @@ public class HibernateInvitationDao extends HibernateDaoSupport implements IInvi
 	public List<Invitation> getAll(User user) {
 		List<Invitation> results;
 		try {
-			// TODO hopefully user.getUserId is really to column to join to...
 			results = this.getHibernateTemplate().getSessionFactory()
 					.getCurrentSession().createQuery(
 							"FROM invitation WHERE invitedOn = ?").setSerializable(0,
