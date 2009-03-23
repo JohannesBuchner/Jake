@@ -4,7 +4,7 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.actions.users.InviteUsersAction;
-import com.jakeapp.gui.swing.actions.users.RenameUsersAction;
+import com.jakeapp.gui.swing.actions.users.ResendInvitationUsersAction;
 import com.jakeapp.gui.swing.actions.users.SyncUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustFullUsersAction;
 import com.jakeapp.gui.swing.actions.users.TrustNoUsersAction;
@@ -48,7 +48,8 @@ import java.util.EnumSet;
  * @author studpete
  */
 public class NewsPanel extends javax.swing.JPanel
-				implements ProjectChangedCallback, DataChangedCallback, ContextChangedCallback {
+				implements ProjectChangedCallback, DataChangedCallback,
+				ContextChangedCallback {
 
 	private static final long serialVersionUID = -6867091182930736758L;
 	private static final Logger log = Logger.getLogger(NewsPanel.class);
@@ -56,7 +57,8 @@ public class NewsPanel extends javax.swing.JPanel
 	private ResourceMap resourceMap;
 	private Icon startIcon = ImageLoader.get(getClass(), "/icons/folder-open.png");
 	private Icon stopIcon = ImageLoader.get(getClass(), "/icons/folder.png");
-	private Icon invalidIcon = ImageLoader.get(getClass(), "/icons/folder_invalid.png");
+	private Icon invalidIcon =
+					ImageLoader.get(getClass(), "/icons/folder_invalid.png");
 
 	private StartStopProjectAction startStopProjectAction =
 					new StartStopProjectAction();
@@ -268,15 +270,16 @@ public class NewsPanel extends javax.swing.JPanel
 	private JPopupMenu createUsersContextMenu() {
 		JPopupMenu pm = new JakePopupMenu();
 
-		pm.add(new JMenuItem(new InviteUsersAction(true)));
-		pm.add(new JSeparator());
-		pm.add(new JMenuItem(new RenameUsersAction((JListMutable) usersList)));
-		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new ResendInvitationUsersAction(usersList)));
+		// HACK: reenable
+		//pm.add(new JMenuItem(new RenameUsersAction((JListMutable) usersList)));
 		pm.add(new JMenuItem(new SyncUsersAction(usersList)));
 		pm.add(new JSeparator());
 		pm.add(new JCheckBoxMenuItem(new TrustFullUsersAction(usersList)));
 		pm.add(new JCheckBoxMenuItem(new TrustUsersAction(usersList)));
 		pm.add(new JCheckBoxMenuItem(new TrustNoUsersAction(usersList)));
+		pm.add(new JSeparator());
+		pm.add(new JMenuItem(new InviteUsersAction(true)));
 		return pm;
 	}
 

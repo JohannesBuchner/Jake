@@ -1,25 +1,8 @@
 package com.jakeapp.gui.swing;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
@@ -41,6 +24,14 @@ import com.jakeapp.jake.fss.exceptions.LaunchException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -213,10 +204,10 @@ public interface ICoreAccess {
 	 * @param name : name of the project
 	 * @param path : path of the project
 	 * @param msg
+	 * @param startOnCreate
 	 */
-	// TODO: return AvailableLater?
-	public void createProject(String name, String path, MsgService msg);
-
+	public void createProject(String name, String path, MsgService msg,
+					boolean startOnCreate);
 
 	/**
 	 * Deletes a project. Works asyn, fires the callback when finished. Throws

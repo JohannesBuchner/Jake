@@ -39,6 +39,9 @@ public class UserHelper {
 	 * @return nickname or full name, if nn not set.
 	 */
 	public static String getNickOrFullName(UserInfo user) {
+		if(user == null) {
+			return "";
+		}
 		if (user.getNickName().length() > 0) {
 			return cleanUserId(user.getNickName());
 		}
