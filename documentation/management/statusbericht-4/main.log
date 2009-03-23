@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.3.28)  22 MAR 2009 17:08
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.3.28)  23 MAR 2009 23:58
 entering extended mode
 **main.tex
 (./main.tex
@@ -615,12 +615,29 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 37.
-)
-AED: lastpage setting LastPage [3] (./main.aux) ) 
+
+Overfull \hbox (3.54604pt too wide) in paragraph at lines 43--46
+[]\OT1/cmr/m/n/12 Die Do-ku-men-te UI-Skizzen und -beschreibung, Ri-si-ko-absch
+[]atzung, An-wen-dungs-fall-be-schrei-
+ []
+
+
+Overfull \hbox (32.63893pt too wide) in paragraph at lines 47--48
+[]\OT1/cmr/m/n/12 Die Be-spre-chungs-pro-to-kol-le sind auf http://wiki.jakeapp
+.com/doku.php?id=protokolle:protokolle
+ []
+
+
+Overfull \hbox (27.5126pt too wide) in paragraph at lines 49--50
+[]\OT1/cmr/m/n/12 Die Ja-va-doc (Tech-ni-sche Do-ku-men-ta-ti-on) ist auf http:
+//wiki.jakeapp.com/doku.php?id=javadoc
+ []
+
+) AED: lastpage setting LastPage [3] (./main.aux) ) 
 Here is how much of TeX's memory you used:
  4509 strings out of 94432
  56516 string characters out of 1175566
- 117381 words of memory out of 1000000
+ 117402 words of memory out of 1000000
  7610 multiletter control sequences out of 10000+50000
  12061 words of font info for 44 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
@@ -629,8 +646,8 @@ PDF statistics:
  78 PDF objects out of 300000
  6 named destinations out of 131072
  89 words of extra memory for PDF output out of 10000
-</usr/share/texmf/fonts/type1/
-bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmti12.pfb></usr
-/share/texmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texmf/fonts/type1/blu
-esky/cm/cmbx12.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr17.pfb>
-Output written on main.pdf (4 pages, 45427 bytes).
+</usr/share/texmf/fonts/type
+1/bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmti12.pfb></u
+sr/share/texmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texmf/fonts/type1/b
+luesky/cm/cmbx12.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr17.pfb>
+Output written on main.pdf (4 pages, 47327 bytes).
