@@ -47,6 +47,7 @@ public class ProjectsChangeListener implements ChangeListener {
 
 		// relay the event to someone who can use it!
 		JakeDownloadMgr.getInstance().pullProgressUpdate(jo, status, progress);
+		fireChangeEvent(jo);
 	}
 
 	@Override public void onlineStatusChanged(Project p) {

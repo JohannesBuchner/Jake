@@ -720,7 +720,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		LogEntry realProvider = null;
 
 		if (potentialProviders == null)
-			throw new NoSuchLogEntryException();
+			throw new NoSuchLogEntryException("No Providers found!");
 
 		for (LogEntry potentialProvider : potentialProviders) {
 			log.debug("looking at possible provider " + potentialProvider.getMember());
