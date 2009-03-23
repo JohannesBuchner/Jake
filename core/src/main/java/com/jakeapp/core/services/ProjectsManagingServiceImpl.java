@@ -388,7 +388,19 @@ public class ProjectsManagingServiceImpl implements
 		// Check preconditions
 		if (project == null)
 			throw new IllegalArgumentException("project is null!");
-		if (!project.isOpen() || project.isStarted()) {
+
+		// try to init project (maybe it was just created)
+		if(!project.isOpen()) {
+			try {
+				initProject(project);
+			} catch (NoSuchProjectException e) {
+				e.printStackTrace();
+			} catch (NotADirectoryException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (project.isStarted()) {
 			log.warn("Attemted to start a project that's not open or that is already started: "
 					+ project);
 			return false;

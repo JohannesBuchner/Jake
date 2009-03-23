@@ -77,20 +77,21 @@ public class ExceptionUtilities {
 		internalShowError(e.getMessage(), e);
 	}
 
-	private static String getExceptionText(Throwable e, String newline) {
+	private static String getExceptionText(Throwable e, String newline, int maxLen) {
 		StringBuilder sb = new StringBuilder();
 		if (e.getMessage() != null) {
 			sb.append(e.getMessage()).append(newline + newline);
 		}
 		StackTraceElement[] trace = e.getStackTrace();
-		for (int i = 0; i < trace.length; i++)
+		for (int i = 0; i < trace.length && i < maxLen; i++)
 			sb.append("\tat ").append(trace[i]).append(newline);
 
 		Throwable ourCause = e;
 		if (ourCause.getCause() != null) {
 			ourCause = ourCause.getCause();
-			sb.append("caused by: " + newline);
-			sb.append(getExceptionText(ourCause, newline));
+			sb.append("caused by: ");
+			sb.append(newline);
+			sb.append(getExceptionText(ourCause, newline, maxLen));
 		}
 		return sb.toString();
 	}
@@ -107,12 +108,14 @@ public class ExceptionUtilities {
 			msg = e.getClass().getName();
 		}
 
-		final String clipBoard = msg + "\n\n" + getExceptionText(e, "\n");
+		final String clipBoard = msg + "\n\n" + getExceptionText(e, "\n", 200);
 
 		// show only one exception, save the rest
 		if (exceptionDisplayActive) {
 			exceptionQueue.add(new ExceptionSaver(e, msg));
 		} else {
+			exceptionDisplayActive = true;
+			
 			String okMsg = "Ok";
 			int numExceptions = exceptionQueue.size();
 			if (numExceptions > 0) {
@@ -129,7 +132,7 @@ public class ExceptionUtilities {
 
 			JSheet.showOptionSheet(JakeContext.getFrame(),
 							"<html><h2>" + msg + "</h2><br><font size=2>" + getExceptionText(e,
-											"<br>") + "</font><br><br>" + getApologyText() + "</html>",
+											"<br>", 20) + "</font><br><br>" + getApologyText() + "</html>",
 							JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options.toArray(),
 							options.get(0), new SheetListener() {
 								@Override public void optionSelected(SheetEvent evt) {

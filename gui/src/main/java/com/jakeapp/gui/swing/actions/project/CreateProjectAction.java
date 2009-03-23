@@ -10,7 +10,6 @@ import com.jakeapp.gui.swing.helpers.ProjectHelper;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -49,7 +48,7 @@ public class CreateProjectAction extends ProjectAction {
 		if (path != null) {
 			JakeMainApp.getCore().createProject(ProjectHelper.createDefaultPath(path),
 							path,
-							JakeContext.getMsgService());
+							JakeContext.getMsgService(), false);
 		}
 	}
 

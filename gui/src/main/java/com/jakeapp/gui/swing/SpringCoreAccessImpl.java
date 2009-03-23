@@ -304,7 +304,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 													ProjectChangedCallback.ProjectChangedEvent.Reason.Joined));
 
 					// start the project!
-					StartStopProjectAction.perform(project);					
+					StartStopProjectAction.perform(project);
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
@@ -595,7 +595,12 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		if (user == null)
 			return null;
 
-		return pms.getProjectUserInfo(JakeContext.getProject(), user);
+		try {
+			return pms.getProjectUserInfo(JakeContext.getProject(), user);
+		} catch (Exception ex) {
+			log.warn("Error catching UserInfo", ex);
+			return null;
+		}
 	}
 
 	@Override
@@ -722,12 +727,13 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void createProject(final String name, final String path,
-					final MsgService msg) throws ProjectCreationException {
-		log.info("Create project: " + name + " path: " + path + " msg: " + msg);
+					final MsgService msg, final boolean startOnCreate)
+					throws ProjectCreationException {
+		log.debug("Create project: " + name + " path: " + path + " msg: " + msg);
 
 		// preconditions
 		if (path == null) {
-			throw new NullPointerException("Path cannot be null.");
+			throw new IllegalArgumentException("Path cannot be null.");
 		}
 
 		// TODO: AvailableLaterObject
@@ -742,6 +748,10 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					EventCore.get().fireProjectChanged(
 									new ProjectChangedCallback.ProjectChangedEvent(project,
 													ProjectChangedCallback.ProjectChangedEvent.Reason.Created));
+
+					if (startOnCreate) {
+						StartStopProjectAction.perform(project);
+					}
 
 				} catch (FrontendNotLoggedInException e) {
 					ExceptionUtilities.showError(

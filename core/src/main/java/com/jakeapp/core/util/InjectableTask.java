@@ -5,6 +5,7 @@ package com.jakeapp.core.util;
 
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -84,7 +85,15 @@ public abstract class InjectableTask<T> implements Runnable {
 		while (true) {
 			try {
 				// HACK TODO EVIL Timeout !?
-				this.s.tryAcquire(35, TimeUnit.SECONDS);
+
+				int timeout = 40;
+
+				// if we are in the event dispatching (gui) thread, only accept short tasks.
+				if(SwingUtilities.isEventDispatchThread()) {
+					timeout = 2;
+				}
+
+				this.s.tryAcquire(timeout, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				log.warn("Interrupted Task after Timeout!", e);
 				throw e;

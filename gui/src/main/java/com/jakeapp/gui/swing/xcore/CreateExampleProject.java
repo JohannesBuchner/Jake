@@ -36,7 +36,7 @@ public class CreateExampleProject {
 			writer.close();
 
 			JakeMainApp.getCore().createProject("JakeShared", newDir.getAbsolutePath(),
-							JakeContext.getMsgService());
+							JakeContext.getMsgService(), true);
 		} catch (Exception e) {
 			ExceptionUtilities.showError(e);
 		}

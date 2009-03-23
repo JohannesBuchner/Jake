@@ -221,7 +221,6 @@ public class EventCore {
 
 
 	public void fireNotesChanged(Project p) {
-		System.err.println("!!!!! HELLO, THE NOTES HAVE CHANGED !!!!!");
 		ObjectCache.get().updateNotes(p);
 		fireLogChanged(p);
 	}
@@ -237,8 +236,6 @@ public class EventCore {
 	}
 
 	public void fireLogChanged(Project p) {
-		//log.error("!!!!! HELLO, THE LOG HAS CHANGED !!!!!");
-		
 		// TODO: UGLY HACK, change someday
 		ObjectCache.get().updateNotes(p);
 		fireDataChanged(DataChangedCallback.ALL, p);

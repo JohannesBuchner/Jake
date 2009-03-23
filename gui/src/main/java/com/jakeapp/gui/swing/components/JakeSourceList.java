@@ -1,12 +1,6 @@
 package com.jakeapp.gui.swing.components;
 
-import com.explodingpixels.macwidgets.SourceList;
-import com.explodingpixels.macwidgets.SourceListCategory;
-import com.explodingpixels.macwidgets.SourceListClickListener;
-import com.explodingpixels.macwidgets.SourceListContextMenuProvider;
-import com.explodingpixels.macwidgets.SourceListItem;
-import com.explodingpixels.macwidgets.SourceListModel;
-import com.explodingpixels.macwidgets.SourceListSelectionListener;
+import com.explodingpixels.macwidgets.*;
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -179,13 +173,12 @@ public class JakeSourceList extends JakeGuiComponent
 
 		SourceList sourceList = new SourceList(projectSourceListModel);
 
+		// BAD JAKE :P :P
+		//sourceList.setColorScheme(new SourceListDarkColorScheme());
+
 		sourceList.addSourceListClickListener(projectClickListener);
 		sourceList.addSourceListSelectionListener(projectSelectionListener);
 
-		// use the fancy scrollbars on mac
-		//if (Platform.isMac()) {
-		//	sourceList.useIAppStyleScrollBars();
-		//}
 
 		final SourceListContextMenuProvider menuProvider =
 						new SourceListContextMenuProvider() {
