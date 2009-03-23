@@ -228,7 +228,7 @@ public class ProjectRequestListener
 	@Transactional
 	private void storeIncomingNote(LogEntry<? extends ILogable> entry) {
 		//TODO process DELETE_NOTE
-		log.warn("persisting noteobject");
+		log.debug("persisting noteobject");
 		try {
 			db.getNoteObjectDao(p).persist(
 				//pull note that does already exist	
@@ -236,17 +236,15 @@ public class ProjectRequestListener
 			);
 		} catch (IllegalArgumentException iaex) {
 			try {
-				log.warn(p.getUserId());
+				//pull note that is completely new and does not exist in the db yet
 				db.getNoteObjectDao(p).persist((NoteObject)(entry.getBelongsTo()));
 			} catch (Exception ex) {
-				log.fatal("OMG");
-				log.fatal(ex);
+				log.warn(ex);
 			}
 		} catch (Exception ex) {
-			log.fatal("storing note failed");
-			log.fatal(ex);
+			log.warn("storing note failed");
+			log.warn(ex);
 		}
-		log.warn("persisting noteobject done");
 		//TODO notify gui (later version)
 	}
 
