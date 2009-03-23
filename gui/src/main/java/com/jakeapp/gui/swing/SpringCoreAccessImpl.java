@@ -579,7 +579,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		List<UserInfo> users = new ArrayList<UserInfo>();
 
 		if (project == null) {
-			log.warn("Get People for empty UserID.");
+			log.warn("Get People for empty project.");
 			return users;
 		}
 
