@@ -16,7 +16,10 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
 
-
+/**
+ * <code>AvailableLaterObject</code> returning a <code>Long</code> representing the cummulated size of the given
+ * <code>Collection</code> of <code>FileObject</code>s.
+ */
 /**
  * Calculates the total size of a list of files.
  * @author djinn
@@ -32,6 +35,9 @@ public class ProjectSizeTotalFuture extends AvailableLaterWrapperObject<Long, Co
 		this.fss = fss;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Long calculate() {
 		final String STATUS = "";

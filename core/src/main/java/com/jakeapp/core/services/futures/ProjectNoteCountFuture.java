@@ -11,8 +11,8 @@ import com.jakeapp.core.domain.NoteObject;
 
 
 /**
- * @author djinn
- * 
+ * <code>AvailableLaterObject</code> returning an <code>Integer</code> representing the number
+ * of <code>FileObject</code> within a <code>Project</code>
  */
 public class ProjectNoteCountFuture extends
 		AvailableLaterWrapperObject<Integer, Collection<NoteObject>> {

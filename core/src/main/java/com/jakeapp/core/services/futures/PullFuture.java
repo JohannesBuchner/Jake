@@ -8,6 +8,10 @@ import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.synchronization.ISyncService;
 
+/**
+ * <code>AvailableLaterObject</code> downloading (<code>Pull</code>ing) a <code>List</code> of <code>JakeObject</code>s
+ * with the given <code>ISyncService</code>
+ */
 public class PullFuture extends AvailableLaterObject<Void> {
 	private static final Logger log = Logger.getLogger(PullFuture.class);
 	private ISyncService iss;
@@ -18,6 +22,9 @@ public class PullFuture extends AvailableLaterObject<Void> {
 		this.jakeObjects = jakeObjects;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Void calculate() throws Exception {
 		Exception lastException = null; 
