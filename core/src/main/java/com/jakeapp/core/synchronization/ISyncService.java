@@ -93,20 +93,21 @@ public interface ISyncService {
 	 * The object is requested (found in the log) and its content stored. The
 	 * RequestHandlePolicy is asked for users having the object.
 	 *
-	 * @param jo the object to be pulled
+	 * @param object the object to be pulled
 	 * @throws NoSuchLogEntryException  the object does not exist (no one announced it)
 	 * @throws IllegalArgumentException
 	 * @throws NotLoggedInException
 	 * @return the requested JakeObject
 	 */
-	public <T extends JakeObject> T pullObject(T jo) throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
+	public <T extends JakeObject> T pullObject(T object)
+			throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
 
 	/**
 	 * Adds a log entry that the object has been modified, created, deleted, ...<br>
 	 * Performs the action on the DomainObject too. <br>
 	 * Unless you are in a loop, you probably want to do a poke afterwards.
 	 *
-	 * @param jo
+	 * @param jakeObject
 	 * @param action	 one of LogAction.JAKE_OBJECT_NEW_VERSION
 				LogAction.JAKE_OBJECT_DELETE LogAction.TAG_ADD
 				LogAction.TAG_REMOVE action LogAction.JAKE_OBJECT_LOCK LogAction.JAKE_OBJECT_UNLOCK
@@ -117,7 +118,8 @@ public interface ISyncService {
 	 * @throws IllegalArgumentException  if you are doing it wrong
 	 * @see LogAction for what to set
 	 */
-	public void announce(JakeObject jo, LogAction action, String commitMsg) throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
+	public void announce(JakeObject jakeObject, LogAction action, String commitMsg)
+			throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
 
 	/* Project member changes: just do a poke */
 
@@ -128,31 +130,32 @@ public interface ISyncService {
 	 * @return null if not locked, the {@link LogEntry} otherwise
 	 * @throws IllegalArgumentException if the supplied JakeObject is null or invalid
 	 */
-	public LogEntry<JakeObject> getLock(JakeObject object) throws IllegalArgumentException;
+	public LogEntry<JakeObject> getLock(JakeObject object)
+			throws IllegalArgumentException;
 
 
 	/**
 	 * start offering files to others, etc. 
 	 *
-	 * @param p
-	 * @param cl
+	 * @param project
+	 * @param changeListener
 	 * @throws ProjectException
 	 */
-	public void startServing(Project p, ChangeListener cl)
+	public void startServing(Project project, ChangeListener changeListener)
 			  throws ProjectException;
 
 	/**
-	 * start offering files to others, etc. TODO
-	 * @param p
+	 * stop offering files to others, etc.
+	 * @param project the <code>Project</code> which should stop serving its services.
 	 */
-	public void stopServing(Project p);
+	public void stopServing(Project project);
 
 	/**
-	 * Gets the Tags for the object
+	 * Gets the <code>Tag</code>s for the <code>JakeObject</code>
 	 *
-	 * @param jo
+	 * @param jakeObject the <code>
 	 */
-	void getTags(JakeObject jo);
+	void getTags(JakeObject jakeObject); //TODO bug #100
 
 	/**
 	 * gets the SyncStatus for a specific JakeObject
@@ -169,9 +172,9 @@ public interface ISyncService {
 	/**
 	 * returns the local file represented by the given FileObject
 	 *
-	 * @param fo
+	 * @param fileObject
 	 * @return
 	 * @throws IOException
 	 */
-	public File getFile(FileObject fo) throws IOException;
+	public File getFile(FileObject fileObject) throws IOException;
 }

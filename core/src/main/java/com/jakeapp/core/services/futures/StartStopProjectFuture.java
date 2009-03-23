@@ -8,6 +8,9 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.services.IProjectsManagingService;
 import com.jakeapp.core.synchronization.exceptions.ProjectException;
 
+/**
+ * <code>AvailableLaterObject</code> which is responsible for starting or stoping a given <code>Project</code>.
+ */
 public class StartStopProjectFuture extends AvailableLaterObject<Void> {
 
 	private Project project;
@@ -21,6 +24,9 @@ public class StartStopProjectFuture extends AvailableLaterObject<Void> {
 		this.start = start;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Void calculate() {
 		try {
