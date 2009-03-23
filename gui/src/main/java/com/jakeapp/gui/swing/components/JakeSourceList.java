@@ -179,10 +179,6 @@ public class JakeSourceList extends JakeGuiComponent
 		sourceList.addSourceListClickListener(projectClickListener);
 		sourceList.addSourceListSelectionListener(projectSelectionListener);
 
-		// use the fancy scrollbars on mac
-		//if (Platform.isMac()) {
-		//	sourceList.useIAppStyleScrollBars();
-		//}
 
 		final SourceListContextMenuProvider menuProvider =
 						new SourceListContextMenuProvider() {
