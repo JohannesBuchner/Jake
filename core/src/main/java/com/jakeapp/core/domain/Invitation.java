@@ -8,7 +8,8 @@ import java.util.Date;
 import java.io.File;
 
 /**
- * This class is used to persist received invitations in the global database.
+ * This class is used to persist received <code>Invitation</code>s in the global database until they 
+ * get either rejected or accepted.
  */
 @Entity(name = "invitation")
 public class Invitation {

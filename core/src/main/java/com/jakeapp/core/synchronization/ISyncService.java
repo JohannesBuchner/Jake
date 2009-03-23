@@ -78,74 +78,74 @@ public interface ISyncService {
 	 * @throws IllegalProtocolException if the supplied UserId is of the wrong protocol-type
 	 */
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, User pm)
-			  throws IllegalArgumentException, IllegalProtocolException;
+			throws IllegalArgumentException, IllegalProtocolException;
 
 	/**
 	 * Tells the user userId to do a logSync. It is the way of telling
 	 * "hey, we have something new". This makes no guarantees and fails silently
 	 *
-	 * @param project
-	 * @param pm
+	 * @param project   the <code>Project</code> whichs should be synced
+	 * @param otherUser the <code>User</code> to be poked
 	 */
-	public void poke(Project project, User pm);
+	public void poke(Project project, User otherUser);
 
 	/**
 	 * The object is requested (found in the log) and its content stored. The
 	 * RequestHandlePolicy is asked for users having the object.
 	 *
 	 * @param object the object to be pulled
+	 * @return the requested <code>JakeObject</code>
 	 * @throws NoSuchLogEntryException  the object does not exist (no one announced it)
-	 * @throws IllegalArgumentException
-	 * @throws NotLoggedInException
-	 * @return the requested JakeObject
+	 * @throws IllegalArgumentException if the supplied object is currently not supported to be handled
+	 * @throws NotLoggedInException	 gets thrown if we're not logged in on the <code>ICService</code>
 	 */
 	public <T extends JakeObject> T pullObject(T object)
 			throws NoSuchLogEntryException, NotLoggedInException, IllegalArgumentException;
 
 	/**
-	 * Adds a log entry that the object has been modified, created, deleted, ...<br>
-	 * Performs the action on the DomainObject too. <br>
+	 * Adds a <code>LogEntry</code> that the object has been modified, created, deleted, ...<br>
+	 * Performs the action on the corresponding instance of the <code>JakeObject</code> too. <br>
 	 * Unless you are in a loop, you probably want to do a poke afterwards.
 	 *
-	 * @param jakeObject
+	 * @param jakeObject the <code>JakeObject</code> to be announced.
 	 * @param action	 one of LogAction.JAKE_OBJECT_NEW_VERSION
-				LogAction.JAKE_OBJECT_DELETE LogAction.TAG_ADD
-				LogAction.TAG_REMOVE action LogAction.JAKE_OBJECT_LOCK LogAction.JAKE_OBJECT_UNLOCK
-	 * @param commitMsg or tag content
-	 * @throws NotAReadableFileException
-	 * @throws InvalidFilenameException
-	 * @throws FileNotFoundException
-	 * @throws IllegalArgumentException  if you are doing it wrong
+	 *                   LogAction.JAKE_OBJECT_DELETE LogAction.TAG_ADD
+	 *                   LogAction.TAG_REMOVE action LogAction.JAKE_OBJECT_LOCK LogAction.JAKE_OBJECT_UNLOCK
+	 * @param commitMsg  or tag content
+	 * @throws NotAReadableFileException if creating a hash over the <code>FileObject</code> fails
+	 * @throws InvalidFilenameException  if creating a hash over the <code>FileObject</code> fails
+	 * @throws FileNotFoundException	 if creating a hash over the <code>FileObject</code> fails
+	 * @throws IllegalArgumentException  if the given <code>JakeObject</code> does not
+	 *                                   contain a <code>Project</code> object
 	 * @see LogAction for what to set
 	 */
 	public void announce(JakeObject jakeObject, LogAction action, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException, NotAReadableFileException;
 
-	/* Project member changes: just do a poke */
-
 	/**
-	 * Tries to find out if the supplied object is softlocked or not
+	 * Tries to find out if the supplied <code>JakeObject</code> is softlocked or not
 	 *
-	 * @param object the {@link JakeObject} to query
+	 * @param jakeObject the {@link JakeObject} to query
 	 * @return null if not locked, the {@link LogEntry} otherwise
 	 * @throws IllegalArgumentException if the supplied JakeObject is null or invalid
 	 */
-	public LogEntry<JakeObject> getLock(JakeObject object)
+	public LogEntry<JakeObject> getLock(JakeObject jakeObject)
 			throws IllegalArgumentException;
 
 
 	/**
-	 * start offering files to others, etc. 
+	 * start offering files to others, etc.
 	 *
-	 * @param project
-	 * @param changeListener
-	 * @throws ProjectException
+	 * @param project the <code>Project</code> to be started
+	 * @param changeListener the <code>ChangeListener</code> listening for changes regarding this <code>Project</code>
+	 * @throws ProjectException if starting of one of the subsystems failed
 	 */
 	public void startServing(Project project, ChangeListener changeListener)
-			  throws ProjectException;
+			throws ProjectException;
 
 	/**
 	 * stop offering files to others, etc.
+	 *
 	 * @param project the <code>Project</code> which should stop serving its services.
 	 */
 	public void stopServing(Project project);
@@ -158,7 +158,7 @@ public interface ISyncService {
 	void getTags(JakeObject jakeObject); //TODO bug #100
 
 	/**
-	 * gets the SyncStatus for a specific JakeObject
+	 * gets the SyncStatus for a specific <code>JakeObject</code>
 	 *
 	 * @param fo
 	 * @return
@@ -167,7 +167,7 @@ public interface ISyncService {
 	 * @throws IOException
 	 */
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T fo)
-			  throws InvalidFilenameException, NotAReadableFileException, IOException;
+			throws InvalidFilenameException, NotAReadableFileException, IOException;
 
 	/**
 	 * returns the local file represented by the given FileObject
