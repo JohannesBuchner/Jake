@@ -1,45 +1,5 @@
 package com.jakeapp.gui.swing.panels;
 
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.application.ResourceMap;
-import org.jdesktop.jxlayer.JXLayer;
-import org.jdesktop.swingx.JXHyperlink;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.hyperlink.LinkAction;
-
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
@@ -67,6 +27,29 @@ import com.jakeapp.gui.swing.worker.tasks.AbstractTask;
 import com.jakeapp.gui.swing.worker.tasks.LoginAccountTask;
 import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.application.ResourceMap;
+import org.jdesktop.jxlayer.JXLayer;
+import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.hyperlink.LinkAction;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Userpanel creates accouts for Jake.
@@ -88,6 +71,7 @@ public class UserPanel extends JXPanel
 	private UserDataPanel loginUserDataPanel;
 	private UserDataPanel registerUserDataPanel;
 	private JComboBox loginServiceCheckBox;
+	private SpinningWheelComponent workingAnimationDark;
 	private SpinningWheelComponent workingAnimation;
 	private Map<SupportedServices, Account> creds =
 					new HashMap<SupportedServices, Account>();
@@ -204,9 +188,9 @@ public class UserPanel extends JXPanel
 		Animator timer = new Animator(10000, modifier);
 		timer.start();
 
-		SpinningWheelComponent inidcator = new SpinningWheelComponent();
-		inidcator.startAnimation();
-		loader.add(inidcator, "center");
+		workingAnimationDark = new SpinningWheelComponent(true);
+		workingAnimationDark.startAnimation();
+		loader.add(workingAnimationDark, "center");
 		return loader;
 	}
 
@@ -376,8 +360,8 @@ public class UserPanel extends JXPanel
 		JPanel addUserButtonPanel = new JPanel(new MigLayout("wrap 2, fill, ins 0"));
 		addUserButtonPanel.setOpaque(false);
 
-		workingAnimation = new SpinningWheelComponent();
-		addUserButtonPanel.add(workingAnimation, "hidemode 1, left");
+		//workingAnimation = new SpinningWheelComponent(false);
+		//addUserButtonPanel.add(workingAnimation, "hidemode 1, left");
 
 		signInRegisterButton = new JButton();
 		signInRegisterButton.putClientProperty("JButton.buttonType", "textured");

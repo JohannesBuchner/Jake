@@ -35,9 +35,6 @@ public class JoinProjectAction extends ProjectAction {
 
 		// clear current invite
 		JakeContext.setInvitation(null);
-
-		// ask the user if he wants to make an initial log sync
-		// fixme: todo
 	}
 
 

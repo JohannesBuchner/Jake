@@ -23,6 +23,7 @@ import com.jakeapp.core.services.futures.StartStopProjectFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -301,6 +302,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 					EventCore.get().fireProjectChanged(
 									new ProjectChangedCallback.ProjectChangedEvent(project,
 													ProjectChangedCallback.ProjectChangedEvent.Reason.Joined));
+
+					// start the project!
+					StartStopProjectAction.perform(project);					
 
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
