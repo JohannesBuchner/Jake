@@ -162,7 +162,7 @@ public class XmppUsersService implements IUsersService {
 				try {
 					if (isCapable(this.xmppid)) {
 						if (isFriend(this.xmppid)) {
-							this.log.info("It is a friend!");
+							this.log.debug("It is a friend!");
 							notifyAboutPresenceChange(this.xmppid);
 						}
 					}
