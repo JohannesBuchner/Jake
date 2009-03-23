@@ -1,6 +1,12 @@
 package com.jakeapp.gui.swing.components;
 
-import com.explodingpixels.macwidgets.*;
+import com.explodingpixels.macwidgets.SourceList;
+import com.explodingpixels.macwidgets.SourceListCategory;
+import com.explodingpixels.macwidgets.SourceListClickListener;
+import com.explodingpixels.macwidgets.SourceListContextMenuProvider;
+import com.explodingpixels.macwidgets.SourceListItem;
+import com.explodingpixels.macwidgets.SourceListModel;
+import com.explodingpixels.macwidgets.SourceListSelectionListener;
 import com.jakeapp.core.domain.Invitation;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
@@ -393,7 +399,7 @@ public class JakeSourceList extends JakeGuiComponent
 			// fixme: need counter-only or some sort of caching...
 
 			int logSize = 0;
-			
+
 			try {
 				logSize = JakeMainApp.getCore().getLog(project, null, 0).size();
 			} catch (Exception ex) {
