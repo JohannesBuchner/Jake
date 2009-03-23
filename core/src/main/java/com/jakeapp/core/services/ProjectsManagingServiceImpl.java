@@ -1,23 +1,5 @@
 package com.jakeapp.core.services;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.availablelater.AvailableLaterWrapperObject;
 import com.jakeapp.availablelater.AvailableNowObject;
@@ -30,29 +12,12 @@ import com.jakeapp.core.dao.IProjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
 import com.jakeapp.core.domain.exceptions.ProjectNotLoadedException;
 import com.jakeapp.core.domain.exceptions.UserFormatException;
-import com.jakeapp.core.domain.exceptions.NoSuchMsgServiceException;
-import com.jakeapp.core.domain.logentries.FollowTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectLockLogEntry;
-import com.jakeapp.core.domain.logentries.JakeObjectUnlockLogEntry;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.domain.logentries.ProjectCreatedLogEntry;
-import com.jakeapp.core.domain.logentries.ProjectMemberInvitedLogEntry;
-import com.jakeapp.core.domain.logentries.StartTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.StopTrustingProjectMemberLogEntry;
-import com.jakeapp.core.domain.logentries.TagAddLogEntry;
-import com.jakeapp.core.domain.logentries.TagRemoveLogEntry;
+import com.jakeapp.core.domain.logentries.*;
 import com.jakeapp.core.services.futures.DeleteFilesFuture;
 import com.jakeapp.core.services.futures.GetProjectsFuture;
 import com.jakeapp.core.services.futures.ProjectFileCountFuture;
@@ -73,6 +38,13 @@ import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Implementation of the <code>IProjectsManagingService</code> interface.
@@ -1240,7 +1212,7 @@ public class ProjectsManagingServiceImpl implements
 				jo = newFile;
 			}
 		}
-		//FIXME: me don't like that. 
+		//FIXME: me don't like that.
 		return jo;
 	}
 

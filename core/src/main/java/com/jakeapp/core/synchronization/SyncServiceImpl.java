@@ -1,18 +1,5 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.core.Injected;
 import com.jakeapp.core.dao.ILogEntryDao;
@@ -55,6 +42,18 @@ import com.jakeapp.jake.ics.exceptions.TimeoutException;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class should be active whenever you want to use files <p/> On
@@ -136,6 +135,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
+
+		// we need an UUID for the object
+		jo = completeIncomingObjectSafe(jo);
 
 		//TODO this call is not neccessary
 		//it deletes jo.getProject.getUser() and prevents the JakeObject
@@ -278,9 +280,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			String msg = messageMarshaller.requestLogs(project);
 			ics.getMsgService().sendMessage(uid, msg);
 		} catch (NetworkException e) {
-			log.debug("Could not request logs from user " + pm.getUserId(), e);
+			log.warn("Could not request logs from user " + pm.getUserId() + e.getMessage());
 		} catch (OtherUserOfflineException e) {
-			log.debug("Could not request logs from user " + pm.getUserId(), e);
+			log.warn("Could not request logs from user " + pm.getUserId() + e.getMessage());
 		}
 
 		// try to send logs back to requester!
