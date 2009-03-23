@@ -216,7 +216,7 @@ public class MsgServiceManager {
 		List<MsgService<User>> msgservices = this.getAll();
 
 		for (MsgService<User> m : msgservices) {
-			if (m.getUserId() == user) return m;
+			if (m.getUserId().equals(user)) return m;
 		}
 
 		throw new NoSuchMsgServiceException("The supplied User belongs to no MsgService");

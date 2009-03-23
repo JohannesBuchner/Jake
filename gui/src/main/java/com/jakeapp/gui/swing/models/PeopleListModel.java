@@ -24,7 +24,8 @@ import java.util.List;
  * Capsulates UserId into a ListModel.
  */
 public class PeopleListModel extends AbstractListModel
-				implements MutableListModel, ContextChangedCallback, ProjectChangedCallback, DataChangedCallback {
+				implements MutableListModel, ContextChangedCallback, ProjectChangedCallback,
+				DataChangedCallback {
 	private static final Logger log = Logger.getLogger(PeopleListModel.class);
 
 	private List<UserInfo> people;
@@ -64,17 +65,18 @@ public class PeopleListModel extends AbstractListModel
 		if (!JakeContext.isCoreInitialized())
 			return;
 
-		log.debug("updating people model...");
+		if (JakeContext.getProject() != null) {
+			log.debug("updating people model...");
+			try {
+				this.people =
+								JakeMainApp.getCore().getAllProjectMembers(JakeContext.getProject());
+			} catch (PeopleOperationFailedException e) {
+				this.people = new ArrayList<UserInfo>();
+				ExceptionUtilities.showError(e);
+			}
 
-		try {
-			this.people =
-							JakeMainApp.getCore().getAllProjectMembers(JakeContext.getProject());
-		} catch (PeopleOperationFailedException e) {
-			this.people = new ArrayList<UserInfo>();
-			ExceptionUtilities.showError(e);
+			this.fireContentsChanged(this, 0, getSize());
 		}
-
-		this.fireContentsChanged(this, 0, getSize());
 	}
 
 	@Override

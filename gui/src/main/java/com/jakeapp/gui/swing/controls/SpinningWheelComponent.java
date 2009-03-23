@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * A progress indicator for background tasks whose duration isn't known until
@@ -21,10 +25,10 @@ import java.awt.geom.*;
  * true, and you repeatedly invoke animateOneFrame.
  */
 public class SpinningWheelComponent extends JComponent {
-	private static final int DIAMETER = 30;
-	private static final int BAR_COUNT = 20;
-	private static Area[] bars;
-	private static Color[] colors;
+	private final int DIAMETER = 30;
+	private final int BAR_COUNT = 20;
+	private Area[] bars;
+	private Color[] colors;
 	private Timer timer;
 	private int currentBar = 0;
 	private boolean painted = true;
@@ -34,8 +38,12 @@ public class SpinningWheelComponent extends JComponent {
 	private int maxValue = 0;
 
 	public SpinningWheelComponent() {
+		this(false);
+	}
+
+	public SpinningWheelComponent(boolean darkBackground) {
 		initBars();
-		initColors();
+		initColors(darkBackground);
 		initTimer();
 		setOpaque(false);
 	}
@@ -49,7 +57,8 @@ public class SpinningWheelComponent extends JComponent {
 	public void paintComponent(Graphics oldGraphics) {
 		Graphics2D g = (Graphics2D) oldGraphics;
 		if (painted && (isDisplayedWhenStopped || timer.isRunning())) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+							RenderingHints.VALUE_ANTIALIAS_ON);
 			if (maxValue != 0) {
 				paintPie(g);
 			} else {
@@ -84,7 +93,8 @@ public class SpinningWheelComponent extends JComponent {
 	}
 
 	private void paintBars(Graphics2D g) {
-		g.transform(AffineTransform.getTranslateInstance(getWidth() / 2, getHeight() / 2));
+		g.transform(
+						AffineTransform.getTranslateInstance(getWidth() / 2, getHeight() / 2));
 		for (int i = 0; i < bars.length; ++i) {
 			g.setColor(colors[(currentBar + i) % colors.length]);
 			g.fill(bars[i]);
@@ -128,6 +138,7 @@ public class SpinningWheelComponent extends JComponent {
 
 	/**
 	 * Sometimes the resizing caused by setVisible is annoying, and you'd just like the component not to paint itself.
+	 *
 	 * @param newState
 	 */
 	public void setPainted(boolean newState) {
@@ -140,6 +151,7 @@ public class SpinningWheelComponent extends JComponent {
 	/**
 	 * Switches from the usual spinning "indeterminate" animation to a "determinate" pie chart style.
 	 * To revert to the "indeterminate" style, call either setProgress(0, 0) or stopAnimation.
+	 *
 	 * @param newCurrentValue
 	 * @param newMaxValue
 	 */
@@ -151,24 +163,31 @@ public class SpinningWheelComponent extends JComponent {
 		this.maxValue = newMaxValue;
 
 		// If the change can have caused a visible change on the display, repaint.
-		if (maxValue == 0 || degreesFilledBy(oldCurrentValue, oldMaxValue) != degreesFilledBy(currentValue, maxValue)) {
+		if (maxValue == 0 || degreesFilledBy(oldCurrentValue,
+						oldMaxValue) != degreesFilledBy(currentValue, maxValue)) {
 			repaint();
 		}
 	}
 
-	private synchronized static void initColors() {
+	private synchronized void initColors(boolean darkBackground) {
 		if (colors != null) {
 			return;
 		}
 
 		colors = new Color[BAR_COUNT];
 		for (int i = 0; i < colors.length; ++i) {
-			int value = 210 - 128 / (i + 1);
+			int value;
+
+			if (darkBackground)
+				value = 65 + 160 / (i + 1);
+			else
+				value = 190 - 128 / (i + 1);
+
 			colors[i] = new Color(value, value, value);
 		}
 	}
 
-	private synchronized static void initBars() {
+	private synchronized void initBars() {
 		if (bars != null) {
 			return;
 		}
@@ -179,8 +198,11 @@ public class SpinningWheelComponent extends JComponent {
 		for (int i = 0; i < bars.length; ++i) {
 			Area primitive = makeBar();
 
-			Point2D.Double center = new Point2D.Double((double) DIAMETER / 2, (double) DIAMETER / 2);
-			AffineTransform toCircle = AffineTransform.getRotateInstance(((double) -i) * fixedAngle, center.getX(), center.getY());
+			Point2D.Double center =
+							new Point2D.Double((double) DIAMETER / 2, (double) DIAMETER / 2);
+			AffineTransform toCircle = AffineTransform
+							.getRotateInstance(((double) -i) * fixedAngle, center.getX(),
+											center.getY());
 			AffineTransform toBorder = AffineTransform.getTranslateInstance(45.0, -6.0);
 
 			AffineTransform toScale = AffineTransform.getScaleInstance(0.1, 0.1);

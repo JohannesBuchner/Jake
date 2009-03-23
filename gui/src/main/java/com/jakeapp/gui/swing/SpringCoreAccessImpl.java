@@ -1,35 +1,10 @@
 package com.jakeapp.gui.swing;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.availablelater.AvailableErrorObject;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.Invitation;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.TrustState;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.FrontendNotLoggedInException;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
@@ -48,6 +23,7 @@ import com.jakeapp.core.services.futures.StartStopProjectFuture;
 import com.jakeapp.core.synchronization.IFriendlySyncService;
 import com.jakeapp.core.synchronization.UserInfo;
 import com.jakeapp.core.synchronization.attributes.Attributed;
+import com.jakeapp.gui.swing.actions.project.StartStopProjectAction;
 import com.jakeapp.gui.swing.callbacks.FilesChangedCallback;
 import com.jakeapp.gui.swing.callbacks.ProjectChangedCallback;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
@@ -73,6 +49,12 @@ import com.jakeapp.jake.fss.exceptions.NotAFileException;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 public class SpringCoreAccessImpl implements ICoreAccess {
 	private static final Logger log = Logger.getLogger(SpringCoreAccessImpl.class);
@@ -80,7 +62,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	private IProjectsManagingService pms;
 	private IFriendlySyncService iss;
 
-	private final JakeObjectAttributedCacheManager attributedCacheMan = new JakeObjectAttributedCacheManager();
+	private final JakeObjectAttributedCacheManager attributedCacheMan =
+					new JakeObjectAttributedCacheManager();
 
 	/**
 	 * SessionId returned by the authentication Method of
@@ -107,11 +90,11 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 	@Override
 	public List<Invitation> getInvitations() {
-        if(JakeContext.getMsgService() != null) {
-		    return this.pms.getInvitations(JakeContext.getMsgService());
-        }else {
-            return new ArrayList<Invitation>();
-        }
+		if (JakeContext.getMsgService() != null) {
+			return this.pms.getInvitations(JakeContext.getMsgService());
+		} else {
+			return new ArrayList<Invitation>();
+		}
 	}
 
 	@Override
@@ -320,6 +303,9 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 									new ProjectChangedCallback.ProjectChangedEvent(project,
 													ProjectChangedCallback.ProjectChangedEvent.Reason.Joined));
 
+					// start the project!
+					StartStopProjectAction.perform(project);					
+
 				} catch (FrontendNotLoggedInException e) {
 					handleNotLoggedInException(e);
 				} catch (RuntimeException run) {
@@ -336,27 +322,19 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 
 
 	public void rejectInvitation() {
-		log.info("Reject invitation: " + JakeContext.getInvitation());
+		final Invitation invitation = JakeContext.getInvitation();
+		log.info("Reject invitation: " + invitation);
 
 		Runnable runner = new Runnable() {
 			public void run() {
 				try {
-					Invitation invitation = JakeContext.getInvitation();
-
-					// TODO: This is the ugliest piece of code I have written in my life.
-					//       Testing only. Please forgive me, but I was out of ideas. --chris
-					if(invitation == null) {
-						log.fatal("JakeContext.getInvitation() is NULL");
-						throw new IllegalStateException("JakeContext.getInvitation() is NULL even though it can't be");
-					}
-					
 					getFrontendService().getProjectsManagingService(getSessionId())
 									.rejectInvitation(invitation);
 
-
 					// FIXME: One fine day, far far far away, make this prettier.
 					EventCore.get().fireProjectChanged(
-									new ProjectChangedCallback.ProjectChangedEvent(null, ProjectChangedCallback.ProjectChangedEvent.Reason.Rejected));
+									new ProjectChangedCallback.ProjectChangedEvent(null,
+													ProjectChangedCallback.ProjectChangedEvent.Reason.Rejected));
 
 				} catch (FrontendNotLoggedInException e) {
 					ExceptionUtilities.showError(e);
@@ -498,7 +476,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 
-	public AvailableLaterObject<Collection<NoteObject>> getNotes(final Project project) {
+	public AvailableLaterObject<Collection<NoteObject>> getNotes(
+					final Project project) {
 		log.debug("starting");
 		AvailableLaterObject<Collection<NoteObject>> result = null;
 		Exception ex = null;
@@ -600,7 +579,7 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 		List<UserInfo> users = new ArrayList<UserInfo>();
 
 		if (project == null) {
-			log.warn("Get People for empty UserID.");
+			log.warn("Get People for empty project.");
 			return users;
 		}
 
@@ -960,7 +939,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void addFilesChangedListener(final FilesChangedCallback listener, Project project) {
+	public void addFilesChangedListener(final FilesChangedCallback listener,
+					Project project) {
 		IFileModificationListener fileModificationListener =
 						new IFileModificationListener() {
 
@@ -976,7 +956,8 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void removeFilesChangedListener(FilesChangedCallback listener, Project project) {
+	public void removeFilesChangedListener(FilesChangedCallback listener,
+					Project project) {
 		IFileModificationListener fileModificationListener;
 
 		fileModificationListener = this.fileListeners.get(listener);
@@ -1085,13 +1066,16 @@ public class SpringCoreAccessImpl implements ICoreAccess {
 	}
 
 	@Override
-	public void registerFileWatcher(Project project, IFileModificationListener listener) {
+	public void registerFileWatcher(Project project,
+					IFileModificationListener listener) {
 		this.pms.getFileServices(project).removeModificationListener(listener);
 		this.pms.getFileServices(project).addModificationListener(listener);
 	}
 
 	@Override
-	public void launch(FileObject fo) throws IllegalArgumentException, InvalidFilenameException, LaunchException, IOException {
+	public void launch(FileObject fo)
+					throws IllegalArgumentException, InvalidFilenameException, LaunchException,
+					IOException {
 		this.pms.getFileServices(fo.getProject()).launchFile(fo.getRelPath());
 	}
 }
