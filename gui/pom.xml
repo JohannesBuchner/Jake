@@ -31,6 +31,12 @@
             <layout>default</layout>
         </repository>
         <repository>
+            <id>macwidgets-repo2</id>
+            <name>macwidgets repo2</name>
+            <url>http://maven.step86.at/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>org.codehaus.mojo</id>
             <name>org.codehaus.mojo</name>
             <url>http://repository.codehaus.org/</url>
@@ -72,7 +78,7 @@
         <dependency>
             <groupId>com.explodingpixels</groupId>
             <artifactId>macwidgets</artifactId>
-            <version>r155-jake</version>
+            <version>r251-jake</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
