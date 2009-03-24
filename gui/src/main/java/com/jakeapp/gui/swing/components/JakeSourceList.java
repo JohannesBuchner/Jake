@@ -437,6 +437,11 @@ public class JakeSourceList extends JakeGuiComponent
 			log.trace("selected project not found, selecting null");
 			JakeContext.setProject(null);
 		}
+
+		// TODO: needs to clean the cache, or it throws fixes like
+		// "Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: 1 >= 1"
+		// TODO: does this work?
+		this.getSourceList().getTree().invalidate();
 	}
 
 	private static void setWaiting(JComponent c, boolean on) {
@@ -574,18 +579,18 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void taskStarted(IJakeTask worker) {
-		//if (worker instanceof GetMyProjectsTask) {
-		//	updateSourceList();
-		//}
+		if (worker instanceof GetMyProjectsTask) {
+			updateSourceList();
+		}
 	}
 
 	@Override public void taskUpdated(IJakeTask worker) {
 	}
 
 	@Override public void taskFinished(IJakeTask worker) {
-		//	if (worker instanceof GetMyProjectsTask) {
-		//		updateSourceList();
-		//	}
+		if (worker instanceof GetMyProjectsTask) {
+			updateSourceList();
+		}
 	}
 
 	@Override public void setContextViewPanel(JakeMainView.ContextPanelEnum panel) {
