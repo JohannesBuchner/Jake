@@ -10,6 +10,7 @@ import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.Project;
+import org.apache.log4j.Logger;
 
 /**
  * This backpacks the Project attribute onto each retrieved JakeObject
@@ -17,14 +18,15 @@ import com.jakeapp.core.domain.Project;
  * @author johannes
  */
 final class FileObjectDaoProxy implements IFileObjectDao {
+	private static Logger log = Logger.getLogger(FileObjectDaoProxy.class);
 
 	private final IFileObjectDao innerDao;
 
 	private final Project project;
 
-	FileObjectDaoProxy(IFileObjectDao innerDao, Project p) {
+	FileObjectDaoProxy(IFileObjectDao innerDao, Project project) {
 		this.innerDao = innerDao;
-		this.project = p;
+		this.project = project;
 	}
 
 	private FileObject getWithProject(FileObject fo) {
@@ -55,6 +57,11 @@ final class FileObjectDaoProxy implements IFileObjectDao {
 
 	@Override
 	public List<FileObject> getAll() {
+		if(this.innerDao == null)
+		{
+			log.warn("innerDao is null");
+			System.exit(1);
+		}
 		List<FileObject> results = this.innerDao.getAll();
 		for(FileObject fo : results) {
 			fo.setProject(this.project);

@@ -617,7 +617,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		no.setProject(p);
 		
-		log.debug("got attributed note for " + noin + " in " + no.getProject());
+		log.trace("got attributed note for " + noin + " in " + no.getProject());
 		return new Attributed<NoteObject>(no, lastle, led.getLock(no),
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
