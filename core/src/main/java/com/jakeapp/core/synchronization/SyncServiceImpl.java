@@ -136,8 +136,14 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		IFSService fss = getFSS(jo.getProject());
 		log.debug("announcing " + jo + " : " + action);
 
+		//FIXME: <hack> we lose the member somewhere... 
+		Project project = jo.getProject();
 		// we need an UUID for the object
 		jo = completeIncomingObjectSafe(jo);
+		if (jo.getProject() == null || jo.getProject().getUserId() == null) {
+			jo.setProject(project);
+		}
+		//</hack>
 
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
