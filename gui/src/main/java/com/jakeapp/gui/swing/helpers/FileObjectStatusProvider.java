@@ -70,9 +70,9 @@ public class FileObjectStatusProvider {
 			case CONFLICT:
 				return "Conflict";
 			case MODIFIED_LOCALLY:
-				return "Modified locally";
+				return "locally Modified";
 			case MODIFIED_REMOTELY:
-				return "Modified remote";
+				return "remotely modified";
 			case SYNC:
 				return "Sync";
 			default:

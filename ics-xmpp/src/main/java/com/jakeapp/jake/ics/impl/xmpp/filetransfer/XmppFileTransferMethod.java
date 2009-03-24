@@ -172,8 +172,7 @@ public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveL
 		String filename = inner.substring(FILE_REQUEST.length());
 		FileRequest fr = new FileRequest(filename, true, from_userid);
 
-		log
-				.debug(this.myUserId.getUserId() + " : " + from_userid + " wants  "
+		log.debug(this.myUserId.getUserId() + " : " + from_userid + " wants  "
 						+ filename);
 		String response = XmppFileTransferFactory.START;
 		boolean success = true;

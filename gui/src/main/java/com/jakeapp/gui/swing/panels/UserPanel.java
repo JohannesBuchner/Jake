@@ -72,7 +72,7 @@ public class UserPanel extends JXPanel
 	private UserDataPanel registerUserDataPanel;
 	private JComboBox loginServiceCheckBox;
 	private SpinningWheelComponent workingAnimationDark;
-	private SpinningWheelComponent workingAnimation;
+	private SpinningWheelComponent workingAnimation = new SpinningWheelComponent();
 	private Map<SupportedServices, Account> creds =
 					new HashMap<SupportedServices, Account>();
 	private JPanel addUserPanel;

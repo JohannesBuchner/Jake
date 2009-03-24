@@ -82,7 +82,7 @@ public interface ISyncService {
 
 	/**
 	 * Tells the user userId to do a logSync. It is the way of telling
-	 * "hey, we have something new". This makes no guarantees and fails silently
+	 * "hey, we have something new". This makes no guarantees and fails silently.
 	 *
 	 * @param project   the <code>Project</code> whichs should be synced
 	 * @param otherUser the <code>User</code> to be poked
@@ -151,20 +151,21 @@ public interface ISyncService {
 	public void stopServing(Project project);
 
 	/**
-	 * Gets the <code>Tag</code>s for the <code>JakeObject</code>
+	 * Gets the <code>Tag</code>s for the <code>JakeObject</code>.
 	 *
-	 * @param jakeObject the <code>
+	 * @param jakeObject The JakeObject to retrieve all Tags for. Since not
+	 * 	all JakeObjects can have associated Tags, this method may do nothing.
 	 */
 	void getTags(JakeObject jakeObject); //TODO bug #100
 
 	/**
 	 * gets the SyncStatus for a specific <code>JakeObject</code>
-	 *
-	 * @param fo
-	 * @return
-	 * @throws InvalidFilenameException
-	 * @throws NotAReadableFileException
-	 * @throws IOException
+	 * @param fo The <code>JakeObject</code> to get an Attributed for.
+	 * @return A Representation of <code>fo</code> that supports methods for requesting the status.
+	 * @throws IllegalArgumentException fo is null.
+	 * @throws InvalidFilenameException if fo is a FileObject and its relpath is not valid
+	 * @throws IOException if fo is a FileObject and it is impossible to determine
+	 * 	if its relpath points to an ordinary file or a directory, or if a general I/O error occurs.
 	 */
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T fo)
 			throws InvalidFilenameException, NotAReadableFileException, IOException;
@@ -172,9 +173,10 @@ public interface ISyncService {
 	/**
 	 * returns the local file represented by the given FileObject
 	 *
-	 * @param fileObject
-	 * @return
-	 * @throws IOException
+	 * @param fileObject The FileObject to extract the path for the current OS from.
+	 * @return null, if the relpath of <code>fileObject</code> is not valid. A <code>File</code>
+	 * 	pointing to the correct Path otherwise.
+	 * @throws IOException TODO never thrown, please remove
 	 */
 	public File getFile(FileObject fileObject) throws IOException;
 }

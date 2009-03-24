@@ -46,13 +46,13 @@ public class JakeDownloadMgr implements DataChangedCallback, TaskChangedCallback
 	}
 
 	public void pullProgressUpdate(JakeObject jo, Status status, double progress) {
-		if(jo == null || !(jo instanceof FileObject)) {
+		if (jo == null || !(jo instanceof FileObject)) {
 			log.trace("Ignoring progress update of Non-FileObject: " + jo);
 			return;
 		}
 
-		FileObject fo = (FileObject)jo;
-		if(!isQueued(fo)) {
+		FileObject fo = (FileObject) jo;
+		if (!isQueued(fo)) {
 			log.warn("Received Progress Update for Object that is not in Queue!? " + fo);
 			return;
 		}
@@ -99,17 +99,15 @@ public class JakeDownloadMgr implements DataChangedCallback, TaskChangedCallback
 	}
 
 	private void addQueueOrDirectStart(FileObject fo, EnumSet<DlOptions> options) {
-		if (hasFreeSlots()) {
-			startDownload(fo, options);
-		} else {
-			addToQueue(fo, options);
-		}
+		startDownload(fo, options);
 	}
 
 	private void startDownload(FileObject fo, EnumSet<DlOptions> options) {
+		log.info("Starting Download of " + fo.getRelPath() + options);
+		addToQueue(fo, options);
+
 		if (!hasFreeSlots()) {
-			log.warn("Not starting download, no free slots left, queuing...");
-			addToQueue(fo, options);
+			log.warn("Not starting download, no free slots left, queuing only.");
 		} else {
 
 			// create the task!
@@ -121,7 +119,7 @@ public class JakeDownloadMgr implements DataChangedCallback, TaskChangedCallback
 			}
 
 			// create info & start download
-			DownloadInfo info = new DownloadInfo(fo, task, options);
+			//DownloadInfo info = new DownloadInfo(fo, task, options);
 			this.downloads.add(fo);
 			JakeExecutor.exec(task);
 		}
@@ -205,16 +203,16 @@ public class JakeDownloadMgr implements DataChangedCallback, TaskChangedCallback
 		// remove task from downloads!
 
 		DownloadInfo info = isDownloading(task);
-		if(info != null) {
+		if (info != null) {
 			log.info("Download for " + task + " is finished.");
 			this.downloads.remove(info.getFileObject());
 		}
 	}
 
 	private DownloadInfo isDownloading(IJakeTask task) {
-		for(FileObject fo : this.downloads) {
+		for (FileObject fo : this.downloads) {
 			DownloadInfo info = getInfo(fo);
-			if(info.getTask() == task) {
+			if (info.getTask() == task) {
 				return info;
 			}
 		}

@@ -4,7 +4,9 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -25,7 +27,8 @@ import java.util.List;
  *
  * @author Simon
  */
-public class NotesTableModel extends DefaultTableModel implements DataChangedCallback {
+public class NotesTableModel extends DefaultTableModel
+				implements DataChangedCallback, ContextChangedCallback {
 	private static final long serialVersionUID = -2745782032637383756L;
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
@@ -82,7 +85,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 	 * @param project the project from which the notes should be loaded.
 	 */
 	public void update(Project project) {
-		log.info("Updating note table model for project "+project);
+		log.info("Updating note table model for project " + project);
 		if (project == null) {
 			return;
 		}
@@ -91,8 +94,8 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 	}
 
 	/**
-	 * @return the first currently selected note or  - if assigned - 
-	 * {@link #getNoteToSelectLater}
+	 * @return the first currently selected note or  - if assigned -
+	 *         {@link #getNoteToSelectLater}
 	 */
 	private NoteObject getNoteSelection() {
 		//assumption: there is only one selected note
@@ -100,42 +103,47 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 		int oldSelection;
 		Attributed<NoteObject> oldSelectionNote = null;
 		NoteObject result = null;
-		
+
 		result = this.getNoteToSelectLater();
-		if (result==null) {
+		if (result == null) {
 			try {
 				oldSelection = NotesPanel.getInstance().getNotesTable().getSelectedRow();
-				oldSelectionNote = this.getNoteAtRow(NotesPanel.getInstance().getNotesTable().convertRowIndexToModel(oldSelection));
-				result = (oldSelectionNote==null)?null:oldSelectionNote.getJakeObject();
-			}
-			catch (Exception ex) {
+				oldSelectionNote = this.getNoteAtRow(
+								NotesPanel.getInstance().getNotesTable().convertRowIndexToModel(
+												oldSelection));
+				result =
+								(oldSelectionNote == null) ? null : oldSelectionNote.getJakeObject();
+			} catch (Exception ex) {
 				//empty handling, since we might just initialize the whole panel/model
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Sets the selection of the NotesPanel to a specific note.
+	 *
 	 * @param toSelect The note to select in the NotesPanel. If null, nothing happens.
 	 */
 	private void setSelectedNote(NoteObject toSelect) {
 		int newSelection;
 		//select the row that was previously selected
-		if (toSelect!=null) {
+		if (toSelect != null) {
 			newSelection = 0;
 			for (Attributed<NoteObject> attributed : this.attributedNotes) {
 				if (attributed.getJakeObject().equals(toSelect)) {
 					//found the previously selected note!
-					newSelection = NotesPanel.getInstance().getNotesTable().convertRowIndexToView(newSelection);
-					NotesPanel.getInstance().getNotesTable().setRowSelectionInterval(newSelection, newSelection);
+					newSelection = NotesPanel.getInstance().getNotesTable()
+									.convertRowIndexToView(newSelection);
+					NotesPanel.getInstance().getNotesTable()
+									.setRowSelectionInterval(newSelection, newSelection);
 				}
 				newSelection++;
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the note that should be selected when the next note-update happens.
 	 * Clears this note, so that further calls to this method will return null,
@@ -143,36 +151,43 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 	 */
 	private synchronized NoteObject getNoteToSelectLater() {
 		NoteObject result = noteToSelectLater;
-		
+
 		this.noteToSelectLater = null;
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Sets a note that should be selected when the notes are updated the next time.
 	 * the NoteObject might not exist in the model yet.
+	 *
 	 * @param toSelect
 	 */
 	public void setNoteToSelectLater(NoteObject toSelect) {
 		this.noteToSelectLater = toSelect;
 	}
-	
+
 	public void updateNotes(Project p) {
 		NoteObject oldSelectionNote = this.getNoteSelection();
 
 		// FIXME: cache better!?
 		log.debug("updating notes from core and merge with attributes...");
-		List<NoteObject> rawNotes = new ArrayList<NoteObject>(ObjectCache.get().getNotes(p));
-		this.attributedNotes.clear();
+		List<NoteObject> rawNotes =
+						new ArrayList<NoteObject>(ObjectCache.get().getNotes(p));
+
+		List<Attributed<NoteObject>> newAttributedNotes =
+						new ArrayList<Attributed<NoteObject>>();
+
 		if (rawNotes != null) {
 			for (NoteObject note : rawNotes) {
-				this.attributedNotes
+				newAttributedNotes
 								.add(JakeMainApp.getCore().<NoteObject>getAttributed(note));
 			}
 		}
-		log.debug("update done.");
+		clearNotes(false);
+		this.attributedNotes.addAll(newAttributedNotes);
 
+		log.debug("update done.");
 		this.fireTableDataChanged();
 		this.setSelectedNote(oldSelectionNote);
 	}
@@ -183,7 +198,7 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 		Attributed<NoteObject> note = this.getAttributedNotes().get(row);
 
 		// failsave return empty string
-		if(note == null) {
+		if (note == null) {
 			return "";
 		}
 
@@ -268,9 +283,23 @@ public class NotesTableModel extends DefaultTableModel implements DataChangedCal
 
 	@Override
 	public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
-
 		if (dataReason.contains(DataReason.Notes)) {
 			updateNotes(p);
+		}
+	}
+
+
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		if (reason.contains(Reason.Project)) {
+			clearNotes(true);
+			updateNotes(JakeContext.getProject());
+		}
+	}
+
+	private void clearNotes(boolean fireChange) {
+		this.attributedNotes.clear();
+		if (fireChange) {
+			this.fireTableDataChanged();
 		}
 	}
 }

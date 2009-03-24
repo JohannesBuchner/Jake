@@ -1,18 +1,18 @@
 package com.jakeapp.core.domain.logentries;
 
 import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.domain.User;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -239,6 +239,12 @@ public abstract class LogEntry<T extends ILogable> implements Serializable {
 
 	@Column(name = "objectuuid", nullable = true)
 	public String getObjectuuid() {
+
+		// BLODDY HACK AHEAD!
+		if(belongsTo != null && belongsTo instanceof JakeObject) {
+			return ((JakeObject)belongsTo).getUuid().toString();
+		}
+
 		return objectuuid;
 	}
 
@@ -255,7 +261,7 @@ public abstract class LogEntry<T extends ILogable> implements Serializable {
 		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
 		result = prime * result + ((logAction == null) ? 0 : logAction.hashCode());
 		result = prime * result + ((member == null) ? 0 : member.hashCode());
-		result = prime * result + ((objectuuid == null) ? 0 : objectuuid.hashCode());
+		result = prime * result + ((getObjectuuid() == null) ? 0 : getObjectuuid().hashCode());
 		result = prime * result + (processed ? 1231 : 1237);
 		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
 		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
@@ -299,7 +305,7 @@ public abstract class LogEntry<T extends ILogable> implements Serializable {
 		if (objectuuid == null) {
 			if (other.objectuuid != null)
 				return false;
-		} else if (!objectuuid.equals(other.objectuuid))
+		} else if (!getObjectuuid().equals(other.getObjectuuid()))
 			return false;
 		if (processed != other.processed)
 			return false;

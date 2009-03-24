@@ -22,14 +22,21 @@ public class JakeObjectStatus {
 	private LogEntry<? extends ILogable> lastLockLogEntry;
 
 	/**
-	 * * @param lastVersionLogAction
-	 *
-	 * @param lastVersionLogEntry
-	 * @param lastLockLogEntry
-	 * @param objectExistsLocally
-	 * @param checksumDifferentFromLastNewVersionLogEntry
-	 * @param hasUnprocessedLogEntries
-	 * @param lastProcessedLogAction		 @see {@link com.jakeapp.core.synchronization.attributes.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
+	 * @param lastVersionLogEntry The logentry that describes
+	 * 	the last known version of the JakeObject, either on this computer
+	 * 	or remote.
+	 * @param lastLockLogEntry The logentry that is the last lock or unlock-entry
+	 * 	of the JakeObject. If it is of type {@link LogAction#JAKE_OBJECT_LOCK},
+	 * 	the JakeObject can be considered locked, if it is of type {@link LogAction#JAKE_OBJECT_UNLOCK},
+	 * 	the JakeObject can be considered unlocked.
+	 * @param objectExistsLocally true if there is a local version of the JakeObject.
+	 * @param checksumDifferentFromLastNewVersionLogEntry true, if the JakeObject has
+	 * 	a different checksum as the one listed in the log and thus can be regarded as
+	 * 	modified.
+	 * @param hasUnprocessedLogEntries true if there are LogEntries for this JakeObject
+	 * 	that have not been processed yet.
+	 * @param lastProcessedLogAction LogAction of the newest processed LogEntry.
+	 * @see {@link com.jakeapp.core.synchronization.attributes.LockStatus#getLockStatus(com.jakeapp.core.domain.LogAction)}
 	 *      ,
 	 *      {@link com.jakeapp.core.synchronization.attributes.Existence#getExistance(boolean, com.jakeapp.core.domain.LogAction)}
 	 *      {@link com.jakeapp.core.synchronization.attributes.SyncStatus#getSyncStatus(boolean, boolean, com.jakeapp.core.domain.LogAction, boolean)}

@@ -7,6 +7,7 @@ import com.jakeapp.gui.swing.JakeMainApp;
 import com.jakeapp.gui.swing.JakeMainView;
 import com.jakeapp.gui.swing.actions.abstracts.FileAction;
 import com.jakeapp.gui.swing.exceptions.FileOperationFailedException;
+import com.jakeapp.gui.swing.helpers.ExceptionUtilities;
 import com.jakeapp.gui.swing.helpers.FileUtilities;
 import com.jakeapp.gui.swing.worker.JakeExecutor;
 import com.jakeapp.gui.swing.worker.tasks.PullAndLaunchJakeObjectsTask;
@@ -77,8 +78,8 @@ public class OpenFileAction extends FileAction {
 		try {
 			FileUtilities.launchFile(fo);
 		} catch (FileOperationFailedException e) {
-			//ExceptionUtilities.showError("Failed launching " + fo.getRelPath(), e);
-			log.warn("Failed lauchning " + e.getMessage());
+			ExceptionUtilities.showError("Failed launching " + fo.getRelPath(), e);
+			//log.warn("Failed lauchning " + e.getMessage());
 		}
 	}
 }
