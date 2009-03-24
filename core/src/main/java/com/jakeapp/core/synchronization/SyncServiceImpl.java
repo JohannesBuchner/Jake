@@ -231,6 +231,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@Override
 	public <T extends JakeObject> T pullObject(T join) throws NoSuchLogEntryException,
 			NotLoggedInException, IllegalArgumentException {
+		// TODO see Bug #101.
+
 		T jo;
 		try {
 			jo = completeIncomingObject(join);
