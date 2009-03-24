@@ -464,7 +464,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@Transactional
 	public Attributed<FileObject> getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
-		log.debug("get JakeObjectStatus for " + foin);
+		log.trace("get JakeObjectStatus for " + foin);
 		if (foin == null) {
 			throw new IllegalArgumentException("FileObject is null!");
 		}
@@ -561,7 +561,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		Project p = noin.getProject();
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
 		
-		log.debug("getting attributed note for " + noin + " in " + p);
+		log.trace("getting attributed note for " + noin + " in " + p);
 
 		// this is very similar, but slightly different to the FileObject code
 		// compare and edit them side-by-side
