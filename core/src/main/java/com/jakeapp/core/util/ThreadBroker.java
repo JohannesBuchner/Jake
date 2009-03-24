@@ -3,8 +3,8 @@ package com.jakeapp.core.util;
 import com.jakeapp.core.DarkMagic;
 import org.apache.log4j.Logger;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -16,13 +16,10 @@ import java.util.concurrent.Semaphore;
  */
 @DarkMagic
 public class ThreadBroker implements Runnable {
-
 	private static final Logger log = Logger.getLogger(ThreadBroker.class);
-
-	private List<InjectableTask<?>> tasks = new LinkedList<InjectableTask<?>>();
-
+	private final List<InjectableTask<?>> tasks =
+					new CopyOnWriteArrayList<InjectableTask<?>>();
 	private Semaphore s = new Semaphore(0);
-
 	private boolean running = true;
 
 	/**
@@ -62,11 +59,13 @@ public class ThreadBroker implements Runnable {
 			try {
 				// FIXME: this shouldn't be needed!!!?
 				// why this keeps throwing NoSuchElementExceptions?
-				if (this.tasks.isEmpty()) {
-					log.warn("Tried to run Task but no Task available!!");
-				} else {
-					InjectableTask<?> task = this.tasks.remove(0);
-					runTask(task);
+				synchronized (this.tasks) {
+					if (this.tasks.isEmpty()) {
+						log.warn("Tried to run Task but no Task available!!");
+					} else {
+						InjectableTask<?> task = this.tasks.remove(0);
+						runTask(task);
+					}
 				}
 			} catch (Exception e) {
 				log.error("task died!", e);
