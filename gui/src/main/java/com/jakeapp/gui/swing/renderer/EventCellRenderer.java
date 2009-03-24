@@ -1,5 +1,6 @@
 package com.jakeapp.gui.swing.renderer;
 
+import com.explodingpixels.macwidgets.MacFontUtils;
 import com.jakeapp.core.domain.FileObject;
 import com.jakeapp.core.domain.ILogable;
 import com.jakeapp.core.domain.NoteObject;
@@ -13,7 +14,6 @@ import com.jakeapp.gui.swing.helpers.TimeUtilities;
 import com.jakeapp.gui.swing.helpers.Translator;
 import com.jakeapp.gui.swing.helpers.UserHelper;
 import com.jakeapp.gui.swing.panels.NewsPanel;
-import com.explodingpixels.macwidgets.MacFontUtils;
 import org.apache.log4j.Logger;
 import org.jdesktop.application.ResourceMap;
 
@@ -28,23 +28,23 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 	private static final Logger log = Logger.getLogger(EventCellRenderer.class);
 
 	// file actions
-	private final static ImageIcon fileAddIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/file-add.png");
+	private final static ImageIcon fileAddIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/file-add.png");
 
-	private final static ImageIcon fileRemoveIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/file-remove.png");
+	private final static ImageIcon fileRemoveIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/file-remove.png");
 
-	private final static ImageIcon fileMoveIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/file-moved.png");
+	private final static ImageIcon fileMoveIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/file-moved.png");
 
-	private final static ImageIcon fileUpdateIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/file-updated.png");
+	private final static ImageIcon fileUpdateIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/file-updated.png");
 
-	private final static ImageIcon fileLockIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/file-lock.png");
+	private final static ImageIcon fileLockIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/file-lock.png");
 
-	private final static ImageIcon fileUnlockIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/file-unlock.png");
+	private final static ImageIcon fileUnlockIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/file-unlock.png");
 
 	// project actions
 	private final static ImageIcon projectCreatedIcon = new ImageIcon(
@@ -52,40 +52,40 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 									JakeMainApp.class.getResource("/icons/project-created.png")));
 
 	// users actions
-	private final static ImageIcon peopleTrustIcon = ImageLoader.get(JakeMainApp.class,
-					"/icons/user-trust.png");
+	private final static ImageIcon peopleTrustIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/user-trust.png");
 
-	private final static ImageIcon peopleNoTrustIcon = ImageLoader.get(JakeMainApp.class,
-					"/icons/user-trust-no.png");
+	private final static ImageIcon peopleNoTrustIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/user-trust-no.png");
 
-	private final static ImageIcon peopleInviteIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/user-invited.png");
+	private final static ImageIcon peopleInviteIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/user-invited.png");
 
-	private final static ImageIcon peopleAcceptInvitationIcon = ImageLoader.get(
-			JakeMainApp.class, "/icons/user-invite-ok.png");
+	private final static ImageIcon peopleAcceptInvitationIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/user-invite-ok.png");
 
-	private final static ImageIcon peopleRejectInvitationIcon = ImageLoader.get(
-			JakeMainApp.class, "/icons/user-invite-rejected.png");
+	private final static ImageIcon peopleRejectInvitationIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/user-invite-rejected.png");
 
-	private final static ImageIcon peopleTrustFullIcon = ImageLoader.get(JakeMainApp.class,
-					"/icons/user-trust-full.png");
+	private final static ImageIcon peopleTrustFullIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/user-trust-full.png");
 
 	// tag actions
-	private final static ImageIcon tagAddIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/" + "tags-add.png");
+	private final static ImageIcon tagAddIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/" + "tags-add.png");
 
-	private final static ImageIcon tagRemoveIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/" + "tags-remove.png");
+	private final static ImageIcon tagRemoveIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/" + "tags-remove.png");
 
 	// note actions
-	private final static ImageIcon noteAddIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/" + "note-add.png");
+	private final static ImageIcon noteAddIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/" + "note-add.png");
 
-	private final static ImageIcon noteRemoveIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/" + "note-remove.png");
+	private final static ImageIcon noteRemoveIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/" + "note-remove.png");
 
-	private final static ImageIcon noteUpdateIcon = ImageLoader.get(JakeMainApp.class,
-			"/icons/" + "note-updated.png");
+	private final static ImageIcon noteUpdateIcon =
+					ImageLoader.get(JakeMainApp.class, "/icons/" + "note-updated.png");
 
 	// get notes resource map
 	private static final ResourceMap newsResourceMap =
@@ -238,11 +238,12 @@ public class EventCellRenderer extends DefaultJakeTableCellRenderer {
 
 		// set the tooltip text
 		setToolTipText(
-						"<html><font size=4>" + this.getText() + "</font><br>" + TimeUtilities
+						"<html><font size=3>" + this.getText() + "</font><br>" + TimeUtilities
 										.getRelativeTime(loge.getTimestamp()) + " (" + loge
-										.getTimestamp().toGMTString() + ")" + comment + "</html>");
+										.getTimestamp().toGMTString() + ")" + comment + "<br>" + this
+										.toString() + "</html>");
 
-		setFont(MacFontUtils.ITUNES_FONT);		
+		setFont(MacFontUtils.ITUNES_FONT);
 		return this;
 	}
 

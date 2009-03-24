@@ -441,7 +441,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 						return join;
 					}
 				}
-				log.debug("we don't have " + join + " in the JakeObject table nor in the log.");
+				log.trace("we don't have " + join + " in the JakeObject table nor in the log.");
 				throw e;
 			}
 		}
@@ -475,7 +475,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		try {
 			fo = completeIncomingObject(foin);
 		} catch (NoSuchJakeObjectException e) {
-			log.debug("FileObject is not in database. nulling uuid");
+			log.trace("FileObject is not in database. nulling uuid");
 			fo = new FileObject(p, foin.getRelPath());
 		}
 		// 1 exists?
