@@ -319,7 +319,7 @@ public class JakeSourceList extends JakeGuiComponent
 	/**
 	 * Updates the SourceList (project list)
 	 */
-	private void updateSourceList() {
+	private synchronized void updateSourceList() {
 		setWaiting(sourceList.getComponent(),
 						JakeExecutor.isTaskRunning(GetMyProjectsTask.class));
 
@@ -426,9 +426,13 @@ public class JakeSourceList extends JakeGuiComponent
 		projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 
 
+		try {
 		if (getSourceList() != null && projectSLI != null) {
 			log.trace("setting selected item: " + projectSLI);
 			getSourceList().setSelectedItem(projectSLI);
+		}
+		}catch(Exception ex) {
+			log.warn("Error restoring selection!", ex);
 		}
 
 		sourceList.addSourceListSelectionListener(projectSelectionListener);

@@ -16,7 +16,6 @@ import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import org.apache.log4j.Logger;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.filetransfer.FileTransferListener;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
@@ -33,7 +32,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -45,14 +43,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class XmppFileTransferMethod implements ITransferMethod, IMessageReceiveListener,
 				ILoginStateListener, IOutgoingRequestManager {
-
-
 	private static Logger log = Logger.getLogger(XmppFileTransferMethod.class);
 
-	private static final String FILE_REQUEST = "<filerequest/>";
-
-	private static final Object FILE_RESPONSE_DONT_HAVE = "<fileresponseno/>";
-	
 	/**
 	 * How long we wait for a response from a server after we have sent
 	 * a request to this server, in milliseconds

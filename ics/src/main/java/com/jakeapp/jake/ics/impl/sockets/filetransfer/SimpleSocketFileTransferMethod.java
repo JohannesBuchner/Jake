@@ -1,32 +1,5 @@
 package com.jakeapp.jake.ics.impl.sockets.filetransfer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
@@ -41,21 +14,35 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 // TODO: timeouts for negotiations
 public class SimpleSocketFileTransferMethod implements ITransferMethod,
 		IMessageReceiveListener {
-
 	private static final Logger log = Logger
 			.getLogger(SimpleSocketFileTransferMethod.class);
 
 	private static final String ADDRESS_REQUEST = "<addressrequest/>";
-
 	private static final String ADDRESS_RESPONSE = "<addressresponse/>";
+	private static final String GOT_REQUESTED_FILE = "<file/>";
 
 	private static final int BLOCKSIZE = 1024;
-
-	private static final String GOT_REQUESTED_FILE = "<file/>";
 
 	private IMsgService negotiationService;
 
@@ -122,6 +109,7 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 								SimpleSocketFileTransferMethod.this.listeners.remove(key)
 									.failed(new TimeoutException());
 							} catch (Exception ignored) {
+								log.warn("Ignoring Exception", ignored);
 							}
 						}
 					}
@@ -195,7 +183,9 @@ public class SimpleSocketFileTransferMethod implements ITransferMethod,
 			 * third step, client receives ok from server
 			 */
 			handleServerOk(from_userid, inner);
-		} else {
+		} else if(inner.startsWith(FILE_RESPONSE_DONT_HAVE)) {
+			log.info("Got response: User " + from_userid + " doesn't have file.");
+		}	else {
 			log.warn("unknown request from " + from_userid + ": " + content);
 		}
 	}

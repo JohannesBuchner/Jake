@@ -128,8 +128,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	public void announce(JakeObject jo, LogAction action, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
-		NoteObject note = null;
-		FileObject fo = null;
+		NoteObject note;
+		FileObject fo;
 		LogEntry<JakeObject> le;
 		User user;
 
@@ -139,21 +139,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		// we need an UUID for the object
 		jo = completeIncomingObjectSafe(jo);
 
-		//TODO this call is not neccessary
-		//it deletes jo.getProject.getUser() and prevents the JakeObject
-		//from being written to the log.
-		//jo = completeIncomingObjectSafe(jo);
-		
-		/*
-		 * if (isNoteObject(jo)) { note =
-		 * completeIncomingObjectOrNew((NoteObject) jo); } else { fo =
-		 * completeIncomingObjectOrNew((FileObject) jo); }
-		 */
-
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
 				user = getMyProjectMember(jo.getProject());
-				
 				le = new JakeObjectNewVersionLogEntry(jo, user, commitMsg, null, true);
 				break;
 

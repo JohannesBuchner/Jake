@@ -1,26 +1,9 @@
 package com.jakeapp.core.synchronization.request;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.core.DarkMagic;
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
 import com.jakeapp.core.domain.logentries.LogEntry;
 import com.jakeapp.core.services.ICSManager;
@@ -43,6 +26,15 @@ import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 import com.jakeapp.jake.ics.status.ILoginStateListener;
 import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ProjectRequestListener
 				implements IMessageReceiveListener, IOnlineStatusListener,
