@@ -10,6 +10,10 @@ import com.jakeapp.core.domain.logentries.LogEntry;
 import org.apache.log4j.Logger;
 
 /**
+ * An attributed version of a JakeObject.
+ * The attributed version includes information about the synchronization
+ * status of a JakeObject e.g. if the object is in sync with other
+ * clients, if it is shared, deleted or has been modified.
  * @author johannes
  */
 public class Attributed<T extends JakeObject> extends JakeObjectStatus {
@@ -20,15 +24,16 @@ public class Attributed<T extends JakeObject> extends JakeObjectStatus {
 	private long size;
 
 	/**
-	 * @param jakeObject
-	 * @param lastVersionLogEntry
-	 * @param lastLockLogEntry
-	 * @param objectExistsLocally
-	 * @param checksumDifferentFromLastNewVersionLogEntry
-	 * @param hasUnprocessedLogEntries
-	 * @param lastProcessedLogAction
-	 * @param lastModificationDate
-	 * @param size
+	 * @param jakeObject The Jakeobject whose status is described.
+	 * @param lastVersionLogEntry {@link JakeObjectStatus}
+	 * @param lastLockLogEntry {@link JakeObjectStatus}
+	 * @param objectExistsLocally {@link JakeObjectStatus}
+	 * @param checksumDifferentFromLastNewVersionLogEntry {@link JakeObjectStatus}
+	 * @param hasUnprocessedLogEntries {@link JakeObjectStatus}
+	 * @param lastProcessedLogAction {@link JakeObjectStatus}
+	 * @param lastModificationDate Date of the last modification.
+	 * @param size Size of the <code>JakeObject</code>. Either the length of the content for notes
+	 * 	or the filesize (in bytes) for files.
 	 * */
 	public Attributed(T jakeObject, LogEntry<? extends ILogable> lastVersionLogEntry,
 			LogEntry<? extends ILogable> lastLockLogEntry, boolean objectExistsLocally,
