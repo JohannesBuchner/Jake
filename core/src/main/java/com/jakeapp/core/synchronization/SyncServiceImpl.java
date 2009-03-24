@@ -60,10 +60,11 @@ import java.util.UUID;
  * Project->pause/start call {@link #startServing(Project, ChangeListener)} and
  * {@link #stopServing(Project)} <p/> Even when you are offline, this is to be
  * used.
- * 
+ *
  * @author johannes
  */
-public class SyncServiceImpl extends FriendlySyncService implements IInternalSyncService {
+public class SyncServiceImpl extends FriendlySyncService
+				implements IInternalSyncService {
 	private static final Logger log = Logger.getLogger(SyncServiceImpl.class);
 
 	/**
@@ -75,14 +76,15 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/**
 	 * key is the UUID
 	 */
-	private Map<String, ProjectRequestListener> projectRequestListeners = new HashMap<String, ProjectRequestListener>();
+	private Map<String, ProjectRequestListener> projectRequestListeners =
+					new HashMap<String, ProjectRequestListener>();
 
 	@Injected
 	private IProjectsFileServices projectsFileServices;
 
-//	private ChangeListener getProjectChangeListener(Project p) {
-//		return (p == null) ? null : projectChangeListeners.get(p.getProjectId());
-//	}
+	//	private ChangeListener getProjectChangeListener(Project p) {
+	//		return (p == null) ? null : projectChangeListeners.get(p.getProjectId());
+	//	}
 
 	@Injected
 	private RequestHandlePolicy rhp;
@@ -115,19 +117,19 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	@Override
 	protected Iterable<User> getProjectMembers(Project project)
-			throws NoSuchProjectException {
-		return new LinkedList<User>(db.getLogEntryDao(project).getCurrentProjectMembers(project.getUserId()));
+					throws NoSuchProjectException {
+		return new LinkedList<User>(db.getLogEntryDao(project).getCurrentProjectMembers(
+						project.getUserId()));
 	}
 
 
 	public SyncServiceImpl() {
 	}
 
-	@Override
-	@Transactional
+	@Override @Transactional
 	public void announce(JakeObject jo, LogAction action, String commitMsg)
-			throws FileNotFoundException, InvalidFilenameException,
-			NotAReadableFileException {
+					throws FileNotFoundException, InvalidFilenameException,
+					NotAReadableFileException {
 		NoteObject note;
 		FileObject fo;
 		LogEntry<JakeObject> le;
@@ -153,8 +155,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 			case JAKE_OBJECT_DELETE:
 				// what we do is always processed
-				le = new JakeObjectDeleteLogEntry(jo,
-						getMyProjectMember(jo.getProject()), commitMsg, true);
+				le = new JakeObjectDeleteLogEntry(jo, getMyProjectMember(jo.getProject()),
+								commitMsg, true);
 				break;
 			default:
 				throw new IllegalArgumentException("invalid logaction");
@@ -179,9 +181,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	@Override
-	@Transactional
-	public LogEntry<JakeObject> getLock(JakeObject jo) throws IllegalArgumentException {
+	@Override @Transactional
+	public LogEntry<JakeObject> getLock(JakeObject jo)
+					throws IllegalArgumentException {
 		return db.getLogEntryDao(jo).getLock(jo);
 	}
 
@@ -219,12 +221,10 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-
-	@SuppressWarnings("unchecked")
-	@Transactional
-	@Override
-	public <T extends JakeObject> T pullObject(T join) throws NoSuchLogEntryException,
-			NotLoggedInException, IllegalArgumentException {
+	@SuppressWarnings("unchecked") @Transactional @Override
+	public <T extends JakeObject> T pullObject(T join)
+					throws NoSuchLogEntryException, NotLoggedInException,
+					IllegalArgumentException {
 		// TODO see Bug #101.
 
 		T jo;
@@ -233,9 +233,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		} catch (NoSuchJakeObjectException e1) {
 			throw new IllegalArgumentException(e1);
 		}
-		
-		LogEntry<JakeObject> le = db.getUnprocessedAwareLogEntryDao(jo).getLastVersion(
-				jo, true);
+
+		LogEntry<JakeObject> le =
+						db.getUnprocessedAwareLogEntryDao(jo).getLastVersion(jo, true);
 		log.debug("got logentry: " + le);
 		if (le == null) { // delete
 			log.debug("lets delete it");
@@ -254,20 +254,18 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			jo = (T) pullNoteObject(jo.getProject(), le);
 			this.projectChangeListener.pullDone(jo);
 			return jo;
-		}
-		else {
+		} else {
 			log.debug("Pulling a fileobject...");
 			jo = (T) pullFileObject(jo.getProject(), (FileObject) le.getBelongsTo());
 			this.projectChangeListener.pullDone(jo);
 			return jo;
 		}
 	}
-	
 
 
 	@Override
 	public Iterable<LogEntry<ILogable>> startLogSync(Project project, User pm)
-			throws IllegalArgumentException, IllegalProtocolException {
+					throws IllegalArgumentException, IllegalProtocolException {
 		log.info("Requesting log sync from user " + pm.getUserId());
 
 		ICService ics = getICS(project);
@@ -276,9 +274,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			String msg = messageMarshaller.requestLogs(project);
 			ics.getMsgService().sendMessage(uid, msg);
 		} catch (NetworkException e) {
-			log.warn("Could not request logs from user " + pm.getUserId() + e.getMessage());
+			log.warn(
+							"Could not request logs from user " + pm.getUserId() + e.getMessage());
 		} catch (OtherUserOfflineException e) {
-			log.warn("Could not request logs from user " + pm.getUserId() + e.getMessage());
+			log.warn(
+							"Could not request logs from user " + pm.getUserId() + e.getMessage());
 		}
 
 		// try to send logs back to requester!
@@ -291,10 +291,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	@Transactional
-	@Override
+	@Transactional @Override
 	public <T extends JakeObject> Attributed<T> getJakeObjectSyncStatus(T jo)
-			throws InvalidFilenameException, NotAReadableFileException, IOException {
+					throws InvalidFilenameException, NotAReadableFileException, IOException {
 		if (isNoteObject(jo))
 			return (Attributed<T>) getJakeObjectSyncStatus((NoteObject) jo);
 		else
@@ -319,12 +318,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
 		if (prl == null) {
 			prl = new ProjectRequestListener(p, icsManager, db,
-					(IInternalSyncService) this, messageMarshaller);
+							(IInternalSyncService) this, messageMarshaller);
 			projectRequestListeners.put(p.getProjectId(), prl);
 		}
 		try {
-			p.getMessageService().activateSubsystem(getICS(p), prl, prl, prl,
-					p.getProjectId());
+			p.getMessageService()
+							.activateSubsystem(getICS(p), prl, prl, prl, p.getProjectId());
 		} catch (Exception e) {
 			throw new ProjectException(e);
 		}
@@ -335,15 +334,15 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			log.error("starting to serve failed", e);
 			// TODO: retry some time?
 		}
-		
+
 		log.debug("Project " + p + " activated");
 
 		// fixme: there's only one change listener for everything now!
 		projectChangeListener = cl;
-//		projectChangeListeners.put(p.getProjectId(), cl);
+		//		projectChangeListeners.put(p.getProjectId(), cl);
 		runningProjects.put(p.getProjectId(), p);
 
-		 // registering the listener with the ics
+		// registering the listener with the ics
 		getICS(p).getMsgService().registerReceiveMessageListener(prl);
 		syncProjectMembers(p);
 	}
@@ -357,8 +356,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		//projectChangeListeners.remove(p.getProjectId());
 
 		ProjectRequestListener prl = projectRequestListeners.get(p.getProjectId());
-		if(prl != null)
-		{
+		if (prl != null) {
 			getICS(p).getMsgService().unRegisterReceiveMessageListener(prl);
 			projectRequestListeners.remove(p.getProjectId());
 		}
@@ -372,8 +370,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	}
 
 
-	@Override
-	@Transactional
+	@Override @Transactional
 	public void getTags(JakeObject jo) {
 		db.getLogEntryDao(jo).getCurrentTags(jo);
 	}
@@ -381,7 +378,6 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	public Project getProjectById(String projectid) {
 		return this.runningProjects.get(projectid);
 	}
-
 
 
 	// ////////// PUT ALL LOCAL HELPERS BEYOND THIS LINE
@@ -399,8 +395,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/**
 	 * Avoiding stub objects (without ID)
 	 */
-	@SuppressWarnings("unchecked")
-	@Transactional
+	@SuppressWarnings("unchecked") @Transactional
 	private JakeObject completeIncomingObjectSafe(JakeObject join) {
 		if (isNoteObject(join)) {
 			return this.completeIncomingObjectOrNew((NoteObject) join);
@@ -411,42 +406,43 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	/**
 	 * Avoiding stub objects (without ID)
-	 * 
+	 *
 	 * @param <T>
 	 * @param join
 	 * @return the FileObject or NoteObject from the Database
 	 * @throws NoSuchJakeObjectException
 	 * @throws IllegalArgumentException
 	 */
-	@SuppressWarnings("unchecked")
-	@Transactional
+	@SuppressWarnings("unchecked") @Transactional
 	private <T extends JakeObject> T completeIncomingObject(T join)
-			throws IllegalArgumentException, NoSuchJakeObjectException {
+					throws IllegalArgumentException, NoSuchJakeObjectException {
 		if (isNoteObject(join)) {
 			return (T) db.getNoteObjectDao(join.getProject()).get(join.getUuid());
 		} else {
 			try {
-				return (T) getFileObjectByRelpath(join.getProject(), ((FileObject) join)
-					.getRelPath());
-			}catch(NoSuchJakeObjectException e) {
-				if(join.getUuid() != null) {
+				return (T) getFileObjectByRelpath(join.getProject(),
+								((FileObject) join).getRelPath());
+			} catch (NoSuchJakeObjectException e) {
+				if (join.getUuid() != null) {
 					// produced nullpointerexceptions!
 					//log.debug("logentry dump:  -------");
 					//for(LogEntry<? extends ILogable> le : db.getUnprocessedAwareLogEntryDao(join).getAll(true)) {
 					//	log.debug(le);
 					//}
 					//log.debug("logentry dump done ----");
-					if(db.getUnprocessedAwareLogEntryDao(join).getDeleteState(join, true) != null) {
+					if (db.getUnprocessedAwareLogEntryDao(join)
+									.getDeleteState(join, true) != null) {
 						// log.debug("found " + join + " in the log. accepting the uuid");
 						return join;
 					}
 				}
-				log.trace("we don't have " + join + " in the JakeObject table nor in the log.");
+				log.trace(
+								"we don't have " + join + " in the JakeObject table nor in the log.");
 				throw e;
 			}
 		}
 	}
-	
+
 	private LogAction getLogActionNullSafe(LogEntry<? extends ILogable> lock) {
 		if (lock == null)
 			return null;
@@ -457,7 +453,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	@Transactional
 	public Attributed<FileObject> getJakeObjectSyncStatus(FileObject foin)
-			throws InvalidFilenameException, IOException {
+					throws InvalidFilenameException, IOException {
 		log.trace("get JakeObjectStatus for " + foin);
 		if (foin == null) {
 			throw new IllegalArgumentException("FileObject is null!");
@@ -501,7 +497,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 					size = fss.getFileSize(fo.getRelPath());
 					pulledle = led.getLastVersionOfJakeObject(fo, false);
 					checksumEqualToLastNewVersionLogEntry = pulledle.getChecksum()
-							.equals(fss.calculateHashOverFile(fo.getRelPath()));
+									.equals(fss.calculateHashOverFile(fo.getRelPath()));
 				} catch (NotAReadableFileException e) {
 					size = 0;
 					checksumEqualToLastNewVersionLogEntry = false;
@@ -546,15 +542,15 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
 
 		return new Attributed<FileObject>(fo, lastle, locklog, objectExistsLocally,
-				!checksumEqualToLastNewVersionLogEntry, hasUnprocessedLogEntries,
-				lastProcessedLogAction, lastModificationDate, size);
+						!checksumEqualToLastNewVersionLogEntry, hasUnprocessedLogEntries,
+						lastProcessedLogAction, lastModificationDate, size);
 	}
 
 	@Transactional
 	public Attributed<NoteObject> getJakeObjectSyncStatus(NoteObject noin) {
 		Project p = noin.getProject();
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
-		
+
 		log.trace("getting attributed note for " + noin + " in " + p);
 
 		// this is very similar, but slightly different to the FileObject code
@@ -592,8 +588,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		LogEntry<NoteObject> pulledle;
 		try {
 			pulledle = led.getLastVersionOfJakeObject(no, false);
-			checksumEqualToLastNewVersionLogEntry = pulledle.getBelongsTo().getContent()
-					.equals(content);
+			checksumEqualToLastNewVersionLogEntry =
+							pulledle.getBelongsTo().getContent().equals(content);
 		} catch (NoSuchLogEntryException e1) {
 			pulledle = null;
 			checksumEqualToLastNewVersionLogEntry = false;
@@ -610,12 +606,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		LogAction lastProcessedLogAction = getLogActionNullSafe(pulledle);
 
 		no.setProject(p);
-		
+
 		log.trace("got attributed note for " + noin + " in " + no.getProject());
 		return new Attributed<NoteObject>(no, lastle, led.getLock(no),
-				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
-				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
-				size);
+						objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
+						hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,
+						size);
 	}
 
 
@@ -650,7 +646,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	@Transactional
 	private FileObject getFileObjectByRelpath(Project p, String relpath)
-			throws NoSuchJakeObjectException {
+					throws NoSuchJakeObjectException {
 		return db.getFileObjectDao(p).complete(new FileObject(p, relpath));
 	}
 
@@ -675,42 +671,37 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 * Pulls a Fileobject from any available source and - if the pull has been
 	 * successful - sets all LogEntries that became obsoleted by the pull to
 	 * processed.
-	 * 
-	 * @param p
-	 *            The Project the fileobject should belong to
-	 * @param fo
-	 *            The File to pull
+	 *
+	 * @param p	The Project the fileobject should belong to
+	 * @param fo The File to pull
 	 * @return fo null if pull was not successful
-	 * @throws NotLoggedInException
-	 *             if there is not logged in MsgService for p
-	 * @throws NoSuchLogEntryException
-	 *             if there are no LogEntries for the JakeObject.
-	 * @throws IllegalArgumentException
-	 *             if p or fo were null.
+	 * @throws NotLoggedInException		 if there is not logged in MsgService for p
+	 * @throws NoSuchLogEntryException	if there are no LogEntries for the JakeObject.
+	 * @throws IllegalArgumentException if p or fo were null.
 	 */
-	@SuppressWarnings("unchecked")
-	@Transactional
+	@SuppressWarnings("unchecked") @Transactional
 	public FileObject pullFileObject(Project p, FileObject fo)
-			throws NotLoggedInException, NoSuchLogEntryException,
-			IllegalArgumentException {
+					throws NotLoggedInException, NoSuchLogEntryException,
+					IllegalArgumentException {
 		// preconditions-check
 		if (p == null)
 			throw new IllegalArgumentException("Project may not be null");
 		if (fo == null)
 			throw new IllegalArgumentException("FileObject may not be null");
-		if (p.getMessageService() == null || p.getMessageService().getVisibilityStatus() != VisibilityStatus.ONLINE)
+		if (p.getMessageService() == null || p.getMessageService()
+						.getVisibilityStatus() != VisibilityStatus.ONLINE)
 			throw new NotLoggedInException();
 		if (!getICS(p).getStatusService().isLoggedIn()) {
 			log.warn("Project not online");
 			throw new NotLoggedInException();
 		}
-		
+
 
 		IFileTransferService ts;
 		IFileTransfer result = null;
 		FileRequest fr;
-		Iterable<LogEntry> potentialProviders = this.getRequestHandlePolicy()
-				.getPotentialJakeObjectProviders(fo);
+		Iterable<LogEntry> potentialProviders =
+						this.getRequestHandlePolicy().getPotentialJakeObjectProviders(fo);
 
 		UserId remoteBackendPeer;
 		ChangeListener cl = projectChangeListener;
@@ -722,18 +713,18 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		for (LogEntry potentialProvider : potentialProviders) {
 			log.debug("looking at possible provider " + potentialProvider.getMember());
 			if (potentialProvider == null || potentialProvider.getMember() == null) {
-				throw new IllegalStateException("getPotentialJakeObjectProviders " +
-						"returned invalid Logentries");
+				throw new IllegalStateException(
+								"getPotentialJakeObjectProviders " + "returned invalid Logentries");
 			}
-			remoteBackendPeer = this.icsManager.getBackendUserId(p, potentialProvider
-					.getMember());
+			remoteBackendPeer =
+							this.icsManager.getBackendUserId(p, potentialProvider.getMember());
 			log.debug("remoteBackendPeer: " + remoteBackendPeer);
 
 			log.debug("getting transferService");
 			ts = this.icsManager.getTransferService(p);
 
-			String contentname = this.messageMarshaller.requestFile(fo.getProject(),
-					potentialProvider);
+			String contentname =
+							this.messageMarshaller.requestFile(fo.getProject(), potentialProvider);
 			log.debug("content addressed with: " + contentname);
 			fr = new FileRequest(contentname, false, remoteBackendPeer);
 
@@ -744,12 +735,13 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 				// either returned successfully or not successfully
 				log.debug("requesting " + fr);
 				result = AvailableLaterWaiter.await(new FileRequestFuture(fo, ts, fr, cl,
-						getProjectsFileServices()));
+								getProjectsFileServices()));
 				// Save potentialProvider for later usage.
 				realProvider = potentialProvider;
 				break;
 			} catch (Exception ignored) {
-				log.warn("pull from " + potentialProvider + " failed" + ignored.getMessage());
+				log.warn(
+								"pull from " + potentialProvider + " failed" + ignored.getMessage());
 				log.info("trying next provider");
 				continue;
 			}
@@ -782,8 +774,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 	@Transactional
 	private void deleteBecauseRemoteSaidSo(JakeObject jo)
-			throws IllegalArgumentException, NoSuchJakeObjectException,
-			FileNotFoundException {
+					throws IllegalArgumentException, NoSuchJakeObjectException,
+					FileNotFoundException {
 		if (jo instanceof NoteObject) {
 			db.getNoteObjectDao(jo.getProject()).delete((NoteObject) jo);
 		}
@@ -792,11 +784,11 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 			try {
 				getFSS(jo.getProject()).deleteFile(((FileObject) jo).getRelPath());
 			} catch (NotAFileException e) {
-				log.fatal("database corrupted: tried to delete a file that isn't a file",
-						e);
+				log.fatal("database corrupted: tried to delete a file that isn't a file", e);
 			} catch (InvalidFilenameException e) {
-				log.fatal("database corrupted: tried to delete a file that isn't "
-						+ "a valid file", e);
+				log.fatal(
+								"database corrupted: tried to delete a file that isn't " + "a valid file",
+								e);
 			}
 		}
 	}
@@ -805,7 +797,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/**
 	 * returns true if NoteObject <br>
 	 * returns false if FileObject
-	 * 
+	 *
 	 * @param jo
 	 * @return
 	 */
@@ -816,12 +808,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	/**
 	 * Sets a LogEntry and all previously happened LogEntries, that have the
 	 * same 'belongsTo' to processed.
-	 * 
+	 *
 	 * @param le
 	 */
-	@SuppressWarnings("unchecked")
-	@Transactional
-	private void setLogentryProcessed(JakeObject jo, LogEntry<? extends JakeObject> le) {
+	@SuppressWarnings("unchecked") @Transactional
+	private void setLogentryProcessed(JakeObject jo,
+					LogEntry<? extends JakeObject> le) {
 		if (jo == null || le == null)
 			return;
 
@@ -836,7 +828,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	public void setApplicationContextFactory(
-			ProjectApplicationContextFactory projectApplicationContextFactory) {
+					ProjectApplicationContextFactory projectApplicationContextFactory) {
 		this.db = projectApplicationContextFactory;
 	}
 
@@ -855,9 +847,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	// IT
 
 
-//	public ChangeListener getProjectChangeListener(String projectId) {
-//		return this.projectChangeListeners.get(projectId);
-//	}
+	//	public ChangeListener getProjectChangeListener(String projectId) {
+	//		return this.projectChangeListeners.get(projectId);
+	//	}
 
 
 	/**
@@ -867,21 +859,21 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	 * <li>in the ics</li>
 	 * </ul>
 	 * We should only trust the logentries and fix everything else by that.
-	 * 
+	 *
 	 * @param project
 	 */
 	@Transactional
 	private void syncProjectMembers(Project project) {
-		Collection<User> members = db.getLogEntryDao(project)
-				.getCurrentProjectMembers(project.getUserId());
+		Collection<User> members =
+						db.getLogEntryDao(project).getCurrentProjectMembers(project.getUserId());
 
 		members.remove(project.getUserId()); // dont sync with ourself
-		
+
 		for (User member : members) {
 			UserId userid = getICSManager().getBackendUserId(project, member);
 			try {
 				getICS(project).getUsersService().addUser(userid, userid.getUserId());
-			} catch (NoSuchUseridException e) { 
+			} catch (NoSuchUseridException e) {
 				log.warn("no such user: " + member);
 			} catch (Exception e) {
 				// silent fail 
@@ -895,7 +887,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		if (ics == null)
 			return false;
 		try {
-			return ics.getStatusService().isLoggedIn(getICSManager().getBackendUserId(p, u));
+			return ics.getStatusService()
+							.isLoggedIn(getICSManager().getBackendUserId(p, u));
 		} catch (NoSuchUseridException e) {
 			return false;
 		} catch (NotLoggedInException e) {
@@ -913,7 +906,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 
 	private IFileTransferService getTransferService(Project p)
-			throws NotLoggedInException {
+					throws NotLoggedInException {
 		return p.getMessageService().getIcsManager().getTransferService(p);
 	}
 }

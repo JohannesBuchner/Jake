@@ -4,7 +4,9 @@ import com.jakeapp.core.domain.NoteObject;
 import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.synchronization.attributes.Attributed;
 import com.jakeapp.gui.swing.JakeMainApp;
+import com.jakeapp.gui.swing.callbacks.ContextChangedCallback;
 import com.jakeapp.gui.swing.callbacks.DataChangedCallback;
+import com.jakeapp.gui.swing.globals.JakeContext;
 import com.jakeapp.gui.swing.helpers.ImageLoader;
 import com.jakeapp.gui.swing.helpers.NotesHelper;
 import com.jakeapp.gui.swing.helpers.TimeUtilities;
@@ -26,7 +28,7 @@ import java.util.List;
  * @author Simon
  */
 public class NotesTableModel extends DefaultTableModel
-				implements DataChangedCallback {
+				implements DataChangedCallback, ContextChangedCallback {
 	private static final long serialVersionUID = -2745782032637383756L;
 	private static Logger log = Logger.getLogger(NotesTableModel.class);
 
@@ -182,11 +184,10 @@ public class NotesTableModel extends DefaultTableModel
 								.add(JakeMainApp.getCore().<NoteObject>getAttributed(note));
 			}
 		}
-		this.attributedNotes.clear();
+		clearNotes(false);
 		this.attributedNotes.addAll(newAttributedNotes);
 
 		log.debug("update done.");
-
 		this.fireTableDataChanged();
 		this.setSelectedNote(oldSelectionNote);
 	}
@@ -282,9 +283,23 @@ public class NotesTableModel extends DefaultTableModel
 
 	@Override
 	public void dataChanged(EnumSet<DataReason> dataReason, Project p) {
-
 		if (dataReason.contains(DataReason.Notes)) {
 			updateNotes(p);
+		}
+	}
+
+
+	@Override public void contextChanged(EnumSet<Reason> reason, Object context) {
+		if (reason.contains(Reason.Project)) {
+			clearNotes(true);
+			updateNotes(JakeContext.getProject());
+		}
+	}
+
+	private void clearNotes(boolean fireChange) {
+		this.attributedNotes.clear();
+		if (fireChange) {
+			this.fireTableDataChanged();
 		}
 	}
 }
